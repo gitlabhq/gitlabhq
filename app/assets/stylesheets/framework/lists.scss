@@ -107,7 +107,7 @@ ul.content-list {
 
   > li {
     padding: $gl-padding;
-    border-color: #f1f2f4;
+    border-color: $table-border-color;
     margin-left: -$gl-padding;
     margin-right: -$gl-padding;
     color: $gl-gray;
@@ -117,7 +117,7 @@ ul.content-list {
     }
 
     .controls {
-      padding-top: 4px;
+      padding-top: 1px;
       float: right;
 
       .btn {

@@ -78,6 +78,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     fill_in :file_name, with: 'Spaces Not Allowed'
   end
 
+  step 'I fill the new file name with a new directory' do
+    fill_in :file_name, with: new_file_name_with_directory
+  end
+
   step 'I fill the commit message' do
     fill_in :commit_message, with: 'Not yet a commit message.', visible: true
   end
@@ -238,6 +242,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       @project.namespace, @project, 'master/' + new_file_name))
   end
 
+  step 'I am redirected to the new file with directory' do
+    expect(current_path).to eq(namespace_project_blob_path(
+      @project.namespace, @project, 'master/' + new_file_name_with_directory))
+  end
+
   step 'I am redirected to the new file on new branch' do
     expect(current_path).to eq(namespace_project_blob_path(
       @project.namespace, @project, 'new_branch_name/' + new_file_name))
@@ -286,6 +295,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     select "'test'", from: 'ref'
   end
 
+  step "I switch ref to fix" do
+    select "fix", from: 'ref'
+  end
+
   step "I see the ref 'test' has been selected" do
     expect(page).to have_selector '.select2-chosen', text: "'test'"
   end
@@ -294,7 +307,16 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     visit namespace_project_tree_path(@project.namespace, @project, "'test'")
   end
 
+  step "I visit the fix tree" do
+    visit namespace_project_tree_path(@project.namespace, @project, "fix/.testdir")
+  end
+
   step 'I see the commit data' do
+    expect(page).to have_css('.tree-commit-link', visible: true)
+    expect(page).not_to have_content('Loading commit data...')
+  end
+
+  step 'I see the commit data for a directory with a leading dot' do
     expect(page).to have_css('.tree-commit-link', visible: true)
     expect(page).not_to have_content('Loading commit data...')
   end
@@ -320,6 +342,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   # not a filename present at root of the seed repository.
   def new_file_name
     'not_a_file.md'
+  end
+
+  # Constant value that is a valid filename with directory and
+  # not a filename present at root of the seed repository.
+  def new_file_name_with_directory
+    'foo/bar/baz.txt'
   end
 
   # Constant value that is a valid directory and

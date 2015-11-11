@@ -17,45 +17,46 @@
   - else
     = button_tag 'Import all projects', class: "btn btn-success js-import-all"
 
-%table.table.import-jobs
-  %thead
-    %tr
-      %th From Google Code
-      %th To GitLab
-      %th Status
-  %tbody
-    - @already_added_projects.each do |project|
-      %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
-        %td
-          = link_to project.import_source, "https://code.google.com/p/#{project.import_source}", target: "_blank"
-        %td
-          %strong= link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
-        %td.job-status
-          - if project.import_status == 'finished'
-            %span
-              %i.fa.fa-check
-              done
-          - elsif project.import_status == 'started'
-            %i.fa.fa-spinner.fa-spin
-            started
-          - else
-            = project.human_import_status_name
+.table-holder
+  %table.table.import-jobs
+    %thead
+      %tr
+        %th From Google Code
+        %th To GitLab
+        %th Status
+    %tbody
+      - @already_added_projects.each do |project|
+        %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
+          %td
+            = link_to project.import_source, "https://code.google.com/p/#{project.import_source}", target: "_blank"
+          %td
+            %strong= link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
+          %td.job-status
+            - if project.import_status == 'finished'
+              %span
+                %i.fa.fa-check
+                done
+            - elsif project.import_status == 'started'
+              %i.fa.fa-spinner.fa-spin
+              started
+            - else
+              = project.human_import_status_name
 
-    - @repos.each do |repo|
-      %tr{id: "repo_#{repo.id}"}
-        %td
-          = link_to repo.name, "https://code.google.com/p/#{repo.name}", target: "_blank"
-        %td.import-target
-          = "#{current_user.username}/#{repo.name}"
-        %td.import-actions.job-status
-          = button_tag "Import", class: "btn js-add-to-import"
-    - @incompatible_repos.each do |repo|
-      %tr{id: "repo_#{repo.id}"}
-        %td
-          = link_to repo.name, "https://code.google.com/p/#{repo.name}", target: "_blank"
-        %td.import-target
-        %td.import-actions-job-status
-          = label_tag "Incompatible Project", nil, class: "label label-danger"
+      - @repos.each do |repo|
+        %tr{id: "repo_#{repo.id}"}
+          %td
+            = link_to repo.name, "https://code.google.com/p/#{repo.name}", target: "_blank"
+          %td.import-target
+            = "#{current_user.username}/#{repo.name}"
+          %td.import-actions.job-status
+            = button_tag "Import", class: "btn js-add-to-import"
+      - @incompatible_repos.each do |repo|
+        %tr{id: "repo_#{repo.id}"}
+          %td
+            = link_to repo.name, "https://code.google.com/p/#{repo.name}", target: "_blank"
+          %td.import-target
+          %td.import-actions-job-status
+            = label_tag "Incompatible Project", nil, class: "label label-danger"
 
 - if @incompatible_repos.any?
   %p
@@ -66,5 +67,5 @@
     = link_to "import flow", new_import_google_code_path
     again.
 
-:coffeescript
-  new ImporterStatus("#{jobs_import_google_code_path}", "#{import_google_code_path}")
+:javascript
+  new ImporterStatus("#{jobs_import_google_code_path}", "#{import_google_code_path}");

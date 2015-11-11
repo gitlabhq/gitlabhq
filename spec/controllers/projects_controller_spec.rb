@@ -22,17 +22,68 @@ describe ProjectsController do
       end
     end
 
-    context "when requested with case sensitive namespace and project path" do
-      it "redirects to the normalized path for case mismatch" do
-        get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+    context "rendering default project view" do
+      render_views
 
-        expect(response).to redirect_to("/#{public_project.path_with_namespace}")
+      it "renders the activity view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('activity')
+
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_activity')
       end
 
-      it "loads the page if normalized path matches request path" do
-        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+      it "renders the readme view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('readme')
 
-        expect(response.status).to eq(200)
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_readme')
+      end
+
+      it "renders the files view" do
+        allow(controller).to receive(:current_user).and_return(user)
+        allow(user).to receive(:project_view).and_return('files')
+
+        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+        expect(response).to render_template('_files')
+      end
+    end
+
+    context "when requested with case sensitive namespace and project path" do
+      context "when there is a match with the same casing" do
+        it "loads the project" do
+          get :show, namespace_id: public_project.namespace.path, id: public_project.path
+
+          expect(assigns(:project)).to eq(public_project)
+          expect(response.status).to eq(200)
+        end
+      end
+
+      context "when there is a match with different casing" do
+        it "redirects to the normalized path" do
+          get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+
+          expect(assigns(:project)).to eq(public_project)
+          expect(response).to redirect_to("/#{public_project.path_with_namespace}")
+        end
+
+
+        # MySQL queries are case insensitive by default, so this spec would fail.
+        if Gitlab::Database.postgresql?
+          context "when there is also a match with the same casing" do
+
+            let!(:other_project) { create(:project, :public, namespace: public_project.namespace, path: public_project.path.upcase) }
+
+            it "loads the exactly matched project" do
+
+              get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+
+              expect(assigns(:project)).to eq(other_project)
+              expect(response.status).to eq(200)
+            end
+          end
+        end
       end
     end
   end
@@ -60,6 +111,52 @@ describe ProjectsController do
            namespace_id: project.namespace.to_param,
            id: public_project.to_param)
       expect(user.starred?(public_project)).to be_falsey
+    end
+  end
+
+  describe "DELETE remove_fork" do
+    context 'when signed in' do
+      before do
+        sign_in(user)
+      end
+
+      context 'with forked project' do
+        let(:project_fork) { create(:project, namespace: user.namespace) }
+
+        before do
+          create(:forked_project_link, forked_to_project: project_fork)
+        end
+
+        it 'should remove fork from project' do
+          delete(:remove_fork,
+              namespace_id: project_fork.namespace.to_param,
+              id: project_fork.to_param, format: :js)
+
+          expect(project_fork.forked?).to be_falsey
+          expect(flash[:notice]).to eq('The fork relationship has been removed.')
+          expect(response).to render_template(:remove_fork)
+        end
+      end
+
+      context 'when project not forked' do
+        let(:unforked_project) { create(:project, namespace: user.namespace) }
+
+        it 'should do nothing if project was not forked' do
+          delete(:remove_fork,
+              namespace_id: unforked_project.namespace.to_param,
+              id: unforked_project.to_param, format: :js)
+
+          expect(flash[:notice]).to be_nil
+          expect(response).to render_template(:remove_fork)
+        end
+      end
+    end
+
+    it "does nothing if user is not signed in" do
+      delete(:remove_fork,
+          namespace_id: project.namespace.to_param,
+          id: project.to_param, format: :js)
+      expect(response.status).to eq(401)
     end
   end
 end

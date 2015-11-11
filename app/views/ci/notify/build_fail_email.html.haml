@@ -7,13 +7,17 @@
     = @project.name
 
 %p
-  Commit link: #{gitlab_commit_link(@project, @build.commit.short_sha)}
+  Commit: #{link_to @build.short_sha, namespace_project_commit_path(@build.gl_project.namespace, @build.gl_project, @build.sha)}
 %p
   Author: #{@build.commit.git_author_name}
 %p
   Branch: #{@build.ref}
 %p
+  Stage: #{@build.stage}
+%p
+  Job: #{@build.name}
+%p
   Message: #{@build.commit.git_commit_message}
 
 %p
-  Url: #{link_to @build.short_sha, namespace_project_build_url(@build.gl_project.namespace, @build.gl_project, @build)}
+  Build details: #{link_to "Build #{@build.id}", namespace_project_build_url(@build.gl_project.namespace, @build.gl_project, @build)}

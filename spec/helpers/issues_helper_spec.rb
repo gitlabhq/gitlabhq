@@ -117,4 +117,14 @@ describe IssuesHelper do
     end
   end
 
+  describe "#merge_requests_sentence" do
+    subject { merge_requests_sentence(merge_requests)}
+    let(:merge_requests) do
+      [ build(:merge_request, iid: 1), build(:merge_request, iid: 2),
+        build(:merge_request, iid: 3)]
+    end
+
+    it { is_expected.to eq("!1, !2, or !3") }
+  end
+
 end

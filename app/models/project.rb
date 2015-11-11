@@ -37,6 +37,7 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
+  include Gitlab::CurrentSettings
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -119,8 +120,9 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :ci_commits, ->() { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
   has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
+  has_many :releases, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
@@ -243,11 +245,12 @@ class Project < ActiveRecord::Base
       # Use of unscoped ensures we're not secretly adding any ORDER BYs, which
       # have a negative impact on performance (and aren't needed for this
       # query).
-      unscoped.
+      projects = unscoped.
         joins(:namespace).
-        iwhere('namespaces.path' => namespace_path).
-        iwhere('projects.path' => project_path).
-        take
+        iwhere('namespaces.path' => namespace_path)
+
+      projects.where('projects.path' => project_path).take ||
+        projects.iwhere('projects.path' => project_path).take
     end
 
     def visibility_levels
@@ -567,7 +570,7 @@ class Project < ActiveRecord::Base
   end
 
   def empty_repo?
-    !repository.exists? || repository.empty?
+    !repository.exists? || !repository.has_visible_content?
   end
 
   def repo
@@ -656,6 +659,8 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+
+    Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
   def hook_attrs
@@ -772,7 +777,9 @@ class Project < ActiveRecord::Base
   end
 
   def ensure_gitlab_ci_project
-    gitlab_ci_project || create_gitlab_ci_project
+    gitlab_ci_project || create_gitlab_ci_project(
+      shared_runners_enabled: current_application_settings.shared_runners_enabled
+    )
   end
 
   def enable_ci

@@ -1,3 +1,9 @@
+.table-holder {
+  margin: -$gl-padding;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 table {
   &.table {
     .dropdown-menu a {
@@ -18,15 +24,17 @@ table {
 
     tr {
       td, th {
-        padding: 8px 10px;
+        padding: 10px $gl-padding;
         line-height: 20px;
         vertical-align: middle;
       }
+
       th {
         font-weight: normal;
         font-size: 15px;
         border-bottom: 1px solid $border-color !important;
       }
+
       td {
         border-color: $table-border-color !important;
         border-bottom: 1px solid;

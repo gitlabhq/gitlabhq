@@ -1,3 +1,4 @@
+- page_title "Triggers"
 %h3.page-title
   Triggers
 
@@ -7,12 +8,13 @@
 %hr.clearfix
 
 -if @triggers.any?
-  %table.table
-    %thead
-      %th Token
-      %th Last used
-      %th
-    = render partial: 'trigger', collection: @triggers, as: :trigger
+  .table-holder
+    %table.table
+      %thead
+        %th Token
+        %th Last used
+        %th
+      = render partial: 'trigger', collection: @triggers, as: :trigger
 - else
   %h4 No triggers
 

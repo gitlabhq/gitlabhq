@@ -1,7 +1,7 @@
 module CiStatusHelper
   def ci_status_path(ci_commit)
     project = ci_commit.gl_project
-    ci_namespace_project_commit_path(project.namespace, project, ci_commit.sha)
+    builds_namespace_project_commit_path(project.namespace, project, ci_commit.sha)
   end
 
   def ci_status_icon(ci_commit)
@@ -41,5 +41,14 @@ module CiStatusHelper
       end
 
     icon(icon_name)
+  end
+
+  def render_ci_status(ci_commit)
+    link_to ci_status_path(ci_commit),
+      class: "c#{ci_status_color(ci_commit)}",
+      title: "Build status: #{ci_commit.status}",
+      data: { toggle: 'tooltip', placement: 'left' } do
+      ci_status_icon(ci_commit)
+    end
   end
 end

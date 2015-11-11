@@ -12,7 +12,7 @@ describe RunnersHelper do
   end
 
   it "returns online text" do
-    runner = FactoryGirl.build(:ci_runner, contacted_at: 1.hour.ago, active: true)
+    runner = FactoryGirl.build(:ci_runner, contacted_at: 1.second.ago, active: true)
     expect(runner_status_icon(runner)).to include("Runner is online")
   end
 end

@@ -1,0 +1,12 @@
+.project-last-commit
+  - ci_commit = project.ci_commit(commit.sha)
+  - if ci_commit
+    = link_to ci_status_path(ci_commit), class: "ci-status ci-#{ci_commit.status}" do
+      = ci_status_icon(ci_commit)
+      = ci_commit.status
+
+  = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
+  = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message"
+  &middot;
+  #{time_ago_with_tooltip(commit.committed_date, skip_js: true)} by
+  = commit_author_link(commit, avatar: true, size: 24)

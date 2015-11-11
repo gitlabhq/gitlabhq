@@ -35,6 +35,16 @@ Gitlab::Popen.popen(%W(find /some/path -not -path /some/path -mmin +120 -delete)
 
 This coding style could have prevented CVE-2013-4490.
 
+## Always use the configurable git binary path for git commands
+
+```ruby
+# Wrong
+system(*%W(git branch -d -- #{branch_name}))
+
+# Correct
+system(*%W(#{Gitlab.config.git.bin_path} branch -d -- #{branch_name}))
+```
+
 ## Bypass the shell by splitting commands into separate tokens
 
 When we pass shell commands as a single string to Ruby, Ruby will let `/bin/sh` evaluate the entire string. Essentially, we are asking the shell to evaluate a one-line script. This creates a risk for shell injection attacks. It is better to split the shell command into tokens ourselves. Sometimes we use the scripting capabilities of the shell to change the working directory or set environment variables. All of this can also be achieved securely straight from Ruby
@@ -81,9 +91,9 @@ In the GitLab codebase, we avoid the option/argument ambiguity by _always_ using
 
 ```ruby
 # Wrong
-system(*%W(git branch -d #{branch_name}))
+system(*%W(#{Gitlab.config.git.bin_path} branch -d #{branch_name}))
 # Correct
-system(*%W(git branch -d -- #{branch_name}))
+system(*%W(#{Gitlab.config.git.bin_path} branch -d -- #{branch_name}))
 ```
 
 This coding style could have prevented CVE-2013-4582.
@@ -94,9 +104,9 @@ Capturing the output of shell commands with backticks reads nicely, but you are 
 
 ```ruby
 # Wrong
-logs = `cd #{repo_dir} && git log`
+logs = `cd #{repo_dir} && #{Gitlab.config.git.bin_path} log`
 # Correct
-logs, exit_status = Gitlab::Popen.popen(%W(git log), repo_dir)
+logs, exit_status = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} log), repo_dir)
 
 # Wrong
 user = `whoami`
@@ -108,7 +118,7 @@ In other repositories, such as gitlab-shell you can also use `IO.popen`.
 
 ```ruby
 # Safe IO.popen example
-logs = IO.popen(%W(git log), chdir: repo_dir) { |p| p.read }
+logs = IO.popen(%W(#{Gitlab.config.git.bin_path} log), chdir: repo_dir) { |p| p.read }
 ```
 
 Note that unlike `Gitlab::Popen.popen`, `IO.popen` does not capture standard error.

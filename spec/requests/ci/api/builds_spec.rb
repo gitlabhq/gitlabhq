@@ -76,6 +76,8 @@ describe Ci::API::API do
 
         expect(response.status).to eq(201)
         expect(json_response["variables"]).to eq([
+          { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
+          { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
           { "key" => "DB_NAME", "value" => "postgres", "public" => true },
           { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
         ])
@@ -93,6 +95,9 @@ describe Ci::API::API do
 
         expect(response.status).to eq(201)
         expect(json_response["variables"]).to eq([
+          { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
+          { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+          { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
           { "key" => "DB_NAME", "value" => "postgres", "public" => true },
           { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
           { "key" => "TRIGGER_KEY", "value" => "TRIGGER_VALUE", "public" => false },

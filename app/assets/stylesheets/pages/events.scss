@@ -4,10 +4,10 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding;
+  padding: $gl-padding $gl-padding $gl-padding ($gl-padding + $gl-avatar-size + 15px);
   margin-left: -$gl-padding;
   margin-right: -$gl-padding;
-  border-bottom: 1px solid #f1f2f4;
+  border-bottom: 1px solid $table-border-color;
   color: #7f8fa4;
 
   &.event-inline {
@@ -16,10 +16,7 @@
       top: -2px;
     }
 
-    .event-title {
-      line-height: 44px;
-    }
-
+    .event-title,
     .event-item-timestamp {
       line-height: 44px;
     }
@@ -30,7 +27,7 @@
   }
 
   .avatar {
-    margin-right: 15px;
+    margin-left: -($gl-avatar-size + 15px);
   }
 
   .event-title {
@@ -43,8 +40,7 @@
   }
 
   .event-body {
-    margin-left: 63px;
-    margin-right: 80px;
+    margin-right: 174px;
 
     .event-note {
       margin-top: 5px;
@@ -155,6 +151,8 @@
 
 @media (max-width: $screen-xs-max) {
   .event-item {
+    padding-left: $gl-padding;
+
     .event-title {
       white-space: normal;
       overflow: visible;

@@ -17,8 +17,10 @@
         - @participants.each do |participant|
           = link_to_member(@project, participant, name: false, size: 24)
     .col-md-3
-      %span.slead.has_tooltip{title: 'Cross-project reference'}
-        = cross_project_reference(@project, @issue)
+      .input-group.cross-project-reference
+        %span.slead.has_tooltip{title: 'Cross-project reference'}
+          = cross_project_reference(@project, @issue)
+        = clipboard_button
 
 .row
   %section.col-md-9

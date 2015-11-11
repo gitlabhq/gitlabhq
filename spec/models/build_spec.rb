@@ -200,13 +200,34 @@ describe Ci::Build do
     context 'returns variables' do
       subject { build.variables }
 
-      let(:variables) do
+      let(:predefined_variables) do
+        [
+          { key: :CI_BUILD_NAME, value: 'test', public: true },
+          { key: :CI_BUILD_STAGE, value: 'stage', public: true },
+        ]
+      end
+
+      let(:yaml_variables) do
         [
           { key: :DB_NAME, value: 'postgres', public: true }
         ]
       end
 
-      it { is_expected.to eq(variables) }
+      before { build.update_attributes(stage: 'stage') }
+
+      it { is_expected.to eq(predefined_variables + yaml_variables) }
+
+      context 'for tag' do
+        let(:tag_variable) do
+          [
+            { key: :CI_BUILD_TAG, value: 'master', public: true }
+          ]
+        end
+
+        before { build.update_attributes(tag: true) }
+
+        it { is_expected.to eq(tag_variable + predefined_variables + yaml_variables) }
+      end
 
       context 'and secure variables' do
         let(:secure_variables) do
@@ -219,7 +240,7 @@ describe Ci::Build do
           build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
         end
 
-        it { is_expected.to eq(variables + secure_variables) }
+        it { is_expected.to eq(predefined_variables + yaml_variables + secure_variables) }
 
         context 'and trigger variables' do
           let(:trigger) { FactoryGirl.create :ci_trigger, project: project }
@@ -229,12 +250,17 @@ describe Ci::Build do
               { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
             ]
           end
+          let(:predefined_trigger_variable) do
+            [
+              { key: :CI_BUILD_TRIGGERED, value: 'true', public: true }
+            ]
+          end
 
           before do
             build.trigger_request = trigger_request
           end
 
-          it { is_expected.to eq(variables + secure_variables + trigger_variables) }
+          it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
         end
       end
     end
@@ -271,6 +297,107 @@ describe Ci::Build do
       project.update_attributes(email_add_pusher: true,
                                 email_recipients: "rec1 rec1 #{pusher_email}")
       is_expected.to eq(['rec1', pusher_email])
+    end
+  end
+
+  describe :can_be_served? do
+    let(:runner) { FactoryGirl.create :ci_specific_runner }
+
+    before { build.project.runners << runner }
+
+    context 'runner without tags' do
+      it 'can handle builds without tags' do
+        expect(build.can_be_served?(runner)).to be_truthy
+      end
+
+      it 'cannot handle build with tags' do
+        build.tag_list = ['aa']
+        expect(build.can_be_served?(runner)).to be_falsey
+      end
+    end
+
+    context 'runner with tags' do
+      before { runner.tag_list = ['bb', 'cc'] }
+
+      it 'can handle builds without tags' do
+        expect(build.can_be_served?(runner)).to be_truthy
+      end
+
+      it 'can handle build with matching tags' do
+        build.tag_list = ['bb']
+        expect(build.can_be_served?(runner)).to be_truthy
+      end
+
+      it 'cannot handle build with not matching tags' do
+        build.tag_list = ['aa']
+        expect(build.can_be_served?(runner)).to be_falsey
+      end
+    end
+  end
+
+  describe :any_runners_online? do
+    subject { build.any_runners_online? }
+
+    context 'when no runners' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'if there are runner' do
+      let(:runner) { FactoryGirl.create :ci_specific_runner }
+
+      before do
+        build.project.runners << runner
+        runner.update_attributes(contacted_at: 1.second.ago)
+      end
+
+      it { is_expected.to be_truthy }
+
+      it 'that is inactive' do
+        runner.update_attributes(active: false)
+        is_expected.to be_falsey
+      end
+
+      it 'that is not online' do
+        runner.update_attributes(contacted_at: nil)
+        is_expected.to be_falsey
+      end
+
+      it 'that cannot handle build' do
+        expect_any_instance_of(Ci::Build).to receive(:can_be_served?).and_return(false)
+        is_expected.to be_falsey
+      end
+
+    end
+  end
+
+  describe :show_warning? do
+    subject { build.show_warning? }
+
+    %w(pending).each do |state|
+      context "if commit_status.status is #{state}" do
+        before { build.status = state }
+
+        it { is_expected.to be_truthy }
+
+        context "and there are specific runner" do
+          let(:runner) { FactoryGirl.create :ci_specific_runner, contacted_at: 1.second.ago }
+
+          before do
+            build.project.runners << runner
+            runner.save
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+
+    %w(success failed canceled running).each do |state|
+      context "if commit_status.status is #{state}" do
+        before { build.status = state }
+
+        it { is_expected.to be_falsey }
+      end
     end
   end
 end

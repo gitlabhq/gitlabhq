@@ -223,7 +223,7 @@ describe ProjectWiki do
 
   def create_temp_repo(path)
     FileUtils.mkdir_p path
-    system(*%W(git init --quiet --bare -- #{path}))
+    system(*%W(#{Gitlab.config.git.bin_path} init --quiet --bare -- #{path}))
   end
 
   def remove_temp_repo(path)

@@ -34,7 +34,7 @@ module Grack
       auth!
 
       if project && authorized_request?
-        # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
+        # Tell gitlab-workhorse the request is OK, and what the GL_ID is
         render_grack_auth_ok
       elsif @user.nil? && !@ci
         unauthorized
@@ -193,7 +193,21 @@ module Grack
     end
 
     def render_grack_auth_ok
-      [200, { "Content-Type" => "application/json" }, [JSON.dump({ 'GL_ID' => Gitlab::ShellEnv.gl_id(@user) })]]
+      repo_path =
+        if @request.path_info =~ /^([\w\.\/-]+)\.wiki\.git/
+          ProjectWiki.new(project).repository.path_to_repo
+        else
+          project.repository.path_to_repo
+        end
+
+      [
+        200,
+        { "Content-Type" => "application/json" },
+        [JSON.dump({
+          'GL_ID' => Gitlab::ShellEnv.gl_id(@user),
+          'RepoPath' => repo_path,
+        })]
+      ]
     end
 
     def render_not_found
