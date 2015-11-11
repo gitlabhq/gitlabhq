@@ -531,7 +531,7 @@ ActiveRecord::Schema.define(version: 20151116144118) do
     t.string   "type"
     t.string   "description", default: "",    null: false
     t.string   "avatar"
-    t.boolean  "public",      default: false
+    t.boolean  "visible",     default: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
@@ -554,6 +554,7 @@ ActiveRecord::Schema.define(version: 20151116144118) do
     t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
+    t.boolean  "is_award",      default: false
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
