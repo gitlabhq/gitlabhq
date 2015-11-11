@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103001141) do
+ActiveRecord::Schema.define(version: 20151110125604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -702,6 +702,7 @@ ActiveRecord::Schema.define(version: 20151103001141) do
     t.integer  "commit_count",                   default: 0
     t.boolean  "merge_requests_ff_only_enabled", default: false
     t.text     "issues_template"
+    t.text     "import_error"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
