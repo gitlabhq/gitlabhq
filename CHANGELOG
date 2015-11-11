@@ -1,13 +1,91 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.1.0 (unreleased)
+v 8.2.0 (unreleased)
+  - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
+  - Fix Drone CI service template not saving properly (Stan Hu)
+  - Added a GitLab specific profiling tool called "Sherlock" (see GitLab CE merge request #1749)
+  - Upgrade gitlab_git to 7.2.20 and rugged to 0.23.3 (Stan Hu)
+  - Improved performance of finding users by one of their Email addresses
+  - Add allow_failure field to commit status API (Stan Hu)
+  - Improved performance of replacing references in comments
+  - Show last project commit to default branch on project home page
+  - Highlight comment based on anchor in URL
+  - Adds ability to remove the forked relationship from project settings screen. (Han Loong Liauw)
+  - Improved performance of sorting milestone issues
+  - Allow users to select the Files view as default project view (Cristian Bica)
+  - Show "Empty Repository Page" for repository without branches (Artem V. Navrotskiy)
+  - Fix: Inability to reply to code comments in the MR view, if the MR comes from a fork
+  - Use git follow flag for commits page when retrieve history for file or directory
+  - Show merge request CI status on merge requests index page
+  - Send build name and stage in CI notification e-mail
+  - Extend yml syntax for only and except to support specifying repository path
+  - Enable shared runners to all new projects
+  - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
+  - Remove deprecated CI events from project settings page
+  - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
+  - Add "New file" link to dropdown on project page
+  - Include commit logs in project search
+  - Add "added", "modified" and "removed" properties to commit object in webhook
+  - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
+  - Allow groups to appear in the search results if the group owner allows it
+  - New design for project graphs page
+  - Fix incoming email config defaults
+  - MR target branch is now visible on a list view when it is different from project's default one
+  - Improve Continuous Integration graphs page
+
+v 8.1.4
+  - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
+  - Prevent redirect loop when home_page_url is set to the root URL
+  - Fix incoming email config defaults
+  - Make color of "Accept Merge Request" button consistent with current build status
+  - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
+
+v 8.1.3
+  - Force update refs/merge-requests/X/head upon a push to the source branch of a merge request (Stan Hu)
+  - Spread out runner contacted_at updates
+  - Use issue editor as cross reference comment author when issue is edited with a new mention
+  - Add Facebook authentication
+
+v 8.1.2
+  - Fix cloning Wiki repositories via HTTP (Stan Hu)
+  - Add migration to remove satellites directory
+  - Fix specific runners visibility
+  - Fix 500 when editing CI service
+  - Require CI jobs to be named
+  - Fix CSS for runner status
+  - Fix CI badge
+  - Allow developer to manage builds
+
+v 8.1.1
+  - Removed, see 8.1.2
+
+v 8.1.0
+  - Ensure MySQL CI limits DB migrations occur after the fields have been created (Stan Hu)
+  - Fix duplicate repositories in GitHub import page (Stan Hu)
+  - Redirect to a default path if HTTP_REFERER is not set (Stan Hu)
+  - Adds ability to create directories using the web editor (Ben Ford)
+  - Cleanup stuck CI builds
+  - Send an email to admin email when a user is reported for spam (Jonathan Rochkind)
+  - Show notifications button when user is member of group rather than project (Grzegorz Bizon)
+  - Fix bug preventing mentioned issued from being closed when MR is merged using fast-forward merge.
+  - Fix nonatomic database update potentially causing project star counts to go negative (Stan Hu)
+  - Don't show "Add README" link in an empty repository if user doesn't have access to push (Stan Hu)
+  - Fix error preventing displaying of commit data for a directory with a leading dot (Stan Hu)
+  - Speed up load times of issue detail pages by roughly 1.5x
+  - Fix CI rendering regressions
+  - If a merge request is to close an issue, show this on the issue page (Zeger-Jan van de Weg)
+  - Add a system note and update relevant merge requests when a branch is deleted or re-added (Stan Hu)
   - Make diff file view easier to use on mobile screens (Stan Hu)
+  - Improved performance of finding users by username or Email address
+  - Fix bug where merge request comments created by API would not trigger notifications (Stan Hu)
   - Add support for creating directories from Files page (Stan Hu)
   - Allow removing of project without confirmation when JavaScript is disabled (Stan Hu)
   - Support filtering by "Any" milestone or issue and fix "No Milestone" and "No Label" filters (Stan Hu)
   - Improved performance of the trending projects page
+  - Remove CI migration task
   - Improved performance of finding projects by their namespace
   - Fix bug where transferring a project would result in stale commit links (Stan Hu)
+  - Fix build trace updating
   - Include full path of source and target branch names in New Merge Request page (Stan Hu)
   - Add user preference to view activities as default dashboard (Stan Hu)
   - Add option to admin area to sign in as a specific user (Pavel Forkert)
@@ -17,7 +95,10 @@ v 8.1.0 (unreleased)
   - Fix cases where Markdown did not render links in activity feed (Stan Hu)
   - Add first and last to pagination (Zeger-Jan van de Weg)
   - Added Commit Status API
+  - Added Builds View
+  - Added when to .gitlab-ci.yml
   - Show CI status on commit page
+  - Added CI_BUILD_TAG, _STAGE, _NAME and _TRIGGERED to CI builds
   - Show CI status on Your projects page and Starred projects page
   - Remove "Continuous Integration" page from dashboard
   - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
@@ -27,6 +108,7 @@ v 8.1.0 (unreleased)
   - Move CI triggers page to project settings area
   - Move CI project settings page to CE project settings area
   - Fix bug when removed file was not appearing in merge request diff
+  - Show warning when build cannot be served by any of the available CI runners
   - Note the original location of a moved project when notifying users of the move
   - Improve error message when merging fails
   - Add support of multibyte characters in LDAP UID (Roman Petrov)
@@ -38,7 +120,7 @@ v 8.1.0 (unreleased)
   - Move CI web hooks page to project settings area
   - Fix User Identities API. It now allows you to properly create or update user's identities.
   - Add user preference to change layout width (Peter Göbel)
-  - Use commit status in merge request widget as preffered source of CI status
+  - Use commit status in merge request widget as preferred source of CI status
   - Integrate CI commit and build pages into project pages
   - Move CI services page to project settings area
   - Add "Quick Submit" behavior to input fields throughout the application. Use
@@ -46,6 +128,8 @@ v 8.1.0 (unreleased)
   - Fix position of hamburger in header for smaller screens (Han Loong Liauw)
   - Fix bug where Emojis in Markdown would truncate remaining text (Sakata Sinji)
   - Persist filters when sorting on admin user page (Jerry Lukins)
+  - Update style of snippets pages (Han Loong Liauw)
+  - Allow dashboard and group issues/MRs to be filtered by label
   - Add spellcheck=false to certain input fields
   - Invalidate stored service password if the endpoint URL is changed
   - Project names are not fully shown if group name is too big, even on group page view
@@ -53,6 +137,15 @@ v 8.1.0 (unreleased)
   - Add "New Page" button to Wiki Pages tab (Stan Hu)
   - Only render 404 page from /public
   - Hide passwords from services API (Alex Lossent)
+  - Fix: Images cannot show when projects' path was changed
+  - Let gitlab-git-http-server generate and serve 'git archive' downloads
+  - Optimize query when filtering on issuables (Zeger-Jan van de Weg)
+  - Fix padding of outdated discussion item.
+  - Animate the logo on hover
+
+v 8.0.5
+  - Correct lookup-by-email for LDAP logins
+  - Fix loading spinner sometimes not being hidden on Merge Request tab switches
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)

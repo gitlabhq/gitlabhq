@@ -1,13 +1,5 @@
 source "https://rubygems.org"
 
-def darwin_only(require_as)
-  RUBY_PLATFORM.include?('darwin') && require_as
-end
-
-def linux_only(require_as)
-  RUBY_PLATFORM.include?('linux') && require_as
-end
-
 gem 'rails', '4.1.12'
 
 # Specify a sprockets version due to security issue
@@ -27,6 +19,7 @@ gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.1.3'
 gem 'omniauth',               '~> 1.2.2'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
+gem 'omniauth-facebook',      '~> 3.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.0'
@@ -47,7 +40,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.18'
+gem "gitlab_git", '~> 7.2.20'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -58,11 +51,7 @@ gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 gem 'gollum-lib', '~> 4.0.2'
 
 # Language detection
-# GitLab fork of linguist does not require pygments/python dependency.
-# New version of original gem also dropped pygments support but it has strict
-# dependency to unstable rugged version. We have internal issue for replacing
-# fork with original gem when we meet on same rugged version - https://dev.gitlab.org/gitlab/gitlabhq/issues/2052.
-gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
+gem "github-linguist", "~> 4.7.0", require: "linguist"
 
 # API
 gem 'grape',        '~> 0.6.1'
@@ -71,7 +60,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Format dates and times
 # based on human-friendly examples
-gem "stamp", '~> 0.5.0'
+gem "stamp", '~> 0.6.0'
 
 # Enumeration fields
 gem 'enumerize', '~> 0.7.0'
@@ -102,7 +91,7 @@ gem "seed-fu", '~> 2.3.5'
 gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
 gem 'github-markup', '~> 1.3.1'
-gem 'redcarpet',     '~> 3.3.2'
+gem 'redcarpet',     '~> 3.3.3'
 gem 'RedCloth',      '~> 4.2.9'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '~> 0.9.12'
@@ -120,7 +109,7 @@ group :unicorn do
 end
 
 # State machine
-gem "state_machine", '~> 1.2.0'
+gem "state_machines-activerecord", '~> 0.3.0'
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -192,11 +181,11 @@ gem 'ace-rails-ap', '~> 2.0.1'
 gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes', '~> 0.6.9.4'
+gem 'charlock_holmes', '~> 0.7.3'
 
 gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails", '~> 4.1.0'
-gem "uglifier", '~> 2.3.2'
+gem "uglifier", '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
 gem 'jquery-turbolinks', '~> 2.0.1'
 
@@ -205,11 +194,11 @@ gem 'bootstrap-sass',     '~> 3.0'
 gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.1'
 gem 'gon',                '~> 5.0.0'
-gem 'jquery-atwho-rails', '~> 1.0.0'
+gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 3.1.3'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
 gem 'jquery-ui-rails',    '~> 4.2.1'
-gem 'nprogress-rails',    '~> 0.1.2.3'
+gem 'nprogress-rails',    '~> 0.1.6.7'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
@@ -222,8 +211,9 @@ group :development do
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'
   gem 'quiet_assets', '~> 1.0.2'
-  gem 'rack-mini-profiler', '~> 0.9.0', require: false
   gem 'rerun', '~> 0.10.0'
+  gem 'bullet', require: false
+  gem 'rblineprof', platform: :mri, require: false
 
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
@@ -290,7 +280,7 @@ gem 'newrelic-grape'
 
 gem 'octokit', '~> 3.7.0'
 
-gem "mail_room", "~> 0.6.0"
+gem "mail_room", "~> 0.6.1"
 
 gem 'email_reply_parser', '~> 0.5.8'
 
@@ -304,11 +294,3 @@ gem 'oauth2', '~> 1.0.0'
 
 # Soft deletion
 gem "paranoia", "~> 2.0"
-
-group :development, :test do
-  gem 'guard-rspec', '~> 4.2.0'
-
-  gem 'rb-fsevent', require: darwin_only('rb-fsevent')
-  gem 'growl',      require: darwin_only('growl')
-  gem 'rb-inotify', require: linux_only('rb-inotify')
-end

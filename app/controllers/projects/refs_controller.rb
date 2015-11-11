@@ -3,6 +3,7 @@ class Projects::RefsController < Projects::ApplicationController
   include TreeHelper
 
   before_action :require_non_empty_project
+  before_action :validate_ref_id
   before_action :assign_ref_vars
   before_action :authorize_download_code!
 
@@ -70,5 +71,11 @@ class Projects::RefsController < Projects::ApplicationController
       format.html { render_404 }
       format.js
     end
+  end
+
+  private
+
+  def validate_ref_id
+    return not_found! if params[:id].present? && params[:id] !~ Gitlab::Regex.git_reference_regex
   end
 end

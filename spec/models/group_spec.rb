@@ -84,4 +84,23 @@ describe Group do
       expect(group.avatar_type).to eq(["only images allowed"])
     end
   end
+
+  describe "public_profile?" do
+    it "returns true for public group" do
+      group = create(:group, public: true)
+      expect(group.public_profile?).to be_truthy
+    end
+
+    it "returns true for non-public group with public project" do
+      group = create(:group)
+      create(:project, :public, group: group)
+      expect(group.public_profile?).to be_truthy
+    end
+
+    it "returns false for non-public group with no public projects" do
+      group = create(:group)
+      create(:project, group: group)
+      expect(group.public_profile?).to be_falsy
+    end
+  end
 end

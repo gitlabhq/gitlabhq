@@ -18,6 +18,7 @@
   line-height: 36px;
 }
 
+.content-block,
 .gray-content-block {
   margin: -$gl-padding;
   background-color: $background-color;
@@ -26,6 +27,14 @@
   border-top: 1px solid $border-color;
   border-bottom: 1px solid $border-color;
   color: $gl-gray;
+
+  &.oneline-block {
+    line-height: 42px;
+  }
+
+  &.white {
+    background-color: white;
+  }
 
   &.top-block {
     border-top: none;
@@ -58,5 +67,50 @@
 
   .oneline {
     line-height: 42px;
+  }
+}
+
+.cover-block {
+  text-align: center;
+  background: #f7f8fa;
+  margin: -$gl-padding;
+  margin-bottom: 0;
+  padding: 44px $gl-padding;
+  border-bottom: 1px solid $border-color;
+  position: relative;
+
+  .avatar-holder {
+    margin-bottom: 16px;
+
+    .avatar, .identicon {
+      margin: 0 auto;
+      float: none;
+    }
+
+    .identicon {
+      @include border-radius(50%);
+    }
+  }
+
+  .cover-title {
+    color: $gl-header-color;
+    margin: 0;
+    font-size: 23px;
+    font-weight: normal;
+    margin: 16px 0 5px 0;
+    color: #4c4e54;
+    font-size: 23px;
+    line-height: 1.1;
+  }
+
+  .cover-desc {
+    padding: 0 $gl-padding 3px;
+    color: $gl-text-color;
+  }
+
+  .cover-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
   }
 }

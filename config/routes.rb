@@ -2,6 +2,19 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
+  if Gitlab::Sherlock.enabled?
+    namespace :sherlock do
+      resources :transactions, only: [:index, :show] do
+        resources :queries, only: [:show]
+        resources :file_samples, only: [:show]
+
+        collection do
+          delete :destroy_all
+        end
+      end
+    end
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -23,8 +36,6 @@ Gitlab::Application.routes.draw do
       end
 
       resources :runner_projects, only: [:create, :destroy]
-
-      resources :events, only: [:index]
     end
 
     resource :user_sessions do
@@ -378,6 +389,7 @@ Gitlab::Application.routes.draw do
               [:new, :create, :index], path: "/") do
       member do
         put :transfer
+        delete :remove_fork
         post :archive
         post :unarchive
         post :toggle_star
@@ -473,8 +485,9 @@ Gitlab::Application.routes.draw do
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
           member do
             get :branches
-            get :ci
-            get :cancel_builds
+            get :builds
+            post :cancel_builds
+            post :retry_builds
           end
         end
 
@@ -543,8 +556,10 @@ Gitlab::Application.routes.draw do
           member do
             # tree viewer logs
             get 'logs_tree', constraints: { id: Gitlab::Regex.git_reference_regex }
+            # Directories with leading dots erroneously get rejected if git
+            # ref regex used in constraints. Regex verification now done in controller.
             get 'logs_tree/*path' => 'refs#logs_tree', as: :logs_file, constraints: {
-              id: Gitlab::Regex.git_reference_regex,
+              id: /.*/,
               path: /.*/
             }
           end
@@ -568,7 +583,10 @@ Gitlab::Application.routes.draw do
         end
 
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
-        resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
+          resource :release, only: [:edit, :update]
+        end
+
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
@@ -585,10 +603,14 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :builds, only: [:show] do
+        resources :builds, only: [:index, :show] do
+          collection do
+            post :cancel_all
+          end
+
           member do
-            get :cancel
             get :status
+            post :cancel
             post :retry
           end
         end

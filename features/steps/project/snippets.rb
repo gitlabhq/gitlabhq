@@ -22,7 +22,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I click link "New Snippet"' do
-    click_link "Add new snippet"
+    click_link "New Snippet"
   end
 
   step 'I click link "Snippet one"' do
@@ -42,13 +42,13 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I click link "Edit"' do
-    page.within ".file-title" do
+    page.within ".page-title" do
       click_link "Edit"
     end
   end
 
-  step 'I click link "Remove Snippet"' do
-    click_link "remove"
+  step 'I click link "Delete"' do
+    click_link "Delete"
   end
 
   step 'I submit new snippet "Snippet three"' do

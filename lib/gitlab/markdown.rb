@@ -7,6 +7,14 @@ module Gitlab
   module Markdown
     # Convert a Markdown String into an HTML-safe String of HTML
     #
+    # Note that while the returned HTML will have been sanitized of dangerous
+    # HTML, it may post a risk of information leakage if it's not also passed
+    # through `post_process`.
+    #
+    # Also note that the returned String is always HTML, not XHTML. Views
+    # requiring XHTML, such as Atom feeds, need to call `post_process` on the
+    # result, providing the appropriate `pipeline` option.
+    #
     # markdown - Markdown String
     # context  - Hash of context options passed to our HTML Pipeline
     #
@@ -31,6 +39,33 @@ module Gitlab
       renderer.render(markdown)
     end
 
+    # Perform post-processing on an HTML String
+    #
+    # This method is used to perform state-dependent changes to a String of
+    # HTML, such as removing references that the current user doesn't have
+    # permission to make (`RedactorFilter`).
+    #
+    # html     - String to process
+    # options  - Hash of options to customize output
+    #            :pipeline  - Symbol pipeline type
+    #            :project   - Project
+    #            :user      - User object
+    #
+    # Returns an HTML-safe String
+    def self.post_process(html, options)
+      context = {
+        project:      options[:project],
+        current_user: options[:user]
+      }
+      doc = post_processor.to_document(html, context)
+
+      if options[:pipeline] == :atom
+        doc.to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
+      else
+        doc.to_html
+      end.html_safe
+    end
+
     # Provide autoload paths for filters to prevent a circular dependency error
     autoload :AutolinkFilter,               'gitlab/markdown/autolink_filter'
     autoload :CommitRangeReferenceFilter,   'gitlab/markdown/commit_range_reference_filter'
@@ -41,6 +76,7 @@ module Gitlab
     autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
     autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
     autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
+    autoload :RedactorFilter,               'gitlab/markdown/redactor_filter'
     autoload :RelativeLinkFilter,           'gitlab/markdown/relative_link_filter'
     autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
     autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
@@ -48,27 +84,22 @@ module Gitlab
     autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
     autoload :TaskListFilter,               'gitlab/markdown/task_list_filter'
     autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
+    autoload :UploadLinkFilter,             'gitlab/markdown/upload_link_filter'
 
-    # Public: Parse the provided text with GitLab-Flavored Markdown
+    # Public: Parse the provided HTML with GitLab-Flavored Markdown
     #
-    # text         - the source text
-    # options      - A Hash of options used to customize output (default: {}):
-    #                :xhtml               - output XHTML instead of HTML
-    #                :reference_only_path - Use relative path for reference links
-    def self.gfm(text, options = {})
-      return text if text.nil?
-
-      # Duplicate the string so we don't alter the original, then call to_str
-      # to cast it back to a String instead of a SafeBuffer. This is required
-      # for gsub calls to work as we need them to.
-      text = text.dup.to_str
-
-      options.reverse_merge!(
-        xhtml:                false,
-        reference_only_path:  true,
-        project:              options[:project],
-        current_user:         options[:current_user]
-      )
+    # html    - HTML String
+    # options - A Hash of options used to customize output (default: {})
+    #           :no_header_anchors - Disable header anchors in TableOfContentsFilter
+    #           :path              - Current path String
+    #           :pipeline          - Symbol pipeline type
+    #           :project           - Current Project object
+    #           :project_wiki      - Current ProjectWiki object
+    #           :ref               - Current ref String
+    #
+    # Returns an HTML-safe String
+    def self.gfm(html, options = {})
+      return '' unless html.present?
 
       @pipeline ||= HTML::Pipeline.new(filters)
 
@@ -77,41 +108,36 @@ module Gitlab
         pipeline: options[:pipeline],
 
         # EmojiFilter
-        asset_root: Gitlab.config.gitlab.base_url,
         asset_host: Gitlab::Application.config.asset_host,
-
-        # TableOfContentsFilter
-        no_header_anchors: options[:no_header_anchors],
+        asset_root: Gitlab.config.gitlab.base_url,
 
         # ReferenceFilter
-        current_user:    options[:current_user],
-        only_path:       options[:reference_only_path],
-        project:         options[:project],
+        only_path: only_path_pipeline?(options[:pipeline]),
+        project:   options[:project],
 
         # RelativeLinkFilter
+        project_wiki:   options[:project_wiki],
         ref:            options[:ref],
         requested_path: options[:path],
-        project_wiki:   options[:project_wiki]
+
+        # TableOfContentsFilter
+        no_header_anchors: options[:no_header_anchors]
       }
 
-      result = @pipeline.call(text, context)
-
-      save_options = 0
-      if options[:xhtml]
-        save_options |= Nokogiri::XML::Node::SaveOptions::AS_XHTML
-      end
-
-      text = result[:output].to_html(save_with: save_options)
-
-      text.html_safe
+      @pipeline.to_html(html, context).html_safe
     end
 
     private
 
-    def self.renderer
-      @markdown ||= begin
-        renderer = Redcarpet::Render::HTML.new
-        Redcarpet::Markdown.new(renderer, redcarpet_options)
+    # Check if a pipeline enables the `only_path` context option
+    #
+    # Returns Boolean
+    def self.only_path_pipeline?(pipeline)
+      case pipeline
+      when :atom, :email
+        false
+      else
+        true
       end
     end
 
@@ -129,6 +155,17 @@ module Gitlab
       }.freeze
     end
 
+    def self.renderer
+      @markdown ||= begin
+        renderer = Redcarpet::Render::HTML.new
+        Redcarpet::Markdown.new(renderer, redcarpet_options)
+      end
+    end
+
+    def self.post_processor
+      @post_processor ||= HTML::Pipeline.new([Gitlab::Markdown::RedactorFilter])
+    end
+
     # Filters used in our pipeline
     #
     # SanitizationFilter should come first so that all generated reference HTML
@@ -140,6 +177,7 @@ module Gitlab
         Gitlab::Markdown::SyntaxHighlightFilter,
         Gitlab::Markdown::SanitizationFilter,
 
+        Gitlab::Markdown::UploadLinkFilter,
         Gitlab::Markdown::RelativeLinkFilter,
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,

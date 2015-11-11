@@ -4,8 +4,6 @@ module Ci
     before_action :project
     before_action :authorize_manage_project!
 
-    layout 'ci/project'
-
     def create
       @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 

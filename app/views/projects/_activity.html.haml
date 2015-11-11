@@ -1,4 +1,3 @@
-= render 'projects/last_push'
 .gray-content-block.activity-filter-block
   - if current_user
     .pull-right
@@ -9,5 +8,5 @@
 .content_list{:"data-href" => activity_project_path(@project)}
 = spinner
 
-:coffeescript
-  new Activities()
+:javascript
+  new Activities();

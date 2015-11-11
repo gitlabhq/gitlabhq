@@ -26,7 +26,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def secure_url
-    File.join(Gitlab.config.gitlab.url, @project.path_with_namespace, "uploads", @secret, file.filename)
+    File.join("/uploads", @secret, file.filename)
   end
 
   def file_storage?

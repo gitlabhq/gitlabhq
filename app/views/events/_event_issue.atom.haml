@@ -1,3 +1,2 @@
 %div{xmlns: "http://www.w3.org/1999/xhtml"}
-  - if issue.description.present?
-    = markdown(issue.description, xhtml: true, reference_only_path: false, project: issue.project)
+  = markdown(issue.description, pipeline: :atom, project: issue.project)

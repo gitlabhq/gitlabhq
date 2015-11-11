@@ -91,6 +91,16 @@ Feature: Project Source Browse Files
     And I see a commit error message
 
   @javascript
+  Scenario: I can create file with a directory name
+    Given I click on "New file" link in repo
+    And I fill the new file name with a new directory
+    And I edit code
+    And I fill the commit message
+    And I click on "Commit changes"
+    Then I am redirected to the new file with directory
+    And I should see its new content
+
+  @javascript
   Scenario: I can edit file
     Given I click on ".gitignore" file in repo
     And I click button "Edit"
@@ -205,3 +215,9 @@ Feature: Project Source Browse Files
     And I see the ref 'test' has been selected
     And I visit the 'test' tree
     Then I see the commit data
+
+  @javascript
+  Scenario: I browse code with a leading dot in the directory
+    Given I switch ref to fix
+    And I visit the fix tree
+    Then I see the commit data for a directory with a leading dot

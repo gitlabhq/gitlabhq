@@ -22,28 +22,29 @@
       %strong Map a FogBugz account ID to a GitLab user
       %p
         Selecting a GitLab user will add a link to the GitLab user in the descriptions
-        of issues and comments (e.g. "By <a href="#">@johnsmith</a>"). It will also 
+        of issues and comments (e.g. "By <a href="#">@johnsmith</a>"). It will also
         associate and/or assign these issues and comments with the selected user.
 
-  %table.table
-    %thead
-      %tr
-        %th ID
-        %th Name
-        %th Email
-        %th GitLab User
-    %tbody
-      - @user_map.each do |id, user|
+  .table-holder
+    %table.table
+      %thead
         %tr
-          %td= id
-          %td= text_field_tag "users[#{id}][name]", user[:name], class: 'form-control'
-          %td= text_field_tag "users[#{id}][email]", user[:email], class: 'form-control'
-          %td
-            = users_select_tag("users[#{id}][gitlab_user]", class: 'custom-form-control',
-              scope: :all, email_user: true, selected: user[:gitlab_user])
+          %th ID
+          %th Name
+          %th Email
+          %th GitLab User
+      %tbody
+        - @user_map.each do |id, user|
+          %tr
+            %td= id
+            %td= text_field_tag "users[#{id}][name]", user[:name], class: 'form-control'
+            %td= text_field_tag "users[#{id}][email]", user[:email], class: 'form-control'
+            %td
+              = users_select_tag("users[#{id}][gitlab_user]", class: 'custom-form-control',
+                scope: :all, email_user: true, selected: user[:gitlab_user])
 
   .form-actions
     = submit_tag 'Continue to the next step', class: 'btn btn-create'
 
-:coffeescript
-  new UsersSelect()
+:javascript
+  new UsersSelect();

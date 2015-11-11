@@ -162,10 +162,25 @@
     border-color: #e7e9ed;
     width: 140px;
 
+    .badge {
+      font-weight: normal;
+      background-color: #eee;
+      color: #78a;
+    }
+
     &.active {
       border-color: $gl-info;
       background: $gl-info;
       color: #fff;
+
+      .badge {
+        color: $gl-info;
+        background-color: white;
+      }
     }
   }
+}
+
+.btn-clipboard {
+  border: none;
 }

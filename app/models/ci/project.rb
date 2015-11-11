@@ -99,6 +99,7 @@ module Ci
       def ordered_by_last_commit_date
         last_commit_subquery = "(SELECT gl_project_id, MAX(committed_at) committed_at FROM #{Ci::Commit.table_name} GROUP BY gl_project_id)"
         joins("LEFT JOIN #{last_commit_subquery} AS last_commit ON #{Ci::Project.table_name}.gitlab_id = last_commit.gl_project_id").
+          joins(:gl_project).
           order("CASE WHEN last_commit.committed_at IS NULL THEN 1 ELSE 0 END, last_commit.committed_at DESC")
       end
     end
@@ -115,12 +116,12 @@ module Ci
       web_url
     end
 
-    def any_runners?
-      if runners.active.any?
+    def any_runners?(&block)
+      if runners.active.any?(&block)
         return true
       end
 
-      shared_runners_enabled && Ci::Runner.shared.active.any?
+      shared_runners_enabled && Ci::Runner.shared.active.any?(&block)
     end
 
     def set_default_values
@@ -205,7 +206,7 @@ module Ci
     end
 
     def commits
-      gl_project.ci_commits
+      gl_project.ci_commits.ordered
     end
 
     def builds

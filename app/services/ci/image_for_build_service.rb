@@ -1,16 +1,14 @@
 module Ci
   class ImageForBuildService
     def execute(project, params)
-      image_name =
-        if params[:sha]
-          commit = project.commits.find_by(sha: params[:sha])
-          image_for_commit(commit)
-        elsif params[:ref]
-          commit = project.last_commit_for_ref(params[:ref])
-          image_for_commit(commit)
-        else
-          'build-unknown.svg'
+      sha = params[:sha]
+      sha ||=
+        if params[:ref]
+          project.gl_project.commit(params[:ref]).try(:sha)
         end
+
+      commit = project.commits.ordered.find_by(sha: sha)
+      image_name = image_for_commit(commit)
 
       image_path = Rails.root.join('public/ci', image_name)
 

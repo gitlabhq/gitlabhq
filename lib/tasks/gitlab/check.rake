@@ -335,7 +335,7 @@ namespace :gitlab do
       print "Redis version >= #{min_redis_version}? ... "
 
       redis_version = run(%W(redis-cli --version))
-      redis_version = redis_version.try(:match, /redis-cli (.*)/)
+      redis_version = redis_version.try(:match, /redis-cli (\d+\.\d+\.\d+)/)
       if redis_version &&
           (Gem::Version.new(redis_version[1]) > Gem::Version.new(min_redis_version))
         puts "yes".green
@@ -642,7 +642,6 @@ namespace :gitlab do
 
       if Gitlab.config.incoming_email.enabled
         check_address_formatted_correctly
-        check_mail_room_config_exists
         check_imap_authentication
 
         if Rails.env.production?
@@ -744,42 +743,16 @@ namespace :gitlab do
       end
     end
 
-    def check_mail_room_config_exists
-      print "MailRoom config exists? ... "
-
-      mail_room_config_file = Rails.root.join("config", "mail_room.yml")
-
-      if File.exists?(mail_room_config_file)
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Copy config/mail_room.yml.example to config/mail_room.yml",
-          "Check that the information in config/mail_room.yml is correct"
-        )
-        for_more_information(
-          "doc/incoming_email/README.md"
-        )
-        fix_and_rerun
-      end
-    end
-
     def check_imap_authentication
       print "IMAP server credentials are correct? ... "
 
-      mail_room_config_file = Rails.root.join("config", "mail_room.yml")
-
-      unless File.exists?(mail_room_config_file)
-        puts "can't check because of previous errors".magenta
-        return
-      end
-
-      config = YAML.load_file(mail_room_config_file)[:mailboxes].first rescue nil
+      config = Gitlab.config.incoming_email
 
       if config
         begin
-          imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
-          imap.login(config[:email], config[:password])
+          imap = Net::IMAP.new(config.host, port: config.port, ssl: config.ssl)
+          imap.starttls if config.start_tls
+          imap.login(config.user, config.password)
           connected = true
         rescue
           connected = false
@@ -791,7 +764,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "Check that the information in config/mail_room.yml is correct"
+          "Check that the information in config/gitlab.yml is correct"
         )
         for_more_information(
           "doc/incoming_email/README.md"
@@ -851,7 +824,7 @@ namespace :gitlab do
         repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
         repo_dirs.each do |dir|
           puts "\nChecking repo at #{dir}"
-          system(*%w(git fsck), chdir: dir)
+          system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: dir)
         end
       end
     end

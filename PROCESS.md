@@ -115,3 +115,10 @@ We can only accept a merge request if all the tests are green. I've just
 restarted the build. When the tests are still not passing after this restart and
 you're sure that is does not have anything to do with your code changes, please
 rebase with master to see if that solves the issue.
+
+### Closing down the issue tracker on GitHub
+
+We are currently in the process of closing down the issue tracker on GitHub, to
+prevent duplication with the GitLab.com issue tracker.
+Since this is an older issue I'll be closing this for now. If you think this is
+still an issue I encourage you to open it on the \[GitLab.com issue tracker\](https://gitlab.com/gitlab-org/gitlab-ce/issues).

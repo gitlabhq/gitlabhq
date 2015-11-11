@@ -45,6 +45,6 @@
         .description-block.subscribed{class: ( 'hidden' unless subscribed )}
           You're receiving notifications because you're subscribed to this thread.
 
-:coffeescript
-  new Subscription("#{toggle_subscription_path(issuable)}")
-  new IssuableContext()
+:javascript
+  new Subscription("#{toggle_subscription_path(issuable)}");
+  new IssuableContext();

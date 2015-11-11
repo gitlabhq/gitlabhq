@@ -33,7 +33,7 @@ describe Projects::UploadsController do
 
       it 'returns a content with original filename, new link, and correct type.' do
         expect(response.body).to match '\"alt\":\"rails_sample\"'
-        expect(response.body).to match "\"url\":\"http://localhost/#{project.path_with_namespace}/uploads"
+        expect(response.body).to match "\"url\":\"/uploads"
         expect(response.body).to match '\"is_image\":true'
       end
     end
@@ -49,7 +49,7 @@ describe Projects::UploadsController do
 
       it 'returns a content with original filename, new link, and correct type.' do
         expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
-        expect(response.body).to match "\"url\":\"http://localhost/#{project.path_with_namespace}/uploads"
+        expect(response.body).to match "\"url\":\"/uploads"
         expect(response.body).to match '\"is_image\":false'
       end
     end

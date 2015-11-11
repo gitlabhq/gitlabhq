@@ -55,7 +55,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :default_snippet_visibility,
       :restricted_signup_domains_raw,
       :version_check_enabled,
+      :admin_notification_email,
       :user_oauth_applications,
+      :shared_runners_enabled,
       restricted_visibility_levels: [],
       import_sources: []
     )

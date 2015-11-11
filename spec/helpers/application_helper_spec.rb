@@ -99,6 +99,15 @@ describe ApplicationHelper do
 
       helper.avatar_icon('foo@example.com', 20)
     end
+
+    describe 'using a User' do
+      it 'should return an URL for the avatar' do
+        user = create(:user, avatar: File.open(avatar_file_path))
+
+        expect(helper.avatar_icon(user).to_s).
+          to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
+      end
+    end
   end
 
   describe 'gravatar_icon' do

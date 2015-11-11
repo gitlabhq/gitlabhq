@@ -8,13 +8,13 @@
         = @user.name
       %ul.well-list
         %li
-          = image_tag avatar_icon(@user.email, 60), class: "avatar s60"
+          = image_tag avatar_icon(@user, 60), class: "avatar s60"
         %li
           %span.light Profile page:
           %strong
             = link_to user_path(@user) do
               = @user.username
-    = render 'users/profile', user: @user
+    = render 'admin/users/profile', user: @user
 
     .panel.panel-default
       .panel-heading

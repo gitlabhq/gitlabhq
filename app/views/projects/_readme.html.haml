@@ -1,12 +1,9 @@
 - if readme = @repository.readme
-  %article.readme-holder#README
-    .clearfix
-      .pull-right
-        &nbsp;
-        - if can?(current_user, :push_code, @project)
-          = link_to namespace_project_edit_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)), class: 'light' do
-            %i.fa-align.fa.fa-pencil
-    .wiki
+  %article.readme-holder
+    .pull-right
+      - if can?(current_user, :push_code, @project)
+        = link_to icon('pencil'), namespace_project_edit_blob_path(@project.namespace, @project, tree_join(@repository.root_ref, readme.name)), class: 'light edit-project-readme'
+    .file-content.wiki
       = cache(readme_cache_key) do
         = render_readme(readme)
 - else

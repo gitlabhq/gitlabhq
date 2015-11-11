@@ -33,6 +33,10 @@ class ApplicationController < ActionController::Base
     render_404
   end
 
+  def redirect_back_or_default(default: root_path, options: {})
+    redirect_to request.referer.present? ? :back : default, options
+  end
+
   protected
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
@@ -55,13 +59,8 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!(*args)
-    # If user is not signed-in and tries to access root_path - redirect him to landing page
-    # Don't redirect to the default URL to prevent endless redirections
-    if current_application_settings.home_page_url.present? &&
-        current_application_settings.home_page_url.chomp('/') != Gitlab.config.gitlab['url'].chomp('/')
-      if current_user.nil? && root_path == request.path
-        redirect_to current_application_settings.home_page_url and return
-      end
+    if redirect_to_home_page_url?
+      redirect_to current_application_settings.home_page_url and return
     end
 
     super(*args)
@@ -120,7 +119,6 @@ class ApplicationController < ActionController::Base
       project_path = "#{namespace}/#{id}"
       @project = Project.find_with_namespace(project_path)
 
-
       if @project and can?(current_user, :read_project, @project)
         if @project.path_with_namespace != project_path
           redirect_to request.original_url.gsub(project_path, @project.path_with_namespace) and return
@@ -150,7 +148,7 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render "errors/git_not_found", layout: "errors", status: 404
+    render html: "errors/git_not_found", layout: "errors", status: 404
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -342,5 +340,18 @@ class ApplicationController < ActionController::Base
 
   def git_import_enabled?
     current_application_settings.import_sources.include?('git')
+  end
+
+  def redirect_to_home_page_url?
+    # If user is not signed-in and tries to access root_path - redirect him to landing page
+    # Don't redirect to the default URL to prevent endless redirections
+    return false unless current_application_settings.home_page_url.present?
+
+    home_page_url = current_application_settings.home_page_url.chomp('/')
+    root_urls = [Gitlab.config.gitlab['url'].chomp('/'), root_url.chomp('/')]
+
+    return false if root_urls.include?(home_page_url)
+
+    current_user.nil? && root_path == request.path
   end
 end

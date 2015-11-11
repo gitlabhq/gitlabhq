@@ -211,9 +211,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-0-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-1-stable gitlab
 
-**Note:** You can change `8-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -253,8 +253,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     nproc
 
     # Enable cluster mode if you expect to have a high load instance
-    # Ex. change amount of workers to 3 for 2GB RAM server
     # Set the number of workers to at least the number of cores
+    # Ex. change amount of workers to 3 for 2GB RAM server
     sudo -u git -H editor config/unicorn.rb
 
     # Copy the example Rack attack config
@@ -310,7 +310,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v2.6.5] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install[v2.6.6] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:
@@ -325,9 +325,14 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
     cd gitlab-git-http-server
+    sudo -u git -H git checkout 0.3.0
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
+    
+    # Go to Gitlab installation folder
+
+    cd /home/git/gitlab
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
@@ -344,11 +349,6 @@ GitLab Shell is an SSH access and repository management software developed speci
 The `secrets.yml` file stores encryption keys for sessions and secure variables.
 Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.
 Otherwise your secrets are exposed if one of your backups is compromised.
-
-### Install schedules
-
-    # Setup schedules
-    sudo -u gitlab_ci -H bundle exec whenever -w RAILS_ENV=production
 
 ### Install Init Script
 
@@ -493,7 +493,7 @@ See the [omniauth integration document](../integration/omniauth.md)
 ### Build your projects
 
 GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
-Checkout the [Gitlab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
+Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
 
 ### Custom Redis Connection
 

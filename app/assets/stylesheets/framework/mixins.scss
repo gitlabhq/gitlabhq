@@ -72,9 +72,10 @@
   list-style: none;
 
   > li {
+    @include clearfix;
+
     padding: 10px 0;
     border-bottom: 1px solid #EEE;
-    overflow: hidden;
     display: block;
     margin: 0px;
 
@@ -137,6 +138,7 @@
 
       &:hover, &:active, &:focus {
         text-decoration: none;
+        outline: none;
       }
     }
 
@@ -147,14 +149,8 @@
 
     .badge {
       font-weight: normal;
-      background-color: #fff;
       background-color: #eee;
       color: #78a;
     }
   }
-}
-
-.fa-align {
-  top: 20px;
-  position: relative;
 }

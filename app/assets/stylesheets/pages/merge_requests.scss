@@ -19,6 +19,20 @@
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
+
+      .accept_merge_request {
+        &.ci-pending,
+        &.ci-running {
+          @include btn-orange;
+        }
+
+        &.ci-skipped,
+        &.ci-failed,
+        &.ci-canceled,
+        &.ci-error {
+          @include btn-red;
+        }
+      }
     }
 
     .accept-control {
@@ -205,6 +219,15 @@
 
 #modal_merge_info .modal-dialog {
   width: 600px;
+
+  .btn-clipboard {
+    @extend .pull-right;
+
+    margin-right: 18px;
+    margin-top: 5px;
+    position: absolute;
+    right: 0;
+  }
 }
 
 .mr-source-target {

@@ -80,3 +80,24 @@
     }
   }
 }
+
+.issuable-filter-count {
+  span {
+    display: block;
+    margin-bottom: -16px;
+    padding: 13px 0;
+  }
+}
+
+.cross-project-reference {
+  text-align: center;
+  width: 100%;
+
+  .slead {
+    padding: 5px;
+  }
+
+  span, button {
+    background-color: $background-color;
+  }
+}
