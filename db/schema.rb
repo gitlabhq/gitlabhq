@@ -384,6 +384,7 @@ ActiveRecord::Schema.define(version: 20151118162244) do
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
   add_index "issues", ["project_id"], name: "index_issues_on_project_id", using: :btree
+  add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title", using: :btree
 
   create_table "keys", force: true do |t|
@@ -641,9 +642,7 @@ ActiveRecord::Schema.define(version: 20151118162244) do
     t.integer  "star_count",             default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "commit_count",                   default: 0
-    t.boolean  "merge_requests_ff_only_enabled", default: false
-    t.text     "issues_template"
+    t.integer  "commit_count",           default: 0
     t.text     "import_error"
   end
 
@@ -653,6 +652,7 @@ ActiveRecord::Schema.define(version: 20151118162244) do
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
+  add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branches", force: true do |t|
     t.integer  "project_id",                          null: false
