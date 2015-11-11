@@ -677,31 +677,34 @@ ActiveRecord::Schema.define(version: 20151110125604) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                 default: true,     null: false
-    t.boolean  "wall_enabled",                   default: true,     null: false
-    t.boolean  "merge_requests_enabled",         default: true,     null: false
-    t.boolean  "wiki_enabled",                   default: true,     null: false
+    t.boolean  "issues_enabled",                   default: true,     null: false
+    t.boolean  "wall_enabled",                     default: true,     null: false
+    t.boolean  "merge_requests_enabled",           default: true,     null: false
+    t.boolean  "wiki_enabled",                     default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                 default: "gitlab", null: false
+    t.string   "issues_tracker",                   default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",               default: true,     null: false
+    t.boolean  "snippets_enabled",                 default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",               default: 0,        null: false
-    t.boolean  "archived",                       default: false,    null: false
+    t.integer  "visibility_level",                 default: 0,        null: false
+    t.boolean  "archived",                         default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
-    t.float    "repository_size",                default: 0.0
-    t.text     "merge_requests_template"
-    t.integer  "star_count",                     default: 0,        null: false
-    t.boolean  "merge_requests_rebase_enabled",  default: false
+    t.float    "repository_size",                  default: 0.0
+    t.integer  "star_count",                       default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "approvals_before_merge",         default: 0,        null: false
-    t.boolean  "reset_approvals_on_push",        default: true
-    t.integer  "commit_count",                   default: 0
-    t.boolean  "merge_requests_ff_only_enabled", default: false
+    t.text     "merge_requests_template"
+    t.boolean  "merge_requests_rebase_enabled",    default: false
+    t.integer  "commit_count",                     default: 0
+    t.integer  "approvals_before_merge",           default: 0,        null: false
+    t.boolean  "reset_approvals_on_push",          default: true
+    t.boolean  "merge_requests_ff_only_enabled",   default: false
     t.text     "issues_template"
+    t.boolean  "mirror",                           default: false,    null: false
+    t.datetime "mirror_last_update_at"
+    t.datetime "mirror_last_successful_update_at"
     t.text     "import_error"
   end
 
