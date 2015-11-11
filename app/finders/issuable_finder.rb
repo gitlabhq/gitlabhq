@@ -62,10 +62,10 @@ class IssuableFinder
 
     if project?
       @project = Project.find(params[:project_id])
-      
+
       unless Ability.abilities.allowed?(current_user, :read_project, @project)
         @project = nil
-      end 
+      end
     else
       @project = nil
     end
