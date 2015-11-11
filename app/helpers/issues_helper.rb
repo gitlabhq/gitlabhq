@@ -87,6 +87,11 @@ module IssuesHelper
     merge_requests.map(&:to_reference).to_sentence(last_word_connector: ', or ')
   end
 
+  def url_to_emoji(name)
+    emoji_path = "emoji/#{Emoji.emoji_filename(name)}.png"
+    url_to_image(emoji_path)
+  end
+
   # Required for Gitlab::Markdown::IssueReferenceFilter
   module_function :url_for_issue
 end

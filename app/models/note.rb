@@ -50,6 +50,8 @@ class Note < ActiveRecord::Base
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
+  scope :awards, ->{ where("is_award IS TRUE") }
+  scope :nonawards, ->{ where("is_award IS FALSE") }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
   scope :not_inline, ->{ where(line_code: [nil, '']) }
@@ -96,6 +98,12 @@ class Note < ActiveRecord::Base
 
     def search(query)
       where("LOWER(note) like :query", query: "%#{query.downcase}%")
+    end
+
+    def grouped_awards
+      select(:note).distinct.map do |note|
+        [ note.note, where(note: note.note) ]
+      end
     end
   end
 
@@ -286,44 +294,6 @@ class Note < ActiveRecord::Base
   # if note commit id doesn't exist
   rescue
     nil
-  end
-
-  DOWNVOTES = %w(-1 :-1: :thumbsdown: :thumbs_down_sign:)
-
-  # Check if the note is a downvote
-  def downvote?
-    votable? && note.start_with?(*DOWNVOTES)
-  end
-
-  UPVOTES = %w(+1 :+1: :thumbsup: :thumbs_up_sign:)
-
-  # Check if the note is an upvote
-  def upvote?
-    votable? && note.start_with?(*UPVOTES)
-  end
-
-  def superceded?(notes)
-    return false unless vote?
-
-    notes.each do |note|
-      next if note == self
-
-      if note.vote? &&
-        self[:author_id] == note[:author_id] &&
-        self[:created_at] <= note[:created_at]
-        return true
-      end
-    end
-
-    false
-  end
-
-  def vote?
-    upvote? || downvote?
-  end
-
-  def votable?
-    for_issue? || (for_merge_request? && !for_diff_line?)
   end
 
   # Mentionable override.

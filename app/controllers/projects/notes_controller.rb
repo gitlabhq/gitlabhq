@@ -3,7 +3,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
-  before_action :find_current_user_notes, except: [:destroy, :delete_attachment]
+  before_action :find_current_user_notes, except: [:destroy, :delete_attachment, :award_toggle]]
 
   def index
     current_fetched_at = Time.now.to_i
@@ -56,6 +56,27 @@ class Projects::NotesController < Projects::ApplicationController
     respond_to do |format|
       format.js { render nothing: true }
     end
+  end
+
+  def award_toggle
+    noteable = params[:noteable_type] == "Issue" ? Issue : MergeRequest
+    noteable = noteable.find(params[:noteable_id])
+    data = {
+      noteable: noteable,
+      author: current_user,
+      is_award: true,
+      note: params[:emoji]
+    }
+
+    note = project.notes.find_by(data)
+
+    if note
+      note.destroy
+    else
+      project.notes.create(data)
+    end
+
+    render json: {ok: true}
   end
 
   private
@@ -111,6 +132,8 @@ class Projects::NotesController < Projects::ApplicationController
       id: note.id,
       discussion_id: note.discussion_id,
       html: note_to_html(note),
+      award: note.is_award,
+      note: note.note,
       discussion_html: note_to_discussion_html(note),
       discussion_with_diff_html: note_to_discussion_with_diff_html(note)
     }

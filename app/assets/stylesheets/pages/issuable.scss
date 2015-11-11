@@ -101,3 +101,45 @@
     background-color: $background-color;
   }
 }
+
+.awards {
+  .award {
+    border: 1px solid;
+    padding: 1px 3px;
+    width: 50px;
+    border-radius: 5px;
+    float:left;
+    margin: 0 3px;
+    border-color: #ccc;
+    cursor: pointer;
+
+    &.active {
+      border-color: rgba(79,176,252,.4);
+      background-color: rgba(79,176,252,.08);
+
+      .counter {
+        font-weight: bold;
+      }
+    }
+
+    .icon {
+      float: left;
+      margin-right: 10px;
+    }
+  }
+
+  #add-award {
+    font-size: 20px;
+    border-radius: 5px;
+    float: left;
+    width: 50px;
+    font-weight: bold;
+  }
+  
+  .awards-menu{
+    li {
+      float: left;
+      margin: 3px;
+    }
+  }
+}
