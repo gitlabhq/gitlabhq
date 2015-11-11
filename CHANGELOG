@@ -32,12 +32,12 @@ v 8.2.0 (unreleased)
   - Fix incoming email config defaults
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
+  - Make color of "Accept Merge Request" button consistent with current build status
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
   - Prevent redirect loop when home_page_url is set to the root URL
   - Fix incoming email config defaults
-  - Make color of "Accept Merge Request" button consistent with current build status
   - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
 
 v 8.1.3
