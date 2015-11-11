@@ -328,6 +328,10 @@ table {
   }
 }
 
+.well {
+  margin-bottom: 0;
+}
+
 .search_box {
   @extend .well;
   text-align: center;
