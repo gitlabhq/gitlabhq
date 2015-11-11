@@ -259,6 +259,7 @@ group :development, :test do
   gem 'rubocop',  '~> 0.28.0',  require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
+  gem 'flog', require: false
 
   gem 'benchmark-ips', require: false
 end

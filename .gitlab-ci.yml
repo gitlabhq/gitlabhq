@@ -73,3 +73,11 @@ brakeman:
   tags:
     - ruby
     - mysql
+
+flog:
+  script:
+    - bundle exec rake flog
+  tags:
+    - ruby
+    - mysql
+  allow_failure: true
