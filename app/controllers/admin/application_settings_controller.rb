@@ -58,6 +58,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :admin_notification_email,
       :user_oauth_applications,
       :shared_runners_enabled,
+      :max_artifacts_size,
       restricted_visibility_levels: [],
       import_sources: []
     )

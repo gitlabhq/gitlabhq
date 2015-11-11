@@ -89,6 +89,7 @@ class ApplicationSetting < ActiveRecord::Base
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
       import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
+      max_artifacts_size: Settings.gitlab_ci['max_artifacts_size'],
     )
   end
 

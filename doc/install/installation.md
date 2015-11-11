@@ -246,6 +246,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Change the permissions of the directory where CI build traces are stored
     sudo chmod -R u+rwX builds/
 
+    # Change the permissions of the directory where CI artifacts are stored
+    sudo chmod -R u+rwX shared/artifacts/
+
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 

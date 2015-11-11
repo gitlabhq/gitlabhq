@@ -150,7 +150,7 @@ module Backup
     private
 
     def backup_contents
-      folders_to_backup + ["uploads.tar.gz", "builds.tar.gz", "backup_information.yml"]
+      folders_to_backup + ["uploads.tar.gz", "builds.tar.gz", "artifacts.tar.gz", "backup_information.yml"]
     end
 
     def folders_to_backup

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Builds" do
+  let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+
   before do
     login_as(:user)
     @commit = FactoryGirl.create :ci_commit
@@ -66,6 +68,15 @@ describe "Builds" do
     it { expect(page).to have_content @commit.sha[0..7] }
     it { expect(page).to have_content @commit.git_commit_message }
     it { expect(page).to have_content @commit.git_author_name }
+
+    context "Download artifacts" do
+      before do
+        @build.update_attributes(artifacts_file: artifacts_file)
+        visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      end
+
+      it { expect(page).to have_content 'Download artifacts' }
+    end
   end
 
   describe "POST /:project/builds/:id/cancel" do
@@ -89,5 +100,15 @@ describe "Builds" do
 
     it { expect(page).to have_content 'pending' }
     it { expect(page).to have_content 'Cancel' }
+  end
+
+  describe "GET /:project/builds/:id/download" do
+    before do
+      @build.update_attributes(artifacts_file: artifacts_file)
+      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      click_link 'Download artifacts'
+    end
+
+    it { expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type) }
   end
 end
