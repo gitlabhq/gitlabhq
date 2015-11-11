@@ -484,7 +484,7 @@ class Repository
     root_ref_commit = commit(root_ref)
 
     if branch_commit
-      rugged.merge_base(root_ref_commit.id, branch_commit.id) == branch_commit.id
+      is_ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
@@ -493,6 +493,11 @@ class Repository
   def merge_base(first_commit_id, second_commit_id)
     rugged.merge_base(first_commit_id, second_commit_id)
   end
+
+  def is_ancestor?(ancestor_id, descendant_id)
+    merge_base(ancestor_id, descendant_id) == ancestor_id
+  end
+
 
   def search_files(query, ref)
     offset = 2
