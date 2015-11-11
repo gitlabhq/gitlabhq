@@ -32,6 +32,7 @@ v 8.2.0 (unreleased)
   - Fix incoming email config defaults
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
+  - Accept COPYING as licence file (Zeger-Jan van de Weg)
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
@@ -155,7 +156,6 @@ v 8.0.4
   - Fix "Assign All" button on Runner admin page
   - Fix search in Files
   - Add full project namespace to payload of system webhooks (Ricardo Band)
-  - Accept COPYING as licence file (Zeger-Jan van de Weg)
 
 v 8.0.3
   - Fix URL shown in Slack notifications
