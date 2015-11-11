@@ -134,6 +134,9 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
+  scope :join_project, -> { joins(:target_project) }
+  scope :references_project, -> { references(:target_project) }
+
   def self.reference_prefix
     '!'
   end
