@@ -105,29 +105,25 @@ class Repository
   end
 
   def add_branch(branch_name, ref)
-    cache.expire(:branch_names)
-    @branches = nil
+    expire_branches_cache
 
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
   end
 
   def add_tag(tag_name, ref, message = nil)
-    cache.expire(:tag_names)
-    @tags = nil
+    expire_tags_cache
 
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(branch_name)
-    cache.expire(:branch_names)
-    @branches = nil
+    expire_branches_cache
 
     gitlab_shell.rm_branch(path_with_namespace, branch_name)
   end
 
   def rm_tag(tag_name)
-    cache.expire(:tag_names)
-    @tags = nil
+    expire_tags_cache
 
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
@@ -167,6 +163,16 @@ class Repository
         send(key)
       end
     end
+  end
+
+  def expire_tags_cache
+    cache.expire(:tag_names)
+    @tags = nil
+  end
+
+  def expire_branches_cache
+    cache.expire(:branch_names)
+    @branches = nil
   end
 
   def expire_cache
