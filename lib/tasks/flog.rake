@@ -2,6 +2,7 @@ desc 'Code complexity analyze via flog'
 task :flog do
   output = %x(bundle exec flog -m app/ lib/gitlab)
   exit_code = 0
+  minimum_score = 70
   output = output.lines
 
   # Skip total complexity score
@@ -14,7 +15,7 @@ task :flog do
     score, method = line.split(" ")
     score = score.to_i
 
-    if score > 40
+    if score > minimum_score
       exit_code = 1
       puts "High complexity in #{method}. Score: #{score}"
     end
