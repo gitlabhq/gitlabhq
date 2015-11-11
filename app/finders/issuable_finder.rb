@@ -77,11 +77,11 @@ class IssuableFinder
     return @projects if defined?(@projects)
 
     if project?
-      project
+      @projects = project
     elsif current_user && params[:authorized_only].presence && !current_user_related?
-      current_user.authorized_projects
+      @projects = current_user.authorized_projects
     else
-      ProjectsFinder.new.execute(current_user)
+      @projects = ProjectsFinder.new.execute(current_user)
     end
   end
 
