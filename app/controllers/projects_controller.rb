@@ -89,7 +89,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    if @project.import_in_progress?
+    # If we're importing while we do have a repository, we're simply updating the mirror.
+    if @project.import_in_progress? && !@project.updating_mirror?
       redirect_to namespace_project_import_path(@project.namespace, @project)
       return
     end

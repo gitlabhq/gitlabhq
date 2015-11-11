@@ -328,6 +328,14 @@ class Project < ActiveRecord::Base
   end
 
   def add_import_job
+    if repository_exists?
+      if mirror?
+        RepositoryUpdateMirrorWorker.perform_async(self.id)
+      end
+
+      return
+    end
+
     if forked?
       RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
     else
@@ -415,6 +423,12 @@ class Project < ActiveRecord::Base
     else
       import_start
     end
+  end
+
+  def fetch_mirror
+    return unless mirror?
+
+    repository.fetch_upstream(self.import_url)
   end
 
   def check_limit

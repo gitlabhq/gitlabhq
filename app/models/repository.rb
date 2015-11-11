@@ -4,6 +4,8 @@ class Repository
   class PreReceiveError < StandardError; end
   class CommitError < StandardError; end
 
+  MIRROR_REMOTE = "upstream"
+
   include Gitlab::ShellAdapter
 
   attr_accessor :raw_repository, :path_with_namespace, :project
@@ -128,8 +130,22 @@ class Repository
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
+  def add_remote(name, url)
+    raw_repository.remote_add(name, url)
+  rescue Rugged::ConfigError
+    raw_repository.remote_update(name, url: url)
+  end
+
+  def fetch_remote(remote)
+    gitlab_shell.fetch_remote(path_with_namespace, remote)
+  end
+
   def branch_names
     cache.fetch(:branch_names) { raw_repository.branch_names }
+  end
+
+  def branch_exists?(name)
+    branch_names.include?(name)
   end
 
   def tag_names
@@ -514,6 +530,35 @@ class Repository
       is_ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
+    end
+  end
+
+  def fetch_upstream(url)
+    add_remote(Repository::MIRROR_REMOTE, url)
+    fetch_remote(Repository::MIRROR_REMOTE)
+  end
+
+  def upstream_branches
+    rugged.references.each("refs/remotes/#{Repository::MIRROR_REMOTE}/*").map do |ref|
+      name = ref.name.sub(/\Arefs\/remotes\/#{Repository::MIRROR_REMOTE}\//, "")
+      source_sha = ref.target.oid
+
+      begin
+        Gitlab::Git::Branch.new(name, ref.target)
+      rescue Rugged::ReferenceError
+        # Omit invalid branch
+      end
+    end.compact
+  end
+
+  def diverged_from_upstream?(branch_name)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
+
+    if upstream_commit
+      !is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
     end
   end
 
