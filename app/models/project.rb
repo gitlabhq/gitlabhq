@@ -156,6 +156,7 @@ class Project < ActiveRecord::Base
   validates :import_url,
     format: { with: /\A#{URI.regexp(%w(ssh git http https))}\z/, message: 'should be a valid url' },
     if: :external_import?
+  validates :import_url, presence: true, if: :mirror?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -180,6 +181,7 @@ class Project < ActiveRecord::Base
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
+  scope :mirror, -> { where(mirror: true) }
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -204,6 +206,21 @@ class Project < ActiveRecord::Base
 
     after_transition any => :started, do: :schedule_add_import_job
     after_transition any => :finished, do: :clear_import_data
+
+    after_transition started: :finished do |project, transaction|
+      if project.mirror?
+        timestamp = DateTime.now
+        project.mirror_last_update_at = timestamp
+        project.mirror_last_successful_update_at = timestamp
+        project.save
+      end
+    end
+
+    after_transition started: :failed do |project, transaction|
+      if project.mirror?
+        project.update(mirror_last_update_at: DateTime.now)
+      end
+    end
   end
 
   class << self
@@ -254,7 +271,7 @@ class Project < ActiveRecord::Base
         joins(:namespace).
         iwhere('namespaces.path' => namespace_path)
 
-      projects.where('projects.path' => project_path).take || 
+      projects.where('projects.path' => project_path).take ||
         projects.iwhere('projects.path' => project_path).take
     end
 
@@ -356,6 +373,48 @@ class Project < ActiveRecord::Base
     result.to_s
   rescue
     original_url
+  end
+
+  def mirror_updated?
+    mirror? && self.mirror_last_update_at
+  end
+
+  def updating_mirror?
+    mirror? && import_in_progress? && !empty_repo?
+  end
+
+  def mirror_last_update_status
+    return unless mirror_updated?
+
+    if self.mirror_last_update_at == self.mirror_last_successful_update_at
+      :success
+    else
+      :failed
+    end
+  end
+
+  def mirror_last_update_success?
+    mirror_last_update_status == :success
+  end
+
+  def mirror_last_update_failed?
+    mirror_last_update_status == :failed
+  end
+
+  def mirror_ever_updated_successfully?
+    mirror_updated? && self.mirror_last_successful_update_at
+  end
+
+  def update_mirror
+    return unless mirror?
+
+    return if import_in_progress?
+
+    if import_failed?
+      import_retry
+    else
+      import_start
+    end
   end
 
   def check_limit
