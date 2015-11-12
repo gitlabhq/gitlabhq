@@ -141,6 +141,7 @@ job_name:
 | tags          | optional | Defines a list of tags which are used to select runner |
 | allow_failure | optional | Allow build to fail. Failed build doesn't contribute to commit status |
 | when          | optional | Define when to run build. Can be `on_success`, `on_failure` or `always` |
+| artifacts     | optional | Define list build artifacts |
 
 ### script
 `script` is a shell script which is executed by runner. The shell script is prepended with `before_script`.
@@ -169,7 +170,7 @@ This are two parameters that allow for setting a refs policy to limit when jobs 
 
 There are a few rules that apply to usage of refs policy:
 
-1. `only` and `except` are exclusive. If both `only` and `except` are defined in job specification only `only` is taken into account.
+1. `only` and `except` are inclusive. If both `only` and `except` are defined in job specification the ref is filtered by `only` and `except`.
 1. `only` and `except` allow for using the regexp expressions.
 1. `only` and `except` allow for using special keywords: `branches` and `tags`.
 These names can be used for example to exclude all tags and all branches.
@@ -181,6 +182,18 @@ job:
   except:
     - branches # use special keyword
 ```
+
+1. `only` and `except` allow for specify repository path to filter jobs for forks.
+The repository path can be used to have jobs executed only for parent repository.
+
+```yaml
+job:
+  only:
+    - branches@gitlab-org/gitlab-ce
+  except:
+    - master@gitlab-org/gitlab-ce
+```
+The above will run `job` for all branches on `gitlab-org/gitlab-ce`, except master .
 
 ### tags
 `tags` is used to select specific runners from the list of all runners that are allowed to run this project.
@@ -245,6 +258,35 @@ cleanup:
 The above script will:
 1. Execute `cleanup_build` only when the `build` failed,
 2. Always execute `cleanup` as the last step in pipeline.
+
+### artifacts
+`artifacts` is used to specify list of files and directories which should be attached to build after success.
+
+1. Send all files in `binaries` and `.config`:
+```
+artifacts:
+  paths:
+  - binaries/
+  - .config
+```
+
+2. Send all git untracked files:
+```
+artifacts:
+  untracked: true
+```
+
+3. Send all git untracked files and files in `binaries`:
+```
+artifacts:
+  untracked: true
+  paths:
+  - binaries/
+```
+
+The artifacts will be send after the build success to GitLab and will be accessible in GitLab interface to download.
+
+This feature requires GitLab Runner v0.7.0 or higher.
 
 ## Validate the .gitlab-ci.yml
 Each instance of GitLab CI has an embedded debug tool called Lint.

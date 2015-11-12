@@ -21,6 +21,10 @@
       - if can?(current_user, :push_code, @project)
         %li.divider
         %li
+          = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master'), title: 'New file' do
+            = icon('file fw')
+            New file
+        %li
           = link_to new_namespace_project_branch_path(@project.namespace, @project) do
             = icon('code-fork fw')
             New branch

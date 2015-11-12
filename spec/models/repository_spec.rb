@@ -26,6 +26,15 @@ describe Repository do
     it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
   end
 
+  describe :find_commits_by_message do
+    subject { repository.find_commits_by_message('submodule').map{ |k| k.id } }
+
+    it { is_expected.to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    it { is_expected.to include('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+    it { is_expected.to include('cfe32cf61b73a0d5e9f13e774abde7ff789b1660') }
+    it { is_expected.not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e') }
+  end
+
   describe :blob_at do
     context 'blank sha' do
       subject { repository.blob_at(Gitlab::Git::BLANK_SHA, '.gitignore') }

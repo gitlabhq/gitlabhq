@@ -39,7 +39,7 @@ describe GitlabCiService do
     end
 
     describe :build_page do
-      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://localhost/#{@ci_project.gl_project.path_with_namespace}/commit/2ab7834c/ci")}
+      it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://localhost/#{@ci_project.gl_project.path_with_namespace}/commit/2ab7834c/builds")}
     end
 
     describe "execute" do

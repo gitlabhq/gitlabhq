@@ -39,6 +39,8 @@ module Ci
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
+    mount_uploader :artifacts_file, ArtifactUploader
+
     acts_as_taggable
 
     # To prevent db load megabytes of data from trace
@@ -104,6 +106,14 @@ module Ci
 
     def ignored?
       failed? && allow_failure?
+    end
+
+    def retryable?
+      commands.present?
+    end
+
+    def retried?
+      !self.commit.latest_builds_for_ref(self.ref).include?(self)
     end
 
     def trace_html
@@ -209,6 +219,14 @@ module Ci
       "#{dir_to_trace}/#{id}.log"
     end
 
+    def token
+      project.token
+    end
+
+    def valid_token? token
+      project.valid_token? token
+    end
+
     def target_url
       Gitlab::Application.routes.url_helpers.
         namespace_project_build_url(gl_project.namespace, gl_project, self)
@@ -222,7 +240,7 @@ module Ci
     end
 
     def retry_url
-      if commands.present?
+      if retryable?
         Gitlab::Application.routes.url_helpers.
           retry_namespace_project_build_path(gl_project.namespace, gl_project, self)
       end
@@ -238,6 +256,13 @@ module Ci
 
     def show_warning?
       pending? && !any_runners_online?
+    end
+
+    def download_url
+      if artifacts_file.exists?
+        Gitlab::Application.routes.url_helpers.
+          download_namespace_project_build_path(gl_project.namespace, gl_project, self)
+      end
     end
 
     private

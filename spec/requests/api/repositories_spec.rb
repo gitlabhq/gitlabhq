@@ -36,8 +36,8 @@ describe API::API, api: true  do
       it 'should create a new annotated tag' do
         # Identity must be set in .gitconfig to create annotated tag.
         repo_path = project.repository.path_to_repo
-        system(*%W(git --git-dir=#{repo_path} config user.name #{user.name}))
-        system(*%W(git --git-dir=#{repo_path} config user.email #{user.email}))
+        system(*%W(#{Gitlab.config.git.bin_path} --git-dir=#{repo_path} config user.name #{user.name}))
+        system(*%W(#{Gitlab.config.git.bin_path} --git-dir=#{repo_path} config user.email #{user.email}))
 
         post api("/projects/#{project.id}/repository/tags", user),
              tag_name: 'v7.1.0',

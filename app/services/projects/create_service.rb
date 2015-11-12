@@ -94,8 +94,6 @@ module Projects
         @project.team << [current_user, :master, current_user]
       end
 
-      @project.update_column(:last_activity_at, @project.created_at)
-
       if @project.import?
         @project.import_start
       end

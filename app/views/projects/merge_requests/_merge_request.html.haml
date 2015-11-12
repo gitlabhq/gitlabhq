@@ -41,6 +41,11 @@
       %span
         %i.fa.fa-clock-o
         = merge_request.milestone.title
+    - if merge_request.target_project.default_branch != merge_request.target_branch
+      &nbsp;
+      %span
+        %i.fa.fa-code-fork
+        = merge_request.target_branch
     - if merge_request.tasks?
       %span.task-status
         = merge_request.task_status
