@@ -102,13 +102,22 @@ describe Repository do
   end
 
   describe "#license" do
-    it 'test selection preference' do
+    before do
       repository.send(:cache).expire(:license)
       TestBlob = Struct.new(:name)
+    end
+
+    it 'test selection preference' do
       files = [TestBlob.new('file'), TestBlob.new('license'), TestBlob.new('copying')]
       expect(repository.tree).to receive(:blobs).and_return(files)
 
       expect(repository.license.name).to eq('license')
+    end
+
+    it 'also accepts licence instead of license' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('licence')])
+
+      expect(repository.license.name).to eq('licence')
     end
   end
 end

@@ -244,16 +244,24 @@ class Repository
   def license
     cache.fetch(:license) do
       licenses =  tree(:head).blobs.find_all do |file|
-                    file.name =~ /\A(copying|license)/i
+                    file.name =~ /\A(copying|license|licence)/i
                   end
 
-      # If `licence`, `copying` and `copying.lesser` are found, return in the
-      # following order: licence, copying, copying.lesser
-      regex = [/\Alicense(\..*)?\z/i, /\Acopying(\..{0,3})?\z/i, /\Acopying.lesser/i]
+      preferences = [
+        /\Alicen[sc]e\z/i,        # LICENSE, LICENCE
+        /\Alicen[sc]e\./i,        # LICENSE.md, LICENSE.txt
+        /\Acopying\z/i,           # COPYING
+        /\Acopying\.(?!lesser)/i, # COPYING.txt
+        /Acopying.lesser/i        # COPYING.LESSER
+      ]
 
-      regex.map do |re|
-        licenses.find { |l| l.name =~ re }
-      end.compact.first
+      license = nil
+      preferences.each do |r|
+        license = licenses.find { |l| l.name =~ r }
+        break if license
+      end
+
+      license
     end
   end
 
