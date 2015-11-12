@@ -244,7 +244,7 @@ class Repository
   def license
     cache.fetch(:license) do
       tree(:head).blobs.find do |file|
-        file.name =~ /\Alicense/i
+        file.name =~ /\A(license|licence)/i
       end
     end
   end
