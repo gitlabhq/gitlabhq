@@ -52,6 +52,19 @@ describe API::API, api: true  do
       end
     end
 
+    context 'lightweight tags with release notes' do
+      it 'should create a new tag' do
+        post api("/projects/#{project.id}/repository/tags", user),
+             tag_name: 'v7.0.1',
+             ref: 'master',
+             release_description: 'Wow'
+
+        expect(response.status).to eq(201)
+        expect(json_response['name']).to eq('v7.0.1')
+        expect(json_response['release']['description']).to eq('Wow')
+      end
+    end
+
     context 'annotated tag' do
       it 'should create a new annotated tag' do
         # Identity must be set in .gitconfig to create annotated tag.
