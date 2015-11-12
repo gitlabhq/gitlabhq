@@ -391,10 +391,13 @@ class User < ActiveRecord::Base
 
   # Groups user has access to
   def authorized_groups
-    @authorized_groups ||= begin
-                             group_ids = (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-                             Group.where(id: group_ids)
-                           end
+    @authorized_groups ||=
+      begin
+        union = Gitlab::SQL::Union.
+          new([groups.select(:id), authorized_projects.select(:namespace_id)])
+
+        Group.where("id IN (#{union.to_sql})")
+      end
   end
 
   # Projects user has access to
