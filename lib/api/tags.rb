@@ -29,7 +29,7 @@ module API
         authorize_push_project
         message = params[:message] || nil
         result = CreateTagService.new(user_project, current_user).
-          execute(params[:tag_name], params[:ref], message)
+          execute(params[:tag_name], params[:ref], message, params[:release_description])
 
         if result[:status] == :success
           present result[:tag],

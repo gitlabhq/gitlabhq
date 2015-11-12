@@ -28,6 +28,10 @@ Parameters:
         "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
       ]
     },
+    "release": {
+      "tag": "1.0.0",
+      "description": "Amazing release. Wow"
+    },
     "name": "v1.0.0",
     "message": null
   }
@@ -48,6 +52,7 @@ Parameters:
 - `tag_name` (required) - The name of a tag
 - `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
 - `message` (optional) - Creates annotated tag.
+- `release_description` (optional) - Add release notes to the git tag and store it in the GitLab database.
 
 ```json
 {
@@ -64,6 +69,10 @@ Parameters:
       "2a4b78934375d7f53875269ffd4f45fd83a84ebe"
     ]
   },
+  "release": {
+    "tag": "1.0.0",
+    "description": "Amazing release. Wow"
+  },
   "name": "v1.0.0",
   "message": null
 }
@@ -73,3 +82,25 @@ it will contain the annotation.
 
 It returns 200 if the operation succeed. In case of an error,
 405 with an explaining error message is returned.
+
+
+## New release
+
+Add release notes to the existing git tag
+
+```
+PUT /projects/:id/repository/:tag/release
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `tag` (required) - The name of a tag
+- `description` (required) - Release notes with markdown support
+
+```json
+{
+  "tag": "1.0.0",
+  "description": "Amazing release. Wow"
+}
+```

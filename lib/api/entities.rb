@@ -95,31 +95,6 @@ module API
       end
     end
 
-    class RepoTag < Grape::Entity
-      expose :name
-      expose :message do |repo_obj, _options|
-        if repo_obj.respond_to?(:message)
-          repo_obj.message
-        else
-          nil
-        end
-      end
-
-      expose :commit do |repo_obj, options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit
-        elsif options[:project]
-          options[:project].repository.commit(repo_obj.target)
-        end
-      end
-
-      expose :release do |repo_obj, options|
-        if options[:project]
-          options[:project].releases.find_by(tag: repo_obj.name)
-        end
-      end
-    end
-
     class RepoObject < Grape::Entity
       expose :name
 
@@ -350,6 +325,31 @@ module API
 
     class Release < Grape::Entity
       expose :tag, :description
+    end
+
+    class RepoTag < Grape::Entity
+      expose :name
+      expose :message do |repo_obj, _options|
+        if repo_obj.respond_to?(:message)
+          repo_obj.message
+        else
+          nil
+        end
+      end
+
+      expose :commit do |repo_obj, options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit
+        elsif options[:project]
+          options[:project].repository.commit(repo_obj.target)
+        end
+      end
+
+      expose :release, using: Entities::Release do |repo_obj, options|
+        if options[:project]
+          options[:project].releases.find_by(tag: repo_obj.name)
+        end
+      end
     end
   end
 end
