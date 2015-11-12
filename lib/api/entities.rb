@@ -341,5 +341,9 @@ module API
       expose :user_oauth_applications
       expose :after_sign_out_path
     end
+
+    class Release < Grape::Entity
+      expose :tag, :description
+    end
   end
 end

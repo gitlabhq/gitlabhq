@@ -11,7 +11,6 @@ describe API::API, api: true  do
   let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
   let!(:guest) { create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST) }
 
-
   describe "GET /projects/:id/repository/tags" do
     it "should return an array of project tags" do
       get api("/projects/#{project.id}/repository/tags", user)
@@ -84,6 +83,20 @@ describe API::API, api: true  do
            ref: 'foo'
       expect(response.status).to eq(400)
       expect(json_response['message']).to eq('Invalid reference name')
+    end
+  end
+
+  describe 'PUT /projects/:id/repository/:tag/release' do
+    let(:tag_name) { project.repository.tag_names.first }
+    let(:description) { 'Awesome release!' }
+
+    it 'should create description for existing git tag' do
+      put api("/projects/#{project.id}/repository/#{tag_name}/release", user),
+        description: description
+
+      expect(response.status).to eq(200)
+      expect(json_response['tag']).to eq(tag_name)
+      expect(json_response['description']).to eq(description)
     end
   end
 end
