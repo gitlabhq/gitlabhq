@@ -541,7 +541,6 @@ class Repository
   def upstream_branches
     rugged.references.each("refs/remotes/#{Repository::MIRROR_REMOTE}/*").map do |ref|
       name = ref.name.sub(/\Arefs\/remotes\/#{Repository::MIRROR_REMOTE}\//, "")
-      source_sha = ref.target.oid
 
       begin
         Gitlab::Git::Branch.new(name, ref.target)
