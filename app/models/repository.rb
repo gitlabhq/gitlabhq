@@ -6,7 +6,7 @@ class Repository
 
   include Gitlab::ShellAdapter
 
-  attr_accessor :raw_repository, :path_with_namespace, :project
+  attr_accessor :path_with_namespace, :project
 
   def self.clean_old_archives
     repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
@@ -19,14 +19,18 @@ class Repository
   def initialize(path_with_namespace, default_branch = nil, project = nil)
     @path_with_namespace = path_with_namespace
     @project = project
+  end
 
-    if path_with_namespace
-      @raw_repository = Gitlab::Git::Repository.new(path_to_repo)
-      @raw_repository.autocrlf = :input
+  def raw_repository
+    return nil unless path_with_namespace
+
+    @raw_repository ||= begin
+      repo = Gitlab::Git::Repository.new(path_to_repo)
+      repo.autocrlf = :input
+      repo
+    rescue Gitlab::Git::Repository::NoRepository
+      nil
     end
-
-  rescue Gitlab::Git::Repository::NoRepository
-    nil
   end
 
   # Return absolute path to repository
