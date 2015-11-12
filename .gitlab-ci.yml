@@ -12,6 +12,8 @@ cache:
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  # retry tests only in CI environment
+  RSPEC_RETRY_RETRY_COUNT: "3"
 
 before_script:
   - source ./scripts/prepare_build.sh
