@@ -19,7 +19,6 @@
         Mirrored from #{link_to import_url, import_url}.
 
         = render "shared/mirror_status"
-        = render "shared/mirror_update_button", size: "sm"
 
 
   .project-repo-buttons
@@ -30,6 +29,7 @@
     = render "shared/clone_panel"
     
     .split-repo-buttons
+      = render "projects/buttons/update_mirror"
       = render "projects/buttons/download"
       = render 'projects/buttons/dropdown'
 
