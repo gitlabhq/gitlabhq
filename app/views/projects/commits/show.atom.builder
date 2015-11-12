@@ -12,7 +12,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
       xml.link    href: namespace_project_commit_url(@project.namespace, @project, id: commit.id)
       xml.title   truncate(commit.title, length: 80)
       xml.updated commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")
-      xml.media   :thumbnail, width: "40", height: "40", url: avatar_icon(commit.author_email)
+      xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(commit.author_email))
       xml.author do |author|
         xml.name commit.author_name
         xml.email commit.author_email
