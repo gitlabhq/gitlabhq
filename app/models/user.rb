@@ -396,13 +396,14 @@ class User < ActiveRecord::Base
         union = Gitlab::SQL::Union.
           new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
-        Group.where("id IN (#{union.to_sql})")
+        Group.where("namespaces.id IN (#{union.to_sql})")
       end
   end
 
   # Projects user has access to
   def authorized_projects
-    @authorized_projects ||= Project.where("id IN (#{projects_union.to_sql})")
+    @authorized_projects ||=
+      Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
   def owned_projects
