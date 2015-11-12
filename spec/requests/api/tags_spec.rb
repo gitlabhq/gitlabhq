@@ -12,11 +12,31 @@ describe API::API, api: true  do
   let!(:guest) { create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST) }
 
   describe "GET /projects/:id/repository/tags" do
-    it "should return an array of project tags" do
-      get api("/projects/#{project.id}/repository/tags", user)
-      expect(response.status).to eq(200)
-      expect(json_response).to be_an Array
-      expect(json_response.first['name']).to eq(project.repo.tags.sort_by(&:name).reverse.first.name)
+    let(:tag_name) { project.repository.tag_names.sort.reverse.first }
+    let(:description) { 'Awesome release!' }
+
+    context 'without releases' do
+      it "should return an array of project tags" do
+        get api("/projects/#{project.id}/repository/tags", user)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(tag_name)
+      end
+    end
+
+    context 'with releases' do
+      before do
+        release = project.releases.find_or_initialize_by(tag: tag_name)
+        release.update_attributes(description: description)
+        get api("/projects/#{project.id}/repository/tags", user)
+      end
+
+      it "should return an array of project tags with release info" do
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(tag_name)
+        expect(json_response.first['release']['description']).to eq(description)
+      end
     end
   end
 

@@ -112,6 +112,12 @@ module API
           options[:project].repository.commit(repo_obj.target)
         end
       end
+
+      expose :release do |repo_obj, options|
+        if options[:project]
+          options[:project].releases.find_by(tag: repo_obj.name)
+        end
+      end
     end
 
     class RepoObject < Grape::Entity
