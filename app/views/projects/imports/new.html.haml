@@ -5,11 +5,12 @@
 %hr
 
 - if @project.import_failed?
-  .alert.alert-danger
-    %p The repository could not be imported.
-    %pre.prepend-top-10
-      :preserve
-        #{@project.import_error.try(:strip)}
+  .panel.panel-danger
+    .panel-heading The repository could not be imported.
+    .panel-body
+      %pre
+        :preserve
+          #{@project.import_error.try(:strip)}
 
 = form_for @project, url: namespace_project_import_path(@project.namespace, @project), method: :post, html: { class: 'form-horizontal' } do |f|
   = render "shared/import_form", f: f
