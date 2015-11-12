@@ -16,7 +16,7 @@ class RepositoryImportWorker
       end
     else
       begin
-        import_result = gitlab_shell.import_repository(project.path_with_namespace, project.import_url)
+        gitlab_shell.import_repository(project.path_with_namespace, project.import_url)
       rescue Gitlab::Shell::Error => e
         project.update(import_error: e.message)
         project.import_fail
