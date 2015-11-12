@@ -1,32 +1,27 @@
 - page_title "Mirror Repository"
+.pull-right
+  - if @project.mirror_last_update_success?
+    Successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+  %span.prepend-left-10
+    = render "shared/mirror_update_button"
 %h3.page-title
   Mirror Repository
-  .pull-right
-    = render "shared/mirror_update_button"
+
 %p.light
   Set up your project to automatically have its branches and tags updated from an upstream repository every hour.
 
 %hr.clearfix
 
-- if @project.mirror?
-  - if @project.updating_mirror?
-    .alert.alert-info
-      %p The repository is being updated...
-
-  - case @project.mirror_last_update_status
-  - when :success
-    .alert.alert-success
-      %p The repository was successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
-  - when :failed
-    .alert.alert-danger
-      %p The repository failed to be updated #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
-      %pre.prepend-top-10
+- if @project.mirror_last_update_failed?
+  .panel.panel-danger
+    .panel-heading
+      The repository failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
+      - if @project.mirror_ever_updated_successfully?
+        Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+    .panel-body
+      %pre
         :preserve
           #{@project.import_error.try(:strip)}
-
-    - if @project.mirror_ever_updated_successfully?
-      .alert.alert-success
-        %p The repository was last successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
 
 = form_for @project, url: namespace_project_mirror_path(@project.namespace, @project), html: { class: 'form-horizontal' } do |f|
   - if @project.errors.any?
