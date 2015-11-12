@@ -397,26 +397,9 @@ class User < ActiveRecord::Base
                            end
   end
 
-  def authorized_projects_id
-    @authorized_projects_id ||= begin
-      project_ids = personal_projects.pluck(:id)
-      project_ids.push(*groups_projects.pluck(:id))
-      project_ids.push(*projects.pluck(:id).uniq)
-    end
-  end
-
-  def master_or_owner_projects_id
-    @master_or_owner_projects_id ||= begin
-      scope = { access_level: [ Gitlab::Access::MASTER, Gitlab::Access::OWNER ] }
-      project_ids = personal_projects.pluck(:id)
-      project_ids.push(*groups_projects.where(members: scope).pluck(:id))
-      project_ids.push(*projects.where(members: scope).pluck(:id).uniq)
-    end
-  end
-
   # Projects user has access to
   def authorized_projects
-    @authorized_projects ||= Project.where(id: authorized_projects_id)
+    @authorized_projects ||= Project.where("id IN (#{projects_union.to_sql})")
   end
 
   def owned_projects
@@ -743,8 +726,8 @@ class User < ActiveRecord::Base
     Event.contributions.where(author_id: self).
       where("created_at > ?", Time.now - 1.year).
       reorder(project_id: :desc).
-      select(:project_id).
-      uniq.map(&:project_id)
+      uniq.
+      pluck(:project_id)
   end
 
   def restricted_signup_domains
@@ -774,11 +757,26 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
+  def ci_authorized_projects
+    @ci_authorized_projects ||=
+      Ci::Project.where("gitlab_id IN (#{projects_union.to_sql})")
+  end
+
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject.joins(:project).
-        where(ci_projects: { gitlab_id: master_or_owner_projects_id }).select(:runner_id)
+        where("ci_projects.gitlab_id IN (#{projects_union.to_sql})").
+        select(:runner_id)
+
       Ci::Runner.specific.where(id: runner_ids)
     end
+  end
+
+  private
+
+  def projects_union
+    Gitlab::SQL::Union.new([personal_projects.select(:id),
+                            groups_projects.select(:id),
+                            projects.select(:id)])
   end
 end
