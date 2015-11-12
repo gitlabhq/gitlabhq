@@ -11,15 +11,17 @@
     .controls.pull-left.prepend-top-10
       = submit_tag "Validate", class: 'btn btn-success submit-yml'
 
-    
+
 %p.text-center.loading
   %i.fa.fa-refresh.fa-spin
 
 .results.prepend-top-20
 
-:coffeescript
-  $(".loading").hide()
-  $('form').bind 'ajax:beforeSend', ->
-    $(".loading").show()
-  $('form').bind 'ajax:complete', ->
-    $(".loading").hide()
+:javascript
+  $(".loading").hide();
+  $('form').bind('ajax:beforeSend', function() {
+    $(".loading").show();
+  });
+  $('form').bind('ajax:complete', function() {
+    $(".loading").hide();
+  });

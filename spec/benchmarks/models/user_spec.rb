@@ -1,6 +1,16 @@
 require 'spec_helper'
 
 describe User, benchmark: true do
+  describe '.all' do
+    before do
+      10.times { create(:user) }
+    end
+
+    benchmark_subject { User.all.to_a }
+
+    it { is_expected.to iterate_per_second(500) }
+  end
+
   describe '.by_login' do
     before do
       %w{Alice Bob Eve}.each do |name|

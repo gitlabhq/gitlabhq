@@ -15,8 +15,8 @@ class CommitStatus < ActiveRecord::Base
   scope :pending, -> { where(status: 'pending') }
   scope :success, -> { where(status: 'success') }
   scope :failed, -> { where(status: 'failed')  }
-  scope :running_or_pending, -> { where(status:[:running, :pending]) }
-  scope :finished, -> { where(status:[:success, :failed, :canceled]) }
+  scope :running_or_pending, -> { where(status: [:running, :pending]) }
+  scope :finished, -> { where(status: [:success, :failed, :canceled]) }
   scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :ref)) }
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
   scope :for_ref, ->(ref) { where(ref: ref) }
@@ -91,5 +91,9 @@ class CommitStatus < ActiveRecord::Base
 
   def show_warning?
     false
+  end
+
+  def download_url
+    nil
   end
 end
