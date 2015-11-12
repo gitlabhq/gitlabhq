@@ -36,7 +36,9 @@ class Member < ActiveRecord::Base
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
   validates :invite_email,  presence: { if: :invite? },
             email: { strict_mode: true, allow_nil: true },
-            uniqueness: { scope: [:source_type, :source_id], allow_nil: true }
+            uniqueness: { scope: [:source_type,
+                                  :source_id],
+                          allow_nil: true }
 
   scope :invite, -> { where(user_id: nil) }
   scope :non_invite, -> { where("user_id IS NOT NULL") }
