@@ -66,30 +66,6 @@ module Ci
     class << self
       include Ci::CurrentSettings
 
-      def base_build_script
-        <<-eos
-  git submodule update --init
-  ls -la
-        eos
-      end
-
-      def parse(project)
-        params = {
-          gitlab_id:                project.id,
-          default_ref:              project.default_branch || 'master',
-          email_add_pusher:         current_application_settings.add_pusher,
-          email_only_broken_builds: current_application_settings.all_broken_builds,
-        }
-
-        project = Ci::Project.new(params)
-        project.build_missing_services
-        project
-      end
-
-      def already_added?(project)
-        where(gitlab_id: project.id).any?
-      end
-
       def unassigned(runner)
         joins("LEFT JOIN #{Ci::RunnerProject.table_name} ON #{Ci::RunnerProject.table_name}.project_id = #{Ci::Project.table_name}.id " \
           "AND #{Ci::RunnerProject.table_name}.runner_id = #{runner.id}").
