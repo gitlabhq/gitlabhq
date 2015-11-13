@@ -1,9 +1,9 @@
 # == Schema Information
 #
-# Table name: projects
+# Table name: ci_projects
 #
 #  id                       :integer          not null, primary key
-#  name                     :string(255)      not null
+#  name                     :string(255)
 #  timeout                  :integer          default(3600), not null
 #  created_at               :datetime
 #  updated_at               :datetime

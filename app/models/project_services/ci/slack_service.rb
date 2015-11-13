@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: services
+# Table name: ci_services
 #
 #  id         :integer          not null, primary key
 #  type       :string(255)
