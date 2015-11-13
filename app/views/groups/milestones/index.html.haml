@@ -14,10 +14,10 @@
     group are listed here.
 .milestones
   %ul.content-list
-    - if @group_milestones.blank?
+    - if @milestones.blank?
       %li
         .nothing-here-block No milestones to show
     - else
-      - @group_milestones.each do |milestone|
+      - @milestones.each do |milestone|
         = render 'milestone', milestone: milestone
-  = paginate @group_milestones, theme: "gitlab"
+  = paginate @milestones, theme: "gitlab"

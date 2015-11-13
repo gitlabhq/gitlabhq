@@ -1,6 +1,5 @@
 class Groups::GroupMembersController < Groups::ApplicationController
   skip_before_action :authenticate_user!, only: [:index]
-  before_action :group
 
   # Authorize
   before_action :authorize_read_group!
@@ -79,10 +78,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   protected
-
-  def group
-    @group ||= Group.find_by(path: params[:group_id])
-  end
 
   def member_params
     params.require(:group_member).permit(:access_level, :user_id)

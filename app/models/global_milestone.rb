@@ -1,6 +1,14 @@
-class GroupMilestone
+class GlobalMilestone
   attr_accessor :title, :milestones
   alias_attribute :name, :title
+
+  def self.build_collection(milestones)
+    milestones = milestones.group_by(&:title)
+
+    milestones.map do |title, milestones|
+      new(title, milestones)
+    end
+  end
 
   def initialize(title, milestones)
     @title = title
@@ -10,7 +18,7 @@ class GroupMilestone
   def safe_title
     @title.parameterize
   end
-  
+
   def projects
     milestones.map { |milestone| milestone.project }
   end
@@ -60,15 +68,15 @@ class GroupMilestone
   end
 
   def issues
-    @group_issues ||= milestones.map(&:issues).flatten.group_by(&:state)
+    @issues ||= milestones.map(&:issues).flatten.group_by(&:state)
   end
 
   def merge_requests
-    @group_merge_requests ||= milestones.map(&:merge_requests).flatten.group_by(&:state)
+    @merge_requests ||= milestones.map(&:merge_requests).flatten.group_by(&:state)
   end
 
   def participants
-    @group_participants ||= milestones.map(&:participants).flatten.compact.uniq
+    @participants ||= milestones.map(&:participants).flatten.compact.uniq
   end
 
   def opened_issues

@@ -5,7 +5,7 @@
   This will create milestone in every selected project
 %hr
 
-= form_for @group_milestone, as: :milestone, url: group_milestones_path(@group), html: { class: 'form-horizontal milestone-form gfm-form js-requires-input' }  do |f|
+= form_for @milestone, url: group_milestones_path(@group), html: { class: 'form-horizontal milestone-form gfm-form js-requires-input' }  do |f|
   .row
     .col-md-6
       .form-group
