@@ -68,8 +68,14 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  after_commit do
+    Rails.cache.write('application_setting.last', self)
+  end
+
   def self.current
-    ApplicationSetting.last
+    Rails.cache.fetch('application_setting.last') do
+      ApplicationSetting.last
+    end
   end
 
   def self.create_from_defaults
