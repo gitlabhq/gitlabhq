@@ -5,7 +5,7 @@ describe Ci::API::API do
 
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
   let(:project) { FactoryGirl.create(:ci_project) }
-  let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+  let(:gl_project) { project.gl_project }
 
   before do
     stub_ci_commit_to_return_yaml_file
@@ -14,7 +14,7 @@ describe Ci::API::API do
   describe "Builds API for runners" do
     let(:shared_runner) { FactoryGirl.create(:ci_runner, token: "SharedRunner") }
     let(:shared_project) { FactoryGirl.create(:ci_project, name: "SharedProject") }
-    let(:shared_gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: shared_project) }
+    let(:shared_gl_project) { shared_project.gl_project }
 
     before do
       FactoryGirl.create :ci_runner_project, project_id: project.id, runner_id: runner.id
@@ -160,15 +160,13 @@ describe Ci::API::API do
           end
 
           it "using token as parameter" do
-            settings = Gitlab::CurrentSettings::current_application_settings
-            settings.update_attributes(max_artifacts_size: 0)
+            stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { token: build.project.token, filesize: 100 }, headers
             expect(response.status).to eq(413)
           end
 
           it "using token as header" do
-            settings = Gitlab::CurrentSettings::current_application_settings
-            settings.update_attributes(max_artifacts_size: 0)
+            stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { filesize: 100 }, headers_with_token
             expect(response.status).to eq(413)
           end
@@ -220,8 +218,7 @@ describe Ci::API::API do
             end
 
             it do
-              settings = Gitlab::CurrentSettings::current_application_settings
-              settings.update_attributes(max_artifacts_size: 0)
+              stub_application_setting(max_artifacts_size: 0)
               upload_artifacts(file_upload, headers_with_token)
               expect(response.status).to eq(413)
             end

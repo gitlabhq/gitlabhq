@@ -88,8 +88,11 @@ describe API::API, api: true  do
         end
 
         it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
-          [project, project2, project3].each{ |project| project.build_missing_services }
-          project2.gitlab_ci_service.update(active: true)
+          [project, project2, project3].each do |project|
+            project.builds_enabled = false
+            project.build_missing_services
+          end
+          project2.builds_enabled = true
           get api('/projects', user), { ci_enabled_first: 'true' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
