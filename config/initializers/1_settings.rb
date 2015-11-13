@@ -209,10 +209,12 @@ Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious'
 # CI
 #
 Settings['gitlab_ci'] ||= Settingslogic.new({})
-Settings.gitlab_ci['all_broken_builds']   = true if Settings.gitlab_ci['all_broken_builds'].nil?
-Settings.gitlab_ci['add_pusher']          = false if Settings.gitlab_ci['add_pusher'].nil?
-Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
-Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
+Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_broken_builds'].nil?
+Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
+Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
+Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+Settings.gitlab_ci['max_artifacts_size']    ||= 100 # in megabytes
 
 #
 # Reply by email
@@ -220,8 +222,8 @@ Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci[
 Settings['incoming_email'] ||= Settingslogic.new({})
 Settings.incoming_email['enabled']    = false if Settings.incoming_email['enabled'].nil?
 Settings.incoming_email['port']       = 143 if Settings.incoming_email['port'].nil?
-Settings.incoming_email['ssl']        = 143 if Settings.incoming_email['ssl'].nil?
-Settings.incoming_email['start_tls']  = 143 if Settings.incoming_email['start_tls'].nil?
+Settings.incoming_email['ssl']        = false if Settings.incoming_email['ssl'].nil?
+Settings.incoming_email['start_tls']  = false if Settings.incoming_email['start_tls'].nil?
 Settings.incoming_email['mailbox']    = "inbox" if Settings.incoming_email['mailbox'].nil?
 
 #

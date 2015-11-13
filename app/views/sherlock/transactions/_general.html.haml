@@ -1,0 +1,33 @@
+.prepend-top-default
+  .panel.panel-default
+    .panel-heading
+      %strong
+        = t('sherlock.general')
+    %ul.well-list
+      %li
+        %span.light
+          #{t('sherlock.id')}:
+        %strong
+          = @transaction.id
+      %li
+        %span.light
+          #{t('sherlock.type')}:
+        %strong
+          = @transaction.type
+      %li
+        %span.light
+          #{t('sherlock.path')}:
+        %strong
+          = @transaction.path
+      %li
+        %span.light
+          #{t('sherlock.time')}:
+        %strong
+          = @transaction.duration.round(2)
+          = t('sherlock.seconds')
+      %li
+        %span.light
+          #{t('sherlock.finished_at')}:
+        %strong
+          = time_ago_in_words(@transaction.finished_at)
+          = t('sherlock.ago')

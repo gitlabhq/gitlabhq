@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103001141) do
+ActiveRecord::Schema.define(version: 20151109100728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(version: 20151103001141) do
     t.text     "import_sources"
     t.text     "help_page_text"
     t.string   "admin_notification_email"
+    t.boolean  "shared_runners_enabled",       default: true,  null: false
+    t.integer  "max_artifacts_size",           default: 100,   null: false
   end
 
   create_table "approvals", force: true do |t|
@@ -137,6 +139,7 @@ ActiveRecord::Schema.define(version: 20151103001141) do
     t.string   "type"
     t.string   "target_url"
     t.string   "description"
+    t.text     "artifacts_file"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -720,6 +723,17 @@ ActiveRecord::Schema.define(version: 20151103001141) do
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
+
+  create_table "releases", force: true do |t|
+    t.string   "tag"
+    t.text     "description"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "releases", ["project_id", "tag"], name: "index_releases_on_project_id_and_tag", using: :btree
+  add_index "releases", ["project_id"], name: "index_releases_on_project_id", using: :btree
 
   create_table "sent_notifications", force: true do |t|
     t.integer "project_id"

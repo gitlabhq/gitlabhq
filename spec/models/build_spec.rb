@@ -400,4 +400,19 @@ describe Ci::Build do
       end
     end
   end
+
+  describe :download_url do
+    subject { build.download_url }
+
+    it "should be nil if artifact doesn't exist" do
+      build.update_attributes(artifacts_file: nil)
+      is_expected.to be_nil
+    end
+
+    it 'should be nil if artifact exist' do
+      gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+      build.update_attributes(artifacts_file: gif)
+      is_expected.to_not be_nil
+    end
+  end
 end

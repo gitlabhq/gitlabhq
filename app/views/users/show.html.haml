@@ -115,5 +115,5 @@
           projects: @projects.sort_by(&:star_count).reverse,
           projects_limit: 10, stars: true, avatar: true
 
-:coffeescript
-  $(".user-calendar").load("#{user_calendar_path}")
+:javascript
+  $(".user-calendar").load("#{user_calendar_path}");

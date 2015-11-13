@@ -31,6 +31,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
+    @merge_requests = @merge_requests.preload(:target_project)
 
     respond_to do |format|
       format.html
