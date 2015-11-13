@@ -25,6 +25,7 @@ v 8.2.0 (unreleased)
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
+  - Fix omniauth documentation setting for omnibus configuration (Jon Cairns)
   - Add "New file" link to dropdown on project page
   - Include commit logs in project search
   - Add "added", "modified" and "removed" properties to commit object in webhook
