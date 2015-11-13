@@ -17,27 +17,34 @@ module Gitlab
           next if first_line == "-\n"
 
           first_token = find_first_token(first_line, second_line)
-          start = first_token + START
-
-          if first_token.empty?
-            # In case if we remove string of spaces in commit
-            diff_arr[index+1].sub!("-", "-" => "-#{START}")
-            diff_arr[index+2].sub!("+", "+" => "+#{START}")
-          else
-            diff_arr[index+1].sub!(first_token, first_token => start)
-            diff_arr[index+2].sub!(first_token, first_token => start)
-          end
+          apply_first_token(diff_arr, index, first_token)
 
           last_token = find_last_token(first_line, second_line, first_token)
-
-          # This is tricky: escape backslashes so that `sub` doesn't interpret them
-          # as backreferences. Regexp.escape does NOT do the right thing.
-          replace_token = FINISH + last_token.gsub(/\\/, '\&\&')
-          diff_arr[index+1].sub!(/#{Regexp.escape(last_token)}$/, replace_token)
-          diff_arr[index+2].sub!(/#{Regexp.escape(last_token)}$/, replace_token)
+          apply_last_token(diff_arr, index, last_token)
         end
 
         diff_arr
+      end
+
+      def apply_first_token(diff_arr, index, first_token)
+        start = first_token + START
+
+        if first_token.empty?
+          # In case if we remove string of spaces in commit
+          diff_arr[index+1].sub!("-", "-" => "-#{START}")
+          diff_arr[index+2].sub!("+", "+" => "+#{START}")
+        else
+          diff_arr[index+1].sub!(first_token, first_token => start)
+          diff_arr[index+2].sub!(first_token, first_token => start)
+        end
+      end
+
+      def apply_last_token(diff_arr, index, last_token)
+        # This is tricky: escape backslashes so that `sub` doesn't interpret them
+        # as backreferences. Regexp.escape does NOT do the right thing.
+        replace_token = FINISH + last_token.gsub(/\\/, '\&\&')
+        diff_arr[index+1].sub!(/#{Regexp.escape(last_token)}$/, replace_token)
+        diff_arr[index+2].sub!(/#{Regexp.escape(last_token)}$/, replace_token)
       end
 
       def find_first_token(first_line, second_line)
