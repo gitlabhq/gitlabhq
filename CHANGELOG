@@ -42,6 +42,7 @@ v 8.2.0 (unreleased)
   - Ability to add release notes (markdown text and attachments) to git tags (aka Releases)
   - Relative links from a repositories README.md now link to the default branch
   - Fix trailing whitespace issue in merge request/issue title
+  - Fix bug when milestone/label filter was empty for dashboard issues page
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
