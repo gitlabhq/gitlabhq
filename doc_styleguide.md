@@ -105,3 +105,15 @@ the authenticated user's namespace.
 ```bash
 curl --data "name=foo" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
 ```
+
+**Post data using form-data**
+
+Instead of using json or urlencode you can use mutlipart/form-data which
+properly handles data encoding:
+
+```
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -F "title=ssh-key" -F "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v3/users/25/keys
+```
+
+The above example is run by and administrator and will add an SSH public key
+titled ssh-key to user's account which has an id of 25.
