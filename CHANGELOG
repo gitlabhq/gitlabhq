@@ -21,6 +21,7 @@ v 8.2.0 (unreleased)
   - Send build name and stage in CI notification e-mail
   - Extend yml syntax for only and except to support specifying repository path
   - Enable shared runners to all new projects
+  - Bump GitLab-Workhorse to 0.4.1
   - Allow to define cache in `.gitlab-ci.yml`
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
