@@ -128,11 +128,10 @@ Install the Bundler Gem:
 
 ## 3. Go
 
-Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
-This is a small daemon written in Go.
-To install gitlab-git-http-server we need a Go compiler.
-The instructions below assume you use 64-bit Linux. You can find
-downloads for other platforms at the [Go download
+Since GitLab 8.0, Git HTTP requests are handled by gitlab-workhorse (formerly
+gitlab-git-http-server). This is a small daemon written in Go. To install
+gitlab-workhorse we need a Go compiler. The instructions below assume you
+use 64-bit Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
     curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
@@ -323,16 +322,16 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 **Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up gitlab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
-### Install gitlab-git-http-server
+### Install gitlab-workhorse
 
     cd /home/git
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
-    cd gitlab-git-http-server
-    sudo -u git -H git checkout 0.3.0
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
+    cd gitlab-workhorse
+    sudo -u git -H git checkout 0.4.1
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
-    
+
     # Go to Gitlab installation folder
 
     cd /home/git/gitlab
