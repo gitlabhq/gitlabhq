@@ -37,6 +37,7 @@ v 8.2.0 (unreleased)
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
   - Make color of "Accept Merge Request" button consistent with current build status
+  - Add ignore white space option in merge request diff and commit and compare view
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
