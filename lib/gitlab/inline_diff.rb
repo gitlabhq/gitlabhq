@@ -11,7 +11,6 @@ module Gitlab
         indexes.each do |index|
           first_line = diff_arr[index+1]
           second_line = diff_arr[index+2]
-          max_length = [first_line.size, second_line.size].max
 
           # Skip inline diff if empty line was replaced with content
           next if first_line == "-\n"
