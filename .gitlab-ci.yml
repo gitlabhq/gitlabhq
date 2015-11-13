@@ -80,7 +80,6 @@ flog:
   tags:
     - ruby
     - mysql
-  allow_failure: true
 
 flay:
   script:
