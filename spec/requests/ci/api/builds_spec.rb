@@ -160,15 +160,13 @@ describe Ci::API::API do
           end
 
           it "using token as parameter" do
-            settings = Gitlab::CurrentSettings::current_application_settings
-            settings.update_attributes(max_artifacts_size: 0)
+            stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { token: build.project.token, filesize: 100 }, headers
             expect(response.status).to eq(413)
           end
 
           it "using token as header" do
-            settings = Gitlab::CurrentSettings::current_application_settings
-            settings.update_attributes(max_artifacts_size: 0)
+            stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { filesize: 100 }, headers_with_token
             expect(response.status).to eq(413)
           end
@@ -220,8 +218,7 @@ describe Ci::API::API do
             end
 
             it do
-              settings = Gitlab::CurrentSettings::current_application_settings
-              settings.update_attributes(max_artifacts_size: 0)
+              stub_application_setting(max_artifacts_size: 0)
               upload_artifacts(file_upload, headers_with_token)
               expect(response.status).to eq(413)
             end
