@@ -39,6 +39,7 @@ v 8.2.0 (unreleased)
   - Improve Continuous Integration graphs page
   - Make color of "Accept Merge Request" button consistent with current build status
   - Add ignore white space option in merge request diff and commit and compare view
+  - Relative links from a repositories README.md now link to the default branch
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
