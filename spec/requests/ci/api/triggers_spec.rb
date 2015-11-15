@@ -6,7 +6,7 @@ describe Ci::API::API do
   describe 'POST /projects/:project_id/refs/:ref/trigger' do
     let!(:trigger_token) { 'secure token' }
     let!(:gl_project) { FactoryGirl.create(:project) }
-    let!(:project) { FactoryGirl.create(:ci_project, gl_project: gl_project) }
+    let!(:project) { gl_project.ensure_gitlab_ci_project }
     let!(:project2) { FactoryGirl.create(:ci_project) }
     let!(:trigger) { FactoryGirl.create(:ci_trigger, project: project, token: trigger_token) }
     let(:options) do

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: application_settings
+# Table name: ci_application_settings
 #
 #  id                :integer          not null, primary key
 #  all_broken_builds :boolean

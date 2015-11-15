@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Ci::CreateTriggerRequestService do
   let(:service) { Ci::CreateTriggerRequestService.new }
   let(:gl_project) { create(:project) }
-  let(:project) { create(:ci_project, gl_project: gl_project) }
+  let(:project) { gl_project.ensure_gitlab_ci_project }
   let(:trigger) { create(:ci_trigger, project: project) }
 
   before do
