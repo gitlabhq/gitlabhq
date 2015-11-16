@@ -158,10 +158,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(
+    permitted = params.require(:issue).permit(
       :title, :assignee_id, :position, :description,
       :milestone_id, :state_event, :task_num, label_ids: []
     )
+    params[:issue][:title].strip! if params[:issue][:title]
+    permitted
   end
 
   def bulk_update_params
