@@ -9,7 +9,7 @@
       Open
   Milestone #{@milestone.title}
   .pull-right
-    - if can?(current_user, :admin_group, @group)
+    - if can?(current_user, :admin_milestones, @group)
       - if @milestone.active?
         = link_to 'Close Milestone', group_milestone_path(@group, @milestone.safe_title, title: @milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-sm btn-close"
       - else

@@ -233,6 +233,7 @@ class Ability
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules.push(*[
           :create_projects,
+          :admin_milestones
         ])
       end
 

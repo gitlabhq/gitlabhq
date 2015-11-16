@@ -3,10 +3,11 @@
 
 = render 'shared/milestones_filter'
 .gray-content-block
-  .pull-right
-    %span.pull-right.hidden-xs
-      = link_to new_group_milestone_path(@group), class: "btn btn-new" do
-        New Milestone
+  - if can?(current_user, :admin_milestones, @group)
+    .pull-right
+      %span.pull-right.hidden-xs
+        = link_to new_group_milestone_path(@group), class: "btn btn-new" do
+          New Milestone
 
   .oneline
     Only milestones from
