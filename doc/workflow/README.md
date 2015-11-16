@@ -13,5 +13,6 @@
 - [Project users](add-user/add-user.md)
 - [Protected branches](protected_branches.md)
 - [Web Editor](web_editor.md)
+- [Releases](releases.md)
 - [Merge Requests](merge_requests.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)
