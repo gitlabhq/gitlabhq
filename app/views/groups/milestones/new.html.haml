@@ -21,7 +21,6 @@
         .col-sm-10
           = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
             = render 'projects/zen', f: f, attr: :description, classes: 'description form-control js-quick-submit'
-            = render 'projects/notes/hints'
             .clearfix
             .error-alert
       .form-group
@@ -43,7 +42,7 @@
 
 
 :javascript
-  $( ".datepicker" ).datepicker({
+  $(".datepicker").datepicker({
     dateFormat: "yy-mm-dd",
     onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
   }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));
