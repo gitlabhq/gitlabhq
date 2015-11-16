@@ -55,6 +55,7 @@
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [User permissions](permissions/permissions.md)
 - [API](api/README.md)
+- [Downgrade back to CE](downgrade_ee_to_ce/README.md) Follow this guide if you need to downgrade from EE to CE.
 
 ## Contributor documentation
 
