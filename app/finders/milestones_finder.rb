@@ -10,4 +10,3 @@ class MilestonesFinder
     end
   end
 end
-
