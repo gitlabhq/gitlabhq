@@ -423,7 +423,7 @@ ActiveRecord::Schema.define(version: 20151114113410) do
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "lfs_objects", force: true do |t|
-    t.string   "oid",        null: false, unique: true
+    t.string   "oid",        null: false
     t.integer  "size",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
