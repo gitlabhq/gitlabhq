@@ -686,7 +686,7 @@ describe User do
     end
   end
 
-  describe "#contributed_projects_ids" do
+  describe "#contributed_projects" do
     subject { create(:user) }
     let!(:project1) { create(:project) }
     let!(:project2) { create(:project, forked_from_project: project3) }
@@ -701,15 +701,15 @@ describe User do
     end
 
     it "includes IDs for projects the user has pushed to" do
-      expect(subject.contributed_projects_ids).to include(project1.id)
+      expect(subject.contributed_projects).to include(project1)
     end
 
     it "includes IDs for projects the user has had merge requests merged into" do
-      expect(subject.contributed_projects_ids).to include(project3.id)
+      expect(subject.contributed_projects).to include(project3)
     end
 
     it "doesn't include IDs for unrelated projects" do
-      expect(subject.contributed_projects_ids).not_to include(project2.id)
+      expect(subject.contributed_projects).not_to include(project2)
     end
   end
 
@@ -756,6 +756,50 @@ describe User do
       create(:merge_request, source_project: project2, target_project: project1, source_branch: project2.default_branch, target_branch: 'fix', author: subject)
 
       expect(subject.recent_push).to eq(nil)
+    end
+  end
+
+  describe '#authorized_groups' do
+    let!(:user) { create(:user) }
+    let!(:private_group) { create(:group) }
+    let!(:public_group) { create(:group, public: true) }
+
+    before do
+      private_group.add_user(user, Gitlab::Access::MASTER)
+    end
+
+    describe 'excluding public groups' do
+      subject { user.authorized_groups }
+
+      it { is_expected.to eq([private_group]) }
+    end
+
+    describe 'including public groups' do
+      subject { user.authorized_groups(true) }
+
+      it { is_expected.to eq([public_group, private_group]) }
+    end
+  end
+
+  describe '#authorized_projects' do
+    let!(:user) { create(:user) }
+    let!(:private_project) { create(:project, :private) }
+    let!(:public_project) { create(:project, :public) }
+
+    before do
+      private_project.team << [user, Gitlab::Access::MASTER]
+    end
+
+    describe 'excluding public projects' do
+      subject { user.authorized_projects }
+
+      it { is_expected.to eq([private_project]) }
+    end
+
+    describe 'including public projects' do
+      subject { user.authorized_projects(true) }
+
+      it { is_expected.to eq([public_project, private_project]) }
     end
   end
 end

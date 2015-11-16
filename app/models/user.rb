@@ -389,21 +389,40 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Groups user has access to
-  def authorized_groups
-    @authorized_groups ||=
-      begin
-        union = Gitlab::SQL::Union.
-          new([groups.select(:id), authorized_projects.select(:namespace_id)])
+  # Returns the groups a user has access to, optionally including any public
+  # groups.
+  #
+  # public_internal - When set to "true" all public groups and groups of public
+  #                   projects are also included.
+  #
+  # Returns an ActiveRecord::Relation
+  def authorized_groups(public_internal = false)
+    union = Gitlab::SQL::Union.
+      new([groups.select(:id), authorized_projects(public_internal).
+           select(:namespace_id)])
 
-        Group.where("namespaces.id IN (#{union.to_sql})")
-      end
+    sql = "namespaces.id IN (#{union.to_sql})"
+
+    if public_internal
+      sql << ' OR public IS TRUE'
+    end
+
+    Group.where(sql)
   end
 
-  # Projects user has access to
-  def authorized_projects
-    @authorized_projects ||=
-      Project.where("projects.id IN (#{projects_union.to_sql})")
+  # Returns the groups a user is authorized to access.
+  #
+  # public_internal - When set to "true" all public/internal projects will also
+  #                   be included.
+  def authorized_projects(public_internal = false)
+    base = "projects.id IN (#{projects_union.to_sql})"
+
+    if public_internal
+      Project.where("#{base} OR projects.visibility_level IN (?)",
+                    Project.public_and_internal_levels)
+    else
+      Project.where(base)
+    end
   end
 
   def owned_projects
@@ -726,12 +745,25 @@ class User < ActiveRecord::Base
     Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
   end
 
-  def contributed_projects_ids
-    Event.contributions.where(author_id: self).
+  # Returns the projects a user contributed to in the last year.
+  #
+  # This method relies on a subquery as this performs significantly better
+  # compared to a JOIN when coupled with, for example,
+  # `Project.visible_to_user`. That is, consider the following code:
+  #
+  #     some_user.contributed_projects.visible_to_user(other_user)
+  #
+  # If this method were to use a JOIN the resulting query would take roughly 200
+  # ms on a database with a similar size to gitlab.com's database. On the other
+  # hand, using a subquery means we can get the exact same data in about 40 ms.
+  def contributed_projects
+    events = Event.select(:project_id).
+      contributions.where(author_id: self).
       where("created_at > ?", Time.now - 1.year).
-      reorder(project_id: :desc).
       uniq.
-      pluck(:project_id)
+      reorder(nil)
+
+    Project.where(id: events)
   end
 
   def restricted_signup_domains
