@@ -228,6 +228,13 @@ Settings.incoming_email['start_tls']  = false if Settings.incoming_email['start_
 Settings.incoming_email['mailbox']    = "inbox" if Settings.incoming_email['mailbox'].nil?
 
 #
+# Git LFS
+#
+Settings['lfs'] ||= Settingslogic.new({})
+Settings.lfs['enabled']      = false if Settings.lfs['enabled'].nil?
+Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"), Rails.root)
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})

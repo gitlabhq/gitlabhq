@@ -40,6 +40,7 @@ v 8.2.0 (unreleased)
   - New design for project graphs page
   - Remove deprecated dumped yaml file generated from previous job definitions
   - Fix incoming email config defaults
+  - Show specific runners from projects where user is master or owner
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
   - Make color of "Accept Merge Request" button consistent with current build status
