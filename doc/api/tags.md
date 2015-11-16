@@ -40,7 +40,7 @@ Parameters:
 
 ## Create a new tag
 
-Creates new tag in the repository that points to the supplied ref.
+Creates a new tag in the repository that points to the supplied ref.
 
 ```
 POST /projects/:id/repository/tags

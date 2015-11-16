@@ -1,14 +1,14 @@
 # Releases
 
-You can turn any git tag into release by just adding a release notes to it. 
-Release notes behaves like any other markdown form in GitLab so you can write text and drag-n-drop files to it.
-Release notes are stored in GitLab database. 
+You can turn any git tag into a release, by adding a note to it.
+Release notes behave like any other markdown form in GitLab so you can write text and drag-n-drop files to it.
+Release notes are stored in the database of GitLab. 
 
 There are several ways to add release notes: 
 
-* In UI when you create new git tag with GitLab
-* In UI when you add release notes to existing git tag
-* with GitLab API
+* In the interface, when you create a new git tag with GitLab
+* In the interface, by adding a note to an existing git tag
+* with the GitLab API
 
 ## New tag page with release notes text area
 
