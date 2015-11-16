@@ -1,13 +1,13 @@
 # Milestones
 
-Milestone allows you to group issues and set due date for it. 
-Milestone is created per project. 
+Milestones allow you to organize issues and merge requests into a cohesive group, optionally setting a due date. 
+A common use is keeping track of an upcoming software version. Milestones are created per-project.
 
 ![milestone form](milestones/form.png)
 
 ## Groups and milestones
 
-You can create milestone with single form for several projects that belongs to the same group.
-On the group milestones page you will be able to see this milestones grouped together by name.
+You can create a milestone for several projects in the same group simultaneously. 
+On the group's milestones page, you will be able to see the status of that milestone across all of the selected projects.
 
 ![group milestone form](milestones/group_form.png)

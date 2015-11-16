@@ -8,7 +8,7 @@
   Milestone #{@milestone.title}
 
 %hr
-- if (@milestone.total_items_count == @milestone.closed_items_count) && @milestone.active?
+- if @milestone.complete? && @milestone.active?
   .alert.alert-success
     %span All issues for this milestone are closed. You may close the milestone now.
 

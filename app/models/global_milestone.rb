@@ -94,4 +94,8 @@ class GlobalMilestone
   def closed_merge_requests
     merge_requests.values_at("closed", "merged", "locked").compact.flatten
   end
+
+  def complete?
+    total_items_count == closed_items_count
+  end
 end

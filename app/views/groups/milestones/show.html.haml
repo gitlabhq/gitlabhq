@@ -16,7 +16,7 @@
         = link_to 'Reopen Milestone', group_milestone_path(@group, @milestone.safe_title, title: @milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
 
 %hr
-- if (@milestone.total_items_count == @milestone.closed_items_count) && @milestone.active?
+- if @milestone.complete? && @milestone.active?
   .alert.alert-success
     %span All issues for this milestone are closed. You may close the milestone now.
 
