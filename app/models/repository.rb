@@ -346,8 +346,8 @@ class Repository
     end
   end
 
-  def branch_names_contains(sha)
-    args = %W(#{Gitlab.config.git.bin_path} branch --contains #{sha})
+  def refs_contains_sha(ref_type, sha)
+    args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
     names = Gitlab::Popen.popen(args, path_to_repo).first
 
     if names.respond_to?(:split)
@@ -363,21 +363,12 @@ class Repository
     end
   end
 
+  def branch_names_contains(sha)
+    refs_contains_sha('branch', sha)
+  end
+
   def tag_names_contains(sha)
-    args = %W(#{Gitlab.config.git.bin_path} tag --contains #{sha})
-    names = Gitlab::Popen.popen(args, path_to_repo).first
-
-    if names.respond_to?(:split)
-      names = names.split("\n").map(&:strip)
-
-      names.each do |name|
-        name.slice! '* '
-      end
-
-      names
-    else
-      []
-    end
+    refs_contains_sha('tag', sha)
   end
 
   def branches
