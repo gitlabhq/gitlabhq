@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151114113410) do
+ActiveRecord::Schema.define(version: 20151116144118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -423,15 +423,14 @@ ActiveRecord::Schema.define(version: 20151114113410) do
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "lfs_objects", force: true do |t|
-    t.string   "oid",        null: false, unique: true
+    t.string   "oid",        null: false
     t.integer  "size",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file"
   end
 
-  add_index "lfs_objects", ["oid", "size"], name: "index_lfs_objects_on_oid_and_size", using: :btree
-  add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", using: :btree
+  add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
 
   create_table "lfs_objects_projects", force: true do |t|
     t.integer  "lfs_object_id", null: false
