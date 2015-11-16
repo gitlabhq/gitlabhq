@@ -1,8 +1,10 @@
+- status_class = @merge_request.ci_commit ? " ci-#{@merge_request.ci_commit.status}" : nil
+
 = form_for [:merge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post, html: { class: 'accept-mr-form js-requires-input' } do |f|
   = hidden_field_tag :authenticity_token, form_authenticity_token
   .accept-merge-holder.clearfix.js-toggle-container
     .accept-action
-      = f.button class: "btn btn-create accept_merge_request" do
+      = f.button class: "btn btn-create accept_merge_request#{status_class}" do
         Accept Merge Request
     - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && !@merge_request.for_fork?
       .accept-control.checkbox
@@ -18,8 +20,9 @@
           text: @merge_request.merge_commit_message,
           rows: 14, hint: true
 
-  :coffeescript
-    $('.accept-mr-form').on 'ajax:before', ->
-      btn = $('.accept_merge_request')
-      btn.disable()
-      btn.html("<i class='fa fa-spinner fa-spin'></i> Merge in progress")
+  :javascript
+    $('.accept-mr-form').on('ajax:before', function() {
+      var btn = $('.accept_merge_request');
+      btn.disable();
+      btn.html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
+    });

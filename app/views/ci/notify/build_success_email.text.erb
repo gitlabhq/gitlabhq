@@ -4,6 +4,8 @@ Status:   <%= @build.status %>
 Commit:   <%= @build.commit.short_sha %>
 Author:   <%= @build.commit.git_author_name %>
 Branch:   <%= @build.ref %>
+Stage:    <%= @build.stage %>
+Job:      <%= @build.name %>
 Message:  <%= @build.commit.git_commit_message %>
 
 Url:      <%= namespace_project_build_url(@build.gl_project.namespace, @build.gl_project, @build) %>

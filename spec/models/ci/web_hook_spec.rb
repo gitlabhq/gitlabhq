@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: web_hooks
+# Table name: ci_web_hooks
 #
 #  id         :integer          not null, primary key
 #  url        :string(255)      not null

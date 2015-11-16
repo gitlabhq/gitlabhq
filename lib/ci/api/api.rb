@@ -27,6 +27,7 @@ module Ci
 
       helpers Helpers
       helpers ::API::Helpers
+      helpers Gitlab::CurrentSettings
 
       mount Builds
       mount Commits

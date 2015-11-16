@@ -119,6 +119,6 @@ rebase with master to see if that solves the issue.
 ### Closing down the issue tracker on GitHub
 
 We are currently in the process of closing down the issue tracker on GitHub, to
-prevent duplication with the [GitLab.com issue tracker][https://gitlab.com/gitlab-org/gitlab-ce/issues].
+prevent duplication with the GitLab.com issue tracker.
 Since this is an older issue I'll be closing this for now. If you think this is
-still an issue I encourage you to open it on the  [GitLab.com issue tracker][https://gitlab.com/gitlab-org/gitlab-ce/issues].
+still an issue I encourage you to open it on the \[GitLab.com issue tracker\](https://gitlab.com/gitlab-org/gitlab-ce/issues).

@@ -22,7 +22,8 @@ Parameters:
     "author_name": "Dmitriy Zaporozhets",
     "author_email": "dzaporozhets@sphereconsultinginc.com",
     "created_at": "2012-09-20T11:50:22+03:00",
-    "message": "Replace sanitize with escape once"
+    "message": "Replace sanitize with escape once",
+    "allow_failure": false
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -31,7 +32,8 @@ Parameters:
     "author_name": "randx",
     "author_email": "dmitriy.zaporozhets@gmail.com",
     "created_at": "2012-09-20T09:06:12+03:00",
-    "message": "Sanitize for network graph"
+    "message": "Sanitize for network graph",
+    "allow_failure": false
   }
 ]
 ```

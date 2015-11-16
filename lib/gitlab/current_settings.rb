@@ -23,7 +23,9 @@ module Gitlab
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         session_expire_delay: Settings.gitlab['session_expire_delay'],
-        import_sources: Settings.gitlab['import_sources']
+        import_sources: Settings.gitlab['import_sources'],
+        shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
+        max_artifacts_size: Ci::Settings.gitlab_ci['max_artifacts_size'],
       )
     end
 

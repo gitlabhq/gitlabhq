@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: variables
+# Table name: ci_variables
 #
 #  id                   :integer          not null, primary key
 #  project_id           :integer          not null

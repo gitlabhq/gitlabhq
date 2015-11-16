@@ -60,7 +60,7 @@ class GitPushService
 
     # If CI was disabled but .gitlab-ci.yml file was pushed
     # we enable CI automatically
-    if !project.gitlab_ci? && gitlab_ci_yaml?(newrev)
+    if !project.builds_enabled? && gitlab_ci_yaml?(newrev)
       project.enable_ci
     end
 

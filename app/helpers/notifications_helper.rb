@@ -16,37 +16,25 @@ module NotificationsHelper
   def notification_list_item(notification_level, user_membership)
     case notification_level
     when Notification::N_DISABLED
-      content_tag(:li, class: active_level_for(user_membership, Notification::N_DISABLED)) do
-        link_to '#', class: 'update-notification', data: { notification_level: Notification::N_DISABLED } do
-          icon('microphone-slash fw', text: 'Disabled')
-        end
-      end
+      update_notification_link(Notification::N_DISABLED, user_membership, 'Disabled', 'microphone-slash')
     when Notification::N_PARTICIPATING
-      content_tag(:li, class: active_level_for(user_membership, Notification::N_PARTICIPATING)) do
-        link_to '#', class: 'update-notification', data: { notification_level: Notification::N_PARTICIPATING } do
-          icon('volume-up fw', text: 'Participate')
-        end
-      end
+      update_notification_link(Notification::N_PARTICIPATING, user_membership, 'Participate', 'volume-up')
     when Notification::N_WATCH
-      content_tag(:li, class: active_level_for(user_membership, Notification::N_WATCH)) do
-        link_to '#', class: 'update-notification', data: { notification_level: Notification::N_WATCH } do
-          icon('eye fw', text: 'Watch')
-        end
-      end
+      update_notification_link(Notification::N_WATCH, user_membership, 'Watch', 'eye')
     when Notification::N_MENTION
-      content_tag(:li, class: active_level_for(user_membership, Notification::N_MENTION)) do
-        link_to '#', class: 'update-notification', data: { notification_level: Notification::N_MENTION }  do
-          icon('at fw', text: 'On mention')
-        end
-      end
+      update_notification_link(Notification::N_MENTION, user_membership, 'On mention', 'at')
     when Notification::N_GLOBAL
-      content_tag(:li, class: active_level_for(user_membership, Notification::N_GLOBAL)) do
-        link_to '#', class: 'update-notification', data: { notification_level: Notification::N_GLOBAL } do
-          icon('globe fw', text: 'Global')
-        end
-      end
+      update_notification_link(Notification::N_GLOBAL, user_membership, 'Global', 'globe')
     else
       # do nothing
+    end
+  end
+
+  def update_notification_link(notification_level, user_membership, title, icon)
+    content_tag(:li, class: active_level_for(user_membership, notification_level)) do
+      link_to '#', class: 'update-notification', data: { notification_level: notification_level } do
+        icon("#{icon} fw", text: title)
+      end
     end
   end
 

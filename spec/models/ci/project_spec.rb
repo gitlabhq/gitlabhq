@@ -1,9 +1,9 @@
 # == Schema Information
 #
-# Table name: projects
+# Table name: ci_projects
 #
 #  id                       :integer          not null, primary key
-#  name                     :string(255)      not null
+#  name                     :string(255)
 #  timeout                  :integer          default(3600), not null
 #  created_at               :datetime
 #  updated_at               :datetime
@@ -28,8 +28,8 @@
 require 'spec_helper'
 
 describe Ci::Project do
-  let(:gl_project) { FactoryGirl.create :empty_project }
-  let(:project) { FactoryGirl.create :ci_project, gl_project: gl_project }
+  let(:project) { FactoryGirl.create :ci_project }
+  let(:gl_project) { project.gl_project }
   subject { project }
 
   it { is_expected.to have_many(:runner_projects) }
@@ -192,18 +192,6 @@ describe Ci::Project do
       allow(project).to receive(:success?).and_return(false)
       expect(project.broken_or_success?).to eq(false)
     end
-  end
-
-  describe 'Project.parse' do
-    let(:project) { FactoryGirl.create :project }
-
-    subject { Ci::Project.parse(project) }
-
-    it { is_expected.to be_valid }
-    it { is_expected.to be_kind_of(Ci::Project) }
-    it { expect(subject.name).to eq(project.name_with_namespace) }
-    it { expect(subject.gitlab_id).to eq(project.id) }
-    it { expect(subject.gitlab_url).to eq(project.web_url) }
   end
 
   describe :repo_url_with_auth do

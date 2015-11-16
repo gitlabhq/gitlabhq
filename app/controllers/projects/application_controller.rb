@@ -29,7 +29,7 @@ class Projects::ApplicationController < ApplicationController
   private
 
   def ci_enabled
-    return render_404 unless @project.gitlab_ci?
+    return render_404 unless @project.builds_enabled?
   end
 
   def ci_project

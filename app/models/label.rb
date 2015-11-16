@@ -8,6 +8,7 @@
 #  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
+#  template   :boolean          default(FALSE)
 #
 
 class Label < ActiveRecord::Base

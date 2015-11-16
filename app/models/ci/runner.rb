@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: runners
+# Table name: ci_runners
 #
 #  id           :integer          not null, primary key
 #  token        :string(255)

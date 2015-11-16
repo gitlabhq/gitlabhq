@@ -74,7 +74,7 @@ module IssuesHelper
                                                     issue.project, issue)
       xml.title   truncate(issue.title, length: 80)
       xml.updated issue.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
-      xml.media   :thumbnail, width: "40", height: "40", url: avatar_icon(issue.author_email)
+      xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
       xml.author do |author|
         xml.name issue.author_name
         xml.email issue.author_email
