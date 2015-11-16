@@ -1,4 +1,4 @@
-class Groups::AvatarsController < ApplicationController
+class Groups::AvatarsController < Groups::ApplicationController
   def destroy
     @group.remove_avatar!
     @group.save
