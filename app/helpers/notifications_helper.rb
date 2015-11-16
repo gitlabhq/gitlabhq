@@ -30,9 +30,9 @@ module NotificationsHelper
     end
   end
 
-  def update_notification_link(notification_label, user_membership, title, icon)
+  def update_notification_link(notification_level, user_membership, title, icon)
     content_tag(:li, class: active_level_for(user_membership, notification_level)) do
-      link_to '#', class: 'update-notification', data: { notification_level: notification_label } do
+      link_to '#', class: 'update-notification', data: { notification_level: notification_level } do
         icon("#{icon} fw", text: title)
       end
     end
