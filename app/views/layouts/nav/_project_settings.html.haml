@@ -50,7 +50,7 @@
         %span
           Audit Events
 
-    - if @project.gitlab_ci?
+    - if @project.builds_enabled?
       = nav_link(controller: :runners) do
         = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners', data: {placement: 'right'} do
           = icon('cog fw')

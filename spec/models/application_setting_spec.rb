@@ -23,16 +23,20 @@
 #  after_sign_out_path          :string(255)
 #  session_expire_delay         :integer          default(10080), not null
 #  import_sources               :text
+#  help_page_text               :text
+#  admin_notification_email     :string(255)
+#  shared_runners_enabled       :boolean          default(TRUE), not null
+#  max_artifacts_size           :integer          default(100), not null
 #
 
 require 'spec_helper'
 
 describe ApplicationSetting, models: true do
-  it { expect(ApplicationSetting.create_from_defaults).to be_valid }
+  let(:setting) { ApplicationSetting.create_from_defaults }
+
+  it { expect(setting).to be_valid }
 
   context 'restricted signup domains' do
-    let(:setting) { ApplicationSetting.create_from_defaults }
-
     it 'set single domain' do
       setting.restricted_signup_domains_raw = 'example.com'
       expect(setting.restricted_signup_domains).to eq(['example.com'])
@@ -51,6 +55,28 @@ describe ApplicationSetting, models: true do
     it 'set multiple domains with commas' do
       setting.restricted_signup_domains_raw = "example.com, *.example.com"
       expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
+    end
+  end
+
+  context 'shared runners' do
+    let(:gl_project) { create(:empty_project) }
+
+    before do
+      allow_any_instance_of(Project).to receive(:current_application_settings).and_return(setting)
+    end
+
+    subject { gl_project.ensure_gitlab_ci_project.shared_runners_enabled }
+
+    context 'enabled' do
+      before { setting.update_attributes(shared_runners_enabled: true) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'disabled' do
+      before { setting.update_attributes(shared_runners_enabled: false) }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

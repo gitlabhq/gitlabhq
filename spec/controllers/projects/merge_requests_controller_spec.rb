@@ -147,6 +147,34 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'GET diffs with ignore_whitespace_change' do
+    def go(format: 'html')
+      get :diffs,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          format: format,
+          w: 1
+    end
+
+    context 'as html' do
+      it 'renders the diff template' do
+        go
+
+        expect(response).to render_template('diffs')
+      end
+    end
+    
+    context 'as json' do
+      it 'renders the diffs template to a string' do
+        go format: 'json'
+
+        expect(response).to render_template('projects/merge_requests/show/_diffs')
+        expect(JSON.parse(response.body)).to have_key('html')
+      end
+    end
+  end
+
   describe 'GET commits' do
     def go(format: 'html')
       get :commits,

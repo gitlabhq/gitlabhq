@@ -11,6 +11,7 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
+#  public      :boolean          default(FALSE)
 #
 
 require 'spec_helper'

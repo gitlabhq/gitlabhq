@@ -1,13 +1,14 @@
-= content_for :title do
-  %h3.project-title
-    Runner ##{@runner.id}
-    .pull-right
-      - if @runner.shared?
-        %span.runner-state.runner-state-shared
-          Shared
-      - else
-        %span.runner-state.runner-state-specific
-          Specific
+- page_title "#{@runner.description} ##{@runner.id}", "Runners"
+
+%h3.page-title
+  Runner ##{@runner.id}
+  .pull-right
+    - if @runner.shared?
+      %span.runner-state.runner-state-shared
+        Shared
+    - else
+      %span.runner-state.runner-state-specific
+        Specific
 
 .table-holder
   %table.table

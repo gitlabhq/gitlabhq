@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: triggers
+# Table name: ci_triggers
 #
 #  id         :integer          not null, primary key
 #  token      :string(255)

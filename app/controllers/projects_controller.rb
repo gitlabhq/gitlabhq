@@ -72,8 +72,7 @@ class ProjectsController < ApplicationController
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
-    if @project.forked?
-      @project.forked_project_link.destroy
+    if @project.unlink_fork
       flash[:notice] = 'The fork relationship has been removed.'
     end
   end
@@ -211,11 +210,32 @@ class ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(
-      :name, :path, :description, :issues_tracker, :tag_list,
-      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
-      :wiki_enabled, :issues_template, :merge_requests_template, :visibility_level, :merge_requests_rebase_enabled,
-      :import_url, :last_activity_at, :namespace_id, :avatar,
-      :approvals_before_merge, :approver_ids, :reset_approvals_on_push, :merge_requests_ff_only_enabled
+      :avatar,
+      :builds_enabled,
+      :default_branch,
+      :description,
+      :import_url,
+      :issues_enabled,
+      :issues_tracker,
+      :issues_tracker_id,
+      :last_activity_at,
+      :merge_requests_enabled,
+      :name,
+      :namespace_id,
+      :path,
+      :snippets_enabled,
+      :tag_list,
+      :visibility_level,
+      :wiki_enabled,
+
+      # EE-only
+      :approvals_before_merge,
+      :approver_ids,
+      :issues_template,
+      :merge_requests_ff_only_enabled,
+      :merge_requests_rebase_enabled,
+      :merge_requests_template,
+      :reset_approvals_on_push
     )
   end
 
@@ -244,7 +264,7 @@ class ProjectsController < ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
-  # Override get_id from ExtractsPath, which returns the branch and file path 
+  # Override get_id from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref

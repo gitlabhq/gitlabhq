@@ -33,17 +33,7 @@ class SystemHooksService
         )
       end
     when Project
-      owner = model.owner
-
-      data.merge!({
-        name: model.name,
-        path: model.path,
-        path_with_namespace: model.path_with_namespace,
-        project_id: model.id,
-        owner_name: owner.name,
-        owner_email: owner.respond_to?(:email) ?  owner.email : "",
-        project_visibility: Project.visibility_levels.key(model.visibility_level_field).downcase
-      })
+      data.merge!(project_data(model))
     when User
       data.merge!({
         name: model.name,
@@ -51,16 +41,7 @@ class SystemHooksService
         user_id: model.id
       })
     when ProjectMember
-      data.merge!({
-        project_name: model.project.name,
-        project_path: model.project.path,
-        project_path_with_namespace: model.project.path_with_namespace,
-        project_id: model.project.id,
-        user_name: model.user.name,
-        user_email: model.user.email,
-        access_level: model.human_access,
-        project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
-      })
+      data.merge!(project_member_data(model))
     when Group
       owner = model.owner
 
@@ -72,15 +53,7 @@ class SystemHooksService
         owner_email: owner.respond_to?(:email) ? owner.email : nil,
       )
     when GroupMember
-      data.merge!(
-        group_name: model.group.name,
-        group_path: model.group.path,
-        group_id: model.group.id,
-        user_name: model.user.name,
-        user_email: model.user.email,
-        user_id: model.user.id,
-        group_access: model.human_access,
-      )
+      data.merge!(group_member_data(model))
     end
   end
 
@@ -95,5 +68,44 @@ class SystemHooksService
     else
       "#{model.class.name.downcase}_#{event.to_s}"
     end
+  end
+
+  def project_data(model)
+    owner = model.owner
+
+    {
+      name: model.name,
+      path: model.path,
+      path_with_namespace: model.path_with_namespace,
+      project_id: model.id,
+      owner_name: owner.name,
+      owner_email: owner.respond_to?(:email) ?  owner.email : "",
+      project_visibility: Project.visibility_levels.key(model.visibility_level_field).downcase
+    }
+  end
+
+  def project_member_data(model)
+    {
+      project_name: model.project.name,
+      project_path: model.project.path,
+      project_path_with_namespace: model.project.path_with_namespace,
+      project_id: model.project.id,
+      user_name: model.user.name,
+      user_email: model.user.email,
+      access_level: model.human_access,
+      project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
+    }
+  end
+
+  def group_member_data(model)
+    {
+      group_name: model.group.name,
+      group_path: model.group.path,
+      group_id: model.group.id,
+      user_name: model.user.name,
+      user_email: model.user.email,
+      user_id: model.user.id,
+      group_access: model.human_access,
+    }
   end
 end

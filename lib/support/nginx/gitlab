@@ -44,7 +44,7 @@ upstream gitlab-workhorse {
 
 ## Normal HTTP host
 server {
-  ## Either remove "default_server" from the listen line below, 
+  ## Either remove "default_server" from the listen line below,
   ## or delete the /etc/nginx/sites-enabled/default file. This will cause gitlab
   ## to be served if you visit any address that your server responds to, eg.
   ## the ip address of the server (http://x.x.x.x/)n 0.0.0.0:80 default_server;
@@ -113,6 +113,13 @@ server {
     proxy_pass http://gitlab;
   }
 
+  location ~ ^/[\w\.-]+/[\w\.-]+/gitlab-lfs/objects {
+    client_max_body_size 0;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
+  }
+
   location ~ ^/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
@@ -129,6 +136,22 @@ server {
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
+  }
+
+  # Build artifacts should be submitted to this location
+  location ~ ^/[\w\.-]+/[\w\.-]+/builds/download {
+      client_max_body_size 0;
+      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+      error_page 418 = @gitlab-workhorse;
+      return 418;
+  }
+
+  # Build artifacts should be submitted to this location
+  location ~ /ci/api/v1/builds/[0-9]+/artifacts {
+      client_max_body_size 0;
+      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+      error_page 418 = @gitlab-workhorse;
+      return 418;
   }
 
   location @gitlab-workhorse {
