@@ -1,8 +1,6 @@
-class Groups::AvatarsController < ApplicationController
+class Groups::AvatarsController < Groups::ApplicationController
   def destroy
-    @group = Group.find_by(path: params[:group_id])
     @group.remove_avatar!
-
     @group.save
 
     redirect_to edit_group_path(@group)

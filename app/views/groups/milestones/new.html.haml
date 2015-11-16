@@ -1,16 +1,14 @@
-%h3.page-title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.iid}"
-.back-link
-  = link_to namespace_project_milestones_path(@project.namespace, @project) do
-    &larr; To milestones
+- page_title "Milestones"
+- header_title group_title(@group, "Milestones", group_milestones_path(@group))
 
+%h3.page-title
+  New Milestone
+
+%p.light
+  This will create milestone in every selected project
 %hr
 
-= form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form js-requires-input'}  do |f|
-  -if @milestone.errors.any?
-    .alert.alert-danger
-      %ul
-        - @milestone.errors.full_messages.each do |msg|
-          %li= msg
+= form_for @milestone, url: group_milestones_path(@group), html: { class: 'form-horizontal milestone-form gfm-form js-requires-input' }  do |f|
   .row
     .col-md-6
       .form-group
@@ -23,9 +21,14 @@
         .col-sm-10
           = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
             = render 'projects/zen', f: f, attr: :description, classes: 'description form-control js-quick-submit'
-            = render 'projects/notes/hints'
-          .clearfix
-          .error-alert
+            .clearfix
+            .error-alert
+      .form-group
+        = f.label :projects, "Projects", class: "control-label"
+        .col-sm-10
+          = f.collection_select :project_ids, @group.projects, :id, :name,
+            { selected: @group.projects.map(&:id) }, multiple: true, class: 'select2'
+
     .col-md-6
       .form-group
         = f.label :due_date, "Due Date", class: "control-label"
@@ -34,12 +37,8 @@
           .datepicker
 
   .form-actions
-    - if @milestone.new_record?
-      = f.submit 'Create milestone', class: "btn-create btn"
-      = link_to "Cancel", namespace_project_milestones_path(@project.namespace, @project), class: "btn btn-cancel"
-    -else
-      = f.submit 'Save changes', class: "btn-save btn"
-      = link_to "Cancel", namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-cancel"
+    = f.submit 'Create Milestone', class: "btn-create btn"
+    = link_to "Cancel", group_milestones_path(@group), class: "btn btn-cancel"
 
 
 :javascript

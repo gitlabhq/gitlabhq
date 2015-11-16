@@ -368,7 +368,7 @@ Gitlab::Application.routes.draw do
       end
 
       resource :avatar, only: [:destroy]
-      resources :milestones, only: [:index, :show, :update]
+      resources :milestones, only: [:index, :show, :update, :new, :create]
     end
   end
 
