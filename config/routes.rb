@@ -368,7 +368,7 @@ Gitlab::Application.routes.draw do
       end
 
       resource :avatar, only: [:destroy]
-      resources :milestones, only: [:index, :show, :update]
+      resources :milestones, only: [:index, :show, :update, :new, :create]
     end
   end
 
@@ -660,7 +660,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :notes, constraints: { id: /\d+/ } do
+        resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
           end

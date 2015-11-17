@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.2.0 (unreleased)
+v 8.3.0 (unreleased)
+
+v 8.2.0
   - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
   - Fix Drone CI service template not saving properly (Stan Hu)
   - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
@@ -35,6 +37,7 @@ v 8.2.0 (unreleased)
   - New design for project graphs page
   - Remove deprecated dumped yaml file generated from previous job definitions
   - Fix incoming email config defaults
+  - Show specific runners from projects where user is master or owner
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
   - Make color of "Accept Merge Request" button consistent with current build status
@@ -42,6 +45,8 @@ v 8.2.0 (unreleased)
   - Ability to add release notes (markdown text and attachments) to git tags (aka Releases)
   - Relative links from a repositories README.md now link to the default branch
   - Fix trailing whitespace issue in merge request/issue title
+  - Fix bug when milestone/label filter was empty for dashboard issues page
+  - Add ability to create milestone in group projects from single form
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
