@@ -34,16 +34,18 @@ class Member < ActiveRecord::Base
                                     message: "already exists in source",
                                     allow_nil: true }
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
-  validates :invite_email,  presence: { if: :invite? },
-            email: {
-              strict_mode: true,
-              allow_nil: true
-            },
-            uniqueness: {
-              scope: [:source_type,
-                      :source_id],
-              allow_nil: true
-            }
+  validates :invite_email,
+    presence: {
+      if: :invite?
+    },
+    email: {
+      strict_mode: true,
+      allow_nil: true
+    },
+    uniqueness: {
+      scope: [:source_type, :source_id],
+      allow_nil: true
+    }
 
   scope :invite, -> { where(user_id: nil) }
   scope :non_invite, -> { where("user_id IS NOT NULL") }
@@ -100,7 +102,9 @@ class Member < ActiveRecord::Base
     private
 
     def can_update_member?(current_user, member)
-      !current_user || current_user.can?(:update_group_member, member) ||
+      # There is no current user for bulk actions, in which case anything is allowed
+      !current_user ||
+        current_user.can?(:update_group_member, member) ||
         current_user.can?(:update_project_member, member)
     end
   end

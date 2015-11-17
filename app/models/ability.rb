@@ -240,11 +240,11 @@ class Ability
 
       # Only group owner and administrators can admin group
       if group.has_owner?(user) || user.admin?
-        rules.push(*[
-                     :admin_group,
-                     :admin_namespace,
-                     :admin_group_member
-                   ])
+        rules += [
+          :admin_group,
+          :admin_namespace,
+          :admin_group_member
+        ]
       end
 
       rules.flatten
@@ -255,15 +255,14 @@ class Ability
 
       # Only namespace owner and administrators can admin it
       if namespace.owner == user || user.admin?
-        rules.push(*[
-                     :create_projects,
-                     :admin_namespace
-                   ])
+        rules += [
+          :create_projects,
+          :admin_namespace
+        ]
       end
 
       rules.flatten
     end
-
 
     [:issue, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
@@ -305,15 +304,18 @@ class Ability
       rules = []
       target_user = subject.user
       group = subject.group
-      can_manage = group_abilities(user, group).include?(:admin_group_member)
 
-      if can_manage && (user != target_user)
-        rules << :update_group_member
-        rules << :destroy_group_member
-      end
+      unless group.last_owner?(target_user)
+        can_manage = group_abilities(user, group).include?(:admin_group_member)
 
-      if !group.last_owner?(user) && (can_manage || (user == target_user))
-        rules << :destroy_group_member
+        if can_manage && user != target_user
+          rules << :update_group_member
+          rules << :destroy_group_member
+        end
+
+        if user == target_user
+          rules << :destroy_group_member
+        end
       end
 
       rules
@@ -323,16 +325,20 @@ class Ability
       rules = []
       target_user = subject.user
       project = subject.project
-      can_manage = project_abilities(user, project).include?(:admin_project_member)
 
-      if can_manage && user != target_user && target_user != project.owner
-        rules << :update_project_member
-        rules << :destroy_project_member
+      unless target_user == project.owner
+        can_manage = project_abilities(user, project).include?(:admin_project_member)
+
+        if can_manage && user != target_user
+          rules << :update_project_member
+          rules << :destroy_project_member
+        end
+
+        if user == target_user
+          rules << :destroy_project_member
+        end
       end
 
-      if user == target_user && target_user != project.owner
-        rules << :destroy_project_member
-      end
       rules
     end
 

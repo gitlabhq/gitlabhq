@@ -42,8 +42,7 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
-  include HasOwners
-
+  
   extend Gitlab::ConfigHelper
   extend Enumerize
 
@@ -117,7 +116,6 @@ class Project < ActiveRecord::Base
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
   has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
-  alias_method :my_members, :project_members
   has_many :users, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects

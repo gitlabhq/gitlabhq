@@ -20,8 +20,7 @@ require 'file_size_validator'
 class Group < Namespace
   include Gitlab::ConfigHelper
   include Referable
-  include HasOwners
-
+  
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
   has_many :users, through: :group_members
@@ -66,6 +65,10 @@ class Group < Namespace
     end
   end
 
+  def owners
+    @owners ||= group_members.owners.includes(:user).map(&:user)
+  end
+
   def add_users(user_ids, access_level, current_user = nil)
     user_ids.each do |user_id|
       Member.add_user(self.group_members, user_id, access_level, current_user)
@@ -90,6 +93,22 @@ class Group < Namespace
 
   def add_master(user, current_user = nil)
     add_user(user, Gitlab::Access::MASTER, current_user)
+  end
+
+  def add_owner(user, current_user = nil)
+    add_user(user, Gitlab::Access::OWNER, current_user)
+  end
+
+  def has_owner?(user)
+    owners.include?(user)
+  end
+
+  def has_master?(user)
+    members.masters.where(user_id: user).any?
+  end
+
+  def last_owner?(user)
+    has_owner?(user) && owners.size == 1
   end
 
   def avatar_type
