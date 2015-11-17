@@ -379,7 +379,7 @@ class NotificationService
     end
   end
 
-  def build_recipients(target, project, current_user, extra_recipients = nil )
+  def build_recipients(target, project, current_user, extra_recipients = nil)
     recipients = target.participants(current_user)
 
     recipients = recipients.concat(extra_recipients).compact.uniq if extra_recipients
