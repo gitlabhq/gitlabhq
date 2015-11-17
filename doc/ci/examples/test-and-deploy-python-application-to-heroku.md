@@ -1,7 +1,7 @@
 ## Test and Deploy a python application
 This example will guide you how to run tests in your Python application and deploy it automatically as Heroku application.
 
-You can checkout the example [source](https://gitlab.com/ayufan/python-getting-started) and check [CI status](https://ci.gitlab.com/projects/4080).
+You can checkout the example [source](https://gitlab.com/ayufan/python-getting-started) and check [CI status](https://gitlab.com/ayufan/python-getting-started/builds?scope=all).
 
 ### Configure project
 This is what the `.gitlab-ci.yml` file looks like for this project:

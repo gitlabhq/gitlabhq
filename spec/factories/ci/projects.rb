@@ -31,14 +31,20 @@ FactoryGirl.define do
   factory :ci_project_without_token, class: Ci::Project do
     default_ref 'master'
 
-    gl_project factory: :empty_project
+    shared_runners_enabled false
 
     factory :ci_project do
       token 'iPWx6WM4lhHNedGfBpPJNP'
     end
 
-    factory :ci_public_project do
-      public true
+    initialize_with do
+      # TODO:
+      # this is required, because builds_enabled is initialized when Project is created
+      # and this create gitlab_ci_project if builds is set to true
+      # here we take created gitlab_ci_project and update it's attributes
+      ci_project = create(:empty_project).ensure_gitlab_ci_project
+      ci_project.update_attributes(attributes)
+      ci_project
     end
   end
 end

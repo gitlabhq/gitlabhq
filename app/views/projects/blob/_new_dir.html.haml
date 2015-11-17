@@ -21,5 +21,5 @@
               = submit_tag "Create directory", class: 'btn btn-primary btn-create'
               = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
-:coffeescript
+:javascript
   disableButtonIfAnyEmptyField($("#dir-create-form"), ".form-control", ".btn-create");

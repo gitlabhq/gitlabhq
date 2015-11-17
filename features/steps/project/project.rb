@@ -124,11 +124,11 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see back to dashboard button' do
-    expect(page).to have_content 'Back to dashboard'
+    expect(page).to have_content 'Go to dashboard'
   end
 
   step 'I should see back to group button' do
-    expect(page).to have_content 'Back to group'
+    expect(page).to have_content 'Go to group'
   end
 
   step 'I click notifications drop down button' do

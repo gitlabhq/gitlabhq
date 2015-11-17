@@ -17,6 +17,9 @@ describe 'Gitlab::PushDataBuilder' do
     it { expect(data[:repository][:git_ssh_url]).to eq(project.ssh_url_to_repo) }
     it { expect(data[:repository][:visibility_level]).to eq(project.visibility_level) }
     it { expect(data[:total_commits_count]).to eq(3) }
+    it { expect(data[:added]).to eq(["gitlab-grack"]) }
+    it { expect(data[:modified]).to eq([".gitmodules", "files/ruby/popen.rb", "files/ruby/regex.rb"]) }
+    it { expect(data[:removed]).to eq([]) }
   end
 
   describe :build do
@@ -35,5 +38,8 @@ describe 'Gitlab::PushDataBuilder' do
     it { expect(data[:ref]).to eq('refs/tags/v1.1.0') }
     it { expect(data[:commits]).to be_empty }
     it { expect(data[:total_commits_count]).to be_zero }
+    it { expect(data[:added]).to eq([]) }
+    it { expect(data[:modified]).to eq([]) }
+    it { expect(data[:removed]).to eq([]) }
   end
 end

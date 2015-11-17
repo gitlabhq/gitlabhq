@@ -1,5 +1,6 @@
 class DashboardController < Dashboard::ApplicationController
   before_action :event_filter, only: :activity
+  before_action :projects, only: [:issues, :merge_requests]
 
   respond_to :html
 
@@ -46,5 +47,9 @@ class DashboardController < Dashboard::ApplicationController
     @events = Event.in_projects(project_ids)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
+  end
+
+  def projects
+    @projects ||= current_user.authorized_projects.sorted_by_activity.non_archived
   end
 end

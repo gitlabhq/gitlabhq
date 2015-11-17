@@ -71,7 +71,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 
   # Filter LDAP users
   #
-  #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
+  #   Format: RFC 4515 https://tools.ietf.org/search/rfc4515
   #   Ex. (employeeType=developer)
   #
   #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
@@ -145,7 +145,7 @@ If multiple LDAP email attributes are present, e.g. `mail: foo@bar.com` and `ema
 ## Using an LDAP filter to limit access to your GitLab server
 
 If you want to limit all GitLab access to a subset of the LDAP users on your LDAP server you can set up an LDAP user filter.
-The filter must comply with [RFC 4515](http://tools.ietf.org/search/rfc4515).
+The filter must comply with [RFC 4515](https://tools.ietf.org/search/rfc4515).
 
 ```ruby
 # For omnibus packages; new LDAP server syntax

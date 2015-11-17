@@ -60,7 +60,8 @@ module Ci
 
     class BuildTime < Chart
       def collect
-        commits = project.commits.joins(:builds).where("#{Ci::Build.table_name}.finished_at is NOT NULL AND #{Ci::Build.table_name}.started_at is NOT NULL").last(30)
+        commits = project.commits.last(30)
+
         commits.each do |commit|
           @labels << commit.short_sha
           @build_times << (commit.duration / 60)

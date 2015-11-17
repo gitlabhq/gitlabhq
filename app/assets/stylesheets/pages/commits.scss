@@ -33,6 +33,8 @@
 }
 
 li.commit {
+  list-style: none;
+
   .commit-row-title {
     font-size: $list-font-size;
     line-height: 20px;
@@ -111,5 +113,12 @@ li.commit {
       float: right;
       @extend .cgray;
     }
+  }
+}
+
+.branch-commit {
+  color: $gl-gray;
+  .commit-id, .commit-row-message {
+    color: $gl-gray;
   }
 }

@@ -19,7 +19,7 @@ describe "Commits" do
       stub_ci_commit_to_return_yaml_file
     end
 
-    describe "GET /:project/commits/:sha" do
+    describe "GET /:project/commits/:sha/ci" do
       before do
         visit ci_status_path(@commit)
       end
@@ -29,10 +29,24 @@ describe "Commits" do
       it { expect(page).to have_content @commit.git_author_name }
     end
 
+    context "Download artifacts" do
+      let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+
+      before do
+        @build.update_attributes(artifacts_file: artifacts_file)
+      end
+
+      it do
+        visit ci_status_path(@commit)
+        click_on "Download artifacts"
+        expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type)
+      end
+    end
+
     describe "Cancel all builds" do
       it "cancels commit" do
         visit ci_status_path(@commit)
-        click_on "Cancel all"
+        click_on "Cancel running"
         expect(page).to have_content "canceled"
       end
     end

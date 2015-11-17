@@ -102,9 +102,10 @@
               %code \(\d+.\d+\%\) covered
             %li
               pytest-cov (Python) -
-              %code \d+\%$
-
-
+              %code \d+\%\s*$
+            %li
+              phpunit --coverage-text --colors=never (PHP) -
+              %code ^\s*Lines:\s*\d+.\d+\%
 
   %fieldset
     %legend Advanced settings

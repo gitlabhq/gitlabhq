@@ -6,7 +6,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I should see back to dashboard button' do
-    expect(page).to have_content 'Back to dashboard'
+    expect(page).to have_content 'Go to dashboard'
   end
 
   step 'gitlab user "Mike"' do
@@ -253,6 +253,28 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see "archived" label' do
     expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
+  end
+
+  step 'I fill milestone name' do
+    fill_in 'milestone_title', with: 'v2.9.0'
+  end
+
+  step 'I click new milestone button' do
+    click_link "New Milestone"
+  end
+
+  step 'I press create mileston button' do
+    click_button "Create Milestone"
+  end
+
+  step 'milestone in each project should be created' do
+    group = Group.find_by(name: 'Owned')
+    expect(page).to have_content "Milestone v2.9.0"
+    expect(group.projects).to be_present
+
+    group.projects.each do |project|
+      expect(page).to have_content project.name
+    end
   end
 
   protected
