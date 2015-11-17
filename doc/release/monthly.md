@@ -54,21 +54,25 @@ template are explained below:
 - [ ] Update GitLab.com with RC1
 - [ ] Create the regression issue in the CE issue tracker:
 
-    > This is a meta issue to index possible regressions in this monthly release
-    > and any patch versions.
-    >
-    > Please do not raise or discuss issues directly in this issue but link to
-    > issues that might warrant a patch release. If there is a Merge Request
-    > that fixes the issue, please link to that as well.
-    >
-    > Please only post one regression issue and/or merge request per comment.
-    > Comments will be updated by the release manager as they are addressed.
+    ```
+    This is a meta issue to index possible regressions in this monthly release
+    and any patch versions.
+
+    Please do not raise or discuss issues directly in this issue but link to
+    issues that might warrant a patch release. If there is a Merge Request
+    that fixes the issue, please link to that as well.
+
+    Please only post one regression issue and/or merge request per comment.
+    Comments will be updated by the release manager as they are addressed.
+    ```
 
 - [ ] Tweet about RC1 release:
 
-    > GitLab x.y.0.rc1 is available: https://packages.gitlab.com/gitlab/unstable
-    > Use at your own risk. Please link regressions issues from
-    > LINK_TO_REGRESSION_ISSUE
+    ```
+    GitLab x.y.0.rc1 is available: https://packages.gitlab.com/gitlab/unstable
+    Use at your own risk. Please link regressions issues from
+    LINK_TO_REGRESSION_ISSUE
+    ```
 
 ### Xth: (3 working days before the 22nd)
 
