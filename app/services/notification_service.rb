@@ -113,7 +113,7 @@ class NotificationService
     end
 
     # Add all users participating in the thread (author, assignee, comment authors)
-    participants = 
+    participants =
       if target.respond_to?(:participants)
         target.participants(note.author)
       else
@@ -276,35 +276,25 @@ class NotificationService
   # Remove users with disabled notifications from array
   # Also remove duplications and nil recipients
   def reject_muted_users(users, project = nil)
-    users = users.to_a.compact.uniq
-    users = users.reject(&:blocked?)
-
-    users.reject do |user|
-      next user.notification.disabled? unless project
-
-      member = project.project_members.find_by(user_id: user.id)
-
-      if !member && project.group
-        member = project.group.group_members.find_by(user_id: user.id)
-      end
-
-      # reject users who globally disabled notification and has no membership
-      next user.notification.disabled? unless member
-
-      # reject users who disabled notification in project
-      next true if member.notification.disabled?
-
-      # reject users who have N_GLOBAL in project and disabled in global settings
-      member.notification.global? && user.notification.disabled?
-    end
+    reject_users(users, :disabled?, project)
   end
 
   # Remove users with notification level 'Mentioned'
   def reject_mention_users(users, project = nil)
+    reject_users(users, :mention?, project)
+  end
+
+  # Reject users which method_name from notification object returns true.
+  #
+  # Example:
+  #   reject_users(users, :watch?, project)
+  #
+  def reject_users(users, method_name, project = nil)
     users = users.to_a.compact.uniq
+    users = users.reject(&:blocked?)
 
     users.reject do |user|
-      next user.notification.mention? unless project
+      next user.notification.send(method_name) unless project
 
       member = project.project_members.find_by(user_id: user.id)
 
@@ -313,19 +303,19 @@ class NotificationService
       end
 
       # reject users who globally set mention notification and has no membership
-      next user.notification.mention? unless member
+      next user.notification.send(method_name) unless member
 
       # reject users who set mention notification in project
-      next true if member.notification.mention?
+      next true if member.notification.send(method_name)
 
       # reject users who have N_MENTION in project and disabled in global settings
-      member.notification.global? && user.notification.mention?
+      member.notification.global? && user.notification.send(method_name)
     end
   end
 
   def reject_unsubscribed_users(recipients, target)
     return recipients unless target.respond_to? :subscriptions
-    
+
     recipients.reject do |user|
       subscription = target.subscriptions.find_by_user_id(user.id)
       subscription && !subscription.subscribed
@@ -343,7 +333,7 @@ class NotificationService
       recipients
     end
   end
-  
+
   def new_resource_email(target, project, method)
     recipients = build_recipients(target, project, target.author)
 

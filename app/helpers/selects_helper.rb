@@ -35,8 +35,20 @@ module SelectsHelper
   end
 
   def groups_select_tag(id, opts = {})
-    css_class = "ajax-groups-select "
-    css_class << "multiselect " if opts[:multiple]
+    opts[:class] ||= ''
+    opts[:class] << ' ajax-groups-select'
+    select2_tag(id, opts)
+  end
+
+  def namespace_select_tag(id, opts = {})
+    opts[:class] ||= ''
+    opts[:class] << ' ajax-namespace-select'
+    select2_tag(id, opts)
+  end
+
+  def select2_tag(id, opts = {})
+    css_class = ''
+    css_class << 'multiselect ' if opts[:multiple]
     css_class << (opts[:class] || '')
     value = opts[:selected] || ''
 
