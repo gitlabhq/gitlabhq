@@ -17,7 +17,7 @@ module Projects
       new_project = CreateService.new(current_user, new_params).execute
 
       if new_project.persisted?
-        if @project.gitlab_ci?
+        if @project.builds_enabled?
           new_project.enable_ci
 
           settings = @project.gitlab_ci_project.attributes.select do |attr_name, value|

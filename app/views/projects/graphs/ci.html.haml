@@ -1,7 +1,16 @@
 - page_title "Continuous Integration", "Graphs"
 = render "header_title"
 = render 'head'
+.gray-content-block.append-bottom-default
+  .oneline
+    A collection of graphs for Continuous Integration
+
 #charts.ci-charts
+  .row
+    .col-md-6
+      = render 'projects/graphs/ci/overall'
+    .col-md-6
+      = render 'projects/graphs/ci/build_times'
+
+  %hr
   = render 'projects/graphs/ci/builds'
-  = render 'projects/graphs/ci/build_times'
-= render 'projects/graphs/ci/overall'

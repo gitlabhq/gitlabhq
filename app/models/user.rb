@@ -54,6 +54,7 @@
 #  public_email               :string(255)      default(""), not null
 #  dashboard                  :integer          default(0)
 #  project_view               :integer          default(0)
+#  consumed_timestep          :integer
 #  layout                     :integer          default(0)
 #
 
@@ -401,6 +402,15 @@ class User < ActiveRecord::Base
       project_ids = personal_projects.pluck(:id)
       project_ids.push(*groups_projects.pluck(:id))
       project_ids.push(*projects.pluck(:id).uniq)
+    end
+  end
+
+  def master_or_owner_projects_id
+    @master_or_owner_projects_id ||= begin
+      scope = { access_level: [ Gitlab::Access::MASTER, Gitlab::Access::OWNER ] }
+      project_ids = personal_projects.pluck(:id)
+      project_ids.push(*groups_projects.where(members: scope).pluck(:id))
+      project_ids.push(*projects.where(members: scope).pluck(:id).uniq)
     end
   end
 
@@ -764,14 +774,10 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_projects
-    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects_id)
-  end
-
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject.joins(:project).
-        where(ci_projects: { gitlab_id: authorized_projects_id }).select(:runner_id)
+        where(ci_projects: { gitlab_id: master_or_owner_projects_id }).select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end
   end

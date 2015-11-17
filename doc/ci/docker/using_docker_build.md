@@ -35,7 +35,7 @@ GitLab Runner then executes build scripts as `gitlab-runner` user.
 
     ```bash
     $ sudo gitlab-runner register -n \
-      --url http://gitlab.com/ci \
+      --url https://gitlab.com/ci \
       --token RUNNER_TOKEN \
       --executor shell
       --description "My Runner"
@@ -84,7 +84,7 @@ In order to do that follow the steps:
 
     ```bash
     $ sudo gitlab-runner register -n \
-      --url http://gitlab.com/ci \
+      --url https://gitlab.com/ci \
       --token RUNNER_TOKEN \
       --executor docker \
       --description "My Docker Runner" \

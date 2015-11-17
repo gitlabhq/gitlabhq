@@ -2,7 +2,7 @@
 
 GitLab by default supports [Gravatar](https://gravatar.com) avatar service.
 Libravatar is a service which delivers your avatar (profile picture) to other websites and their API is
-[heavily based on gravatar](http://wiki.libravatar.org/api/).
+[heavily based on gravatar](https://wiki.libravatar.org/api/).
 
 This means that it is not complicated to switch to Libravatar avatar service or even self hosted Libravatar server.
 
@@ -31,7 +31,7 @@ the configuration options as follows:
 
 ## Self-hosted
 
-If you are [running your own libravatar service](http://wiki.libravatar.org/running_your_own/) the URL will be different in the configuration
+If you are [running your own libravatar service](https://wiki.libravatar.org/running_your_own/) the URL will be different in the configuration
 but the important part is to provide the same placeholders so GitLab can parse the URL correctly.
 
 For example, you host a service on `http://libravatar.example.com` the `plain_url` you need to supply in `gitlab.yml` is
@@ -63,7 +63,7 @@ Run `sudo gitlab-ctl reconfigure` for changes to take effect.
 
 ## Default URL for missing images
 
-[Libravatar supports different sets](http://wiki.libravatar.org/api/) of `missing images` for emails not found on the Libravatar service.
+[Libravatar supports different sets](https://wiki.libravatar.org/api/) of `missing images` for emails not found on the Libravatar service.
 
 In order to use a different set other than `identicon`, replace `&d=identicon` portion of the URL with another supported set.
 For example, you can use `retro` set in which case the URL would look like: `plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=retro"`
