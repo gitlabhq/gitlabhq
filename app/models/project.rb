@@ -76,6 +76,8 @@ class Project < ActiveRecord::Base
   has_one :git_hook, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
+  belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
+
   # Project services
   has_many :services
   has_one :gitlab_ci_service, dependent: :destroy
@@ -162,6 +164,7 @@ class Project < ActiveRecord::Base
     format: { with: /\A#{URI.regexp(%w(ssh git http https))}\z/, message: 'should be a valid url' },
     if: :external_import?
   validates :import_url, presence: true, if: :mirror?
+  validates :mirror_user, presence: true, if: :mirror?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,

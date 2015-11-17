@@ -48,6 +48,6 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def import_params
-    params.require(:project).permit(:import_url, :mirror)
+    params.require(:project).permit(:import_url, :mirror, :mirror_user_id)
   end
 end

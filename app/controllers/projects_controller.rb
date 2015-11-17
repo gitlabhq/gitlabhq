@@ -237,6 +237,7 @@ class ProjectsController < ApplicationController
       :merge_requests_rebase_enabled,
       :merge_requests_template,
       :mirror,
+      :mirror_user_id,
       :reset_approvals_on_push
     )
   end

@@ -48,9 +48,9 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.boolean  "twitter_sharing_enabled",      default: true
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
-    t.boolean  "version_check_enabled",        default: true
     t.integer  "max_attachment_size",          default: 10,    null: false
     t.integer  "default_project_visibility"
+    t.boolean  "version_check_enabled",        default: true
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
     t.boolean  "user_oauth_applications",      default: true
@@ -725,10 +725,11 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.boolean  "reset_approvals_on_push",          default: true
     t.boolean  "merge_requests_ff_only_enabled",   default: false
     t.text     "issues_template"
+    t.text     "import_error"
     t.boolean  "mirror",                           default: false,    null: false
     t.datetime "mirror_last_update_at"
     t.datetime "mirror_last_successful_update_at"
-    t.text     "import_error"
+    t.integer  "mirror_user_id"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree

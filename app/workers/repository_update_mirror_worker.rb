@@ -8,8 +8,7 @@ class RepositoryUpdateMirrorWorker
 
   def perform(project_id)
     @project = Project.find(project_id)
-    # TODO: Use actual user
-    @current_user = User.last
+    @current_user = @project.mirror_user || @project.creator
 
     result = Projects::UpdateMirrorService.new(@project, @current_user).execute
     if result[:status] == :error

@@ -55,5 +55,16 @@
           %li
             The update action will time out after 10 minutes. For big repositories, use a clone/push combination.
 
+  .form-group
+    = f.label :mirror_user_id, class: 'control-label' do
+      Mirror user
+    .col-sm-10
+      = users_select_tag("project[mirror_user_id]", class: 'input-large', selected: @project.mirror_user_id || current_user.id,
+        first_user: true, current_user: true, push_code_to_protected_branches: true)
+      .help-block
+        This user will be the author of all events in the activity feed that are the result of an update,
+        like new branches being created or new commits being pushed to existing branches.
+        They need to have at least master access to this project.
+
   .form-actions
     = f.submit "Save Changes", class: "btn btn-create"
