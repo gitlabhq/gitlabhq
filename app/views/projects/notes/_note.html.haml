@@ -7,7 +7,7 @@
       .note-header
         - if note_editable?(note)
           .note-actions
-            = link_to edit_namespace_project_note_path(note.project.namespace, note.project, note), title: 'Edit comment', remote: true, class: 'js-note-edit' do
+            = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
               = icon('pencil-square-o')
 
             = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'js-note-delete danger' do
@@ -59,6 +59,9 @@
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
+        - unless note.system?
+          -# System notes can't be edited
+          = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url
         .note-attachment
