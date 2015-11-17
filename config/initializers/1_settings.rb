@@ -171,6 +171,7 @@ Settings.gitlab.default_projects_features['issues']         = true if Settings.g
 Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']           = true if Settings.gitlab.default_projects_features['wiki'].nil?
 Settings.gitlab.default_projects_features['snippets']       = false if Settings.gitlab.default_projects_features['snippets'].nil?
+Settings.gitlab.default_projects_features['builds']         = true if Settings.gitlab.default_projects_features['builds'].nil?
 Settings.gitlab.default_projects_features['visibility_level']    = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive') if Settings.gitlab['repository_downloads_path'].nil?
 Settings.gitlab['restricted_signup_domains'] ||= []
@@ -186,6 +187,7 @@ Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_br
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
 Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+Settings.gitlab_ci['max_artifacts_size']    ||= 100 # in megabytes
 
 #
 # Reply by email
@@ -196,6 +198,13 @@ Settings.incoming_email['port']       = 143 if Settings.incoming_email['port'].n
 Settings.incoming_email['ssl']        = false if Settings.incoming_email['ssl'].nil?
 Settings.incoming_email['start_tls']  = false if Settings.incoming_email['start_tls'].nil?
 Settings.incoming_email['mailbox']    = "inbox" if Settings.incoming_email['mailbox'].nil?
+
+#
+# Git LFS
+#
+Settings['lfs'] ||= Settingslogic.new({})
+Settings.lfs['enabled']      = false if Settings.lfs['enabled'].nil?
+Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"), Rails.root)
 
 #
 # Gravatar

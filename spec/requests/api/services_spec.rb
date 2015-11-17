@@ -46,6 +46,7 @@ describe API::API, api: true  do
         delete api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response.status).to eq(200)
+        project.send(service_method).reload
         expect(project.send(service_method).activated?).to be_falsey
       end
     end

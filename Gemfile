@@ -54,7 +54,7 @@ gem 'gollum-lib', '~> 4.0.2'
 gem "github-linguist", "~> 4.7.0", require: "linguist"
 
 # API
-gem 'grape',        '~> 0.6.1'
+gem 'grape',        '~> 0.13.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -109,7 +109,7 @@ group :unicorn do
 end
 
 # State machine
-gem "state_machine", '~> 1.2.0'
+gem "state_machines-activerecord", '~> 0.3.0'
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -259,6 +259,8 @@ group :development, :test do
   gem 'rubocop',  '~> 0.28.0',  require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
+  gem 'flog', require: false
+  gem 'flay', require: false
 
   gem 'benchmark-ips', require: false
 end

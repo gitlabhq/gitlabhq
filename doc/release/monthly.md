@@ -37,9 +37,9 @@ template are explained below:
 
 ### Xth: (6 working days before the 22nd)
 
-- [ ] Merge CE `master` into EE `master` via merge request (#LINK)
 - [ ] Determine QA person and notify this person
 - [ ] Check the tasks in [how to rc1 guide](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/release/howto_rc1.md) and delegate tasks if necessary
+- [ ] Merge CE `master` into EE `master` via merge request (#LINK)
 - [ ] Create CE and EE RC1 versions (#LINK)
 - [ ] Build RC1 packages
 

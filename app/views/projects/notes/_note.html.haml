@@ -2,7 +2,7 @@
   .timeline-entry-inner
     .timeline-icon
       %a{href: user_path(note.author)}
-        %img.avatar.s40{src: avatar_icon(note.author), alt: ''}
+        = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
         - if note_editable?(note)

@@ -10,7 +10,7 @@ By submitting code as an individual you agree to the [individual contributor lic
 
 ## Security vulnerability disclosure
 
-Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](http://about.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](https://about.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## Closing policy for issues and merge requests
 
@@ -35,7 +35,7 @@ The [GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab
 
 Do not use the issue tracker for feature requests. We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose. Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
 
-Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
+Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](https://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
 
 ### Issue tracker guidelines
 
@@ -72,7 +72,7 @@ If you can, please submit a merge request with the fix or improvements including
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)
 1. If you are changing the README, some documentation or other things which have no effect on the tests, add `[ci skip]` somewhere in the commit message
-1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
+1. If you have multiple commits please combine them into one commit by [squashing them](https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a merge request (MR) to the master branch
 1. The MR title should describe the change you want to make
@@ -181,4 +181,4 @@ This code of conduct applies both within project spaces and in public spaces whe
 
 Instances of abusive, harassing, or otherwise unacceptable behavior can be reported by emailing contact@gitlab.com
 
-This Code of Conduct is adapted from the [Contributor Covenant](http:contributor-covenant.org), version 1.1.0, available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/)
+This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org), version 1.1.0, available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/)
