@@ -1,11 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.1.0
-  - Fix: LDAP group links API is not working as expected.
+v 8.3.0 (unreleased)
 
-v 8.0.1
-v 8.1.0 (unreleased)
-v 8.2.0 (unreleased)
+v 8.2.0
   - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
   - Fix Drone CI service template not saving properly (Stan Hu)
   - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
@@ -48,6 +45,8 @@ v 8.2.0 (unreleased)
   - Ability to add release notes (markdown text and attachments) to git tags (aka Releases)
   - Relative links from a repositories README.md now link to the default branch
   - Fix trailing whitespace issue in merge request/issue title
+  - Fix bug when milestone/label filter was empty for dashboard issues page
+  - Add ability to create milestone in group projects from single form
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
@@ -261,44 +260,6 @@ v 8.0.0
   - Redirect from incorrectly cased group or project path to correct one (Francesco Levorato)
   - Removed API calls from CE to CI
 
-v 7.14.0
-  - Allow displaying of archived projects in the admin interface (Artem Sidorenko)
-  - Allow configuration of import sources for new projects (Artem Sidorenko)
-  - Search for comments should be case insensetive
-  - Create cross-reference for closing references on commits pushed to non-default branches (Maël Valais)
-  - Ability to search milestones
-  - Gracefully handle SMTP user input errors (e.g. incorrect email addresses) to prevent Sidekiq retries (Stan Hu)
-  - Move dashboard activity to separate page (for your projects and starred projects)
-  - Improve performance of git blame
-  - Limit content width to 1200px for most of pages to improve readability on big screens
-  - Fix 500 error when submit project snippet without body
-  - Improve search page usability
-  - Bring more UI consistency in way how projects, snippets and groups lists are rendered
-  - Make all profiles and group public
-  - Fixed login failure when extern_uid changes (Joel Koglin)
-  - Don't notify users without access to the project when they are (accidentally) mentioned in a note.
-  - Retrieving oauth token with LDAP credentials
-  - Load Application settings from running database unless env var USE_DB=false
-  - Added Drone CI integration (Kirill Zaitsev)
-  - Allow developers to retry builds
-  - Hide advanced project options for non-admin users
-  - Fail builds if no .gitlab-ci.yml is found
-  - Refactored service API and added automatically service docs generator (Kirill Zaitsev)
-  - Added web_url key project hook_attrs (Kirill Zaitsev)
-  - Add ability to get user information by ID of an SSH key via the API
-  - Fix bug which IE cannot show image at markdown when the image is raw file of gitlab
-  - Add support for Crowd
-  - Global Labels that are available to all projects
-  - Fix highlighting of deleted lines in diffs.
-  - Project notification level can be set on the project page itself
-  - Added service API endpoint to retrieve service parameters (Petheő Bence)
-  - Add FogBugz project import (Jared Szechy)
-  - Sort users autocomplete lists by user (Allister Antosik)
-  - Webhook for issue now contains repository field (Jungkook Park)
-  - Add ability to add custom text to the help page (Jeroen van Baarsen)
-  - Add pg_schema to backup config
-  - Removed API calls from CE to CI
-
 v 7.14.3
   - No changes
 
@@ -339,7 +300,6 @@ v 7.14.0
   - Fix URL used for refreshing notes if relative_url is present (Bartłomiej Święcki)
   - Fix commit data retrieval when branch name has single quotes (Stan Hu)
   - Check that project was actually created rather than just validated in import:repos task (Stan Hu)
-  - Fix inability to save "Reset approvals on push" setting (Sandish Chen)
   - Fix full screen mode for snippet comments (Daniel Gerhardt)
   - Fix 404 error in files view after deleting the last file in a repository (Stan Hu)
   - Fix the "Reload with full diff" URL button (Stan Hu)
@@ -354,11 +314,6 @@ v 7.14.0
   - Add support for destroying project milestones (Stan Hu)
   - Allow custom backup archive permissions
   - Add project star and fork count, group avatar URL and user/group web URL attributes to API
-  - Fix bug causing Bitbucket importer to crash when OAuth application had been removed.
-  - Add fetch command to the MR page.
-  - Fix bug causing "Remove source-branch" option not to work for merge requests from the same project.
-  - Fix approvals for forks. Now you can change approvals settings on the new merge request form
-  - Suggested approvers are shown on the new merge request form
   - Show who last edited a comment if it wasn't the original author
   - Send notification to all participants when MR is merged.
   - Add ability to manage user email addresses via the API.
@@ -696,9 +651,6 @@ v 7.10.0
   - Restrict permissions on backup files
   - Improve oauth accounts UI in profile page
   - Add ability to unlink connected accounts
-  - Add changes to Deploy Keys to the Audit Logs
-
-v 7.9.0 (unreleased)
   - Replace commits calendar with faster contribution calendar that includes issues and merge requests
   - Add inifinite scroll to user page activity
   - Don't include system notes in issue/MR comment count.
@@ -793,7 +745,6 @@ v 7.9.0
   - Fix hidden diff comments in merge request discussion view
   - Allow user confirmation to be skipped for new users via API
   - Add a service to send updates to an Irker gateway (Romain Coltel)
-  - Ignore case of LDAP user DN when checking group membership.
   - Add brakeman (security scanner for Ruby on Rails)
   - Slack username and channel options
   - Add grouped milestones from all projects to dashboard.
@@ -1268,9 +1219,6 @@ v 6.9.0
   - Block SSH access for 'disabled' Active Directory users
   - Labels for merge requests (Drew Blessing)
   - Threaded emails by setting a Message-ID (Philip Blatter)
-
-v 6.8.1
-  - Bump required gitlab-shell version to 1.9.3
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
