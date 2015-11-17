@@ -22,7 +22,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :abilities, :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?
-  helper_method :new_mr_from_push_event, :new_mr_path_for_fork_from_push_event, :new_mr_path_from_push_event
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -341,35 +340,6 @@ class ApplicationController < ActionController::Base
 
   def git_import_enabled?
     current_application_settings.import_sources.include?('git')
-  end
-
-  # new merge requests routing helpers
-  def new_mr_path_from_push_event(event, target_branch=nil)
-    target_project = event.project.forked_from_project || event.project
-    new_namespace_project_merge_request_path(
-      event.project.namespace,
-      event.project,
-      new_mr_from_push_event(event, target_project, target_branch)
-    )
-  end
-
-  def new_mr_path_for_fork_from_push_event(event, target_branch=nil)
-    new_namespace_project_merge_request_path(
-      event.project.namespace,
-      event.project,
-      new_mr_from_push_event(event, event.project.forked_from_project, target_branch)
-    )
-  end
-
-  def new_mr_from_push_event(event, target_project, target_branch)
-    {
-      merge_request: {
-        source_project_id: event.project.id,
-        target_project_id: target_project.id,
-        source_branch: event.branch_name,
-        target_branch: target_branch || target_project.repository.root_ref
-      }
-    }
   end
 
   def redirect_to_home_page_url?

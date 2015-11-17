@@ -1,6 +1,7 @@
 # Controller for viewing a file's blame
 class Projects::BlobController < Projects::ApplicationController
   include ExtractsPath
+  include CreatesMergeRequestForCommit
   include ActionView::Helpers::SanitizeHelper
 
   # Raised when given an invalid file path
@@ -27,15 +28,8 @@ class Projects::BlobController < Projects::ApplicationController
     if result[:status] == :success
       flash[:notice] = "The changes have been successfully committed"
       respond_to do |format|
-        format.html do
-          url = if params[:create_merge_request]
-            new_mr_path_from_push_event(current_user.recent_push(@project.id), @ref)
-          else
-            namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path))
-          end
-          redirect_to url
-        end
-        format.json { render json: { message: "success", filePath: namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path)) } }
+        format.html { redirect_to after_create_path }
+        format.json { render json: { message: "success", filePath: after_create_path } }
       end
     else
       flash[:alert] = result[:message]
@@ -59,14 +53,7 @@ class Projects::BlobController < Projects::ApplicationController
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
       respond_to do |format|
-        format.html do
-          url = if params[:create_merge_request]
-            new_mr_path_from_push_event(current_user.recent_push(@project.id), @ref)
-          else
-            after_edit_path
-          end
-          redirect_to url
-        end
+        format.html { redirect_to after_edit_path }
         format.json { render json: { message: "success", filePath: after_edit_path } }
       end
     else
@@ -91,7 +78,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
-      redirect_to namespace_project_tree_path(@project.namespace, @project, @target_branch)
+      redirect_to after_destroy_path
     else
       flash[:alert] = result[:message]
       render :show
@@ -145,15 +132,33 @@ class Projects::BlobController < Projects::ApplicationController
     render_404
   end
 
+  def after_create_path
+    @after_create_path ||=
+      if create_merge_request?
+        new_merge_request_path
+      else
+        namespace_project_blob_path(@project.namespace, @project, File.join(@new_branch, @file_path))
+      end
+  end
+
   def after_edit_path
     @after_edit_path ||=
-      if from_merge_request
+      if create_merge_request?
+        new_merge_request_path
+      elsif from_merge_request && @new_branch == @ref
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
           "#file-path-#{hexdigest(@path)}"
-      elsif @target_branch.present?
-        namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @path))
       else
-        namespace_project_blob_path(@project.namespace, @project, @id)
+        namespace_project_blob_path(@project.namespace, @project, File.join(@new_branch, @path))
+      end
+  end
+
+  def after_destroy_path
+    @after_destroy_path ||=
+      if create_merge_request?
+        new_merge_request_path
+      else
+        namespace_project_tree_path(@project.namespace, @project, @new_branch)
       end
   end
 
@@ -168,7 +173,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def editor_variables
     @current_branch = @ref
-    @target_branch = params[:new_branch].present? ? sanitized_new_branch_name : @ref
+    @new_branch = params[:new_branch].present? ? sanitized_new_branch_name : @ref
 
     @file_path =
       if action_name.to_s == 'create'
@@ -188,7 +193,7 @@ class Projects::BlobController < Projects::ApplicationController
     @commit_params = {
       file_path: @file_path,
       current_branch: @current_branch,
-      target_branch: @target_branch,
+      target_branch: @new_branch,
       commit_message: params[:commit_message],
       file_content: params[:content],
       file_content_encoding: params[:encoding]
