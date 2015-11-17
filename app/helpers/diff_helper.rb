@@ -1,4 +1,8 @@
 module DiffHelper
+  def diff_view
+    params[:view] == 'parallel' ? 'parallel' : 'inline'
+  end
+
   def allowed_diff_size
     if diff_hard_limit_enabled?
       Commit::DIFF_HARD_LIMIT_FILES
@@ -137,7 +141,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "inline-diff-btn", class: (params[:view] != 'parallel' ? 'btn active' : 'btn') do
+    link_to url_for(params_copy), id: "inline-diff-btn", class: (diff_view == 'inline' ? 'btn active' : 'btn') do
       'Inline'
     end
   end
@@ -148,7 +152,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "parallel-diff-btn", class: (params[:view] == 'parallel' ? 'btn active' : 'btn') do
+    link_to url_for(params_copy), id: "parallel-diff-btn", class: (diff_view == 'parallel' ? 'btn active' : 'btn') do
       'Side-by-side'
     end
   end
