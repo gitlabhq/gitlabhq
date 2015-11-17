@@ -113,7 +113,7 @@ class NotificationService
     end
 
     # Add all users participating in the thread (author, assignee, comment authors)
-    participants = 
+    participants =
       if target.respond_to?(:participants)
         target.participants(note.author)
       else
@@ -325,7 +325,7 @@ class NotificationService
 
   def reject_unsubscribed_users(recipients, target)
     return recipients unless target.respond_to? :subscriptions
-    
+
     recipients.reject do |user|
       subscription = target.subscriptions.find_by_user_id(user.id)
       subscription && !subscription.subscribed
@@ -343,7 +343,7 @@ class NotificationService
       recipients
     end
   end
-  
+
   def new_resource_email(target, project, method)
     recipients = build_recipients(target, project, target.author)
 
@@ -361,12 +361,13 @@ class NotificationService
   end
 
   def reassign_resource_email(target, project, current_user, method)
-    assignee_id_was = previous_record(target, "assignee_id")
-    previous_assignee = User.find(assignee_id_was)
+    previous_assignee_id = previous_record(target, "assignee_id")
+    previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
+
     recipients = build_recipients(target, project, current_user, [previous_assignee])
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, assignee_id_was, current_user.id)
+      mailer.send(method, recipient.id, target.id, previous_assignee_id, current_user.id)
     end
   end
 
@@ -378,9 +379,10 @@ class NotificationService
     end
   end
 
-  def build_recipients(target, project, current_user, previous_records = nil )
+  def build_recipients(target, project, current_user, extra_recipients = nil )
     recipients = target.participants(current_user)
-    recipients.concat(previous_records).compact.uniq if previous_records
+
+    recipients = recipients.concat(extra_recipients).compact.uniq if extra_recipients
 
     recipients = add_project_watchers(recipients, project)
     recipients = reject_mention_users(recipients, project)
