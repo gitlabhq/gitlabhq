@@ -6,7 +6,7 @@
       .counter
         = vote.last.count
 
-  %button.dropdown
+  .dropdown.awards-controls
     %a#add-award{"data-toggle" => "dropdown", "data-target" => "#", "href" => "#"} +
     %ul.dropdown-menu.awards-menu
       - ["100", "blush", "heart", "smile", "rage", "beers", "thumbsup", "disappointed", "ok_hand", "helicopter"].each do |emoji|

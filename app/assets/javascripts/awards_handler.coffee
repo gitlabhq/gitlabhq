@@ -39,7 +39,7 @@ class @AwardsHandler
     nodes.push("<div class='counter'>1")
     nodes.push("</div></div>")
 
-    $(".awards").append(nodes.join("\n"))
+    $(".awards-controls").before(nodes.join("\n"))
 
   getImage: (emoji) ->
     $("li." + emoji).html()
