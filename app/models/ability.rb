@@ -1,7 +1,7 @@
 class Ability
   class << self
     def allowed(user, subject)
-      return not_auth_abilities(user, subject) if user.nil?
+      return anonymous_abilities(user, subject) if user.nil?
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
@@ -19,22 +19,21 @@ class Ability
       end.concat(global_abilities(user))
     end
 
-    # List of possible abilities
-    # for non-authenticated user
-    def not_auth_abilities(user, subject)
+    # List of possible abilities for anonymous user
+    def anonymous_abilities(user, subject)
       case true
       when subject.is_a?(PersonalSnippet)
-        not_auth_personal_snippet_abilities(subject)
+        anonymous_personal_snippet_abilities(subject)
       when subject.is_a?(Project) || subject.respond_to?(:project)
-        not_auth_project_abilities(subject)
+        anonymous_project_abilities(subject)
       when subject.is_a?(Group) || subject.respond_to?(:group)
-        not_auth_group_abilities(subject)
+        anonymous_group_abilities(subject)
       else
         []
       end
     end
 
-    def not_auth_project_abilities(subject)
+    def anonymous_project_abilities(subject)
       project = if subject.is_a?(Project)
                   subject
                 else
@@ -62,7 +61,7 @@ class Ability
       end
     end
 
-    def not_auth_group_abilities(subject)
+    def anonymous_group_abilities(subject)
       group = if subject.is_a?(Group)
                 subject
               else
@@ -76,7 +75,7 @@ class Ability
       end
     end
 
-    def not_auth_personal_snippet_abilities(snippet)
+    def anonymous_personal_snippet_abilities(snippet)
       if snippet.public?
         [:read_personal_snippet]
       else
