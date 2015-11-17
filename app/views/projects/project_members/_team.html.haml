@@ -1,5 +1,3 @@
-- can_admin_project = can?(current_user, :admin_project, @project)
-
 .panel.panel-default.prepend-top-20
   .panel-heading
     %strong #{@project.name}
@@ -8,4 +6,4 @@
       (#{members.count})
   %ul.well-list
     - members.each do |project_member|
-      = render 'project_member', member: project_member, current_user_can_admin_project: can_admin_project
+      = render 'project_member', member: project_member
