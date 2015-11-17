@@ -46,7 +46,7 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text, context = {})
-    process_markdown(text, options)
+    process_markdown(text, context)
   end
 
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
