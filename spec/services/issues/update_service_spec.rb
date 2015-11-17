@@ -36,7 +36,7 @@ describe Issues::UpdateService do
       it { expect(@issue.labels.count).to eq(1) }
       it { expect(@issue.labels.first.title).to eq('Bug') }
 
-      it 'should send email to user2 about assign of new issue and email to user about issue unassignment' do
+      it 'should send email to user2 about assign of new issue and email to user3 about issue unassignment' do
         deliveries = ActionMailer::Base.deliveries
         email = deliveries.last
         recipients = deliveries.last(2).map(&:to).flatten
