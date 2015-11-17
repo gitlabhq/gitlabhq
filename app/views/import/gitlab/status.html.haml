@@ -9,38 +9,39 @@
 %p
   = button_tag 'Import all projects', class: "btn btn-success js-import-all"
 
-%table.table.import-jobs
-  %thead
-    %tr
-      %th From GitLab.com
-      %th To this GitLab instance
-      %th Status
-  %tbody
-    - @already_added_projects.each do |project|
-      %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
-        %td
-          = link_to project.import_source, "https://gitlab.com/#{project.import_source}", target: "_blank"
-        %td
-          %strong= link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
-        %td.job-status
-          - if project.import_status == 'finished'
-            %span
-              %i.fa.fa-check
-              done
-          - elsif project.import_status == 'started'
-            %i.fa.fa-spinner.fa-spin
-            started
-          - else
-            = project.human_import_status_name
+.table-holder
+  %table.table.import-jobs
+    %thead
+      %tr
+        %th From GitLab.com
+        %th To this GitLab instance
+        %th Status
+    %tbody
+      - @already_added_projects.each do |project|
+        %tr{id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
+          %td
+            = link_to project.import_source, "https://gitlab.com/#{project.import_source}", target: "_blank"
+          %td
+            %strong= link_to project.path_with_namespace, [project.namespace.becomes(Namespace), project]
+          %td.job-status
+            - if project.import_status == 'finished'
+              %span
+                %i.fa.fa-check
+                done
+            - elsif project.import_status == 'started'
+              %i.fa.fa-spinner.fa-spin
+              started
+            - else
+              = project.human_import_status_name
 
-    - @repos.each do |repo|
-      %tr{id: "repo_#{repo["id"]}"}
-        %td
-          = link_to repo["path_with_namespace"], "https://gitlab.com/#{repo["path_with_namespace"]}", target: "_blank"
-        %td.import-target
-          = repo["path_with_namespace"]
-        %td.import-actions.job-status
-          = button_tag "Import", class: "btn js-add-to-import"
+      - @repos.each do |repo|
+        %tr{id: "repo_#{repo["id"]}"}
+          %td
+            = link_to repo["path_with_namespace"], "https://gitlab.com/#{repo["path_with_namespace"]}", target: "_blank"
+          %td.import-target
+            = repo["path_with_namespace"]
+          %td.import-actions.job-status
+            = button_tag "Import", class: "btn js-add-to-import"
 
-:coffeescript
-  new ImporterStatus("#{jobs_import_gitlab_path}", "#{import_gitlab_path}")
+:javascript
+  new ImporterStatus("#{jobs_import_gitlab_path}", "#{import_gitlab_path}");

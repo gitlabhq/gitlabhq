@@ -1,11 +1,14 @@
 class ProjectsController < ApplicationController
-  prepend_before_filter :render_go_import, only: [:show]
+  include ExtractsPath
+
+  prepend_before_action :render_go_import, only: [:show]
   skip_before_action :authenticate_user!, only: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
+  before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
+  before_action :authorize_admin_project!, only: [:edit, :update]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -56,11 +59,21 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
+    return access_denied! unless can?(current_user, :change_namespace, @project)
+
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(project, current_user).execute(namespace)
 
     if @project.errors[:new_namespace].present?
       flash[:alert] = @project.errors[:new_namespace].first
+    end
+  end
+
+  def remove_fork
+    return access_denied! unless can?(current_user, :remove_fork_project, @project)
+
+    if @project.unlink_fork
+      flash[:notice] = 'The fork relationship has been removed.'
     end
   end
 
@@ -87,7 +100,7 @@ class ProjectsController < ApplicationController
             render 'projects/empty'
           else
             if current_user
-              @membership = @project.project_member_by_id(current_user.id)
+              @membership = @project.team.find_member(current_user.id)
             end
 
             render :show
@@ -110,11 +123,7 @@ class ProjectsController < ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).execute
     flash[:alert] = "Project '#{@project.name}' was deleted."
 
-    if request.referer.include?('/admin')
-      redirect_to admin_namespaces_projects_path
-    else
-      redirect_to dashboard_projects_path
-    end
+    redirect_back_or_default(default: dashboard_projects_path, options: {})
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), alert: ex.message
   end
@@ -139,6 +148,7 @@ class ProjectsController < ApplicationController
 
   def archive
     return access_denied! unless can?(current_user, :archive_project, @project)
+
     @project.archive!
 
     respond_to do |format|
@@ -148,6 +158,7 @@ class ProjectsController < ApplicationController
 
   def unarchive
     return access_denied! unless can?(current_user, :archive_project, @project)
+
     @project.unarchive!
 
     respond_to do |format|
@@ -201,7 +212,8 @@ class ProjectsController < ApplicationController
     params.require(:project).permit(
       :name, :path, :description, :issues_tracker, :tag_list,
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
-      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar
+      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
+      :builds_enabled
     )
   end
 
@@ -224,5 +236,15 @@ class ProjectsController < ApplicationController
     @id = @id.gsub(/\.git\Z/, "")
 
     render "go_import", layout: false
+  end
+
+  def repo_exists?
+    project.repository_exists? && !project.empty_repo?
+  end
+
+  # Override get_id from ExtractsPath, which returns the branch and file path
+  # for the blob/tree, which in this case is just the root of the default branch.
+  def get_id
+    project.repository.root_ref
   end
 end

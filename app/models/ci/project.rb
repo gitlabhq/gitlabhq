@@ -1,9 +1,9 @@
 # == Schema Information
 #
-# Table name: projects
+# Table name: ci_projects
 #
 #  id                       :integer          not null, primary key
-#  name                     :string(255)      not null
+#  name                     :string(255)
 #  timeout                  :integer          default(3600), not null
 #  created_at               :datetime
 #  updated_at               :datetime
@@ -66,30 +66,6 @@ module Ci
     class << self
       include Ci::CurrentSettings
 
-      def base_build_script
-        <<-eos
-  git submodule update --init
-  ls -la
-        eos
-      end
-
-      def parse(project)
-        params = {
-          gitlab_id:                project.id,
-          default_ref:              project.default_branch || 'master',
-          email_add_pusher:         current_application_settings.add_pusher,
-          email_only_broken_builds: current_application_settings.all_broken_builds,
-        }
-
-        project = Ci::Project.new(params)
-        project.build_missing_services
-        project
-      end
-
-      def already_added?(project)
-        where(gitlab_id: project.id).any?
-      end
-
       def unassigned(runner)
         joins("LEFT JOIN #{Ci::RunnerProject.table_name} ON #{Ci::RunnerProject.table_name}.project_id = #{Ci::Project.table_name}.id " \
           "AND #{Ci::RunnerProject.table_name}.runner_id = #{runner.id}").
@@ -99,6 +75,7 @@ module Ci
       def ordered_by_last_commit_date
         last_commit_subquery = "(SELECT gl_project_id, MAX(committed_at) committed_at FROM #{Ci::Commit.table_name} GROUP BY gl_project_id)"
         joins("LEFT JOIN #{last_commit_subquery} AS last_commit ON #{Ci::Project.table_name}.gitlab_id = last_commit.gl_project_id").
+          joins(:gl_project).
           order("CASE WHEN last_commit.committed_at IS NULL THEN 1 ELSE 0 END, last_commit.committed_at DESC")
       end
     end

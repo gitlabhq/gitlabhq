@@ -49,15 +49,18 @@ class GitPushService
     elsif push_to_existing_branch?(ref, oldrev)
       # Collect data for this git push
       @push_commits = project.repository.commits_between(oldrev, newrev)
-      project.update_merge_requests(oldrev, newrev, ref, @user)
       process_commit_messages(ref)
     end
+
+    # Update merge requests that may be affected by this push. A new branch
+    # could cause the last commit of a merge request to change.
+    project.update_merge_requests(oldrev, newrev, ref, @user)
 
     @push_data = build_push_data(oldrev, newrev, ref)
 
     # If CI was disabled but .gitlab-ci.yml file was pushed
     # we enable CI automatically
-    if !project.gitlab_ci? && gitlab_ci_yaml?(newrev)
+    if !project.builds_enabled? && gitlab_ci_yaml?(newrev)
       project.enable_ci
     end
 
@@ -76,7 +79,7 @@ class GitPushService
 
     authors = Hash.new do |hash, commit|
       email = commit.author_email
-      return hash[email] if hash.has_key?(email)
+      next hash[email] if hash.has_key?(email)
 
       hash[email] = commit_user(commit)
     end

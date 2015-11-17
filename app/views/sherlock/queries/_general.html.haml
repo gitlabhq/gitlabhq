@@ -1,0 +1,50 @@
+.prepend-top-default
+  .panel.panel-default
+    .panel-heading
+      %strong
+        = t('sherlock.general')
+    %ul.well-list
+      %li
+        %span.light
+          #{t('sherlock.time')}:
+        %strong
+          = @query.duration.round(4)
+          = t('sherlock.milliseconds')
+      %li
+        %span.light
+          #{t('sherlock.origin')}:
+        %strong
+          = @query.last_application_frame.path
+        %small.light
+          = t('sherlock.line')
+          = @query.last_application_frame.line
+
+  .panel.panel-default
+    .panel-heading
+      .pull-right
+        %button.js-clipboard-trigger.btn.btn-xs{title: t('sherlock.copy_to_clipboard'), type: :button}
+          %i.fa.fa-clipboard
+        %pre.hidden
+          = @query.formatted_query
+      %strong
+        = t('sherlock.query')
+    %ul.well-list
+      %li
+        .code.js-syntax-highlight.sherlock-code
+          :preserve
+            #{highlight("#{@query.id}.sql", @query.formatted_query)}
+
+  .panel.panel-default
+    .panel-heading
+      .pull-right
+        %button.js-clipboard-trigger.btn.btn-xs{title: t('sherlock.copy_to_clipboard'), type: :button}
+          %i.fa.fa-clipboard
+        %pre.hidden
+          = @query.explain
+      %strong
+        = t('sherlock.query_plan')
+    %ul.well-list
+      %li
+        .code.js-syntax-highlight.sherlock-code
+          %pre
+            %code= @query.explain

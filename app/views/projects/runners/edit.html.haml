@@ -1,3 +1,5 @@
+- page_title "Edit", "#{@runner.description} ##{@runner.id}", "Runners"
+
 %h4 Runner ##{@runner.id}
 %hr
 = form_for @runner, url: runner_path(@runner), html: { class: 'form-horizontal' } do |f|

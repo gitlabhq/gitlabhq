@@ -1,5 +1,5 @@
 -if @issue.description
-  = markdown(@issue.description, reference_only_path: false)
+  = markdown(@issue.description, pipeline: :email)
 
 - if @issue.assignee_id.present?
   %p

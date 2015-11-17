@@ -25,7 +25,7 @@ module API
     format :json
     content_type :txt, "text/plain"
 
-    helpers APIHelpers
+    helpers Helpers
 
     mount Groups
     mount GroupMembers
@@ -52,5 +52,6 @@ module API
     mount Labels
     mount Settings
     mount Keys
+    mount Tags
   end
 end

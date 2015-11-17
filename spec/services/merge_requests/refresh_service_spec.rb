@@ -62,6 +62,25 @@ describe MergeRequests::RefreshService do
       it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
     end
 
+    context 'manual merge of source branch' do
+      before do
+        # Merge master -> feature branch
+        author = { email: 'test@gitlab.com', time: Time.now, name: "Me" }
+        commit_options = { message: 'Test message', committer: author, author: author }
+        master_commit = @project.repository.commit('master')
+        @project.repository.merge(@user, master_commit.id, 'feature', commit_options)
+        commit = @project.repository.commit('feature')
+        service.new(@project, @user).execute(@oldrev, commit.id, 'refs/heads/feature')
+        reload_mrs
+      end
+
+      it { expect(@merge_request.notes.last.note).to include('changed to merged') }
+      it { expect(@merge_request).to be_merged }
+      it { expect(@merge_request.diffs.length).to be > 0 }
+      it { expect(@fork_merge_request).to be_merged }
+      it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
+    end
+
     context 'push to fork repo source branch' do
       let(:refresh_service) { service.new(@fork_project, @user) }
       before do
@@ -104,6 +123,27 @@ describe MergeRequests::RefreshService do
       it { expect(@merge_request).to be_merged }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }
+    end
+
+    context 'push new branch that exists in a merge request' do
+      let(:refresh_service) { service.new(@fork_project, @user) }
+
+      it 'refreshes the merge request' do
+        expect(refresh_service).to receive(:execute_hooks).
+                                       with(@fork_merge_request, 'update')
+        allow_any_instance_of(Repository).to receive(:merge_base).and_return(@oldrev)
+
+        refresh_service.execute(Gitlab::Git::BLANK_SHA, @newrev, 'refs/heads/master')
+        reload_mrs
+
+        expect(@merge_request.notes).to be_empty
+        expect(@merge_request).to be_open
+
+        notes = @fork_merge_request.notes.reorder(:created_at).map(&:note)
+        expect(notes[0]).to include('Restored source branch `master`')
+        expect(notes[1]).to include('Added 4 commits')
+        expect(@fork_merge_request).to be_open
+      end
     end
 
     def reload_mrs

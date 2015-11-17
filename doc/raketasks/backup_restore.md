@@ -16,7 +16,7 @@ You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json`
 from source). This file contains the database encryption key used
 for two-factor authentication. If you restore a GitLab backup without
 restoring the database encryption key, users who have two-factor
-authentication enabled will loose access to your GitLab server.
+authentication enabled will lose access to your GitLab server.
 
 If you are interested in GitLab CI backup please follow to the [CI backup documentation](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/raketasks/backup_restore.md)*
 
@@ -29,7 +29,8 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 Also you can choose what should be backed up by adding environment variable SKIP. Available options: db,
-uploads (attachments), repositories. Use a comma to specify several options at the same time.
+uploads (attachments), repositories, builds(CI build output logs), artifacts (CI build artifacts).
+Use a comma to specify several options at the same time.
 
 ```
 sudo gitlab-rake gitlab:backup:create SKIP=db,uploads

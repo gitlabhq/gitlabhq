@@ -22,24 +22,27 @@ module Issues
             issue, issue.labels - old_labels, old_labels - issue.labels)
         end
 
-        if issue.previous_changes.include?('milestone_id')
-          create_milestone_note(issue)
-        end
-
-        if issue.previous_changes.include?('assignee_id')
-          create_assignee_note(issue)
-          notification_service.reassigned_issue(issue, current_user)
-        end
-
-        if issue.previous_changes.include?('title')
-          create_title_change_note(issue, issue.previous_changes['title'].first)
-        end
-
-        issue.create_new_cross_references!
+        handle_changes(issue)
+        issue.create_new_cross_references!(current_user)
         execute_hooks(issue, 'update')
       end
 
       issue
+    end
+
+    def handle_changes(issue)
+      if issue.previous_changes.include?('milestone_id')
+        create_milestone_note(issue)
+      end
+
+      if issue.previous_changes.include?('assignee_id')
+        create_assignee_note(issue)
+        notification_service.reassigned_issue(issue, current_user)
+      end
+
+      if issue.previous_changes.include?('title')
+        create_title_change_note(issue, issue.previous_changes['title'].first)
+      end
     end
   end
 end

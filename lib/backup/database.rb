@@ -2,26 +2,26 @@ require 'yaml'
 
 module Backup
   class Database
-    attr_reader :config, :db_dir
+    attr_reader :config, :db_file_name
 
     def initialize
       @config = YAML.load_file(File.join(Rails.root,'config','database.yml'))[Rails.env]
-      @db_dir = File.join(Gitlab.config.backup.path, 'db')
+      @db_file_name = File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
     end
 
     def dump
-      FileUtils.rm_rf(@db_dir)
-      # Ensure the parent dir of @db_dir exists
-      FileUtils.mkdir_p(Gitlab.config.backup.path)
-      # Fail if somebody raced to create @db_dir before us
-      FileUtils.mkdir(@db_dir, mode: 0700)
+      FileUtils.mkdir_p(File.dirname(db_file_name))
+      FileUtils.rm_f(db_file_name)
+      compress_rd, compress_wr = IO.pipe
+      compress_pid = spawn(*%W(gzip -1 -c), in: compress_rd, out: [db_file_name, 'w', 0600])
+      compress_rd.close
 
-      success = case config["adapter"]
+      dump_pid = case config["adapter"]
       when /^mysql/ then
         $progress.print "Dumping MySQL database #{config['database']} ... "
         # Workaround warnings from MySQL 5.6 about passwords on cmd line
         ENV['MYSQL_PWD'] = config["password"].to_s if config["password"]
-        system('mysqldump', *mysql_args, config['database'], out: db_file_name)
+        spawn('mysqldump', *mysql_args, config['database'], out: compress_wr)
       when "postgresql" then
         $progress.print "Dumping PostgreSQL database #{config['database']} ... "
         pg_env
@@ -30,47 +30,41 @@ module Backup
           pgsql_args << "-n"
           pgsql_args << Gitlab.config.backup.pg_schema
         end
-        system('pg_dump', *pgsql_args, config['database'], out: db_file_name)
+        spawn('pg_dump', *pgsql_args, config['database'], out: compress_wr)
       end
+      compress_wr.close
+
+      success = [compress_pid, dump_pid].all? { |pid| Process.waitpid(pid); $?.success? }
+
       report_success(success)
       abort 'Backup failed' unless success
-
-      $progress.print 'Compressing database ... '
-      success = system('gzip', db_file_name)
-      report_success(success)
-      abort 'Backup failed: compress error' unless success
     end
 
     def restore
-      $progress.print 'Decompressing database ... '
-      success = system('gzip', '-d', db_file_name_gz)
-      report_success(success)
-      abort 'Restore failed: decompress error' unless success
+      decompress_rd, decompress_wr = IO.pipe
+      decompress_pid = spawn(*%W(gzip -cd), out: decompress_wr, in: db_file_name)
+      decompress_wr.close
 
-      success = case config["adapter"]
+      restore_pid = case config["adapter"]
       when /^mysql/ then
         $progress.print "Restoring MySQL database #{config['database']} ... "
         # Workaround warnings from MySQL 5.6 about passwords on cmd line
         ENV['MYSQL_PWD'] = config["password"].to_s if config["password"]
-        system('mysql', *mysql_args, config['database'], in: db_file_name)
+        spawn('mysql', *mysql_args, config['database'], in: decompress_rd)
       when "postgresql" then
         $progress.print "Restoring PostgreSQL database #{config['database']} ... "
         pg_env
-        system('psql', config['database'], '-f', db_file_name)
+        spawn('psql', config['database'], in: decompress_rd)
       end
+      decompress_rd.close
+
+      success = [decompress_pid, restore_pid].all? { |pid| Process.waitpid(pid); $?.success? }
+
       report_success(success)
       abort 'Restore failed' unless success
     end
 
     protected
-
-    def db_file_name
-      File.join(db_dir, 'database.sql')
-    end
-
-    def db_file_name_gz
-      File.join(db_dir, 'database.sql.gz')
-    end
 
     def mysql_args
       args = {

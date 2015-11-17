@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: runners
+# Table name: ci_runners
 #
 #  id           :integer          not null, primary key
 #  token        :string(255)
@@ -36,6 +36,7 @@ module Ci
     scope :active, ->() { where(active: true) }
     scope :paused, ->() { where(active: false) }
     scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
+    scope :ordered, ->() { order(id: :desc) }
 
     acts_as_taggable
 

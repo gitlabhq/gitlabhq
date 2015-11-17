@@ -33,8 +33,11 @@ module Grack
 
       auth!
 
+      lfs_response = Gitlab::Lfs::Router.new(project, @user, @request).try_call
+      return lfs_response unless lfs_response.nil?
+
       if project && authorized_request?
-        # Tell gitlab-git-http-server the request is OK, and what the GL_ID is
+        # Tell gitlab-workhorse the request is OK, and what the GL_ID is
         render_grack_auth_ok
       elsif @user.nil? && !@ci
         unauthorized
@@ -72,7 +75,7 @@ module Grack
       matched_login = /(?<s>^[a-zA-Z]*-ci)-token$/.match(login)
 
       if project && matched_login.present? && git_cmd == 'git-upload-pack'
-        underscored_service = matched_login['s'].underscore 
+        underscored_service = matched_login['s'].underscore
 
         if Service.available_services_names.include?(underscored_service)
           service_method = "#{underscored_service}_service"
@@ -193,12 +196,19 @@ module Grack
     end
 
     def render_grack_auth_ok
+      repo_path =
+        if @request.path_info =~ /^([\w\.\/-]+)\.wiki\.git/
+          ProjectWiki.new(project).repository.path_to_repo
+        else
+          project.repository.path_to_repo
+        end
+
       [
         200,
         { "Content-Type" => "application/json" },
         [JSON.dump({
           'GL_ID' => Gitlab::ShellEnv.gl_id(@user),
-          'RepoPath' => project.repository.path_to_repo,
+          'RepoPath' => repo_path,
         })]
       ]
     end

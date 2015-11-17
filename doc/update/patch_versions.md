@@ -49,9 +49,7 @@ sudo -u git -H bundle install --without development test mysql --deployment
 sudo -u git -H bundle install --without development test postgres --deployment
 
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
-sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
-sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
+sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS_ENV=production
 ```
 
 ### 5. Start application

@@ -1,12 +1,12 @@
 - page_title "Builds"
-- header_title project_title(@project, "Builds", project_builds_path(@project))
+= render "header_title"
 
 .project-issuable-filter
   .controls
     - if @ci_project && current_user && can?(current_user, :manage_builds, @project)
       .pull-left.hidden-xs
         - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel all', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
+          = link_to 'Cancel all', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
   %ul.center-top-menu
     %li{class: ('active' if @scope.nil?)}
@@ -25,28 +25,29 @@
         %span.badge.js-totalbuilds-count= @all_builds.count(:id)
 
 .gray-content-block
-  List of #{@scope || 'running'} builds from this project
+  #{(@scope || 'running').capitalize} builds from this project
 
 %ul.content-list
   - if @builds.blank?
     %li
       .nothing-here-block No builds to show
   - else
-    %table.table.builds
-      %thead
-        %tr
-          %th Status
-          %th Build ID
-          %th Commit
-          %th Ref
-          %th Runner
-          %th Name
-          %th Duration
-          %th Finished at
-          %th
+    .table-holder
+      %table.table.builds
+        %thead
+          %tr
+            %th Status
+            %th Build ID
+            %th Commit
+            %th Ref
+            %th Stage
+            %th Name
+            %th Duration
+            %th Finished at
+            %th
 
-      - @builds.each do |build|
-        = render 'projects/builds/build', build: build
+        - @builds.each do |build|
+          = render 'projects/commit_statuses/commit_status', commit_status: build, commit_sha: true, stage: true, allow_retry: true
 
-    = paginate @builds
+    = paginate @builds, theme: 'gitlab'
 

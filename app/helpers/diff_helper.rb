@@ -137,7 +137,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "inline-diff-btn", class: (params[:view] != 'parallel' ? 'btn btn-sm active' : 'btn btn-sm') do
+    link_to url_for(params_copy), id: "inline-diff-btn", class: (params[:view] != 'parallel' ? 'btn active' : 'btn') do
       'Inline'
     end
   end
@@ -148,7 +148,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "parallel-diff-btn", class: (params[:view] == 'parallel' ? 'btn active btn-sm' : 'btn btn-sm') do
+    link_to url_for(params_copy), id: "parallel-diff-btn", class: (params[:view] == 'parallel' ? 'btn active' : 'btn') do
       'Side-by-side'
     end
   end
@@ -170,7 +170,8 @@ module DiffHelper
 
   def commit_for_diff(diff)
     if diff.deleted_file
-      @merge_request ? @merge_request.commits.last : @commit.parents.first
+      first_commit = @first_commit || @commit
+      first_commit.parent
     else
       @commit
     end

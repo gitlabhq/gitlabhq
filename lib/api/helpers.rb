@@ -1,5 +1,5 @@
 module API
-  module APIHelpers
+  module Helpers
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
     PRIVATE_TOKEN_PARAM = :private_token
     SUDO_HEADER ="HTTP_SUDO"
@@ -133,6 +133,12 @@ module API
       authorize! :admin_project, user_project
     end
 
+    def require_gitlab_workhorse!
+      unless env['HTTP_GITLAB_WORKHORSE'].present?
+        forbidden!('Request should be executed via GitLab Workhorse')
+      end
+    end
+
     def can?(object, action, subject)
       abilities.allowed?(object, action, subject)
     end
@@ -234,6 +240,10 @@ module API
       render_api_error!(message || '409 Conflict', 409)
     end
 
+    def file_to_large!
+      render_api_error!('413 Request Entity Too Large', 413)
+    end
+
     def render_validation_error!(model)
       if model.errors.any?
         render_api_error!(model.errors.messages || '400 Bad Request', 400)
@@ -279,6 +289,44 @@ module API
         :asc
       else
         :desc
+      end
+    end
+
+    # file helpers
+
+    def uploaded_file!(field, uploads_path)
+      if params[field]
+        bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
+        return params[field]
+      end
+
+      # sanitize file paths
+      # this requires all paths to exist
+      required_attributes! %W(#{field}.path)
+      uploads_path = File.realpath(uploads_path)
+      file_path = File.realpath(params["#{field}.path"])
+      bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
+
+      UploadedFile.new(
+        file_path,
+        params["#{field}.name"],
+        params["#{field}.type"] || 'application/octet-stream',
+      )
+    end
+
+    def present_file!(path, filename, content_type = 'application/octet-stream')
+      filename ||= File.basename(path)
+      header['Content-Disposition'] = "attachment; filename=#{filename}"
+      header['Content-Transfer-Encoding'] = 'binary'
+      content_type content_type
+
+      # Support download acceleration
+      case headers['X-Sendfile-Type']
+      when 'X-Sendfile'
+        header['X-Sendfile'] = path
+        body
+      else
+        file FileStreamer.new(path)
       end
     end
 

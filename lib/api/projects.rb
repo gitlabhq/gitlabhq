@@ -75,6 +75,7 @@ module API
       #   description (optional) - short project description
       #   issues_enabled (optional)
       #   merge_requests_enabled (optional)
+      #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
@@ -90,6 +91,7 @@ module API
                                      :description,
                                      :issues_enabled,
                                      :merge_requests_enabled,
+                                     :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
                                      :namespace_id,
@@ -117,6 +119,7 @@ module API
       #   default_branch (optional) - 'master' by default
       #   issues_enabled (optional)
       #   merge_requests_enabled (optional)
+      #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
@@ -132,6 +135,7 @@ module API
                                      :default_branch,
                                      :issues_enabled,
                                      :merge_requests_enabled,
+                                     :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
                                      :public,
@@ -172,6 +176,7 @@ module API
       #   description (optional) - short project description
       #   issues_enabled (optional)
       #   merge_requests_enabled (optional)
+      #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
@@ -185,6 +190,7 @@ module API
                                      :default_branch,
                                      :issues_enabled,
                                      :merge_requests_enabled,
+                                     :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
                                      :public,
@@ -246,8 +252,8 @@ module API
       # Example Request:
       #  DELETE /projects/:id/fork
       delete ":id/fork" do
-        authenticated_as_admin!
-        unless user_project.forked_project_link.nil?
+        authorize! :remove_fork_project, user_project
+        if user_project.forked?
           user_project.forked_project_link.destroy
         end
       end

@@ -6,8 +6,8 @@
 #
 module Issuable
   extend ActiveSupport::Concern
-  include Mentionable
   include Participable
+  include Mentionable
 
   included do
     belongs_to :author, class_name: "User"
@@ -24,7 +24,7 @@ module Issuable
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}
-    scope :recent, -> { order("created_at DESC") }
+    scope :recent, -> { reorder(id: :desc) }
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
@@ -47,8 +47,7 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, :description
-
-    participant :author, :assignee, :notes_with_associations, :mentioned_users
+    participant :author, :assignee, :notes_with_associations
   end
 
   module ClassMethods
@@ -84,6 +83,10 @@ module Issuable
 
   def is_being_reassigned?
     assignee_id_changed?
+  end
+
+  def open?
+    opened? || reopened?
   end
 
   #

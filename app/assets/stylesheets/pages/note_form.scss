@@ -56,6 +56,10 @@
   .note_text {
     width: 100%;
   }
+
+  .comment-hints {
+    margin-top: -12px;
+  }
 }
 
 /* loading indicator */
@@ -168,7 +172,7 @@
   color: #999;
   background: #FFF;
   padding: 7px;
-  margin-top: -11px;
+  margin-top: -7px;
   border: 1px solid $border-color;
   font-size: 13px;
 }

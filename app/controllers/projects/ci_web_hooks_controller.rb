@@ -24,7 +24,7 @@ class Projects::CiWebHooksController < Projects::ApplicationController
   def test
     Ci::TestHookService.new.execute(hook, current_user)
 
-    redirect_to :back
+    redirect_back_or_default(default: { action: 'index' })
   end
 
   def destroy

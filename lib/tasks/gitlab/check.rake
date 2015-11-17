@@ -335,7 +335,7 @@ namespace :gitlab do
       print "Redis version >= #{min_redis_version}? ... "
 
       redis_version = run(%W(redis-cli --version))
-      redis_version = redis_version.try(:match, /redis-cli (.*)/)
+      redis_version = redis_version.try(:match, /redis-cli (\d+\.\d+\.\d+)/)
       if redis_version &&
           (Gem::Version.new(redis_version[1]) > Gem::Version.new(min_redis_version))
         puts "yes".green
@@ -824,7 +824,7 @@ namespace :gitlab do
         repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
         repo_dirs.each do |dir|
           puts "\nChecking repo at #{dir}"
-          system(*%w(git fsck), chdir: dir)
+          system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: dir)
         end
       end
     end

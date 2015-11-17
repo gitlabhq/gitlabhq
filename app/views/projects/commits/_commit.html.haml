@@ -18,10 +18,10 @@
 
       .pull-right
         - if ci_commit
-          = link_to ci_status_path(ci_commit), class: "c#{ci_status_color(ci_commit)}" do
-            = ci_status_icon(ci_commit)
+          = render_ci_status(ci_commit)
           &nbsp;
-        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
+        = clipboard_button
+        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id", data: {clipboard_text: commit.id}
 
       .notes_count
         - if note_count > 0

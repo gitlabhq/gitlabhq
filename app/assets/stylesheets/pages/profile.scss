@@ -47,3 +47,31 @@
     }
   }
 }
+
+.calendar-hint {
+  margin-top: -12px;
+  float: right;
+  font-size: 12px;
+}
+
+.profile-link-holder {
+  display: inline;
+
+  &:after {
+    content: "\00B7";
+    padding: 0px 6px;
+    font-weight: bold;
+  }
+
+  &:last-child {
+    &:after {
+      content: "";
+      padding: 0;
+    }
+  }
+
+  a {
+    color: $blue-dark;
+    text-decoration: none;
+  }
+}

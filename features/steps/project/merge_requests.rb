@@ -40,6 +40,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content "Bug NS-04"
   end
 
+  step 'I should not see "master" branch' do
+    expect(page).not_to have_content "master"
+  end
+
+  step 'I should see "other_branch" branch' do
+    expect(page).to have_content "other_branch"
+  end
+
   step 'I should see "Bug NS-04" in merge requests' do
     expect(page).to have_content "Bug NS-04"
   end
@@ -88,6 +96,18 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            target_project: project,
            source_branch: 'fix',
            target_branch: 'master',
+           author: project.users.first,
+           description: "# Description header"
+          )
+  end
+
+  step 'project "Shop" have "Bug NS-06" open merge request' do
+    create(:merge_request,
+           title: "Bug NS-06",
+           source_project: project,
+           target_project: project,
+           source_branch: 'fix',
+           target_branch: 'other_branch',
            author: project.users.first,
            description: "# Description header"
           )
@@ -336,6 +356,19 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a patch diff' do
     expect(page).to have_content('diff --git')
+  end
+
+  step '"Bug NS-05" has CI status' do
+    project = merge_request.source_project
+    project.enable_ci
+    ci_commit = create :ci_commit, gl_project: project, sha: merge_request.last_commit.id
+    create :ci_build, commit: ci_commit
+  end
+
+  step 'I should see merge request "Bug NS-05" with CI status' do
+    page.within ".mr-list" do
+      expect(page).to have_link "Build status: pending"
+    end
   end
 
   def merge_request

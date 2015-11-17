@@ -54,6 +54,7 @@
 #  public_email               :string(255)      default(""), not null
 #  dashboard                  :integer          default(0)
 #  project_view               :integer          default(0)
+#  consumed_timestep          :integer
 #  layout                     :integer          default(0)
 #
 
@@ -183,7 +184,7 @@ class User < ActiveRecord::Base
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum project_view: [:readme, :activity]
+  enum project_view: [:readme, :activity, :files]
 
   alias_attribute :private_token, :authentication_token
 
@@ -235,21 +236,16 @@ class User < ActiveRecord::Base
 
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email)
-      user_table = arel_table
-      email_table = Email.arel_table
+      sql = 'SELECT *
+      FROM users
+      WHERE id IN (
+        SELECT id FROM users WHERE email = :email
+        UNION
+        SELECT emails.user_id FROM emails WHERE email = :email
+      )
+      LIMIT 1;'
 
-      # Use ARel to build a query:
-      query = user_table.
-        # SELECT "users".* FROM "users"
-        project(user_table[Arel.star]).
-        # LEFT OUTER JOIN "emails"
-        join(email_table, Arel::Nodes::OuterJoin).
-        # ON "users"."id" = "emails"."user_id"
-        on(user_table[:id].eq(email_table[:user_id])).
-        # WHERE ("user"."email" = '<email>' OR "emails"."email" = '<email>')
-        where(user_table[:email].eq(email).or(email_table[:email].eq(email)))
-
-      find_by_sql(query.to_sql).first
+      User.find_by_sql([sql, { email: email }]).first
     end
 
     def filter(filter_name)
@@ -401,15 +397,26 @@ class User < ActiveRecord::Base
                            end
   end
 
+  def authorized_projects_id
+    @authorized_projects_id ||= begin
+      project_ids = personal_projects.pluck(:id)
+      project_ids.push(*groups_projects.pluck(:id))
+      project_ids.push(*projects.pluck(:id).uniq)
+    end
+  end
+
+  def master_or_owner_projects_id
+    @master_or_owner_projects_id ||= begin
+      scope = { access_level: [ Gitlab::Access::MASTER, Gitlab::Access::OWNER ] }
+      project_ids = personal_projects.pluck(:id)
+      project_ids.push(*groups_projects.where(members: scope).pluck(:id))
+      project_ids.push(*projects.where(members: scope).pluck(:id).uniq)
+    end
+  end
 
   # Projects user has access to
   def authorized_projects
-    @authorized_projects ||= begin
-                               project_ids = personal_projects.pluck(:id)
-                               project_ids.push(*groups_projects.pluck(:id))
-                               project_ids.push(*projects.pluck(:id).uniq)
-                               Project.where(id: project_ids)
-                             end
+    @authorized_projects ||= Project.where(id: authorized_projects_id)
   end
 
   def owned_projects
@@ -706,12 +713,15 @@ class User < ActiveRecord::Base
   end
 
   def toggle_star(project)
-    user_star_project = users_star_projects.
-      where(project: project, user: self).take
-    if user_star_project
-      user_star_project.destroy
-    else
-      UsersStarProject.create!(project: project, user: self)
+    UsersStarProject.transaction do
+      user_star_project = users_star_projects.
+          where(project: project, user: self).lock(true).first
+
+      if user_star_project
+        user_star_project.destroy
+      else
+        UsersStarProject.create!(project: project, user: self)
+      end
     end
   end
 
@@ -764,12 +774,11 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_projects
-    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects)
-  end
-
   def ci_authorized_runners
-    Ci::Runner.specific.includes(:runner_projects).
-      where(ci_runner_projects: { project_id: ci_authorized_projects } )
+    @ci_authorized_runners ||= begin
+      runner_ids = Ci::RunnerProject.joins(:project).
+        where(ci_projects: { gitlab_id: master_or_owner_projects_id }).select(:runner_id)
+      Ci::Runner.specific.where(id: runner_ids)
+    end
   end
 end

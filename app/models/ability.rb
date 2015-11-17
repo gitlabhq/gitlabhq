@@ -154,6 +154,7 @@ class Ability
         :create_merge_request,
         :create_wiki,
         :manage_builds,
+        :download_build_artifacts,
         :push_code
       ]
     end
@@ -189,7 +190,8 @@ class Ability
         :change_visibility_level,
         :rename_project,
         :remove_project,
-        :archive_project
+        :archive_project,
+        :remove_fork_project
       ]
     end
 
@@ -231,6 +233,7 @@ class Ability
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules.push(*[
           :create_projects,
+          :admin_milestones
         ])
       end
 

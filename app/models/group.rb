@@ -11,6 +11,7 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
+#  public      :boolean          default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -120,7 +121,7 @@ class Group < Namespace
   end
 
   def public_profile?
-    projects.public_only.any?
+    self.public || projects.public_only.any?
   end
 
   def post_create_hook

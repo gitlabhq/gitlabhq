@@ -14,11 +14,6 @@ describe LabelsHelper do
         expect(label).not_to receive(:project)
         link_to_label(label)
       end
-
-      it 'includes option for "No Label"' do
-        result = project_labels_options(project)
-        expect(result).to include('No Label')
-      end
     end
 
     context 'without @project set' do

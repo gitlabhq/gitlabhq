@@ -23,6 +23,10 @@
 #  after_sign_out_path          :string(255)
 #  session_expire_delay         :integer          default(10080), not null
 #  import_sources               :text
+#  help_page_text               :text
+#  admin_notification_email     :string(255)
+#  shared_runners_enabled       :boolean          default(TRUE), not null
+#  max_artifacts_size           :integer          default(100), not null
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -44,6 +48,10 @@ class ApplicationSetting < ActiveRecord::Base
     allow_blank: true,
     format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }
 
+  validates :admin_notification_email,
+    allow_blank: true,
+    email: true
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -64,8 +72,14 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  after_commit do
+    Rails.cache.write('application_setting.last', self)
+  end
+
   def self.current
-    ApplicationSetting.last
+    Rails.cache.fetch('application_setting.last') do
+      ApplicationSetting.last
+    end
   end
 
   def self.create_from_defaults
@@ -83,7 +97,9 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
-      import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
+      import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
+      shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
+      max_artifacts_size: Settings.gitlab_ci['max_artifacts_size'],
     )
   end
 

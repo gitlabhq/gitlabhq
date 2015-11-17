@@ -8,14 +8,6 @@ module Ci
 
     private
 
-    def authenticate_public_page!
-      unless project.public
-        authenticate_user!
-
-        return access_denied! unless can?(current_user, :read_project, gl_project)
-      end
-    end
-
     def authenticate_token!
       unless project.valid_token?(params[:token])
         return head(403)

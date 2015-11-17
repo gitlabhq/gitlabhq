@@ -64,6 +64,7 @@
       text-decoration: none;
       padding-left: 22px;
       font-weight: normal;
+      outline: none;
 
       &:hover {
         text-decoration: none;
@@ -176,6 +177,7 @@
   text-align: center;
   line-height: 40px;
   transition-duration: .3s;
+  outline: none;
 }
 
 .collapse-nav a:hover {
@@ -238,10 +240,14 @@
       width: 100%;
       padding: 10px 22px;
       overflow: hidden;
+      outline: none;
 
       img {
         width: 36px;
         height: 36px;
+      }
+
+      #tanuki-logo, img {
         float: left;
       }
 
@@ -263,5 +269,15 @@
     &:hover {
       background-color: #EEE;
     }
+  }
+}
+
+
+.tanuki-shape {
+  transition: all 0.8s;
+
+  &:hover {
+    fill: rgb(255, 255, 255);
+    transition: all 0.1s;
   }
 }

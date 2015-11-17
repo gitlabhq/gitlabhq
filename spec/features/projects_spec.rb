@@ -34,6 +34,27 @@ feature 'Project', feature: true do
     end
   end
 
+  describe 'remove forked relationship', js: true do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, namespace: user.namespace) }
+
+    before do
+      login_with user
+      create(:forked_project_link, forked_to_project: project)
+      visit edit_namespace_project_path(project.namespace, project)
+    end
+
+    it 'should remove fork' do
+      expect(page).to have_content 'Remove fork relationship'
+
+      remove_with_confirm('Remove fork relationship', project.path)
+
+      expect(page).to have_content 'The fork relationship has been removed.'
+      expect(project.forked?).to be_falsey
+      expect(page).not_to have_content 'Remove fork relationship'
+    end
+  end
+
   describe 'removal', js: true do
     let(:user)    { create(:user) }
     let(:project) { create(:project, namespace: user.namespace) }
@@ -45,13 +66,13 @@ feature 'Project', feature: true do
     end
 
     it 'should remove project' do
-      expect { remove_project }.to change {Project.count}.by(-1)
+      expect { remove_with_confirm('Remove project', project.path) }.to change {Project.count}.by(-1)
     end
   end
 
-  def remove_project
-    click_button "Remove project"
-    fill_in 'confirm_name_input', with: project.path
+  def remove_with_confirm(button_text, confirm_with)
+    click_button button_text
+    fill_in 'confirm_name_input', with: confirm_with
     click_button 'Confirm'
   end
 end

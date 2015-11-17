@@ -15,8 +15,7 @@ Note: It is a best practice to use a password for an SSH key, but it is not
 required and you can skip creating a password by pressing enter. Note that
 the password you choose here can't be altered or retrieved.
 
-To generate a new SSH key, use the following command:
-```bash
+To generate a new SSH key, use the following commandGitLab```bash
 ssh-keygen -t rsa -C "$your_email"
 ```
 This command will prompt you for a location and filename to store the key
@@ -78,11 +77,11 @@ Deploy keys can be shared between projects, you just need to add them to each pr
 
 ### Eclipse
 
-How to add your ssh key to Eclipse: http://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
+How to add your ssh key to Eclipse: https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
 
 ## Tip: Non-default OpenSSH key file names or locations
 
-If, for whatever reason, you decide to specify a non-default location and filename for your Gitlab SSH key pair, you must configure your SSH client to find your Gitlab SSH private key for connections to your Gitlab server (perhaps gitlab.com). For OpenSSH clients, this is handled in the `~/.ssh/config` file with a stanza similar to the following:
+If, for whatever reason, you decide to specify a non-default location and filename for your GitLab SSH key pair, you must configure your SSH client to find your GitLab SSH private key for connections to your GitLab server (perhaps gitlab.com). For OpenSSH clients, this is handled in the `~/.ssh/config` file with a stanza similar to the following:
 
 ```
 #
@@ -97,7 +96,7 @@ User mygitlabusername
 Another example
 ```
 #
-# Our company's internal Gitlab server
+# Our company's internal GitLab server
 #
 Host my-gitlab.company.com
 RSAAuthentication yes

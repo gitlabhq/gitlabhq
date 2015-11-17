@@ -1,0 +1,39 @@
+- page_title @tag.name, "Tags"
+= render "projects/commits/header_title"
+= render "projects/commits/head"
+
+.gray-content-block
+  .pull-right
+    - if can?(current_user, :push_code, @project)
+      = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, @tag.name), class: 'btn-grouped btn', title: 'Edit release notes' do
+        = icon("pencil")
+    = link_to namespace_project_tree_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped', title: 'Browse source code' do
+      = icon('files-o')
+    = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn btn-grouped', title: 'Browse commits' do
+      = icon('history')
+    - if can? current_user, :download_code, @project
+      = render 'projects/tags/download', ref: @tag.name, project: @project
+    - if can?(current_user, :admin_project, @project)
+      .pull-right
+        = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'} do
+          %i.fa.fa-trash-o
+  .title
+    %strong= @tag.name
+    - if @tag.message.present?
+      %span.light
+        &nbsp;
+        = strip_gpg_signature(@tag.message)
+  - if @commit
+    = render 'projects/branches/commit', commit: @commit, project: @project
+  - else
+    Cant find HEAD commit for this tag
+
+
+.append-bottom-default.prepend-top-default
+  - if @release.description.present?
+    .description
+      .wiki
+        = preserve do
+          = markdown @release.description
+  - else
+    This tag has no release notes.

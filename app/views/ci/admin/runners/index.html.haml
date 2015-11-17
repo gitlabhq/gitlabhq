@@ -1,5 +1,5 @@
 %p.lead
-  %span To register new runner you should enter the following registration token. With this token the runner will request a unique runner token and use that for future communication.
+  %span To register a new runner you should enter the following registration token. With this token the runner will request a unique runner token and use that for future communication.
   %code #{GitlabCi::REGISTRATION_TOKEN}
 
 .bs-callout
@@ -21,7 +21,7 @@
         \- run builds from assigned projects
       %li
         %span.label.label-danger paused
-        \- runner will not receive any new build
+        \- runner will not receive any new builds
 
 .append-bottom-20.clearfix
   .pull-left
@@ -35,18 +35,19 @@
 
 %br
 
-%table.table
-  %thead
-    %tr
-      %th Type
-      %th Runner token
-      %th Description
-      %th Projects
-      %th Builds
-      %th Tags
-      %th Last contact
-      %th
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th Type
+        %th Runner token
+        %th Description
+        %th Projects
+        %th Builds
+        %th Tags
+        %th Last contact
+        %th
 
-  - @runners.each do |runner|
-    = render "ci/admin/runners/runner", runner: runner
+    - @runners.each do |runner|
+      = render "ci/admin/runners/runner", runner: runner
 = paginate @runners

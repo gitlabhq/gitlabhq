@@ -1,3 +1,4 @@
+- page_title "CI Web Hooks"
 %h3.page-title
   CI Web hooks
 
@@ -20,17 +21,18 @@
 
 -if @web_hooks.any?
   %h4 Activated web hooks (#{@web_hooks.count})
-  %table.table
-    - @web_hooks.each do |hook|
-      %tr
-        %td
-          .clearfix
-            %span.monospace= hook.url
-        %td
-          .pull-right
-            - if @ci_project.commits.any?
-              = link_to 'Test Hook', test_namespace_project_ci_web_hook_path(@project.namespace, @project, hook), class: "btn btn-sm btn-grouped"
-            = link_to 'Remove', namespace_project_ci_web_hook_path(@project.namespace, @project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
+  .table-holder
+    %table.table
+      - @web_hooks.each do |hook|
+        %tr
+          %td
+            .clearfix
+              %span.monospace= hook.url
+          %td
+            .pull-right
+              - if @ci_project.commits.any?
+                = link_to 'Test Hook', test_namespace_project_ci_web_hook_path(@project.namespace, @project, hook), class: "btn btn-sm btn-grouped"
+              = link_to 'Remove', namespace_project_ci_web_hook_path(@project.namespace, @project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
 
 %h4 Web Hook data example
 

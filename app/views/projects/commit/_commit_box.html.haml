@@ -19,7 +19,7 @@
 
 %p
   %span.light Commit
-  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit)
+  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
 .commit-info-row
   %span.light Authored by
   %strong
@@ -36,7 +36,7 @@
 .commit-info-row
   %span.cgray= pluralize(@commit.parents.count, "parent")
   - @commit.parents.each do |parent|
-    = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent)
+    = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
 
 - if @ci_commit
   .pull-right
@@ -55,5 +55,5 @@
     %pre.commit-description
       = preserve(gfm(escape_once(@commit.description)))
 
-:coffeescript
-  $(".commit-info-row.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}")
+:javascript
+  $(".commit-info-row.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");

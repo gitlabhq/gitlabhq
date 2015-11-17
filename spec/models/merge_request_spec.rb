@@ -20,6 +20,7 @@
 #  position          :integer          default(0)
 #  locked_at         :datetime
 #  updated_by_id     :integer
+#  merge_error       :string(255)
 #
 
 require 'spec_helper'
@@ -78,6 +79,12 @@ describe MergeRequest do
     it "should include notes for commits" do
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.mr_and_commit_notes.count).to eq(2)
+    end
+
+    it "should include notes for commits from target project as well" do
+      create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit', project: merge_request.target_project)
+      expect(merge_request.commits).not_to be_empty
+      expect(merge_request.mr_and_commit_notes.count).to eq(3)
     end
   end
 

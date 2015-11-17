@@ -88,8 +88,11 @@ describe API::API, api: true  do
         end
 
         it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
-          [project, project2, project3].each{ |project| project.build_missing_services }
-          project2.gitlab_ci_service.update(active: true)
+          [project, project2, project3].each do |project|
+            project.builds_enabled = false
+            project.build_missing_services
+          end
+          project2.builds_enabled = true
           get api('/projects', user), { ci_enabled_first: 'true' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
@@ -606,28 +609,42 @@ describe API::API, api: true  do
 
     describe 'DELETE /projects/:id/fork' do
 
-      it "shouldn't available for non admin users" do
+      it "shouldn't be visible to users outside group" do
         delete api("/projects/#{project_fork_target.id}/fork", user)
-        expect(response.status).to eq(403)
+        expect(response.status).to eq(404)
       end
 
-      it 'should make forked project unforked' do
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project).not_to be_nil
-        expect(project_fork_target.forked?).to be_truthy
-        delete api("/projects/#{project_fork_target.id}/fork", admin)
-        expect(response.status).to eq(200)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project).to be_nil
-        expect(project_fork_target.forked?).not_to be_truthy
-      end
+      context 'when users belong to project group' do
+        let(:project_fork_target) { create(:project, group: create(:group)) }
 
-      it 'should be idempotent if not forked' do
-        expect(project_fork_target.forked_from_project).to be_nil
-        delete api("/projects/#{project_fork_target.id}/fork", admin)
-        expect(response.status).to eq(200)
-        expect(project_fork_target.reload.forked_from_project).to be_nil
+        before do
+          project_fork_target.group.add_owner user
+          project_fork_target.group.add_developer user2
+        end
+
+        it 'should be forbidden to non-owner users' do
+          delete api("/projects/#{project_fork_target.id}/fork", user2)
+          expect(response.status).to eq(403)
+        end
+
+        it 'should make forked project unforked' do
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+          project_fork_target.reload
+          expect(project_fork_target.forked_from_project).not_to be_nil
+          expect(project_fork_target.forked?).to be_truthy
+          delete api("/projects/#{project_fork_target.id}/fork", admin)
+          expect(response.status).to eq(200)
+          project_fork_target.reload
+          expect(project_fork_target.forked_from_project).to be_nil
+          expect(project_fork_target.forked?).not_to be_truthy
+        end
+
+        it 'should be idempotent if not forked' do
+          expect(project_fork_target.forked_from_project).to be_nil
+          delete api("/projects/#{project_fork_target.id}/fork", admin)
+          expect(response.status).to eq(200)
+          expect(project_fork_target.reload.forked_from_project).to be_nil
+        end
       end
     end
   end

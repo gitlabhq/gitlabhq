@@ -42,11 +42,10 @@
             class: 'select2 trigger-submit', include_blank: true,
             data: {placeholder: 'Milestone'})
 
-        - if @project
-          .filter-item.inline.labels-filter
-            = select_tag('label_name', project_labels_options(@project),
-              class: 'select2 trigger-submit', include_blank: true,
-              data: {placeholder: 'Label'})
+        .filter-item.inline.labels-filter
+          = select_tag('label_name', projects_labels_options,
+            class: 'select2 trigger-submit', include_blank: true,
+            data: {placeholder: 'Label'})
 
         .pull-right
           = render 'shared/sort_dropdown'
@@ -61,9 +60,9 @@
           = hidden_field_tag :state_event, params[:state_event]
           = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
-:coffeescript
-  new UsersSelect()
-
-  $('form.filter-form').on 'submit', (event) ->
-    event.preventDefault()
-    Turbolinks.visit @.action + '&' + $(@).serialize()
+:javascript
+  new UsersSelect();
+  $('form.filter-form').on('submit', function (event) {
+    event.preventDefault();
+    Turbolinks.visit(this.action + '&' + $(this).serialize());
+  });
