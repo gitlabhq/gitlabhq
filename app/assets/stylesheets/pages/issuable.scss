@@ -128,12 +128,22 @@
     }
   }
 
-  #add-award {
-    font-size: 20px;
-    border-radius: 5px;
+  .awards-controls {
+    height: 25px;
+    width: 28px;
     float: left;
-    width: 50px;
-    font-weight: bold;
+    padding: 0 0 5px 5px;
+    line-height: 1;
+
+    #add-award {
+      font-size: 27px;
+      &:hover {
+        text-decoration: none;
+      }
+      &:link {
+        text-decoration: none;
+      }
+    }
   }
   
   .awards-menu{
