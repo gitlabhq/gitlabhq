@@ -84,6 +84,7 @@ production: &base
       merge_requests: true
       wiki: true
       snippets: false
+      builds: true
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
@@ -122,6 +123,12 @@ production: &base
 
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
+
+  ## Git LFS
+  lfs:
+    enabled: false
+    # The location where LFS objects are stored (default: shared/lfs-objects).
+    # storage_path: shared/lfs-objects
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
@@ -274,27 +281,28 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
-      # - { name: 'google_oauth2',
-      #     label: 'Google',
-      #     app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET',
-      #     args: { access_type: 'offline', approval_prompt: '' } }
-      # - { name: 'twitter',
-      #     app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET' }
       # - { name: 'github',
-      #     label: 'GitHub',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
       #     args: { scope: 'user:email' } }
-      # - { name: 'gitlab',
-      #     label: 'GitLab.com',
-      #     app_id: 'YOUR_APP_ID',
-      #     app_secret: 'YOUR_APP_SECRET',
-      #     args: { scope: 'api' } }
       # - { name: 'bitbucket',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
+      # - { name: 'gitlab',
+      #     app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET',
+      #     args: { scope: 'api' } }
+      # - { name: 'google_oauth2',
+      #     app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET',
+      #     args: { access_type: 'offline', approval_prompt: '' } }
+      # - { name: 'facebook',
+      #     app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET' }
+      # - { name: 'twitter',
+      #     app_id: 'YOUR_APP_ID',
+      #     app_secret: 'YOUR_APP_SECRET' }
+      #
       # - { name: 'saml',
       #     label: 'Our SAML Provider',
       #     args: {
@@ -313,8 +321,6 @@ production: &base
   # Shared file storage settings
   shared:
     # path: /mnt/gitlab # Default: shared
-
-
 
 
   #
@@ -417,6 +423,8 @@ test:
   <<: *base
   gravatar:
     enabled: true
+  lfs:
+    enabled: false
   gitlab:
     host: localhost
     port: 80

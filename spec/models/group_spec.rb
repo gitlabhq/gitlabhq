@@ -11,6 +11,7 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
+#  public      :boolean          default(FALSE)
 #
 
 require 'spec_helper'
@@ -82,6 +83,25 @@ describe Group do
     it "should be false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
       expect(group.avatar_type).to eq(["only images allowed"])
+    end
+  end
+
+  describe "public_profile?" do
+    it "returns true for public group" do
+      group = create(:group, public: true)
+      expect(group.public_profile?).to be_truthy
+    end
+
+    it "returns true for non-public group with public project" do
+      group = create(:group)
+      create(:project, :public, group: group)
+      expect(group.public_profile?).to be_truthy
+    end
+
+    it "returns false for non-public group with no public projects" do
+      group = create(:group)
+      create(:project, group: group)
+      expect(group.public_profile?).to be_falsy
     end
   end
 end

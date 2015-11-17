@@ -2,6 +2,19 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
+  if Gitlab::Sherlock.enabled?
+    namespace :sherlock do
+      resources :transactions, only: [:index, :show] do
+        resources :queries, only: [:show]
+        resources :file_samples, only: [:show]
+
+        collection do
+          delete :destroy_all
+        end
+      end
+    end
+  end
+
   namespace :ci do
     # CI API
     Ci::API::API.logger Rails.logger
@@ -19,7 +32,6 @@ Gitlab::Application.routes.draw do
         get :status, to: 'projects#badge'
         get :integration
         post :toggle_shared_runners
-        get :dumped_yaml
       end
 
       resources :runner_projects, only: [:create, :destroy]
@@ -81,7 +93,7 @@ Gitlab::Application.routes.draw do
   end
 
   # Enable Grack support
-  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
   get 'help'                  => 'help#index'
@@ -210,6 +222,8 @@ Gitlab::Application.routes.draw do
       resources :keys, only: [:show, :destroy]
       resources :identities, only: [:index, :edit, :update, :destroy]
 
+      delete 'stop_impersonation' => 'impersonation#destroy', on: :collection
+
       member do
         get :projects
         get :keys
@@ -219,7 +233,7 @@ Gitlab::Application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
-        post :login_as
+        post 'impersonate' => 'impersonation#create'
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
@@ -354,7 +368,7 @@ Gitlab::Application.routes.draw do
       end
 
       resource :avatar, only: [:destroy]
-      resources :milestones, only: [:index, :show, :update]
+      resources :milestones, only: [:index, :show, :update, :new, :create]
     end
   end
 
@@ -472,8 +486,9 @@ Gitlab::Application.routes.draw do
         resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
           member do
             get :branches
-            get :ci
-            get :cancel_builds
+            get :builds
+            post :cancel_builds
+            post :retry_builds
           end
         end
 
@@ -569,7 +584,10 @@ Gitlab::Application.routes.draw do
         end
 
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
-        resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
+          resource :release, only: [:edit, :update]
+        end
+
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
@@ -588,12 +606,13 @@ Gitlab::Application.routes.draw do
 
         resources :builds, only: [:index, :show] do
           collection do
-            get :cancel_all
+            post :cancel_all
           end
 
           member do
-            get :cancel
             get :status
+            post :cancel
+            get :download
             post :retry
           end
         end
@@ -641,7 +660,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-        resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
+        resources :notes, constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
           end

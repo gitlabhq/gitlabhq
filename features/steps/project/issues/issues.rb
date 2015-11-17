@@ -219,7 +219,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'The code block should be unchanged' do
-    expect(page).to have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
+    expect(page).to have_content("Command [1]: /usr/local/bin/git , see [text](doc/text)")
   end
 
   step 'project \'Shop\' has issue \'Bugfix1\' with description: \'Description for issue1\'' do

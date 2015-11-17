@@ -87,6 +87,15 @@ class Repository
     commits
   end
 
+  def find_commits_by_message(query)
+    # Limited to 1000 commits for now, could be parameterized?
+    args = %W(#{Gitlab.config.git.bin_path} log --pretty=%H --max-count 1000 --grep=#{query})
+
+    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:chomp)
+    commits = git_log_results.map { |c| commit(c) }
+    commits
+  end
+
   def find_branch(name)
     branches.find { |branch| branch.name == name }
   end
@@ -287,7 +296,7 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    args = %W(git rev-list --max-count=1 #{sha} -- #{path})
+    args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
     sha = Gitlab::Popen.popen(args, path_to_repo).first.strip
     commit(sha)
   end
@@ -337,8 +346,8 @@ class Repository
     end
   end
 
-  def branch_names_contains(sha)
-    args = %W(git branch --contains #{sha})
+  def refs_contains_sha(ref_type, sha)
+    args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
     names = Gitlab::Popen.popen(args, path_to_repo).first
 
     if names.respond_to?(:split)
@@ -354,21 +363,12 @@ class Repository
     end
   end
 
+  def branch_names_contains(sha)
+    refs_contains_sha('branch', sha)
+  end
+
   def tag_names_contains(sha)
-    args = %W(git tag --contains #{sha})
-    names = Gitlab::Popen.popen(args, path_to_repo).first
-
-    if names.respond_to?(:split)
-      names = names.split("\n").map(&:strip)
-
-      names.each do |name|
-        name.slice! '* '
-      end
-
-      names
-    else
-      []
-    end
+    refs_contains_sha('tag', sha)
   end
 
   def branches
@@ -496,7 +496,7 @@ class Repository
 
   def search_files(query, ref)
     offset = 2
-    args = %W(git grep -i -n --before-context #{offset} --after-context #{offset} -e #{query} #{ref || root_ref})
+    args = %W(#{Gitlab.config.git.bin_path} grep -i -n --before-context #{offset} --after-context #{offset} -e #{query} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
@@ -528,7 +528,7 @@ class Repository
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(git fetch -f #{source_path} #{source_ref}:#{target_ref})
+    args = %W(#{Gitlab.config.git.bin_path} fetch -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
   end
 

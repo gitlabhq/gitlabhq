@@ -10,10 +10,10 @@
 
 .milestones
   %ul.content-list
-    - if @dashboard_milestones.blank?
+    - if @milestones.blank?
       %li
         .nothing-here-block No milestones to show
     - else
-      - @dashboard_milestones.each do |milestone|
+      - @milestones.each do |milestone|
         = render 'milestone', milestone: milestone
-  = paginate @dashboard_milestones, theme: "gitlab"
+  = paginate @milestones, theme: "gitlab"

@@ -31,6 +31,10 @@ module SharedPaths
     visit merge_requests_group_path(Group.find_by(name: "Owned"))
   end
 
+  step 'I visit group "Owned" milestones page' do
+    visit group_milestones_path(Group.find_by(name: "Owned"))
+  end
+
   step 'I visit group "Owned" members page' do
     visit group_group_members_path(Group.find_by(name: "Owned"))
   end

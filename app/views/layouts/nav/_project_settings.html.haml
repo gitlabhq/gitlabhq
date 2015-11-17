@@ -1,9 +1,9 @@
 %ul.nav.nav-sidebar
   = nav_link do
-    = link_to project_path(@project), title: 'Back to project', data: {placement: 'right'}, class: 'back-link' do
+    = link_to project_path(@project), title: 'Go to project', data: {placement: 'right'}, class: 'back-link' do
       = icon('caret-square-o-left fw')
       %span
-        Back to project
+        Go to project
 
   %li.separate-item
 
@@ -34,7 +34,7 @@
         %span
           Protected Branches
 
-    - if @project.gitlab_ci?
+    - if @project.builds_enabled?
       = nav_link(controller: :runners) do
         = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners', data: {placement: 'right'} do
           = icon('cog fw')

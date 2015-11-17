@@ -100,7 +100,7 @@ module LabelsHelper
         Label.where(project_id: @projects)
       end
 
-    grouped_labels = Labels::GroupService.new(labels).execute
+    grouped_labels = GlobalLabel.build_collection(labels)
     grouped_labels.unshift(Label::None)
     grouped_labels.unshift(Label::Any)
 

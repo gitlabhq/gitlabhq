@@ -28,7 +28,7 @@ module MilestonesHelper
         Milestone.where(project_id: @projects)
       end.active
 
-    grouped_milestones = Milestones::GroupService.new(milestones).execute
+    grouped_milestones = GlobalMilestone.build_collection(milestones)
     grouped_milestones.unshift(Milestone::None)
     grouped_milestones.unshift(Milestone::Any)
 

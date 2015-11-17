@@ -37,6 +37,7 @@ class Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
+  include Gitlab::CurrentSettings
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -52,6 +53,7 @@ class Project < ActiveRecord::Base
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :issues_enabled, gitlab_config_features.issues
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
+  default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
@@ -123,6 +125,9 @@ class Project < ActiveRecord::Base
   has_many :starrers, through: :users_star_projects, source: :user
   has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
   has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
+  has_many :releases, dependent: :destroy
+  has_many :lfs_objects_projects, dependent: :destroy
+  has_many :lfs_objects, through: :lfs_objects_projects
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
@@ -249,7 +254,7 @@ class Project < ActiveRecord::Base
         joins(:namespace).
         iwhere('namespaces.path' => namespace_path)
 
-      projects.where('projects.path' => project_path).take || 
+      projects.where('projects.path' => project_path).take ||
         projects.iwhere('projects.path' => project_path).take
     end
 
@@ -455,10 +460,6 @@ class Project < ActiveRecord::Base
 
   def find_service(list, name)
     list.find { |service| service.to_param == name }
-  end
-
-  def gitlab_ci?
-    gitlab_ci_service && gitlab_ci_service.active && gitlab_ci_project.present?
   end
 
   def ci_services
@@ -777,12 +778,38 @@ class Project < ActiveRecord::Base
   end
 
   def ensure_gitlab_ci_project
-    gitlab_ci_project || create_gitlab_ci_project
+    gitlab_ci_project || create_gitlab_ci_project(
+      shared_runners_enabled: current_application_settings.shared_runners_enabled
+    )
+  end
+
+  # TODO: this should be migrated to Project table,
+  # the same as issues_enabled
+  def builds_enabled
+    gitlab_ci_service && gitlab_ci_service.active
+  end
+
+  def builds_enabled?
+    builds_enabled
+  end
+
+  def builds_enabled=(value)
+    service = gitlab_ci_service || create_gitlab_ci_service
+    service.active = value
+    service.save
   end
 
   def enable_ci
-    service = gitlab_ci_service || create_gitlab_ci_service
-    service.active = true
-    service.save
+    self.builds_enabled = true
+  end
+
+  def unlink_fork
+    if forked?
+      forked_from_project.lfs_objects.find_each do |lfs_object|
+        lfs_object.projects << self
+      end
+
+      forked_project_link.destroy
+    end
   end
 end

@@ -155,6 +155,7 @@ class Ability
         :create_merge_request,
         :create_wiki,
         :manage_builds,
+        :download_build_artifacts,
         :push_code
       ]
     end
@@ -231,9 +232,10 @@ class Ability
 
       # Only group masters and group owners can create new projects in group
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
-        rules.push(*[
-                     :create_projects,
-                   ])
+        rules += [
+          :create_projects,
+          :admin_milestones
+        ]
       end
 
       # Only group owner and administrators can admin group
