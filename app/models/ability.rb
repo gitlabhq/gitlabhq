@@ -2,7 +2,7 @@ class Ability
   class << self
     def allowed(user, subject)
       return not_auth_abilities(user, subject) if user.nil?
-      return [] unless user.kind_of?(User)
+      return [] unless user.is_a?(User)
       return [] if user.blocked?
 
       case subject.class.name
@@ -22,14 +22,20 @@ class Ability
     # List of possible abilities
     # for non-authenticated user
     def not_auth_abilities(user, subject)
-      return not_auth_personal_snippet_abilities(subject) if subject.kind_of?(PersonalSnippet)
-      return not_auth_project_abilities(subject) if subject.kind_of?(Project) || subject.respond_to?(:project)
-      return not_auth_group_abilities(subject) if subject.kind_of?(Group) || subject.respond_to?(:group)
-      []
+      case true
+      when subject.is_a?(PersonalSnippet)
+        not_auth_personal_snippet_abilities(subject)
+      when subject.is_a?(Project) || subject.respond_to?(:project)
+        not_auth_project_abilities(subject)
+      when subject.is_a?(Group) || subject.respond_to?(:group)
+        not_auth_group_abilities(subject)
+      else
+        []
+      end
     end
 
     def not_auth_project_abilities(subject)
-      project = if subject.kind_of?(Project)
+      project = if subject.is_a?(Project)
                   subject
                 else
                   subject.project
@@ -57,7 +63,7 @@ class Ability
     end
 
     def not_auth_group_abilities(subject)
-      group = if subject.kind_of?(Group)
+      group = if subject.is_a?(Group)
                 subject
               else
                 subject.group
@@ -327,7 +333,7 @@ class Ability
       end
 
       if snippet.public? || snippet.internal?
-        rules.push(:read_personal_snippet)
+        rules << :read_personal_snippet 
       end
 
       rules
