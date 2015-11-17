@@ -39,7 +39,7 @@ describe Projects::ForkService do
       it "fork and enable CI for fork" do
         @from_project.enable_ci
         @to_project = fork_project(@from_project, @to_user)
-        expect(@to_project.gitlab_ci?).to be_truthy
+        expect(@to_project.builds_enabled?).to be_truthy
       end
     end
   end

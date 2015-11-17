@@ -39,6 +39,12 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
         new DropzoneInput($('.merge-request-form'))
         new IssuableForm($('.merge-request-form'))
+      when 'projects:tags:new'
+        new ZenMode()
+        new DropzoneInput($('.tag-form'))
+      when 'projects:releases:edit'
+        new ZenMode()
+        new DropzoneInput($('.release-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssuable()

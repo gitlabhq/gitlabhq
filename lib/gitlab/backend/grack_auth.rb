@@ -33,6 +33,9 @@ module Grack
 
       auth!
 
+      lfs_response = Gitlab::Lfs::Router.new(project, @user, @request).try_call
+      return lfs_response unless lfs_response.nil?
+
       if project && authorized_request?
         # Tell gitlab-workhorse the request is OK, and what the GL_ID is
         render_grack_auth_ok

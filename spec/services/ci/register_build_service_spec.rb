@@ -70,6 +70,10 @@ module Ci
       end
 
       context 'disallow shared runners' do
+        before do
+          gl_project.gitlab_ci_project.update(shared_runners_enabled: false)
+        end
+
         context 'shared runner' do
           let(:build) { service.execute(shared_runner) }
 

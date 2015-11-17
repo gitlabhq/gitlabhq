@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: events
+# Table name: ci_events
 #
 #  id          :integer          not null, primary key
 #  project_id  :integer

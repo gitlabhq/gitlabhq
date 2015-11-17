@@ -445,12 +445,15 @@ describe Project do
     it { expect(project.ci_commit(commit.sha)).to eq(commit) }
   end
 
-  describe :enable_ci do
+  describe :builds_enabled do
     let(:project) { create :project }
 
-    before { project.enable_ci }
+    before { project.builds_enabled = true }
 
-    it { expect(project.gitlab_ci?).to be_truthy }
+    subject { project.builds_enabled }
+
+    it { is_expected.to eq(project.gitlab_ci_service.active) }
+    it { expect(project.builds_enabled?).to be_truthy }
     it { expect(project.gitlab_ci_project).to be_a(Ci::Project) }
   end
 

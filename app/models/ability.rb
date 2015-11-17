@@ -170,6 +170,7 @@ class Ability
         :create_merge_request,
         :create_wiki,
         :manage_builds,
+        :download_build_artifacts,
         :push_code
       ]
     end

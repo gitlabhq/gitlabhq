@@ -249,19 +249,19 @@ describe Gitlab::GitAccess do
   describe "git_hook_check" do
     describe "author email check" do
       it 'returns true' do
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab')).to be_truthy
+        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_truthy
       end
 
       it 'returns false' do
         project.create_git_hook
         project.git_hook.update(commit_message_regex: "@only.com")
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab')).not_to be_allowed
+        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
       end
 
       it 'returns true for tags' do
         project.create_git_hook
         project.git_hook.update(commit_message_regex: "@only.com")
-        expect(access.git_hook_check(user, project, 'refs/tags/v1', '6f6d7e7ed', '570e7b2ab')).to be_allowed
+        expect(access.git_hook_check(user, project, 'refs/tags/v1', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
       end
     end
 
@@ -272,12 +272,12 @@ describe Gitlab::GitAccess do
       end
 
       it 'returns false for non-member user' do
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab')).not_to be_allowed
+        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
       end
 
       it 'returns true if committer is a gitlab member' do
         create(:user, email: 'dmitriy.zaporozhets@gmail.com')
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab')).to be_allowed
+        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
       end
     end
 
@@ -285,13 +285,13 @@ describe Gitlab::GitAccess do
       it 'returns false when filename is prohibited' do
         project.create_git_hook
         project.git_hook.update(file_name_regex: "jpg$")
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '913c66a37', '33f3729a4')).not_to be_allowed
+        expect(access.git_hook_check(user, project, 'refs/heads/master', '913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')).not_to be_allowed
       end
 
       it 'returns true if file name is allowed' do
         project.create_git_hook
         project.git_hook.update(file_name_regex: "exe$")
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '913c66a37', '33f3729a4')).to be_allowed
+        expect(access.git_hook_check(user, project, 'refs/heads/master', '913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')).to be_allowed
       end
     end
 
@@ -303,13 +303,13 @@ describe Gitlab::GitAccess do
       it "returns false when size is too large" do
         project.create_git_hook
         project.git_hook.update(max_file_size: 1)
-        expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf6', '913c66a37')).not_to be_allowed
+        expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).not_to be_allowed
       end
 
       it "returns true when size is allowed" do
         project.create_git_hook
         project.git_hook.update(max_file_size: 2)
-        expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf6', '913c66a37')).to be_allowed
+        expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
       end
     end
   end

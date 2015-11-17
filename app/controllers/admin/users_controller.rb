@@ -63,12 +63,6 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
-  def login_as
-    sign_in(user)
-    flash[:alert] = "Logged in as #{user.username}"
-    redirect_to root_path
-  end
-
   def disable_two_factor
     user.disable_two_factor!
     redirect_to admin_user_path(user),
