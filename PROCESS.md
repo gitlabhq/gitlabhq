@@ -45,6 +45,8 @@ Workflow labels are purposely not very detailed since that would be hard to keep
 - *Frontend* needs help from a Front-end engineer
 - *Graphics* needs help from a Graphics designer
 
+Example workflow: when a UX designer provided a design but it needs frontend work they remove the UX label and add the frontend label.
+
 ## Functional labels
 
 These labels describe what development specialities are involved such as: PostgreSQL, UX, LDAP.
