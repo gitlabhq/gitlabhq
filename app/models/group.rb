@@ -20,8 +20,9 @@ require 'file_size_validator'
 class Group < Namespace
   include Gitlab::ConfigHelper
   include Referable
-
+  
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  alias_method :members, :group_members
   has_many :users, through: :group_members
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
@@ -108,10 +109,6 @@ class Group < Namespace
 
   def last_owner?(user)
     has_owner?(user) && owners.size == 1
-  end
-
-  def members
-    group_members
   end
 
   def avatar_type

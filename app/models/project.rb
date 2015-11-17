@@ -42,7 +42,7 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
-
+  
   extend Gitlab::ConfigHelper
   extend Enumerize
 
