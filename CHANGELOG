@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.2.0 (unreleased)
+v 8.3.0 (unreleased)
+
+v 8.2.0
   - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
   - Fix Drone CI service template not saving properly (Stan Hu)
   - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
