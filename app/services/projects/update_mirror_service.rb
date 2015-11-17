@@ -1,21 +1,24 @@
 module Projects
   class UpdateMirrorService < BaseService
-    class FetchError < StandardError; end
+    class Error < StandardError; end
+    class UpdateError < Error; end
 
     def execute
       return false unless project.mirror?
 
-      begin
-        update_tags do
-          project.fetch_mirror
-        end
-      rescue Gitlab::Shell::Error => e
-        raise FetchError, e.message
+      unless current_user.can?(:push_code_to_protected_branches, project)
+        return error("The mirror user is not allowed to push code to all branches on this project.")
+      end
+
+      update_tags do
+        project.fetch_mirror
       end
 
       update_branches
 
-      true
+      success
+    rescue Gitlab::Shell::Error, UpdateError => e
+      error(e.message)
     end
 
     private
@@ -29,13 +32,20 @@ module Projects
         local_branch = local_branches[name]
 
         if local_branch.nil?
-          CreateBranchService.new(project, current_user).execute(name, upstream_branch.target)
+          result = CreateBranchService.new(project, current_user).execute(name, upstream_branch.target)
+          if result[:status] == :error
+            raise UpdateError, result[:message]
+          end
         elsif local_branch.target == upstream_branch.target
           # Already up to date
         elsif repository.diverged_from_upstream?(name)
           # Cannot be updated
         else
-          repository.ff_merge(current_user, upstream_branch.target, name)
+          begin
+            repository.ff_merge(current_user, upstream_branch.target, name)
+          rescue Repository::PreReceiveError, Repository::CommitError => e
+            raise UpdateError, e.message
+          end
         end
       end
     end

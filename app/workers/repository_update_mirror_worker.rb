@@ -11,10 +11,9 @@ class RepositoryUpdateMirrorWorker
     # TODO: Use actual user
     @current_user = User.last
 
-    begin
-      Projects::UpdateMirrorService.new(@project, @current_user).execute
-    rescue Projects::UpdateMirrorService::FetchError => e
-      project.update(import_error: e.message)
+    result = Projects::UpdateMirrorService.new(@project, @current_user).execute
+    if result[:status] == :error
+      project.update(import_error: result[:message])
       project.import_fail
       return
     end
