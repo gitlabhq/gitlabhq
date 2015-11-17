@@ -48,10 +48,28 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     click_button "Add users to group"
   end
 
+  step 'I select "Mike" as "Master"' do
+    user = User.find_by(name: "Mike")
+
+    page.within ".users-group-form" do
+      select2(user.id, from: "#user_ids", multiple: true)
+      select "Master", from: "access_level"
+    end
+
+    click_button "Add users to group"
+  end
+
   step 'I should see "Mike" in team list as "Reporter"' do
     page.within '.well-list' do
       expect(page).to have_content('Mike')
       expect(page).to have_content('Reporter')
+    end
+  end
+
+  step 'I should see "Mike" in team list as "Owner"' do
+    page.within '.well-list' do
+      expect(page).to have_content('Mike')
+      expect(page).to have_content('Owner')
     end
   end
 
