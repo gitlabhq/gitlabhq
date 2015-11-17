@@ -34,6 +34,7 @@ v 8.2.0
   - Add "added", "modified" and "removed" properties to commit object in webhook
   - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
   - Allow groups to appear in the search results if the group owner allows it
+  - Add email notification to former assignee upon unassignment (Adam Lieskovský)
   - New design for project graphs page
   - Remove deprecated dumped yaml file generated from previous job definitions
   - Fix incoming email config defaults
