@@ -45,6 +45,7 @@ v 8.2.0 (unreleased)
   - Fix trailing whitespace issue in merge request/issue title
   - Fix bug when milestone/label filter was empty for dashboard issues page
   - Add ability to create milestone in group projects from single form
+  - Add option to create merge request when editing/creating a file (Dirceu Tiegs)
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
