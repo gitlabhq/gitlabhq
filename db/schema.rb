@@ -643,9 +643,7 @@ ActiveRecord::Schema.define(version: 20151118162244) do
     t.integer  "star_count",             default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "commit_count",                   default: 0
-    t.boolean  "merge_requests_ff_only_enabled", default: false
-    t.text     "issues_template"
+    t.integer  "commit_count",           default: 0
     t.text     "import_error"
   end
 
