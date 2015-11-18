@@ -6,7 +6,7 @@ The general recommendation is to not have Git repositories larger than 1GB to pr
 GitLab already supports [managing large files with git annex](http://doc.gitlab.com/ee/workflow/git_annex.html) (EE only), however in certain
 environments it is not always convenient to use different commands to differentiate between the large files and regular ones.
 
-Git LFS makes this simpler for the end user by removing the requirement to learn new commands
+Git LFS makes this simpler for the end user by removing the requirement to learn new commands.
 <!-- more -->
 
 ## How it works
@@ -134,5 +134,3 @@ This will remember the credentials for an hour after which Git operations will r
 If you are using OS X you can use `osxkeychain` to store and encrypt your credentials. For Windows, `wincred` is available.
 
 More details about various methods of storing the user credentials can be found on [Git Credential Storage documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage)
-
-
