@@ -114,8 +114,8 @@
     cursor: pointer;
 
     &.active {
-      border-color: rgba(79,176,252,.4);
-      background-color: rgba(79,176,252,.08);
+      border-color: rgba(79,176,252,0.4);
+      background-color: rgba(79,176,252,0.1);
 
       .counter {
         font-weight: bold;

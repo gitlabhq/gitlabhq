@@ -15,8 +15,8 @@
   
 :coffeescript
   post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
-  noteable_type = "Issue"
-  noteable_id = #{@issue.id}
+  noteable_type = #{votable}
+  noteable_id = #{votable.id}
   window.awards_handler = new AwardsHandler(post_emoji_url, noteable_type, noteable_id)
 
   $ ->
@@ -29,7 +29,3 @@
       awards_handler.addAward(emoji)
 
     $(".award").tooltip()
-
-    
-
-      
