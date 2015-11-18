@@ -59,8 +59,7 @@
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
-        - unless note.system?
-          -# System notes can't be edited
+        - if note_editable?(note)
           = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url

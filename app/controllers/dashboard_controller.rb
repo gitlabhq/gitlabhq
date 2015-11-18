@@ -1,25 +1,11 @@
 class DashboardController < Dashboard::ApplicationController
+  include IssuesAction
+  include MergeRequestsAction
+
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests]
 
   respond_to :html
-
-  def merge_requests
-    @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
-    @merge_requests = @merge_requests.preload(:author, :target_project)
-  end
-
-  def issues
-    @issues = get_issues_collection
-    @issues = @issues.page(params[:page]).per(PER_PAGE)
-    @issues = @issues.preload(:author, :project)
-
-    respond_to do |format|
-      format.html
-      format.atom { render layout: false }
-    end
-  end
 
   def activity
     @last_push = current_user.recent_push

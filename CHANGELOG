@@ -1,6 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.2.0 (unreleased)
+v 8.3.0 (unreleased)
+
+v 8.2.0
+  - Fix grouping of contributors by email in graph.
   - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
   - Fix Drone CI service template not saving properly (Stan Hu)
   - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
@@ -32,6 +35,7 @@ v 8.2.0 (unreleased)
   - Add "added", "modified" and "removed" properties to commit object in webhook
   - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
   - Allow groups to appear in the search results if the group owner allows it
+  - Add email notification to former assignee upon unassignment (Adam Lieskovský)
   - New design for project graphs page
   - Remove deprecated dumped yaml file generated from previous job definitions
   - Fix incoming email config defaults
@@ -46,6 +50,7 @@ v 8.2.0 (unreleased)
   - Fix bug when milestone/label filter was empty for dashboard issues page
   - Add ability to create milestone in group projects from single form
   - Add option to create merge request when editing/creating a file (Dirceu Tiegs)
+  - Prevent the last owner of a group from being able to delete themselves by 'adding' themselves as a master (James Lopez)
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)

@@ -87,4 +87,3 @@ flay:
   tags:
     - ruby
     - mysql
-  allow_failure: true
