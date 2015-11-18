@@ -44,8 +44,7 @@ module Projects
     end
 
     def update_forks_visibility_level(new_level)
-      project.forks.each do |forked_link|
-        forked_project = forked_link.forked_to_project
+      project.forks.each do |forked_project|
         fork_level = forked_project.visibility_level
 
         if fork_level > new_level.to_i
