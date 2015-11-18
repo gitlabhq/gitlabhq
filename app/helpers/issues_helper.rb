@@ -92,6 +92,14 @@ module IssuesHelper
     url_to_image(emoji_path)
   end
 
+  def emoji_author_list(notes, current_user)
+    list = notes.map do |note|
+             note.author == current_user ? "me" : note.author.username
+           end
+
+    list.join(", ")
+  end
+
   # Required for Gitlab::Markdown::IssueReferenceFilter
   module_function :url_for_issue
 end

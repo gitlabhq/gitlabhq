@@ -13,6 +13,7 @@ class @AwardsHandler
         counter = @findEmojiIcon(emoji).siblings(".counter")
         counter.text(parseInt(counter.text()) + 1)
         counter.parent().addClass("active")
+        @addMeToAuthorList(emoji)
     else
       @createEmoji(emoji)
 
@@ -28,13 +29,38 @@ class @AwardsHandler
     if parseInt(counter.text()) > 1
       counter.text(parseInt(counter.text()) - 1)
       counter.parent().removeClass("active")
+      @removeMeFromAuthorList(emoji)
     else
-      counter.parent().remove()
+      award = counter.parent()
+      award.tooltip("destroy")
+      award.remove()
 
+  removeMeFromAuthorList: (emoji) ->
+    award_block = @findEmojiIcon(emoji).parent()
+    authors = award_block.attr("data-original-title").split(", ")
+    authors = _.without(authors, "me").join(", ")
+    award_block.attr("title", authors)
+    @resetTooltip(award_block)
+
+  addMeToAuthorList: (emoji) ->
+    award_block = @findEmojiIcon(emoji).parent()
+    authors = award_block.attr("data-original-title").split(", ")
+    authors.push("me")
+    award_block.attr("title", authors.join(", "))
+    @resetTooltip(award_block)
+
+  resetTooltip: (award) ->
+    award.tooltip("destroy")
+
+    # "destroy" call is asynchronous, this is why we need to set timeout.
+    setTimeout (->
+      award.tooltip()
+    ), 200
+    
 
   createEmoji: (emoji) ->
     nodes = []
-    nodes.push("<div class='award active'>")
+    nodes.push("<div class='award active' title='me'>")
     nodes.push("<div class='icon' data-emoji='" + emoji + "'>")
     nodes.push(@getImage(emoji))
     nodes.push("</div>")
@@ -42,6 +68,8 @@ class @AwardsHandler
     nodes.push("</div></div>")
 
     $(".awards-controls").before(nodes.join("\n"))
+
+    $(".award").tooltip()
 
   getImage: (emoji) ->
     $("li[data-emoji='" + emoji + "'").html()
