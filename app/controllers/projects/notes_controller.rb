@@ -3,7 +3,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
-  before_action :find_current_user_notes, except: [:destroy, :delete_attachment, :award_toggle]]
+  before_action :find_current_user_notes, except: [:destroy, :delete_attachment, :award_toggle]
 
   def index
     current_fetched_at = Time.now.to_i
@@ -76,7 +76,7 @@ class Projects::NotesController < Projects::ApplicationController
       project.notes.create(data)
     end
 
-    render json: {ok: true}
+    render json: { ok: true }
   end
 
   private
