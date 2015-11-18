@@ -23,11 +23,11 @@ module Gitlab
         # (thus fixing this problem), at a slight performance cost.
         fragments = ActiveRecord::Base.connection.unprepared_statement do
           @relations.map do |rel|
-            "(#{rel.reorder(nil).to_sql})"
+            rel.reorder(nil).to_sql
           end
         end
 
-        fragments.join(' UNION ')
+        fragments.join("\nUNION\n")
       end
     end
   end

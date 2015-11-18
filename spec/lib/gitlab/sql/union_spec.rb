@@ -10,7 +10,7 @@ describe Gitlab::SQL::Union do
       sql1 = rel1.reorder(nil).to_sql
       sql2 = rel2.reorder(nil).to_sql
 
-      expect(union.to_sql).to eq("(#{sql1}) UNION (#{sql2})")
+      expect(union.to_sql).to eq("#{sql1}\nUNION\n#{sql2}")
     end
   end
 end
