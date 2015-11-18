@@ -556,8 +556,7 @@ Gitlab::Application.routes.draw do
             get :diffs
             get :commits
             post :merge
-            delete :merge, action: :cancel_merge_when_build_succeeds
-            get :merge_check
+            post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
           end

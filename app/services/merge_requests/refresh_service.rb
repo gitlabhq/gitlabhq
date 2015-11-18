@@ -77,9 +77,7 @@ module MergeRequests
     end
 
     def reset_merge_when_build_succeeds
-      merge_requests_for_source_branch.each do |merge_request|
-        merge_request.reset_merge_when_build_succeeds
-      end
+      merge_requests_for_source_branch.each(&:reset_merge_when_build_succeeds)
     end
 
     def find_new_commits

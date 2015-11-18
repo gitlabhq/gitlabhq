@@ -30,7 +30,7 @@ describe MergeRequest do
   describe 'associations' do
     it { is_expected.to belong_to(:target_project).with_foreign_key(:target_project_id).class_name('Project') }
     it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
-
+    it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to have_one(:merge_request_diff).dependent(:destroy) }
   end
 
@@ -53,6 +53,8 @@ describe MergeRequest do
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
+    it { is_expected.to respond_to(:merge_params) }
+    it { is_expected.to respond_to(:merge_when_build_succeeds) }
   end
 
   describe '#to_reference' do
@@ -168,6 +170,16 @@ describe MergeRequest do
 
     it "doesn't detect WIP by default" do
       expect(subject).not_to be_work_in_progress
+    end
+  end
+
+  describe "#reset_merge_when_build_succeeds" do
+    let(:merge_if_green) { create :merge_request, merge_when_build_succeeds: true }
+    it "sets the item to false" do
+      merge_if_green.reset_merge_when_build_succeeds
+      merge_if_green.reload
+
+      expect(merge_if_green.merge_when_build_succeeds).to be_falsey
     end
   end
 

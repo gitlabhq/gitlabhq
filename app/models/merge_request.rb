@@ -253,6 +253,10 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def mergeable_by_or_author(user)
+    self.can_be_merged_by?(user) || self.author == user
+  end
+
   def mr_and_commit_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
@@ -390,7 +394,7 @@ class MergeRequest < ActiveRecord::Base
 
   def reset_merge_when_build_succeeds
     return unless merge_when_build_succeeds?
-    
+
     self.merge_when_build_succeeds = false
     self.merge_user = nil
     self.merge_params = nil

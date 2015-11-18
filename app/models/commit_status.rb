@@ -75,7 +75,7 @@ class CommitStatus < ActiveRecord::Base
       build.update_attributes finished_at: Time.now
     end
 
-    after_transition running: :success do |build, transition|
+    after_transition [:pending, :running] => :success do |build, transition|
       MergeRequests::MergeWhenBuildSucceedsService.new(build.commit.gl_project, nil).trigger(build)
     end
 

@@ -29,5 +29,5 @@
     $('.accept_merge_request').on 'click', ->
       btn = $(this)
       btn.html("<i class='fa fa-spinner fa-spin'></i> Merge in progress")
-    $('.accept-mr-form').on 'ajax:sen', ->
+    $('.accept-mr-form').on 'ajax:send', ->
       $(".accept-mr-form :input").disable()

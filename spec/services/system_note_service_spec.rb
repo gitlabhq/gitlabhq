@@ -207,6 +207,22 @@ describe SystemNoteService do
     end
   end
 
+  describe '.merge_when_build_succeeds' do
+    let(:ci_commit) { create :ci_commit, gl_project: project }
+    let(:merge_request) { create :merge_request, project: project }
+
+    subject { described_class.merge_when_build_succeeds(merge_request, project, author) }
+
+    it_behaves_like 'a system note'
+
+    it "posts the Merge When Build Succeeds system note" do
+      allow(merge_request).to receive(:ci_commit).and_return(ci_commit)
+      allow(ci_commit).to receive(:short_sha).and_return('12345678')
+
+      expect(subject.note).to eq  "This merge request will be automatically merged when the build for 12345678 succeeds"
+    end
+  end
+
   describe '.change_title' do
     subject { described_class.change_title(noteable, project, author, 'Old title') }
 

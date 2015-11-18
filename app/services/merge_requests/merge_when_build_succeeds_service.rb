@@ -1,7 +1,7 @@
 module MergeRequests
   class MergeWhenBuildSucceedsService < MergeRequests::BaseService
     def execute(merge_request)
-      merge_request.merge_params.merge!(params[:merge_params])
+      merge_request.merge_params.merge!(params)
 
       # The service is also called when the merge params are updated.
       already_approved = merge_request.merge_when_build_succeeds?
