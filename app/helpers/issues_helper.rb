@@ -100,6 +100,10 @@ module IssuesHelper
     list.join(", ")
   end
 
+  def emoji_list
+    ::AwardEmoji::EMOJI_LIST
+  end
+
   # Required for Gitlab::Markdown::IssueReferenceFilter
   module_function :url_for_issue
 end

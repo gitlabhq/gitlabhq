@@ -9,7 +9,7 @@
   .dropdown.awards-controls
     %a#add-award{"data-toggle" => "dropdown", "data-target" => "#", "href" => "#"} +
     %ul.dropdown-menu.awards-menu
-      - ["100", "blush", "heart", "smile", "rage", "beers", "thumbsup", "disappointed", "ok_hand", "helicopter"].each do |emoji|
+      - emoji_list.each do |emoji|
         %li{"data-emoji" => "#{emoji}"}= image_tag url_to_emoji(emoji), height: "20px", width: "20px"
 
   
