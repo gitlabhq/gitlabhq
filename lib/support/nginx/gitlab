@@ -67,7 +67,7 @@ server {
   location / {
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
-    try_files $uri $uri/index.html $uri.html @gitlab;
+    try_files $uri /index.html $uri.html @gitlab;
   }
 
   ## We route uploads through GitLab to prevent XSS and enforce access control.
