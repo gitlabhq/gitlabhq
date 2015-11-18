@@ -85,4 +85,21 @@ describe Event do
       end
     end
   end
+
+  describe '.limit_recent' do
+    let!(:event1) { create(:closed_issue_event) }
+    let!(:event2) { create(:closed_issue_event) }
+
+    describe 'without an explicit limit' do
+      subject { Event.limit_recent }
+
+      it { is_expected.to eq([event2, event1]) }
+    end
+
+    describe 'with an explicit limit' do
+      subject { Event.limit_recent(1) }
+
+      it { is_expected.to eq([event2]) }
+    end
+  end
 end

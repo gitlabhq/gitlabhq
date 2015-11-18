@@ -69,6 +69,10 @@ class Event < ActiveRecord::Base
 
       row ? row.updated_at : nil
     end
+
+    def limit_recent(limit = 20, offset = nil)
+      recent.limit(limit).offset(offset)
+    end
   end
 
   def proper?
