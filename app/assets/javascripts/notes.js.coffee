@@ -121,7 +121,7 @@ class @Notes
       @initTaskList()
 
     if note.award
-      awards_handler.addAwardToEmojiBar(note.note)
+      awards_handler.addAwardToEmojiBar(note.note, note.emoji_path)
 
   ###
   Check if note does not exists on page
