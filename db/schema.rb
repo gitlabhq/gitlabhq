@@ -531,7 +531,7 @@ ActiveRecord::Schema.define(version: 20151118162244) do
     t.string   "type"
     t.string   "description", default: "",    null: false
     t.string   "avatar"
-    t.boolean  "visible",     default: false
+    t.boolean  "public",      default: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
