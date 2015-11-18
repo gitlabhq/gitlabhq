@@ -88,7 +88,7 @@ module IssuesHelper
   end
 
   def url_to_emoji(name)
-    emoji_path = "emoji/#{Emoji.emoji_filename(name)}.png"
+    emoji_path = ::AwardEmoji.path_to_emoji_image(name)
     url_to_image(emoji_path)
   end
 

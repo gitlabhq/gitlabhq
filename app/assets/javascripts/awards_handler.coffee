@@ -5,7 +5,7 @@ class @AwardsHandler
     @postEmoji emoji, =>
       @addAwardToEmojiBar(emoji)
     
-  addAwardToEmojiBar: (emoji) ->
+  addAwardToEmojiBar: (emoji, custom_path = '') ->
     if @exist(emoji)
       if @isActive(emoji)
         @decrementCounter(emoji)
@@ -15,7 +15,7 @@ class @AwardsHandler
         counter.parent().addClass("active")
         @addMeToAuthorList(emoji)
     else
-      @createEmoji(emoji)
+      @createEmoji(emoji, custom_path)
 
   exist: (emoji) ->
     @findEmojiIcon(emoji).length > 0
@@ -58,11 +58,11 @@ class @AwardsHandler
     ), 200
     
 
-  createEmoji: (emoji) ->
+  createEmoji: (emoji, custom_path) ->
     nodes = []
     nodes.push("<div class='award active' title='me'>")
     nodes.push("<div class='icon' data-emoji='" + emoji + "'>")
-    nodes.push(@getImage(emoji))
+    nodes.push(@getImage(emoji, custom_path))
     nodes.push("</div>")
     nodes.push("<div class='counter'>1")
     nodes.push("</div></div>")
@@ -71,8 +71,12 @@ class @AwardsHandler
 
     $(".award").tooltip()
 
-  getImage: (emoji) ->
-    $("li[data-emoji='" + emoji + "'").html()
+  getImage: (emoji, custom_path) ->
+    if custom_path
+      $(".awards-menu li").first().html().replace(/emoji\/.*\.png/, custom_path)
+    else
+      $("li[data-emoji='" + emoji + "'").html()
+
 
   postEmoji: (emoji, callback) ->
     $.post @post_emoji_url, {

@@ -133,6 +133,7 @@ class Projects::NotesController < Projects::ApplicationController
       discussion_id: note.discussion_id,
       html: note_to_html(note),
       award: note.is_award,
+      emoji_path: note.is_award ? ::AwardEmoji.path_to_emoji_image(note.note) : "",
       note: note.note,
       discussion_html: note_to_discussion_html(note),
       discussion_with_diff_html: note_to_discussion_with_diff_html(note)

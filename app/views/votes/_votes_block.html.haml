@@ -12,7 +12,6 @@
       - emoji_list.each do |emoji|
         %li{"data-emoji" => "#{emoji}"}= image_tag url_to_emoji(emoji), height: "20px", width: "20px"
 
-  
 :coffeescript
   post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
   noteable_type = "#{votable.class}"
