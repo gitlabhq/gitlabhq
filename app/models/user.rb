@@ -770,15 +770,10 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_projects
-    @ci_authorized_projects ||=
-      Ci::Project.where("gitlab_id IN (#{projects_union.to_sql})")
-  end
-
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject.joins(:project).
-        where("ci_projects.gitlab_id IN (#{projects_union.to_sql})").
+        where("ci_projects.gitlab_id IN (#{ci_projects_union.to_sql})").
         select(:runner_id)
 
       Ci::Runner.specific.where(id: runner_ids)
@@ -791,5 +786,14 @@ class User < ActiveRecord::Base
     Gitlab::SQL::Union.new([personal_projects.select(:id),
                             groups_projects.select(:id),
                             projects.select(:id)])
+  end
+
+  def ci_projects_union
+    scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }
+    groups = groups_projects.where(members: scope)
+    other  = projects.where(members: scope)
+
+    Gitlab::SQL::Union.new([personal_projects.select(:id), groups.select(:id),
+                            other.select(:id)])
   end
 end
