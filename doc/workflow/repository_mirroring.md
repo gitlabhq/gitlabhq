@@ -1,9 +1,9 @@
 # Repository Mirroring
 
-You can set up a project to automatically have its branches and tags updated from an upstream repository.
+You can set up a project to automatically have its branches, tags, and commits updated from an upstream repository.
 This is useful when a repository you're interested in is located on a different server, and you want to be able to browse its content and its activity using the familiar GitLab interface.
 
-Mirror repositories are updated every hour, and all new branches, tags and commits will be visible in the project's activity feed. Users with at least developer access to the project can also force an immediate update.
+Mirror repositories are updated every hour, and all new branches, tags, and commits will be visible in the project's activity feed. Users with at least developer access to the project can also force an immediate update.
 
 ![Project page](repository_mirroring/project_page.png)
 
