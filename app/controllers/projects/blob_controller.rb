@@ -23,21 +23,9 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
-    result = Files::CreateService.new(@project, current_user, @commit_params).execute
-
-    if result[:status] == :success
-      flash[:notice] = "The changes have been successfully committed"
-      respond_to do |format|
-        format.html { redirect_to after_create_path }
-        format.json { render json: { message: "success", filePath: after_create_path } }
-      end
-    else
-      flash[:alert] = result[:message]
-      respond_to do |format|
-        format.html { render :new }
-        format.json { render json: { message: "failed", filePath: namespace_project_blob_path(@project.namespace, @project, @id) } }
-      end
-    end
+    create_commit(Files::CreateService, success_path: after_create_path,
+                                        failure_view: :new,
+                                        failure_path: namespace_project_new_blob_path(@project.namespace, @project, @ref))
   end
 
   def show
@@ -48,21 +36,9 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
-    result = Files::UpdateService.new(@project, current_user, @commit_params).execute
-
-    if result[:status] == :success
-      flash[:notice] = "Your changes have been successfully committed"
-      respond_to do |format|
-        format.html { redirect_to after_edit_path }
-        format.json { render json: { message: "success", filePath: after_edit_path } }
-      end
-    else
-      flash[:alert] = result[:message]
-      respond_to do |format|
-        format.html { render :edit }
-        format.json { render json: { message: "failed", filePath: namespace_project_new_blob_path(@project.namespace, @project, @id) } }
-      end
-    end
+    create_commit(Files::UpdateService, success_path: after_edit_path,
+                                        failure_view: :edit,
+                                        failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
   end
 
   def preview
@@ -130,6 +106,24 @@ class Projects::BlobController < Projects::ApplicationController
 
   rescue InvalidPathError
     render_404
+  end
+
+  def create_commit(service, success_path:, failure_view:, failure_path:)
+    result = service.new(@project, current_user, @commit_params).execute
+
+    if result[:status] == :success
+      flash[:notice] = "Your changes have been successfully committed"
+      respond_to do |format|
+        format.html { redirect_to success_path }
+        format.json { render json: { message: "success", filePath: success_path } }
+      end
+    else
+      flash[:alert] = result[:message]
+      respond_to do |format|
+        format.html { render failure_view }
+        format.json { render json: { message: "failed", filePath: failure_path } }
+      end
+    end
   end
 
   def after_create_path
