@@ -404,10 +404,8 @@ class User < ActiveRecord::Base
 
   def owned_projects
     @owned_projects ||=
-      begin
-        namespace_ids = owned_groups.pluck(:id).push(namespace.id)
-        Project.in_namespace(namespace_ids).joins(:namespace)
-      end
+      Project.where('namespace_id IN (?) OR namespace_id = ?',
+                    owned_groups.select(:id), namespace.id).joins(:namespace)
   end
 
   # Team membership in authorized projects
