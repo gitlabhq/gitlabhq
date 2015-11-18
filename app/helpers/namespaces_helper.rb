@@ -17,15 +17,6 @@ module NamespacesHelper
     grouped_options_for_select(options, selected)
   end
 
-  def namespace_select_tag(id, opts = {})
-    css_class = "ajax-namespace-select "
-    css_class << "multiselect " if opts[:multiple]
-    css_class << (opts[:class] || '')
-    value = opts[:selected] || ''
-
-    hidden_field_tag(id, value, class: css_class)
-  end
-
   def namespace_icon(namespace, size = 40)
     if namespace.kind_of?(Group)
       group_icon(namespace)

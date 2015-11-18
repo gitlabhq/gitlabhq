@@ -20,6 +20,7 @@
 #  position          :integer          default(0)
 #  locked_at         :datetime
 #  updated_by_id     :integer
+#  merge_error       :string(255)
 #
 
 require Rails.root.join("app/models/commit")
@@ -43,7 +44,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, to: :merge_request_diff, prefix: nil
+  delegate :commits, :diffs, :diffs_no_whitespace, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests

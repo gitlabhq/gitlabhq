@@ -26,10 +26,6 @@ module Ci
       redirect_to namespace_project_runners_path(project.gl_project.namespace, project.gl_project)
     end
 
-    def dumped_yaml
-      send_data @project.generated_yaml_config, filename: '.gitlab-ci.yml'
-    end
-
     protected
 
     def project

@@ -1,8 +1,8 @@
-## Test Clojure applications
+## Test a Clojure application
 
 This example will guide you how to run tests in your Clojure application.
 
-You can checkout the example [source](https://gitlab.com/dzaporozhets/clojure-web-application) and check [CI status](https://ci.gitlab.com/projects/6306).
+You can checkout the example [source](https://gitlab.com/dzaporozhets/clojure-web-application) and check [CI status](https://gitlab.com/dzaporozhets/clojure-web-application/builds?scope=all).
 
 ### Configure project
 

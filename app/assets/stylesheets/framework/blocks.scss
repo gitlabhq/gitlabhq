@@ -28,6 +28,10 @@
   border-bottom: 1px solid $border-color;
   color: $gl-gray;
 
+  &.oneline-block {
+    line-height: 42px;
+  }
+
   &.white {
     background-color: white;
   }
@@ -100,7 +104,7 @@
   }
 
   .cover-desc {
-    padding: 0 $gl-padding;
+    padding: 0 $gl-padding 3px;
     color: $gl-text-color;
   }
 

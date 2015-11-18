@@ -16,6 +16,15 @@ Feature: Project Merge Requests
     When I visit project "Shop" merge requests page
     Then I should see merge request "Bug NS-05" with CI status
 
+  Scenario: I should not see target branch name when it is project's default branch
+    Then I should see "Bug NS-04" in merge requests
+    And I should not see "master" branch
+
+  Scenario: I should see target branch when it is different from default
+    Given project "Shop" have "Bug NS-06" open merge request
+    When I visit project "Shop" merge requests page
+    Then I should see "other_branch" branch
+
   Scenario: I should see rejected merge requests
     Given I click link "Closed"
     Then I should see "Feature NS-03" in merge requests

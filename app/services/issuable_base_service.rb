@@ -28,12 +28,47 @@ class IssuableBaseService < BaseService
   end
 
   def filter_params(issuable_ability_name = :issue)
+    params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
+    params[:milestone_id] = "" if params[:milestone_id] == IssuableFinder::NONE
+
     ability = :"admin_#{issuable_ability_name}"
 
     unless can?(current_user, ability, project)
       params.delete(:milestone_id)
       params.delete(:label_ids)
       params.delete(:assignee_id)
+    end
+  end
+
+  def update(issuable)
+    change_state(issuable)
+    filter_params
+    old_labels = issuable.labels.to_a
+
+    if params.present? && issuable.update_attributes(params.merge(updated_by: current_user))
+      issuable.reset_events_cache
+
+      if issuable.labels != old_labels
+        create_labels_note(
+          issuable,
+          issuable.labels - old_labels,
+          old_labels - issuable.labels)
+      end
+
+      handle_changes(issuable)
+      issuable.create_new_cross_references!(current_user)
+      execute_hooks(issuable, 'update')
+    end
+
+    issuable
+  end
+
+  def change_state(issuable)
+    case params.delete(:state_event)
+    when 'reopen'
+      reopen_service.new(project, current_user, {}).execute(issuable)
+    when 'close'
+      close_service.new(project, current_user, {}).execute(issuable)
     end
   end
 end

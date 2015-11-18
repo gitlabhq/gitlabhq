@@ -25,68 +25,88 @@ If the release is falling behind immediately warn the team.
 
 ## Create an overall issue and follow it
 
-Create issue for GitLab CE project(internal). Name it "Release x.x.x" for easier searching.
-Replace the dates with actual dates based on the number of workdays before the release.
-All steps from issue template are explained below
+Create an issue in the GitLab CE project. Name it "Release x.x" and tag it with
+the `release` label for easier searching. Replace the dates with actual dates
+based on the number of workdays before the release. All steps from issue
+template are explained below:
 
 ```
-Xth: (7 working days before the 22nd)
+### Xth: (7 working days before the 22nd)
 
-- [ ] Triage the omnibus-gitlab milestone
+- [ ] Triage the [Omnibus milestone]
 
-Xth: (6 working days before the 22nd)
+### Xth: (6 working days before the 22nd)
 
-- [ ] Merge CE master in to EE master via merge request (#LINK)
 - [ ] Determine QA person and notify this person
 - [ ] Check the tasks in [how to rc1 guide](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/release/howto_rc1.md) and delegate tasks if necessary
-- [ ] Create CE, EE, CI RC1 versions (#LINK)
-- [ ] Build RC1 packages (EE first) (#LINK)
+- [ ] Merge CE `master` into EE `master` via merge request (#LINK)
+- [ ] Create CE and EE RC1 versions (#LINK)
+- [ ] Build RC1 packages
 
-Xth: (5 working days before the 22nd)
+### Xth: (5 working days before the 22nd)
 
 - [ ] Do QA and fix anything coming out of it (#LINK)
-- [ ] Close the omnibus-gitlab milestone
-- [ ] Prepare the blog post (#LINK)
+- [ ] Close the [Omnibus milestone]
+- [ ] Prepare the [blog post]
 
-Xth: (4 working days before the 22nd)
+### Xth: (4 working days before the 22nd)
 
-- [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
-- [ ] Update ci.gitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
-- [ ] Create regression issues (CE, CI) (#LINK)
-- [ ] Tweet about rc1 (#LINK), proposed text: 
+- [ ] Update GitLab.com with RC1
+- [ ] Create the regression issue in the CE issue tracker:
 
-> GitLab x.x.0.rc1 is available https://packages.gitlab.com/gitlab/unstable Use at your own risk. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
+    ```
+    This is a meta issue to index possible regressions in this monthly release
+    and any patch versions.
 
-Xth: (3 working days before the 22nd)
+    Please do not raise or discuss issues directly in this issue but link to
+    issues that might warrant a patch release. If there is a Merge Request
+    that fixes the issue, please link to that as well.
 
-- [ ] Merge CE stable branch into EE stable branch
+    Please only post one regression issue and/or merge request per comment.
+    Comments will be updated by the release manager as they are addressed.
+    ```
 
-Xth: (2 working days before the 22nd)
+- [ ] Tweet about RC1 release:
 
-- [ ] Check that everyone is mentioned on the blog post using `@all` (the reviewer should have done this one working day ago)
-- [ ] Check that MVP is added to the mvp page (source/mvp/index.html in www-gitlab-com)
+    ```
+    GitLab x.y.0.rc1 is available: https://packages.gitlab.com/gitlab/unstable
+    Use at your own risk. Please link regressions issues from
+    LINK_TO_REGRESSION_ISSUE
+    ```
 
-Xth: (1 working day before the 22nd)
+### Xth: (3 working days before the 22nd)
 
-- [ ] Merge CE stable into EE stable
-- [ ] Create CE, EE, CI release candidates (#LINK) (hopefully final ones with the same commit as the release tomorrow) 
+- [ ] Merge `x-y-stable` into `x-y-stable-ee`
+- [ ] Check that everyone is mentioned on the [blog post] using `@all`
+
+### Xth: (2 working days before the 22nd)
+
+- [ ] Check that MVP is added to the [MVP page]
+
+### Xth: (1 working day before the 22nd)
+
+- [ ] Merge `x-y-stable` into `x-y-stable-ee`
+- [ ] Create CE and EE release candidates
 - [ ] Create Omnibus tags and build packages for the latest release candidates
-- [ ] Update GitLab.com with the latest RC (#LINK)
-- [ ] Update ci.gitLab.com with the latest RC (#LINK)
+- [ ] Update GitLab.com with the latest RC
 
-22nd before 1200 CET:
+### 22nd before 1200 CET:
 
 Release before 1200 CET / 2AM PST, to make sure the majority of our users
 get the new version on the 22nd and there is sufficient time in the European
 workday to quickly fix any issues.
 
-- [ ] Merge CE stable into EE stable (#LINK)
-- [ ] Create the 'x.y.0' tag with the [release tools](https://dev.gitlab.org/gitlab/release-tools) (#LINK)
+- [ ] Merge `x-y-stable` into `x-y-stable-ee`
+- [ ] Create the 'x.y.0' tag with the [release tools](https://dev.gitlab.org/gitlab/release-tools)
 - [ ] Create the 'x.y.0' version on version.gitlab.com
-- [ ] Try to do before 1100 CET: Create and push omnibus tags for x.y.0 (will auto-release the packages) (#LINK)
-- [ ] Try to do before 1200 CET: Publish the release blog post (#LINK)
-- [ ] Tweet about the release (blog post) (#LINK)
-- [ ] Schedule a second tweet of the release announcement with the same text at 1800 CET / 8AM PST
+- [ ] Try to do before 1100 CET: Create and push Omnibus tags for x.y.0 (will auto-release the packages)
+- [ ] Try to do before 1200 CET: Publish the release [blog post]
+- [ ] Tweet about the release
+- [ ] Schedule a second Tweet of the release announcement with the same text at 1800 CET / 8AM PST
+
+[Omnibus milestone]: LINK_TO_OMNIBUS_MILESTONE
+[blog post]: LINK_TO_WIP_BLOG_POST
+[MVP page]: https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/source/mvp/index.html
 ```
 
 - - -

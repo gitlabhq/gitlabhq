@@ -24,18 +24,19 @@
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
 
-      - if current_user_can_admin_project
+      - if can?(current_user, :admin_project_member, @project)
         = link_to resend_invite_namespace_project_project_member_path(@project.namespace, @project, member), method: :post, class: "btn-xs btn", title: 'Resend invite' do
           Resend invite
 
-  - if current_user_can_admin_project
-    - unless @project.personal? && user == current_user
-      .pull-right
-        %strong= member.human_access
+  - if can?(current_user, :admin_project_member, @project)
+    .pull-right
+      %strong= member.human_access
+      - if can?(current_user, :update_project_member, member)
         = button_tag class: "btn-xs btn js-toggle-button",
                      title: 'Edit access level', type: 'button' do
           %i.fa.fa-pencil-square-o
 
+      - if can?(current_user, :destroy_project_member, member)
         &nbsp;
         - if current_user == user
           = link_to leave_namespace_project_project_members_path(@project.namespace, @project), data: { confirm: leave_project_message(@project) }, method: :delete, class: "btn-xs btn btn-remove", title: 'Leave project' do

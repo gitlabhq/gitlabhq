@@ -1,0 +1,36 @@
+- page_title t('sherlock.title'), t('sherlock.transaction')
+- header_title t('sherlock.title'), sherlock_transactions_path
+
+%ul.center-top-menu
+  %li.active
+    %a(href="#tab-general" data-toggle="tab")
+      = t('sherlock.general')
+  %li
+    %a(href="#tab-queries" data-toggle="tab")
+      = t('sherlock.queries')
+      %span.badge
+        #{@transaction.queries.length}
+  %li
+    %a(href="#tab-file-samples" data-toggle="tab")
+      = t('sherlock.file_samples')
+      %span.badge
+        #{@transaction.file_samples.length}
+
+.gray-content-block
+  .pull-right
+    = link_to(sherlock_transactions_path, class: 'btn') do
+      %i.fa.fa-arrow-left
+      = t('sherlock.all_transactions')
+  .oneline
+    = t('sherlock.transaction')
+    = @transaction.id
+
+.tab-content
+  .tab-pane.active#tab-general
+    = render(partial: 'general')
+
+  .tab-pane#tab-queries
+    = render(partial: 'queries')
+
+  .tab-pane#tab-file-samples
+    = render(partial: 'file_samples')

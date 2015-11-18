@@ -41,8 +41,8 @@ describe Ci::API::API do
     describe "GET /projects/owned" do
       let!(:gl_project1) {FactoryGirl.create(:empty_project, namespace: user.namespace)}
       let!(:gl_project2) {FactoryGirl.create(:empty_project, namespace: user.namespace)}
-      let!(:project1) { FactoryGirl.create(:ci_project, gl_project: gl_project1) }
-      let!(:project2) { FactoryGirl.create(:ci_project, gl_project: gl_project2) }
+      let!(:project1) { gl_project1.ensure_gitlab_ci_project }
+      let!(:project2) { gl_project2.ensure_gitlab_ci_project }
 
       before do
         project1.gl_project.team << [user, :developer]
@@ -180,87 +180,53 @@ describe Ci::API::API do
     end
   end
 
-  describe "POST /projects" do
-    let(:gl_project) { FactoryGirl.create :empty_project }
-    let(:project_info) do
-      {
-        gitlab_id: gl_project.id
-      }
+  describe "POST /projects/:id/runners/:id" do
+    let(:project) { FactoryGirl.create(:ci_project) }
+    let(:runner) { FactoryGirl.create(:ci_runner) }
+
+    it "should add the project to the runner" do
+      project.gl_project.team << [user, :master]
+      post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
+      expect(response.status).to eq(201)
+
+      project.reload
+      expect(project.runners.first.id).to eq(runner.id)
     end
 
-    let(:invalid_project_info) { {} }
+    it "should fail if it tries to link a non-existing project or runner" do
+      post ci_api("/projects/#{project.id}/runners/non-existing"), options
+      expect(response.status).to eq(404)
 
-    context "with valid project info" do
-      before do
-        options.merge!(project_info)
-      end
-
-      it "should create a project with valid data" do
-        post ci_api("/projects"), options
-        expect(response.status).to eq(201)
-        expect(json_response['name']).to eq(gl_project.name_with_namespace)
-      end
+      post ci_api("/projects/non-existing/runners/#{runner.id}"), options
+      expect(response.status).to eq(404)
     end
 
-    context "with invalid project info" do
-      before do
-        options.merge!(invalid_project_info)
-      end
+    it "non-manager is not authorized" do
+      allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
+      post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
+      expect(response.status).to eq(401)
+    end
+  end
 
-      it "should error with invalid data" do
-        post ci_api("/projects"), options
-        expect(response.status).to eq(400)
-      end
+  describe "DELETE /projects/:id/runners/:id" do
+    let(:project) { FactoryGirl.create(:ci_project) }
+    let(:runner) { FactoryGirl.create(:ci_runner) }
+
+    it "should remove the project from the runner" do
+      project.gl_project.team << [user, :master]
+      post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
+
+      expect(project.runners).to be_present
+      delete ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
+      expect(response.status).to eq(200)
+
+      project.reload
+      expect(project.runners).to be_empty
     end
 
-    describe "POST /projects/:id/runners/:id" do
-      let(:project) { FactoryGirl.create(:ci_project) }
-      let(:runner) { FactoryGirl.create(:ci_runner) }
-
-      it "should add the project to the runner" do
-        project.gl_project.team << [user, :master]
-        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
-        expect(response.status).to eq(201)
-
-        project.reload
-        expect(project.runners.first.id).to eq(runner.id)
-      end
-
-      it "should fail if it tries to link a non-existing project or runner" do
-        post ci_api("/projects/#{project.id}/runners/non-existing"), options
-        expect(response.status).to eq(404)
-
-        post ci_api("/projects/non-existing/runners/#{runner.id}"), options
-        expect(response.status).to eq(404)
-      end
-
-      it "non-manager is not authorized" do
-        allow_any_instance_of(User).to receive(:can_manage_project?).and_return(false)
-        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
-        expect(response.status).to eq(401)
-      end
-    end
-
-    describe "DELETE /projects/:id/runners/:id" do
-      let(:project) { FactoryGirl.create(:ci_project) }
-      let(:runner) { FactoryGirl.create(:ci_runner) }
-
-      it "should remove the project from the runner" do
-        project.gl_project.team << [user, :master]
-        post ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
-
-        expect(project.runners).to be_present
-        delete ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
-        expect(response.status).to eq(200)
-
-        project.reload
-        expect(project.runners).to be_empty
-      end
-
-      it "non-manager is not authorized" do
-        delete ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
-        expect(response.status).to eq(401)
-      end
+    it "non-manager is not authorized" do
+      delete ci_api("/projects/#{project.id}/runners/#{runner.id}"), options
+      expect(response.status).to eq(401)
     end
   end
 end

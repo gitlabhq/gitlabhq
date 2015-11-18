@@ -37,8 +37,10 @@ nohup.out
 public/assets/
 public/uploads.*
 public/uploads/
+shared/artifacts/
 rails_best_practices_output.html
 /tags
 tmp/
 vendor/bundle/*
 builds/*
+shared/*

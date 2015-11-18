@@ -44,7 +44,7 @@ module Gitlab::Markdown
         instance = described_class.new('Foo')
         3.times { instance.whitelist }
 
-        expect(instance.whitelist[:transformers].size).to eq 4
+        expect(instance.whitelist[:transformers].size).to eq 5
       end
 
       it 'allows syntax highlighting' do
@@ -77,19 +77,100 @@ module Gitlab::Markdown
       end
 
       it 'removes `rel` attribute from `a` elements' do
-        doc = filter(%q{<a href="#" rel="nofollow">Link</a>})
+        act = %q{<a href="#" rel="nofollow">Link</a>}
+        exp = %q{<a href="#">Link</a>}
 
-        expect(doc.css('a').size).to eq 1
-        expect(doc.at_css('a')['href']).to eq '#'
-        expect(doc.at_css('a')['rel']).to be_nil
+        expect(filter(act).to_html).to eq exp
       end
 
-      it 'removes script-like `href` attribute from `a` elements' do
-        html = %q{<a href="javascript:alert('Hi')">Hi</a>}
-        doc = filter(html)
+      # Adapted from the Sanitize test suite: http://git.io/vczrM
+      protocols = {
+        'protocol-based JS injection: simple, no spaces' => {
+          input:  '<a href="javascript:alert(\'XSS\');">foo</a>',
+          output: '<a>foo</a>'
+        },
 
-        expect(doc.css('a').size).to eq 1
-        expect(doc.at_css('a')['href']).to be_nil
+        'protocol-based JS injection: simple, spaces before' => {
+          input:  '<a href="javascript    :alert(\'XSS\');">foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: simple, spaces after' => {
+          input:  '<a href="javascript:    alert(\'XSS\');">foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: simple, spaces before and after' => {
+          input:  '<a href="javascript    :   alert(\'XSS\');">foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: preceding colon' => {
+          input:  '<a href=":javascript:alert(\'XSS\');">foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: UTF-8 encoding' => {
+          input:  '<a href="javascript&#58;">foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: long UTF-8 encoding' => {
+          input:  '<a href="javascript&#0058;">foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: long UTF-8 encoding without semicolons' => {
+          input:  '<a href=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#0000040&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: hex encoding' => {
+          input:  '<a href="javascript&#x3A;">foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: long hex encoding' => {
+          input:  '<a href="javascript&#x003A;">foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: hex encoding without semicolons' => {
+          input:  '<a href=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x72&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>foo</a>',
+          output: '<a>foo</a>'
+        },
+
+        'protocol-based JS injection: null char' => {
+          input:  "<a href=java\0script:alert(\"XSS\")>foo</a>",
+          output: '<a href="java"></a>'
+        },
+
+        'protocol-based JS injection: spaces and entities' => {
+          input:  '<a href=" &#14;  javascript:alert(\'XSS\');">foo</a>',
+          output: '<a href="">foo</a>'
+        },
+      }
+
+      protocols.each do |name, data|
+        it "handles #{name}" do
+          doc = filter(data[:input])
+
+          expect(doc.to_html).to eq data[:output]
+        end
+      end
+
+      it 'allows non-standard anchor schemes' do
+        exp = %q{<a href="irc://irc.freenode.net/git">IRC</a>}
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
+      end
+
+      it 'allows relative links' do
+        exp = %q{<a href="foo/bar.md">foo/bar.md</a>}
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
       end
     end
 
