@@ -640,7 +640,10 @@ ActiveRecord::Schema.define(version: 20151116144118) do
     t.integer  "star_count",             default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "commit_count",           default: 0
+    t.integer  "commit_count",                   default: 0
+    t.boolean  "merge_requests_ff_only_enabled", default: false
+    t.text     "issues_template"
+    t.text     "import_error"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree

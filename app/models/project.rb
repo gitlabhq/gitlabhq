@@ -310,15 +310,17 @@ class Project < ActiveRecord::Base
 
   def add_import_job
     if forked?
-      unless RepositoryForkWorker.perform_async(id, forked_from_project.path_with_namespace, self.namespace.path)
-        import_fail
-      end
+      RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
     else
-      RepositoryImportWorker.perform_async(id)
+      RepositoryImportWorker.perform_async(self.id)
     end
   end
 
   def clear_import_data
+    update(import_error: nil)
+
+    ProjectCacheWorker.perform_async(self.id)
+
     self.import_data.destroy if self.import_data
   end
 
@@ -344,6 +346,14 @@ class Project < ActiveRecord::Base
 
   def import_finished?
     import_status == 'finished'
+  end
+
+  def safe_import_url
+    result = URI.parse(self.import_url)
+    result.password = '*****' unless result.password.nil?
+    result.to_s
+  rescue
+    original_url
   end
 
   def check_limit
