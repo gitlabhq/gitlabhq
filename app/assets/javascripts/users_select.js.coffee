@@ -8,6 +8,7 @@ class @UsersSelect
       @projectId = $(select).data('project-id')
       @groupId = $(select).data('group-id')
       @showCurrentUser = $(select).data('current-user')
+      @pushCodeToProtectedBranches = $(select).data('push-code-to-protected-branches')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
       showEmailUser = $(select).data('email-user')
@@ -112,6 +113,7 @@ class @UsersSelect
         group_id: @groupId
         skip_ldap: @skipLdap
         current_user: @showCurrentUser
+        push_code_to_protected_branches: @pushCodeToProtectedBranches
       dataType: "json"
     ).done (users) ->
       callback(users)

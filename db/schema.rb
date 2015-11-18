@@ -48,9 +48,9 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.boolean  "twitter_sharing_enabled",      default: true
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
-    t.boolean  "version_check_enabled",        default: true
     t.integer  "max_attachment_size",          default: 10,    null: false
     t.integer  "default_project_visibility"
+    t.boolean  "version_check_enabled",        default: true
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
     t.boolean  "user_oauth_applications",      default: true
@@ -700,31 +700,36 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                 default: true,     null: false
-    t.boolean  "wall_enabled",                   default: true,     null: false
-    t.boolean  "merge_requests_enabled",         default: true,     null: false
-    t.boolean  "wiki_enabled",                   default: true,     null: false
+    t.boolean  "issues_enabled",                   default: true,     null: false
+    t.boolean  "wall_enabled",                     default: true,     null: false
+    t.boolean  "merge_requests_enabled",           default: true,     null: false
+    t.boolean  "wiki_enabled",                     default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                 default: "gitlab", null: false
+    t.string   "issues_tracker",                   default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",               default: true,     null: false
+    t.boolean  "snippets_enabled",                 default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",               default: 0,        null: false
-    t.boolean  "archived",                       default: false,    null: false
+    t.integer  "visibility_level",                 default: 0,        null: false
+    t.boolean  "archived",                         default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
-    t.float    "repository_size",                default: 0.0
-    t.text     "merge_requests_template"
-    t.integer  "star_count",                     default: 0,        null: false
-    t.boolean  "merge_requests_rebase_enabled",  default: false
+    t.float    "repository_size",                  default: 0.0
+    t.integer  "star_count",                       default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "approvals_before_merge",         default: 0,        null: false
-    t.boolean  "reset_approvals_on_push",        default: true
-    t.integer  "commit_count",                   default: 0
-    t.boolean  "merge_requests_ff_only_enabled", default: false
+    t.text     "merge_requests_template"
+    t.boolean  "merge_requests_rebase_enabled",    default: false
+    t.integer  "commit_count",                     default: 0
+    t.integer  "approvals_before_merge",           default: 0,        null: false
+    t.boolean  "reset_approvals_on_push",          default: true
+    t.boolean  "merge_requests_ff_only_enabled",   default: false
     t.text     "issues_template"
+    t.text     "import_error"
+    t.boolean  "mirror",                           default: false,    null: false
+    t.datetime "mirror_last_update_at"
+    t.datetime "mirror_last_successful_update_at"
+    t.integer  "mirror_user_id"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree

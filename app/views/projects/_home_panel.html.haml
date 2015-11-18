@@ -13,22 +13,24 @@
         = link_to project_path(forked_from_project) do
           = forked_from_project.namespace.try(:name)
 
+    - if @project.mirror?
+      - import_url = @project.safe_import_url
+      %p
+        Mirrored from #{link_to import_url, import_url}.
+
+        = render "shared/mirror_status"
 
 
   .project-repo-buttons
     .split-one
       = render 'projects/buttons/star'
+      = render 'projects/buttons/fork'
 
-      - unless empty_repo
-        = render 'projects/buttons/fork'
-    
     = render "shared/clone_panel"
-    .split-repo-buttons 
-      - unless empty_repo
-        - if can? current_user, :download_code, @project
-          = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: @ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
-            = icon('download fw')
-            
-      = render 'projects/buttons/dropdown'
-    = render 'projects/buttons/notifications'
     
+    .split-repo-buttons
+      = render "projects/buttons/update_mirror"
+      = render "projects/buttons/download"
+      = render 'projects/buttons/dropdown'
+
+    = render 'projects/buttons/notifications'

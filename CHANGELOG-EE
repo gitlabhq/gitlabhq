@@ -8,6 +8,7 @@ v 8.2.0
   - Fix "Rebase onto master"
   - Ensure a comment is properly recorded in JIRA when a merge request is accepted
   - Allow groups to appear in the `Share with group` share if the group owner allows it
+  - Add option to mirror an upstream repository.
 
 v 8.1.4
   - Fix bug in JIRA integration which prevented merge requests from being accepted when using issue closing pattern
@@ -22,6 +23,7 @@ v 8.1.1
   - Removed, see 8.1.2
 
 v 8.1.0
+  - Add documentation for "Share project with group" API call
   - Added an issues template (Hannes Rosenögger)
   - Add documentation for "Share project with group" API call 
   - Abiliy to disable 'Share with Group' feature (via UI and API)
@@ -69,7 +71,7 @@ v 7.14.0
   - Fix importing projects from GitHub Enterprise Edition.
   - Automatic approver suggestions (based on an authority of the code)
   - Add support for Jenkins unstable status
-  - Automatic approver suggestions (based on an authority of the code)  
+  - Automatic approver suggestions (based on an authority of the code)
   - Support Kerberos ticket-based authentication for Git HTTP access
 
 v 7.13.3

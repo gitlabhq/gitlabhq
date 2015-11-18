@@ -1,6 +1,6 @@
 module Gitlab
   class Shell
-    class AccessDenied < StandardError; end
+    class Error < StandardError; end
 
     class KeyAdder < Struct.new(:io)
       def add_key(id, key)
@@ -36,8 +36,23 @@ module Gitlab
     #   import_repository("gitlab/gitlab-ci", "https://github.com/randx/six.git")
     #
     def import_repository(name, url)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'import-project',
-                                   "#{name}.git", url, '240'])
+      output, status = Popen::popen([gitlab_shell_projects_path, 'import-project', "#{name}.git", url, '240'])
+      raise Error, output unless status.zero?
+      true
+    end
+
+    # Fetch remote for repository
+    #
+    # name - project path with namespace
+    # remote - remote name
+    #
+    # Ex.
+    #   fetch_remote("gitlab/gitlab-ci", "upstream")
+    #
+    def fetch_remote(name, remote)
+      output, status = Popen::popen([gitlab_shell_projects_path, 'fetch-remote', "#{name}.git", remote, '600'])
+      raise Error, output unless status.zero?
+      true
     end
 
     # Move repository
