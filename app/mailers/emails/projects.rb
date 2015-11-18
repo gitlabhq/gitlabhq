@@ -60,26 +60,28 @@ module Emails
     end
 
     def repository_push_email(project_id, recipient, opts = {})
-      email = Gitlab::Email::RepositoryPush.new(project_id, recipient, opts)
+      repository_push =
+        Gitlab::Email::Message::RepositoryPush.new(self, project_id, recipient, opts)
 
-      @project = email.project
-      @current_user = @author  = email.author
-      @reverse_compare = email.reverse_compare
-      @compare = email.compare
-      @ref_name  = email.ref_name
-      @ref_type  = email.ref_type
-      @action  = email.action
-      @disable_diffs = email.disable_diffs
-      @commits = email.commits
-      @diffs = email.diffs
-      @action_name = email.action_name
-      @target_url = email.target_url
+      @project = repository_push.project
+      @current_user = @author  = repository_push.author
+      @reverse_compare = repository_push.reverse_compare
+      @compare = repository_push.compare
+      @ref_name  = repository_push.ref_name
+      @ref_type  = repository_push.ref_type
+      @action  = repository_push.action
+      @action_name = repository_push.action_name
+      @disable_diffs = repository_push.disable_diffs
+      @commits = repository_push.commits
+      @diffs = repository_push.diffs
+      @target_url = repository_push.target_url
       @disable_footer = true
 
-      mail(from:      sender(email.author_id, email.send_from_committer_email),
-           reply_to:  email.reply_to,
-           to:        email.recipient,
-           subject:   email.subject)
+      mail(from:      sender(repository_push.author_id,
+                             repository_push.send_from_committer_email),
+           reply_to:  repository_push.reply_to,
+           to:        repository_push.recipient,
+           subject:   repository_push.subject)
     end
   end
 end
