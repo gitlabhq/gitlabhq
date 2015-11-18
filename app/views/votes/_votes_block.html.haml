@@ -15,17 +15,16 @@
   
 :coffeescript
   post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
-  noteable_type = #{votable}
-  noteable_id = #{votable.id}
+  noteable_type = "#{votable.class}"
+  noteable_id = "#{votable.id}"
   window.awards_handler = new AwardsHandler(post_emoji_url, noteable_type, noteable_id)
 
-  $ ->
-    $(".awards-menu li").click (e)->
-      emoji = $(this).data("emoji")
-      awards_handler.addAward(emoji)
+  $(".awards-menu li").click (e)->
+    emoji = $(this).data("emoji")
+    awards_handler.addAward(emoji)
 
-    $(".awards").on "click", ".award", (e)->
-      emoji = $(this).find(".icon").data("emoji")
-      awards_handler.addAward(emoji)
+  $(".awards").on "click", ".award", (e)->
+    emoji = $(this).find(".icon").data("emoji")
+    awards_handler.addAward(emoji)
 
-    $(".award").tooltip()
+  $(".award").tooltip()
