@@ -24,6 +24,8 @@
   %ul.breadcrumb.repo-breadcrumb
     = commits_breadcrumbs
 
+= render 'projects/commits/mirror_status'
+
 %div{id: dom_id(@project)}
   #commits-list= render "commits", project: @project
 .clear

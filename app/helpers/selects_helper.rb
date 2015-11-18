@@ -13,6 +13,7 @@ module SelectsHelper
     first_user = opts[:first_user] && current_user ? current_user.username : false
     current_user = opts[:current_user] || false
     project = opts[:project] || @project
+    push_code_to_protected_branches = opts[:push_code_to_protected_branches]
 
     html = {
       class: css_class,
@@ -21,7 +22,8 @@ module SelectsHelper
       'data-any-user' => any_user,
       'data-email-user' => email_user,
       'data-first-user' => first_user,
-      'data-current-user' => current_user
+      'data-current-user' => current_user,
+      'data-push-code-to-protected-branches' => push_code_to_protected_branches
     }
 
     unless opts[:scope] == :all

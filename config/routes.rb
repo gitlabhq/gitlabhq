@@ -633,6 +633,11 @@ Gitlab::Application.routes.draw do
         end
 
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resource :mirror, only: [:show, :update] do
+          member do
+            post :update_now
+          end
+        end
         resources :git_hooks, constraints: { id: /\d+/ }
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]

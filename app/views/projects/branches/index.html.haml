@@ -5,7 +5,7 @@
   .pull-right
     - if can? current_user, :push_code, @project
       = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
-        %i.fa.fa-add-sign
+        = icon('plus')
         New branch
       &nbsp;
     .dropdown.inline
@@ -26,6 +26,9 @@
             = sort_title_oldest_updated
   .oneline
     Protected branches can be managed in project settings
+
+= render 'projects/commits/mirror_status'
+
 - unless @branches.empty?
   %ul.content-list.all-branches
     - @branches.each do |branch|
