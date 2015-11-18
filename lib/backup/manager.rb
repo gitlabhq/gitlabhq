@@ -158,7 +158,7 @@ module Backup
     end
 
     def folders_to_backup
-      %w{repositories db}.map{ |name| name unless skipped?(name) }.compact
+      %w{repositories db}.reject{ |name| skipped?(name) }
     end
 
     def settings
