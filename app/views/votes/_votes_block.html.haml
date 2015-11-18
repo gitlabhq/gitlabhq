@@ -1,10 +1,10 @@
 .awards.votes-block
-  - votable.notes.awards.grouped_awards.each do | vote |
-    .award{class: ("active" if vote.last.pluck(:author_id).include?(current_user.id)), title: emoji_author_list(vote.last, current_user)}
-      .icon{"data-emoji" => "#{vote.first}"}
-        = image_tag url_to_emoji(vote.first), height: "20px", width: "20px"
+  - votable.notes.awards.grouped_awards.each do | note |
+    .award{class: (note_active_class(note.last, current_user)), title: emoji_author_list(note.last, current_user)}
+      .icon{"data-emoji" => "#{note.first}"}
+        = image_tag url_to_emoji(note.first), height: "20px", width: "20px"
       .counter
-        = vote.last.count
+        = note.last.count
 
   .dropdown.awards-controls
     %a.add-award{"data-toggle" => "dropdown", "data-target" => "#", "href" => "#"}

@@ -555,13 +555,14 @@ ActiveRecord::Schema.define(version: 20151118162244) do
     t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
-    t.boolean  "is_award",      default: false
+    t.boolean  "is_award",      default: false, null: false
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
   add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
   add_index "notes", ["created_at", "id"], name: "index_notes_on_created_at_and_id", using: :btree
   add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
+  add_index "notes", ["is_award"], name: "index_notes_on_is_award", using: :btree
   add_index "notes", ["line_code"], name: "index_notes_on_line_code", using: :btree
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
   add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree

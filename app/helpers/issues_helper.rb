@@ -104,6 +104,10 @@ module IssuesHelper
     ::AwardEmoji::EMOJI_LIST
   end
 
+  def note_active_class(notes, current_user)
+    notes.pluck(:author_id).include?(current_user.id) ? "active" : ""
+  end
+
   # Required for Gitlab::Markdown::IssueReferenceFilter
   module_function :url_for_issue
 end
