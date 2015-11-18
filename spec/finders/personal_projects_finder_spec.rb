@@ -8,12 +8,12 @@ describe PersonalProjectsFinder do
 
   let!(:public_project) do
     create(:project, :public, namespace: source_user.namespace, name: 'A',
-           path: 'A')
+                              path: 'A')
   end
 
   let!(:private_project) do
     create(:project, :private, namespace: source_user.namespace, name: 'B',
-           path: 'B')
+                               path: 'B')
   end
 
   before do

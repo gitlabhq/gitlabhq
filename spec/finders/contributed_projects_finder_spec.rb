@@ -15,10 +15,10 @@ describe ContributedProjectsFinder do
     public_project.team << [source_user, Gitlab::Access::MASTER]
 
     create(:event, action: Event::PUSHED, project: public_project,
-           target: public_project, author: source_user)
+                   target: public_project, author: source_user)
 
     create(:event, action: Event::PUSHED, project: private_project,
-           target: private_project, author: source_user)
+                   target: private_project, author: source_user)
   end
 
   describe 'without a current user' do
