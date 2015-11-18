@@ -389,40 +389,17 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Returns the groups a user has access to, optionally including any public
-  # groups.
-  #
-  # public_internal - When set to "true" all public groups and groups of public
-  #                   projects are also included.
-  #
-  # Returns an ActiveRecord::Relation
-  def authorized_groups(public_internal = false)
+  # Returns the groups a user has access to
+  def authorized_groups
     union = Gitlab::SQL::Union.
-      new([groups.select(:id), authorized_projects(public_internal).
-           select(:namespace_id)])
+      new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
-    sql = "namespaces.id IN (#{union.to_sql})"
-
-    if public_internal
-      sql << ' OR public IS TRUE'
-    end
-
-    Group.where(sql)
+    Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
   # Returns the groups a user is authorized to access.
-  #
-  # public_internal - When set to "true" all public/internal projects will also
-  #                   be included.
-  def authorized_projects(public_internal = false)
-    base = "projects.id IN (#{projects_union.to_sql})"
-
-    if public_internal
-      Project.where("#{base} OR projects.visibility_level IN (?)",
-                    Project.public_and_internal_levels)
-    else
-      Project.where(base)
-    end
+  def authorized_projects
+    Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
   def owned_projects

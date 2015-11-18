@@ -762,44 +762,26 @@ describe User do
   describe '#authorized_groups' do
     let!(:user) { create(:user) }
     let!(:private_group) { create(:group) }
-    let!(:public_group) { create(:group, public: true) }
 
     before do
       private_group.add_user(user, Gitlab::Access::MASTER)
     end
 
-    describe 'excluding public groups' do
-      subject { user.authorized_groups }
+    subject { user.authorized_groups }
 
-      it { is_expected.to eq([private_group]) }
-    end
-
-    describe 'including public groups' do
-      subject { user.authorized_groups(true) }
-
-      it { is_expected.to eq([public_group, private_group]) }
-    end
+    it { is_expected.to eq([private_group]) }
   end
 
   describe '#authorized_projects' do
     let!(:user) { create(:user) }
     let!(:private_project) { create(:project, :private) }
-    let!(:public_project) { create(:project, :public) }
 
     before do
       private_project.team << [user, Gitlab::Access::MASTER]
     end
 
-    describe 'excluding public projects' do
-      subject { user.authorized_projects }
+    subject { user.authorized_projects }
 
-      it { is_expected.to eq([private_project]) }
-    end
-
-    describe 'including public projects' do
-      subject { user.authorized_projects(true) }
-
-      it { is_expected.to eq([public_project, private_project]) }
-    end
+    it { is_expected.to eq([private_project]) }
   end
 end
