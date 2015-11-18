@@ -729,7 +729,7 @@ class User < ActiveRecord::Base
   #     some_user.contributed_projects.visible_to_user(other_user)
   #
   # If this method were to use a JOIN the resulting query would take roughly 200
-  # ms on a database with a similar size to gitlab.com's database. On the other
+  # ms on a database with a similar size to GitLab.com's database. On the other
   # hand, using a subquery means we can get the exact same data in about 40 ms.
   def contributed_projects
     events = Event.select(:project_id).
