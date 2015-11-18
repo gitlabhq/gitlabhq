@@ -135,8 +135,10 @@
     padding: 0 0 5px 5px;
     line-height: 1;
 
-    #add-award {
+    .add-award {
       font-size: 27px;
+      color: #ccc;
+
       &:hover {
         text-decoration: none;
       }
