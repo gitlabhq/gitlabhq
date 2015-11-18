@@ -26,12 +26,16 @@ class PersonalProjectsFinder
     authorized = @user.personal_projects.visible_to_user(current_user)
 
     union = Gitlab::SQL::Union.
-      new([authorized.select(:id), public_projects.select(:id)])
+      new([authorized.select(:id), public_and_internal_projects.select(:id)])
 
     Project.where("projects.id IN (#{union.to_sql})")
   end
 
   def public_projects
     @user.personal_projects.public_only
+  end
+
+  def public_and_internal_projects
+    @user.personal_projects.public_and_internal_only
   end
 end
