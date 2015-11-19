@@ -52,7 +52,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
     return render_403 unless can?(current_user, :destroy_group_member, @group_member)
 
     @group_member.destroy
-
     log_audit_event(@group_member, action: :destroy)
 
     respond_to do |format|
@@ -80,7 +79,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     if can?(current_user, :destroy_group_member, @group_member)
       @group_member.destroy
-      
       log_audit_event(@group_member, action: :destroy)
 
       redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
