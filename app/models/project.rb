@@ -42,7 +42,7 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
-  
+
   extend Gitlab::ConfigHelper
   extend Enumerize
 
@@ -336,7 +336,6 @@ class Project < ActiveRecord::Base
   end
 
   def add_import_job
-<<<<<<< HEAD
     if repository_exists?
       if mirror?
         RepositoryUpdateMirrorWorker.perform_async(self.id)
@@ -345,8 +344,6 @@ class Project < ActiveRecord::Base
       return
     end
 
-=======
->>>>>>> ce/8-2-stable
     if forked?
       RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
     else
@@ -394,7 +391,6 @@ class Project < ActiveRecord::Base
     original_url
   end
 
-<<<<<<< HEAD
   def mirror_updated?
     mirror? && self.mirror_last_update_at
   end
@@ -443,8 +439,6 @@ class Project < ActiveRecord::Base
     repository.fetch_upstream(self.import_url)
   end
 
-=======
->>>>>>> ce/8-2-stable
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
       errors[:limit_reached] << ("Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")

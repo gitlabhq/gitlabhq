@@ -96,23 +96,19 @@ class Member < ActiveRecord::Base
         member.created_by ||= current_user
         member.access_level = access_level
 
+        member.skip_notification = skip_notification
+
         member.save
       end
     end
 
     private
 
-<<<<<<< HEAD
-      member.skip_notification = skip_notification
-
-      member.save
-=======
     def can_update_member?(current_user, member)
       # There is no current user for bulk actions, in which case anything is allowed
       !current_user ||
         current_user.can?(:update_group_member, member) ||
         current_user.can?(:update_project_member, member)
->>>>>>> ce/8-2-stable
     end
   end
 

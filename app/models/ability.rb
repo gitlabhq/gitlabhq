@@ -5,18 +5,18 @@ class Ability
       return [] unless user.kind_of?(User)
       return [] if user.blocked?
 
-<<<<<<< HEAD
-      abilities = 
+      abilities =
         case subject.class.name
-        when "Project"          then project_abilities(user, subject)
-        when "Issue"            then issue_abilities(user, subject)
-        when "Note"             then note_abilities(user, subject)
-        when "ProjectSnippet"   then project_snippet_abilities(user, subject)
-        when "PersonalSnippet"  then personal_snippet_abilities(user, subject)
-        when "MergeRequest"     then merge_request_abilities(user, subject)
-        when "Group"            then group_abilities(user, subject)
-        when "Namespace"        then namespace_abilities(user, subject)
-        when "GroupMember"      then group_member_abilities(user, subject)
+        when "Project" then project_abilities(user, subject)
+        when "Issue" then issue_abilities(user, subject)
+        when "Note" then note_abilities(user, subject)
+        when "ProjectSnippet" then project_snippet_abilities(user, subject)
+        when "PersonalSnippet" then personal_snippet_abilities(user, subject)
+        when "MergeRequest" then merge_request_abilities(user, subject)
+        when "Group" then group_abilities(user, subject)
+        when "Namespace" then namespace_abilities(user, subject)
+        when "GroupMember" then group_member_abilities(user, subject)
+        when "ProjectMember" then project_member_abilities(user, subject)
         else []
         end
 
@@ -34,21 +34,6 @@ class Ability
         :push_code,
         :push_code_to_protected_branches
       ]
-=======
-      case subject.class.name
-      when "Project" then project_abilities(user, subject)
-      when "Issue" then issue_abilities(user, subject)
-      when "Note" then note_abilities(user, subject)
-      when "ProjectSnippet" then project_snippet_abilities(user, subject)
-      when "PersonalSnippet" then personal_snippet_abilities(user, subject)
-      when "MergeRequest" then merge_request_abilities(user, subject)
-      when "Group" then group_abilities(user, subject)
-      when "Namespace" then namespace_abilities(user, subject)
-      when "GroupMember" then group_member_abilities(user, subject)
-      when "ProjectMember" then project_member_abilities(user, subject)
-      else []
-      end.concat(global_abilities(user))
->>>>>>> ce/8-2-stable
     end
 
     # List of possible abilities
@@ -275,15 +260,11 @@ class Ability
           :admin_group,
           :admin_namespace,
           :admin_group_member
-<<<<<<< HEAD
-        ])
-
-        unless group.ldap_synced?
-          rules << :admin_group_member
-        end
-=======
         ]
->>>>>>> ce/8-2-stable
+
+        if group.ldap_synced?
+          rules.delete(:admin_group_member)
+        end
       end
 
       rules.flatten

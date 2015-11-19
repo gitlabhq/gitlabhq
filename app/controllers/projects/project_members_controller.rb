@@ -43,18 +43,14 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def update
     @project_member = @project.project_members.find(params[:id])
-<<<<<<< HEAD
+
+    return render_403 unless can?(current_user, :update_project_member, @project_member)
+
     old_access_level = @project_member.human_access
 
     if @project_member.update_attributes(member_params)
       log_audit_event(@project_member, action: :update, old_access_level: old_access_level)
     end
-=======
-
-    return render_403 unless can?(current_user, :update_project_member, @project_member)
-
-    @project_member.update_attributes(member_params)
->>>>>>> ce/8-2-stable
   end
 
   def destroy
@@ -63,6 +59,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     return render_403 unless can?(current_user, :destroy_project_member, @project_member)
 
     @project_member.destroy
+    
     log_audit_event(@project_member, action: :destroy)
 
     respond_to do |format|
@@ -90,14 +87,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def leave
     @project_member = @project.project_members.find_by(user_id: current_user)
 
-<<<<<<< HEAD
-    @project_member = @project.project_members.find_by(user_id: current_user)
-    @project_member.destroy
-    log_audit_event(@project_member, action: :destroy)
-=======
     if can?(current_user, :destroy_project_member, @project_member)
       @project_member.destroy
->>>>>>> ce/8-2-stable
+
+      log_audit_event(@project_member, action: :destroy)
 
       respond_to do |format|
         format.html { redirect_to dashboard_projects_path, notice: "You left the project." }

@@ -39,40 +39,25 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     return render_403 unless can?(current_user, :update_group_member, @group_member)
 
-<<<<<<< HEAD
-    old_access_level = @member.human_access
+    old_access_level = @group_member.human_access
 
-    if @member.update_attributes(member_params)
-      log_audit_event(@member, action: :update, old_access_level: old_access_level)
+    if @group_member.update_attributes(member_params)
+      log_audit_event(@group_member, action: :update, old_access_level: old_access_level)
     end
-=======
-    @group_member.update_attributes(member_params)
->>>>>>> ce/8-2-stable
   end
 
   def destroy
     @group_member = @group.group_members.find(params[:id])
 
-<<<<<<< HEAD
-    if can?(current_user, :destroy_group_member, @group_member)  # May fail if last owner.
-      @group_member.destroy
-      log_audit_event(@group_member, action: :destroy)
-
-      respond_to do |format|
-        format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
-        format.js { render nothing: true }
-      end
-    else
-      return render_403
-=======
     return render_403 unless can?(current_user, :destroy_group_member, @group_member)
 
     @group_member.destroy
 
+    log_audit_event(@group_member, action: :destroy)
+
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
       format.js { render nothing: true }
->>>>>>> ce/8-2-stable
     end
   end
 
@@ -95,10 +80,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     if can?(current_user, :destroy_group_member, @group_member)
       @group_member.destroy
-<<<<<<< HEAD
+      
       log_audit_event(@group_member, action: :destroy)
-=======
->>>>>>> ce/8-2-stable
 
       redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
     else
