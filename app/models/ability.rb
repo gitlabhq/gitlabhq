@@ -1,8 +1,8 @@
 class Ability
   class << self
     def allowed(user, subject)
-      return not_auth_abilities(user, subject) if user.nil?
-      return [] unless user.kind_of?(User)
+      return anonymous_abilities(user, subject) if user.nil?
+      return [] unless user.is_a?(User)
       return [] if user.blocked?
 
       case subject.class.name
@@ -20,15 +20,25 @@ class Ability
       end.concat(global_abilities(user))
     end
 
-    # List of possible abilities
-    # for non-authenticated user
-    def not_auth_abilities(user, subject)
-      project = if subject.kind_of?(Project)
+    # List of possible abilities for anonymous user
+    def anonymous_abilities(user, subject)
+      case true
+      when subject.is_a?(PersonalSnippet)
+        anonymous_personal_snippet_abilities(subject)
+      when subject.is_a?(Project) || subject.respond_to?(:project)
+        anonymous_project_abilities(subject)
+      when subject.is_a?(Group) || subject.respond_to?(:group)
+        anonymous_group_abilities(subject)
+      else
+        []
+      end
+    end
+
+    def anonymous_project_abilities(subject)
+      project = if subject.is_a?(Project)
                   subject
-                elsif subject.respond_to?(:project)
-                  subject.project
                 else
-                  nil
+                  subject.project
                 end
 
       if project && project.public?
@@ -48,19 +58,29 @@ class Ability
 
         rules - project_disabled_features_rules(project)
       else
-        group = if subject.kind_of?(Group)
-                  subject
-                elsif subject.respond_to?(:group)
-                  subject.group
-                else
-                  nil
-                end
+        []
+      end
+    end
 
-        if group && group.public_profile?
-          [:read_group]
-        else
-          []
-        end
+    def anonymous_group_abilities(subject)
+      group = if subject.is_a?(Group)
+                subject
+              else
+                subject.group
+              end
+
+      if group && group.public_profile?
+        [:read_group]
+      else
+        []
+      end
+    end
+
+    def anonymous_personal_snippet_abilities(snippet)
+      if snippet.public?
+        [:read_personal_snippet]
+      else
+        []
       end
     end
 
@@ -280,7 +300,7 @@ class Ability
       end
     end
 
-    [:note, :project_snippet, :personal_snippet].each do |name|
+    [:note, :project_snippet].each do |name|
       define_method "#{name}_abilities" do |user, subject|
         rules = []
 
@@ -298,6 +318,24 @@ class Ability
 
         rules
       end
+    end
+
+    def personal_snippet_abilities(user, snippet)
+      rules = []
+
+      if snippet.author == user
+        rules += [
+          :read_personal_snippet,
+          :update_personal_snippet,
+          :admin_personal_snippet
+        ]
+      end
+
+      if snippet.public? || snippet.internal?
+        rules << :read_personal_snippet 
+      end
+
+      rules
     end
 
     def group_member_abilities(user, subject)
