@@ -55,7 +55,7 @@ In `config/gitlab.yml`:
 * When SSH is set as a remote, Git LFS objects still go through HTTPS
 * Any Git LFS request will ask for HTTPS credentials to be provided so good Git credentials store is recommended
 * Currently, storing GitLab Git LFS objects on a non-local storage (like S3 buckets) is not supported
-* Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have to add the url to Git config manually (see #troubleshooting-tips)
+* Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have to add the URL to Git config manually (see #troubleshooting-tips)
 
 ## Using Git LFS
 
@@ -77,11 +77,10 @@ git commit -am "Added Debian iso"     # commit the file meta data
 git push origin master                # sync the git repo and large file to the GitLab server
 ```
 
-Downloading a single large file is also very simple:
+Cloning the repository works the same as before. Git automatically detects the LFS-tracked files and clones them via HTTP. If you performed the git clone command with a SSH URL, you have to enter your GitLab credentials for HTTP authentication.
 
 ```bash
 git clone git@gitlab.example.com:group/project.git
-git lfs fetch debian.iso              # download the large file
 ```
 
 
