@@ -11,6 +11,9 @@ v 8.2.0
   - Upgrade gitlab_git to 7.2.20 and rugged to 0.23.3 (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
   - Add allow_failure field to commit status API (Stan Hu)
+  - Commits without .gitlab-ci.yml are marked as skipped
+  - Save detailed error when YAML syntax is invalid
+  - Added build artifacts
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
   - Highlight comment based on anchor in URL
@@ -119,7 +122,6 @@ v 8.1.0
   - Show CI status on Your projects page and Starred projects page
   - Remove "Continuous Integration" page from dashboard
   - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
-  - Added build artifacts
   - Fix grammar in admin area "labels" .nothing-here-block when no labels exist.
   - Move CI runners page to project settings area
   - Move CI variables page to project settings area
