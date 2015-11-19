@@ -46,6 +46,7 @@ class Note < ActiveRecord::Base
 
   validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
   validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
+  validates :author, presence: true, if: ->(n) { n.is_award }
 
   mount_uploader :attachment, AttachmentUploader
 
