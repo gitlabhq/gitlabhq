@@ -3,7 +3,7 @@
 # Used for git housekeeping
 #
 # Ex.
-#   Projects::HousekeepingService.new(project, user).execute
+#   Projects::HousekeepingService.new(project).execute
 #
 module Projects
   class HousekeepingService < BaseService
@@ -14,9 +14,7 @@ module Projects
     end
 
     def execute
-      if gitlab_shell.exists?(@project.path_with_namespace + '.git')
-        gitlab_shell.gc(@project.path_with_namespace)
-      end
+      gitlab_shell.gc(@project.path_with_namespace)
     end
   end
 end
