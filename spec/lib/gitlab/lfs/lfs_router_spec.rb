@@ -66,7 +66,7 @@ describe Gitlab::Lfs::Router do
           json_response = ActiveSupport::JSON.decode(lfs_router_auth.try_call.last.first)
 
           expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}")
-          expect(json_response['_links']['download']['header']).to eq("Authorization" => @auth, "Accept" => "application/vnd.git-lfs+json; charset=utf-8")
+          expect(json_response['_links']['download']['header']).to eq("Authorization" => @auth)
         end
       end
 
@@ -107,7 +107,7 @@ describe Gitlab::Lfs::Router do
             json_response = ActiveSupport::JSON.decode(lfs_router_public_auth.try_call.last.first)
 
             expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{public_project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}")
-            expect(json_response['_links']['download']['header']).to eq("Accept" => "application/vnd.git-lfs+json; charset=utf-8")
+            expect(json_response['_links']['download']['header']).to eq({})
           end
         end
 
@@ -117,7 +117,7 @@ describe Gitlab::Lfs::Router do
             json_response = ActiveSupport::JSON.decode(lfs_router_public_noauth.try_call.last.first)
 
             expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{public_project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}")
-            expect(json_response['_links']['download']['header']).to eq("Accept" => "application/vnd.git-lfs+json; charset=utf-8")
+            expect(json_response['_links']['download']['header']).to eq({})
           end
         end
       end
@@ -191,7 +191,7 @@ describe Gitlab::Lfs::Router do
             json_response = ActiveSupport::JSON.decode(lfs_router_forked_auth.try_call.last.first)
 
             expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{forked_project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}")
-            expect(json_response['_links']['download']['header']).to eq("Accept" => "application/vnd.git-lfs+json; charset=utf-8")
+            expect(json_response['_links']['download']['header']).to eq({})
           end
         end
 
@@ -219,7 +219,7 @@ describe Gitlab::Lfs::Router do
 
             json_response = ActiveSupport::JSON.decode(lfs_router_forked_auth.try_call.last.first)
             expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{forked_project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
-            expect(json_response['_links']['download']['header']).to eq("Accept" => "application/vnd.git-lfs+json; charset=utf-8", "Authorization" => @auth)
+            expect(json_response['_links']['download']['header']).to eq("Authorization" => @auth)
           end
         end
 
@@ -250,7 +250,8 @@ describe Gitlab::Lfs::Router do
         body = { 'objects' => [{
                    'oid' => sample_oid,
                    'size' => sample_size
-                  }]
+                  }],
+                  'operation' => 'upload'
                 }.to_json
         env['rack.input'] = StringIO.new(body)
       end
@@ -286,7 +287,8 @@ describe Gitlab::Lfs::Router do
               'objects' => [{
                 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
                 'size' => 1575078
-                }]
+                }],
+              'operation' => 'upload'
                 }.to_json
             env['rack.input'] = StringIO.new(body)
           end
@@ -315,7 +317,8 @@ describe Gitlab::Lfs::Router do
                 { 'oid' => sample_oid,
                   'size' => sample_size
                 }
-              ]
+              ],
+              'operation' => 'upload'
             }.to_json
             env['rack.input'] = StringIO.new(body)
             public_project.lfs_objects << lfs_object
@@ -351,6 +354,12 @@ describe Gitlab::Lfs::Router do
     end
 
     context 'when user is not authenticated' do
+      before do
+        env['rack.input'] = StringIO.new(
+          { 'objects' => [], 'operation' => 'upload' }.to_json
+        )
+      end
+
       context 'when user has push access' do
         before do
           project.team << [user, :master]
