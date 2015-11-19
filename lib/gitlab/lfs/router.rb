@@ -48,7 +48,7 @@ module Gitlab
 
         # Check for Batch API
         if post_path[0].ends_with?("/info/lfs/objects/batch")
-          lfs.render_lfs_api_auth
+          lfs.render_batch_operation_response
         else
           nil
         end
