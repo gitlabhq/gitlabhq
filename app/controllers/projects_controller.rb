@@ -172,14 +172,10 @@ class ProjectsController < ApplicationController
   end
 
   def housekeeping
-    status = ::Projects::HousekeepingService.new(@project).execute
+    ::Projects::HousekeepingService.new(@project).execute
 
     respond_to do |format|
-      if status
-        flash[:notice] = "Housekeeping finished successfully."
-      else
-        flash[:alert] = "Housekeeping failed."
-      end
+      flash[:notice] = "Housekeeping successfully started."
       format.html { redirect_to project_path(@project) }
     end
   end

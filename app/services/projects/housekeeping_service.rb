@@ -14,7 +14,7 @@ module Projects
     end
 
     def execute
-      gitlab_shell.gc(@project.path_with_namespace)
+      GitlabShellWorker.perform_async(:gc, @project.path_with_namespace)
     end
   end
 end
