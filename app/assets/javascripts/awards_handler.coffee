@@ -79,11 +79,11 @@ class @AwardsHandler
 
 
   postEmoji: (emoji, callback) ->
-    $.post @post_emoji_url, {
-      emoji: emoji
+    $.post @post_emoji_url, { note: {
+      note: emoji
       noteable_type: @noteable_type
       noteable_id: @noteable_id
-    },(data) ->
+    }},(data) ->
       if data.ok
         callback.call()
 
