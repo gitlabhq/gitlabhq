@@ -149,7 +149,7 @@ describe 'gitlab:app namespace rake task' do
       # Redirect STDOUT and run the rake task
       orig_stdout = $stdout
       $stdout = StringIO.new
-      ENV["SKIP"] = "repositories"
+      ENV["SKIP"] = "repositories,uploads"
       run_rake_task('gitlab:backup:create')
       $stdout = orig_stdout
 
@@ -180,6 +180,7 @@ describe 'gitlab:app namespace rake task' do
 
       expect(Rake::Task["gitlab:backup:db:restore"]).to receive :invoke
       expect(Rake::Task["gitlab:backup:repo:restore"]).not_to receive :invoke
+      expect(Rake::Task["gitlab:backup:uploads:restore"]).not_to receive :invoke
       expect(Rake::Task["gitlab:backup:builds:restore"]).to receive :invoke
       expect(Rake::Task["gitlab:backup:artifacts:restore"]).to receive :invoke
       expect(Rake::Task["gitlab:shell:setup"]).to receive :invoke
