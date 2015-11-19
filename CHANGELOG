@@ -11,6 +11,10 @@ v 8.2.0
   - Upgrade gitlab_git to 7.2.20 and rugged to 0.23.3 (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
   - Add allow_failure field to commit status API (Stan Hu)
+  - Commits without .gitlab-ci.yml are marked as skipped
+  - Save detailed error when YAML syntax is invalid
+  - Since GitLab CI is enabled by default, remove enabling it by pushing .gitlab-ci.yml
+  - Added build artifacts
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
   - Highlight comment based on anchor in URL
