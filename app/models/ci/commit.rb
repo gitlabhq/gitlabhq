@@ -190,14 +190,11 @@ module Ci
     def config_processor
       return nil unless ci_yaml_file
       @config_processor ||= Ci::GitlabCiYamlProcessor.new(ci_yaml_file, gl_project.path_with_namespace)
-    rescue Ci::GitlabCiYamlProcessor::ValidationError => e
+    rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
       save_yaml_error(e.message)
       nil
-    rescue Psych::SyntaxError => e
-      save_yaml_error(e.message)
-      nil
-    rescue Exception
-      save_yaml_error("Undefined yaml error")
+    rescue
+      save_yaml_error("Undefined error")
       nil
     end
 
