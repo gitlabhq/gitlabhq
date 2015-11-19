@@ -103,19 +103,23 @@
 }
 
 .awards {
+  @include clearfix;
+  line-height: 32px;
+  margin: 5px 0;
+
   .award {
+    @include border-radius(5px);
+
     border: 1px solid;
-    padding: 1px 3px;
-    width: 50px;
-    border-radius: 5px;
-    float:left;
-    margin: 0 3px;
-    border-color: #ccc;
+    padding: 0px 10px;
+    float: left;
+    margin: 0 5px;
+    border-color: $border-color;
     cursor: pointer;
 
     &.active {
-      border-color: rgba(79,176,252,0.4);
-      background-color: rgba(79,176,252,0.1);
+      border-color: $border-gray-light;
+      background-color: $gray-light;
 
       .counter {
         font-weight: bold;
@@ -126,28 +130,39 @@
       float: left;
       margin-right: 10px;
     }
+
+    .counter {
+      float: left;
+    }
   }
 
   .awards-controls {
-    height: 25px;
-    width: 28px;
+    line-height: 32px;
+    margin-left: 10px;
     float: left;
-    padding: 0 0 5px 5px;
-    line-height: 1;
 
     .add-award {
-      font-size: 27px;
-      color: #ccc;
+      font-size: 24px;
+      color: $gl-gray;
+      position: relative;
+      top: 2px;
 
-      &:hover {
-        text-decoration: none;
-      }
+      &:hover,
       &:link {
         text-decoration: none;
       }
     }
+
+    .awards-menu {
+      padding: $gl-padding;
+      min-width: 214px;
+
+      > li {
+        margin: 5px;
+      }
+    }
   }
-  
+
   .awards-menu{
     li {
       float: left;
