@@ -196,7 +196,7 @@ module Ci
     rescue Psych::SyntaxError => e
       save_yaml_error(e.message)
       nil
-    rescue Exception => e
+    rescue Exception
       save_yaml_error("Undefined yaml error")
       nil
     end
