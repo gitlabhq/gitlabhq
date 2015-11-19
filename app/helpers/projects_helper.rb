@@ -117,7 +117,7 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if project.gitlab_ci? && can?(current_user, :read_build, project)
+    if project.builds_enabled? && can?(current_user, :read_build, project)
       nav_tabs << :builds
     end
 
@@ -251,14 +251,6 @@ module ProjectsHelper
 
   def version_path(project)
     filename_path(project, :version)
-  end
-
-  def hidden_pass_url(original_url)
-    result = URI(original_url)
-    result.password = '*****' unless result.password.nil?
-    result
-  rescue
-    original_url
   end
 
   def project_wiki_path_with_version(proj, page, version, is_newest)

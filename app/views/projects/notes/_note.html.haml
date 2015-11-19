@@ -2,7 +2,7 @@
   .timeline-entry-inner
     .timeline-icon
       %a{href: user_path(note.author)}
-        %img.avatar.s40{src: avatar_icon(note.author), alt: ''}
+        = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
         - if note_editable?(note)
@@ -35,32 +35,11 @@
               - if note.updated_by && note.updated_by != note.author
                 by #{link_to_member(note.project, note.updated_by, avatar: false, author_class: nil)}
 
-        - if note.superceded?(@notes)
-          - if note.upvote?
-            %span.vote.upvote.label.label-gray.strikethrough
-              = icon('thumbs-up')
-              \+1
-          - if note.downvote?
-            %span.vote.downvote.label.label-gray.strikethrough
-              = icon('thumbs-down')
-              \-1
-        - else
-          - if note.upvote?
-            %span.vote.upvote.label.label-success
-              = icon('thumbs-up')
-              \+1
-          - if note.downvote?
-            %span.vote.downvote.label.label-danger
-              = icon('thumbs-down')
-              \-1
-
-
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
-        - unless note.system?
-          -# System notes can't be edited
+        - if note_editable?(note)
           = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url

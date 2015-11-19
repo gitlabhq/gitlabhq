@@ -62,7 +62,7 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :created_at, :last_activity_at
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
@@ -92,25 +92,6 @@ module API
     class GroupMember < UserBasic
       expose :access_level do |user, options|
         options[:group].group_members.find_by(user_id: user.id).access_level
-      end
-    end
-
-    class RepoTag < Grape::Entity
-      expose :name
-      expose :message do |repo_obj, _options|
-        if repo_obj.respond_to?(:message)
-          repo_obj.message
-        else
-          nil
-        end
-      end
-
-      expose :commit do |repo_obj, options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit
-        elsif options[:project]
-          options[:project].repository.commit(repo_obj.target)
-        end
       end
     end
 
@@ -181,7 +162,7 @@ module API
     end
 
     class MergeRequest < ProjectEntity
-      expose :target_branch, :source_branch, :upvotes, :downvotes
+      expose :target_branch, :source_branch
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
@@ -211,8 +192,6 @@ module API
       expose :author, using: Entities::UserBasic
       expose :created_at
       expose :system?, as: :system
-      expose :upvote?, as: :upvote
-      expose :downvote?, as: :downvote
     end
 
     class MRNote < Grape::Entity
@@ -231,7 +210,7 @@ module API
 
     class CommitStatus < Grape::Entity
       expose :id, :sha, :ref, :status, :name, :target_url, :description,
-             :created_at, :started_at, :finished_at
+             :created_at, :started_at, :finished_at, :allow_failure
       expose :author, using: Entities::UserBasic
     end
 
@@ -340,6 +319,35 @@ module API
       expose :restricted_signup_domains
       expose :user_oauth_applications
       expose :after_sign_out_path
+    end
+
+    class Release < Grape::Entity
+      expose :tag, :description
+    end
+
+    class RepoTag < Grape::Entity
+      expose :name
+      expose :message do |repo_obj, _options|
+        if repo_obj.respond_to?(:message)
+          repo_obj.message
+        else
+          nil
+        end
+      end
+
+      expose :commit do |repo_obj, options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit
+        elsif options[:project]
+          options[:project].repository.commit(repo_obj.target)
+        end
+      end
+
+      expose :release, using: Entities::Release do |repo_obj, options|
+        if options[:project]
+          options[:project].releases.find_by(tag: repo_obj.name)
+        end
+      end
     end
   end
 end

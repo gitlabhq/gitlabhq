@@ -16,6 +16,7 @@
 .append-bottom-10 { margin-bottom:10px }
 .append-bottom-15 { margin-bottom:15px }
 .append-bottom-20 { margin-bottom:20px }
+.append-bottom-default { margin-bottom: $gl-padding; }
 .inline { display: inline-block }
 .center { text-align: center }
 
@@ -325,6 +326,10 @@ table {
   a {
     margin-right: 15px;
   }
+}
+
+.well {
+  margin-bottom: 0;
 }
 
 .search_box {

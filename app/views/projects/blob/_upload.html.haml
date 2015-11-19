@@ -5,7 +5,7 @@
         %a.close{href: "#", "data-dismiss" => "modal"} ×
         %h3.page-title #{title}
       .modal-body
-        = form_tag form_path, method: method, class: 'blob-file-upload-form-js form-horizontal' do
+        = form_tag form_path, method: method, class: 'js-upload-blob-form form-horizontal' do
           .dropzone
             .dropzone-previews.blob-upload-dropzone-previews
               %p.dz-message.light
@@ -13,19 +13,15 @@
                 = link_to 'click to upload', '#', class: "markdown-selector"
           %br
           .dropzone-alerts{class: "alert alert-danger data", style: "display:none"}
-          = render 'shared/commit_message_container', params: params,
-            placeholder: placeholder
-          - unless @project.empty_repo?
-            .form-group.branch
-              = label_tag 'branch', class: 'control-label' do
-                Branch
-              .col-sm-10
-                = text_field_tag 'new_branch', @ref, class: "form-control"
+
+          = render 'shared/new_commit_form', placeholder: placeholder
+
           .form-group
             .col-sm-offset-2.col-sm-10
               = button_tag button_title, class: 'btn btn-small btn-primary btn-upload-file', id: 'submit-all'
               = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
-:coffeescript
-  disableButtonIfEmptyField $('.blob-file-upload-form-js').find('#commit_message'), '.btn-upload-file'
-  new BlobFileDropzone($('.blob-file-upload-form-js'), '#{method}')
+:javascript
+  disableButtonIfEmptyField($('.js-upload-blob-form').find('.js-commit-message'), '.btn-upload-file');
+  new BlobFileDropzone($('.js-upload-blob-form'), '#{method}');
+  new NewCommitForm($('.js-upload-blob-form'))

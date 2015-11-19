@@ -1,0 +1,26 @@
+- page_title t('sherlock.title'), t('sherlock.transaction'), t('sherlock.query')
+- header_title t('sherlock.title'), sherlock_transactions_path
+
+%ul.center-top-menu
+  %li.active
+    %a(href="#tab-general" data-toggle="tab")
+      = t('sherlock.general')
+  %li
+    %a(href="#tab-backtrace" data-toggle="tab")
+      = t('sherlock.backtrace')
+
+.gray-content-block
+  .pull-right
+    = link_to(sherlock_transaction_path(@transaction), class: 'btn') do
+      %i.fa.fa-arrow-left
+      = t('sherlock.transaction')
+  .oneline
+    = t('sherlock.query')
+    = @query.id
+
+.tab-content
+  .tab-pane.active#tab-general
+    = render(partial: 'general')
+
+  .tab-pane#tab-backtrace
+    = render(partial: 'backtrace')

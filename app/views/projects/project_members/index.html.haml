@@ -29,7 +29,8 @@
 - if @group
   = render "group_members", members: @group_members
 
-:coffeescript
-  $('form.member-search-form').on 'submit', (event) ->
-    event.preventDefault()
-    Turbolinks.visit @.action + '?' + $(@).serialize()
+:javascript
+  $('form.member-search-form').on('submit', function (event) {
+    event.preventDefault();
+    Turbolinks.visit(this.action + '?' + $(this).serialize());
+  });

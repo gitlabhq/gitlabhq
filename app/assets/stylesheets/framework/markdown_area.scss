@@ -106,6 +106,7 @@
 }
 
 .markdown-area {
+  @include border-radius(0);
   background: #FFF;
   border: 1px solid #ddd;
   min-height: 140px;

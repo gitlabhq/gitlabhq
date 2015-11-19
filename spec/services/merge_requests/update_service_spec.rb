@@ -3,7 +3,8 @@ require 'spec_helper'
 describe MergeRequests::UpdateService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let(:merge_request) { create(:merge_request, :simple, title: 'Old title') }
+  let(:user3) { create(:user) }
+  let(:merge_request) { create(:merge_request, :simple, title: 'Old title', assignee_id: user3.id) }
   let(:project) { merge_request.project }
   let(:label) { create(:label) }
 
@@ -47,9 +48,11 @@ describe MergeRequests::UpdateService do
                                with(@merge_request, 'update')
       end
 
-      it 'should send email to user2 about assign of new merge_request' do
-        email = ActionMailer::Base.deliveries.last
-        expect(email.to.first).to eq(user2.email)
+      it 'should send email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
+        deliveries = ActionMailer::Base.deliveries
+        email = deliveries.last
+        recipients = deliveries.last(2).map(&:to).flatten
+        expect(recipients).to include(user2.email, user3.email)
         expect(email.subject).to include(merge_request.title)
       end
 

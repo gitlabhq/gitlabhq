@@ -1,8 +1,6 @@
 - page_title "Members"
 - header_title group_title(@group, "Members", group_group_members_path(@group))
-- show_roles = should_user_see_group_roles?(current_user, @group)
-
-- if show_roles
+- if should_user_see_group_roles?(current_user, @group)
   %p.light
     Members of group have access to all group projects.
     Read more about permissions
@@ -32,11 +30,12 @@
       (#{@members.total_count})
   %ul.well-list
     - @members.each do |member|
-      = render 'groups/group_members/group_member', member: member, show_roles: show_roles, show_controls: true
+      = render 'groups/group_members/group_member', member: member, show_controls: true
 
 = paginate @members, theme: 'gitlab'
 
-:coffeescript
-  $('form.member-search-form').on 'submit', (event) ->
-    event.preventDefault()
-    Turbolinks.visit @.action + '?' + $(@).serialize()
+:javascript
+  $('form.member-search-form').on('submit', function(event) {
+    event.preventDefault();
+    Turbolinks.visit(this.action + '?' + $(this).serialize());
+  });

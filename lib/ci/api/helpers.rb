@@ -1,6 +1,8 @@
 module Ci
   module API
     module Helpers
+      BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN"
+      BUILD_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 60
 
       def authenticate_runners!
@@ -13,6 +15,11 @@ module Ci
 
       def authenticate_project_token!(project)
         forbidden! unless project.valid_token?(params[:project_token])
+      end
+
+      def authenticate_build_token!(build)
+        token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
+        forbidden! unless token && build.valid_token?(token)
       end
 
       def update_runner_last_contact
@@ -31,6 +38,10 @@ module Ci
         return unless params["info"].present?
         info = attributes_for_keys(["name", "version", "revision", "platform", "architecture"], params["info"])
         current_runner.update(info)
+      end
+
+      def max_artifacts_size
+        current_application_settings.max_artifacts_size.megabytes.to_i
       end
     end
   end

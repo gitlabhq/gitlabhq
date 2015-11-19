@@ -31,8 +31,6 @@ Parameters:
     "project_id": 3,
     "title": "test1",
     "state": "opened",
-    "upvotes": 0,
-    "downvotes": 0,
     "author": {
       "id": 1,
       "username": "admin",
@@ -77,8 +75,6 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "merged",
-  "upvotes": 0,
-  "downvotes": 0,
   "author": {
     "id": 1,
     "username": "admin",
@@ -126,8 +122,6 @@ Parameters:
   "updated_at": "2015-02-02T20:08:49.959Z",
   "target_branch": "secret_token",
   "source_branch": "version-1-9",
-  "upvotes": 0,
-  "downvotes": 0,
   "author": {
     "name": "Chad Hamill",
     "username": "jarrett",
@@ -198,8 +192,6 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "opened",
-  "upvotes": 0,
-  "downvotes": 0,
   "author": {
     "id": 1,
     "username": "admin",
@@ -250,8 +242,6 @@ Parameters:
   "title": "test1",
   "description": "description1",
   "state": "opened",
-  "upvotes": 0,
-  "downvotes": 0,
   "author": {
     "id": 1,
     "username": "admin",
@@ -304,8 +294,6 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "merged",
-  "upvotes": 0,
-  "downvotes": 0,
   "author": {
     "id": 1,
     "username": "admin",

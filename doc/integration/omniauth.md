@@ -36,7 +36,7 @@ If you want to change these settings:
     ```
     gitlab_rails['omniauth_enabled'] = true
     gitlab_rails['omniauth_allow_single_sign_on'] = false
-    gitlab_rails['block_auto_created_users'] = true
+    gitlab_rails['omniauth_block_auto_created_users'] = true
     ```
 
 * **For installations from source**

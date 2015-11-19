@@ -4,7 +4,7 @@ describe Ci::API::API, 'Commits' do
   include ApiHelpers
 
   let(:project) { FactoryGirl.create(:ci_project) }
-  let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+  let(:gl_project) { project.gl_project }
   let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
 
   let(:options) do

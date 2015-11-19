@@ -29,8 +29,6 @@
 
   .issue-info
     = "#{issue.to_reference} opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by #{link_to_member(@project, issue.author, avatar: false)}".html_safe
-    - if issue.votes_count > 0
-      = render 'votes/votes_inline', votable: issue
     - if issue.milestone
       &nbsp;
       %span

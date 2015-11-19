@@ -12,6 +12,12 @@ Feature: Project Commits Tags
     And I submit new tag form
     Then I should see new tag created
 
+  Scenario: I create a tag with release notes
+    Given I click new tag link
+    And I submit new tag form with release notes
+    Then I should see new tag created
+    And I should see tag release notes
+
   Scenario: I create a tag with invalid name
     And I click new tag link
     And I submit new tag form with invalid name
@@ -27,15 +33,13 @@ Feature: Project Commits Tags
     And I submit new tag form with tag that already exists
     Then I should see new an error that tag already exists
 
-  @javascript
   Scenario: I delete a tag
+    Given I visit tag 'v1.1.0' page
     Given I delete tag 'v1.1.0'
     Then I should not see tag 'v1.1.0'
 
-  @javascript
-  Scenario: I delete all tags and see info message
-    Given I delete all tags
-    Then I should see tags info message
-
-  # @wip
-  # Scenario: I can download project by tag
+  Scenario: I add release notes to the tag
+    Given I visit tag 'v1.1.0' page
+    When I click edit tag link
+    And I fill release notes and submit form
+    Then I should see tag release notes

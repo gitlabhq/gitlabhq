@@ -23,7 +23,6 @@
             = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'select2', tabindex: 2}
 
       - if import_sources_enabled?
-
         .project-import.js-toggle-container
           .form-group
             %label.control-label Import project from
@@ -82,19 +81,7 @@
                   %span Any repo by URL
 
           .js-toggle-content.hide
-            .form-group.import-url-data
-              = f.label :import_url, class: 'control-label' do
-                %span Git repository URL
-              .col-sm-10
-                = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
-                .well.prepend-top-20
-                  %ul
-                    %li
-                      The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
-                    %li
-                      The import will time out after 4 minutes. For big repositories, use a clone/push combination.
-                    %li
-                      To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}.
+            = render "shared/import_form", f: f
 
       .prepend-botton-10
 
@@ -124,9 +111,11 @@
       Creating project &amp; repository.
     %p Please wait a moment, this page will automatically refresh when ready.
 
-:coffeescript
-  $('.how_to_import_link').bind 'click', (e) ->
-    e.preventDefault()
-    import_modal = $(this).next(".modal").show()
-  $('.modal-header .close').bind 'click', ->
-    $(".modal").hide()
+:javascript
+  $('.how_to_import_link').bind('click', function (e) {
+    e.preventDefault();
+    var import_modal = $(this).next(".modal").show();
+  });
+  $('.modal-header .close').bind('click', function() {
+    $(".modal").hide();
+  });

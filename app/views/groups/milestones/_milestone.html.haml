@@ -22,7 +22,7 @@
             %span.label.label-gray
               = milestone.project.name
     .col-sm-6
-      - if can?(current_user, :admin_group, @group)
+      - if can?(current_user, :admin_milestones, @group)
         - if milestone.closed?
           = link_to 'Reopen Milestone', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-xs btn-grouped btn-reopen"
         - else

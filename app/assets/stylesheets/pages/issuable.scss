@@ -101,3 +101,71 @@
     background-color: $background-color;
   }
 }
+
+.awards {
+  @include clearfix;
+  line-height: 34px;
+  margin: 2px 0;
+
+  .award {
+    @include border-radius(5px);
+
+    border: 1px solid;
+    padding: 0px 10px;
+    float: left;
+    margin: 0 5px;
+    border-color: $border-color;
+    cursor: pointer;
+
+    &.active {
+      border-color: $border-gray-light;
+      background-color: $gray-light;
+
+      .counter {
+        font-weight: bold;
+      }
+    }
+
+    .icon {
+      float: left;
+      margin-right: 10px;
+    }
+
+    .counter {
+      float: left;
+    }
+  }
+
+  .awards-controls {
+    margin-left: 10px;
+    float: left;
+
+    .add-award {
+      font-size: 24px;
+      color: $gl-gray;
+      position: relative;
+      top: 2px;
+
+      &:hover,
+      &:link {
+        text-decoration: none;
+      }
+    }
+
+    .awards-menu {
+      padding: $gl-padding;
+      min-width: 214px;
+
+      > li {
+        margin: 5px;
+      }
+    }
+  }
+
+  .awards-menu{
+    li {
+      float: left;
+      margin: 3px;
+    }
+  }
+}
