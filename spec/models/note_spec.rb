@@ -132,12 +132,11 @@ describe Note do
 
   describe :grouped_awards do
     before do
-      create :note, note: "smile"
-      create :note, note: "smile"
+      create :note, note: "smile", is_award: true
+      create :note, note: "smile", is_award: true
     end
 
     it "returns grouped array of notes" do
-      grouped_array = Note.grouped_awards
       expect(Note.grouped_awards.first.first).to eq("smile")
       expect(Note.grouped_awards.first.last).to match_array(Note.all)
     end
