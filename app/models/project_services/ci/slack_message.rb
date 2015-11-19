@@ -45,7 +45,7 @@ module Ci
 
     def attachment_message
       out = "<#{ci_project_url(project)}|#{project_name}>: "
-      out << "Commit <#{ci_namespace_project_commit_url(commit.gl_project.namespace, commit.gl_project, commit.sha)}|\##{commit.id}> "
+      out << "Commit <#{builds_namespace_project_commit_url(commit.gl_project.namespace, commit.gl_project, commit.sha)}|\##{commit.id}> "
       out << "(<#{commit_sha_link}|#{commit.short_sha}>) "
       out << "of <#{commit_ref_link}|#{commit.ref}> "
       out << "by #{commit.git_author_name} " if commit.git_author_name

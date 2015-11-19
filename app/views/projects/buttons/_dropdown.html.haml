@@ -5,7 +5,7 @@
     %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
       - if can?(current_user, :create_issue, @project)
         %li
-          = link_to url_for_new_issue do
+          = link_to url_for_new_issue(@project, only_path: true) do
             = icon('exclamation-circle fw')
             New issue
       - if can?(current_user, :create_merge_request, @project)
@@ -21,6 +21,10 @@
       - if can?(current_user, :push_code, @project)
         %li.divider
         %li
+          = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master'), title: 'New file' do
+            = icon('file fw')
+            New file
+        %li
           = link_to new_namespace_project_branch_path(@project.namespace, @project) do
             = icon('code-fork fw')
             New branch
@@ -28,5 +32,3 @@
           = link_to new_namespace_project_tag_path(@project.namespace, @project) do
             = icon('tags fw')
             New tag
-
-

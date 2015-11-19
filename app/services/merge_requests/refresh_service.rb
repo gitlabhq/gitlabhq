@@ -7,17 +7,17 @@ module MergeRequests
       @branch_name = Gitlab::Git.ref_name(ref)
 
       find_new_commits
+      # Be sure to close outstanding MRs before reloading them to avoid generating an
+      # empty diff during a manual merge
+      close_merge_requests
       reload_merge_requests
 
       # Leave a system note if a branch was deleted/added
       if branch_added? || branch_removed?
         comment_mr_branch_presence_changed
-        comment_mr_with_commits
-      else
-        comment_mr_with_commits
-        close_merge_requests
       end
 
+      comment_mr_with_commits
       execute_mr_web_hooks
 
       true

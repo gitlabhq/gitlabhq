@@ -16,6 +16,7 @@
 .append-bottom-10 { margin-bottom:10px }
 .append-bottom-15 { margin-bottom:15px }
 .append-bottom-20 { margin-bottom:20px }
+.append-bottom-default { margin-bottom: $gl-padding; }
 .inline { display: inline-block }
 .center { text-align: center }
 
@@ -327,6 +328,10 @@ table {
   }
 }
 
+.well {
+  margin-bottom: 0;
+}
+
 .search_box {
   @extend .well;
   text-align: center;
@@ -384,6 +389,36 @@ table {
 
   &.no-top {
     margin-top: 0;
+  }
+}
+
+.center-middle-menu {
+  @include nav-menu;
+  padding: 0;
+  text-align: center;
+  margin: -$gl-padding;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 58px;
+  border-bottom: 1px solid $border-color;
+
+  li {
+    &:after {
+      content: "|";
+      color: $border-gray-light;
+    }
+
+    &:last-child {
+      &:after {
+        content: none;
+      }
+    }
+
+    > a {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
   }
 }
 

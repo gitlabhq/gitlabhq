@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Builds" do
+  let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+
   before do
     login_as(:user)
     @commit = FactoryGirl.create :ci_commit
@@ -47,10 +49,11 @@ describe "Builds" do
     end
   end
 
-  describe "GET /:project/builds/:id/cancel_all" do
+  describe "POST /:project/builds/:id/cancel_all" do
     before do
       @build.run!
-      visit cancel_all_namespace_project_builds_path(@gl_project.namespace, @gl_project)
+      visit namespace_project_builds_path(@gl_project.namespace, @gl_project)
+      click_link "Cancel all"
     end
 
     it { expect(page).to have_content 'No builds to show' }
@@ -65,12 +68,22 @@ describe "Builds" do
     it { expect(page).to have_content @commit.sha[0..7] }
     it { expect(page).to have_content @commit.git_commit_message }
     it { expect(page).to have_content @commit.git_author_name }
+
+    context "Download artifacts" do
+      before do
+        @build.update_attributes(artifacts_file: artifacts_file)
+        visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      end
+
+      it { expect(page).to have_content 'Download artifacts' }
+    end
   end
 
-  describe "GET /:project/builds/:id/cancel" do
+  describe "POST /:project/builds/:id/cancel" do
     before do
       @build.run!
-      visit cancel_namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      click_link "Cancel"
     end
 
     it { expect(page).to have_content 'canceled' }
@@ -79,11 +92,23 @@ describe "Builds" do
 
   describe "POST /:project/builds/:id/retry" do
     before do
-      visit cancel_namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      @build.run!
+      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      click_link "Cancel"
       click_link 'Retry'
     end
 
     it { expect(page).to have_content 'pending' }
     it { expect(page).to have_content 'Cancel' }
+  end
+
+  describe "GET /:project/builds/:id/download" do
+    before do
+      @build.update_attributes(artifacts_file: artifacts_file)
+      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      click_link 'Download artifacts'
+    end
+
+    it { expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type) }
   end
 end

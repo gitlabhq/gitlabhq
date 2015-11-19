@@ -4,13 +4,14 @@ module Ci
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
-    ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables]
-    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when]
+    ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables, :cache]
+    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when, :artifacts, :cache]
 
-    attr_reader :before_script, :image, :services, :variables
+    attr_reader :before_script, :image, :services, :variables, :path, :cache
 
-    def initialize(config)
+    def initialize(config, path = nil)
       @config = YAML.load(config)
+      @path = path
 
       unless @config.is_a? Hash
         raise ValidationError, "YAML should be a hash"
@@ -45,6 +46,7 @@ module Ci
       @services = @config[:services]
       @stages = @config[:stages] || @config[:types]
       @variables = @config[:variables] || {}
+      @cache = @config[:cache]
       @config.except!(*ALLOWED_YAML_KEYS)
 
       # anything that doesn't have script is considered as unknown
@@ -63,26 +65,6 @@ module Ci
       end
     end
 
-    def process?(only_params, except_params, ref, tag)
-      return true if only_params.nil? && except_params.nil?
-
-      if only_params
-        return true if tag && only_params.include?("tags")
-        return true if !tag && only_params.include?("branches")
-        
-        only_params.find do |pattern|
-          match_ref?(pattern, ref)
-        end
-      else
-        return false if tag && except_params.include?("tags")
-        return false if !tag && except_params.include?("branches")
-
-        except_params.each do |pattern|
-          return false if match_ref?(pattern, ref)
-        end
-      end
-    end
-
     def build_job(name, job)
       {
         stage_idx: stages.index(job[:stage]),
@@ -96,17 +78,11 @@ module Ci
         when: job[:when] || 'on_success',
         options: {
           image: job[:image] || @image,
-          services: job[:services] || @services
+          services: job[:services] || @services,
+          artifacts: job[:artifacts],
+          cache: job[:cache] || @cache,
         }.compact
       }
-    end
-
-    def match_ref?(pattern, ref)
-      if pattern.first == "/" && pattern.last == "/"
-        Regexp.new(pattern[1...-1]) =~ ref
-      else
-        pattern == ref
-      end
     end
 
     def normalize_script(script)
@@ -136,6 +112,16 @@ module Ci
 
       unless @variables.nil? || validate_variables(@variables)
         raise ValidationError, "variables should be a map of key-valued strings"
+      end
+
+      if @cache
+        if @cache[:untracked] && !validate_boolean(@cache[:untracked])
+          raise ValidationError, "cache:untracked parameter should be an boolean"
+        end
+
+        if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
+          raise ValidationError, "cache:paths parameter should be an array of strings"
+        end
       end
 
       @jobs.each do |name, job|
@@ -186,7 +172,27 @@ module Ci
         raise ValidationError, "#{name} job: except parameter should be an array of strings"
       end
 
-      if job[:allow_failure] && !job[:allow_failure].in?([true, false])
+      if job[:cache]
+        if job[:cache][:untracked] && !validate_boolean(job[:cache][:untracked])
+          raise ValidationError, "#{name} job: cache:untracked parameter should be an boolean"
+        end
+
+        if job[:cache][:paths] && !validate_array_of_strings(job[:cache][:paths])
+          raise ValidationError, "#{name} job: cache:paths parameter should be an array of strings"
+        end
+      end
+
+      if job[:artifacts]
+        if job[:artifacts][:untracked] && !validate_boolean(job[:artifacts][:untracked])
+          raise ValidationError, "#{name} job: artifacts:untracked parameter should be an boolean"
+        end
+
+        if job[:artifacts][:paths] && !validate_array_of_strings(job[:artifacts][:paths])
+          raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
+        end
+      end
+
+      if job[:allow_failure] && !validate_boolean(job[:allow_failure])
         raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
 
@@ -207,6 +213,41 @@ module Ci
 
     def validate_string(value)
       value.is_a?(String) || value.is_a?(Symbol)
+    end
+
+    def validate_boolean(value)
+      value.in?([true, false])
+    end
+
+    def process?(only_params, except_params, ref, tag)
+      if only_params.present?
+        return false unless matching?(only_params, ref, tag)
+      end
+
+      if except_params.present?
+        return false if matching?(except_params, ref, tag)
+      end
+
+      true
+    end
+
+    def matching?(patterns, ref, tag)
+      patterns.any? do |pattern|
+        match_ref?(pattern, ref, tag)
+      end
+    end
+
+    def match_ref?(pattern, ref, tag)
+      pattern, path = pattern.split('@', 2)
+      return false if path && path != self.path
+      return true if tag && pattern == 'tags'
+      return true if !tag && pattern == 'branches'
+
+      if pattern.first == "/" && pattern.last == "/"
+        Regexp.new(pattern[1...-1]) =~ ref
+      else
+        pattern == ref
+      end
     end
   end
 end

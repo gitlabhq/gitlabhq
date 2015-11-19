@@ -42,13 +42,13 @@ upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
 }
 
-upstream gitlab-git-http-server {
-  server unix:/home/git/gitlab/tmp/sockets/gitlab-git-http-server.socket fail_timeout=0;
+upstream gitlab-workhorse {
+  server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
 }
 
 ## Redirects all HTTP traffic to the HTTPS host
 server {
-  ## Either remove "default_server" from the listen line below, 
+  ## Either remove "default_server" from the listen line below,
   ## or delete the /etc/nginx/sites-enabled/default file. This will cause gitlab
   ## to be served if you visit any address that your server responds to, eg.
   ## the ip address of the server (http://x.x.x.x/)
@@ -112,7 +112,7 @@ server {
   location / {
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
-    try_files $uri $uri/index.html $uri.html @gitlab;
+    try_files $uri /index.html $uri.html @gitlab;
   }
 
   ## We route uploads through GitLab to prevent XSS and enforce access control.
@@ -160,25 +160,46 @@ server {
     proxy_pass http://gitlab;
   }
 
+  location ~ ^/[\w\.-]+/[\w\.-]+/gitlab-lfs/objects {
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
+  }
+
   location ~ ^/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
-    # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
-    error_page 418 = @gitlab-git-http-server;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^/[\w\.-]+/[\w\.-]+/repository/archive {
-    # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
-    error_page 418 = @gitlab-git-http-server;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^/api/v3/projects/.*/repository/archive {
-    # 'Error' 418 is a hack to re-use the @gitlab-git-http-server block
-    error_page 418 = @gitlab-git-http-server;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
-  location @gitlab-git-http-server {
+  # Build artifacts should be submitted to this location
+  location ~ ^/[\w\.-]+/[\w\.-]+/builds/download {
+      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+      error_page 418 = @gitlab-workhorse;
+      return 418;
+  }
+
+  # Build artifacts should be submitted to this location
+  location ~ /ci/api/v1/builds/[0-9]+/artifacts {
+      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+      error_page 418 = @gitlab-workhorse;
+      return 418;
+  }
+
+  location @gitlab-workhorse {
+    client_max_body_size 0;
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     gzip off;
@@ -194,7 +215,7 @@ server {
 
     # The following settings only work with NGINX 1.7.11 or newer
     #
-    # # Pass chunked request bodies to gitlab-git-http-server as-is
+    # # Pass chunked request bodies to gitlab-workhorse as-is
     # proxy_request_buffering off;
     # proxy_http_version 1.1;
 
@@ -203,7 +224,7 @@ server {
     proxy_set_header    X-Forwarded-Ssl     on;
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
     proxy_set_header    X-Forwarded-Proto   $scheme;
-    proxy_pass http://gitlab-git-http-server;
+    proxy_pass http://gitlab-workhorse;
   }
 
   ## Enable gzip compression as per rails guide:

@@ -70,6 +70,28 @@ describe Projects::CreateService do
       end
     end
 
+    context 'builds_enabled global setting' do
+      let(:project) { create_project(@user, @opts) }
+
+      subject { project.builds_enabled? }
+
+      context 'global builds_enabled false does not enable CI by default' do
+        before do
+          @opts.merge!(builds_enabled: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'global builds_enabled true does enable CI by default' do
+        before do
+          @opts.merge!(builds_enabled: true)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
     context 'restricted visibility level' do
       before do
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])

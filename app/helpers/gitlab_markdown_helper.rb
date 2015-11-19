@@ -49,7 +49,7 @@ module GitlabMarkdownHelper
     return "" unless text.present?
 
     context[:project] ||= @project
-    
+
     html = Gitlab::Markdown.render(text, context)
 
     context.merge!(

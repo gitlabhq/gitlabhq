@@ -55,7 +55,9 @@ module Projects
         @project.save
 
         if @project.persisted? && !@project.import?
-          raise 'Failed to create repository' unless @project.create_repository
+          unless @project.create_repository
+            raise 'Failed to create repository'
+          end
         end
       end
 
@@ -94,11 +96,7 @@ module Projects
         @project.team << [current_user, :master, current_user]
       end
 
-      @project.update_column(:last_activity_at, @project.created_at)
-
-      if @project.import?
-        @project.import_start
-      end
+      @project.import_start if @project.import?
     end
   end
 end

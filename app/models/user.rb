@@ -54,6 +54,7 @@
 #  public_email               :string(255)      default(""), not null
 #  dashboard                  :integer          default(0)
 #  project_view               :integer          default(0)
+#  consumed_timestep          :integer
 #  layout                     :integer          default(0)
 #
 
@@ -235,21 +236,16 @@ class User < ActiveRecord::Base
 
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email)
-      user_table = arel_table
-      email_table = Email.arel_table
+      sql = 'SELECT *
+      FROM users
+      WHERE id IN (
+        SELECT id FROM users WHERE email = :email
+        UNION
+        SELECT emails.user_id FROM emails WHERE email = :email
+      )
+      LIMIT 1;'
 
-      # Use ARel to build a query:
-      query = user_table.
-        # SELECT "users".* FROM "users"
-        project(user_table[Arel.star]).
-        # LEFT OUTER JOIN "emails"
-        join(email_table, Arel::Nodes::OuterJoin).
-        # ON "users"."id" = "emails"."user_id"
-        on(user_table[:id].eq(email_table[:user_id])).
-        # WHERE ("user"."email" = '<email>' OR "emails"."email" = '<email>')
-        where(user_table[:email].eq(email).or(email_table[:email].eq(email)))
-
-      find_by_sql(query.to_sql).first
+      User.find_by_sql([sql, { email: email }]).first
     end
 
     def filter(filter_name)
@@ -393,33 +389,23 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Groups user has access to
+  # Returns the groups a user has access to
   def authorized_groups
-    @authorized_groups ||= begin
-                             group_ids = (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-                             Group.where(id: group_ids)
-                           end
+    union = Gitlab::SQL::Union.
+      new([groups.select(:id), authorized_projects.select(:namespace_id)])
+
+    Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
-  def authorized_projects_id
-    @authorized_projects_id ||= begin
-      project_ids = personal_projects.pluck(:id)
-      project_ids.push(*groups_projects.pluck(:id))
-      project_ids.push(*projects.pluck(:id).uniq)
-    end
-  end
-
-  # Projects user has access to
+  # Returns the groups a user is authorized to access.
   def authorized_projects
-    @authorized_projects ||= Project.where(id: authorized_projects_id)
+    Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
   def owned_projects
     @owned_projects ||=
-      begin
-        namespace_ids = owned_groups.pluck(:id).push(namespace.id)
-        Project.in_namespace(namespace_ids).joins(:namespace)
-      end
+      Project.where('namespace_id IN (?) OR namespace_id = ?',
+                    owned_groups.select(:id), namespace.id).joins(:namespace)
   end
 
   # Team membership in authorized projects
@@ -734,12 +720,25 @@ class User < ActiveRecord::Base
     Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
   end
 
-  def contributed_projects_ids
-    Event.contributions.where(author_id: self).
+  # Returns the projects a user contributed to in the last year.
+  #
+  # This method relies on a subquery as this performs significantly better
+  # compared to a JOIN when coupled with, for example,
+  # `Project.visible_to_user`. That is, consider the following code:
+  #
+  #     some_user.contributed_projects.visible_to_user(other_user)
+  #
+  # If this method were to use a JOIN the resulting query would take roughly 200
+  # ms on a database with a similar size to GitLab.com's database. On the other
+  # hand, using a subquery means we can get the exact same data in about 40 ms.
+  def contributed_projects
+    events = Event.select(:project_id).
+      contributions.where(author_id: self).
       where("created_at > ?", Time.now - 1.year).
-      reorder(project_id: :desc).
-      select(:project_id).
-      uniq.map(&:project_id)
+      uniq.
+      reorder(nil)
+
+    Project.where(id: events)
   end
 
   def restricted_signup_domains
@@ -769,15 +768,30 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_projects
-    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects_id)
-  end
-
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject.joins(:project).
-        where(ci_projects: { gitlab_id: authorized_projects_id }).select(:runner_id)
+        where("ci_projects.gitlab_id IN (#{ci_projects_union.to_sql})").
+        select(:runner_id)
+
       Ci::Runner.specific.where(id: runner_ids)
     end
+  end
+
+  private
+
+  def projects_union
+    Gitlab::SQL::Union.new([personal_projects.select(:id),
+                            groups_projects.select(:id),
+                            projects.select(:id)])
+  end
+
+  def ci_projects_union
+    scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }
+    groups = groups_projects.where(members: scope)
+    other  = projects.where(members: scope)
+
+    Gitlab::SQL::Union.new([personal_projects.select(:id), groups.select(:id),
+                            other.select(:id)])
   end
 end

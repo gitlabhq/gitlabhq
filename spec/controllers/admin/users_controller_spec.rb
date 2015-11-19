@@ -7,21 +7,6 @@ describe Admin::UsersController do
     sign_in(admin)
   end
 
-  describe 'POST login_as' do
-    let(:user) { create(:user) }
-
-    it 'logs admin as another user' do
-      expect(warden.authenticate(scope: :user)).not_to eq(user)
-      post :login_as, id: user.username
-      expect(warden.authenticate(scope: :user)).to eq(user)
-    end
-
-    it 'redirects user to homepage' do
-      post :login_as, id: user.username
-      expect(response).to redirect_to(root_path)
-    end
-  end
-
   describe 'DELETE #user with projects' do
     let(:user) { create(:user) }
     let(:project) { create(:project, namespace: user.namespace) }

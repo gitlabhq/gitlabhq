@@ -18,7 +18,10 @@ module Gitlab
       #     homepage: String,
       #   },
       #   commits: Array,
-      #   total_commits_count: Fixnum
+      #   total_commits_count: Fixnum,
+      #   added: ["CHANGELOG"],
+      #   modified: [],
+      #   removed: ["tmp/file.txt"]
       # }
       #
       def build(project, user, oldrev, newrev, ref, commits = [], message = nil)
@@ -33,6 +36,8 @@ module Gitlab
         commit_attrs = commits_limited.map(&:hook_attrs)
 
         type = Gitlab::Git.tag_ref?(ref) ? "tag_push" : "push"
+
+        repo_changes = repo_changes(project, newrev, oldrev)
         # Hash to be passed as post_receive_data
         data = {
           object_kind: type,
@@ -55,7 +60,10 @@ module Gitlab
             visibility_level: project.visibility_level
           },
           commits: commit_attrs,
-          total_commits_count: commits_count
+          total_commits_count: commits_count,
+          added: repo_changes[:added],
+          modified: repo_changes[:modified],
+          removed: repo_changes[:removed]
         }
 
         data
@@ -85,6 +93,27 @@ module Gitlab
         else
           newrev
         end
+      end
+
+      def repo_changes(project, newrev, oldrev)
+        changes = { added: [], modified: [], removed: [] }
+        compare_result = CompareService.new.
+          execute(project, newrev, project, oldrev)
+
+        if compare_result
+          compare_result.diffs.each do |diff|
+            case true
+            when diff.deleted_file
+              changes[:removed] << diff.old_path
+            when diff.renamed_file, diff.new_file
+              changes[:added] << diff.new_path
+            else
+              changes[:modified] << diff.new_path
+            end
+          end
+        end
+
+        changes
       end
     end
   end

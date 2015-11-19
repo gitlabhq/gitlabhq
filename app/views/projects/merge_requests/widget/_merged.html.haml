@@ -15,7 +15,7 @@
 
       - elsif can_remove_branch?(@merge_request.source_project, @merge_request.source_branch)
         .remove_source_branch_widget
-          %p 
+          %p
             = succeed '.' do
               The changes were merged into
               %span.label-branch= @merge_request.target_branch
@@ -25,7 +25,7 @@
             Remove Source Branch
 
         .remove_source_branch_widget.failed.hide
-          %p 
+          %p
             Failed to remove source branch '#{@merge_request.source_branch}'.
 
         .remove_source_branch_in_progress.hide
@@ -33,17 +33,20 @@
             = icon('spinner spin')
             Removing source branch '#{@merge_request.source_branch}'. Please wait. This page will be automatically reload.
 
-        :coffeescript
-          $('.remove_source_branch').on 'click', ->
-            $('.remove_source_branch_widget').hide()
-            $('.remove_source_branch_in_progress').show()
+        :javascript
+          $('.remove_source_branch').on('click', function() {
+            $('.remove_source_branch_widget').hide();
+            $('.remove_source_branch_in_progress').show();
+          });
 
-          $(".remove_source_branch").on "ajax:success", (e, data, status, xhr) ->
-            location.reload()
+          $(".remove_source_branch").on("ajax:success", function (e, data, status, xhr) {
+            location.reload();
+          });
 
-          $(".remove_source_branch").on "ajax:error", (e, data, status, xhr) ->
-            $('.remove_source_branch_widget').hide()
-            $('.remove_source_branch_in_progress').hide()
-            $('.remove_source_branch_widget.failed').show()
+          $(".remove_source_branch").on("ajax:error", function (e, data, status, xhr) {
+            $('.remove_source_branch_widget').hide();
+            $('.remove_source_branch_in_progress').hide();
+            $('.remove_source_branch_widget.failed').show();
+          });
 
 

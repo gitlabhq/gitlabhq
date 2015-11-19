@@ -28,8 +28,8 @@ class Projects::ImportsController < Projects::ApplicationController
       if @project.import_finished?
         redirect_to(project_path(@project)) and return
       else
-        redirect_to new_namespace_project_import_path(@project.namespace,
-                                                      @project) && return
+        redirect_to(new_namespace_project_import_path(@project.namespace,
+                                                      @project)) and return
       end
     end
   end

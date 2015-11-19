@@ -24,7 +24,7 @@ module Issuable
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}
-    scope :recent, -> { order("created_at DESC") }
+    scope :recent, -> { reorder(id: :desc) }
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }

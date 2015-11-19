@@ -1,0 +1,48 @@
+- page_title "Milestones"
+- header_title group_title(@group, "Milestones", group_milestones_path(@group))
+
+%h3.page-title
+  New Milestone
+
+%p.light
+  This will create milestone in every selected project
+%hr
+
+= form_for @milestone, url: group_milestones_path(@group), html: { class: 'form-horizontal milestone-form gfm-form js-requires-input' }  do |f|
+  .row
+    .col-md-6
+      .form-group
+        = f.label :title, "Title", class: "control-label"
+        .col-sm-10
+          = f.text_field :title, maxlength: 255, class: "form-control js-quick-submit", required: true
+          %p.hint Required
+      .form-group.milestone-description
+        = f.label :description, "Description", class: "control-label"
+        .col-sm-10
+          = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
+            = render 'projects/zen', f: f, attr: :description, classes: 'description form-control js-quick-submit'
+            .clearfix
+            .error-alert
+      .form-group
+        = f.label :projects, "Projects", class: "control-label"
+        .col-sm-10
+          = f.collection_select :project_ids, @group.projects, :id, :name,
+            { selected: @group.projects.map(&:id) }, multiple: true, class: 'select2'
+
+    .col-md-6
+      .form-group
+        = f.label :due_date, "Due Date", class: "control-label"
+        .col-sm-10= f.hidden_field :due_date
+        .col-sm-10
+          .datepicker
+
+  .form-actions
+    = f.submit 'Create Milestone', class: "btn-create btn"
+    = link_to "Cancel", group_milestones_path(@group), class: "btn btn-cancel"
+
+
+:javascript
+  $(".datepicker").datepicker({
+    dateFormat: "yy-mm-dd",
+    onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
+  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));

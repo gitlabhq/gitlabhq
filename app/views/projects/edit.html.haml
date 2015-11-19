@@ -57,7 +57,16 @@
                     = f.check_box :merge_requests_enabled
                     %strong Merge Requests
                     %br
-                    %span.descr Submit changes to be merged upstream.
+                    %span.descr Submit changes to be merged upstream
+
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                .checkbox
+                  = f.label :builds_enabled do
+                    = f.check_box :builds_enabled
+                    %strong Builds
+                    %br
+                    %span.descr Test and deploy your changes before merge
 
             .form-group
               .col-sm-offset-2.col-sm-10

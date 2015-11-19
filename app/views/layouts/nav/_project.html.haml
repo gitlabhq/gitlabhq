@@ -1,16 +1,16 @@
 %ul.nav.nav-sidebar
   - if @project.group
     = nav_link do
-      = link_to group_path(@project.group), title: 'Back to group', data: {placement: 'right'}, class: 'back-link' do
+      = link_to group_path(@project.group), title: 'Go to group', data: {placement: 'right'}, class: 'back-link' do
         = icon('caret-square-o-left fw')
         %span
-          Back to group
+          Go to group
   - else
     = nav_link do
-      = link_to root_path, title: 'Back to dashboard', data: {placement: 'right'}, class: 'back-link' do
+      = link_to root_path, title: 'Go to dashboard', data: {placement: 'right'}, class: 'back-link' do
         = icon('caret-square-o-left fw')
         %span
-          Back to dashboard
+          Go to dashboard
 
   %li.separate-item
 
@@ -32,7 +32,7 @@
           Files
 
   - if project_nav_tab? :commits
-    = nav_link(controller: %w(commit commits compare repositories tags branches)) do
+    = nav_link(controller: %w(commit commits compare repositories tags branches releases)) do
       = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits', data: {placement: 'right'} do
         = icon('history fw')
         %span

@@ -1,15 +1,18 @@
 class GroupsController < Groups::ApplicationController
+  include IssuesAction
+  include MergeRequestsAction
+
   skip_before_action :authenticate_user!, only: [:show, :issues, :merge_requests]
   respond_to :html
   before_action :group, except: [:new, :create]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:show, :new, :create]
+  before_action :authorize_read_group!, except: [:show, :new, :create, :autocomplete]
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_action :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
-  before_action :load_projects, except: [:new, :create, :projects, :edit, :update]
+  before_action :load_projects, except: [:new, :create, :projects, :edit, :update, :autocomplete]
   before_action :event_filter, only: :show
 
   layout :determine_layout
@@ -50,23 +53,6 @@ class GroupsController < Groups::ApplicationController
         load_events
         render layout: false
       end
-    end
-  end
-
-  def merge_requests
-    @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
-    @merge_requests = @merge_requests.preload(:author, :target_project)
-  end
-
-  def issues
-    @issues = get_issues_collection
-    @issues = @issues.page(params[:page]).per(PER_PAGE)
-    @issues = @issues.preload(:author, :project)
-
-    respond_to do |format|
-      format.html
-      format.atom { render layout: false }
     end
   end
 
@@ -133,7 +119,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar)
+    params.require(:group).permit(:name, :description, :path, :avatar, :public)
   end
 
   def load_events

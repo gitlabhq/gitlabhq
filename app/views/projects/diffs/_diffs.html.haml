@@ -1,9 +1,9 @@
-- if params[:view] == 'parallel'
+- if diff_view == 'parallel'
   - fluid_layout true
 
 - diff_files = safe_diff_files(diffs)
 
-.gray-content-block.second-block
+.gray-content-block.second-block.oneline-block
   .inline-parallel-buttons
     .btn-group
       = inline_diff_btn

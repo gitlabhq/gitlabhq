@@ -60,6 +60,14 @@ Feature: Groups
     Then I should see "Mike" in team list as "Reporter"
 
   @javascript
+  Scenario: Ignore add user to group when is already Owner
+    Given gitlab user "Mike"
+    When I visit group "Owned" members page
+    And I click link "Add members"
+    When I select "Mike" as "Reporter"
+    Then I should see "Mike" in team list as "Owner"
+
+  @javascript
   Scenario: Invite user to group
     When I visit group "Owned" members page
     And I click link "Add members"
@@ -153,6 +161,13 @@ Feature: Groups
     Then I should see group milestone with descriptions and expiry date
     And I should see group milestone with all issues and MRs assigned to that milestone
 
+  Scenario: Create multiple milestones with one form
+    Given I visit group "Owned" milestones page
+    And I click new milestone button
+    And I fill milestone name
+    When I press create mileston button
+    Then milestone in each project should be created
+
   # Group projects in settings
   Scenario: I should see all projects in the project list in settings
     Given Group "Owned" has archived project
@@ -169,4 +184,4 @@ Feature: Groups
     When I visit group "Owned" page
     Then I should see group "Owned"
     Then I should see project "Public-project"
-   
+
