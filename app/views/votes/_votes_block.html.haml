@@ -8,7 +8,7 @@
 
   .dropdown.awards-controls
     %a.add-award{"data-toggle" => "dropdown", "data-target" => "#", "href" => "#"}
-      = icon('plus-circle')
+      = icon('plus-square-o')
     %ul.dropdown-menu.awards-menu
       - emoji_list.each do |emoji|
         %li{"data-emoji" => "#{emoji}"}= image_tag url_to_emoji(emoji), height: "20px", width: "20px"
