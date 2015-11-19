@@ -129,4 +129,17 @@ describe Note do
 
     it { expect(Note.search('wow')).to include(note) }
   end
+
+  describe :grouped_awards do
+    before do
+      create :note, note: "smile"
+      create :note, note: "smile"
+    end
+
+    it "returns grouped array of notes" do
+      grouped_array = Note.grouped_awards
+      expect(Note.grouped_awards.first.first).to eq("smile")
+      expect(Note.grouped_awards.first.last).to match_array(Note.all)
+    end
+  end
 end
