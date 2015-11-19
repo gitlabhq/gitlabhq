@@ -162,7 +162,7 @@ module API
     end
 
     class MergeRequest < ProjectEntity
-      expose :target_branch, :source_branch, :upvotes, :downvotes
+      expose :target_branch, :source_branch
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
@@ -192,8 +192,6 @@ module API
       expose :author, using: Entities::UserBasic
       expose :created_at
       expose :system?, as: :system
-      expose :upvote?, as: :upvote
-      expose :downvote?, as: :downvote
     end
 
     class MRNote < Grape::Entity

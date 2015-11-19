@@ -345,17 +345,6 @@ describe Project do
       expect(project1.star_count).to eq(0)
       expect(project2.star_count).to eq(0)
     end
-
-    it 'is decremented when an upvoter account is deleted' do
-      user = create :user
-      project = create :project, :public
-      user.toggle_star(project)
-      project.reload
-      expect(project.star_count).to eq(1)
-      user.destroy
-      project.reload
-      expect(project.star_count).to eq(0)
-    end
   end
 
   describe :avatar_type do
