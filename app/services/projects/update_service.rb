@@ -13,7 +13,6 @@ module Projects
         end
 
         return false unless visibility_level_allowed?(new_visibility)
-        update_forks_visibility_level(new_visibility.to_i)
       end
 
       new_branch = params[:default_branch]
@@ -41,19 +40,6 @@ module Projects
       )
 
       false
-    end
-
-    def update_forks_visibility_level(new_level)
-      return unless new_level < project.visibility_level
-
-      project.forks.each do |forked_project|
-        fork_level = forked_project.visibility_level
-
-        if fork_level > new_level
-          forked_project.visibility_level = new_level
-          forked_project.save!
-        end
-      end
     end
   end
 end
