@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.1.12'
+gem 'rails', '4.1.14'
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
