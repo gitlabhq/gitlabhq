@@ -40,13 +40,14 @@ class Note < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true
 
   validates :note, :project, presence: true
+  validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
   validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
   validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
   validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
-  validates :author, presence: true, if: ->(n) { n.is_award }
+  validates :author, presence: true
 
   mount_uploader :attachment, AttachmentUploader
 
@@ -102,7 +103,7 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_awards
-      select(:note).distinct.map do |note|
+      awards.select(:note).distinct.map do |note|
         [ note.note, where(note: note.note) ]
       end
     end

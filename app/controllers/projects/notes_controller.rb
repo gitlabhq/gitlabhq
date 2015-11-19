@@ -59,21 +59,21 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def award_toggle
-    noteable = params[:noteable_type] == "Issue" ? Issue : MergeRequest
-    noteable = noteable.find(params[:noteable_id])
+    noteable = note_params[:noteable_type] == "issue" ? Issue : MergeRequest
+    noteable = noteable.find_by!(id: note_params[:noteable_id], project: project)
+
     data = {
-      noteable: noteable,
       author: current_user,
       is_award: true,
-      note: params[:emoji]
+      note: note_params[:note]
     }
 
-    note = project.notes.find_by(data)
+    note = noteable.notes.find_by(data)
 
     if note
       note.destroy
     else
-      project.notes.create(data)
+      Notes::CreateService.new(project, current_user, note_params).execute
     end
 
     render json: { ok: true }
