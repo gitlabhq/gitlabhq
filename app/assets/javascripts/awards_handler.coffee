@@ -75,7 +75,7 @@ class @AwardsHandler
     if custom_path
       $(".awards-menu li").first().html().replace(/emoji\/.*\.png/, custom_path)
     else
-      $("li[data-emoji='" + emoji + "'").html()
+      $("li[data-emoji='" + emoji + "']").html()
 
 
   postEmoji: (emoji, callback) ->
@@ -88,4 +88,4 @@ class @AwardsHandler
         callback.call()
 
   findEmojiIcon: (emoji) ->
-    $(".icon[data-emoji='" + emoji + "'")
+    $(".icon[data-emoji='" + emoji + "']")

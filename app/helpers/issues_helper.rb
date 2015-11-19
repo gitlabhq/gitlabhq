@@ -105,7 +105,11 @@ module IssuesHelper
   end
 
   def note_active_class(notes, current_user)
-    notes.pluck(:author_id).include?(current_user.id) ? "active" : ""
+    if current_user && notes.pluck(:author_id).include?(current_user.id)
+      "active"
+    else
+      ""
+    end
   end
 
   # Required for Gitlab::Markdown::IssueReferenceFilter
