@@ -22,7 +22,7 @@ describe IssuesFinder, benchmark: true do
     describe 'retrieving issues without labels' do
       let(:finder) do
         IssuesFinder.new(user, scope: 'all', label_name: Label::None.title,
-                         state: 'opened')
+                               state: 'opened')
       end
 
       benchmark_subject { finder.execute }
@@ -33,7 +33,7 @@ describe IssuesFinder, benchmark: true do
     describe 'retrieving issues with labels' do
       let(:finder) do
         IssuesFinder.new(user, scope: 'all', label_name: label1.title,
-                         state: 'opened')
+                               state: 'opened')
       end
 
       benchmark_subject { finder.execute }
@@ -44,7 +44,7 @@ describe IssuesFinder, benchmark: true do
     describe 'retrieving issues for a single project' do
       let(:finder) do
         IssuesFinder.new(user, scope: 'all', label_name: Label::None.title,
-                         state: 'opened', project_id: project.id)
+                               state: 'opened', project_id: project.id)
       end
 
       benchmark_subject { finder.execute }
