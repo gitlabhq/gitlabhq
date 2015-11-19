@@ -159,7 +159,7 @@ Please do not raise issues directly in this issue but link to issues that might 
 The decision to create a patch release or not is with the release manager who is assigned to this issue.
 The release manager will comment here about the plans for patch releases.
 
-Assign the issue to the release manager and at mention all members of gitlab core team. If there are any known bugs in the release add them immediately.
+Assign the issue to the release manager and at mention all members of GitLab core team. If there are any known bugs in the release add them immediately.
 
 ## Tweet about RC1
 
