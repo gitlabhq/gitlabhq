@@ -17,7 +17,7 @@ Once the request is authorized, Git LFS client receives instructions from where 
 ## Requirements
 
 * Git LFS is supported in GitLab starting with version 8.2
-* Git LFS client version 0.6.0 and up
+* Git LFS [client](https://git-lfs.github.com) version 0.6.0 and up
 
 ## GitLab and Git LFS
 
