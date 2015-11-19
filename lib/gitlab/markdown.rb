@@ -33,7 +33,7 @@ module Gitlab
     end
 
     def self.render_result(text, context = {})
-      pipeline_by_name(context[:pipeline]).call(text, context)
+      Pipeline[context[:pipeline]].call(text, context)
     end
 
     # Perform post-processing on an HTML String
@@ -50,11 +50,9 @@ module Gitlab
     #
     # Returns an HTML-safe String
     def self.post_process(html, context)
-      pipeline = pipeline_by_name(context[:pipeline])
-      context = pipeline.transform_context(context)
+      context = Pipeline[context[:pipeline]].transform_context(context)
 
-      pipeline = pipeline_by_name(:post_process)
-
+      pipeline = Pipeline[:post_process]
       if context[:xhtml]
         pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
       else
@@ -66,6 +64,7 @@ module Gitlab
 
     def self.cacheless_render(text, context = {})
       result = render_result(text, context)
+
       output = result[:output]
       if output.respond_to?(:to_html)
         output.to_html
@@ -76,48 +75,41 @@ module Gitlab
 
     def self.full_cache_key(cache_key, pipeline_name)
       return unless cache_key
-      pipeline_name ||= :full
-      ["markdown", *cache_key, pipeline_name]
-    end
-
-    def self.pipeline_by_name(pipeline_name)
-      pipeline_name ||= :full
-      const_get("#{pipeline_name.to_s.camelize}Pipeline")
+      ["markdown", *cache_key, pipeline_name || :full]
     end
 
     # Provide autoload paths for filters to prevent a circular dependency error
-    autoload :AutolinkFilter,               'gitlab/markdown/autolink_filter'
-    autoload :CommitRangeReferenceFilter,   'gitlab/markdown/commit_range_reference_filter'
-    autoload :CommitReferenceFilter,        'gitlab/markdown/commit_reference_filter'
-    autoload :EmojiFilter,                  'gitlab/markdown/emoji_filter'
-    autoload :ExternalIssueReferenceFilter, 'gitlab/markdown/external_issue_reference_filter'
-    autoload :ExternalLinkFilter,           'gitlab/markdown/external_link_filter'
-    autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
-    autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
-    autoload :MarkdownFilter,               'gitlab/markdown/markdown_filter'
-    autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
-    autoload :RedactorFilter,               'gitlab/markdown/redactor_filter'
-    autoload :RelativeLinkFilter,           'gitlab/markdown/relative_link_filter'
-    autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
-    autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
-    autoload :SyntaxHighlightFilter,        'gitlab/markdown/syntax_highlight_filter'
-    autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
-    autoload :TaskListFilter,               'gitlab/markdown/task_list_filter'
-    autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
-    autoload :UploadLinkFilter,             'gitlab/markdown/upload_link_filter'
+    autoload :AutolinkFilter,               'gitlab/markdown/filter/autolink_filter'
+    autoload :CommitRangeReferenceFilter,   'gitlab/markdown/filter/commit_range_reference_filter'
+    autoload :CommitReferenceFilter,        'gitlab/markdown/filter/commit_reference_filter'
+    autoload :EmojiFilter,                  'gitlab/markdown/filter/emoji_filter'
+    autoload :ExternalIssueReferenceFilter, 'gitlab/markdown/filter/external_issue_reference_filter'
+    autoload :ExternalLinkFilter,           'gitlab/markdown/filter/external_link_filter'
+    autoload :IssueReferenceFilter,         'gitlab/markdown/filter/issue_reference_filter'
+    autoload :LabelReferenceFilter,         'gitlab/markdown/filter/label_reference_filter'
+    autoload :MarkdownFilter,               'gitlab/markdown/filter/markdown_filter'
+    autoload :MergeRequestReferenceFilter,  'gitlab/markdown/filter/merge_request_reference_filter'
+    autoload :RedactorFilter,               'gitlab/markdown/filter/redactor_filter'
+    autoload :ReferenceGathererFilter,      'gitlab/markdown/filter/reference_gatherer_filter'
+    autoload :RelativeLinkFilter,           'gitlab/markdown/filter/relative_link_filter'
+    autoload :SanitizationFilter,           'gitlab/markdown/filter/sanitization_filter'
+    autoload :SnippetReferenceFilter,       'gitlab/markdown/filter/snippet_reference_filter'
+    autoload :SyntaxHighlightFilter,        'gitlab/markdown/filter/syntax_highlight_filter'
+    autoload :TableOfContentsFilter,        'gitlab/markdown/filter/table_of_contents_filter'
+    autoload :TaskListFilter,               'gitlab/markdown/filter/task_list_filter'
+    autoload :UserReferenceFilter,          'gitlab/markdown/filter/user_reference_filter'
+    autoload :UploadLinkFilter,             'gitlab/markdown/filter/upload_link_filter'
 
-    autoload :AsciidocPipeline,             'gitlab/markdown/asciidoc_pipeline'
-    autoload :AtomPipeline,                 'gitlab/markdown/atom_pipeline'
-    autoload :CombinedPipeline,             'gitlab/markdown/combined_pipeline'
-    autoload :DescriptionPipeline,          'gitlab/markdown/description_pipeline'
-    autoload :EmailPipeline,                'gitlab/markdown/email_pipeline'
-    autoload :FullPipeline,                 'gitlab/markdown/full_pipeline'
-    autoload :GfmPipeline,                  'gitlab/markdown/gfm_pipeline'
-    autoload :NotePipeline,                 'gitlab/markdown/note_pipeline'
-    autoload :Pipeline,                     'gitlab/markdown/pipeline'
-    autoload :PlainMarkdownPipeline,        'gitlab/markdown/plain_markdown_pipeline'
-    autoload :PostProcessPipeline,          'gitlab/markdown/post_process_pipeline'
-    autoload :ReferenceExtractionPipeline,  'gitlab/markdown/reference_extraction_pipeline'
-    autoload :SingleLinePipeline,           'gitlab/markdown/single_line_pipeline'
+    autoload :AsciidocPipeline,             'gitlab/markdown/pipeline/asciidoc_pipeline'
+    autoload :AtomPipeline,                 'gitlab/markdown/pipeline/atom_pipeline'
+    autoload :DescriptionPipeline,          'gitlab/markdown/pipeline/description_pipeline'
+    autoload :EmailPipeline,                'gitlab/markdown/pipeline/email_pipeline'
+    autoload :FullPipeline,                 'gitlab/markdown/pipeline/full_pipeline'
+    autoload :GfmPipeline,                  'gitlab/markdown/pipeline/gfm_pipeline'
+    autoload :NotePipeline,                 'gitlab/markdown/pipeline/note_pipeline'
+    autoload :PlainMarkdownPipeline,        'gitlab/markdown/pipeline/plain_markdown_pipeline'
+    autoload :PostProcessPipeline,          'gitlab/markdown/pipeline/post_process_pipeline'
+    autoload :ReferenceExtractionPipeline,  'gitlab/markdown/pipeline/reference_extraction_pipeline'
+    autoload :SingleLinePipeline,           'gitlab/markdown/pipeline/single_line_pipeline'
   end
 end

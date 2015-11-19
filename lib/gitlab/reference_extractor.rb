@@ -33,8 +33,7 @@ module Gitlab
     #
     # Returns the results Array for the requested filter type
     def pipeline_result(filter_type)
-      klass  = "#{filter_type.to_s.camelize}ReferenceFilter"
-      filter = Gitlab::Markdown.const_get(klass)
+      filter = Gitlab::Markdown::ReferenceFilter[filter_type]
 
       context = {
         pipeline: :reference_extraction,

@@ -29,6 +29,10 @@ module Gitlab
         end
       end
 
+      def self.[](name)
+        Markdown.const_get("#{name.to_s.camelize}ReferenceFilter")
+      end
+
       def self.user_can_reference?(user, node, context)
         if node.has_attribute?('data-project')
           project_id = node.attr('data-project').to_i
