@@ -398,7 +398,7 @@ Gitlab::Application.routes.draw do
       end
 
       resource :avatar, only: [:destroy]
-      resources :milestones, only: [:index, :show, :update]
+      resources :milestones, only: [:index, :show, :update, :new, :create]
     end
 
     get "/audit_events" => "audit_events#group_log"
@@ -712,7 +712,7 @@ Gitlab::Application.routes.draw do
 
         resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
-        resources :notes, constraints: { id: /\d+/ } do
+        resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
           end

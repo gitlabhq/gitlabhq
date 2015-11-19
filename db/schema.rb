@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151114113410) do
+ActiveRecord::Schema.define(version: 20151116144118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,9 +48,9 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.boolean  "twitter_sharing_enabled",      default: true
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
+    t.boolean  "version_check_enabled",        default: true
     t.integer  "max_attachment_size",          default: 10,    null: false
     t.integer  "default_project_visibility"
-    t.boolean  "version_check_enabled",        default: true
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
     t.boolean  "user_oauth_applications",      default: true
@@ -491,8 +491,7 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.string   "file"
   end
 
-  add_index "lfs_objects", ["oid", "size"], name: "index_lfs_objects_on_oid_and_size", using: :btree
-  add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", using: :btree
+  add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
 
   create_table "lfs_objects_projects", force: true do |t|
     t.integer  "lfs_object_id", null: false
@@ -715,21 +714,21 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",                  default: 0.0
+    t.text     "merge_requests_template"
     t.integer  "star_count",                       default: 0,        null: false
+    t.boolean  "merge_requests_rebase_enabled",    default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.text     "merge_requests_template"
-    t.boolean  "merge_requests_rebase_enabled",    default: false
-    t.integer  "commit_count",                     default: 0
     t.integer  "approvals_before_merge",           default: 0,        null: false
     t.boolean  "reset_approvals_on_push",          default: true
+    t.integer  "commit_count",                     default: 0
     t.boolean  "merge_requests_ff_only_enabled",   default: false
     t.text     "issues_template"
-    t.text     "import_error"
     t.boolean  "mirror",                           default: false,    null: false
     t.datetime "mirror_last_update_at"
     t.datetime "mirror_last_successful_update_at"
     t.integer  "mirror_user_id"
+    t.text     "import_error"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
