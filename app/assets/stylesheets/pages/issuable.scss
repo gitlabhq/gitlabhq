@@ -104,8 +104,8 @@
 
 .awards {
   @include clearfix;
-  line-height: 32px;
-  margin: 5px 0;
+  line-height: 34px;
+  margin: 2px 0;
 
   .award {
     @include border-radius(5px);
@@ -137,7 +137,6 @@
   }
 
   .awards-controls {
-    line-height: 32px;
     margin-left: 10px;
     float: left;
 
