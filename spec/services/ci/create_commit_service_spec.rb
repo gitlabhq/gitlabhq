@@ -64,7 +64,7 @@ module Ci
         expect(result).to be_persisted
         expect(result.builds.any?).to be_falsey
         expect(result.status).to eq('skipped')
-        expect(commit.yaml_errors).to_not be_nil
+        expect(result.yaml_errors).to be_nil
       end
 
       it 'skips commits if yaml is invalid' do
@@ -79,7 +79,7 @@ module Ci
                                  commits: commits
         )
         expect(commit.builds.any?).to be false
-        expect(commit.status).to eq('skipped')
+        expect(commit.status).to eq('failed')
         expect(commit.yaml_errors).to_not be_nil
       end
 
