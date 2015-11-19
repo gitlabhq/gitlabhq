@@ -16,13 +16,26 @@ describe UsersController do
     context 'with rendered views' do
       render_views
 
-      it 'renders the show template' do
-        sign_in(user)
+      describe 'when logged in' do
+        before do
+          sign_in(user)
+        end
 
-        get :show, username: user.username
+        it 'renders the show template' do
+          get :show, username: user.username
 
-        expect(response).to be_success
-        expect(response).to render_template('show')
+          expect(response).to be_success
+          expect(response).to render_template('show')
+        end
+      end
+
+      describe 'when logged out' do
+        it 'renders the show template' do
+          get :show, username: user.username
+
+          expect(response).to be_success
+          expect(response).to render_template('show')
+        end
       end
     end
   end
