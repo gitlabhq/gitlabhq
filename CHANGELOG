@@ -15,6 +15,7 @@ v 8.2.0
   - Add allow_failure field to commit status API (Stan Hu)
   - Commits without .gitlab-ci.yml are marked as skipped
   - Save detailed error when YAML syntax is invalid
+  - Since GitLab CI is enabled by default, remove enabling it by pushing .gitlab-ci.yml
   - Added build artifacts
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
