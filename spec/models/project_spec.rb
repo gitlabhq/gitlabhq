@@ -453,4 +453,23 @@ describe Project do
       end
     end
   end
+
+  describe '.visible_to_user' do
+    let!(:project) { create(:project, :private) }
+    let!(:user)    { create(:user) }
+
+    subject { described_class.visible_to_user(user) }
+
+    describe 'when a user has access to a project' do
+      before do
+        project.team.add_user(user, Gitlab::Access::MASTER)
+      end
+
+      it { is_expected.to eq([project]) }
+    end
+
+    describe 'when a user does not have access to any projects' do
+      it { is_expected.to eq([]) }
+    end
+  end
 end
