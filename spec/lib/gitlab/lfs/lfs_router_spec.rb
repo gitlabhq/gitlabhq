@@ -26,19 +26,41 @@ describe Gitlab::Lfs::Router do
 
   let(:sample_oid) { "b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80" }
   let(:sample_size) { 499013 }
+  let(:respond_with_deprecated) {[ 501, { "Content-Type"=>"application/json; charset=utf-8" }, ["{\"message\":\"Server supports batch API only, please update your Git LFS client to version 0.6.0 and up.\",\"documentation_url\":\"#{Gitlab.config.gitlab.url}/help\"}"]]}
+  let(:respond_with_disabled) {[ 501, { "Content-Type"=>"application/json; charset=utf-8" }, ["{\"message\":\"Git LFS is not enabled on this GitLab server, contact your admin.\",\"documentation_url\":\"#{Gitlab.config.gitlab.url}/help\"}"]]}
 
   describe 'when lfs is disabled' do
     before do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
+      env['REQUEST_METHOD'] = 'POST'
+      body = {
+                'objects' => [
+                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                    'size' => 1575078
+                  },
+                  { 'oid' => sample_oid,
+                    'size' => sample_size
+                  }
+                ],
+                'operation' => 'upload'
+              }.to_json
+      env['rack.input'] = StringIO.new(body)
+      env["PATH_INFO"] = "#{project.repository.path_with_namespace}.git/info/lfs/objects/batch"
+    end
+
+    it 'responds with 501' do
+      expect(lfs_router_auth.try_call).to match_array(respond_with_disabled)
+    end
+  end
+
+  describe 'when fetching lfs object using deprecated API' do
+    before do
+      enable_lfs
       env["PATH_INFO"] = "#{project.repository.path_with_namespace}.git/info/lfs/objects/#{sample_oid}"
     end
 
     it 'responds with 501' do
-      respond_with_disabled = [ 501,
-                                { "Content-Type"=>"application/vnd.git-lfs+json" },
-                                ["{\"message\":\"Git LFS is not enabled on this GitLab server, contact your admin.\",\"documentation_url\":\"#{Gitlab.config.gitlab.url}/help\"}"]
-                              ]
-      expect(lfs_router_auth.try_call).to match_array(respond_with_disabled)
+      expect(lfs_router_auth.try_call).to match_array(respond_with_deprecated)
     end
   end
 
@@ -46,93 +68,10 @@ describe Gitlab::Lfs::Router do
     before do
       enable_lfs
       env['HTTP_ACCEPT'] = "application/vnd.git-lfs+json; charset=utf-8"
-      env["PATH_INFO"] = "#{project.repository.path_with_namespace}.git/info/lfs/objects/#{sample_oid}"
-    end
-
-    describe 'when user is authenticated' do
-      context 'and user has project download access' do
-        before do
-          @auth = authorize(user)
-          env["HTTP_AUTHORIZATION"] = @auth
-          project.lfs_objects << lfs_object
-          project.team << [user, :master]
-        end
-
-        it "responds with status 200" do
-          expect(lfs_router_auth.try_call.first).to eq(200)
-        end
-
-        it "responds with download hypermedia" do
-          json_response = ActiveSupport::JSON.decode(lfs_router_auth.try_call.last.first)
-
-          expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}")
-          expect(json_response['_links']['download']['header']).to eq("Authorization" => @auth)
-        end
-      end
-
-      context 'and user does not have project access' do
-        it "responds with status 403" do
-          expect(lfs_router_auth.try_call.first).to eq(403)
-        end
-      end
-    end
-
-    describe 'when user is unauthenticated' do
-      context 'and user does not have download access' do
-        it "responds with status 401" do
-          expect(lfs_router_noauth.try_call.first).to eq(401)
-        end
-      end
-
-      context 'and user has download access' do
-        before do
-          project.team << [user, :master]
-        end
-
-        it "responds with status 401" do
-          expect(lfs_router_noauth.try_call.first).to eq(401)
-        end
-      end
-    end
-
-    describe 'and project is public' do
-      context 'and project has access to the lfs object' do
-        before do
-          public_project.lfs_objects << lfs_object
-        end
-
-        context 'and user is authenticated' do
-          it "responds with status 200 and sends download hypermedia" do
-            expect(lfs_router_public_auth.try_call.first).to eq(200)
-            json_response = ActiveSupport::JSON.decode(lfs_router_public_auth.try_call.last.first)
-
-            expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{public_project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}")
-            expect(json_response['_links']['download']['header']).to eq({})
-          end
-        end
-
-        context 'and user is unauthenticated' do
-          it "responds with status 200 and sends download hypermedia" do
-            expect(lfs_router_public_noauth.try_call.first).to eq(200)
-            json_response = ActiveSupport::JSON.decode(lfs_router_public_noauth.try_call.last.first)
-
-            expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{public_project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}")
-            expect(json_response['_links']['download']['header']).to eq({})
-          end
-        end
-      end
-
-      context 'and project does not have access to the lfs object' do
-        it "responds with status 404" do
-          expect(lfs_router_public_auth.try_call.first).to eq(404)
-        end
-      end
+      env["PATH_INFO"] = "#{project.repository.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}"
     end
 
     describe 'and request comes from gitlab-workhorse' do
-      before do
-        env["PATH_INFO"] = "#{project.repository.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}"
-      end
       context 'without user being authorized' do
         it "responds with status 401" do
           expect(lfs_router_noauth.try_call.first).to eq(401)
@@ -173,68 +112,17 @@ describe Gitlab::Lfs::Router do
         end
       end
     end
+  end
 
-    describe 'from a forked public project' do
-      before do
-        env['HTTP_ACCEPT'] = "application/vnd.git-lfs+json; charset=utf-8"
-        env["PATH_INFO"] = "#{forked_project.repository.path_with_namespace}.git/info/lfs/objects/#{sample_oid}"
-      end
+  describe 'when handling lfs request using deprecated API' do
+    before do
+      enable_lfs
+      env['REQUEST_METHOD'] = 'POST'
+      env["PATH_INFO"] = "#{project.repository.path_with_namespace}.git/info/lfs/objects"
+    end
 
-      context "when fetching a lfs object" do
-        context "and user has project download access" do
-          before do
-            public_project.lfs_objects << lfs_object
-          end
-
-          it "can download the lfs object" do
-            expect(lfs_router_forked_auth.try_call.first).to eq(200)
-            json_response = ActiveSupport::JSON.decode(lfs_router_forked_auth.try_call.last.first)
-
-            expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{forked_project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}")
-            expect(json_response['_links']['download']['header']).to eq({})
-          end
-        end
-
-        context "and user is not authenticated but project is public" do
-          before do
-            public_project.lfs_objects << lfs_object
-          end
-
-          it "can download the lfs object" do
-            expect(lfs_router_forked_auth.try_call.first).to eq(200)
-          end
-        end
-
-        context "and user has project download access" do
-          before do
-            env["PATH_INFO"] = "#{forked_project.repository.path_with_namespace}.git/info/lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897"
-            @auth = ActionController::HttpAuthentication::Basic.encode_credentials(user.username, user.password)
-            env["HTTP_AUTHORIZATION"] = @auth
-            lfs_object_two = create(:lfs_object, :with_file, oid: "91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", size: 1575078)
-            public_project.lfs_objects << lfs_object_two
-          end
-
-          it "can get a lfs object that is not in the forked project" do
-            expect(lfs_router_forked_auth.try_call.first).to eq(200)
-
-            json_response = ActiveSupport::JSON.decode(lfs_router_forked_auth.try_call.last.first)
-            expect(json_response['_links']['download']['href']).to eq("#{Gitlab.config.gitlab.url}/#{forked_project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
-            expect(json_response['_links']['download']['header']).to eq("Authorization" => @auth)
-          end
-        end
-
-        context "and user has project download access" do
-          before do
-            env["PATH_INFO"] = "#{forked_project.repository.path_with_namespace}.git/info/lfs/objects/267c8b1d876743971e3a9978405818ff5ca731c4c870b06507619cd9b1847b6b"
-            lfs_object_three = create(:lfs_object, :with_file, oid: "267c8b1d876743971e3a9978405818ff5ca731c4c870b06507619cd9b1847b6b", size: 127192524)
-            project.lfs_objects << lfs_object_three
-          end
-
-          it "cannot get a lfs object that is not in the project" do
-            expect(lfs_router_forked_auth.try_call.first).to eq(404)
-          end
-        end
-      end
+    it 'responds with 501' do
+      expect(lfs_router_auth.try_call).to match_array(respond_with_deprecated)
     end
   end
 
