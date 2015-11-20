@@ -23,8 +23,8 @@ Issues and merge requests should be in English and contain appropriate language 
 ## Helping others
 
 Please help other GitLab users when you can.
-The channnels people will reach out on can be found on the [getting help page](https://about.gitlab.com/getting-help/).
-Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the irc channel.
+The channels people will reach out on can be found on the [getting help page](https://about.gitlab.com/getting-help/).
+Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the IRC channel.
 You can also sign up on [CodeTriage](http://www.codetriage.com/gitlabhq/gitlabhq) to help with one issue every day.
 
 ## Issue tracker
@@ -59,7 +59,7 @@ We welcome merge requests with fixes and improvements to GitLab code, tests, and
 
 Merge requests can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests) or [github.com](https://github.com/gitlabhq/gitlabhq/pulls).
 
-If you are new to GitLab development (or web development in general), search for the label `easyfix` ([gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=easyfix), [github](https://github.com/gitlabhq/gitlabhq/labels/easyfix)). Those are issues easy to fix, marked by the GitLab core-team. If you are unsure how to proceed but want to help, mention one of the core-team members to give you a hint.
+If you are new to GitLab development (or web development in general), search for the label `easyfix` ([GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=easyfix), [GitHub](https://github.com/gitlabhq/gitlabhq/labels/easyfix)). Those are issues easy to fix, marked by the GitLab core-team. If you are unsure how to proceed but want to help, mention one of the core-team members to give you a hint.
 
 To start with GitLab download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) and see [Development section](doc/development/README.md) in the help file.
 
@@ -99,7 +99,7 @@ If you contribute to GitLab please know that changes involve more than just code
 We have the following [definition of done](http://guide.agilealliance.org/guide/definition-of-done.html).
 Please ensure you support the feature you contribute through all of these steps.
 
-1. Description explaning the relevancy (see following item)
+1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
 1. Unit and integration tests that pass on the CI server
 1. Documented in the /doc directory
@@ -163,7 +163,7 @@ If you add a dependency in GitLab (such as an operating system package) please c
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 1.  [Database Migrations](doc/development/migration_style_guide.md)
 1.  [Documentation styleguide](doc_styleguide.md)
-1.  Interface text should be written subjectively instead of objectively. It should be the gitlab core team addressing a person. It should be written in present time and never use past tense (has been/was). For example instead of "prohibited this user from being saved due to the following errors:" the text should be "sorry, we could not create your account because:". Also these [excellent writing guidelines](https://github.com/NARKOZ/guides#writing).
+1.  Interface text should be written subjectively instead of objectively. It should be the GitLab core team addressing a person. It should be written in present time and never use past tense (has been/was). For example instead of "prohibited this user from being saved due to the following errors:" the text should be "sorry, we could not create your account because:". Also these [excellent writing guidelines](https://github.com/NARKOZ/guides#writing).
 
 This is also the style used by linting tools such as [RuboCop](https://github.com/bbatsov/rubocop), [PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).
 
