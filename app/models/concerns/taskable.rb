@@ -7,6 +7,8 @@ require 'task_list/filter'
 #
 # Used by MergeRequest and Issue
 module Taskable
+  COMPLETED    = 'completed'.freeze
+  INCOMPLETE   = 'incomplete'.freeze
   ITEM_PATTERN = /
     ^
     (?:\s*[-+*]|(?:\d+\.))? # optional list prefix

@@ -355,7 +355,8 @@ class SystemNoteService
   #
   # Returns the created Note object
   def self.change_task_status(noteable, project, author, new_task)
-    body = "Marked the task **#{new_task.source}** as #{new_task.status_label}"
+    status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
+    body = "Marked the task **#{new_task.source}** as #{status_label}"
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 end
