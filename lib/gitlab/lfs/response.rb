@@ -42,7 +42,7 @@ module Gitlab
         when "upload"
           render_batch_upload(request_body)
         else
-          render_forbidden
+          render_not_found
         end
       end
 
@@ -322,16 +322,21 @@ module Gitlab
       def download_hypermedia_links(all_objects, existing_objects)
         all_objects.each do |object|
           # generate links only for existing objects
-          next unless existing_objects.include?(object['oid'])
-
-          object['_links'] = {
-            'download' => {
-              'href' => "#{@origin_project.http_url_to_repo}/gitlab-lfs/objects/#{object['oid']}",
-              'header' => {
-                'Authorization' => @env['HTTP_AUTHORIZATION']
-              }.compact
+          if existing_objects.include?(object['oid'])
+            object['actions'] = {
+              'download' => {
+                'href' => "#{@origin_project.http_url_to_repo}/gitlab-lfs/objects/#{object['oid']}",
+                'header' => {
+                  'Authorization' => @env['HTTP_AUTHORIZATION']
+                }.compact
+              }
             }
-          }
+          else
+            object['error'] = {
+              'code' => 404,
+              'message' => "Object does not exist on the server or you don't have permissions to access it",
+            }
+          end
         end
 
         { 'objects' => all_objects }
@@ -342,7 +347,7 @@ module Gitlab
           # generate links only for non-existing objects
           next if existing_objects.include?(object['oid'])
 
-          object['_links'] = {
+          object['actions'] = {
             'upload' => {
               'href' => "#{@origin_project.http_url_to_repo}/gitlab-lfs/objects/#{object['oid']}/#{object['size']}",
               'header' => {
