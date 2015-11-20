@@ -31,13 +31,22 @@ class Member < ActiveRecord::Base
 
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
-  validates :user_id, uniqueness: { scope: [:source_type, :source_id], 
+  validates :user_id, uniqueness: { scope: [:source_type, :source_id],
                                     message: "already exists in source",
                                     allow_nil: true }
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
-  validates :invite_email,  presence: { if: :invite? }, 
-                            email: { strict_mode: true, allow_nil: true }, 
-                            uniqueness: { scope: [:source_type, :source_id], allow_nil: true }
+  validates :invite_email,
+    presence: {
+      if: :invite?
+    },
+    email: {
+      strict_mode: true,
+      allow_nil: true
+    },
+    uniqueness: {
+      scope: [:source_type, :source_id],
+      allow_nil: true
+    }
 
   scope :invite, -> { where(user_id: nil) }
   scope :non_invite, -> { where("user_id IS NOT NULL") }
@@ -74,7 +83,7 @@ class Member < ActiveRecord::Base
 
     def add_user(members, user_id, access_level, current_user = nil, skip_notification: false)
       user = user_for_id(user_id)
-      
+
       # `user` can be either a User object or an email to be invited
       if user.is_a?(User)
         member = members.find_or_initialize_by(user_id: user.id)
@@ -83,12 +92,23 @@ class Member < ActiveRecord::Base
         member.invite_email = user
       end
 
-      member.created_by ||= current_user
-      member.access_level = access_level
+      if can_update_member?(current_user, member)
+        member.created_by ||= current_user
+        member.access_level = access_level
 
-      member.skip_notification = skip_notification
+        member.skip_notification = skip_notification
 
-      member.save
+        member.save
+      end
+    end
+
+    private
+
+    def can_update_member?(current_user, member)
+      # There is no current user for bulk actions, in which case anything is allowed
+      !current_user ||
+        current_user.can?(:update_group_member, member) ||
+        current_user.can?(:update_project_member, member)
     end
   end
 
@@ -98,7 +118,7 @@ class Member < ActiveRecord::Base
 
   def accept_invite!(new_user)
     return false unless invite?
-    
+
     self.invite_token = nil
     self.invite_accepted_at = Time.now.utc
 

@@ -6,7 +6,7 @@ window.ContributorsStatGraphUtil =
     for entry in log
       @add_date(entry.date, total) unless total[entry.date]?
 
-      data = by_author[entry.author_name] #|| by_email[entry.author_email]      
+      data = by_author[entry.author_name] || by_email[entry.author_email]      
       data ?= @add_author(entry, by_author, by_email)
 
       @add_date(entry.date, data) unless data[entry.date]
@@ -96,4 +96,3 @@ window.ContributorsStatGraphUtil =
       true
     else
       false
-

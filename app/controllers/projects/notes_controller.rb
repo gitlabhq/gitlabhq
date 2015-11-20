@@ -3,7 +3,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
-  before_action :find_current_user_notes, except: [:destroy, :edit, :delete_attachment]
+  before_action :find_current_user_notes, except: [:destroy, :delete_attachment]
 
   def index
     current_fetched_at = Time.now.to_i
@@ -27,11 +27,6 @@ class Projects::NotesController < Projects::ApplicationController
       format.json { render_note_json(@note) }
       format.html { redirect_back_or_default }
     end
-  end
-
-  def edit
-    @note = note
-    render layout: false
   end
 
   def update
