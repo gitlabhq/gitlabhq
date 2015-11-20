@@ -53,15 +53,7 @@ class IssuableBaseService < BaseService
 
     if params.present? && issuable.update_attributes(params.merge(updated_by: current_user))
       issuable.reset_events_cache
-
-      if issuable.labels != old_labels
-        create_labels_note(
-          issuable,
-          issuable.labels - old_labels,
-          old_labels - issuable.labels)
-      end
-
-      handle_common_system_notes(issuable)
+      handle_common_system_notes(issuable, old_labels: old_labels)
       handle_changes(issuable)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')
@@ -79,13 +71,18 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def handle_common_system_notes(issuable)
+  def handle_common_system_notes(issuable, options = {})
     if issuable.previous_changes.include?('title')
       create_title_change_note(issuable, issuable.previous_changes['title'].first)
     end
 
     if issuable.previous_changes.include?('description') && issuable.tasks?
       create_task_status_note(issuable)
+    end
+
+    old_labels = options[:old_labels]
+    if old_labels && (issuable.labels != old_labels)
+      create_labels_note(issuable, issuable.labels - old_labels, old_labels - issuable.labels)
     end
   end
 end
