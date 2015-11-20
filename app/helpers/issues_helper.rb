@@ -90,6 +90,8 @@ module IssuesHelper
   def url_to_emoji(name)
     emoji_path = ::AwardEmoji.path_to_emoji_image(name)
     url_to_image(emoji_path)
+  rescue StandardError
+    ""
   end
 
   def emoji_author_list(notes, current_user)
