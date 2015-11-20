@@ -53,7 +53,7 @@ module Ci
         end
       end
 
-      it 'fails commits without .gitlab-ci.yml' do
+      it 'skips commits without .gitlab-ci.yml' do
         stub_ci_commit_yaml_file(nil)
         result = service.execute(project, user,
                                  ref: 'refs/heads/0_1',
@@ -63,7 +63,24 @@ module Ci
         )
         expect(result).to be_persisted
         expect(result.builds.any?).to be_falsey
-        expect(result.status).to eq('failed')
+        expect(result.status).to eq('skipped')
+        expect(result.yaml_errors).to be_nil
+      end
+
+      it 'skips commits if yaml is invalid' do
+        message = 'message'
+        allow_any_instance_of(Ci::Commit).to receive(:git_commit_message) { message }
+        stub_ci_commit_yaml_file('invalid: file: file')
+        commits = [{ message: message }]
+        commit = service.execute(project, user,
+                                 ref: 'refs/tags/0_1',
+                                 before: '00000000',
+                                 after: '31das312',
+                                 commits: commits
+        )
+        expect(commit.builds.any?).to be false
+        expect(commit.status).to eq('failed')
+        expect(commit.yaml_errors).to_not be_nil
       end
 
       describe :ci_skip? do
@@ -100,7 +117,7 @@ module Ci
         end
 
         it "skips builds creation if there is [ci skip] tag in commit message and yaml is invalid" do
-          stub_ci_commit_yaml_file('invalid: file')
+          stub_ci_commit_yaml_file('invalid: file: fiile')
           commits = [{ message: message }]
           commit = service.execute(project, user,
                                    ref: 'refs/tags/0_1',
@@ -110,6 +127,7 @@ module Ci
           )
           expect(commit.builds.any?).to be false
           expect(commit.status).to eq("skipped")
+          expect(commit.yaml_errors).to be_nil
         end
       end
 

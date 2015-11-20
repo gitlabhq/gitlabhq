@@ -126,7 +126,7 @@ production: &base
 
   ## Git LFS
   lfs:
-    enabled: false
+    enabled: true
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 

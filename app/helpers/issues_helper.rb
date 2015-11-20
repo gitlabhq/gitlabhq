@@ -87,6 +87,33 @@ module IssuesHelper
     merge_requests.map(&:to_reference).to_sentence(last_word_connector: ', or ')
   end
 
+  def url_to_emoji(name)
+    emoji_path = ::AwardEmoji.path_to_emoji_image(name)
+    url_to_image(emoji_path)
+  rescue StandardError
+    ""
+  end
+
+  def emoji_author_list(notes, current_user)
+    list = notes.map do |note|
+             note.author == current_user ? "me" : note.author.username
+           end
+
+    list.join(", ")
+  end
+
+  def emoji_list
+    ::AwardEmoji::EMOJI_LIST
+  end
+
+  def note_active_class(notes, current_user)
+    if current_user && notes.pluck(:author_id).include?(current_user.id)
+      "active"
+    else
+      ""
+    end
+  end
+
   # Required for Gitlab::Markdown::IssueReferenceFilter
   module_function :url_for_issue
 end

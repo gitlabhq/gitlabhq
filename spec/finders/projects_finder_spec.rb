@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe ProjectsFinder do
+<<<<<<< HEAD
   let(:user) { create :user }
   let(:group) { create :group }
   let(:group2) { create :group }
@@ -13,45 +14,59 @@ describe ProjectsFinder do
   let(:project6) { create(:empty_project, :internal,  group: group2) }
   let(:project7) { create(:empty_project, :public,  group: group2) }
   let(:project8) { create(:empty_project, :private,  group: group2) }
+=======
+  describe '#execute' do
+    let(:user) { create(:user) }
 
-  context 'non authenticated' do
-    subject { ProjectsFinder.new.execute(nil, group: group) }
+    let!(:private_project)  { create(:project, :private) }
+    let!(:internal_project) { create(:project, :internal) }
+    let!(:public_project)   { create(:project, :public) }
+>>>>>>> b6f0eddce552d7423869e9072a7a0706e309dbdf
 
-    it { is_expected.to include(project1) }
-    it { is_expected.not_to include(project2) }
-    it { is_expected.not_to include(project3) }
-    it { is_expected.not_to include(project4) }
-  end
+    let(:finder) { described_class.new }
 
-  context 'authenticated' do
-    subject { ProjectsFinder.new.execute(user, group: group) }
+    describe 'without a group' do
+      describe 'without a user' do
+        subject { finder.execute }
 
-    it { is_expected.to include(project1) }
-    it { is_expected.to include(project2) }
-    it { is_expected.not_to include(project3) }
-    it { is_expected.not_to include(project4) }
-  end
+        it { is_expected.to eq([public_project]) }
+      end
 
-  context 'authenticated, project member' do
-    before { project3.team << [user, :developer] }
+      describe 'with a user' do
+        subject { finder.execute(user) }
 
-    subject { ProjectsFinder.new.execute(user, group: group) }
+        describe 'without private projects' do
+          it { is_expected.to eq([public_project, internal_project]) }
+        end
 
-    it { is_expected.to include(project1) }
-    it { is_expected.to include(project2) }
-    it { is_expected.to include(project3) }
-    it { is_expected.not_to include(project4) }
-  end
+        describe 'with private projects' do
+          before do
+            private_project.team.add_user(user, Gitlab::Access::MASTER)
+          end
 
-  context 'authenticated, group member' do
-    before { group.add_developer(user) }
+          it do
+            is_expected.to eq([public_project, internal_project,
+                               private_project])
+          end
+        end
+      end
+    end
 
-    subject { ProjectsFinder.new.execute(user, group: group) }
+    describe 'with a group' do
+      let(:group) { public_project.group }
 
-    it { is_expected.to include(project1) }
-    it { is_expected.to include(project2) }
-    it { is_expected.to include(project3) }
-    it { is_expected.to include(project4) }
+      describe 'without a user' do
+        subject { finder.execute(nil, group: group) }
+
+        it { is_expected.to eq([public_project]) }
+      end
+
+      describe 'with a user' do
+        subject { finder.execute(user, group: group) }
+
+        it { is_expected.to eq([public_project, internal_project]) }
+      end
+    end
   end
 
   context 'authenticated, group member with project shared with group' do

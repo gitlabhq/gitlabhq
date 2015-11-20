@@ -53,6 +53,14 @@ class Group < Namespace
     def reference_pattern
       User.reference_pattern
     end
+
+    def public_and_given_groups(ids)
+      where('public IS TRUE OR namespaces.id IN (?)', ids)
+    end
+
+    def visible_to_user(user)
+      where(id: user.authorized_groups.select(:id).reorder(nil))
+    end
   end
 
   def to_reference(_from_project = nil)

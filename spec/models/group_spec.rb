@@ -38,6 +38,33 @@ describe Group do
     it { is_expected.not_to validate_presence_of :owner }
   end
 
+  describe '.public_and_given_groups' do
+    let!(:public_group) { create(:group, public: true) }
+
+    subject { described_class.public_and_given_groups([group.id]) }
+
+    it { is_expected.to eq([public_group, group]) }
+  end
+
+  describe '.visible_to_user' do
+    let!(:group) { create(:group) }
+    let!(:user)  { create(:user) }
+
+    subject { described_class.visible_to_user(user) }
+
+    describe 'when the user has access to a group' do
+      before do
+        group.add_user(user, Gitlab::Access::MASTER)
+      end
+
+      it { is_expected.to eq([group]) }
+    end
+
+    describe 'when the user does not have access to any groups' do
+      it { is_expected.to eq([]) }
+    end
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(group.to_reference).to eq "@#{group.name}"

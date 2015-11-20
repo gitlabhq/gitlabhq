@@ -716,6 +716,10 @@ Gitlab::Application.routes.draw do
           member do
             delete :delete_attachment
           end
+
+          collection do
+            post :award_toggle
+          end
         end
 
         resources :uploads, only: [:create] do
