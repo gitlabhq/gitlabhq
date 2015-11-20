@@ -35,11 +35,11 @@ module Notes
     end
 
     def contains_emoji_only?(note)
-      note =~ /\A:?[-_+[:alnum:]]*:?\s?\z/
+      note =~ /\A:[-_+[:alnum:]]*:\s?\z/
     end
 
     def emoji_name(note)
-      note.match(/\A:?([-_+[:alnum:]]*):?\s?/)[1]
+      note.match(/\A:([-_+[:alnum:]]*):\s?/)[1]
     end
   end
 end
