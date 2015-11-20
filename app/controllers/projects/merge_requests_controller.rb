@@ -294,7 +294,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
-    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
+    @notes = @merge_request.mr_and_commit_notes.nonawards.inc_author.fresh
     @discussions = Note.discussions_from_notes(@notes)
     @noteable = @merge_request
 
