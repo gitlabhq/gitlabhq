@@ -2,116 +2,120 @@ module Gitlab
   module Email
     module Message
       class RepositoryPush
-        attr_reader :compare, :reverse_compare, :send_from_committer_email,
-                    :disable_diffs, :action, :ref, :author_id
         attr_accessor :recipient
+        attr_reader :author_id, :ref, :action
 
         def initialize(notify, project_id, recipient, opts = {})
-          raise ArgumentError, 'Missing arguments: author_id, ref, action' unless
+          raise ArgumentError, 'Missing options: author_id, ref, action' unless
             opts[:author_id] && opts[:ref] && opts[:action]
 
           @notify = notify
           @project_id = project_id
           @recipient = recipient
+          @opts = opts
 
-          @author_id = opts[:author_id]
-          @ref = opts[:ref]
-          @action = opts[:action]
-
-          @compare = opts[:compare] || nil
-          @reverse_compare = opts[:reverse_compare] || false
-          @send_from_committer_email = opts[:send_from_committer_email] || false
-          @disable_diffs = opts[:disable_diffs] || false
-
-          @author = author
-          @project = project
-          @commits = commits
-          @diffs = diffs
-          @ref_name = ref_name
-          @ref_type = ref_type
-          @action_name = action_name
+          @author_id = opts.delete(:author_id)
+          @ref = opts.delete(:ref)
+          @action = opts.delete(:action)
         end
 
         def project
-          Project.find(@project_id)
+          @project ||= Project.find(@project_id)
         end
 
         def author
-          User.find(@author_id)
+          @author ||= User.find(@author_id)
         end
 
         def commits
-          Commit.decorate(@compare.commits, @project) if @compare
+          @commits ||= (Commit.decorate(compare.commits, project) if compare)
         end
 
         def diffs
-          @compare.diffs if @compare
+          @diffs ||= (compare.diffs if compare)
+        end
+
+        def compare
+          @opts[:compare]
+        end
+
+        def reverse_compare?
+          @opts[:reverse_compare] || false
+        end
+
+        def disable_diffs?
+          @opts[:disable_diffs] || false
+        end
+
+        def send_from_committer_email?
+          @opts[:send_from_committer_email] || false
         end
 
         def action_name
-          case @action
-          when :create
-            'pushed new'
-          when :delete
-            'deleted'
-          else
-            'pushed to'
-          end
-        end
-
-        def subject
-          subject_text = '[Git]'
-          subject_text << "[#{@project.path_with_namespace}]"
-          subject_text << "[#{@ref_name}]" if @action == :push
-          subject_text << ' '
-
-          if @action == :push
-            if @commits.length > 1
-              subject_text << "Deleted " if @reverse_compare
-              subject_text << "#{@commits.length} commits: #{@commits.first.title}"
+          @action_name ||=
+            case @action
+            when :create
+              'pushed new'
+            when :delete
+              'deleted'
             else
-              subject_text << "Deleted 1 commit: " if @reverse_compare
-              subject_text << @commits.first.title
+              'pushed to'
             end
-          else
-            subject_action = @action_name.dup
-            subject_action[0] = subject_action[0].capitalize
-            subject_text << "#{subject_action} #{@ref_type} #{@ref_name}"
-          end
         end
 
         def ref_name
-          Gitlab::Git.ref_name(@ref)
+          @ref_name ||= Gitlab::Git.ref_name(@ref)
         end
 
         def ref_type
-          Gitlab::Git.tag_ref?(@ref) ? 'tag' : 'branch'
+          @ref_type ||= Gitlab::Git.tag_ref?(@ref) ? 'tag' : 'branch'
         end
 
         def target_url
           if @action == :push
-            if @commits.length > 1
-              @notify.namespace_project_compare_url(@project.namespace,
-                                                    @project,
-                                                    from: Commit.new(@compare.base, @project),
-                                                    to:   Commit.new(@compare.head, @project))
+            if commits.length > 1 && compare
+              @notify.namespace_project_compare_url(project.namespace,
+                                                    project,
+                                                    from: Commit.new(compare.base, project),
+                                                    to:   Commit.new(compare.head, project))
             else
-              @notify.namespace_project_commit_url(@project.namespace,
-                                                   @project, @commits.first)
+              @notify.namespace_project_commit_url(project.namespace,
+                                                   project, commits.first)
             end
           else
             unless @action == :delete
-              @notify.namespace_project_tree_url(@project.namespace,
-                                                 @project, @ref_name)
+              @notify.namespace_project_tree_url(project.namespace,
+                                                 project, ref_name)
             end
           end
         end
 
         def reply_to
-          if @send_from_committer_email && @notify.can_send_from_user_email?(@author)
-            @author.email
+          if send_from_committer_email? && @notify.can_send_from_user_email?(author)
+            author.email
           else
             Gitlab.config.gitlab.email_reply_to
+          end
+        end
+
+        def subject
+          subject_text = '[Git]'
+          subject_text << "[#{project.path_with_namespace}]"
+          subject_text << "[#{ref_name}]" if @action == :push
+          subject_text << ' '
+
+          if @action == :push
+            if commits.length > 1
+              subject_text << "Deleted " if reverse_compare?
+              subject_text << "#{commits.length} commits: #{commits.first.title}"
+            else
+              subject_text << "Deleted 1 commit: " if reverse_compare?
+              subject_text << commits.first.title
+            end
+          else
+            subject_action = action_name.dup
+            subject_action[0] = subject_action[0].capitalize
+            subject_text << "#{subject_action} #{ref_type} #{ref_name}"
           end
         end
       end

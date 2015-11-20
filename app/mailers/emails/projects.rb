@@ -65,20 +65,20 @@ module Emails
 
       @project = repository_push.project
       @current_user = @author  = repository_push.author
-      @reverse_compare = repository_push.reverse_compare
       @compare = repository_push.compare
       @ref_name  = repository_push.ref_name
       @ref_type  = repository_push.ref_type
       @action  = repository_push.action
       @action_name = repository_push.action_name
-      @disable_diffs = repository_push.disable_diffs
       @commits = repository_push.commits
       @diffs = repository_push.diffs
       @target_url = repository_push.target_url
+      @disable_diffs = repository_push.disable_diffs?
+      @reverse_compare = repository_push.reverse_compare?
       @disable_footer = true
 
       mail(from:      sender(repository_push.author_id,
-                             repository_push.send_from_committer_email),
+                             repository_push.send_from_committer_email?),
            reply_to:  repository_push.reply_to,
            to:        repository_push.recipient,
            subject:   repository_push.subject)
