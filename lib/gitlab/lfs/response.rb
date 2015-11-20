@@ -321,7 +321,6 @@ module Gitlab
 
       def download_hypermedia_links(all_objects, existing_objects)
         all_objects.each do |object|
-          # generate links only for existing objects
           if existing_objects.include?(object['oid'])
             object['actions'] = {
               'download' => {
@@ -344,7 +343,7 @@ module Gitlab
 
       def upload_hypermedia_links(all_objects, existing_objects)
         all_objects.each do |object|
-          # generate links only for non-existing objects
+          # generate actions only for non-existing objects
           next if existing_objects.include?(object['oid'])
 
           object['actions'] = {

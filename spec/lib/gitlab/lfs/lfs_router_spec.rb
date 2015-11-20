@@ -248,11 +248,11 @@ describe Gitlab::Lfs::Router do
     describe 'download' do
       describe 'when user is authenticated' do
         before do
-          body = { 'objects' => [{
-                                   'oid' => sample_oid,
-                                   'size' => sample_size
-                                 }],
-                   'operation' => 'download'
+          body = { 'operation' => 'download',
+                   'objects' => [
+                     { 'oid' => sample_oid,
+                       'size' => sample_size
+                     }]
           }.to_json
           env['rack.input'] = StringIO.new(body)
         end
@@ -274,17 +274,16 @@ describe Gitlab::Lfs::Router do
               expect(response.first).to eq(200)
               response_body = ActiveSupport::JSON.decode(response.last.first)
 
-              expect(response_body).to eq(
-                'objects' => [{
-                    'oid' => sample_oid,
+              expect(response_body).to eq('objects' => [
+                { 'oid' => sample_oid,
                   'size' => sample_size,
                   'actions' => {
                     'download' => {
-                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                    'header' => {'Authorization' => @auth}
+                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                      'header' => { 'Authorization' => @auth }
+                    }
                   }
-                  }
-                                          }])
+                }])
             end
           end
 
@@ -298,26 +297,24 @@ describe Gitlab::Lfs::Router do
               expect(response.first).to eq(200)
               response_body = ActiveSupport::JSON.decode(response.last.first)
 
-              expect(response_body).to eq(
-                                         'objects' => [{
-                                                         'oid' => sample_oid,
-                                                         'size' => sample_size,
-                                                         'error' => {
-                                                           'code' => 404,
-                                                           'message' => "Object does not exist on the server or you don't have permissions to access it",
-                                                         }
-                                                       }])
+              expect(response_body).to eq('objects' => [
+                { 'oid' => sample_oid,
+                  'size' => sample_size,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                  }
+                }])
             end
           end
 
           context 'when downloading a lfs object that does not exist' do
             before do
-              body = {
-                'objects' => [{
-                                'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                                'size' => 1575078
-                              }],
-                'operation' => 'download'
+              body = { 'operation' => 'download',
+                       'objects' => [
+                         { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                           'size' => 1575078
+                         }]
               }.to_json
               env['rack.input'] = StringIO.new(body)
             end
@@ -327,30 +324,28 @@ describe Gitlab::Lfs::Router do
               expect(response.first).to eq(200)
               response_body = ActiveSupport::JSON.decode(response.last.first)
 
-              expect(response_body).to eq(
-                                         'objects' => [{
-                                                         'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                                                         'size' => 1575078,
-                                                         'error' => {
-                                                           'code' => 404,
-                                                           'message' => "Object does not exist on the server or you don't have permissions to access it",
-                                                         }
-                                                       }])
+              expect(response_body).to eq('objects' => [
+                { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                  'size' => 1575078,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                  }
+                }])
             end
           end
 
           context 'when downloading one new and one existing lfs object' do
             before do
-              body = {
-                'objects' => [
-                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078
-                  },
-                  { 'oid' => sample_oid,
-                    'size' => sample_size
-                  }
-                ],
-                'operation' => 'download'
+              body = { 'operation' => 'download',
+                       'objects' => [
+                         { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                           'size' => 1575078
+                         },
+                         { 'oid' => sample_oid,
+                           'size' => sample_size
+                         }
+                       ]
               }.to_json
               env['rack.input'] = StringIO.new(body)
               project.lfs_objects << lfs_object
@@ -361,25 +356,23 @@ describe Gitlab::Lfs::Router do
               expect(response.first).to eq(200)
               response_body = ActiveSupport::JSON.decode(response.last.first)
 
-              expect(response_body).to eq(
-                                         'objects' => [{
-                                                         'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                                                         'size' => 1575078,
-                                                         'error' => {
-                                                           'code' => 404,
-                                                           'message' => "Object does not exist on the server or you don't have permissions to access it",
-                                                         }
-                                                       },
-                                                       {
-                                                         'oid' => sample_oid,
-                                                         'size' => sample_size,
-                                                         'actions' => {
-                                                           'download' => {
-                                                             'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                                                             'header' => {'Authorization' => @auth}
-                                                           }
-                                                         }
-                                                       }])
+              expect(response_body).to eq('objects' => [
+                { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                  'size' => 1575078,
+                  'error' => {
+                    'code' => 404,
+                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                  }
+                },
+                { 'oid' => sample_oid,
+                  'size' => sample_size,
+                  'actions' => {
+                    'download' => {
+                      'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                      'header' => { 'Authorization' => @auth }
+                    }
+                  }
+                }])
             end
           end
         end
@@ -411,11 +404,12 @@ describe Gitlab::Lfs::Router do
 
       context 'when user is not authenticated' do
         before do
-          body = { 'objects' => [{
-                                   'oid' => sample_oid,
-                                   'size' => sample_size
-                                 }],
-                   'operation' => 'download'
+          body = { 'operation' => 'download',
+                   'objects' => [
+                     { 'oid' => sample_oid,
+                       'size' => sample_size
+                     }],
+
           }.to_json
           env['rack.input'] = StringIO.new(body)
         end
@@ -430,17 +424,16 @@ describe Gitlab::Lfs::Router do
             expect(response.first).to eq(200)
             response_body = ActiveSupport::JSON.decode(response.last.first)
 
-            expect(response_body).to eq(
-                                       'objects' => [{
-                                                       'oid' => sample_oid,
-                                                       'size' => sample_size,
-                                                       'actions' => {
-                                                         'download' => {
-                                                           'href' => "#{public_project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
-                                                           'header' => {}
-                                                         }
-                                                       }
-                                                     }])
+            expect(response_body).to eq('objects' => [
+              { 'oid' => sample_oid,
+                'size' => sample_size,
+                'actions' => {
+                  'download' => {
+                    'href' => "#{public_project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                    'header' => {}
+                  }
+                }
+              }])
           end
         end
 
@@ -459,12 +452,12 @@ describe Gitlab::Lfs::Router do
     describe 'upload' do
       describe 'when user is authenticated' do
         before do
-          body = { 'objects' => [{
-                     'oid' => sample_oid,
-                     'size' => sample_size
-                    }],
-                    'operation' => 'upload'
-                  }.to_json
+          body = { 'operation' => 'upload',
+                   'objects' => [
+                     { 'oid' => sample_oid,
+                       'size' => sample_size
+                     }]
+          }.to_json
           env['rack.input'] = StringIO.new(body)
         end
 
@@ -472,7 +465,7 @@ describe Gitlab::Lfs::Router do
           before do
             @auth = authorize(user)
             env["HTTP_AUTHORIZATION"] = @auth
-            project.team << [user, :master]
+            project.team << [user, :developer]
           end
 
           context 'when pushing an lfs object that already exists' do
@@ -489,19 +482,19 @@ describe Gitlab::Lfs::Router do
               expect(response['objects'].first['size']).to eq(sample_size)
               expect(lfs_object.projects.pluck(:id)).to_not include(project.id)
               expect(lfs_object.projects.pluck(:id)).to include(public_project.id)
-              expect(response['objects'].first).to have_key('_links')
+              expect(response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
+              expect(response['objects'].first['actions']['upload']['header']).to eq('Authorization' => @auth)
             end
           end
 
           context 'when pushing a lfs object that does not exist' do
             before do
-              body = {
-                'objects' => [{
-                  'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                  'size' => 1575078
-                  }],
-                'operation' => 'upload'
-                  }.to_json
+              body = { 'operation' => 'upload',
+                       'objects' => [
+                         { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                           'size' => 1575078
+                         }]
+              }.to_json
               env['rack.input'] = StringIO.new(body)
             end
 
@@ -514,26 +507,25 @@ describe Gitlab::Lfs::Router do
               expect(response_body['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
               expect(response_body['objects'].first['size']).to eq(1575078)
               expect(lfs_object.projects.pluck(:id)).not_to include(project.id)
-              expect(response_body['objects'].first['_links']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
-              expect(response_body['objects'].first['_links']['upload']['header']).to eq("Authorization" => @auth)
+              expect(response_body['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
+              expect(response_body['objects'].first['actions']['upload']['header']).to eq('Authorization' => @auth)
             end
           end
 
           context 'when pushing one new and one existing lfs object' do
             before do
-              body = {
-                'objects' => [
-                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                    'size' => 1575078
-                  },
-                  { 'oid' => sample_oid,
-                    'size' => sample_size
-                  }
-                ],
-                'operation' => 'upload'
+              body = { 'operation' => 'upload',
+                       'objects' => [
+                         { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                           'size' => 1575078
+                         },
+                         { 'oid' => sample_oid,
+                           'size' => sample_size
+                         }
+                       ]
               }.to_json
               env['rack.input'] = StringIO.new(body)
-              public_project.lfs_objects << lfs_object
+              project.lfs_objects << lfs_object
             end
 
             it "responds with status 200 with upload hypermedia link for the new object" do
@@ -543,17 +535,14 @@ describe Gitlab::Lfs::Router do
               response_body = ActiveSupport::JSON.decode(response.last.first)
               expect(response_body['objects']).to be_kind_of(Array)
 
-
               expect(response_body['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
               expect(response_body['objects'].first['size']).to eq(1575078)
-              expect(response_body['objects'].first['_links']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
-              expect(response_body['objects'].first['_links']['upload']['header']).to eq("Authorization" => @auth)
+              expect(response_body['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
+              expect(response_body['objects'].first['actions']['upload']['header']).to eq("Authorization" => @auth)
 
               expect(response_body['objects'].last['oid']).to eq(sample_oid)
               expect(response_body['objects'].last['size']).to eq(sample_size)
-              expect(lfs_object.projects.pluck(:id)).to_not include(project.id)
-              expect(lfs_object.projects.pluck(:id)).to include(public_project.id)
-              expect(response_body['objects'].last).to have_key('_links')
+              expect(response_body['objects'].last).to_not have_key('actions')
             end
           end
         end
@@ -592,11 +581,11 @@ describe Gitlab::Lfs::Router do
 
     describe 'unsupported' do
       before do
-        body = { 'objects' => [{
-          'oid' => sample_oid,
-          'size' => sample_size
-        }],
-          'operation' => 'other'
+        body = { 'operation' => 'other',
+                 'objects' => [
+                   { 'oid' => sample_oid,
+                     'size' => sample_size
+                   }]
         }.to_json
         env['rack.input'] = StringIO.new(body)
       end
