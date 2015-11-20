@@ -238,142 +238,371 @@ describe Gitlab::Lfs::Router do
     end
   end
 
-  describe 'when initiating pushing of the lfs object' do
+  describe 'when handling lfs batch request' do
     before do
       enable_lfs
       env['REQUEST_METHOD'] = 'POST'
-      env["PATH_INFO"] = "#{project.repository.path_with_namespace}.git/info/lfs/objects/batch"
+      env['PATH_INFO'] = "#{project.repository.path_with_namespace}.git/info/lfs/objects/batch"
     end
 
-    describe 'when user is authenticated' do
+    describe 'download' do
+      describe 'when user is authenticated' do
+        before do
+          body = { 'objects' => [{
+                                   'oid' => sample_oid,
+                                   'size' => sample_size
+                                 }],
+                   'operation' => 'download'
+          }.to_json
+          env['rack.input'] = StringIO.new(body)
+        end
+
+        describe 'when user has download access' do
+          before do
+            @auth = authorize(user)
+            env["HTTP_AUTHORIZATION"] = @auth
+            project.team << [user, :reporter]
+          end
+
+          context 'when downloading an lfs object that is assigned to our project' do
+            before do
+              project.lfs_objects << lfs_object
+            end
+
+            it 'responds with status 200 and href to download' do
+              response = lfs_router_auth.try_call
+              expect(response.first).to eq(200)
+              response_body = ActiveSupport::JSON.decode(response.last.first)
+
+              expect(response_body).to eq(
+                'objects' => [{
+                    'oid' => sample_oid,
+                  'size' => sample_size,
+                  'actions' => {
+                    'download' => {
+                    'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                    'header' => {'Authorization' => @auth}
+                  }
+                  }
+                                          }])
+            end
+          end
+
+          context 'when downloading an lfs object that is assigned to other project' do
+            before do
+              public_project.lfs_objects << lfs_object
+            end
+
+            it 'responds with status 200 and error message' do
+              response = lfs_router_auth.try_call
+              expect(response.first).to eq(200)
+              response_body = ActiveSupport::JSON.decode(response.last.first)
+
+              expect(response_body).to eq(
+                                         'objects' => [{
+                                                         'oid' => sample_oid,
+                                                         'size' => sample_size,
+                                                         'error' => {
+                                                           'code' => 404,
+                                                           'message' => "Object does not exist on the server or you don't have permissions to access it",
+                                                         }
+                                                       }])
+            end
+          end
+
+          context 'when downloading a lfs object that does not exist' do
+            before do
+              body = {
+                'objects' => [{
+                                'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                                'size' => 1575078
+                              }],
+                'operation' => 'download'
+              }.to_json
+              env['rack.input'] = StringIO.new(body)
+            end
+
+            it "responds with status 200 and error message" do
+              response = lfs_router_auth.try_call
+              expect(response.first).to eq(200)
+              response_body = ActiveSupport::JSON.decode(response.last.first)
+
+              expect(response_body).to eq(
+                                         'objects' => [{
+                                                         'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                                                         'size' => 1575078,
+                                                         'error' => {
+                                                           'code' => 404,
+                                                           'message' => "Object does not exist on the server or you don't have permissions to access it",
+                                                         }
+                                                       }])
+            end
+          end
+
+          context 'when downloading one new and one existing lfs object' do
+            before do
+              body = {
+                'objects' => [
+                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                    'size' => 1575078
+                  },
+                  { 'oid' => sample_oid,
+                    'size' => sample_size
+                  }
+                ],
+                'operation' => 'download'
+              }.to_json
+              env['rack.input'] = StringIO.new(body)
+              project.lfs_objects << lfs_object
+            end
+
+            it "responds with status 200 with upload hypermedia link for the new object" do
+              response = lfs_router_auth.try_call
+              expect(response.first).to eq(200)
+              response_body = ActiveSupport::JSON.decode(response.last.first)
+
+              expect(response_body).to eq(
+                                         'objects' => [{
+                                                         'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                                                         'size' => 1575078,
+                                                         'error' => {
+                                                           'code' => 404,
+                                                           'message' => "Object does not exist on the server or you don't have permissions to access it",
+                                                         }
+                                                       },
+                                                       {
+                                                         'oid' => sample_oid,
+                                                         'size' => sample_size,
+                                                         'actions' => {
+                                                           'download' => {
+                                                             'href' => "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                                                             'header' => {'Authorization' => @auth}
+                                                           }
+                                                         }
+                                                       }])
+            end
+          end
+        end
+
+        context 'when user does is not member of the project' do
+          before do
+            @auth = authorize(user)
+            env["HTTP_AUTHORIZATION"] = @auth
+            project.team << [user, :guest]
+          end
+
+          it 'responds with 403' do
+            expect(lfs_router_auth.try_call.first).to eq(403)
+          end
+        end
+
+        context 'when user does not have download access' do
+          before do
+            @auth = authorize(user)
+            env["HTTP_AUTHORIZATION"] = @auth
+            project.team << [user, :guest]
+          end
+
+          it 'responds with 403' do
+            expect(lfs_router_auth.try_call.first).to eq(403)
+          end
+        end
+      end
+
+      context 'when user is not authenticated' do
+        before do
+          body = { 'objects' => [{
+                                   'oid' => sample_oid,
+                                   'size' => sample_size
+                                 }],
+                   'operation' => 'download'
+          }.to_json
+          env['rack.input'] = StringIO.new(body)
+        end
+
+        describe 'is accessing public project' do
+          before do
+            public_project.lfs_objects << lfs_object
+          end
+
+          it 'responds with status 200 and href to download' do
+            response = lfs_router_public_noauth.try_call
+            expect(response.first).to eq(200)
+            response_body = ActiveSupport::JSON.decode(response.last.first)
+
+            expect(response_body).to eq(
+                                       'objects' => [{
+                                                       'oid' => sample_oid,
+                                                       'size' => sample_size,
+                                                       'actions' => {
+                                                         'download' => {
+                                                           'href' => "#{public_project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}",
+                                                           'header' => {}
+                                                         }
+                                                       }
+                                                     }])
+          end
+        end
+
+        describe 'is accessing non-public project' do
+          before do
+            project.lfs_objects << lfs_object
+          end
+
+          it 'responds with authorization required' do
+            expect(lfs_router_noauth.try_call.first).to eq(401)
+          end
+        end
+      end
+    end
+
+    describe 'upload' do
+      describe 'when user is authenticated' do
+        before do
+          body = { 'objects' => [{
+                     'oid' => sample_oid,
+                     'size' => sample_size
+                    }],
+                    'operation' => 'upload'
+                  }.to_json
+          env['rack.input'] = StringIO.new(body)
+        end
+
+        describe 'when user has project push access' do
+          before do
+            @auth = authorize(user)
+            env["HTTP_AUTHORIZATION"] = @auth
+            project.team << [user, :master]
+          end
+
+          context 'when pushing an lfs object that already exists' do
+            before do
+              public_project.lfs_objects << lfs_object
+            end
+
+            it "responds with status 200 and links the object to the project" do
+              response_body = lfs_router_auth.try_call.last
+              response = ActiveSupport::JSON.decode(response_body.first)
+
+              expect(response['objects']).to be_kind_of(Array)
+              expect(response['objects'].first['oid']).to eq(sample_oid)
+              expect(response['objects'].first['size']).to eq(sample_size)
+              expect(lfs_object.projects.pluck(:id)).to_not include(project.id)
+              expect(lfs_object.projects.pluck(:id)).to include(public_project.id)
+              expect(response['objects'].first).to have_key('_links')
+            end
+          end
+
+          context 'when pushing a lfs object that does not exist' do
+            before do
+              body = {
+                'objects' => [{
+                  'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                  'size' => 1575078
+                  }],
+                'operation' => 'upload'
+                  }.to_json
+              env['rack.input'] = StringIO.new(body)
+            end
+
+            it "responds with status 200 and upload hypermedia link" do
+              response = lfs_router_auth.try_call
+              expect(response.first).to eq(200)
+
+              response_body = ActiveSupport::JSON.decode(response.last.first)
+              expect(response_body['objects']).to be_kind_of(Array)
+              expect(response_body['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
+              expect(response_body['objects'].first['size']).to eq(1575078)
+              expect(lfs_object.projects.pluck(:id)).not_to include(project.id)
+              expect(response_body['objects'].first['_links']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
+              expect(response_body['objects'].first['_links']['upload']['header']).to eq("Authorization" => @auth)
+            end
+          end
+
+          context 'when pushing one new and one existing lfs object' do
+            before do
+              body = {
+                'objects' => [
+                  { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+                    'size' => 1575078
+                  },
+                  { 'oid' => sample_oid,
+                    'size' => sample_size
+                  }
+                ],
+                'operation' => 'upload'
+              }.to_json
+              env['rack.input'] = StringIO.new(body)
+              public_project.lfs_objects << lfs_object
+            end
+
+            it "responds with status 200 with upload hypermedia link for the new object" do
+              response = lfs_router_auth.try_call
+              expect(response.first).to eq(200)
+
+              response_body = ActiveSupport::JSON.decode(response.last.first)
+              expect(response_body['objects']).to be_kind_of(Array)
+
+
+              expect(response_body['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
+              expect(response_body['objects'].first['size']).to eq(1575078)
+              expect(response_body['objects'].first['_links']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
+              expect(response_body['objects'].first['_links']['upload']['header']).to eq("Authorization" => @auth)
+
+              expect(response_body['objects'].last['oid']).to eq(sample_oid)
+              expect(response_body['objects'].last['size']).to eq(sample_size)
+              expect(lfs_object.projects.pluck(:id)).to_not include(project.id)
+              expect(lfs_object.projects.pluck(:id)).to include(public_project.id)
+              expect(response_body['objects'].last).to have_key('_links')
+            end
+          end
+        end
+
+        context 'when user does not have push access' do
+          it 'responds with 403' do
+            expect(lfs_router_auth.try_call.first).to eq(403)
+          end
+        end
+      end
+
+      context 'when user is not authenticated' do
+        before do
+          env['rack.input'] = StringIO.new(
+            { 'objects' => [], 'operation' => 'upload' }.to_json
+          )
+        end
+
+        context 'when user has push access' do
+          before do
+            project.team << [user, :master]
+          end
+
+          it "responds with status 401" do
+            expect(lfs_router_public_noauth.try_call.first).to eq(401)
+          end
+        end
+
+        context 'when user does not have push access' do
+          it "responds with status 401" do
+            expect(lfs_router_public_noauth.try_call.first).to eq(401)
+          end
+        end
+      end
+    end
+
+    describe 'unsupported' do
       before do
         body = { 'objects' => [{
-                   'oid' => sample_oid,
-                   'size' => sample_size
-                  }],
-                  'operation' => 'upload'
-                }.to_json
+          'oid' => sample_oid,
+          'size' => sample_size
+        }],
+          'operation' => 'other'
+        }.to_json
         env['rack.input'] = StringIO.new(body)
       end
 
-      describe 'when user has project push access' do
-        before do
-          @auth = authorize(user)
-          env["HTTP_AUTHORIZATION"] = @auth
-          project.team << [user, :master]
-        end
-
-        context 'when pushing an lfs object that already exists' do
-          before do
-            public_project.lfs_objects << lfs_object
-          end
-
-          it "responds with status 200 and links the object to the project" do
-            response_body = lfs_router_auth.try_call.last
-            response = ActiveSupport::JSON.decode(response_body.first)
-
-            expect(response['objects']).to be_kind_of(Array)
-            expect(response['objects'].first['oid']).to eq(sample_oid)
-            expect(response['objects'].first['size']).to eq(sample_size)
-            expect(lfs_object.projects.pluck(:id)).to_not include(project.id)
-            expect(lfs_object.projects.pluck(:id)).to include(public_project.id)
-            expect(response['objects'].first).to have_key('_links')
-          end
-        end
-
-        context 'when pushing a lfs object that does not exist' do
-          before do
-            body = {
-              'objects' => [{
-                'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                'size' => 1575078
-                }],
-              'operation' => 'upload'
-                }.to_json
-            env['rack.input'] = StringIO.new(body)
-          end
-
-          it "responds with status 200 and upload hypermedia link" do
-            response = lfs_router_auth.try_call
-            expect(response.first).to eq(200)
-
-            response_body = ActiveSupport::JSON.decode(response.last.first)
-            expect(response_body['objects']).to be_kind_of(Array)
-            expect(response_body['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
-            expect(response_body['objects'].first['size']).to eq(1575078)
-            expect(lfs_object.projects.pluck(:id)).not_to include(project.id)
-            expect(response_body['objects'].first['_links']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
-            expect(response_body['objects'].first['_links']['upload']['header']).to eq("Authorization" => @auth)
-          end
-        end
-
-        context 'when pushing one new and one existing lfs object' do
-          before do
-            body = {
-              'objects' => [
-                { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
-                  'size' => 1575078
-                },
-                { 'oid' => sample_oid,
-                  'size' => sample_size
-                }
-              ],
-              'operation' => 'upload'
-            }.to_json
-            env['rack.input'] = StringIO.new(body)
-            public_project.lfs_objects << lfs_object
-          end
-
-          it "responds with status 200 with upload hypermedia link for the new object" do
-            response = lfs_router_auth.try_call
-            expect(response.first).to eq(200)
-
-            response_body = ActiveSupport::JSON.decode(response.last.first)
-            expect(response_body['objects']).to be_kind_of(Array)
-
-
-            expect(response_body['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
-            expect(response_body['objects'].first['size']).to eq(1575078)
-            expect(response_body['objects'].first['_links']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
-            expect(response_body['objects'].first['_links']['upload']['header']).to eq("Authorization" => @auth)
-
-            expect(response_body['objects'].last['oid']).to eq(sample_oid)
-            expect(response_body['objects'].last['size']).to eq(sample_size)
-            expect(lfs_object.projects.pluck(:id)).to_not include(project.id)
-            expect(lfs_object.projects.pluck(:id)).to include(public_project.id)
-            expect(response_body['objects'].last).to have_key('_links')
-          end
-        end
-      end
-
-      context 'when user does not have push access' do
-        it 'responds with 403' do
-          expect(lfs_router_auth.try_call.first).to eq(403)
-        end
-      end
-    end
-
-    context 'when user is not authenticated' do
-      before do
-        env['rack.input'] = StringIO.new(
-          { 'objects' => [], 'operation' => 'upload' }.to_json
-        )
-      end
-
-      context 'when user has push access' do
-        before do
-          project.team << [user, :master]
-        end
-
-        it "responds with status 401" do
-          expect(lfs_router_public_noauth.try_call.first).to eq(401)
-        end
-      end
-
-      context 'when user does not have push access' do
-        it "responds with status 401" do
-          expect(lfs_router_public_noauth.try_call.first).to eq(401)
-        end
+      it 'responds with status 404' do
+        expect(lfs_router_public_noauth.try_call.first).to eq(404)
       end
     end
   end
