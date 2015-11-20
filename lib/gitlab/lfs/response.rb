@@ -10,20 +10,6 @@ module Gitlab
         @request = request
       end
 
-      # Return a response for a download request
-      # Can be a response to:
-      # Request from a user to get the file
-      # Request from gitlab-workhorse which file to serve to the user
-      def render_download_hypermedia_response(oid)
-        render_response_to_download do
-          if check_download_accept_header?
-            render_lfs_download_hypermedia(oid)
-          else
-            render_not_found
-          end
-        end
-      end
-
       def render_download_object_response(oid)
         render_response_to_download do
           if check_download_sendfile_header?
@@ -66,13 +52,24 @@ module Gitlab
         end
       end
 
+      def render_unsupported_deprecated_api
+        [
+          501,
+          { "Content-Type" => "application/json; charset=utf-8" },
+          [JSON.dump({
+            'message' => 'Server supports batch API only, please update your Git LFS client to version 0.6.0 and up.',
+            'documentation_url' => "#{Gitlab.config.gitlab.url}/help",
+          })]
+        ]
+      end
+
       private
 
       def render_not_enabled
         [
           501,
           {
-            "Content-Type" => "application/vnd.git-lfs+json",
+            "Content-Type" => "application/json; charset=utf-8",
           },
           [JSON.dump({
             'message' => 'Git LFS is not enabled on this GitLab server, contact your admin.',
@@ -169,21 +166,6 @@ module Gitlab
         end
       end
 
-      def render_lfs_download_hypermedia(oid)
-        return render_not_found unless oid.present?
-
-        lfs_object = object_for_download(oid)
-        if lfs_object
-          [
-            200,
-            { "Content-Type" => "application/vnd.git-lfs+json" },
-            [JSON.dump(download_hypermedia(oid))]
-          ]
-        else
-          render_not_found
-        end
-      end
-
       def render_lfs_upload_ok(oid, size, tmp_file)
         if store_file(oid, size, tmp_file)
           [
@@ -224,10 +206,6 @@ module Gitlab
 
       def check_download_sendfile_header?
         @env['HTTP_X_SENDFILE_TYPE'].to_s == "X-Sendfile"
-      end
-
-      def check_download_accept_header?
-        @env['HTTP_ACCEPT'].to_s == "application/vnd.git-lfs+json; charset=utf-8"
       end
 
       def user_can_fetch?
@@ -303,20 +281,6 @@ module Gitlab
         selected_objects = select_existing_objects(objects)
 
         download_hypermedia_links(objects, selected_objects)
-      end
-
-      def download_hypermedia(oid)
-        {
-         '_links' => {
-           'download' =>
-             {
-              'href' => "#{@origin_project.http_url_to_repo}/gitlab-lfs/objects/#{oid}",
-              'header' => {
-                'Authorization' => @env['HTTP_AUTHORIZATION']
-              }.compact
-            }
-          }
-        }
       end
 
       def download_hypermedia_links(all_objects, existing_objects)
