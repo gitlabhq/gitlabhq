@@ -422,26 +422,7 @@ class User < ActiveRecord::Base
     union = Gitlab::SQL::Union.
       new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
-<<<<<<< HEAD
-  def authorized_projects_id
-    @authorized_projects_id ||= begin
-      project_ids = personal_projects.pluck(:id)
-      project_ids.push(*groups_projects.pluck(:id))
-      project_ids.push(*projects.pluck(:id).uniq)
-      project_ids.push(*groups.joins(:shared_projects).pluck(:project_id))
-    end
-  end
-
-  def master_or_owner_projects_id
-    @master_or_owner_projects_id ||= begin
-      scope = { access_level: [ Gitlab::Access::MASTER, Gitlab::Access::OWNER ] }
-      project_ids = personal_projects.pluck(:id)
-      project_ids.push(*groups_projects.where(members: scope).pluck(:id))
-      project_ids.push(*projects.where(members: scope).pluck(:id).uniq)
-    end
-=======
     Group.where("namespaces.id IN (#{union.to_sql})")
->>>>>>> b6f0eddce552d7423869e9072a7a0706e309dbdf
   end
 
   # Returns the groups a user is authorized to access.
@@ -834,7 +815,8 @@ class User < ActiveRecord::Base
   def projects_union
     Gitlab::SQL::Union.new([personal_projects.select(:id),
                             groups_projects.select(:id),
-                            projects.select(:id)])
+                            projects.select(:id),
+                            groups.joins(:shared_projects).select(:project_id)])
   end
 
   def ci_projects_union
