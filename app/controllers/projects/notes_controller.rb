@@ -65,7 +65,7 @@ class Projects::NotesController < Projects::ApplicationController
     data = {
       author: current_user,
       is_award: true,
-      note: note_params[:note]
+      note: note_params[:note].gsub(":", '')
     }
 
     note = noteable.notes.find_by(data)
