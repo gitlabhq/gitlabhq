@@ -153,6 +153,10 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
         click_on 'Save'
       end
     end
+
+    page.within "#group_member_#{member.id}" do
+      expect(page).to have_content "Developer"
+    end
   end
 
   step 'I go to "Audit Events"' do
