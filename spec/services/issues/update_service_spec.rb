@@ -121,6 +121,25 @@ describe Issues::UpdateService do
           expect(note).to be_nil
         end
       end
+
+      context 'when a Task list with a completed item is totally replaced' do
+        before do
+          update_issue({ description: "- [ ] Task 1\n- [X] Task 2" })
+          update_issue({ description: "- [ ] One\n- [ ] Two\n- [ ] Three" })
+        end
+
+        it 'does not create a system note referencing the position the old item' do
+          note = find_note('Marked the task **Two** as incomplete')
+
+          expect(note).to be_nil
+        end
+
+        it 'should not generate a new note at all' do
+          expect {
+            update_issue({ description: "- [ ] One\n- [ ] Two\n- [ ] Three" })
+          }.not_to change { Note.count }
+        end
+      end
     end
 
   end

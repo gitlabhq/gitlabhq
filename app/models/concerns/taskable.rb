@@ -31,7 +31,7 @@ module Taskable
       old_task = old_tasks[i]
       next unless old_task
 
-      new_task.source == new_task.source && new_task.complete? != old_task.complete?
+      new_task.source == old_task.source && new_task.complete? != old_task.complete?
     end
   end
 
