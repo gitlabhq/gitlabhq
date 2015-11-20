@@ -135,9 +135,9 @@ describe Issues::UpdateService do
         end
 
         it 'should not generate a new note at all' do
-          expect {
+          expect do
             update_issue({ description: "- [ ] One\n- [ ] Two\n- [ ] Three" })
-          }.not_to change { Note.count }
+          end.not_to change { Note.count }
         end
       end
     end
