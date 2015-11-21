@@ -51,5 +51,8 @@ class RepositoryImportWorker
     end
 
     project.import_finish
+
+    # Explicitly update mirror so that upstream remote is created and fetched
+    project.update_mirror
   end
 end
