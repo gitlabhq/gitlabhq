@@ -47,7 +47,7 @@ module API
       #   tag_name (required) - The name of the tag
       #   description (required) - Release notes with markdown support
       # Example Request:
-      #   PUT /projects/:id/repository/tags/:tag_name/release
+      #   POST /projects/:id/repository/tags/:tag_name/release
       post ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
         authorize_push_project
         required_attributes! [:description]
@@ -57,7 +57,7 @@ module API
         if result[:status] == :success
           present result[:release], with: Entities::Release
         else
-          render_api_error!(result[:message], 404)
+          render_api_error!(result[:message], result[:http_status])
         end
       end
     end

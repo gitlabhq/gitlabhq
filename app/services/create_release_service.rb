@@ -8,12 +8,18 @@ class CreateReleaseService < BaseService
 
     # Only create a release if the tag exists
     if existing_tag
-      release = project.releases.find_or_initialize_by(tag: tag_name)
-      release.update_attributes(description: release_description)
+      release = project.releases.find_by(tag: tag_name)
 
-      success(release)
+      if(release)
+        error('Release already exists', 409)
+      else
+        release = project.releases.new({ tag: tag_name, description: release_description })
+        release.save
+
+        success(release)
+      end
     else
-      error('Tag does not exist')
+      error('Tag does not exist', 404)
     end
   end
 

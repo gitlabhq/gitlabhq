@@ -28,10 +28,10 @@ describe API::API, api: true  do
       before do
         release = project.releases.find_or_initialize_by(tag: tag_name)
         release.update_attributes(description: description)
-        get api("/projects/#{project.id}/repository/tags", user)
       end
 
       it "should return an array of project tags with release info" do
+        get api("/projects/#{project.id}/repository/tags", user)
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
@@ -138,6 +138,21 @@ describe API::API, api: true  do
 
       expect(response.status).to eq(404)
       expect(json_response['message']).to eq('Tag does not exist')
+    end
+
+    context 'on tag with existing release' do
+      before do
+        release = project.releases.find_or_initialize_by(tag: tag_name)
+        release.update_attributes(description: description)
+      end
+
+      it 'should return 409 if there is already a release' do
+        post api("/projects/#{project.id}/repository/tags/#{tag_name}/release", user),
+          description: description
+
+        expect(response.status).to eq(409)
+        expect(json_response['message']).to eq('Release already exists')
+      end
     end
   end
 end
