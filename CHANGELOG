@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
 
 v 8.2.0
   - Improved performance of finding projects and groups in various places
