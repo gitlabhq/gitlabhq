@@ -119,16 +119,16 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'PUT /projects/:id/repository/:tag/release' do
+  describe 'PUT /projects/:id/repository/tags/:tag_name/release' do
     let(:tag_name) { project.repository.tag_names.first }
     let(:description) { 'Awesome release!' }
 
     it 'should create description for existing git tag' do
-      put api("/projects/#{project.id}/repository/#{tag_name}/release", user),
+      put api("/projects/#{project.id}/repository/tags/#{tag_name}/release", user),
         description: description
 
       expect(response.status).to eq(200)
-      expect(json_response['tag']).to eq(tag_name)
+      expect(json_response['tag_name']).to eq(tag_name)
       expect(json_response['description']).to eq(description)
     end
   end

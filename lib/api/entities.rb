@@ -322,7 +322,8 @@ module API
     end
 
     class Release < Grape::Entity
-      expose :tag, :description
+      expose :tag, as: :tag_name
+      expose :description
     end
 
     class RepoTag < Grape::Entity

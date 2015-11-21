@@ -44,14 +44,14 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   tag (required) - The name of the tag
+      #   tag_name (required) - The name of the tag
       #   description (required) - Release notes with markdown support
       # Example Request:
-      #   PUT /projects/:id/repository/tags
-      put ':id/repository/:tag/release', requirements: { tag: /.*/ } do
+      #   PUT /projects/:id/repository/tags/:tag_name/release
+      put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
         authorize_push_project
         required_attributes! [:description]
-        release = user_project.releases.find_or_initialize_by(tag: params[:tag])
+        release = user_project.releases.find_or_initialize_by(tag: params[:tag_name])
         release.update_attributes(description: params[:description])
 
         present release, with: Entities::Release

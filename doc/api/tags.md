@@ -29,7 +29,7 @@ Parameters:
       ]
     },
     "release": {
-      "tag": "1.0.0",
+      "tag_name": "1.0.0",
       "description": "Amazing release. Wow"
     },
     "name": "v1.0.0",
@@ -70,7 +70,7 @@ Parameters:
     ]
   },
   "release": {
-    "tag": "1.0.0",
+    "tag_name": "1.0.0",
     "description": "Amazing release. Wow"
   },
   "name": "v1.0.0",
@@ -89,18 +89,18 @@ It returns 200 if the operation succeed. In case of an error,
 Add release notes to the existing git tag
 
 ```
-PUT /projects/:id/repository/:tag/release
+PUT /projects/:id/repository/tags/:tag_name/release
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `tag` (required) - The name of a tag
+- `tag_name` (required) - The name of a tag
 - `description` (required) - Release notes with markdown support
 
 ```json
 {
-  "tag": "1.0.0",
+  "tag_name": "1.0.0",
   "description": "Amazing release. Wow"
 }
 ```
