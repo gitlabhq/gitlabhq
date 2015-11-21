@@ -131,5 +131,13 @@ describe API::API, api: true  do
       expect(json_response['tag_name']).to eq(tag_name)
       expect(json_response['description']).to eq(description)
     end
+
+    it 'should return 404 if the tag does not exist' do
+      put api("/projects/#{project.id}/repository/tags/foobar/release", user),
+        description: description
+
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('Tag does not exist')
+    end
   end
 end

@@ -86,7 +86,8 @@ It returns 200 if the operation succeed. In case of an error,
 
 ## New release
 
-Add release notes to the existing git tag
+Add release notes to the existing git tag. It returns 200 if the release is
+created successfully. If the tag does not exist, 404 is returned.
 
 ```
 PUT /projects/:id/repository/tags/:tag_name/release

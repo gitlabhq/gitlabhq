@@ -51,10 +51,14 @@ module API
       put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
         authorize_push_project
         required_attributes! [:description]
-        release = user_project.releases.find_or_initialize_by(tag: params[:tag_name])
-        release.update_attributes(description: params[:description])
+        result = CreateReleaseService.new(user_project, current_user).
+          execute(params[:tag_name], params[:description])
 
-        present release, with: Entities::Release
+        if result[:status] == :success
+          present result[:release], with: Entities::Release
+        else
+          render_api_error!(result[:message], 404)
+        end
       end
     end
   end
