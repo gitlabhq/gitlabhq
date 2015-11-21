@@ -23,17 +23,17 @@ class ProjectsFinder
     group = options[:group]
 
     if group
-      base, extra = group_projects(current_user, group)
+      segments = group_projects(current_user, group)
     else
-      base, extra = all_projects(current_user)
+      segments = all_projects(current_user)
     end
 
-    if base and extra
-      union = Gitlab::SQL::Union.new([base.select(:id), extra.select(:id)])
+    if segments.length > 1
+      union = Gitlab::SQL::Union.new(segments.map { |s| s.select(:id) })
 
       Project.where("projects.id IN (#{union.to_sql})")
     else
-      base
+      segments.first
     end
   end
 
