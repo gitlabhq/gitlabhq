@@ -5,6 +5,9 @@ module Gitlab
         attr_accessor :recipient
         attr_reader :author_id, :ref, :action
 
+        delegate :namespace, :name_with_namespace, to: :project, prefix: :project
+        delegate :name, to: :author, prefix: :author
+
         def initialize(notify, project_id, recipient, opts = {})
           raise ArgumentError, 'Missing options: author_id, ref, action' unless
             opts[:author_id] && opts[:ref] && opts[:action]
@@ -35,8 +38,16 @@ module Gitlab
           @diffs ||= (compare.diffs if compare)
         end
 
+        def diffs_count
+          diffs.count if diffs
+        end
+
         def compare
           @opts[:compare]
+        end
+
+        def compare_timeout
+          compare.timeout if compare
         end
 
         def reverse_compare?
@@ -74,17 +85,17 @@ module Gitlab
         def target_url
           if @action == :push
             if commits.length > 1 && compare
-              @notify.namespace_project_compare_url(project.namespace,
+              @notify.namespace_project_compare_url(project_namespace,
                                                     project,
                                                     from: Commit.new(compare.base, project),
                                                     to:   Commit.new(compare.head, project))
             else
-              @notify.namespace_project_commit_url(project.namespace,
+              @notify.namespace_project_commit_url(project_namespace,
                                                    project, commits.first)
             end
           else
             unless @action == :delete
-              @notify.namespace_project_tree_url(project.namespace,
+              @notify.namespace_project_tree_url(project_namespace,
                                                  project, ref_name)
             end
           end

@@ -1,21 +1,21 @@
-#{@author.name} #{@action_name} #{@ref_type} #{@ref_name} at #{@project.name_with_namespace}
-- if @compare
+#{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name} at #{@message.project_name_with_namespace}
+- if @message.compare
   \
   \
-  - if @reverse_compare
+  - if @message.reverse_compare?
     WARNING: The push did not contain any new commits, but force pushed to delete the commits and changes below.
     \
     \
-  = @reverse_compare ? "Deleted commits:" : "Commits:"
-  - @commits.each do |commit|
+  = @message.reverse_compare? ? "Deleted commits:" : "Commits:"
+  - @message.commits.each do |commit|
     #{commit.short_id} by #{commit.author_name} at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
     #{commit.safe_message}
     \- - - - -
   \
   \
-  #{pluralize @diffs.count, "changed file"}:
+  #{pluralize @message.diffs_count, "changed file"}:
   \
-  - @diffs.each do |diff|
+  - @message.diffs.each do |diff|
     - if diff.deleted_file
       \- − #{diff.old_path}
     - elsif diff.renamed_file
@@ -24,11 +24,11 @@
       \- + #{diff.new_path}
     - else
       \- #{diff.new_path}
-  - unless @disable_diffs
+  - unless @message.disable_diffs?
     \
     \
     Changes:
-    - @diffs.each do |diff|
+    - @message.diffs.each do |diff|
       \
       \=====================================
       - if diff.deleted_file
@@ -39,11 +39,11 @@
         = diff.new_path
       \=====================================
       != diff.diff
-  - if @compare.timeout
+  - if @message.compare_timeout
     \
     \
     Huge diff. To prevent performance issues it was hidden
-  - if @target_url
+  - if @message.target_url
     \
     \
-    View it on GitLab: #{@target_url}
+    View it on GitLab: #{@message.target_url}
