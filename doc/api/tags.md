@@ -106,3 +106,26 @@ Parameters:
   "description": "Amazing release. Wow"
 }
 ```
+
+## Update a release
+
+Updates the release notes of a given release. It returns 200 if the release is
+successfully updated. If the tag or the release does not exist, it returns 404
+with a proper error message.
+
+```
+PUT /projects/:id/repository/tags/:tag_name/release
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `tag_name` (required) - The name of a tag
+- `description` (required) - Release notes with markdown support
+
+```json
+{
+  "tag_name": "1.0.0",
+  "description": "Amazing release. Wow"
+}
+```

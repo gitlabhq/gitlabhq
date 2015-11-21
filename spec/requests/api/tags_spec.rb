@@ -155,4 +155,42 @@ describe API::API, api: true  do
       end
     end
   end
+
+  describe 'PUT id/repository/tags/:tag_name/release' do
+    let(:tag_name) { project.repository.tag_names.first }
+    let(:description) { 'Awesome release!' }
+    let(:new_description) { 'The best release!' }
+
+    context 'on tag with existing release' do
+      before do
+        release = project.releases.find_or_initialize_by(tag: tag_name)
+        release.update_attributes(description: description)
+      end
+
+      it 'should update the release description' do
+        put api("/projects/#{project.id}/repository/tags/#{tag_name}/release", user),
+          description: new_description
+
+        expect(response.status).to eq(200)
+        expect(json_response['tag_name']).to eq(tag_name)
+        expect(json_response['description']).to eq(new_description)
+      end
+    end
+
+    it 'should return 404 if the tag does not exist' do
+      put api("/projects/#{project.id}/repository/tags/foobar/release", user),
+        description: new_description
+
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('Tag does not exist')
+    end
+
+    it 'should return 404 if the release does not exist' do
+      put api("/projects/#{project.id}/repository/tags/#{tag_name}/release", user),
+        description: new_description
+
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('Release does not exist')
+    end
+  end
 end
