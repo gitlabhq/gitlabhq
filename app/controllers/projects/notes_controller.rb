@@ -59,8 +59,11 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def award_toggle
-    noteable = note_params[:noteable_type] == "issue" ? Issue : MergeRequest
-    noteable = noteable.find_by!(id: note_params[:noteable_id], project: project)
+    noteable = if note_params[:noteable_type] == "issue"
+                 project.issues.find(note_params[:noteable_id])
+               else
+                 project.merge_requests.find(note_params[:noteable_id])
+               end
 
     data = {
       author: current_user,
