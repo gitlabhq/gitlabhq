@@ -48,7 +48,7 @@ module API
       #   description (required) - Release notes with markdown support
       # Example Request:
       #   PUT /projects/:id/repository/tags/:tag_name/release
-      put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
+      post ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
         authorize_push_project
         required_attributes! [:description]
         result = CreateReleaseService.new(user_project, current_user).

@@ -84,13 +84,13 @@ It returns 200 if the operation succeed. In case of an error,
 405 with an explaining error message is returned.
 
 
-## New release
+## Create a new release
 
-Add release notes to the existing git tag. It returns 200 if the release is
+Add release notes to the existing git tag. It returns 201 if the release is
 created successfully. If the tag does not exist, 404 is returned.
 
 ```
-PUT /projects/:id/repository/tags/:tag_name/release
+POST /projects/:id/repository/tags/:tag_name/release
 ```
 
 Parameters:
