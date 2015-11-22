@@ -89,6 +89,16 @@ module Issuable
     opened? || reopened?
   end
 
+  # Deprecated. Still exists to preserve API compatibility.
+  def downvotes
+    0
+  end
+
+  # Deprecated. Still exists to preserve API compatibility.
+  def upvotes
+    0
+  end
+
   def subscribed?(user)
     subscription = subscriptions.find_by_user_id(user.id)
 

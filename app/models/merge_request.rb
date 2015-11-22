@@ -545,7 +545,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ci_commit
-    if last_commit
+    if last_commit and source_project
       source_project.ci_commit(last_commit.id)
     end
   end

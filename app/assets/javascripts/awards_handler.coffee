@@ -73,7 +73,7 @@ class @AwardsHandler
 
   getImage: (emoji, custom_path) ->
     if custom_path
-      $(".awards-menu li").first().html().replace(/emoji\/.*\.png/, custom_path)
+      $("<img>").attr({src: custom_path, width: 20, height: 20}).wrap("<div>").parent().html()
     else
       $("li[data-emoji='" + emoji + "']").html()
 
