@@ -3,8 +3,9 @@
 ## List merge requests
 
 Get all merge requests for this project. 
-The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`). 
-The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
+The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests. With GitLab 8.2 the return fields `upvotes` and
+`downvotes` are deprecated and always return `0`.
 
 ```
 GET /projects/:id/merge_requests
@@ -31,6 +32,8 @@ Parameters:
     "project_id": 3,
     "title": "test1",
     "state": "opened",
+    "upvotes": 0,
+    "downvotes": 0,
     "author": {
       "id": 1,
       "username": "admin",
@@ -55,7 +58,7 @@ Parameters:
 
 ## Get single MR
 
-Shows information about a single merge request.
+Shows information about a single merge request. With GitLab 8.2 the return fields `upvotes` and `downvotes` are deprecated and always return `0`.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id
@@ -75,6 +78,8 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "merged",
+  "upvotes": 0,
+  "downvotes": 0,
   "author": {
     "id": 1,
     "username": "admin",
@@ -98,7 +103,9 @@ Parameters:
 
 ## Get single MR changes
 
-Shows information about the merge request including its files and changes
+Shows information about the merge request including its files and changes.
+With GitLab 8.2 the return fields `upvotes` and `downvotes` are deprecated and
+always return `0`.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id/changes
@@ -122,6 +129,8 @@ Parameters:
   "updated_at": "2015-02-02T20:08:49.959Z",
   "target_branch": "secret_token",
   "source_branch": "version-1-9",
+  "upvotes": 0,
+  "downvotes": 0,
   "author": {
     "name": "Chad Hamill",
     "username": "jarrett",
@@ -167,7 +176,8 @@ Parameters:
 
 ## Create MR
 
-Creates a new merge request.
+Creates a new merge request. With GitLab 8.2 the return fields `upvotes` and `
+downvotes` are deprecated and always return `0`.
 
 ```
 POST /projects/:id/merge_requests
@@ -192,6 +202,8 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "opened",
+  "upvotes": 0,
+  "downvotes": 0,
   "author": {
     "id": 1,
     "username": "admin",
@@ -217,7 +229,8 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Update MR
 
-Updates an existing merge request. You can change the target branch, title, or even close the MR.
+Updates an existing merge request. You can change the target branch, title, or even close the MR. With GitLab 8.2 the return fields `upvotes` and `downvotes`
+are deprecated and always return `0`.
 
 ```
 PUT /projects/:id/merge_request/:merge_request_id
@@ -242,6 +255,8 @@ Parameters:
   "title": "test1",
   "description": "description1",
   "state": "opened",
+  "upvotes": 0,
+  "downvotes": 0,
   "author": {
     "id": 1,
     "username": "admin",
@@ -266,7 +281,8 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Accept MR
 
-Merge changes submitted with MR using this API.
+Merge changes submitted with MR using this API. With GitLab 8.2 the return
+fields `upvotes` and `downvotes` are deprecated and always return `0`.
 
 If merge success you get `200 OK`.
 
@@ -294,6 +310,8 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "merged",
+  "upvotes": 0,
+  "downvotes": 0,
   "author": {
     "id": 1,
     "username": "admin",
