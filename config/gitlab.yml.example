@@ -124,6 +124,12 @@ production: &base
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
 
+  ## Build Artifacts
+  artifacts:
+    enabled: true
+    # The location where build artifacts are stored (default: shared/artifacts).
+    # path: shared/artifacts
+
   ## Git LFS
   lfs:
     enabled: true

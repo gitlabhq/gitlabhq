@@ -5,6 +5,7 @@ v 8.3.0 (unreleased)
 v 8.2.0
   - Improved performance of finding projects and groups in various places
   - Improved performance of rendering user profile pages and Atom feeds
+  - Expose build artifacts path as config option
   - Fix grouping of contributors by email in graph.
   - Improved performance of finding issues with/without labels
   - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
