@@ -16,6 +16,7 @@ module Gitlab
           @project_id = project_id
           @recipient = recipient
           @opts = opts
+          @urls = Gitlab::Application.routes.url_helpers
 
           @author_id = opts.delete(:author_id)
           @ref = opts.delete(:ref)
@@ -85,17 +86,17 @@ module Gitlab
         def target_url
           if @action == :push
             if commits.length > 1 && compare
-              @notify.namespace_project_compare_url(project_namespace,
+              @urls.namespace_project_compare_url(project_namespace,
                                                     project,
                                                     from: Commit.new(compare.base, project),
                                                     to:   Commit.new(compare.head, project))
             else
-              @notify.namespace_project_commit_url(project_namespace,
+              @urls.namespace_project_commit_url(project_namespace,
                                                    project, commits.first)
             end
           else
             unless @action == :delete
-              @notify.namespace_project_tree_url(project_namespace,
+              @urls.namespace_project_tree_url(project_namespace,
                                                  project, ref_name)
             end
           end
