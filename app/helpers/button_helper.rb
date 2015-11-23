@@ -1,4 +1,11 @@
 module ButtonHelper
+  def clipboard_button
+    content_tag :button,
+      icon('clipboard'),
+      class: 'btn btn-xs btn-clipboard js-clipboard-trigger',
+      type: :button
+  end
+
   def http_clone_button(project)
     klass = 'btn'
     klass << ' active'      if default_clone_protocol == 'http'
