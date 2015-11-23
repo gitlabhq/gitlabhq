@@ -341,4 +341,22 @@ class SystemNoteService
 
     "* #{commit_ids} - #{commits_text} from branch `#{branch}`\n"
   end
+
+  # Called when the status of a Task has changed
+  #
+  # noteable  - Noteable object.
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # new_task  - TaskList::Item object.
+  #
+  # Example Note text:
+  #
+  #   "Soandso marked the task Whatever as completed."
+  #
+  # Returns the created Note object
+  def self.change_task_status(noteable, project, author, new_task)
+    status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
+    body = "Marked the task **#{new_task.source}** as #{status_label}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
 end
