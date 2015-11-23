@@ -88,10 +88,10 @@ flay:
     - ruby
     - mysql
 
-bundler:audit
+bundler:audit:
   script: 
-    - bundle exec bundle-audit update
-    - bundle exec bundle-audit check
+    - "bundle exec bundle-audit update"
+    - "bundle exec bundle-audit check"
   tags:
     - ruby
     - mysql
