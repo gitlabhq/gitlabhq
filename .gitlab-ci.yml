@@ -87,3 +87,11 @@ flay:
   tags:
     - ruby
     - mysql
+
+bundler:audit
+  script: 
+    - bundle exec bundle-audit update
+    - bundle exec bundle-audit check
+  tags:
+    - ruby
+    - mysql
