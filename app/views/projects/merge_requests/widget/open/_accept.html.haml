@@ -13,7 +13,7 @@
       - else
         = f.button class: "btn btn-create btn-grouped accept_merge_request #{status_class}" do
           Accept Merge Request
-    - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && !@merge_request.for_fork?
+    - if @merge_request.can_remove_source_branch?
       .accept-control.checkbox
         = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
           = check_box_tag :should_remove_source_branch

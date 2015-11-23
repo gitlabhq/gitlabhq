@@ -570,6 +570,7 @@ Gitlab::Application.routes.draw do
           member do
             get :diffs
             get :commits
+            get :merge_check
             post :merge
             post :cancel_merge_when_build_succeeds
             get :ci_status

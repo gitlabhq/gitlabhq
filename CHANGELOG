@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+- Merge when build succeeds (Zeger-Jan van de Weg)
 
 v 8.2.0
   - Fix grouping of contributors by email in graph.
@@ -28,10 +29,6 @@ v 8.2.0
   - Allow to define cache in `.gitlab-ci.yml`
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
-  - Use issue editor as cross reference comment author when issue is edited with a new mention.
-  - Merge when build succeeds (Zeger-Jan van de Weg)
-
-v 8.1.1
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
   - Fix omniauth documentation setting for omnibus configuration (Jon Cairns)
   - Add "New file" link to dropdown on project page

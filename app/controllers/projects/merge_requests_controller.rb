@@ -151,14 +151,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def cancel_merge_when_build_succeeds
-    unless @merge_request.can_be_merged_by?(current_user) || @merge_request.author == current_user
-      return access_denied!
-    end
+    return access_denied! unless @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
 
-    if @merge_request.merge_when_build_succeeds?
-      @merge_request.reset_merge_when_build_succeeds
-      SystemNoteService.cancel_merge_when_build_succeeds(merge_request, @project, @current_user)
-    end
+    MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user).cancel(@merge_request)
   end
 
   def merge
@@ -171,7 +166,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds] && @merge_request.ci_commit.active?
+    if params[:merge_when_build_succeeds] && @merge_request.ci_commit && @merge_request.ci_commit.active?
       MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
                                                       .execute(@merge_request)
       @status = :merge_when_build_succeeds

@@ -182,39 +182,35 @@ module API
       #   id (required)                         - The ID of a project
       #   merge_request_id (required)           - ID of MR
       #   merge_commit_message (optional)       - Custom merge commit message
-      #   merge_when_build_succeeds (optional)  - truethy when this MR should be merged when the build is succesfull
+      #   should_remove_source_branch           - When true, the source branch will be deleted if possible
+      #   merge_when_build_succeeds (optional)  - When true, this MR will be merged when the build succeeds
       # Example:
       #   PUT /projects/:id/merge_request/:merge_request_id/merge
       #
       put ":id/merge_request/:merge_request_id/merge" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
-        allowed = ::Gitlab::GitAccess.new(current_user, user_project).
-          can_push_to_branch?(merge_request.target_branch)
-
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
-        unauthorized! unless allowed
+        unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
-        not_allowed! unless merge_request.open?
+        not_allowed! unless merge_request.open? && !merge_request.work_in_progress?
 
         merge_request.check_if_can_be_merged if merge_request.unchecked?
+
+        render_api_error!('Branch cannot be merged', 406) if merge_request.can_be_merged?
 
         merge_params = {
           commit_message: params[:merge_commit_message],
           should_remove_source_branch: params[:should_remove_source_branch]
         }
 
-        if  !merge_request.work_in_progress?
-          if parse_boolean(params[:merge_when_build_succeeds])
-            ::MergeRequest::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).
-              execute(merge_request)
-          else
-            ::MergeRequests::MergeService.new(merge_request.target_project, current_user, merge_params).
-              execute(merge_request, merge_params)
-          end
+        if parse_boolean(params[:merge_when_build_succeeds]) && merge_request.ci_commit && merge_request.ci_commit.active?
+          ::MergeRequest::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).
+            execute(merge_request)
         else
-          render_api_error!('Branch cannot be merged', 405)
+          ::MergeRequests::MergeService.new(merge_request.target_project, current_user, merge_params).
+            execute(merge_request)
         end
 
         present merge_request, with: Entities::MergeRequest
@@ -233,15 +229,9 @@ module API
 
         # Merge request can not be merged
         # because user dont have permissions to push into target branch
-        unauthorized! unless allowed
+        unauthorized! unless merge_request.can_cancel_merge_when_build_succeeds?(current_user)
 
-        if merge_request.merged? || !merge_request.open? || !merge_request.merge_when_build_succeeds?
-          not_allowed!
-        end
-
-        merge_request.reset_merge_when_build_succeeds
-
-        present merge_request, with: Entities::MergeRequest
+        ::MergeRequest::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user).cancel(merge_request)
       end
 
       # Get a merge request's comments

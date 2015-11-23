@@ -296,7 +296,7 @@ Parameters:
 - `merge_request_id` (required)             - ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
-- `merge_when_build_succeeds` (optional)    - if `true` the MR is merge when the build succeeds
+- `merged_when_build_succeeds` (optional)    - if `true` the MR is merge when the build succeeds
 
 ```json
 {
@@ -329,15 +329,13 @@ Parameters:
 
 ## Cancel Merge When Build Succeeds
 
-Cancels the merge when build succeeds and reset the merge parameters
-
-If successfull you'll get `200 OK`.
+If successful you'll get `200 OK`.
 
 If you don't have permissions to accept this merge request - you'll get a 401
 
 If the merge request is already merged or closed - you get 405 and error message 'Method Not Allowed'
 
-In case the merge request is not set to be merged when the build succeeds, you'll also get a 405 with the error message 'Method Not Allowed'
+In case the merge request is not set to be merged when the build succeeds, you'll also get a 406 error.
 ```
 PUT /projects/:id/merge_request/:merge_request_id/cancel_merge_when_build_succeeds
 ```

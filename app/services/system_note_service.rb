@@ -131,8 +131,8 @@ class SystemNoteService
   end
 
   # Called when 'merge when build succeeds' is executed
-  def self.merge_when_build_succeeds(noteable, project, author)
-    body = "This merge request will be automatically merged when the build for #{noteable.ci_commit.short_sha} succeeds"
+  def self.merge_when_build_succeeds(noteable, project, author, ci_commit)
+    body = "Approved an automatic merge when the build for #{ci_commit.sha} succeeds"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end

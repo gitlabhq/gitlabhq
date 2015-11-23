@@ -421,7 +421,6 @@ ActiveRecord::Schema.define(version: 20151116144118) do
   end
 
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
-  add_index "labels", ["title"], name: "index_labels_on_title", using: :btree
 
   create_table "lfs_objects", force: true do |t|
     t.string   "oid",        null: false
@@ -525,7 +524,6 @@ ActiveRecord::Schema.define(version: 20151116144118) do
   add_index "milestones", ["due_date"], name: "index_milestones_on_due_date", using: :btree
   add_index "milestones", ["project_id", "iid"], name: "index_milestones_on_project_id_and_iid", unique: true, using: :btree
   add_index "milestones", ["project_id"], name: "index_milestones_on_project_id", using: :btree
-  add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
 
   create_table "namespaces", force: true do |t|
     t.string   "name",                        null: false

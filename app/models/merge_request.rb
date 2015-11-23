@@ -254,8 +254,15 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def mergeable_by_or_author(user)
-    self.can_be_merged_by?(user) || self.author == user
+  def can_cancel_merge_when_build_succeeds?(user)
+    can_be_merged_by?(user) || self.author == user
+  end
+
+  def can_remove_source_branch?
+    for_fork? &&
+    !project.protected_branch(source_branch) &&
+    !project.repository.root_ref(source_branch) &&
+    can?(current_user, :push_code, project)
   end
 
   def mr_and_commit_notes
