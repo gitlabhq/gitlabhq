@@ -63,6 +63,9 @@ module Emails
       @message =
         Gitlab::Email::Message::RepositoryPush.new(self, project_id, recipient, opts)
 
+      # used in notify layout
+      @target_url = @message.target_url
+
       mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
            reply_to:  @message.reply_to,
            to:        @message.recipient,
