@@ -1,11 +1,11 @@
-## GitLab Git LFS Administration
+# GitLab Git LFS Administration
 
 Documentation on how to use Git LFS are under [Managing large binary files with Git LFS doc](manage_large_binaries_with_git_lfs.md).
 
 ## Requirements
 
 * Git LFS is supported in GitLab starting with version 8.2.
-* Users need to install [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up
+* Users need to install [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up.
 
 ## Configuration
 

@@ -73,9 +73,10 @@ Check if you have permissions to push to the project or fetch from the project.
 
 * Project is not allowed to access the LFS object
 
-Check if the LFS object you are trying to push to the project or fetch from the project is available to the project.
+LFS object you are trying to push to the project or fetch from the project is not available to the project anymore.
+Probably the object was removed from the server.
 
-* Project is using deprecated LFS API
+* Local git repository is using deprecated LFS API
 
 ### Invalid status for <url> : 501
 
