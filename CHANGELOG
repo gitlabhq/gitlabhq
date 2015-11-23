@@ -1,7 +1,5 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.3.0 (unreleased)
-
 v 8.2.1
   - Forcefully update builds that didn't want to update with state machine
   - Fix: saving GitLabCiService as Admin Template
