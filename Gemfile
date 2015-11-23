@@ -261,6 +261,7 @@ group :development, :test do
   gem 'simplecov', '~> 0.10.0', require: false
   gem 'flog', require: false
   gem 'flay', require: false
+  gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
 end
