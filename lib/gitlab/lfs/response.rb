@@ -57,7 +57,7 @@ module Gitlab
           501,
           { "Content-Type" => "application/json; charset=utf-8" },
           [JSON.dump({
-            'message' => 'Server supports batch API only, please update your Git LFS client to version 0.6.0 and up.',
+            'message' => 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.',
             'documentation_url' => "#{Gitlab.config.gitlab.url}/help",
           })]
         ]

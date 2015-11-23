@@ -7,55 +7,27 @@ GitLab already supports [managing large files with git annex](http://doc.gitlab.
 environments it is not always convenient to use different commands to differentiate between the large files and regular ones.
 
 Git LFS makes this simpler for the end user by removing the requirement to learn new commands.
-<!-- more -->
 
 ## How it works
 
 Git LFS client talks with the GitLab server over HTTPS. It uses HTTP Basic Authentication to authorize client requests.
 Once the request is authorized, Git LFS client receives instructions from where to fetch or where to push the large file.
 
+## GitLab server configuration
+
+Documentation for GitLab instance administrators is under [LFS administration doc](lfs_administration.md).
+
 ## Requirements
 
 * Git LFS is supported in GitLab starting with version 8.2
-* Git LFS [client](https://git-lfs.github.com) version 0.6.0 and up
-
-## GitLab and Git LFS
-
-### Configuration
-
-Git LFS objects can be large in size. By default, they are stored on the server GitLab is installed on.
-
-There are two configuration options to help GitLab server administrators:
-
-* Enabling/disabling Git LFS support
-* Changing the location of LFS object storage
-
-#### Omnibus packages
-
-In `/etc/gitlab/gitlab.rb`:
-
-```ruby
-gitlab_rails['lfs_enabled'] = false
-gitlab_rails['lfs_storage_path'] = "/mnt/storage/lfs-objects"
-```
-
-#### Installations from source
-
-In `config/gitlab.yml`:
-
-```yaml
-  lfs:
-    enabled: false
-    storage_path: /mnt/storage/lfs-objects
-```
+* [Git LFS client](https://git-lfs.github.com) version 1.0.1 and up
 
 ## Known limitations
 
-* Git LFS v1 original API is not supported since it was deprecated early in LFS development, starting with Git LFS version 0.6.0
+* Git LFS v1 original API is not supported since it was deprecated early in LFS development
 * When SSH is set as a remote, Git LFS objects still go through HTTPS
 * Any Git LFS request will ask for HTTPS credentials to be provided so good Git credentials store is recommended
-* Currently, storing GitLab Git LFS objects on a non-local storage (like S3 buckets) is not supported
-* Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have to add the URL to Git config manually (see #troubleshooting-tips)
+* Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have to add the URL to Git config manually (see #troubleshooting)
 
 ## Using Git LFS
 
@@ -83,6 +55,11 @@ Cloning the repository works the same as before. Git automatically detects the L
 git clone git@gitlab.example.com:group/project.git
 ```
 
+If you already cloned the repository and you want to get the latest LFS object that are on the remote repository, eg. from branch `master`:
+
+```bash
+git lfs fetch master
+```
 
 ## Troubleshooting
 
@@ -90,17 +67,31 @@ git clone git@gitlab.example.com:group/project.git
 
 There are a couple of reasons why this error can occur:
 
-* Wrong version of LFS client used:
+* You don't have permissions to access certain LFS object
 
-Check the version of Git LFS on the client machine with `git lfs version`. Only version 0.6.0 and newer are supported.
+Check if you have permissions to push to the project or fetch from the project.
 
-* Project is using deprecated LFS API
+* Project is not allowed to access the LFS object
 
-Check the Git config of the project for traces of deprecated API with `git lfs -l`. If `batch = false` is set in the config, remove the line and try using Git LFS client newer than 0.6.0.
+LFS object you are trying to push to the project or fetch from the project is not available to the project anymore.
+Probably the object was removed from the server.
+
+* Local git repository is using deprecated LFS API
 
 ### Invalid status for <url> : 501
 
-When attempting to push a LFS object to a GitLab server that doesn't have Git LFS support enabled, server will return status `error 501`. Check with your GitLab administrator why Git LFS is not enabled on the server. See [Configuration section](#configuration) for instructions on how to enable LFS support.
+Git LFS will log the failures into a log file.
+To view this log file, while in project directory:
+
+```bash
+git lfs logs last
+```
+
+If the status `error 501` is shown, it is because:
+
+* Git LFS support is not enabled on the GitLab server. Check with your GitLab administrator why Git LFS is not enabled on the server. See [LFS administration documentation](lfs_administration.md) for instructions on how to enable LFS support.
+
+* Git LFS client version is not supported by GitLab server. Check your Git LFS version with `git lfs version`. Check the Git config of the project for traces of deprecated API with `git lfs -l`. If `batch = false` is set in the config, remove the line and try to update your Git LFS client. Only version 1.0.1 and newer are supported.
 
 ### getsockopt: connection refused
 
@@ -132,4 +123,4 @@ This will remember the credentials for an hour after which Git operations will r
 
 If you are using OS X you can use `osxkeychain` to store and encrypt your credentials. For Windows, `wincred` is available.
 
-More details about various methods of storing the user credentials can be found on [Git Credential Storage documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage)
+More details about various methods of storing the user credentials can be found on [Git Credential Storage documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage).
