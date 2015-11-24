@@ -537,7 +537,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def rebase_dir_path
-    Rails.root.join('tmp', 'rebase', source_project.id.to_s, id.to_s).to_s
+    File.join(Gitlab.config.shared.path, 'tmp/rebase', source_project.id.to_s, id.to_s).to_s
   end
 
   def rebase_in_progress?
