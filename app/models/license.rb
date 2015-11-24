@@ -44,7 +44,7 @@ class License < ActiveRecord::Base
   def license
     return nil unless self.data
 
-    @license ||= 
+    @license ||=
       begin
         Gitlab::License.import(self.data)
       rescue Gitlab::License::ImportError
@@ -89,7 +89,7 @@ class License < ActiveRecord::Base
   def valid_license
     return if license?
 
-    self.errors.add(:base, "The license file is invalid. Make sure it is exactly as you received it from GitLab B.V..")
+    self.errors.add(:base, "The license key is invalid. Make sure it is exactly as you received it from GitLab Inc.")
   end
 
   def active_user_count
@@ -99,7 +99,7 @@ class License < ActiveRecord::Base
 
     date_range = (self.starts_at - 1.year)..self.starts_at
     active_user_count = HistoricalData.during(date_range).maximum(:active_user_count) || 0
-    
+
     return unless active_user_count
 
     return if active_user_count < restricted_user_count
