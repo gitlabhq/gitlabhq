@@ -325,7 +325,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   def mary_jane_member
     user = User.find_by(name: "Mary Jane")
-    owned_group.members.where(user_id: user.id).first
+    owned_group.members.find_by(user_id: user.id)
   end
 
   def assigned_to_me(key)
