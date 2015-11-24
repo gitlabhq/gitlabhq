@@ -47,10 +47,10 @@ Please send a merge request with a tested solution or a merge request with a fai
 1. **Observed behavior**
 1. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
 1. **Output of checks**
-    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
+    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (For installations with omnibus-gitlab package: `sudo gitlab-rake gitlab:check SANITIZE=true`); For installations from source: `sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
     * Version of GitLab you are running; we will only investigate issues in the latest stable and development releases as per the [maintenance policy](MAINTENANCE.md)
     * Add the last commit SHA-1 of the GitLab version you used to replicate the issue (obtainable from the help page)
-    * Describe your setup (use relevant parts from `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
+    * Describe your setup (use relevant parts from the env info: For installations with omnibus-gitlab package: `sudo gitlab-rake gitlab:env:info`; For installations from source: `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
 1. **Possible fixes**: If you can, link to the line of code that might be responsible for the problem
 
 ## Merge requests
