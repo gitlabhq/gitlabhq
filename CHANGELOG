@@ -3,6 +3,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.3.0 (unreleased)
 
 v 8.2.0
+v 8.0.1
+v 8.1.0 (unreleased)
+v 8.2.0 (unreleased)
+v 8.3.0 (unreleased)
+
+v 8.2.0
+  - Improved performance of finding projects and groups in various places
+  - Improved performance of rendering user profile pages and Atom feeds
+  - Fix grouping of contributors by email in graph.
   - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
   - Fix Drone CI service template not saving properly (Stan Hu)
   - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
@@ -10,6 +19,10 @@ v 8.2.0
   - Upgrade gitlab_git to 7.2.20 and rugged to 0.23.3 (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
   - Add allow_failure field to commit status API (Stan Hu)
+  - Commits without .gitlab-ci.yml are marked as skipped
+  - Save detailed error when YAML syntax is invalid
+  - Since GitLab CI is enabled by default, remove enabling it by pushing .gitlab-ci.yml
+  - Added build artifacts
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
   - Highlight comment based on anchor in URL
@@ -27,6 +40,7 @@ v 8.2.0
   - Allow to define cache in `.gitlab-ci.yml`
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
+  - Improve personal snippet access workflow (Douglas Alexandre)
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
   - Fix omniauth documentation setting for omnibus configuration (Jon Cairns)
   - Add "New file" link to dropdown on project page
@@ -34,6 +48,7 @@ v 8.2.0
   - Add "added", "modified" and "removed" properties to commit object in webhook
   - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
   - Allow groups to appear in the search results if the group owner allows it
+  - Add email notification to former assignee upon unassignment (Adam Lieskovský)
   - New design for project graphs page
   - Remove deprecated dumped yaml file generated from previous job definitions
   - Fix incoming email config defaults
@@ -47,6 +62,9 @@ v 8.2.0
   - Fix trailing whitespace issue in merge request/issue title
   - Fix bug when milestone/label filter was empty for dashboard issues page
   - Add ability to create milestone in group projects from single form
+  - Add option to create merge request when editing/creating a file (Dirceu Tiegs)
+  - Prevent the last owner of a group from being able to delete themselves by 'adding' themselves as a master (James Lopez)
+  - Add Award Emoji to issue and merge request pages
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)

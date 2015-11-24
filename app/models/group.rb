@@ -20,8 +20,9 @@ require 'file_size_validator'
 class Group < Namespace
   include Gitlab::ConfigHelper
   include Referable
-
+  
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  alias_method :members, :group_members
   has_many :users, through: :group_members
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
@@ -51,6 +52,14 @@ class Group < Namespace
 
     def reference_pattern
       User.reference_pattern
+    end
+
+    def public_and_given_groups(ids)
+      where('public IS TRUE OR namespaces.id IN (?)', ids)
+    end
+
+    def visible_to_user(user)
+      where(id: user.authorized_groups.select(:id).reorder(nil))
     end
   end
 
@@ -112,10 +121,6 @@ class Group < Namespace
 
   def last_owner?(user)
     has_owner?(user) && owners.size == 1
-  end
-
-  def members
-    group_members
   end
 
   def avatar_type

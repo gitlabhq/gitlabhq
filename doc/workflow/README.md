@@ -22,6 +22,7 @@
 - [Two-factor Authentication (2FA)](two_factor_authentication.md)
 - [Web Editor](web_editor.md)
 - [Releases](releases.md)
+- [Milestones](milestones.md)
 - [Merge Requests](merge_requests.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)
 - [Repository Mirroring](repository_mirroring.md)

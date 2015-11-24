@@ -3,13 +3,15 @@ require 'spec_helper'
 describe Issues::UpdateService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let(:issue) { create(:issue, title: 'Old title') }
+  let(:user3) { create(:user) }
+  let(:issue) { create(:issue, title: 'Old title', assignee_id: user3.id) }
   let(:label) { create(:label) }
   let(:project) { issue.project }
 
   before do
     project.team << [user, :master]
     project.team << [user2, :developer]
+    project.team << [user3, :developer]
   end
 
   describe 'execute' do
@@ -34,9 +36,11 @@ describe Issues::UpdateService do
       it { expect(@issue.labels.count).to eq(1) }
       it { expect(@issue.labels.first.title).to eq('Bug') }
 
-      it 'should send email to user2 about assign of new issue' do
-        email = ActionMailer::Base.deliveries.last
-        expect(email.to.first).to eq(user2.email)
+      it 'should send email to user2 about assign of new issue and email to user3 about issue unassignment' do
+        deliveries = ActionMailer::Base.deliveries
+        email = deliveries.last
+        recipients = deliveries.last(2).map(&:to).flatten
+        expect(recipients).to include(user2.email, user3.email)
         expect(email.subject).to include(issue.title)
       end
 

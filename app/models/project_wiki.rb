@@ -86,6 +86,8 @@ class ProjectWiki
     commit = commit_details(:created, message, title)
 
     wiki.write_page(title, format, content, commit)
+
+    update_project_activity
   rescue Gollum::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
     return false
@@ -95,10 +97,14 @@ class ProjectWiki
     commit = commit_details(:updated, message, page.title)
 
     wiki.update_page(page, page.name, format, content, commit)
+
+    update_project_activity
   end
 
   def delete_page(page, message = nil)
     wiki.delete_page(page, commit_details(:deleted, message, page.title))
+
+    update_project_activity
   end
 
   def page_title_and_dir(title)
@@ -145,5 +151,9 @@ class ProjectWiki
 
   def path_to_repo
     @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, "#{path_with_namespace}.git")
+  end
+
+  def update_project_activity
+    @project.touch(:last_activity_at)
   end
 end

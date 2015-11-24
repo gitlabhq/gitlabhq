@@ -7,7 +7,7 @@ Please explore webhooks as an option if you do not have filesystem access. For a
 Git natively supports hooks that are executed on different actions.
 Examples of server-side git hooks include pre-receive, post-receive, and update.
 See
-[Git SCM Server-Side Hooks](http://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks)
+[Git SCM Server-Side Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks)
 for more information about each hook type.
 
 As of gitlab-shell version 2.2.0 (which requires GitLab 7.5+), GitLab

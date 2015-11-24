@@ -2,9 +2,12 @@
   %input#zen-toggle-comment.zen-toggle-comment(tabindex="-1" type="checkbox")
   .zen-backdrop
     - classes << ' js-gfm-input markdown-area'
-    = f.text_area attr, class: classes, placeholder: ''
+    - if defined?(f) && f
+      = f.text_area attr, class: classes, placeholder: ''
+    - else
+      = text_area_tag attr, nil, class: classes, placeholder: ''
     %a.zen-enter-link(tabindex="-1" href="#")
-      %i.fa.fa-expand
+      = icon('expand')
       Edit in fullscreen
     %a.zen-leave-link(href="#")
-      %i.fa.fa-compress
+      = icon('compress')

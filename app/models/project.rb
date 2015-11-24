@@ -313,6 +313,10 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
+
+    def visible_to_user(user)
+      where(id: user.authorized_projects.select(:id).reorder(nil))
+    end
   end
 
   def team
