@@ -23,6 +23,7 @@
 - [Namespaces](namespaces.md)
 - [Settings](settings.md)
 - [Keys](keys.md)
+- [License](license.md)
 
 ## Clients
 
