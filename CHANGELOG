@@ -11,6 +11,7 @@ v 8.3.0 (unreleased)
   - Update project repositorize size and commit count during import:repos task (Stan Hu)
   - Fix API setting of 'public' attribute to false will make a project private (Stan Hu)
   - Handle and report SSL errors in Web hook test (Stan Hu)
+  - Bump Redis requirement to 2.8 for Sidekiq 4 (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
