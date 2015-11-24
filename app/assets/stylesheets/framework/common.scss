@@ -64,7 +64,7 @@ pre {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background: $gl-primary;
-  color: #FFF
+  color: #FFF;
 }
 
 .str-truncated {
@@ -326,6 +326,10 @@ table {
   a {
     margin-right: 15px;
   }
+}
+
+.well {
+  margin-bottom: 0;
 }
 
 .search_box {

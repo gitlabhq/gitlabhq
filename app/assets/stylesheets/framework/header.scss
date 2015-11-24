@@ -118,6 +118,10 @@ header {
       }
     }
   }
+
+  .impersonation i {
+    color: $red-normal;
+  }
 }
 
 @mixin collapsed-header {

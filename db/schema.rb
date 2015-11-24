@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151105094515) do
+ActiveRecord::Schema.define(version: 20151118162244) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20151105094515) do
     t.text     "help_page_text"
     t.string   "admin_notification_email"
     t.boolean  "shared_runners_enabled",       default: true,  null: false
+    t.integer  "max_artifacts_size",           default: 100,   null: false
   end
 
   create_table "audit_events", force: true do |t|
@@ -108,6 +109,7 @@ ActiveRecord::Schema.define(version: 20151105094515) do
     t.string   "type"
     t.string   "target_url"
     t.string   "description"
+    t.text     "artifacts_file"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -382,6 +384,7 @@ ActiveRecord::Schema.define(version: 20151105094515) do
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
   add_index "issues", ["project_id"], name: "index_issues_on_project_id", using: :btree
+  add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title", using: :btree
 
   create_table "keys", force: true do |t|
@@ -419,6 +422,25 @@ ActiveRecord::Schema.define(version: 20151105094515) do
   end
 
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+
+  create_table "lfs_objects", force: true do |t|
+    t.string   "oid",        null: false
+    t.integer  "size",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file"
+  end
+
+  add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
+
+  create_table "lfs_objects_projects", force: true do |t|
+    t.integer  "lfs_object_id", null: false
+    t.integer  "project_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "lfs_objects_projects", ["project_id"], name: "index_lfs_objects_projects_on_project_id", using: :btree
 
   create_table "members", force: true do |t|
     t.integer  "access_level",       null: false
@@ -517,6 +539,7 @@ ActiveRecord::Schema.define(version: 20151105094515) do
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
+  add_index "namespaces", ["public"], name: "index_namespaces_on_public", using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
   create_table "notes", force: true do |t|
@@ -533,12 +556,14 @@ ActiveRecord::Schema.define(version: 20151105094515) do
     t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
+    t.boolean  "is_award",      default: false, null: false
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
   add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
   add_index "notes", ["created_at", "id"], name: "index_notes_on_created_at_and_id", using: :btree
   add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
+  add_index "notes", ["is_award"], name: "index_notes_on_is_award", using: :btree
   add_index "notes", ["line_code"], name: "index_notes_on_line_code", using: :btree
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
   add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
@@ -620,6 +645,7 @@ ActiveRecord::Schema.define(version: 20151105094515) do
     t.string   "import_type"
     t.string   "import_source"
     t.integer  "commit_count",           default: 0
+    t.text     "import_error"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
@@ -628,6 +654,7 @@ ActiveRecord::Schema.define(version: 20151105094515) do
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
+  add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branches", force: true do |t|
     t.integer  "project_id",                          null: false

@@ -30,6 +30,7 @@ class GitlabCiService < CiService
   end
 
   def ensure_gitlab_ci_project
+    return unless project
     project.ensure_gitlab_ci_project
   end
 

@@ -256,3 +256,9 @@ textarea.js-gfm-input {
 .strikethrough {
   text-decoration: line-through;
 }
+
+h1, h2, h3, h4 {
+  small {
+    color: $gl-gray;
+  }
+}

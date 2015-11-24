@@ -25,13 +25,6 @@ describe Projects::ForkService do
       end
     end
 
-    context 'fork project failure' do
-      it "fails due to transaction failure" do
-        @to_project = fork_project(@from_project, @to_user, false)
-        expect(@to_project.import_failed?)
-      end
-    end
-
     context 'project already exists' do
       it "should fail due to validation, not transaction failure" do
         @existing_project = create(:project, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
@@ -46,7 +39,7 @@ describe Projects::ForkService do
       it "fork and enable CI for fork" do
         @from_project.enable_ci
         @to_project = fork_project(@from_project, @to_user)
-        expect(@to_project.gitlab_ci?).to be_truthy
+        expect(@to_project.builds_enabled?).to be_truthy
       end
     end
   end
@@ -66,7 +59,7 @@ describe Projects::ForkService do
 
     context 'fork project for group' do
       it 'group owner successfully forks project into the group' do
-        to_project = fork_project(@project, @group_owner, true, @opts)
+        to_project = fork_project(@project, @group_owner, @opts)
         expect(to_project.owner).to       eq(@group)
         expect(to_project.namespace).to   eq(@group)
         expect(to_project.name).to        eq(@project.name)
@@ -78,7 +71,7 @@ describe Projects::ForkService do
 
     context 'fork project for group when user not owner' do
       it 'group developer should fail to fork project into the group' do
-        to_project = fork_project(@project, @developer, true, @opts)
+        to_project = fork_project(@project, @developer, @opts)
         expect(to_project.errors[:namespace]).to eq(['is not valid'])
       end
     end
@@ -87,7 +80,7 @@ describe Projects::ForkService do
       it 'should fail due to validation, not transaction failure' do
         existing_project = create(:project, name: @project.name,
                                             namespace: @group)
-        to_project = fork_project(@project, @group_owner, true, @opts)
+        to_project = fork_project(@project, @group_owner, @opts)
         expect(existing_project.persisted?).to be_truthy
         expect(to_project.errors[:name]).to eq(['has already been taken'])
         expect(to_project.errors[:path]).to eq(['has already been taken'])
@@ -95,8 +88,8 @@ describe Projects::ForkService do
     end
   end
 
-  def fork_project(from_project, user, fork_success = true, params = {})
-    allow(RepositoryForkWorker).to receive(:perform_async).and_return(fork_success)
+  def fork_project(from_project, user, params = {})
+    allow(RepositoryForkWorker).to receive(:perform_async).and_return(true)
     Projects::ForkService.new(from_project, user, params).execute
   end
 end

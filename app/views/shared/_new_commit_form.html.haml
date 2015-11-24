@@ -1,0 +1,18 @@
+= render 'shared/commit_message_container', placeholder: placeholder
+
+- unless @project.empty_repo?
+  .form-group.branch
+    = label_tag 'branch', class: 'control-label' do
+      Branch
+    .col-sm-10
+      = text_field_tag 'new_branch', @new_branch || @ref, class: "form-control js-new-branch"
+
+  .form-group.js-create-merge-request-form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        - nonce = SecureRandom.hex
+        = label_tag "create_merge_request-#{nonce}" do
+          = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: "create_merge_request-#{nonce}"
+          Start a <strong>new merge request</strong> with this commit
+
+  = hidden_field_tag 'original_branch', @ref, class: 'js-original-branch'

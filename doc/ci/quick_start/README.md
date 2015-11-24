@@ -6,7 +6,7 @@ To start building projects with GitLab CI a few steps needs to be done.
 
 First you need to have a working GitLab and GitLab CI instance.
 
-You can omit this step if you use [GitLab.com](http://GitLab.com/).
+You can omit this step if you use [GitLab.com](https://GitLab.com/).
 
 ## 2. Create repository on GitLab
 
@@ -16,7 +16,7 @@ Push your application to that repository.
 ## 3. Add project to CI
 
 The next part is to login to GitLab CI.
-Point your browser to the URL you have set GitLab or use [gitlab.com/ci](http://gitlab.com/ci/).
+Point your browser to the URL you have set GitLab or use [gitlab.com/ci](https://gitlab.com/ci/).
 
 On the first screen you will see a list of GitLab's projects that you have access to:
 
@@ -97,7 +97,7 @@ If you do it correctly your runner should be shown under **Runners activated for
 
 ### Shared runners
 
-If you use [gitlab.com/ci](http://gitlab.com/ci/) you can use **Shared runners** provided by GitLab Inc.
+If you use [gitlab.com/ci](https://gitlab.com/ci/) you can use **Shared runners** provided by GitLab Inc.
 These are special virtual machines that are run on GitLab's infrastructure that can build any project.
 To enable **Shared runners** you have to go to **Runners** and click **Enable shared runners** for this project.
 

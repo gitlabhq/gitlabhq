@@ -1,18 +1,19 @@
 # == Schema Information
 #
-# Table name: commits
+# Table name: ci_commits
 #
-#  id           :integer          not null, primary key
-#  project_id   :integer
-#  ref          :string(255)
-#  sha          :string(255)
-#  before_sha   :string(255)
-#  push_data    :text
-#  created_at   :datetime
-#  updated_at   :datetime
-#  tag          :boolean          default(FALSE)
-#  yaml_errors  :text
-#  committed_at :datetime
+#  id            :integer          not null, primary key
+#  project_id    :integer
+#  ref           :string(255)
+#  sha           :string(255)
+#  before_sha    :string(255)
+#  push_data     :text
+#  created_at    :datetime
+#  updated_at    :datetime
+#  tag           :boolean          default(FALSE)
+#  yaml_errors   :text
+#  committed_at  :datetime
+#  gl_project_id :integer
 #
 
 module Ci
@@ -187,13 +188,13 @@ module Ci
     end
 
     def config_processor
+      return nil unless ci_yaml_file
       @config_processor ||= Ci::GitlabCiYamlProcessor.new(ci_yaml_file, gl_project.path_with_namespace)
-    rescue Ci::GitlabCiYamlProcessor::ValidationError => e
+    rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
       save_yaml_error(e.message)
       nil
-    rescue Exception => e
-      logger.error e.message + "\n" + e.backtrace.join("\n")
-      save_yaml_error("Undefined yaml error")
+    rescue
+      save_yaml_error("Undefined error")
       nil
     end
 

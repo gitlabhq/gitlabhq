@@ -13,7 +13,7 @@ module Gitlab
     def user
       return @user if defined?(@user)
 
-      @user = 
+      @user =
         case actor
         when User
           actor
@@ -125,7 +125,7 @@ module Gitlab
     def change_access_check(change)
       oldrev, newrev, ref = change.split(' ')
 
-      action = 
+      action =
         if project.protected_branch?(branch_name(ref))
           protected_branch_action(oldrev, newrev, branch_name(ref))
         elsif protected_tag?(tag_name(ref))
@@ -148,7 +148,7 @@ module Gitlab
             build_status_object(false, "You are not allowed to change existing tags on this project.")
           else # :push_code
             build_status_object(false, "You are not allowed to push code to this project.")
-          end 
+          end
         return status
       end
 

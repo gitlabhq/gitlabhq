@@ -188,7 +188,7 @@ Parameters:
     "target_url": "http://jenkins/project/url",
     "description": "Jenkins success",
     "created_at": "2015-10-12T09:47:16.250Z",
-    "started_at": "2015-10-12T09:47:16.250Z"",
+    "started_at": "2015-10-12T09:47:16.250Z",
     "finished_at": "2015-10-12T09:47:16.262Z",
     "author": {
       "id": 1,
@@ -228,7 +228,7 @@ POST /projects/:id/statuses/:sha
   "target_url": "http://jenkins/project/url",
   "description": "Jenkins success",
   "created_at": "2015-10-12T09:47:16.250Z",
-  "started_at": "2015-10-12T09:47:16.250Z"",
+  "started_at": "2015-10-12T09:47:16.250Z",
   "finished_at": "2015-10-12T09:47:16.262Z",
   "author": {
     "id": 1,

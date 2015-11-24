@@ -42,7 +42,7 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
-
+  
   extend Gitlab::ConfigHelper
   extend Enumerize
 
@@ -52,6 +52,7 @@ class Project < ActiveRecord::Base
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :issues_enabled, gitlab_config_features.issues
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
+  default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
@@ -123,6 +124,8 @@ class Project < ActiveRecord::Base
   has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
   has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
   has_many :releases, dependent: :destroy
+  has_many :lfs_objects_projects, dependent: :destroy
+  has_many :lfs_objects, through: :lfs_objects_projects
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
@@ -283,6 +286,10 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
+
+    def visible_to_user(user)
+      where(id: user.authorized_projects.select(:id).reorder(nil))
+    end
   end
 
   def team
@@ -307,15 +314,17 @@ class Project < ActiveRecord::Base
 
   def add_import_job
     if forked?
-      unless RepositoryForkWorker.perform_async(id, forked_from_project.path_with_namespace, self.namespace.path)
-        import_fail
-      end
+      RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
     else
-      RepositoryImportWorker.perform_async(id)
+      RepositoryImportWorker.perform_async(self.id)
     end
   end
 
   def clear_import_data
+    update(import_error: nil)
+
+    ProjectCacheWorker.perform_async(self.id)
+
     self.import_data.destroy if self.import_data
   end
 
@@ -341,6 +350,14 @@ class Project < ActiveRecord::Base
 
   def import_finished?
     import_status == 'finished'
+  end
+
+  def safe_import_url
+    result = URI.parse(self.import_url)
+    result.password = '*****' unless result.password.nil?
+    result.to_s
+  rescue
+    original_url
   end
 
   def check_limit
@@ -455,10 +472,6 @@ class Project < ActiveRecord::Base
 
   def find_service(list, name)
     list.find { |service| service.to_param == name }
-  end
-
-  def gitlab_ci?
-    gitlab_ci_service && gitlab_ci_service.active && gitlab_ci_project.present?
   end
 
   def ci_services
@@ -782,9 +795,33 @@ class Project < ActiveRecord::Base
     )
   end
 
-  def enable_ci
+  # TODO: this should be migrated to Project table,
+  # the same as issues_enabled
+  def builds_enabled
+    gitlab_ci_service && gitlab_ci_service.active
+  end
+
+  def builds_enabled?
+    builds_enabled
+  end
+
+  def builds_enabled=(value)
     service = gitlab_ci_service || create_gitlab_ci_service
-    service.active = true
+    service.active = value
     service.save
+  end
+
+  def enable_ci
+    self.builds_enabled = true
+  end
+
+  def unlink_fork
+    if forked?
+      forked_from_project.lfs_objects.find_each do |lfs_object|
+        lfs_object.projects << self
+      end
+
+      forked_project_link.destroy
+    end
   end
 end

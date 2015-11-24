@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.1.12'
+gem 'rails', '4.1.14'
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -54,7 +54,7 @@ gem 'gollum-lib', '~> 4.0.2'
 gem "github-linguist", "~> 4.7.0", require: "linguist"
 
 # API
-gem 'grape',        '~> 0.6.1'
+gem 'grape',        '~> 0.13.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -259,6 +259,9 @@ group :development, :test do
   gem 'rubocop',  '~> 0.28.0',  require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
+  gem 'flog', require: false
+  gem 'flay', require: false
+  gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
 end

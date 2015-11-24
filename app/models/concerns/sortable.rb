@@ -8,8 +8,9 @@ module Sortable
   included do
     # By default all models should be ordered
     # by created_at field starting from newest
-    default_scope { order(id: :desc) }
+    default_scope { order_id_desc }
 
+    scope :order_id_desc, -> { reorder(id: :desc) }
     scope :order_created_desc, -> { reorder(created_at: :desc) }
     scope :order_created_asc, -> { reorder(created_at: :asc) }
     scope :order_updated_desc, -> { reorder(updated_at: :desc) }

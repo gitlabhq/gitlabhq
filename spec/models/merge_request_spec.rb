@@ -20,6 +20,7 @@
 #  position          :integer          default(0)
 #  locked_at         :datetime
 #  updated_by_id     :integer
+#  merge_error       :string(255)
 #
 
 require 'spec_helper'
@@ -191,5 +192,30 @@ describe MergeRequest do
 
   it_behaves_like 'a Taskable' do
     subject { create :merge_request, :simple }
+  end
+
+  describe '#ci_commit' do
+    describe 'when the source project exists' do
+      it 'returns the latest commit' do
+        commit    = double(:commit, id: '123abc')
+        ci_commit = double(:ci_commit)
+
+        allow(subject).to receive(:last_commit).and_return(commit)
+
+        expect(subject.source_project).to receive(:ci_commit).
+          with('123abc').
+          and_return(ci_commit)
+
+        expect(subject.ci_commit).to eq(ci_commit)
+      end
+    end
+
+    describe 'when the source project does not exist' do
+      it 'returns nil' do
+        allow(subject).to receive(:source_project).and_return(nil)
+
+        expect(subject.ci_commit).to be_nil
+      end
+    end
   end
 end
