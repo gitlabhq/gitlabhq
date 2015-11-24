@@ -13,10 +13,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     create(:user, name: "Mike")
   end
 
-  step 'I click link "Add members"' do
-    find(:css, 'button.btn-new').click
-  end
-
   step 'I should see group "Owned"' do
     expect(page).to have_content '@owned'
   end
@@ -60,14 +56,14 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see "Mike" in team list as "Reporter"' do
-    page.within '.well-list' do
+    page.within '.content-list' do
       expect(page).to have_content('Mike')
       expect(page).to have_content('Reporter')
     end
   end
 
   step 'I should see "Mike" in team list as "Owner"' do
-    page.within '.well-list' do
+    page.within '.content-list' do
       expect(page).to have_content('Mike')
       expect(page).to have_content('Owner')
     end
@@ -83,7 +79,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
-    page.within '.well-list' do
+    page.within '.content-list' do
       expect(page).to have_content('sjobs@apple.com')
       expect(page).to have_content('invited')
       expect(page).to have_content('Reporter')
@@ -114,32 +110,29 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I select user "Mary Jane" from list with role "Reporter"' do
     user = User.find_by(name: "Mary Jane") || create(:user, name: "Mary Jane")
-    click_button 'Add members'
+
     page.within ".users-group-form" do
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "access_level"
     end
+
     click_button "Add users to group"
   end
 
   step 'I should see user "John Doe" in team list' do
-    projects_with_access = find(".panel .well-list")
-    expect(projects_with_access).to have_content("John Doe")
+    expect(group_members_list).to have_content("John Doe")
   end
 
   step 'I should not see user "John Doe" in team list' do
-    projects_with_access = find(".panel .well-list")
-    expect(projects_with_access).not_to have_content("John Doe")
+    expect(group_members_list).not_to have_content("John Doe")
   end
 
   step 'I should see user "Mary Jane" in team list' do
-    projects_with_access = find(".panel .well-list")
-    expect(projects_with_access).to have_content("Mary Jane")
+    expect(group_members_list).to have_content("Mary Jane")
   end
 
   step 'I should not see user "Mary Jane" in team list' do
-    projects_with_access = find(".panel .well-list")
-    expect(projects_with_access).not_to have_content("Mary Jane")
+    expect(group_members_list).not_to have_content("Mary Jane")
   end
 
   step 'project from group "Owned" has issues assigned to me' do
@@ -400,5 +393,9 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
             assignee: current_user,
             author: current_user,
             milestone: milestone2_project3
+  end
+
+  def group_members_list
+    find(".panel .content-list")
   end
 end
