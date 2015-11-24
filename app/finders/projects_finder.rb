@@ -44,7 +44,6 @@ class ProjectsFinder
       [
         group_projects_for_user(current_user, group),
         group.projects.public_and_internal_only,
-        group.shared_projects.visible_to_user(current_user)
       ]
     else
       [group.projects.public_only]

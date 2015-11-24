@@ -53,8 +53,6 @@ There are two editions of GitLab:
 - GitLab Community Edition (CE) is available freely under the MIT Expat license.
 - GitLab Enterprise Edition (EE) includes [extra features](https://about.gitlab.com/features/#compare) that are more useful for organizations with more than 100 users. To use EE and get official support please [become a subscriber](https://about.gitlab.com/pricing/).
 
-Included with the GitLab Omnibus Packages is [GitLab CI](https://about.gitlab.com/gitlab-ci/) that can easily build, test and deploy code.
-
 ## Website
 
 On [about.gitlab.com](https://about.gitlab.com/) you can find more information about:

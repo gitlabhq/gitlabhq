@@ -59,7 +59,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     return render_403 unless can?(current_user, :destroy_project_member, @project_member)
 
     @project_member.destroy
-    
+
     log_audit_event(@project_member, action: :destroy)
 
     respond_to do |format|

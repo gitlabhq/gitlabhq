@@ -18,40 +18,16 @@ class Ability
         when "GroupMember" then group_member_abilities(user, subject)
         when "ProjectMember" then project_member_abilities(user, subject)
         else []
-        end
-
-      abilities.concat(global_abilities(user))
-
+        end.concat(global_abilities(user))
       abilities -= license_blocked_abilities if License.block_changes?
 
       abilities
     end
 
-    def license_blocked_abilities
-      [
-        :create_issue,
-        :create_merge_request,
-        :push_code,
-        :push_code_to_protected_branches
-      ]
-    end
-
-    # List of possible abilities for anonymous user
-    def anonymous_abilities(user, subject)
-      case true
-      when subject.is_a?(PersonalSnippet)
-        anonymous_personal_snippet_abilities(subject)
-      when subject.is_a?(Project) || subject.respond_to?(:project)
-        anonymous_project_abilities(subject)
-      when subject.is_a?(Group) || subject.respond_to?(:group)
-        anonymous_group_abilities(subject)
-      else
-        []
-      end
-    end
-
-    def anonymous_project_abilities(subject)
-      project = if subject.is_a?(Project)
+    # List of possible abilities
+    # for non-authenticated user
+    def not_auth_abilities(user, subject)
+      project = if subject.kind_of?(Project)
                   subject
                 else
                   subject.project
