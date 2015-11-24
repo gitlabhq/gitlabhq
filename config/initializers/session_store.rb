@@ -7,6 +7,7 @@ include Gitlab::CurrentSettings
 begin
   Settings.gitlab['session_expire_delay'] = current_application_settings.session_expire_delay
 rescue
+  Settings.gitlab['session_expire_delay'] ||= 10080
 end
 
 unless Rails.env.test?
