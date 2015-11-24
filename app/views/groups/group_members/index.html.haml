@@ -1,9 +1,6 @@
-- @blank_container = true
 - page_title "Members"
 - header_title group_title(@group, "Members", group_group_members_path(@group))
-
-
-
+- @blank_container = true
 
 .group-members-page
   - if current_user && current_user.can?(:admin_group_member, @group)
@@ -14,8 +11,6 @@
         - if should_user_see_group_roles?(current_user, @group)
           %p.light
             Members of group have access to all group projects.
-            Read more about permissions
-            %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
         .new-group-member-holder
           = render "new_group_member"
 
