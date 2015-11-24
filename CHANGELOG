@@ -7,6 +7,7 @@ v 8.3.0 (unreleased)
   - Fix 500 error when update group member permission
   - Fix: Raw private snippets access workflow
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
+  - Fire update hook from GitLab
 
 v 8.2.1
   - Forcefully update builds that didn't want to update with state machine
