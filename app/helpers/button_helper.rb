@@ -1,8 +1,24 @@
 module ButtonHelper
-  def clipboard_button
+  # Output a "Copy to Clipboard" button
+  #
+  # data - Data attributes passed to `content_tag`
+  #
+  # Examples:
+  #
+  #   # Define the clipboard's text
+  #   clipboard_button(clipboard_text: "Foo")
+  #   # => "<button class='...' data-clipboard-text='Foo'>...</button>"
+  #
+  #   # Define the target element
+  #   clipboard_button(clipboard_target: "#foo")
+  #   # => "<button class='...' data-clipboard-target='#foo'>...</button>"
+  #
+  # See http://clipboardjs.com/#usage
+  def clipboard_button(data = {})
     content_tag :button,
       icon('clipboard'),
-      class: 'btn btn-xs btn-clipboard js-clipboard-trigger',
+      class: 'btn btn-xs btn-clipboard',
+      data: data,
       type: :button
   end
 
