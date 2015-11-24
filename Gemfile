@@ -206,7 +206,7 @@ gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 
-gem "gitlab-license", "~> 0.0.2"
+gem "gitlab-license", "~> 0.0.4"
 
 group :development do
   gem "foreman"
