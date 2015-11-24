@@ -208,18 +208,28 @@ describe SystemNoteService do
   end
 
   describe '.merge_when_build_succeeds' do
-    let(:ci_commit) { create :ci_commit, gl_project: project }
-    let(:merge_request) { create :merge_request, project: project }
+    let(:ci_commit) { create :ci_commit_without_jobs }
+    let(:noteable) { create :merge_request }
 
-    subject { described_class.merge_when_build_succeeds(merge_request, project, author) }
+    subject { described_class.merge_when_build_succeeds(noteable, project, author, ci_commit) }
 
     it_behaves_like 'a system note'
 
     it "posts the Merge When Build Succeeds system note" do
-      allow(merge_request).to receive(:ci_commit).and_return(ci_commit)
-      allow(ci_commit).to receive(:short_sha).and_return('12345678')
+      expect(subject.note).to eq  "Enabled an automatic merge when the build for 97de212e80737a608d939f648d959671fb0a0142 succeeds"
+    end
+  end
 
-      expect(subject.note).to eq  "This merge request will be automatically merged when the build for 12345678 succeeds"
+  describe '.cancel_merge_when_build_succeeds' do
+    let(:ci_commit) { create :ci_commit_without_jobs }
+    let(:noteable) { create :merge_request }
+
+    subject { described_class.cancel_merge_when_build_succeeds(noteable, project, author) }
+
+    it_behaves_like 'a system note'
+
+    it "posts the Merge When Build Succeeds system note" do
+      expect(subject.note).to eq  "Canceled the automatic merge"
     end
   end
 

@@ -7,13 +7,13 @@
       - ci_commit = @merge_request.ci_commit
       - if ci_commit && ci_commit.active?
         = f.button class: "btn btn-create btn-grouped merge_when_build_succeeds", name: "merge_when_build_succeeds" do
-          Merge when Build Succeeds
+          Merge When Build Succeeds
         = f.button class: "btn btn-create btn-grouped accept_merge_request #{status_class}" do
           Accept Merge Request Now
       - else
         = f.button class: "btn btn-create btn-grouped accept_merge_request #{status_class}" do
           Accept Merge Request
-    - if @merge_request.can_remove_source_branch?
+    - if @merge_request.can_remove_source_branch?(current_user)
       .accept-control.checkbox
         = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
           = check_box_tag :should_remove_source_branch

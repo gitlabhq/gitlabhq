@@ -174,6 +174,30 @@ describe MergeRequest do
     end
   end
 
+  describe '#can_remove_source_branch' do
+    let(:user) { build(:user)}
+
+    before do
+      subject.source_project.team << [user, :master]
+    end
+
+    it "cant be merged when its a a protected branch" do
+      subject.source_project.protected_branches = [];
+
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
+    end
+
+    it "cant remove a root ref" do
+      subject.source_branch = "master";
+
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
+    end
+
+    it "is truthy in all other cases" do
+      expect(subject.can_remove_source_branch?(user))
+    end
+  end
+
   describe "#reset_merge_when_build_succeeds" do
     let(:merge_if_green) { create :merge_request, merge_when_build_succeeds: true }
     it "sets the item to false" do

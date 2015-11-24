@@ -254,15 +254,14 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def can_cancel_merge_when_build_succeeds?(user)
-    can_be_merged_by?(user) || self.author == user
+  def can_cancel_merge_when_build_succeeds?(current_user)
+    can_be_merged_by?(current_user) || self.author == current_user
   end
 
-  def can_remove_source_branch?
-    for_fork? &&
-    !project.protected_branch(source_branch) &&
-    !project.repository.root_ref(source_branch) &&
-    can?(current_user, :push_code, project)
+  def can_remove_source_branch?(current_user)
+    !source_project.protected_branch?(source_branch) &&
+      !source_project.root_ref?(source_branch) &&
+      Ability.abilities.allowed?(current_user, :push_code, source_project)
   end
 
   def mr_and_commit_notes

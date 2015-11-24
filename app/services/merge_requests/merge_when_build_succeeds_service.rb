@@ -11,13 +11,11 @@ module MergeRequests
       unless already_approved
         merge_request.merge_when_build_succeeds = true
         merge_request.merge_user                = @current_user
+
+        SystemNoteService.merge_when_build_succeeds(merge_request, @project, @current_user, merge_request.ci_commit)
       end
 
       merge_request.save
-
-      unless already_approved
-        SystemNoteService.merge_when_build_succeeds(merge_request, @project, @current_user, merge_request.ci_commit)
-      end
     end
 
     # Triggers the automatic merge of merge_request once the build succeeds

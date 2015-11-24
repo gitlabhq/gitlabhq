@@ -17,7 +17,8 @@ describe MergeRequests::RefreshService do
                               source_project: @project,
                               source_branch: 'master',
                               target_branch: 'feature',
-                              target_project: @project)
+                              target_project: @project,
+                              merge_when_build_succeeds: true)
 
       @fork_merge_request = create(:merge_request,
                                    source_project: @fork_project,
@@ -46,6 +47,7 @@ describe MergeRequests::RefreshService do
 
       it { expect(@merge_request.notes).not_to be_empty }
       it { expect(@merge_request).to be_open }
+      it { expect(@merge_request.merge_when_build_succeeds).to be_falsey}
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }
     end
@@ -145,6 +147,7 @@ describe MergeRequests::RefreshService do
         expect(@fork_merge_request).to be_open
       end
     end
+
 
     def reload_mrs
       @merge_request.reload

@@ -3,22 +3,25 @@
   to be merged automatically when
   #{link_to "the build", ci_status_path(@merge_request.ci_commit)} succeeds.
 %div
-  - if @merge_request.merge_params["should_remove_source_branch"].present?
+  - source_branch_removed = @merge_request.merge_params["should_remove_source_branch"].present?
+  - if source_branch_removed
     = succeed '.' do
       The changes will be merged into
       %span.label-branch= @merge_request.target_branch
     The source branch will be removed.
+  - else
     %p
       = succeed '.' do
         The changes will be merged into
         %span.label-branch= @merge_request.target_branch
       The source branch will not be removed.
 
-  .clearfix.prepend-top-10
-    - if @merge_request.can_remove_source_branch? && !@merge_request.merge_params["should_remove_source_branch"].present?
-      = link_to merge_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, merge_when_build_succeeds: true, should_remove_source_branch: true), remote: true, method: :post, class: "btn btn-grouped btn-primary btn-sm remove_source_branch" do
-        = icon('times')
-        Remove Source Branch When Merged
-    - if @merge_request.merge_when_build_succeeds
-      = link_to cancel_merge_when_build_succeeds_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request), remote: true, method: :post, class: "btn btn-grouped btn-warning btn-sm" do
-        Cancel Automatic Merge
+  - if (@merge_request.can_remove_source_branch?(current_user) && !source_branch_removed) || @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+    .clearfix.prepend-top-10
+      - if @merge_request.can_remove_source_branch?(current_user) && !source_branch_removed
+        = link_to merge_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, merge_when_build_succeeds: true, should_remove_source_branch: true), remote: true, method: :post, class: "btn btn-grouped btn-primary btn-sm remove_source_branch" do
+          = icon('times')
+          Remove Source Branch When Merged
+      - if @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+        = link_to cancel_merge_when_build_succeeds_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request), remote: true, method: :post, class: "btn btn-grouped btn-warning btn-sm" do
+          Cancel Automatic Merge
