@@ -74,6 +74,13 @@ Feature: Groups
     When I select "sjobs@apple.com" as "Reporter"
     Then I should see "sjobs@apple.com" in team list as invited "Reporter"
 
+  @javascript
+  Scenario: Edit group member permissions
+    Given "Mary Jane" is guest of group "Owned"
+    And I visit group "Owned" members page
+    When I change the "Mary Jane" role to "Developer"
+    Then I should see "Mary Jane" as "Developer"
+
   # Leave
 
   @javascript

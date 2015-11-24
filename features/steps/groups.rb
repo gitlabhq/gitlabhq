@@ -26,7 +26,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'Group "Owned" has a public project "Public-project"' do
-    group = Group.find_by(name: "Owned")
+    group = owned_group
 
     @project = create :empty_project, :public,
                  group: group,
@@ -91,7 +91,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see group "Owned" projects list' do
-    Group.find_by(name: "Owned").projects.each do |project|
+    owned_group.projects.each do |project|
       expect(page).to have_link project.name
     end
   end
@@ -172,12 +172,12 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I change group "Owned" avatar' do
     attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"
-    Group.find_by(name: "Owned").reload
+    owned_group.reload
   end
 
   step 'I should see new group "Owned" avatar' do
-    expect(Group.find_by(name: "Owned").avatar).to be_instance_of AvatarUploader
-    expect(Group.find_by(name: "Owned").avatar.url).to eq "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/banana_sample.gif"
+    expect(owned_group.avatar).to be_instance_of AvatarUploader
+    expect(owned_group.avatar.url).to eq "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -187,16 +187,16 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I have group "Owned" avatar' do
     attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"
-    Group.find_by(name: "Owned").reload
+    owned_group.reload
   end
 
   step 'I remove group "Owned" avatar' do
     click_link "Remove avatar"
-    Group.find_by(name: "Owned").reload
+    owned_group.reload
   end
 
   step 'I should not see group "Owned" avatar' do
-    expect(Group.find_by(name: "Owned").avatar?).to eq false
+    expect(owned_group.avatar?).to eq false
   end
 
   step 'I should not see the "Remove avatar" button' do
@@ -295,18 +295,49 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     end
   end
 
+  step 'I change the "Mary Jane" role to "Developer"' do
+    member = mary_jane_member
+
+    page.within "#group_member_#{member.id}" do
+      find(".js-toggle-button").click
+      page.within "#edit_group_member_#{member.id}" do
+        select 'Developer', from: 'group_member_access_level'
+        click_on 'Save'
+      end
+    end
+  end
+
+  step 'I should see "Mary Jane" as "Developer"' do
+    member = mary_jane_member
+
+    page.within "#group_member_#{member.id}" do
+      page.within '.member-access-level' do
+        expect(page).to have_content "Developer"
+      end
+    end
+  end
+
   protected
+
+  def owned_group
+    @owned_group ||= Group.find_by(name: "Owned")
+  end
+
+  def mary_jane_member
+    user = User.find_by(name: "Mary Jane")
+    owned_group.members.find_by(user_id: user.id)
+  end
 
   def assigned_to_me(key)
     project.send(key).where(assignee_id: current_user.id)
   end
 
   def project
-    Group.find_by(name: "Owned").projects.first
+    owned_group.projects.first
   end
 
   def group_milestone
-    group = Group.find_by(name: "Owned")
+    group = owned_group
 
     @project1 = create :project,
                  group: group

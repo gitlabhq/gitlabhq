@@ -30,7 +30,7 @@
 
   - if should_user_see_group_roles?(current_user, @group)
     %span.pull-right
-      %strong= member.human_access
+      %strong.member-access-level= member.human_access
       - if show_controls
         - if can?(current_user, :update_group_member, member)
           = button_tag class: "btn-xs btn js-toggle-button",
