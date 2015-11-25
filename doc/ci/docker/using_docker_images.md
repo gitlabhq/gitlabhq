@@ -42,7 +42,44 @@ So, **to access your database service you have to connect to host: `mysql` inste
 
 ### How to use other images as services?
 You are not limited to have only database services. 
-You can hand modify `config.toml` to add any image as service found at [Docker Hub](https://registry.hub.docker.com/). 
+You can add the services to `.gitlab-ci.yml` or hand modify the `config.toml`.
+You can use any image as service found at [Docker Hub](https://registry.hub.docker.com/). 
+
+### Define image and services from `.gitlab-ci.yml`
+You can simply define image or list services that you want to use for the build time.
+```
+image: ruby:2.2
+services:
+  - postgres:9.3
+before_install:
+  - bundle install
+  
+test:
+  script:
+  - bundle exec rake spec
+```
+
+It's possible to define image and service per-job:
+```
+before_install:
+  - bundle install
+
+test:2.1:
+  image: ruby:2.1
+  services:
+  - postgres:9.3
+  script:
+  - bundle exec rake spec
+
+test:2.2:
+  image: ruby:2.2
+  services:
+  - postgres:9.4
+  script:
+  - bundle exec rake spec
+```
+
+### Define image and services in `config.toml`
 Look for `[runners.docker]` section:
 ```
 [runners.docker]
@@ -50,13 +87,16 @@ Look for `[runners.docker]` section:
   services = ["mysql:latest", "postgres:latest"]
 ```
 
+The image and services defined these way will be added to all builds run by that runner.
+
+### Accessing the services
 For example you need `wordpress` instance to test some API integration with `Wordpress`. 
-You can for example use this image: [tutum/wordpress](https://registry.hub.docker.com/u/tutum/wordpress/). 
-This is image that have fully preconfigured `wordpress` and have `MySQL` server built-in:
+You can for example use this image: [tutum/wordpress](https://registry.hub.docker.com/u/tutum/wordpress/).
+
 ```
-[runners.docker]
-  image = "ruby:2.1"
-  services = ["mysql:latest", "postgres:latest", "tutum/wordpress:latest"]
+# .gitlab-ci.yml
+services:
+- tutum/wordpress:latest
 ```
 
 Next time when you run your application the `tutum/wordpress` will be started 
@@ -64,7 +104,7 @@ and you will have access to it from your build container under hostname: `tutum_
 
 Alias hostname for the service is made from the image name:
 1. Everything after `:` is stripped,
-2. '/' is replaced with `__`.
+2. '/' is replaced to `__`.
 
 ### Configuring services
 Many services accept environment variables, which allow you to easily change database names or set account names depending on the environment.
@@ -98,67 +138,6 @@ https://registry.hub.docker.com/u/library/mysql/ or https://registry.hub.docker.
 or README page for any other Docker image.
 
 **Note: All variables will passed to all service containers. It's not designed to distinguish which variable should go where.**
-
-### Overwrite image and services
-It's possible to overwrite `docker-image` and specify services from `.gitlab-ci.yml`.
-If you add to your YAML the `image` and the `services` these parameters
-be used instead of the ones that were specified during runner's registration.
-```
-image: ruby:2.2
-services:
-  - postgres:9.3
-before_install:
-  - bundle install
-  
-test:
-  script:
-  - bundle exec rake spec
-```
-
-It's possible to define image and service per-job:
-```
-before_install:
-  - bundle install
-
-test:2.1:
-  image: ruby:2.1
-  services:
-  - postgres:9.3
-  script:
-  - bundle exec rake spec
-
-test:2.2:
-  image: ruby:2.2
-  services:
-  - postgres:9.4
-  script:
-  - bundle exec rake spec
-```
-
-#### How to enable overwriting?
-To enable overwriting you have to **enable it first** (it's disabled by default for security reasons). 
-You can do that by hand modifying runner configuration: `config.toml`. 
-Please go to section where is `[runners.docker]` definition for your runner. 
-Add `allowed_images` and `allowed_services` to specify what images are allowed to be picked from `.gitlab-ci.yml`:
-```
-[runners.docker]
-  image = "ruby:2.1"
-  allowed_images = ["ruby:*", "python:*"]
-  allowed_services = ["mysql:*", "redis:*"]
-```
-This enables you to use in your `.gitlab-ci.yml` any image that matches above wildcards. 
-You will be able to pick only `ruby` and `python` images. 
-The same rule can be applied to limit services. 
-
-If you are courageous enough, you can make it fully open and accept everything:
-```
-[runners.docker]
-  image = "ruby:2.1"
-  allowed_images = ["*", "*/*"]
-  allowed_services = ["*", "*/*"]
-```
-
-**It the feature is not enabled, or image isn't allowed the error message will be put into the build log.**
 
 ### How Docker integration works
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
