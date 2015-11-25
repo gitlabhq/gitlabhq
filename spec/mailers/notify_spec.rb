@@ -85,6 +85,24 @@ describe Notify do
     it { is_expected.to_not have_body_text /ViewAction/ }
   end
 
+  shared_examples 'it should show Gmail Actions View Issue link' do
+    it_behaves_like 'it should have Gmail Actions links'
+
+    it { is_expected.to have_body_text /View Issue/ }
+  end
+
+  shared_examples 'it should show Gmail Actions View Merge request link' do
+    it_behaves_like 'it should have Gmail Actions links'
+
+    it { is_expected.to have_body_text /View Merge request/ }
+  end
+
+  shared_examples 'it should show Gmail Actions View Commit link' do
+    it_behaves_like 'it should have Gmail Actions links'
+
+    it { is_expected.to have_body_text /View Commit/ }
+  end
+
   describe 'for new users, the email' do
     let(:example_site_path) { root_path }
     let(:new_user) { create(:user, email: new_user_address, created_by_id: 1) }
@@ -207,7 +225,7 @@ describe Notify do
 
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread', 'issue'
-          it_behaves_like 'it should have Gmail Actions links'
+          it_behaves_like 'it should show Gmail Actions View Issue link'
 
           it 'has the correct subject' do
             is_expected.to have_subject /#{project.name} \| #{issue.title} \(##{issue.iid}\)/
@@ -216,14 +234,12 @@ describe Notify do
           it 'contains a link to the new issue' do
             is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
-
-          it 'Gmail Actions contain correct action name' do
-            is_expected.to have_body_text /View Issue/
-          end
         end
 
         describe 'that are new with a description' do
           subject { Notify.new_issue_email(issue_with_description.assignee_id, issue_with_description.id) }
+
+          it_behaves_like 'it should show Gmail Actions View Issue link'
 
           it 'contains the description' do
             is_expected.to have_body_text /#{issue_with_description.description}/
@@ -235,7 +251,7 @@ describe Notify do
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread', 'issue'
-          it_behaves_like 'it should have Gmail Actions links'
+          it_behaves_like 'it should show Gmail Actions View Issue link'
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
@@ -258,10 +274,6 @@ describe Notify do
           it 'contains a link to the issue' do
             is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
-
-          it 'Gmail Actions contain correct action name' do
-            is_expected.to have_body_text /View Issue/
-          end
         end
 
         describe 'status changed' do
@@ -269,7 +281,7 @@ describe Notify do
           subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user) }
 
           it_behaves_like 'an answer to an existing thread', 'issue'
-          it_behaves_like 'it should have Gmail Actions links'
+          it_behaves_like 'it should show Gmail Actions View Issue link'
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
@@ -292,10 +304,6 @@ describe Notify do
           it 'contains a link to the issue' do
             is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
-
-          it 'Gmail Actions contain correct action name' do
-            is_expected.to have_body_text /View Issue/
-          end
         end
       end
 
@@ -309,7 +317,7 @@ describe Notify do
 
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread', 'merge_request'
-          it_behaves_like 'it should have Gmail Actions links'
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
 
           it 'has the correct subject' do
             is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
@@ -330,23 +338,15 @@ describe Notify do
           it 'has the correct message-id set' do
             is_expected.to have_header 'Message-ID', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
           end
-
-          it 'Gmail Actions contain correct action name' do
-            is_expected.to have_body_text /View Merge request/
-          end
         end
 
         describe 'that are new with a description' do
           subject { Notify.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
 
-          it_behaves_like 'it should have Gmail Actions links'
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
 
           it 'contains the description' do
             is_expected.to have_body_text /#{merge_request_with_description.description}/
-          end
-
-          it 'Gmail Actions contain correct action name' do
-            is_expected.to have_body_text /View Merge request/
           end
         end
 
@@ -355,7 +355,7 @@ describe Notify do
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread', 'merge_request'
-          it_behaves_like 'it should have Gmail Actions links'
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
@@ -378,10 +378,6 @@ describe Notify do
           it 'contains a link to the merge request' do
             is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
           end
-
-          it 'Gmail Actions contain correct action name' do
-            is_expected.to have_body_text /View Merge request/
-          end
         end
 
         describe 'status changed' do
@@ -389,8 +385,7 @@ describe Notify do
           subject { Notify.merge_request_status_email(recipient.id, merge_request.id, status, current_user) }
 
           it_behaves_like 'an answer to an existing thread', 'merge_request'
-          it_behaves_like 'it should have Gmail Actions links'
-
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
@@ -413,10 +408,6 @@ describe Notify do
           it 'contains a link to the merge request' do
             is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
           end
-
-          it 'Gmail Actions contain correct action name' do
-            is_expected.to have_body_text /View Merge request/
-          end
         end
 
         describe 'that are merged' do
@@ -424,7 +415,7 @@ describe Notify do
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread', 'merge_request'
-          it_behaves_like 'it should have Gmail Actions links'
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
 
           it 'is sent as the merge author' do
             sender = subject.header[:from].addrs[0]
@@ -442,10 +433,6 @@ describe Notify do
 
           it 'contains a link to the merge request' do
             is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
-          end
-
-          it 'Gmail Actions contain correct action name' do
-            is_expected.to have_body_text /View Merge request/
           end
         end
       end
@@ -529,7 +516,7 @@ describe Notify do
 
         it_behaves_like 'a note email'
         it_behaves_like 'an answer to an existing thread', 'commit'
-        it_behaves_like 'it should have Gmail Actions links'
+        it_behaves_like 'it should show Gmail Actions View Commit link'
 
         it 'has the correct subject' do
           is_expected.to have_subject /#{commit.title} \(#{commit.short_id}\)/
@@ -537,10 +524,6 @@ describe Notify do
 
         it 'contains a link to the commit' do
           is_expected.to have_body_text commit.short_id
-        end
-
-        it 'Gmail Actions contain correct action name' do
-          is_expected.to have_body_text /View Commit/
         end
       end
 
@@ -553,7 +536,7 @@ describe Notify do
 
         it_behaves_like 'a note email'
         it_behaves_like 'an answer to an existing thread', 'merge_request'
-        it_behaves_like 'it should have Gmail Actions links'
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
 
         it 'has the correct subject' do
           is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
@@ -561,10 +544,6 @@ describe Notify do
 
         it 'contains a link to the merge request note' do
           is_expected.to have_body_text /#{note_on_merge_request_path}/
-        end
-
-        it 'Gmail Actions contain correct action name' do
-          is_expected.to have_body_text /View Merge request/
         end
       end
 
@@ -577,7 +556,7 @@ describe Notify do
 
         it_behaves_like 'a note email'
         it_behaves_like 'an answer to an existing thread', 'issue'
-        it_behaves_like 'it should have Gmail Actions links'
+        it_behaves_like 'it should show Gmail Actions View Issue link'
 
         it 'has the correct subject' do
           is_expected.to have_subject /#{issue.title} \(##{issue.iid}\)/
@@ -585,10 +564,6 @@ describe Notify do
 
         it 'contains a link to the issue note' do
           is_expected.to have_body_text /#{note_on_issue_path}/
-        end
-
-        it 'Gmail Actions contain correct action name' do
-          is_expected.to have_body_text /View Issue/
         end
       end
     end
@@ -860,7 +835,7 @@ describe Notify do
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }
 
-    it_behaves_like 'it should have Gmail Actions links'
+    it_behaves_like 'it should show Gmail Actions View Commit link'
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -886,10 +861,6 @@ describe Notify do
 
     it 'contains a link to the diff' do
       is_expected.to have_body_text /#{diff_path}/
-    end
-
-    it 'Gmail Actions contain correct action name' do
-      is_expected.to have_body_text /View Commit/
     end
   end
 end
