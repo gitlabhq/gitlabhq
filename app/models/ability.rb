@@ -18,19 +18,33 @@ class Ability
         when "GroupMember" then group_member_abilities(user, subject)
         when "ProjectMember" then project_member_abilities(user, subject)
         else []
-        end.concat(global_abilities(user))
+        end
+
+      abilities.concat(global_abilities(user))
+
       abilities -= license_blocked_abilities if License.block_changes?
 
       abilities
     end
 
+    def license_blocked_abilities
+      [
+        :create_issue,
+        :create_merge_request,
+        :push_code,
+        :push_code_to_protected_branches
+      ]
+    end
+
     # List of possible abilities
     # for non-authenticated user
-    def not_auth_abilities(user, subject)
-      project = if subject.kind_of?(Project)
+    def anonymous_abilities(user, subject)
+      project = if subject.is_a?(Project)
                   subject
-                else
+                elsif subject.respond_to?(:project)
                   subject.project
+                else
+                  nil
                 end
 
       if project && project.public?
@@ -50,21 +64,19 @@ class Ability
 
         rules - project_disabled_features_rules(project)
       else
-        []
-      end
-    end
+        group = if subject.kind_of?(Group)
+                  subject
+                elsif subject.respond_to?(:group)
+                  subject.group
+                else
+                  nil
+                end
 
-    def anonymous_group_abilities(subject)
-      group = if subject.is_a?(Group)
-                subject
-              else
-                subject.group
-              end
-
-      if group && group.public_profile?
-        [:read_group]
-      else
-        []
+        if group && group.public_profile?
+          [:read_group]
+        else
+          []
+        end
       end
     end
 
@@ -378,10 +390,10 @@ class Ability
 
     def abilities
       @abilities ||= begin
-        abilities = Six.new
-        abilities << self
-        abilities
-      end
+                       abilities = Six.new
+                       abilities << self
+                       abilities
+                     end
     end
 
     private
