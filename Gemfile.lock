@@ -312,9 +312,11 @@ GEM
       rouge (~> 1.10.1)
       sanitize (~> 2.1.0)
       stringex (~> 2.5.1)
-    gon (5.0.4)
-      actionpack (>= 2.3.0)
+    gon (6.0.1)
+      actionpack (>= 3.0)
       json
+      multi_json
+      request_store (>= 1.0)
     grape (0.13.0)
       activesupport
       builder
@@ -846,7 +848,7 @@ DEPENDENCIES
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.0.2)
-  gon (~> 5.0.0)
+  gon (~> 6.0.1)
   grape (~> 0.13.0)
   grape-entity (~> 0.4.2)
   haml-rails (~> 0.9.0)
