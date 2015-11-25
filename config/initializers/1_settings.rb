@@ -293,3 +293,7 @@ if Rails.env.test?
   Settings.gitlab['default_can_create_group'] = true
   Settings.gitlab['default_can_create_team']  = false
 end
+
+# Force a refresh of application settings at startup
+ApplicationSetting.expire
+Ci::ApplicationSetting.expire
