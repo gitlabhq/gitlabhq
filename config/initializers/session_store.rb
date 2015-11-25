@@ -3,10 +3,11 @@
 require 'gitlab/current_settings'
 include Gitlab::CurrentSettings
 
-# allow it to fail: it may to do so when create_from_defaults is executed before migrations are actually done
+# allow it to fail: it may do so when create_from_defaults is executed before migrations are actually done
 begin
-  Settings.gitlab['session_expire_delay'] = current_application_settings.session_expire_delay
+  Settings.gitlab['session_expire_delay'] = current_application_settings.session_expire_delay || 10080
 rescue
+  Settings.gitlab['session_expire_delay'] ||= 10080
 end
 
 unless Rails.env.test?
