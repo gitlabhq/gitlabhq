@@ -72,6 +72,8 @@ module Gitlab
           update_ssh_keys
         end
 
+        update_kerberos_identity if import_kerberos_identities?
+
         # Skip updating group permissions
         # if instance does not use group_base setting
         return true unless group_base.present?
@@ -115,6 +117,21 @@ module Gitlab
           unless deleted_key.destroy
             logger.error "#{self.class.name}: failed to remove LDAP SSH key #{key.inspect} from #{user.name} (#{user.id})"
           end
+        end
+      end
+
+      # Update user Kerberos identity with Kerberos principal name from Active Directory
+      def update_kerberos_identity
+        # there can be only one Kerberos identity in GitLab; if the user has a Kerberos identity in AD,
+        # replace any existing Kerberos identity for the user
+        return unless ldap_user.kerberos_principal.present?
+        kerberos_identity = user.identities.where(provider: :kerberos).first
+        return if kerberos_identity && kerberos_identity.extern_uid == ldap_user.kerberos_principal
+        kerberos_identity ||= Identity.new(provider: :kerberos, user: user)
+        kerberos_identity.extern_uid = ldap_user.kerberos_principal
+        unless kerberos_identity.save
+          Rails.logger.error "#{self.class.name}: failed to add Kerberos principal #{principal} to #{user.name} (#{user.id})\n"\
+            "error messages: #{new_identity.errors.messages}"
         end
       end
 
@@ -181,6 +198,11 @@ module Gitlab
 
       def sync_ssh_keys?
         ldap_config.sync_ssh_keys?
+      end
+
+      def import_kerberos_identities?
+        # Kerberos may be enabled for Git HTTP access and/or as an Omniauth provider
+        ldap_config.active_directory && (Gitlab.config.kerberos.enabled || AuthHelper.kerberos_enabled? )
       end
 
       def group_base
