@@ -4,6 +4,13 @@ require "krb5_auth"
 module Gitlab
   module Kerberos
     class Authentication
+      def self.kerberos_default_realm
+        krb5 = ::Krb5Auth::Krb5.new
+        default_realm = krb5.get_default_realm
+        krb5.close # release memory allocated by the krb5 library
+        default_realm
+      end
+
       def self.login(login, password)
         return unless Devise.omniauth_providers.include?(:kerberos)
         return unless login.present? && password.present?
@@ -25,15 +32,14 @@ module Gitlab
       end
 
       def login
-        valid? && find_by_login(@login)
+        # get_default_principal consistently returns the canonical Kerberos principal name, with realm
+        valid? && find_by_login(@krb5.get_default_principal)
       end
 
       private
 
       def find_by_login(login)
-        identity = ::Identity.
-          where(provider: :kerberos).
-          where('lower(extern_uid) = ?', login).last
+        identity = ::Identity.find_by(provider: :kerberos, extern_uid: login)
         identity && identity.user
       end
     end

@@ -18,6 +18,7 @@ v 8.2.2
 v 8.2.1
   - Forcefully update builds that didn't want to update with state machine
   - Fix: saving GitLabCiService as Admin Template
+  - Canonicalization of Kerberos identities to always include realm (Alex Lossent)
 
 v 8.2.0
   - Invalidate stored jira password if the endpoint URL is changed
@@ -46,6 +47,8 @@ v 8.1.0
   - Added an issues template (Hannes Rosenögger)
   - Add documentation for "Share project with group" API call 
   - Ability to disable 'Share with Group' feature (via UI and API)
+  - Add documentation for "Share project with group" API call
+  - Abiliy to disable 'Share with Group' feature (via UI and API)
 
 v 8.0.6
   - No EE-specific changes

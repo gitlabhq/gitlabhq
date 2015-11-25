@@ -5,13 +5,18 @@ module Grack
     def self.call(env)
       # Avoid issues with instance variables in Grack::Auth persisting across
       # requests by creating a new instance for each request.
-      Auth.new({}).call(env)
+      Auth.new({}).call_with_kerberos_support(env)
     end
   end
 
   class Auth < Rack::Auth::Basic
 
     attr_accessor :user, :project, :env
+
+    def call_with_kerberos_support(env)
+      # Make sure the final leg of Kerberos authentication is applied as per RFC4559
+      apply_negotiate_final_leg(call(env))
+    end
 
     def call(env)
       @env = env
@@ -42,7 +47,7 @@ module Grack
       elsif @user.nil? && !@ci
         unauthorized
       else
-        apply_negotiate_final_leg(render_not_found)
+        render_not_found
       end
     end
 
@@ -99,8 +104,7 @@ module Grack
         return unless krb_principal
 
         # Set @user if authentication succeeded
-        identity = ::Identity.find_by(provider: 'kerberos', extern_uid: krb_principal)
-        identity ||= ::Identity.find_by(provider: 'kerberos', extern_uid: krb_principal.split("@")[0])
+        identity = ::Identity.find_by(provider: :kerberos, extern_uid: krb_principal)
         @user = identity.user if identity
       else
         # Authentication with username and password
