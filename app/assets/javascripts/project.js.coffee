@@ -1,11 +1,19 @@
 class @Project
   constructor: ->
-    # Git clone panel switcher
-    cloneHolder = $('.git-clone-holder')
-    if cloneHolder.length
-      $('.js-protocol-switch', cloneHolder).click ->
-        $('.js-protocol-switch', cloneHolder).toggleClass('active')
-        $('#project_clone').val($(@).data('clone'))
+    # Git protocol switcher
+    $('.js-protocol-switch').click ->
+      return if $(@).hasClass('active')
+
+      # Toggle 'active' for both buttons
+      $('.js-protocol-switch').toggleClass('active')
+
+      url = $(@).data('clone')
+
+      # Update the input field
+      $('#project_clone').val(url)
+
+      # Update the command line instructions
+      $('.clone').text(url)
 
     # Ref switcher
     $('.project-refs-select').on 'change', ->
