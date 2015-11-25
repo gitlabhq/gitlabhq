@@ -23,7 +23,7 @@ module ButtonHelper
   end
 
   def http_clone_button(project)
-    klass = 'btn'
+    klass = 'btn js-protocol-switch'
     klass << ' active'      if default_clone_protocol == 'http'
     klass << ' has_tooltip' if current_user.try(:require_password?)
 
@@ -41,7 +41,7 @@ module ButtonHelper
   end
 
   def ssh_clone_button(project)
-    klass = 'btn'
+    klass = 'btn js-protocol-switch'
     klass << ' active'      if default_clone_protocol == 'ssh'
     klass << ' has_tooltip' if current_user.try(:require_ssh_key?)
 

@@ -178,6 +178,11 @@
     &:active {
       outline: none;
     }
+
+    &.btn-clipboard {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
   }
 
   .active {

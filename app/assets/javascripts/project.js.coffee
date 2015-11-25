@@ -3,11 +3,9 @@ class @Project
     # Git clone panel switcher
     cloneHolder = $('.git-clone-holder')
     if cloneHolder.length
-      $('a, button', cloneHolder).click ->
-        $('a, button', cloneHolder).removeClass 'active'
-        $(@).addClass 'active'
-        $('#project_clone', cloneHolder).val $(@).data 'clone'
-        $(".clone").text("").append $(@).data 'clone'
+      $('.js-protocol-switch', cloneHolder).click ->
+        $('.js-protocol-switch', cloneHolder).toggleClass('active')
+        $('#project_clone').val($(@).data('clone'))
 
     # Ref switcher
     $('.project-refs-select').on 'change', ->
