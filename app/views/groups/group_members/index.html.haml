@@ -24,7 +24,7 @@
         = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
           .form-group
             = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }
-          = button_tag class: 'btn' do
+          = button_tag class: 'btn', title: 'Search' do
             = icon("search")
     %ul.content-list
       - @members.each do |member|
