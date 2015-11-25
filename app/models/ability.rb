@@ -36,15 +36,25 @@ class Ability
       ]
     end
 
-    # List of possible abilities
-    # for non-authenticated user
+    # List of possible abilities for anonymous user
     def anonymous_abilities(user, subject)
+      case true
+      when subject.is_a?(PersonalSnippet)
+        anonymous_personal_snippet_abilities(subject)
+      when subject.is_a?(Project) || subject.respond_to?(:project)
+        anonymous_project_abilities(subject)
+      when subject.is_a?(Group) || subject.respond_to?(:group)
+        anonymous_group_abilities(subject)
+      else
+        []
+      end
+    end
+
+    def anonymous_project_abilities(subject)
       project = if subject.is_a?(Project)
                   subject
-                elsif subject.respond_to?(:project)
-                  subject.project
                 else
-                  nil
+                  subject.project
                 end
 
       if project && project.public?
@@ -64,19 +74,21 @@ class Ability
 
         rules - project_disabled_features_rules(project)
       else
-        group = if subject.kind_of?(Group)
-                  subject
-                elsif subject.respond_to?(:group)
-                  subject.group
-                else
-                  nil
-                end
+        []
+      end
+    end
 
-        if group && group.public_profile?
-          [:read_group]
-        else
-          []
-        end
+    def anonymous_group_abilities(subject)
+      group = if subject.is_a?(Group)
+                subject
+              else
+                subject.group
+              end
+
+      if group && group.public_profile?
+        [:read_group]
+      else
+        []
       end
     end
 
