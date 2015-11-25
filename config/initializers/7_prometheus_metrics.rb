@@ -26,9 +26,24 @@ Sidekiq.configure_server do |config|
 end
 
 if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
-  unless Sidekiq.server?
-    Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
-  end
+  Gitlab::Cluster::LifecycleEvents.on_worker_start do
+    defined?(::Prometheus::Client.reinitialize_on_pid_change) && Prometheus::Client.reinitialize_on_pid_change
 
-  Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
+    unless Sidekiq.server?
+      Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+    end
+
+    Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
+  end
+end
+
+Gitlab::Cluster::LifecycleEvents.signal_master_restart do
+  # The following is necessary to ensure stale Prometheus metrics don't
+  # accumulate over time. It needs to be done in this hook as opposed to
+  # inside an init script to ensure metrics files aren't deleted after new
+  # unicorn workers start after a SIGUSR2 is received.
+  if ENV['prometheus_multiproc_dir']
+    old_metrics = Dir[File.join(ENV['prometheus_multiproc_dir'], '*.db')]
+    FileUtils.rm_rf(old_metrics)
+  end
 end
