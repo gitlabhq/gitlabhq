@@ -1,6 +1,6 @@
 - if @status
   :plain
-    merge_request_widget.mergeInProgress();
+    merge_request_widget.mergeInProgress(#{params[:should_remove_source_branch] == '1'});
 - else
   :plain
     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/reload'))}");

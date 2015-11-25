@@ -9,6 +9,7 @@ v 8.3.0 (unreleased)
   - Don't show project fork event as "imported"
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info
+  - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)

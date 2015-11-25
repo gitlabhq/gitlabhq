@@ -7,7 +7,7 @@
         by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
     %div
-      - if !@merge_request.source_branch_exists?
+      - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
         = succeed '.' do
           The changes were merged into
           = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
