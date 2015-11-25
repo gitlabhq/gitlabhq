@@ -74,8 +74,11 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
         author: current_user,
         milestone: milestone
 
-      milestone = create :milestone, title: "GL-113", project: project,
-        due_date: '2114-08-20', description: 'Lorem Ipsum is simply dummy text'
+      milestone = create :milestone,
+        title: "GL-113",
+        project: project,
+        due_date: '2114-08-20',
+        description: 'Lorem Ipsum is simply dummy text'
 
       create :issue,
         project: project,
