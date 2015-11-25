@@ -332,67 +332,22 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   def group_milestone
     group = owned_group
 
-    @project1 = create :project,
-                 group: group
-    project2 = create :project,
-                 path: 'gitlab-ci',
-                 group: group
-    @project3 = create :project,
-                 path: 'cookbook-gitlab',
-                 group: group
-    milestone1_project1 = create :milestone,
-                            title: "Version 7.2",
-                            project: @project1
-    milestone1_project2 = create :milestone,
-                            title: "Version 7.2",
-                            project: project2
-    create :milestone,
-      title: "Version 7.2",
-      project: @project3
-    milestone2_project1 = create :milestone,
-                            title: "GL-113",
-                            project: @project1
-    milestone2_project2 = create :milestone,
-                            title: "GL-113",
-                            project: project2
-    milestone2_project3 = create :milestone,
-                            title: "GL-113",
-                            project: @project3,
-                            due_date: '2114-08-20',
-                            description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry'
-    @issue1 = create :issue,
-               project: @project1,
-               assignee: current_user,
-               author: current_user,
-               milestone: milestone2_project1
-    create :issue,
-      project: project2,
-      assignee: current_user,
-      author: current_user,
-      milestone: milestone1_project2
-    create :issue,
-      project: @project3,
-      assignee: current_user,
-      author: current_user,
-      milestone: milestone1_project1
-    create :merge_request,
-      source_project: @project1,
-      target_project: @project1,
-      assignee: current_user,
-      author: current_user,
-      milestone: milestone2_project1
-    create :merge_request,
-      source_project: project2,
-      target_project: project2,
-      assignee: current_user,
-      author: current_user,
-      milestone: milestone2_project2
-    @mr3 = create :merge_request,
-            source_project: @project3,
-            target_project: @project3,
-            assignee: current_user,
-            author: current_user,
-            milestone: milestone2_project3
+    %w(gitlabhq gitlab-ci cookbook-gitlab).each do |path|
+      project = create :project, path: path, group: group
+      milestone = create :milestone, title: "Version 7.2", project: project
+      create :issue,
+        project: project,
+        assignee: current_user,
+        author: current_user,
+        milestone: milestone
+
+      milestone = create :milestone, title: "GL-113", project: project
+      create :issue,
+        project: project,
+        assignee: current_user,
+        author: current_user,
+        milestone: milestone
+    end
   end
 
   def group_members_list
