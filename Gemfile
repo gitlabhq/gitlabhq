@@ -62,9 +62,6 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 # based on human-friendly examples
 gem "stamp", '~> 0.6.0'
 
-# Enumeration fields
-gem 'enumerize', '~> 0.7.0'
-
 # Pagination
 gem "kaminari", "~> 0.16.3"
 
