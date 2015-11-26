@@ -18,18 +18,16 @@ module Gitlab
           # Param:  Hash config A hash containing addional package configuration.
           # Returns: Composer::Package::Package
           def load(project, ref, config)
-
+            
+            # export version
             config['version'] = parse_version(ref)
 
             # export distribution package
-            # this works only on public repositories since composer can't handle gitlab oAuth yet.
-            if project.public?
-              config['dist'] = {
-                'url' => Rails.application.routes.url_helpers.archive_namespace_project_repository_url(project.namespace, project, ref: ref.name, format: 'zip'),
-                'type' => 'zip',
-                'reference' => ref.target
-              }
-            end
+            config['dist'] = {
+              'url' => Rails.application.routes.url_helpers.archive_namespace_project_repository_url(project.namespace, project, ref: ref.name, format: 'zip'),
+              'type' => 'zip',
+              'reference' => ref.target
+            }
 
             # export source package
             config['source'] = {
