@@ -153,7 +153,7 @@ gem "gemnasium-gitlab-service", "~> 0.2"
 gem "slack-notifier", "~> 1.2.0"
 
 # Asana integration
-gem 'asana', '~> 0.0.6'
+gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
