@@ -1,5 +1,14 @@
 .tree-holder {
 
+
+  .tree-filter{
+    width: 50%;
+    .tree-filter-input{
+      width: 95%;
+      display: inline-block;
+    }
+  }
+
   .tree-table {
     margin-bottom: 0;
 
@@ -48,6 +57,8 @@
     .tree_time_ago {
       min-width: 135px;
     }
+
+
   }
 
   .tree_author {

@@ -3,12 +3,22 @@
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_commits_url(@project.namespace, @project, @ref, format: :atom, private_token: current_user.private_token), title: "#{@project.name}:#{@ref} commits")
-
 = render 'projects/last_push'
 
 - if can? current_user, :download_code, @project
   .tree-download-holder
     = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'btn-group pull-right hidden-xs hidden-sm', split_button: true
+  .tree-download-holder
+    %span.btn-group{class: 'btn-group pull-right hidden-xs hidden-sm', style: 'padding-right:2px;'}
+      = link_to namespace_project_tree_filter_path(@project.namespace, @project, @ref), class: 'btn btn-success', rel: 'nofollow' do
+        %i.fa.fa-filter
+        %span TREE FILTER
+- else
+  .tree-download-holder
+    %span.btn-group{class: 'btn-group pull-right hidden-xs hidden-sm', style: 'padding-right:2px;'}
+      = link_to namespace_project_tree_filter_path(@project.namespace, @project, @ref), class: 'btn', rel: 'nofollow' do
+        %i.fa.fa-filter
+        %span TREE FILTER
 
 #tree-holder.tree-holder.clearfix
   .gray-content-block.top-block
