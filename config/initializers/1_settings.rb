@@ -112,6 +112,10 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['attributes'] = {} if server['attributes'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+    server['preempt_gravatar_with_ldap'] = false if server['preempt_gravatar_with_ldap'].nil?
+    server['local_avatar_storage_path'] ||= '/dev/shm/gitlab/avatars'
+    server['avatar_plain_url'] ||= "http://#{Settings.gitlab['host']}/avatar/%{hash}_%{size}.jpg"
+    server['avatar_secure_url'] ||= "https://#{Settings.gitlab['host']}/avatar/%{hash}_%{size}.jpg"
   end
 end
 
