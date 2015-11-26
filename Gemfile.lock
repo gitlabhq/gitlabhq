@@ -930,6 +930,7 @@ DEPENDENCIES
   rack-cors (~> 0.4.0)
   rack-oauth2 (~> 1.2.1)
   rails (= 4.2.4)
+  rails-deprecated_sanitizer (~> 1.0.3)
   raphael-rails (~> 2.1.2)
   rblineprof
   rdoc (~> 3.6)

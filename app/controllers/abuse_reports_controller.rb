@@ -10,7 +10,7 @@ class AbuseReportsController < ApplicationController
 
     if @abuse_report.save
       if current_application_settings.admin_notification_email.present?
-        AbuseReportMailer.delay.notify(@abuse_report.id)
+        AbuseReportMailer.deliver_later.notify(@abuse_report.id)
       end
 
       message = "Thank you for your report. A GitLab administrator will look into it shortly."

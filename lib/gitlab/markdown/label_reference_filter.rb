@@ -60,8 +60,7 @@ module Gitlab
       def url_for_label(project, label)
         h = Gitlab::Application.routes.url_helpers
         h.namespace_project_issues_path(project.namespace, project,
-                                        label_name: label.name,
-                                        only_path: context[:only_path])
+                                        label_name: label.name)
       end
 
       def render_colored_label(label)

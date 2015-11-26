@@ -78,7 +78,7 @@ module Ci
     end
 
     def mailer
-      Ci::Notify.delay
+      Ci::Notify.deliver_later
     end
   end
 end
