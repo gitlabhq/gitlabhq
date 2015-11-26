@@ -394,7 +394,7 @@ Usage of private and internal repositories will still require authentication.</p
       package = ref_package(ref)
       repository.add_package(package)
     end
-  rescue Exception => e
+  rescue => e
     # These errors are non-critical and have an impact on the exported
     # packages. These errors can be ignored and are logged for troubleshooting.
     log(e.message)
@@ -415,7 +415,7 @@ Usage of private and internal repositories will still require authentication.</p
     end
 
     root_json.write({ packages: [], includes: includes })
-  rescue Exception => e
+  rescue => e
     # These errors are critical indicating that we can not process
     # the root json file. Log and raise
     log(e.message)

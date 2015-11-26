@@ -41,7 +41,7 @@ module Gitlab
             end
           end
           @file.write({ 'packages' => data })
-        rescue Exception => e
+        rescue => e
           Gitlab::AppLogger.error("ProjectRepository: #{e.message}")
         end
 
@@ -63,7 +63,7 @@ module Gitlab
                     'Could not parse package list from the repository'
             end
             packages = data['packages']
-          rescue Exception => e
+          rescue => e
             raise ::Composer::InvalidRepositoryError,
                   "Invalid repository data in #{@file.path}, \
                   packages could not be loaded: \
