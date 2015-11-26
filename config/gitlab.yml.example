@@ -251,6 +251,15 @@ production: &base
           first_name: 'givenName'
           last_name:  'sn'
 
+        # Enable LDAP/AD to be queried for user avatars and if found
+        # be used in pereference to Gravatar service.
+        #
+        preempt_gravatar_with_ldap: false       # Use LDAP/AD thumbnail avatar image if found (default: false)
+        #local_avatar_storage_path: ''          # Local path to store images (default: /dev/shm/gitlab/avatars)
+        #avatar_plain_url: 'http://...'         # default: 'http://<config defined "host">/avatar/%{hash}_%{size}.jpg'
+        #avatar_secure_url: 'https://...'       # default: 'https://<config defined "host">/avatar/%{hash}_%{size}.jpg'
+        
+
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
       # so that GitLab can remember which LDAP server a user belongs to.

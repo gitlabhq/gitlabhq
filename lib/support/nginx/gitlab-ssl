@@ -239,5 +239,15 @@ server {
     add_header Cache-Control public;
   }
 
+  ## If you enable the option to preempt gravatar by first
+  ## trying to retrieve a users avatar thumbnail from LDAP,
+  ## then this defines the request and local directory path
+  ## used to serve the images.
+  location /avatar {
+    alias /dev/shm/gitlab/avatars;
+    expires 1w;
+    add_header Cache-Control public;
+  }
+
   error_page 502 /502.html;
 }

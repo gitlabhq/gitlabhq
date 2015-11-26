@@ -575,6 +575,7 @@ GEM
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     rinku (1.7.3)
+    rmagick (2.15.4)
     rotp (2.1.1)
     rouge (1.10.1)
     rqrcode (0.7.0)
@@ -943,3 +944,4 @@ DEPENDENCIES
 
 BUNDLED WITH
    1.10.6
+
