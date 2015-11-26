@@ -4,6 +4,7 @@ describe Repository do
   include RepoHelpers
 
   let(:repository) { create(:project).repository }
+  let(:user) { create(:user) }
 
   describe :branch_names_contains do
     subject { repository.branch_names_contains(sample_commit.id) }
@@ -99,5 +100,104 @@ describe Repository do
       it { expect(subject.startline).to eq(186) }
       it { expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n") }
     end
+
   end
+
+  describe :add_branch do
+    context 'when pre hooks were successful' do
+      it 'should run without errors' do
+        hook = double(trigger: true)
+        expect(Gitlab::Git::Hook).to receive(:new).twice.and_return(hook)
+
+        expect { repository.add_branch(user, 'new_feature', 'master') }.not_to raise_error
+      end
+
+      it 'should create the branch' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(true)
+
+        branch = repository.add_branch(user, 'new_feature', 'master')
+
+        expect(branch.name).to eq('new_feature')
+      end
+    end
+
+    context 'when pre hooks failed' do
+      it 'should get an error' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+
+        expect do
+          repository.add_branch(user, 'new_feature', 'master')
+        end.to raise_error(GitHooksService::PreReceiveError)
+      end
+
+      it 'should not create the branch' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+
+        expect do
+          repository.add_branch(user, 'new_feature', 'master')
+        end.to raise_error(GitHooksService::PreReceiveError)
+        expect(repository.find_branch('new_feature')).to be_nil
+      end
+    end
+  end
+
+  describe :rm_branch do
+    context 'when pre hooks were successful' do
+      it 'should run without errors' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(true)
+
+        expect { repository.rm_branch(user, 'feature') }.not_to raise_error
+      end
+
+      it 'should delete the branch' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(true)
+
+        expect { repository.rm_branch(user, 'feature') }.not_to raise_error
+
+        expect(repository.find_branch('feature')).to be_nil
+      end
+    end
+
+    context 'when pre hooks failed' do
+      it 'should get an error' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+
+        expect do
+          repository.rm_branch(user, 'new_feature')
+        end.to raise_error(GitHooksService::PreReceiveError)
+      end
+
+      it 'should not delete the branch' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+
+        expect do
+          repository.rm_branch(user, 'feature')
+        end.to raise_error(GitHooksService::PreReceiveError)
+        expect(repository.find_branch('feature')).not_to be_nil
+      end
+    end
+  end
+
+  describe :commit_with_hooks do
+    context 'when pre hooks were successful' do
+      it 'should run without errors' do
+        expect_any_instance_of(GitHooksService).to receive(:execute).and_return(true)
+
+        expect do
+          repository.commit_with_hooks(user, 'feature') { sample_commit.id }
+        end.not_to raise_error
+      end
+    end
+
+    context 'when pre hooks failed' do
+      it 'should get an error' do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+
+        expect do
+          repository.commit_with_hooks(user, 'feature') { sample_commit.id }
+        end.to raise_error(GitHooksService::PreReceiveError)
+      end
+    end
+  end
+
 end
