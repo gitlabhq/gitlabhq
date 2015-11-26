@@ -15,7 +15,7 @@ module Gitlab
           unless repository_file.is_a?(::Composer::Json::JsonFile)
             raise ::Composer::TypeError,
                   'repository_file type must be a \
-                  Composer::Json::JsonFile or superclass'
+                  Composer::Json::JsonFile or subclass'
           end
           super([])
           @file = repository_file
