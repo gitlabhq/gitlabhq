@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.2.2
+  - Fix: Raw private snippets access workflow
+
 v 8.2.1
   - Forcefully update builds that didn't want to update with state machine
   - Fix: saving GitLabCiService as Admin Template
