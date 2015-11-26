@@ -7,7 +7,7 @@
       .note-header
         - if note_editable?(note)
           .note-actions
-            = link_to edit_namespace_project_note_path(note.project.namespace, note.project, note), title: 'Edit comment', remote: true, class: 'js-note-edit' do
+            = link_to '#', title: 'Edit comment', class: 'js-note-edit' do
               = icon('pencil-square-o')
 
             = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'js-note-delete danger' do
@@ -35,30 +35,12 @@
               - if note.updated_by && note.updated_by != note.author
                 by #{link_to_member(note.project, note.updated_by, avatar: false, author_class: nil)}
 
-        - if note.superceded?(@notes)
-          - if note.upvote?
-            %span.vote.upvote.label.label-gray.strikethrough
-              = icon('thumbs-up')
-              \+1
-          - if note.downvote?
-            %span.vote.downvote.label.label-gray.strikethrough
-              = icon('thumbs-down')
-              \-1
-        - else
-          - if note.upvote?
-            %span.vote.upvote.label.label-success
-              = icon('thumbs-up')
-              \+1
-          - if note.downvote?
-            %span.vote.downvote.label.label-danger
-              = icon('thumbs-down')
-              \-1
-
-
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
+        - if note_editable?(note)
+          = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url
         .note-attachment

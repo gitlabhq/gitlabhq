@@ -1,6 +1,7 @@
 # Controller for viewing a repository's file structure
 class Projects::TreeController < Projects::ApplicationController
   include ExtractsPath
+  include CreatesMergeRequestForCommit
   include ActionView::Helpers::SanitizeHelper
 
   before_action :require_non_empty_project, except: [:new, :create]
@@ -43,7 +44,7 @@ class Projects::TreeController < Projects::ApplicationController
     if result && result[:status] == :success
       flash[:notice] = "The directory has been successfully created"
       respond_to do |format|
-        format.html { redirect_to namespace_project_blob_path(@project.namespace, @project, File.join(@new_branch, @dir_name)) }
+        format.html { redirect_to after_create_dir_path }
       end
     else
       flash[:alert] = message
@@ -52,6 +53,8 @@ class Projects::TreeController < Projects::ApplicationController
       end
     end
   end
+
+  private
 
   def assign_dir_vars
     @new_branch = params[:new_branch].present? ? sanitize(strip_tags(params[:new_branch])) : @ref
@@ -62,5 +65,13 @@ class Projects::TreeController < Projects::ApplicationController
       target_branch: @new_branch,
       commit_message: params[:commit_message],
     }
+  end
+
+  def after_create_dir_path
+    if create_merge_request?
+      new_merge_request_path
+    else
+      namespace_project_blob_path(@project.namespace, @project, File.join(@new_branch, @dir_name))
+    end
   end
 end

@@ -150,17 +150,15 @@ module Backup
     private
 
     def backup_contents
-      folders_to_backup + ["uploads.tar.gz", "builds.tar.gz", "artifacts.tar.gz", "backup_information.yml"]
+      folders_to_backup + archives_to_backup + ["backup_information.yml"]
+    end
+
+    def archives_to_backup
+      %w{uploads builds artifacts lfs}.map{ |name| (name + ".tar.gz") unless skipped?(name) }.compact
     end
 
     def folders_to_backup
-      folders = %w{repositories db}
-
-      if ENV["SKIP"]
-        return folders.reject{ |folder| ENV["SKIP"].include?(folder) }
-      end
-
-      folders
+      %w{repositories db}.reject{ |name| skipped?(name) }
     end
 
     def settings

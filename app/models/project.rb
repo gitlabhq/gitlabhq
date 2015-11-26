@@ -72,11 +72,10 @@ class Project < ActiveRecord::Base
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
   belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
   belongs_to :namespace
+  belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
   has_one :git_hook, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
-
-  belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
   # Project services
   has_many :services
@@ -132,9 +131,9 @@ class Project < ActiveRecord::Base
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
-
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
+
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
 
@@ -312,6 +311,10 @@ class Project < ActiveRecord::Base
       ) join_note_counts ON projects.id = join_note_counts.project_id"
 
       joins(join_body).reorder('join_note_counts.amount DESC')
+    end
+
+    def visible_to_user(user)
+      where(id: user.authorized_projects.select(:id).reorder(nil))
     end
   end
 

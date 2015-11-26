@@ -29,6 +29,7 @@ class @Notes
     $(document).on "ajax:success", "form.edit_note", @updateNote
 
     # Edit note link
+    $(document).on "click", ".js-note-edit", @showEditForm
     $(document).on "click", ".note-edit-cancel", @cancelEdit
 
     # Reopen and close actions for Issue/MR combined with note form submit
@@ -66,6 +67,7 @@ class @Notes
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
     $(document).off "ajax:success", "form.edit_note"
+    $(document).off "click", ".js-note-edit"
     $(document).off "click", ".note-edit-cancel"
     $(document).off "click", ".js-note-delete"
     $(document).off "click", ".js-note-attachment-delete"
@@ -111,12 +113,15 @@ class @Notes
   renderNote: (note) ->
     # render note if it not present in loaded list
     # or skip if rendered
-    if @isNewNote(note)
+    if @isNewNote(note) && !note.award
       @note_ids.push(note.id)
       $('ul.main-notes-list').
         append(note.html).
         syntaxHighlight()
       @initTaskList()
+
+    if note.award
+      awards_handler.addAwardToEmojiBar(note.note, note.emoji_path)
 
   ###
   Check if note does not exists on page
@@ -253,7 +258,6 @@ class @Notes
   ###
   addNote: (xhr, note, status) =>
     @renderNote(note)
-    @updateVotes()
 
   ###
   Called in response to the new note form being submitted
@@ -285,14 +289,13 @@ class @Notes
   Adds a hidden div with the original content of the note to fill the edit note form with
   if the user cancels
   ###
-  showEditForm: (note, formHTML) ->
-    nodeText = note.find(".note-text");
-    nodeText.hide()
-    note.find('.note-edit-form').remove()
-    nodeText.after(formHTML)
+  showEditForm: (e) ->
+    e.preventDefault()
+    note = $(this).closest(".note")
     note.find(".note-body > .note-text").hide()
     note.find(".note-header").hide()
-    form = note.find(".note-edit-form")
+    base_form = note.find(".note-edit-form")
+    form = base_form.clone().insertAfter(base_form)
     form.addClass('current-note-edit-form gfm-form')
     form.find('.div-dropzone').remove()
 
@@ -471,9 +474,6 @@ class @Notes
     form = $(".js-new-note-form")
     form = $(e.target).closest(".js-discussion-note-form")
     @removeDiscussionNoteForm(form)
-
-  updateVotes: ->
-    true
 
   ###
   Called after an attachment file has been selected.

@@ -85,13 +85,12 @@ module Gitlab
 
       def link_to_all
         project = context[:project]
-
         url = urls.namespace_project_url(project.namespace, project,
                                          only_path: context[:only_path])
         data = data_attribute(project: project.id)
-
         text = User.reference_prefix + 'all'
-        %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
+
+        link_tag(url, data, text)
       end
 
       def link_to_namespace(namespace)
@@ -105,16 +104,20 @@ module Gitlab
       def link_to_group(group, namespace)
         url = urls.group_url(group, only_path: context[:only_path])
         data = data_attribute(group: namespace.id)
-
         text = Group.reference_prefix + group
-        %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
+
+        link_tag(url, data, text)
       end
 
       def link_to_user(user, namespace)
         url = urls.user_url(user, only_path: context[:only_path])
         data = data_attribute(user: namespace.owner_id)
-
         text = User.reference_prefix + user
+
+        link_tag(url, data, text)
+      end
+
+      def link_tag(url, data, text)
         %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
       end
     end

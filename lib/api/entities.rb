@@ -172,7 +172,9 @@ module API
     end
 
     class MergeRequest < ProjectEntity
-      expose :target_branch, :source_branch, :upvotes, :downvotes
+      expose :target_branch, :source_branch
+      # deprecated, always returns 0
+      expose :upvotes,  :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
@@ -202,6 +204,7 @@ module API
       expose :author, using: Entities::UserBasic
       expose :created_at
       expose :system?, as: :system
+      # upvote? and downvote? are deprecated, always return false
       expose :upvote?, as: :upvote
       expose :downvote?, as: :downvote
     end
@@ -342,7 +345,8 @@ module API
     end
 
     class Release < Grape::Entity
-      expose :tag, :description
+      expose :tag, as: :tag_name
+      expose :description
     end
 
     class RepoTag < Grape::Entity

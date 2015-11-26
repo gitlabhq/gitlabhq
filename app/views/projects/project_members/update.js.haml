@@ -1,3 +1,2 @@
-- can_admin_project = can?(current_user, :admin_project, @project)
 :plain
-  $("##{dom_id(@project_member)}").replaceWith('#{escape_javascript(render("project_member", member: @project_member, current_user_can_admin_project: can_admin_project))}');
+  $("##{dom_id(@project_member)}").replaceWith('#{escape_javascript(render("project_member", member: @project_member))}');
