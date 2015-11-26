@@ -19,15 +19,15 @@ class CreateTagService < BaseService
     new_tag = repository.find_tag(tag_name)
 
     if new_tag
-      if release_description
-        release = project.releases.find_or_initialize_by(tag: tag_name)
-        release.update_attributes(description: release_description)
-      end
-
       push_data = create_push_data(project, current_user, new_tag)
       EventCreateService.new.push(project, current_user, push_data)
       project.execute_hooks(push_data.dup, :tag_push_hooks)
       project.execute_services(push_data.dup, :tag_push_hooks)
+
+      if release_description
+        CreateReleaseService.new(@project, @current_user).
+          execute(tag_name, release_description)
+      end
 
       success(new_tag)
     else

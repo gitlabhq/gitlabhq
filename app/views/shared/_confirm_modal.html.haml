@@ -9,12 +9,13 @@
         %p.cred.lead.js-confirm-text
 
         %p
-          This action can lead to data loss.
-          To prevent accidental actions we ask you to confirm your intention.
+          %span.js-warning-text
+            This action can lead to data loss.
+            To prevent accidental actions we ask you to confirm your intention.
           %br
           Please type
           %code.js-confirm-danger-match #{phrase}
-          to proceed or close this modal to cancel
+          to proceed or close this modal to cancel.
 
         .form-group
           = text_field_tag 'confirm_name_input', '', class: 'form-control js-confirm-danger-input'

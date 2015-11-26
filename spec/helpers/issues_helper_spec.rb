@@ -127,4 +127,30 @@ describe IssuesHelper do
     it { is_expected.to eq("!1, !2, or !3") }
   end
 
+  describe "#url_to_emoji" do
+    it "returns url" do
+      expect(url_to_emoji("smile")).to include("emoji/1F604.png")
+    end
+  end
+
+  describe "#emoji_list" do
+    it "returns url" do
+      expect(emoji_list).to be_kind_of(Array)
+    end
+  end
+
+  describe "#note_active_class" do
+    before do
+      @note = create :note
+      @note1 = create :note
+    end
+
+    it "returns empty string for unauthenticated user" do
+      expect(note_active_class(Note.all, nil)).to eq("")
+    end
+
+    it "returns active string for author" do
+      expect(note_active_class(Note.all, @note.author)).to eq("active")
+    end
+  end
 end

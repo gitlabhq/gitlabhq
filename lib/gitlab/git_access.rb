@@ -170,9 +170,9 @@ module Gitlab
     end
 
     def git_hook_check(user, project, ref, oldrev, newrev)
-      return build_status_object(true) unless project.git_hook
-
-      return build_status_object(true) unless newrev && oldrev
+      unless project.git_hook && newrev && oldrev
+        return build_status_object(true)
+      end
 
       git_hook = project.git_hook
 
@@ -182,8 +182,9 @@ module Gitlab
           return build_status_object(false, "You can not delete tag")
         end
       else
-        return build_status_object(true) unless git_hook.commit_validation?
-        return build_status_object(true) if Gitlab::Git.blank_ref?(newrev)
+        if Gitlab::Git.blank_ref?(newrev) || !git_hook.commit_validation?
+          return build_status_object(true)
+        end
 
         oldrev = project.default_branch if Gitlab::Git.blank_ref?(oldrev)
 
@@ -195,52 +196,8 @@ module Gitlab
           end
 
         commits.each do |commit|
-          if git_hook.commit_message_regex.present?
-            unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
-              return build_status_object(false, "Commit message does not follow the pattern '#{git_hook.commit_message_regex}'")
-            end
-          end
-
-          if git_hook.author_email_regex.present?
-            unless commit.committer_email =~ Regexp.new(git_hook.author_email_regex)
-              return build_status_object(false, "Committer's email '#{commit.committer_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
-            end
-
-            unless commit.author_email =~ Regexp.new(git_hook.author_email_regex)
-              return build_status_object(false, "Author's email '#{commit.author_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
-            end
-          end
-
-          # Check whether author is a GitLab member
-          if git_hook.member_check
-            unless User.existing_member?(commit.author_email.downcase)
-              return build_status_object(false, "Author '#{commit.author_email}' is not a member of team")
-            end
-
-            if commit.author_email.downcase != commit.committer_email.downcase
-              unless User.existing_member?(commit.committer_email.downcase)
-                return build_status_object(false, "Committer '#{commit.committer_email}' is not a member of team")
-              end
-            end
-          end
-
-          if git_hook.file_name_regex.present?
-            commit.diffs.each do |diff|
-              if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
-                return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern '#{git_hook.file_name_regex}'")
-              end
-            end
-          end
-
-          if git_hook.max_file_size > 0
-            commit.diffs.each do |diff|
-              next if diff.deleted_file
-
-              blob = project.repository.blob_at(commit.id, diff.new_path)
-              if blob.size > git_hook.max_file_size.megabytes
-                return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{git_hook.max_file_size} MB")
-              end
-            end
+          if status_object = check_commit(commit, git_hook)
+            return status_object
           end
         end
       end
@@ -249,6 +206,65 @@ module Gitlab
     end
 
     private
+
+    # If commit does not pass git hook validation the whole push should be rejected.
+    # This method should return nil if no error found or status object if there are some errors.
+    # In case of errors - all other checks will be canceled and push will be rejected.
+    def check_commit(commit, git_hook)
+      unless git_hook.commit_message_allowed?(commit.safe_message)
+        return build_status_object(false, "Commit message does not follow the pattern '#{git_hook.commit_message_regex}'")
+      end
+
+      unless git_hook.author_email_allowed?(commit.committer_email)
+        return build_status_object(false, "Committer's email '#{commit.committer_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
+      end
+
+      unless git_hook.author_email_allowed?(commit.author_email)
+        return build_status_object(false, "Author's email '#{commit.author_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
+      end
+
+      # Check whether author is a GitLab member
+      if git_hook.member_check
+        unless User.existing_member?(commit.author_email.downcase)
+          return build_status_object(false, "Author '#{commit.author_email}' is not a member of team")
+        end
+
+        if commit.author_email.downcase != commit.committer_email.downcase
+          unless User.existing_member?(commit.committer_email.downcase)
+            return build_status_object(false, "Committer '#{commit.committer_email}' is not a member of team")
+          end
+        end
+      end
+
+      if status_object = check_commit_diff(commit, git_hook)
+        return status_object
+      end
+
+      nil
+    end
+
+    def check_commit_diff(commit, git_hook)
+      if git_hook.file_name_regex.present?
+        commit.diffs.each do |diff|
+          if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
+            return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern '#{git_hook.file_name_regex}'")
+          end
+        end
+      end
+
+      if git_hook.max_file_size > 0
+        commit.diffs.each do |diff|
+          next if diff.deleted_file
+
+          blob = project.repository.blob_at(commit.id, diff.new_path)
+          if blob.size > git_hook.max_file_size.megabytes
+            return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{git_hook.max_file_size} MB")
+          end
+        end
+      end
+
+      nil
+    end
 
     def protected_branch_action(oldrev, newrev, branch_name)
       # we dont allow force push to protected branch
@@ -289,8 +305,6 @@ module Gitlab
         nil
       end
     end
-
-    protected
 
     def build_status_object(status, message = '')
       GitAccessStatus.new(status, message)

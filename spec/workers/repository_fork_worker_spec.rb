@@ -12,7 +12,6 @@ describe RepositoryForkWorker do
                                                    project.path_with_namespace,
                                                    fork_project.namespace.path).
                                                    and_return(true)
-      expect(ProjectCacheWorker).to receive(:perform_async)
 
       subject.perform(project.id,
                       project.path_with_namespace,

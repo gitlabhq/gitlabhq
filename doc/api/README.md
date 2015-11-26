@@ -10,6 +10,7 @@
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Commits](commits.md)
+- [Tags](tags.md)
 - [Branches](branches.md)
 - [Merge Requests](merge_requests.md)
 - [Issues](issues.md)

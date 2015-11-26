@@ -253,14 +253,6 @@ module ProjectsHelper
     filename_path(project, :version)
   end
 
-  def hidden_pass_url(original_url)
-    result = URI(original_url)
-    result.password = '*****' unless result.password.nil?
-    result
-  rescue
-    original_url
-  end
-
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
     namespace_project_wiki_path(proj.namespace, proj, page, url_params)

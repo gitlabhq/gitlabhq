@@ -12,7 +12,7 @@ module GroupsHelper
   end
 
   def should_user_see_group_roles?(user, group)
-    if user
+    if user && group
       user.is_admin? || group.members.exists?(user_id: user.id)
     else
       false

@@ -1,0 +1,70 @@
+- page_title "Mirror Repository"
+.pull-right
+  - if @project.mirror_last_update_success?
+    Successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+  %span.prepend-left-10
+    = render "shared/mirror_update_button"
+%h3.page-title
+  Mirror Repository
+
+%p.light
+  Set up your project to automatically have its branches, tags, and commits updated from an upstream repository every hour.
+
+%hr.clearfix
+
+- if @project.mirror_last_update_failed?
+  .panel.panel-danger
+    .panel-heading
+      The repository failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
+      - if @project.mirror_ever_updated_successfully?
+        Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+    .panel-body
+      %pre
+        :preserve
+          #{@project.import_error.try(:strip)}
+
+= form_for @project, url: namespace_project_mirror_path(@project.namespace, @project), html: { class: 'form-horizontal' } do |f|
+  - if @project.errors.any?
+    .alert.alert-danger
+      - @project.errors.full_messages.each do |msg|
+        %p= msg
+
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :mirror do
+          = f.check_box :mirror
+          %strong
+            Mirror repository
+        .help-block
+          Automatically update this project's branches, tags, and commits from the upstream repository every hour.
+
+  .form-group
+    = f.label :import_url, class: 'control-label' do
+      %span Git repository URL
+    .col-sm-10
+      = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+      .well.prepend-top-20
+        %ul
+          %li
+            The repository must be accessible over <code>http://</code>, <code>https://</code>, <code>ssh://</code> or <code>git://</code>.
+          %li
+            If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
+          %li
+            If your SSH repository is not publicly accessible, add the public SSH key of the GitLab server to the remote repository.
+          %li
+            The update action will time out after 10 minutes. For big repositories, use a clone/push combination.
+
+  .form-group
+    = f.label :mirror_user_id, class: 'control-label' do
+      Mirror user
+    .col-sm-10
+      = users_select_tag("project[mirror_user_id]", class: 'input-large', selected: @project.mirror_user_id || current_user.id,
+        first_user: true, current_user: true, push_code_to_protected_branches: true)
+      .help-block
+        This user will be the author of all events in the activity feed that are the result of an update,
+        like new branches being created or new commits being pushed to existing branches.
+        They need to have at least master access to this project.
+
+  .form-actions
+    = f.submit "Save Changes", class: "btn btn-create"

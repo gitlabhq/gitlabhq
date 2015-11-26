@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151114113410) do
+ActiveRecord::Schema.define(version: 20151118162244) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -436,6 +436,7 @@ ActiveRecord::Schema.define(version: 20151114113410) do
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
   add_index "issues", ["project_id"], name: "index_issues_on_project_id", using: :btree
+  add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title", using: :btree
 
   create_table "keys", force: true do |t|
@@ -491,8 +492,7 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.string   "file"
   end
 
-  add_index "lfs_objects", ["oid", "size"], name: "index_lfs_objects_on_oid_and_size", using: :btree
-  add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", using: :btree
+  add_index "lfs_objects", ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
 
   create_table "lfs_objects_projects", force: true do |t|
     t.integer  "lfs_object_id", null: false
@@ -608,6 +608,7 @@ ActiveRecord::Schema.define(version: 20151114113410) do
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
+  add_index "namespaces", ["public"], name: "index_namespaces_on_public", using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
   create_table "notes", force: true do |t|
@@ -624,12 +625,14 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.boolean  "system",        default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
+    t.boolean  "is_award",      default: false, null: false
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
   add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
   add_index "notes", ["created_at", "id"], name: "index_notes_on_created_at_and_id", using: :btree
   add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
+  add_index "notes", ["is_award"], name: "index_notes_on_is_award", using: :btree
   add_index "notes", ["line_code"], name: "index_notes_on_line_code", using: :btree
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
   add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
@@ -700,31 +703,36 @@ ActiveRecord::Schema.define(version: 20151114113410) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                 default: true,     null: false
-    t.boolean  "wall_enabled",                   default: true,     null: false
-    t.boolean  "merge_requests_enabled",         default: true,     null: false
-    t.boolean  "wiki_enabled",                   default: true,     null: false
+    t.boolean  "issues_enabled",                   default: true,     null: false
+    t.boolean  "wall_enabled",                     default: true,     null: false
+    t.boolean  "merge_requests_enabled",           default: true,     null: false
+    t.boolean  "wiki_enabled",                     default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                 default: "gitlab", null: false
+    t.string   "issues_tracker",                   default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",               default: true,     null: false
+    t.boolean  "snippets_enabled",                 default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",               default: 0,        null: false
-    t.boolean  "archived",                       default: false,    null: false
+    t.integer  "visibility_level",                 default: 0,        null: false
+    t.boolean  "archived",                         default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
-    t.float    "repository_size",                default: 0.0
+    t.float    "repository_size",                  default: 0.0
     t.text     "merge_requests_template"
-    t.integer  "star_count",                     default: 0,        null: false
-    t.boolean  "merge_requests_rebase_enabled",  default: false
+    t.integer  "star_count",                       default: 0,        null: false
+    t.boolean  "merge_requests_rebase_enabled",    default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "approvals_before_merge",         default: 0,        null: false
-    t.boolean  "reset_approvals_on_push",        default: true
-    t.integer  "commit_count",                   default: 0
-    t.boolean  "merge_requests_ff_only_enabled", default: false
+    t.integer  "approvals_before_merge",           default: 0,        null: false
+    t.boolean  "reset_approvals_on_push",          default: true
+    t.integer  "commit_count",                     default: 0
+    t.boolean  "merge_requests_ff_only_enabled",   default: false
     t.text     "issues_template"
+    t.boolean  "mirror",                           default: false,    null: false
+    t.datetime "mirror_last_update_at"
+    t.datetime "mirror_last_successful_update_at"
+    t.integer  "mirror_user_id"
+    t.text     "import_error"
   end
 
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
@@ -733,6 +741,7 @@ ActiveRecord::Schema.define(version: 20151114113410) do
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
+  add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branches", force: true do |t|
     t.integer  "project_id",                          null: false

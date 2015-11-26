@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.1.12'
+gem 'rails', '4.1.14'
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -206,7 +206,7 @@ gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 
-gem "gitlab-license", "~> 0.0.2"
+gem "gitlab-license", "~> 0.0.4"
 
 group :development do
   gem "foreman"
@@ -265,6 +265,7 @@ group :development, :test do
   gem 'simplecov', '~> 0.10.0', require: false
   gem 'flog', require: false
   gem 'flay', require: false
+  gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
 end

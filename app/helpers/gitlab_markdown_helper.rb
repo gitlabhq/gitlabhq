@@ -46,39 +46,13 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text, context = {})
-    return "" unless text.present?
-
-    context.reverse_merge!(
-      path:         @path,
-      pipeline:     :default,
-      project:      @project,
-      project_wiki: @project_wiki,
-      ref:          @ref
-    )
-
-    user = current_user if defined?(current_user)
-
-    html = Gitlab::Markdown.render(text, context)
-    Gitlab::Markdown.post_process(html, pipeline: context[:pipeline], project: @project, user: user)
+    process_markdown(text, context)
   end
 
   # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
   # with a custom pipeline depending on the content being rendered
   def gfm(text, options = {})
-    return "" unless text.present?
-
-    options.reverse_merge!(
-      path:         @path,
-      pipeline:     :default,
-      project:      @project,
-      project_wiki: @project_wiki,
-      ref:          @ref
-    )
-
-    user = current_user if defined?(current_user)
-
-    html = Gitlab::Markdown.gfm(text, options)
-    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], project: @project, user: user)
+    process_markdown(text, options, :gfm)
   end
 
   def asciidoc(text)
@@ -203,5 +177,27 @@ module GitlabMarkdownHelper
     else
       ''
     end
+  end
+
+  def process_markdown(text, options, method = :markdown)
+    return "" unless text.present?
+
+    options.reverse_merge!(
+      path:         @path,
+      pipeline:     :default,
+      project:      @project,
+      project_wiki: @project_wiki,
+      ref:          @ref
+    )
+
+    user = current_user if defined?(current_user)
+
+    html = if method == :gfm
+             Gitlab::Markdown.gfm(text, options)
+           else
+             Gitlab::Markdown.render(text, options)
+           end
+
+    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], project: @project, user: user)
   end
 end

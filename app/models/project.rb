@@ -72,6 +72,7 @@ class Project < ActiveRecord::Base
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
   belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
   belongs_to :namespace
+  belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
   has_one :git_hook, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
@@ -130,9 +131,9 @@ class Project < ActiveRecord::Base
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
-
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
+
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
   has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
 
@@ -161,6 +162,8 @@ class Project < ActiveRecord::Base
   validates :import_url,
     format: { with: /\A#{URI.regexp(%w(ssh git http https))}\z/, message: 'should be a valid url' },
     if: :external_import?
+  validates :import_url, presence: true, if: :mirror?
+  validates :mirror_user, presence: true, if: :mirror?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -185,6 +188,7 @@ class Project < ActiveRecord::Base
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
+  scope :mirror, -> { where(mirror: true) }
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -209,6 +213,21 @@ class Project < ActiveRecord::Base
 
     after_transition any => :started, do: :schedule_add_import_job
     after_transition any => :finished, do: :clear_import_data
+
+    after_transition started: :finished do |project, transaction|
+      if project.mirror?
+        timestamp = DateTime.now
+        project.mirror_last_update_at = timestamp
+        project.mirror_last_successful_update_at = timestamp
+        project.save
+      end
+    end
+
+    after_transition started: :failed do |project, transaction|
+      if project.mirror?
+        project.update(mirror_last_update_at: DateTime.now)
+      end
+    end
   end
 
   class << self
@@ -293,6 +312,10 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
+
+    def visible_to_user(user)
+      where(id: user.authorized_projects.select(:id).reorder(nil))
+    end
   end
 
   def team
@@ -316,16 +339,26 @@ class Project < ActiveRecord::Base
   end
 
   def add_import_job
-    if forked?
-      unless RepositoryForkWorker.perform_async(id, forked_from_project.path_with_namespace, self.namespace.path)
-        import_fail
+    if repository_exists?
+      if mirror?
+        RepositoryUpdateMirrorWorker.perform_async(self.id)
       end
+
+      return
+    end
+
+    if forked?
+      RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
     else
-      RepositoryImportWorker.perform_async(id)
+      RepositoryImportWorker.perform_async(self.id)
     end
   end
 
   def clear_import_data
+    update(import_error: nil)
+
+    ProjectCacheWorker.perform_async(self.id)
+
     self.import_data.destroy if self.import_data
   end
 
@@ -351,6 +384,62 @@ class Project < ActiveRecord::Base
 
   def import_finished?
     import_status == 'finished'
+  end
+
+  def safe_import_url
+    result = URI.parse(self.import_url)
+    result.password = '*****' unless result.password.nil?
+    result.to_s
+  rescue
+    original_url
+  end
+
+  def mirror_updated?
+    mirror? && self.mirror_last_update_at
+  end
+
+  def updating_mirror?
+    mirror? && import_in_progress? && !empty_repo?
+  end
+
+  def mirror_last_update_status
+    return unless mirror_updated?
+
+    if self.mirror_last_update_at == self.mirror_last_successful_update_at
+      :success
+    else
+      :failed
+    end
+  end
+
+  def mirror_last_update_success?
+    mirror_last_update_status == :success
+  end
+
+  def mirror_last_update_failed?
+    mirror_last_update_status == :failed
+  end
+
+  def mirror_ever_updated_successfully?
+    mirror_updated? && self.mirror_last_successful_update_at
+  end
+
+  def update_mirror
+    return unless mirror?
+
+    return if import_in_progress?
+
+    if import_failed?
+      import_retry
+    else
+      import_start
+    end
+  end
+
+  def fetch_mirror
+    return unless mirror?
+
+    repository.fetch_upstream(self.import_url)
   end
 
   def check_limit

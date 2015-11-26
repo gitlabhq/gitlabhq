@@ -83,20 +83,35 @@ module Gitlab
 
       # Update user ssh keys if they changed in LDAP
       def update_ssh_keys
-        user.keys.ldap.where.not(key: ldap_user.ssh_keys).each do |deleted_key|
-          Rails.logger.info "#{self.class.name}: removing LDAP SSH key #{deleted_key.key} from #{user.name} (#{user.id})"
-          unless deleted_key.destroy
-            Rails.logger.error "#{self.class.name}: failed to remove LDAP SSH key #{key.inspect} from #{user.name} (#{user.id})"
-          end
-        end
+        remove_old_ssh_keys
+        add_new_ssh_keys
+      end
 
-        (ldap_user.ssh_keys - user.keys.ldap.pluck(:key)).each do |key|
-          Rails.logger.info "#{self.class.name}: adding LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})"
+      # Add ssh keys that are in LDAP but not in GitLab
+      def add_new_ssh_keys
+        keys = ldap_user.ssh_keys - user.keys.ldap.pluck(:key)
+
+        keys.each do |key|
+          logger.info "#{self.class.name}: adding LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})"
           new_key = LDAPKey.new(title: "LDAP - #{ldap_config.sync_ssh_keys}", key: key)
           new_key.user = user
+
           unless new_key.save
-            Rails.logger.error "#{self.class.name}: failed to add LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})\n"\
+            logger.error "#{self.class.name}: failed to add LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})\n"\
               "error messages: #{new_key.errors.messages}"
+          end
+        end
+      end
+
+      # Remove ssh keys that do not exist in LDAP any more
+      def remove_old_ssh_keys
+        keys = user.keys.ldap.where.not(key: ldap_user.ssh_keys)
+
+        keys.each do |deleted_key|
+          logger.info "#{self.class.name}: removing LDAP SSH key #{deleted_key.key} from #{user.name} (#{user.id})"
+
+          unless deleted_key.destroy
+            logger.error "#{self.class.name}: failed to remove LDAP SSH key #{key.inspect} from #{user.name} (#{user.id})"
           end
         end
       end
@@ -142,7 +157,7 @@ module Gitlab
           if active_group_links.any?
             group.add_users([user.id], fetch_group_access(group, user, active_group_links), skip_notification: true)
           elsif group.last_owner?(user)
-            Rails.logger.warn "#{self.class.name}: LDAP group sync cannot remove #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
+            logger.warn "#{self.class.name}: LDAP group sync cannot remove #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
           else
             group.users.delete(user)
           end
@@ -175,6 +190,7 @@ module Gitlab
       end
 
       private
+
       def gitlab_groups_with_ldap_link
         ::Group.includes(:ldap_group_links).references(:ldap_group_links).
           where.not(ldap_group_links: { id: nil }).
@@ -189,6 +205,10 @@ module Gitlab
 
         # TODO: Test if nil value of current_access_level in handled properly
         [current_access_level, max_group_access_level].compact.max
+      end
+
+      def logger
+        Rails.logger
       end
     end
   end

@@ -97,6 +97,8 @@ module Ci
 
     state_machine :status, initial: :pending do
       after_transition any => [:success, :failed, :canceled] do |build, transition|
+        return unless build.gl_project
+
         project = build.project
 
         if project.web_hooks?
