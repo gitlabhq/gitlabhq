@@ -175,7 +175,7 @@ GET /projects/:id/services/campfire
 
 ## Composer
 
-Simple web-based real-time group chat
+List this project as a composer package.
 
 ### Create/Edit Composer service
 
