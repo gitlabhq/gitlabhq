@@ -19,7 +19,7 @@ gem "pg", '~> 0.18.2', group: :postgres
 # Authentication libraries
 gem 'devise',                 '~> 3.5.2'
 gem 'devise-async',           '~> 0.9.0'
-gem 'doorkeeper',             '~> 2.1.3'
+gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-facebook',      '~> 3.0.0'
@@ -64,9 +64,6 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 # Format dates and times
 # based on human-friendly examples
 gem "stamp", '~> 0.6.0'
-
-# Enumeration fields
-gem 'enumerize', '~> 0.7.0'
 
 # Pagination
 gem "kaminari", "~> 0.16.3"
@@ -157,7 +154,7 @@ gem "gemnasium-gitlab-service", "~> 0.2"
 gem "slack-notifier", "~> 1.2.0"
 
 # Asana integration
-gem 'asana', '~> 0.0.6'
+gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
