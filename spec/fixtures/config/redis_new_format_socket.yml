@@ -1,0 +1,6 @@
+development:
+  url: unix:/path/to/redis.sock
+test:
+  url: unix:/path/to/redis.sock
+production:
+  url: unix:/path/to/redis.sock

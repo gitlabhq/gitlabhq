@@ -57,6 +57,7 @@ module Gitlab
         config.delete(:url)
       else
         redis_hash = ::Redis::Store::Factory.extract_host_options_from_uri(redis_uri)
+        config.delete(:url)
         config.merge!(redis_hash)
       end
 
