@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'composer'
-require 'digest/crc32'
 
 describe Gitlab::Composer::Package::Loader::ProjectLoader do
   let(:project) { create(:project) }
