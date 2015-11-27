@@ -1,15 +1,12 @@
-require 'open3'
+require 'backup/files'
 
 module Backup
-  class Composer
-    attr_reader :name, :app_packages_json, :app_packages_dir, :app_packages_parent_dir, :backup_tarball
+  class Composer < Files
+    attr_reader :app_packages_json
 
     def initialize
-      @name = 'composer'
-      @app_packages_dir = File.realpath(Rails.root.join('public/p'))
-      @app_packages_parent_dir = File.realpath(File.join(@app_packages_dir, '..'))
-      @app_packages_json = File.join(@app_packages_parent_dir, 'packages.json')
-      @backup_tarball = File.join(Gitlab.config.backup.path, name + '.tar.gz')
+      super('composer', Rails.root.join('public/p'))
+      @app_packages_json = File.join(@files_parent_dir, 'packages.json')
     end
 
     # Backup public/packages.json and public/p to backup/composer.tar.gz
@@ -21,7 +18,7 @@ module Backup
       FileUtils.rm_f(backup_tarball)
 
       # Create backup tarball
-      run_pipeline!([%W(tar -cf - -C #{app_packages_dir} . -C #{app_packages_parent_dir} packages.json), %W(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+      run_pipeline!([%W(tar -cf - -C #{app_files_dir} . -C #{files_parent_dir} packages.json), %W(gzip -c -1)], out: [backup_tarball, 'w', 0600])
 
     end
 
@@ -33,18 +30,18 @@ module Backup
       backup_existing_packages_dir
 
       # Create packages dir
-      Dir.mkdir(app_packages_dir, 0700)
+      Dir.mkdir(app_files_dir, 0700)
 
       # Restore packages contents
-      run_pipeline!([%W(gzip -cd), %W(tar -C #{app_packages_dir} -xf -)], in: backup_tarball)
+      run_pipeline!([%W(gzip -cd), %W(tar -C #{app_files_dir} -xf -)], in: backup_tarball)
 
       # Restore packages.json to parent folder
-      FileUtils.mv(File.join(app_packages_dir, 'packages.json'), app_packages_json)
+      FileUtils.mv(File.join(app_files_dir, 'packages.json'), app_packages_json)
     end
 
     # Move public/packages.json to public/packages.timestamp.json
     def backup_existing_packages_json
-      timestamped_packages_json = File.join(app_packages_parent_dir, "packages.#{Time.now.to_i}.json")
+      timestamped_packages_json = File.join(files_parent_dir, "packages.#{Time.now.to_i}.json")
       if File.exists?(app_packages_json)
         FileUtils.mv(app_packages_json, File.expand_path(timestamped_packages_json))
       end
@@ -52,15 +49,10 @@ module Backup
 
     # Move public/p to public/p.timestamp
     def backup_existing_packages_dir
-      timestamped_packages_dir = File.join(app_packages_parent_dir, "p.#{Time.now.to_i}")
-      if File.exists?(app_packages_dir)
-        FileUtils.mv(app_packages_dir, File.expand_path(timestamped_packages_dir))
+      timestamped_packages_dir = File.join(files_parent_dir, "p.#{Time.now.to_i}")
+      if File.exists?(app_files_dir)
+        FileUtils.mv(app_files_dir, File.expand_path(timestamped_packages_dir))
       end
-    end
-
-    def run_pipeline!(cmd_list, options={})
-      status_list = Open3.pipeline(*cmd_list, options)
-      abort 'Backup failed' unless status_list.compact.all?(&:success?)
     end
   end
 end
