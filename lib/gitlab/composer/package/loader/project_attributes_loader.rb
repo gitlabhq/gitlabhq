@@ -40,11 +40,11 @@ module Gitlab
 
           def parse_time(project, ref)
             commit = project.repository.commit(ref.target)
-            commit.committed_date.strftime('%Y-%m-%d %H:%M:%S') unless commit.nil?
+            commit.committed_date.strftime('%Y-%m-%d %H:%M:%S') if commit
           end
 
           def parse_keywords(project)
-            project.tags.collect { |t| t['name'] } unless project.tags.nil?
+            project.tags.collect { |t| t['name'] }
           end
 
         end
