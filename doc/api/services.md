@@ -189,7 +189,7 @@ Parameters:
 
 - `package_mode` (**required**)
 - `package_type` (**required**)
-- `custom_package_type` (optional)
+- `custom_package_type` (**required**)
 - `export_branches` (optional)
 - `branch_filters` (optional)
 - `export_tags` (optional)
