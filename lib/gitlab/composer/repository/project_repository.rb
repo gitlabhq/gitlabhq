@@ -1,5 +1,3 @@
-require 'digest/crc32'
-
 module Gitlab
   module Composer
     module Repository
@@ -31,13 +29,10 @@ module Gitlab
         def write
           data = {}
           unless packages.nil? || packages.empty?
-            uid = 0
-            crc = Digest::CRC32.hexdigest(packages[0].name)
             packages.each do |package|
               next if package.instance_of?(::Composer::Package::AliasPackage)
               data[package.pretty_name] = {} unless data[package.pretty_name]
               data[package.pretty_name][package.pretty_version] = @dumper.dump(package)
-              data[package.pretty_name][package.pretty_version]['uid'] = "#{crc}" + (uid += 1).to_s
             end
           end
           @file.write({ 'packages' => data })

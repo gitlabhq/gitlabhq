@@ -1,6 +1,5 @@
 require 'spec_helper'
 require 'composer'
-require 'digest/crc32'
 
 describe Gitlab::Composer::Repository::ProjectRepository do
 
@@ -60,7 +59,6 @@ describe Gitlab::Composer::Repository::ProjectRepository do
     allow(json).to receive(:is_a?).once.and_return( true )
 
     repo = ProjectRepository.new(json)
-    crc = Digest::CRC32.hexdigest('mypkg')
 
     expect(json).to receive(:read).once.and_return({ 'packages' => {} })
     expect(json).to receive(:exists?).once.and_return( true )
@@ -71,8 +69,7 @@ describe Gitlab::Composer::Repository::ProjectRepository do
             'name' => 'mypkg',
             'type' => 'library',
             'version' => '0.1.10',
-            'version_normalized' => '0.1.10.0',
-            'uid' => "#{crc}1"
+            'version_normalized' => '0.1.10.0'
           }
         }
       }
