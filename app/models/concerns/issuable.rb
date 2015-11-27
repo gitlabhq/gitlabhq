@@ -8,6 +8,7 @@ module Issuable
   extend ActiveSupport::Concern
   include Participable
   include Mentionable
+  include StripAttribute
 
   included do
     belongs_to :author, class_name: "User"
@@ -51,6 +52,7 @@ module Issuable
 
     attr_mentionable :title, :description
     participant :author, :assignee, :notes_with_associations
+    strip_attributes :title
   end
 
   module ClassMethods
