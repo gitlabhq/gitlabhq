@@ -31,9 +31,9 @@ describe Gitlab::Composer::Package::Loader::ProjectLoader do
         expect(package.source_url).to eq(@project.url_to_repo)
         expect(package.source_type).to eq('git')
         expect(package.source_reference).to eq(@branch.target)
-        expect(package.dist_url).to eq(nil)
-        expect(package.dist_type).to eq(nil)
-        expect(package.dist_reference).to eq(nil)
+        expect(package.dist_url).to eq([@project.web_url, 'repository', 'archive.zip?ref=' + @branch.name].join('/'))
+        expect(package.dist_type).to eq('zip')
+        expect(package.dist_reference).to eq(@branch.target)
       end
     end
 
