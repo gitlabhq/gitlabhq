@@ -456,6 +456,15 @@ Gitlab::Application.routes.draw do
         end
 
         scope do
+          get(
+            '/tree_filter/*id',
+            to: 'tree_filter#show',
+            constraints: { id: /.+/, format: /(html|js)/ },
+            as: :tree_filter
+          )
+        end
+
+        scope do
           post(
               '/create_dir/*id',
               to: 'tree#create_dir',

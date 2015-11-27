@@ -1,0 +1,24 @@
+- ref = @ref
+- project = @project
+- tree_filter_list = @tree_filter_list
+- path = @path
+- id = @id
+- commit = @commit
+
+- page_title path.presence || "Files", ref
+- header_title project_title(project, "Files", project_files_path(project))
+
+#tree-holder.tree-holder.clearfix
+  .gray-content-block.top-block
+    = render 'projects/tree_filter/tree_filter_header',
+      tree_filter_list: tree_filter_list,
+      project: project,
+      ref: ref,
+      path: path
+
+  = render 'projects/tree_filter/tree_filter_content',
+    tree_filter_list: tree_filter_list,
+    project: project,
+    path: path,
+    id: id,
+    commit: commit

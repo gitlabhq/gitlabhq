@@ -1,0 +1,8 @@
+.tree-ref-holder
+  = render 'shared/ref_switcher', destination: 'tree_filter', path: path
+%ul.breadcrumb.repo-breadcrumb
+  %li
+    = link_to namespace_project_tree_path(project.namespace, project, ref) do
+      = project.path
+  %li.tree-filter
+    %input.form-control.tree-filter-input{type: "text", placeholder: 'Filter by path'}
