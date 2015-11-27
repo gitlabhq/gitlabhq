@@ -54,12 +54,12 @@ module Gitlab
       if redis_uri.scheme == 'unix'
         # Redis::Store does not handle Unix sockets well, so let's do it for them
         config[:path] = redis_uri.path
-        config.delete(:url)
       else
         redis_hash = ::Redis::Store::Factory.extract_host_options_from_uri(redis_uri)
         config.merge!(redis_hash)
       end
 
+      config.delete(:url)
       config
     end
 
