@@ -121,7 +121,7 @@ GEM
     coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.9.1.1)
+    coffee-script-source (1.10.0)
     colorize (0.7.7)
     connection_pool (2.2.0)
     coveralls (0.8.2)
@@ -370,7 +370,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-scrollto-rails (1.4.3)
       railties (> 3.1, < 5.0)
-    jquery-turbolinks (2.0.2)
+    jquery-turbolinks (2.1.0)
       railties (>= 3.1.0)
       turbolinks
     jquery-ui-rails (4.2.1)
@@ -853,7 +853,7 @@ DEPENDENCIES
   jquery-atwho-rails (~> 1.3.2)
   jquery-rails (~> 3.1.3)
   jquery-scrollto-rails (~> 1.4.3)
-  jquery-turbolinks (~> 2.0.1)
+  jquery-turbolinks (~> 2.1.0)
   jquery-ui-rails (~> 4.2.1)
   kaminari (~> 0.16.3)
   letter_opener (~> 1.1.2)
