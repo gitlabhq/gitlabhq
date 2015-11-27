@@ -1,21 +1,21 @@
 class @ProjectTreeFilter
   constructor: ->
 
-    #focus text input box
+    # focus text input box
     $(".tree-filter-input").focus()
 
-    #bind keyup event at text input box
+    # bind keyup event at text input box
     $(document).off "keyup", ".tree-filter-input"
     $(document).on "keyup", ".tree-filter-input", @treeFilter
 
     $(".tree-filter-input").trigger( "keyup" ) if $(".tree-filter-input").val()
 
-  #filter tree
+  # filter tree
   treeFilter: (e) ->
     searchCharArr = $(this).val().split("")
     regEx = makeRegEx searchCharArr
 
-    #file list count
+    # file list count
     showCnt = 20;
 
     $(this).closest('.tree-holder').find('#files-slider .tree-item').each (index, element) ->
@@ -24,7 +24,7 @@ class @ProjectTreeFilter
         result = regEx.exec text
 
         if result
-          markTxt = markText result, searchCharArr
+          markTxt = highlightText result, searchCharArr
           $(element).find("a").html(text.replace(result, markTxt))
           $(this).show()
           showCnt--;
@@ -33,17 +33,17 @@ class @ProjectTreeFilter
       else
         $(this).hide()
 
-  #mark text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
-  markText = (txt, charArr) ->
+  # highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
+  highlightText = (txt, charArr) ->
     result = ""
     target = txt.toString()
     for char in charArr
       charIdx = target.toLowerCase().indexOf char.toLowerCase()
       result += "#{target.substring 0, charIdx}#{(target.charAt charIdx).bold()}"
-      target = target.substring charIdx+1
+      target = target.substring charIdx + 1
     return result
 
-  #generate regular expression(abc -> a[^b]*b[^c]*c)
+  # generate regular expression(abc -> a[^b]*b[^c]*c)
   makeRegEx = (searchCharArr) ->
     regExStr = ""
     for char in searchCharArr

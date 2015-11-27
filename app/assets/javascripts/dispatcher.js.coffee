@@ -103,6 +103,8 @@ class Dispatcher
         new User()
         new Activities()
 
+    console.log("path: " + path)
+    console.log("path.first(): " + path.first())
     switch path.first()
       when 'admin'
         new Admin()
@@ -140,6 +142,8 @@ class Dispatcher
             shortcut_handler = new ShortcutsNavigation()
           when 'project_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
             shortcut_handler = new ShortcutsNavigation()
+          when 'tree_filter'
+            new ProjectTreeFilter()
 
 
     # If we haven't installed a custom shortcut handler, install the default one
