@@ -191,17 +191,17 @@ server {
   # Build artifacts should be submitted to this location
   location ~ ^/[\w\.-]+/[\w\.-]+/builds/download {
     client_max_body_size 0;
-      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-      error_page 418 = @gitlab-workhorse;
-      return 418;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
   }
 
   # Build artifacts should be submitted to this location
   location ~ /ci/api/v1/builds/[0-9]+/artifacts {
     client_max_body_size 0;
-      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-      error_page 418 = @gitlab-workhorse;
-      return 418;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
   }
 
   location @gitlab-workhorse {
