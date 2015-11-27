@@ -8,7 +8,3 @@
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
   .input-group-btn
     = clipboard_button(clipboard_target: '#project_clone')
-  - if project.kind_of?(Project)
-    .input-group-addon.has_tooltip{title: "#{visibility_level_label(project.visibility_level)} project", data: { container: "body" } }
-      .visibility-level-label
-        = visibility_level_icon(project.visibility_level)

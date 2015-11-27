@@ -90,7 +90,12 @@
   }
 
   .visibility-level-label {
+    @extend .btn;
+    @extend .btn-gray;
+
     color: $gray;
+    cursor: auto;
+
     i {
       color: inherit;
     }
