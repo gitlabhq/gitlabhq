@@ -23,6 +23,7 @@ v 8.2.2
   - Prevent "413 Request entity too large" errors when pushing large files with LFS
   - Fix invalid links within projects dashboard header
   - Make current user the first user in assignee dropdown in issues detail page (Stan Hu)
+  - Fix: duplicate email notifications on issue comments
 
 v 8.2.1
   - Forcefully update builds that didn't want to update with state machine
