@@ -246,6 +246,7 @@ class @Notes
       else
         previewButton.removeClass("turn-on").addClass "turn-off"
 
+    autosize(textarea)
     new Autosave textarea, [
       "Note"
       form.find("#note_commit_id").val()
