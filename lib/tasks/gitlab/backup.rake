@@ -14,6 +14,7 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:builds:create"].invoke
       Rake::Task["gitlab:backup:artifacts:create"].invoke
       Rake::Task["gitlab:backup:lfs:create"].invoke
+      Rake::Task["gitlab:backup:composer:create"].invoke
 
       backup = Backup::Manager.new
       backup.pack
@@ -36,6 +37,7 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:builds:restore"].invoke unless backup.skipped?("builds")
       Rake::Task["gitlab:backup:artifacts:restore"].invoke unless backup.skipped?("artifacts")
       Rake::Task["gitlab:backup:lfs:restore"].invoke unless backup.skipped?("lfs")
+      Rake::Task["gitlab:backup:composer:restore"].invoke unless backup.skipped?("composer")
       Rake::Task["gitlab:shell:setup"].invoke
 
       backup.cleanup
@@ -151,6 +153,25 @@ namespace :gitlab do
       task restore: :environment do
         $progress.puts "Restoring lfs objects ... ".blue
         Backup::Lfs.new.restore
+        $progress.puts "done".green
+      end
+    end
+
+    namespace :composer do
+      task create: :environment do
+        $progress.puts "Dumping composer packages ... ".blue
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("composer")
+          $progress.puts "[SKIPPED]".cyan
+        else
+          Backup::Composer.new.dump
+          $progress.puts "done".green
+        end
+      end
+
+      task restore: :environment do
+        $progress.puts "Restoring composer packages ... ".blue
+        Backup::Composer.new.restore
         $progress.puts "done".green
       end
     end

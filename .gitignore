@@ -44,3 +44,4 @@ tmp/
 vendor/bundle/*
 builds/*
 shared/*
+public/p/*

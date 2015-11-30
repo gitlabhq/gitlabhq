@@ -251,9 +251,18 @@ module API
       expose :push_events, :issues_events, :merge_requests_events, :tag_push_events, :note_events
       # Expose serialized properties
       expose :properties do |service, options|
-        field_names = service.fields.
-          select { |field| options[:include_passwords] || field[:type] != 'password' }.
-          map { |field| field[:name] }
+        field_names = []
+        service.fields.each do |field|
+          if field[:type] == 'fieldset'
+            field[:fields].each do |subfield|
+              if options[:include_passwords] || subfield[:type] != 'password'
+                field_names << subfield[:name]
+              end
+            end
+          elsif options[:include_passwords] || field[:type] != 'password'
+            field_names << field[:name]
+          end
+        end
         service.properties.slice(*field_names)
       end
     end

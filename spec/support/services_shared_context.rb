@@ -4,11 +4,33 @@ Service.available_services_names.each do |service|
     let(:service_method) { "#{service}_service".to_sym }
     let(:service_klass) { "#{service}_service".classify.constantize }
     let(:service_fields) { service_klass.new.fields }
-    let(:service_attrs_list) { service_fields.inject([]) {|arr, hash| arr << hash[:name].to_sym } }
+    let(:service_attrs_list) do
+      attrs = []
+      service_fields.each do |field|
+        if field[:type] == 'fieldset'
+          field[:fields].each do |subfield|
+            attrs << subfield[:name].to_sym
+          end
+        else
+          attrs << field[:name].to_sym
+        end
+      end
+      attrs
+    end
     let(:service_attrs_list_without_passwords) do
-      service_fields.
-        select { |field| field[:type] != 'password' }.
-        map { |field| field[:name].to_sym}
+      attrs = []
+      service_fields.each do |field|
+        if field[:type] == 'fieldset'
+          field[:fields].each do |subfield|
+            if subfield[:type] != 'password'
+              attrs << subfield[:name].to_sym
+            end
+          end
+        elsif field[:type] != 'password'
+          attrs << field[:name].to_sym
+        end
+      end
+      attrs
     end
     let(:service_attrs) do
       service_attrs_list.inject({}) do |hash, k|
@@ -18,6 +40,10 @@ Service.available_services_names.each do |service|
           hash.merge!(k => "http://example.com")
         elsif service == 'irker' && k == :recipients
           hash.merge!(k => 'irc://irc.network.net:666/#channel')
+        elsif service == 'composer' && k == :package_mode
+          hash.merge!(k => 'default')
+        elsif service == 'composer' && k == :package_type
+          hash.merge!(k => 'library')
         else
           hash.merge!(k => "someword")
         end

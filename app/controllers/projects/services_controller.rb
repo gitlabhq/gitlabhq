@@ -8,7 +8,9 @@ class Projects::ServicesController < Projects::ApplicationController
                     :push_events, :issues_events, :merge_requests_events, :tag_push_events,
                     :note_events, :send_from_committer_email, :disable_diffs, :external_wiki_url,
                     :notify, :color,
-                    :server_host, :server_port, :default_irc_uri, :enable_ssl_verification]
+                    :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
+                    :package_mode, :package_type, :custom_package_type, :custom_json,
+                    :export_branches, :branch_filters, :export_tags, :tag_filters]
 
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password]

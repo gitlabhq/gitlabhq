@@ -78,6 +78,7 @@ class Project < ActiveRecord::Base
   has_many :services
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
+  has_one :composer_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
