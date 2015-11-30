@@ -113,7 +113,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I click status link' do
-    find('.center-top-menu').click_link "Builds"
+    find('.commit-ci-menu').click_link "Builds"
   end
 
   step 'I see builds list' do
