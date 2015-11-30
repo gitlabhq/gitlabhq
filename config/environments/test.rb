@@ -32,4 +32,6 @@ Rails.application.configure do
   config.eager_load = false
 
   config.cache_store = :null_store
+
+  config.active_job.queue_adapter = :test
 end

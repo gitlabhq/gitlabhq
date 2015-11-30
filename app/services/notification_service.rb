@@ -148,7 +148,6 @@ class NotificationService
 
     # build notify method like 'note_commit_email'
     notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
-
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.id, note.id).deliver_later
     end
@@ -371,7 +370,7 @@ class NotificationService
     recipients = build_recipients(target, project, current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, current_user.id).deliver
+      mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
     end
   end
 
@@ -396,7 +395,7 @@ class NotificationService
     recipients = build_recipients(target, project, current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, status, current_user.id).deliver
+      mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
     end
   end
 
