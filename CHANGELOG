@@ -4,6 +4,7 @@ v 8.3.0 (unreleased)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
+  - Fire update hook from GitLab
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
