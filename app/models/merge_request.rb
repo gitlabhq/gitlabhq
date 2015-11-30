@@ -146,9 +146,16 @@ class MergeRequest < ActiveRecord::Base
   # This pattern supports cross-project references.
   def self.reference_pattern
     %r{
-      (#{Project.reference_pattern})?
-      #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
+      #{link_reference_pattern} |
+      (?:
+        (#{Project.reference_pattern})?
+        #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
+      )
     }x
+  end
+
+  def self.link_reference_pattern
+    super("merge_requests", /(?<merge_request>\d+)/)
   end
 
   def to_reference(from_project = nil)

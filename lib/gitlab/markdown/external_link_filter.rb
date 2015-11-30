@@ -10,6 +10,9 @@ module Gitlab
         doc.search('a').each do |node|
           next unless node.has_attribute?('href')
 
+          klass = node.attribute('class')
+          next if klass && klass.include?('gfm')
+
           link = node.attribute('href').value
 
           # Skip non-HTTP(S) links

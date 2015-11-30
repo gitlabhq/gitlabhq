@@ -131,5 +131,36 @@ module Gitlab::Markdown
         expect(result[:references][:commit]).not_to be_empty
       end
     end
+
+    context 'URL cross-project reference' do
+      let(:namespace) { create(:namespace, name: 'cross-reference') }
+      let(:project2)  { create(:project, :public, namespace: namespace) }
+      let(:commit)    { project2.commit }
+      let(:reference) { urls.namespace_project_commit_url(project2.namespace, project2, commit.id) }
+
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
+
+        expect(doc.css('a').first.attr('href')).
+          to eq urls.namespace_project_commit_url(project2.namespace, project2, commit.id)
+      end
+
+      it 'links with adjacent text' do
+        doc = filter("Fixed (#{reference}.)")
+
+        exp = Regexp.escape(project2.to_reference)
+        expect(doc.to_html).to match(/\(<a.+>#{commit.to_reference(project)}<\/a>\.\)/)
+      end
+
+      it 'ignores invalid commit IDs on the referenced project' do
+        exp = act = "Committed #{invalidate_reference(reference)}"
+        expect(filter(act).to_html).to eq exp
+      end
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("See #{reference}")
+        expect(result[:references][:commit]).not_to be_empty
+      end
+    end
   end
 end

@@ -12,7 +12,10 @@ module Gitlab
       def call
         doc.css('a.gfm').each do |node|
           unless user_can_reference?(node)
-            node.replace(node.text)
+            # The reference should be replaced by the original text,
+            # which is not always the same as the rendered text.
+            text = node.attribute('data-original') || node.text
+            node.replace(text)
           end
         end
 

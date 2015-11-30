@@ -40,7 +40,7 @@ module Gitlab
       # Returns a String replaced with the return of the block.
       def self.references_in(text)
         text.gsub(object_class.reference_pattern) do |match|
-          yield match, $~[object_sym].to_i, $~[:project]
+          yield match, $~[object_sym].to_i, $~[:project], $~
         end
       end
 
@@ -74,26 +74,41 @@ module Gitlab
       # Returns a String with references replaced with links. All links
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
       def object_link_filter(text)
-        references_in(text) do |match, id, project_ref|
+        references_in(text) do |match, id, project_ref, matches|
           project = project_from_ref(project_ref)
 
           if project && object = find_object(project, id)
-            title = escape_once("#{object_title}: #{object.title}")
+            title = escape_once(object_link_title(object))
             klass = reference_class(object_sym)
-            data  = data_attribute(project: project.id, object_sym => object.id)
-            url = url_for_object(object, project)
+            data  = data_attribute(project: project.id, object_sym => object.id, original: match)
+            url = matches[:url] || url_for_object(object, project)
+
+            text = object.to_reference(context[:project])
+
+            extras = object_link_text_extras(object, matches)
+            text += " (#{extras.join(", ")})" if extras.any?
 
             %(<a href="#{url}" #{data}
                  title="#{title}"
-                 class="#{klass}">#{match}</a>)
+                 class="#{klass}">#{text}</a>)
           else
             match
           end
         end
       end
 
-      def object_title
-        object_class.name.titleize
+      def object_link_text_extras(object, matches)
+        extras = []
+
+        if matches[:anchor] && matches[:anchor] =~ /\A\#note_(\d+)\z/
+          extras << "comment #{$1}"
+        end
+
+        extras
+      end
+
+      def object_link_title(object)
+        "#{object_class.name.titleize}: #{object.title}"
       end
     end
   end

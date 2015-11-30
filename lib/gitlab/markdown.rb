@@ -181,8 +181,6 @@ module Gitlab
         Gitlab::Markdown::RelativeLinkFilter,
         Gitlab::Markdown::EmojiFilter,
         Gitlab::Markdown::TableOfContentsFilter,
-        Gitlab::Markdown::AutolinkFilter,
-        Gitlab::Markdown::ExternalLinkFilter,
 
         Gitlab::Markdown::UserReferenceFilter,
         Gitlab::Markdown::IssueReferenceFilter,
@@ -192,6 +190,9 @@ module Gitlab
         Gitlab::Markdown::CommitRangeReferenceFilter,
         Gitlab::Markdown::CommitReferenceFilter,
         Gitlab::Markdown::LabelReferenceFilter,
+
+        Gitlab::Markdown::AutolinkFilter,
+        Gitlab::Markdown::ExternalLinkFilter,
 
         Gitlab::Markdown::TaskListFilter
       ]

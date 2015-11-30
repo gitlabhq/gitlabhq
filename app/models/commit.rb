@@ -73,16 +73,23 @@ class Commit
   # This pattern supports cross-project references.
   def self.reference_pattern
     %r{
-      (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>\h{6,40})
+      #{link_reference_pattern} |
+      (?:
+        (?:#{Project.reference_pattern}#{reference_prefix})?
+        (?<commit>\h{6,40})
+      )
     }x
+  end
+
+  def self.link_reference_pattern
+    super("commit", /(?<commit>\h{6,40})/)
   end
 
   def to_reference(from_project = nil)
     if cross_project_reference?(from_project)
-      "#{project.to_reference}@#{id}"
+      project.to_reference + self.class.reference_prefix + self.short_id
     else
-      id
+      self.short_id
     end
   end
 

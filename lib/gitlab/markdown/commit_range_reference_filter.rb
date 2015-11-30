@@ -5,24 +5,14 @@ module Gitlab
     # HTML filter that replaces commit range references with links.
     #
     # This filter supports cross-project references.
-    class CommitRangeReferenceFilter < ReferenceFilter
-      include CrossProjectReference
+    class CommitRangeReferenceFilter < AbstractReferenceFilter
+      def self.object_class
+        CommitRange
+      end
 
-      # Public: Find commit range references in text
-      #
-      #   CommitRangeReferenceFilter.references_in(text) do |match, commit_range, project_ref|
-      #     "<a href=...>#{commit_range}</a>"
-      #   end
-      #
-      # text - String text to search.
-      #
-      # Yields the String match, the String commit range, and an optional String
-      # of the external project reference.
-      #
-      # Returns a String replaced with the return of the block.
       def self.references_in(text)
         text.gsub(CommitRange.reference_pattern) do |match|
-          yield match, $~[:commit_range], $~[:project]
+          yield match, $~[:commit_range], $~[:project], $~
         end
       end
 
@@ -31,9 +21,9 @@ module Gitlab
         return unless project
 
         id = node.attr("data-commit-range")
-        range = CommitRange.new(id, project)
+        range = find_object(project, id)
 
-        return unless range.valid_commits?
+        return unless range
 
         { commit_range: range }
       end
@@ -44,48 +34,24 @@ module Gitlab
         @commit_map = {}
       end
 
-      def call
-        replace_text_nodes_matching(CommitRange.reference_pattern) do |content|
-          commit_range_link_filter(content)
-        end
+      def self.find_object(project, id)
+        range = CommitRange.new(id, project)
+
+        range.valid_commits? ? range : nil
       end
 
-      # Replace commit range references in text with links to compare the commit
-      # ranges.
-      #
-      # text - String text to replace references in.
-      #
-      # Returns a String with commit range references replaced with links. All
-      # links have `gfm` and `gfm-commit_range` class names attached for
-      # styling.
-      def commit_range_link_filter(text)
-        self.class.references_in(text) do |match, id, project_ref|
-          project = self.project_from_ref(project_ref)
-
-          range = CommitRange.new(id, project)
-
-          if range.valid_commits?
-            url = url_for_commit_range(project, range)
-
-            title = range.reference_title
-            klass = reference_class(:commit_range)
-            data  = data_attribute(project: project.id, commit_range: id)
-
-            project_ref += '@' if project_ref
-
-            %(<a href="#{url}" #{data}
-                 title="#{title}"
-                 class="#{klass}">#{project_ref}#{range}</a>)
-          else
-            match
-          end
-        end
+      def find_object(*args)
+        self.class.find_object(*args)
       end
 
-      def url_for_commit_range(project, range)
+      def url_for_object(range, project)
         h = Gitlab::Application.routes.url_helpers
         h.namespace_project_compare_url(project.namespace, project,
                                         range.to_param.merge(only_path: context[:only_path]))
+      end
+
+      def object_link_title(range)
+        range.reference_title
       end
     end
   end

@@ -89,7 +89,7 @@ module Gitlab::Markdown
     context 'cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, :public, namespace: namespace) }
-      let(:merge)     { create(:merge_request, source_project: project2) }
+      let(:merge)     { create(:merge_request, source_project: project2, target_project: project2) }
       let(:reference) { merge.to_reference(project) }
 
       it 'links to a valid reference' do
@@ -97,7 +97,7 @@ module Gitlab::Markdown
 
         expect(doc.css('a').first.attr('href')).
           to eq urls.namespace_project_merge_request_url(project2.namespace,
-                                                        project, merge)
+                                                        project2, merge)
       end
 
       it 'links with adjacent text' do
@@ -109,6 +109,31 @@ module Gitlab::Markdown
         exp = act = "Merge #{invalidate_reference(reference)}"
 
         expect(filter(act).to_html).to eq exp
+      end
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("Merge #{reference}")
+        expect(result[:references][:merge_request]).to eq [merge]
+      end
+    end
+
+    context 'URL cross-project reference' do
+      let(:namespace) { create(:namespace, name: 'cross-reference') }
+      let(:project2)  { create(:project, :public, namespace: namespace) }
+      let(:merge)     { create(:merge_request, source_project: project2, target_project: project2) }
+      let(:reference) { urls.namespace_project_merge_request_url(project2.namespace,
+                                                    project2, merge) + '/diffs#note_123' }
+
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
+
+        expect(doc.css('a').first.attr('href')).
+          to eq reference
+      end
+
+      it 'links with adjacent text' do
+        doc = filter("Merge (#{reference}.)")
+        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(merge.to_reference(project))} \(diffs, comment 123\)<\/a>\.\)/)
       end
 
       it 'adds to the results hash' do

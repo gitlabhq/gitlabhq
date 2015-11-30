@@ -114,5 +114,35 @@ module Gitlab::Markdown
         expect(result[:references][:snippet]).to eq [snippet]
       end
     end
+
+    context 'URL cross-project reference' do
+      let(:namespace) { create(:namespace, name: 'cross-reference') }
+      let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+      let(:snippet)   { create(:project_snippet, project: project2) }
+      let(:reference) { urls.namespace_project_snippet_url(project2.namespace, project2, snippet) }
+
+      it 'links to a valid reference' do
+        doc = filter("See #{reference}")
+
+        expect(doc.css('a').first.attr('href')).
+          to eq urls.namespace_project_snippet_url(project2.namespace, project2, snippet)
+      end
+
+      it 'links with adjacent text' do
+        doc = filter("See (#{reference}.)")
+        expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(snippet.to_reference(project))}<\/a>\.\)/)
+      end
+
+      it 'ignores invalid snippet IDs on the referenced project' do
+        exp = act = "See #{invalidate_reference(reference)}"
+
+        expect(filter(act).to_html).to eq exp
+      end
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("Snippet #{reference}")
+        expect(result[:references][:snippet]).to eq [snippet]
+      end
+    end
   end
 end
