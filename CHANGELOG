@@ -6,6 +6,7 @@ v 8.2.2
   - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
   - Fix: Raw private snippets access workflow
   - Prevent "413 Request entity too large" errors when pushing large files with LFS
+  - Ensure GitLab fires custom update hooks after commit via UI
 
 v 8.2.1
   - Forcefully update builds that didn't want to update with state machine
