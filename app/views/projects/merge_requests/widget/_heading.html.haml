@@ -1,10 +1,9 @@
 - ci_commit = @merge_request.ci_commit
 - if ci_commit
-  - status = ci_commit.status
   .mr-widget-heading
-    .ci_widget{class: "ci-#{status}"}
+    .ci_widget{class: "ci-#{ci_commit.status}"}
       = ci_status_icon(ci_commit)
-      %span CI build #{status}
+      %span CI build #{ci_status_label(ci_commit)}
       for #{@merge_request.last_commit_short_sha}.
       %span.ci-coverage
       = link_to "View build details", ci_status_path(ci_commit)

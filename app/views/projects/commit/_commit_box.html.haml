@@ -45,7 +45,7 @@
     = link_to ci_status_path(@ci_commit), class: "ci-status ci-#{@ci_commit.status}" do
       = ci_status_icon(@ci_commit)
       build:
-      = @ci_commit.status
+      = ci_status_label(@ci_commit)
 
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin
