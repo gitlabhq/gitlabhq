@@ -293,3 +293,12 @@ if Rails.env.test?
   Settings.gitlab['default_can_create_group'] = true
   Settings.gitlab['default_can_create_team']  = false
 end
+
+# Force a refresh of application settings at startup
+begin
+  ApplicationSetting.expire
+  Ci::ApplicationSetting.expire
+rescue
+  # Gracefully handle when Redis is not available. For example,
+  # omnibus may fail here during assets:precompile.
+end
