@@ -22,25 +22,35 @@
 
   .file-title {
     @extend .monospace;
+
+    line-height: 42px;
+    padding-top: 7px;
+    padding-bottom: 7px;
   }
 
   .editor-ref {
     background: $background-color;
-    padding: 11px 15px;
+    padding-right: $gl-padding;
     border-right: 1px solid $border-color;
-    display: inline-block;
-    margin: -5px -5px;
+    display: block;
+    float: left;
     margin-right: 10px;
   }
 
   .editor-file-name {
-    .new-file-name {
-      display: inline-block;
-      width: 450px;
-    }
+    @extend .monospace;
+    
+    float: left;
+    margin-right: 10px;
+  }
 
-    .form-control {
-      margin-top: -3px;
-    }
+  .new-file-name {
+    display: inline-block;
+    width: 450px;
+    float: left;
+  }
+
+  .select2 {
+    float: right;
   }
 }
