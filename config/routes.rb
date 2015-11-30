@@ -1,7 +1,7 @@
 require 'sidekiq/web'
 require 'api/api'
 
-Gitlab::Application.routes.draw do
+Rails.application.routes.draw do
   if Gitlab::Sherlock.enabled?
     namespace :sherlock do
       resources :transactions, only: [:index, :show] do

@@ -42,8 +42,10 @@ describe MergeRequests::UpdateService do
       before do
         allow(service).to receive(:execute_hooks)
 
-        @merge_request = service.execute(merge_request)
-        @merge_request.reload
+        perform_enqueued_jobs do
+          @merge_request = service.execute(merge_request)
+          @merge_request.reload
+        end
       end
 
       it { expect(@merge_request).to be_valid }

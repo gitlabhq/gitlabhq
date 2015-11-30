@@ -55,7 +55,7 @@ class GitlabCiService < CiService
   end
 
   def get_ci_commit(sha, ref)
-    Ci::Project.find(project.gitlab_ci_project).commits.find_by_sha!(sha)
+    Ci::Project.find(project.gitlab_ci_project.id).commits.find_by_sha!(sha)
   end
 
   def commit_status(sha, ref)
