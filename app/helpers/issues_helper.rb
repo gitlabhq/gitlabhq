@@ -84,7 +84,11 @@ module IssuesHelper
   end
 
   def merge_requests_sentence(merge_requests)
-    merge_requests.map(&:to_reference).to_sentence(last_word_connector: ', or ')
+    # Sorting based on the `!123` or `group/project!123` reference will sort
+    # local merge requests first.
+    merge_requests.map do |merge_request|
+      merge_request.to_reference(@project)
+    end.sort.to_sentence(last_word_connector: ', or ')
   end
 
   def url_to_emoji(name)
