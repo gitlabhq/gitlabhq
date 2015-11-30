@@ -148,7 +148,6 @@ module Gitlab::Markdown
       it 'links with adjacent text' do
         doc = filter("Fixed (#{reference}.)")
 
-        exp = Regexp.escape(project2.to_reference)
         expect(doc.to_html).to match(/\(<a.+>#{commit.to_reference(project)}<\/a>\.\)/)
       end
 

@@ -121,8 +121,7 @@ module Gitlab::Markdown
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, :public, namespace: namespace) }
       let(:merge)     { create(:merge_request, source_project: project2, target_project: project2) }
-      let(:reference) { urls.namespace_project_merge_request_url(project2.namespace,
-                                                    project2, merge) + '/diffs#note_123' }
+      let(:reference) { urls.namespace_project_merge_request_url(project2.namespace, project2, merge) + '/diffs#note_123' }
 
       it 'links to a valid reference' do
         doc = filter("See #{reference}")
