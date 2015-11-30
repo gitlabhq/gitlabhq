@@ -4,7 +4,7 @@
   %span.issue-id Merge Request ##{@merge_request.iid}
   %span.creator
     &middot;
-    created by #{link_to_member(@project, @merge_request.author, size: 24)}
+    opened by #{link_to_member(@project, @merge_request.author, size: 24)}
     &middot;
     = time_ago_with_tooltip(@merge_request.created_at)
     - if @merge_request.updated_at != @merge_request.created_at

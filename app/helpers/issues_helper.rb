@@ -44,14 +44,17 @@ module IssuesHelper
   end
 
   def bulk_update_milestone_options
-    options_for_select([['None (backlog)', -1]]) +
-        options_from_collection_for_select(project_active_milestones, 'id',
-                                           'title', params[:milestone_id])
+    milestones = project_active_milestones.to_a
+    milestones.unshift(Milestone::None)
+
+    options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
   end
 
   def milestone_options(object)
-    options_from_collection_for_select(object.project.milestones.active,
-                                       'id', 'title', object.milestone_id)
+    milestones = object.project.milestones.active.to_a
+    milestones.unshift(Milestone::None)
+
+    options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)
   end
 
   def issue_box_class(item)

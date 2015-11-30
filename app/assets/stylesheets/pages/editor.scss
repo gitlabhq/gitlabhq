@@ -19,20 +19,6 @@
       color: #B94A48;
     }
   }
-  .commit-button-annotation {
-    display: inline-block;
-    margin: 0;
-    padding: 2px;
-
-    > * {
-      float: left;
-    }
-
-    .message {
-      display: inline-block;
-      margin: 5px 8px 0 8px;
-    }
-  }
 
   .file-title {
     @extend .monospace;
@@ -56,11 +42,5 @@
     .form-control {
       margin-top: -3px;
     }
-  }
-
-  .form-actions {
-    margin: -$gl-padding;
-    margin-top: 0;
-    padding: $gl-padding
   }
 }

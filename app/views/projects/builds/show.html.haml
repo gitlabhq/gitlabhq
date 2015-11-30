@@ -1,4 +1,4 @@
-- page_title "#{@build.name} (#{@build.id})", "Builds"
+- page_title "#{@build.name} (##{@build.id})", "Builds"
 = render "header_title"
 
 .build-page
@@ -140,7 +140,7 @@
         %h4.title
           Commit
           .pull-right
-            %small 
+            %small
               = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
         %p
           %span.attr-name Branch:
@@ -162,7 +162,7 @@
 
       - if @builds.present?
         .build-widget
-          %h4.title #{pluralize(@builds.count(:id), "other build")} for 
+          %h4.title #{pluralize(@builds.count(:id), "other build")} for
           = succeed ":" do
             = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
           %table.table.builds

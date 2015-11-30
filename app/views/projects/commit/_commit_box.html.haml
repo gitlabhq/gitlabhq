@@ -13,13 +13,15 @@
         - unless @commit.parents.length > 1
           %li= link_to "Email Patches", namespace_project_commit_path(@project.namespace, @project, @commit, format: :patch)
         %li= link_to "Plain Diff",    namespace_project_commit_path(@project.namespace, @project, @commit, format: :diff)
-    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-primary btn-grouped" do
-      %span Browse Code »
+    = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-grouped" do
+      = icon('files-o')
+      Browse Files
   %div
 
 %p
   %span.light Commit
-  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
+  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace", data: { clipboard_text: @commit.id }
+  = clipboard_button
 .commit-info-row
   %span.light Authored by
   %strong

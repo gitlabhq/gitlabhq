@@ -1,5 +1,5 @@
 = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
-  %div.prepend-top-20
+  %div.prepend-top-default
     .issuable-context-title
       %label
         Assignee:
@@ -11,7 +11,7 @@
       - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
         = users_select_tag("#{issuable.class.table_name.singularize}[assignee_id]", placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: issuable.assignee_id, project: @target_project, null_user: true, current_user: true)
 
-  %div.prepend-top-20.clearfix
+  %div.prepend-top-default.clearfix
     .issuable-context-title
       %label
         Milestone:
@@ -25,25 +25,32 @@
         none
     .issuable-context-selectbox
       - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-        = f.select(:milestone_id, milestone_options(issuable), { include_blank: 'Select milestone' }, {class: 'select2 select2-compact js-select2 js-milestone'})
+        = f.select(:milestone_id, milestone_options(issuable), { include_blank: true }, { class: 'select2 select2-compact js-select2 js-milestone', data: { placeholder: 'Select milestone' }})
         = hidden_field_tag :issuable_context
         = f.submit class: 'btn hide'
 
+  - if issuable.labels.any?
+    %div.prepend-top-default.clearfix
+      .issuable-context-title
+        %label Labels
+      .merge-request-show-labels
+        - issuable.labels.each do |label|
+          = link_to_label(label)
+
   - if current_user
     - subscribed = issuable.subscribed?(current_user)
-    %div.prepend-top-20.clearfix
+    %div.prepend-top-default.clearfix
       .issuable-context-title
-        %label
-          Subscription:
-      %button.btn.btn-block.subscribe-button{:type => 'button'}
-        = icon('eye')
-        %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+        %label Subscription
       - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
       .subscription-status{data: {status: subscribtion_status}}
         .description-block.unsubscribed{class: ( 'hidden' if subscribed )}
           You're not receiving notifications from this thread.
         .description-block.subscribed{class: ( 'hidden' unless subscribed )}
           You're receiving notifications because you're subscribed to this thread.
+      %button.btn.btn-block.subscribe-button{:type => 'button'}
+        = icon('eye')
+        %span= subscribed ? 'Unsubscribe' : 'Subscribe'
 
 :javascript
   new Subscription("#{toggle_subscription_path(issuable)}");

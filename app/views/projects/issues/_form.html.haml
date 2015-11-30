@@ -1,9 +1,5 @@
-%div.issue-form-holder
-  %h3.page-title= @issue.new_record? ? "Create Issue" : "Edit Issue ##{@issue.iid}"
-  %hr
-
-  = form_for [@project.namespace.becomes(Namespace), @project, @issue], html: { class: 'form-horizontal issue-form gfm-form' } do |f|
-    = render 'shared/issuable/form', f: f, issuable: @issue
+= form_for [@project.namespace.becomes(Namespace), @project, @issue], html: { class: 'form-horizontal issue-form gfm-form js-requires-input' } do |f|
+  = render 'shared/issuable/form', f: f, issuable: @issue
 
 :javascript
   $('.assign-to-me-link').on('click', function(e){

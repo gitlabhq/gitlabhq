@@ -117,7 +117,7 @@ module CommitsHelper
       end
     end
     link_to(
-      "Browse Code »",
+      "Browse Files »",
       namespace_project_tree_path(project.namespace, project, commit),
       class: "pull-right"
     )
