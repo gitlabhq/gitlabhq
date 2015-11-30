@@ -87,7 +87,7 @@ describe "Admin::Users", feature: true  do
     end
 
     it "should call send mail" do
-      expect(Notify).to receive(:new_user_email)
+      expect_any_instance_of(NotificationService).to receive(:new_user)
 
       click_button "Create user"
     end

@@ -8,7 +8,7 @@
     = @project.name
 
 %p
-  Commit: #{link_to @build.short_sha, namespace_project_commit_path(@build.gl_project.namespace, @build.gl_project, @build.sha)}
+  Commit: #{link_to @build.short_sha, namespace_project_commit_url(@build.gl_project.namespace, @build.gl_project, @build.sha)}
 %p
   Author: #{@build.commit.git_author_name}
 %p
