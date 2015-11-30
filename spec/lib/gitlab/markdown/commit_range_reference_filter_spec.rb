@@ -8,8 +8,8 @@ module Gitlab::Markdown
     let(:commit1) { project.commit }
     let(:commit2) { project.commit("HEAD~2") }
 
-    let(:range)  { CommitRange.new("#{commit1.id}...#{commit2.id}") }
-    let(:range2) { CommitRange.new("#{commit1.id}..#{commit2.id}") }
+    let(:range)  { CommitRange.new("#{commit1.id}...#{commit2.id}", project) }
+    let(:range2) { CommitRange.new("#{commit1.id}..#{commit2.id}", project) }
 
     it 'requires project context' do
       expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
@@ -53,7 +53,7 @@ module Gitlab::Markdown
       it 'links with adjacent text' do
         doc = filter("See (#{reference}.)")
 
-        exp = Regexp.escape(range.to_s)
+        exp = Regexp.escape(range.to_reference)
         expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
       end
 
@@ -62,6 +62,7 @@ module Gitlab::Markdown
 
         expect(project).to receive(:valid_repo?).and_return(true)
         expect(project.repository).to receive(:commit).with(commit1.id.reverse)
+        expect(project.repository).to receive(:commit).with(commit2.id)
         expect(filter(act).to_html).to eq exp
       end
 

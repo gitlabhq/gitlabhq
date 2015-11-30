@@ -2,12 +2,12 @@
 #
 # Examples:
 #
-#   range = CommitRange.new('f3f85602...e86e1013')
+#   range = CommitRange.new('f3f85602...e86e1013', project)
 #   range.exclude_start?  # => false
 #   range.reference_title # => "Commits f3f85602 through e86e1013"
 #   range.to_s            # => "f3f85602...e86e1013"
 #
-#   range = CommitRange.new('f3f856029bc5f966c5a7ee24cf7efefdd20e6019..e86e1013709735be5bb767e2b228930c543f25ae')
+#   range = CommitRange.new('f3f856029bc5f966c5a7ee24cf7efefdd20e6019..e86e1013709735be5bb767e2b228930c543f25ae', project)
 #   range.exclude_start?  # => true
 #   range.reference_title # => "Commits f3f85602^ through e86e1013"
 #   range.to_param        # => {from: "f3f856029bc5f966c5a7ee24cf7efefdd20e6019^", to: "e86e1013709735be5bb767e2b228930c543f25ae"}
@@ -21,7 +21,7 @@ class CommitRange
   include ActiveModel::Conversion
   include Referable
 
-  attr_reader :sha_from, :notation, :sha_to
+  attr_reader :commit_from, :notation, :commit_to
 
   # Optional Project model
   attr_accessor :project
@@ -53,17 +53,22 @@ class CommitRange
   # project      - An optional Project model.
   #
   # Raises ArgumentError if `range_string` does not match `PATTERN`.
-  def initialize(range_string, project = nil)
+  def initialize(range_string, project)
+    @project = project
+
     range_string.strip!
 
     unless range_string.match(/\A#{PATTERN}\z/)
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"
     end
 
-    @exclude_start = !range_string.include?('...')
-    @sha_from, @notation, @sha_to = range_string.split(/(\.{2,3})/, 2)
+    ref_from, @notation, ref_to = range_string.split(/(\.{2,3})/, 2)
 
-    @project = project
+    @exclude_start = @notation == '..'
+    if project.valid_repo?
+      @commit_from = project.commit(ref_from)
+      @commit_to   = project.commit(ref_to)
+    end
   end
 
   def inspect
@@ -71,15 +76,16 @@ class CommitRange
   end
 
   def to_s
-    "#{sha_from[0..7]}#{notation}#{sha_to[0..7]}"
+    sha_from + notation + sha_to
   end
 
+  alias_method :id, :to_s
+
   def to_reference(from_project = nil)
-    # Not using to_s because we want the full SHAs
-    reference = sha_from + notation + sha_to
+    reference = Commit.truncate_sha(sha_from) + notation + Commit.truncate_sha(sha_to)
 
     if cross_project_reference?(from_project)
-      reference = project.to_reference + '@' + reference
+      reference = project.to_reference + self.class.reference_prefix + reference
     end
 
     reference
@@ -87,14 +93,14 @@ class CommitRange
 
   # Returns a String for use in a link's title attribute
   def reference_title
-    "Commits #{suffixed_sha_from} through #{sha_to}"
+    "Commits #{sha_start} through #{sha_to}"
   end
 
   # Return a Hash of parameters for passing to a URL helper
   #
   # See `namespace_project_compare_url`
   def to_param
-    { from: suffixed_sha_from, to: sha_to }
+    { from: sha_start, to: sha_to }
   end
 
   def exclude_start?
@@ -105,28 +111,42 @@ class CommitRange
   # repository
   #
   # project - An optional Project to check (default: `project`)
-  def valid_commits?(project = project)
-    return nil   unless project.present?
-    return false unless project.valid_repo?
-
-    commit_from.present? && commit_to.present?
+  def valid_commits?
+    commit_start.present? && commit_end.present?
   end
 
   def persisted?
     true
   end
 
-  def commit_from
-    @commit_from ||= project.repository.commit(suffixed_sha_from)
+  def sha_from
+    return nil unless @commit_from
+
+    @commit_from.id
   end
 
-  def commit_to
-    @commit_to ||= project.repository.commit(sha_to)
+  def sha_to
+    return nil unless @commit_to
+
+    @commit_to.id
   end
 
-  private
+  def sha_start
+    return nil unless sha_from
 
-  def suffixed_sha_from
-    sha_from + (exclude_start? ? '^' : '')
+    exclude_start? ? sha_from + '^' : sha_from
   end
+
+  def commit_start
+    return nil unless sha_start
+
+    if exclude_start?
+      @commit_start ||= project.commit(sha_start)
+    else
+      commit_from
+    end
+  end
+
+  alias_method :sha_end, :sha_to
+  alias_method :commit_end, :commit_to
 end
