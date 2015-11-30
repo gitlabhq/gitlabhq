@@ -13,6 +13,16 @@ If you do manually update a branch in the GitLab repository, the branch will bec
 
 ![Diverged branch](repository_mirroring/diverged_branch.png)
 
-You can set up Repository Mirroring by navigating to Project Settings &gt; Repository Mirroring.
+## Set it up
+
+### New projects
+
+When creating a new project, you can enable Repository Mirroring when you choose to import the repository from "Any repo by URL".
+
+![New project](repository_mirroring/new_project.png)
+
+### Existing projects
+
+For existing projects, you can set up Repository Mirroring by navigating to Project Settings &gt; Repository Mirroring.
 
 ![Settings](repository_mirroring/settings.png)
