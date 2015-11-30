@@ -6,6 +6,7 @@ v 8.3.0 (unreleased)
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Add ignore whitespace change option to commit view
   - Fire update hook from GitLab
+  - Fix: sort milestones by due date once again (Greg Smethells)
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
