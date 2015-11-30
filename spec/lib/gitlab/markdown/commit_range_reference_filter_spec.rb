@@ -5,8 +5,8 @@ module Gitlab::Markdown
     include FilterSpecHelper
 
     let(:project) { create(:project, :public) }
-    let(:commit1) { project.commit }
-    let(:commit2) { project.commit("HEAD~2") }
+    let(:commit1) { project.commit("HEAD~2") }
+    let(:commit2) { project.commit }
 
     let(:range)  { CommitRange.new("#{commit1.id}...#{commit2.id}", project) }
     let(:range2) { CommitRange.new("#{commit1.id}..#{commit2.id}", project) }
@@ -89,7 +89,7 @@ module Gitlab::Markdown
         link = doc.css('a').first
 
         expect(link).to have_attribute('data-commit-range')
-        expect(link.attr('data-commit-range')).to eq range.to_reference
+        expect(link.attr('data-commit-range')).to eq range.to_s
       end
 
       it 'supports an :only_path option' do
@@ -146,7 +146,8 @@ module Gitlab::Markdown
     context 'URL cross-project reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, :public, namespace: namespace) }
-      let(:reference) { urls.namespace_project_compare_url(project2.namespace, project2, range.to_param) }
+      let(:range)  { CommitRange.new("#{commit1.id}...master", project) }
+      let(:reference) { urls.namespace_project_compare_url(project2.namespace, project2, from: commit1.id, to: 'master') }
 
       before do
         range.project = project2
@@ -156,7 +157,7 @@ module Gitlab::Markdown
         doc = filter("See #{reference}")
 
         expect(doc.css('a').first.attr('href')).
-          to eq urls.namespace_project_compare_url(project2.namespace, project2, range.to_param)
+          to eq reference
       end
 
       it 'links with adjacent text' do

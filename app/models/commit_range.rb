@@ -22,16 +22,19 @@ class CommitRange
   include Referable
 
   attr_reader :commit_from, :notation, :commit_to
+  attr_reader :ref_from, :ref_to
 
   # Optional Project model
   attr_accessor :project
 
-  # See `exclude_start?`
-  attr_reader :exclude_start
-
-  # The beginning and ending SHAs can be between 6 and 40 hex characters, and
+  # The beginning and ending refs can be named or SHAs, and
   # the range notation can be double- or triple-dot.
-  PATTERN = /\h{6,40}\.{2,3}\h{6,40}/
+  REF_PATTERN = /[0-9a-zA-Z][0-9a-zA-Z_.-]*[0-9a-zA-Z\^]/
+  PATTERN = /#{REF_PATTERN}\.{2,3}#{REF_PATTERN}/
+
+  # In text references, the beginning and ending refs can only be SHAs
+  # between 6 and 40 hex characters.
+  STRICT_PATTERN = /\h{6,40}\.{2,3}\h{6,40}/
 
   def self.reference_prefix
     '@'
@@ -45,7 +48,7 @@ class CommitRange
       #{link_reference_pattern} |
       (?:
         (?:#{Project.reference_pattern}#{reference_prefix})?
-        (?<commit_range>#{PATTERN})
+        (?<commit_range>#{STRICT_PATTERN})
       )
     }x
   end
@@ -69,12 +72,16 @@ class CommitRange
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"
     end
 
-    ref_from, @notation, ref_to = range_string.split(/(\.{2,3})/, 2)
+    @ref_from, @notation, @ref_to = range_string.split(/(\.{2,3})/, 2)
 
-    @exclude_start = @notation == '..'
     if project.valid_repo?
-      @commit_from = project.commit(ref_from)
-      @commit_to   = project.commit(ref_to)
+      @commit_from = project.commit(@ref_from)
+      @commit_to   = project.commit(@ref_to)
+    end
+
+    if valid_commits?
+      @ref_from = Commit.truncate_sha(sha_from) if sha_from.start_with?(@ref_from)
+      @ref_to   = Commit.truncate_sha(sha_to)   if sha_to.start_with?(@ref_to)
     end
   end
 
@@ -89,7 +96,7 @@ class CommitRange
   alias_method :id, :to_s
 
   def to_reference(from_project = nil)
-    reference = Commit.truncate_sha(sha_from) + notation + Commit.truncate_sha(sha_to)
+    reference = ref_from + notation + ref_to
 
     if cross_project_reference?(from_project)
       reference = project.to_reference + self.class.reference_prefix + reference
@@ -111,7 +118,7 @@ class CommitRange
   end
 
   def exclude_start?
-    exclude_start
+    @notation == '..'
   end
 
   # Check if both the starting and ending commit IDs exist in a project's
