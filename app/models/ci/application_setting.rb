@@ -14,11 +14,15 @@ module Ci
     extend Ci::Model
 
     after_commit do
-      Rails.cache.write('ci_application_setting.last', self)
+      Rails.cache.write(cache_key, self)
+    end
+
+    def self.expire
+      Rails.cache.delete(cache_key)
     end
 
     def self.current
-      Rails.cache.fetch('ci_application_setting.last') do
+      Rails.cache.fetch(cache_key) do
         Ci::ApplicationSetting.last
       end
     end
@@ -28,6 +32,10 @@ module Ci
         all_broken_builds: Settings.gitlab_ci['all_broken_builds'],
         add_pusher: Settings.gitlab_ci['add_pusher'],
       )
+    end
+
+    def self.cache_key
+      'ci_application_setting.last'
     end
   end
 end

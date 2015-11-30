@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.2.2
+  - Ensure cached application settings are refreshed at startup (Stan Hu)
   - Fix: Raw private snippets access workflow
   - Prevent "413 Request entity too large" errors when pushing large files with LFS
 
