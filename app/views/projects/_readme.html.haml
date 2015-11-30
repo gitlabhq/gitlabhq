@@ -1,4 +1,4 @@
-- unless readme = @repository.readme
+- if readme = @repository.readme
   %article.readme-holder
     .pull-right
       - if can?(current_user, :push_code, @project)
