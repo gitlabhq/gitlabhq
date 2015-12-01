@@ -5,9 +5,9 @@ module Notes
       note.author = current_user
       note.system = false
 
-      if contains_emoji_only?(params[:note])
+      if award_emoji_note?
         note.is_award = true
-        note.note = emoji_name(params[:note])
+        note.note = emoji_name
       end
 
       if note.save
@@ -34,12 +34,23 @@ module Notes
       note.project.execute_services(note_data, :note_hooks)
     end
 
-    def contains_emoji_only?(note)
-      note =~ /\A:[-_+[:alnum:]]*:\s?\z/
+    private
+
+    def award_emoji_note?
+      # We support award-emojis only in issue discussion
+      issue_comment? && contains_emoji_only?
     end
 
-    def emoji_name(note)
-      note.match(/\A:([-_+[:alnum:]]*):\s?/)[1]
+    def contains_emoji_only?
+      params[:note] =~ /\A:[-_+[:alnum:]]*:\s?\z/
+    end
+
+    def issue_comment?
+      params[:noteable_type] == 'Issue'
+    end
+
+    def emoji_name
+      params[:note].match(/\A:([-_+[:alnum:]]*):\s?/)[1]
     end
   end
 end
