@@ -14,7 +14,7 @@ module Gitlab
           unless user_can_reference?(node)
             # The reference should be replaced by the original text,
             # which is not always the same as the rendered text.
-            text = node.attribute('data-original') || node.text
+            text = node.attr('data-original') || node.text
             node.replace(text)
           end
         end

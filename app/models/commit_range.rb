@@ -44,11 +44,8 @@ class CommitRange
   # This pattern supports cross-project references.
   def self.reference_pattern
     %r{
-      #{link_reference_pattern} |
-      (?:
-        (?:#{Project.reference_pattern}#{reference_prefix})?
-        (?<commit_range>#{STRICT_PATTERN})
-      )
+      (?:#{Project.reference_pattern}#{reference_prefix})?
+      (?<commit_range>#{STRICT_PATTERN})
     }x
   end
 

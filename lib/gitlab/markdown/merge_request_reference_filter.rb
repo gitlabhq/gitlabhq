@@ -24,7 +24,7 @@ module Gitlab
       def object_link_text_extras(object, matches)
         extras = super
 
-        if matches[:path] && matches[:path] == '/diffs'
+        if matches.names.include?("path") && matches[:path] && matches[:path] == '/diffs'
           extras.unshift "diffs"
         end
 

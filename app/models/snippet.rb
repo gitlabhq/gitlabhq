@@ -60,11 +60,8 @@ class Snippet < ActiveRecord::Base
   # This pattern supports cross-project references.
   def self.reference_pattern
     %r{
-      #{link_reference_pattern} |
-      (?:
-        (#{Project.reference_pattern})?
-        #{Regexp.escape(reference_prefix)}(?<snippet>\d+)
-      )
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}(?<snippet>\d+)
     }x
   end
 

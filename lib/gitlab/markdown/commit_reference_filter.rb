@@ -10,8 +10,8 @@ module Gitlab
         Commit
       end
 
-      def self.references_in(text)
-        text.gsub(Commit.reference_pattern) do |match|
+      def self.references_in(text, pattern = Commit.reference_pattern)
+        text.gsub(pattern) do |match|
           yield match, $~[:commit], $~[:project], $~
         end
       end

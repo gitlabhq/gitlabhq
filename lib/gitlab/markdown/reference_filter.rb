@@ -122,6 +122,29 @@ module Gitlab
         doc
       end
 
+      def replace_link_nodes_matching(pattern)
+        return doc if project.nil?
+
+        doc.search('a').each do |node|
+          klass = node.attr('class')
+          next if klass && klass.include?('gfm')
+
+          link = node.attr('href')
+          text = node.text
+
+          # Ignore ending punctionation like periods or commas
+          next unless link == text && text =~ /\A#{pattern}/
+
+          html = yield text
+
+          next if html == text
+
+          node.replace(html)
+        end
+
+        doc
+      end
+
       # Ensure that a :project key exists in context
       #
       # Note that while the key might exist, its value could be nil!
