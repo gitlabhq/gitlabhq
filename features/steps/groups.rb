@@ -26,7 +26,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'Group "Owned" has a public project "Public-project"' do
-    group = Group.find_by(name: "Owned")
+    group = owned_group
 
     @project = create :empty_project, :public,
                  group: group,
@@ -91,7 +91,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see group "Owned" projects list' do
-    Group.find_by(name: "Owned").projects.each do |project|
+    owned_group.projects.each do |project|
       expect(page).to have_link project.name
     end
   end
@@ -214,12 +214,12 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I change group "Owned" avatar' do
     attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"
-    Group.find_by(name: "Owned").reload
+    owned_group.reload
   end
 
   step 'I should see new group "Owned" avatar' do
-    expect(Group.find_by(name: "Owned").avatar).to be_instance_of AvatarUploader
-    expect(Group.find_by(name: "Owned").avatar.url).to eq "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/banana_sample.gif"
+    expect(owned_group.avatar).to be_instance_of AvatarUploader
+    expect(owned_group.avatar.url).to eq "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -229,16 +229,16 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I have group "Owned" avatar' do
     attach_file(:group_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
     click_button "Save group"
-    Group.find_by(name: "Owned").reload
+    owned_group.reload
   end
 
   step 'I remove group "Owned" avatar' do
     click_link "Remove avatar"
-    Group.find_by(name: "Owned").reload
+    owned_group.reload
   end
 
   step 'I should not see group "Owned" avatar' do
-    expect(Group.find_by(name: "Owned").avatar?).to eq false
+    expect(owned_group.avatar?).to eq false
   end
 
   step 'I should not see the "Remove avatar" button' do
@@ -337,14 +337,36 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     end
   end
 
-  protected
+  step 'LDAP enabled' do
+    allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
+  end
+
+  step 'LDAP disabled' do
+    allow(Gitlab.config.ldap).to receive(:enabled).and_return(false)
+  end
+
+  step 'I add a new LDAP synchronization' do
+    page.within('form#new_ldap_group_link') do
+      find('#ldap_group_link_cn', visible: false).set('my-group-cn')
+      # fill_in('LDAP Group cn', with: 'my-group-cn', visible: false)
+      select 'Developer', from: "ldap_group_link_group_access"
+      click_button 'Add synchronization'
+    end
+  end
+
+  step 'I see a new LDAP synchronization listed' do
+    expect(page).not_to have_content('No synchronizations yet')
+    expect(page).to have_content('As Developer on ldap server')
+  end
+
+  private
 
   def assigned_to_me(key)
     project.send(key).where(assignee_id: current_user.id)
   end
 
   def project
-    Group.find_by(name: "Owned").projects.first
+    owned_group.projects.first
   end
 
   def group_milestone
@@ -411,27 +433,5 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
             assignee: current_user,
             author: current_user,
             milestone: milestone2_project3
-  end
-
-  step 'LDAP enabled' do
-    allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
-  end
-
-  step 'LDAP disabled' do
-    allow(Gitlab.config.ldap).to receive(:enabled).and_return(false)
-  end
-
-  step 'I add a new LDAP synchronization' do
-    page.within('form#new_ldap_group_link') do
-      find('#ldap_group_link_cn', visible: false).set('my-group-cn')
-      # fill_in('LDAP Group cn', with: 'my-group-cn', visible: false)
-      select 'Developer', from: "ldap_group_link_group_access"
-      click_button 'Add synchronization'
-    end
-  end
-
-  step 'I see a new LDAP synchronization listed' do
-    expect(page).not_to have_content('No synchronizations yet')
-    expect(page).to have_content('As Developer on ldap server')
   end
 end

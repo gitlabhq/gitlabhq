@@ -8,7 +8,7 @@
 # If you change this file in a Merge Request, please also create a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 
 if Rails.env.production?
-  Gitlab::Application.config.action_mailer.delivery_method = :smtp
+  Rails.application.config.action_mailer.delivery_method = :smtp
 
   ActionMailer::Base.smtp_settings = {
     address: "email.server.com",

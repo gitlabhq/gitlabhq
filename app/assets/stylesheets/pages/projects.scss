@@ -90,7 +90,12 @@
   }
 
   .visibility-level-label {
+    @extend .btn;
+    @extend .btn-gray;
+
     color: $gray;
+    cursor: auto;
+
     i {
       color: inherit;
     }
@@ -177,6 +182,11 @@
 
     &:active {
       outline: none;
+    }
+
+    &.btn-clipboard {
+      padding-left: 15px;
+      padding-right: 15px;
     }
   }
 

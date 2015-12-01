@@ -45,4 +45,8 @@ module SharedGroup
     project.team << [user, :master]
     @project_count += 1
   end
+
+  def owned_group
+    @owned_group ||= Group.find_by(name: "Owned")
+  end
 end

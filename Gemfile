@@ -1,6 +1,10 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.1.14'
+gem 'rails', '4.2.4'
+gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+
+# Responders respond_to and respond_with
+gem 'responders', '~> 2.0'
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -16,7 +20,7 @@ gem "pg", '~> 0.18.2', group: :postgres
 # Authentication libraries
 gem 'devise',                 '~> 3.5.2'
 gem 'devise-async',           '~> 0.9.0'
-gem 'doorkeeper',             '~> 2.1.3'
+gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-facebook',      '~> 3.0.0'
@@ -29,7 +33,7 @@ gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
 gem 'gssapi', group: :kerberos
-gem 'rack-oauth2',            '~> 1.0.5'
+gem 'rack-oauth2',            '~> 1.2.1'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
@@ -97,9 +101,10 @@ gem 'redcarpet',     '~> 3.3.3'
 gem 'RedCloth',      '~> 4.2.9'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '~> 0.9.12'
-gem 'creole',        '~>0.3.6'
+gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
+gem 'net-ssh',       '~> 3.0.1'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
@@ -128,7 +133,7 @@ gem "httparty", '~> 0.13.3'
 
 # Colored output to console
 gem "colored", '~> 1.2'
-gem "colorize", '~> 0.5.8'
+gem "colorize", '~> 0.7.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -156,7 +161,7 @@ gem "gemnasium-gitlab-service", "~> 0.2"
 gem "slack-notifier", "~> 1.2.0"
 
 # Asana integration
-gem 'asana', '~> 0.0.6'
+gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -189,13 +194,13 @@ gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
-gem 'jquery-turbolinks', '~> 2.0.1'
+gem 'jquery-turbolinks', '~> 2.1.0'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.0'
 gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.1'
-gem 'gon',                '~> 5.0.0'
+gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 3.1.3'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
@@ -218,6 +223,7 @@ group :development do
   gem 'rerun', '~> 0.10.0'
   gem 'bullet', require: false
   gem 'rblineprof', platform: :mri, require: false
+  gem 'web-console', '~> 2.0'
 
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
@@ -274,7 +280,7 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
-  gem 'test_after_commit', '~> 0.2.2'
+  gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack'
 end
 

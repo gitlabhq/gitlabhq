@@ -33,13 +33,15 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_shell_ssh_path_prefix
+      user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
+
       if gitlab_shell.ssh_port != 22
-        "ssh://#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:#{gitlab_shell.ssh_port}/"
+        "ssh://#{user_host}:#{gitlab_shell.ssh_port}/"
       else
         if gitlab_shell.ssh_host.include? ':'
-          "[#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}]:"
+          "[#{user_host}]:"
         else
-          "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+          "#{user_host}:"
         end
       end
     end
@@ -331,4 +333,13 @@ if Rails.env.test?
   Settings.gitlab['default_projects_limit']   = 42
   Settings.gitlab['default_can_create_group'] = true
   Settings.gitlab['default_can_create_team']  = false
+end
+
+# Force a refresh of application settings at startup
+begin
+  ApplicationSetting.expire
+  Ci::ApplicationSetting.expire
+rescue
+  # Gracefully handle when Redis is not available. For example,
+  # omnibus may fail here during assets:precompile.
 end

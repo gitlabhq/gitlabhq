@@ -325,13 +325,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request_params
-    permitted = params.require(:merge_request).permit(
+    params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, label_ids: []
     )
-    params[:merge_request][:title].strip! if params[:merge_request][:title]
-    permitted
   end
 
   # Make sure merge requests created before 8.0

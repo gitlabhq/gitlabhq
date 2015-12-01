@@ -84,6 +84,19 @@ describe Gitlab::Sherlock::Transaction do
     end
   end
 
+  describe '#query_duration' do
+    it 'returns the total query duration in seconds' do
+      time   = Time.now
+      query1 = Gitlab::Sherlock::Query.new('SELECT 1', time, time + 5)
+      query2 = Gitlab::Sherlock::Query.new('SELECT 2', time, time + 2)
+
+      transaction.queries << query1
+      transaction.queries << query2
+
+      expect(transaction.query_duration).to be_within(0.1).of(7.0)
+    end
+  end
+
   describe '#to_param' do
     it 'returns the transaction ID' do
       expect(transaction.to_param).to eq(transaction.id)

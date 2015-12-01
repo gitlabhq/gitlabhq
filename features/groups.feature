@@ -186,6 +186,8 @@ Feature: Groups
     When I press create mileston button
     Then milestone in each project should be created
 
+
+
   # Group projects in settings
   Scenario: I should see all projects in the project list in settings
     Given Group "Owned" has archived project

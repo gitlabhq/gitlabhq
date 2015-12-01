@@ -665,11 +665,11 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def avatar_url(size = nil)
+  def avatar_url(size = nil, scale = 2)
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     else
-      GravatarService.new.execute(email, size)
+      GravatarService.new.execute(email, size, scale)
     end
   end
 
