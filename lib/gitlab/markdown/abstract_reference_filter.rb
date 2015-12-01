@@ -2,8 +2,8 @@ require 'gitlab/markdown'
 
 module Gitlab
   module Markdown
-    # Issues, Snippets and Merge Requests shares similar functionality in refernce filtering.
-    # All this functionality moved to this class
+    # Issues, Snippets, Merge Requests, Commits and Commit Ranges share
+    # similar functionality in refernce filtering.
     class AbstractReferenceFilter < ReferenceFilter
       include CrossProjectReference
 
@@ -26,16 +26,15 @@ module Gitlab
 
       # Public: Find references in text (like `!123` for merge requests)
       #
-      #   AnyReferenceFilter.references_in(text) do |match, object|
-      #     "<a href=...>PREFIX#{object}</a>"
+      #   AnyReferenceFilter.references_in(text) do |match, id, project_ref, matches|
+      #     object = find_object(project_ref, id)
+      #     "<a href=...>#{object.to_reference}</a>"
       #   end
       #
-      # PREFIX - symbol that detects reference (like ! for merge requests)
-      # object - reference object (snippet, merget request etc)
       # text - String text to search.
       #
-      # Yields the String match, the Integer referenced object ID, and an optional String
-      # of the external project reference.
+      # Yields the String match, the Integer referenced object ID, an optional String
+      # of the external project reference, and all of the matchdata.
       #
       # Returns a String replaced with the return of the block.
       def self.references_in(text)

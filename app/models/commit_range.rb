@@ -13,8 +13,7 @@
 #   range.to_param        # => {from: "f3f856029bc5f966c5a7ee24cf7efefdd20e6019^", to: "e86e1013709735be5bb767e2b228930c543f25ae"}
 #   range.to_s            # => "f3f85602..e86e1013"
 #
-#   # Assuming `project` is a Project with a repository containing both commits:
-#   range.project = project
+#   # Assuming the specified project has a repository containing both commits:
 #   range.valid_commits? # => true
 #
 class CommitRange
@@ -68,7 +67,7 @@ class CommitRange
 
     range_string.strip!
 
-    unless range_string.match(/\A#{PATTERN}\z/)
+    unless range_string =~ /\A#{PATTERN}\z/
       raise ArgumentError, "invalid CommitRange string format: #{range_string}"
     end
 
@@ -123,8 +122,6 @@ class CommitRange
 
   # Check if both the starting and ending commit IDs exist in a project's
   # repository
-  #
-  # project - An optional Project to check (default: `project`)
   def valid_commits?
     commit_start.present? && commit_end.present?
   end
