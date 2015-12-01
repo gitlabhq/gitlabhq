@@ -38,15 +38,31 @@ describe CommitRange do
     let(:cross) { create(:project) }
 
     it 'returns a String reference to the object' do
-      expect(range.to_reference).to eq "#{sha_from}...#{sha_to}"
+      expect(range.to_reference).to eq "#{full_sha_from}...#{full_sha_to}"
     end
 
     it 'returns a String reference to the object' do
-      expect(range2.to_reference).to eq "#{sha_from}..#{sha_to}"
+      expect(range2.to_reference).to eq "#{full_sha_from}..#{full_sha_to}"
     end
 
     it 'supports a cross-project reference' do
-      expect(range.to_reference(cross)).to eq "#{project.to_reference}@#{sha_from}...#{sha_to}"
+      expect(range.to_reference(cross)).to eq "#{project.to_reference}@#{full_sha_from}...#{full_sha_to}"
+    end
+  end
+
+  describe '#reference_link_text' do
+    let(:cross) { create(:project) }
+
+    it 'returns a String reference to the object' do
+      expect(range.reference_link_text).to eq "#{sha_from}...#{sha_to}"
+    end
+
+    it 'returns a String reference to the object' do
+      expect(range2.reference_link_text).to eq "#{sha_from}..#{sha_to}"
+    end
+
+    it 'supports a cross-project reference' do
+      expect(range.reference_link_text(cross)).to eq "#{project.to_reference}@#{sha_from}...#{sha_to}"
     end
   end
 

@@ -15,12 +15,23 @@ describe Commit do
 
   describe '#to_reference' do
     it 'returns a String reference to the object' do
-      expect(commit.to_reference).to eq commit.short_id
+      expect(commit.to_reference).to eq commit.id
     end
 
     it 'supports a cross-project reference' do
       cross = double('project')
-      expect(commit.to_reference(cross)).to eq "#{project.to_reference}@#{commit.short_id}"
+      expect(commit.to_reference(cross)).to eq "#{project.to_reference}@#{commit.id}"
+    end
+  end
+
+  describe '#reference_link_text' do
+    it 'returns a String reference to the object' do
+      expect(commit.reference_link_text).to eq commit.short_id
+    end
+
+    it 'supports a cross-project reference' do
+      cross = double('project')
+      expect(commit.reference_link_text(cross)).to eq "#{project.to_reference}@#{commit.short_id}"
     end
   end
 
@@ -88,7 +99,7 @@ eos
     subject { create(:project).commit }
 
     let(:author) { create(:user, email: subject.author_email) }
-    let(:backref_text) { "commit #{subject.short_id}" }
+    let(:backref_text) { "commit #{subject.id}" }
     let(:set_mentionable_text) do
       ->(txt) { allow(subject).to receive(:safe_message).and_return(txt) }
     end

@@ -82,7 +82,7 @@ module Gitlab
             data  = data_attribute(project: project.id, object_sym => object.id, original: match)
             url = matches[:url] || url_for_object(object, project)
 
-            text = object.to_reference(context[:project])
+            text = object.reference_link_text(context[:project])
 
             extras = object_link_text_extras(object, matches)
             text += " (#{extras.join(", ")})" if extras.any?

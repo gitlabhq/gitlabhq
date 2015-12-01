@@ -21,6 +21,10 @@ module Referable
     ''
   end
 
+  def reference_link_text(from_project = nil)
+    to_reference(from_project)
+  end
+
   module ClassMethods
     # The character that prefixes the actual reference identifier
     #

@@ -148,7 +148,7 @@ module Gitlab::Markdown
       it 'links with adjacent text' do
         doc = filter("Fixed (#{reference}.)")
 
-        expect(doc.to_html).to match(/\(<a.+>#{commit.to_reference(project)}<\/a>\.\)/)
+        expect(doc.to_html).to match(/\(<a.+>#{commit.reference_link_text(project)}<\/a>\.\)/)
       end
 
       it 'ignores invalid commit IDs on the referenced project' do

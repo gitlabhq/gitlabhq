@@ -53,7 +53,7 @@ module Gitlab::Markdown
       it 'links with adjacent text' do
         doc = filter("See (#{reference}.)")
 
-        exp = Regexp.escape(range.to_reference)
+        exp = Regexp.escape(range.reference_link_text)
         expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
       end
 
@@ -125,7 +125,7 @@ module Gitlab::Markdown
       it 'links with adjacent text' do
         doc = filter("Fixed (#{reference}.)")
 
-        exp = Regexp.escape("#{project2.to_reference}@#{range.to_reference}")
+        exp = Regexp.escape("#{project2.to_reference}@#{range.reference_link_text}")
         expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
       end
 
@@ -163,7 +163,7 @@ module Gitlab::Markdown
       it 'links with adjacent text' do
         doc = filter("Fixed (#{reference}.)")
 
-        exp = Regexp.escape(range.to_reference(project))
+        exp = Regexp.escape(range.reference_link_text(project))
         expect(doc.to_html).to match(/\(<a.+>#{exp}<\/a>\.\)/)
       end
 
