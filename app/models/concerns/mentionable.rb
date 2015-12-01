@@ -67,7 +67,7 @@ module Mentionable
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the
     # case for otherwise identical Commit objects.
-    refs.reject! { |ref| ref == local_reference }
+    refs.reject { |ref| ref == local_reference }
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
