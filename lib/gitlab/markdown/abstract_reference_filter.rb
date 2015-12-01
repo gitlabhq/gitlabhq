@@ -3,7 +3,7 @@ require 'gitlab/markdown'
 module Gitlab
   module Markdown
     # Issues, Merge Requests, Snippets, Commits and Commit Ranges share
-    # similar functionality in refernce filtering.
+    # similar functionality in reference filtering.
     class AbstractReferenceFilter < ReferenceFilter
       include CrossProjectReference
 
@@ -88,6 +88,8 @@ module Gitlab
       # to the referenced object's details page.
       #
       # text - String text to replace references in.
+      # pattern - Reference pattern to match against.
+      # link_text - Original content of the link being replaced.
       #
       # Returns a String with references replaced with links. All links
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
@@ -98,7 +100,7 @@ module Gitlab
           if project && object = find_object(project, id)
             title = escape_once(object_link_title(object))
             klass = reference_class(object_sym)
-            
+
             data  = data_attribute(
               original:     link_text || match,
               project:      project.id,
