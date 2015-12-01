@@ -107,7 +107,7 @@ describe Repository do
     context 'when pre hooks were successful' do
       it 'should run without errors' do
         hook = double(trigger: true)
-        expect(Gitlab::Git::Hook).to receive(:new).twice.and_return(hook)
+        expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
 
         expect { repository.add_branch(user, 'new_feature', 'master') }.not_to raise_error
       end

@@ -8,9 +8,7 @@ class GitHooksService
     @newrev     = newrev
     @ref        = ref
 
-    pre_status = run_hook('pre-receive')
-
-    if pre_status
+    if run_hook('pre-receive') && run_hook('update')
       yield
 
       run_hook('post-receive')
