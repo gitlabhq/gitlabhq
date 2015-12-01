@@ -99,7 +99,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
-gem 'net-ssh',       '~> 3.0.1'
+gem 'rouge',         '~> 1.10.1'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
@@ -205,6 +205,7 @@ gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
+gem 'net-ssh',            '~> 3.0.1'
 
 group :development do
   gem "foreman"

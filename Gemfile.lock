@@ -940,6 +940,7 @@ DEPENDENCIES
   request_store (~> 1.2.0)
   rerun (~> 0.10.0)
   responders (~> 2.0)
+  rouge (~> 1.10.1)
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.3.0)
   rubocop (~> 0.28.0)
