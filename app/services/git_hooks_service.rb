@@ -8,23 +8,21 @@ class GitHooksService
     @newrev     = newrev
     @ref        = ref
 
-    if run_hook('pre-receive') && run_hook('update')
-      yield
-
-      run_hook('post-receive')
+    %w(pre-receive update).each do |hook_name|
+      unless run_hook(hook_name)
+        raise PreReceiveError.new("Git operation was rejected by #{hook_name} hook")
+      end
     end
+
+    yield
+
+    run_hook('post-receive')
   end
 
   private
 
   def run_hook(name)
     hook = Gitlab::Git::Hook.new(name, @repo_path)
-    status = hook.trigger(@user, @oldrev, @newrev, @ref)
-
-    if !status && (name != 'post-receive')
-      raise PreReceiveError.new("Git operation was rejected by #{name} hook")
-    end
-
-    status
+    hook.trigger(@user, @oldrev, @newrev, @ref)
   end
 end

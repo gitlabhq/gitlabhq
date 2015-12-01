@@ -31,7 +31,9 @@ describe GitHooksService do
         expect(service).to receive(:run_hook).with('pre-receive').and_return(false)
         expect(service).not_to receive(:run_hook).with('post-receive')
 
-        service.execute(user, @repo_path, @blankrev, @newrev, @ref)
+        expect do
+          service.execute(user, @repo_path, @blankrev, @newrev, @ref)
+        end.to raise_error(GitHooksService::PreReceiveError)
       end
     end
 
@@ -41,7 +43,9 @@ describe GitHooksService do
         expect(service).to receive(:run_hook).with('update').and_return(false)
         expect(service).not_to receive(:run_hook).with('post-receive')
 
-        service.execute(user, @repo_path, @blankrev, @newrev, @ref)
+        expect do
+          service.execute(user, @repo_path, @blankrev, @newrev, @ref)
+        end.to raise_error(GitHooksService::PreReceiveError)
       end
     end
 
