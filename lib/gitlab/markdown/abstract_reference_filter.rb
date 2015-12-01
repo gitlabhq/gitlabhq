@@ -2,7 +2,7 @@ require 'gitlab/markdown'
 
 module Gitlab
   module Markdown
-    # Issues, Snippets, Merge Requests, Commits and Commit Ranges share
+    # Issues, Merge Requests, Snippets, Commits and Commit Ranges share
     # similar functionality in refernce filtering.
     class AbstractReferenceFilter < ReferenceFilter
       include CrossProjectReference
@@ -64,8 +64,13 @@ module Gitlab
           object_link_filter(content, object_class.reference_pattern)
         end
 
-        replace_link_nodes_matching(object_class.link_reference_pattern) do |content|
-          object_link_filter(content, object_class.link_reference_pattern)
+        replace_link_nodes_with_href(object_class.reference_pattern) do |link, text|
+          object_link_filter(link, object_class.reference_pattern, link_text: text)
+        end
+
+        replace_link_nodes_with_text(object_class.link_reference_pattern) do |text|
+          object_link_filter(text, object_class.link_reference_pattern)
+        end
         end
       end
 
@@ -76,7 +81,7 @@ module Gitlab
       #
       # Returns a String with references replaced with links. All links
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
-      def object_link_filter(text, pattern)
+      def object_link_filter(text, pattern, link_text: nil)
         references_in(text, pattern) do |match, id, project_ref, matches|
           project = project_from_ref(project_ref)
 
@@ -88,10 +93,13 @@ module Gitlab
             url = matches[:url] if matches.names.include?("url")
             url ||= url_for_object(object, project)
 
-            text = object.reference_link_text(context[:project])
+            text = link_text
+            unless text
+              text = object.reference_link_text(context[:project])
 
-            extras = object_link_text_extras(object, matches)
-            text += " (#{extras.join(", ")})" if extras.any?
+              extras = object_link_text_extras(object, matches)
+              text += " (#{extras.join(", ")})" if extras.any?
+            end
 
             %(<a href="#{url}" #{data}
                  title="#{title}"

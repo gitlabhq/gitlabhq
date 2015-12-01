@@ -122,7 +122,7 @@ module Gitlab
         doc
       end
 
-      def replace_link_nodes_matching(pattern)
+      def replace_link_nodes_with_text(pattern)
         return doc if project.nil?
 
         doc.search('a').each do |node|
@@ -132,12 +132,39 @@ module Gitlab
           link = node.attr('href')
           text = node.text
 
+          next unless link && text
+
+          link = URI.decode(link)
           # Ignore ending punctionation like periods or commas
           next unless link == text && text =~ /\A#{pattern}/
 
           html = yield text
 
           next if html == text
+
+          node.replace(html)
+        end
+
+        doc
+      end
+
+      def replace_link_nodes_with_href(pattern)
+        return doc if project.nil?
+
+        doc.search('a').each do |node|
+          klass = node.attr('class')
+          next if klass && klass.include?('gfm')
+
+          link = node.attr('href')
+          text = node.text
+
+          next unless link && text
+          link = URI.decode(link)
+          next unless link && link =~ /\A#{pattern}\z/
+
+          html = yield link, text
+
+          next if html == link
 
           node.replace(html)
         end
