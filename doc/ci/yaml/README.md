@@ -20,22 +20,6 @@ Of course a command can execute code directly (`./configure;make;make install`) 
 Jobs are used to create builds, which are then picked up by [runners](../runners/README.md) and executed within the environment of the runner.
 What is important, is that each job is run independently from each other.
 
-## Why `.gitlab-ci.yml`
-
-By placing a single configuration file in the root of your repository,
-it is version controlled and you get all the advantages of git.
-
-In addition, builds for older versions of the repository will work just fine,
-as GitLab look at the `.gitlab-ci.yml` of the pushed commit.
-This means that forks also build without any problem.
-
-You can even set up different builds for different branches. This allows you
-to only deploy the `production` branch, for instance.
-
-By having a single source of truth, everyone can view and contribute to the
-stability of your CI builds, eventually improving the quality of your development
-cycle.
-
 ## .gitlab-ci.yml
 The YAML syntax allows for using more complex job specifications than in the above example:
 
@@ -201,7 +185,7 @@ This are two parameters that allow for setting a refs policy to limit when jobs 
 
 There are a few rules that apply to usage of refs policy:
 
-1. `only` and `except` are exclusive. If both `only` and `except` are defined in job specification only `only` is taken into account.
+1. `only` and `except` are inclusive. If both `only` and `except` are defined in job specification the ref is filtered by `only` and `except`.
 1. `only` and `except` allow for using the regexp expressions.
 1. `only` and `except` allow for using special keywords: `branches` and `tags`.
 These names can be used for example to exclude all tags and all branches.
@@ -213,6 +197,18 @@ job:
   except:
     - branches # use special keyword
 ```
+
+1. `only` and `except` allow for specify repository path to filter jobs for forks.
+The repository path can be used to have jobs executed only for parent repository.
+
+```yaml
+job:
+  only:
+    - branches@gitlab-org/gitlab-ce
+  except:
+    - master@gitlab-org/gitlab-ce
+```
+The above will run `job` for all branches on `gitlab-org/gitlab-ce`, except master .
 
 ### tags
 `tags` is used to select specific runners from the list of all runners that are allowed to run this project.

@@ -1,7 +1,7 @@
 # Quick Start
 
-GitLab Continuous Integration (CI) is fully integrated into GitLab itself. You
-only need to enable it in the Services settings of your project.
+Starting from version 8.0, GitLab Continuous Integration (CI) is fully
+integrated into GitLab itself and is enabled by default on all projects.
 
 This guide assumes that you:
 
@@ -21,17 +21,10 @@ automagically started by the Runner and will appear under the project's
 
 Now, let's break it down to pieces and work on solving the GitLab CI puzzle.
 
-## 1. Creating a `.gitlab-ci.yml` file
+## Creating a `.gitlab-ci.yml` file
 
- **GitLab CI** service is enabled automatically on the first push of a
- `.gitlab-ci.yml` file in your repository and this is the recommended way.
-
-For other methods read [how to enable the GitLab CI service](../enable_ci.md).
-
- **GitLab CI** service is enabled automatically on the first push of a
- `.gitlab-ci.yml` file in your repository and this is the recommended way.
-
-For other methods read [how to enable the GitLab CI service](../enable_ci.md).
+Before you create `.gitlab-ci.yml` let's first explain in brief what this is
+all about.
 
 ### What is `.gitlab-ci.yml`
 
@@ -48,7 +41,9 @@ branches can have separate builds and you have a single source of truth for CI.
 You can read more about the reasons why we are using `.gitlab-ci.yml`
 [in our blog about it][blog-ci].
 
-`.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file.
+**Note:** `.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file
+so you have to pay extra attention to the identation. Always use spaces, not
+tabs.
 
 ### Creating a simple `.gitlab-ci.yml` file
 
@@ -75,20 +70,21 @@ rubocop:
 This is the simplest possible build configuration that will work for most Ruby
 applications:
 
-1. Define two jobs `rspec` and `rubocop` with different commands to be executed.
+1. Define two jobs `rspec` and `rubocop` (the names are arbitrary) with
+   different commands to be executed.
 1. Before every job, the commands defined by `before_script` are executed.
 
 The `.gitlab-ci.yml` file defines sets of jobs with constraints of how and when
-they should be run. The jobs are defined as top-level elements with a name and
-always have to contain the `script` name. Jobs are used to create builds,
-which are then picked by [Runners](../runners/README.md) and executed within
-the environment of the Runner.
+they should be run. The jobs are defined as top-level elements with a name (in
+our case `rspec` and `rubocop`) and always have to contain the `script` keyword.
+Jobs are used to create builds, which are then picked by
+[Runners](../runners/README.md) and executed within the environment of the Runner.
 
 What is important is that each job is run independently from each other.
 
 If you want to check whether your `.gitlab-ci.yml` file is valid, there is a
 Lint tool under the page `/ci/lint` of your GitLab instance. You can also find
-the link under **Settings** -> **CI settings** in your project.
+the link under **Settings > CI settings** in your project.
 
 For more information and a complete `.gitlab-ci.yml` syntax, please check
 [the documentation on .gitlab-ci.yml](../yaml/README.md).
@@ -122,13 +118,13 @@ yet for these builds.
 
 The next step is to configure a Runner so that it picks the pending jobs.
 
-## 2. Configuring a Runner
+## Configuring a Runner
 
 In GitLab, Runners run the builds that you define in `.gitlab-ci.yml`.
 A Runner can be a virtual machine, a VPS, a bare-metal machine, a docker
 container or even a cluster of containers. GitLab and the Runners communicate
 through an API, so the only needed requirement is that the machine on which the
-Runner is configured to have Internet access.
+Runner is configured to has Internet access.
 
 A Runner can be specific to a certain project or serve multiple projects in
 GitLab. If it serves all projects it's called a _Shared Runner_.
@@ -137,22 +133,23 @@ Find more information about different Runners in the
 [Runners](../runners/README.md) documentation.
 
 You can find whether any Runners are assigned to your project by going to
-**Settings** -> **Runners**.
-Setting up a Runner is easy and straightforward. The official Runner supported
-
-by GitLab is written in Go and can be found at
+**Settings > Runners**. Setting up a Runner is easy and straightforward. The
+official Runner supported by GitLab is written in Go and can be found at
 <https://gitlab.com/gitlab-org/gitlab-ci-multi-runner>.
 
-In order to have a functional Runner you need to:
+In order to have a functional Runner you need to follow two steps:
 
 1. [Install it][runner-install]
 2. [Configure it](../runners/README.md#registering-a-specific-runner)
+
+Follow the links above to set up your own Runner or use a Shared Runner as
+described in the next section.
 
 For other types of unofficial Runners written in other languages, see the
 [instructions for the various GitLab Runners](https://about.gitlab.com/gitlab-ci/#gitlab-runner).
 
 Once the Runner has been set up, you should see it on the Runners page of your
-project, following **Settings** -> **Runners**.
+project, following **Settings > Runners**.
 
 ![Activated runners](img/runners_activated.png)
 
@@ -161,15 +158,15 @@ project, following **Settings** -> **Runners**.
 If you use [GitLab.com](https://gitlab.com/) you can use **Shared Runners**
 provided by GitLab Inc.
 
-These are special virtual machines that are run on GitLab's infrastructure that
-can build any project.
+These are special virtual machines that run on GitLab's infrastructure and can
+build any project.
 
 To enable **Shared Runners** you have to go to your project's
-**Settings** -> **Runners** and click **Enable shared runners**.
+**Settings > Runners** and click **Enable shared runners**.
 
 [Read more on Shared Runners](../runners/README.md).
 
-## 3. Seeing the status of your build
+## Seeing the status of your build
 
 After configuring the Runner succesfully, you should see the status of your
 last commit change from _pending_ to either _running_, _success_ or _failed_.
@@ -194,7 +191,7 @@ Awesome! You started using CI in GitLab!
 Next you can look into doing more with the CI. Many people are using GitLab
 to package, containerize, test and deploy software.
 
-We have a number of [examples](../examples/README.md) available.
+Visit our various languages examples at <https://gitlab.com/groups/gitlab-examples>.
 
 [runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#installation
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
