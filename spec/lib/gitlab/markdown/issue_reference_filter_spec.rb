@@ -136,19 +136,11 @@ module Gitlab::Markdown
       end
     end
 
-    context 'URL cross-project reference' do
+    context 'cross-project URL reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:empty_project, :public, namespace: namespace) }
       let(:issue)     { create(:issue, project: project2) }
       let(:reference) { helper.url_for_issue(issue.iid, project2) + "#note_123" }
-
-      it 'ignores valid references when cross-reference project uses external tracker' do
-        expect_any_instance_of(Project).to receive(:get_issue).
-          with(issue.iid).and_return(nil)
-
-        exp = act = "Issue #{reference}"
-        expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(reference)}<\/a>/)
-      end
 
       it 'links to a valid reference' do
         doc = reference_filter("See #{reference}")
@@ -160,6 +152,54 @@ module Gitlab::Markdown
       it 'links with adjacent text' do
         doc = reference_filter("Fixed (#{reference}.)")
         expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(issue.to_reference(project))} \(comment 123\)<\/a>\.\)/)
+      end
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("Fixed #{reference}")
+        expect(result[:references][:issue]).to eq [issue]
+      end
+    end
+
+    context 'cross-project reference in link href' do
+      let(:namespace) { create(:namespace, name: 'cross-reference') }
+      let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+      let(:issue)     { create(:issue, project: project2) }
+      let(:reference) { %Q{<a href="#{issue.to_reference(project)}">Reference</a>} }
+
+      it 'links to a valid reference' do
+        doc = reference_filter("See #{reference}")
+
+        expect(doc.css('a').first.attr('href')).
+          to eq helper.url_for_issue(issue.iid, project2)
+      end
+
+      it 'links with adjacent text' do
+        doc = reference_filter("Fixed (#{reference}.)")
+        expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
+      end
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("Fixed #{reference}")
+        expect(result[:references][:issue]).to eq [issue]
+      end
+    end
+
+    context 'cross-project URL in link href' do
+      let(:namespace) { create(:namespace, name: 'cross-reference') }
+      let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+      let(:issue)     { create(:issue, project: project2) }
+      let(:reference) { %Q{<a href="#{helper.url_for_issue(issue.iid, project2) + "#note_123"}">Reference</a>} }
+
+      it 'links to a valid reference' do
+        doc = reference_filter("See #{reference}")
+
+        expect(doc.css('a').first.attr('href')).
+          to eq helper.url_for_issue(issue.iid, project2) + "#note_123"
+      end
+
+      it 'links with adjacent text' do
+        doc = reference_filter("Fixed (#{reference}.)")
+        expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
       end
 
       it 'adds to the results hash' do

@@ -60,17 +60,27 @@ module Gitlab
       end
 
       def call
+        # `#123`
         replace_text_nodes_matching(object_class.reference_pattern) do |content|
           object_link_filter(content, object_class.reference_pattern)
         end
 
+        # `[Issue](#123)`, which is turned into
+        # `<a href="#123">Issue</a>`
         replace_link_nodes_with_href(object_class.reference_pattern) do |link, text|
           object_link_filter(link, object_class.reference_pattern, link_text: text)
         end
 
+        # `http://gitlab.example.com/namespace/project/issues/123`, which is turned into
+        # `<a href="http://gitlab.example.com/namespace/project/issues/123">http://gitlab.example.com/namespace/project/issues/123</a>`
         replace_link_nodes_with_text(object_class.link_reference_pattern) do |text|
           object_link_filter(text, object_class.link_reference_pattern)
         end
+
+        # `[Issue](http://gitlab.example.com/namespace/project/issues/123)`, which is turned into
+        # `<a href="http://gitlab.example.com/namespace/project/issues/123">Issue</a>`
+        replace_link_nodes_with_href(object_class.link_reference_pattern) do |link, text|
+          object_link_filter(link, object_class.link_reference_pattern, link_text: text)
         end
       end
 
@@ -88,7 +98,12 @@ module Gitlab
           if project && object = find_object(project, id)
             title = escape_once(object_link_title(object))
             klass = reference_class(object_sym)
-            data  = data_attribute(project: project.id, object_sym => object.id, original: match)
+            
+            data  = data_attribute(
+              original:     link_text || match,
+              project:      project.id,
+              object_sym => object.id
+            )
 
             url = matches[:url] if matches.names.include?("url")
             url ||= url_for_object(object, project)

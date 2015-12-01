@@ -143,7 +143,7 @@ module Gitlab::Markdown
       end
     end
 
-    context 'URL cross-project reference' do
+    context 'cross-project URL reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, :public, namespace: namespace) }
       let(:range)  { CommitRange.new("#{commit1.id}...master", project) }

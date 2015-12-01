@@ -117,7 +117,7 @@ module Gitlab::Markdown
       end
     end
 
-    context 'URL cross-project reference' do
+    context 'cross-project URL reference' do
       let(:namespace) { create(:namespace, name: 'cross-reference') }
       let(:project2)  { create(:project, :public, namespace: namespace) }
       let(:merge)     { create(:merge_request, source_project: project2, target_project: project2) }
