@@ -27,6 +27,16 @@ The channels people will reach out on can be found on the [getting help page](ht
 Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the IRC channel.
 You can also sign up on [CodeTriage](http://www.codetriage.com/gitlabhq/gitlabhq) to help with one issue every day.
 
+## I want to contribute!
+
+If you want to contribute to GitLab, but are not sure where to start,
+look for [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=up-for-grabs)
+with the label `up-for-grabs`.
+These issues will be of reasonable size and challenge, for anyone to start
+contributing to GitLab.
+
+This was inspired by [an article by Kent C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.i2f363mx4).
+
 ## Issue tracker
 
 To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/getting-help/).
