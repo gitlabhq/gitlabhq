@@ -346,12 +346,10 @@ class Ability
       unless group.last_owner?(target_user)
         can_manage = group_abilities(user, group).include?(:admin_group_member)
 
-        if can_manage && user != target_user
+        if can_manage
           rules << :update_group_member
           rules << :destroy_group_member
-        end
-
-        if user == target_user
+        elsif user == target_user
           rules << :destroy_group_member
         end
       end

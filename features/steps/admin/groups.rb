@@ -1,5 +1,6 @@
 class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   include SharedAuthentication
+  include SharedGroup
   include SharedPaths
   include SharedUser
   include SharedActiveTab
@@ -85,6 +86,34 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   step 'I should not see "John Doe" in team list' do
     page.within ".group-users-list" do
       expect(page).not_to have_content "John Doe"
+    end
+  end
+
+  step 'I select current user as "Developer"' do
+    page.within ".users-group-form" do
+      select2(current_user.id, from: "#user_ids", multiple: true)
+      select "Developer", from: "access_level"
+    end
+
+    click_button "Add users to group"
+  end
+
+  step 'I should see current user as "Developer"' do
+    page.within '.content-list' do
+      expect(page).to have_content(current_user.name)
+      expect(page).to have_content('Developer')
+    end
+  end
+
+  step 'I click on the "Remove User From Group" button for current user' do
+    find(:css, 'li', text: current_user.name).find(:css, 'a.btn-remove').click
+    # poltergeist always confirms popups.
+  end
+
+  step 'I should not see current user as "Developer"' do
+    page.within '.content-list' do
+      expect(page).not_to have_content(current_user.name)
+      expect(page).not_to have_content('Developer')
     end
   end
 
