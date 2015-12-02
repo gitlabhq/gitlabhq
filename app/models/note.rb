@@ -72,6 +72,7 @@ class Note < ActiveRecord::Base
 
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
+  before_validation :set_award!
 
   class << self
     def discussions_from_notes(notes)
@@ -348,5 +349,37 @@ class Note < ActiveRecord::Base
 
   def editable?
     !system?
+  end
+
+  # Checks if note is an award added from an issue comment.
+  #
+  # If note is an award, this method sets is_award to true,
+  # and changes note content to award-emoji name.
+  #
+  # Awards are only supported for issue comments.
+  #
+  # Method is executed as a before_validation callback.
+  #
+  def set_award!
+    return unless issue_comment? && contains_emoji_only?
+
+    self.is_award = true
+    self.note = award_emoji_name
+  end
+
+  private
+
+  def issue_comment?
+    noteable.kind_of?(Issue)
+  end
+
+  def contains_emoji_only?
+    (note =~ /\A:[-_+[:alnum:]]*:\s?\z/) ? true : false
+  end
+
+  def award_emoji_name
+    return nil unless contains_emoji_only?
+
+    note.match(/\A:([-_+[:alnum:]]*):\s?/)[1]
   end
 end
