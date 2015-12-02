@@ -1,4 +1,5 @@
-%p.lead Compare branches for new Merge Request
+%h3.page-title
+  New Merge Request
 
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], url: new_namespace_project_merge_request_path(@project.namespace, @project), method: :get, html: { class: "merge-request-form form-inline js-requires-input" } do |f|
   .hide.alert.alert-danger.mr-compare-errors

@@ -4,10 +4,6 @@
 
 %p= @service.description
 
-.back-link
-  = link_to namespace_project_services_path(@project.namespace, @project) do
-    &larr; to services
-
 %hr
 
 = form_for(@service, as: :service, url: namespace_project_service_path(@project.namespace, @project, @service.to_param), method: :put, html: { class: 'form-horizontal' }) do |form|

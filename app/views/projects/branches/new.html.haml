@@ -6,8 +6,9 @@
     %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
     = @error
 %h3.page-title
-  %i.fa.fa-code-fork
-  New branch
+  New Branch
+%hr
+
 = form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-requires-input" do
   .form-group
     = label_tag :branch_name, 'Name for new branch', class: 'control-label'

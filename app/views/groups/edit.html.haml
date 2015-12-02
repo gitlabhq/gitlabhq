@@ -3,8 +3,7 @@
 
 .panel.panel-default
   .panel-heading
-    %strong= @group.name
-    group settings:
+    Group settings
   .panel-body
     = form_for @group, html: { multipart: true, class: "form-horizontal" }, authenticity_token: true do |f|
       - if @group.errors.any?

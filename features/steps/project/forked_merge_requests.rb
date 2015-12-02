@@ -41,7 +41,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
 
     click_button "Compare branches"
 
-    expect(page).to have_content "New merge request"
+    expect(page).to have_content "New Merge Request"
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
   end
 
