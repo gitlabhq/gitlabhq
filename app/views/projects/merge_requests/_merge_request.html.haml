@@ -44,8 +44,8 @@
         = link_to_label(label, project: merge_request.project)
     - if merge_request.target_project.default_branch != merge_request.target_branch
       &nbsp;
-      %span
-        %i.fa.fa-code-fork
+      = link_to namespace_project_commits_path(merge_request.project.namespace, merge_request.project, merge_request.target_branch) do
+        = icon('code-fork')
         = merge_request.target_branch
     - if merge_request.tasks?
       &nbsp;
