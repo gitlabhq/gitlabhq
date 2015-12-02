@@ -1,12 +1,29 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
+  - Fix 500 error when update group member permission
+  - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
+  - Add ignore whitespace change option to commit view
+  - Fire update hook from GitLab
+
+v 8.2.2
+  - Fix 404 in redirection after removing a project (Stan Hu)
+  - Ensure cached application settings are refreshed at startup (Stan Hu)
+  - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
+  - Fix: Raw private snippets access workflow
+  - Prevent "413 Request entity too large" errors when pushing large files with LFS
+
+v 8.2.1
+  - Forcefully update builds that didn't want to update with state machine
+  - Fix: saving GitLabCiService as Admin Template
 
 v 8.2.0
   - Improved performance of finding projects and groups in various places
   - Improved performance of rendering user profile pages and Atom feeds
+  - Expose build artifacts path as config option
   - Fix grouping of contributors by email in graph.
-  - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
+  - Improved performance of finding issues with/without labels
   - Fix Drone CI service template not saving properly (Stan Hu)
   - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
   - Added a GitLab specific profiling tool called "Sherlock" (see GitLab CE merge request #1749)
@@ -15,6 +32,7 @@ v 8.2.0
   - Add allow_failure field to commit status API (Stan Hu)
   - Commits without .gitlab-ci.yml are marked as skipped
   - Save detailed error when YAML syntax is invalid
+  - Since GitLab CI is enabled by default, remove enabling it by pushing .gitlab-ci.yml
   - Added build artifacts
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
@@ -33,6 +51,7 @@ v 8.2.0
   - Allow to define cache in `.gitlab-ci.yml`
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
+  - Improve personal snippet access workflow (Douglas Alexandre)
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
   - Fix omniauth documentation setting for omnibus configuration (Jon Cairns)
   - Add "New file" link to dropdown on project page
@@ -54,7 +73,9 @@ v 8.2.0
   - Fix trailing whitespace issue in merge request/issue title
   - Fix bug when milestone/label filter was empty for dashboard issues page
   - Add ability to create milestone in group projects from single form
+  - Add option to create merge request when editing/creating a file (Dirceu Tiegs)
   - Prevent the last owner of a group from being able to delete themselves by 'adding' themselves as a master (James Lopez)
+  - Add Award Emoji to issue and merge request pages
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)

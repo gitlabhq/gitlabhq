@@ -42,9 +42,8 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
-  
+
   extend Gitlab::ConfigHelper
-  extend Enumerize
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 

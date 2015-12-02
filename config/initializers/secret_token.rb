@@ -22,15 +22,15 @@ def find_secure_token
   end
 end
 
-Gitlab::Application.config.secret_token = find_secure_token
-Gitlab::Application.config.secret_key_base = find_secure_token
+Rails.application.config.secret_token = find_secure_token
+Rails.application.config.secret_key_base = find_secure_token
 
 # CI
 def generate_new_secure_token
   SecureRandom.hex(64)
 end
 
-if Gitlab::Application.secrets.db_key_base.blank?
+if Rails.application.secrets.db_key_base.blank?
   warn "Missing `db_key_base` for '#{Rails.env}' environment. The secrets will be generated and stored in `config/secrets.yml`"
 
   all_secrets = YAML.load_file('config/secrets.yml') if File.exist?('config/secrets.yml')
@@ -46,5 +46,5 @@ if Gitlab::Application.secrets.db_key_base.blank?
     file.write(YAML.dump(all_secrets))
   end
 
-  Gitlab::Application.secrets.db_key_base = env_secrets['db_key_base']
+  Rails.application.secrets.db_key_base = env_secrets['db_key_base']
 end

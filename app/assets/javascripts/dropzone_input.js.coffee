@@ -1,3 +1,5 @@
+#= require markdown_preview
+
 class @DropzoneInput
   constructor: (form) ->
     Dropzone.autoDiscover = false
@@ -11,17 +13,14 @@ class @DropzoneInput
     uploadProgress = $("<div class=\"div-dropzone-progress\"></div>")
     btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>"
     project_uploads_path = window.project_uploads_path or null
-    markdown_preview_path = window.markdown_preview_path or null
     max_file_size = gon.max_file_size or 10
 
     form_textarea = $(form).find("textarea.markdown-area")
     form_textarea.wrap "<div class=\"div-dropzone\"></div>"
     form_textarea.on 'paste', (event) =>
       handlePaste(event)
-    form_textarea.on "input", ->
-      hideReferencedUsers()
-    form_textarea.on "blur", ->
-      renderMarkdown()
+
+    $(form).setupMarkdownPreview()
 
     form_dropzone = $(form).find('.div-dropzone')
     form_dropzone.parent().addClass "div-dropzone-wrapper"
@@ -33,42 +32,6 @@ class @DropzoneInput
     form_dropzone.find(".div-dropzone-spinner").css
       "opacity": 0
       "display": "none"
-
-    # Preview button
-    $(document).off "click", ".js-md-preview-button"
-    $(document).on "click", ".js-md-preview-button", (e) ->
-      ###
-      Shows the Markdown preview.
-
-      Lets the server render GFM into Html and displays it.
-      ###
-      e.preventDefault()
-      form = $(this).closest("form")
-      # toggle tabs
-      form.find(".js-md-write-button").parent().removeClass "active"
-      form.find(".js-md-preview-button").parent().addClass "active"
-
-      # toggle content
-      form.find(".md-write-holder").hide()
-      form.find(".md-preview-holder").show()
-
-      renderMarkdown()
-
-    # Write button
-    $(document).off "click", ".js-md-write-button"
-    $(document).on "click", ".js-md-write-button", (e) ->
-      ###
-      Shows the Markdown textarea.
-      ###
-      e.preventDefault()
-      form = $(this).closest("form")
-      # toggle tabs
-      form.find(".js-md-write-button").parent().addClass "active"
-      form.find(".js-md-preview-button").parent().removeClass "active"
-
-      # toggle content
-      form.find(".md-write-holder").show()
-      form.find(".md-preview-holder").hide()
 
     dropzone = form_dropzone.dropzone(
       url: project_uploads_path
@@ -135,41 +98,6 @@ class @DropzoneInput
     )
 
     child = $(dropzone[0]).children("textarea")
-
-    hideReferencedUsers = ->
-      referencedUsers = form.find(".referenced-users")
-      referencedUsers.hide()
-
-    renderReferencedUsers = (users) ->
-      referencedUsers = form.find(".referenced-users")
-
-      if referencedUsers.length
-        if users.length >= 10
-          referencedUsers.show()
-          referencedUsers.find(".js-referenced-users-count").text users.length
-        else
-          referencedUsers.hide()
-
-    renderMarkdown = ->
-      preview = form.find(".js-md-preview")
-      mdText = form.find(".markdown-area").val()
-      if mdText.trim().length is 0
-        preview.text "Nothing to preview."
-        hideReferencedUsers()
-      else
-        preview.text "Loading..."
-        $.ajax(
-          type: "POST",
-          url: markdown_preview_path,
-          data: {
-            text: mdText
-          },
-          dataType: "json"
-        ).success (data) ->
-          preview.html data.body
-          preview.syntaxHighlight()
-
-          renderReferencedUsers data.references.users
 
     formatLink = (link) ->
       text = "[#{link.alt}](#{link.url})"

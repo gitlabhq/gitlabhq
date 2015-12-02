@@ -70,7 +70,7 @@ describe Gitlab::Markdown::LabelReferenceFilter do
       doc = filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+        namespace_project_issues_path(project.namespace, project, label_name: label.name)
     end
 
     it 'links with adjacent text' do
@@ -93,7 +93,7 @@ describe Gitlab::Markdown::LabelReferenceFilter do
       doc = filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+        namespace_project_issues_path(project.namespace, project, label_name: label.name)
       expect(doc.text).to eq 'See gfm'
     end
 
@@ -117,7 +117,7 @@ describe Gitlab::Markdown::LabelReferenceFilter do
       doc = filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+        namespace_project_issues_path(project.namespace, project, label_name: label.name)
       expect(doc.text).to eq 'See gfm references'
     end
 

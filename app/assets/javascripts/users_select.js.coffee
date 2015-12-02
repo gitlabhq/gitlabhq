@@ -58,11 +58,8 @@ class @UsersSelect
 
             query.callback(data)
 
-        initSelection: (element, callback) =>
-          id = $(element).val()
-          if id != "" && id != "0"
-            @user(id, callback)
-
+        initSelection: (args...) =>
+          @initSelection(args...)
         formatResult: (args...) =>
           @formatResult(args...)
         formatSelection: (args...) =>
@@ -70,6 +67,14 @@ class @UsersSelect
         dropdownCssClass: "ajax-users-dropdown"
         escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
           m
+
+  initSelection: (element, callback) ->
+    id = $(element).val()
+    if id == "0"
+      nullUser = { name: 'Unassigned' }
+      callback(nullUser)
+    else if id != ""
+      @user(id, callback)
 
   formatResult: (user) ->
     if user.avatar_url

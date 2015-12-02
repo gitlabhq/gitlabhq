@@ -14,8 +14,10 @@
         #votes= render 'votes/votes_block', votable: @merge_request
       = render "projects/merge_requests/show/participants"
     .col-md-3
-      %span.slead.has_tooltip{:"data-original-title" => 'Cross-project reference'}
-        = cross_project_reference(@project, @merge_request)
+      .input-group.cross-project-reference
+        %span#cross-project-reference.slead.has_tooltip{title: 'Cross-project reference'}
+          = cross_project_reference(@project, @merge_request)
+        = clipboard_button(clipboard_target: '#cross-project-reference')
 
 .row
   %section.col-md-9

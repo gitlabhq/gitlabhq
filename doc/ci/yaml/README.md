@@ -278,26 +278,23 @@ The above script will:
 `artifacts` is used to specify list of files and directories which should be attached to build after success.
 
 1. Send all files in `binaries` and `.config`:
-```
-artifacts:
-  paths:
-  - binaries/
-  - .config
-```
+
+        artifacts:
+          paths:
+          - binaries/
+          - .config
 
 2. Send all git untracked files:
-```
-artifacts:
-  untracked: true
-```
+
+        artifacts:
+          untracked: true
 
 3. Send all git untracked files and files in `binaries`:
-```
-artifacts:
-  untracked: true
-  paths:
-  - binaries/
-```
+
+        artifacts:
+          untracked: true
+          paths:
+          - binaries/
 
 The artifacts will be send after the build success to GitLab and will be accessible in GitLab interface to download.
 
@@ -307,46 +304,41 @@ This feature requires GitLab Runner v0.7.0 or higher.
 `cache` is used to specify list of files and directories which should be cached between builds.
 
 1. Cache all files in `binaries` and `.config`:
-```
-rspec:
-  script: test
-  cache:
-    paths:
-    - binaries/
-    - .config
-```
+
+        rspec:
+          script: test
+          cache:
+            paths:
+            - binaries/
+            - .config
 
 2. Cache all git untracked files:
-```
-rspec:
-  script: test
-  cache:
-    untracked: true
-```
 
+        rspec:
+          script: test
+          cache:
+            untracked: true
+            
 3. Cache all git untracked files and files in `binaries`:
-```
-rspec:
-  script: test
-  cache:
-    untracked: true
-    paths:
-    - binaries/
-```
+
+        rspec:
+          script: test
+          cache:
+            untracked: true
+            paths:
+            - binaries/
 
 4. Locally defined cache overwrites globally defined options. This will cache only `binaries/`:
 
-```
-cache:
-  paths:
-  - my/files
-
-rspec:
-  script: test
-  cache:
-    paths:
-    - binaries/
-```
+        cache:
+          paths:
+          - my/files
+        
+        rspec:
+          script: test
+          cache:
+            paths:
+            - binaries/
 
 The cache is provided on best effort basis, so don't expect that cache will be present.
 For implementation details please check GitLab Runner.

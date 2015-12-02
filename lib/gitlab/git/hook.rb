@@ -16,6 +16,17 @@ module Gitlab
       def trigger(gl_id, oldrev, newrev, ref)
         return true unless exists?
 
+        case name
+        when "pre-receive", "post-receive"
+          call_receive_hook(gl_id, oldrev, newrev, ref)
+        when "update"
+          call_update_hook(gl_id, oldrev, newrev, ref)
+        end
+      end
+
+      private
+
+      def call_receive_hook(gl_id, oldrev, newrev, ref)
         changes = [oldrev, newrev, ref].join(" ")
 
         # function  will return true if succesful
@@ -53,6 +64,12 @@ module Gitlab
         end
 
         exit_status
+      end
+
+      def call_update_hook(gl_id, oldrev, newrev, ref)
+        Dir.chdir(repo_path) do
+          system({ 'GL_ID' => gl_id }, path, ref, oldrev, newrev)
+        end
       end
     end
   end

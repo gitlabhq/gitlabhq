@@ -67,7 +67,12 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def define_show_vars
-    @diffs = commit.diffs
+    if params[:w].to_i == 1
+      @diffs = commit.diffs({ ignore_whitespace_change: true })
+    else
+      @diffs = commit.diffs
+    end
+
     @notes_count = commit.notes.count
     
     @builds = ci_commit.builds if ci_commit

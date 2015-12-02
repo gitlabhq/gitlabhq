@@ -73,13 +73,21 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   after_commit do
-    Rails.cache.write('application_setting.last', self)
+    Rails.cache.write(cache_key, self)
   end
 
   def self.current
-    Rails.cache.fetch('application_setting.last') do
+    Rails.cache.fetch(cache_key) do
       ApplicationSetting.last
     end
+  end
+
+  def self.expire
+    Rails.cache.delete(cache_key)
+  end
+
+  def self.cache_key
+    'application_setting.last'
   end
 
   def self.create_from_defaults
@@ -99,7 +107,7 @@ class ApplicationSetting < ActiveRecord::Base
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
       import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
-      max_artifacts_size: Settings.gitlab_ci['max_artifacts_size'],
+      max_artifacts_size: Settings.artifacts['max_size'],
     )
   end
 

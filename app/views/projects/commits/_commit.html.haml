@@ -20,8 +20,8 @@
         - if ci_commit
           = render_ci_status(ci_commit)
           &nbsp;
-        = clipboard_button
-        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id", data: {clipboard_text: commit.id}
+        = clipboard_button(clipboard_text: commit.id)
+        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
 
       .notes_count
         - if note_count > 0
