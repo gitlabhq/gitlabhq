@@ -31,7 +31,7 @@
 
   %h2#blocks Blocks
 
-  %h3
+  %h4
     %code .gray-content-block
 
   .gray-content-block.middle-block
@@ -43,9 +43,9 @@
     = lorem
 
 
-  %h3
+  %h4
     %code .cover-block
-
+  %br
   .cover-block
     .avatar-holder
       = image_tag avatar_icon('admin@example.com', 90), class: "avatar s90", alt: ''
@@ -64,7 +64,7 @@
 
   %h2#lists Lists
 
-  %h3
+  %h4
     %code .content-list
   %ul.content-list
     %li
@@ -74,7 +74,7 @@
     %li
       One item
 
-  %h3
+  %h4
     %code .well-list
   %ul.well-list
     %li
@@ -84,7 +84,7 @@
     %li
       One item
 
-  %h3
+  %h4
     %code .panel .well-list
 
   .panel.panel-default
@@ -97,7 +97,7 @@
       %li
         One item
 
-  %h3
+  %h4
     %code .bordered-list
   %ul.bordered-list
     %li
@@ -138,7 +138,7 @@
 
   %h2#navs Navigation
 
-  %h3
+  %h4
     %code .center-top-menu
   .example
     %ul.center-top-menu
@@ -147,7 +147,7 @@
       %li
         %a Closed
 
-  %h3
+  %h4
     %code .btn-group.btn-group-next
   .example
     %div.btn-group.btn-group-next
@@ -155,7 +155,7 @@
       %a.btn Closed
 
 
-  %h3
+  %h4
     %code .nav.nav-tabs
   .example
     %ul.nav.nav-tabs
@@ -221,7 +221,7 @@
 
   %h2#forms Forms
 
-  %h3
+  %h4
     %code form.horizontal-form
 
   %form.form-horizontal
@@ -243,7 +243,7 @@
       .col-sm-offset-2.col-sm-10
         %button.btn.btn-default{:type => "submit"} Sign in
 
-  %h3
+  %h4
     %code form
 
   %form
@@ -260,7 +260,7 @@
     %button.btn.btn-default{:type => "submit"} Sign in
 
   %h2#file File
-  %h3
+  %h4
     %code .file-holder
 
   - blob = Snippet.new(content: "Wow\nSuch\nFile")
@@ -271,12 +271,12 @@
         .file-actions
           .btn-group
             %a.btn Edit
-            %a.btn Remove
+            %a.btn.btn-danger Remove
       .file-contenta.code
         = render 'shared/file_highlight', blob: blob
 
   %h2#markdown Markdown
-  %h3
+  %h4
     %code .md or .wiki and others
 
   Markdown rendering has a bit different css and presented in next UI elements:
