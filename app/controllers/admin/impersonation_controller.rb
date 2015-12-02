@@ -11,7 +11,7 @@ class Admin::ImpersonationController < Admin::ApplicationController
       redirect_to admin_user_path(@user)
     else
       session[:impersonator_id] = current_user.username
-      session[:impersonator_return_to] = request.env['HTTP_REFERER']
+      session[:impersonator_return_to] = admin_user_path(@user)
 
       warden.set_user(user, scope: 'user')
 
