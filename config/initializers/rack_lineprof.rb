@@ -2,7 +2,7 @@
 # with darker backgrounds. This patch tweaks the colors a bit so the output is
 # actually readable.
 if Rails.env.development? and RUBY_ENGINE == 'ruby' and ENV['ENABLE_LINEPROF']
-  Gitlab::Application.config.middleware.use(Rack::Lineprof)
+  Rails.application.config.middleware.use(Rack::Lineprof)
 
   module Rack
     class Lineprof

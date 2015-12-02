@@ -87,13 +87,16 @@ describe "Admin::Users", feature: true  do
     end
 
     it "should call send mail" do
-      expect(Notify).to receive(:new_user_email)
+      expect_any_instance_of(NotificationService).to receive(:new_user)
 
       click_button "Create user"
     end
 
     it "should send valid email to user with email & password" do
-      click_button "Create user"
+      perform_enqueued_jobs do
+        click_button "Create user"
+      end
+
       user = User.find_by(username: 'bang')
       email = ActionMailer::Base.deliveries.last
       expect(email.subject).to have_content('Account was created')

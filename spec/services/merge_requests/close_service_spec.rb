@@ -18,7 +18,9 @@ describe MergeRequests::CloseService do
       before do
         allow(service).to receive(:execute_hooks)
 
-        @merge_request = service.execute(merge_request)
+        perform_enqueued_jobs do
+          @merge_request = service.execute(merge_request)
+        end
       end
 
       it { expect(@merge_request).to be_valid }

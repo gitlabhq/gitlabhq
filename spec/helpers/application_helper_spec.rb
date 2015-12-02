@@ -59,7 +59,7 @@ describe ApplicationHelper do
 
       avatar_url = "http://localhost/uploads/project/avatar/#{project.id}/banana_sample.gif"
       expect(helper.project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).
-        to eq "<img alt=\"Banana sample\" src=\"#{avatar_url}\" />"
+        to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
     end
 
     it 'should give uploaded icon when present' do

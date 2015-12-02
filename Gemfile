@@ -1,6 +1,10 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.1.14'
+gem 'rails', '4.2.4'
+gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+
+# Responders respond_to and respond_with
+gem 'responders', '~> 2.0'
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -95,6 +99,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
+gem 'net-ssh',       '~> 3.0.1'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
@@ -210,6 +215,7 @@ group :development do
   gem 'rerun', '~> 0.10.0'
   gem 'bullet', require: false
   gem 'rblineprof', platform: :mri, require: false
+  gem 'web-console', '~> 2.0'
 
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
@@ -266,7 +272,7 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
-  gem 'test_after_commit', '~> 0.2.2'
+  gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack'
 end
 

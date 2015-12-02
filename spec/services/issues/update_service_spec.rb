@@ -36,7 +36,10 @@ describe Issues::UpdateService do
           label_ids: [label.id]
         }
 
-        @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        perform_enqueued_jobs do
+          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        end
+
         @issue.reload
       end
 

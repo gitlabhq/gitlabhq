@@ -9,7 +9,7 @@ class AutocompleteController < ApplicationController
     @users = @users.reorder(:name)
     @users = @users.page(params[:page]).per(PER_PAGE)
 
-    unless params[:search].present?
+    if params[:search].blank?
       # Include current user if available to filter by "Me"
       if params[:current_user] && current_user
         @users = [*@users, current_user].uniq
