@@ -162,6 +162,10 @@
         padding: 0px 8px;
         @include border-radius(6px);
       }
+
+      &.back-link i {
+        transition-duration: .3s;
+      }
     }
   }
 }
@@ -190,7 +194,7 @@
 
       &.back-link {
         i {
-          visibility: hidden;
+          opacity: 0;
         }
       }
     }
