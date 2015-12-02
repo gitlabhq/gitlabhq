@@ -37,31 +37,33 @@ class WebHook < ActiveRecord::Base
   def execute(data, hook_name)
     parsed_url = URI.parse(url)
     if parsed_url.userinfo.blank?
-      WebHook.post(url,
-                   body: data.to_json,
-                   headers: {
-                     "Content-Type" => "application/json",
-                     "X-Gitlab-Event" => hook_name.singularize.titleize
-                   },
-                   verify: enable_ssl_verification)
+      response = WebHook.post(url,
+                              body: data.to_json,
+                              headers: {
+                                  "Content-Type" => "application/json",
+                                  "X-Gitlab-Event" => hook_name.singularize.titleize
+                              },
+                              verify: enable_ssl_verification)
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
       auth = {
         username: URI.decode(parsed_url.user),
         password: URI.decode(parsed_url.password),
       }
-      WebHook.post(post_url,
-                   body: data.to_json,
-                   headers: {
-                     "Content-Type" => "application/json",
-                     "X-Gitlab-Event" => hook_name.singularize.titleize
-                   },
-                   verify: enable_ssl_verification,
-                   basic_auth: auth)
+      response = WebHook.post(post_url,
+                              body: data.to_json,
+                              headers: {
+                                  "Content-Type" => "application/json",
+                                  "X-Gitlab-Event" => hook_name.singularize.titleize
+                              },
+                              verify: enable_ssl_verification,
+                              basic_auth: auth)
     end
-  rescue SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
+
+    [response.code == 200, ActionView::Base.full_sanitizer.sanitize(response.to_s)]
+  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
-    false
+    [false, e.to_s]
   end
 
   def async_execute(data, hook_name)
