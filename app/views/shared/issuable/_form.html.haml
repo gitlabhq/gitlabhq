@@ -94,15 +94,17 @@
         = link_to 'Change branches', mr_change_branches_path(@merge_request)
 
 .form-actions
-  - if !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project)) && !issuable.persisted?
-    %p
-      Please review the
-      %strong #{link_to 'guidelines for contribution', guide_url}
-      to this repository.
   - if issuable.new_record?
     = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
     = f.submit 'Save changes', class: 'btn btn-save'
+
+  - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
+    .inline.prepend-left-10
+      Please review the
+      %strong #{link_to 'contribution guidelines', guide_url}
+      for this project.
+
   - if issuable.new_record?
     - cancel_project = issuable.source_project
   - else
