@@ -56,12 +56,14 @@ module MergeRequestsHelper
   end
 
   def source_branch_with_namespace(merge_request)
+    branch = link_to(merge_request.source_branch, namespace_project_commits_path(merge_request.source_project.namespace, merge_request.source_project, merge_request.source_branch))
+
     if merge_request.for_fork?
       namespace = link_to(merge_request.source_project_namespace,
         project_path(merge_request.source_project))
-      namespace + ":#{merge_request.source_branch}"
+      namespace + ":" + branch
     else
-      merge_request.source_branch
+      branch
     end
   end
 

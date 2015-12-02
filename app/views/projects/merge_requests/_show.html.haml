@@ -26,7 +26,8 @@
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
       .normal
         %span Request to merge
-        = link_to source_branch_with_namespace(@merge_request), namespace_project_commits_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), class: "label-branch"
+        %span.label-branch
+          = source_branch_with_namespace(@merge_request)
         %span into
         = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
           = @merge_request.target_branch
