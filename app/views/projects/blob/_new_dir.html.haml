@@ -9,7 +9,7 @@
           .form-group
             = label_tag :dir_name, 'Directory name', class: 'control-label'
             .col-sm-10
-              = text_field_tag :dir_name, params[:dir_name], placeholder: "Directory name", required: true, class: 'form-control'
+              = text_field_tag :dir_name, params[:dir_name], required: true, class: 'form-control'
 
           = render 'shared/new_commit_form', placeholder: "Add new directory"
 
