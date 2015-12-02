@@ -28,11 +28,13 @@
           = 0
 
   .issue-info
-    = "#{issue.to_reference} opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by #{link_to_member(@project, issue.author, avatar: false)}".html_safe
+    #{issue.to_reference} &middot;
+    opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
+    by #{link_to_member(@project, issue.author, avatar: false)}
     - if issue.milestone
       &nbsp;
-      %span
-        %i.fa.fa-clock-o
+      = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
+        = icon('clock-o')
         = issue.milestone.title
     - if issue.tasks?
       %span.task-status
