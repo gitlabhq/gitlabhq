@@ -100,6 +100,7 @@
 
       .form-actions
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
+        = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
 
         - if current_user.can_create_group?
           .pull-right
