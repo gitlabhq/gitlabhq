@@ -152,7 +152,7 @@ module Gitlab::Markdown
       end
 
       it 'ignores invalid commit IDs on the referenced project' do
-        exp = act = "Committed #{invalidate_reference(reference)}"
+        act = "Committed #{invalidate_reference(reference)}"
         expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(invalidate_reference(reference))}<\/a>/)
       end
 

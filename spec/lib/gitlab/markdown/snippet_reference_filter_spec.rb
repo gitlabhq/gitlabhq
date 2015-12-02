@@ -134,7 +134,7 @@ module Gitlab::Markdown
       end
 
       it 'ignores invalid snippet IDs on the referenced project' do
-        exp = act = "See #{invalidate_reference(reference)}"
+        act = "See #{invalidate_reference(reference)}"
 
         expect(reference_filter(act).to_html).to match(/<a.+>#{Regexp.escape(invalidate_reference(reference))}<\/a>/)
       end

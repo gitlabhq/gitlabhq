@@ -93,7 +93,7 @@ class CommitRange
 
   def to_reference(from_project = nil)
     if cross_project_reference?(from_project)
-      reference = project.to_reference + self.class.reference_prefix + self.id
+      project.to_reference + self.class.reference_prefix + self.id
     else
       self.id
     end
