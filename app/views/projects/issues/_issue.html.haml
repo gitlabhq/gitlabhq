@@ -14,7 +14,7 @@
         %span
           CLOSED
       - if issue.assignee
-        = link_to_member(@project, issue.assignee, name: false)
+        = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
       - note_count = issue.notes.user.count
       - if note_count > 0
         &nbsp;

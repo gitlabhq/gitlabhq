@@ -20,7 +20,7 @@
       - note_count = merge_request.mr_and_commit_notes.user.count
       - if merge_request.assignee
         &nbsp;
-        = link_to_member(merge_request.source_project, merge_request.assignee, name: false)
+        = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
       - if note_count > 0
         &nbsp;
         %span
