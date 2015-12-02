@@ -34,8 +34,6 @@
   %h3
     %code .gray-content-block
 
-
-
   .gray-content-block.middle-block
     %h4 Normal block inside content
     = lorem
@@ -44,6 +42,25 @@
     %h4 Second block
     = lorem
 
+
+  %h3
+    %code .cover-block
+
+  .cover-block
+    .avatar-holder
+      = image_tag avatar_icon('admin@example.com', 90), class: "avatar s90", alt: ''
+    .cover-title
+      John Smith
+
+    .cover-desc
+      = lorem
+
+    .cover-controls
+      = link_to '#', class: 'btn btn-gray' do
+        = icon('pencil')
+      &nbsp;
+      = link_to '#', class: 'btn btn-gray' do
+        = icon('rss')
 
   %h2#lists Lists
 
@@ -257,7 +274,6 @@
             %a.btn Remove
       .file-contenta.code
         = render 'shared/file_highlight', blob: blob
-
 
   %h2#markdown Markdown
   %h3
