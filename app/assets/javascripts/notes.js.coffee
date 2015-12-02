@@ -111,6 +111,10 @@ class @Notes
   Note: for rendering inline notes use renderDiscussionNote
   ###
   renderNote: (note) ->
+    unless note.valid
+      alert('You have already used this award emoji !') if note.award
+      return
+
     # render note if it not present in loaded list
     # or skip if rendered
     if @isNewNote(note) && !note.award

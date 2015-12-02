@@ -133,6 +133,7 @@ class Projects::NotesController < Projects::ApplicationController
   def render_note_json(note)
     if note.valid?
       render json: {
+        valid: true,
         id: note.id,
         discussion_id: note.discussion_id,
         html: note_to_html(note),
@@ -143,7 +144,11 @@ class Projects::NotesController < Projects::ApplicationController
         discussion_with_diff_html: note_to_discussion_with_diff_html(note)
       }
     else
-      render json: { invalid: true, errors: note.errors }
+      render json: {
+        valid: false,
+        award: note.is_award,
+        errors: note.errors
+      }
     end
   end
 
