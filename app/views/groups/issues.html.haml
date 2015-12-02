@@ -4,21 +4,35 @@
   - if current_user
     = auto_discovery_link_tag(:atom, issues_group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} issues")
 
+.project-issuable-filter
+  .controls
+    .pull-left
+      - if current_user
+        .hidden-xs.pull-left
+          = link_to issues_group_url(@group, format: :atom, private_token: current_user.private_token), class: 'btn' do
+            %i.fa.fa-rss
 
+    - if @projects.any? { |project| can?(current_user, :create_issue, project) }
+      .dropdown.inline.prepend-left-10
+        %button.dropdown-toggle.btn.btn-new{type: 'button', 'data-toggle' => 'dropdown'}
+          %i.fa.fa-plus
+          New Issue
+          %b.caret
+        %ul.dropdown-menu.dropdown-menu-align-right
+          - @projects.each do |project|
+            - if can?(current_user, :create_issue, project)
+              %li
+                = link_to new_namespace_project_issue_path(project.namespace, project) do
+                  = project.name_with_namespace
 
-= render 'shared/issuable/filter', type: :issues
+  = render 'shared/issuable/filter', type: :issues
+
 .gray-content-block.second-block
-  .pull-right
-    - if current_user
-      .hidden-xs.pull-left
-        = link_to issues_group_url(@group, format: :atom, private_token: current_user.private_token) do
-          %i.fa.fa-rss
-  %div
-    Only issues from
-    %strong #{@group.name}
-    group are listed here.
-    - if current_user
-      To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
+  Only issues from
+  %strong #{@group.name}
+  group are listed here.
+  - if current_user
+    To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
 
 .prepend-top-default
   = render 'shared/issues'
