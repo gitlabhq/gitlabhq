@@ -130,9 +130,11 @@
                 The project can be committed to.
                 %br
                 %strong Once active this project shows up in the search and on the dashboard.
-              = link_to 'Unarchive', unarchive_namespace_project_path(@project.namespace, @project),
-                  data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
-                  method: :post, class: "btn btn-success"
+
+              .form-actions
+                = link_to 'Unarchive project', unarchive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
+                    method: :post, class: "btn btn-success"
         - else
           .panel.panel-warning
             .panel-heading
@@ -144,9 +146,11 @@
                 It is hidden from the dashboard and doesn't show up in searches.
                 %br
                 %strong Archived projects cannot be committed to!
-              = link_to 'Archive', archive_namespace_project_path(@project.namespace, @project),
-                  data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
-                  method: :post, class: "btn btn-warning"
+
+              .form-actions
+                = link_to 'Archive project', archive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                    method: :post, class: "btn btn-warning"
       - else
         .nothing-here-block Only the project owner can archive a project
 
@@ -175,7 +179,7 @@
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.
             .form-actions
-              = f.submit 'Rename', class: "btn btn-warning"
+              = f.submit 'Rename project', class: "btn btn-warning"
 
       - if can?(current_user, :change_namespace, @project)
         .panel.panel-default.panel.panel-danger
@@ -194,7 +198,7 @@
                     %li You can only transfer the project to namespaces you manage.
                     %li You will need to update your local repositories to point to the new location.
               .form-actions
-                = f.submit 'Transfer', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+                = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
       - else
         .nothing-here-block Only the project owner can transfer a project
 

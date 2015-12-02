@@ -10,7 +10,7 @@
   = render 'shared/service_settings', form: form
 
   .form-actions
-    = form.submit 'Save', class: 'btn btn-save'
+    = form.submit 'Save changes', class: 'btn btn-save'
     &nbsp;
     - if @service.valid? && @service.activated?
       - disabled = @service.can_test? ? '':'disabled'

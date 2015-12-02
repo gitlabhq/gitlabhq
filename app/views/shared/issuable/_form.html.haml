@@ -90,7 +90,7 @@
       %strong #{link_to 'guidelines for contribution', guide_url}
       to this repository.
   - if issuable.new_record?
-    = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+    = f.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
     = f.submit 'Save changes', class: 'btn btn-save'
   - if issuable.new_record?
