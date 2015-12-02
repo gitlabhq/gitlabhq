@@ -12,9 +12,9 @@
         Forked from
         = link_to project_path(forked_from_project) do
           = forked_from_project.namespace.try(:name)
-  .cover-controls
     .visibility-level-label
       = visibility_level_icon(@project.visibility_level)
+  .cover-controls.left
       = visibility_level_label(@project.visibility_level)
 
   .project-repo-buttons
