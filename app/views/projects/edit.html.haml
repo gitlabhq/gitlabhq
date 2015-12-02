@@ -174,7 +174,6 @@
                     .input-group-addon
                       #{URI.join(root_url, @project.namespace.path)}/
                     = f.text_field :path, class: 'form-control'
-                    %span.input-group-addon .git
                 %ul
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.
