@@ -11,7 +11,7 @@
 
 = form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-requires-input" do
   .form-group
-    = label_tag :branch_name, 'Name for new branch', class: 'control-label'
+    = label_tag :branch_name, nil, class: 'control-label'
     .col-sm-10
       = text_field_tag :branch_name, params[:branch_name], placeholder: 'enter new branch name', required: true, tabindex: 1, class: 'form-control'
   .form-group
