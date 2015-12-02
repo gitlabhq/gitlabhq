@@ -122,6 +122,7 @@ class @Notes
 
     if note.award
       awards_handler.addAwardToEmojiBar(note.note, note.emoji_path)
+      awards_handler.scrollToAwards()
 
   ###
   Check if note does not exists on page

@@ -89,3 +89,8 @@ class @AwardsHandler
 
   findEmojiIcon: (emoji) ->
     $(".icon[data-emoji='" + emoji + "']")
+
+  scrollToAwards: ->
+    $('body, html').animate({
+      scrollTop: $('.awards').offset().top - 80
+    }, 200)
