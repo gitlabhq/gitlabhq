@@ -26,9 +26,10 @@
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
       .normal
         %span Request to merge
-        %span.label-branch #{source_branch_with_namespace(@merge_request)}
+        = link_to source_branch_with_namespace(@merge_request), namespace_project_commits_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), class: "label-branch"
         %span into
-        %span.label-branch #{@merge_request.target_branch}
+        = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
+          = @merge_request.target_branch
 
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
