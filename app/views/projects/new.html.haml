@@ -11,16 +11,16 @@
           Project path
         .col-sm-10
           .input-group
-            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 1, autofocus: true, required: true
-            .input-group-addon
-              \.git
-
-      - if current_user.can_select_namespace?
-        .form-group
-          = f.label :namespace_id, class: 'control-label' do
-            %span Namespace
-          .col-sm-10
-            = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'select2', tabindex: 2}
+            - if current_user.can_select_namespace?
+              .input-group-addon
+                = root_url
+              = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user, display_path: true), {}, {class: 'select2', tabindex: 1}
+              .input-group-addon
+                \/
+            - else
+              .input-group-addon
+                #{root_url}#{current_user.username}/
+            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
 
       - if import_sources_enabled?
         .project-import.js-toggle-container
