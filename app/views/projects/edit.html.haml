@@ -213,7 +213,8 @@
                   #{link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)}.
                   %br
                   %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
-                = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+                .form-actions
+                  = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
         - else
           .nothing-here-block Only the project owner can remove the fork relationship.
 
@@ -226,8 +227,8 @@
                 Removing the project will delete its repository and all related resources including issues, merge requests etc.
                 %br
                 %strong Removed projects cannot be restored!
-
-              = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+              .form-actions
+                = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
       - else
         .nothing-here-block Only the project owner can remove a project.
 

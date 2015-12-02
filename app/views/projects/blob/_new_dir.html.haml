@@ -13,10 +13,9 @@
 
           = render 'shared/new_commit_form', placeholder: "Add new directory"
 
-          .form-group
-            .col-sm-offset-2.col-sm-10
-              = submit_tag "Create directory", class: 'btn btn-primary btn-create'
-              = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+          .form-actions
+            = submit_tag "Create directory", class: 'btn btn-create'
+            = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
 
 :javascript
   disableButtonIfAnyEmptyField($(".js-create-dir-form"), ".form-control", ".btn-create");
