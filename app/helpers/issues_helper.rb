@@ -96,7 +96,7 @@ module IssuesHelper
 
   def emoji_author_list(notes, current_user)
     list = notes.map do |note|
-             note.author == current_user ? "me" : note.author.username
+             note.author == current_user ? "me" : note.author.name
            end
 
     list.join(", ")
