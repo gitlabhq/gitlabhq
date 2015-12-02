@@ -26,12 +26,6 @@
 }
 
 .project-home-panel {
-  text-align: center;
-  background: #f7f8fa;
-  margin: -$gl-padding;
-  padding: $gl-padding;
-  padding: 44px 0 17px 0;
-
   .project-identicon-holder {
     margin-bottom: 16px;
 
@@ -101,7 +95,6 @@
     display: inline-table;
     position: relative;
     top: 17px;
-    margin-bottom: 44px;
   }
 
   .project-repo-buttons {
