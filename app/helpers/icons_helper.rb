@@ -27,16 +27,20 @@ module IconsHelper
     end
   end
 
-  def public_icon
-    icon('globe fw')
-  end
+  def visibility_level_icon(level, fw: true)
+    name =
+      case level
+      when Gitlab::VisibilityLevel::PRIVATE
+        'lock'
+      when Gitlab::VisibilityLevel::INTERNAL
+        'shield'
+      else # Gitlab::VisibilityLevel::PUBLIC
+        'globe'
+      end
+      
+    name << " fw" if fw
 
-  def internal_icon
-    icon('shield fw')
-  end
-
-  def private_icon
-    icon('lock fw')
+    icon(name)
   end
 
   def file_type_icon_class(type, mode, name)
