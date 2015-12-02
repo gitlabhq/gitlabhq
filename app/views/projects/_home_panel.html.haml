@@ -17,6 +17,15 @@
   .cover-controls.left
       = visibility_level_label(@project.visibility_level)
 
+  .cover-controls
+    - if can?(current_user, :admin_project, @project)
+      = link_to edit_project_path(@project), class: 'btn btn-gray' do
+        = icon('pencil')
+    - if current_user
+      &nbsp;
+      = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), class: 'btn btn-gray' do
+        = icon('rss')
+
   .project-repo-buttons
     .split-one
       = render 'projects/buttons/star'
