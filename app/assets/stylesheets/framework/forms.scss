@@ -22,9 +22,10 @@ input[type='text'].danger {
 }
 
 .form-actions {
-  padding: 17px 20px 18px;
-  margin-top: 18px;
-  margin-bottom: 18px;
+  margin: -$gl-padding;
+  margin-top: 0;
+  margin-bottom: -$gl-padding;
+  padding: $gl-padding;
   background-color: $background-color;
   border-top: 1px solid $border-color;
 }
