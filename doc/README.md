@@ -32,7 +32,7 @@
 
 + [Testing PHP](ci/languages/php.md)
 
-## CI Services
+### CI Services
 
 + [Using MySQL](ci/services/mysql.md)
 + [Using PostgreSQL](ci/services/postgres.md)
