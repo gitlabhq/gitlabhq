@@ -85,14 +85,15 @@
           %p
             Changing your username will change path to all personal projects!
           %div
-            = f.text_field :username, required: true, class: 'form-control'
+            .input-group
+              .input-group-addon
+                = "#{root_url}u/"
+              = f.text_field :username, required: true, class: 'form-control'
             &nbsp;
           .loading-gif.hide
             %p
               = icon('spinner spin')
               Saving new username
-          %p.light
-            = user_url(@user)
           .form-actions
             = f.submit 'Save username', class: "btn btn-warning"
 
