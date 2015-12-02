@@ -112,7 +112,8 @@ class @Notes
   ###
   renderNote: (note) ->
     unless note.valid
-      alert('You have already used this award emoji !') if note.award
+      if note.award
+        new Flash('You have already used this award emoji !', 'alert')
       return
 
     # render note if it not present in loaded list
