@@ -1,8 +1,10 @@
 module Gitlab
   class ClosingIssueExtractor
     ISSUE_CLOSING_REGEX = begin
+      link_pattern = URI.regexp(%w(http https))
+
       pattern = Gitlab.config.gitlab.issue_closing_pattern
-      pattern = pattern.sub('%{issue_ref}', "(?:(?:#{Issue.link_reference_pattern})|(?:#{Issue.reference_pattern}))")
+      pattern = pattern.sub('%{issue_ref}', "(?:(?:#{link_pattern})|(?:#{Issue.reference_pattern}))")
       Regexp.new(pattern).freeze
     end
 
