@@ -123,10 +123,16 @@
 }
 
 .user-result {
+  min-height: 24px;
+
   .user-image {
     float: left;
   }
-  .user-name {
+
+  &.no-username {
+    .user-name {
+      line-height: 24px;
+    }
   }
 }
 
