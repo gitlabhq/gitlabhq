@@ -20,7 +20,7 @@
 + [Using MySQL](services/mysql.md)
 + [Using PostgreSQL](services/postgres.md)
 + [Using Redis](services/redis.md)
-+ [Using Other Services](docker/using_docker_images.html#how-to-use-other-images-as-services)
++ [Using Other Services](docker/using_docker_images.md#how-to-use-other-images-as-services)
 
 ### Examples
 

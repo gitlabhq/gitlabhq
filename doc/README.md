@@ -37,7 +37,7 @@
 + [Using MySQL](ci/services/mysql.md)
 + [Using PostgreSQL](ci/services/postgres.md)
 + [Using Redis](ci/services/redis.md)
-+ [Using Other Services](ci/docker/using_docker_images.html#how-to-use-other-images-as-services)
++ [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
 
 ### CI Examples
 
