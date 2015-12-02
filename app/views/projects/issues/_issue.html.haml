@@ -6,9 +6,6 @@
   .issue-title
     %span.issue-title-text
       = link_to_gfm issue.title, issue_path(issue), class: "row_title"
-    .issue-labels
-      - issue.labels.each do |label|
-        = link_to_label(label, project: issue.project)
     .pull-right.light
       - if issue.closed?
         %span
@@ -36,7 +33,12 @@
       = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
         = icon('clock-o')
         = issue.milestone.title
+    - if issue.labels.any?
+      &nbsp;
+      - issue.labels.each do |label|
+        = link_to_label(label, project: issue.project)
     - if issue.tasks?
+      &nbsp;
       %span.task-status
         = issue.task_status
 
