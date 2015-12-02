@@ -24,9 +24,9 @@
     = link_to 'Cancel', namespace_project_branches_path(@project.namespace, @project), class: 'btn btn-cancel'
 
 :javascript
-  var availableTags = #{@project.repository.ref_names.to_json};
+  var availableRefs = #{@project.repository.ref_names.to_json};
 
   $("#ref").autocomplete({
-    source: availableTags,
+    source: availableRefs,
     minLength: 1
   });
