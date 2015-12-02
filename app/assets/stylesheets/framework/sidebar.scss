@@ -20,12 +20,15 @@
 }
 
 .content-wrapper {
+  min-height: 100vh;
   width: 100%;
   padding: 20px;
+  background: #EAEBEC;
 
   .container-fluid {
     background: #FFF;
     padding: $gl-padding;
+    min-height: 90vh;
 
     &.container-blank {
       background: none;
