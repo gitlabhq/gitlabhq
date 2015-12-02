@@ -29,6 +29,14 @@
         = hidden_field_tag :issuable_context
         = f.submit class: 'btn hide'
 
+  - if issuable.labels.any?
+    %div.prepend-top-default.clearfix
+      .issuable-context-title
+        %label Labels
+      .merge-request-show-labels
+        - issuable.labels.each do |label|
+          = link_to_label(label)
+
   - if current_user
     - subscribed = issuable.subscribed?(current_user)
     %div.prepend-top-20.clearfix
