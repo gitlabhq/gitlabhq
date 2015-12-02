@@ -23,13 +23,13 @@
         = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
       - if note_count > 0
         &nbsp;
-        %span
-          %i.fa.fa-comments
+        = link_to merge_request_path(merge_request) + "#notes" do
+          = icon('comments')
           = note_count
       - else
         &nbsp;
-        %span.merge-request-no-comments
-          %i.fa.fa-comments
+        = link_to merge_request_path(merge_request) + "#notes", class: "merge-request-no-comments" do
+          = icon('comments')
           = 0
 
   .merge-request-info
