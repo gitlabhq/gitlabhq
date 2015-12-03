@@ -132,7 +132,6 @@ gem 'sidetiq', '~> 0.6.3'
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colored", '~> 1.2'
 gem "colorize", '~> 0.7.0'
 
 # GitLab settings
