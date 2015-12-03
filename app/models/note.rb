@@ -367,12 +367,12 @@ class Note < ActiveRecord::Base
     self.note = award_emoji_name
   end
 
-  private
-
   def supports_awards?
     noteable.kind_of?(Issue) ||
       noteable.is_a?(MergeRequest)
   end
+
+  private
 
   def contains_emoji_only?
     (note =~ /\A:[-_+[:alnum:]]*:\s?\z/) ? true : false
