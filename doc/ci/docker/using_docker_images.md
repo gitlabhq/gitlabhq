@@ -69,6 +69,10 @@ The service container for MySQL will be accessible under the hostname `mysql`.
 So, in order to access your database service you have to connect to the host
 named `mysql` instead of a socket or `localhost`.
 
+### Overwrite image and services
+
+See the section below.
+
 ### How to use other images as services
 
 You are not limited to have only database services. You can add as many
