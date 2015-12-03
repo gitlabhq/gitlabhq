@@ -19,7 +19,7 @@
     = f.hidden_field :target_branch
 
 .mr-compare.merge-request
-  %ul.merge-request-tabs
+  %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
     %li.commits-tab
       = link_to url_for(params), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
         Commits
@@ -31,7 +31,7 @@
 
   .tab-content
     #commits.commits.tab-pane
-      = render "projects/commits/commits", project: @project
+      = render "projects/merge_requests/show/commits"
     #diffs.diffs.tab-pane.active
       - if @diffs.present?
         = render "projects/diffs/diffs", diffs: @diffs, project: @project
@@ -57,4 +57,3 @@
     diffs_loaded: true,
     commits_loaded: true
   });
-
