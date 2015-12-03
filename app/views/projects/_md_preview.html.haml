@@ -15,10 +15,11 @@
       .js-md-preview{class: (preview_class if defined?(preview_class))}
 
   - if defined?(referenced_users) && referenced_users
-    %span.referenced-users.pull-left.hide
-      = icon('exclamation-triangle')
-      You are about to add
-      %strong
-        %span.js-referenced-users-count 0
-        people
-      to the discussion. Proceed with caution.
+    %div.clearfix
+      %span.referenced-users.hide
+        = icon('exclamation-triangle')
+        You are about to add
+        %strong
+          %span.js-referenced-users-count 0
+          people
+        to the discussion. Proceed with caution.
