@@ -1,13 +1,13 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head"
-  %body.ui_charcoal.login-page.application
+  %body.ui_charcoal.login-page.application.navless
     = render "layouts/header/empty"
     = render "layouts/broadcast"
     .container.navless-container
       .content
         = render "layouts/flash"
-        .row.prepend-top-20
+        .row
           .col-sm-5.pull-right
             = yield
           .col-sm-7.brand-holder.pull-left
