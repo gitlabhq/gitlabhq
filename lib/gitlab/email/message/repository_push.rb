@@ -87,17 +87,17 @@ module Gitlab
           if @action == :push
             if commits.length > 1 && compare
               @urls.namespace_project_compare_url(project_namespace,
-                                                    project,
-                                                    from: Commit.new(compare.base, project),
-                                                    to:   Commit.new(compare.head, project))
+                                                  project,
+                                                  from: Commit.new(compare.base, project),
+                                                  to:   Commit.new(compare.head, project))
             else
               @urls.namespace_project_commit_url(project_namespace,
-                                                   project, commits.first)
+                                                 project, commits.first)
             end
           else
             unless @action == :delete
               @urls.namespace_project_tree_url(project_namespace,
-                                                 project, ref_name)
+                                               project, ref_name)
             end
           end
         end
