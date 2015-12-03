@@ -156,7 +156,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the Editing page' do
-    expect(page).to have_content('Editing')
+    expect(page).to have_content('Edit Page')
   end
 
   step 'I view the page history of a Wiki page that has a path' do
