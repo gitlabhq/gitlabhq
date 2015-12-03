@@ -115,7 +115,7 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(find(:select, "merge_request_source_project_id", {}).value).to eq @forked_project.id.to_s
     expect(find(:select, "merge_request_target_project_id", {}).value).to eq @project.id.to_s
     expect(find(:select, "merge_request_source_branch", {}).value).to eq ""
-    expect(find(:select, "merge_request_target_branch", {}).value).to eq ""
+    expect(find(:select, "merge_request_target_branch", {}).value).to eq "master"
     click_button "Compare branches"
   end
 
