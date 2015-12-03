@@ -32,7 +32,7 @@
       = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
         = render 'projects/zen', attr: :release_description, classes: 'description js-quick-submit form-control'
         = render 'projects/notes/hints'
-        .help-block Optionally, you can add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.
+        .help-block Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.
   .form-actions
     = button_tag 'Create tag', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', namespace_project_tags_path(@project.namespace, @project), class: 'btn btn-cancel'
