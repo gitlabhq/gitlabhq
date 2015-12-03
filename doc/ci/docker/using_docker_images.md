@@ -152,7 +152,7 @@ services:
 ```
 
 When the build is run, `tutum/wordpress` will be started and you will have
-access to it from your build container under the hostname `tutum_wordpress`.
+access to it from your build container under the hostname `tutum__wordpress`.
 
 The alias hostname for the service is made from the image name following these
 rules:
