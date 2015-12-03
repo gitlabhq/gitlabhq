@@ -12,8 +12,5 @@ class @Flash
     @flash.click -> $(@).fadeOut()
     @flash.show()
 
-  pinToTop: ->
-    @flash.addClass('flash-pinned')
-
-  raise: ->
-    @flash.addClass('flash-raised')
+  pin: ->
+    @flash.addClass('flash-pinned flash-raised')

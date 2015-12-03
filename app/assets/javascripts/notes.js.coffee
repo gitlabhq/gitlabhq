@@ -114,8 +114,7 @@ class @Notes
     unless note.valid
       if note.award
         flash = new Flash('You have already used this award emoji !', 'alert')
-        flash.pinToTop()
-        flash.raise()
+        flash.pin()
       return
 
     # render note if it not present in loaded list
