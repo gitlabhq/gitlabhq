@@ -18,10 +18,6 @@
   }
 }
 
-.project-edit-content {
-  padding: 7px;
-}
-
 .project-name-holder {
   .help-inline {
     vertical-align: top;
@@ -369,7 +365,7 @@ table.table.protected-branches-list tr.no-border {
 
 .project-stats {
   text-align: center;
-  margin-top: 15px;
+  margin-top: $gl-padding;
   margin-bottom: 0;
   padding-top: 10px;
   padding-bottom: 4px;

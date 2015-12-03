@@ -1,0 +1,15 @@
+.panel {
+  margin-bottom: $gl-padding;
+  
+  .panel-heading {
+    padding: 10px $gl-padding;
+  }
+  .panel-body {
+    padding: $gl-padding;
+
+    .form-actions {
+      margin: -$gl-padding;
+      margin-top: $gl-padding;
+    }
+  }
+}
