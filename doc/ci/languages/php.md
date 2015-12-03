@@ -242,7 +242,7 @@ If your test suite needs to access a private repository, you need to configure
 
 Most of the time you will need a running database in order for your tests to
 run. If you are using the Docker executor you can leverage Docker's ability to
-connect to other containers. In GitLab Runner lingo, this can be achieved by
+link to other containers. In GitLab Runner lingo, this can be achieved by
 defining a `service`.
 
 This functionality is covered in [the CI services](../services/README.md)
