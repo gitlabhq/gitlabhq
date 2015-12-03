@@ -17,7 +17,6 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :after_edit_path, only: [:edit, :update]
-  before_action :show_lfs_object, only: :show
 
   def new
     commit unless @repository.empty?
@@ -193,21 +192,5 @@ class Projects::BlobController < Projects::ApplicationController
       file_content: params[:content],
       file_content_encoding: params[:encoding]
     }
-  end
-
-  def show_lfs_object
-    return unless @blob && @blob.text? && @blob.data.present?
-
-    if @blob.data.starts_with?("version https://git-lfs.github.com/spec")
-      oid = @blob.data.match(/#{LfsObject::MATCH_FROM_POINTER_REGEX}/)
-      if oid && oid[1]
-        lfs_object = LfsObject.find_by_oid(oid[1])
-        return nil unless lfs_object && lfs_object.file.exists?
-
-        if lfs_object.projects.exists?(lfs_object.storage_project(@project).id)
-          send_file lfs_object.file.path, filename: @blob.name, disposition: 'attachment'
-        end
-      end
-    end
   end
 end
