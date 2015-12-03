@@ -8,7 +8,7 @@
   .merge-request-details.issuable-details
     = render "projects/merge_requests/show/mr_title"
     = render "projects/merge_requests/show/mr_box"
-    .append-bottom-20.mr-source-target.prepend-top-default
+    .append-bottom-default.mr-source-target.prepend-top-default
       - if @merge_request.open?
         .pull-right
           - if @merge_request.source_branch_exists?
@@ -40,7 +40,7 @@
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
   - if @commits.present?
-    %ul.merge-request-tabs
+    %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
       %li.notes-tab
         = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#notes', action: 'notes', toggle: 'tab'} do
           Discussion
