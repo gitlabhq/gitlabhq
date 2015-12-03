@@ -5,7 +5,7 @@
   .pull-right
     - if can? current_user, :push_code, @project
       = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
-        %i.fa.fa-add-sign
+        = icon('plus')
         New branch
       &nbsp;
     .dropdown.inline
