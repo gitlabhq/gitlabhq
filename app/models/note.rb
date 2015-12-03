@@ -361,7 +361,7 @@ class Note < ActiveRecord::Base
   # Method is executed as a before_validation callback.
   #
   def set_award!
-    return unless issue_comment? && contains_emoji_only?
+    return unless supports_awards? && contains_emoji_only?
 
     self.is_award = true
     self.note = award_emoji_name
@@ -369,8 +369,9 @@ class Note < ActiveRecord::Base
 
   private
 
-  def issue_comment?
-    noteable.kind_of?(Issue)
+  def supports_awards?
+    noteable.kind_of?(Issue) ||
+      noteable.is_a?(MergeRequest)
   end
 
   def contains_emoji_only?
