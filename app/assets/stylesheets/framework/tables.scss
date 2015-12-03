@@ -6,6 +6,8 @@
 
 table {
   &.table {
+    margin-bottom: $gl-padding;
+    
     .dropdown-menu a {
       text-decoration: none;
     }

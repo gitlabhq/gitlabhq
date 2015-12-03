@@ -260,7 +260,7 @@ module Gitlab
       end
 
       def link_to_project(object)
-        if object && !object.projects.exists?(@project)
+        if object && !object.projects.exists?(@project.id)
           object.projects << @project
           object.save
         end
