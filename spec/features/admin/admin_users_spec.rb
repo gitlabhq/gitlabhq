@@ -128,6 +128,16 @@ describe "Admin::Users", feature: true  do
 
           expect(page).not_to have_content('Impersonate')
         end
+
+        it 'should not show impersonate button for blocked user' do
+          another_user.block
+
+          visit admin_user_path(another_user)
+
+          expect(page).not_to have_content('Impersonate')
+
+          another_user.activate
+        end
       end
 
       context 'when impersonating' do
