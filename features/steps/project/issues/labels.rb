@@ -9,7 +9,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I remove label \'bug\'' do
     page.within "#label_#{bug_label.id}" do
-      click_link 'Remove'
+      click_link 'Delete'
     end
   end
 

@@ -68,6 +68,10 @@
   .oneline {
     line-height: 42px;
   }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .cover-block {
@@ -113,4 +117,8 @@
     top: 10px;
     right: 10px;
   }
+}
+
+.block-connector {
+  margin-top: -1px;
 }

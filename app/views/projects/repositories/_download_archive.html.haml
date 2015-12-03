@@ -3,10 +3,10 @@
 - split_button = split_button || false
 - if split_button == true
   %span.btn-group{class: btn_class}
-    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'zip'), class: 'btn btn-success col-xs-10', rel: 'nofollow' do
+    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'zip'), class: 'btn col-xs-10', rel: 'nofollow' do
       %i.fa.fa-download
       %span Download zip
-    %a.col-xs-2.btn.btn-success.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+    %a.col-xs-2.btn.dropdown-toggle{ 'data-toggle' => 'dropdown' }
       %span.caret
       %span.sr-only
         Select Archive Format
