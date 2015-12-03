@@ -7,7 +7,7 @@
 
 /** COMMON CLASSES **/
 .prepend-top-10 { margin-top:10px }
-.prepend-top-default { margin-top: $gl-padding; }
+.prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-20 { margin-top:20px }
 .prepend-left-10 { margin-left:10px }
 .prepend-left-20 { margin-left:20px }
@@ -50,6 +50,10 @@ pre {
     border-radius: 0;
     color: #555;
   }
+}
+
+hr {
+  margin: $gl-padding 0;
 }
 
 .dropdown-menu > li > a {
@@ -428,4 +432,8 @@ table {
 
 .space-right {
   margin-right: 10px;
+}
+
+.alert, .progress {
+  margin-bottom: $gl-padding;
 }
