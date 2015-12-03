@@ -1,4 +1,6 @@
 require 'spec_helper'
+# rubocop:disable Lint/UselessAssignment
+# As rubocop doesn't see a need for both `ci_commit` and `ci_build`
 
 feature 'Merge When Build Succeeds', feature: true, js: true do
   let(:user) { create(:user) }
@@ -32,16 +34,20 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
       it 'activates Merge When Build Succeeds feature' do
         expect(page).to have_link "Cancel Automatic Merge"
 
-        expect(page).to have_content "Approved by #{user.name} to be merged automatically when the build succeeds."
+        expect(page).to have_content "Set by #{user.name} to be merged automatically when the build succeeds."
         expect(page).to have_content "The source branch will not be removed."
+
+        visit_merge_request(merge_request) # Needed to refresh the page
+        expect(page).to have_content /Enabled an automatic merge when the build for [0-9a-f]{8} succeeds/i
       end
     end
   end
 
   context 'When it is enabled' do
-    # No clue how, but push a new commit to the branch
-    let(:merge_request) { create(:merge_request_with_diffs, source_project: project, # source_branch: "mepmep",
-                                  author: user, title: "Bug NS-04", merge_when_build_succeeds: true) }
+    let(:merge_request) do
+      create(:merge_request_with_diffs, source_project: project, author: user,
+                                        merge_user: user, title: "MepMep", merge_when_build_succeeds: true)
+    end
 
     before do
       merge_request.source_project.team << [user, :master]
@@ -60,10 +66,16 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
       click_link "Cancel Automatic Merge"
 
       expect(page).to have_button  "Merge When Build Succeeds"
+
+      visit_merge_request(merge_request) # Needed to refresh the page
+      expect(page).to have_content "Cancelled the automatic merge"
     end
 
     it "allows the user to remove the source branch" do
       expect(page).to have_link "Remove Source Branch When Merged"
+
+      click_link "Remove Source Branch When Merged"
+      expect(page).to have_content "The source branch will be removed"
     end
   end
 
@@ -78,3 +90,4 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
   end
 end
+# rubocop:enable Lint/UselessAssignment

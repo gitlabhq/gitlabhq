@@ -18,7 +18,8 @@ describe MergeRequests::RefreshService do
                               source_branch: 'master',
                               target_branch: 'feature',
                               target_project: @project,
-                              merge_when_build_succeeds: true)
+                              merge_when_build_succeeds: true,
+                              merge_user: @user)
 
       @fork_merge_request = create(:merge_request,
                                    source_project: @fork_project,

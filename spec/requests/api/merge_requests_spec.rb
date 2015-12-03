@@ -303,7 +303,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_request/:merge_request_id/merge" do
-    let (:ci_commit) { create(:ci_commit_without_jobs) }
+    let(:ci_commit) { create(:ci_commit_without_jobs) }
 
     it "should return merge_request in case of success" do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)

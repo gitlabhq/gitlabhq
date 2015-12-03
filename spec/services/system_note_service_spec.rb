@@ -208,20 +208,20 @@ describe SystemNoteService do
   end
 
   describe '.merge_when_build_succeeds' do
-    let(:ci_commit) { create :ci_commit_without_jobs }
+    let(:ci_commit) { build :ci_commit_without_jobs }
     let(:noteable) { create :merge_request }
 
-    subject { described_class.merge_when_build_succeeds(noteable, project, author, ci_commit) }
+    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.last_commit) }
 
     it_behaves_like 'a system note'
 
     it "posts the Merge When Build Succeeds system note" do
-      expect(subject.note).to eq  "Enabled an automatic merge when the build for 97de212e80737a608d939f648d959671fb0a0142 succeeds"
+      expect(subject.note).to match  /Enabled an automatic merge when the build for (\w+\/\w+@)?[0-9a-f]{40} succeeds/
     end
   end
 
   describe '.cancel_merge_when_build_succeeds' do
-    let(:ci_commit) { create :ci_commit_without_jobs }
+    let(:ci_commit) { build :ci_commit_without_jobs }
     let(:noteable) { create :merge_request }
 
     subject { described_class.cancel_merge_when_build_succeeds(noteable, project, author) }
@@ -229,7 +229,7 @@ describe SystemNoteService do
     it_behaves_like 'a system note'
 
     it "posts the Merge When Build Succeeds system note" do
-      expect(subject.note).to eq  "Canceled the automatic merge"
+      expect(subject.note).to eq  "Cancelled the automatic merge"
     end
   end
 

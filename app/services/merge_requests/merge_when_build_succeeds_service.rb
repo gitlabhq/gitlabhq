@@ -1,6 +1,6 @@
 module MergeRequests
   class MergeWhenBuildSucceedsService < MergeRequests::BaseService
-    # Marks the passed `merge_request` to be marked when the build succeeds or
+    # Marks the passed `merge_request` to be merged when the build succeeds or
     # updates the params for the automatic merge
     def execute(merge_request)
       merge_request.merge_params.merge!(params)
@@ -12,7 +12,7 @@ module MergeRequests
         merge_request.merge_when_build_succeeds = true
         merge_request.merge_user                = @current_user
 
-        SystemNoteService.merge_when_build_succeeds(merge_request, @project, @current_user, merge_request.ci_commit)
+        SystemNoteService.merge_when_build_succeeds(merge_request, @project, @current_user, merge_request.last_commit)
       end
 
       merge_request.save
@@ -25,8 +25,7 @@ module MergeRequests
       merge_requests.each do |merge_request|
         next unless merge_request.merge_when_build_succeeds?
 
-        ci_commit = merge_request.ci_commit
-        if ci_commit && ci_commit.success? && merge_request.mergeable?
+        if merge_request.ci_commit && merge_request.ci_commit.success? && merge_request.mergeable?
           MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id, merge_request.merge_params)
         end
       end
@@ -34,7 +33,7 @@ module MergeRequests
 
     # Cancels the automatic merge
     def cancel(merge_request)
-      if merge_request.merge_when_build_succeeds? && merge_request.open? && !merge_request.merged?
+      if merge_request.merge_when_build_succeeds? && merge_request.open?
         merge_request.reset_merge_when_build_succeeds
         SystemNoteService.cancel_merge_when_build_succeeds(merge_request, @project, @current_user)
 

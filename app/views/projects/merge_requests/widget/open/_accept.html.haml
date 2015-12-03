@@ -4,8 +4,7 @@
   = hidden_field_tag :authenticity_token, form_authenticity_token
   .accept-merge-holder.clearfix.js-toggle-container
     .accept-action
-      - ci_commit = @merge_request.ci_commit
-      - if ci_commit && ci_commit.active?
+      - if @merge_request.ci_commit && @merge_request.ci_commit.active?
         = f.button class: "btn btn-create btn-grouped merge_when_build_succeeds", name: "merge_when_build_succeeds" do
           Merge When Build Succeeds
         = f.button class: "btn btn-create btn-grouped accept_merge_request #{status_class}" do

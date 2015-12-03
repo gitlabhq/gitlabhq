@@ -2,25 +2,28 @@
 #
 # Table name: merge_requests
 #
-#  id                :integer          not null, primary key
-#  target_branch     :string(255)      not null
-#  source_branch     :string(255)      not null
-#  source_project_id :integer          not null
-#  author_id         :integer
-#  assignee_id       :integer
-#  title             :string(255)
-#  created_at        :datetime
-#  updated_at        :datetime
-#  milestone_id      :integer
-#  state             :string(255)
-#  merge_status      :string(255)
-#  target_project_id :integer          not null
-#  iid               :integer
-#  description       :text
-#  position          :integer          default(0)
-#  locked_at         :datetime
-#  updated_by_id     :integer
-#  merge_error       :string(255)
+#  id                         :integer          not null, primary key
+#  target_branch              :string(255)      not null
+#  source_branch              :string(255)      not null
+#  source_project_id          :integer          not null
+#  author_id                  :integer
+#  assignee_id                :integer
+#  title                      :string(255)
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  milestone_id               :integer
+#  state                      :string(255)
+#  merge_status               :string(255)
+#  target_project_id          :integer          not null
+#  iid                        :integer
+#  description                :text
+#  position                   :integer          default(0)
+#  locked_at                  :datetime
+#  updated_by_id              :integer
+#  merge_error                :string(255)
+#  merge_params               :text (serialized to hash)
+#  merge_when_build_succeeds  :boolean          default(false), not null
+#  merge_user_id              :integer
 #
 
 require Rails.root.join("app/models/commit")
@@ -124,6 +127,7 @@ class MergeRequest < ActiveRecord::Base
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
+  validates :merge_user, presence: true, if: :merge_when_build_succeeds?
   validate :validate_branches
   validate :validate_fork
 
@@ -496,8 +500,6 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ci_commit
-    if last_commit
-      source_project.ci_commit(last_commit.id)
-    end
+    @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit
   end
 end

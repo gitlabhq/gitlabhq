@@ -48,6 +48,24 @@ describe MergeRequest do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
+
+    context "Validation of merge user with Merge When Build succeeds" do
+      it "allows user to be nil when the feature is disabled" do
+        expect(subject).to be_valid
+      end
+
+      it "is invalid without merge user" do
+        subject.merge_when_build_succeeds = true
+        expect(subject).not_to be_valid
+      end
+
+      it "is valid with merge user" do
+        subject.merge_when_build_succeeds = true
+        subject.merge_user = build(:user)
+
+        expect(subject).to be_valid
+      end
+    end
   end
 
   describe 'respond to' do
@@ -175,31 +193,41 @@ describe MergeRequest do
   end
 
   describe '#can_remove_source_branch' do
-    let(:user) { build(:user)}
+    let(:user) { create(:user) }
+    let(:user2) { create(:user) }
 
     before do
       subject.source_project.team << [user, :master]
+
+      subject.source_branch = "feature"
+      subject.target_branch = "master"
+      subject.save!
     end
 
-    it "cant be merged when its a a protected branch" do
-      subject.source_project.protected_branches = [];
-
+    it "can't be removed when its a protected branch" do
+      allow(subject.source_project).to receive(:protected_branch?).and_return(true)
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
     it "cant remove a root ref" do
-      subject.source_branch = "master";
+      subject.source_branch = "master"
+      subject.target_branch = "feature"
 
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
-    it "is truthy in all other cases" do
-      expect(subject.can_remove_source_branch?(user))
+    it "is unable to remove the source branch for a project the user cannot push to" do
+      expect(subject.can_remove_source_branch?(user2)).to be_falsey
+    end
+
+    it "is can be removed in all other cases" do
+      expect(subject.can_remove_source_branch?(user)).to be_truthy
     end
   end
 
   describe "#reset_merge_when_build_succeeds" do
-    let(:merge_if_green) { create :merge_request, merge_when_build_succeeds: true }
+    let(:merge_if_green) { create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user) }
+
     it "sets the item to false" do
       merge_if_green.reset_merge_when_build_succeeds
       merge_if_green.reload
