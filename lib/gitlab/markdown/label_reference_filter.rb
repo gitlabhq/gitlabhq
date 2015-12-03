@@ -51,7 +51,11 @@ module Gitlab
           if label = project.labels.find_by(params)
             url = url_for_label(project, label)
             klass = reference_class(:label)
-            data = data_attribute(project: project.id, label: label.id)
+            data = data_attribute(
+              original: link_text || match,
+              project: project.id,
+              label: label.id
+            )
 
             text = link_text || render_colored_label(label)
 
