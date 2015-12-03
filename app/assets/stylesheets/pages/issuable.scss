@@ -51,11 +51,12 @@
 
 .issuable-details {
   .page-title {
-    margin-top: -15px;
-    padding: 10px 0;
+    margin-top: -$gl-padding;
+    padding: 7px 0;
     margin-bottom: 0;
     color: #5c5d5e;
     font-size: 16px;
+    line-height: 42px;
 
     .author {
       color: #5c5d5e;
@@ -157,6 +158,7 @@
       min-width: 214px;
 
       > li {
+        cursor: pointer;
         margin: 5px;
       }
     }

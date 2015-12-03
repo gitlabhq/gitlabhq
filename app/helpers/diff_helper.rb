@@ -146,9 +146,9 @@ module DiffHelper
   def submodule_link(blob, ref, repository = @repository)
     tree, commit = submodule_links(blob, ref, repository)
     commit_id = if commit.nil?
-                  blob.id[0..10]
+                  Commit.truncate_sha(blob.id)
                 else
-                  link_to "#{blob.id[0..10]}", commit
+                  link_to Commit.truncate_sha(blob.id), commit
                 end
 
     [
