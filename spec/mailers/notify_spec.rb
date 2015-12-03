@@ -247,7 +247,7 @@ describe Notify do
         end
 
         describe 'that have been reassigned' do
-          subject { Notify.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id, current_user) }
+          subject { Notify.reassigned_issue_email(recipient.id, issue.id, previous_assignee.id, current_user.id) }
 
           it_behaves_like 'a multiple recipients email'
           it_behaves_like 'an answer to an existing thread', 'issue'
@@ -278,7 +278,7 @@ describe Notify do
 
         describe 'status changed' do
           let(:status) { 'closed' }
-          subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user) }
+          subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user.id) }
 
           it_behaves_like 'an answer to an existing thread', 'issue'
           it_behaves_like 'it should show Gmail Actions View Issue link'
@@ -401,7 +401,7 @@ describe Notify do
 
         describe 'status changed' do
           let(:status) { 'reopened' }
-          subject { Notify.merge_request_status_email(recipient.id, merge_request.id, status, current_user) }
+          subject { Notify.merge_request_status_email(recipient.id, merge_request.id, status, current_user.id) }
 
           it_behaves_like 'an answer to an existing thread', 'merge_request'
           it_behaves_like 'it should show Gmail Actions View Merge request link'
@@ -616,8 +616,10 @@ describe Notify do
     let(:user) { create(:user, email: 'old-email@mail.com') }
 
     before do
-      user.email = "new-email@mail.com"
-      user.save
+      perform_enqueued_jobs do
+        user.email = "new-email@mail.com"
+        user.save
+      end
     end
 
     subject { ActionMailer::Base.deliveries.last }

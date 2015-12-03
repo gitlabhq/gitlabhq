@@ -7,11 +7,11 @@
   = render "form"
 
 - if @commits.present?
-  .prepend-top-20
+  .prepend-top-default
     = render "projects/commits/commit_list"
     = render "projects/diffs/diffs", diffs: @diffs, project: @project
 - else
-  .light-well.prepend-top-20
+  .light-well.prepend-top-default
     .center
       %h4
         There isn't anything to compare.
