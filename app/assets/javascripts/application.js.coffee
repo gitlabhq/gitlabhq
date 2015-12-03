@@ -195,7 +195,8 @@ $ ->
     e.preventDefault()
     btn = $(e.target)
     text = btn.data("confirm-danger-message")
+    warningMessage = btn.data("warning-message")
     form = btn.closest("form")
-    new ConfirmDangerModal(form, text)
+    new ConfirmDangerModal(form, text, warningMessage: warningMessage)
 
   new Aside()

@@ -1,8 +1,6 @@
 - page_title "Members"
 - header_title group_title(@group, "Members", group_group_members_path(@group))
-- show_roles = should_user_see_group_roles?(current_user, @group)
-
-- if show_roles
+- if should_user_see_group_roles?(current_user, @group)
   %p.light
     Members of group have access to all group projects.
     Read more about permissions
@@ -18,8 +16,10 @@
   - if current_user && current_user.can?(:admin_group_member, @group)
     .pull-right
       - if @group.ldap_synced?
-        = link_to reset_access_group_ldap_path(@group), class: 'btn btn-grouped', data: { confirm: "Force GitLab to do LDAP permission checks for all group members? All members besides yourself will be reduced to 'Guest' access until their next interaction with GitLab." }, method: :put do
-          Clear LDAP permission cache
+        = form_tag(reset_access_group_ldap_path(@group), method: :put, class: 'inline') do
+          = button_to 'Clear LDAP permission cache', '#', class: "btn btn-remove js-confirm-danger",
+            data: { "confirm-danger-message" => clear_ldap_permission_cache_message,
+                    'warning-message' => 'If you made manual permission tweaks for some group members they will be lost.' }
 
       = button_tag class: 'btn btn-new js-toggle-button', type: 'button' do
         Add members
@@ -49,9 +49,10 @@
       (#{@members.total_count})
   %ul.well-list
     - @members.each do |member|
-      = render 'groups/group_members/group_member', member: member, show_roles: show_roles, show_controls: true
+      = render 'groups/group_members/group_member', member: member, show_controls: true
 
 = paginate @members, theme: 'gitlab'
+= render 'shared/confirm_modal', phrase: 'reset'
 
 :javascript
   $('form.member-search-form').on('submit', function(event) {

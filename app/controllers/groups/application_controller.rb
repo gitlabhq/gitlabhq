@@ -1,5 +1,6 @@
 class Groups::ApplicationController < ApplicationController
   layout 'group'
+  before_action :group
 
   private
 

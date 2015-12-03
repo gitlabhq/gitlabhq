@@ -216,7 +216,6 @@ Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_br
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
 Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
-Settings.gitlab_ci['max_artifacts_size']    ||= 100 # in megabytes
 
 #
 # Reply by email
@@ -229,10 +228,18 @@ Settings.incoming_email['start_tls']  = false if Settings.incoming_email['start_
 Settings.incoming_email['mailbox']    = "inbox" if Settings.incoming_email['mailbox'].nil?
 
 #
+# Build Artifacts
+#
+Settings['artifacts'] ||= Settingslogic.new({})
+Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
+Settings.artifacts['path']         = File.expand_path(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"), Rails.root)
+Settings.artifacts['max_size']    ||= 100 # in megabytes
+
+#
 # Git LFS
 #
 Settings['lfs'] ||= Settingslogic.new({})
-Settings.lfs['enabled']      = false if Settings.lfs['enabled'].nil?
+Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"), Rails.root)
 
 #

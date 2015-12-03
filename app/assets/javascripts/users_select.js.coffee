@@ -8,6 +8,7 @@ class @UsersSelect
       @projectId = $(select).data('project-id')
       @groupId = $(select).data('group-id')
       @showCurrentUser = $(select).data('current-user')
+      @pushCodeToProtectedBranches = $(select).data('push-code-to-protected-branches')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
       showEmailUser = $(select).data('email-user')
@@ -59,11 +60,8 @@ class @UsersSelect
 
             query.callback(data)
 
-        initSelection: (element, callback) =>
-          id = $(element).val()
-          if id != "" && id != "0"
-            @user(id, callback)
-
+        initSelection: (args...) =>
+          @initSelection(args...)
         formatResult: (args...) =>
           @formatResult(args...)
         formatSelection: (args...) =>
@@ -71,6 +69,14 @@ class @UsersSelect
         dropdownCssClass: "ajax-users-dropdown"
         escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
           m
+
+  initSelection: (element, callback) ->
+    id = $(element).val()
+    if id == "0"
+      nullUser = { name: 'Unassigned' }
+      callback(nullUser)
+    else if id != ""
+      @user(id, callback)
 
   formatResult: (user) ->
     if user.avatar_url
@@ -112,6 +118,7 @@ class @UsersSelect
         group_id: @groupId
         skip_ldap: @skipLdap
         current_user: @showCurrentUser
+        push_code_to_protected_branches: @pushCodeToProtectedBranches
       dataType: "json"
     ).done (users) ->
       callback(users)

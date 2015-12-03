@@ -169,6 +169,18 @@ FactoryGirl.define do
     title
     content
     file_name
+
+    trait :public do
+      visibility_level Gitlab::VisibilityLevel::PUBLIC
+    end
+
+    trait :internal do
+      visibility_level Gitlab::VisibilityLevel::INTERNAL
+    end
+
+    trait :private do
+      visibility_level Gitlab::VisibilityLevel::PRIVATE
+    end
   end
 
   factory :snippet do
@@ -213,6 +225,7 @@ FactoryGirl.define do
 
   factory :gitlab_license, class: "Gitlab::License" do
     starts_at { Date.today - 1.month }
+    expires_at { Date.today + 11.months }
     licensee do
       { "Name" => FFaker::Name.name }
     end

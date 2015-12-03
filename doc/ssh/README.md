@@ -77,7 +77,7 @@ Deploy keys can be shared between projects, you just need to add them to each pr
 
 ### Eclipse
 
-How to add your ssh key to Eclipse: http://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
+How to add your ssh key to Eclipse: https://wiki.eclipse.org/EGit/User_Guide#Eclipse_SSH_Configuration
 
 ## Tip: Non-default OpenSSH key file names or locations
 

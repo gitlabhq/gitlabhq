@@ -135,6 +135,8 @@ class MergeRequest < ActiveRecord::Base
   scope :merged, -> { with_state(:merged) }
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
+  scope :join_project, -> { joins(:target_project) }
+  scope :references_project, -> { references(:target_project) }
 
   participant :approvers_left
 
@@ -537,7 +539,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def rebase_dir_path
-    Rails.root.join('tmp', 'rebase', source_project.id.to_s, id.to_s).to_s
+    File.join(Gitlab.config.shared.path, 'tmp/rebase', source_project.id.to_s, id.to_s).to_s
   end
 
   def rebase_in_progress?
@@ -545,7 +547,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ci_commit
-    if last_commit
+    if last_commit and source_project
       source_project.ci_commit(last_commit.id)
     end
   end

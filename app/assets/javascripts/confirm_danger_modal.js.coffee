@@ -1,7 +1,8 @@
 class @ConfirmDangerModal
-  constructor: (form, text) ->
+  constructor: (form, text, {warningMessage} = {}) ->
     @form = form
-    $('.js-confirm-text').text(text || '')
+    $('.js-confirm-text').html(text || '')
+    $('.js-warning-text').html(warningMessage) if warningMessage
     $('.js-confirm-danger-input').val('')
     $('#modal-confirm-danger').modal('show')
     project_path = $('.js-confirm-danger-match').text()
