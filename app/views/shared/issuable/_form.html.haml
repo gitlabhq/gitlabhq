@@ -93,7 +93,8 @@
         %p.help-block
         = link_to 'Change branches', mr_change_branches_path(@merge_request)
 
-.form-actions
+- is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
+.gray-content-block{class: (is_footer ? "footer-block" : "middle-block")}
   - if !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project)) && !issuable.persisted?
     %p
       Please review the

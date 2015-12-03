@@ -444,7 +444,9 @@ describe Project do
 
       before do
         2.times do
-          create(:note_on_commit, project: project2, created_at: date)
+          # Little fix for special issue related to Fractional Seconds support for MySQL.
+          # See: https://github.com/rails/rails/pull/14359/files
+          create(:note_on_commit, project: project2, created_at: date + 1)
         end
       end
 
