@@ -2,7 +2,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds,
+    :revert
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -192,7 +193,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def revert
-    redirect_to new_namespace_project_merge_request_url(@project.namespace, @project)
+    @repository.find_or_create_branch(@merge_request.reverse_branch_name, @merge_request.target_branch)
+
+    url_params = { merge_request: {
+      source_branch: @merge_request.reverse_branch_name,
+      target_branch: @merge_request.target_branch,
+      source_project_id: @merge_request.target_project_id,
+      target_project_id: @merge_request.target_project_id
+    }}
+
+    redirect_to new_namespace_project_merge_request_url(@project.namespace, @project, url_params)
   end
 
   def branch_from

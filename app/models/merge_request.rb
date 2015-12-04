@@ -532,4 +532,8 @@ class MergeRequest < ActiveRecord::Base
 
     [diff_base_commit, last_commit]
   end
+
+  def reverse_branch_name
+    "revert-#{id}-#{target_branch}"
+  end
 end
