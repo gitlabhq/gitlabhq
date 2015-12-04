@@ -1,12 +1,17 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Fix application settings cache not expiring after changes (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Add ignore whitespace change option to commit view
   - Fire update hook from GitLab
   - Style warning about mentioning many people in a comment
+  - Don't show project fork event as "imported"
+  - Add API endpoint to fetch merge request commits list
+  - Expose events API with comment information and author info
+  - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
@@ -14,6 +19,8 @@ v 8.2.2
   - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
   - Fix: Raw private snippets access workflow
   - Prevent "413 Request entity too large" errors when pushing large files with LFS
+  - Fix invalid links within projects dashboard header
+  - Make current user the first user in assignee dropdown in issues detail page (Stan Hu)
 
 v 8.2.1
   - Forcefully update builds that didn't want to update with state machine

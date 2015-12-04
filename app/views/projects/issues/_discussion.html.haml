@@ -29,10 +29,3 @@
     .issuable-affix
       .context
         = render 'shared/issuable/context', issuable: @issue
-
-      - if @issue.labels.any?
-        .issuable-context-title
-          %label Labels
-        .issue-show-labels
-          - @issue.labels.each do |label|
-            = link_to_label(label)
