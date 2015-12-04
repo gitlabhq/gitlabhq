@@ -21,7 +21,7 @@ Sidekiq.configure_server do |config|
   # Sidekiq-cron: load recurring jobs from schedule.yml
   schedule_file = 'config/schedule.yml'
   if File.exists?(schedule_file)
-    Sidekiq::Cron::Job.load_from_hash YAML.load_file(schedule_file)
+    Sidekiq::Cron::Job.load_from_hash YAML.load(ERB.new(File.read(schedule_file)).result)
   end
 end
 
