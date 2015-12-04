@@ -8,9 +8,9 @@ module Gitlab
     class ExternalLinkFilter < HTML::Pipeline::Filter
       def call
         doc.search('a').each do |node|
-          next unless node.has_attribute?('href')
+          link = node.attr('href')
 
-          link = node.attribute('href').value
+          next unless link
 
           # Skip non-HTTP(S) links
           next unless link.start_with?('http')

@@ -151,6 +151,10 @@ class MergeRequest < ActiveRecord::Base
     }x
   end
 
+  def self.link_reference_pattern
+    super("merge_requests", /(?<merge_request>\d+)/)
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -316,7 +320,7 @@ class MergeRequest < ActiveRecord::Base
       issues = commits.flat_map { |c| c.closes_issues(current_user) }
       issues.push(*Gitlab::ClosingIssueExtractor.new(project, current_user).
                   closed_by_message(description))
-      issues.uniq.sort_by(&:id)
+      issues.uniq
     else
       []
     end
