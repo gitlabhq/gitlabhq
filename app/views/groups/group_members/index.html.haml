@@ -3,6 +3,17 @@
 - @blank_container = true
 
 .group-members-page
+  - if current_user && current_user.can?(:admin_group_member, @group)
+    .panel.panel-default
+      .panel-heading
+        Add new user to group
+      .panel-body
+        - if should_user_see_group_roles?(current_user, @group)
+          %p.light
+            Members of group have access to all group projects.
+        .new-group-member-holder
+          = render "new_group_member"
+
   - if @group.ldap_synced?
     .bs-callout.bs-callout-info
       The members of this group are managed using LDAP and cannot be added, changed or removed here.
@@ -21,7 +32,7 @@
             data: { "confirm-danger-message" => clear_ldap_permission_cache_message,
                     'warning-message' => 'If you made manual permission tweaks for some group members they will be lost.' }
 
-
+  
   .panel.panel-default
     .panel-heading
       %strong #{@group.name}

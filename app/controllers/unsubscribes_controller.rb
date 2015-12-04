@@ -11,7 +11,7 @@ class UnsubscribesController < ApplicationController
     @user = get_user
     if @user
       @user.admin_unsubscribe!
-      Notify.send_unsubscribed_notification(@user).deliver_later
+      Notify.send_unsubscribed_notification(@user.id).deliver_later
     end
     redirect_to new_user_session_path, notice: 'You have been unsubscribed'
   end
