@@ -8,7 +8,7 @@ class LfsObject < ActiveRecord::Base
 
   def storage_project(project)
     if project && project.forked?
-      project.forked_from_project
+      storage_project(project.forked_from_project)
     else
       project
     end
