@@ -6,6 +6,10 @@ html {
 
 body {
   background-color: #EAEBEC !important;
+
+  &.navless {
+    background-color: white !important;
+  }
 }
 
 .container {
@@ -18,8 +22,8 @@ body {
 }
 
 .navless-container {
-  padding-top: $header-height;
-  margin-top: 30px;
+  margin-top: $header-height;
+  padding-top: $gl-padding * 2;
 }
 
 .container-limited {
