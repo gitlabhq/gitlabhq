@@ -84,8 +84,8 @@ module Gitlab
         end
 
         def target_url
-          if @action == :push
-            if commits.length > 1 && compare
+          if @action == :push && commits
+            if commits.length > 1
               @urls.namespace_project_compare_url(project_namespace,
                                                   project,
                                                   from: Commit.new(compare.base, project),
@@ -116,7 +116,7 @@ module Gitlab
           subject_text << "[#{ref_name}]" if @action == :push
           subject_text << ' '
 
-          if @action == :push
+          if @action == :push && commits
             if commits.length > 1
               subject_text << "Deleted " if reverse_compare?
               subject_text << "#{commits.length} commits: #{commits.first.title}"
