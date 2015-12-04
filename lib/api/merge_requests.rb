@@ -76,6 +76,22 @@ module API
         present merge_request, with: Entities::MergeRequest
       end
 
+      # Show MR commits
+      #
+      # Parameters:
+      #   id (required)               - The ID of a project
+      #   merge_request_id (required) - The ID of MR
+      #
+      # Example:
+      #   GET /projects/:id/merge_request/:merge_request_id/commits
+      #
+      get ':id/merge_request/:merge_request_id/commits' do
+        merge_request = user_project.merge_requests.
+          find(params[:merge_request_id])
+        authorize! :read_merge_request, merge_request
+        present merge_request.commits, with: Entities::RepoCommit
+      end
+
       # Show MR changes
       #
       # Parameters:
