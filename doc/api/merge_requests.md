@@ -103,7 +103,7 @@ Parameters:
 
 ## Get single MR commits
 
-Get a list of repository commits in a merge request.
+Get a list of merge request commits.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id/commits
@@ -124,8 +124,7 @@ Parameters:
     "author_name": "Dmitriy Zaporozhets",
     "author_email": "dzaporozhets@sphereconsultinginc.com",
     "created_at": "2012-09-20T11:50:22+03:00",
-    "message": "Replace sanitize with escape once",
-    "allow_failure": false
+    "message": "Replace sanitize with escape once"
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -134,8 +133,7 @@ Parameters:
     "author_name": "randx",
     "author_email": "dmitriy.zaporozhets@gmail.com",
     "created_at": "2012-09-20T09:06:12+03:00",
-    "message": "Sanitize for network graph",
-    "allow_failure": false
+    "message": "Sanitize for network graph"
   }
 ]
 ```
