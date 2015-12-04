@@ -10,6 +10,9 @@ v 8.3.0 (unreleased)
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info
 
+v 8.2.3
+  - Webhook payload has an added, modified and removed properties for each commit
+
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
   - Ensure cached application settings are refreshed at startup (Stan Hu)

@@ -146,7 +146,10 @@ class Commit
       author: {
         name: author_name,
         email: author_email
-      }
+      },
+      added: repo_changes[:added],
+      modified: repo_changes[:modified],
+      removed: repo_changes[:removed]
     }
   end
 
@@ -195,5 +198,24 @@ class Commit
 
   def status
     ci_commit.try(:status) || :not_found
+  end
+
+  private
+
+  def repo_changes
+    changes = { added: [], modified: [], removed: [] }
+
+    diffs.each do |diff|
+      case true
+      when diff.deleted_file
+        changes[:removed] << diff.old_path
+      when diff.renamed_file, diff.new_file
+        changes[:added] << diff.new_path
+      else
+        changes[:modified] << diff.new_path
+      end
+    end
+
+    changes
   end
 end
