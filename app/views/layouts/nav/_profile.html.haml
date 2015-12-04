@@ -1,6 +1,6 @@
 %ul.nav.nav-sidebar
   = nav_link do
-    = link_to root_path, title: 'Go to dashboard', data: {placement: 'right'}, class: 'back-link' do
+    = link_to root_path, title: 'Go to dashboard', class: 'back-link' do
       = icon('caret-square-o-left fw')
       %span
         Go to dashboard
@@ -8,52 +8,52 @@
   %li.separate-item
 
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
-    = link_to profile_path, title: 'Profile', data: {placement: 'right'} do
+    = link_to profile_path, title: 'Profile Settings' do
       = icon('user fw')
       %span
         Profile Settings
   = nav_link(controller: [:accounts, :two_factor_auths]) do
-    = link_to profile_account_path, title: 'Account', data: {placement: 'right'} do
+    = link_to profile_account_path, title: 'Account' do
       = icon('gear fw')
       %span
         Account
   = nav_link(path: ['profiles#applications', 'applications#edit', 'applications#show', 'applications#new', 'applications#create']) do
-    = link_to applications_profile_path, title: 'Applications', data: {placement: 'right'} do
+    = link_to applications_profile_path, title: 'Applications' do
       = icon('cloud fw')
       %span
         Applications
   = nav_link(controller: :emails) do
-    = link_to profile_emails_path, title: 'Emails', data: {placement: 'right'} do
+    = link_to profile_emails_path, title: 'Emails' do
       = icon('envelope-o fw')
       %span
         Emails
         %span.count= current_user.emails.count + 1
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
-      = link_to edit_profile_password_path, title: 'Password', data: {placement: 'right'} do
+      = link_to edit_profile_password_path, title: 'Password' do
         = icon('lock fw')
         %span
           Password
   = nav_link(controller: :notifications) do
-    = link_to profile_notifications_path, title: 'Notifications', data: {placement: 'right'} do
+    = link_to profile_notifications_path, title: 'Notifications' do
       = icon('inbox fw')
       %span
         Notifications
 
   = nav_link(controller: :keys) do
-    = link_to profile_keys_path, title: 'SSH Keys', data: {placement: 'right'} do
+    = link_to profile_keys_path, title: 'SSH Keys' do
       = icon('key fw')
       %span
         SSH Keys
         %span.count= current_user.keys.count
   = nav_link(controller: :preferences) do
-    = link_to profile_preferences_path, title: 'Preferences', data: {placement: 'right'} do
+    = link_to profile_preferences_path, title: 'Preferences' do
       -# TODO (rspeicher): Better icon?
       = icon('image fw')
       %span
         Preferences
   = nav_link(path: 'profiles#audit_log') do
-    = link_to audit_log_profile_path, title: 'Audit Log', data: {placement: 'right'} do
+    = link_to audit_log_profile_path, title: 'Audit Log' do
       = icon('history fw')
       %span
         Audit Log
