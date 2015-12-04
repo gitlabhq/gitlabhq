@@ -4,7 +4,7 @@
 # - let(:backref_text) { "the way that +subject+ should refer to itself in backreferences " }
 # - let(:set_mentionable_text) { lambda { |txt| "block that assigns txt to the subject's mentionable_text" } }
 
-def common_mentionable_setup
+shared_context 'mentionable context' do
   let(:project) { subject.project }
   let(:author)  { subject.author }
 
@@ -56,7 +56,7 @@ def common_mentionable_setup
 end
 
 shared_examples 'a mentionable' do
-  common_mentionable_setup
+  include_context 'mentionable context'
 
   it 'generates a descriptive back-reference' do
     expect(subject.gfm_reference).to eq(backref_text)
@@ -88,7 +88,7 @@ shared_examples 'a mentionable' do
 end
 
 shared_examples 'an editable mentionable' do
-  common_mentionable_setup
+  include_context 'mentionable context'
 
   it_behaves_like 'a mentionable'
 
