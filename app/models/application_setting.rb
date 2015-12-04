@@ -30,6 +30,8 @@
 #
 
 class ApplicationSetting < ActiveRecord::Base
+  CACHE_KEY = 'application_setting.last'
+
   serialize :restricted_visibility_levels
   serialize :import_sources
   serialize :restricted_signup_domains, Array
@@ -73,21 +75,17 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   after_commit do
-    Rails.cache.write(cache_key, self)
+    Rails.cache.write(CACHE_KEY, self)
   end
 
   def self.current
-    Rails.cache.fetch(cache_key) do
+    Rails.cache.fetch(CACHE_KEY) do
       ApplicationSetting.last
     end
   end
 
   def self.expire
-    Rails.cache.delete(cache_key)
-  end
-
-  def self.cache_key
-    'application_setting.last'
+    Rails.cache.delete(CACHE_KEY)
   end
 
   def self.create_from_defaults

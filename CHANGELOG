@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.2.3
+  - Fix application settings cache not expiring after changes (Stan Hu)
+
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
   - Ensure cached application settings are refreshed at startup (Stan Hu)
