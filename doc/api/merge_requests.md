@@ -159,7 +159,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "files": [
+  "changes": [
     {
     "old_path": "VERSION",
     "new_path": "VERSION",
