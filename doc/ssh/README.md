@@ -15,7 +15,8 @@ Note: It is a best practice to use a password for an SSH key, but it is not
 required and you can skip creating a password by pressing enter. Note that
 the password you choose here can't be altered or retrieved.
 
-To generate a new SSH key, use the following commandGitLab```bash
+To generate a new SSH key, use the following command:
+```bash
 ssh-keygen -t rsa -C "$your_email"
 ```
 This command will prompt you for a location and filename to store the key
