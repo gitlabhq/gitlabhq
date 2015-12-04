@@ -1,7 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
-  - Fix application settings cache not expiring after changes (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
@@ -11,6 +10,9 @@ v 8.3.0 (unreleased)
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info
   - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
+
+v 8.2.3
+  - Fix application settings cache not expiring after changes (Stan Hu)
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
