@@ -3,7 +3,7 @@ require 'spec_helper'
 module Ci
   describe CreateCommitService, services: true do
     let(:service) { CreateCommitService.new }
-    let(:project) { FactoryGirl.create(:ci_project) }
+    let(:project) { FactoryGirl.create(:empty_project) }
     let(:user) { nil }
 
     before do
@@ -24,7 +24,7 @@ module Ci
         it { expect(commit).to be_kind_of(Commit) }
         it { expect(commit).to be_valid }
         it { expect(commit).to be_persisted }
-        it { expect(commit).to eq(project.commits.last) }
+        it { expect(commit).to eq(project.ci_commits.last) }
         it { expect(commit.builds.first).to be_kind_of(Build) }
       end
 

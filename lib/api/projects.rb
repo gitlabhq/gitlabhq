@@ -82,6 +82,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   shared_runners_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - 0 by default
@@ -98,6 +99,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
+                                     :shared_runners_enabled,
                                      :namespace_id,
                                      :public,
                                      :visibility_level,
@@ -126,6 +128,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
       #   import_url (optional)
@@ -142,6 +145,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
+                                     :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
                                      :import_url]
@@ -183,6 +187,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
       # Example Request
@@ -197,6 +202,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
+                                     :shared_runners_enabled,
                                      :public,
                                      :visibility_level]
         attrs = map_public_to_visibility_level(attrs)

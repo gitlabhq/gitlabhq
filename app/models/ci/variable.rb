@@ -15,10 +15,10 @@ module Ci
   class Variable < ActiveRecord::Base
     extend Ci::Model
     
-    belongs_to :project, class_name: 'Ci::Project'
+    belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
 
     validates_presence_of :key
-    validates_uniqueness_of :key, scope: :project_id
+    validates_uniqueness_of :key, scope: :gl_project_id
 
     attr_encrypted :value, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
   end

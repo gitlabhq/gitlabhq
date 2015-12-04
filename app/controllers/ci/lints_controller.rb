@@ -1,5 +1,5 @@
 module Ci
-  class LintsController < Ci::ApplicationController
+  class LintsController < ApplicationController
     before_action :authenticate_user!
 
     def show

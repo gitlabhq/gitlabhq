@@ -7,6 +7,8 @@ module Projects
         description:            @project.description,
         name:                   @project.name,
         path:                   @project.path,
+        shared_runners_enabled: @project.shared_runners_enabled,
+        builds_enabled:         @project.builds_enabled,
         namespace_id:           @params[:namespace].try(:id) || current_user.namespace.id
       }
 
@@ -15,19 +17,6 @@ module Projects
       end
 
       new_project = CreateService.new(current_user, new_params).execute
-
-      if new_project.persisted?
-        if @project.builds_enabled?
-          new_project.enable_ci
-
-          settings = @project.gitlab_ci_project.attributes.select do |attr_name, value|
-            ["public", "shared_runners_enabled", "allow_git_fetch"].include? attr_name
-          end
-
-          new_project.gitlab_ci_project.update(settings)
-        end
-      end
-
       new_project
     end
   end

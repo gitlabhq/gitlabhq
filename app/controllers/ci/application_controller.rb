@@ -4,8 +4,6 @@ module Ci
       "app/helpers/ci"
     end
 
-    helper_method :gl_project
-
     private
 
     def authenticate_token!
@@ -15,13 +13,13 @@ module Ci
     end
 
     def authorize_access_project!
-      unless can?(current_user, :read_project, gl_project)
+      unless can?(current_user, :read_project, project)
         return page_404
       end
     end
 
     def authorize_manage_builds!
-      unless can?(current_user, :manage_builds, gl_project)
+      unless can?(current_user, :manage_builds, project)
         return page_404
       end
     end
@@ -31,7 +29,7 @@ module Ci
     end
 
     def authorize_manage_project!
-      unless can?(current_user, :admin_project, gl_project)
+      unless can?(current_user, :admin_project, project)
         return page_404
       end
     end
@@ -57,10 +55,6 @@ module Ci
         html: html,
         count: count
       }
-    end
-
-    def gl_project
-      ::Project.find(@project.gitlab_id)
     end
   end
 end

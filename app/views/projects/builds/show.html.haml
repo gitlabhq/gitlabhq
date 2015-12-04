@@ -56,7 +56,7 @@
 
           %br
           Go to
-          = link_to namespace_project_runners_path(@build.gl_project.namespace, @build.gl_project) do
+          = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
             Runners page
 
   .row.prepend-top-default
@@ -113,7 +113,7 @@
         %p
           %span.attr-name Runner:
           - if @build.runner && current_user && current_user.admin
-            = link_to "##{@build.runner.id}", ci_admin_runner_path(@build.runner.id)
+            = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
           - elsif @build.runner
             \##{@build.runner.id}
 

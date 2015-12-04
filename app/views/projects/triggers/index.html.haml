@@ -36,7 +36,7 @@
     :plain
       curl -X POST \
            -F token=TOKEN \
-           #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}
+           #{ci_build_trigger_url(@project.id, 'REF_NAME')}
   %h3
     Use .gitlab-ci.yml
 
@@ -51,7 +51,7 @@
       trigger:
         type: deploy
         script:
-          - "curl -X POST -F token=TOKEN #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}"
+          - "curl -X POST -F token=TOKEN #{ci_build_trigger_url(@project.id, 'REF_NAME')}"
   %h3
     Pass build variables
 
@@ -66,4 +66,4 @@
       curl -X POST \
            -F token=TOKEN \
            -F "variables[RUN_NIGHTLY_BUILD]=true" \
-           #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}
+           #{ci_build_trigger_url(@project.id, 'REF_NAME')}

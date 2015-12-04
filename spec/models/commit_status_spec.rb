@@ -44,7 +44,7 @@ describe CommitStatus, models: true do
 
   it { is_expected.to delegate_method(:sha).to(:commit) }
   it { is_expected.to delegate_method(:short_sha).to(:commit) }
-  it { is_expected.to delegate_method(:gl_project).to(:commit) }
+  it { is_expected.to delegate_method(:project).to(:commit) }
   
   it { is_expected.to respond_to :success? }
   it { is_expected.to respond_to :failed? }

@@ -3,11 +3,11 @@
 .bs-callout.bs-callout-warning
   GitLab Runners do not offer secure isolation between projects that they do builds for. You are TRUSTING all GitLab users who can push code to project A, B or C to run shell scripts on the machine hosting runner X.
   %hr
-  - if @ci_project.shared_runners_enabled
-    = link_to toggle_shared_runners_ci_project_path(@ci_project), class: 'btn btn-warning', method: :post do
+  - if @project.shared_runners_enabled?
+    = link_to toggle_shared_runners_namespace_project_runners_path(@project.namespace, @project), class: 'btn btn-warning', method: :post do
       Disable shared runners
   - else
-    = link_to toggle_shared_runners_ci_project_path(@ci_project), class: 'btn btn-success', method: :post do
+    = link_to toggle_shared_runners_namespace_project_runners_path(@project.namespace, @project), class: 'btn btn-success', method: :post do
       Enable shared runners
   &nbsp; for this project
 

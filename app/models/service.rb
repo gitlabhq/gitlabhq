@@ -41,7 +41,7 @@ class Service < ActiveRecord::Base
 
   validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
 
-  scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
+  scope :visible, -> { where.not(type: ['GitlabIssueTrackerService', 'GitlabCiService']) }
 
   scope :push_hooks, -> { where(push_events: true, active: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
@@ -188,7 +188,6 @@ class Service < ActiveRecord::Base
       external_wiki
       flowdock
       gemnasium
-      gitlab_ci
       hipchat
       irker
       jira

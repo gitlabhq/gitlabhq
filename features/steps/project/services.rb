@@ -11,22 +11,12 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     expect(page).to have_content 'Project services'
     expect(page).to have_content 'Campfire'
     expect(page).to have_content 'HipChat'
-    expect(page).to have_content 'GitLab CI'
     expect(page).to have_content 'Assembla'
     expect(page).to have_content 'Pushover'
     expect(page).to have_content 'Atlassian Bamboo'
     expect(page).to have_content 'JetBrains TeamCity'
     expect(page).to have_content 'Asana'
     expect(page).to have_content 'Irker (IRC gateway)'
-  end
-
-  step 'I click gitlab-ci service link' do
-    click_link 'GitLab CI'
-  end
-
-  step 'I fill gitlab-ci settings' do
-    check 'Active'
-    click_button 'Save'
   end
 
   step 'I should see service settings saved' do

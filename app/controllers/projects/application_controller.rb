@@ -31,8 +31,4 @@ class Projects::ApplicationController < ApplicationController
   def builds_enabled
     return render_404 unless @project.builds_enabled?
   end
-
-  def ci_project
-    @ci_project ||= @project.ensure_gitlab_ci_project
-  end
 end

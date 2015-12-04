@@ -16,10 +16,10 @@ module Ci
 
       def push(from, to, format)
         @labels << from.strftime(format)
-        @total << project.builds.
+        @total << project.ci_builds.
           where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", to, from).
           count(:all)
-        @success << project.builds.
+        @success << project.ci_builds.
           where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", to, from).
           success.count(:all)
       end
@@ -60,7 +60,7 @@ module Ci
 
     class BuildTime < Chart
       def collect
-        commits = project.commits.last(30)
+        commits = project.ci_commits.last(30)
 
         commits.each do |commit|
           @labels << commit.short_sha

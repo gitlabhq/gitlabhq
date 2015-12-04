@@ -25,7 +25,7 @@ module Ci
     
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
-    has_many :projects, through: :runner_projects, class_name: 'Ci::Project'
+    has_many :projects, through: :runner_projects, class_name: '::Project', foreign_key: :gl_project_id
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -45,10 +45,6 @@ module Ci
             query: "%#{query.try(:downcase)}%")
     end
 
-    def gl_projects_ids
-      projects.select(:gitlab_id)
-    end
-
     def set_default_values
       self.token = SecureRandom.hex(15) if self.token.blank?
     end
@@ -56,7 +52,7 @@ module Ci
     def assign_to(project, current_user = nil)
       self.is_shared = false if shared?
       self.save
-      project.runner_projects.create!(runner_id: self.id)
+      project.ci_runner_projects.create!(runner_id: self.id)
     end
 
     def display_name

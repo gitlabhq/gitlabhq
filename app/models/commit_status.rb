@@ -30,6 +30,7 @@
 class CommitStatus < ActiveRecord::Base
   self.table_name = 'ci_builds'
 
+  belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
   belongs_to :commit, class_name: 'Ci::Commit'
   belongs_to :user
 
@@ -49,6 +50,7 @@ class CommitStatus < ActiveRecord::Base
   scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :ref)) }
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
   scope :for_ref, ->(ref) { where(ref: ref) }
+  scope :has_coverage?, -> { where.not(coverage: nil).any? }
 
   state_machine :status, initial: :pending do
     event :run do
@@ -86,7 +88,7 @@ class CommitStatus < ActiveRecord::Base
     state :canceled, value: 'canceled'
   end
 
-  delegate :sha, :short_sha, :gl_project,
+  delegate :sha, :short_sha, :project,
            to: :commit, prefix: false
 
   # TODO: this should be removed with all references

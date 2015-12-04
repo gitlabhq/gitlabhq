@@ -1,0 +1,73 @@
+- project = build.project
+%tr.build
+  %td.status
+    = ci_status_with_icon(build.status)
+
+  %td.build-link
+    - if build.target_url
+      = link_to build.target_url do
+        %strong Build ##{build.id}
+    - else
+      %strong Build ##{build.id}
+
+    - if build.show_warning?
+      %i.fa.fa-warning.text-warning
+
+  %td
+    - if project
+      = link_to project.name_with_namespace, admin_namespace_project_path(project.namespace, project), class: "monospace"
+
+  %td
+    = link_to build.short_sha, namespace_project_commit_path(project.namespace, project, build.sha), class: "monospace"
+
+  %td
+    - if build.ref
+      = link_to build.ref, namespace_project_commits_path(project.namespace, project, build.ref)
+    - else
+      .light none
+
+  %td
+    - if build.try(:runner)
+      = runner_link(build.runner)
+    - else
+      .light none
+
+  %td
+    #{build.stage} / #{build.name}
+
+    .pull-right
+      - if build.tags.any?
+        - build.tags.each do |tag|
+          %span.label.label-primary
+            = tag
+      - if build.try(:trigger_request)
+        %span.label.label-info triggered
+      - if build.try(:allow_failure)
+        %span.label.label-danger allowed to fail
+
+  %td.duration
+    - if build.duration
+      #{duration_in_words(build.finished_at, build.started_at)}
+
+  %td.timestamp
+    - if build.finished_at
+      %span #{time_ago_with_tooltip(build.finished_at)}
+
+  - if defined?(coverage) && coverage
+    %td.coverage
+      - if build.try(:coverage)
+        #{build.coverage}%
+
+  %td
+    .pull-right
+      - if current_user && can?(current_user, :download_build_artifacts, project) && build.download_url
+        = link_to build.download_url, title: 'Download artifacts' do
+          %i.fa.fa-download
+      - if current_user && can?(current_user, :manage_builds, build.project)
+        - if build.active?
+          - if build.cancel_url
+            = link_to build.cancel_url, method: :post, title: 'Cancel' do
+              %i.fa.fa-remove.cred
+        - elsif defined?(allow_retry) && allow_retry && build.retry_url
+          = link_to build.retry_url, method: :post, title: 'Retry' do
+            %i.fa.fa-repeat

@@ -9,8 +9,7 @@ describe "Commits" do
     before do
       login_as :user
       project.team << [@user, :master]
-      @ci_project = project.ensure_gitlab_ci_project
-      @commit = FactoryGirl.create :ci_commit, gl_project: project, sha: project.commit.sha
+      @commit = FactoryGirl.create :ci_commit, project: project, sha: project.commit.sha
       @build = FactoryGirl.create :ci_build, commit: @commit
       @generic_status = FactoryGirl.create :generic_commit_status, commit: @commit
     end

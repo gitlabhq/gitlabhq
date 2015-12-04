@@ -3,17 +3,6 @@ module Ci
     # Runners API
     class Runners < Grape::API
       resource :runners do
-        # Get list of all available runners
-        #
-        # Example Request:
-        #   GET /runners
-        get do
-          authenticate!
-          runners = Ci::Runner.all
-
-          present runners, with: Entities::Runner
-        end
-
         # Delete runner
         # Parameters:
         #   token (required) - The unique token of runner
@@ -47,9 +36,9 @@ module Ci
                 tag_list: params[:tag_list],
                 is_shared: true
               )
-            elsif project = Ci::Project.find_by(token: params[:token])
+            elsif project = Project.find_by(token: params[:token])
               # Create a specific runner for project.
-              project.runners.create(
+              project.ci_runners.create(
                 description: params[:description],
                 tag_list: params[:tag_list]
               )

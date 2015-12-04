@@ -42,6 +42,10 @@ FactoryGirl.define do
 
     commit factory: :ci_commit
 
+    after(:build) do |build, evaluator|
+      build.project = build.commit.project
+    end
+
     factory :ci_not_started_build do
       started_at nil
       finished_at nil

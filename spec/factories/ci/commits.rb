@@ -21,7 +21,7 @@ FactoryGirl.define do
   factory :ci_empty_commit, class: Ci::Commit do
     sha '97de212e80737a608d939f648d959671fb0a0142'
 
-    gl_project factory: :empty_project
+    project factory: :empty_project
 
     factory :ci_commit_without_jobs do
       after(:build) do |commit|

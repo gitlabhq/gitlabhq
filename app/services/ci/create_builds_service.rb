@@ -29,7 +29,8 @@ module Ci
           build_attrs.merge!(ref: ref,
                              tag: tag,
                              trigger_request: trigger_request,
-                             user: user)
+                             user: user,
+                             gl_project_id: commit.gl_project_id)
 
           build = commit.builds.create!(build_attrs)
           build.execute_hooks

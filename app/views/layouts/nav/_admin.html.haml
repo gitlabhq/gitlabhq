@@ -24,11 +24,18 @@
       = icon('key fw')
       %span
         Deploy Keys
-  = nav_link do
-    = link_to ci_admin_projects_path, title: 'Continuous Integration' do
-      = icon('building fw')
+  = nav_link path: ['runners#index', 'runners#show'] do
+    = link_to admin_runners_path do
+      = icon('cog fw')
       %span
-        Continuous Integration
+        Runners
+        %span.count= Ci::Runner.count(:all)
+  = nav_link path: 'builds#index' do
+    = link_to admin_builds_path do
+      = icon('link fw')
+      %span
+        Builds
+        %span.count= Ci::Build.count(:all)
   = nav_link(controller: :logs) do
     = link_to admin_logs_path, title: 'Logs' do
       = icon('file-text fw')

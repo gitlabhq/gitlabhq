@@ -38,7 +38,7 @@ describe Ci::Runner, models: true do
   end
 
   describe :assign_to do
-    let!(:project) { FactoryGirl.create :ci_project }
+    let!(:project) { FactoryGirl.create :empty_project }
     let!(:shared_runner) { FactoryGirl.create(:ci_shared_runner) }
 
     before { shared_runner.assign_to(project) }
@@ -116,18 +116,18 @@ describe Ci::Runner, models: true do
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
       runner = FactoryGirl.create(:ci_specific_runner)
-      project = FactoryGirl.create(:ci_project)
-      project1 = FactoryGirl.create(:ci_project)
-      project.runners << runner
-      project1.runners << runner
+      project = FactoryGirl.create(:empty_project)
+      project1 = FactoryGirl.create(:empty_project)
+      project.ci_runners << runner
+      project1.ci_runners << runner
 
       expect(runner.belongs_to_one_project?).to be_falsey
     end
 
     it "returns true" do
       runner = FactoryGirl.create(:ci_specific_runner)
-      project = FactoryGirl.create(:ci_project)
-      project.runners << runner
+      project = FactoryGirl.create(:empty_project)
+      project.ci_runners << runner
 
       expect(runner.belongs_to_one_project?).to be_truthy
     end

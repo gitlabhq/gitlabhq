@@ -19,7 +19,7 @@ module RunnersHelper
     id = "\##{runner.id}"
 
     if current_user && current_user.admin
-      link_to ci_admin_runner_path(runner) do
+      link_to admin_runner_path(runner) do
         display_name + id
       end
     else
