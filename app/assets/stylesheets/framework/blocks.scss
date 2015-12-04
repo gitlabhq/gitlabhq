@@ -68,6 +68,12 @@
   .oneline {
     line-height: 42px;
   }
+  
+  h4 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 9px 0;
+  }
 
   > p:last-child {
     margin-bottom: 0;
@@ -76,7 +82,7 @@
 
 .cover-block {
   text-align: center;
-  background: #f7f8fa;
+  background: #faf9f9;
   margin: -$gl-padding;
   margin-bottom: 0;
   padding: 44px $gl-padding;
@@ -102,7 +108,7 @@
     font-size: 23px;
     font-weight: normal;
     margin: 16px 0 5px 0;
-    color: #4c4e54;
+    color: #323232;
     font-size: 23px;
     line-height: 1.1;
   }
