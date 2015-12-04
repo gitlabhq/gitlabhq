@@ -45,21 +45,21 @@ class Spinach::Features::AdminIssuesLabels < Spinach::FeatureSteps
   step 'I submit new label \'support\'' do
     visit new_admin_label_path
     fill_in 'Title', with: 'support'
-    fill_in 'Background Color', with: '#F95610'
+    fill_in 'Background color', with: '#F95610'
     click_button 'Save'
   end
 
   step 'I submit new label \'bug\'' do
     visit new_admin_label_path
     fill_in 'Title', with: 'bug'
-    fill_in 'Background Color', with: '#F95610'
+    fill_in 'Background color', with: '#F95610'
     click_button 'Save'
   end
 
   step 'I submit new label with invalid color' do
     visit new_admin_label_path
     fill_in 'Title', with: 'support'
-    fill_in 'Background Color', with: '#12'
+    fill_in 'Background color', with: '#12'
     click_button 'Save'
   end
 
@@ -101,7 +101,7 @@ class Spinach::Features::AdminIssuesLabels < Spinach::FeatureSteps
 
   step 'I change label \'bug\' to \'fix\'' do
     fill_in 'Title', with: 'fix'
-    fill_in 'Background Color', with: '#F15610'
+    fill_in 'Background color', with: '#F15610'
     click_button 'Save'
   end
 

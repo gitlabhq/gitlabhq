@@ -72,13 +72,13 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I submit new issue "500 error on profile"' do
     fill_in "issue_title", with: "500 error on profile"
-    click_button "Submit new issue"
+    click_button "Submit issue"
   end
 
   step 'I submit new issue "500 error on profile" with label \'bug\'' do
     fill_in "issue_title", with: "500 error on profile"
     select 'bug', from: "Labels"
-    click_button "Submit new issue"
+    click_button "Submit issue"
   end
 
   step 'I click link "500 error on profile"' do

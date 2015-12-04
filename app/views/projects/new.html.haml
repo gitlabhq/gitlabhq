@@ -1,5 +1,10 @@
 - page_title    'New Project'
-- header_title  'New Project'
+- header_title  "Projects", root_path
+
+%h3.page-title
+  New Project
+%hr
+
 .project-edit-container
   .project-edit-errors
     = render 'projects/errors'
@@ -95,11 +100,12 @@
           Description
           %span.light (optional)
         .col-sm-10
-          = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250, tabindex: 3
+          = f.text_area :description, class: "form-control", rows: 3, maxlength: 250, tabindex: 3
       = render 'shared/visibility_level', f: f, visibility_level: default_project_visibility, can_change_visibility_level: true, form_model: @project
 
       .form-actions
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
+        = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
 
 .save-project-loader.hide
   .center

@@ -39,14 +39,14 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     select "fix", from: "merge_request_source_branch"
     select "master", from: "merge_request_target_branch"
 
-    click_button "Compare branches"
+    click_button "Compare branches and continue"
 
-    expect(page).to have_content "New merge request"
+    expect(page).to have_content "New Merge Request"
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
   end
 
   step 'I submit the merge request' do
-    click_button "Submit new merge request"
+    click_button "Submit merge request"
   end
 
   step 'I follow the target commit link' do

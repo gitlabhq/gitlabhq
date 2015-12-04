@@ -142,7 +142,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can see new file page' do
-    expect(page).to have_content "Create New File"
+    expect(page).to have_content "New File"
     expect(page).to have_content "Commit message"
   end
 
