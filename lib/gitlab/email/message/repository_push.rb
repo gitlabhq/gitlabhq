@@ -15,12 +15,12 @@ module Gitlab
           @notify = notify
           @project_id = project_id
           @recipient = recipient
-          @opts = opts
+          @opts = opts.dup
           @urls = Gitlab::Application.routes.url_helpers
 
-          @author_id = opts.delete(:author_id)
-          @ref = opts.delete(:ref)
-          @action = opts.delete(:action)
+          @author_id = @opts.delete(:author_id)
+          @ref = @opts.delete(:ref)
+          @action = @opts.delete(:action)
         end
 
         def project
