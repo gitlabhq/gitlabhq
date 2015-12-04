@@ -263,13 +263,14 @@ gitlab-runner exec shell test:app
 
 ## Example project
 
-We have set up an [Example PHP Project](https://gitlab.com/gitlab-examples/php)
-for your convenience that runs on [GitLab.com](https://gitlab.com) using our
-publicly available [shared runners](../runners/README.md).
+We have set up an [Example PHP Project][php-example-repo] for your convenience
+that runs on [GitLab.com](https://gitlab.com) using our publicly available
+[shared runners](../runners/README.md).
 
-Want to hack it? Simply fork it, commit and push  your changes. Within a few
+Want to hack on it? Simply fork it, commit and push  your changes. Within a few
 moments the changes will be picked by a public runner and the build will begin.
 
 [php-hub]: https://hub.docker.com/_/php/
 [phpenv]: https://github.com/phpenv/phpenv
 [phpenv-installation]: https://github.com/phpenv/phpenv#installation
+[php-example-repo]: https://gitlab.com/gitlab-examples/php
