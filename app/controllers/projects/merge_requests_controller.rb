@@ -191,6 +191,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def revert
+    redirect_to new_namespace_project_merge_request_url(@project.namespace, @project)
+  end
+
   def branch_from
     #This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
