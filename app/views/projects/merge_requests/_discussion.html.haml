@@ -26,10 +26,3 @@
     .issuable-affix
       .context
         = render 'shared/issuable/context', issuable: @merge_request
-
-      - if @merge_request.labels.any?
-        .issuable-context-title
-          %label Labels
-        .merge-request-show-labels
-          - @merge_request.labels.each do |label|
-            = link_to_label(label)

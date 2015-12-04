@@ -86,7 +86,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see label \'bug\' with issue' do
-    page.within '.issue-show-labels' do
+    page.within '.issuable-show-labels' do
       expect(page).to have_content 'bug'
     end
   end

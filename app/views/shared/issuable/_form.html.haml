@@ -36,9 +36,9 @@
       = f.label :assignee_id, "Assignee", class: 'control-label'
       .col-sm-10
         = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-            placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
+            placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
             selected: issuable.assignee_id, project: @target_project || @project,
-            first_user: true, current_user: true)
+            first_user: true, current_user: true, include_blank: true)
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
   .form-group
@@ -47,7 +47,7 @@
       .col-sm-10
         - if milestone_options(issuable).present?
           = f.select(:milestone_id, milestone_options(issuable),
-            { include_blank: 'Select milestone' }, { class: 'select2' })
+            { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
         - else
           .prepend-top-10
           %span.light No open milestones available.
@@ -59,7 +59,7 @@
     .col-sm-10
       - if issuable.project.labels.any?
         = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-          { selected: issuable.label_ids }, multiple: true, class: 'select2'
+          { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
       - else
         .prepend-top-10
         %span.light No labels yet.
@@ -77,22 +77,24 @@
   .form-group
     = f.label :target_branch, class: 'control-label'
     .col-sm-10
-      = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record? })
+      = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
       - if @merge_request.new_record?
         %p.help-block
         = link_to 'Change branches', mr_change_branches_path(@merge_request)
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .gray-content-block{class: (is_footer ? "footer-block" : "middle-block")}
-  - if !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project)) && !issuable.persisted?
-    %p
-      Please review the
-      %strong #{link_to 'guidelines for contribution', guide_url}
-      to this repository.
   - if issuable.new_record?
     = f.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
     = f.submit 'Save changes', class: 'btn btn-save'
+
+  - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
+    .inline.prepend-left-10
+      Please review the
+      %strong #{link_to 'contribution guidelines', guide_url}
+      for this project.
+
   - if issuable.new_record?
     - cancel_project = issuable.source_project
   - else
