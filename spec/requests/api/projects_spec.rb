@@ -389,14 +389,30 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/events' do
     before { project_member2 }
 
-    it 'should return a project events' do
-      get api("/projects/#{project.id}/events", user)
-      expect(response.status).to eq(200)
-      json_event = json_response.first
+    context 'valid request' do
+      before do
+        note = create(:note_on_issue, note: 'What an awesome day!', project: project)
+        EventCreateService.new.leave_note(note, note.author)
+        get api("/projects/#{project.id}/events", user)
+      end
 
-      expect(json_event['action_name']).to eq('joined')
-      expect(json_event['project_id'].to_i).to eq(project.id)
-      expect(json_event['author_username']).to eq(user3.username)
+      it { expect(response.status).to eq(200) }
+
+      context 'joined event' do
+        let(:json_event) { json_response[1] }
+
+        it { expect(json_event['action_name']).to eq('joined') }
+        it { expect(json_event['project_id'].to_i).to eq(project.id) }
+        it { expect(json_event['author_username']).to eq(user3.username) }
+        it { expect(json_event['author']['name']).to eq(user3.name) }
+      end
+
+      context 'comment event' do
+        let(:json_event) { json_response.first }
+
+        it { expect(json_event['action_name']).to eq('commented on') }
+        it { expect(json_event['note']['body']).to eq('What an awesome day!') }
+      end
     end
 
     it 'should return a 404 error if not found' do
