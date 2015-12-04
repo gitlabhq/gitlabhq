@@ -8,6 +8,7 @@
 #  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
+#  template   :boolean          default(FALSE)
 #
 
 class Label < ActiveRecord::Base
@@ -16,7 +17,7 @@ class Label < ActiveRecord::Base
   # Requests that have no label assigned.
   LabelStruct = Struct.new(:title, :name)
   None = LabelStruct.new('No Label', 'No Label')
-  Any = LabelStruct.new('Any', '')
+  Any = LabelStruct.new('Any Label', '')
 
   DEFAULT_COLOR = '#428BCA'
 

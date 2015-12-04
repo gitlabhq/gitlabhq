@@ -15,6 +15,16 @@
       border-left: none;
       padding-top: 5px;
     }
+
+    .select2-chosen {
+      color: $gl-text-color;
+    }
+
+    &.select2-default {
+      .select2-chosen {
+        color: #999;
+      }
+    }
   }
 }
 
@@ -22,6 +32,7 @@
   color: #7f8fa4;
   border: 1px solid #e7e9ed;
 }
+
 
 .select2-drop {
   @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
@@ -123,10 +134,16 @@
 }
 
 .user-result {
+  min-height: 24px;
+
   .user-image {
     float: left;
   }
-  .user-name {
+
+  &.no-username {
+    .user-name {
+      line-height: 24px;
+    }
   }
 }
 

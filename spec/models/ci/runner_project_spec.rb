@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: runner_projects
+# Table name: ci_runner_projects
 #
 #  id         :integer          not null, primary key
 #  runner_id  :integer          not null

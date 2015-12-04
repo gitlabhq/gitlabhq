@@ -80,11 +80,18 @@ flog:
   tags:
     - ruby
     - mysql
-  allow_failure: true
 
 flay:
   script:
     - bundle exec rake flay
+  tags:
+    - ruby
+    - mysql
+
+bundler:audit:
+  script: 
+    - "bundle exec bundle-audit update"
+    - "bundle exec bundle-audit check"
   tags:
     - ruby
     - mysql

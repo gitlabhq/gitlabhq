@@ -84,6 +84,7 @@ production: &base
       merge_requests: true
       wiki: true
       snippets: false
+      builds: true
 
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
@@ -122,6 +123,18 @@ production: &base
 
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
+
+  ## Build Artifacts
+  artifacts:
+    enabled: true
+    # The location where build artifacts are stored (default: shared/artifacts).
+    # path: shared/artifacts
+
+  ## Git LFS
+  lfs:
+    enabled: true
+    # The location where LFS objects are stored (default: shared/lfs-objects).
+    # storage_path: shared/lfs-objects
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
@@ -316,8 +329,6 @@ production: &base
     # path: /mnt/gitlab # Default: shared
 
 
-
-
   #
   # 4. Advanced settings
   # ==========================
@@ -418,6 +429,8 @@ test:
   <<: *base
   gravatar:
     enabled: true
+  lfs:
+    enabled: false
   gitlab:
     host: localhost
     port: 80

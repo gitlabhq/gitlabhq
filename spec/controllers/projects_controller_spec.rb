@@ -88,6 +88,22 @@ describe ProjectsController do
     end
   end
 
+  describe "#destroy" do
+    let(:admin) { create(:admin) }
+
+    it "redirects to the dashboard" do
+      controller.instance_variable_set(:@project, project)
+      sign_in(admin)
+
+      orig_id = project.id
+      delete :destroy, namespace_id: project.namespace.path, id: project.path
+
+      expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(response.status).to eq(302)
+      expect(response).to redirect_to(dashboard_projects_path)
+    end
+  end
+
   describe "POST #toggle_star" do
     it "toggles star if user is signed in" do
       sign_in(user)

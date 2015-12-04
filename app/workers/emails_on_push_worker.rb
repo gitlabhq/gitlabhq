@@ -53,7 +53,7 @@ class EmailsOnPushWorker
           reverse_compare:            reverse_compare,
           send_from_committer_email:  send_from_committer_email,
           disable_diffs:              disable_diffs
-        ).deliver
+        ).deliver_now
       # These are input errors and won't be corrected even if Sidekiq retries
       rescue Net::SMTPFatalError, Net::SMTPSyntaxError => e
         logger.info("Failed to send e-mail for project '#{project.name_with_namespace}' to #{recipient}: #{e}")

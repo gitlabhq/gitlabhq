@@ -6,7 +6,7 @@ class Repository
 
   include Gitlab::ShellAdapter
 
-  attr_accessor :raw_repository, :path_with_namespace, :project
+  attr_accessor :path_with_namespace, :project
 
   def self.clean_old_archives
     repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
@@ -19,14 +19,18 @@ class Repository
   def initialize(path_with_namespace, default_branch = nil, project = nil)
     @path_with_namespace = path_with_namespace
     @project = project
+  end
 
-    if path_with_namespace
-      @raw_repository = Gitlab::Git::Repository.new(path_to_repo)
-      @raw_repository.autocrlf = :input
+  def raw_repository
+    return nil unless path_with_namespace
+
+    @raw_repository ||= begin
+      repo = Gitlab::Git::Repository.new(path_to_repo)
+      repo.autocrlf = :input
+      repo
+    rescue Gitlab::Git::Repository::NoRepository
+      nil
     end
-
-  rescue Gitlab::Git::Repository::NoRepository
-    nil
   end
 
   # Return absolute path to repository
@@ -105,29 +109,25 @@ class Repository
   end
 
   def add_branch(branch_name, ref)
-    cache.expire(:branch_names)
-    @branches = nil
+    expire_branches_cache
 
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
   end
 
   def add_tag(tag_name, ref, message = nil)
-    cache.expire(:tag_names)
-    @tags = nil
+    expire_tags_cache
 
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(branch_name)
-    cache.expire(:branch_names)
-    @branches = nil
+    expire_branches_cache
 
     gitlab_shell.rm_branch(path_with_namespace, branch_name)
   end
 
   def rm_tag(tag_name)
-    cache.expire(:tag_names)
-    @tags = nil
+    expire_tags_cache
 
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
@@ -188,6 +188,16 @@ class Repository
         send(:diverging_commit_counts, branch)
       end
     end
+  end
+
+  def expire_tags_cache
+    cache.expire(:tag_names)
+    @tags = nil
+  end
+
+  def expire_branches_cache
+    cache.expire(:branch_names)
+    @branches = nil
   end
 
   def expire_cache
@@ -380,8 +390,8 @@ class Repository
     end
   end
 
-  def branch_names_contains(sha)
-    args = %W(#{Gitlab.config.git.bin_path} branch --contains #{sha})
+  def refs_contains_sha(ref_type, sha)
+    args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
     names = Gitlab::Popen.popen(args, path_to_repo).first
 
     if names.respond_to?(:split)
@@ -397,21 +407,12 @@ class Repository
     end
   end
 
+  def branch_names_contains(sha)
+    refs_contains_sha('branch', sha)
+  end
+
   def tag_names_contains(sha)
-    args = %W(#{Gitlab.config.git.bin_path} tag --contains #{sha})
-    names = Gitlab::Popen.popen(args, path_to_repo).first
-
-    if names.respond_to?(:split)
-      names = names.split("\n").map(&:strip)
-
-      names.each do |name|
-        name.slice! '* '
-      end
-
-      names
-    else
-      []
-    end
+    refs_contains_sha('tag', sha)
   end
 
   def branches
@@ -527,7 +528,7 @@ class Repository
     root_ref_commit = commit(root_ref)
 
     if branch_commit
-      rugged.merge_base(root_ref_commit.id, branch_commit.id) == branch_commit.id
+      is_ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
     end
@@ -536,6 +537,11 @@ class Repository
   def merge_base(first_commit_id, second_commit_id)
     rugged.merge_base(first_commit_id, second_commit_id)
   end
+
+  def is_ancestor?(ancestor_id, descendant_id)
+    merge_base(ancestor_id, descendant_id) == ancestor_id
+  end
+
 
   def search_files(query, ref)
     offset = 2
@@ -599,9 +605,13 @@ class Repository
 
     # Run GitLab pre-receive hook
     pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', path_to_repo)
-    status = pre_receive_hook.trigger(gl_id, oldrev, newrev, ref)
+    pre_receive_hook_status = pre_receive_hook.trigger(gl_id, oldrev, newrev, ref)
 
-    if status
+    # Run GitLab update hook
+    update_hook = Gitlab::Git::Hook.new('update', path_to_repo)
+    update_hook_status = update_hook.trigger(gl_id, oldrev, newrev, ref)
+
+    if pre_receive_hook_status && update_hook_status
       if was_empty
         # Create branch
         rugged.references.create(ref, newrev)
@@ -624,7 +634,7 @@ class Repository
       # Remove tmp ref and return error to user
       rugged.references.delete(tmp_ref)
 
-      raise PreReceiveError.new('Commit was rejected by pre-receive hook')
+      raise PreReceiveError.new('Commit was rejected by git hook')
     end
   end
 

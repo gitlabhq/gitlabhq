@@ -1,12 +1,41 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.2.0 (unreleased)
-  - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
+v 8.3.0 (unreleased)
+  - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
+  - Fix 500 error when update group member permission
+  - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
+  - Add ignore whitespace change option to commit view
+  - Fire update hook from GitLab
+  - Don't show project fork event as "imported"
+
+v 8.2.2
+  - Fix 404 in redirection after removing a project (Stan Hu)
+  - Ensure cached application settings are refreshed at startup (Stan Hu)
+  - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
+  - Fix: Raw private snippets access workflow
+  - Prevent "413 Request entity too large" errors when pushing large files with LFS
+  - Fix invalid links within projects dashboard header
+
+v 8.2.1
+  - Forcefully update builds that didn't want to update with state machine
+  - Fix: saving GitLabCiService as Admin Template
+
+v 8.2.0
+  - Improved performance of finding projects and groups in various places
+  - Improved performance of rendering user profile pages and Atom feeds
+  - Expose build artifacts path as config option
+  - Fix grouping of contributors by email in graph.
+  - Improved performance of finding issues with/without labels
   - Fix Drone CI service template not saving properly (Stan Hu)
+  - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
   - Added a GitLab specific profiling tool called "Sherlock" (see GitLab CE merge request #1749)
   - Upgrade gitlab_git to 7.2.20 and rugged to 0.23.3 (Stan Hu)
   - Improved performance of finding users by one of their Email addresses
   - Add allow_failure field to commit status API (Stan Hu)
+  - Commits without .gitlab-ci.yml are marked as skipped
+  - Save detailed error when YAML syntax is invalid
+  - Since GitLab CI is enabled by default, remove enabling it by pushing .gitlab-ci.yml
+  - Added build artifacts
   - Improved performance of replacing references in comments
   - Show last project commit to default branch on project home page
   - Highlight comment based on anchor in URL
@@ -20,21 +49,37 @@ v 8.2.0 (unreleased)
   - Send build name and stage in CI notification e-mail
   - Extend yml syntax for only and except to support specifying repository path
   - Enable shared runners to all new projects
+  - Bump GitLab-Workhorse to 0.4.1
+  - Allow to define cache in `.gitlab-ci.yml`
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
   - Use issue editor as cross reference comment author when issue is edited with a new mention.
   - Add graphs of commits ahead and behind default branch (Jeff Stubler)
+  - Improve personal snippet access workflow (Douglas Alexandre)
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
+  - Fix omniauth documentation setting for omnibus configuration (Jon Cairns)
   - Add "New file" link to dropdown on project page
   - Include commit logs in project search
   - Add "added", "modified" and "removed" properties to commit object in webhook
   - Rename "Back to" links to "Go to" because its not always a case it point to place user come from
   - Allow groups to appear in the search results if the group owner allows it
+  - Add email notification to former assignee upon unassignment (Adam Lieskovský)
   - New design for project graphs page
+  - Remove deprecated dumped yaml file generated from previous job definitions
   - Fix incoming email config defaults
+  - Show specific runners from projects where user is master or owner
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
   - Make color of "Accept Merge Request" button consistent with current build status
+  - Add ignore white space option in merge request diff and commit and compare view
+  - Ability to add release notes (markdown text and attachments) to git tags (aka Releases)
+  - Relative links from a repositories README.md now link to the default branch
+  - Fix trailing whitespace issue in merge request/issue title
+  - Fix bug when milestone/label filter was empty for dashboard issues page
+  - Add ability to create milestone in group projects from single form
+  - Add option to create merge request when editing/creating a file (Dirceu Tiegs)
+  - Prevent the last owner of a group from being able to delete themselves by 'adding' themselves as a master (James Lopez)
+  - Add Award Emoji to issue and merge request pages
 
 v 8.1.4
   - Fix bug where manually merged branches in a MR would end up with an empty diff (Stan Hu)
@@ -104,7 +149,6 @@ v 8.1.0
   - Show CI status on Your projects page and Starred projects page
   - Remove "Continuous Integration" page from dashboard
   - Add notes and SSL verification entries to hook APIs (Ben Boeckel)
-  - Added build artifacts
   - Fix grammar in admin area "labels" .nothing-here-block when no labels exist.
   - Move CI runners page to project settings area
   - Move CI variables page to project settings area

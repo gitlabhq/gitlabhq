@@ -34,13 +34,19 @@ The most important thing is making sure valid issues receive feedback from the d
 
 ## Workflow labels
 
-Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to re-evaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue. 
+Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to re-evaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue.
 
 -   *Awaiting feedback*: Feedback pending from the reporter
 -   *Awaiting confirmation of fix*: The issue should already be solved in **master** (generally you can avoid this workflow item and just close the issue right away)
 -   *Attached MR*: There is a MR attached and the discussion should happen there
     - We need to let issues stay in sync with the MR's. We can do this with a "Closing #XXXX" or "Fixes #XXXX" comment in the MR. We can't close the issue when there is a merge request because sometimes a MR is not good and we just close the MR, then the issue must stay.
--   *Awaiting developer action/feedback*: Issue needs to be fixed or clarified by a developer
+- *Developer*: needs help from a developer
+- *UX* needs needs help from a UX designer
+- *Frontend* needs help from a Front-end engineer
+- *Graphics* needs help from a Graphics designer
+- *up-for-grabs* is an issue suitable for first-time contributors, of reasonable difficulty and size. Not exclusive with other labels.
+
+Example workflow: when a UX designer provided a design but it needs frontend work they remove the UX label and add the frontend label.
 
 ## Functional labels
 

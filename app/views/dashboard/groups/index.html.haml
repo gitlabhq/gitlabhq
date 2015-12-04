@@ -8,8 +8,8 @@
       = link_to new_group_path, class: "btn btn-new" do
         %i.fa.fa-plus
         New Group
-  .title Welcome to the groups!
-  Group members have access to all group projects.
+  .oneline
+    Group members have access to all group projects.
 
 %ul.content-list
   - @group_members.each do |group_member|

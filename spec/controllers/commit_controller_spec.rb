@@ -69,6 +69,21 @@ describe Projects::CommitController do
 
         expect(response.body).to start_with("diff --git")
       end
+      
+      it "should really only be a git diff without whitespace changes" do
+        get(:show,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            id: '66eceea0db202bb39c4e445e8ca28689645366c5',
+            # id: commit.id,
+            format: format,
+            w: 1)
+
+        expect(response.body).to start_with("diff --git")
+        # without whitespace option, there are more than 2 diff_splits
+        diff_splits = assigns(:diffs)[0].diff.split("\n")
+        expect(diff_splits.length).to be <= 2
+      end
     end
 
     describe "as patch" do

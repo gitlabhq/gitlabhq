@@ -30,7 +30,7 @@ module Gitlab
 
       def user_map
         @user_map ||= begin
-          user_map = Hash.new do |hash, user| 
+          user_map = Hash.new do |hash, user|
             # Replace ... by \.\.\., so `johnsm...@gmail.com` isn't autolinked.
             Client.mask_email(user).sub("...", "\\.\\.\\.")
           end
@@ -76,18 +76,7 @@ module Gitlab
           attachments = format_attachments(raw_issue["id"], 0, issue_comment["attachments"])
 
           body = format_issue_body(author, date, content, attachments)
-
-          labels = []
-          raw_issue["labels"].each do |label|
-            name = nice_label_name(label)
-            labels << name
-
-            unless @known_labels.include?(name)
-              create_label(name)
-              @known_labels << name
-            end
-          end
-          labels << nice_status_name(raw_issue["status"])
+          labels = import_issue_labels(raw_issue)
 
           assignee_id = nil
           if raw_issue.has_key?("owner")
@@ -110,6 +99,7 @@ module Gitlab
             assignee_id:  assignee_id,
             state:        raw_issue["state"] == "closed" ? "closed" : "opened"
           )
+
           issue.add_labels_by_names(labels)
 
           if issue.iid != raw_issue["id"]
@@ -118,6 +108,23 @@ module Gitlab
 
           import_issue_comments(issue, comments)
         end
+      end
+
+      def import_issue_labels(raw_issue)
+        labels = []
+
+        raw_issue["labels"].each do |label|
+          name = nice_label_name(label)
+          labels << name
+
+          unless @known_labels.include?(name)
+            create_label(name)
+            @known_labels << name
+          end
+        end
+
+        labels << nice_status_name(raw_issue["status"])
+        labels
       end
 
       def import_issue_comments(issue, comments)
@@ -172,7 +179,7 @@ module Gitlab
           "#5cb85c"
         when "Status: Started"
           "#8e44ad"
-        
+
         when "Priority: Critical"
           "#ffcfcf"
         when "Priority: High"
@@ -181,7 +188,7 @@ module Gitlab
           "#fff5cc"
         when "Priority: Low"
           "#cfe9ff"
-        
+
         when "Type: Defect"
           "#d9534f"
         when "Type: Enhancement"
@@ -249,8 +256,8 @@ module Gitlab
         end
 
         if raw_updates.has_key?("cc")
-          cc = raw_updates["cc"].map do |l| 
-            deleted = l.start_with?("-") 
+          cc = raw_updates["cc"].map do |l|
+            deleted = l.start_with?("-")
             l = l[1..-1] if deleted
             l = user_map[l]
             l = "~~#{l}~~" if deleted
@@ -261,8 +268,8 @@ module Gitlab
         end
 
         if raw_updates.has_key?("labels")
-          labels = raw_updates["labels"].map do |l| 
-            deleted = l.start_with?("-") 
+          labels = raw_updates["labels"].map do |l|
+            deleted = l.start_with?("-")
             l = l[1..-1] if deleted
             l = nice_label_name(l)
             l = "~~#{l}~~" if deleted
@@ -278,43 +285,37 @@ module Gitlab
 
         if raw_updates.has_key?("blockedOn")
           blocked_ons = raw_updates["blockedOn"].map do |raw_blocked_on|
-            name, id = raw_blocked_on.split(":", 2)
-
-            deleted = name.start_with?("-") 
-            name = name[1..-1] if deleted
-
-            text =
-              if name == project.import_source
-                "##{id}"
-              else
-                "#{project.namespace.path}/#{name}##{id}"
-              end
-            text = "~~#{text}~~" if deleted
-            text
+            format_blocking_updates(raw_blocked_on)
           end
+
           updates << "*Blocked on: #{blocked_ons.join(", ")}*"
         end
 
         if raw_updates.has_key?("blocking")
           blockings = raw_updates["blocking"].map do |raw_blocked_on|
-            name, id = raw_blocked_on.split(":", 2)
-            
-            deleted = name.start_with?("-") 
-            name = name[1..-1] if deleted
-
-            text =
-              if name == project.import_source
-                "##{id}"
-              else
-                "#{project.namespace.path}/#{name}##{id}"
-              end
-            text = "~~#{text}~~" if deleted
-            text
+            format_blocking_updates(raw_blocked_on)
           end
+
           updates << "*Blocking: #{blockings.join(", ")}*"
         end
 
         updates
+      end
+
+      def format_blocking_updates(raw_blocked_on)
+        name, id = raw_blocked_on.split(":", 2)
+
+        deleted = name.start_with?("-")
+        name = name[1..-1] if deleted
+
+        text =
+          if name == project.import_source
+            "##{id}"
+          else
+            "#{project.namespace.path}/#{name}##{id}"
+          end
+        text = "~~#{text}~~" if deleted
+        text
       end
 
       def format_attachments(issue_id, comment_id, raw_attachments)
@@ -325,7 +326,7 @@ module Gitlab
 
           filename = attachment["fileName"]
           link = "https://storage.googleapis.com/google-code-attachments/#{@repo.name}/issue-#{issue_id}/comment-#{comment_id}/#{filename}"
-          
+
           text = "[#{filename}](#{link})"
           text = "!#{text}" if filename =~ /\.(png|jpg|jpeg|gif|bmp|tiff)\z/i
           text

@@ -72,8 +72,7 @@ class ProjectsController < ApplicationController
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
-    if @project.forked?
-      @project.forked_project_link.destroy
+    if @project.unlink_fork
       flash[:notice] = 'The fork relationship has been removed.'
     end
   end
@@ -124,7 +123,7 @@ class ProjectsController < ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).execute
     flash[:alert] = "Project '#{@project.name}' was deleted."
 
-    redirect_back_or_default(default: dashboard_projects_path, options: {})
+    redirect_to dashboard_projects_path
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), alert: ex.message
   end
@@ -213,7 +212,8 @@ class ProjectsController < ApplicationController
     params.require(:project).permit(
       :name, :path, :description, :issues_tracker, :tag_list,
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
-      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar
+      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
+      :builds_enabled
     )
   end
 
@@ -242,7 +242,7 @@ class ProjectsController < ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
-  # Override get_id from ExtractsPath, which returns the branch and file path 
+  # Override get_id from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref

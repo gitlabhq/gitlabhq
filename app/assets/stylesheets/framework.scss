@@ -1,9 +1,9 @@
 @import "framework/fonts";
 @import "framework/variables";
 @import "framework/mixins";
-@import "framework/layout";
 @import 'framework/tw_bootstrap_variables';
 @import 'framework/tw_bootstrap';
+@import "framework/layout";
 
 @import "framework/avatar.scss";
 @import "framework/blocks.scss";
@@ -25,6 +25,7 @@
 @import "framework/markdown_area.scss";
 @import "framework/mobile.scss";
 @import "framework/pagination.scss";
+@import "framework/panels.scss";
 @import "framework/selects.scss";
 @import "framework/sidebar.scss";
 @import "framework/tables.scss";

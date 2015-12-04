@@ -23,6 +23,10 @@
 #  after_sign_out_path          :string(255)
 #  session_expire_delay         :integer          default(10080), not null
 #  import_sources               :text
+#  help_page_text               :text
+#  admin_notification_email     :string(255)
+#  shared_runners_enabled       :boolean          default(TRUE), not null
+#  max_artifacts_size           :integer          default(100), not null
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -68,8 +72,22 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  after_commit do
+    Rails.cache.write(cache_key, self)
+  end
+
   def self.current
-    ApplicationSetting.last
+    Rails.cache.fetch(cache_key) do
+      ApplicationSetting.last
+    end
+  end
+
+  def self.expire
+    Rails.cache.delete(cache_key)
+  end
+
+  def self.cache_key
+    'application_setting.last'
   end
 
   def self.create_from_defaults
@@ -89,7 +107,7 @@ class ApplicationSetting < ActiveRecord::Base
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
       import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
-      max_artifacts_size: Settings.gitlab_ci['max_artifacts_size'],
+      max_artifacts_size: Settings.artifacts['max_size'],
     )
   end
 

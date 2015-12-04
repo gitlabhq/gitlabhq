@@ -17,8 +17,9 @@ describe MergeRequests::MergeService do
 
       before do
         allow(service).to receive(:execute_hooks)
-
-        service.execute(merge_request, 'Awesome message')
+        perform_enqueued_jobs do
+          service.execute(merge_request, 'Awesome message')
+        end
       end
 
       it { expect(merge_request).to be_valid }

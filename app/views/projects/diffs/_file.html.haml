@@ -2,19 +2,27 @@
   .diff-header{id: "file-path-#{hexdigest(diff_file.file_path)}"}
     - if diff_file.diff.submodule?
       %span
+        = icon('archive fw')
         - submodule_item = project.repository.blob_at(@commit.id, diff_file.file_path)
-        = submodule_link(submodule_item, @commit.id, project.repository)
+        %strong
+          = submodule_link(submodule_item, @commit.id, project.repository)
     - else
       %span
+        = blob_icon blob.mode, blob.name
+        = link_to "#diff-#{i}" do
+          %strong
+            = diff_file.new_path
+
         - if diff_file.deleted_file
-          = "#{diff_file.old_path} deleted"
+          deleted
         - elsif diff_file.renamed_file
-          = "#{diff_file.old_path} renamed to #{diff_file.new_path}"
-        - else
-          = diff_file.new_path
+          renamed from
+          %strong
+            = diff_file.old_path
 
         - if diff_file.mode_changed?
-          %span.file-mode= "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
+          %small
+            = "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
       .diff-controls
         - if blob.text?
@@ -33,7 +41,7 @@
     -# Skipp all non non-supported blobs
     - return unless blob.respond_to?('text?')
     - if blob.text?
-      - if params[:view] == 'parallel'
+      - if diff_view == 'parallel'
         = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
       - else
         = render "projects/diffs/text_file", diff_file: diff_file, index: i
@@ -42,4 +50,3 @@
       = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, file: blob, index: i
     - else
       .nothing-here-block No preview for this file type
-

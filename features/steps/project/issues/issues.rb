@@ -65,7 +65,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   step 'I see current user as the first user' do
     expect(page).to have_selector('.user-result', visible: true, count: 4)
     users = page.all('.user-name')
-    expect(users[0].text).to eq 'Any'
+    expect(users[0].text).to eq 'Any Assignee'
     expect(users[1].text).to eq 'Unassigned'
     expect(users[2].text).to eq current_user.name
   end

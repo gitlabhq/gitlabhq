@@ -5,7 +5,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I click on the Cancel button' do
-    page.within(:css, ".form-actions") do
+    page.within(:css, ".wiki-form .form-actions") do
       click_on "Cancel"
     end
   end
@@ -24,7 +24,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     expect(page).to have_content "link test"
 
     click_link "link test"
-    expect(page).to have_content "Editing"
+    expect(page).to have_content "Edit Page"
   end
 
   step 'I have an existing Wiki page' do
@@ -68,7 +68,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I click on the "Delete this page" button' do
-    click_on "Delete this page"
+    click_on "Delete"
   end
 
   step 'The page should be deleted' do
@@ -120,13 +120,13 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   step 'I should see the new wiki page form' do
     expect(current_path).to match('wikis/image.jpg')
     expect(page).to have_content('New Wiki Page')
-    expect(page).to have_content('Editing - image.jpg')
+    expect(page).to have_content('Edit Page image.jpg')
   end
 
   step 'I create a New page with paths' do
     click_on 'New Page'
     fill_in 'Page slug', with: 'one/two/three'
-    click_on 'Build'
+    click_on 'Create Page'
     fill_in "wiki_content", with: 'wiki content'
     click_on "Create page"
     expect(current_path).to include 'one/two/three'
@@ -135,7 +135,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   step 'I create a New page with an invalid name' do
     click_on 'New Page'
     fill_in 'Page slug', with: 'invalid name'
-    click_on 'Build'
+    click_on 'Create Page'
   end
 
   step 'I should see an error message' do
@@ -156,7 +156,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the Editing page' do
-    expect(page).to have_content('Editing')
+    expect(page).to have_content('Edit Page')
   end
 
   step 'I view the page history of a Wiki page that has a path' do

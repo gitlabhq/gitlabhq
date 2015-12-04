@@ -14,5 +14,8 @@ class StuckCiBuildsWorker
       Rails.logger.debug "Dropping stuck #{build.status} build #{build.id} for runner #{build.runner_id}"
       build.drop
     end
+
+    # Update builds that failed to drop
+    builds.update_all(status: 'failed')
   end
 end

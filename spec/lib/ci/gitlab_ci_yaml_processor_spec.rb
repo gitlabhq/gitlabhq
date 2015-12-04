@@ -333,6 +333,60 @@ module Ci
       end
     end
 
+    describe "Caches" do
+      it "returns cache when defined globally" do
+        config = YAML.dump({
+                             cache: { paths: ["logs/", "binaries/"], untracked: true },
+                             rspec: {
+                               script: "rspec"
+                             }
+                           })
+
+        config_processor = GitlabCiYamlProcessor.new(config)
+
+        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+        expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
+          paths: ["logs/", "binaries/"],
+          untracked: true,
+        )
+      end
+
+      it "returns cache when defined in a job" do
+        config = YAML.dump({
+                             rspec: {
+                               cache: { paths: ["logs/", "binaries/"], untracked: true },
+                               script: "rspec"
+                             }
+                           })
+
+        config_processor = GitlabCiYamlProcessor.new(config)
+
+        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+        expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
+          paths: ["logs/", "binaries/"],
+          untracked: true,
+        )
+      end
+
+      it "overwrite cache when defined for a job and globally" do
+        config = YAML.dump({
+                             cache: { paths: ["logs/", "binaries/"], untracked: true },
+                             rspec: {
+                               script: "rspec",
+                               cache: { paths: ["test/"], untracked: false },
+                             }
+                           })
+
+        config_processor = GitlabCiYamlProcessor.new(config)
+
+        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+        expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
+          paths: ["test/"],
+          untracked: false,
+        )
+      end
+    end
+
     describe "Artifacts" do
       it "returns artifacts when defined" do
         config = YAML.dump({
@@ -371,8 +425,12 @@ module Ci
     end
 
     describe "Error handling" do
+      it "fails to parse YAML" do
+        expect{GitlabCiYamlProcessor.new("invalid: yaml: test")}.to raise_error(Psych::SyntaxError)
+      end
+
       it "indicates that object is invalid" do
-        expect{GitlabCiYamlProcessor.new("invalid_yaml\n!ccdvlf%612334@@@@")}.to raise_error(GitlabCiYamlProcessor::ValidationError)
+        expect{GitlabCiYamlProcessor.new("invalid_yaml")}.to raise_error(GitlabCiYamlProcessor::ValidationError)
       end
 
       it "returns errors if tags parameter is invalid" do
@@ -541,6 +599,34 @@ module Ci
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:paths parameter should be an array of strings")
+      end
+
+      it "returns errors if cache:untracked is not an array of strings" do
+        config = YAML.dump({ cache: { untracked: "string" }, rspec: { script: "test" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:untracked parameter should be an boolean")
+      end
+
+      it "returns errors if cache:paths is not an array of strings" do
+        config = YAML.dump({ cache: { paths: "string" }, rspec: { script: "test" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:paths parameter should be an array of strings")
+      end
+
+      it "returns errors if job cache:untracked is not an array of strings" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", cache: { untracked: "string" } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:untracked parameter should be an boolean")
+      end
+
+      it "returns errors if job cache:paths is not an array of strings" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", cache: { paths: "string" } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:paths parameter should be an array of strings")
       end
     end
   end

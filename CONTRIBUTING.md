@@ -10,7 +10,7 @@ By submitting code as an individual you agree to the [individual contributor lic
 
 ## Security vulnerability disclosure
 
-Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](http://about.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](https://about.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## Closing policy for issues and merge requests
 
@@ -23,9 +23,19 @@ Issues and merge requests should be in English and contain appropriate language 
 ## Helping others
 
 Please help other GitLab users when you can.
-The channnels people will reach out on can be found on the [getting help page](https://about.gitlab.com/getting-help/).
-Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the irc channel.
+The channels people will reach out on can be found on the [getting help page](https://about.gitlab.com/getting-help/).
+Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the IRC channel.
 You can also sign up on [CodeTriage](http://www.codetriage.com/gitlabhq/gitlabhq) to help with one issue every day.
+
+## I want to contribute!
+
+If you want to contribute to GitLab, but are not sure where to start,
+look for [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=up-for-grabs)
+with the label `up-for-grabs`.
+These issues will be of reasonable size and challenge, for anyone to start
+contributing to GitLab.
+
+This was inspired by [an article by Kent C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.i2f363mx4).
 
 ## Issue tracker
 
@@ -35,7 +45,7 @@ The [GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab
 
 Do not use the issue tracker for feature requests. We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose. Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
 
-Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
+Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](https://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
 
 ### Issue tracker guidelines
 
@@ -47,10 +57,10 @@ Please send a merge request with a tested solution or a merge request with a fai
 1. **Observed behavior**
 1. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
 1. **Output of checks**
-    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
+    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (For installations with omnibus-gitlab package: `sudo gitlab-rake gitlab:check SANITIZE=true`); For installations from source: `sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
     * Version of GitLab you are running; we will only investigate issues in the latest stable and development releases as per the [maintenance policy](MAINTENANCE.md)
     * Add the last commit SHA-1 of the GitLab version you used to replicate the issue (obtainable from the help page)
-    * Describe your setup (use relevant parts from `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
+    * Describe your setup (use relevant parts from the env info: For installations with omnibus-gitlab package: `sudo gitlab-rake gitlab:env:info`; For installations from source: `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
 1. **Possible fixes**: If you can, link to the line of code that might be responsible for the problem
 
 ## Merge requests
@@ -59,7 +69,7 @@ We welcome merge requests with fixes and improvements to GitLab code, tests, and
 
 Merge requests can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests) or [github.com](https://github.com/gitlabhq/gitlabhq/pulls).
 
-If you are new to GitLab development (or web development in general), search for the label `easyfix` ([gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=easyfix), [github](https://github.com/gitlabhq/gitlabhq/labels/easyfix)). Those are issues easy to fix, marked by the GitLab core-team. If you are unsure how to proceed but want to help, mention one of the core-team members to give you a hint.
+If you are new to GitLab development (or web development in general), search for the label `easyfix` ([GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=easyfix), [GitHub](https://github.com/gitlabhq/gitlabhq/labels/easyfix)). Those are issues easy to fix, marked by the GitLab core-team. If you are unsure how to proceed but want to help, mention one of the core-team members to give you a hint.
 
 To start with GitLab download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) and see [Development section](doc/development/README.md) in the help file.
 
@@ -72,7 +82,7 @@ If you can, please submit a merge request with the fix or improvements including
 1. Write [tests](https://gitlab.com/gitlab-org/gitlab-development-kit#running-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)
 1. If you are changing the README, some documentation or other things which have no effect on the tests, add `[ci skip]` somewhere in the commit message
-1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
+1. If you have multiple commits please combine them into one commit by [squashing them](https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a merge request (MR) to the master branch
 1. The MR title should describe the change you want to make
@@ -99,7 +109,7 @@ If you contribute to GitLab please know that changes involve more than just code
 We have the following [definition of done](http://guide.agilealliance.org/guide/definition-of-done.html).
 Please ensure you support the feature you contribute through all of these steps.
 
-1. Description explaning the relevancy (see following item)
+1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
 1. Unit and integration tests that pass on the CI server
 1. Documented in the /doc directory
@@ -163,7 +173,7 @@ If you add a dependency in GitLab (such as an operating system package) please c
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 1.  [Database Migrations](doc/development/migration_style_guide.md)
 1.  [Documentation styleguide](doc_styleguide.md)
-1.  Interface text should be written subjectively instead of objectively. It should be the gitlab core team addressing a person. It should be written in present time and never use past tense (has been/was). For example instead of "prohibited this user from being saved due to the following errors:" the text should be "sorry, we could not create your account because:". Also these [excellent writing guidelines](https://github.com/NARKOZ/guides#writing).
+1.  Interface text should be written subjectively instead of objectively. It should be the GitLab core team addressing a person. It should be written in present time and never use past tense (has been/was). For example instead of "prohibited this user from being saved due to the following errors:" the text should be "sorry, we could not create your account because:". Also these [excellent writing guidelines](https://github.com/NARKOZ/guides#writing).
 
 This is also the style used by linting tools such as [RuboCop](https://github.com/bbatsov/rubocop), [PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).
 
@@ -181,4 +191,4 @@ This code of conduct applies both within project spaces and in public spaces whe
 
 Instances of abusive, harassing, or otherwise unacceptable behavior can be reported by emailing contact@gitlab.com
 
-This Code of Conduct is adapted from the [Contributor Covenant](http:contributor-covenant.org), version 1.1.0, available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/)
+This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org), version 1.1.0, available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/)

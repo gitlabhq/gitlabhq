@@ -44,9 +44,10 @@ module IssuesHelper
   end
 
   def bulk_update_milestone_options
-    options_for_select([['None (backlog)', -1]]) +
-        options_from_collection_for_select(project_active_milestones, 'id',
-                                           'title', params[:milestone_id])
+    milestones = project_active_milestones.to_a
+    milestones.unshift(Milestone::None)
+
+    options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
   end
 
   def milestone_options(object)
@@ -74,7 +75,7 @@ module IssuesHelper
                                                     issue.project, issue)
       xml.title   truncate(issue.title, length: 80)
       xml.updated issue.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
-      xml.media   :thumbnail, width: "40", height: "40", url: avatar_icon(issue.author_email)
+      xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
       xml.author do |author|
         xml.name issue.author_name
         xml.email issue.author_email
@@ -85,6 +86,33 @@ module IssuesHelper
 
   def merge_requests_sentence(merge_requests)
     merge_requests.map(&:to_reference).to_sentence(last_word_connector: ', or ')
+  end
+
+  def url_to_emoji(name)
+    emoji_path = ::AwardEmoji.path_to_emoji_image(name)
+    url_to_image(emoji_path)
+  rescue StandardError
+    ""
+  end
+
+  def emoji_author_list(notes, current_user)
+    list = notes.map do |note|
+             note.author == current_user ? "me" : note.author.name
+           end
+
+    list.join(", ")
+  end
+
+  def emoji_list
+    ::AwardEmoji::EMOJI_LIST
+  end
+
+  def note_active_class(notes, current_user)
+    if current_user && notes.pluck(:author_id).include?(current_user.id)
+      "active"
+    else
+      ""
+    end
   end
 
   # Required for Gitlab::Markdown::IssueReferenceFilter

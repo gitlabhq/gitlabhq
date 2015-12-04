@@ -171,7 +171,7 @@
                 %td
                   = ci_icon_for_status(build.status)
                 %td
-                  = link_to namespace_project_build_path(@project.namespace, @project, @build) do
+                  = link_to namespace_project_build_path(@project.namespace, @project, build) do
                     - if build.name
                       = build.name
                     - else

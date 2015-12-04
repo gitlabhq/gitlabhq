@@ -6,7 +6,7 @@
 #tree-holder.tree-holder
   .file-holder
     .file-title
-      %i.fa.fa-file
+      = blob_icon @blob.mode, @blob.name
       %strong
         = @path
       %small= number_to_human_size @blob.size
@@ -43,4 +43,3 @@
                   - blame_group[:lines].each do |line|
                     :erb
                       <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
-
