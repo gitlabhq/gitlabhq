@@ -1,0 +1,26 @@
+- page_title "Find File", @ref
+- header_title project_title(@project, "Files", project_files_path(@project))
+
+#tree-holder.tree-holder.clearfix
+  .gray-content-block.top-block
+    .tree-ref-holder
+      = render 'shared/ref_switcher', destination: 'file_find', path: @path
+    %ul.breadcrumb.repo-breadcrumb
+      %li
+        = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
+          = @project.path
+      %li.file-finder
+        %input.form-control.file-finder-input{type: "text", placeholder: 'Find by path'}
+
+  %div.tree-content-holder
+    .table-holder
+      %table.table#files-slider{class: "table_#{@hex_path} tree-table table-striped" }
+        %tbody
+      = spinner nil, true
+
+:coffeescript
+  new ProjectFindFile({
+    url: "#{escape_javascript(@url)}"
+    commitId: "#{escape_javascript(@id)}"
+    blobUrlTemplate: "#{escape_javascript(@blobUrlTemplate)}"
+  })
