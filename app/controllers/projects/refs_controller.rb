@@ -20,6 +20,8 @@ class Projects::RefsController < Projects::ApplicationController
             namespace_project_network_path(@project.namespace, @project, @id, @options)
           when "graphs"
             namespace_project_graph_path(@project.namespace, @project, @id)
+          when "find_file"
+            namespace_project_find_file_path(@project.namespace, @project, @id)
           when "graphs_commits"
             commits_namespace_project_graph_path(@project.namespace, @project, @id)
           else

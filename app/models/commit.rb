@@ -78,11 +78,23 @@ class Commit
     }x
   end
 
+  def self.link_reference_pattern
+    super("commit", /(?<commit>\h{6,40})/)
+  end
+
   def to_reference(from_project = nil)
     if cross_project_reference?(from_project)
-      "#{project.to_reference}@#{id}"
+      project.to_reference + self.class.reference_prefix + self.id
     else
-      id
+      self.id
+    end
+  end
+
+  def reference_link_text(from_project = nil)
+    if cross_project_reference?(from_project)
+      project.to_reference + self.class.reference_prefix + self.short_id
+    else
+      self.short_id
     end
   end
 

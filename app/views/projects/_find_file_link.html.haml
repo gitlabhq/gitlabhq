@@ -1,0 +1,6 @@
+- if project && project_namespace && ref
+  .find-file-link-holder
+    %span.btn-group{class: 'btn-group pull-right hidden-xs hidden-sm'}
+      = link_to namespace_project_find_file_path(project_namespace, project, ref), class: 'btn btn-success shortcuts-find-file', rel: 'nofollow' do
+        = icon('search')
+        %span FIND FILE

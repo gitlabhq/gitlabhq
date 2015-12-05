@@ -14,6 +14,7 @@ class @ShortcutsNavigation extends Shortcuts
     Mousetrap.bind('g m', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-merge_requests'))
     Mousetrap.bind('g w', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-wiki'))
     Mousetrap.bind('g s', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-snippets'))
+    Mousetrap.bind('t', -> ShortcutsNavigation.findAndFollowLink('.shortcuts-find-file'))
     @enabledHelp.push('.hidden-shortcut.project')
 
   @findAndFollowLink: (selector) ->
