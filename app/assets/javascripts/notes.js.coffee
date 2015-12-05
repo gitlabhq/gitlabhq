@@ -113,7 +113,7 @@ class @Notes
   renderNote: (note) ->
     unless note.valid
       if note.award
-        flash = new Flash('You have already used this award emoji !', 'alert')
+        flash = new Flash('You have already used this award emoji!', 'alert')
         flash.pin()
       return
 
