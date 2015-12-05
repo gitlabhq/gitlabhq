@@ -1,3 +1,6 @@
+= content_for :flash_message do
+  = render 'shared/project_limit'
+
 %ul.center-top-menu
   = nav_link(path: ['projects#index', 'root#index']) do
     = link_to dashboard_projects_path, title: 'Home', class: 'shortcuts-activity', data: {placement: 'right'} do
