@@ -627,9 +627,13 @@ class Repository
 
     # Run GitLab pre-receive hook
     pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', path_to_repo)
-    status = pre_receive_hook.trigger(gl_id, oldrev, newrev, ref)
+    pre_receive_hook_status = pre_receive_hook.trigger(gl_id, oldrev, newrev, ref)
 
-    if status
+    # Run GitLab update hook
+    update_hook = Gitlab::Git::Hook.new('update', path_to_repo)
+    update_hook_status = update_hook.trigger(gl_id, oldrev, newrev, ref)
+
+    if pre_receive_hook_status && update_hook_status
       if was_empty
         # Create branch
         rugged.references.create(ref, newrev)
@@ -652,7 +656,7 @@ class Repository
       # Remove tmp ref and return error to user
       rugged.references.delete(tmp_ref)
 
-      raise PreReceiveError.new('Commit was rejected by pre-receive hook')
+      raise PreReceiveError.new('Commit was rejected by git hook')
     end
   end
 

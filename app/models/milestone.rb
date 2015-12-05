@@ -22,6 +22,7 @@ class Milestone < ActiveRecord::Base
 
   include InternalId
   include Sortable
+  include StripAttribute
 
   belongs_to :project
   has_many :issues
@@ -34,6 +35,8 @@ class Milestone < ActiveRecord::Base
 
   validates :title, presence: true
   validates :project, presence: true
+
+  strip_attributes :title
 
   state_machine :state, initial: :active do
     event :close do

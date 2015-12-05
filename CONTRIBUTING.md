@@ -27,6 +27,16 @@ The channels people will reach out on can be found on the [getting help page](ht
 Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the IRC channel.
 You can also sign up on [CodeTriage](http://www.codetriage.com/gitlabhq/gitlabhq) to help with one issue every day.
 
+## I want to contribute!
+
+If you want to contribute to GitLab, but are not sure where to start,
+look for [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=up-for-grabs)
+with the label `up-for-grabs`.
+These issues will be of reasonable size and challenge, for anyone to start
+contributing to GitLab.
+
+This was inspired by [an article by Kent C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.i2f363mx4).
+
 ## Issue tracker
 
 To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/getting-help/).
@@ -47,10 +57,10 @@ Please send a merge request with a tested solution or a merge request with a fai
 1. **Observed behavior**
 1. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
 1. **Output of checks**
-    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
+    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (For installations with omnibus-gitlab package: `sudo gitlab-rake gitlab:check SANITIZE=true`); For installations from source: `sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
     * Version of GitLab you are running; we will only investigate issues in the latest stable and development releases as per the [maintenance policy](MAINTENANCE.md)
     * Add the last commit SHA-1 of the GitLab version you used to replicate the issue (obtainable from the help page)
-    * Describe your setup (use relevant parts from `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
+    * Describe your setup (use relevant parts from the env info: For installations with omnibus-gitlab package: `sudo gitlab-rake gitlab:env:info`; For installations from source: `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
 1. **Possible fixes**: If you can, link to the line of code that might be responsible for the problem
 
 ## Merge requests

@@ -173,8 +173,7 @@ module ProjectsHelper
     'unknown'
   end
 
-  def default_url_to_repo(project = nil)
-    project = project || @project
+  def default_url_to_repo(project = @project)
     current_user ? project.url_to_repo : project.http_url_to_repo
   end
 

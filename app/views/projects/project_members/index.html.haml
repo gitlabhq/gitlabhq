@@ -1,42 +1,28 @@
 - page_title "Members"
 = render "header_title"
-
-.gray-content-block.top-block
-  .clearfix.js-toggle-container
-    = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
-      .form-group
-        = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control search-text-input', spellcheck: false }
-      = button_tag 'Search', class: 'btn'
-
-    - if can?(current_user, :admin_project_member, @project) && !membership_locked?
-      %span.pull-right
-        = button_tag class: 'btn btn-new btn-grouped js-toggle-button', type: 'button' do
-          Add members
-          %i.fa.fa-chevron-down
-        = link_to import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-grouped", title: "Import members from another project" do
-          Import members
-
-      .js-toggle-content.hide.new-group-member-holder
-        = render "new_project_member"
-
-%p.prepend-top-default.light
-  Users with access to this project are listed below.
-  Read more about project permissions
-  %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+- @blank_container = true
 
 - if membership_locked?
-  %p.text-warning
+  .alert.alert-warning
     Adding new users is disabled at group level
 
-= render "team", members: @project_members
+.project-members-page
+  - if can?(current_user, :admin_project_member, @project) && !membership_locked?
+    .panel.panel-default
+      .panel-heading
+        Add new user to project
+        .pull-right
+          = link_to import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-grouped", title: "Import members from another project" do
+            Import members
+      .panel-body
+        %p.light
+          Users with access to this project are listed below.
+        = render "new_project_member"
 
-- if @group
-  = render "group_members", members: @group_members
-- if @project_group_links.any? && @project.allowed_to_share_with_group?
-  = render "shared_group_members"
+  = render "team", members: @project_members
 
-:javascript
-  $('form.member-search-form').on('submit', function (event) {
-    event.preventDefault();
-    Turbolinks.visit(this.action + '?' + $(this).serialize());
-  });
+  - if @group
+    = render "group_members", members: @group_members
+
+  - if @project_group_links.any? && @project.allowed_to_share_with_group?
+    = render "shared_group_members"

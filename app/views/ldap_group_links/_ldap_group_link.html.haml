@@ -5,10 +5,10 @@
   %strong= ldap_group_link.cn
 
   - if ldap_group_link.config
-    %p.light
+    .light
       As #{ldap_group_link.human_access} on #{ldap_group_link.provider_label} server
   - else
-    %p.cred
+    .cred
       %i.fa.fa-warning
       Config for
       %code #{ldap_group_link.provider}

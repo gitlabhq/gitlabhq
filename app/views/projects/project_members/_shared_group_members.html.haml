@@ -13,7 +13,7 @@
           = link_to group_group_members_path(shared_group), class: 'btn btn-sm' do
             %i.fa.fa-pencil-square-o
             Edit group members
-    %ul.well-list
+    %ul.content-list
       - shared_group.group_members.order('access_level DESC').limit(20).each do |member|
         = render 'groups/group_members/group_member', member: member, show_controls: false, show_roles: false
       - if shared_group_users_count > 20

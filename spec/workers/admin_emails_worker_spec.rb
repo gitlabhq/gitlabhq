@@ -15,8 +15,10 @@ describe AdminEmailsWorker do
     end
 
     it "sends email to subscribed users" do
-      AdminEmailsWorker.new.perform(recipient_id, 'subject', 'body')
-      expect(ActionMailer::Base.deliveries.count).to eql 2
+      perform_enqueued_jobs do
+        AdminEmailsWorker.new.perform(recipient_id, 'subject', 'body')
+        expect(ActionMailer::Base.deliveries.count).to eql 2
+      end
     end
   end
 end

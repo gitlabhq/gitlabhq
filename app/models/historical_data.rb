@@ -1,5 +1,5 @@
 class HistoricalData < ActiveRecord::Base
-  validate :date, presence: true
+  validates :date, presence: true
 
   # HistoricalData.during((Date.today - 1.year)..Date.today).average(:active_user_count)
   scope :during, ->(range) { where(date: range) }

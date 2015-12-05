@@ -5,14 +5,20 @@ class Admin::ImpersonationController < Admin::ApplicationController
   before_action :authorize_impersonator!
 
   def create
-    session[:impersonator_id] = current_user.username
-    session[:impersonator_return_to] = request.env['HTTP_REFERER']
+    if @user.blocked?
+      flash[:alert] = "You cannot impersonate a blocked user"
 
-    warden.set_user(user, scope: 'user')
+      redirect_to admin_user_path(@user)
+    else
+      session[:impersonator_id] = current_user.username
+      session[:impersonator_return_to] = admin_user_path(@user)
 
-    flash[:alert] = "You are impersonating #{user.username}."
+      warden.set_user(user, scope: 'user')
 
-    redirect_to root_path
+      flash[:alert] = "You are impersonating #{user.username}."
+
+      redirect_to root_path
+    end
   end
 
   def destroy

@@ -23,7 +23,9 @@ describe MergeRequests::FfMergeService do
       before do
         allow(service).to receive(:execute_hooks)
 
-        service.execute(merge_request)
+        perform_enqueued_jobs do
+          service.execute(merge_request)
+        end
       end
 
       it "should not create merge commit" do

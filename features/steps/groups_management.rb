@@ -28,7 +28,6 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   end
 
   step 'I can control user membership' do
-    expect(page).to have_button 'Add members'
     expect(page).to have_link 'Import members'
     expect(page).to have_selector '#project_member_access_level'
   end

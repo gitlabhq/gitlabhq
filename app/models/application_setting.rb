@@ -74,13 +74,21 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   after_commit do
-    Rails.cache.write('application_setting.last', self)
+    Rails.cache.write(cache_key, self)
   end
 
   def self.current
-    Rails.cache.fetch('application_setting.last') do
+    Rails.cache.fetch(cache_key) do
       ApplicationSetting.last
     end
+  end
+
+  def self.expire
+    Rails.cache.delete(cache_key)
+  end
+
+  def self.cache_key
+    'application_setting.last'
   end
 
   def self.create_from_defaults
