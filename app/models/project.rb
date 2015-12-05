@@ -726,6 +726,11 @@ class Project < ActiveRecord::Base
     "#{web_url}.git"
   end
 
+  # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
+  def kerberos_url_to_repo
+    "#{Gitlab.config.build_gitlab_kerberos_url + Gitlab::Application.routes.url_helpers.namespace_project_path(self.namespace, self)}.git"
+  end
+
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
     protected_branches_names.include?(branch_name)

@@ -1,5 +1,6 @@
 v 8.3.0 (unreleased)
   - License information can now be retrieved via the API
+  - Show Kerberos clone url when Kerberos enabled and url different than HTTP url (Borja Aparicio)
 
 v 8.2.0
   - Invalidate stored jira password if the endpoint URL is changed

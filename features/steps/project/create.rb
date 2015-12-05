@@ -18,6 +18,16 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
     expect(page).to have_content Project.last.url_to_repo
   end
 
+  step 'KRB5 enabled' do
+    # Enable Kerberos in an alternative port to force Kerberos button and URL to show up in the UI
+    allow(Gitlab.config.kerberos).to receive(:enabled).and_return(true)
+    allow(Gitlab.config.kerberos).to receive(:use_dedicated_port).and_return(true)
+  end
+
+  step 'KRB5 disabled' do
+    allow(Gitlab.config.kerberos).to receive(:enabled).and_return(false)
+  end
+
   step 'I see empty project instuctions' do
     expect(page).to have_content "git init"
     expect(page).to have_content "git remote"
@@ -38,5 +48,13 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
 
   step 'Remote url should update to ssh link' do
     expect(page).to have_content "git remote add origin #{Project.last.url_to_repo}"
+  end
+
+  step 'If I click on KRB5' do
+    click_button 'KRB5'
+  end
+
+  step 'Remote url should update to kerberos link' do
+    expect(page).to have_content "git remote add origin #{Project.last.kerberos_url_to_repo}"
   end
 end
