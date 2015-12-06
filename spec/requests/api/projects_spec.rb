@@ -742,6 +742,18 @@ describe API::API, api: true  do
         end
       end
 
+      it 'should update visibility_level from public to private' do
+        project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+
+        project_param = { public: false }
+        put api("/projects/#{project3.id}", user), project_param
+        expect(response.status).to eq(200)
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+        expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
+      end
+
       it 'should not update name to existing name' do
         project_param = { name: project3.name }
         put api("/projects/#{project.id}", user), project_param
