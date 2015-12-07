@@ -14,7 +14,7 @@ First configure SAML 2.0 support in GitLab, then register the GitLab application
       sudo editor /etc/gitlab/gitlab.rb
     ```
 
-    For instalations from source:
+    For installations from source:
 
     ```sh
       cd /home/git/gitlab
