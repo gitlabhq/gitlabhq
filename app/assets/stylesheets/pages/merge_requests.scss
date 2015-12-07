@@ -173,25 +173,10 @@
   line-height: 1.1;
 }
 
-.merge-request-form-info {
-  padding-top: 15px;
-}
-
 // hide mr close link for inline diff comment form
 .diff-file .close-mr-link,
 .diff-file .reopen-mr-link {
   display: none;
-}
-
-.merge-request-show-labels {
-  a {
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: inline-block;
-    .color-label {
-      padding: 6px 10px;
-    }
-  }
 }
 
 .merge-request-form .select2-container {

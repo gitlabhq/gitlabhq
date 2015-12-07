@@ -1,5 +1,10 @@
 - page_title    'New Group'
-- header_title  'New Group'
+- header_title  "Groups", dashboard_groups_path
+
+%h3.page-title
+  New Group
+%hr
+
 = form_for @group, html: { class: 'group-form form-horizontal' } do |f|
   - if @group.errors.any?
     .alert.alert-danger
@@ -18,3 +23,4 @@
 
   .form-actions
     = f.submit 'Create group', class: "btn btn-create", tabindex: 3
+    = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'

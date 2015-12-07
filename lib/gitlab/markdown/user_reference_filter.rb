@@ -52,6 +52,10 @@ module Gitlab
         replace_text_nodes_matching(User.reference_pattern) do |content|
           user_link_filter(content)
         end
+
+        replace_link_nodes_with_href(User.reference_pattern) do |link, text|
+          user_link_filter(link, link_text: text)
+        end
       end
 
       # Replace `@user` user references in text with links to the referenced
@@ -61,12 +65,12 @@ module Gitlab
       #
       # Returns a String with `@user` references replaced with links. All links
       # have `gfm` and `gfm-project_member` class names attached for styling.
-      def user_link_filter(text)
+      def user_link_filter(text, link_text: nil)
         self.class.references_in(text) do |match, username|
           if username == 'all'
-            link_to_all
+            link_to_all(link_text: link_text)
           elsif namespace = Namespace.find_by(path: username)
-            link_to_namespace(namespace) || match
+            link_to_namespace(namespace, link_text: link_text) || match
           else
             match
           end
@@ -83,36 +87,36 @@ module Gitlab
         reference_class(:project_member)
       end
 
-      def link_to_all
+      def link_to_all(link_text: nil)
         project = context[:project]
         url = urls.namespace_project_url(project.namespace, project,
                                          only_path: context[:only_path])
         data = data_attribute(project: project.id)
-        text = User.reference_prefix + 'all'
+        text = link_text || User.reference_prefix + 'all'
 
         link_tag(url, data, text)
       end
 
-      def link_to_namespace(namespace)
+      def link_to_namespace(namespace, link_text: nil)
         if namespace.is_a?(Group)
-          link_to_group(namespace.path, namespace)
+          link_to_group(namespace.path, namespace, link_text: link_text)
         else
-          link_to_user(namespace.path, namespace)
+          link_to_user(namespace.path, namespace, link_text: link_text)
         end
       end
 
-      def link_to_group(group, namespace)
+      def link_to_group(group, namespace, link_text: nil)
         url = urls.group_url(group, only_path: context[:only_path])
         data = data_attribute(group: namespace.id)
-        text = Group.reference_prefix + group
+        text = link_text || Group.reference_prefix + group
 
         link_tag(url, data, text)
       end
 
-      def link_to_user(user, namespace)
+      def link_to_user(user, namespace, link_text: nil)
         url = urls.user_url(user, only_path: context[:only_path])
         data = data_attribute(user: namespace.owner_id)
-        text = User.reference_prefix + user
+        text = link_text || User.reference_prefix + user
 
         link_tag(url, data, text)
       end

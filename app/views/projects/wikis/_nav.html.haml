@@ -1,10 +1,19 @@
-%ul.center-top-menu
-  = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
-    = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
+.project-issuable-filter
+  .controls
+    - if can?(current_user, :create_wiki, @project)
+      = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
+        %i.fa.fa-plus
+        New Page
 
-  = nav_link(path: 'wikis#pages') do
-    = link_to 'Pages', namespace_project_wiki_pages_path(@project.namespace, @project)
+      = render 'projects/wikis/new'
 
-  = nav_link(path: 'wikis#git_access') do
-    = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
-      Git Access
+  %ul.center-top-menu
+    = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
+      = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
+
+    = nav_link(path: 'wikis#pages') do
+      = link_to 'Pages', namespace_project_wiki_pages_path(@project.namespace, @project)
+
+    = nav_link(path: 'wikis#git_access') do
+      = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
+        Git Access

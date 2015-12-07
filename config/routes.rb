@@ -368,7 +368,7 @@ Rails.application.routes.draw do
       end
 
       resource :avatar, only: [:destroy]
-      resources :milestones, only: [:index, :show, :update, :new, :create]
+      resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
     end
   end
 

@@ -15,12 +15,14 @@ module SelectsHelper
 
     html = {
       class: css_class,
-      'data-placeholder' => placeholder,
-      'data-null-user' => null_user,
-      'data-any-user' => any_user,
-      'data-email-user' => email_user,
-      'data-first-user' => first_user,
-      'data-current-user' => current_user
+      data: {
+        placeholder: placeholder,
+        null_user: null_user,
+        any_user: any_user,
+        email_user: email_user,
+        first_user: first_user,
+        current_user: current_user
+      }
     }
 
     unless opts[:scope] == :all
