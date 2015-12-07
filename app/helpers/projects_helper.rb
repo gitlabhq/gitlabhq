@@ -183,9 +183,7 @@ module ProjectsHelper
   end
 
   def default_clone_protocol
-    if !current_user
-      "http"
-    elsif current_user.require_ssh_key?
+    if !current_user || current_user.require_ssh_key?
       "http"
     else
       "ssh"
