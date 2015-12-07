@@ -229,7 +229,7 @@ describe SystemNoteService do
     it_behaves_like 'a system note'
 
     it "posts the Merge When Build Succeeds system note" do
-      expect(subject.note).to eq  "Cancelled the automatic merge"
+      expect(subject.note).to eq  "Canceled the automatic merge"
     end
   end
 

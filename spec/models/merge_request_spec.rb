@@ -192,7 +192,7 @@ describe MergeRequest do
     end
   end
 
-  describe '#can_remove_source_branch' do
+  describe '#can_remove_source_branch?' do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
 

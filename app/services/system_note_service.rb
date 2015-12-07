@@ -139,7 +139,7 @@ class SystemNoteService
 
   # Called when 'merge when build succeeds' is canceled
   def self.cancel_merge_when_build_succeeds(noteable, project, author)
-    body = "Cancelled the automatic merge"
+    body = "Canceled the automatic merge"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end

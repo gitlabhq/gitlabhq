@@ -68,7 +68,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
       expect(page).to have_button  "Merge When Build Succeeds"
 
       visit_merge_request(merge_request) # Needed to refresh the page
-      expect(page).to have_content "Cancelled the automatic merge"
+      expect(page).to have_content "Canceled the automatic merge"
     end
 
     it "allows the user to remove the source branch" do

@@ -78,7 +78,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
     it 'Posts a system note' do
       note = mr_merge_if_green_enabled.notes.last
-      expect(note.note).to include 'Cancelled the automatic merge'
+      expect(note.note).to include 'Canceled the automatic merge'
     end
   end
 end
