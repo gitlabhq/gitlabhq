@@ -23,10 +23,10 @@ class Namespace < ActiveRecord::Base
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
-    presence: true, uniqueness: true,
     length: { within: 0..255 },
-    format: { with: Gitlab::Regex.namespace_name_regex,
-              message: Gitlab::Regex.namespace_name_regex_message }
+    namespace_name: true,
+    presence: true,
+    uniqueness: true
 
   validates :description, length: { within: 0..255 }
   validates :path,
