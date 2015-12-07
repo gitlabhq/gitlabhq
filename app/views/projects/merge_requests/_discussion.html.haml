@@ -7,7 +7,7 @@
 
 = render 'shared/show_aside'
 
-.gray-content-block.second-block.oneline-block
+.gray-content-block.middle-block.oneline-block
   .row
     .col-md-9
       .votes-holder.pull-right
@@ -15,9 +15,9 @@
       = render "projects/merge_requests/show/participants"
     .col-md-3
       .input-group.cross-project-reference
-        %span.slead.has_tooltip{title: 'Cross-project reference'}
+        %span#cross-project-reference.slead.has_tooltip{title: 'Cross-project reference'}
           = cross_project_reference(@project, @merge_request)
-        = clipboard_button
+        = clipboard_button(clipboard_target: '#cross-project-reference')
 
 .row
   %section.col-md-9
@@ -26,10 +26,3 @@
     .issuable-affix
       .context
         = render 'shared/issuable/context', issuable: @merge_request
-
-      - if @merge_request.labels.any?
-        .issuable-context-title
-          %label Labels
-        .merge-request-show-labels
-          - @merge_request.labels.each do |label|
-            = link_to_label(label)

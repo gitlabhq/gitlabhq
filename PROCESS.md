@@ -44,6 +44,7 @@ Workflow labels are purposely not very detailed since that would be hard to keep
 - *UX* needs needs help from a UX designer
 - *Frontend* needs help from a Front-end engineer
 - *Graphics* needs help from a Graphics designer
+- *up-for-grabs* is an issue suitable for first-time contributors, of reasonable difficulty and size. Not exclusive with other labels.
 
 Example workflow: when a UX designer provided a design but it needs frontend work they remove the UX label and add the frontend label.
 

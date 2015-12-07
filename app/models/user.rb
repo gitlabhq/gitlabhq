@@ -637,11 +637,11 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def avatar_url(size = nil)
+  def avatar_url(size = nil, scale = 2)
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     else
-      GravatarService.new.execute(email, size)
+      GravatarService.new.execute(email, size, scale)
     end
   end
 
@@ -690,7 +690,7 @@ class User < ActiveRecord::Base
   end
 
   def starred?(project)
-    starred_projects.exists?(project)
+    starred_projects.exists?(project.id)
   end
 
   def toggle_star(project)
@@ -793,5 +793,10 @@ class User < ActiveRecord::Base
 
     Gitlab::SQL::Union.new([personal_projects.select(:id), groups.select(:id),
                             other.select(:id)])
+  end
+
+  # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
   end
 end

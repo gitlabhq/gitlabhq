@@ -1,38 +1,35 @@
 - page_title "Members"
 - header_title group_title(@group, "Members", group_group_members_path(@group))
-- if should_user_see_group_roles?(current_user, @group)
-  %p.light
-    Members of group have access to all group projects.
-    Read more about permissions
-    %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+- @blank_container = true
 
-
-.clearfix.js-toggle-container
-  = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
-    .form-group
-      = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control search-text-input', spellcheck: false }
-    = button_tag 'Search', class: 'btn'
-
+.group-members-page
   - if current_user && current_user.can?(:admin_group_member, @group)
-    .pull-right
-      = button_tag class: 'btn btn-new js-toggle-button', type: 'button' do
-        Add members
-        %i.fa.fa-chevron-down
+    .panel.panel-default
+      .panel-heading
+        Add new user to group
+      .panel-body
+        - if should_user_see_group_roles?(current_user, @group)
+          %p.light
+            Members of group have access to all group projects.
+        .new-group-member-holder
+          = render "new_group_member"
 
-    .js-toggle-content.hide.new-group-member-holder
-      = render "new_group_member"
-
-.panel.panel-default.prepend-top-20
-  .panel-heading
-    %strong #{@group.name}
-    group members
-    %small
-      (#{@members.total_count})
-  %ul.well-list
-    - @members.each do |member|
-      = render 'groups/group_members/group_member', member: member, show_controls: true
-
-= paginate @members, theme: 'gitlab'
+  .panel.panel-default
+    .panel-heading
+      %strong #{@group.name}
+      group members
+      %small
+        (#{@members.total_count})
+      .pull-right
+        = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
+          .form-group
+            = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }
+          = button_tag class: 'btn', title: 'Search' do
+            = icon("search")
+    %ul.content-list
+      - @members.each do |member|
+        = render 'groups/group_members/group_member', member: member, show_controls: true
+    = paginate @members, theme: 'gitlab'
 
 :javascript
   $('form.member-search-form').on('submit', function(event) {

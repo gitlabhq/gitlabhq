@@ -87,7 +87,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Diff"' do
-    click_link 'Preview changes'
+    click_link 'Preview Changes'
   end
 
   step 'I click on "Commit Changes"' do
@@ -142,7 +142,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can see new file page' do
-    expect(page).to have_content "Create New File"
+    expect(page).to have_content "New File"
     expect(page).to have_content "Commit message"
   end
 
@@ -192,7 +192,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see Browse dir link' do
-    expect(page).to have_link 'Browse Dir »'
+    expect(page).to have_link 'Browse Directory »'
     expect(page).not_to have_link 'Browse Code »'
   end
 
@@ -204,13 +204,13 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I see Browse file link' do
     expect(page).to have_link 'Browse File »'
-    expect(page).not_to have_link 'Browse Code »'
+    expect(page).not_to have_link 'Browse Files »'
   end
 
   step 'I see Browse code link' do
-    expect(page).to have_link 'Browse Code »'
+    expect(page).to have_link 'Browse Files »'
     expect(page).not_to have_link 'Browse File »'
-    expect(page).not_to have_link 'Browse Dir »'
+    expect(page).not_to have_link 'Browse Directory »'
   end
 
   step 'I click on Permalink' do

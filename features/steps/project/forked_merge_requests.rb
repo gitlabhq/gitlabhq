@@ -39,14 +39,14 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     select "fix", from: "merge_request_source_branch"
     select "master", from: "merge_request_target_branch"
 
-    click_button "Compare branches"
+    click_button "Compare branches and continue"
 
-    expect(page).to have_content "New merge request"
+    expect(page).to have_content "New Merge Request"
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
   end
 
   step 'I submit the merge request' do
-    click_button "Submit new merge request"
+    click_button "Submit merge request"
   end
 
   step 'I follow the target commit link' do
@@ -112,11 +112,10 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill out an invalid "Merge Request On Forked Project" merge request' do
-    select "Select branch", from: "merge_request_target_branch"
     expect(find(:select, "merge_request_source_project_id", {}).value).to eq @forked_project.id.to_s
     expect(find(:select, "merge_request_target_project_id", {}).value).to eq @project.id.to_s
     expect(find(:select, "merge_request_source_branch", {}).value).to eq ""
-    expect(find(:select, "merge_request_target_branch", {}).value).to eq ""
+    expect(find(:select, "merge_request_target_branch", {}).value).to eq "master"
     click_button "Compare branches"
   end
 

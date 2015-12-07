@@ -274,9 +274,6 @@ sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
 # Start GitLab
 sudo gitlab-ctl start
 
-# Create satellites
-sudo gitlab-rake gitlab:satellites:create
-
 # Check GitLab
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```

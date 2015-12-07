@@ -14,7 +14,7 @@ module Gitlab
 
     def self.mute_mailer
       code = <<-eos
-def Notify.delay
+def Notify.deliver_later
   self
 end
       eos

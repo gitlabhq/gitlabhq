@@ -33,13 +33,15 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_shell_ssh_path_prefix
+      user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
+
       if gitlab_shell.ssh_port != 22
-        "ssh://#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:#{gitlab_shell.ssh_port}/"
+        "ssh://#{user_host}:#{gitlab_shell.ssh_port}/"
       else
         if gitlab_shell.ssh_host.include? ':'
-          "[#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}]:"
+          "[#{user_host}]:"
         else
-          "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+          "#{user_host}:"
         end
       end
     end
@@ -162,7 +164,7 @@ Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].
 Settings.gitlab['twitter_sharing_enabled'] ||= true if Settings.gitlab['twitter_sharing_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -292,4 +294,13 @@ if Rails.env.test?
   Settings.gitlab['default_projects_limit']   = 42
   Settings.gitlab['default_can_create_group'] = true
   Settings.gitlab['default_can_create_team']  = false
+end
+
+# Force a refresh of application settings at startup
+begin
+  ApplicationSetting.expire
+  Ci::ApplicationSetting.expire
+rescue
+  # Gracefully handle when Redis is not available. For example,
+  # omnibus may fail here during assets:precompile.
 end

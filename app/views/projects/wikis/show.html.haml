@@ -5,11 +5,12 @@
 
 .gray-content-block
   = render 'main_links'
-  %h3.page-title
+  %h3.page-title.oneline
     = @page.title.capitalize
 
-  .wiki-last-edit-by
-    Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
+    %span.wiki-last-edit-by
+      &middot;
+      last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
 
 - if @page.historical?
   .warning_message
@@ -21,8 +22,3 @@
   .wiki
     = preserve do
       = render_wiki_content(@page)
-
-.gray-content-block.footer-block
-  .wiki-last-edit-by
-    Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
-

@@ -18,27 +18,31 @@ describe AbuseReportsController do
       end
 
       it "sends a notification email" do
-        post :create,
-          abuse_report: {
-            user_id: user.id,
-            message: message
-          }
-
-        email = ActionMailer::Base.deliveries.last
-
-        expect(email.to).to eq([admin_email])
-        expect(email.subject).to include(user.username)
-        expect(email.text_part.body).to include(message)
-      end
-
-      it "saves the abuse report" do
-        expect do
+        perform_enqueued_jobs do
           post :create,
             abuse_report: {
               user_id: user.id,
               message: message
             }
-        end.to change { AbuseReport.count }.by(1)
+
+          email = ActionMailer::Base.deliveries.last
+
+          expect(email.to).to eq([admin_email])
+          expect(email.subject).to include(user.username)
+          expect(email.text_part.body).to include(message)
+        end
+      end
+
+      it "saves the abuse report" do
+        perform_enqueued_jobs do
+          expect do
+            post :create,
+              abuse_report: {
+                user_id: user.id,
+                message: message
+              }
+          end.to change { AbuseReport.count }.by(1)
+        end
       end
     end
 

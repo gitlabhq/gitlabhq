@@ -1,5 +1,5 @@
 - empty_repo = @project.empty_repo?
-.project-home-panel.clearfix{:class => ("empty-project" if empty_repo)}
+.project-home-panel.cover-block.clearfix{:class => ("empty-project" if empty_repo)}
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
   .project-home-desc
@@ -12,8 +12,19 @@
         Forked from
         = link_to project_path(forked_from_project) do
           = forked_from_project.namespace.try(:name)
+  .cover-controls.left
+    .visibility-level-label.has_tooltip{title: project_visibility_level_description(@project.visibility_level), data: { container: 'body' } }
+      = visibility_level_icon(@project.visibility_level, fw: false)
+      = visibility_level_label(@project.visibility_level)
 
-
+  .cover-controls
+    - if can?(current_user, :admin_project, @project)
+      = link_to edit_project_path(@project), class: 'btn btn-gray' do
+        = icon('pencil')
+    - if current_user
+      &nbsp;
+      = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), class: 'btn btn-gray' do
+        = icon('rss')
 
   .project-repo-buttons
     .split-one
@@ -21,7 +32,7 @@
       = render 'projects/buttons/fork'
 
     = render "shared/clone_panel"
-    
+
     .split-repo-buttons
       = render "projects/buttons/download"
       = render 'projects/buttons/dropdown'

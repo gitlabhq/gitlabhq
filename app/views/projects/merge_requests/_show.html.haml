@@ -8,7 +8,7 @@
   .merge-request-details.issuable-details
     = render "projects/merge_requests/show/mr_title"
     = render "projects/merge_requests/show/mr_box"
-    .append-bottom-20.mr-source-target.prepend-top-default
+    .append-bottom-default.mr-source-target.prepend-top-default
       - if @merge_request.open?
         .pull-right
           - if @merge_request.source_branch_exists?
@@ -26,21 +26,23 @@
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
       .normal
         %span Request to merge
-        %span.label-branch #{source_branch_with_namespace(@merge_request)}
+        %span.label-branch
+          = source_branch_with_namespace(@merge_request)
         %span into
-        %span.label-branch #{@merge_request.target_branch}
+        = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
+          = @merge_request.target_branch
 
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
 
-    - if @merge_request.open? && @merge_request.can_be_merged?
-      .light.append-bottom-20
+    - if @merge_request.open? && @merge_request.source_branch_exists? && @merge_request.can_be_merged? && @merge_request.can_be_merged_by?(current_user)
+      .light.prepend-top-default
         You can also accept this merge request manually using the
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
   - if @commits.present?
-    %ul.merge-request-tabs
+    %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
       %li.notes-tab
         = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#notes', action: 'notes', toggle: 'tab'} do
           Discussion
