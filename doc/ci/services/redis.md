@@ -1,40 +1,68 @@
-## Using Redis
+# Using Redis
 
-It's possible to use Redis database test your apps during builds.
+As many applications depend on Redis as their key-value store, you will
+eventually need it in order for your tests to run. Below you are guided how to
+do this with the Docker and Shell executors of GitLab Runner.
 
-### Use Redis with Docker executor
+## Use Redis with Docker executor
 
-If you are using our Docker integration you basically have everything already.
+If you are using our Docker integration you basically have everything set up
+already.
 
-1. Add this to your `.gitlab-ci.yml`:
+First, in your `.gitlab-ci.yml` add:
 
-		services:
-		- redis
+```yaml
+services:
+  - redis:latest
+```
 
-2. Configure your application to use the database:
+Then you need to configure your application to use the Redis database, for
+example:
 
-		Host: redis
+```bash
+Host: redis
+```
 
-3. You can also use any other available on [DockerHub](https://hub.docker.com/_/redis/). For example: `redis:2.6`.
+And that's it. Redis will now be available to be used within your testing
+framework.
 
-Example: https://gitlab.com/gitlab-examples/redis/blob/master/.gitlab-ci.yml
+If you want to use any other version of Redis, check the available versions
+on [Docker Hub](https://hub.docker.com/_/redis/).
 
-### Use Redis with Shell executor
+## Use Redis with Shell executor
 
-It's possible to use Redis on manually configured servers that are using GitLab Runner with Shell executor.
+Redis can also be used on manually configured servers that are using GitLab
+Runner with the Shell executor.
 
-1. First install the Redis server:
+In your build machine install the Redis server:
 
-		sudo apt-get install redis-server
+```bash
+sudo apt-get install redis-server
+```
 
-2. Try to connect to the server:
+Verify that you can connect to the server with the `gitlab-runner` user:
 
-		# Try connecting the the Redis server
-		sudo -u gitlab-runner -H redis-cli
+```bash
+# Try connecting the the Redis server
+sudo -u gitlab-runner -H redis-cli
 
-		# Quit the session
-		127.0.0.1:6379> quit
+# Quit the session
+127.0.0.1:6379> quit
+```
 
-4. Configure your application to use the database:
+Finally, configure your application to use the database, for example:
 
-		Host: localhost
+```bash
+Host: localhost
+```
+
+## Example project
+
+We have set up an [Example Redis Project][redis-example-repo] for your convenience
+that runs on [GitLab.com](https://gitlab.com) using our publicly available
+[shared runners](../runners/README.md).
+
+Want to hack on it? Simply fork it, commit and push  your changes. Within a few
+moments the changes will be picked by a public runner and the build will begin.
+
+[redis-example-repo]: https://gitlab.com/gitlab-examples/redis
