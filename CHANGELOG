@@ -3,8 +3,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
   - Fix Error 500s when creating global milestones with Unicode characters (Stan Hu)
-
-v 8.2.3
+  - Update documentation for "Guest" permissions
+  - Properly convert Emoji-only comments into Award Emojis
   - Webhook payload has an added, modified and removed properties for each commit
 
 v 8.2.2
