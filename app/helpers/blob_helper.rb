@@ -30,7 +30,7 @@ module BlobHelper
         nil
       end
 
-    if blob && blob.text? && !blob.lfs_pointer?
+    if blob_viewable?(blob)
       text = 'Edit'
       after = options[:after] || ''
       from_mr = options[:from_merge_request_id]
@@ -72,8 +72,8 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def viewable?(blob)
-    blob.text? && !blob.lfs_pointer?
+  def blob_viewable?(blob)
+    blob && blob.text? && !blob.lfs_pointer?
   end
 
   def blob_size(blob)
