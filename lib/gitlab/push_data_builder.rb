@@ -18,10 +18,7 @@ module Gitlab
       #     homepage: String,
       #   },
       #   commits: Array,
-      #   total_commits_count: Fixnum,
-      #   added: ["CHANGELOG"],
-      #   modified: [],
-      #   removed: ["tmp/file.txt"]
+      #   total_commits_count: Fixnum
       # }
       #
       def build(project, user, oldrev, newrev, ref, commits = [], message = nil)
@@ -33,11 +30,12 @@ module Gitlab
 
         # For performance purposes maximum 20 latest commits
         # will be passed as post receive hook data.
-        commit_attrs = commits_limited.map(&:hook_attrs)
+        commit_attrs = commits_limited.map do |commit|
+          commit.hook_attrs(with_changed_files: true)
+        end
 
         type = Gitlab::Git.tag_ref?(ref) ? "tag_push" : "push"
 
-        repo_changes = repo_changes(project, newrev, oldrev)
         # Hash to be passed as post_receive_data
         data = {
           object_kind: type,
@@ -60,10 +58,7 @@ module Gitlab
             visibility_level: project.visibility_level
           },
           commits: commit_attrs,
-          total_commits_count: commits_count,
-          added: repo_changes[:added],
-          modified: repo_changes[:modified],
-          removed: repo_changes[:removed]
+          total_commits_count: commits_count
         }
 
         data
@@ -93,27 +88,6 @@ module Gitlab
         else
           newrev
         end
-      end
-
-      def repo_changes(project, newrev, oldrev)
-        changes = { added: [], modified: [], removed: [] }
-        compare_result = CompareService.new.
-          execute(project, newrev, project, oldrev)
-
-        if compare_result
-          compare_result.diffs.each do |diff|
-            case true
-            when diff.deleted_file
-              changes[:removed] << diff.old_path
-            when diff.renamed_file, diff.new_file
-              changes[:added] << diff.new_path
-            else
-              changes[:modified] << diff.new_path
-            end
-          end
-        end
-
-        changes
       end
     end
   end

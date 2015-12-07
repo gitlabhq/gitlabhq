@@ -100,4 +100,15 @@ eos
     # Include the subject in the repository stub.
     let(:extra_commits) { [subject] }
   end
+
+  describe '#hook_attrs' do
+    let(:data) { commit.hook_attrs(with_changed_files: true) }
+
+    it { expect(data).to be_a(Hash) }
+    it { expect(data[:message]).to include('Add submodule from gitlab.com') }
+    it { expect(data[:timestamp]).to eq('2014-02-27T11:01:38+02:00') }
+    it { expect(data[:added]).to eq(["gitlab-grack"]) }
+    it { expect(data[:modified]).to eq([".gitmodules"]) }
+    it { expect(data[:removed]).to eq([]) }
+  end
 end

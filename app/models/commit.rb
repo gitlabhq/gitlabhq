@@ -135,10 +135,10 @@ class Commit
     description.present?
   end
 
-  def hook_attrs
+  def hook_attrs(with_changed_files: false)
     path_with_namespace = project.path_with_namespace
 
-    {
+    data = {
       id: id,
       message: safe_message,
       timestamp: committed_date.xmlschema,
@@ -148,6 +148,12 @@ class Commit
         email: author_email
       }
     }
+
+    if with_changed_files
+      data.merge!(repo_changes)
+    end
+
+    data
   end
 
   # Discover issues should be closed when this commit is pushed to a project's
@@ -195,5 +201,23 @@ class Commit
 
   def status
     ci_commit.try(:status) || :not_found
+  end
+
+  private
+
+  def repo_changes
+    changes = { added: [], modified: [], removed: [] }
+
+    diffs.each do |diff|
+      if diff.deleted_file
+        changes[:removed] << diff.old_path
+      elsif diff.renamed_file || diff.new_file
+        changes[:added] << diff.new_path
+      else
+        changes[:modified] << diff.new_path
+      end
+    end
+
+    changes
   end
 end
