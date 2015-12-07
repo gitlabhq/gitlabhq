@@ -39,8 +39,11 @@ class Note < ActiveRecord::Base
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 
+  before_validation :set_award!
+
   validates :note, :project, presence: true
   validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
+  validates :note, inclusion: { in: Emoji.emojis_names }, if: ->(n) { n.is_award }
   validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -347,5 +350,32 @@ class Note < ActiveRecord::Base
 
   def editable?
     !system?
+  end
+
+  # Checks if note is an award added as a comment
+  #
+  # If note is an award, this method sets is_award to true
+  #   and changes content of the note to award name.
+  #
+  # Method is executed as a before_validation callback.
+  #
+  def set_award!
+    return unless awards_supported? && contains_emoji_only?
+    self.is_award = true
+    self.note = award_emoji_name
+  end
+
+  private
+
+  def awards_supported?
+    noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)
+  end
+
+  def contains_emoji_only?
+    note =~ /\A#{Gitlab::Markdown::EmojiFilter.emoji_pattern}\s?\Z/
+  end
+
+  def award_emoji_name
+    note.match(Gitlab::Markdown::EmojiFilter.emoji_pattern)[1]
   end
 end

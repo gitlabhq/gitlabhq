@@ -126,6 +126,80 @@ module Gitlab
         doc
       end
 
+      # Iterate through the document's link nodes, yielding the current node's
+      # content if:
+      #
+      # * The `project` context value is present AND
+      # * The node's content matches `pattern`
+      #
+      # pattern - Regex pattern against which to match the node's content
+      #
+      # Yields the current node's String contents. The result of the block will
+      # replace the node and update the current document.
+      #
+      # Returns the updated Nokogiri::HTML::DocumentFragment object.
+      def replace_link_nodes_with_text(pattern)
+        return doc if project.nil?
+
+        doc.search('a').each do |node|
+          klass = node.attr('class')
+          next if klass && klass.include?('gfm')
+
+          link = node.attr('href')
+          text = node.text
+
+          next unless link && text
+
+          link = URI.decode(link)
+          # Ignore ending punctionation like periods or commas
+          next unless link == text && text =~ /\A#{pattern}/
+
+          html = yield text
+
+          next if html == text
+
+          node.replace(html)
+        end
+
+        doc
+      end
+
+      # Iterate through the document's link nodes, yielding the current node's
+      # content if:
+      #
+      # * The `project` context value is present AND
+      # * The node's HREF matches `pattern`
+      #
+      # pattern - Regex pattern against which to match the node's HREF
+      #
+      # Yields the current node's String HREF and String content.
+      # The result of the block will replace the node and update the current document.
+      #
+      # Returns the updated Nokogiri::HTML::DocumentFragment object.
+      def replace_link_nodes_with_href(pattern)
+        return doc if project.nil?
+
+        doc.search('a').each do |node|
+          klass = node.attr('class')
+          next if klass && klass.include?('gfm')
+
+          link = node.attr('href')
+          text = node.text
+
+          next unless link && text
+          link = URI.decode(link)
+          next unless link && link =~ /\A#{pattern}\z/
+
+          html = yield link, text
+
+          next if html == link
+
+          node.replace(html)
+        end
+
+        doc
+      end
+
       # Ensure that a :project key exists in context
       #
       # Note that while the key might exist, its value could be nil!

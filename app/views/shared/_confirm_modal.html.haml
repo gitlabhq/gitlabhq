@@ -3,7 +3,8 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h4 Confirmation required
+        %h3.page-title
+          Confirmation required
 
       .modal-body
         %p.cred.lead.js-confirm-text
@@ -18,5 +19,5 @@
 
         .form-group
           = text_field_tag 'confirm_name_input', '', class: 'form-control js-confirm-danger-input'
-        .form-group
+        .form-actions
           = submit_tag 'Confirm', class: "btn btn-danger js-confirm-danger-submit"

@@ -14,7 +14,7 @@
               = f.label :name, class: 'control-label' do
                 Project name
               .col-sm-10
-                = f.text_field :name, placeholder: "Example Project", class: "form-control", id: "project_name_edit"
+                = f.text_field :name, class: "form-control", id: "project_name_edit"
 
 
             .form-group
@@ -22,7 +22,7 @@
                 Project description
                 %span.light (optional)
               .col-sm-10
-                = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250
+                = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
             - unless @project.empty_repo?
               .form-group
@@ -130,9 +130,11 @@
                 The project can be committed to.
                 %br
                 %strong Once active this project shows up in the search and on the dashboard.
-              = link_to 'Unarchive', unarchive_namespace_project_path(@project.namespace, @project),
-                  data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
-                  method: :post, class: "btn btn-success"
+
+              .form-actions
+                = link_to 'Unarchive project', unarchive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
+                    method: :post, class: "btn btn-success"
         - else
           .panel.panel-warning
             .panel-heading
@@ -144,9 +146,11 @@
                 It is hidden from the dashboard and doesn't show up in searches.
                 %br
                 %strong Archived projects cannot be committed to!
-              = link_to 'Archive', archive_namespace_project_path(@project.namespace, @project),
-                  data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
-                  method: :post, class: "btn btn-warning"
+
+              .form-actions
+                = link_to 'Archive project', archive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                    method: :post, class: "btn btn-warning"
       - else
         .nothing-here-block Only the project owner can archive a project
 
@@ -160,7 +164,7 @@
                 Project name
               .col-sm-9
                 .form-group
-                  = f.text_field :name, placeholder: "Example Project", class: "form-control"
+                  = f.text_field :name, class: "form-control"
             .form-group
               = f.label :path, class: 'control-label' do
                 %span Path
@@ -170,12 +174,11 @@
                     .input-group-addon
                       #{URI.join(root_url, @project.namespace.path)}/
                     = f.text_field :path, class: 'form-control'
-                    %span.input-group-addon .git
                 %ul
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.
             .form-actions
-              = f.submit 'Rename', class: "btn btn-warning"
+              = f.submit 'Rename project', class: "btn btn-warning"
 
       - if can?(current_user, :change_namespace, @project)
         .panel.panel-default.panel.panel-danger
@@ -194,7 +197,7 @@
                     %li You can only transfer the project to namespaces you manage.
                     %li You will need to update your local repositories to point to the new location.
               .form-actions
-                = f.submit 'Transfer', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+                = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
       - else
         .nothing-here-block Only the project owner can transfer a project
 
@@ -209,7 +212,8 @@
                   #{link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)}.
                   %br
                   %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
-                = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+                .form-actions
+                  = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
         - else
           .nothing-here-block Only the project owner can remove the fork relationship.
 
@@ -222,8 +226,8 @@
                 Removing the project will delete its repository and all related resources including issues, merge requests etc.
                 %br
                 %strong Removed projects cannot be restored!
-
-              = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+              .form-actions
+                = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
       - else
         .nothing-here-block Only the project owner can remove a project.
 

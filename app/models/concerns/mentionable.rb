@@ -66,13 +66,18 @@ module Mentionable
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
   def referenced_mentionables(current_user = self.author, text = nil, load_lazy_references: true)
     refs = all_references(current_user, text, load_lazy_references: load_lazy_references)
-    (refs.issues + refs.merge_requests + refs.commits) - [local_reference]
+    refs = (refs.issues + refs.merge_requests + refs.commits)
+
+    # We're using this method instead of Array diffing because that requires
+    # both of the object's `hash` values to be the same, which may not be the
+    # case for otherwise identical Commit objects.
+    refs.reject { |ref| ref == local_reference }
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in the +mentionable_attrs+.
   def create_cross_references!(author = self.author, without = [], text = nil)
     refs = referenced_mentionables(author, text)
-    
+
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the
     # case for otherwise identical Commit objects.
@@ -115,7 +120,7 @@ module Mentionable
     # Only include changed fields that are mentionable
     source.select { |key, val| mentionable.include?(key) }
   end
-  
+
   # Determine whether or not a cross-reference Note has already been created between this Mentionable and
   # the specified target.
   def cross_reference_exists?(target)

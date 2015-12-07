@@ -17,7 +17,7 @@ describe Gitlab::Markdown::IssueReferenceFilter do
   %w(pre code a style).each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Issue #{issue.to_reference}</#{elem}>"
-      expect(filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to eq exp
     end
   end
 
@@ -28,18 +28,18 @@ describe Gitlab::Markdown::IssueReferenceFilter do
       expect(project).to receive(:get_issue).with(issue.iid).and_return(nil)
 
       exp = act = "Issue #{reference}"
-      expect(filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to eq exp
     end
 
     it 'links to a valid reference' do
-      doc = filter("Fixed #{reference}")
+      doc = reference_filter("Fixed #{reference}")
 
       expect(doc.css('a').first.attr('href')).
         to eq helper.url_for_issue(issue.iid, project)
     end
 
     it 'links with adjacent text' do
-      doc = filter("Fixed (#{reference}.)")
+      doc = reference_filter("Fixed (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
     end
 
@@ -47,28 +47,28 @@ describe Gitlab::Markdown::IssueReferenceFilter do
       invalid = invalidate_reference(reference)
       exp = act = "Fixed #{invalid}"
 
-      expect(filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to eq exp
     end
 
     it 'includes a title attribute' do
-      doc = filter("Issue #{reference}")
+      doc = reference_filter("Issue #{reference}")
       expect(doc.css('a').first.attr('title')).to eq "Issue: #{issue.title}"
     end
 
     it 'escapes the title attribute' do
       issue.update_attribute(:title, %{"></a>whatever<a title="})
 
-      doc = filter("Issue #{reference}")
+      doc = reference_filter("Issue #{reference}")
       expect(doc.text).to eq "Issue #{reference}"
     end
 
     it 'includes default classes' do
-      doc = filter("Issue #{reference}")
+      doc = reference_filter("Issue #{reference}")
       expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
     end
 
     it 'includes a data-project attribute' do
-      doc = filter("Issue #{reference}")
+      doc = reference_filter("Issue #{reference}")
       link = doc.css('a').first
 
       expect(link).to have_attribute('data-project')
@@ -76,7 +76,7 @@ describe Gitlab::Markdown::IssueReferenceFilter do
     end
 
     it 'includes a data-issue attribute' do
-      doc = filter("See #{reference}")
+      doc = reference_filter("See #{reference}")
       link = doc.css('a').first
 
       expect(link).to have_attribute('data-issue')
@@ -84,7 +84,7 @@ describe Gitlab::Markdown::IssueReferenceFilter do
     end
 
     it 'supports an :only_path context' do
-      doc = filter("Issue #{reference}", only_path: true)
+      doc = reference_filter("Issue #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
@@ -108,25 +108,97 @@ describe Gitlab::Markdown::IssueReferenceFilter do
         with(issue.iid).and_return(nil)
 
       exp = act = "Issue #{reference}"
-      expect(filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to eq exp
     end
 
     it 'links to a valid reference' do
-      doc = filter("See #{reference}")
+      doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.attr('href')).
         to eq helper.url_for_issue(issue.iid, project2)
     end
 
     it 'links with adjacent text' do
-      doc = filter("Fixed (#{reference}.)")
+      doc = reference_filter("Fixed (#{reference}.)")
       expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(reference)}<\/a>\.\)/)
     end
 
     it 'ignores invalid issue IDs on the referenced project' do
       exp = act = "Fixed #{invalidate_reference(reference)}"
 
-      expect(filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to eq exp
+    end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Fixed #{reference}")
+      expect(result[:references][:issue]).to eq [issue]
+    end
+  end
+
+  context 'cross-project URL reference' do
+    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:reference) { helper.url_for_issue(issue.iid, project2) + "#note_123" }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq reference
+    end
+
+    it 'links with adjacent text' do
+      doc = reference_filter("Fixed (#{reference}.)")
+      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(issue.to_reference(project))} \(comment 123\)<\/a>\.\)/)
+    end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Fixed #{reference}")
+      expect(result[:references][:issue]).to eq [issue]
+    end
+  end
+
+  context 'cross-project reference in link href' do
+    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:reference) { %Q{<a href="#{issue.to_reference(project)}">Reference</a>} }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq helper.url_for_issue(issue.iid, project2)
+    end
+
+    it 'links with adjacent text' do
+      doc = reference_filter("Fixed (#{reference}.)")
+      expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
+    end
+
+    it 'adds to the results hash' do
+      result = reference_pipeline_result("Fixed #{reference}")
+      expect(result[:references][:issue]).to eq [issue]
+    end
+  end
+
+  context 'cross-project URL in link href' do
+    let(:namespace) { create(:namespace, name: 'cross-reference') }
+    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:issue)     { create(:issue, project: project2) }
+    let(:reference) { %Q{<a href="#{helper.url_for_issue(issue.iid, project2) + "#note_123"}">Reference</a>} }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).
+        to eq helper.url_for_issue(issue.iid, project2) + "#note_123"
+    end
+
+    it 'links with adjacent text' do
+      doc = reference_filter("Fixed (#{reference}.)")
+      expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
     end
 
     it 'adds to the results hash' do

@@ -60,11 +60,11 @@ This is image that have fully preconfigured `wordpress` and have `MySQL` server 
 ```
 
 Next time when you run your application the `tutum/wordpress` will be started 
-and you will have access to it from your build container under hostname: `tutum_wordpress`.
+and you will have access to it from your build container under hostname: `tutum__wordpress`.
 
 Alias hostname for the service is made from the image name:
 1. Everything after `:` is stripped,
-2. '/' is replaced to `_`.
+2. '/' is replaced with `__`.
 
 ### Configuring services
 Many services accept environment variables, which allow you to easily change database names or set account names depending on the environment.

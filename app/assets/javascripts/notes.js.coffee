@@ -111,6 +111,12 @@ class @Notes
   Note: for rendering inline notes use renderDiscussionNote
   ###
   renderNote: (note) ->
+    unless note.valid
+      if note.award
+        flash = new Flash('You have already used this award emoji!', 'alert')
+        flash.pin()
+      return
+
     # render note if it not present in loaded list
     # or skip if rendered
     if @isNewNote(note) && !note.award
@@ -122,6 +128,7 @@ class @Notes
 
     if note.award
       awards_handler.addAwardToEmojiBar(note.note, note.emoji_path)
+      awards_handler.scrollToAwards()
 
   ###
   Check if note does not exists on page
