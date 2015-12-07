@@ -59,6 +59,15 @@
               %strong Merge Request events
             %p.light
               This url will be triggered when a merge request is created
+      - if @service.supported_events.include?("build")
+        %div
+          = form.check_box :build_events, class: 'pull-left'
+          .prepend-left-20
+            = form.label :build_events, class: 'list-label' do
+              %strong Build events
+            %p.light
+              This url will be triggered when a build status changes
+
 
 - @service.fields.each do |field|
   - type = field[:type]

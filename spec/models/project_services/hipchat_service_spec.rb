@@ -247,6 +247,55 @@ describe HipchatService, models: true do
       end
     end
 
+    context 'build events' do
+      let(:build) { create(:ci_build) }
+      let(:data) { Gitlab::BuildDataBuilder.build(build) }
+
+      context 'for failed' do
+        before { build.drop }
+
+        it "should call Hipchat API" do
+          hipchat.execute(data)
+
+          expect(WebMock).to have_requested(:post, api_url).once
+        end
+
+        it "should create a build message" do
+          message = hipchat.send(:create_build_message, data)
+
+          project_url = project.web_url
+          project_name = project.name_with_namespace.gsub(/\s/, '')
+          sha = data[:sha]
+          ref = data[:ref]
+          ref_type = data[:tag] ? 'tag' : 'branch'
+          duration = data[:commit][:duration]
+
+          expect(message).to eq("<a href=\"#{project_url}\">#{project_name}</a>: " \
+            "Commit <a href=\"#{project_url}/commit/#{sha}/builds\">#{Commit.truncate_sha(sha)}</a> " \
+            "of <a href=\"#{project_url}/commits/#{ref}\">#{ref}</a> #{ref_type} " \
+            "by #{data[:commit][:author_name]} failed in #{duration} second(s)")
+        end
+      end
+
+      context 'for succeeded' do
+        before do
+          build.success
+        end
+
+        it "should call Hipchat API" do
+          hipchat.notify_only_broken_builds = false
+          hipchat.execute(data)
+          expect(WebMock).to have_requested(:post, api_url).once
+        end
+
+        it "should notify only broken" do
+          hipchat.notify_only_broken_builds = true
+          hipchat.execute(data)
+          expect(WebMock).to_not have_requested(:post, api_url).once
+        end
+      end
+    end
+
     context "#message_options" do
       it "should be set to the defaults" do
         expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'yellow' })

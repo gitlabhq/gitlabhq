@@ -1,11 +1,17 @@
 require 'spec_helper'
 
-describe API::API, 'ProjectHooks', api: true  do
+describe API::API, 'ProjectHooks', api: true do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let!(:hook) { create(:project_hook, project: project, url: "http://example.com", push_events: true, merge_requests_events: true, tag_push_events: true, issues_events: true, note_events: true, enable_ssl_verification: true) }
+  let!(:hook) do
+    create(:project_hook,
+           project: project, url: "http://example.com",
+           push_events: true, merge_requests_events: true, tag_push_events: true,
+           issues_events: true, note_events: true, build_events: true,
+           enable_ssl_verification: true)
+  end
 
   before do
     project.team << [user, :master]
@@ -26,6 +32,7 @@ describe API::API, 'ProjectHooks', api: true  do
         expect(json_response.first['merge_requests_events']).to eq(true)
         expect(json_response.first['tag_push_events']).to eq(true)
         expect(json_response.first['note_events']).to eq(true)
+        expect(json_response.first['build_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
       end
     end
@@ -83,6 +90,7 @@ describe API::API, 'ProjectHooks', api: true  do
       expect(json_response['merge_requests_events']).to eq(false)
       expect(json_response['tag_push_events']).to eq(false)
       expect(json_response['note_events']).to eq(false)
+      expect(json_response['build_events']).to eq(false)
       expect(json_response['enable_ssl_verification']).to eq(true)
     end
 

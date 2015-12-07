@@ -5,30 +5,6 @@ module Ci
       before { authenticate! }
 
       resource :projects do
-        # Register new webhook for project
-        #
-        # Parameters
-        #   project_id (required) - The ID of a project
-        #   web_hook (required) - WebHook URL
-        # Example Request
-        #   POST /projects/:project_id/webhooks
-        post ":project_id/webhooks" do
-          required_attributes! [:web_hook]
-
-          project = Ci::Project.find(params[:project_id])
-
-          unauthorized! unless can?(current_user, :admin_project, project.gl_project)
-
-          web_hook = project.web_hooks.new({ url: params[:web_hook] })
-
-          if web_hook.save
-            present web_hook, with: Entities::WebHook
-          else
-            errors = web_hook.errors.full_messages.join(", ")
-            render_api_error!(errors, 400)
-          end
-        end
-
         # Retrieve all Gitlab CI projects that the user has access to
         #
         # Example Request:
@@ -119,20 +95,6 @@ module Ci
             errors = project.errors.full_messages.join(", ")
             render_api_error!(errors, 400)
           end
-        end
-
-        # Remove a Gitlab CI project
-        #
-        # Parameters:
-        #   id (required) - The ID of a project
-        # Example Request:
-        #   DELETE /projects/:id
-        delete ":id" do
-          project = Ci::Project.find(params[:id])
-
-          unauthorized! unless can?(current_user, :admin_project, project.gl_project)
-
-          project.destroy
         end
 
         # Link a Gitlab CI project to a runner

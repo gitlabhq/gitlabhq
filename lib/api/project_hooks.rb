@@ -45,6 +45,7 @@ module API
           :merge_requests_events,
           :tag_push_events,
           :note_events,
+          :build_events,
           :enable_ssl_verification
         ]
         @hook = user_project.hooks.new(attrs)
@@ -77,6 +78,7 @@ module API
           :merge_requests_events,
           :tag_push_events,
           :note_events,
+          :build_events,
           :enable_ssl_verification
         ]
 

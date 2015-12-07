@@ -26,6 +26,7 @@ class WebHook < ActiveRecord::Base
   default_value_for :note_events, false
   default_value_for :merge_requests_events, false
   default_value_for :tag_push_events, false
+  default_value_for :build_events, false
   default_value_for :enable_ssl_verification, true
 
   # HTTParty timeout

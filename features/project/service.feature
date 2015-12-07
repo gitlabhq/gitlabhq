@@ -55,11 +55,11 @@ Feature: Project Services
     And I fill Pushover settings
     Then I should see Pushover service settings saved
 
-  Scenario: Activate email on push service
+  Scenario: Activate email service
     When I visit project "Shop" services page
-    And I click email on push service link
-    And I fill email on push settings
-    Then I should see email on push service settings saved
+    And I click email service link
+    And I fill email settings
+    Then I should see email service settings saved
 
   Scenario: Activate Irker (IRC Gateway) service
     When I visit project "Shop" services page

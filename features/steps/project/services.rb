@@ -118,16 +118,16 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     expect(find_field('Restrict to branch').value).to eq 'master'
   end
 
-  step 'I click email on push service link' do
-    click_link 'Emails on push'
+  step 'I click email service link' do
+    click_link 'Emails'
   end
 
-  step 'I fill email on push settings' do
+  step 'I fill email settings' do
     fill_in 'Recipients', with: 'qa@company.name'
     click_button 'Save'
   end
 
-  step 'I should see email on push service settings saved' do
+  step 'I should see email service settings saved' do
     expect(find_field('Recipients').value).to eq 'qa@company.name'
   end
 
