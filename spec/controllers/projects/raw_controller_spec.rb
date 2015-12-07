@@ -33,5 +33,37 @@ describe Projects::RawController do
         expect(response.header['Content-Type']).to eq('image/jpeg')
       end
     end
+
+    context 'lfs object' do
+      let(:id) { 'master/files/lfs/lfs_object.iso' }
+      let!(:lfs_object) { create(:lfs_object, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897', size: '1575078') }
+
+      context 'when project has access' do
+        before do
+          public_project.lfs_objects << lfs_object
+        end
+
+        it 'serves the file' do
+          get(:show,
+              namespace_id: public_project.namespace.to_param,
+              project_id: public_project.to_param,
+              id: id)
+
+          expect(response.status).to eq(200)
+          expect(response.header['Content-Type']).to eq('application/octet-stream')
+        end
+      end
+
+      context 'when project does not have access' do
+        it 'does not serve the file' do
+          get(:show,
+              namespace_id: public_project.namespace.to_param,
+              project_id: public_project.to_param,
+              id: id)
+
+          expect(response.status).to eq(404)
+        end
+      end
+    end
   end
 end

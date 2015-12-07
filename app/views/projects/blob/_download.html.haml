@@ -4,8 +4,4 @@
       %h1.light
         %i.fa.fa-download
       %h4
-        - if blob.lfs_pointer?
-          - size = blob.lfs_size
-        - else
-          - size = blob.size
-        Download (#{number_to_human_size size})
+        Download (#{number_to_human_size blob_size(blob)})

@@ -13,4 +13,8 @@ class LfsObject < ActiveRecord::Base
       project
     end
   end
+
+  def project_allowed_access?(project)
+    projects.exists?(storage_project(project).id)
+  end
 end

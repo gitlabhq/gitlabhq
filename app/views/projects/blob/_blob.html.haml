@@ -29,7 +29,7 @@
       %strong
         = blob.name
       %small
-        = number_to_human_size(blob.size) unless blob.lfs_pointer?
+        = number_to_human_size(blob_size(blob))
       .file-actions.hidden-xs
         = render "actions"
     - if blob.lfs_pointer?

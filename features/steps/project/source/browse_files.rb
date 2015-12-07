@@ -305,6 +305,32 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).not_to have_content('Loading commit data...')
   end
 
+  step 'I click on "files/lfs/lfs_object.iso" file in repo' do
+    click_link 'files'
+    click_link "lfs"
+    click_link "lfs_object.iso"
+  end
+
+  step 'I should see download link and object size' do
+    expect(page).to have_content 'Download (1.5 MB)'
+  end
+
+  step 'I should not see lfs pointer details' do
+    expect(page).not_to have_content 'version https://git-lfs.github.com/spec/v1'
+    expect(page).not_to have_content 'oid sha256:91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897'
+    expect(page).not_to have_content 'size 1575078'
+  end
+
+  step 'I should see buttons for allowed commands' do
+    expect(page).to have_content 'Raw'
+    expect(page).to have_content 'History'
+    expect(page).to have_content 'Permalink'
+    expect(page).not_to have_content 'Edit'
+    expect(page).not_to have_content 'Blame'
+    expect(page).not_to have_content 'Delete'
+    expect(page).not_to have_content 'Replace'
+  end
+
   private
 
   def set_new_content
