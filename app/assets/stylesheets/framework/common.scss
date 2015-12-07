@@ -377,10 +377,9 @@ table {
 .center-top-menu {
   @include nav-menu;
   text-align: center;
-  margin-top: 5px;
-  margin-bottom: $gl-padding;
   height: 56px;
-  margin-top: -$gl-padding;
+  margin: -$gl-padding;
+  margin-bottom: $gl-padding;
   padding-top: $gl-padding;
 
   &.no-bottom {
@@ -389,6 +388,11 @@ table {
 
   &.no-top {
     margin-top: 0;
+  }
+
+  &.bottom-border {
+    border-bottom: 1px solid $border-color;
+    height: 57px;
   }
 }
 

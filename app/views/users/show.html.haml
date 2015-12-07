@@ -73,7 +73,7 @@
   .user-calendar-activities
 
 
-%ul.center-top-menu.no-top.no-bottom
+%ul.center-top-menu.no-top.no-bottom.bottom-border
   %li.active
     = link_to "#activity", 'data-toggle' => 'tab' do
       Activity
@@ -92,26 +92,17 @@
 
 .tab-content
   .tab-pane.active#activity
-    .gray-content-block.middle-block
-      Public activity by #{@user.name}
-
     .content_list
     = spinner
 
   - if @groups.any?
     .tab-pane#groups
-      .gray-content-block.middle-block
-        Groups #{@user.name} is a member of
-
       %ul.content-list
         - @groups.each do |group|
           = render 'shared/groups/group', group: group
 
   - if @contributed_projects.present?
     .tab-pane#contributed
-      .gray-content-block.middle-block
-        Projects #{@user.name} has contributed to
-
       .contributed-projects
         = render 'shared/projects/list',
           projects: @contributed_projects.sort_by(&:star_count).reverse,
@@ -119,9 +110,6 @@
 
   - if @projects.present?
     .tab-pane#personal
-      .gray-content-block.middle-block
-        Projects owned by #{@user.name}
-
       .personal-projects
         = render 'shared/projects/list',
           projects: @projects.sort_by(&:star_count).reverse,
