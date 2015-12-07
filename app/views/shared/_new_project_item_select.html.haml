@@ -1,6 +1,6 @@
 - if @projects.any?
   .prepend-left-10.new-project-item-select-holder
-    = project_select_tag :project_path, class: "new-project-item-select"
+    = project_select_tag :project_path, class: "new-project-item-select", data: { include_groups: local_assigns[:include_groups] }
     %a.btn.btn-new.new-project-item-select-button
       = icon('plus')
       = local_assigns[:label]

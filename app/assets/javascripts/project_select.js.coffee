@@ -2,25 +2,38 @@ class @ProjectSelect
   constructor: ->
     $('.ajax-project-select').each (i, select) ->
       @groupId = $(select).data('group-id')
+      @includeGroups = $(select).data('include-groups')
+
+      placeholder = "Search for project"
+      placeholder += " or group" if @includeGroups
 
       $(select).select2
-        placeholder: "Search for project"
-        multiple: $(select).hasClass('multiselect')
+        placeholder: placeholder
         minimumInputLength: 0
         query: (query) =>
-          callback = (projects) ->
+          finalCallback = (projects) ->
             data = { results: projects }
             query.callback(data)
 
-          if @groupId
-            Api.groupProjects @groupId, query.term, callback
+          if @includeGroups
+            projectsCallback = (projects) ->
+              groupsCallback = (groups) ->
+                data = groups.concat(projects)
+                finalCallback(data)
+
+              Api.groups query.term, false, groupsCallback
           else
-            Api.projects query.term, callback
+            projectsCallback = finalCallback
+
+          if @groupId
+            Api.groupProjects @groupId, query.term, projectsCallback
+          else
+            Api.projects query.term, projectsCallback
 
         id: (project) ->
           project.web_url
 
         text: (project) ->
-          project.name_with_namespace
+          project.name_with_namespace || project.name
 
         dropdownCssClass: "ajax-project-dropdown"
