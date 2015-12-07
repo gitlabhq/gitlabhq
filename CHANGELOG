@@ -1,7 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
-- Merge when build succeeds (Zeger-Jan van de Weg)
+  - Merge when build succeeds (Zeger-Jan van de Weg)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)

@@ -132,7 +132,7 @@ class SystemNoteService
 
   # Called when 'merge when build succeeds' is executed
   def self.merge_when_build_succeeds(noteable, project, author, last_commit)
-    body = "Enabled an automatic merge when the build for #{last_commit.to_reference} succeeds"
+    body = "Enabled an automatic merge when the build for #{last_commit.to_reference(project)} succeeds"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end

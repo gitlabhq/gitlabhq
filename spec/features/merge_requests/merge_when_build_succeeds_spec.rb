@@ -1,6 +1,4 @@
 require 'spec_helper'
-# rubocop:disable Lint/UselessAssignment
-# As rubocop doesn't see a need for both `ci_commit` and `ci_build`
 
 feature 'Merge When Build Succeeds', feature: true, js: true do
   let(:user) { create(:user) }
@@ -14,10 +12,10 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
   end
 
   context "Active build for Merge Request" do
-    before do
-      ci_commit = create(:ci_commit, gl_project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch)
-      ci_build = create(:ci_build, commit: ci_commit)
+    let!(:ci_commit) { create(:ci_commit, gl_project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
+    let!(:ci_build) { create(:ci_build, commit: ci_commit) }
 
+    before do
       login_as user
       visit_merge_request(merge_request)
     end
@@ -49,14 +47,15 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
                                         merge_user: user, title: "MepMep", merge_when_build_succeeds: true)
     end
 
+    let!(:ci_commit) { create(:ci_commit, gl_project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
+    let!(:ci_build) { create(:ci_build, commit: ci_commit) }
+
     before do
       merge_request.source_project.team << [user, :master]
       merge_request.source_branch = "feature"
       merge_request.target_branch = "master"
       merge_request.save!
 
-      ci_commit = create(:ci_commit, gl_project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch)
-      ci_build = create(:ci_build, commit: ci_commit)
 
       login_as user
       visit_merge_request(merge_request)
@@ -90,4 +89,3 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
   end
 end
-# rubocop:enable Lint/UselessAssignment
