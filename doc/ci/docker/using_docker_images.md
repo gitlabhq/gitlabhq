@@ -190,7 +190,7 @@ This will create two service containers (MySQL and PostgreSQL).
 
 1. Create a build container and execute script in its context:
 ```
-$ cat build_script | docker run -n build -i -l mysql:service-mysql -l postgres:service-postgres ruby:2.1 /bin/bash
+$ docker run --name build -i --link=service-mysql:mysql --link=service-postgres:postgres ruby:2.1 /bin/bash < build_script
 ```
 This will create build container that has two service containers linked.
 The build_script is piped using STDIN to bash interpreter which executes the build script in container. 
