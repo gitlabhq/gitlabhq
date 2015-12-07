@@ -372,8 +372,7 @@ class Note < ActiveRecord::Base
   end
 
   def contains_emoji_only?
-    emoji_only_pattern = /\A#{Gitlab::Markdown::EmojiFilter.emoji_pattern}\s?\Z/
-    (note =~ emoji_only_pattern) ? true : false
+    note =~ /\A#{Gitlab::Markdown::EmojiFilter.emoji_pattern}\s?\Z/
   end
 
   def award_emoji_name
