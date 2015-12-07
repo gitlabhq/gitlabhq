@@ -12,18 +12,7 @@
           = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: 'btn' do
             %i.fa.fa-rss
 
-    - if @projects.any? { |project| can?(current_user, :create_issue, project) }
-      .dropdown.inline.prepend-left-10
-        %button.dropdown-toggle.btn.btn-new{type: 'button', 'data-toggle' => 'dropdown'}
-          %i.fa.fa-plus
-          New Issue
-          %b.caret
-        %ul.dropdown-menu.dropdown-menu-align-right
-          - @projects.each do |project|
-            - if can?(current_user, :create_issue, project)
-              %li
-                = link_to new_namespace_project_issue_path(project.namespace, project) do
-                  = project.name_with_namespace
+    = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
 
   = render 'shared/issuable/filter', type: :issues
 

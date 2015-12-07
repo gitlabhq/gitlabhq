@@ -3,18 +3,7 @@
 
 .project-issuable-filter
   .controls
-    - if @projects.any? { |project| can?(current_user, :create_merge_request, project) }
-      .dropdown.inline
-        %button.dropdown-toggle.btn.btn-new{type: 'button', 'data-toggle' => 'dropdown'}
-          %i.fa.fa-plus
-          New Merge Request
-          %b.caret
-        %ul.dropdown-menu.dropdown-menu-align-right
-          - @projects.each do |project|
-            - if can?(current_user, :create_merge_request, project)
-              %li
-                = link_to new_namespace_project_merge_request_path(project.namespace, project) do
-                  = project.name_with_namespace
+    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New Merge Request"
 
   = render 'shared/issuable/filter', type: :merge_requests
 
