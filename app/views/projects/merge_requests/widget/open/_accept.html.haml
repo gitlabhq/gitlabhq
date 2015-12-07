@@ -38,7 +38,7 @@
           text: @merge_request.merge_commit_message,
           rows: 14, hint: true
 
-    = hidden_field_tag :merge_when_build_succeeds, ""
+    = hidden_field_tag :merge_when_build_succeeds, "", autocomplete: "off"
 
   :javascript
     $('.accept_merge_request').on('click', function() {
