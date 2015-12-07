@@ -39,7 +39,11 @@ module MergeRequestsHelper
   end
 
   def issues_sentence(issues)
-    issues.map(&:to_reference).to_sentence
+    # Sorting based on the `#123` or `group/project#123` reference will sort
+    # local issues first.
+    issues.map do |issue|
+      issue.to_reference(@project)
+    end.sort.to_sentence
   end
 
   def mr_change_branches_path(merge_request)
@@ -49,18 +53,21 @@ module MergeRequestsHelper
         source_project_id: @merge_request.source_project_id,
         target_project_id: @merge_request.target_project_id,
         source_branch: @merge_request.source_branch,
-        target_branch: nil
-      }
+        target_branch: @merge_request.target_branch,
+      },
+      change_branches: true
     )
   end
 
   def source_branch_with_namespace(merge_request)
+    branch = link_to(merge_request.source_branch, namespace_project_commits_path(merge_request.source_project.namespace, merge_request.source_project, merge_request.source_branch))
+
     if merge_request.for_fork?
       namespace = link_to(merge_request.source_project_namespace,
         project_path(merge_request.source_project))
-      namespace + ":#{merge_request.source_branch}"
+      namespace + ":" + branch
     else
-      merge_request.source_branch
+      branch
     end
   end
 

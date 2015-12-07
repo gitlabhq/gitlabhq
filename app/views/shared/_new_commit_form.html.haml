@@ -2,10 +2,9 @@
 
 - unless @project.empty_repo?
   .form-group.branch
-    = label_tag 'branch', class: 'control-label' do
-      Branch
+    = label_tag 'new_branch', 'Target branch', class: 'control-label'
     .col-sm-10
-      = text_field_tag 'new_branch', @new_branch || @ref, class: "form-control js-new-branch"
+      = text_field_tag 'new_branch', @new_branch || @ref, required: true, class: "form-control js-new-branch"
 
       .js-create-merge-request-container
         .checkbox

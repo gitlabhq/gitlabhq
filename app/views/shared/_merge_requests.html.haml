@@ -3,8 +3,11 @@
     .panel.panel-default.panel-small
       - project = group[0]
       .panel-heading
-        = link_to_project project
-        = link_to 'show all', namespace_project_merge_requests_path(project.namespace, project), class: 'pull-right'
+        = link_to project.name_with_namespace, namespace_project_merge_requests_path(project.namespace, project)
+        - if can?(current_user, :create_merge_request, project)
+          .pull-right
+            = link_to 'New merge request', new_namespace_project_merge_request_path(project.namespace, project)
+
       %ul.well-list.mr-list
         - group[1].each do |merge_request|
           = render 'projects/merge_requests/merge_request', merge_request: merge_request

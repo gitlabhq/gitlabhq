@@ -131,16 +131,25 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def render_note_json(note)
-    render json: {
-      id: note.id,
-      discussion_id: note.discussion_id,
-      html: note_to_html(note),
-      award: note.is_award,
-      emoji_path: note.is_award ? view_context.image_url(::AwardEmoji.path_to_emoji_image(note.note)) : "",
-      note: note.note,
-      discussion_html: note_to_discussion_html(note),
-      discussion_with_diff_html: note_to_discussion_with_diff_html(note)
-    }
+    if note.valid?
+      render json: {
+        valid: true,
+        id: note.id,
+        discussion_id: note.discussion_id,
+        html: note_to_html(note),
+        award: note.is_award,
+        emoji_path: note.is_award ? view_context.image_url(::AwardEmoji.path_to_emoji_image(note.note)) : "",
+        note: note.note,
+        discussion_html: note_to_discussion_html(note),
+        discussion_with_diff_html: note_to_discussion_with_diff_html(note)
+      }
+    else
+      render json: {
+        valid: false,
+        award: note.is_award,
+        errors: note.errors
+      }
+    end
   end
 
   def authorize_admin_note!

@@ -32,17 +32,15 @@ class @UsersSelect
               if showNullUser
                 nullUser = {
                   name: 'Unassigned',
-                  avatar: null,
-                  username: 'none',
                   id: 0
                 }
                 data.results.unshift(nullUser)
 
               if showAnyUser
+                name = showAnyUser
+                name = 'Any User' if name == true
                 anyUser = {
-                  name: 'Any',
-                  avatar: null,
-                  username: 'none',
+                  name: name,
                   id: null
                 }
                 data.results.unshift(anyUser)
@@ -50,7 +48,6 @@ class @UsersSelect
             if showEmailUser && data.results.length == 0 && query.term.match(/^[^@]+@[^@]+$/)
               emailUser = {
                 name: "Invite \"#{query.term}\"",
-                avatar: null,
                 username: query.term,
                 id: query.term
               }
@@ -82,10 +79,10 @@ class @UsersSelect
     else
       avatar = gon.default_avatar_url
 
-    "<div class='user-result'>
+    "<div class='user-result #{'no-username' unless user.username}'>
        <div class='user-image'><img class='avatar s24' src='#{avatar}'></div>
        <div class='user-name'>#{user.name}</div>
-       <div class='user-username'>#{user.username}</div>
+       <div class='user-username'>#{user.username || ""}</div>
      </div>"
 
   formatSelection: (user) ->

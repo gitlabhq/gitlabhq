@@ -17,6 +17,9 @@ module Gitlab
         return doc unless linkable_files?
 
         doc.search('a').each do |el|
+          klass = el.attr('class')
+          next if klass && klass.include?('gfm')
+          
           process_link_attr el.attribute('href')
         end
 
