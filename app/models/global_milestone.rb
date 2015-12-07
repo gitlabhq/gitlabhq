@@ -16,7 +16,7 @@ class GlobalMilestone
   end
 
   def safe_title
-    @title.parameterize
+    @title.to_slug.to_s
   end
 
   def projects

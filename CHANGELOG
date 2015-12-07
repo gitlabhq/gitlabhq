@@ -16,6 +16,7 @@ v 8.3.0 (unreleased)
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
+  - Fix Error 500s when creating global milestones with Unicode characters (Stan Hu)
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)

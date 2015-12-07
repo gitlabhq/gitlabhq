@@ -46,7 +46,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   end
 
   def milestone_path(title)
-    group_milestone_path(@group, title.parameterize, title: title)
+    group_milestone_path(@group, title.to_slug.to_s, title: title)
   end
 
   def projects
