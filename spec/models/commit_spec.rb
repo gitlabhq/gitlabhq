@@ -102,7 +102,7 @@ eos
   end
 
   describe '#hook_attrs' do
-    let(:data) { commit.hook_attrs(true) }
+    let(:data) { commit.hook_attrs(with_changed_files: true) }
 
     it { expect(data).to be_a(Hash) }
     it { expect(data[:message]).to include('Add submodule from gitlab.com') }

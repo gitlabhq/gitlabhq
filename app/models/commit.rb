@@ -135,7 +135,7 @@ class Commit
     description.present?
   end
 
-  def hook_attrs(with_changed_files = false)
+  def hook_attrs(with_changed_files: false)
     path_with_namespace = project.path_with_namespace
 
     data = {
@@ -150,11 +150,7 @@ class Commit
     }
 
     if with_changed_files
-      data.merge!({
-        added: repo_changes[:added],
-        modified: repo_changes[:modified],
-        removed: repo_changes[:removed]
-      })
+      data.merge!(repo_changes)
     end
 
     data
@@ -212,16 +208,13 @@ class Commit
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    if diffs.any?
-      diffs.each do |diff|
-        case true
-        when diff.deleted_file
-          changes[:removed] << diff.old_path
-        when diff.renamed_file, diff.new_file
-          changes[:added] << diff.new_path
-        else
-          changes[:modified] << diff.new_path
-        end
+    diffs.each do |diff|
+      if diff.deleted_file
+        changes[:removed] << diff.old_path
+      elsif diff.renamed_file || diff.new_file
+        changes[:added] << diff.new_path
+      else
+        changes[:modified] << diff.new_path
       end
     end
 
