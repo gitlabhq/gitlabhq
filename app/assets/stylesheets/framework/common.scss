@@ -7,7 +7,7 @@
 
 /** COMMON CLASSES **/
 .prepend-top-10 { margin-top:10px }
-.prepend-top-default { margin-top: $gl-padding; }
+.prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-20 { margin-top:20px }
 .prepend-left-10 { margin-left:10px }
 .prepend-left-20 { margin-left:20px }
@@ -52,6 +52,10 @@ pre {
   }
 }
 
+hr {
+  margin: $gl-padding 0;
+}
+
 .dropdown-menu > li > a {
   text-shadow: none;
 }
@@ -64,7 +68,7 @@ pre {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background: $gl-primary;
-  color: #FFF
+  color: #FFF;
 }
 
 .str-truncated {
@@ -328,13 +332,13 @@ table {
   }
 }
 
+.well {
+  margin-bottom: 0;
+}
+
 .search_box {
   @extend .well;
   text-align: center;
-}
-
-.task-status {
-  margin-left: 10px;
 }
 
 #nprogress .spinner {
@@ -428,4 +432,8 @@ table {
 
 .space-right {
   margin-right: 10px;
+}
+
+.alert, .progress {
+  margin-bottom: $gl-padding;
 }

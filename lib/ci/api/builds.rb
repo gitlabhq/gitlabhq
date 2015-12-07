@@ -58,6 +58,7 @@ module Ci
         #   POST /builds/:id/artifacts/authorize
         post ":id/artifacts/authorize" do
           require_gitlab_workhorse!
+          not_allowed! unless Gitlab.config.artifacts.enabled
           build = Ci::Build.find_by_id(params[:id])
           not_found! unless build
           authenticate_build_token!(build)
@@ -91,6 +92,7 @@ module Ci
         #   POST /builds/:id/artifacts
         post ":id/artifacts" do
           require_gitlab_workhorse!
+          not_allowed! unless Gitlab.config.artifacts.enabled
           build = Ci::Build.find_by_id(params[:id])
           not_found! unless build
           authenticate_build_token!(build)

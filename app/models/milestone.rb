@@ -16,12 +16,13 @@
 class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
-  MilestoneStruct = Struct.new(:title, :name)
-  None = MilestoneStruct.new('No Milestone', 'No Milestone')
-  Any = MilestoneStruct.new('Any', '')
+  MilestoneStruct = Struct.new(:title, :name, :id)
+  None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
+  Any = MilestoneStruct.new('Any Milestone', '', -1)
 
   include InternalId
   include Sortable
+  include StripAttribute
 
   belongs_to :project
   has_many :issues
@@ -34,6 +35,8 @@ class Milestone < ActiveRecord::Base
 
   validates :title, presence: true
   validates :project, presence: true
+
+  strip_attributes :title
 
   state_machine :state, initial: :active do
     event :close do

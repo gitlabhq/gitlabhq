@@ -1,7 +1,7 @@
 require 'sidekiq/web'
 require 'api/api'
 
-Gitlab::Application.routes.draw do
+Rails.application.routes.draw do
   if Gitlab::Sherlock.enabled?
     namespace :sherlock do
       resources :transactions, only: [:index, :show] do
@@ -664,6 +664,10 @@ Gitlab::Application.routes.draw do
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
+          end
+
+          collection do
+            post :award_toggle
           end
         end
 

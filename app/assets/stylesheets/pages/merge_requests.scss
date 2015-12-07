@@ -4,7 +4,6 @@
  */
 .mr-state-widget {
   background: #F7F8FA;
-  margin-bottom: 20px;
   color: $gl-gray;
   border: 1px solid #dce0e6;
   @include border-radius(2px);
@@ -89,7 +88,7 @@
   .mr-widget-body,
   .ci_widget,
   .mr-widget-footer {
-    padding: 15px;
+    padding: $gl-padding;
   }
 
   .normal {
@@ -118,26 +117,8 @@
   }
 }
 
-.merge-request .merge-request-tabs {
-  @include nav-menu;
-  margin: -$gl-padding;
-  padding: $gl-padding;
-  text-align: center;
-  margin-bottom: 1px;
-}
-
-// Mobile
-@media (max-width: 480px) {
-  .merge-request .merge-request-tabs {
-    margin: 0;
-    padding: 0;
-
-    li {
-      a {
-        padding: 0;
-      }
-    }
-  }
+.merge-request-details {
+  margin-bottom: $gl-padding;
 }
 
 .mr_source_commit,
@@ -194,25 +175,10 @@
   line-height: 1.1;
 }
 
-.merge-request-form-info {
-  padding-top: 15px;
-}
-
 // hide mr close link for inline diff comment form
 .diff-file .close-mr-link,
 .diff-file .reopen-mr-link {
   display: none;
-}
-
-.merge-request-show-labels {
-  a {
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: inline-block;
-    .color-label {
-      padding: 6px 10px;
-    }
-  }
 }
 
 .merge-request-form .select2-container {

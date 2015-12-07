@@ -63,6 +63,16 @@ class Event < ActiveRecord::Base
             Event::PUSHED, ["MergeRequest", "Issue"],
             [Event::CREATED, Event::CLOSED, Event::MERGED])
     end
+
+    def latest_update_time
+      row = select(:updated_at, :project_id).reorder(id: :desc).take
+
+      row ? row.updated_at : nil
+    end
+
+    def limit_recent(limit = 20, offset = nil)
+      recent.limit(limit).offset(offset)
+    end
   end
 
   def proper?
@@ -191,7 +201,7 @@ class Event < ActiveRecord::Base
     elsif commented?
       "commented on"
     elsif created_project?
-      if project.import?
+      if project.external_import?
         "imported"
       else
         "created"

@@ -23,9 +23,19 @@ Issues and merge requests should be in English and contain appropriate language 
 ## Helping others
 
 Please help other GitLab users when you can.
-The channnels people will reach out on can be found on the [getting help page](https://about.gitlab.com/getting-help/).
-Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the irc channel.
+The channels people will reach out on can be found on the [getting help page](https://about.gitlab.com/getting-help/).
+Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the IRC channel.
 You can also sign up on [CodeTriage](http://www.codetriage.com/gitlabhq/gitlabhq) to help with one issue every day.
+
+## I want to contribute!
+
+If you want to contribute to GitLab, but are not sure where to start,
+look for [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=up-for-grabs)
+with the label `up-for-grabs`.
+These issues will be of reasonable size and challenge, for anyone to start
+contributing to GitLab.
+
+This was inspired by [an article by Kent C. Dodds](https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.i2f363mx4).
 
 ## Issue tracker
 
@@ -47,10 +57,10 @@ Please send a merge request with a tested solution or a merge request with a fai
 1. **Observed behavior**
 1. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
 1. **Output of checks**
-    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
+    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (For installations with omnibus-gitlab package: `sudo gitlab-rake gitlab:check SANITIZE=true`); For installations from source: `sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
     * Version of GitLab you are running; we will only investigate issues in the latest stable and development releases as per the [maintenance policy](MAINTENANCE.md)
     * Add the last commit SHA-1 of the GitLab version you used to replicate the issue (obtainable from the help page)
-    * Describe your setup (use relevant parts from `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
+    * Describe your setup (use relevant parts from the env info: For installations with omnibus-gitlab package: `sudo gitlab-rake gitlab:env:info`; For installations from source: `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
 1. **Possible fixes**: If you can, link to the line of code that might be responsible for the problem
 
 ## Merge requests
@@ -59,7 +69,7 @@ We welcome merge requests with fixes and improvements to GitLab code, tests, and
 
 Merge requests can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests) or [github.com](https://github.com/gitlabhq/gitlabhq/pulls).
 
-If you are new to GitLab development (or web development in general), search for the label `easyfix` ([gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=easyfix), [github](https://github.com/gitlabhq/gitlabhq/labels/easyfix)). Those are issues easy to fix, marked by the GitLab core-team. If you are unsure how to proceed but want to help, mention one of the core-team members to give you a hint.
+If you are new to GitLab development (or web development in general), search for the label `easyfix` ([GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=easyfix), [GitHub](https://github.com/gitlabhq/gitlabhq/labels/easyfix)). Those are issues easy to fix, marked by the GitLab core-team. If you are unsure how to proceed but want to help, mention one of the core-team members to give you a hint.
 
 To start with GitLab download the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) and see [Development section](doc/development/README.md) in the help file.
 
@@ -99,7 +109,7 @@ If you contribute to GitLab please know that changes involve more than just code
 We have the following [definition of done](http://guide.agilealliance.org/guide/definition-of-done.html).
 Please ensure you support the feature you contribute through all of these steps.
 
-1. Description explaning the relevancy (see following item)
+1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
 1. Unit and integration tests that pass on the CI server
 1. Documented in the /doc directory
@@ -163,7 +173,7 @@ If you add a dependency in GitLab (such as an operating system package) please c
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 1.  [Database Migrations](doc/development/migration_style_guide.md)
 1.  [Documentation styleguide](doc_styleguide.md)
-1.  Interface text should be written subjectively instead of objectively. It should be the gitlab core team addressing a person. It should be written in present time and never use past tense (has been/was). For example instead of "prohibited this user from being saved due to the following errors:" the text should be "sorry, we could not create your account because:". Also these [excellent writing guidelines](https://github.com/NARKOZ/guides#writing).
+1.  Interface text should be written subjectively instead of objectively. It should be the GitLab core team addressing a person. It should be written in present time and never use past tense (has been/was). For example instead of "prohibited this user from being saved due to the following errors:" the text should be "sorry, we could not create your account because:". Also these [excellent writing guidelines](https://github.com/NARKOZ/guides#writing).
 
 This is also the style used by linting tools such as [RuboCop](https://github.com/bbatsov/rubocop), [PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).
 

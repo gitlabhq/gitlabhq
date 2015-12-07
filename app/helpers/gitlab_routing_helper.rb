@@ -6,7 +6,7 @@
 #
 # For example instead of this:
 #
-#   namespace_project_merge_request_path(merge_request.project.namespace, merge_request.projects, merge_request)
+#   namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
 #
 # We can simply use shortcut:
 #

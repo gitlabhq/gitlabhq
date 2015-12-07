@@ -9,6 +9,10 @@ module SharedUser
     user_exists("Mary Jane", { username: "mary_jane" })
   end
 
+  step 'gitlab user "Mike"' do
+    create(:user, name: "Mike")
+  end
+
   protected
 
   def user_exists(name, options = {})

@@ -23,18 +23,6 @@ class @BlobFileDropzone
       init: ->
         this.on 'addedfile', (file) ->
           $('.dropzone-alerts').html('').hide()
-          commit_message = form.find('#commit_message')[0]
-
-          if /^Upload/.test(commit_message.placeholder)
-            commit_message.placeholder = 'Upload ' + file.name
-
-          return
-
-        this.on 'removedfile', (file) ->
-          commit_message = form.find('#commit_message')[0]
-
-          if /^Upload/.test(commit_message.placeholder)
-            commit_message.placeholder = 'Upload new file'
 
           return
 
@@ -47,8 +35,9 @@ class @BlobFileDropzone
           return
 
         this.on 'sending', (file, xhr, formData) ->
-          formData.append('new_branch', form.find('#new_branch').val())
-          formData.append('commit_message', form.find('#commit_message').val())
+          formData.append('new_branch', form.find('.js-new-branch').val())
+          formData.append('create_merge_request', form.find('.js-create-merge-request').val())
+          formData.append('commit_message', form.find('.js-commit-message').val())
           return
 
       # Override behavior of adding error underneath preview

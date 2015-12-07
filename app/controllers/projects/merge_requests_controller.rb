@@ -268,7 +268,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
-    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
+    @notes = @merge_request.mr_and_commit_notes.nonawards.inc_author.fresh
     @discussions = Note.discussions_from_notes(@notes)
     @noteable = @merge_request
 
@@ -290,13 +290,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request_params
-    permitted = params.require(:merge_request).permit(
+    params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
       :state_event, :description, :task_num, label_ids: []
     )
-    params[:merge_request][:title].strip! if params[:merge_request][:title]
-    permitted
   end
 
   def merge_params

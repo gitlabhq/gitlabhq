@@ -12,13 +12,18 @@
 module Ci
   class ApplicationSetting < ActiveRecord::Base
     extend Ci::Model
+    CACHE_KEY = 'ci_application_setting.last'
 
     after_commit do
-      Rails.cache.write('ci_application_setting.last', self)
+      Rails.cache.write(CACHE_KEY, self)
+    end
+
+    def self.expire
+      Rails.cache.delete(CACHE_KEY)
     end
 
     def self.current
-      Rails.cache.fetch('ci_application_setting.last') do
+      Rails.cache.fetch(CACHE_KEY) do
         Ci::ApplicationSetting.last
       end
     end

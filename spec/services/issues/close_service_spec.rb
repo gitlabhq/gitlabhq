@@ -14,7 +14,9 @@ describe Issues::CloseService do
   describe :execute do
     context "valid params" do
       before do
-        @issue = Issues::CloseService.new(project, user, {}).execute(issue)
+        perform_enqueued_jobs do
+          @issue = Issues::CloseService.new(project, user, {}).execute(issue)
+        end
       end
 
       it { expect(@issue).to be_valid }

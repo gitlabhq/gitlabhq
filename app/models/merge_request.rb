@@ -141,6 +141,9 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
+  scope :join_project, -> { joins(:target_project) }
+  scope :references_project, -> { references(:target_project) }
+
   def self.reference_prefix
     '!'
   end
@@ -153,6 +156,10 @@ class MergeRequest < ActiveRecord::Base
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
     }x
+  end
+
+  def self.link_reference_pattern
+    super("merge_requests", /(?<merge_request>\d+)/)
   end
 
   def to_reference(from_project = nil)
@@ -330,7 +337,7 @@ class MergeRequest < ActiveRecord::Base
       issues = commits.flat_map { |c| c.closes_issues(current_user) }
       issues.push(*Gitlab::ClosingIssueExtractor.new(project, current_user).
                   closed_by_message(description))
-      issues.uniq.sort_by(&:id)
+      issues.uniq
     else
       []
     end
@@ -500,6 +507,6 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ci_commit
-    @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit
+    @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
   end
 end

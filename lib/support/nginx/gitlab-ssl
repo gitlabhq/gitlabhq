@@ -112,7 +112,7 @@ server {
   location / {
     ## Serve static files from defined root folder.
     ## @gitlab is a named location for the upstream fallback, see below.
-    try_files $uri $uri/index.html $uri.html @gitlab;
+    try_files $uri /index.html $uri.html @gitlab;
   }
 
   ## We route uploads through GitLab to prevent XSS and enforce access control.
@@ -168,18 +168,21 @@ server {
   }
 
   location ~ ^/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
+    client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^/[\w\.-]+/[\w\.-]+/repository/archive {
+    client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
   }
 
   location ~ ^/api/v3/projects/.*/repository/archive {
+    client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
     error_page 418 = @gitlab-workhorse;
     return 418;
@@ -187,21 +190,22 @@ server {
 
   # Build artifacts should be submitted to this location
   location ~ ^/[\w\.-]+/[\w\.-]+/builds/download {
-      client_max_body_size 0;
-      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-      error_page 418 = @gitlab-workhorse;
-      return 418;
+    client_max_body_size 0;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
   }
 
   # Build artifacts should be submitted to this location
   location ~ /ci/api/v1/builds/[0-9]+/artifacts {
-      client_max_body_size 0;
-      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-      error_page 418 = @gitlab-workhorse;
-      return 418;
+    client_max_body_size 0;
+    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
+    error_page 418 = @gitlab-workhorse;
+    return 418;
   }
 
   location @gitlab-workhorse {
+    client_max_body_size 0;
     ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     gzip off;

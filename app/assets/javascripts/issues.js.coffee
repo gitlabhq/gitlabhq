@@ -29,7 +29,7 @@
     $('#filter_issue_search').val($('#issue_search').val())
 
   initSelects: ->
-    $("select#update_status").select2(width: 'resolve', dropdownAutoWidth: true)
+    $("select#update_state_event").select2(width: 'resolve', dropdownAutoWidth: true)
     $("select#update_assignee_id").select2(width: 'resolve', dropdownAutoWidth: true)
     $("select#update_milestone_id").select2(width: 'resolve', dropdownAutoWidth: true)
     $("select#label_name").select2(width: 'resolve', dropdownAutoWidth: true)
