@@ -145,6 +145,7 @@ class NotificationService
     recipients = reject_unsubscribed_users(recipients, note.noteable)
 
     recipients.delete(note.author)
+    recipients = recipients.uniq
 
     # build notify method like 'note_commit_email'
     notify_method = "note_#{note.noteable_type.underscore}_email".to_sym

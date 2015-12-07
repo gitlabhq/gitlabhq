@@ -35,11 +35,24 @@ module FilterSpecHelper
     pipeline.call(body)
   end
 
-  def reference_pipeline_result(body, contexts = {})
+  def reference_pipeline(contexts = {})
     contexts.reverse_merge!(project: project) if defined?(project)
 
-    pipeline = HTML::Pipeline.new([described_class, Gitlab::Markdown::ReferenceGathererFilter], contexts)
-    pipeline.call(body)
+    filters = [
+      Gitlab::Markdown::AutolinkFilter,
+      described_class,
+      Gitlab::Markdown::ReferenceGathererFilter
+    ]
+
+    HTML::Pipeline.new(filters, contexts)
+  end
+
+  def reference_pipeline_result(body, contexts = {})
+    reference_pipeline(contexts).call(body)
+  end
+
+  def reference_filter(html, contexts = {})
+    reference_pipeline(contexts).to_document(html)
   end
 
   # Modify a String reference to make it invalid

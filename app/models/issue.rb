@@ -69,6 +69,10 @@ class Issue < ActiveRecord::Base
     }x
   end
 
+  def self.link_reference_pattern
+    super("issues", /(?<issue>\d+)/)
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
