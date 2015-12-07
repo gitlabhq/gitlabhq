@@ -16,6 +16,7 @@ v 8.3.0 (unreleased)
   - Expose events API with comment information and author info
   - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
   - Run custom Git hooks when branch is created or deleted.
+  - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
