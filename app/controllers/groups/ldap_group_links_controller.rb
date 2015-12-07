@@ -14,16 +14,19 @@ class Groups::LdapGroupLinksController < Groups::ApplicationController
       if request.referer && request.referer.include?('admin')
         redirect_to [:admin, @group], notice: 'New LDAP link saved'
       else
-        redirect_to :back, notice: 'New LDAP link saved'
+        redirect_back_or_default(default: { action: 'index' }, options: { notice: 'New LDAP link saved' })
       end
     else
-      redirect_to :back, alert: "Could not create new LDAP link: #{ldap_group_link.errors.full_messages * ', '}"
+      redirect_back_or_default(
+        default: { action: 'index' },
+        options: { alert: "Could not create new LDAP link: #{ldap_group_link.errors.full_messages * ', '}" }
+      )
     end
   end
 
   def destroy
     @group.ldap_group_links.where(id: params[:id]).destroy_all
-    redirect_to :back, notice: 'LDAP link removed'
+    redirect_back_or_default(default: { action: 'index' }, options: { notice: 'LDAP link removed' })
   end
 
   private
