@@ -30,12 +30,10 @@ class Namespace < ActiveRecord::Base
 
   validates :description, length: { within: 0..255 }
   validates :path,
-    uniqueness: { case_sensitive: false },
-    presence: true,
     length: { within: 1..255 },
-    exclusion: { in: Gitlab::Blacklist.path },
-    format: { with: Gitlab::Regex.namespace_regex,
-              message: Gitlab::Regex.namespace_regex_message }
+    namespace: true,
+    presence: true,
+    uniqueness: { case_sensitive: false }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
