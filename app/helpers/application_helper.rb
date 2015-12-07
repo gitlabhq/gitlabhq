@@ -209,7 +209,7 @@ module ApplicationHelper
       title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
-    element += javascript_tag "$('.js-timeago').timeago()" unless skip_js
+    element += javascript_tag "$('.js-timeago').last().timeago()" unless skip_js
 
     element
   end
