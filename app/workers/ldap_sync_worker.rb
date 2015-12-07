@@ -1,16 +1,7 @@
 class LdapSyncWorker
   include Sidekiq::Worker
-  include Sidetiq::Schedulable
 
   sidekiq_options retry: false
-
-  if Gitlab.config.ldap.enabled
-    DAILY = Gitlab.config.ldap.schedule_sync_daily
-    HOUR = Gitlab.config.ldap.schedule_sync_hour
-    MINUTE = Gitlab.config.ldap.schedule_sync_minute
-
-    recurrence { daily(DAILY).hour_of_day(HOUR).minute_of_hour(MINUTE) }
-  end
 
   def perform
     Rails.logger.info "Performing daily LDAP sync task."
