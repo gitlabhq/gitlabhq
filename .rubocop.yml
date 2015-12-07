@@ -743,14 +743,14 @@ Metrics/CyclomaticComplexity:
                  A complexity metric that is strongly correlated to the number
                  of test cases needed to validate a method.
   Enabled: true
-  Max: 16
+  Max: 17
 
 Metrics/PerceivedComplexity:
   Description: >-
                  A complexity metric geared towards measuring complexity for a
                  human reader.
   Enabled: true
-  Max: 16
+  Max: 17
 
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
