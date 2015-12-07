@@ -24,6 +24,7 @@ v 8.3.0 (unreleased)
   - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
   - Add languages page to graphs
   - Block LDAP user when they are no longer found in the LDAP server
+  - Improve wording on project visibility levels (Zeger-Jan van de Weg)
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
