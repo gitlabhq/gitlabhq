@@ -10,12 +10,12 @@ def common_mentionable_setup
 
   let(:mentioned_issue)  { create(:issue, project: project) }
   let!(:mentioned_mr)     { create(:merge_request, :simple, source_project: project) }
-  let(:mentioned_commit) { project.commit }
+  let(:mentioned_commit) { project.commit("HEAD~1") }
 
   let(:ext_proj)   { create(:project, :public) }
   let(:ext_issue)  { create(:issue, project: ext_proj) }
   let(:ext_mr)     { create(:merge_request, :simple, source_project: ext_proj) }
-  let(:ext_commit) { ext_proj.commit }
+  let(:ext_commit) { ext_proj.commit("HEAD~2") }
 
   # Override to add known commits to the repository stub.
   let(:extra_commits) { [] }
@@ -45,14 +45,11 @@ def common_mentionable_setup
   before do
     # Wire the project's repository to return the mentioned commit, and +nil+
     # for any unrecognized commits.
-    commitmap = {
-      mentioned_commit.id => mentioned_commit
-    }
-    extra_commits.each { |c| commitmap[c.short_id] = c }
-
-    allow(Project).to receive(:find).and_call_original
-    allow(Project).to receive(:find).with(project.id.to_s).and_return(project)
-    allow(project.repository).to receive(:commit) { |sha| commitmap[sha] }
+    allow_any_instance_of(::Repository).to receive(:commit).and_call_original
+    allow_any_instance_of(::Repository).to receive(:commit).with(mentioned_commit.short_id).and_return(mentioned_commit)
+    extra_commits.each do |commit|
+      allow_any_instance_of(::Repository).to receive(:commit).with(commit.short_id).and_return(commit)
+    end
 
     set_mentionable_text.call(ref_string)
   end

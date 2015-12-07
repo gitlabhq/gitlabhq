@@ -125,7 +125,7 @@ class SystemNoteService
   # Returns the created Note object
   def self.change_status(noteable, project, author, status, source)
     body = "Status changed to #{status}"
-    body += " by #{source.gfm_reference}" if source
+    body += " by #{source.gfm_reference(project)}" if source
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
