@@ -396,6 +396,11 @@ table {
     padding-bottom: 11px;
     margin-bottom: -1px;
   }
+
+  &.bottom-border {
+    border-bottom: 1px solid $border-color;
+    height: 57px;
+  }
 }
 
 .center-middle-menu {
