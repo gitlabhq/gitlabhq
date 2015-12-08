@@ -1,83 +1,83 @@
 require 'spec_helper'
 
-describe "Commits" do
+describe 'Commits' do
   include CiStatusHelper
 
   let(:project) { create(:project) }
 
-  describe "CI" do
+  describe 'CI' do
     before do
       login_as :user
       project.team << [@user, :master]
-      @ci_project = project.ensure_gitlab_ci_project
-      @commit = FactoryGirl.create :ci_commit, gl_project: project, sha: project.commit.sha
-      @build = FactoryGirl.create :ci_build, commit: @commit
-      @generic_status = FactoryGirl.create :generic_commit_status, commit: @commit
-    end
-
-    before do
+      project.ensure_gitlab_ci_project
       stub_ci_commit_to_return_yaml_file
     end
 
-    describe "GET /:project/commits/:sha/ci" do
-      before do
-        visit ci_status_path(@commit)
-      end
-
-      it { expect(page).to have_content @commit.sha[0..7] }
-      it { expect(page).to have_content @commit.git_commit_message }
-      it { expect(page).to have_content @commit.git_author_name }
+    let!(:commit) do
+      FactoryGirl.create :ci_commit, gl_project: project, sha: project.commit.sha
     end
 
-    context "Download artifacts" do
+    let!(:build) { FactoryGirl.create :ci_build, commit: commit }
+
+    describe 'GET /:project/commits/:sha/ci' do
+      before do
+        visit ci_status_path(commit)
+      end
+
+      it { expect(page).to have_content commit.sha[0..7] }
+      it { expect(page).to have_content commit.git_commit_message }
+      it { expect(page).to have_content commit.git_author_name }
+    end
+
+    context 'Download artifacts' do
       let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
 
       before do
-        @build.update_attributes(artifacts_file: artifacts_file)
+        build.update_attributes(artifacts_file: artifacts_file)
       end
 
       it do
-        visit ci_status_path(@commit)
-        click_on "Download artifacts"
+        visit ci_status_path(commit)
+        click_on 'Download artifacts'
         expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type)
       end
     end
 
-    describe "Cancel all builds" do
-      it "cancels commit" do
-        visit ci_status_path(@commit)
-        click_on "Cancel running"
-        expect(page).to have_content "canceled"
+    describe 'Cancel all builds' do
+      it 'cancels commit' do
+        visit ci_status_path(commit)
+        click_on 'Cancel running'
+        expect(page).to have_content 'canceled'
       end
     end
 
-    describe "Cancel build" do
-      it "cancels build" do
-        visit ci_status_path(@commit)
-        click_on "Cancel"
-        expect(page).to have_content "canceled"
+    describe 'Cancel build' do
+      it 'cancels build' do
+        visit ci_status_path(commit)
+        click_on 'Cancel'
+        expect(page).to have_content 'canceled'
       end
     end
 
-    describe ".gitlab-ci.yml not found warning" do
+    describe '.gitlab-ci.yml not found warning' do
       context 'ci service enabled' do
         it "does not show warning" do
-          visit ci_status_path(@commit)
-          expect(page).not_to have_content ".gitlab-ci.yml not found in this commit"
+          visit ci_status_path(commit)
+          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
         end
 
-        it "shows warning" do
+        it 'shows warning' do
           stub_ci_commit_yaml_file(nil)
-          visit ci_status_path(@commit)
-          expect(page).to have_content ".gitlab-ci.yml not found in this commit"
+          visit ci_status_path(commit)
+          expect(page).to have_content '.gitlab-ci.yml not found in this commit'
         end
       end
 
       context 'ci service disabled' do
         before do
-          allow_any_instance_of(GitlabCiService).to receive(:active).and_return(false)
+          stub_ci_service_disabled
           stub_ci_commit_yaml_file(nil)
-          visit ci_status_path(@commit)
+          visit ci_status_path(commit)
         end
 
         it 'does not show warning' do
