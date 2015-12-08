@@ -30,7 +30,7 @@ module BlobHelper
         nil
       end
 
-    return unless blob && blob_editable?(blob)
+    return unless blob && blob.text? && blob_editable?(blob)
 
     text = 'Edit'
     after = options[:after] || ''
@@ -47,7 +47,7 @@ module BlobHelper
   end
 
   def blob_editable?(blob, project = @project, ref = @ref)
-    allowed_tree_edit?(project, ref) && !blob.lfs_pointer?
+    !blob.lfs_pointer? && allowed_tree_edit?(project, ref)
   end
 
   def leave_edit_message
