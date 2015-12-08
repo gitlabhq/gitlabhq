@@ -12,7 +12,7 @@
     .col-md-9
       .votes-holder.pull-right
         #votes= render 'votes/votes_block', votable: @merge_request
-      = render "projects/merge_requests/show/participants"
+      = render "shared/issuable/participants"
     .col-md-3
       .input-group.cross-project-reference
         %span#cross-project-reference.slead.has_tooltip{title: 'Cross-project reference'}
@@ -21,7 +21,7 @@
 
 .row
   %section.col-md-9
-    = render "projects/notes/notes_with_form"
+    .voting_notes#notes= render "projects/notes/notes_with_form"
   %aside.col-md-3
     .issuable-affix
       .context
