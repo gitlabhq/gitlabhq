@@ -1,12 +1,12 @@
 # Merge When Build Succeeds
 
-When reviewing a merge request that looks ready to merge but still has one or more CI builds running, you can set it to be merged automatically when the build succeeds. This way, you don't have to wait for the build to finish and remember to merge the merge request then.
+When reviewing a merge request that looks ready to merge but still has one or more CI builds running, you can set it to be merged automatically when all builds succeed. This way, you don't have to wait for the builds to finish and remember to merge the request manually.
 
 ![Enable](merge_when_build_succeeds/enable.png)
 
-When you hit the "Merge When Build Succeeds" button, the status of the Merge Request will be updated to represent the impending merge. If you cannot wait for the build to succeed and want to build immediately, this option is available in the dropdown menu on the right of the main button.
+When you hit the "Merge When Build Succeeds" button, the status of the merge request will be updated to represent the impending merge. If you cannot wait for the build to succeed and want to merge immediately, this option is available in the dropdown menu on the right of the main button.
 
-Both team developers and the author of the merge request have the option to cancel the automatic merge when they find a reason it shouldn't be merged after all.
+Both team developers and the author of the merge request have the option to cancel the automatic merge if they find a reason why it shouldn't be merged after all.
 
 ![Status](merge_when_build_succeeds/status.png)
 
