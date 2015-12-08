@@ -278,6 +278,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff = @merge_request.merge_request_diff
 
+    @ci_commit = @merge_request.ci_commit
+
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr
       @merge_request.close

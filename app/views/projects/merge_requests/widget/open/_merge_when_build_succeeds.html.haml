@@ -1,7 +1,6 @@
 %h4
   Set by #{link_to_member(@project, @merge_request.merge_user, avatar: true)}
-  to be merged automatically when
-  #{link_to "the build", ci_status_path(@merge_request.ci_commit)} succeeds.
+  to be merged automatically when the build succeeds.
 %div
   - should_remove_source_branch = @merge_request.merge_params["should_remove_source_branch"].present?
   %p

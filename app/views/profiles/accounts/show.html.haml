@@ -26,11 +26,11 @@
             - else
               %span You don`t have one yet. Click generate to fix it.
 
-          .form-actions
-            - if current_user.private_token
-              = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default btn-build-token"
-            - else
-              = f.submit 'Generate', class: "btn btn-default btn-build-token"
+        .form-actions
+          - if current_user.private_token
+            = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
+          - else
+            = f.submit 'Generate', class: "btn btn-default"
 
   - unless current_user.ldap_user?
     .panel.panel-default

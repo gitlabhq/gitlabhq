@@ -20,11 +20,11 @@
 .mr-compare.merge-request
   %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
     %li.commits-tab
-      = link_to url_for(params), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
+      = link_to url_for(params), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
         Commits
         %span.badge= @commits.size
     %li.diffs-tab.active
-      = link_to url_for(params), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
+      = link_to url_for(params), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
         Changes
         %span.badge= @diffs.size
 
