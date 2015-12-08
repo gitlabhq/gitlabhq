@@ -23,10 +23,7 @@ class BambooService < CiService
 
   prop_accessor :bamboo_url, :build_key, :username, :password
 
-  validates :bamboo_url,
-    presence: true,
-    format: { with: /\A#{URI.regexp}\z/ },
-    if: :activated?
+  validates :bamboo_url, presence: true, url: true, if: :activated?
   validates :build_key, presence: true, if: :activated?
   validates :username,
     presence: true,
@@ -84,7 +81,7 @@ class BambooService < CiService
   def supported_events
     %w(push)
   end
-  
+
   def build_info(sha)
     url = URI.parse("#{bamboo_url}/rest/api/latest/result?label=#{sha}")
 

@@ -30,6 +30,10 @@ module Gitlab
         replace_text_nodes_matching(Label.reference_pattern) do |content|
           label_link_filter(content)
         end
+
+        replace_link_nodes_with_href(Label.reference_pattern) do |link, text|
+          label_link_filter(link, link_text: text)
+        end
       end
 
       # Replace label references in text with links to the label specified.
@@ -38,7 +42,7 @@ module Gitlab
       #
       # Returns a String with label references replaced with links. All links
       # have `gfm` and `gfm-label` class names attached for styling.
-      def label_link_filter(text)
+      def label_link_filter(text, link_text: nil)
         project = context[:project]
 
         self.class.references_in(text) do |match, id, name|
@@ -47,10 +51,16 @@ module Gitlab
           if label = project.labels.find_by(params)
             url = url_for_label(project, label)
             klass = reference_class(:label)
-            data = data_attribute(project: project.id, label: label.id)
+            data = data_attribute(
+              original: link_text || match,
+              project: project.id,
+              label: label.id
+            )
+
+            text = link_text || render_colored_label(label)
 
             %(<a href="#{url}" #{data}
-                 class="#{klass}">#{render_colored_label(label)}</a>)
+                 class="#{klass}">#{text}</a>)
           else
             match
           end
@@ -59,8 +69,8 @@ module Gitlab
 
       def url_for_label(project, label)
         h = Gitlab::Application.routes.url_helpers
-        h.namespace_project_issues_path(project.namespace, project,
-                                        label_name: label.name)
+        h.namespace_project_issues_url( project.namespace, project, label_name: label.name,
+                                                                    only_path:  context[:only_path])
       end
 
       def render_colored_label(label)

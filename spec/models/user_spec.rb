@@ -91,7 +91,23 @@ describe User do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:username) }
+    describe 'username' do
+      it 'validates presence' do
+        expect(subject).to validate_presence_of(:username)
+      end
+
+      it 'rejects blacklisted names' do
+        user = build(:user, username: 'dashboard')
+
+        expect(user).not_to be_valid
+        expect(user.errors.values).to eq [['dashboard is a reserved name']]
+      end
+
+      it 'validates uniqueness' do
+        expect(subject).to validate_uniqueness_of(:username)
+      end
+    end
+
     it { is_expected.to validate_presence_of(:projects_limit) }
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }

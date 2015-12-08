@@ -1,16 +1,30 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
-  - Fix application settings cache not expiring after changes (Stan Hu)
+  - Fix API setting of 'public' attribute to false will make a project private (Stan Hu)
+  - Handle and report SSL errors in Web hook test (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
+  - Recognize issue/MR/snippet/commit links as references
   - Add ignore whitespace change option to commit view
   - Fire update hook from GitLab
+  - Style warning about mentioning many people in a comment
+  - Fix: sort milestones by due date once again (Greg Smethells)
   - Don't show project fork event as "imported"
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info
   - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
+  - Fix 500 error when creating a merge request that removes a submodule
+  - Run custom Git hooks when branch is created or deleted.
+  - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
+
+v 8.2.3
+  - Fix application settings cache not expiring after changes (Stan Hu)
+  - Fix Error 500s when creating global milestones with Unicode characters (Stan Hu)
+
+v 8.2.3
+  - Webhook payload has an added, modified and removed properties for each commit
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
@@ -21,6 +35,7 @@ v 8.2.2
   - Fix: As an admin, cannot add oneself as a member to a group/project
   - Fix invalid links within projects dashboard header
   - Make current user the first user in assignee dropdown in issues detail page (Stan Hu)
+  - Fix: duplicate email notifications on issue comments
 
 v 8.2.1
   - Forcefully update builds that didn't want to update with state machine
