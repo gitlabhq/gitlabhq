@@ -64,6 +64,8 @@ namespace :gitlab do
 
           if project.persisted?
             puts " * Created #{project.name} (#{repo_path})".green
+            project.update_repository_size
+            project.update_commit_count
           else
             puts " * Failed trying to create #{project.name} (#{repo_path})".red
             puts "   Errors: #{project.errors.messages}".red
