@@ -30,3 +30,7 @@
             = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal'} do
               = icon('folder fw')
               New directory
+  - elsif !on_top_of_branch?
+    %li
+      %span.btn.add-to-tree.disabled.has_tooltip{href: '#', title: "You can only add files when you are on top of a branch.", data: {container: 'body'}}
+        = icon('plus')

@@ -46,23 +46,26 @@ module TreeHelper
     File.join(*args)
   end
 
+  def on_top_of_branch?(project = @project, ref = @ref)
+    project.repository.branch_names.include?(ref)
+  end
+
   def allowed_tree_edit?(project = nil, ref = nil)
     project ||= @project
+    ref ||= @ref
+    return false unless on_top_of_branch?(project, ref)
+
     can?(current_user, :push_code, project)
   end
 
   def tree_edit_branch(project = @project, ref = @ref)
-    if allowed_tree_edit?
+    if allowed_tree_edit?(project, ref)
       if can_push_branch?(project, ref)
         ref
       else
         project.repository.next_patch_branch
       end
     end
-  end
-
-  def can_delete_or_replace?(blob)
-    allowed_tree_edit? && !blob.lfs_pointer?
   end
 
   def tree_breadcrumbs(tree, max_links = 2)
