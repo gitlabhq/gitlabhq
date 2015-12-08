@@ -22,10 +22,8 @@ class ExternalWikiService < Service
   include HTTParty
 
   prop_accessor :external_wiki_url
-  validates :external_wiki_url,
-            presence: true,
-            format: { with: /\A#{URI.regexp}\z/ },
-            if: :activated?
+
+  validates :external_wiki_url, presence: true, url: true, if: :activated?
 
   def title
     'External Wiki'
