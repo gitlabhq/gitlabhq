@@ -5,9 +5,9 @@
   %td.commit_status-link
     - if commit_status.target_url
       = link_to commit_status.target_url do
-        %strong Build ##{commit_status.id}
+        %strong ##{commit_status.id}
     - else
-      %strong Build ##{commit_status.id}
+      %strong ##{commit_status.id}
 
     - if commit_status.show_warning?
       %i.fa.fa-warning.text-warning
