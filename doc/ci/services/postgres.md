@@ -1,70 +1,96 @@
-## Using PostgreSQL
+# Using PostgreSQL
 
-It's possible to use PostgreSQL database test your apps during builds.
+As many applications depend on PostgreSQL as their database, you will
+eventually need it in order for your tests to run. Below you are guided how to
+do this with the Docker and Shell executors of GitLab Runner.
 
-### Use PostgreSQL with Docker executor
+## Use PostgreSQL with the Docker executor
 
-If you are using our Docker integration you basically have everything already.
+If you are using GitLab's Runner with the Docker executor you basically have
+everything set up already.
 
-1. Add this to your `.gitlab-ci.yml`:
+First, in your `.gitlab-ci.yml` add:
 
-		services:
-		- postgres
+```yaml
+services:
+  - postgres
 
-		variables:
-		  # Configure postgres service (https://hub.docker.com/_/postgres/)
-		  POSTGRES_DB: hello_world_test
-		  POSTGRES_USER: postgres
-		  POSTGRES_PASSWORD: ""
+variables:
+  POSTGRES_DB: nice_marmot
+  POSTGRES_USER: gitlab_runner
+  POSTGRES_PASSWORD: ""
+```
 
-2. Configure your application to use the database:
+And then configure your application to use PostgreSQL, for example:
 
-		Host: postgres
-		User: postgres
-		Password: postgres
-		Database: hello_world_test
+```yaml
+Host: localhost
+User: gitlab_runner
+Password:
+Database: nice_marmot
+```
 
-3. You can also use any other available on [DockerHub](https://hub.docker.com/_/postgres/). For example: `postgres:9.3`.
+You can also use any other docker image available on [Docker Hub][hub-pg].
+For example, to use PostgreSQL 9.3 the service becomes `postgres:9.3`.
 
-Example: https://gitlab.com/gitlab-examples/postgres/blob/master/.gitlab-ci.yml
+The `postgres` image can accept some environment variables. For more details
+check the documentation on [Docker Hub][hub-pg].
 
-### Use PostgreSQL with Shell executor
+## Use PostgreSQL with the Shell executor
 
-It's possible to use PostgreSQL on manually configured servers that are using GitLab Runner with Shell executor.
+You can also use PostgreSQL on manually configured servers that are using
+GitLab Runner with the Shell executor.
 
-1. First install the PostgreSQL server:
+First install the PostgreSQL server:
 
-		sudo apt-get install -y postgresql postgresql-client libpq-dev
+```bash
+sudo apt-get install -y postgresql postgresql-client libpq-dev
+```
 
-2. Create an user:
+Then create a user:
 
-		# Install the database packages
-		sudo apt-get install -y postgresql postgresql-client libpq-dev
+```bash
+# Login to PostgreSQL
+sudo -u postgres psql -d template1
 
-		# Login to PostgreSQL
-		sudo -u postgres psql -d template1
+# Create a user for GitLab Runner that can create databases
+# Do not type the 'template1=#', this is part of the prompt
+template1=# CREATE USER gitlab_runner CREATEDB;
 
-		# Create a user for runner
-		# Do not type the 'template1=#', this is part of the prompt
-		template1=# CREATE USER runner CREATEDB;
+# Create the database & grant all privileges on database
+template1=# CREATE DATABASE nice_marmot OWNER gitlab_runner;
 
-		# Create the database & grant all privileges on database
-		template1=# CREATE DATABASE hello_world_test OWNER runner;
+# Quit the database session
+template1=# \q
+```
 
-		# Quit the database session
-		template1=# \q
+Try to connect to database:
 
-3. Try to connect to database:
+```bash
+# Try connecting to the new database with the new user
+sudo -u gitlab_runner -H psql -d nice_marmot
 
-		# Try connecting to the new database with the new user
-		sudo -u gitlab-runner -H psql -d hello_world_test
+# Quit the database session
+nice_marmot> \q
+```
 
-		# Quit the database session
-		hello_world_test> \q
+Finally, configure your application to use the database:
 
-4. Configure your application to use the database:
+```bash
+Host: localhost
+User: gitlab_runner
+Password:
+Database: nice_marmot
+```
 
-		Host: localhost
-		User: runner
-		Password:
-		Database: hello_world_test
+## Example project
+
+We have set up an [Example PostgreSQL Project][postgres-example-repo] for your
+convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
+available [shared runners](../runners/README.md).
+
+Want to hack on it? Simply fork it, commit and push  your changes. Within a few
+moments the changes will be picked by a public runner and the build will begin.
+
+[hub-pg]: https://hub.docker.com/_/postgres/
+[postgres-example-repo]: https://gitlab.com/gitlab-examples/postgres
