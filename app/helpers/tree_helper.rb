@@ -54,6 +54,10 @@ module TreeHelper
     ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(ref)
   end
 
+  def can_delete_or_replace?(blob)
+    allowed_tree_edit? && !blob.lfs_pointer?
+  end
+
   def tree_breadcrumbs(tree, max_links = 2)
     if @path.present?
       part_path = ""

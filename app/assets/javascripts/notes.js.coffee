@@ -369,8 +369,8 @@ class @Notes
     note = $(this).closest(".note")
     note.find(".note-attachment").remove()
     note.find(".note-body > .note-text").show()
-    note.find(".js-note-attachment-delete").hide()
-    note.find(".note-edit-form").hide()
+    note.find(".note-header").show()
+    note.find(".current-note-edit-form").remove()
 
   ###
   Called when clicking on the "reply" button for a diff line.
