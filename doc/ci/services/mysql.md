@@ -13,7 +13,7 @@ First, in your `.gitlab-ci.yml` add:
 
 ```yaml
 services:
-  - mysql
+  - mysql:latest
 
 variables:
   # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
