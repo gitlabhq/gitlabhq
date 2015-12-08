@@ -6,8 +6,8 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use PostgreSQL with the Docker executor
 
-If you are using GitLab's Runner with the Docker executor you basically have
-everything set up already.
+If you are using [GitLab Runner](../runners/README.md) with the Docker executor
+you basically have everything set up already.
 
 First, in your `.gitlab-ci.yml` add:
 
@@ -21,7 +21,7 @@ variables:
   POSTGRES_PASSWORD: ""
 ```
 
-And then configure your application to use PostgreSQL, for example:
+And then configure your application to use the database, for example:
 
 ```yaml
 Host: localhost
