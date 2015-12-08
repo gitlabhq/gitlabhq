@@ -18,3 +18,8 @@ Feature: Project Graph
     Given project "Shop" has CI enabled
     When I visit project "Shop" CI graph page
     Then page should have CI graphs
+
+  @javascript
+  Scenario: I should see project languages graphs
+    When I visit project "Shop" languages graph page
+    Then page should have languages graphs

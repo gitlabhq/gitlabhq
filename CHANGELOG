@@ -1,9 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Bump gollum-lib to 4.1.0 (Stan Hu)
+  - Fix broken group avatar upload under "New group" (Stan Hu)
+  - Update project repositorize size and commit count during import:repos task (Stan Hu)
   - Fix API setting of 'public' attribute to false will make a project private (Stan Hu)
   - Handle and report SSL errors in Web hook test (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
+  - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
@@ -18,6 +22,8 @@ v 8.3.0 (unreleased)
   - Fix 500 error when creating a merge request that removes a submodule
   - Run custom Git hooks when branch is created or deleted.
   - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
+  - Add languages page to graphs
+  - Block LDAP user when they are no longer found in the LDAP server
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)

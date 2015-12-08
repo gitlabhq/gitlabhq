@@ -43,11 +43,11 @@
   - if @commits.present?
     %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
       %li.notes-tab
-        = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#notes', action: 'notes', toggle: 'tab'} do
+        = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
           Discussion
           %span.badge= @merge_request.mr_and_commit_notes.user.count
       %li.commits-tab
-        = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
+        = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
           Commits
           %span.badge= @commits.size
       - if @ci_commit
@@ -56,7 +56,7 @@
             Builds
             %span.badge= @statuses.size
       %li.diffs-tab
-        = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
+        = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
           Changes
           %span.badge= @merge_request.diffs.size
 

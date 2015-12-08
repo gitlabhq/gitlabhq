@@ -20,7 +20,8 @@
 
 %p
   %span.light Commit
-  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
+  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace", data: { clipboard_text: @commit.id }
+  = clipboard_button
 .commit-info-row
   %span.light Authored by
   %strong
@@ -44,7 +45,7 @@
     = link_to ci_status_path(@ci_commit), class: "ci-status ci-#{@ci_commit.status}" do
       = ci_status_icon(@ci_commit)
       build:
-      = @ci_commit.status
+      = ci_status_label(@ci_commit)
 
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin

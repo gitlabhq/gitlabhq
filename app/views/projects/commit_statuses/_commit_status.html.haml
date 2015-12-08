@@ -1,13 +1,18 @@
 %tr.commit_status
   %td.status
-    = ci_status_with_icon(commit_status.status)
+    - if commit_status.target_url
+      = link_to commit_status.target_url, class: "ci-status ci-#{commit_status.status}" do
+        = ci_icon_for_status(commit_status.status)
+        = commit_status.status
+    - else
+      = ci_status_with_icon(commit_status.status)
 
   %td.commit_status-link
     - if commit_status.target_url
       = link_to commit_status.target_url do
-        %strong Build ##{commit_status.id}
+        %strong ##{commit_status.id}
     - else
-      %strong Build ##{commit_status.id}
+      %strong ##{commit_status.id}
 
     - if commit_status.show_warning?
       %i.fa.fa-warning.text-warning
