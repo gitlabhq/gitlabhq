@@ -329,6 +329,17 @@ class Repository
     commit(sha)
   end
 
+  def next_patch_branch
+    patch_branch_ids = self.branch_names.map do |n|
+      result = n.match(/\Apatch-([0-9]+)\z/)
+      result[1].to_i if result
+    end.compact
+
+    highest_patch_branch_id = patch_branch_ids.max || 0
+
+    "patch-#{highest_patch_branch_id + 1}"
+  end
+
   # Remove archives older than 2 hours
   def branches_sorted_by(value)
     case value

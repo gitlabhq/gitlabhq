@@ -48,10 +48,17 @@ module TreeHelper
 
   def allowed_tree_edit?(project = nil, ref = nil)
     project ||= @project
-    ref ||= @ref
-    return false unless project.repository.branch_names.include?(ref)
+    can?(current_user, :push_code, project)
+  end
 
-    ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(ref)
+  def tree_edit_branch(project = @project, ref = @ref)
+    if allowed_tree_edit?
+      if can_push_branch?(project, ref)
+        ref
+      else
+        project.repository.next_patch_branch
+      end
+    end
   end
 
   def can_delete_or_replace?(blob)
