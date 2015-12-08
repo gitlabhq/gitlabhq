@@ -4,10 +4,10 @@ As many applications depend on Redis as their key-value store, you will
 eventually need it in order for your tests to run. Below you are guided how to
 do this with the Docker and Shell executors of GitLab Runner.
 
-## Use Redis with Docker executor
+## Use Redis with the Docker executor
 
-If you are using our Docker integration you basically have everything set up
-already.
+If you are using GitLab's Runner Docker integration you basically have
+everything set up already.
 
 First, in your `.gitlab-ci.yml` add:
 
@@ -29,7 +29,7 @@ framework.
 If you want to use any other version of Redis, check the available versions
 on [Docker Hub](https://hub.docker.com/_/redis/).
 
-## Use Redis with Shell executor
+## Use Redis with the Shell executor
 
 Redis can also be used on manually configured servers that are using GitLab
 Runner with the Shell executor.
