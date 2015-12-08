@@ -36,6 +36,22 @@ describe ApplicationSetting, models: true do
 
   it { expect(setting).to be_valid }
 
+  describe 'validations' do
+    let(:http)  { 'http://example.com' }
+    let(:https) { 'https://example.com' }
+    let(:ftp)   { 'ftp://example.com' }
+
+    it { is_expected.to allow_value(nil).for(:home_page_url) }
+    it { is_expected.to allow_value(http).for(:home_page_url) }
+    it { is_expected.to allow_value(https).for(:home_page_url) }
+    it { is_expected.not_to allow_value(ftp).for(:home_page_url) }
+
+    it { is_expected.to allow_value(nil).for(:after_sign_out_path) }
+    it { is_expected.to allow_value(http).for(:after_sign_out_path) }
+    it { is_expected.to allow_value(https).for(:after_sign_out_path) }
+    it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
+  end
+
   context 'restricted signup domains' do
     it 'set single domain' do
       setting.restricted_signup_domains_raw = 'example.com'

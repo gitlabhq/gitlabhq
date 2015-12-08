@@ -43,12 +43,12 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates :home_page_url,
     allow_blank: true,
-    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" },
+    url: true,
     if: :home_page_url_column_exist
 
   validates :after_sign_out_path,
     allow_blank: true,
-    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }
+    url: true
 
   validates :admin_notification_email,
     allow_blank: true,
