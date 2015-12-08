@@ -162,8 +162,6 @@
           %td
             %strong
               = link_to user.name, user
-            .light
-              @#{user.username}
           %td= @events.code_push.where(author_id: user).count
           %td= @events.issues.created.where(author_id: user).count
           %td= @events.issues.closed.where(author_id: user).count
