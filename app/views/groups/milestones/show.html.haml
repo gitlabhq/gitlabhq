@@ -18,7 +18,7 @@
 
   .gray-content-block.middle-block
     %h2.issue-title
-      = gfm escape_once(@milestone.title)
+      = markdown escape_once(@milestone.title), pipeline: :single_line
 
 - if @milestone.complete? && @milestone.active?
   .alert.alert-success.prepend-top-default

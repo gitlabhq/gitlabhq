@@ -38,7 +38,7 @@
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
-            = markdown(note.note, {no_header_anchors: true})
+            = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
         - if note_editable?(note)
           = render 'projects/notes/edit_form', note: note
 

@@ -28,7 +28,7 @@ class Note < ActiveRecord::Base
 
   default_value_for :system, false
 
-  attr_mentionable :note
+  attr_mentionable :note, cache: true, pipeline: :note
   participant :author
 
   belongs_to :project

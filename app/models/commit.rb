@@ -7,7 +7,7 @@ class Commit
   include Referable
   include StaticModel
 
-  attr_mentionable :safe_message
+  attr_mentionable :safe_message, pipeline: :single_line
   participant :author, :committer, :notes
 
   attr_accessor :project

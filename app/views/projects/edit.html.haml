@@ -24,10 +24,10 @@
               .col-sm-10
                 = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
-            - if @project.repository.exists? && @project.repository.branch_names.any?
+            - unless @project.empty_repo?
               .form-group
                 = f.label :default_branch, "Default Branch", class: 'control-label'
-                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'select2 select-wide'})
+                .col-sm-10= f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
 
           = render 'shared/visibility_level', f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can_change_visibility_level?(@project, current_user), form_model: @project
