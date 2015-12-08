@@ -80,6 +80,9 @@
               - else
                 %i.fa.fa-user.cgreen
               = link_to user.name, [:admin, user]
+              - if user.note
+                = link_to "#", { "data-toggle" => "tooltip", title: user.note, class: "user-note"} do
+                  = icon("sticky-note-o cgrey")
               - if user.admin?
                 %strong.cred (Admin)
               - if user == current_user

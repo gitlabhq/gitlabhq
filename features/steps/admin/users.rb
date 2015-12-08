@@ -164,4 +164,15 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   step 'click on ssh keys tab' do
     click_link 'SSH keys'
   end
+
+  step 'I submit a note' do
+    @note = 'The reason to change status'
+    fill_in 'Note', with: @note
+    click_button 'Save'
+  end
+
+  step 'I see note tooltip' do
+    visit admin_users_path
+    expect(find(".user-note")["title"]).to have_content(@note)
+  end
 end
