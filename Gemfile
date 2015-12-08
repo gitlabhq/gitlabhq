@@ -120,8 +120,8 @@ gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
 gem 'sinatra', '~> 1.4.4', require: nil
-gem 'sidekiq', '3.3.0'
-gem 'sidetiq', '~> 0.6.3'
+gem 'sidekiq', '~> 3.5.0'
+gem 'sidekiq-cron', '~> 0.3.0'
 
 # HTTP requests
 gem "httparty", '~> 0.13.3'

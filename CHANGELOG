@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Fix API setting of 'public' attribute to false will make a project private (Stan Hu)
+  - Handle and report SSL errors in Web hook test (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
@@ -15,6 +17,7 @@ v 8.3.0 (unreleased)
   - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
   - Fix 500 error when creating a merge request that removes a submodule
   - Run custom Git hooks when branch is created or deleted.
+  - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
