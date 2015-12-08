@@ -23,16 +23,16 @@ class TeamcityService < CiService
 
   prop_accessor :teamcity_url, :build_type, :username, :password
 
-  validates :teamcity_url,
-    presence: true,
-    format: { with: /\A#{URI.regexp}\z/ }, if: :activated?
+  validates :teamcity_url, presence: true, url: true, if: :activated?
   validates :build_type, presence: true, if: :activated?
   validates :username,
     presence: true,
-    if: ->(service) { service.password? }, if: :activated?
+    if: ->(service) { service.password? },
+    if: :activated?
   validates :password,
     presence: true,
-    if: ->(service) { service.username? }, if: :activated?
+    if: ->(service) { service.username? },
+    if: :activated?
 
   attr_accessor :response
 

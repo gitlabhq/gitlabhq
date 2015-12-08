@@ -47,7 +47,7 @@ describe API::API, api: true  do
            name: 'Foo',
            color: '#FFAA'
       expect(response.status).to eq(400)
-      expect(json_response['message']['color']).to eq(['is invalid'])
+      expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'should return 400 for too long color code' do
@@ -55,7 +55,7 @@ describe API::API, api: true  do
            name: 'Foo',
            color: '#FFAAFFFF'
       expect(response.status).to eq(400)
-      expect(json_response['message']['color']).to eq(['is invalid'])
+      expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'should return 400 for invalid name' do
@@ -151,12 +151,12 @@ describe API::API, api: true  do
       expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
-    it 'should return 400 for invalid name' do
+    it 'should return 400 when color code is too short' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           color: '#FF'
       expect(response.status).to eq(400)
-      expect(json_response['message']['color']).to eq(['is invalid'])
+      expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
     it 'should return 400 for too long color code' do
@@ -164,7 +164,7 @@ describe API::API, api: true  do
            name: 'Foo',
            color: '#FFAAFFFF'
       expect(response.status).to eq(400)
-      expect(json_response['message']['color']).to eq(['is invalid'])
+      expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
   end
 end

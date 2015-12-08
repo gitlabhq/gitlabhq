@@ -17,6 +17,12 @@ Sidekiq.configure_server do |config|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS']
     chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
   end
+
+  # Sidekiq-cron: load recurring jobs from schedule.yml
+  schedule_file = 'config/schedule.yml'
+  if File.exists?(schedule_file)
+    Sidekiq::Cron::Job.load_from_hash YAML.load_file(schedule_file)
+  end
 end
 
 Sidekiq.configure_client do |config|
