@@ -24,11 +24,14 @@ variables:
 And then configure your application to use the database, for example:
 
 ```yaml
-Host: localhost
+Host: mysql
 User: root
 Password: mysql_strong_password
 Database: el_duderino
 ```
+
+If you are wondering why we used `mysql` for the `Host`, read more at
+[How is service linked to the build](../docker/using_docker_images.md#how-is-service-linked-to-the-build).
 
 You can also use any other docker image available on [Docker Hub][hub-mysql].
 For example, to use MySQL 5.5 the service becomes `mysql:5.5`.
