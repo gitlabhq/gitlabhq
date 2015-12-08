@@ -43,6 +43,7 @@
 #
 class @MergeRequestTabs
   diffsLoaded: false
+  buildsLoaded: false
   commitsLoaded: false
 
   constructor: (@opts = {}) ->
@@ -54,6 +55,12 @@ class @MergeRequestTabs
 
   bindEvents: ->
     $(document).on 'shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', @tabShown
+    $(document).on 'click', '.js-show-tab', @showTab
+
+  showTab: (event) =>
+    event.preventDefault()
+
+    @activateTab $(event.target).data('action')
 
   tabShown: (event) =>
     $target = $(event.target)
@@ -61,6 +68,8 @@ class @MergeRequestTabs
 
     if action == 'commits'
       @loadCommits($target.attr('href'))
+    else if action == 'builds'
+      @loadBuilds($target.attr('href'))
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
 
@@ -101,7 +110,7 @@ class @MergeRequestTabs
     action = 'notes' if action == 'show'
 
     # Remove a trailing '/commits' or '/diffs'
-    new_state = @_location.pathname.replace(/\/(commits|diffs)(\.html)?\/?$/, '')
+    new_state = @_location.pathname.replace(/\/(commits|builds|diffs)(\.html)?\/?$/, '')
 
     # Append the new action if we're on a tab other than 'notes'
     unless action == 'notes'
@@ -128,6 +137,17 @@ class @MergeRequestTabs
         $('.js-timeago').timeago()
         @commitsLoaded = true
         @scrollToElement("#commits")
+
+  loadBuilds: (source) ->
+    return if @buildsLoaded
+
+    @_get
+      url: "#{source}.json"
+      success: (data) =>
+        document.getElementById('builds').innerHTML = data.html
+        $('.js-timeago').timeago()
+        @buildsLoaded = true
+        @scrollToElement("#builds")
 
   loadDiff: (source) ->
     return if @diffsLoaded

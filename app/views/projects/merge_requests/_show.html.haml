@@ -26,8 +26,7 @@
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
       .normal
         %span Request to merge
-        %span.label-branch
-          = source_branch_with_namespace(@merge_request)
+        %span.label-branch= source_branch_with_namespace(@merge_request)
         %span into
         = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
           = @merge_request.target_branch
@@ -51,6 +50,11 @@
         = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
           Commits
           %span.badge= @commits.size
+      - if @ci_commit
+        %li.builds-tab
+          = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
+            Builds
+            %span.badge= @statuses.size
       %li.diffs-tab
         = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
           Changes
@@ -60,6 +64,8 @@
     #notes.notes.tab-pane.voting_notes
       = render "projects/merge_requests/discussion"
     #commits.commits.tab-pane
+      - # This tab is always loaded via AJAX
+    #builds.builds.tab-pane
       - # This tab is always loaded via AJAX
     #diffs.diffs.tab-pane
       - # This tab is always loaded via AJAX

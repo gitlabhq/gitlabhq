@@ -7,7 +7,7 @@
       %span CI build #{status}
       for #{@merge_request.last_commit_short_sha}.
       %span.ci-coverage
-      = link_to "View build details", ci_status_path(ci_commit)
+      = link_to "View build details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
