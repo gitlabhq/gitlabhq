@@ -21,6 +21,6 @@
     %button.btn.btn-remove{ 'data-target' => '#modal-remove-blob', 'data-toggle' => 'modal' } Delete
 - elsif !on_top_of_branch?
   .btn-group{ role: "group" }
-    %button.btn.btn-default.disabled.has_tooltip{title: "You can only edit files when you are on top of a branch.", data: {container: 'body'}} Edit
-    %button.btn.btn-default.disabled.has_tooltip{title: "You can only replace files when you are on top of a branch.", data: {container: 'body'}} Replace
-    %button.btn.btn-remove.disabled.has_tooltip{title: "You can only delete files when you are on top of a branch.", data: {container: 'body'}} Delete
+    %button.btn.btn-default.disabled.has_tooltip{title: "You can only edit files when you are on a branch.", data: {container: 'body'}} Edit
+    %button.btn.btn-default.disabled.has_tooltip{title: "You can only replace files when you are on a branch.", data: {container: 'body'}} Replace
+    %button.btn.btn-remove.disabled.has_tooltip{title: "You can only delete files when you are on a branch.", data: {container: 'body'}} Delete
