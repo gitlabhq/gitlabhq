@@ -35,7 +35,7 @@ describe Projects::RawController do
     end
 
     context 'lfs object' do
-      let(:id) { 'master/files/lfs/lfs_object.iso' }
+      let(:id) { 'be93687/files/lfs/lfs_object.iso' }
       let!(:lfs_object) { create(:lfs_object, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897', size: '1575078') }
 
       context 'when project has access' do

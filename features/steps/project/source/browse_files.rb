@@ -306,6 +306,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "files/lfs/lfs_object.iso" file in repo' do
+    visit namespace_project_tree_path(@project.namespace, @project, "lfs")
     click_link 'files'
     click_link "lfs"
     click_link "lfs_object.iso"
