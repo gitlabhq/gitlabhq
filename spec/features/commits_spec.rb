@@ -60,15 +60,29 @@ describe "Commits" do
     end
 
     describe ".gitlab-ci.yml not found warning" do
-      it "does not show warning" do
-        visit ci_status_path(@commit)
-        expect(page).not_to have_content ".gitlab-ci.yml not found in this commit"
+      context 'ci service enabled' do
+        it "does not show warning" do
+          visit ci_status_path(@commit)
+          expect(page).not_to have_content ".gitlab-ci.yml not found in this commit"
+        end
+
+        it "shows warning" do
+          stub_ci_commit_yaml_file(nil)
+          visit ci_status_path(@commit)
+          expect(page).to have_content ".gitlab-ci.yml not found in this commit"
+        end
       end
 
-      it "shows warning" do
-        stub_ci_commit_yaml_file(nil)
-        visit ci_status_path(@commit)
-        expect(page).to have_content ".gitlab-ci.yml not found in this commit"
+      context 'ci service disabled' do
+        before do
+          allow_any_instance_of(GitlabCiService).to receive(:active).and_return(false)
+          stub_ci_commit_yaml_file(nil)
+          visit ci_status_path(@commit)
+        end
+
+        it 'does not show warning' do
+          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
+        end
       end
     end
   end
