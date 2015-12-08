@@ -1,72 +1,115 @@
-## Using MySQL
+# Using MySQL
 
-It's possible to use MySQL database test your apps during builds.
+As many applications depend on MySQL as their database, you will eventually
+need it in order for your tests to run. Below you are guided how to do this
+with the Docker and Shell executors of GitLab Runner.
 
-### Use MySQL with Docker executor
+## Use MySQL with the Docker executor
 
-If you are using our Docker integration you basically have everything already.
+If you are using [GitLab Runner](../runners/README.md) with the Docker executor
+you basically have everything set up already.
 
-1. Add this to your `.gitlab-ci.yml`:
+First, in your `.gitlab-ci.yml` add:
 
-		services:
-		- mysql
+```yaml
+services:
+  - mysql
 
-		variables:
-		  # Configure mysql service (https://hub.docker.com/_/mysql/)
-		  MYSQL_DATABASE: hello_world_test
-		  MYSQL_ROOT_PASSWORD: mysql
+variables:
+  # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
+  MYSQL_DATABASE: el_duderino
+  MYSQL_ROOT_PASSWORD: mysql_strong_password
+```
 
-2. Configure your application to use the database:
+And then configure your application to use the database, for example:
 
-		Host: mysql
-		User: root
-		Password: mysql
-		Database: hello_world_test
+```yaml
+Host: localhost
+User: root
+Password: mysql_strong_password
+Database: el_duderino
+```
 
-3. You can also use any other available on [DockerHub](https://hub.docker.com/_/mysql/). For example: `mysql:5.5`. 
+You can also use any other docker image available on [Docker Hub][hub-mysql].
+For example, to use MySQL 5.5 the service becomes `mysql:5.5`.
 
-Example: https://gitlab.com/gitlab-examples/mysql/blob/master/.gitlab-ci.yml
+The `mysql` image can accept some environment variables. For more details
+check the documentation on [Docker Hub][hub-mysql].
 
-### Use MySQL with Shell executor
+## Use MySQL with the Shell executor
 
-It's possible to use MySQL on manually configured servers that are using GitLab Runner with Shell executor.
+You can also use MySQL on manually configured servers that are using
+GitLab Runner with the Shell executor.
 
-1. First install the MySQL server:
-	
-		sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+First install the MySQL server:
 
-		# Pick a MySQL root password (can be anything), type it and press enter
-		# Retype the MySQL root password and press enter
+```bash
+sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+```
 
-2. Create an user:
+Pick a MySQL root password (can be anything), and type it twice when asked.
 
-		mysql -u root -p
+*Note: As a security measure you can run `mysql_secure_installation` to
+remove anonymous users, drop the test database and disable remote logins with
+the root user.*
 
-		# Create a user which will be used by your apps
-		# do not type the 'mysql>', this is part of the prompt
-		# change $password in the command below to a real password you pick
-		mysql> CREATE USER 'runner'@'localhost' IDENTIFIED BY '$password';
+The next step is to create a user, so login to MySQL as root:
 
-		# Ensure you can use the InnoDB engine which is necessary to support long indexes
-		# If this fails, check your MySQL config files (e.g. `/etc/mysql/*.cnf`, `/etc/mysql/conf.d/*`) for the setting "innodb = off"
-		mysql> SET storage_engine=INNODB;
+```bash
+mysql -u root -p
+```
 
-		# Create the database
-		mysql> CREATE DATABASE IF NOT EXISTS `hello_world_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+Then create a user (in our case `runner`) which will be used by your
+application. Change `$password` in the command below to a real strong password.
 
-		# Grant necessary permissions on the database
-		mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES ON `hello_world_test`.* TO 'runner'@'localhost';
+*Note: Do not type `mysql>`, this is part of the MySQL prompt.*
 
-		# Quit the database session
-		mysql> \q
+```bash
+mysql> CREATE USER 'runner'@'localhost' IDENTIFIED BY '$password';
+```
 
-3. Try to connect to database:
+Create the database:
 
-		sudo -u gitlab-runner -H mysql -u runner -p -D hello_world_test
+```bash
+mysql> CREATE DATABASE IF NOT EXISTS `el_duderino` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+```
 
-4. Configure your application to use the database:
+Grant the necessary permissions on the database:
 
-		Host: localhost
-		User: runner
-		Password: $password
-		Database: hello_world_test
+```bash
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES ON `el_duderino`.* TO 'runner'@'localhost';
+```
+
+If all went well you can now quit the database session:
+
+```bash
+mysql> \q
+```
+
+Now, try to connect to the newly created database to check that everything is
+in place:
+
+```bash
+mysql -u runner -p -D el_duderino
+```
+
+As a final step, configure your application to use the database, for example:
+
+```bash
+Host: localhost
+User: runner
+Password: $password
+Database: el_duderino
+```
+
+## Example project
+
+We have set up an [Example MySQL Project][mysql-example-repo] for your
+convenience that runs on [GitLab.com](https://gitlab.com) using our publicly
+available [shared runners](../runners/README.md).
+
+Want to hack on it? Simply fork it, commit and push  your changes. Within a few
+moments the changes will be picked by a public runner and the build will begin.
+
+[hub-mysql]: https://hub.docker.com/_/mysql/
+[mysql-example-repo]: https://gitlab.com/gitlab-examples/mysql
