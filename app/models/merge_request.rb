@@ -295,7 +295,7 @@ class MergeRequest < ActiveRecord::Base
       work_in_progress: work_in_progress?
     }
 
-    unless last_commit.nil?
+    if last_commit
       attrs.merge!(last_commit: last_commit.hook_attrs)
     end
 
