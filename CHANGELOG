@@ -5,6 +5,7 @@ v 8.3.0 (unreleased)
   - Fix API setting of 'public' attribute to false will make a project private (Stan Hu)
   - Handle and report SSL errors in Web hook test (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
+  - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
