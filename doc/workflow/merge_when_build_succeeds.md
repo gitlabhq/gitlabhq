@@ -1,20 +1,15 @@
 # Merge When Build Succeeds
 
-Select a Merge Request to be merged if the build succeeds so the user does not have to wait for the build to finish and revisit the Merge Request to merge it after the build is done.
+When reviewing a merge request that looks ready to merge but still has one or more CI builds running, you can set it to be merged automatically when the build succeeds. This way, you don't have to wait for the build to finish and remember to merge the merge request then.
 
-## Enabling for a Merge Request
+![Enable](merge_when_build_succeeds/enable.png)
 
-Given an active build for a Merge Request, thus pending or running, a `Merge When Build Succeeds` button will appear to any user which can merge it. Once clicked, it ensures this merge request is merged when the build is successful.
-When clicking the button, the merge parameters are also saved to allow the merge user to edit the commit message and remove the source branch if he can remove that branch.
+When you hit the "Merge When Build Succeeds" button, the status of the Merge Request will be updated to represent the impending merge. If you cannot wait for the build to succeed and want to build immediately, this option is available in the dropdown menu on the right of the main button.
 
-When this feature is enabled, a message will appear to notify other users. Also a note is posted on the thread.
+Both team developers and the author of the merge request have the option to cancel the automatic merge when they find a reason it shouldn't be merged after all.
 
-![Enable Merge When Build Succceeds](merge_requests/enable_merge_when_build_succeeds.png)
+![Status](merge_when_build_succeeds/status.png)
 
-## Canceling
+When the build succeeds, the merge request will automatically be merged. When the build fails, the author gets a chance to retry any failed builds, or to push new commits to fix the failure.
 
-The automatic merge can be disabled by clicking the `Cancel Automatic Merge` button, or when a new commit is added to the Merge Request. In the former case a note is posted. In the latter case a user able to merge can enable the feature again.
-
-![Disable the automatic merge](merge_requests/disable_merge_when_build_succeeds.png)
-
-A failed build does not reset the automatic build so a build can be retried.
+When the builds are retried and succeed on the second try, the merge request will automatically be merged after all. When the merge request is updated with new commits, the automatic merge is automatically canceled to allow the new changes to be reviewed.
