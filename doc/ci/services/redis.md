@@ -6,8 +6,8 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use Redis with the Docker executor
 
-If you are using GitLab's Runner Docker integration you basically have
-everything set up already.
+If you are using [GitLab Runner](../runners/README.md) with the Docker executor
+you basically have everything set up already.
 
 First, in your `.gitlab-ci.yml` add:
 
@@ -19,15 +19,15 @@ services:
 Then you need to configure your application to use the Redis database, for
 example:
 
-```bash
+```yaml
 Host: redis
 ```
 
 And that's it. Redis will now be available to be used within your testing
 framework.
 
-If you want to use any other version of Redis, check the available versions
-on [Docker Hub](https://hub.docker.com/_/redis/).
+You can also use any other docker image available on [Docker Hub][hub-redis].
+For example, to use Redis 2.8 the service becomes `redis:2.8`.
 
 ## Use Redis with the Shell executor
 
@@ -52,7 +52,7 @@ sudo -u gitlab-runner -H redis-cli
 
 Finally, configure your application to use the database, for example:
 
-```bash
+```yaml
 Host: localhost
 ```
 
@@ -65,4 +65,5 @@ that runs on [GitLab.com](https://gitlab.com) using our publicly available
 Want to hack on it? Simply fork it, commit and push  your changes. Within a few
 moments the changes will be picked by a public runner and the build will begin.
 
+[hub-redis]: https://hub.docker.com/_/redis/
 [redis-example-repo]: https://gitlab.com/gitlab-examples/redis
