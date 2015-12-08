@@ -25,7 +25,7 @@
         %li
           = link_to issue_path(issue) + "#notes", class: "issue-no-comments" do
             = icon('comments')
-            = notes_count
+            = note_count
 
   .issue-info
     #{issue.to_reference} &middot;
