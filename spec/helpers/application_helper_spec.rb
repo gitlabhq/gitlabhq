@@ -278,7 +278,7 @@ describe ApplicationHelper do
       el = element.next_element
 
       expect(el.name).to eq 'script'
-      expect(el.text).to include "$('.js-timeago').timeago()"
+      expect(el.text).to include "$('.js-timeago').last().timeago()"
     end
 
     it 'allows the script tag to be excluded' do

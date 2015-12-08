@@ -3,9 +3,8 @@
     - if diff_file.diff.submodule?
       %span
         = icon('archive fw')
-        - submodule_item = project.repository.blob_at(@commit.id, diff_file.file_path)
         %strong
-          = submodule_link(submodule_item, @commit.id, project.repository)
+          = submodule_link(blob, @commit.id, project.repository)
     - else
       %span
         = blob_icon blob.mode, blob.name
