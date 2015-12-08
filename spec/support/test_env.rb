@@ -12,6 +12,7 @@ module TestEnv
     'fix'              => '48f0be4',
     'improve/awesome'  => '5937ac0',
     'markdown'         => '0ed8c6c',
+    'lfs'              => 'be93687',
     'master'           => '5937ac0',
     "'test'"           => 'e56497b',
   }
