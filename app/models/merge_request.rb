@@ -484,4 +484,8 @@ class MergeRequest < ActiveRecord::Base
       source_project.ci_commit(last_commit.id)
     end
   end
+
+  def broken?
+    self.commits.blank? || branch_missing? || cannot_be_merged?
+  end
 end

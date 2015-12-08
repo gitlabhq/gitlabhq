@@ -124,6 +124,24 @@ ul.content-list {
         padding: 10px 14px;
       }
     }
+
+    ul.controls {
+      list-style: none;
+
+      li {
+        float: left;
+        padding-right: 10px;
+
+        .author_link {
+          display: inline-block;
+
+          .avatar-inline {
+            margin-left: 0;
+            margin-right: 0;
+          }
+        }
+      }
+    }
   }
 }
 
