@@ -28,7 +28,7 @@ class Projects::ApplicationController < ApplicationController
 
   private
 
-  def ci_enabled
+  def builds_enabled
     return render_404 unless @project.builds_enabled?
   end
 
