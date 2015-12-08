@@ -66,6 +66,11 @@ class @MergeRequestTabs
 
     @setCurrentAction(action)
 
+  scrollToElement: (container) ->
+    if window.location.hash
+      $el = $("#{container} #{window.location.hash}")
+      $('body').scrollTo($el.offset().top) if $el.length
+
   # Activate a tab based on the current action
   activateTab: (action) ->
     action = 'notes' if action == 'show'
@@ -122,6 +127,7 @@ class @MergeRequestTabs
         document.getElementById('commits').innerHTML = data.html
         $('.js-timeago').timeago()
         @commitsLoaded = true
+        @scrollToElement("#commits")
 
   loadDiff: (source) ->
     return if @diffsLoaded
@@ -131,14 +137,18 @@ class @MergeRequestTabs
       success: (data) =>
         document.getElementById('diffs').innerHTML = data.html
         @diffsLoaded = true
+        @scrollToElement("#diffs")
 
-  toggleLoading: ->
-    $('.mr-loading-status .loading').toggle()
+  # Show or hide the loading spinner
+  #
+  # status - Boolean, true to show, false to hide
+  toggleLoading: (status) ->
+    $('.mr-loading-status .loading').toggle(status)
 
   _get: (options) ->
     defaults = {
-      beforeSend: @toggleLoading
-      complete: @toggleLoading
+      beforeSend: => @toggleLoading(true)
+      complete:   => @toggleLoading(false)
       dataType: 'json'
       type: 'GET'
     }

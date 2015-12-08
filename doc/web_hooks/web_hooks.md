@@ -57,6 +57,9 @@ X-Gitlab-Event: Push Hook
         "name": "Jordi Mallach",
         "email": "jordi@softcatala.org"
       }
+      "added": ["CHANGELOG"],
+      "modified": ["app/controller/application.rb"],
+      "removed": []
     },
     {
       "id": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
@@ -66,10 +69,14 @@ X-Gitlab-Event: Push Hook
       "author": {
         "name": "GitLab dev user",
         "email": "gitlabdev@dv6700.(none)"
-      }
+      },
+      "added": ["CHANGELOG"],
+      "modified": ["app/controller/application.rb"],
+      "removed": []
     }
   ],
   "total_commits_count": 4
+  
 }
 ```
 
@@ -314,7 +321,8 @@ X-Gitlab-Event: Note Hook
         "name": "John Smith",
         "email": "john@example.com"
       }
-    }
+    },
+    "work_in_progress": false
   }
 }
 ```
@@ -500,6 +508,7 @@ X-Gitlab-Event: Merge Request Hook
         "email": "gitlabdev@dv6700.(none)"
       }
     },
+    "work_in_progress": false,
     "url": "http://example.com/diaspora/merge_requests/1",
     "action": "open"
   }

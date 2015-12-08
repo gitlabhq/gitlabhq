@@ -30,6 +30,10 @@ module Gitlab
         replace_text_nodes_matching(ExternalIssue.reference_pattern) do |content|
           issue_link_filter(content)
         end
+
+        replace_link_nodes_with_href(ExternalIssue.reference_pattern) do |link, text|
+          issue_link_filter(link, link_text: text)
+        end
       end
 
       # Replace `JIRA-123` issue references in text with links to the referenced
@@ -39,7 +43,7 @@ module Gitlab
       #
       # Returns a String with `JIRA-123` references replaced with links. All
       # links have `gfm` and `gfm-issue` class names attached for styling.
-      def issue_link_filter(text)
+      def issue_link_filter(text, link_text: nil)
         project = context[:project]
 
         self.class.references_in(text) do |match, issue|
@@ -47,10 +51,13 @@ module Gitlab
 
           title = escape_once("Issue in #{project.external_issue_tracker.title}")
           klass = reference_class(:issue)
+          data  = data_attribute(project: project.id)
 
-          %(<a href="#{url}"
+          text = link_text || match
+
+          %(<a href="#{url}" #{data}
                title="#{title}"
-               class="#{klass}">#{match}</a>)
+               class="#{klass}">#{text}</a>)
         end
       end
 

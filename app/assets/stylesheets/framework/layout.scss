@@ -1,0 +1,31 @@
+html {
+  overflow-y: scroll;
+
+  &.touch .tooltip { display: none !important; }
+}
+
+body {
+  background-color: #EAEBEC !important;
+
+  &.navless {
+    background-color: white !important;
+  }
+}
+
+.container {
+  padding-top: 0;
+  z-index: 5;
+}
+
+.container .content {
+  margin: 0 0;
+}
+
+.navless-container {
+  margin-top: $header-height;
+  padding-top: $gl-padding * 2;
+}
+
+.container-limited {
+  max-width: $fixed-layout-width;
+}

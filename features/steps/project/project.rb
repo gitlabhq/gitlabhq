@@ -86,13 +86,13 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Forum" README' do
-    page.within('#README') do
+    page.within('.readme-holder') do
       expect(page).to have_content 'Sample repo for testing gitlab features'
     end
   end
 
   step 'I should see project "Shop" README' do
-    page.within('#README') do
+    page.within('.readme-holder') do
       expect(page).to have_content 'testme'
     end
   end
@@ -124,11 +124,11 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see back to dashboard button' do
-    expect(page).to have_content 'Back to dashboard'
+    expect(page).to have_content 'Go to dashboard'
   end
 
   step 'I should see back to group button' do
-    expect(page).to have_content 'Back to group'
+    expect(page).to have_content 'Go to group'
   end
 
   step 'I click notifications drop down button' do

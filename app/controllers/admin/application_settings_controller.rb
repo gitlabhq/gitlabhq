@@ -55,8 +55,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :default_snippet_visibility,
       :restricted_signup_domains_raw,
       :version_check_enabled,
+      :admin_notification_email,
       :user_oauth_applications,
-      :ci_enabled,
+      :shared_runners_enabled,
+      :max_artifacts_size,
       restricted_visibility_levels: [],
       import_sources: []
     )

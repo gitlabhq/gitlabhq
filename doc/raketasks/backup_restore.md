@@ -7,14 +7,16 @@
 A backup creates an archive file that contains the database, all repositories and all attachments.
 This archive will be saved in backup_path (see `config/gitlab.yml`).
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
-You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1. The best way to migrate your repositories from one server to another is through backup restore.
+You can only restore a backup to exactly the same version of GitLab that you created it
+on, for example 7.2.1. The best way to migrate your repositories from one server to
+another is through backup restore.
 
 You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json`
 (for omnibus packages) or `/home/git/gitlab/.secret` (for installations
 from source). This file contains the database encryption key used
 for two-factor authentication. If you restore a GitLab backup without
 restoring the database encryption key, users who have two-factor
-authentication enabled will loose access to your GitLab server.
+authentication enabled will lose access to your GitLab server.
 
 If you are interested in GitLab CI backup please follow to the [CI backup documentation](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/raketasks/backup_restore.md)*
 
@@ -27,7 +29,8 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 Also you can choose what should be backed up by adding environment variable SKIP. Available options: db,
-uploads (attachments), repositories. Use a comma to specify several options at the same time.
+uploads (attachments), repositories, builds(CI build output logs), artifacts (CI build artifacts), lfs (LFS objects).
+Use a comma to specify several options at the same time.
 
 ```
 sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
@@ -95,6 +98,8 @@ For installations from source:
         aws_secret_access_key: 'secret123'
       # The remote 'directory' to store your backups. For S3, this would be the bucket name.
       remote_directory: 'my.s3.bucket'
+      # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
+      # encryption: 'AES256'
 ```
 
 If you are uploading your backups to S3 you will probably want to create a new
@@ -269,9 +274,6 @@ sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
 # Start GitLab
 sudo gitlab-ctl start
 
-# Create satellites
-sudo gitlab-rake gitlab:satellites:create
-
 # Check GitLab
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
@@ -369,7 +371,11 @@ For more information see similar questions on postgresql issue tracker[here](htt
 
 ## Note
 This documentation is for GitLab CE.
-We backup GitLab.com and make sure your data is secure, but you can't use these methods
-to export / backup your data yourself from GitLab.com.
+We backup GitLab.com and make sure your data is secure, but you can't use these methods to export / backup your data yourself from GitLab.com.
 
 Issues are stored in the database. They can't be stored in Git itself.
+
+To migrate your repositories from one server to another with an up-to-date version of
+GitLab, you can use the [import rake task](import.md) to do a mass import of the
+repository. Note that if you do an import rake task, rather than a backup restore, you
+will have all your repositories, but not any other data.

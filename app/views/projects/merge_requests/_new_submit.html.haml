@@ -1,24 +1,24 @@
 %h3.page-title
-  New merge request
+  New Merge Request
 %p.slead
+  - source_title, target_title = format_mr_branch_names(@merge_request)
   From
-  %strong.label-branch #{@merge_request.source_project_namespace}:#{@merge_request.source_branch}
+  %strong.label-branch #{source_title}
   %span into
-  %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
+  %strong.label-branch #{target_title}
 
   %span.pull-right
     = link_to 'Change branches', mr_change_branches_path(@merge_request)
 %hr
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form js-requires-input' } do |f|
-  .merge-request-form-info
-    = render 'shared/issuable/form', f: f, issuable: @merge_request
-    = f.hidden_field :source_project_id
-    = f.hidden_field :source_branch
-    = f.hidden_field :target_project_id
-    = f.hidden_field :target_branch
+  = render 'shared/issuable/form', f: f, issuable: @merge_request
+  = f.hidden_field :source_project_id
+  = f.hidden_field :source_branch
+  = f.hidden_field :target_project_id
+  = f.hidden_field :target_branch
 
 .mr-compare.merge-request
-  %ul.merge-request-tabs
+  %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
     %li.commits-tab
       = link_to url_for(params), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
         Commits
@@ -30,7 +30,7 @@
 
   .tab-content
     #commits.commits.tab-pane
-      = render "projects/commits/commits", project: @project
+      = render "projects/merge_requests/show/commits"
     #diffs.diffs.tab-pane.active
       - if @diffs.present?
         = render "projects/diffs/diffs", diffs: @diffs, project: @project
@@ -56,4 +56,3 @@
     diffs_loaded: true,
     commits_loaded: true
   });
-

@@ -5,7 +5,7 @@ module Gitlab::Markdown
   describe LabelReferenceFilter do
     include FilterSpecHelper
 
-    let(:project)   { create(:empty_project) }
+    let(:project)   { create(:empty_project, :public) }
     let(:label)     { create(:label, project: project) }
     let(:reference) { label.to_reference }
 
@@ -16,25 +16,33 @@ module Gitlab::Markdown
     %w(pre code a style).each do |elem|
       it "ignores valid references contained inside '#{elem}' element" do
         exp = act = "<#{elem}>Label #{reference}</#{elem}>"
-        expect(filter(act).to_html).to eq exp
+        expect(reference_filter(act).to_html).to eq exp
       end
     end
 
     it 'includes default classes' do
-      doc = filter("Label #{reference}")
+      doc = reference_filter("Label #{reference}")
       expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-label'
     end
 
-    it 'includes a data-project-id attribute' do
-      doc = filter("Label #{reference}")
+    it 'includes a data-project attribute' do
+      doc = reference_filter("Label #{reference}")
       link = doc.css('a').first
 
-      expect(link).to have_attribute('data-project-id')
-      expect(link.attr('data-project-id')).to eq project.id.to_s
+      expect(link).to have_attribute('data-project')
+      expect(link.attr('data-project')).to eq project.id.to_s
+    end
+
+    it 'includes a data-label attribute' do
+      doc = reference_filter("See #{reference}")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-label')
+      expect(link.attr('data-label')).to eq label.id.to_s
     end
 
     it 'supports an :only_path context' do
-      doc = filter("Label #{reference}", only_path: true)
+      doc = reference_filter("Label #{reference}", only_path: true)
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
@@ -42,39 +50,39 @@ module Gitlab::Markdown
     end
 
     it 'adds to the results hash' do
-      result = pipeline_result("Label #{reference}")
+      result = reference_pipeline_result("Label #{reference}")
       expect(result[:references][:label]).to eq [label]
     end
 
     describe 'label span element' do
       it 'includes default classes' do
-        doc = filter("Label #{reference}")
+        doc = reference_filter("Label #{reference}")
         expect(doc.css('a span').first.attr('class')).to eq 'label color-label'
       end
 
       it 'includes a style attribute' do
-        doc = filter("Label #{reference}")
+        doc = reference_filter("Label #{reference}")
         expect(doc.css('a span').first.attr('style')).to match(/\Abackground-color: #\h{6}; color: #\h{6}\z/)
       end
     end
 
     context 'Integer-based references' do
       it 'links to a valid reference' do
-        doc = filter("See #{reference}")
+        doc = reference_filter("See #{reference}")
 
         expect(doc.css('a').first.attr('href')).to eq urls.
           namespace_project_issues_url(project.namespace, project, label_name: label.name)
       end
 
       it 'links with adjacent text' do
-        doc = filter("Label (#{reference}.)")
+        doc = reference_filter("Label (#{reference}.)")
         expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
       end
 
       it 'ignores invalid label IDs' do
         exp = act = "Label #{invalidate_reference(reference)}"
 
-        expect(filter(act).to_html).to eq exp
+        expect(reference_filter(act).to_html).to eq exp
       end
     end
 
@@ -83,7 +91,7 @@ module Gitlab::Markdown
       let(:reference) { "#{Label.reference_prefix}#{label.name}" }
 
       it 'links to a valid reference' do
-        doc = filter("See #{reference}")
+        doc = reference_filter("See #{reference}")
 
         expect(doc.css('a').first.attr('href')).to eq urls.
           namespace_project_issues_url(project.namespace, project, label_name: label.name)
@@ -91,14 +99,14 @@ module Gitlab::Markdown
       end
 
       it 'links with adjacent text' do
-        doc = filter("Label (#{reference}.)")
+        doc = reference_filter("Label (#{reference}.)")
         expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
       end
 
       it 'ignores invalid label names' do
         exp = act = "Label #{Label.reference_prefix}#{label.name.reverse}"
 
-        expect(filter(act).to_html).to eq exp
+        expect(reference_filter(act).to_html).to eq exp
       end
     end
 
@@ -107,7 +115,7 @@ module Gitlab::Markdown
       let(:reference) { label.to_reference(:name) }
 
       it 'links to a valid reference' do
-        doc = filter("See #{reference}")
+        doc = reference_filter("See #{reference}")
 
         expect(doc.css('a').first.attr('href')).to eq urls.
           namespace_project_issues_url(project.namespace, project, label_name: label.name)
@@ -115,21 +123,58 @@ module Gitlab::Markdown
       end
 
       it 'links with adjacent text' do
-        doc = filter("Label (#{reference}.)")
+        doc = reference_filter("Label (#{reference}.)")
         expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
       end
 
       it 'ignores invalid label names' do
         exp = act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
 
-        expect(filter(act).to_html).to eq exp
+        expect(reference_filter(act).to_html).to eq exp
       end
     end
 
     describe 'edge cases' do
       it 'gracefully handles non-references matching the pattern' do
         exp = act = '(format nil "~0f" 3.0) ; 3.0'
-        expect(filter(act).to_html).to eq exp
+        expect(reference_filter(act).to_html).to eq exp
+      end
+    end
+
+    describe 'referencing a label in a link href' do
+      let(:reference) { %Q{<a href="#{label.to_reference}">Label</a>} }
+
+      it 'links to a valid reference' do
+        doc = reference_filter("See #{reference}")
+
+        expect(doc.css('a').first.attr('href')).to eq urls.
+          namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      end
+
+      it 'links with adjacent text' do
+        doc = reference_filter("Label (#{reference}.)")
+        expect(doc.to_html).to match(%r(\(<a.+>Label</a>\.\)))
+      end
+
+      it 'includes a data-project attribute' do
+        doc = reference_filter("Label #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-project')
+        expect(link.attr('data-project')).to eq project.id.to_s
+      end
+
+      it 'includes a data-label attribute' do
+        doc = reference_filter("See #{reference}")
+        link = doc.css('a').first
+
+        expect(link).to have_attribute('data-label')
+        expect(link.attr('data-label')).to eq label.id.to_s
+      end
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("Label #{reference}")
+        expect(result[:references][:label]).to eq [label]
       end
     end
   end

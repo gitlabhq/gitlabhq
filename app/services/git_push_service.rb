@@ -49,17 +49,14 @@ class GitPushService
     elsif push_to_existing_branch?(ref, oldrev)
       # Collect data for this git push
       @push_commits = project.repository.commits_between(oldrev, newrev)
-      project.update_merge_requests(oldrev, newrev, ref, @user)
       process_commit_messages(ref)
     end
 
-    @push_data = build_push_data(oldrev, newrev, ref)
+    # Update merge requests that may be affected by this push. A new branch
+    # could cause the last commit of a merge request to change.
+    project.update_merge_requests(oldrev, newrev, ref, @user)
 
-    # If CI was disabled but .gitlab-ci.yml file was pushed
-    # we enable CI automatically
-    if !project.gitlab_ci? && gitlab_ci_yaml?(newrev)
-      project.enable_ci(user)
-    end
+    @push_data = build_push_data(oldrev, newrev, ref)
 
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :push_hooks)
@@ -74,48 +71,30 @@ class GitPushService
   def process_commit_messages(ref)
     is_default_branch = is_default_branch?(ref)
 
+    authors = Hash.new do |hash, commit|
+      email = commit.author_email
+      next hash[email] if hash.has_key?(email)
+
+      hash[email] = commit_user(commit)
+    end
+
     @push_commits.each do |commit|
-      # Close issues if these commits were pushed to the project's default branch and the commit message matches the
-      # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
-      # a different branch.
-      issues_to_close = commit.closes_issues(user)
-
-      # Load commit author only if needed.
-      # For push with 1k commits it prevents 900+ requests in database
-      author = nil
-
       # Keep track of the issues that will be actually closed because they are on a default branch.
       # Hence, when creating cross-reference notes, the not-closed issues (on non-default branches)
       # will also have cross-reference.
-      actually_closed_issues = []
+      closed_issues = []
 
-      if issues_to_close.present? && is_default_branch
-        author ||= commit_user(commit)
-        actually_closed_issues = issues_to_close
-        issues_to_close.each do |issue|
-          Issues::CloseService.new(project, author, {}).execute(issue, commit)
+      if is_default_branch
+        # Close issues if these commits were pushed to the project's default branch and the commit message matches the
+        # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
+        # a different branch.
+        closed_issues = commit.closes_issues(user)
+        closed_issues.each do |issue|
+          Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit)
         end
       end
 
-      if project.default_issues_tracker?
-        create_cross_reference_notes(commit, actually_closed_issues)
-      end
-    end
-  end
-
-  def create_cross_reference_notes(commit, issues_to_close)
-    # Create cross-reference notes for any other references than those given in issues_to_close.
-    # Omit any issues that were referenced in an issue-closing phrase, or have already been
-    # mentioned from this commit (probably from this commit being pushed to a different branch).
-    refs = commit.references(project, user) - issues_to_close
-    refs.reject! { |r| commit.has_mentioned?(r) }
-
-    if refs.present?
-      author ||= commit_user(commit)
-
-      refs.each do |r|
-        SystemNoteService.cross_reference(r, commit, author)
-      end
+      commit.create_cross_references!(authors[commit], closed_issues)
     end
   end
 
@@ -148,11 +127,5 @@ class GitPushService
 
   def commit_user(commit)
     commit.author || user
-  end
-
-  def gitlab_ci_yaml?(sha)
-    @project.repository.blob_at(sha, '.gitlab-ci.yml')
-  rescue Rugged::ReferenceError
-    nil
   end
 end

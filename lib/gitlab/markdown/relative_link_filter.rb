@@ -17,6 +17,9 @@ module Gitlab
         return doc unless linkable_files?
 
         doc.search('a').each do |el|
+          klass = el.attr('class')
+          next if klass && klass.include?('gfm')
+          
           process_link_attr el.attribute('href')
         end
 
@@ -51,7 +54,7 @@ module Gitlab
           relative_url_root,
           context[:project].path_with_namespace,
           path_type(file_path),
-          ref || 'master',  # assume that if no ref exists we can point to master
+          ref || context[:project].default_branch,  # if no ref exists, point to the default branch
           file_path
         ].compact.join('/').squeeze('/').chomp('/')
 

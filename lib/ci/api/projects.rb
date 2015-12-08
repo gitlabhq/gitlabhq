@@ -75,23 +75,17 @@ module Ci
         # Create Gitlab CI project using Gitlab project info
         #
         # Parameters:
-        #   name (required)            - The name of the project
         #   gitlab_id (required)       - The gitlab id of the project
-        #   path (required)            - The gitlab project path, ex. randx/six
-        #   ssh_url_to_repo (required) - The gitlab ssh url to the repo
         #   default_ref                - The branch to run against (defaults to `master`)
         # Example Request:
         #   POST /projects
         post do
-          required_attributes! [:name, :gitlab_id, :ssh_url_to_repo]
+          required_attributes! [:gitlab_id]
 
           filtered_params = {
-            name:            params[:name],
             gitlab_id:       params[:gitlab_id],
             # we accept gitlab_url for backward compatibility for a while (added to 7.11)
-            path:            params[:path] || params[:gitlab_url].sub(/.*\/(.*\/.*)$/, '\1'),
-            default_ref:     params[:default_ref] || 'master',
-            ssh_url_to_repo: params[:ssh_url_to_repo]
+            default_ref:     params[:default_ref] || 'master'
           }
 
           project = Ci::Project.new(filtered_params)
@@ -109,11 +103,7 @@ module Ci
         #
         # Parameters:
         #   id (required)   - The ID of a project
-        #   name            - The name of the project
-        #   gitlab_id       - The gitlab id of the project
-        #   path            - The gitlab project path, ex. randx/six
-        #   ssh_url_to_repo - The gitlab ssh url to the repo
-        #   default_ref     - The branch to run against (defaults to `master`)
+        #   default_ref      - The branch to run against (defaults to `master`)
         # Example Request:
         #   PUT /projects/:id
         put ":id" do
@@ -121,12 +111,7 @@ module Ci
 
           unauthorized! unless can?(current_user, :admin_project, project.gl_project)
 
-          attrs = attributes_for_keys [:name, :gitlab_id, :path, :gitlab_url, :default_ref, :ssh_url_to_repo]
-
-          # we accept gitlab_url for backward compatibility for a while (added to 7.11)
-          if attrs[:gitlab_url] && !attrs[:path]
-            attrs[:path] = attrs[:gitlab_url].sub(/.*\/(.*\/.*)$/, '\1')
-          end
+          attrs = attributes_for_keys [:default_ref]
 
           if project.update_attributes(attrs)
             present project, with: Entities::Project

@@ -1,0 +1,38 @@
+en:
+  sherlock:
+    title: Sherlock
+    delete_all_transactions: Delete All Transactions
+    introduction: >
+      Below is a list of all transactions recorded by Sherlock. Requests to
+      Sherlock's own routes are ignored.
+    no_transactions: No transactions to show
+    no_queries: No queries to show
+    no_file_samples: No file samples to show
+    all_transactions: All Transactions
+    transaction: Transaction
+    query: Query
+    file_sample: File Sample
+    type: Type
+    path: Path
+    time: Time
+    queries: Queries
+    finished_at: Finished at
+    ago: ago
+    view: View
+    seconds: seconds
+    milliseconds: ms
+    general: General
+    id: ID
+    time_inclusive: Time (inclusive)
+    backtrace: Backtrace
+    application_backtrace: Application Backtrace
+    full_backtrace: Full Backtrace
+    origin: Origin
+    line: line
+    line_capitalized: Line
+    copy_to_clipboard: Copy to clipboard
+    query_plan: Query Plan
+    events: Events
+    percent: '%'
+    count: Count
+    query_time: Query Time

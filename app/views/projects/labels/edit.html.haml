@@ -1,11 +1,7 @@
 - page_title "Edit", @label.name, "Labels"
 = render "header_title"
 
-%h3
-  Edit label
-  %span.light #{@label.name}
-.back-link
-  = link_to namespace_project_labels_path(@project.namespace, @project) do
-    &larr; To labels list
+%h3.page-title
+  Edit Label
 %hr
 = render 'form'

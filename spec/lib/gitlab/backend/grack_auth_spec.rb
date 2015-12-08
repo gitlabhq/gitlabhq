@@ -50,6 +50,22 @@ describe Grack::Auth do
       end
     end
 
+    context "when the Wiki for a project exists" do
+      before do
+        @wiki = ProjectWiki.new(project)
+        env["PATH_INFO"] = "#{@wiki.repository.path_with_namespace}.git/info/refs"
+        project.update_attribute(:visibility_level, Project::PUBLIC)
+      end
+
+      it "responds with the right project" do
+        response = auth.call(env)
+        json_body = ActiveSupport::JSON.decode(response[2][0])
+
+        expect(response.first).to eq(200)
+        expect(json_body['RepoPath']).to include(@wiki.repository.path_with_namespace)
+      end
+    end
+
     context "when the project exists" do
       before do
         env["PATH_INFO"] = project.path_with_namespace + ".git"
@@ -151,14 +167,14 @@ describe Grack::Auth do
                 end
 
                 it "repeated attempts followed by successful attempt" do
-                  for n in 0..maxretry do
+                  maxretry.times.each do
                     expect(attempt_login(false)).to eq(401)
                   end
 
                   expect(attempt_login(true)).to eq(200)
                   expect(Rack::Attack::Allow2Ban.banned?(ip)).to be_falsey
 
-                  for n in 0..maxretry do
+                  maxretry.times.each do
                     expect(attempt_login(false)).to eq(401)
                   end
                 end

@@ -23,14 +23,11 @@ module Ci
         rack_response({ 'message' => '500 Internal Server Error' }, 500)
       end
 
-      before do
-        check_enable_flag!
-      end
-
       format :json
 
       helpers Helpers
-      helpers ::API::APIHelpers
+      helpers ::API::Helpers
+      helpers Gitlab::CurrentSettings
 
       mount Builds
       mount Commits

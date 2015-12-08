@@ -29,28 +29,22 @@
 
 FactoryGirl.define do
   factory :ci_project_without_token, class: Ci::Project do
-    sequence :name do |n|
-      "GitLab / gitlab-shell#{n}"
-    end
-
     default_ref 'master'
 
-    sequence :path do |n|
-      "gitlab/gitlab-shell#{n}"
-    end
-
-    sequence :ssh_url_to_repo do |n|
-      "git@demo.gitlab.com:gitlab/gitlab-shell#{n}.git"
-    end
-
-    gl_project factory: :project
+    shared_runners_enabled false
 
     factory :ci_project do
       token 'iPWx6WM4lhHNedGfBpPJNP'
     end
 
-    factory :ci_public_project do
-      public true
+    initialize_with do
+      # TODO:
+      # this is required, because builds_enabled is initialized when Project is created
+      # and this create gitlab_ci_project if builds is set to true
+      # here we take created gitlab_ci_project and update it's attributes
+      ci_project = create(:empty_project).ensure_gitlab_ci_project
+      ci_project.update_attributes(attributes)
+      ci_project
     end
   end
 end

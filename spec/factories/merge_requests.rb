@@ -20,6 +20,7 @@
 #  position          :integer          default(0)
 #  locked_at         :datetime
 #  updated_by_id     :integer
+#  merge_error       :string(255)
 #
 
 FactoryGirl.define do

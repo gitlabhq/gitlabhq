@@ -1,11 +1,21 @@
-- can_admin_project = can?(current_user, :admin_project, @project)
-
-.panel.panel-default.prepend-top-20
+.panel.panel-default
   .panel-heading
     %strong #{@project.name}
     project members
     %small
       (#{members.count})
-  %ul.well-list
+    .pull-right
+      = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
+        .form-group
+          = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }
+        = button_tag class: 'btn', title: 'Search' do
+          = icon("search")
+  %ul.content-list
     - members.each do |project_member|
-      = render 'project_member', member: project_member, current_user_can_admin_project: can_admin_project
+      = render 'project_member', member: project_member
+
+:javascript
+  $('form.member-search-form').on('submit', function (event) {
+    event.preventDefault();
+    Turbolinks.visit(this.action + '?' + $(this).serialize());
+  });

@@ -11,6 +11,7 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
+#  public      :boolean          default(FALSE)
 #
 
 require 'spec_helper'
@@ -35,6 +36,33 @@ describe Group do
     it { is_expected.to validate_presence_of :path }
     it { is_expected.to validate_uniqueness_of(:path) }
     it { is_expected.not_to validate_presence_of :owner }
+  end
+
+  describe '.public_and_given_groups' do
+    let!(:public_group) { create(:group, public: true) }
+
+    subject { described_class.public_and_given_groups([group.id]) }
+
+    it { is_expected.to eq([public_group, group]) }
+  end
+
+  describe '.visible_to_user' do
+    let!(:group) { create(:group) }
+    let!(:user)  { create(:user) }
+
+    subject { described_class.visible_to_user(user) }
+
+    describe 'when the user has access to a group' do
+      before do
+        group.add_user(user, Gitlab::Access::MASTER)
+      end
+
+      it { is_expected.to eq([group]) }
+    end
+
+    describe 'when the user does not have access to any groups' do
+      it { is_expected.to eq([]) }
+    end
   end
 
   describe '#to_reference' do
@@ -82,6 +110,25 @@ describe Group do
     it "should be false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
       expect(group.avatar_type).to eq(["only images allowed"])
+    end
+  end
+
+  describe "public_profile?" do
+    it "returns true for public group" do
+      group = create(:group, public: true)
+      expect(group.public_profile?).to be_truthy
+    end
+
+    it "returns true for non-public group with public project" do
+      group = create(:group)
+      create(:project, :public, group: group)
+      expect(group.public_profile?).to be_truthy
+    end
+
+    it "returns false for non-public group with no public projects" do
+      group = create(:group)
+      create(:project, group: group)
+      expect(group.public_profile?).to be_falsy
     end
   end
 end

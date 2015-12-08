@@ -3,8 +3,9 @@
 ## List merge requests
 
 Get all merge requests for this project. 
-The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`). 
-The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
+The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests. With GitLab 8.2 the return fields `upvotes` and
+`downvotes` are deprecated and always return `0`.
 
 ```
 GET /projects/:id/merge_requests
@@ -57,7 +58,7 @@ Parameters:
 
 ## Get single MR
 
-Shows information about a single merge request.
+Shows information about a single merge request. With GitLab 8.2 the return fields `upvotes` and `downvotes` are deprecated and always return `0`.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id
@@ -100,9 +101,48 @@ Parameters:
 }
 ```
 
+## Get single MR commits
+
+Get a list of merge request commits.
+
+```
+GET /projects/:id/merge_request/:merge_request_id/commits
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `merge_request_id` (required) - The ID of MR
+
+
+```json
+[
+  {
+    "id": "ed899a2f4b50b4370feeea94676502b42383c746",
+    "short_id": "ed899a2f4b5",
+    "title": "Replace sanitize with escape once",
+    "author_name": "Dmitriy Zaporozhets",
+    "author_email": "dzaporozhets@sphereconsultinginc.com",
+    "created_at": "2012-09-20T11:50:22+03:00",
+    "message": "Replace sanitize with escape once"
+  },
+  {
+    "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
+    "short_id": "6104942438c",
+    "title": "Sanitize for network graph",
+    "author_name": "randx",
+    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "created_at": "2012-09-20T09:06:12+03:00",
+    "message": "Sanitize for network graph"
+  }
+]
+```
+
 ## Get single MR changes
 
-Shows information about the merge request including its files and changes
+Shows information about the merge request including its files and changes.
+With GitLab 8.2 the return fields `upvotes` and `downvotes` are deprecated and
+always return `0`.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id/changes
@@ -156,7 +196,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "files": [
+  "changes": [
     {
     "old_path": "VERSION",
     "new_path": "VERSION",
@@ -173,7 +213,8 @@ Parameters:
 
 ## Create MR
 
-Creates a new merge request.
+Creates a new merge request. With GitLab 8.2 the return fields `upvotes` and `
+downvotes` are deprecated and always return `0`.
 
 ```
 POST /projects/:id/merge_requests
@@ -188,6 +229,7 @@ Parameters:
 - `title` (required)             - Title of MR
 - `description` (optional)       - Description of MR
 - `target_project_id` (optional) - The target project (numeric id)
+- `labels` (optional)            - Labels for MR as a comma-separated list
 
 ```json
 {
@@ -224,7 +266,8 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Update MR
 
-Updates an existing merge request. You can change the target branch, title, or even close the MR.
+Updates an existing merge request. You can change the target branch, title, or even close the MR. With GitLab 8.2 the return fields `upvotes` and `downvotes`
+are deprecated and always return `0`.
 
 ```
 PUT /projects/:id/merge_request/:merge_request_id
@@ -239,6 +282,7 @@ Parameters:
 - `title`                       - Title of MR
 - `description`                 - Description of MR
 - `state_event`                 - New state (close|reopen|merge)
+- `labels` (optional)           - Labels for MR as a comma-separated list
 
 ```json
 {
@@ -274,7 +318,8 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Accept MR
 
-Merge changes submitted with MR using this API.
+Merge changes submitted with MR using this API. With GitLab 8.2 the return
+fields `upvotes` and `downvotes` are deprecated and always return `0`.
 
 If merge success you get `200 OK`.
 

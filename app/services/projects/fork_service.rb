@@ -17,8 +17,14 @@ module Projects
       new_project = CreateService.new(current_user, new_params).execute
 
       if new_project.persisted?
-        if @project.gitlab_ci?
-          @project.gitlab_ci_service.fork_registration(new_project, @current_user)
+        if @project.builds_enabled?
+          new_project.enable_ci
+
+          settings = @project.gitlab_ci_project.attributes.select do |attr_name, value|
+            ["public", "shared_runners_enabled", "allow_git_fetch"].include? attr_name
+          end
+
+          new_project.gitlab_ci_project.update(settings)
         end
       end
 

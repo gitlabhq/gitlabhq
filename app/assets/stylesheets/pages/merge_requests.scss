@@ -3,12 +3,10 @@
  *
  */
 .mr-state-widget {
-  background: #f8fafc;
-  margin-bottom: 20px;
+  background: #F7F8FA;
   color: $gl-gray;
-  border: 1px solid #eef0f2;
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
-  @include border-radius(3px);
+  border: 1px solid #dce0e6;
+  @include border-radius(2px);
 
   form {
     margin-bottom: 0;
@@ -20,6 +18,20 @@
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
+
+      .accept_merge_request {
+        &.ci-pending,
+        &.ci-running {
+          @include btn-orange;
+        }
+
+        &.ci-skipped,
+        &.ci-failed,
+        &.ci-canceled,
+        &.ci-error {
+          @include btn-red;
+        }
+      }
     }
 
     .accept-control {
@@ -74,13 +86,19 @@
   .mr-widget-body,
   .ci_widget,
   .mr-widget-footer {
-    padding: 15px;
+    padding: $gl-padding;
+  }
+
+  .normal {
+    color: #5c5d5e;
   }
 
   .mr-widget-body {
     h4 {
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 17px;
       margin: 5px 0;
+      color: #313236;
     }
 
     p:last-child {
@@ -97,14 +115,8 @@
   }
 }
 
-.merge-request .merge-request-tabs{
-  @include nav-menu;
-  margin: -$gl-padding;
-  padding: $gl-padding;
-  text-align: center;
-  border-top: 1px solid #e7e9ed;
-  margin-top: 18px;
-  margin-bottom: 3px;
+.merge-request-details {
+  margin-bottom: $gl-padding;
 }
 
 .mr_source_commit,
@@ -120,10 +132,12 @@
 }
 
 .label-branch {
-  color: #222;
+  color: #313236;
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
+  font-size: 14px;
+  margin: 0 3px;
 }
 
 .mr-list {
@@ -159,25 +173,10 @@
   line-height: 1.1;
 }
 
-.merge-request-form-info {
-  padding-top: 15px;
-}
-
 // hide mr close link for inline diff comment form
 .diff-file .close-mr-link,
 .diff-file .reopen-mr-link {
   display: none;
-}
-
-.merge-request-show-labels {
-  a {
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: inline-block;
-    .color-label {
-      padding: 6px 10px;
-    }
-  }
 }
 
 .merge-request-form .select2-container {
@@ -186,6 +185,15 @@
 
 #modal_merge_info .modal-dialog {
   width: 600px;
+
+  .btn-clipboard {
+    @extend .pull-right;
+
+    margin-right: 18px;
+    margin-top: 5px;
+    position: absolute;
+    right: 0;
+  }
 }
 
 .mr-source-target {

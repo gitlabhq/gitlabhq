@@ -25,48 +25,24 @@ module VisibilityLevelHelper
   end
 
   def project_visibility_level_description(level)
-    capture_haml do
-      haml_tag :span do
-        case level
-        when Gitlab::VisibilityLevel::PRIVATE
-          haml_concat "Project access must be granted explicitly for each user."
-        when Gitlab::VisibilityLevel::INTERNAL
-          haml_concat "The project can be cloned by"
-          haml_concat "any logged in user."
-        when Gitlab::VisibilityLevel::PUBLIC
-          haml_concat "The project can be cloned"
-          haml_concat "without any"
-          haml_concat "authentication."
-        end
-      end
+    case level
+    when Gitlab::VisibilityLevel::PRIVATE
+      "Project access must be granted explicitly for each user."
+    when Gitlab::VisibilityLevel::INTERNAL
+      "The project can be cloned by any logged in user."
+    when Gitlab::VisibilityLevel::PUBLIC
+      "The project can be cloned without any authentication."
     end
   end
 
   def snippet_visibility_level_description(level)
-    capture_haml do
-      haml_tag :span do
-        case level
-        when Gitlab::VisibilityLevel::PRIVATE
-          haml_concat "The snippet is visible only for me."
-        when Gitlab::VisibilityLevel::INTERNAL
-          haml_concat "The snippet is visible for any logged in user."
-        when Gitlab::VisibilityLevel::PUBLIC
-          haml_concat "The snippet can be accessed"
-          haml_concat "without any"
-          haml_concat "authentication."
-        end
-      end
-    end
-  end
-
-  def visibility_level_icon(level)
     case level
     when Gitlab::VisibilityLevel::PRIVATE
-      private_icon
+      "The snippet is visible only for me."
     when Gitlab::VisibilityLevel::INTERNAL
-      internal_icon
+      "The snippet is visible for any logged in user."
     when Gitlab::VisibilityLevel::PUBLIC
-      public_icon
+      "The snippet can be accessed without any authentication."
     end
   end
 

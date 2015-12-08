@@ -33,13 +33,15 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_shell_ssh_path_prefix
+      user_host = "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}"
+
       if gitlab_shell.ssh_port != 22
-        "ssh://#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:#{gitlab_shell.ssh_port}/"
+        "ssh://#{user_host}:#{gitlab_shell.ssh_port}/"
       else
         if gitlab_shell.ssh_host.include? ':'
-          "[#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}]:"
+          "[#{user_host}]:"
         else
-          "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+          "#{user_host}:"
         end
       end
     end
@@ -125,6 +127,9 @@ Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link
 
 Settings.omniauth['providers']  ||= []
 
+Settings['shared'] ||= Settingslogic.new({})
+Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
+
 Settings['issues_tracker']  ||= {}
 
 #
@@ -159,7 +164,7 @@ Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].
 Settings.gitlab['twitter_sharing_enabled'] ||= true if Settings.gitlab['twitter_sharing_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -168,8 +173,9 @@ Settings.gitlab.default_projects_features['issues']         = true if Settings.g
 Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']           = true if Settings.gitlab.default_projects_features['wiki'].nil?
 Settings.gitlab.default_projects_features['snippets']       = false if Settings.gitlab.default_projects_features['snippets'].nil?
+Settings.gitlab.default_projects_features['builds']         = true if Settings.gitlab.default_projects_features['builds'].nil?
 Settings.gitlab.default_projects_features['visibility_level']    = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
-Settings.gitlab['repository_downloads_path'] = File.absolute_path(Settings.gitlab['repository_downloads_path'] || 'tmp/repositories', Rails.root)
+Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive') if Settings.gitlab['repository_downloads_path'].nil?
 Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
 
@@ -178,17 +184,36 @@ Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious'
 # CI
 #
 Settings['gitlab_ci'] ||= Settingslogic.new({})
-Settings.gitlab_ci['enabled']             = true if Settings.gitlab_ci['enabled'].nil?
-Settings.gitlab_ci['all_broken_builds']   = true if Settings.gitlab_ci['all_broken_builds'].nil?
-Settings.gitlab_ci['add_pusher']          = false if Settings.gitlab_ci['add_pusher'].nil?
-Settings.gitlab_ci['url']                 ||= Settings.send(:build_gitlab_ci_url)
-Settings.gitlab_ci['builds_path']         = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['shared_runners_enabled'].nil?
+Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_broken_builds'].nil?
+Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
+Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
+Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
 
 #
 # Reply by email
 #
 Settings['incoming_email'] ||= Settingslogic.new({})
-Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
+Settings.incoming_email['enabled']    = false if Settings.incoming_email['enabled'].nil?
+Settings.incoming_email['port']       = 143 if Settings.incoming_email['port'].nil?
+Settings.incoming_email['ssl']        = false if Settings.incoming_email['ssl'].nil?
+Settings.incoming_email['start_tls']  = false if Settings.incoming_email['start_tls'].nil?
+Settings.incoming_email['mailbox']    = "inbox" if Settings.incoming_email['mailbox'].nil?
+
+#
+# Build Artifacts
+#
+Settings['artifacts'] ||= Settingslogic.new({})
+Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
+Settings.artifacts['path']         = File.expand_path(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"), Rails.root)
+Settings.artifacts['max_size']    ||= 100 # in megabytes
+
+#
+# Git LFS
+#
+Settings['lfs'] ||= Settingslogic.new({})
+Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
+Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"), Rails.root)
 
 #
 # Gravatar
@@ -229,6 +254,7 @@ if Settings.backup['upload']['connection']
   Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
 end
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
+Settings.backup['upload']['encryption'] ||= nil
 
 #
 # Git
@@ -238,9 +264,12 @@ Settings.git['max_size']  ||= 20971520 # 20.megabytes
 Settings.git['bin_path']  ||= '/usr/bin/git'
 Settings.git['timeout']   ||= 10
 
+# Important: keep the satellites.path setting until GitLab 9.0 at
+# least. This setting is fed to 'rm -rf' in
+# db/migrate/20151023144219_remove_satellites.rb
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
-Settings.satellites['timeout'] ||= 30
+
 
 #
 # Extra customization
@@ -265,4 +294,13 @@ if Rails.env.test?
   Settings.gitlab['default_projects_limit']   = 42
   Settings.gitlab['default_can_create_group'] = true
   Settings.gitlab['default_can_create_team']  = false
+end
+
+# Force a refresh of application settings at startup
+begin
+  ApplicationSetting.expire
+  Ci::ApplicationSetting.expire
+rescue
+  # Gracefully handle when Redis is not available. For example,
+  # omnibus may fail here during assets:precompile.
 end

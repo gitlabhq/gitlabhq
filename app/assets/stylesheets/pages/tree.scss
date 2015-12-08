@@ -1,22 +1,13 @@
 .tree-holder {
-  .tree-content-holder {
-    float: left;
-    width: 100%;
-  }
-
-  .tree_progress {
-    display: none;
-    margin: 20px;
-    &.loading {
-      display: block;
-    }
-  }
 
   .tree-table {
-    @extend .table;
-    @include border-radius(0);
+    margin-bottom: 0;
 
     tr {
+      > td, > th {
+        line-height: 28px;
+      }
+
       &:hover {
         td {
           background: $hover;
@@ -27,9 +18,9 @@
       }
       &.selected {
         td {
-          background: $background-color;
-          border-top: 1px solid #EEE;
-          border-bottom: 1px solid #EEE;
+          background: $gray-dark;
+          border-top: 1px solid $border-gray-dark;
+          border-bottom: 1px solid $border-gray-dark;
         }
       }
     }
@@ -83,19 +74,6 @@
 .tree-ref-holder {
   float: left;
   margin-right: 15px;
-}
-
-.readme-holder {
-  margin: 0 auto;
-
-  .readme-file-title {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #777;
-    border-bottom: 1px solid #DDD;
-    padding: 10px 0;
-  }
 }
 
 .blob-commit-info {

@@ -23,24 +23,31 @@ class TeamcityService < CiService
 
   prop_accessor :teamcity_url, :build_type, :username, :password
 
-  validates :teamcity_url,
-    presence: true,
-    format: { with: /\A#{URI.regexp}\z/ }, if: :activated?
+  validates :teamcity_url, presence: true, url: true, if: :activated?
   validates :build_type, presence: true, if: :activated?
   validates :username,
     presence: true,
-    if: ->(service) { service.password? }, if: :activated?
+    if: ->(service) { service.password? },
+    if: :activated?
   validates :password,
     presence: true,
-    if: ->(service) { service.username? }, if: :activated?
+    if: ->(service) { service.username? },
+    if: :activated?
 
   attr_accessor :response
 
   after_save :compose_service_hook, if: :activated?
+  before_update :reset_password
 
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.save
+  end
+
+  def reset_password
+    if teamcity_url_changed? && !password_touched?
+      self.password = nil
+    end
   end
 
   def title

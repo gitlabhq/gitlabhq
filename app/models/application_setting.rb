@@ -23,9 +23,15 @@
 #  after_sign_out_path          :string(255)
 #  session_expire_delay         :integer          default(10080), not null
 #  import_sources               :text
+#  help_page_text               :text
+#  admin_notification_email     :string(255)
+#  shared_runners_enabled       :boolean          default(TRUE), not null
+#  max_artifacts_size           :integer          default(100), not null
 #
 
 class ApplicationSetting < ActiveRecord::Base
+  CACHE_KEY = 'application_setting.last'
+
   serialize :restricted_visibility_levels
   serialize :import_sources
   serialize :restricted_signup_domains, Array
@@ -37,12 +43,16 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates :home_page_url,
     allow_blank: true,
-    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" },
+    url: true,
     if: :home_page_url_column_exist
 
   validates :after_sign_out_path,
     allow_blank: true,
-    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }
+    url: true
+
+  validates :admin_notification_email,
+    allow_blank: true,
+    email: true
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
@@ -64,8 +74,18 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  after_commit do
+    Rails.cache.write(CACHE_KEY, self)
+  end
+
   def self.current
-    ApplicationSetting.last
+    Rails.cache.fetch(CACHE_KEY) do
+      ApplicationSetting.last
+    end
+  end
+
+  def self.expire
+    Rails.cache.delete(CACHE_KEY)
   end
 
   def self.create_from_defaults
@@ -84,7 +104,8 @@ class ApplicationSetting < ActiveRecord::Base
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
       import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
-      ci_enabled: Settings.gitlab_ci['enabled']
+      shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
+      max_artifacts_size: Settings.artifacts['max_size'],
     )
   end
 

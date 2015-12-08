@@ -21,12 +21,12 @@ module Files
         create_target_branch
       end
 
-      if sha = commit
+      if commit
         success
       else
         error("Something went wrong. Your changes were not committed")
       end
-    rescue Repository::CommitError, Repository::PreReceiveError, ValidationError => ex
+    rescue Repository::CommitError, GitHooksService::PreReceiveError, ValidationError => ex
       error(ex.message)
     end
 

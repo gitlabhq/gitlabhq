@@ -60,8 +60,6 @@ describe ProjectHook do
     end
 
     it "POSTs the data as JSON" do
-      json = @data.to_json
-
       @project_hook.execute(@data, 'push_hooks')
       expect(WebMock).to have_requested(:post, @project_hook.url).with(
         headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Push Hook' }
@@ -72,6 +70,12 @@ describe ProjectHook do
       expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
       expect { @project_hook.execute(@data, 'push_hooks') }.to raise_error(RuntimeError)
+    end
+
+    it "handles SSL exceptions" do
+      expect(WebHook).to receive(:post).and_raise(OpenSSL::SSL::SSLError.new('SSL error'))
+
+      expect(@project_hook.execute(@data, 'push_hooks')).to eq([false, 'SSL error'])
     end
   end
 end

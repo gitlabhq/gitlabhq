@@ -20,6 +20,7 @@
 #  position          :integer          default(0)
 #  locked_at         :datetime
 #  updated_by_id     :integer
+#  merge_error       :string(255)
 #
 
 require Rails.root.join("app/models/commit")
@@ -40,7 +41,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
+  delegate :commits, :diffs, :diffs_no_whitespace, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -133,6 +134,9 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
+  scope :join_project, -> { joins(:target_project) }
+  scope :references_project, -> { references(:target_project) }
+
   def self.reference_prefix
     '!'
   end
@@ -147,6 +151,10 @@ class MergeRequest < ActiveRecord::Base
     }x
   end
 
+  def self.link_reference_pattern
+    super("merge_requests", /(?<merge_request>\d+)/)
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -155,6 +163,18 @@ class MergeRequest < ActiveRecord::Base
     end
 
     reference
+  end
+
+  def last_commit
+    merge_request_diff ? merge_request_diff.last_commit : compare_commits.last
+  end
+
+  def first_commit
+    merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
+  end
+
+  def last_commit_short_sha
+    last_commit.short_id
   end
 
   def validate_branches
@@ -222,12 +242,8 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def open?
-    opened? || reopened?
-  end
-
   def work_in_progress?
-    title =~ /\A\[?WIP\]?:? /i
+    !!(title =~ /\A\[?WIP\]?:? /i)
   end
 
   def mergeable?
@@ -249,7 +265,7 @@ class MergeRequest < ActiveRecord::Base
 
     Note.where(
       "(project_id = :target_project_id AND noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR" +
-      "(project_id = :source_project_id AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
+      "((project_id = :source_project_id OR project_id = :target_project_id) AND noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
       mr_id: id,
       commit_ids: commit_ids,
       target_project_id: target_project_id,
@@ -275,10 +291,11 @@ class MergeRequest < ActiveRecord::Base
     attrs = {
       source: source_project.hook_attrs,
       target: target_project.hook_attrs,
-      last_commit: nil
+      last_commit: nil,
+      work_in_progress: work_in_progress?
     }
 
-    unless last_commit.nil?
+    if last_commit
       attrs.merge!(last_commit: last_commit.hook_attrs)
     end
 
@@ -293,13 +310,17 @@ class MergeRequest < ActiveRecord::Base
     target_project
   end
 
+  def closes_issue?(issue)
+    closes_issues.include?(issue)
+  end
+
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
       issues = commits.flat_map { |c| c.closes_issues(current_user) }
       issues.push(*Gitlab::ClosingIssueExtractor.new(project, current_user).
                   closed_by_message(description))
-      issues.uniq.sort_by(&:id)
+      issues.uniq
     else
       []
     end
@@ -455,6 +476,12 @@ class MergeRequest < ActiveRecord::Base
       yield
     ensure
       unlock_mr if locked?
+    end
+  end
+
+  def ci_commit
+    if last_commit and source_project
+      source_project.ci_commit(last_commit.id)
     end
   end
 end

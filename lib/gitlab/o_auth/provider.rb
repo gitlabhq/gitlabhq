@@ -1,6 +1,12 @@
 module Gitlab
   module OAuth
     class Provider
+      LABELS = {
+        "github"         => "GitHub",
+        "gitlab"         => "GitLab.com",
+        "google_oauth2"  => "Google"
+      }.freeze
+
       def self.providers
         Devise.omniauth_providers
       end
@@ -23,8 +29,9 @@ module Gitlab
       end
 
       def self.label_for(name)
+        name = name.to_s
         config = config_for(name)
-        (config && config['label']) || name.to_s.titleize
+        (config && config['label']) || LABELS[name] || name.titleize
       end
     end
   end

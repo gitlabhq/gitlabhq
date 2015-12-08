@@ -106,7 +106,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-The use of Ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system Ruby.
+The use of Ruby version managers such as [RVM](https://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system Ruby.
 
 Remove the old Ruby 1.8 if present
 
@@ -115,8 +115,9 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -L --progress http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.6.tar.gz | tar xz
-    cd ruby-2.1.6
+    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.7.tar.gz
+    echo 'e2e195a4a58133e3ad33b955c829bb536fa3c075  ruby-2.1.7.tar.gz' | shasum -c - && tar xzf ruby-2.1.7.tar.gz
+    cd ruby-2.1.7
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -127,15 +128,17 @@ Install the Bundler Gem:
 
 ## 3. Go
 
-Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
-This is a small daemon written in Go.
-To install gitlab-git-http-server we need a Go compiler.
+Since GitLab 8.0, Git HTTP requests are handled by gitlab-workhorse (formerly
+gitlab-git-http-server). This is a small daemon written in Go. To install
+gitlab-workhorse we need a Go compiler. The instructions below assume you
+use 64-bit Linux. You can find downloads for other platforms at the [Go download
+page](https://golang.org/dl).
 
-    curl -O --progress https://storage.googleapis.com/golang/go1.5.linux-amd64.tar.gz
-    echo '5817fa4b2252afdb02e11e8b9dc1d9173ef3bd5a  go1.5.linux-amd64.tar.gz' | shasum -c - && \
-      sudo tar -C /usr/local -xzf go1.5.linux-amd64.tar.gz
+    curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
+    echo '46eecd290d8803887dec718c691cc243f2175fe0  go1.5.1.linux-amd64.tar.gz' | shasum -c - && \
+      sudo tar -C /usr/local -xzf go1.5.1.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.linux-amd64.tar.gz
+    rm go1.5.1.linux-amd64.tar.gz
 
 ## 4. System Users
 
@@ -207,9 +210,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-0-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-2-stable gitlab
 
-**Note:** You can change `8-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -242,6 +245,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Change the permissions of the directory where CI build traces are stored
     sudo chmod -R u+rwX builds/
 
+    # Change the permissions of the directory where CI artifacts are stored
+    sudo chmod -R u+rwX shared/artifacts/
+
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
@@ -249,8 +255,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     nproc
 
     # Enable cluster mode if you expect to have a high load instance
-    # Ex. change amount of workers to 3 for 2GB RAM server
     # Set the number of workers to at least the number of cores
+    # Ex. change amount of workers to 3 for 2GB RAM server
     sudo -u git -H editor config/unicorn.rb
 
     # Copy the example Rack attack config
@@ -291,7 +297,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 ### Install Gems
 
-**Note:** As of bundler 1.5.2, you can invoke `bundle install -jN` (where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler). First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411) that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
+**Note:** As of bundler 1.5.2, you can invoke `bundle install -jN` (where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information check this [post](https://robots.thoughtbot.com/parallel-gem-installing-using-bundler). First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411) that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
     # For PostgreSQL (note, the option says "without ... mysql")
     sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
@@ -306,7 +312,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v2.6.5] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:
@@ -314,16 +320,21 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 **Note:** If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
-**Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up gitlab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
+**Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
-### Install gitlab-git-http-server
+### Install gitlab-workhorse
 
     cd /home/git
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
-    cd gitlab-git-http-server
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
+    cd gitlab-workhorse
+    sudo -u git -H git checkout 0.4.2
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
+
+    # Go to GitLab installation folder
+
+    cd /home/git/gitlab
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
@@ -340,11 +351,6 @@ GitLab Shell is an SSH access and repository management software developed speci
 The `secrets.yml` file stores encryption keys for sessions and secure variables.
 Backup `secrets.yml` someplace safe, but don't store it in the same place as your database backups.
 Otherwise your secrets are exposed if one of your backups is compromised.
-
-### Install schedules
-
-    # Setup schedules
-    sudo -u gitlab_ci -H bundle exec whenever -w RAILS_ENV=production
 
 ### Install Init Script
 
@@ -489,7 +495,7 @@ See the [omniauth integration document](../integration/omniauth.md)
 ### Build your projects
 
 GitLab can build your projects. To enable that feature you need GitLab Runners to do that for you.
-Checkout the [Gitlab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
+Checkout the [GitLab Runner section](https://about.gitlab.com/gitlab-ci/#gitlab-runner) to install it
 
 ### Custom Redis Connection
 

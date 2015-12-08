@@ -4,7 +4,7 @@
   %ol
     %li
       Add at least one runner to the project.
-      Go to #{link_to 'Runners page', ci_project_runners_path(@project), target: :blank} for instructions.
+      Go to #{link_to 'Runners page', runners_path(@project.gl_project), target: :blank} for instructions.
     %li
       Put the .gitlab-ci.yml in the root of your repository. Examples can be found in #{link_to "Configuring project (.gitlab-ci.yml)", "http://doc.gitlab.com/ci/yaml/README.html", target: :blank}.
       You can also test your .gitlab-ci.yml in the #{link_to "Lint", ci_lint_path}

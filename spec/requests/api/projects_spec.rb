@@ -88,8 +88,11 @@ describe API::API, api: true  do
         end
 
         it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
-          [project, project2, project3].each{ |project| project.build_missing_services }
-          project2.gitlab_ci_service.update(active: true)
+          [project, project2, project3].each do |project|
+            project.builds_enabled = false
+            project.build_missing_services
+          end
+          project2.builds_enabled = true
           get api('/projects', user), { ci_enabled_first: 'true' }
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
@@ -386,14 +389,30 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/events' do
     before { project_member2 }
 
-    it 'should return a project events' do
-      get api("/projects/#{project.id}/events", user)
-      expect(response.status).to eq(200)
-      json_event = json_response.first
+    context 'valid request' do
+      before do
+        note = create(:note_on_issue, note: 'What an awesome day!', project: project)
+        EventCreateService.new.leave_note(note, note.author)
+        get api("/projects/#{project.id}/events", user)
+      end
 
-      expect(json_event['action_name']).to eq('joined')
-      expect(json_event['project_id'].to_i).to eq(project.id)
-      expect(json_event['author_username']).to eq(user3.username)
+      it { expect(response.status).to eq(200) }
+
+      context 'joined event' do
+        let(:json_event) { json_response[1] }
+
+        it { expect(json_event['action_name']).to eq('joined') }
+        it { expect(json_event['project_id'].to_i).to eq(project.id) }
+        it { expect(json_event['author_username']).to eq(user3.username) }
+        it { expect(json_event['author']['name']).to eq(user3.name) }
+      end
+
+      context 'comment event' do
+        let(:json_event) { json_response.first }
+
+        it { expect(json_event['action_name']).to eq('commented on') }
+        it { expect(json_event['note']['body']).to eq('What an awesome day!') }
+      end
     end
 
     it 'should return a 404 error if not found' do
@@ -606,28 +625,42 @@ describe API::API, api: true  do
 
     describe 'DELETE /projects/:id/fork' do
 
-      it "shouldn't available for non admin users" do
+      it "shouldn't be visible to users outside group" do
         delete api("/projects/#{project_fork_target.id}/fork", user)
-        expect(response.status).to eq(403)
+        expect(response.status).to eq(404)
       end
 
-      it 'should make forked project unforked' do
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project).not_to be_nil
-        expect(project_fork_target.forked?).to be_truthy
-        delete api("/projects/#{project_fork_target.id}/fork", admin)
-        expect(response.status).to eq(200)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project).to be_nil
-        expect(project_fork_target.forked?).not_to be_truthy
-      end
+      context 'when users belong to project group' do
+        let(:project_fork_target) { create(:project, group: create(:group)) }
 
-      it 'should be idempotent if not forked' do
-        expect(project_fork_target.forked_from_project).to be_nil
-        delete api("/projects/#{project_fork_target.id}/fork", admin)
-        expect(response.status).to eq(200)
-        expect(project_fork_target.reload.forked_from_project).to be_nil
+        before do
+          project_fork_target.group.add_owner user
+          project_fork_target.group.add_developer user2
+        end
+
+        it 'should be forbidden to non-owner users' do
+          delete api("/projects/#{project_fork_target.id}/fork", user2)
+          expect(response.status).to eq(403)
+        end
+
+        it 'should make forked project unforked' do
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+          project_fork_target.reload
+          expect(project_fork_target.forked_from_project).not_to be_nil
+          expect(project_fork_target.forked?).to be_truthy
+          delete api("/projects/#{project_fork_target.id}/fork", admin)
+          expect(response.status).to eq(200)
+          project_fork_target.reload
+          expect(project_fork_target.forked_from_project).to be_nil
+          expect(project_fork_target.forked?).not_to be_truthy
+        end
+
+        it 'should be idempotent if not forked' do
+          expect(project_fork_target.forked_from_project).to be_nil
+          delete api("/projects/#{project_fork_target.id}/fork", admin)
+          expect(response.status).to eq(200)
+          expect(project_fork_target.reload.forked_from_project).to be_nil
+        end
       end
     end
   end
@@ -707,6 +740,18 @@ describe API::API, api: true  do
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
+      end
+
+      it 'should update visibility_level from public to private' do
+        project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+
+        project_param = { public: false }
+        put api("/projects/#{project3.id}", user), project_param
+        expect(response.status).to eq(200)
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+        expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
       end
 
       it 'should not update name to existing name' do

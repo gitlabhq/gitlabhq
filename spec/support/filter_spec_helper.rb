@@ -29,10 +29,30 @@ module FilterSpecHelper
   #
   # Returns the Hash
   def pipeline_result(body, contexts = {})
-    contexts.reverse_merge!(project: project)
+    contexts.reverse_merge!(project: project) if defined?(project)
 
     pipeline = HTML::Pipeline.new([described_class], contexts)
     pipeline.call(body)
+  end
+
+  def reference_pipeline(contexts = {})
+    contexts.reverse_merge!(project: project) if defined?(project)
+
+    filters = [
+      Gitlab::Markdown::AutolinkFilter,
+      described_class,
+      Gitlab::Markdown::ReferenceGathererFilter
+    ]
+
+    HTML::Pipeline.new(filters, contexts)
+  end
+
+  def reference_pipeline_result(body, contexts = {})
+    reference_pipeline(contexts).call(body)
+  end
+
+  def reference_filter(html, contexts = {})
+    reference_pipeline(contexts).to_document(html)
   end
 
   # Modify a String reference to make it invalid
@@ -53,20 +73,6 @@ module FilterSpecHelper
     else
       reference.gsub(/\w+\z/) { |v| v.reverse }
     end
-  end
-
-  # Stub CrossProjectReference#user_can_reference_project? to return true for
-  # the current test
-  def allow_cross_reference!
-    allow_any_instance_of(described_class).
-      to receive(:user_can_reference_project?).and_return(true)
-  end
-
-  # Stub CrossProjectReference#user_can_reference_project? to return false for
-  # the current test
-  def disallow_cross_reference!
-    allow_any_instance_of(described_class).
-      to receive(:user_can_reference_project?).and_return(false)
   end
 
   # Shortcut to Rails' auto-generated routes helpers, to avoid including the

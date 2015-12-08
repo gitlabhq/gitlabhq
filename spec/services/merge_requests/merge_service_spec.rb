@@ -17,8 +17,9 @@ describe MergeRequests::MergeService do
 
       before do
         allow(service).to receive(:execute_hooks)
-
-        service.execute(merge_request, 'Awesome message')
+        perform_enqueued_jobs do
+          service.execute(merge_request, 'Awesome message')
+        end
       end
 
       it { expect(merge_request).to be_valid }
@@ -33,6 +34,20 @@ describe MergeRequests::MergeService do
       it 'should create system note about merge_request merge' do
         note = merge_request.notes.last
         expect(note.note).to include 'Status changed to merged'
+      end
+    end
+
+    context "error handling" do
+      let(:service) { MergeRequests::MergeService.new(project, user, {}) }
+
+      it 'saves error if there is an exception' do
+        allow(service).to receive(:repository).and_raise("error")
+
+        allow(service).to receive(:execute_hooks)
+
+        service.execute(merge_request, 'Awesome message')
+
+        expect(merge_request.merge_error).to eq("Something went wrong during merge")
       end
     end
   end

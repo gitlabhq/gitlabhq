@@ -43,7 +43,7 @@ You can also use other rich text files in GitLab. You might have to install a de
 
 ## Newlines
 
-GFM honors the markdown specification in how [paragraphs and line breaks are handled](http://daringfireball.net/projects/markdown/syntax#p).
+GFM honors the markdown specification in how [paragraphs and line breaks are handled](https://daringfireball.net/projects/markdown/syntax#p).
 
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.  
 Line-breaks, or softreturns, are rendered if you end a line with two or more spaces
@@ -72,14 +72,14 @@ do_this_and_do_that_and_another_thing
 
 GFM will autolink almost any URL you copy and paste into your text.
 
-    * http://www.google.com
+    * https://www.google.com
     * https://google.com/
     * ftp://ftp.us.debian.org/debian/
     * smb://foo/bar/baz
     * irc://irc.freenode.net/gitlab
     * http://localhost:3000
 
-* http://www.google.com
+* https://www.google.com
 * https://google.com/
 * ftp://ftp.us.debian.org/debian/
 * smb://foo/bar/baz
@@ -274,7 +274,7 @@ The IDs are generated from the content of the header according to the following 
 1. All spaces are converted to hyphens
 1. Two or more hyphens in a row are converted to one
 1. If a header with the same ID has already been generated, a unique
-   incrementing number is appended.
+   incrementing number is appended, starting at 1.
 
 For example:
 
@@ -291,8 +291,8 @@ Would generate the following link IDs:
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-a-in-it`
 1. `this-header-has-unicode-in-it-한글`
+1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
-1. `this-header-has-spaces-in-it-2`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
 
@@ -390,7 +390,7 @@ There are two ways to create links, inline-style and reference-style.
 
     [arbitrary case-insensitive reference text]: https://www.mozilla.org
     [1]: http://slashdot.org
-    [link text itself]: http://www.reddit.com
+    [link text itself]: https://www.reddit.com
 
 [I'm an inline-style link](https://www.google.com)
 
@@ -406,7 +406,7 @@ Some text to show that the reference links can follow later.
 
 [arbitrary case-insensitive reference text]: https://www.mozilla.org
 [1]: http://slashdot.org
-[link text itself]: http://www.reddit.com
+[link text itself]: https://www.reddit.com
 
 **Note**
 
@@ -583,5 +583,5 @@ By including colons in the header row, you can align the text within that column
 ## References
 
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
-- The [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
+- The [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
 - [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.

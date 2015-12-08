@@ -9,6 +9,7 @@
 # require the specific files that are being used in the spec that tests them.
 
 #= require jquery
+#= require jquery.turbolinks
 #= require bootstrap
 #= require underscore
 

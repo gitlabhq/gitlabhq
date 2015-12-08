@@ -59,7 +59,7 @@ describe ApplicationHelper do
 
       avatar_url = "http://localhost/uploads/project/avatar/#{project.id}/banana_sample.gif"
       expect(helper.project_icon("#{project.namespace.to_param}/#{project.to_param}").to_s).
-        to eq "<img alt=\"Banana sample\" src=\"#{avatar_url}\" />"
+        to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
     end
 
     it 'should give uploaded icon when present' do
@@ -95,9 +95,18 @@ describe ApplicationHelper do
     end
 
     it 'should call gravatar_icon when no User exists with the given email' do
-      expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20)
+      expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)
 
-      helper.avatar_icon('foo@example.com', 20)
+      helper.avatar_icon('foo@example.com', 20, 2)
+    end
+
+    describe 'using a User' do
+      it 'should return an URL for the avatar' do
+        user = create(:user, avatar: File.open(avatar_file_path))
+
+        expect(helper.avatar_icon(user).to_s).
+          to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
+      end
     end
   end
 
@@ -141,15 +150,19 @@ describe ApplicationHelper do
         stub_gravatar_setting(plain_url: 'http://example.local/?s=%{size}&hash=%{hash}')
 
         expect(gravatar_icon(user_email, 20)).
-          to eq('http://example.local/?s=20&hash=b58c6f14d292556214bd64909bcdb118')
+          to eq('http://example.local/?s=40&hash=b58c6f14d292556214bd64909bcdb118')
       end
 
       it 'accepts a custom size argument' do
-        expect(helper.gravatar_icon(user_email, 64)).to include '?s=64'
+        expect(helper.gravatar_icon(user_email, 64)).to include '?s=128'
       end
 
-      it 'defaults size to 40 when given an invalid size' do
-        expect(helper.gravatar_icon(user_email, nil)).to include '?s=40'
+      it 'defaults size to 40@2x when given an invalid size' do
+        expect(helper.gravatar_icon(user_email, nil)).to include '?s=80'
+      end
+
+      it 'accepts a scaling factor' do
+        expect(helper.gravatar_icon(user_email, 40, 3)).to include '?s=120'
       end
 
       it 'ignores case and surrounding whitespace' do
@@ -265,7 +278,7 @@ describe ApplicationHelper do
       el = element.next_element
 
       expect(el.name).to eq 'script'
-      expect(el.text).to include "$('.js-timeago').timeago()"
+      expect(el.text).to include "$('.js-timeago').last().timeago()"
     end
 
     it 'allows the script tag to be excluded' do

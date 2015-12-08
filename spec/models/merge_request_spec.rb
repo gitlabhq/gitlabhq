@@ -20,6 +20,7 @@
 #  position          :integer          default(0)
 #  locked_at         :datetime
 #  updated_by_id     :integer
+#  merge_error       :string(255)
 #
 
 require 'spec_helper'
@@ -78,6 +79,12 @@ describe MergeRequest do
     it "should include notes for commits" do
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.mr_and_commit_notes.count).to eq(2)
+    end
+
+    it "should include notes for commits from target project as well" do
+      create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit', project: merge_request.target_project)
+      expect(merge_request.commits).not_to be_empty
+      expect(merge_request.mr_and_commit_notes.count).to eq(3)
     end
   end
 
@@ -165,6 +172,17 @@ describe MergeRequest do
     end
   end
 
+  describe "#hook_attrs" do
+    it "has all the required keys" do
+      attrs = subject.hook_attrs
+      attrs = attrs.to_h
+      expect(attrs).to include(:source)
+      expect(attrs).to include(:target)
+      expect(attrs).to include(:last_commit)
+      expect(attrs).to include(:work_in_progress)
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:merge_request) }
 
@@ -174,5 +192,30 @@ describe MergeRequest do
 
   it_behaves_like 'a Taskable' do
     subject { create :merge_request, :simple }
+  end
+
+  describe '#ci_commit' do
+    describe 'when the source project exists' do
+      it 'returns the latest commit' do
+        commit    = double(:commit, id: '123abc')
+        ci_commit = double(:ci_commit)
+
+        allow(subject).to receive(:last_commit).and_return(commit)
+
+        expect(subject.source_project).to receive(:ci_commit).
+          with('123abc').
+          and_return(ci_commit)
+
+        expect(subject.ci_commit).to eq(ci_commit)
+      end
+    end
+
+    describe 'when the source project does not exist' do
+      it 'returns nil' do
+        allow(subject).to receive(:source_project).and_return(nil)
+
+        expect(subject.ci_commit).to be_nil
+      end
+    end
   end
 end

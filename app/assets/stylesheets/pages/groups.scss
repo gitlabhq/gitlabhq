@@ -1,12 +1,13 @@
-.new-group-member-holder {
-  margin-top: 50px;
-  padding-top: 20px;
-}
-
 .member-search-form {
   float: left;
 }
 
 .milestone-row {
   @include str-truncated(90%);
+}
+
+.dashboard .side .panel .panel-heading .input-group {
+  .form-control {
+    height: 42px;
+  }
 }

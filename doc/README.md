@@ -17,20 +17,22 @@
 
 ## CI Documentation
 
-+ [Quick Start](ci/quick_start/README.md)
-+ [Configuring project (.gitlab-ci.yml)](ci/yaml/README.md)
-+ [Configuring runner](ci/runners/README.md)
-+ [Configuring deployment](ci/deployment/README.md)
-+ [Using Docker Images](ci/docker/using_docker_images.md)
-+ [Using Docker Build](ci/docker/using_docker_build.md)
-+ [Using Variables](ci/variables/README.md)
+- [Quick Start](ci/quick_start/README.md)
+- [Configuring project (.gitlab-ci.yml)](ci/yaml/README.md)
+- [Configuring runner](ci/runners/README.md)
+- [Configuring deployment](ci/deployment/README.md)
+- [Using Docker Images](ci/docker/using_docker_images.md)
+- [Using Docker Build](ci/docker/using_docker_build.md)
+- [Using Variables](ci/variables/README.md)
+- [User permissions](ci/permissions/README.md)
+- [API](ci/api/README.md)
 
 ### CI Examples
 
-+ [Test and deploy Ruby applications to Heroku](ci/examples/test-and-deploy-ruby-application-to-heroku.md)
-+ [Test and deploy Python applications to Heroku](ci/examples/test-and-deploy-python-application-to-heroku.md)
-+ [Test Clojure applications](ci/examples/test-clojure-application.md)
-+ Help your favorite programming language and GitLab by sending a merge request with a guide for that language.
+- [Test and deploy Ruby applications to Heroku](ci/examples/test-and-deploy-ruby-application-to-heroku.md)
+- [Test and deploy Python applications to Heroku](ci/examples/test-and-deploy-python-application-to-heroku.md)
+- [Test Clojure applications](ci/examples/test-clojure-application.md)
+- Help your favorite programming language and GitLab by sending a merge request with a guide for that language.
 
 ## Administrator documentation
 
@@ -48,11 +50,7 @@
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
-
-### Administrator documentation
-
-+ [User permissions](permissions/permissions.md)
-+ [API](api/README.md)
+- [Git LFS configuration](workflow/lfs/lfs_administration.md)
 
 ## Contributor documentation
 

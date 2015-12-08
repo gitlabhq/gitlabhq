@@ -1,13 +1,9 @@
 module Ci
   module API
     module Helpers
+      BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN"
+      BUILD_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 60
-
-      def check_enable_flag!
-        unless current_application_settings.ci_enabled
-          render_api_error!('400 (Bad request) CI is disabled', 400)
-        end
-      end
 
       def authenticate_runners!
         forbidden! unless params[:token] == GitlabCi::REGISTRATION_TOKEN
@@ -21,8 +17,15 @@ module Ci
         forbidden! unless project.valid_token?(params[:project_token])
       end
 
+      def authenticate_build_token!(build)
+        token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
+        forbidden! unless token && build.valid_token?(token)
+      end
+
       def update_runner_last_contact
-        if current_runner.contacted_at.nil? || Time.now - current_runner.contacted_at >= UPDATE_RUNNER_EVERY
+        # Use a random threshold to prevent beating DB updates
+        contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
+        if current_runner.contacted_at.nil? || Time.now - current_runner.contacted_at >= contacted_at_max_age
           current_runner.update_attributes(contacted_at: Time.now)
         end
       end
@@ -35,6 +38,10 @@ module Ci
         return unless params["info"].present?
         info = attributes_for_keys(["name", "version", "revision", "platform", "architecture"], params["info"])
         current_runner.update(info)
+      end
+
+      def max_artifacts_size
+        current_application_settings.max_artifacts_size.megabytes.to_i
       end
     end
   end

@@ -56,17 +56,6 @@
   }
 }
 
-.issue-show-labels {
-  a {
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: inline-block;
-    .color-label {
-      padding: 6px 10px;
-    }
-  }
-}
-
 form.edit-issue {
   margin: 0;
 }
@@ -130,6 +119,11 @@ form.edit-issue {
       display: none;
     }
   }
+}
+
+.issue-closed-by-widget {
+  padding: 16px 0;
+  margin: 0px;
 }
 
 .issue-form .select2-container {

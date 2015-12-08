@@ -125,7 +125,7 @@ class SystemNoteService
   # Returns the created Note object
   def self.change_status(noteable, project, author, status, source)
     body = "Status changed to #{status}"
-    body += " by #{source.gfm_reference}" if source
+    body += " by #{source.gfm_reference(project)}" if source
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -165,6 +165,31 @@ class SystemNoteService
   # Returns the created Note object
   def self.change_branch(noteable, project, author, branch_type, old_branch, new_branch)
     body = "#{branch_type} branch changed from `#{old_branch}` to `#{new_branch}`".capitalize
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when a branch in Noteable is added or deleted
+  #
+  # noteable    - Noteable object
+  # project     - Project owning noteable
+  # author      - User performing the change
+  # branch_type - :source or :target
+  # branch      - branch name
+  # presence    - :add or :delete
+  #
+  # Example Note text:
+  #
+  #   "Restored target branch `feature`"
+  #
+  # Returns the created Note object
+  def self.change_branch_presence(noteable, project, author, branch_type, branch, presence)
+    verb =
+      if presence == :add
+        'restored'
+      else
+        'deleted'
+      end
+    body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
@@ -302,7 +327,7 @@ class SystemNoteService
     commit_ids = if count == 1
                    existing_commits.first.short_id
                  else
-                   if oldrev
+                   if oldrev && !Gitlab::Git.blank_ref?(oldrev)
                      "#{Commit.truncate_sha(oldrev)}...#{existing_commits.last.short_id}"
                    else
                      "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
@@ -315,5 +340,23 @@ class SystemNoteService
     branch = "#{noteable.target_project_namespace}:#{branch}" if noteable.for_fork?
 
     "* #{commit_ids} - #{commits_text} from branch `#{branch}`\n"
+  end
+
+  # Called when the status of a Task has changed
+  #
+  # noteable  - Noteable object.
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # new_task  - TaskList::Item object.
+  #
+  # Example Note text:
+  #
+  #   "Soandso marked the task Whatever as completed."
+  #
+  # Returns the created Note object
+  def self.change_task_status(noteable, project, author, new_task)
+    status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
+    body = "Marked the task **#{new_task.source}** as #{status_label}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
   end
 end

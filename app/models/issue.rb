@@ -69,6 +69,10 @@ class Issue < ActiveRecord::Base
     }x
   end
 
+  def self.link_reference_pattern
+    super("issues", /(?<issue>\d+)/)
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -94,5 +98,15 @@ class Issue < ActiveRecord::Base
   # To allow polymorphism with MergeRequest.
   def source_project
     project
+  end
+
+  # From all notes on this issue, we'll select the system notes about linked
+  # merge requests. Of those, the MRs closing `self` are returned.
+  def closed_by_merge_requests(current_user = nil)
+    return [] unless open?
+
+    notes.system.flat_map do |note|
+      note.all_references(current_user).merge_requests
+    end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
   end
 end

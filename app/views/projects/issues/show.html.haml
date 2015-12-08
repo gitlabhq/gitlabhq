@@ -11,7 +11,8 @@
           Open
       %span.issue-id Issue ##{@issue.iid}
       %span.creator
-        &middot; created by #{link_to_member(@project, @issue.author, size: 24)}
+        &middot;
+        opened by #{link_to_member(@project, @issue.author, size: 24)}
         &middot;
         = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
         - if @issue.updated_at != @issue.created_at
@@ -46,6 +47,7 @@
                 = markdown(@issue.description)
             %textarea.hidden.js-task-list-field
               = @issue.description
-
+  - if @closed_by_merge_requests.present?
+    = render 'projects/issues/closed_by_box'
   .issue-discussion
     = render 'projects/issues/discussion'

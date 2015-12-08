@@ -40,6 +40,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content "Bug NS-04"
   end
 
+  step 'I should not see "master" branch' do
+    expect(page).not_to have_content "master"
+  end
+
+  step 'I should see "other_branch" branch' do
+    expect(page).to have_content "other_branch"
+  end
+
   step 'I should see "Bug NS-04" in merge requests' do
     expect(page).to have_content "Bug NS-04"
   end
@@ -78,7 +86,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     select "feature", from: "merge_request_target_branch"
     click_button "Compare branches"
     fill_in "merge_request_title", with: "Wiki Feature"
-    click_button "Submit new merge request"
+    click_button "Submit merge request"
   end
 
   step 'project "Shop" have "Bug NS-04" open merge request' do
@@ -88,6 +96,18 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            target_project: project,
            source_branch: 'fix',
            target_branch: 'master',
+           author: project.users.first,
+           description: "# Description header"
+          )
+  end
+
+  step 'project "Shop" have "Bug NS-06" open merge request' do
+    create(:merge_request,
+           title: "Bug NS-06",
+           source_project: project,
+           target_project: project,
+           source_branch: 'fix',
+           target_branch: 'other_branch',
            author: project.users.first,
            description: "# Description header"
           )
@@ -224,43 +244,43 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I click link "Hide inline discussion" of the second file' do
-    page.within '.files [id^=diff]:nth-child(2)' do
+  step 'I click link "Hide inline discussion" of the third file' do
+    page.within '.files [id^=diff]:nth-child(3)' do
       find('.js-toggle-diff-comments').trigger('click')
     end
   end
 
-  step 'I click link "Show inline discussion" of the second file' do
-    page.within '.files [id^=diff]:nth-child(2)' do
+  step 'I click link "Show inline discussion" of the third file' do
+    page.within '.files [id^=diff]:nth-child(3)' do
       find('.js-toggle-diff-comments').trigger('click')
     end
   end
 
-  step 'I should not see a comment like "Line is wrong" in the second file' do
-    page.within '.files [id^=diff]:nth-child(2)' do
+  step 'I should not see a comment like "Line is wrong" in the third file' do
+    page.within '.files [id^=diff]:nth-child(3)' do
       expect(page).not_to have_visible_content "Line is wrong"
     end
   end
 
-  step 'I should see a comment like "Line is wrong" in the second file' do
-    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
+  step 'I should see a comment like "Line is wrong" in the third file' do
+    page.within '.files [id^=diff]:nth-child(3) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong"
     end
   end
 
-  step 'I should not see a comment like "Line is wrong here" in the second file' do
-    page.within '.files [id^=diff]:nth-child(2)' do
+  step 'I should not see a comment like "Line is wrong here" in the third file' do
+    page.within '.files [id^=diff]:nth-child(3)' do
       expect(page).not_to have_visible_content "Line is wrong here"
     end
   end
 
-  step 'I should see a comment like "Line is wrong here" in the second file' do
-    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
+  step 'I should see a comment like "Line is wrong here" in the third file' do
+    page.within '.files [id^=diff]:nth-child(3) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong here"
     end
   end
 
-  step 'I leave a comment like "Line is correct" on line 12 of the first file' do
+  step 'I leave a comment like "Line is correct" on line 12 of the second file' do
     init_diff_note_first_file
 
     page.within(".js-discussion-note-form") do
@@ -268,12 +288,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       click_button "Add Comment"
     end
 
-    page.within ".files [id^=diff]:nth-child(1) .note-body > .note-text" do
+    page.within ".files [id^=diff]:nth-child(2) .note-body > .note-text" do
       expect(page).to have_content "Line is correct"
     end
   end
 
-  step 'I leave a comment like "Line is wrong" on line 39 of the second file' do
+  step 'I leave a comment like "Line is wrong" on line 39 of the third file' do
     init_diff_note_second_file
 
     page.within(".js-discussion-note-form") do
@@ -282,8 +302,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I should still see a comment like "Line is correct" in the first file' do
-    page.within '.files [id^=diff]:nth-child(1) .note-body > .note-text' do
+  step 'I should still see a comment like "Line is correct" in the second file' do
+    page.within '.files [id^=diff]:nth-child(2) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
     end
   end
@@ -303,7 +323,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see comments on the side-by-side diff page' do
-    page.within '.files [id^=diff]:nth-child(1) .parallel .note-body > .note-text' do
+    page.within '.files [id^=diff]:nth-child(2) .parallel .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
     end
   end
@@ -336,6 +356,19 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a patch diff' do
     expect(page).to have_content('diff --git')
+  end
+
+  step '"Bug NS-05" has CI status' do
+    project = merge_request.source_project
+    project.enable_ci
+    ci_commit = create :ci_commit, gl_project: project, sha: merge_request.last_commit.id
+    create :ci_build, commit: ci_commit
+  end
+
+  step 'I should see merge request "Bug NS-05" with CI status' do
+    page.within ".mr-list" do
+      expect(page).to have_link "Build status: pending"
+    end
   end
 
   def merge_request

@@ -13,18 +13,11 @@ module Gitlab
       #
       # ref - String reference.
       #
-      # Returns a Project, or nil if the reference can't be accessed
+      # Returns a Project, or nil if the reference can't be found
       def project_from_ref(ref)
         return context[:project] unless ref
 
-        other = Project.find_with_namespace(ref)
-        return nil unless other && user_can_reference_project?(other)
-
-        other
-      end
-
-      def user_can_reference_project?(project, user = context[:current_user])
-        Ability.abilities.allowed?(user, :read_project, project)
+        Project.find_with_namespace(ref)
       end
     end
   end

@@ -1,8 +1,8 @@
 %li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
   .timeline-entry-inner
     .timeline-icon
-      = link_to user_path(note.author) do
-        = image_tag avatar_icon(note.author_email), class: 'avatar s40', alt: ''
+      %a{href: user_path(note.author)}
+        = image_tag avatar_icon(note.author), alt: '', class: 'avatar s40'
     .timeline-content
       .note-header
         - if note_editable?(note)
@@ -14,10 +14,10 @@
               = icon('trash-o')
 
         - unless note.system
-          - member = note.project.team.find_member(note.author.id)
-          - if member
+          - access = note.project.team.human_max_access(note.author.id)
+          - if access
             %span.note-role.label
-              = member.human_access
+              = access
 
         = link_to_member(note.project, note.author, avatar: false)
 
@@ -25,7 +25,7 @@
           = '@' + note.author.username
 
         %span.note-last-update
-          = link_to "##{dom_id(note)}", name: dom_id(note), title: "Link here" do
+          %a{name: dom_id(note), href: "##{dom_id(note)}", title: 'Link here'}
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note_created_ago')
           - if note.updated_at != note.created_at
             %span
@@ -35,31 +35,12 @@
               - if note.updated_by && note.updated_by != note.author
                 by #{link_to_member(note.project, note.updated_by, avatar: false, author_class: nil)}
 
-        - if note.superceded?(@notes)
-          - if note.upvote?
-            %span.vote.upvote.label.label-gray.strikethrough
-              = icon('thumbs-up')
-              \+1
-          - if note.downvote?
-            %span.vote.downvote.label.label-gray.strikethrough
-              = icon('thumbs-down')
-              \-1
-        - else
-          - if note.upvote?
-            %span.vote.upvote.label.label-success
-              = icon('thumbs-up')
-              \+1
-          - if note.downvote?
-            %span.vote.downvote.label.label-danger
-              = icon('thumbs-down')
-              \-1
-
-
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
-        = render 'projects/notes/edit_form', note: note
+        - if note_editable?(note)
+          = render 'projects/notes/edit_form', note: note
 
       - if note.attachment.url
         .note-attachment

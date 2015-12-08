@@ -75,7 +75,7 @@ module Gitlab
       end
 
       def gitlab_options
-        OmniAuth::Strategies::GitLab.default_options[:client_options].symbolize_keys
+        OmniAuth::Strategies::GitLab.default_options[:client_options].to_h.symbolize_keys
       end
     end
   end

@@ -4,6 +4,7 @@
 .gray-content-block.top-block
   - if can? current_user, :admin_label, @project
     = link_to new_namespace_project_label_path(@project.namespace, @project), class: "pull-right btn btn-new" do
+      = icon('plus')
       New label
   .oneline
     Labels can be applied to issues and merge requests.
@@ -14,8 +15,8 @@
       = render @labels
     = paginate @labels, theme: 'gitlab'
   - else
-    .light-well
+    .nothing-here-block
       - if can? current_user, :admin_label, @project
-        .nothing-here-block Create first label or #{link_to 'generate', generate_namespace_project_labels_path(@project.namespace, @project), method: :post} default set of labels
+        Create first label or #{link_to 'generate', generate_namespace_project_labels_path(@project.namespace, @project), method: :post} default set of labels
       - else
-        .nothing-here-block No labels created
+        No labels created

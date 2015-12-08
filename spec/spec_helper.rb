@@ -14,6 +14,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
+require 'benchmark/ips'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -30,9 +31,10 @@ RSpec.configure do |config|
   config.include StubConfiguration
   config.include RelativeUrl,         type: feature
   config.include TestEnv
+  config.include ActiveJob::TestHelper
   config.include StubGitlabCalls
   config.include StubGitlabData
-
+  config.include BenchmarkMatchers, benchmark: true
 
   config.infer_spec_type_from_file_location!
   config.raise_errors_for_deprecations!
@@ -40,6 +42,10 @@ RSpec.configure do |config|
   config.before(:suite) do
     TestEnv.init
   end
+end
+
+FactoryGirl::SyntaxRunner.class_eval do
+  include RSpec::Mocks::ExampleMethods
 end
 
 ActiveRecord::Migration.maintain_test_schema!

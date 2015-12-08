@@ -76,6 +76,22 @@ module API
         present merge_request, with: Entities::MergeRequest
       end
 
+      # Show MR commits
+      #
+      # Parameters:
+      #   id (required)               - The ID of a project
+      #   merge_request_id (required) - The ID of MR
+      #
+      # Example:
+      #   GET /projects/:id/merge_request/:merge_request_id/commits
+      #
+      get ':id/merge_request/:merge_request_id/commits' do
+        merge_request = user_project.merge_requests.
+          find(params[:merge_request_id])
+        authorize! :read_merge_request, merge_request
+        present merge_request.commits, with: Entities::RepoCommit
+      end
+
       # Show MR changes
       #
       # Parameters:
@@ -99,7 +115,7 @@ module API
       #   id (required)            - The ID of a project - this will be the source of the merge request
       #   source_branch (required) - The source branch
       #   target_branch (required) - The target branch
-      #   target_project           - The target project of the merge request defaults to the :id of the project
+      #   target_project_id        - The target project of the merge request defaults to the :id of the project
       #   assignee_id              - Assignee user ID
       #   title (required)         - Title of MR
       #   description              - Description of MR
@@ -249,8 +265,16 @@ module API
         required_attributes! [:note]
 
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
-        note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
-        note.author = current_user
+
+        authorize! :create_note, merge_request
+
+        opts = {
+          note: params[:note],
+          noteable_type: 'MergeRequest',
+          noteable_id: merge_request.id
+        }
+
+        note = ::Notes::CreateService.new(user_project, current_user, opts).execute
 
         if note.save
           present note, with: Entities::MRNote

@@ -63,12 +63,6 @@ class @Notes
     # fetch notes when tab becomes visible
     $(document).on "visibilitychange", @visibilityChange
 
-    # Chrome doesn't fire keypress or keyup for Command+Enter, so we need keydown.
-    $(document).on 'keydown', '.js-note-text', (e) ->
-      return if e.originalEvent.repeat
-      if e.keyCode == 10 || ((e.metaKey || e.ctrlKey) && e.keyCode == 13)
-        $(@).closest('form').submit()
-
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -82,7 +76,6 @@ class @Notes
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
     $(document).off "visibilitychange"
-    $(document).off "keydown", ".js-note-text"
     $(document).off "keyup", ".js-note-text"
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
@@ -118,14 +111,24 @@ class @Notes
   Note: for rendering inline notes use renderDiscussionNote
   ###
   renderNote: (note) ->
+    unless note.valid
+      if note.award
+        flash = new Flash('You have already used this award emoji!', 'alert')
+        flash.pin()
+      return
+
     # render note if it not present in loaded list
     # or skip if rendered
-    if @isNewNote(note)
+    if @isNewNote(note) && !note.award
       @note_ids.push(note.id)
       $('ul.main-notes-list').
         append(note.html).
         syntaxHighlight()
       @initTaskList()
+
+    if note.award
+      awards_handler.addAwardToEmojiBar(note.note, note.emoji_path)
+      awards_handler.scrollToAwards()
 
   ###
   Check if note does not exists on page
@@ -262,7 +265,6 @@ class @Notes
   ###
   addNote: (xhr, note, status) =>
     @renderNote(note)
-    @updateVotes()
 
   ###
   Called in response to the new note form being submitted
@@ -277,13 +279,15 @@ class @Notes
 
   Updates the current note field.
   ###
-  updateNote: (xhr, note, status) =>
-    note_li = $(".note-row-" + note.id)
-    note_li.replaceWith(note.html)
-    note_li.find('.note-edit-form').hide()
-    note_li.find('.note-body > .note-text').show()
-    note_li.find('js-task-list-container').taskList('enable')
-    @enableTaskList()
+  updateNote: (_xhr, note, _status) =>
+    # Convert returned HTML to a jQuery object so we can modify it further
+    $html = $(note.html)
+    $html.syntaxHighlight()
+    $html.find('.js-task-list-container').taskList('enable')
+
+    # Find the note's `li` element by ID and replace it with the updated HTML
+    $note_li = $("#note_#{note.id}")
+    $note_li.replaceWith($html)
 
   ###
   Called in response to clicking the edit note link
@@ -365,8 +369,8 @@ class @Notes
     note = $(this).closest(".note")
     note.find(".note-attachment").remove()
     note.find(".note-body > .note-text").show()
-    note.find(".js-note-attachment-delete").hide()
-    note.find(".note-edit-form").hide()
+    note.find(".note-header").show()
+    note.find(".current-note-edit-form").remove()
 
   ###
   Called when clicking on the "reply" button for a diff line.
@@ -477,9 +481,6 @@ class @Notes
     form = $(".js-new-note-form")
     form = $(e.target).closest(".js-discussion-note-form")
     @removeDiscussionNoteForm(form)
-
-  updateVotes: ->
-    true
 
   ###
   Called after an attachment file has been selected.

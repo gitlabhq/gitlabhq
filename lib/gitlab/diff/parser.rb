@@ -14,8 +14,6 @@ module Gitlab
         lines_arr = ::Gitlab::InlineDiff.processing lines
 
         lines_arr.each do |line|
-          raw_line = line.dup
-
           next if filename?(line)
 
           full_line = html_escape(line.gsub(/\n/, ''))

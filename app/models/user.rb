@@ -54,6 +54,8 @@
 #  public_email               :string(255)      default(""), not null
 #  dashboard                  :integer          default(0)
 #  project_view               :integer          default(0)
+#  consumed_timestep          :integer
+#  layout                     :integer          default(0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -67,6 +69,7 @@ class User < ActiveRecord::Base
   include Referable
   include Sortable
   include TokenAuthenticatable
+  include CaseSensitivity
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
@@ -129,6 +132,8 @@ class User < ActiveRecord::Base
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+  has_one  :abuse_report,             dependent: :destroy
+  has_many :ci_builds,                dependent: :nullify, class_name: 'Ci::Build'
 
 
   #
@@ -143,11 +148,9 @@ class User < ActiveRecord::Base
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
+    namespace: true,
     presence: true,
-    uniqueness: { case_sensitive: false },
-    exclusion: { in: Gitlab::Blacklist.path },
-    format: { with: Gitlab::Regex.namespace_regex,
-              message: Gitlab::Regex.namespace_regex_message }
+    uniqueness: { case_sensitive: false }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
@@ -170,13 +173,16 @@ class User < ActiveRecord::Base
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
+  # User's Layout preference
+  enum layout: [:fixed, :fluid]
+
   # User's Dashboard preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum dashboard: [:projects, :stars]
+  enum dashboard: [:projects, :stars, :project_activity, :starred_project_activity]
 
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
-  enum project_view: [:readme, :activity]
+  enum project_view: [:readme, :activity, :files]
 
   alias_attribute :private_token, :authentication_token
 
@@ -228,21 +234,16 @@ class User < ActiveRecord::Base
 
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email)
-      user_table = arel_table
-      email_table = Email.arel_table
+      sql = 'SELECT *
+      FROM users
+      WHERE id IN (
+        SELECT id FROM users WHERE email = :email
+        UNION
+        SELECT emails.user_id FROM emails WHERE email = :email
+      )
+      LIMIT 1;'
 
-      # Use ARel to build a query:
-      query = user_table.
-        # SELECT "users".* FROM "users"
-        project(user_table[Arel.star]).
-        # LEFT OUTER JOIN "emails"
-        join(email_table, Arel::Nodes::OuterJoin).
-        # ON "users"."id" = "emails"."user_id"
-        on(user_table[:id].eq(email_table[:user_id])).
-        # WHERE ("user"."email" = '<email>' OR "emails"."email" = '<email>')
-        where(user_table[:email].eq(email).or(email_table[:email].eq(email)))
-
-      find_by_sql(query.to_sql).first
+      User.find_by_sql([sql, { email: email }]).first
     end
 
     def filter(filter_name)
@@ -267,8 +268,13 @@ class User < ActiveRecord::Base
     end
 
     def by_login(login)
-      where('lower(username) = :value OR lower(email) = :value',
-            value: login.to_s.downcase).first
+      return nil unless login
+
+      if login.include?('@'.freeze)
+        unscoped.iwhere(email: login).take
+      else
+        unscoped.iwhere(username: login).take
+      end
     end
 
     def find_by_username!(username)
@@ -327,6 +333,10 @@ class User < ActiveRecord::Base
     @reset_token
   end
 
+  def recently_sent_password_reset?
+    reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
+  end
+
   def disable_two_factor!
     update_attributes(
       two_factor_enabled:        false,
@@ -377,31 +387,23 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Groups user has access to
+  # Returns the groups a user has access to
   def authorized_groups
-    @authorized_groups ||= begin
-                             group_ids = (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-                             Group.where(id: group_ids)
-                           end
+    union = Gitlab::SQL::Union.
+      new([groups.select(:id), authorized_projects.select(:namespace_id)])
+
+    Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
-
-  # Projects user has access to
+  # Returns the groups a user is authorized to access.
   def authorized_projects
-    @authorized_projects ||= begin
-                               project_ids = personal_projects.pluck(:id)
-                               project_ids.push(*groups_projects.pluck(:id))
-                               project_ids.push(*projects.pluck(:id).uniq)
-                               Project.where(id: project_ids)
-                             end
+    Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
   def owned_projects
     @owned_projects ||=
-      begin
-        namespace_ids = owned_groups.pluck(:id).push(namespace.id)
-        Project.in_namespace(namespace_ids).joins(:namespace)
-      end
+      Project.where('namespace_id IN (?) OR namespace_id = ?',
+                    owned_groups.select(:id), namespace.id).joins(:namespace)
   end
 
   # Team membership in authorized projects
@@ -633,11 +635,11 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def avatar_url(size = nil)
+  def avatar_url(size = nil, scale = 2)
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     else
-      GravatarService.new.execute(email, size)
+      GravatarService.new.execute(email, size, scale)
     end
   end
 
@@ -686,27 +688,24 @@ class User < ActiveRecord::Base
   end
 
   def starred?(project)
-    starred_projects.exists?(project)
+    starred_projects.exists?(project.id)
   end
 
   def toggle_star(project)
-    user_star_project = users_star_projects.
-      where(project: project, user: self).take
-    if user_star_project
-      user_star_project.destroy
-    else
-      UsersStarProject.create!(project: project, user: self)
+    UsersStarProject.transaction do
+      user_star_project = users_star_projects.
+          where(project: project, user: self).lock(true).first
+
+      if user_star_project
+        user_star_project.destroy
+      else
+        UsersStarProject.create!(project: project, user: self)
+      end
     end
   end
 
   def manageable_namespaces
-    @manageable_namespaces ||=
-      begin
-        namespaces = []
-        namespaces << namespace
-        namespaces += owned_groups
-        namespaces += masters_groups
-      end
+    @manageable_namespaces ||= [namespace] + owned_groups + masters_groups
   end
 
   def namespaces
@@ -719,12 +718,25 @@ class User < ActiveRecord::Base
     Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
   end
 
-  def contributed_projects_ids
-    Event.contributions.where(author_id: self).
+  # Returns the projects a user contributed to in the last year.
+  #
+  # This method relies on a subquery as this performs significantly better
+  # compared to a JOIN when coupled with, for example,
+  # `Project.visible_to_user`. That is, consider the following code:
+  #
+  #     some_user.contributed_projects.visible_to_user(other_user)
+  #
+  # If this method were to use a JOIN the resulting query would take roughly 200
+  # ms on a database with a similar size to GitLab.com's database. On the other
+  # hand, using a subquery means we can get the exact same data in about 40 ms.
+  def contributed_projects
+    events = Event.select(:project_id).
+      contributions.where(author_id: self).
       where("created_at > ?", Time.now - 1.year).
-      reorder(project_id: :desc).
-      select(:project_id).
-      uniq.map(&:project_id)
+      uniq.
+      reorder(nil)
+
+    Project.where(id: events)
   end
 
   def restricted_signup_domains
@@ -754,12 +766,35 @@ class User < ActiveRecord::Base
     !solo_owned_groups.present?
   end
 
-  def ci_authorized_projects
-    @ci_authorized_projects ||= Ci::Project.where(gitlab_id: authorized_projects)
+  def ci_authorized_runners
+    @ci_authorized_runners ||= begin
+      runner_ids = Ci::RunnerProject.joins(:project).
+        where("ci_projects.gitlab_id IN (#{ci_projects_union.to_sql})").
+        select(:runner_id)
+
+      Ci::Runner.specific.where(id: runner_ids)
+    end
   end
 
-  def ci_authorized_runners
-    Ci::Runner.specific.includes(:runner_projects).
-      where(ci_runner_projects: { project_id: ci_authorized_projects } )
+  private
+
+  def projects_union
+    Gitlab::SQL::Union.new([personal_projects.select(:id),
+                            groups_projects.select(:id),
+                            projects.select(:id)])
+  end
+
+  def ci_projects_union
+    scope  = { access_level: [Gitlab::Access::MASTER, Gitlab::Access::OWNER] }
+    groups = groups_projects.where(members: scope)
+    other  = projects.where(members: scope)
+
+    Gitlab::SQL::Union.new([personal_projects.select(:id), groups.select(:id),
+                            other.select(:id)])
+  end
+
+  # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
   end
 end

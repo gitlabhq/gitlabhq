@@ -23,7 +23,7 @@ module Gitlab
           import_url: Project::UNKNOWN_IMPORT_URL
         ).execute
 
-        import_data = project.create_import_data(
+        project.create_import_data(
           data: {
             'repo' => repo.raw_data,
             'user_map' => user_map,

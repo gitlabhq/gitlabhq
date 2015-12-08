@@ -8,10 +8,16 @@
 #  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
+#  template   :boolean          default(FALSE)
 #
 
 class Label < ActiveRecord::Base
   include Referable
+  # Represents a "No Label" state used for filtering Issues and Merge
+  # Requests that have no label assigned.
+  LabelStruct = Struct.new(:title, :name)
+  None = LabelStruct.new('No Label', 'No Label')
+  Any = LabelStruct.new('Any Label', '')
 
   DEFAULT_COLOR = '#428BCA'
 
@@ -21,9 +27,7 @@ class Label < ActiveRecord::Base
   has_many :label_links, dependent: :destroy
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
 
-  validates :color,
-            format: { with: /\A#[0-9A-Fa-f]{6}\Z/ },
-            allow_blank: false
+  validates :color, color: true, allow_blank: false
   validates :project, presence: true, unless: Proc.new { |service| service.template? }
 
   # Don't allow '?', '&', and ',' for label titles

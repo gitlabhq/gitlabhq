@@ -3,11 +3,12 @@ require 'gitlab/markdown'
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor
-    attr_accessor :project, :current_user
+    attr_accessor :project, :current_user, :load_lazy_references
 
-    def initialize(project, current_user = nil)
+    def initialize(project, current_user = nil, load_lazy_references: true)
       @project = project
       @current_user = current_user
+      @load_lazy_references = load_lazy_references
     end
 
     def analyze(text)
@@ -26,9 +27,9 @@ module Gitlab
     def references
       @references ||= Hash.new do |references, type|
         type = type.to_sym
-        return references[type] if references.has_key?(type)
+        next references[type] if references.has_key?(type)
 
-        references[type] = pipeline_result(type).uniq
+        references[type] = pipeline_result(type)
       end
     end
 
@@ -39,21 +40,42 @@ module Gitlab
     #
     # Returns the results Array for the requested filter type
     def pipeline_result(filter_type)
-      klass  = filter_type.to_s.camelize + 'ReferenceFilter'
+      return [] if @text.blank?
+
+      klass  = "#{filter_type.to_s.camelize}ReferenceFilter"
       filter = Gitlab::Markdown.const_get(klass)
 
       context = {
         project: project,
         current_user: current_user,
+
         # We don't actually care about the links generated
         only_path: true,
-        ignore_blockquotes: true
+        ignore_blockquotes: true,
+
+        # ReferenceGathererFilter
+        load_lazy_references: false,
+        reference_filter:     filter
       }
 
-      pipeline = HTML::Pipeline.new([filter], context)
+      # We need to autolink first to finds links to referables, and to prevent
+      # numeric anchors to be parsed as issue references.
+      filters = [
+        Gitlab::Markdown::AutolinkFilter,
+        filter,
+        Gitlab::Markdown::ReferenceGathererFilter
+      ]
+
+      pipeline = HTML::Pipeline.new(filters, context)
       result = pipeline.call(@text)
 
-      result[:references][filter_type]
+      values = result[:references][filter_type].uniq
+
+      if @load_lazy_references
+        values = Gitlab::Markdown::ReferenceFilter::LazyReference.load(values).uniq
+      end
+
+      values
     end
   end
 end

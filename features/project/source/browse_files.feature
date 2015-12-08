@@ -21,12 +21,12 @@ Feature: Project Source Browse Files
     Then I should see raw file content
 
   Scenario: I can create file
-    Given I click on "new file" link in repo
+    Given I click on "New file" link in repo
     Then I can see new file page
 
   @javascript
   Scenario: I can create and commit file
-    Given I click on "new file" link in repo
+    Given I click on "New file" link in repo
     And I edit code
     And I fill the new file name
     And I fill the commit message
@@ -36,14 +36,13 @@ Feature: Project Source Browse Files
 
   @javascript
   Scenario: I can upload file and commit
-    Given I click on "new file" link in repo
-    Then I can see new file page
-    And I can see "upload an existing one"
-    And I click on "upload"
+    Given I click on "Upload file" link in repo
     And I upload a new text file
     And I fill the upload file commit message
+    And I fill the new branch name
     And I click on "Upload file"
     Then I can see the new text file
+    And I am redirected to the new merge request page
     And I can see the new commit message
 
   @javascript
@@ -59,13 +58,13 @@ Feature: Project Source Browse Files
 
   @javascript
   Scenario: I can create and commit file and specify new branch
-    Given I click on "new file" link in repo
+    Given I click on "New file" link in repo
     And I edit code
     And I fill the new file name
     And I fill the commit message
     And I fill the new branch name
     And I click on "Commit Changes"
-    Then I am redirected to the new file on new branch
+    Then I am redirected to the new merge request page
     And I should see its new content
 
   @javascript
@@ -83,13 +82,23 @@ Feature: Project Source Browse Files
 
   @javascript
   Scenario: If I enter an illegal file name I see an error message
-    Given I click on "new file" link in repo
+    Given I click on "New file" link in repo
     And I fill the new file name with an illegal name
     And I edit code
     And I fill the commit message
     And I click on "Commit changes"
     Then I am on the new file page
     And I see a commit error message
+
+  @javascript
+  Scenario: I can create file with a directory name
+    Given I click on "New file" link in repo
+    And I fill the new file name with a new directory
+    And I edit code
+    And I fill the commit message
+    And I click on "Commit changes"
+    Then I am redirected to the new file with directory
+    And I should see its new content
 
   @javascript
   Scenario: I can edit file
@@ -125,7 +134,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I fill the new branch name
     And I click on "Commit Changes"
-    Then I am redirected to the ".gitignore" on new branch
+    Then I am redirected to the new merge request page
     And I should see its new content
 
   @javascript  @wip
@@ -139,6 +148,24 @@ Feature: Project Source Browse Files
     And I see a commit error message
 
   @javascript
+  Scenario: I can create directory in repo
+    When I click on "New directory" link in repo
+    And I fill the new directory name
+    And I fill the commit message
+    And I fill the new branch name
+    And I click on "Create directory"
+    Then I am redirected to the new merge request page
+
+  @javascript
+  Scenario: I attempt to create an existing directory
+    When I click on "New directory" link in repo
+    And I fill an existing directory name
+    And I fill the commit message
+    And I click on "Create directory"
+    Then I see "Unable to create directory"
+    And I am redirected to the root directory
+
+  @javascript
   Scenario: I can see editing preview
     Given I click on ".gitignore" file in repo
     And I click button "Edit"
@@ -147,12 +174,12 @@ Feature: Project Source Browse Files
     Then I see diff
 
   @javascript
-  Scenario: I can remove file and commit
+  Scenario: I can delete file and commit
     Given I click on ".gitignore" file in repo
     And I see the ".gitignore"
-    And I click on "Remove"
+    And I click on "Delete"
     And I fill the commit message
-    And I click on "Remove file"
+    And I click on "Delete file"
     Then I am redirected to the files URL
     And I don't see the ".gitignore"
 
@@ -188,3 +215,9 @@ Feature: Project Source Browse Files
     And I see the ref 'test' has been selected
     And I visit the 'test' tree
     Then I see the commit data
+
+  @javascript
+  Scenario: I browse code with a leading dot in the directory
+    Given I switch ref to fix
+    And I visit the fix tree
+    Then I see the commit data for a directory with a leading dot

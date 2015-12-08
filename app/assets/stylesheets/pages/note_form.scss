@@ -7,6 +7,7 @@
 }
 .reply-btn {
   @extend .btn-primary;
+  margin: 10px $gl-padding;
 }
 .diff-file .diff-content {
   tr.line_holder:hover {
@@ -38,9 +39,8 @@
 }
 
 .new_note, .edit_note {
-  .buttons {
-    margin-top: 8px;
-    margin-bottom: 3px;
+  .note-form-actions {
+    margin-top: $gl-padding;
   }
 
   .note-preview-holder {
@@ -56,6 +56,10 @@
   .note_text {
     width: 100%;
   }
+
+  .comment-hints {
+    margin-top: -12px;
+  }
 }
 
 /* loading indicator */
@@ -65,19 +69,18 @@
 
 .note-image-attach {
   @extend .col-md-4;
-  @extend .thumbnail;
   margin-left: 45px;
   float: none;
 }
 
 .common-note-form {
   margin: 0;
-  background: #f8fafc;
+  background: #F7F8FA;
   padding: $gl-padding;
   margin-left: -$gl-padding;
   margin-right: -$gl-padding;
-  border-right: 1px solid #f1f2f4;
-  border-top: 1px solid #f1f2f4;
+  border-right: 1px solid $border-color;
+  border-top: 1px solid $border-color;
   margin-bottom: -$gl-padding;
 }
 
@@ -147,7 +150,6 @@
 
   .discussion-reply-holder {
     background: $background-color;
-    padding: 10px 15px;
     border-top: 1px solid $border-color;
   }
 }
@@ -168,8 +170,8 @@
 .comment-hints {
   color: #999;
   background: #FFF;
-  padding: 5px;
-  margin-top: -11px;
+  padding: 7px;
+  margin-top: -7px;
   border: 1px solid $border-color;
   font-size: 13px;
 }

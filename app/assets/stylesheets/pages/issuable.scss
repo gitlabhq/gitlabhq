@@ -51,24 +51,26 @@
 
 .issuable-details {
   .page-title {
-    margin-top: -15px;
-    padding: 10px 0;
+    margin-top: -$gl-padding;
+    padding: 7px 0;
     margin-bottom: 0;
-    color: $gl-gray;
+    color: #5c5d5e;
     font-size: 16px;
+    line-height: 42px;
 
     .author {
-      color: $gl-gray;
+      color: #5c5d5e;
     }
 
     .issue-id {
-      font-size: 19px;
-      color: $gl-text-color;
+      color: #5c5d5e;
     }
   }
 
   .issue-title {
     margin: 0;
+    font-size: 23px;
+    color: #313236;
   }
 
   .description {
@@ -76,6 +78,107 @@
 
     p:last-child {
       margin-bottom: 0;
+    }
+  }
+}
+
+.issuable-filter-count {
+  span {
+    display: block;
+    margin-bottom: -16px;
+    padding: 13px 0;
+  }
+}
+
+.issuable-show-labels {
+  a {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    .color-label {
+      padding: 6px 10px;
+    }
+  }
+}
+
+.cross-project-reference {
+  text-align: center;
+  width: 100%;
+
+  .slead {
+    padding: 5px;
+  }
+
+  span, button {
+    background-color: $background-color;
+  }
+}
+
+.awards {
+  @include clearfix;
+  line-height: 34px;
+  margin: 2px 0;
+
+  .award {
+    @include border-radius(5px);
+
+    border: 1px solid;
+    padding: 0px 10px;
+    float: left;
+    margin: 0 5px;
+    border-color: $border-color;
+    cursor: pointer;
+
+    &.active {
+      border-color: $border-gray-light;
+      background-color: $gray-light;
+
+      .counter {
+        font-weight: bold;
+      }
+    }
+
+    .icon {
+      float: left;
+      margin-right: 10px;
+    }
+
+    .counter {
+      float: left;
+    }
+  }
+
+  .awards-controls {
+    margin-left: 10px;
+    float: left;
+
+    .add-award {
+      font-size: 24px;
+      color: $gl-gray;
+      position: relative;
+      top: 2px;
+
+      &:hover,
+      &:link {
+        text-decoration: none;
+      }
+    }
+
+    .awards-menu {
+      padding: $gl-padding;
+      min-width: 214px;
+
+      > li {
+        cursor: pointer;
+        margin: 5px;
+      }
+    }
+  }
+
+  .awards-menu{
+    li {
+      float: left;
+      margin: 3px;
     }
   }
 }

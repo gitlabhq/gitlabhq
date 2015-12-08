@@ -29,7 +29,7 @@ class Profiles::NotificationsController < Profiles::ApplicationController
           flash[:alert] = "Failed to save new settings"
         end
 
-        redirect_to :back
+        redirect_back_or_default(default: profile_notifications_path)
       end
 
       format.js

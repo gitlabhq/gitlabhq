@@ -14,7 +14,7 @@ class InvitesController < ApplicationController
 
       redirect_to path, notice: "You have been granted #{member.human_access} access to #{label}."
     else
-      redirect_to :back, alert: "The invitation could not be accepted."
+      redirect_back_or_default(options: { alert: "The invitation could not be accepted." })
     end
   end
 
@@ -31,7 +31,7 @@ class InvitesController < ApplicationController
 
       redirect_to path, notice: "You have declined the invitation to join #{label}."
     else
-      redirect_to :back, alert: "The invitation could not be declined."
+      redirect_back_or_default(options: { alert: "The invitation could not be declined." })
     end
   end
 

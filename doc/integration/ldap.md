@@ -71,7 +71,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 
   # Filter LDAP users
   #
-  #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
+  #   Format: RFC 4515 https://tools.ietf.org/search/rfc4515
   #   Ex. (employeeType=developer)
   #
   #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
@@ -145,7 +145,7 @@ If multiple LDAP email attributes are present, e.g. `mail: foo@bar.com` and `ema
 ## Using an LDAP filter to limit access to your GitLab server
 
 If you want to limit all GitLab access to a subset of the LDAP users on your LDAP server you can set up an LDAP user filter.
-The filter must comply with [RFC 4515](http://tools.ietf.org/search/rfc4515).
+The filter must comply with [RFC 4515](https://tools.ietf.org/search/rfc4515).
 
 ```ruby
 # For omnibus packages; new LDAP server syntax
@@ -173,3 +173,23 @@ Tip: if you want to limit access to the nested members of an Active Directory gr
 ```
 
 Please note that GitLab does not support the custom filter syntax used by omniauth-ldap.
+
+## Limitations
+
+GitLab's LDAP client is based on [omniauth-ldap](https://gitlab.com/gitlab-org/omniauth-ldap)
+which encapsulates Ruby's `Net::LDAP` class. It provides a pure-Ruby implementation
+of the LDAP client protocol. As a result, GitLab is limited by `omniauth-ldap` and may impact your LDAP 
+server settings.
+
+### TLS Client Authentication  
+Not implemented by `Net::LDAP`.  
+So you should disable anonymous LDAP authentication and enable simple or SASL 
+authentication. TLS client authentication setting in your LDAP server cannot be
+mandatory and clients cannot be authenticated with the TLS protocol. 
+
+### TLS Server Authentication  
+Not supported by GitLab's configuration options.  
+When setting `method: ssl`, the underlying authentication method used by 
+`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with 
+the LDAP server before any LDAP-protocol data is exchanged but no validation of
+the LDAP server's SSL certificate is performed.

@@ -87,13 +87,16 @@ describe "Admin::Users", feature: true  do
     end
 
     it "should call send mail" do
-      expect(Notify).to receive(:new_user_email)
+      expect_any_instance_of(NotificationService).to receive(:new_user)
 
       click_button "Create user"
     end
 
     it "should send valid email to user with email & password" do
-      click_button "Create user"
+      perform_enqueued_jobs do
+        click_button "Create user"
+      end
+
       user = User.find_by(username: 'bang')
       email = ActionMailer::Base.deliveries.last
       expect(email.subject).to have_content('Account was created')
@@ -109,6 +112,63 @@ describe "Admin::Users", feature: true  do
 
       expect(page).to have_content(@user.email)
       expect(page).to have_content(@user.name)
+    end
+
+    describe 'Impersonation' do
+      let(:another_user) { create(:user) }
+      before { visit admin_user_path(another_user) }
+
+      context 'before impersonating' do
+        it 'shows impersonate button for other users' do
+          expect(page).to have_content('Impersonate')
+        end
+
+        it 'should not show impersonate button for admin itself' do
+          visit admin_user_path(@user)
+
+          expect(page).not_to have_content('Impersonate')
+        end
+
+        it 'should not show impersonate button for blocked user' do
+          another_user.block
+
+          visit admin_user_path(another_user)
+
+          expect(page).not_to have_content('Impersonate')
+
+          another_user.activate
+        end
+      end
+
+      context 'when impersonating' do
+        before { click_link 'Impersonate' }
+
+        it 'logs in as the user when impersonate is clicked' do
+          page.within '.sidebar-user .username' do
+            expect(page).to have_content(another_user.username)
+          end
+        end
+
+        it 'sees impersonation log out icon' do
+          icon = first('.fa.fa-user-secret')
+
+          expect(icon).to_not eql nil
+        end
+
+        it 'can log out of impersonated user back to original user' do
+          find(:css, 'li.impersonation a').click
+
+          page.within '.sidebar-user .username' do
+            expect(page).to have_content(@user.username)
+          end
+        end
+
+        it 'is redirected back to the impersonated users page in the admin after stopping' do
+          find(:css, 'li.impersonation a').click
+
+          expect(current_path).to eql "/admin/users/#{another_user.username}"
+        end
+      end
     end
 
     describe 'Two-factor Authentication status' do

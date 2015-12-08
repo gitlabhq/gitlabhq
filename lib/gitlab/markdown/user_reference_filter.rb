@@ -23,9 +23,38 @@ module Gitlab
         end
       end
 
+      def self.referenced_by(node)
+        if node.has_attribute?('data-group')
+          group = Group.find(node.attr('data-group')) rescue nil
+          return unless group
+
+          { user: group.users }
+        elsif node.has_attribute?('data-user')
+          { user: LazyReference.new(User, node.attr('data-user')) }
+        elsif node.has_attribute?('data-project')
+          project = Project.find(node.attr('data-project')) rescue nil
+          return unless project
+
+          { user: project.team.members.flatten }
+        end
+      end
+
+      def self.user_can_reference?(user, node, context)
+        if node.has_attribute?('data-group')
+          group = Group.find(node.attr('data-group')) rescue nil
+          Ability.abilities.allowed?(user, :read_group, group)
+        else
+          super
+        end
+      end
+
       def call
         replace_text_nodes_matching(User.reference_pattern) do |content|
           user_link_filter(content)
+        end
+
+        replace_link_nodes_with_href(User.reference_pattern) do |link, text|
+          user_link_filter(link, link_text: text)
         end
       end
 
@@ -36,12 +65,12 @@ module Gitlab
       #
       # Returns a String with `@user` references replaced with links. All links
       # have `gfm` and `gfm-project_member` class names attached for styling.
-      def user_link_filter(text)
+      def user_link_filter(text, link_text: nil)
         self.class.references_in(text) do |match, username|
           if username == 'all'
-            link_to_all
+            link_to_all(link_text: link_text)
           elsif namespace = Namespace.find_by(path: username)
-            link_to_namespace(namespace) || match
+            link_to_namespace(namespace, link_text: link_text) || match
           else
             match
           end
@@ -58,51 +87,42 @@ module Gitlab
         reference_class(:project_member)
       end
 
-      def link_to_all
+      def link_to_all(link_text: nil)
         project = context[:project]
-
-        # FIXME (rspeicher): Law of Demeter
-        push_result(:user, *project.team.members.flatten)
-
         url = urls.namespace_project_url(project.namespace, project,
                                          only_path: context[:only_path])
+        data = data_attribute(project: project.id)
+        text = link_text || User.reference_prefix + 'all'
 
-        text = User.reference_prefix + 'all'
-        %(<a href="#{url}" class="#{link_class}">#{text}</a>)
+        link_tag(url, data, text)
       end
 
-      def link_to_namespace(namespace)
+      def link_to_namespace(namespace, link_text: nil)
         if namespace.is_a?(Group)
-          link_to_group(namespace.path, namespace)
+          link_to_group(namespace.path, namespace, link_text: link_text)
         else
-          link_to_user(namespace.path, namespace)
+          link_to_user(namespace.path, namespace, link_text: link_text)
         end
       end
 
-      def link_to_group(group, namespace)
-        return unless user_can_reference_group?(namespace)
-
-        push_result(:user, *namespace.users)
-
+      def link_to_group(group, namespace, link_text: nil)
         url = urls.group_url(group, only_path: context[:only_path])
-        data = data_attribute(namespace.id, :group)
+        data = data_attribute(group: namespace.id)
+        text = link_text || Group.reference_prefix + group
 
-        text = Group.reference_prefix + group
-        %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
+        link_tag(url, data, text)
       end
 
-      def link_to_user(user, namespace)
-        push_result(:user, namespace.owner)
-
+      def link_to_user(user, namespace, link_text: nil)
         url = urls.user_url(user, only_path: context[:only_path])
-        data = data_attribute(namespace.owner_id, :user)
+        data = data_attribute(user: namespace.owner_id)
+        text = link_text || User.reference_prefix + user
 
-        text = User.reference_prefix + user
-        %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
+        link_tag(url, data, text)
       end
 
-      def user_can_reference_group?(group)
-        Ability.abilities.allowed?(context[:current_user], :read_group, group)
+      def link_tag(url, data, text)
+        %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
       end
     end
   end

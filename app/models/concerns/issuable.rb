@@ -6,8 +6,9 @@
 #
 module Issuable
   extend ActiveSupport::Concern
-  include Mentionable
   include Participable
+  include Mentionable
+  include StripAttribute
 
   included do
     belongs_to :author, class_name: "User"
@@ -24,7 +25,7 @@ module Issuable
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}
-    scope :recent, -> { order("created_at DESC") }
+    scope :recent, -> { reorder(id: :desc) }
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
@@ -34,6 +35,9 @@ module Issuable
     scope :closed, -> { with_state(:closed) }
     scope :order_milestone_due_desc, -> { joins(:milestone).reorder('milestones.due_date DESC, milestones.id DESC') }
     scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
+
+    scope :join_project, -> { joins(:project) }
+    scope :references_project, -> { references(:project) }
 
     delegate :name,
              :email,
@@ -47,7 +51,8 @@ module Issuable
              prefix: true
 
     attr_mentionable :title, :description
-    participant :author, :assignee, :notes, :mentioned_users
+    participant :author, :assignee, :notes_with_associations
+    strip_attributes :title
   end
 
   module ClassMethods
@@ -85,39 +90,18 @@ module Issuable
     assignee_id_changed?
   end
 
-  #
-  # Votes
-  #
+  def open?
+    opened? || reopened?
+  end
 
-  # Return the number of -1 comments (downvotes)
+  # Deprecated. Still exists to preserve API compatibility.
   def downvotes
-    filter_superceded_votes(notes.select(&:downvote?), notes).size
+    0
   end
 
-  def downvotes_in_percent
-    if votes_count.zero?
-      0
-    else
-      100.0 - upvotes_in_percent
-    end
-  end
-
-  # Return the number of +1 comments (upvotes)
+  # Deprecated. Still exists to preserve API compatibility.
   def upvotes
-    filter_superceded_votes(notes.select(&:upvote?), notes).size
-  end
-
-  def upvotes_in_percent
-    if votes_count.zero?
-      0
-    else
-      100.0 / votes_count * upvotes
-    end
-  end
-
-  # Return the total number of votes
-  def votes_count
-    upvotes + downvotes
+    0
   end
 
   def subscribed?(user)
@@ -176,17 +160,12 @@ module Issuable
     self.class.to_s.underscore
   end
 
-  private
+  def notes_with_associations
+    notes.includes(:author, :project)
+  end
 
-  def filter_superceded_votes(votes, notes)
-    filteredvotes = [] + votes
-
-    votes.each do |vote|
-      if vote.superceded?(notes)
-        filteredvotes.delete(vote)
-      end
-    end
-
-    filteredvotes
+  def updated_tasks
+    Taskable.get_updated_tasks(old_content: previous_changes['description'].first,
+                               new_content: description)
   end
 end

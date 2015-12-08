@@ -37,8 +37,12 @@ module SharedGroup
     group = Group.find_by(name: groupname) || create(:group, name: groupname)
     group.add_user(user, role)
     project ||= create(:project, namespace: group, path: "project#{@project_count}")
-    event   ||= create(:closed_issue_event, project: project)
+    create(:closed_issue_event, project: project)
     project.team << [user, :master]
     @project_count += 1
+  end
+
+  def owned_group
+    @owned_group ||= Group.find_by(name: "Owned")
   end
 end

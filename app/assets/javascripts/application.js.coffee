@@ -135,17 +135,25 @@ $ ->
     ), 1
 
   # Initialize tooltips
-  $('body').tooltip({
-    selector: '.has_tooltip, [data-toggle="tooltip"], .page-sidebar-collapsed .nav-sidebar a'
+  $('body').tooltip(
+    selector: '.has_tooltip, [data-toggle="tooltip"]'
     placement: (_, el) ->
       $el = $(el)
-      if $el.attr('id') == 'js-shortcuts-home'
-        # Place the logo tooltip on the right when collapsed, bottom when expanded
-        $el.parents('header').hasClass('header-collapsed') and 'right' or 'bottom'
-      else
-        # Otherwise use the data-placement attribute, or 'bottom' if undefined
-        $el.data('placement') or 'bottom'
-  })
+      $el.data('placement') || 'bottom'
+  )
+
+  $('.header-logo .home').tooltip(
+    placement: (_, el) ->
+      $el = $(el)
+      if $('.page-with-sidebar').hasClass('page-sidebar-collapsed') then 'right' else 'bottom'
+    container: 'body'
+  )
+
+  $('.page-with-sidebar').tooltip(
+    selector: '.sidebar-collapsed .nav-sidebar a, .sidebar-collapsed a.sidebar-user'
+    placement: 'right'
+    container: 'body'
+  )
 
   # Form submitter
   $('.trigger-submit').on 'change', ->
@@ -180,6 +188,7 @@ $ ->
   $('.navbar-toggle').on 'click', ->
     $('.header-content .title').toggle()
     $('.header-content .navbar-collapse').toggle()
+    $('.navbar-toggle').toggleClass('active')
 
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->

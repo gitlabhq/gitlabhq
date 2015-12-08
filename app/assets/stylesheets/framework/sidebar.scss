@@ -1,0 +1,292 @@
+.page-with-sidebar {
+  padding-top: $header-height;
+  transition-duration: .3s;
+
+  .sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    left: 0;
+    height: 100%;
+    transition-duration: .3s;
+  }
+}
+
+.sidebar-wrapper {
+  z-index: 99;
+  background: $background-color;
+}
+
+.content-wrapper {
+  width: 100%;
+  padding: 20px;
+
+  .container-fluid {
+    background: #FFF;
+    padding: $gl-padding;
+
+    &.container-blank {
+      background: none;
+      padding: 0;
+      border: none;
+    }
+  }
+}
+
+.sidebar-wrapper {
+  .header-logo {
+    border-bottom: 1px solid transparent;
+    float: left;
+    height: $header-height;
+    width: $sidebar_width;
+    position: fixed;
+    z-index: 999;
+    overflow: hidden;
+    transition-duration: .3s;
+
+    a {
+      float: left;
+      height: $header-height;
+      width: 100%;
+      padding: 11px 0 11px 22px;
+      overflow: hidden;
+      outline: none;
+      transition-duration: .3s;
+
+      img {
+        width: 36px;
+        height: 36px;
+      }
+
+      #tanuki-logo, img {
+        float: left;
+      }
+
+      .gitlab-text-container {
+        width: 230px;
+
+        h3 {
+          width: 158px;
+          float: left;
+          margin: 0;
+          margin-left: 14px;
+          font-size: 19px;
+          line-height: 41px;
+          font-weight: normal;
+        }
+      }
+    }
+
+    &:hover {
+      background-color: #EEE;
+    }
+  }
+
+  .sidebar-user {
+    padding: 9px 22px;
+    position: fixed;
+    bottom: 40px;
+    width: $sidebar_width;
+    overflow: hidden;
+    transition-duration: .3s;
+
+    .username {
+      margin-left: 10px;
+      width: $sidebar_width - 2 * 10px;
+      font-size: 16px;
+      line-height: 34px;
+    }
+  }
+}
+
+
+.tanuki-shape {
+  transition: all 0.8s;
+
+  &:hover {
+    fill: rgb(255, 255, 255);
+    transition: all 0.1s;
+  }
+}
+
+
+.nav-sidebar {
+  margin-top: 14 + $header-height;
+  margin-bottom: 100px;
+  transition-duration: .3s;
+  list-style: none;
+  overflow: hidden;
+
+  &.navbar-collapse {
+    padding: 0px !important;
+  }
+
+  li {
+    width: $sidebar_width;
+
+    &.separate-item {
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    a {
+      padding: 7px 15px;
+      font-size: $gl-font-size;
+      line-height: 24px;
+      color: $gray;
+      display: block;
+      text-decoration: none;
+      padding-left: 23px;
+      font-weight: normal;
+      outline: none;
+
+      &:hover {
+        text-decoration: none;
+      }
+
+      &:active, &:focus {
+        text-decoration: none;
+      }
+
+      i {
+        width: 16px;
+        color: $gray-light;
+        margin-right: 13px;
+      }
+
+      .count {
+        float: right;
+        background: #eee;
+        padding: 0px 8px;
+        @include border-radius(6px);
+      }
+
+      &.back-link i {
+        transition-duration: .3s;
+      }
+    }
+  }
+}
+
+.sidebar-subnav {
+  margin-left: 0px;
+  padding-left: 0px;
+
+  li {
+    list-style: none;
+  }
+}
+
+@mixin expanded-sidebar {
+  padding-left: $sidebar_width;
+
+  .sidebar-wrapper {
+    width: $sidebar_width;
+
+    .nav-sidebar {
+      width: $sidebar_width;
+    }
+
+    .nav-sidebar li a{
+      width: 230px;
+
+      &.back-link {
+        i {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}
+
+@mixin collapsed-sidebar {
+  padding-left: $sidebar_collapsed_width;
+
+  .sidebar-wrapper {
+    width: $sidebar_collapsed_width;
+
+    .header-logo {
+      width: $sidebar_collapsed_width;
+
+      a {
+        padding-left: ($sidebar_collapsed_width - 36) / 2;
+
+        .gitlab-text-container {
+          display: none;
+        }
+      }
+    }
+
+    .nav-sidebar {
+      width: $sidebar_collapsed_width;
+
+      li {
+        width: auto;
+
+        a {
+          span {
+            display: none;
+          }
+        }
+      }
+    }
+
+    .collapse-nav a {
+      width: $sidebar_collapsed_width;
+    }
+
+    .sidebar-user {
+      padding-left: ($sidebar_collapsed_width - 36) / 2;
+      width: $sidebar_collapsed_width;
+
+      .username {
+        display: none;
+      }
+    }
+  }
+}
+
+.collapse-nav a {
+  width: $sidebar_width;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  font-size: 13px;
+  background: transparent;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  transition-duration: .3s;
+  outline: none;
+}
+
+.collapse-nav a:hover {
+  text-decoration: none;
+  background: #f2f6f7;
+}
+
+@media (max-width: $screen-md-max) {
+  .page-sidebar-collapsed {
+    @include collapsed-sidebar;
+  }
+
+  .page-sidebar-expanded {
+    @include collapsed-sidebar;
+  }
+
+  .collapse-nav {
+    display: none;
+  }
+}
+
+@media(min-width: $screen-md-max) {
+  .page-sidebar-collapsed {
+    @include collapsed-sidebar;
+  }
+
+  .page-sidebar-expanded {
+    @include expanded-sidebar;
+  }
+}

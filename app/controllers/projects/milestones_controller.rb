@@ -75,11 +75,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def sort_issues
-    @issues = @milestone.issues.where(id: params['sortable_issue'])
-    @issues.each do |issue|
-      issue.position = params['sortable_issue'].index(issue.id.to_s) + 1
-      issue.save
-    end
+    @milestone.sort_issues(params['sortable_issue'].map(&:to_i))
 
     render json: { saved: true }
   end

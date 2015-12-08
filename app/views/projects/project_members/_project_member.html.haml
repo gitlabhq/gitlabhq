@@ -4,7 +4,7 @@
 %li{class: "#{dom_class(member)} js-toggle-container project_member_row access-#{member.human_access.downcase}", id: dom_id(member)}
   %span.list-item-name
     - if member.user
-      = image_tag avatar_icon(user.email, 16), class: "avatar s16", alt: ''
+      = image_tag avatar_icon(user, 24), class: "avatar s24", alt: ''
       %strong
         = link_to user.name, user_path(user)
       %span.cgray= user.username
@@ -14,7 +14,7 @@
         %label.label.label-danger
           %strong Blocked
     - else
-      = image_tag avatar_icon(member.invite_email, 16), class: "avatar s16", alt: ''
+      = image_tag avatar_icon(member.invite_email, 24), class: "avatar s24", alt: ''
       %strong
         = member.invite_email
       %span.cgray
@@ -24,18 +24,19 @@
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
 
-      - if current_user_can_admin_project
+      - if can?(current_user, :admin_project_member, @project)
         = link_to resend_invite_namespace_project_project_member_path(@project.namespace, @project, member), method: :post, class: "btn-xs btn", title: 'Resend invite' do
           Resend invite
 
-  - if current_user_can_admin_project
-    - unless @project.personal? && user == current_user
-      .pull-right
-        %strong= member.human_access
+  - if can?(current_user, :admin_project_member, @project)
+    .pull-right
+      %strong= member.human_access
+      - if can?(current_user, :update_project_member, member)
         = button_tag class: "btn-xs btn js-toggle-button",
                      title: 'Edit access level', type: 'button' do
           %i.fa.fa-pencil-square-o
 
+      - if can?(current_user, :destroy_project_member, member)
         &nbsp;
         - if current_user == user
           = link_to leave_namespace_project_project_members_path(@project.namespace, @project), data: { confirm: leave_project_message(@project) }, method: :delete, class: "btn-xs btn btn-remove", title: 'Leave project' do

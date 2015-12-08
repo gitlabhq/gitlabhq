@@ -131,6 +131,23 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/:id/merge_request/:merge_request_id/commits' do
+    context 'valid merge request' do
+      before { get api("/projects/#{project.id}/merge_request/#{merge_request.id}/commits", user) }
+      let(:commit) { merge_request.commits.first }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(json_response.size).to eq(merge_request.commits.size) }
+      it { expect(json_response.first['id']).to eq(commit.id) }
+      it { expect(json_response.first['title']).to eq(commit.title) }
+    end
+
+    it 'returns a 404 when merge_request_id not found' do
+      get api("/projects/#{project.id}/merge_request/999/commits", user)
+      expect(response.status).to eq(404)
+    end
+  end
+
   describe 'GET /projects/:id/merge_request/:merge_request_id/changes' do
     it 'should return the change information of the merge_request' do
       get api("/projects/#{project.id}/merge_request/#{merge_request.id}/changes", user)
@@ -379,9 +396,14 @@ describe API::API, api: true  do
 
   describe "POST /projects/:id/merge_request/:merge_request_id/comments" do
     it "should return comment" do
+      original_count = merge_request.notes.size
+
       post api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user), note: "My comment"
       expect(response.status).to eq(201)
       expect(json_response['note']).to eq('My comment')
+      expect(json_response['author']['name']).to eq(user.name)
+      expect(json_response['author']['username']).to eq(user.username)
+      expect(merge_request.notes.size).to eq(original_count + 1)
     end
 
     it "should return 400 if note is missing" do
