@@ -444,7 +444,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def approved?
-    approvals_left.zero?
+    approvals_left < 1
   end
 
   def approved_by?(user)
