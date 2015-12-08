@@ -18,6 +18,7 @@ v 8.3.0 (unreleased)
   - Fix 500 error when creating a merge request that removes a submodule
   - Run custom Git hooks when branch is created or deleted.
   - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
+  - Add ability to create a note for user by admin
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151203162133) do
+ActiveRecord::Schema.define(version: 20151208110020) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -815,6 +815,7 @@ ActiveRecord::Schema.define(version: 20151203162133) do
     t.integer  "consumed_timestep"
     t.integer  "layout",                     default: 0
     t.boolean  "hide_project_limit",         default: false
+    t.text     "note"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
