@@ -386,6 +386,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :groups do
+      resource :stats, only: [:show]
       resource :ldap, only: [] do
         member do
           put :reset_access
