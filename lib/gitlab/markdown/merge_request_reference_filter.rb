@@ -28,10 +28,10 @@ module Gitlab
         case path
         when '/diffs'
           extras.unshift "diffs"
-        when '/builds'
-          extras.unshift "builds"
         when '/commits'
           extras.unshift "commits"
+        when '/builds'
+          extras.unshift "builds"
         end
 
         extras

@@ -68,10 +68,10 @@ class @MergeRequestTabs
 
     if action == 'commits'
       @loadCommits($target.attr('href'))
-    else if action == 'builds'
-      @loadBuilds($target.attr('href'))
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
+    else if action == 'builds'
+      @loadBuilds($target.attr('href'))
 
     @setCurrentAction(action)
 
@@ -110,7 +110,7 @@ class @MergeRequestTabs
     action = 'notes' if action == 'show'
 
     # Remove a trailing '/commits' or '/diffs'
-    new_state = @_location.pathname.replace(/\/(commits|builds|diffs)(\.html)?\/?$/, '')
+    new_state = @_location.pathname.replace(/\/(commits|diffs|builds)(\.html)?\/?$/, '')
 
     # Append the new action if we're on a tab other than 'notes'
     unless action == 'notes'
@@ -138,6 +138,16 @@ class @MergeRequestTabs
         @commitsLoaded = true
         @scrollToElement("#commits")
 
+  loadDiff: (source) ->
+    return if @diffsLoaded
+
+    @_get
+      url: "#{source}.json" + @_location.search
+      success: (data) =>
+        document.getElementById('diffs').innerHTML = data.html
+        @diffsLoaded = true
+        @scrollToElement("#diffs")
+
   loadBuilds: (source) ->
     return if @buildsLoaded
 
@@ -148,16 +158,6 @@ class @MergeRequestTabs
         $('.js-timeago').timeago()
         @buildsLoaded = true
         @scrollToElement("#builds")
-
-  loadDiff: (source) ->
-    return if @diffsLoaded
-
-    @_get
-      url: "#{source}.json" + @_location.search
-      success: (data) =>
-        document.getElementById('diffs').innerHTML = data.html
-        @diffsLoaded = true
-        @scrollToElement("#diffs")
 
   # Show or hide the loading spinner
   #
