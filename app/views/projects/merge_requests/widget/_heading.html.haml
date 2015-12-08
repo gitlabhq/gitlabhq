@@ -4,10 +4,12 @@
   .mr-widget-heading
     .ci_widget{class: "ci-#{status}"}
       = ci_status_icon(ci_commit)
-      %span CI build #{status}
-      for #{@merge_request.last_commit_short_sha}.
+      %span Build #{status}
+      for
+      = succeed "." do
+        = link_to @ci_commit.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @ci_commit.sha), class: "monospace"
       %span.ci-coverage
-      = link_to "View build details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
+      = link_to "View details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
@@ -21,10 +23,13 @@
         - else
           = icon("circle")
         %span CI build #{status}
-        for #{@merge_request.last_commit_short_sha}.
+        for
+        - commit = @merge_request.last_commit
+        = succeed "." do
+          = link_to commit.short_id, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, commit), class: "monospace"
         %span.ci-coverage
         - if ci_build_details_path(@merge_request)
-          = link_to "View build details", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
+          = link_to "View details", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
 
     .ci_widget
       = icon("spinner spin")
