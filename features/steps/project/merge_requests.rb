@@ -367,7 +367,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see merge request "Bug NS-05" with CI status' do
     page.within ".mr-list" do
-      expect(page).to have_link "Build status: pending"
+      expect(page).to have_link "Build pending"
     end
   end
 
