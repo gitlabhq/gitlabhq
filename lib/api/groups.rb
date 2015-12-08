@@ -65,6 +65,18 @@ module API
         DestroyGroupService.new(group, current_user).execute
       end
 
+      # Get a list of projects in this group
+      #
+      # Example Request:
+      #   GET /groups/:id/projects
+      get ":id/projects" do
+        group = find_group(params[:id])
+        projects = group.projects
+        projects = filter_projects(projects)
+        projects = paginate projects
+        present projects, with: Entities::Project
+      end
+
       # Transfer a project to the Group namespace
       #
       # Parameters:

@@ -48,6 +48,19 @@ module SelectsHelper
     select2_tag(id, opts)
   end
 
+  def project_select_tag(id, opts = {})
+    opts[:class] ||= ''
+    opts[:class] << ' ajax-project-select'
+
+    unless opts.delete(:scope) == :all
+      if @group
+        opts['data-group-id'] = @group.id
+      end
+    end
+
+    hidden_field_tag(id, opts[:selected], opts)
+  end
+
   def select2_tag(id, opts = {})
     css_class = ''
     css_class << 'multiselect ' if opts[:multiple]
