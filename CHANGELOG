@@ -15,6 +15,7 @@ v 8.3.0 (unreleased)
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info
   - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
+  - Fix 500 error when creating a merge request that removes a submodule
   - Run custom Git hooks when branch is created or deleted.
   - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
 
