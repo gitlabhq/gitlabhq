@@ -52,7 +52,7 @@ gem "gitlab_git", '~> 7.2.20'
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 
 # Git Wiki
-gem 'gollum-lib', '~> 4.0.2'
+gem 'gollum-lib', '~> 4.1.0'
 
 # Language detection
 gem "github-linguist", "~> 4.7.0", require: "linguist"
