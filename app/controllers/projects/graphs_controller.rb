@@ -34,6 +34,26 @@ class Projects::GraphsController < Projects::ApplicationController
     @charts[:build_times] = Ci::Charts::BuildTime.new(ci_project)
   end
 
+  def languages
+    @languages = Linguist::Repository.new(@repository.rugged, @repository.rugged.head.target_id).languages
+    total = @languages.map(&:last).sum
+
+    @languages = @languages.map do |language|
+      name, share = language
+      color = Digest::SHA256.hexdigest(name)[0...6]
+      {
+        value: (share.to_f * 100 / total).round(2),
+        label: name,
+        color: "##{color}",
+        highlight: "##{color}"
+      }
+    end
+
+    @languages.sort! do |x, y|
+      y[:value] <=> x[:value]
+    end
+  end
+
   private
 
   def fetch_graph
