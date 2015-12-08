@@ -42,11 +42,11 @@ describe Projects::RawController do
         before do
           public_project.lfs_objects << lfs_object
           allow_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(true)
-          allow(controller).to receive(:send_file) { controller.render :nothing => true }
+          allow(controller).to receive(:send_file) { controller.render nothing: true }
         end
 
         it 'serves the file' do
-          expect(controller).to receive(:send_file).with("#{Gitlab.config.shared.path}/lfs-objects/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", :filename => "lfs_object.iso", :disposition => 'attachment')
+          expect(controller).to receive(:send_file).with("#{Gitlab.config.shared.path}/lfs-objects/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: "lfs_object.iso", disposition: 'attachment')
           get(:show,
               namespace_id: public_project.namespace.to_param,
               project_id: public_project.to_param,
