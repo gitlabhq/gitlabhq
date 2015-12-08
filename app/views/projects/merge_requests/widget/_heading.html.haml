@@ -1,13 +1,12 @@
-- ci_commit = @merge_request.ci_commit
-- if ci_commit
-  - status = ci_commit.status
+- if @ci_commit
+  - status = @ci_commit.status
   .mr-widget-heading
     .ci_widget{class: "ci-#{status}"}
-      = ci_status_icon(ci_commit)
+      = ci_status_icon(@ci_commit)
       %span CI build #{status}
       for #{@merge_request.last_commit_short_sha}.
       %span.ci-coverage
-      = link_to "View build details", ci_status_path(ci_commit)
+      = link_to "View build details", ci_status_path(@ci_commit)
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
