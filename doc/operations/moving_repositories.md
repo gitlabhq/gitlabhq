@@ -96,25 +96,59 @@ after switching to the new repository storage directory.
 
 ### Parallel rsync for all repositories known to GitLab
 
-This will sync repositories with 10 rsync processes at a time.
+This will sync repositories with 10 rsync processes at a time. We keep
+track of progress so that the transfer can be restarted if necessary.
+
+First we create a new directory, owned by 'git', to hold transfer
+logs. We assume the directory is empty before we start the transfer
+procedure, and that we are the only ones writing files in it.
 
 ```
 # Omnibus
-sudo gitlab-rake gitlab:list_repos |\
-  sudo -u git \
-  /usr/bin/env JOBS=10 \
-  /opt/gitlab/embedded/service/gitlab-rails/bin/parallel-rsync-repoos \
-    /var/opt/gitlab/git-data/repositories \
-    /mnt/gitlab/repositories
+sudo mkdir /var/opt/gitlab/transfer-logs
+sudo chown git:git /var/opt/gitlab/transfer-logs
+
+# Source
+sudo -u git -H mkdir /home/git/transfer-logs
+```
+
+We seed the process with a list of the directories we want to copy.
+
+```
+# Omnibus
+sudo -u git sh -c 'gitlab-rake gitlab:list_repos > /var/opt/gitlab/transfer-logs/all-repos-$(date +%s).txt'
 
 # Source
 cd /home/git/gitlab
-sudo -u git -H bundle exec rake gitlab:list_repos |\
-  sudo -u git -H \
+sudo -u git -H sh -c 'bundle exec rake gitlab:list_repos > /home/git/transfer-logs/all-repos-$(date +%s).txt'
+```
+
+Now we can start the transfer. The command below is idempotent, and
+the number of jobs done by GNU Parallel should converge to zero. If it
+does not some repositories listed in all-repos-1234.txt may have been
+deleted/renamed before they could be copied.
+
+```
+# Omnibus
+sudo -u git sh -c '
+cat /var/opt/gitlab/transfer-logs/* | sort | uniq -u |\
+  /usr/bin/env JOBS=10 \
+  /opt/gitlab/embedded/service/gitlab-rails/bin/parallel-rsync-repos \
+    /var/opt/gitlab/transfer-logs/succes-$(date +%s).log \
+    /var/opt/gitlab/git-data/repositories \
+    /mnt/gitlab/repositories
+'
+
+# Source
+cd /home/git/gitlab
+sudo -u git -H sh -c '
+cat /home/git/transfer-logs/* | sort | uniq -u |\
   /usr/bin/env JOBS=10 \
   bin/parallel-rsync-repos \
+    /home/git/transfer-logs/succes-$(date +%s).log \
     /home/git/repositories \
     /mnt/gitlab/repositories
+`
 ```
 
 ### Parallel rsync only for repositories with recent activity
@@ -129,7 +163,8 @@ gitlab:list_repos' to only print repositories with recent activity.
 sudo gitlab-rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
   sudo -u git \
   /usr/bin/env JOBS=10 \
-  /opt/gitlab/embedded/service/gitlab-rails/bin/parallel-rsync-repoos \
+  /opt/gitlab/embedded/service/gitlab-rails/bin/parallel-rsync-repos \
+    succes-$(date +%s).log \
     /var/opt/gitlab/git-data/repositories \
     /mnt/gitlab/repositories
 
@@ -139,6 +174,7 @@ sudo -u git -H bundle exec rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
   sudo -u git -H \
   /usr/bin/env JOBS=10 \
   bin/parallel-rsync-repos \
+    succes-$(date +%s).log \
     /home/git/repositories \
     /mnt/gitlab/repositories
 ```
