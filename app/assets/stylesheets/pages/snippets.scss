@@ -32,6 +32,12 @@
   .file-holder {
     border-top: 0;
   }
+
+  .file-actions {
+    .btn-clipboard {
+      @extend .btn;
+    }
+  }
 }
 
 .snippet-box {
