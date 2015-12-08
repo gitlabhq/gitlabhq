@@ -27,7 +27,7 @@ module Gitlab
       def user_can_reference?(node)
         if node.has_attribute?('data-reference-filter')
           reference_type = node.attr('data-reference-filter')
-          reference_filter = reference_type.constantize
+          reference_filter = Gitlab::Markdown.const_get(reference_type)
 
           reference_filter.user_can_reference?(current_user, node, context)
         else
