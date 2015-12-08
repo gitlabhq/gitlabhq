@@ -6,6 +6,7 @@ v 8.2.3
   - Update documentation for "Guest" permissions
   - Properly convert Emoji-only comments into Award Emojis
   - Webhook payload has an added, modified and removed properties for each commit
+  - Fix 500 error when creating a merge request that removes a submodule
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)

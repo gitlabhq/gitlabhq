@@ -21,7 +21,8 @@ module TestEnv
   # We currently only need a subset of the branches
   FORKED_BRANCH_SHA = {
     'add-submodule-version-bump' => '3f547c08',
-    'master' => '5937ac0'
+    'master' => '5937ac0',
+    'remove-submodule' => '2a33e0c0'
   }
 
   # Test environment

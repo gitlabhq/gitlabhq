@@ -2,8 +2,9 @@
   .diff-header{id: "file-path-#{hexdigest(diff_file.file_path)}"}
     - if diff_file.diff.submodule?
       %span
-        - submodule_item = project.repository.blob_at(@commit.id, diff_file.file_path)
-        = submodule_link(submodule_item, @commit.id, project.repository)
+        = icon('archive fw')
+        %strong
+          = submodule_link(blob, @commit.id, project.repository)
     - else
       %span
         - if diff_file.deleted_file
