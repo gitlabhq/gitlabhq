@@ -53,10 +53,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).not_to have_link 'edit'
   end
 
-  step 'The edit button is disabled' do
-    expect(page).to have_css '.disabled', text: 'Edit'
-  end
-
   step 'I can edit code' do
     set_new_content
     expect(evaluate_script('blob.editor.getValue()')).to eq new_gitignore_content
