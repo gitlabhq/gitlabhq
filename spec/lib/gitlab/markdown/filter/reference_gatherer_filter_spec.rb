@@ -16,7 +16,7 @@ describe Gitlab::Markdown::ReferenceGathererFilter do
         project = create(:empty_project)
         issue = create(:issue, project: project)
 
-        link = reference_link(project: project.id, issue: issue.id, reference_filter: Gitlab::Markdown::IssueReferenceFilter.name)
+        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
         result = pipeline_result(link, current_user: user)
 
         expect(result[:references][:issue]).to be_empty
@@ -28,14 +28,14 @@ describe Gitlab::Markdown::ReferenceGathererFilter do
         issue = create(:issue, project: project)
         project.team << [user, :master]
 
-        link = reference_link(project: project.id, issue: issue.id, reference_filter: Gitlab::Markdown::IssueReferenceFilter.name)
+        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
         result = pipeline_result(link, current_user: user)
 
         expect(result[:references][:issue]).to eq([issue])
       end
 
       it 'handles invalid Project references' do
-        link = reference_link(project: 12345, issue: 12345, reference_filter: Gitlab::Markdown::IssueReferenceFilter.name)
+        link = reference_link(project: 12345, issue: 12345, reference_filter: 'IssueReferenceFilter')
 
         expect { pipeline_result(link) }.not_to raise_error
       end
@@ -49,7 +49,7 @@ describe Gitlab::Markdown::ReferenceGathererFilter do
         user = create(:user)
         group = create(:group)
 
-        link = reference_link(group: group.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+        link = reference_link(group: group.id, reference_filter: 'UserReferenceFilter')
         result = pipeline_result(link, current_user: user)
 
         expect(result[:references][:user]).to be_empty
@@ -60,14 +60,14 @@ describe Gitlab::Markdown::ReferenceGathererFilter do
         group = create(:group)
         group.add_developer(user)
 
-        link = reference_link(group: group.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+        link = reference_link(group: group.id, reference_filter: 'UserReferenceFilter')
         result = pipeline_result(link, current_user: user)
 
         expect(result[:references][:user]).to eq([user])
       end
 
       it 'handles invalid Group references' do
-        link = reference_link(group: 12345, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+        link = reference_link(group: 12345, reference_filter: 'UserReferenceFilter')
 
         expect { pipeline_result(link) }.not_to raise_error
       end
@@ -77,7 +77,7 @@ describe Gitlab::Markdown::ReferenceGathererFilter do
       it 'allows any User reference' do
         user = create(:user)
 
-        link = reference_link(user: user.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+        link = reference_link(user: user.id, reference_filter: 'UserReferenceFilter')
         result = pipeline_result(link)
 
         expect(result[:references][:user]).to eq([user])

@@ -20,7 +20,7 @@ describe Gitlab::Markdown::RedactorFilter do
       user = create(:user)
       project = create(:empty_project)
 
-      link = reference_link(project: project.id, reference_filter: Gitlab::Markdown::ReferenceFilter.name)
+      link = reference_link(project: project.id, reference_filter: 'ReferenceFilter')
       doc = filter(link, current_user: user)
 
       expect(doc.css('a').length).to eq 0
@@ -31,14 +31,14 @@ describe Gitlab::Markdown::RedactorFilter do
       project = create(:empty_project)
       project.team << [user, :master]
 
-      link = reference_link(project: project.id, reference_filter: Gitlab::Markdown::ReferenceFilter.name)
+      link = reference_link(project: project.id, reference_filter: 'ReferenceFilter')
       doc = filter(link, current_user: user)
 
       expect(doc.css('a').length).to eq 1
     end
 
     it 'handles invalid Project references' do
-      link = reference_link(project: 12345, reference_filter: Gitlab::Markdown::ReferenceFilter.name)
+      link = reference_link(project: 12345, reference_filter: 'ReferenceFilter')
 
       expect { filter(link) }.not_to raise_error
     end
@@ -51,7 +51,7 @@ describe Gitlab::Markdown::RedactorFilter do
         user = create(:user)
         group = create(:group)
 
-        link = reference_link(group: group.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+        link = reference_link(group: group.id, reference_filter: 'UserReferenceFilter')
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 0
@@ -62,14 +62,14 @@ describe Gitlab::Markdown::RedactorFilter do
         group = create(:group)
         group.add_developer(user)
 
-        link = reference_link(group: group.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+        link = reference_link(group: group.id, reference_filter: 'UserReferenceFilter')
         doc = filter(link, current_user: user)
 
         expect(doc.css('a').length).to eq 1
       end
 
       it 'handles invalid Group references' do
-        link = reference_link(group: 12345, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+        link = reference_link(group: 12345, reference_filter: 'UserReferenceFilter')
 
         expect { filter(link) }.not_to raise_error
       end
@@ -79,7 +79,7 @@ describe Gitlab::Markdown::RedactorFilter do
       it 'allows any User reference' do
         user = create(:user)
 
-        link = reference_link(user: user.id, reference_filter: Gitlab::Markdown::UserReferenceFilter.name)
+        link = reference_link(user: user.id, reference_filter: 'UserReferenceFilter')
         doc = filter(link)
 
         expect(doc.css('a').length).to eq 1

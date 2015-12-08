@@ -57,14 +57,14 @@ module Gitlab
       # Examples:
       #
       #   data_attribute(project: 1, issue: 2)
-      #   # => "data-reference-filter=\"Gitlab::Markdown::SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
+      #   # => "data-reference-filter=\"SomeReferenceFilter\" data-project=\"1\" data-issue=\"2\""
       #
       #   data_attribute(project: 3, merge_request: 4)
-      #   # => "data-reference-filter=\"Gitlab::Markdown::SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
+      #   # => "data-reference-filter=\"SomeReferenceFilter\" data-project=\"3\" data-merge-request=\"4\""
       #
       # Returns a String
       def data_attribute(attributes = {})
-        attributes[:reference_filter] = self.class.name
+        attributes[:reference_filter] = self.class.name.demodulize
         attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{value}") }.join(" ")
       end
 
