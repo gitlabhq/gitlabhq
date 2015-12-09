@@ -175,11 +175,11 @@ class Commit
   end
 
   def author
-    @author ||= User.find_by_any_email(author_email)
+    @author ||= User.find_by_any_email(author_email.downcase)
   end
 
   def committer
-    @committer ||= User.find_by_any_email(committer_email)
+    @committer ||= User.find_by_any_email(committer_email.downcase)
   end
 
   def parents
