@@ -1,6 +1,7 @@
 v 8.3.0 (unreleased)
   - License information can now be retrieved via the API
   - Fix bug with negative approvals required
+  - Add group contribution statistics page 
 
 v 8.2.3
   - No EE-specific changes
