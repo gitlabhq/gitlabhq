@@ -119,6 +119,12 @@ module Issuable
       update(subscribed: !subscribed?(user))
   end
 
+  def unsubscribe(user)
+    subscriptions.
+      find_or_initialize_by(user_id: user.id).
+      update(subscribed: false)
+  end
+
   def to_hook_data(user)
     {
       object_kind: self.class.name.underscore,

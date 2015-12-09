@@ -25,8 +25,6 @@ class SentNotification < ActiveRecord::Base
 
   class << self
     def reply_key
-      return nil unless Gitlab::IncomingEmail.enabled?
-
       SecureRandom.hex(16)
     end
 
@@ -59,7 +57,7 @@ class SentNotification < ActiveRecord::Base
 
     def record_note(note, recipient_id, reply_key, params = {})
       params[:line_code] = note.line_code
-      
+
       record(note.noteable, recipient_id, reply_key, params)
     end
   end
@@ -74,5 +72,9 @@ class SentNotification < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def to_param
+    self.reply_key
   end
 end
