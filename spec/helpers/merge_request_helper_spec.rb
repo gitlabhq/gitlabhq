@@ -37,7 +37,7 @@ describe MergeRequestsHelper do
         ]
       end
 
-      it { is_expected.to eq('JIRA-123, JIRA-456, and FOOBAR-7890') }
+      it { is_expected.to eq('FOOBAR-7890, JIRA-123, and JIRA-456') }
     end
   end
 

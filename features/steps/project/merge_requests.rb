@@ -386,7 +386,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       expect(page).to have_content(@user.name)
     end
 
-    click_button "Submit new merge request"
+    click_button "Submit merge request"
     click_link "Edit"
 
     page.within 'ul.approver-list' do
