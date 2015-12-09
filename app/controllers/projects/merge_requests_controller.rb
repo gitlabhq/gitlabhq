@@ -7,6 +7,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
+  before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
 
   # Allow read any merge_request
@@ -299,6 +300,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.unlock_mr
       @merge_request.close
     end
+  end
+
+  def define_widget_vars
+    @ci_commit = @merge_request.ci_commit
   end
 
   def invalid_mr
