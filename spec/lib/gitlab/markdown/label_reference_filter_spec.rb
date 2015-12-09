@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'html/pipeline'
 
 module Gitlab::Markdown
-  describe LabelReferenceFilter do
+  describe LabelReferenceFilter, lib: true do
     include FilterSpecHelper
 
     let(:project)   { create(:empty_project, :public) }

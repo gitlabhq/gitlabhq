@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Gitlab::Markdown
-  describe CrossProjectReference do
+  describe CrossProjectReference, lib: true do
     include described_class
 
     describe '#project_from_ref' do

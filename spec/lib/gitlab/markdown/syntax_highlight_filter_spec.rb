@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Gitlab::Markdown
-  describe SyntaxHighlightFilter do
+  describe SyntaxHighlightFilter, lib: true do
     include FilterSpecHelper
 
     it 'highlights valid code blocks' do

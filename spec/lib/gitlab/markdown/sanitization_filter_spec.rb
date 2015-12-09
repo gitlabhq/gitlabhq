@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Gitlab::Markdown
-  describe SanitizationFilter do
+  describe SanitizationFilter, lib: true do
     include FilterSpecHelper
 
     describe 'default whitelist' do
