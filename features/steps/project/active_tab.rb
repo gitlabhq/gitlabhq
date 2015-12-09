@@ -67,6 +67,10 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
     ensure_active_sub_tab('Commits')
   end
 
+  step 'the active sub tab should be Network' do
+    ensure_active_sub_tab('Network')
+  end
+
   step 'the active sub tab should be Compare' do
     ensure_active_sub_tab('Compare')
   end

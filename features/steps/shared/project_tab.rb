@@ -16,10 +16,6 @@ module SharedProjectTab
     ensure_active_main_tab('Commits')
   end
 
-  step 'the active main tab should be Network' do
-    ensure_active_main_tab('Network')
-  end
-
   step 'the active main tab should be Graphs' do
     ensure_active_main_tab('Graphs')
   end
