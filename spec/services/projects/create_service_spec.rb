@@ -49,6 +49,13 @@ describe Projects::CreateService, services: true do
       it { expect(@project.namespace).to eq(@group) }
     end
 
+    context 'error handling' do
+      it 'handles invalid options' do
+        @opts.merge!({ default_branch: 'master' } )
+        expect(create_project(@user, @opts)).to eq(nil)
+      end
+    end
+
     context 'wiki_enabled creates repository directory' do
       context 'wiki_enabled true creates wiki repository directory' do
         before do
