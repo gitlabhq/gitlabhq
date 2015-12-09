@@ -570,8 +570,9 @@ Rails.application.routes.draw do
 
         resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
           member do
-            get :diffs
             get :commits
+            get :diffs
+            get :builds
             post :merge
             get :merge_check
             get :ci_status
