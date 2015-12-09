@@ -54,7 +54,7 @@ class BuildsEmailService < Service
 
   def fields
     [
-      { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by whitespace' },
+      { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by comma' },
       { type: 'checkbox', name: 'add_pusher', label: 'Add pusher to recipients list' },
       { type: 'checkbox', name: 'notify_only_broken_builds' },
     ]
@@ -72,10 +72,13 @@ class BuildsEmailService < Service
   end
 
   def all_recipients(data)
+    all_recipients = []
+    all_recipients <<= recipients.split(',')
+
     if add_pusher? && data[:user][:email]
-      recipients + " #{data[:user][:email]}"
-    else
-      recipients
+      all_recipients << "#{data[:user][:email]}"
     end
+
+    all_recipients
   end
 end

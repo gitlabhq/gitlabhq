@@ -2,7 +2,7 @@ class BuildEmailWorker
   include Sidekiq::Worker
 
   def perform(build_id, recipients, push_data)
-    recipients.split(' ').each do |recipient|
+    recipients.each do |recipient|
       begin
         case push_data['build_status']
         when 'success'
