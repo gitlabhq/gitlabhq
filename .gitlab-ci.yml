@@ -24,6 +24,13 @@ spec:api:
     - ruby
     - mysql
 
+spec:models:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
+  tags:
+    - ruby
+    - mysql
+
 spec:benchmark:
   script:
     - RAILS_ENV=test bundle exec rake spec:benchmark
@@ -96,7 +103,7 @@ flay:
     - mysql
 
 bundler:audit:
-  script: 
+  script:
     - "bundle exec bundle-audit update"
     - "bundle exec bundle-audit check"
   tags:
