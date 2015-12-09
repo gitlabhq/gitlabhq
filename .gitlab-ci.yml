@@ -39,9 +39,16 @@ spec:other:
     - ruby
     - mysql
 
-spinach:project:
+spinach:project:half:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
+  tags:
+    - ruby
+    - mysql
+
+spinach:project:rest:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   tags:
     - ruby
     - mysql
