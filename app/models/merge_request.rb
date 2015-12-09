@@ -509,4 +509,8 @@ class MergeRequest < ActiveRecord::Base
   def ci_commit
     @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
   end
+
+  def broken?
+    self.commits.blank? || branch_missing? || cannot_be_merged?
+  end
 end
