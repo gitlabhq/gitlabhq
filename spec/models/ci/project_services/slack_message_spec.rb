@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::SlackMessage do
+describe Ci::SlackMessage, models: true do
   subject { Ci::SlackMessage.new(commit) }
 
   let(:commit) { FactoryGirl.create(:ci_commit_with_two_jobs) }

@@ -12,7 +12,7 @@
 
 require 'spec_helper'
 
-describe Ci::Trigger do
+describe Ci::Trigger, models: true do
   let(:project) { FactoryGirl.create :ci_project }
 
   describe 'before_validation' do

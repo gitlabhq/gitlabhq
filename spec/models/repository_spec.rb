@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Repository do
+describe Repository, models: true do
   include RepoHelpers
 
   let(:repository) { create(:project).repository }

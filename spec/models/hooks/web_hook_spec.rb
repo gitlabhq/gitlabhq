@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe ProjectHook do
+describe ProjectHook, models: true do
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
