@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TestHookService do
+describe TestHookService, services: true do
   let(:user)    { create :user }
   let(:project) { create :project }
   let(:hook)    { create :project_hook, project: project }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UrlBuilder do
+describe Gitlab::UrlBuilder, lib: true do
   describe 'When asking for an issue' do
     it 'returns the issue url' do
       issue = create(:issue)

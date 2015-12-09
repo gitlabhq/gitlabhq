@@ -16,7 +16,7 @@
 
 require 'spec_helper'
 
-describe Group do
+describe Group, models: true do
   let!(:group) { create(:group) }
 
   describe 'associations' do

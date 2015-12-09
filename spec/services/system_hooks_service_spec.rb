@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SystemHooksService do
+describe SystemHooksService, services: true do
   let(:user)          { create :user }
   let(:project)       { create :project }
   let(:project_member) { create :project_member }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module Gitlab::Markdown
-  describe UploadLinkFilter do
+  describe UploadLinkFilter, lib: true do
     def filter(doc, contexts = {})
       contexts.reverse_merge!({
         project: project

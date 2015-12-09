@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Database do
+describe Gitlab::Database, lib: true do
   # These are just simple smoke tests to check if the methods work (regardless
   # of what they may return).
   describe '.mysql?' do

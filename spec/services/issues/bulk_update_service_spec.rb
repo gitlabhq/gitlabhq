@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::BulkUpdateService do
+describe Issues::BulkUpdateService, services: true do
   let(:issue) { create(:issue, project: @project) }
 
   before do

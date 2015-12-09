@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Lfs::Router do
+describe Gitlab::Lfs::Router, lib: true do
   let(:project) { create(:project) }
   let(:public_project) { create(:project, :public) }
   let(:forked_project) { fork_project(public_project, user) }

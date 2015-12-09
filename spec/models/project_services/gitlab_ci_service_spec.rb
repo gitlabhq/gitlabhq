@@ -20,7 +20,7 @@
 
 require 'spec_helper'
 
-describe GitlabCiService do
+describe GitlabCiService, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_one(:service_hook) }

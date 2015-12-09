@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Gitlab::Markdown
-  describe SnippetReferenceFilter do
+  describe SnippetReferenceFilter, lib: true do
     include FilterSpecHelper
 
     let(:project)   { create(:empty_project, :public) }

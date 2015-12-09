@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module Gitlab::Markdown
-  describe TableOfContentsFilter do
+  describe TableOfContentsFilter, lib: true do
     include FilterSpecHelper
 
     def header(level, text)

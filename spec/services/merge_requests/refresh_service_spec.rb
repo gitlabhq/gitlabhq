@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::RefreshService do
+describe MergeRequests::RefreshService, services: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:service) { MergeRequests::RefreshService }

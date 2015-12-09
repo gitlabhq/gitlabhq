@@ -1,3 +1,4 @@
+@project_commits
 Feature: Project Commits Branches
   Background:
     Given I sign in as a user

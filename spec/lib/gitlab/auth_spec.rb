@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Auth do
+describe Gitlab::Auth, lib: true do
   let(:gl_auth) { Gitlab::Auth.new }
 
   describe :find do

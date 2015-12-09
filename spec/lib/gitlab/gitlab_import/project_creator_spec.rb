@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitlabImport::ProjectCreator do
+describe Gitlab::GitlabImport::ProjectCreator, lib: true do
   let(:user) { create(:user) }
   let(:repo) do
     {

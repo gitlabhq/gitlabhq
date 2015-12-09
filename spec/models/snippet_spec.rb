@@ -17,7 +17,7 @@
 
 require 'spec_helper'
 
-describe Snippet do
+describe Snippet, models: true do
   describe 'modules' do
     subject { described_class }
 
