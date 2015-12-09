@@ -2,11 +2,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
+  before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
 
   # Allow read any merge_request
@@ -164,15 +165,29 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
 
+  def cancel_merge_when_build_succeeds
+    return access_denied! unless @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
+
+    MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user).cancel(@merge_request)
+  end
+
   def merge
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
 
-    if @merge_request.mergeable?
-      @merge_request.update(merge_error: nil)
-      MergeWorker.perform_async(@merge_request.id, current_user.id, params)
-      @status = true
+    unless @merge_request.mergeable?
+      @status = :failed
+      return
+    end
+
+    @merge_request.update(merge_error: nil)
+
+    if params[:merge_when_build_succeeds] && @merge_request.ci_commit && @merge_request.ci_commit.active?
+      MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
+                                                      .execute(@merge_request)
+      @status = :merge_when_build_succeeds
     else
-      @status = false
+      MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+      @status = :success
     end
   end
 
@@ -287,6 +302,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def define_widget_vars
+    @ci_commit = @merge_request.ci_commit
+  end
+
   def invalid_mr
     # Render special view for MR with removed source or target branch
     render 'invalid'
@@ -298,6 +317,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :target_project_id, :target_branch, :milestone_id,
       :state_event, :description, :task_num, label_ids: []
     )
+  end
+
+  def merge_params
+    params.permit(:should_remove_source_branch, :commit_message)
   end
 
   # Make sure merge requests created before 8.0

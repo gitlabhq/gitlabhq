@@ -11,6 +11,7 @@ module MergeRequests
       # empty diff during a manual merge
       close_merge_requests
       reload_merge_requests
+      reset_merge_when_build_succeeds
 
       # Leave a system note if a branch was deleted/added
       if branch_added? || branch_removed?
@@ -57,7 +58,6 @@ module MergeRequests
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
-
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_code
           merge_request.mark_as_unchecked
@@ -74,6 +74,10 @@ module MergeRequests
           end
         end
       end
+    end
+
+    def reset_merge_when_build_succeeds
+      merge_requests_for_source_branch.each(&:reset_merge_when_build_succeeds)
     end
 
     def find_new_commits

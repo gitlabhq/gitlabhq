@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Merge when build succeeds (Zeger-Jan van de Weg)
   - Bump gollum-lib to 4.1.0 (Stan Hu)
   - Fix broken group avatar upload under "New group" (Stan Hu)
   - Update project repositorize size and commit count during import:repos task (Stan Hu)

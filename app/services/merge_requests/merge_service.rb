@@ -6,15 +6,12 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
-    attr_reader :merge_request, :commit_message
+    attr_reader :merge_request
 
-    def execute(merge_request, commit_message)
-      @commit_message = commit_message
+    def execute(merge_request)
       @merge_request = merge_request
 
-      unless @merge_request.mergeable?
-        return error('Merge request is not mergeable')
-      end
+      return error('Merge request is not mergeable') unless @merge_request.mergeable?
 
       merge_request.in_locked_state do
         if commit
@@ -32,7 +29,7 @@ module MergeRequests
       committer = repository.user_to_committer(current_user)
 
       options = {
-        message: commit_message,
+        message: params[:commit_message] || merge_request.merge_commit_message,
         author: committer,
         committer: committer
       }
@@ -46,6 +43,11 @@ module MergeRequests
 
     def after_merge
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
+
+      if params[:should_remove_source_branch]
+        DeleteBranchService.new(@merge_request.source_project, current_user).
+          execute(merge_request.source_branch)
+      end
     end
   end
 end
