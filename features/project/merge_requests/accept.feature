@@ -1,3 +1,4 @@
+@project_merge_requests
 Feature: Project Merge Requests Acceptance
   Background:
     Given There is an open Merge Request
