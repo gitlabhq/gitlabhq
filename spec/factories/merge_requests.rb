@@ -65,6 +65,11 @@ FactoryGirl.define do
       target_branch "master"
     end
 
+    trait :merge_when_build_succeeds do
+      merge_when_build_succeeds true
+      merge_user author
+    end
+
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
