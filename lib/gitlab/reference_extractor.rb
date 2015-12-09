@@ -49,14 +49,14 @@ module Gitlab
     # Returns the results Array for the requested filter type
     def pipeline_result(filter_type)
       return [] if @text.blank?
-      
+
       klass  = "#{filter_type.to_s.camelize}ReferenceFilter"
       filter = Gitlab::Markdown.const_get(klass)
 
       context = {
         project: project,
         current_user: current_user,
-        
+
         # We don't actually care about the links generated
         only_path: true,
         ignore_blockquotes: true,
@@ -66,7 +66,15 @@ module Gitlab
         reference_filter:     filter
       }
 
-      pipeline = HTML::Pipeline.new([filter, Gitlab::Markdown::ReferenceGathererFilter], context)
+      # We need to autolink first to finds links to referables, and to prevent
+      # numeric anchors to be parsed as issue references.
+      filters = [
+        Gitlab::Markdown::AutolinkFilter,
+        filter,
+        Gitlab::Markdown::ReferenceGathererFilter
+      ]
+
+      pipeline = HTML::Pipeline.new(filters, context)
       result = pipeline.call(@text)
 
       values = result[:references][filter_type].uniq

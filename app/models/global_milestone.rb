@@ -16,7 +16,15 @@ class GlobalMilestone
   end
 
   def safe_title
-    @title.parameterize
+    @title.to_slug.to_s
+  end
+
+  def expired?
+    if due_date
+      due_date.past?
+    else
+      false
+    end
   end
 
   def projects
@@ -97,5 +105,26 @@ class GlobalMilestone
 
   def complete?
     total_items_count == closed_items_count
+  end
+
+  def due_date
+    return @due_date if defined?(@due_date)
+
+    @due_date =
+      if @milestones.all? { |x| x.due_date == @milestones.first.due_date }
+        @milestones.first.due_date
+      else
+        nil
+      end
+  end
+
+  def expires_at
+    if due_date
+      if due_date.past?
+        "expired at #{due_date.stamp("Aug 21, 2011")}"
+      else
+        "expires at #{due_date.stamp("Aug 21, 2011")}"
+      end
+    end
   end
 end

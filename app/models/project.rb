@@ -28,6 +28,7 @@
 #  import_type            :string(255)
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
+#  import_error           :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -159,7 +160,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url,
-    format: { with: /\A#{URI.regexp(%w(ssh git http https))}\z/, message: 'should be a valid url' },
+    url: { protocols: %w(ssh git http https) },
     if: :external_import?
   validates :import_url, presence: true, if: :mirror?
   validates :mirror_user, presence: true, if: :mirror?

@@ -20,8 +20,7 @@ module Ci
     # HTTParty timeout
     default_timeout 10
 
-    validates :url, presence: true,
-                    format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }
+    validates :url, presence: true, url: true
 
     def execute(data)
       parsed_url = URI.parse(url)

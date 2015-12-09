@@ -1,13 +1,13 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :merge, :merge_check,
+    :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
     :ci_status, :toggle_subscription, :approve, :ff_merge, :rebase
   ]
-  before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits]
-  before_action :validates_merge_request, only: [:show, :diffs, :commits]
-  before_action :define_show_vars, only: [:show, :diffs, :commits]
-  before_action :ensure_ref_fetched, only: [:show, :commits, :diffs]
+  before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
+  before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
+  before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
+  before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -79,6 +79,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def builds
+    @ci_project = @merge_request.source_project.gitlab_ci_project
+
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_builds') } }
+    end
+  end
+
   def new
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
     @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
@@ -91,23 +100,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @target_project = merge_request.target_project
     @source_project = merge_request.source_project
-    @commits = @merge_request.compare_commits
+    @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.last_commit
     @first_commit = @merge_request.first_commit
     @diffs = @merge_request.compare_diffs
+
+    @ci_project = @source_project.gitlab_ci_project
+    @ci_commit = @merge_request.ci_commit
+    @statuses = @ci_commit.statuses if @ci_commit
+
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
 
     set_suggested_approvers
   end
 
-  def edit
-    @source_project = @merge_request.source_project
-    @target_project = @merge_request.target_project
-    @target_branches = @merge_request.target_project.repository.branch_names
 
-    set_suggested_approvers
-  end
 
   def create
     @target_branches ||= []
@@ -120,6 +128,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @target_project = @merge_request.target_project
       render action: "new"
     end
+  end
+
+  def edit
+    @source_project = @merge_request.source_project
+    @target_project = @merge_request.target_project
+    @target_branches = @merge_request.target_project.repository.branch_names
+
+    set_suggested_approvers
   end
 
   def update
@@ -303,6 +319,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.commits
 
     @merge_request_diff = @merge_request.merge_request_diff
+
+    @ci_commit = @merge_request.ci_commit
+    @statuses = @ci_commit.statuses if @ci_commit
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr

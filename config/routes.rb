@@ -399,7 +399,7 @@ Rails.application.routes.draw do
       end
 
       resource :avatar, only: [:destroy]
-      resources :milestones, only: [:index, :show, :update, :new, :create]
+      resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
     end
 
     get "/audit_events" => "audit_events#group_log"
@@ -540,6 +540,7 @@ Rails.application.routes.draw do
           member do
             get :commits
             get :ci
+            get :languages
           end
         end
 
@@ -609,8 +610,9 @@ Rails.application.routes.draw do
 
         resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
           member do
-            get :diffs
             get :commits
+            get :diffs
+            get :builds
             post :merge
             get :merge_check
             get :ci_status

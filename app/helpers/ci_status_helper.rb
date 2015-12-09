@@ -8,6 +8,10 @@ module CiStatusHelper
     ci_icon_for_status(ci_commit.status)
   end
 
+  def ci_status_label(ci_commit)
+    ci_label_for_status(ci_commit.status)
+  end
+
   def ci_status_color(ci_commit)
     case ci_commit.status
     when 'success'
@@ -23,7 +27,15 @@ module CiStatusHelper
 
   def ci_status_with_icon(status)
     content_tag :span, class: "ci-status ci-#{status}" do
-      ci_icon_for_status(status) + '&nbsp;'.html_safe + status
+      ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
+    end
+  end
+
+  def ci_label_for_status(status)
+    if status == 'success'
+      'passed'
+    else
+      status
     end
   end
 
@@ -46,7 +58,7 @@ module CiStatusHelper
   def render_ci_status(ci_commit)
     link_to ci_status_path(ci_commit),
       class: "c#{ci_status_color(ci_commit)}",
-      title: "Build status: #{ci_commit.status}",
+      title: "Build status: #{ci_status_label(ci_commit)}",
       data: { toggle: 'tooltip', placement: 'left' } do
       ci_status_icon(ci_commit)
     end

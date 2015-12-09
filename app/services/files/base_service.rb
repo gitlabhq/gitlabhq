@@ -26,7 +26,7 @@ module Files
       else
         error("Something went wrong. Your changes were not committed")
       end
-    rescue Repository::CommitError, Repository::PreReceiveError, ValidationError => ex
+    rescue Repository::CommitError, GitHooksService::PreReceiveError, ValidationError => ex
       error(ex.message)
     end
 
@@ -53,7 +53,7 @@ module Files
 
       unless project.empty_repo?
         unless repository.branch_names.include?(@current_branch)
-          raise_error("You can only create files if you are on top of a branch")
+          raise_error("You can only create or edit files when you are on a branch")
         end
 
         if @current_branch != @target_branch

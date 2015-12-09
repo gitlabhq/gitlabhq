@@ -19,7 +19,7 @@ describe "Builds" do
       end
 
       it { expect(page).to have_content 'Running' }
-      it { expect(page).to have_content 'Cancel all' }
+      it { expect(page).to have_content 'Cancel running' }
       it { expect(page).to have_content @build.short_sha }
       it { expect(page).to have_content @build.ref }
       it { expect(page).to have_content @build.name }
@@ -32,7 +32,7 @@ describe "Builds" do
       end
 
       it { expect(page).to have_content 'No builds to show' }
-      it { expect(page).to have_content 'Cancel all' }
+      it { expect(page).to have_content 'Cancel running' }
     end
 
     context "All builds" do
@@ -45,7 +45,7 @@ describe "Builds" do
       it { expect(page).to have_content @build.short_sha }
       it { expect(page).to have_content @build.ref }
       it { expect(page).to have_content @build.name }
-      it { expect(page).to_not have_content 'Cancel all' }
+      it { expect(page).to_not have_content 'Cancel running' }
     end
   end
 
@@ -53,11 +53,11 @@ describe "Builds" do
     before do
       @build.run!
       visit namespace_project_builds_path(@gl_project.namespace, @gl_project)
-      click_link "Cancel all"
+      click_link "Cancel running"
     end
 
     it { expect(page).to have_content 'No builds to show' }
-    it { expect(page).to_not have_content 'Cancel all' }
+    it { expect(page).to_not have_content 'Cancel running' }
   end
 
   describe "GET /:project/builds/:id" do

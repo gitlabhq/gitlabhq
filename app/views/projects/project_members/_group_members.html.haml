@@ -4,12 +4,13 @@
     group members
     %small
       (#{members.count})
-    .pull-right
-      = link_to group_group_members_path(@group), class: 'btn' do
-        = icon('pencil-square-o')
-        Edit group members
+    - if can?(current_user, :admin_group_member, @group)
+      .pull-right
+        = link_to group_group_members_path(@group), class: 'btn' do
+          = icon('pencil-square-o')
+          Manage group members
   %ul.content-list
-    - members.each do |member|
+    - members.limit(20).each do |member|
       = render 'groups/group_members/group_member', member: member, show_controls: false
     - if members.count > 20
       %li

@@ -1,7 +1,7 @@
 .issuable-details
   .page-title
-    .snippet-box{class: visibility_level_color(@snippet.visibility_level)}
-      = visibility_level_icon(@snippet.visibility_level)
+    .snippet-box.has_tooltip{class: visibility_level_color(@snippet.visibility_level), title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: 'body' }}
+      = visibility_level_icon(@snippet.visibility_level, fw: false)
       = visibility_level_label(@snippet.visibility_level)
     Snippet ##{@snippet.id}
     %span.creator

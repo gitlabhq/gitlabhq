@@ -20,6 +20,22 @@ module Gitlab
         h.namespace_project_merge_request_url(project.namespace, project, mr,
                                             only_path: context[:only_path])
       end
+
+      def object_link_text_extras(object, matches)
+        extras = super
+
+        path = matches[:path] if matches.names.include?("path")
+        case path
+        when '/diffs'
+          extras.unshift "diffs"
+        when '/commits'
+          extras.unshift "commits"
+        when '/builds'
+          extras.unshift "builds"
+        end
+
+        extras
+      end
     end
   end
 end

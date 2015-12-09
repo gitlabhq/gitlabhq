@@ -3,7 +3,7 @@
 %p.light Keep stable branches secure and force developers to use Merge Requests
 %hr
 
-.well.append-bottom-20
+.well
   %p Protected branches are designed to
   %ul
     %li prevent pushes from everybody except #{link_to "masters", help_page_path("permissions", "permissions"), class: "vlink"}
@@ -22,7 +22,7 @@
     .form-group
       = f.label :name, "Branch", class: 'control-label'
       .col-sm-10
-        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2"})
+        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: true}, {class: "select2", data: {placeholder: "Select branch"}})
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -33,4 +33,3 @@
     .form-actions
       = f.submit 'Protect', class: "btn-create btn"
 = render 'branches_list'
-

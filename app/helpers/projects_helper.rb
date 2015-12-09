@@ -21,7 +21,7 @@ module ProjectsHelper
   end
 
   def link_to_member(project, author, opts = {})
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author' }
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -39,7 +39,8 @@ module ProjectsHelper
     if opts[:name]
       link_to(author_html, user_path(author), class: "author_link").html_safe
     else
-      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => sanitize(author.name) } ).html_safe
+      title = opts[:title].sub(":name", sanitize(author.name))
+      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => title, container: 'body' } ).html_safe
     end
   end
 
