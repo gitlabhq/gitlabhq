@@ -43,20 +43,14 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
 
   context 'When it is enabled' do
     let(:merge_request) do
-      create(:merge_request_with_diffs, source_project: project, author: user,
-                                        merge_user: user, title: "MepMep", merge_when_build_succeeds: true)
+      create(:merge_request_with_diffs, :simple,  source_project: project, author: user,
+                                                  merge_user: user, title: "MepMep", merge_when_build_succeeds: true)
     end
 
     let!(:ci_commit) { create(:ci_commit, gl_project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
     let!(:ci_build) { create(:ci_build, commit: ci_commit) }
 
     before do
-      merge_request.source_project.team << [user, :master]
-      merge_request.source_branch = "feature"
-      merge_request.target_branch = "master"
-      merge_request.save!
-
-
       login_as user
       visit_merge_request(merge_request)
     end
