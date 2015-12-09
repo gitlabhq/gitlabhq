@@ -31,6 +31,20 @@ spec:models:
     - ruby
     - mysql
 
+spec:lib:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
+  tags:
+    - ruby
+    - mysql
+
+spec:services:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
+  tags:
+    - ruby
+    - mysql
+
 spec:benchmark:
   script:
     - RAILS_ENV=test bundle exec rake spec:benchmark
