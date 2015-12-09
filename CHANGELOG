@@ -20,7 +20,6 @@ v 8.3.0 (unreleased)
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info
   - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
-  - Fix 500 error when creating a merge request that removes a submodule
   - Run custom Git hooks when branch is created or deleted.
   - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
   - Add languages page to graphs
@@ -31,9 +30,10 @@ v 8.3.0 (unreleased)
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
   - Fix Error 500s when creating global milestones with Unicode characters (Stan Hu)
-
-v 8.2.3
+  - Update documentation for "Guest" permissions
+  - Properly convert Emoji-only comments into Award Emojis
   - Webhook payload has an added, modified and removed properties for each commit
+  - Fix 500 error when creating a merge request that removes a submodule
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
@@ -94,7 +94,6 @@ v 8.2.0
   - Add email notification to former assignee upon unassignment (Adam Lieskovský)
   - New design for project graphs page
   - Remove deprecated dumped yaml file generated from previous job definitions
-  - Fix incoming email config defaults
   - Show specific runners from projects where user is master or owner
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
@@ -252,7 +251,6 @@ v 8.0.2
   - Allow AWS S3 Server-Side Encryption with Amazon S3-Managed Keys for backups (Paul Beattie)
 
 v 8.0.1
-  - Remove git refs used internally by GitLab from network graph (Stan Hu)
   - Improve CI migration procedure and documentation
 
 v 8.0.0
