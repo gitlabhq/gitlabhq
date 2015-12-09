@@ -49,4 +49,8 @@ module SharedProjectTab
   step 'the active main tab should be Activity' do
     ensure_active_main_tab('Activity')
   end
+
+  step 'the active sub tab should be Network' do
+    ensure_active_sub_tab('Network')
+  end
 end
