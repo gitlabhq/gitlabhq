@@ -41,24 +41,6 @@
       %p.light Push events per group member
       %canvas#push{height: 250}
 
-    :javascript
-      var data = {
-        labels : #{@users.map(&:name).to_json},
-        datasets : [
-          {
-            fillColor : "rgba(220,220,220,0.5)",
-            strokeColor : "rgba(220,220,220,1)",
-            barStrokeWidth: 1,
-            barValueSpacing: 1,
-            barDatasetSpacing: 1,
-            data : #{@stats[:push].to_json}
-          }
-        ]
-      }
-      var ctx = $("#push").get(0).getContext("2d");
-      new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});
-
-
 %h3 Merge Requests
 
 .row
@@ -74,24 +56,7 @@
   .col-md-8
     %div
       %p.light Merge requests created per group member
-      %canvas#merge-requests{height: 250}
-
-    :javascript
-      var data = {
-        labels : #{@users.map(&:name).to_json},
-        datasets : [
-          {
-            fillColor : "rgba(220,220,220,0.5)",
-            strokeColor : "rgba(220,220,220,1)",
-            barStrokeWidth: 1,
-            barValueSpacing: 1,
-            barDatasetSpacing: 1,
-            data : #{@stats[:merge_requests].to_json}
-          }
-        ]
-      }
-      var ctx = $("#merge-requests").get(0).getContext("2d");
-      new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});
+      %canvas#merge_requests{height: 250}
 
 %h3 Issues
 
@@ -109,23 +74,6 @@
     %div
       %p.light Issues closed per group member
       %canvas#issues{height: 250}
-
-    :javascript
-      var data = {
-        labels : #{@users.map(&:name).to_json},
-        datasets : [
-          {
-            fillColor : "rgba(220,220,220,0.5)",
-            strokeColor : "rgba(220,220,220,1)",
-            barStrokeWidth: 1,
-            barValueSpacing: 1,
-            barDatasetSpacing: 1,
-            data : #{@stats[:issues].to_json}
-          }
-        ]
-      }
-      var ctx = $("#issues").get(0).getContext("2d");
-      new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});
 
 .gray-content-block
   .oneline
@@ -168,6 +116,26 @@
           %td= @events.merge_requests.created.where(author_id: user).count
           %td= @events.merge_requests.merged.where(author_id: user).count
           %td= @events.where(author_id: user).count
+
+
+
+- [:push, :issues, :merge_requests].each do |scope|
+  :javascript
+    var data = {
+      labels : #{@users.map(&:name).to_json},
+      datasets : [
+        {
+          fillColor : "rgba(220,220,220,0.5)",
+          strokeColor : "rgba(220,220,220,1)",
+          barStrokeWidth: 1,
+          barValueSpacing: 1,
+          barDatasetSpacing: 1,
+          data : #{@stats[scope].to_json}
+        }
+      ]
+    }
+    var ctx = $("##{scope}").get(0).getContext("2d");
+    new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});
 
 :javascript
   $("#event-stats").tablesorter();
