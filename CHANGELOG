@@ -26,6 +26,7 @@ v 8.3.0 (unreleased)
   - Block LDAP user when they are no longer found in the LDAP server
   - Improve wording on project visibility levels (Zeger-Jan van de Weg)
   - Automatically select default clone protocol based on user preferences (Eirik Lygre)
+  - Make Network page as sub tab of Commits
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
