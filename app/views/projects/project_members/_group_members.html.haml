@@ -10,7 +10,7 @@
           = icon('pencil-square-o')
           Manage group members
   %ul.content-list
-    - members.each do |member|
+    - members.limit(20).each do |member|
       = render 'groups/group_members/group_member', member: member, show_controls: false
     - if members.count > 20
       %li

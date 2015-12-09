@@ -83,6 +83,10 @@
     &.ci-error {
       color: $gl-danger;
     }
+
+    a.monospace {
+      color: inherit;
+    }
   }
 
   .mr-widget-body,
