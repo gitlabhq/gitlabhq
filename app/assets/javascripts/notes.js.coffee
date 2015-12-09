@@ -286,7 +286,7 @@ class @Notes
     $html.find('.js-task-list-container').taskList('enable')
 
     # Find the note's `li` element by ID and replace it with the updated HTML
-    $note_li = $("#note_#{note.id}")
+    $note_li = $('.note-row-' + note.id)
     $note_li.replaceWith($html)
 
   ###
