@@ -47,6 +47,17 @@ module Gitlab
       def object_link_title(commit)
         commit.link_title
       end
+
+      def object_link_text_extras(object, matches)
+        extras = super
+
+        path = matches[:path] if matches.names.include?("path")
+        if path == '/builds'
+          extras.unshift "builds"
+        end
+
+        extras
+      end
     end
   end
 end

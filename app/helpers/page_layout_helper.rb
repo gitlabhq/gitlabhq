@@ -4,7 +4,8 @@ module PageLayoutHelper
 
     @page_title.push(*titles.compact) if titles.any?
 
-    @page_title.join(" | ")
+    # Segments are seperated by middot
+    @page_title.join(" \u00b7 ")
   end
 
   def header_title(title = nil, title_url = nil)

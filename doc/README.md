@@ -24,8 +24,20 @@
 - [Using Docker Images](ci/docker/using_docker_images.md)
 - [Using Docker Build](ci/docker/using_docker_build.md)
 - [Using Variables](ci/variables/README.md)
+- [Using SSH keys](ci/ssh_keys/README.md)
 - [User permissions](ci/permissions/README.md)
 - [API](ci/api/README.md)
+
+### CI Languages
+
++ [Testing PHP](ci/languages/php.md)
+
+### CI Services
+
++ [Using MySQL](ci/services/mysql.md)
++ [Using PostgreSQL](ci/services/postgres.md)
++ [Using Redis](ci/services/redis.md)
++ [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
 
 ### CI Examples
 

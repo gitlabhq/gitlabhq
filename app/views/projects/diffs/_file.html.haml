@@ -3,9 +3,8 @@
     - if diff_file.diff.submodule?
       %span
         = icon('archive fw')
-        - submodule_item = project.repository.blob_at(@commit.id, diff_file.file_path)
         %strong
-          = submodule_link(submodule_item, @commit.id, project.repository)
+          = submodule_link(blob, @commit.id, project.repository)
     - else
       %span
         = blob_icon blob.mode, blob.name
@@ -25,7 +24,7 @@
             = "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
       .diff-controls
-        - if blob.text?
+        - if blob_viewable?(blob)
           = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active has_tooltip', title: "Toggle comments for this file" do
             %i.fa.fa-comments
           &nbsp;
@@ -40,7 +39,7 @@
   .diff-content.diff-wrap-lines
     -# Skipp all non non-supported blobs
     - return unless blob.respond_to?('text?')
-    - if blob.text?
+    - if blob_viewable?(blob)
       - if diff_view == 'parallel'
         = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
       - else

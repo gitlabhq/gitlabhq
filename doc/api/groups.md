@@ -1,6 +1,6 @@
 # Groups
 
-## List project groups
+## List groups
 
 Get a list of groups. (As user: my groups, as admin: all groups)
 
@@ -20,6 +20,70 @@ GET /groups
 ```
 
 You can search for groups by name or path, see below.
+
+
+## List a group's projects
+
+Get a list of projects in this group.
+
+```
+GET /groups/:id/projects
+```
+
+Parameters:
+
+- `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
+- `ci_enabled_first` - Return projects ordered by ci_enabled flag. Projects with enabled GitLab CI go first
+
+```json
+[
+  {
+    "id": 4,
+    "description": null,
+    "default_branch": "master",
+    "public": false,
+    "visibility_level": 0,
+    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
+    "web_url": "http://example.com/diaspora/diaspora-client",
+    "tag_list": [
+      "example",
+      "disapora client"
+    ],
+    "owner": {
+      "id": 3,
+      "name": "Diaspora",
+      "created_at": "2013-09-30T13: 46: 02Z"
+    },
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "issues_enabled": true,
+    "merge_requests_enabled": true,
+    "builds_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "created_at": "2013-09-30T13: 46: 02Z",
+    "last_activity_at": "2013-09-30T13: 46: 02Z",
+    "creator_id": 3,
+    "namespace": {
+      "created_at": "2013-09-30T13: 46: 02Z",
+      "description": "",
+      "id": 3,
+      "name": "Diaspora",
+      "owner_id": 1,
+      "path": "diaspora",
+      "updated_at": "2013-09-30T13: 46: 02Z"
+    },
+    "archived": false,
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png"
+  }
+]
+```
 
 ## Details of a group
 
@@ -186,7 +250,7 @@ To get more (up to 100), pass the following as an argument to the API call:
 /groups?per_page=100
 ```
 
-And to switch pages add: 
+And to switch pages add:
 ```
 /groups?per_page=100&page=2
 ```

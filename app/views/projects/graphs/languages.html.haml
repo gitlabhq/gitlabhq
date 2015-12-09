@@ -1,0 +1,32 @@
+- page_title "Languages", "Graphs"
+= render "header_title"
+= render 'head'
+
+.gray-content-block.append-bottom-default
+  .oneline
+    Programming languages used in this repository
+
+.row
+  .col-md-8
+    %canvas#languages-chart{ height: 400 }
+  .col-md-4
+    %ul.bordered-list
+      - @languages.each do |language|
+        %li
+          %span{ style: "color: #{language[:color]}" }
+            = icon('circle')
+          &nbsp;
+          = language[:label]
+          .pull-right
+            = language[:value]
+            \%
+
+:javascript
+  var data = #{@languages.to_json};
+  var ctx = $("#languages-chart").get(0).getContext("2d");
+  var options = {
+    scaleOverlay: true,
+    responsive: true,
+    maintainAspectRatio: false
+  }
+  var myPieChart = new Chart(ctx).Pie(data, options);

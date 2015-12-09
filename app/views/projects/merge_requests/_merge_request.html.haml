@@ -1,11 +1,10 @@
-- ci_commit = merge_request.ci_commit
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
     %span.merge-request-title-text
       = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
     .pull-right.light
-      - if ci_commit
-        = render_ci_status(ci_commit)
+      - if merge_request.ci_commit
+        = render_ci_status(merge_request.ci_commit)
       - if merge_request.merged?
         %span
           = icon('check')

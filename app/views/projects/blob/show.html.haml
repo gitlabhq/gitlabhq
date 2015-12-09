@@ -6,7 +6,7 @@
 %div#tree-holder.tree-holder
   = render 'blob', blob: @blob
 
-- if allowed_tree_edit?
+- if blob_editable?(@blob)
   = render 'projects/blob/remove'
 
   - title = "Replace #{@blob.name}"

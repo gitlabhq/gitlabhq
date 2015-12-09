@@ -1,28 +1,62 @@
-- status_class = @merge_request.ci_commit ? " ci-#{@merge_request.ci_commit.status}" : nil
+- status_class = @ci_commit ? " ci-#{@ci_commit.status}" : nil
 
 = form_for [:merge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post, html: { class: 'accept-mr-form js-requires-input' } do |f|
   = hidden_field_tag :authenticity_token, form_authenticity_token
   .accept-merge-holder.clearfix.js-toggle-container
-    .accept-action
-      = f.button class: "btn btn-create accept_merge_request#{status_class}" do
-        Accept Merge Request
-    - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && !@merge_request.for_fork?
-      .accept-control.checkbox
-        = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
-          = check_box_tag :should_remove_source_branch
-          Remove source branch
-    .accept-control.right
-      = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
-        = icon('edit')
-        Modify commit message
-    .js-toggle-content.hide.prepend-top-20
+    .clearfix
+      .accept-action
+        - if @ci_commit && @ci_commit.active?
+          %span.btn-group
+            = link_to "#", class: "btn btn-create merge_when_build_succeeds" do
+              Merge When Build Succeeds
+            %a.btn.btn-success.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+              %span.caret
+              %span.sr-only
+                Select Merge Moment
+            %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
+              %li
+                = link_to "#", class: "merge_when_build_succeeds" do
+                  = icon('check fw')
+                  Merge When Build Succeeds
+              %li
+                = link_to "#", class: "accept_merge_request" do
+                  = icon('warning fw')
+                  Merge Immediately
+        - else
+          = f.button class: "btn btn-create btn-grouped accept_merge_request #{status_class}" do
+            Accept Merge Request
+      - if @merge_request.can_remove_source_branch?(current_user)
+        .accept-control.checkbox
+          = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
+            = check_box_tag :should_remove_source_branch
+            Remove source branch
+      .accept-control.right
+        = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
+          = icon('edit')
+          Modify commit message
+    .js-toggle-content.hide.prepend-top-default
       = render 'shared/commit_message_container', params: params,
           text: @merge_request.merge_commit_message,
           rows: 14, hint: true
 
+    = hidden_field_tag :merge_when_build_succeeds, "", autocomplete: "off"
+
   :javascript
-    $('.accept-mr-form').on('ajax:before', function() {
-      var btn = $('.accept_merge_request');
-      btn.disable();
-      btn.html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
+    $('.accept_merge_request').on('click', function() {
+      $(this).html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
+    });
+
+    $('.accept-mr-form').on('ajax:send', function() {
+      $(".accept-mr-form :input").disable();
+    });
+
+    $('a.accept_merge_request').on('click', function(e) {
+      e.preventDefault();
+      $(this).closest("form").submit();
+    });
+
+    $('a.merge_when_build_succeeds').on('click', function(e) {
+      e.preventDefault();
+      $("#merge_when_build_succeeds").val("1");
+      $(this).closest("form").submit();
     });

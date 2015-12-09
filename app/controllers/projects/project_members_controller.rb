@@ -23,7 +23,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
         @group_members = @group_members.where(user_id: users)
       end
 
-      @group_members = @group_members.order('access_level DESC').limit(20)
+      @group_members = @group_members.order('access_level DESC')
     end
 
     @project_member = @project.project_members.new

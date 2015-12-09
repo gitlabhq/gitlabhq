@@ -55,7 +55,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I should see label color error message' do
     page.within '.label-form' do
-      expect(page).to have_content 'Color is invalid'
+      expect(page).to have_content 'Color must be a valid color code'
     end
   end
 

@@ -165,6 +165,14 @@ module Ci
       status == 'canceled'
     end
 
+    def active?
+      running? || pending?
+    end
+
+    def complete?
+      canceled? || success? || failed?
+    end
+
     def duration
       duration_array = latest_statuses.map(&:duration).compact
       duration_array.reduce(:+).to_i
@@ -199,7 +207,7 @@ module Ci
     end
 
     def ci_yaml_file
-      gl_project.repository.blob_at(sha, '.gitlab-ci.yml').data
+      @ci_yaml_file ||= gl_project.repository.blob_at(sha, '.gitlab-ci.yml').data
     rescue
       nil
     end

@@ -1,4 +1,5 @@
 require 'sidekiq/web'
+require 'sidekiq/cron/web'
 require 'api/api'
 
 Rails.application.routes.draw do
@@ -368,7 +369,7 @@ Rails.application.routes.draw do
       end
 
       resource :avatar, only: [:destroy]
-      resources :milestones, only: [:index, :show, :update, :new, :create]
+      resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
     end
   end
 
@@ -499,6 +500,7 @@ Rails.application.routes.draw do
           member do
             get :commits
             get :ci
+            get :languages
           end
         end
 
@@ -568,10 +570,12 @@ Rails.application.routes.draw do
 
         resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
           member do
-            get :diffs
             get :commits
-            post :merge
+            get :diffs
+            get :builds
             get :merge_check
+            post :merge
+            post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
           end

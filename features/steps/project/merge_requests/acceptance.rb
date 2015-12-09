@@ -32,4 +32,8 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
   step 'I am signed in as a developer of the project' do
     login_as(@user)
   end
+
+  step 'I should see merge request merged' do
+    expect(page).to have_content('The changes were merged into')
+  end
 end
