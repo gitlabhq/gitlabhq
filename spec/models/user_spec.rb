@@ -56,6 +56,7 @@
 #  project_view               :integer          default(0)
 #  consumed_timestep          :integer
 #  layout                     :integer          default(0)
+#  hide_project_limit         :boolean          default(FALSE)
 #
 
 require 'spec_helper'
