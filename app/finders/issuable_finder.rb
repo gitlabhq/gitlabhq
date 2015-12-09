@@ -39,6 +39,7 @@ class IssuableFinder
     items = by_assignee(items)
     items = by_author(items)
     items = by_label(items)
+    items = by_weight(items)
     sort(items)
   end
 
@@ -260,6 +261,14 @@ class IssuableFinder
           items = items.where(labels: { project_id: projects })
         end
       end
+    end
+
+    items
+  end
+
+  def by_weight(items)
+    if params[:weight].present?
+      items = items.where(weight: params[:weight])
     end
 
     items

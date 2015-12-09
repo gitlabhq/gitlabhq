@@ -121,6 +121,15 @@ module IssuesHelper
     end
   end
 
+  def projects_weight_options
+    options = (Issue::WEIGHT_RANGE).map do |i|
+      [i, i]
+    end
+
+    options.unshift(['Any', nil])
+    options_for_select(options, params[:weight])
+  end
+
   # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
 end

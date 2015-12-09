@@ -434,6 +434,7 @@ ActiveRecord::Schema.define(version: 20151210125932) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
+    t.integer  "weight"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree

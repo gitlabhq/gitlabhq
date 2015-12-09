@@ -47,6 +47,12 @@
             class: 'select2 trigger-submit', include_blank: true,
             data: {placeholder: 'Label'})
 
+        - if controller.controller_name == 'issues'
+          .filter-item.inline.weight-filter
+            = select_tag('weight', projects_weight_options,
+              class: 'select2 trigger-submit', include_blank: true,
+              data: {placeholder: 'Weight'})
+
         .pull-right
           = render 'shared/sort_dropdown'
 
