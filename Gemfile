@@ -208,6 +208,12 @@ gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 
+# Metrics
+group :metrics do
+  gem 'influxdb', '~> 0.2', require: false
+  gem 'connection_pool', '~> 2.0', require: false
+end
+
 group :development do
   gem "foreman"
   gem 'brakeman', '3.0.1', require: false
