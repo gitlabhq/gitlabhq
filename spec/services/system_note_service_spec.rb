@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SystemNoteService do
+describe SystemNoteService, services: true do
   let(:project)  { create(:project) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }

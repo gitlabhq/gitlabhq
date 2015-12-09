@@ -22,7 +22,7 @@ require 'spec_helper'
 require 'socket'
 require 'json'
 
-describe IrkerService do
+describe IrkerService, models: true do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }

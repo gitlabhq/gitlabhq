@@ -13,7 +13,7 @@
 
 require 'spec_helper'
 
-describe Label do
+describe Label, models: true do
   let(:label) { create(:label) }
 
   describe 'associations' do

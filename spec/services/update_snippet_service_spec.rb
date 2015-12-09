@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UpdateSnippetService do
+describe UpdateSnippetService, services: true do
   before do
     @user = create :user
     @admin = create :user, admin: true

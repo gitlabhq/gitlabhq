@@ -33,7 +33,7 @@
 
 require 'spec_helper'
 
-describe GenericCommitStatus do
+describe GenericCommitStatus, models: true do
   let(:commit) { FactoryGirl.create :ci_commit }
   let(:generic_commit_status) { FactoryGirl.create :generic_commit_status, commit: commit }
 

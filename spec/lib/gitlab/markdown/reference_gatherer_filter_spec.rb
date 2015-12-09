@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Gitlab::Markdown
-  describe ReferenceGathererFilter do
+  describe ReferenceGathererFilter, lib: true do
     include ActionView::Helpers::UrlHelper
     include FilterSpecHelper
 

@@ -33,7 +33,7 @@
 
 require 'spec_helper'
 
-describe Project do
+describe Project, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }

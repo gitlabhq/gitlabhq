@@ -21,7 +21,7 @@
 
 require 'spec_helper'
 
-describe Note do
+describe Note, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:noteable) }

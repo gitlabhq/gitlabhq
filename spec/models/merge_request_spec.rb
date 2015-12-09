@@ -25,7 +25,7 @@
 
 require 'spec_helper'
 
-describe MergeRequest do
+describe MergeRequest, models: true do
   subject { create(:merge_request) }
 
   describe 'associations' do

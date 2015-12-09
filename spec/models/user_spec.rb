@@ -61,7 +61,7 @@
 
 require 'spec_helper'
 
-describe User do
+describe User, models: true do
   include Gitlab::CurrentSettings
 
   describe 'modules' do

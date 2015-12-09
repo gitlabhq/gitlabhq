@@ -1,3 +1,4 @@
+@project_merge_requests
 Feature: Project Merge Requests
   Background:
     Given I sign in as a user

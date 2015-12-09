@@ -12,7 +12,7 @@
 
 require 'spec_helper'
 
-describe ProtectedBranch do
+describe ProtectedBranch, models: true do
   describe 'Associations' do
     it { is_expected.to belong_to(:project) }
   end

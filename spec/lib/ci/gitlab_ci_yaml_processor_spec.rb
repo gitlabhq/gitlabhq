@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ci
-  describe GitlabCiYamlProcessor do
+  describe GitlabCiYamlProcessor, lib: true do
     let(:path) { 'path' }
     
     describe "#builds_for_ref" do
