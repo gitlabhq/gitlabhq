@@ -50,15 +50,15 @@
               = link_to 'generate new ones', codes_profile_two_factor_auth_path, method: :post, data: { confirm: 'Are you sure?' }
           invalidating all previous codes.
 
-        - else
-          %p
-            Increase your account's security by enabling two-factor authentication (2FA).
-          %p
-            Each time you log in you’ll be required to provide your username and
-            password as usual, plus a randomly-generated code from your phone.
+      - else
+        %p
+          Increase your account's security by enabling two-factor authentication (2FA).
+        %p
+          Each time you log in you’ll be required to provide your username and
+          password as usual, plus a randomly-generated code from your phone.
 
-          .form-actions
-            = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
+        .form-actions
+          = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
 
   - if button_based_providers.any?
     .panel.panel-default
