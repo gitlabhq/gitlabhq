@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ci
-  describe CreateCommitService do
+  describe CreateCommitService, services: true do
     let(:service) { CreateCommitService.new }
     let(:project) { FactoryGirl.create(:ci_project) }
     let(:user) { nil }

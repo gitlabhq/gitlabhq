@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CreateService do
+describe Projects::CreateService, services: true do
   describe :create_by_user do
     before do
       @user = create :user

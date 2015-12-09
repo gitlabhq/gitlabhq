@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::MergeService do
+describe MergeRequests::MergeService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, assignee: user2) }

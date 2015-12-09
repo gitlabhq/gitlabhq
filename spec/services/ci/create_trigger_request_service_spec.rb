@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::CreateTriggerRequestService do
+describe Ci::CreateTriggerRequestService, services: true do
   let(:service) { Ci::CreateTriggerRequestService.new }
   let(:gl_project) { create(:project) }
   let(:project) { gl_project.ensure_gitlab_ci_project }
