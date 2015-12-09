@@ -4,10 +4,9 @@
       Commits
       %span.badge= number_with_delimiter(@repository.commit_count)
 
-  - if project_nav_tab? :network
-    = nav_link(controller: %w(network)) do
-      = link_to namespace_project_network_path(@project.namespace, @project, current_ref), class: 'shortcuts-network' do
-        Network
+  = nav_link(controller: %w(network)) do
+    = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
+      Network
 
   = nav_link(controller: :compare) do
     = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
