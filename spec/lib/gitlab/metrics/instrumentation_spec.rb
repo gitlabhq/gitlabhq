@@ -34,7 +34,7 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'tracks the call duration upon calling the method' do
-        allow(Gitlab::Metrics::Instrumentation).to receive(:transaction).
+        allow(described_class).to receive(:transaction).
           and_return(transaction)
 
         expect(transaction).to receive(:add_metric).
@@ -51,7 +51,7 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'does not instrument the method' do
-        Gitlab::Metrics::Instrumentation.instrument_method(@dummy, :foo)
+        described_class.instrument_method(@dummy, :foo)
 
         expect(@dummy).to_not respond_to(:_original_foo)
       end
@@ -63,7 +63,7 @@ describe Gitlab::Metrics::Instrumentation do
       before do
         allow(Gitlab::Metrics).to receive(:enabled?).and_return(true)
 
-        Gitlab::Metrics::Instrumentation.
+        described_class.
           instrument_instance_method(@dummy, :bar)
       end
 
@@ -76,7 +76,7 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'tracks the call duration upon calling the method' do
-        allow(Gitlab::Metrics::Instrumentation).to receive(:transaction).
+        allow(described_class).to receive(:transaction).
           and_return(transaction)
 
         expect(transaction).to receive(:add_metric).
@@ -93,11 +93,35 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'does not instrument the method' do
-        Gitlab::Metrics::Instrumentation.
+        described_class.
           instrument_instance_method(@dummy, :bar)
 
         expect(@dummy.method_defined?(:_original_bar)).to eq(false)
       end
+    end
+  end
+
+  describe '.instrument_methods' do
+    before do
+      allow(Gitlab::Metrics).to receive(:enabled?).and_return(true)
+    end
+
+    it 'instruments all public class methods' do
+      described_class.instrument_methods(@dummy)
+
+      expect(@dummy).to respond_to(:_original_foo)
+    end
+  end
+
+  describe '.instrument_instance_methods' do
+    before do
+      allow(Gitlab::Metrics).to receive(:enabled?).and_return(true)
+    end
+
+    it 'instruments all public instance methods' do
+      described_class.instrument_instance_methods(@dummy)
+
+      expect(@dummy.method_defined?(:_original_bar)).to eq(true)
     end
   end
 end

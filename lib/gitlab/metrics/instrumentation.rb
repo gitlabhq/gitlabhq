@@ -27,6 +27,29 @@ module Gitlab
         instrument(:instance, mod, name)
       end
 
+      # Instruments all public methods of a module.
+      #
+      # mod - The module to instrument.
+      def self.instrument_methods(mod)
+        mod.public_methods(false).each do |name|
+          instrument_method(mod, name)
+        end
+      end
+
+      # Instruments all public instance methods of a module.
+      #
+      # mod - The module to instrument.
+      def self.instrument_instance_methods(mod)
+        mod.public_instance_methods(false).each do |name|
+          instrument_instance_method(mod, name)
+        end
+      end
+
+      # Instruments a method.
+      #
+      # type - The type (:class or :instance) of method to instrument.
+      # mod  - The module containing the method.
+      # name - The name of the method to instrument.
       def self.instrument(type, mod, name)
         return unless Metrics.enabled?
 
