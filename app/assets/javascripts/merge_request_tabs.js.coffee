@@ -133,7 +133,7 @@ class @MergeRequestTabs
     @_get
       url: "#{source}.json"
       success: (data) =>
-        document.getElementById('commits').innerHTML = data.html
+        document.querySelector("div#commits").innerHTML = data.html
         $('.js-timeago').timeago()
         @commitsLoaded = true
         @scrollToElement("#commits")
@@ -144,7 +144,7 @@ class @MergeRequestTabs
     @_get
       url: "#{source}.json" + @_location.search
       success: (data) =>
-        document.getElementById('diffs').innerHTML = data.html
+        document.querySelector("div#diffs").innerHTML = data.html
         $('div#diffs .js-syntax-highlight').syntaxHighlight()
         @diffsLoaded = true
         @scrollToElement("#diffs")
@@ -155,7 +155,7 @@ class @MergeRequestTabs
     @_get
       url: "#{source}.json"
       success: (data) =>
-        document.getElementById('builds').innerHTML = data.html
+        document.querySelector("div#builds").innerHTML = data.html
         $('.js-timeago').timeago()
         @buildsLoaded = true
         @scrollToElement("#builds")
