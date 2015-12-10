@@ -22,8 +22,7 @@ module Ci
     protected
 
     def project
-      # TODO: what to do here?
-      @project ||= Project.find_by_ci_id(params[:id])
+      @project ||= Project.find_by(ci_id: params[:id].to_i)
     end
 
     def no_cache

@@ -55,7 +55,7 @@ describe Project, models: true do
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
     it { is_expected.to have_many(:ci_commits) }
-    it { is_expected.to have_many(:ci_statuses) }
+    it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_builds) }
     it { is_expected.to have_many(:ci_runner_projects) }
     it { is_expected.to have_many(:ci_runners) }

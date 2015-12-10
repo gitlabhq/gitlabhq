@@ -169,9 +169,9 @@ class Project < ActiveRecord::Base
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
-  before_validation :set_random_token
-  def set_random_token
-    self.token = SecureRandom.hex(15) if self.token.blank?
+  before_validation :set_runners_token_token
+  def set_runners_token_token
+    self.runners_token = SecureRandom.hex(15) if self.runners_token.blank?
   end
 
   mount_uploader :avatar, AvatarUploader
@@ -270,9 +270,7 @@ class Project < ActiveRecord::Base
     end
 
     def find_by_ci_id(id)
-      ci_projects = Arel::Table.new(:ci_projects)
-      gitlab_id = ci_projects.where(ci_projects[:id].eq(id)).project(ci_projects[:gitlab_id])
-      find_by("id=(#{gitlab_id.to_sql})")
+      find_by(ci_id: id.to_i)
     end
 
     def visibility_levels
@@ -831,7 +829,11 @@ class Project < ActiveRecord::Base
     shared_runners_enabled? && Ci::Runner.shared.active.any?(&block)
   end
 
-  def valid_token? token
+  def valid_runners_token? token
+    self.token && self.token == token
+  end
+
+  def valid_build_token? token
     self.token && self.token == token
   end
 

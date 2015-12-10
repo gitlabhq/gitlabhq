@@ -5,8 +5,9 @@ class MigrateCiToProject < ActiveRecord::Migration
     migrate_project_id_for_table('ci_variables')
     migrate_project_id_for_builds
 
-    migrate_project_column('shared_runners_enabled')
-    migrate_project_column('token')
+    migrate_project_column('id', 'ci_id')
+    migrate_project_column('shared_runners_enabled', 'shared_runners_enabled')
+    migrate_project_column('token', 'runners_token')
     migrate_project_column('coverage_regex', 'build_coverage_regex')
     migrate_project_column('allow_git_fetch', 'build_allow_git_fetch')
     migrate_project_column('timeout', 'build_timeout')
@@ -25,7 +26,7 @@ class MigrateCiToProject < ActiveRecord::Migration
 
   def migrate_project_column(column, new_column = nil)
     new_column ||= column
-    subquery = "SELECT #{column} FROM ci_projects WHERE projects.id = ci_projects.gitlab_id"
+    subquery = "SELECT ci_projects.#{column} FROM ci_projects WHERE projects.id = ci_projects.gitlab_id"
     execute("UPDATE projects SET #{new_column}=(#{subquery}) WHERE #{new_column} IS NULL AND (#{subquery}) IS NOT NULL")
   end
 

@@ -13,10 +13,6 @@ module Ci
         forbidden! unless current_runner
       end
 
-      def authenticate_project_token!(project)
-        forbidden! unless project.valid_token?(params[:project_token])
-      end
-
       def authenticate_build_token!(build)
         token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
         forbidden! unless token && build.valid_token?(token)

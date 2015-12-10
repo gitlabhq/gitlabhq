@@ -6,12 +6,6 @@ module Ci
 
     private
 
-    def authenticate_token!
-      unless project.valid_token?(params[:token])
-        return head(403)
-      end
-    end
-
     def authorize_access_project!
       unless can?(current_user, :read_project, project)
         return page_404

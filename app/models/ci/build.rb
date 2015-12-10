@@ -225,7 +225,7 @@ module Ci
     end
 
     def valid_token? token
-      project.valid_token? token
+      project.valid_runners_token? token
     end
 
     def target_url

@@ -36,7 +36,7 @@ module Ci
                 tag_list: params[:tag_list],
                 is_shared: true
               )
-            elsif project = Project.find_by(token: params[:token])
+            elsif project = Project.find_by(runners_token: params[:token])
               # Create a specific runner for project.
               project.ci_runners.create(
                 description: params[:description],

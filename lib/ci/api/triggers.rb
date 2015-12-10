@@ -14,7 +14,7 @@ module Ci
         post ":id/refs/:ref/trigger" do
           required_attributes! [:token]
 
-          project = Project.find_by_ci_id(params[:id])
+          project = Project.find_by(ci_id: params[:id].to_i)
           trigger = Ci::Trigger.find_by_token(params[:token].to_s)
           not_found! unless project && trigger
           unauthorized! unless trigger.project == project
