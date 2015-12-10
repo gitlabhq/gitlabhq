@@ -23,6 +23,8 @@ class SlackService < Service
   boolean_accessor :notify_only_broken_builds
   validates :webhook, presence: true, if: :activated?
 
+  default_value_for :notify_only_broken_builds, true
+
   def title
     'Slack'
   end

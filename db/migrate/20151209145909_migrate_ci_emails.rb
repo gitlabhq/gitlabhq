@@ -2,6 +2,9 @@ class MigrateCiEmails < ActiveRecord::Migration
   include Gitlab::Database
 
   def up
+    # This inserts a new service: BuildsEmailService
+    # It also "manually" constructs the properties (JSON-encoded)
+    # Migrating all ci_projects e-mail related columns
     execute(
       'INSERT INTO services (project_id, type, created_at, updated_at, active, push_events, issues_events, merge_requests_events, tag_push_events, note_events, build_events, properties) ' \
       "SELECT projects.id, 'BuildsEmailService', ci_services.created_at, ci_services.updated_at, #{true_value}, #{false_value}, #{false_value}, #{false_value}, #{false_value}, #{false_value}, #{true_value}, " \
@@ -12,5 +15,8 @@ class MigrateCiEmails < ActiveRecord::Migration
       'JOIN projects ON ci_projects.gitlab_id = projects.id ' \
       "WHERE ci_services.type = 'Ci::MailService' AND ci_services.active"
     )
+  end
+
+  def down
   end
 end
