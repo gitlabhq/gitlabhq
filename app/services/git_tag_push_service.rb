@@ -10,6 +10,7 @@ class GitTagPushService
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
     project.execute_services(@push_data.dup, :tag_push_hooks)
+    CreateCommitBuildsService.new.execute(project, @user, @push_data)
     ProjectCacheWorker.perform_async(project.id)
 
     true

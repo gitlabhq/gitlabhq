@@ -128,15 +128,15 @@ class Project < ActiveRecord::Base
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
+  has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
   has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
-  has_many :ci_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
-  has_many :ci_builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the ci_statuses
-  has_many :ci_runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
-  has_many :ci_runners, through: :ci_runner_projects, source: :runner, class_name: 'Ci::Runner'
-  has_many :ci_variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
-  has_many :ci_triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
+  has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
+  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
+  has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
+  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
 
-  accepts_nested_attributes_for :ci_variables, allow_destroy: true
+  accepts_nested_attributes_for :variables, allow_destroy: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -822,7 +822,7 @@ class Project < ActiveRecord::Base
   end
 
   def any_runners?(&block)
-    if ci_runners.active.any?(&block)
+    if runners.active.any?(&block)
       return true
     end
 

@@ -8,7 +8,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @all_builds = project.ci_builds
+    @all_builds = project.builds
     @builds = @all_builds.order('created_at DESC')
     @builds =
       case @scope
@@ -23,7 +23,7 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def cancel_all
-    @project.ci_builds.running_or_pending.each(&:cancel)
+    @project.builds.running_or_pending.each(&:cancel)
 
     redirect_to namespace_project_builds_path(project.namespace, project)
   end
@@ -76,7 +76,7 @@ class Projects::BuildsController < Projects::ApplicationController
   private
 
   def build
-    @build ||= project.ci_builds.unscoped.find_by!(id: params[:id])
+    @build ||= project.builds.unscoped.find_by!(id: params[:id])
   end
 
   def artifacts_file

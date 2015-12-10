@@ -5,9 +5,9 @@ class Projects::RunnersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    @runners = project.ci_runners.ordered
+    @runners = project.runners.ordered
     @specific_runners = current_user.ci_authorized_runners.
-      where.not(id: project.ci_runners).
+      where.not(id: project.runners).
       ordered.page(params[:page]).per(20)
     @shared_runners = Ci::Runner.shared.active
     @shared_runners_count = @shared_runners.count(:all)
@@ -60,7 +60,7 @@ class Projects::RunnersController < Projects::ApplicationController
   protected
 
   def set_runner
-    @runner ||= project.ci_runners.find(params[:id])
+    @runner ||= project.runners.find(params[:id])
   end
 
   def runner_params

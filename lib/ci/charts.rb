@@ -16,10 +16,10 @@ module Ci
 
       def push(from, to, format)
         @labels << from.strftime(format)
-        @total << project.ci_builds.
+        @total << project.builds.
           where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", to, from).
           count(:all)
-        @success << project.ci_builds.
+        @success << project.builds.
           where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", to, from).
           success.count(:all)
       end

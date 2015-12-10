@@ -38,7 +38,7 @@ module Ci
               )
             elsif project = Project.find_by(runners_token: params[:token])
               # Create a specific runner for project.
-              project.ci_runners.create(
+              project.runners.create(
                 description: params[:description],
                 tag_list: params[:tag_list]
               )

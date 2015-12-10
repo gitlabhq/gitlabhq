@@ -34,7 +34,7 @@ describe Ci::API::API do
       before { post ci_api("/runners/register"), token: project.token }
 
       it { expect(response.status).to eq(201) }
-      it { expect(project.ci_runners.size).to eq(1) }
+      it { expect(project.runners.size).to eq(1) }
     end
 
     it "should return 403 error if token is invalid" do

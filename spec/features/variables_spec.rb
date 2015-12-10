@@ -18,7 +18,7 @@ describe "Variables" do
       click_on "Save changes"
 
       expect(page).to have_content("Variables were successfully updated.")
-      expect(@project.ci_variables.count).to eq(1)
+      expect(@project.variables.count).to eq(1)
     end
   end
 end

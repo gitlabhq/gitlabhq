@@ -232,7 +232,7 @@ describe Ci::Build, models: true do
         end
 
         before do
-          build.project.ci_variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+          build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
         end
 
         it { is_expected.to eq(predefined_variables + yaml_variables + secure_variables) }
@@ -264,7 +264,7 @@ describe Ci::Build, models: true do
   describe :can_be_served? do
     let(:runner) { FactoryGirl.create :ci_specific_runner }
 
-    before { build.project.ci_runners << runner }
+    before { build.project.runners << runner }
 
     context 'runner without tags' do
       it 'can handle builds without tags' do
@@ -307,7 +307,7 @@ describe Ci::Build, models: true do
       let(:runner) { FactoryGirl.create :ci_specific_runner }
 
       before do
-        build.project.ci_runners << runner
+        build.project.runners << runner
         runner.update_attributes(contacted_at: 1.second.ago)
       end
 
@@ -344,7 +344,7 @@ describe Ci::Build, models: true do
           let(:runner) { FactoryGirl.create :ci_specific_runner, contacted_at: 1.second.ago }
 
           before do
-            build.project.ci_runners << runner
+            build.project.runners << runner
             runner.save
           end
 

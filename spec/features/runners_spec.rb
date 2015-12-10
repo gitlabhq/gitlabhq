@@ -21,9 +21,9 @@ describe "Runners" do
       @specific_runner = FactoryGirl.create :ci_specific_runner
       @specific_runner2 = FactoryGirl.create :ci_specific_runner
       @specific_runner3 = FactoryGirl.create :ci_specific_runner
-      @project.ci_runners << @specific_runner
-      @project2.ci_runners << @specific_runner2
-      @project3.ci_runners << @specific_runner3
+      @project.runners << @specific_runner
+      @project2.runners << @specific_runner2
+      @project3.runners << @specific_runner3
 
       visit runners_path(@project)
     end
@@ -48,7 +48,7 @@ describe "Runners" do
     end
 
     it "disables specific runner for project" do
-      @project2.ci_runners << @specific_runner
+      @project2.runners << @specific_runner
       visit runners_path(@project)
 
       within ".activated-specific-runners" do
@@ -85,7 +85,7 @@ describe "Runners" do
       @project = FactoryGirl.create :empty_project
       @project.team << [user, :master]
       @specific_runner = FactoryGirl.create :ci_specific_runner
-      @project.ci_runners << @specific_runner
+      @project.runners << @specific_runner
     end
 
     it "shows runner information" do

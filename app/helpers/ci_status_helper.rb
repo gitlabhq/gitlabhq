@@ -65,7 +65,7 @@ module CiStatusHelper
   end
 
   def no_runners_for_project?(project)
-    project.ci_runners.blank? &&
+    project.runners.blank? &&
       Ci::Runner.shared.blank?
   end
 end

@@ -17,6 +17,6 @@ class Projects::VariablesController < Projects::ApplicationController
   private
 
   def project_params
-    params.require(:project).permit({ ci_variables_attributes: [:id, :key, :value, :_destroy] })
+    params.require(:project).permit({ variables_attributes: [:id, :key, :value, :_destroy] })
   end
 end

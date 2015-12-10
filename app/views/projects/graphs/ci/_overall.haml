@@ -2,17 +2,17 @@
 %ul
   %li
     Total:
-    %strong= pluralize @project.ci_builds.count(:all), 'build'
+    %strong= pluralize @project.builds.count(:all), 'build'
   %li
     Successful:
-    %strong= pluralize @project.ci_builds.success.count(:all), 'build'
+    %strong= pluralize @project.builds.success.count(:all), 'build'
   %li
     Failed:
-    %strong= pluralize @project.ci_builds.failed.count(:all), 'build'
+    %strong= pluralize @project.builds.failed.count(:all), 'build'
   %li
     Success ratio:
     %strong
-      #{success_ratio(@project.ci_builds.success, @project.ci_builds.failed)}%
+      #{success_ratio(@project.builds.success, @project.builds.failed)}%
   %li
     Commits covered:
     %strong

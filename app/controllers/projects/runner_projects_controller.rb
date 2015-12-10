@@ -18,7 +18,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
   end
 
   def destroy
-    runner_project = project.ci_runner_projects.find(params[:id])
+    runner_project = project.runner_projects.find(params[:id])
     runner_project.destroy
 
     redirect_to runners_path(project)

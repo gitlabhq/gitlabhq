@@ -2,8 +2,8 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
   before_action :project, only: [:create]
 
   def index
-    @runner_projects = project.ci_runner_projects.all
-    @runner_project = project.ci_runner_projects.new
+    @runner_projects = project.runner_projects.all
+    @runner_project = project.runner_projects.new
   end
 
   def create

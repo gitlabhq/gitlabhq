@@ -44,7 +44,7 @@
         = icon('cubes fw')
         %span
           Builds
-          %span.count.builds_counter= @project.ci_builds.running_or_pending.count(:all)
+          %span.count.builds_counter= @project.builds.running_or_pending.count(:all)
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do

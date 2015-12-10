@@ -54,13 +54,13 @@ describe Project, models: true do
     it { is_expected.to have_one(:slack_service).dependent(:destroy) }
     it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
     it { is_expected.to have_one(:asana_service).dependent(:destroy) }
-    it { is_expected.to have_many(:ci_commits) }
     it { is_expected.to have_many(:commit_statuses) }
-    it { is_expected.to have_many(:ci_builds) }
-    it { is_expected.to have_many(:ci_runner_projects) }
-    it { is_expected.to have_many(:ci_runners) }
-    it { is_expected.to have_many(:ci_variables) }
-    it { is_expected.to have_many(:ci_triggers) }
+    it { is_expected.to have_many(:ci_commits) }
+    it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:runner_projects) }
+    it { is_expected.to have_many(:runners) }
+    it { is_expected.to have_many(:variables) }
+    it { is_expected.to have_many(:triggers) }
   end
 
   describe 'modules' do
@@ -519,7 +519,7 @@ describe Project, models: true do
       end
   
       it 'there is a specific runner' do
-        project.ci_runners << specific_runner
+        project.runners << specific_runner
         expect(project.any_runners?).to be_truthy
       end
   
@@ -529,7 +529,7 @@ describe Project, models: true do
       end
   
       it 'checks the presence of specific runner' do
-        project.ci_runners << specific_runner
+        project.runners << specific_runner
         expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
       end
     end

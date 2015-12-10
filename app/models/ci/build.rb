@@ -287,7 +287,7 @@ module Ci
     end
 
     def project_variables
-      project.ci_variables.map do |variable|
+      project.variables.map do |variable|
         { key: variable.key, value: variable.value, public: false }
       end
     end

@@ -118,8 +118,8 @@ describe Ci::Runner, models: true do
       runner = FactoryGirl.create(:ci_specific_runner)
       project = FactoryGirl.create(:empty_project)
       project1 = FactoryGirl.create(:empty_project)
-      project.ci_runners << runner
-      project1.ci_runners << runner
+      project.runners << runner
+      project1.runners << runner
 
       expect(runner.belongs_to_one_project?).to be_falsey
     end
@@ -127,7 +127,7 @@ describe Ci::Runner, models: true do
     it "returns true" do
       runner = FactoryGirl.create(:ci_specific_runner)
       project = FactoryGirl.create(:empty_project)
-      project.ci_runners << runner
+      project.runners << runner
 
       expect(runner.belongs_to_one_project?).to be_truthy
     end

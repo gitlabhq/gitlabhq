@@ -37,7 +37,7 @@ describe "Builds" do
 
     context "All builds" do
       before do
-        @project.ci_builds.running_or_pending.each(&:success)
+        @project.builds.running_or_pending.each(&:success)
         visit namespace_project_builds_path(@project.namespace, @project, scope: :all)
       end
 
