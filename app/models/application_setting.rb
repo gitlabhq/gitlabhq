@@ -31,6 +31,9 @@
 #
 
 class ApplicationSetting < ActiveRecord::Base
+  include TokenAuthenticatable
+  add_authentication_token_field :runners_registration_token
+
   CACHE_KEY = 'application_setting.last'
 
   serialize :restricted_visibility_levels
