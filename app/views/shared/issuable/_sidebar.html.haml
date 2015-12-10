@@ -8,7 +8,7 @@
           = cross_project_reference(@project, issuable)
         = clipboard_button(clipboard_target: 'span#cross-project-reference')
 
-    .block
+    .block.assignee
       .title
         %label
           Assignee:
@@ -19,12 +19,12 @@
         - if issuable.assignee
           %strong= link_to_member(@project, issuable.assignee, size: 24)
         - else
-          none
+          None
 
       .selectbox
         = users_select_tag("#{issuable.class.table_name.singularize}[assignee_id]", placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: issuable.assignee_id, project: @target_project, null_user: true, current_user: true, first_user: true)
 
-    .block
+    .block.milestone
       .title
         %label
           Milestone:
@@ -39,13 +39,13 @@
                 = icon('clock-o')
                 = issuable.milestone.title
         - else
-          none
+          None
       .selectbox
         = f.select(:milestone_id, milestone_options(issuable), { include_blank: true }, { class: 'select2 select2-compact js-select2 js-milestone', data: { placeholder: 'Select milestone' }})
         = hidden_field_tag :issuable_context
         = f.submit class: 'btn hide'
 
-    - if issuable.labels.any?
+    - if issuable.project.labels.any?
       .block
         .title
           %label Labels
@@ -53,8 +53,11 @@
             .pull-right
               = link_to 'Edit', '#', class: 'edit-link'
         .value.issuable-show-labels
-          - issuable.labels.each do |label|
-            = link_to_label(label)
+          - if issuable.labels.any?
+            - issuable.labels.each do |label|
+              = link_to_label(label)
+          - else
+            None
         .selectbox
           = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
             { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }
