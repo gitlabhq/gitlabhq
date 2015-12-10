@@ -10,3 +10,5 @@
             = markdown(@merge_request.description, cache_key: [@merge_request, "description"])
         %textarea.hidden.js-task-list-field
           = @merge_request.description
+
+    = render 'votes/votes_block', votable: @merge_request
