@@ -31,8 +31,7 @@ class Groups::HooksController < Groups::ApplicationController
       if status
         flash[:notice] = 'Hook successfully executed.'
       else
-        flash[:alert] = 'Hook execution failed. '\
-                        'Ensure hook URL is correct and service is up.'
+        flash[:alert] = "Hook execution failed: #{message}"
       end
     else
       flash[:alert] = 'Hook execution failed. Ensure the group has a project with commits.'
