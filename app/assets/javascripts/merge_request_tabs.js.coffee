@@ -77,7 +77,7 @@ class @MergeRequestTabs
 
   scrollToElement: (container) ->
     if window.location.hash
-      $el = $("#{container} #{window.location.hash}")
+      $el = $("div#{container} #{window.location.hash}")
       $('body').scrollTo($el.offset().top) if $el.length
 
   # Activate a tab based on the current action
