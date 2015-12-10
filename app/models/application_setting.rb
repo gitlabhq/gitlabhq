@@ -78,6 +78,8 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  before_save :ensure_runners_registration_token
+
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
   end
