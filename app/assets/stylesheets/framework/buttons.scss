@@ -1,12 +1,11 @@
 @mixin btn-default {
-  @include border-radius(2px);
+  @include border-radius(3px);
   border-width: 1px;
   border-style: solid;
-  text-transform: uppercase;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   line-height: 18px;
-  padding: 11px $gl-padding;
+  padding: 7px $gl-padding;
   letter-spacing: .4px;
 
   &:focus,
@@ -24,7 +23,6 @@
 
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
   background-color: $light;
-  background-image: linear-gradient(#fff, $gray-light);
   border-color: $border-light;
   color: $color;
 
@@ -187,5 +185,5 @@
 }
 
 .label_btn {
-  padding: 8px 12px;
+  padding: 8px 
 }
