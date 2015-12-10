@@ -1,6 +1,22 @@
 v 8.3.0 (unreleased)
   - License information can now be retrieved via the API
   - Fix bug with negative approvals required
+  - Add group contribution statistics page 
+
+v 8.2.3
+  - No EE-specific changes
+
+v 8.2.2
+  - Fix 404 in redirection after removing a project (Stan Hu)
+  - Ensure cached application settings are refreshed at startup (Stan Hu)
+  - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
+  - Fix: Raw private snippets access workflow
+  - Prevent "413 Request entity too large" errors when pushing large files with LFS
+  - Ensure GitLab fires custom update hooks after commit via UI
+
+v 8.2.1
+  - Forcefully update builds that didn't want to update with state machine
+  - Fix: saving GitLabCiService as Admin Template
 
 v 8.2.0
   - Invalidate stored jira password if the endpoint URL is changed
