@@ -4,8 +4,11 @@ describe Ci::API::API do
   include ApiHelpers
   include StubGitlabCalls
 
+  let(:registration_token) { 'abcdefg123456' }
+
   before do
     stub_gitlab_calls
+    stub_application_setting(runners_registration_token: registration_token)
   end
 
   describe "GET /runners" do
@@ -33,20 +36,20 @@ describe Ci::API::API do
 
   describe "POST /runners/register" do
     describe "should create a runner if token provided" do
-      before { post ci_api("/runners/register"), token: GitlabCi::REGISTRATION_TOKEN }
+      before { post ci_api("/runners/register"), token: registration_token }
 
       it { expect(response.status).to eq(201) }
     end
 
     describe "should create a runner with description" do
-      before { post ci_api("/runners/register"), token: GitlabCi::REGISTRATION_TOKEN, description: "server.hostname" }
+      before { post ci_api("/runners/register"), token: registration_token, description: "server.hostname" }
 
       it { expect(response.status).to eq(201) }
       it { expect(Ci::Runner.first.description).to eq("server.hostname") }
     end
 
     describe "should create a runner with tags" do
-      before { post ci_api("/runners/register"), token: GitlabCi::REGISTRATION_TOKEN, tag_list: "tag1, tag2" }
+      before { post ci_api("/runners/register"), token: registration_token, tag_list: "tag1, tag2" }
 
       it { expect(response.status).to eq(201) }
       it { expect(Ci::Runner.first.tag_list.sort).to eq(["tag1", "tag2"]) }
