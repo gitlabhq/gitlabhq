@@ -1,5 +1,9 @@
 module Gitlab
   module Metrics
+    RAILS_ROOT   = Rails.root.to_s
+    METRICS_ROOT = Rails.root.join('lib', 'gitlab', 'metrics').to_s
+    PATH_REGEX   = /^#{RAILS_ROOT}\/?/
+
     def self.pool_size
       Settings.metrics['pool_size'] || 16
     end
@@ -20,16 +24,15 @@ module Gitlab
       @hostname
     end
 
+    # Returns a relative path and line number based on the last application call
+    # frame.
     def self.last_relative_application_frame
-      root    = Rails.root.to_s
-      metrics = Rails.root.join('lib', 'gitlab', 'metrics').to_s
-
       frame = caller_locations.find do |l|
-        l.path.start_with?(root) && !l.path.start_with?(metrics)
+        l.path.start_with?(RAILS_ROOT) && !l.path.start_with?(METRICS_ROOT)
       end
 
       if frame
-        return frame.path.gsub(/^#{Rails.root.to_s}\/?/, ''), frame.lineno
+        return frame.path.sub(PATH_REGEX, ''), frame.lineno
       else
         return nil, nil
       end
