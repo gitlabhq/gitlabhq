@@ -170,13 +170,10 @@ production: &base
   ldap:
     enabled: false
 
-    # GitLab EE only.
-    # In addition to refreshing users when they log in,
-    # enabling this setting will refresh LDAP user membership once a day.
-    # Default time of the day when this will happen is at 1:30am server time.
-    schedule_sync_daily: 1 # Run once every X days. Default: 1, meaning 'daily'
-    schedule_sync_hour: 1 # Hour of the day. Value from 0-23.
-    schedule_sync_minute: 30 # Minute of the hour. Value from 0-59.
+    #
+    # Gitlab EE only:
+    # Since Gitlab 8.3, LDAP refresh job execution can be configured in schedule.yml
+    #
 
     servers:
       ##########################################################################

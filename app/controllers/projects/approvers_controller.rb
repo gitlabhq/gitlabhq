@@ -9,6 +9,6 @@ class Projects::ApproversController < ApplicationController
       project.approvers.find(params[:id]).destroy
     end
   
-    redirect_to :back
+    redirect_back_or_default(default: { action: 'index' })
   end
 end

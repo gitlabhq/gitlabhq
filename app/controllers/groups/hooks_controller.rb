@@ -38,7 +38,7 @@ class Groups::HooksController < Groups::ApplicationController
       flash[:alert] = 'Hook execution failed. Ensure the group has a project with commits.'
     end
 
-    redirect_to :back
+    redirect_back_or_default(default: { action: 'index' })
   end
 
   def destroy
