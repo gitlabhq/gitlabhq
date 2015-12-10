@@ -56,16 +56,12 @@ class IssueTrackerService < Service
   end
 
   def initialize_properties
-    if properties.nil?
+    if new_record?
       if enabled_in_gitlab_config
-        self.properties = {
-          title: issues_tracker['title'],
-          project_url: add_issues_tracker_id(issues_tracker['project_url']),
-          issues_url: add_issues_tracker_id(issues_tracker['issues_url']),
-          new_issue_url: add_issues_tracker_id(issues_tracker['new_issue_url'])
-        }
-      else
-        self.properties = {}
+        self.title = issues_tracker['title']
+        self.project_url = add_issues_tracker_id(issues_tracker['project_url'])
+        self.issues_url = add_issues_tracker_id(issues_tracker['issues_url'])
+        self.new_issue_url = add_issues_tracker_id(issues_tracker['new_issue_url'])
       end
     end
   end
@@ -98,8 +94,8 @@ class IssueTrackerService < Service
 
   def enabled_in_gitlab_config
     Gitlab.config.issues_tracker &&
-    Gitlab.config.issues_tracker.values.any? &&
-    issues_tracker
+      Gitlab.config.issues_tracker.values.any? &&
+      issues_tracker
   end
 
   def issues_tracker
