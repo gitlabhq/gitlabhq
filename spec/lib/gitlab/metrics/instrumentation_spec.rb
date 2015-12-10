@@ -11,6 +11,8 @@ describe Gitlab::Metrics::Instrumentation do
         text
       end
     end
+
+    allow(@dummy).to receive(:name).and_return('Dummy')
   end
 
   describe '.instrument_method' do
@@ -31,7 +33,7 @@ describe Gitlab::Metrics::Instrumentation do
 
       it 'fires an ActiveSupport notification upon calling the method' do
         expect(ActiveSupport::Notifications).to receive(:instrument).
-          with('class_method.method_call', module: @dummy, name: :foo)
+          with('class_method.method_call', module: 'Dummy', name: :foo)
 
         @dummy.foo
       end
@@ -69,7 +71,7 @@ describe Gitlab::Metrics::Instrumentation do
 
       it 'fires an ActiveSupport notification upon calling the method' do
         expect(ActiveSupport::Notifications).to receive(:instrument).
-          with('instance_method.method_call', module: @dummy, name: :bar)
+          with('instance_method.method_call', module: 'Dummy', name: :bar)
 
         @dummy.new.bar
       end

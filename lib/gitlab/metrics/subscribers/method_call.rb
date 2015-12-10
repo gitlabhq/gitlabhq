@@ -10,7 +10,7 @@ module Gitlab
         def instance_method(event)
           return unless current_transaction
 
-          label = "#{event.payload[:module].name}##{event.payload[:name]}"
+          label = "#{event.payload[:module]}##{event.payload[:name]}"
 
           add_metric(label, event.duration)
         end
@@ -18,7 +18,7 @@ module Gitlab
         def class_method(event)
           return unless current_transaction
 
-          label = "#{event.payload[:module].name}.#{event.payload[:name]}"
+          label = "#{event.payload[:module]}.#{event.payload[:name]}"
 
           add_metric(label, event.duration)
         end

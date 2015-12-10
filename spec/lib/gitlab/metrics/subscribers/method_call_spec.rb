@@ -6,8 +6,7 @@ describe Gitlab::Metrics::Subscribers::MethodCall do
   let(:subscriber) { described_class.new }
 
   let(:event) do
-    double(:event, duration: 0.2,
-                   payload:  { module: double(:mod, name: 'Foo'), name: :foo })
+    double(:event, duration: 0.2, payload: { module: 'Foo', name: :foo })
   end
 
   before do
