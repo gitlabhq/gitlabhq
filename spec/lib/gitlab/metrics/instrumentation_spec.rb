@@ -119,6 +119,19 @@ describe Gitlab::Metrics::Instrumentation do
 
       expect(@dummy).to respond_to(:_original_foo)
     end
+
+    it 'only instruments methods directly defined in the module' do
+      mod = Module.new do
+        def kittens
+        end
+      end
+
+      @dummy.extend(mod)
+
+      described_class.instrument_methods(@dummy)
+
+      expect(@dummy).to_not respond_to(:_original_kittens)
+    end
   end
 
   describe '.instrument_instance_methods' do
@@ -130,6 +143,19 @@ describe Gitlab::Metrics::Instrumentation do
       described_class.instrument_instance_methods(@dummy)
 
       expect(@dummy.method_defined?(:_original_bar)).to eq(true)
+    end
+
+    it 'only instruments methods directly defined in the module' do
+      mod = Module.new do
+        def kittens
+        end
+      end
+
+      @dummy.include(mod)
+
+      described_class.instrument_instance_methods(@dummy)
+
+      expect(@dummy.method_defined?(:_original_kittens)).to eq(false)
     end
   end
 end

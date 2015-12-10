@@ -36,7 +36,9 @@ module Gitlab
       # mod - The module to instrument.
       def self.instrument_methods(mod)
         mod.public_methods(false).each do |name|
-          instrument_method(mod, name)
+          method = mod.method(name)
+
+          instrument_method(mod, name) if method.owner == mod.singleton_class
         end
       end
 
@@ -45,7 +47,9 @@ module Gitlab
       # mod - The module to instrument.
       def self.instrument_instance_methods(mod)
         mod.public_instance_methods(false).each do |name|
-          instrument_instance_method(mod, name)
+          method = mod.instance_method(name)
+
+          instrument_instance_method(mod, name) if method.owner == mod
         end
       end
 
@@ -77,7 +81,7 @@ module Gitlab
 
             if trans
               start    = Time.now
-              retval   =
+              retval   = __send__(#{alias_name.inspect}, *args, &block)
               duration = (Time.now - start) * 1000.0
 
               trans.add_metric(Gitlab::Metrics::Instrumentation::SERIES,
