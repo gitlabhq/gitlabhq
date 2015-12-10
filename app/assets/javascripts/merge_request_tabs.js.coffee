@@ -144,9 +144,8 @@ class @MergeRequestTabs
     @_get
       url: "#{source}.json" + @_location.search
       success: (data) =>
-        html = $(data.html)
-        html.syntaxHighlight()
-        $('#diffs').html(html)
+        document.getElementById('diffs').innerHTML = data.html
+        $('div#diffs .js-syntax-highlight').syntaxHighlight()
         @diffsLoaded = true
         @scrollToElement("#diffs")
 
