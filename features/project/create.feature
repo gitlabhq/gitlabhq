@@ -12,8 +12,9 @@ Feature: Project Create
     And I should see empty project instuctions
 
   @javascript
-  Scenario: Empty project instructions
+  Scenario: Empty project instructions with Kerberos disabled
     Given I sign in as a user
+    Given KRB5 disabled
     When I visit new project page
     And fill project form with valid data
     Then I see empty project instuctions
@@ -21,3 +22,18 @@ Feature: Project Create
     Then Remote url should update to http link
     And If I click on SSH
     Then Remote url should update to ssh link
+
+  @javascript
+  Scenario: Empty project instructions with Kerberos enabled
+    Given I sign in as a user
+    Given KRB5 enabled
+    When I visit new project page
+    And fill project form with valid data
+    Then I see empty project instuctions
+    And I click on HTTP
+    Then Remote url should update to http link
+    And If I click on SSH
+    Then Remote url should update to ssh link
+    And If I click on KRB5
+    Then Remote url should update to kerberos link
+    And KRB5 disabled

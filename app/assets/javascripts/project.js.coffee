@@ -4,8 +4,11 @@ class @Project
     $('.js-protocol-switch').click ->
       return if $(@).hasClass('active')
 
-      # Toggle 'active' for both buttons
-      $('.js-protocol-switch').toggleClass('active')
+
+      # Remove the active class for all buttons (ssh, http, kerberos if shown)
+      $('.active').not($(@)).removeClass('active');
+      # Add the active class for the clicked button
+      $(@).toggleClass('active')
 
       url = $(@).data('clone')
 

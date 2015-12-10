@@ -182,6 +182,11 @@ module ProjectsHelper
     current_user ? "ssh" : "http"
   end
 
+  # Given the current GitLab configuration, check whether the GitLab URL for Kerberos is going to be different than the HTTP URL
+  def alternative_kerberos_url?
+    Gitlab.config.alternative_gitlab_kerberos_url?
+  end
+
   def project_last_activity(project)
     if project.last_activity_at
       time_ago_with_tooltip(project.last_activity_at, placement: 'bottom', html_class: 'last_activity_time_ago')
