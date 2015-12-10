@@ -16,7 +16,7 @@ describe BuildEmailWorker do
 
   describe "#perform" do
     it "sends mail" do
-      subject.perform(build.id, user.email, data.stringify_keys)
+      subject.perform(build.id, [user.email], data.stringify_keys)
 
       email = ActionMailer::Base.deliveries.last
       expect(email.subject).to include('Build success for')
@@ -27,7 +27,7 @@ describe BuildEmailWorker do
       ActionMailer::Base.deliveries.clear
       allow(Notify).to receive(:build_success_email).and_raise(Net::SMTPFatalError)
 
-      subject.perform(build.id, user.email, data.stringify_keys)
+      subject.perform(build.id, [user.email], data.stringify_keys)
 
       expect(ActionMailer::Base.deliveries.count).to eq(0)
     end

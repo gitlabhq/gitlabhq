@@ -25,7 +25,7 @@ describe SlackService::BuildMessage do
     let(:color) { 'good' }
 
     it 'returns a message with information about succeeded build' do
-      message = '<somewhere.com|project_name>: Commit <somewhere.com/commit/97de212e80737a608d939f648d959671fb0a0142/builds|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker succeeded in 10 second(s)'
+      message = '<somewhere.com|project_name>: Commit <somewhere.com/commit/97de212e80737a608d939f648d959671fb0a0142/builds|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker passed in 10 second(s)'
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
       expect(subject.attachments).to eq([text: message, color: color])
