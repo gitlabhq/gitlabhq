@@ -350,7 +350,7 @@ class Note < ActiveRecord::Base
   end
 
   def editable?
-    !system?
+    !system? && !is_award
   end
 
   # Checks if note is an award added as a comment

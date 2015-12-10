@@ -142,4 +142,21 @@ describe Note, models: true do
       expect(Note.grouped_awards.first.last).to match_array(Note.all)
     end
   end
+
+  describe "editable?" do
+    it "returns true" do
+      note = build(:note)
+      expect(note.editable?).to be_truthy
+    end
+
+    it "returns false" do
+      note = build(:note, system: true)
+      expect(note.editable?).to be_falsy
+    end
+
+    it "returns false" do
+      note = build(:note, is_award: true, note: "smiley")
+      expect(note.editable?).to be_falsy
+    end
+  end
 end
