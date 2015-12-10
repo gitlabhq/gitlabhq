@@ -23,7 +23,7 @@ module TokenAuthenticatable
 
       define_method("reset_#{token_field}!") do
         write_attribute(token_field, generate_token_for(token_field))
-        save
+        save!
       end
     end
   end
