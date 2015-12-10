@@ -28,6 +28,7 @@ v 8.3.0 (unreleased)
   - Automatically select default clone protocol based on user preferences (Eirik Lygre)
   - Make Network page as sub tab of Commits
   - Add copy-to-clipboard button for Snippets
+  - Accept COPYING,COPYING.lesser, and licence as license file (Zeger-Jan van de Weg)
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
@@ -102,7 +103,6 @@ v 8.2.0
   - Show specific runners from projects where user is master or owner
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
-  - Accept COPYING,COPYING.lesser, and licence as license file (Zeger-Jan van de Weg)
   - Make color of "Accept Merge Request" button consistent with current build status
   - Add ignore white space option in merge request diff and commit and compare view
   - Ability to add release notes (markdown text and attachments) to git tags (aka Releases)
