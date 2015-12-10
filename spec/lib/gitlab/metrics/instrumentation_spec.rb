@@ -17,12 +17,20 @@ describe Gitlab::Metrics::Instrumentation do
     allow(@dummy).to receive(:name).and_return('Dummy')
   end
 
+  describe '.configure' do
+    it 'yields self' do
+      described_class.configure do |c|
+        expect(c).to eq(described_class)
+      end
+    end
+  end
+
   describe '.instrument_method' do
     describe 'with metrics enabled' do
       before do
         allow(Gitlab::Metrics).to receive(:enabled?).and_return(true)
 
-        Gitlab::Metrics::Instrumentation.instrument_method(@dummy, :foo)
+        described_class.instrument_method(@dummy, :foo)
       end
 
       it 'renames the original method' do

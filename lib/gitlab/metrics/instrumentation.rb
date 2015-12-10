@@ -11,6 +11,10 @@ module Gitlab
     module Instrumentation
       SERIES = 'method_calls'
 
+      def self.configure
+        yield self
+      end
+
       # Instruments a class method.
       #
       # mod  - The module to instrument as a Module/Class.
