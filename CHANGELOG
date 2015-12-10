@@ -36,6 +36,7 @@ v 8.3.0 (unreleased)
   - Use new style for milestone detail page
   - Fix sidebar tooltips when collapsed
   - Prevent possible XSS attack with award-emoji
+  - Upgraded Sidekiq to 4.x
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
