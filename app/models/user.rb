@@ -56,6 +56,7 @@
 #  project_view               :integer          default(0)
 #  consumed_timestep          :integer
 #  layout                     :integer          default(0)
+#  hide_project_limit         :boolean          default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -149,11 +150,9 @@ class User < ActiveRecord::Base
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
+    namespace: true,
     presence: true,
-    uniqueness: { case_sensitive: false },
-    exclusion: { in: Gitlab::Blacklist.path },
-    format: { with: Gitlab::Regex.namespace_regex,
-              message: Gitlab::Regex.namespace_regex_message }
+    uniqueness: { case_sensitive: false }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }

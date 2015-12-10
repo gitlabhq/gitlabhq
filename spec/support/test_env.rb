@@ -12,6 +12,7 @@ module TestEnv
     'fix'              => '48f0be4',
     'improve/awesome'  => '5937ac0',
     'markdown'         => '0ed8c6c',
+    'lfs'              => 'be93687',
     'master'           => '5937ac0',
     "'test'"           => 'e56497b',
   }
@@ -21,7 +22,8 @@ module TestEnv
   # We currently only need a subset of the branches
   FORKED_BRANCH_SHA = {
     'add-submodule-version-bump' => '3f547c08',
-    'master' => '5937ac0'
+    'master' => '5937ac0',
+    'remove-submodule' => '2a33e0c0'
   }
 
   # Test environment

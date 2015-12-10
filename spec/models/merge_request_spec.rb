@@ -152,7 +152,7 @@ describe MergeRequest do
       it 'returns sorted JiraIssues' do
         allow(subject.project).to receive_messages(default_branch: subject.target_branch)
 
-        expect(subject.closes_issues).to eq([issue1, issue0])
+        expect(subject.closes_issues).to eq([issue0, issue1])
       end
     end
   end

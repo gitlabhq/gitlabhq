@@ -61,7 +61,7 @@ describe 'Issues', feature: true do
     it 'allows user to select unasigned', js: true do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
 
-      expect(page).to have_content "Assign to #{@user.name}"
+      expect(page).to have_content "Assignee #{@user.name}"
 
       first('#s2id_issue_assignee_id').click
       sleep 2 # wait for ajax stuff to complete

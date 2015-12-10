@@ -4,6 +4,8 @@
   projects_path: "/api/:version/projects.json"
   ldap_groups_path: "/api/:version/ldap/:provider/groups.json"
   namespaces_path: "/api/:version/namespaces.json"
+  group_projects_path: "/api/:version/groups/:id/projects.json"
+  projects_path: "/api/:version/projects.json"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.group_path)
@@ -45,6 +47,35 @@
       dataType: "json"
     ).done (namespaces) ->
       callback(namespaces)
+
+  # Return projects list. Filtered by query
+  projects: (query, callback) ->
+    url = Api.buildUrl(Api.projects_path)
+
+    $.ajax(
+      url: url
+      data:
+        private_token: gon.api_token
+        search: query
+        per_page: 20
+      dataType: "json"
+    ).done (projects) ->
+      callback(projects)
+
+  # Return group projects list. Filtered by query
+  groupProjects: (group_id, query, callback) ->
+    url = Api.buildUrl(Api.group_projects_path)
+    url = url.replace(':id', group_id)
+
+    $.ajax(
+      url: url
+      data:
+        private_token: gon.api_token
+        search: query
+        per_page: 20
+      dataType: "json"
+    ).done (projects) ->
+      callback(projects)
 
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?

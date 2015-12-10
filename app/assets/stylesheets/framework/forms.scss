@@ -91,8 +91,16 @@ label {
 }
 
 .input-group {
+  .select2-container {
+    display: table-cell;
+    width: 200px !important;
+  }
   .input-group-addon {
     background-color: #f7f8fa;
+  }
+  .input-group-addon:not(:first-child):not(:last-child) {
+    border-left: 0;
+    border-right: 0;
   }
 }
 

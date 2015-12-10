@@ -3,7 +3,7 @@
   - if ci_commit
     = link_to ci_status_path(ci_commit), class: "ci-status ci-#{ci_commit.status}" do
       = ci_status_icon(ci_commit)
-      = ci_commit.status
+      = ci_status_label(ci_commit)
 
   = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
   = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message"

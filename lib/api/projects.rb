@@ -7,8 +7,12 @@ module API
       helpers do
         def map_public_to_visibility_level(attrs)
           publik = attrs.delete(:public)
-          publik = parse_boolean(publik)
-          attrs[:visibility_level] = Gitlab::VisibilityLevel::PUBLIC if !attrs[:visibility_level].present? && publik == true
+          if publik.present? && !attrs[:visibility_level].present?
+            publik = parse_boolean(publik)
+            # Since setting the public attribute to private could mean either
+            # private or internal, use the more conservative option, private.
+            attrs[:visibility_level] = (publik == true) ? Gitlab::VisibilityLevel::PUBLIC : Gitlab::VisibilityLevel::PRIVATE
+          end
           attrs
         end
       end

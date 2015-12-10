@@ -53,10 +53,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).not_to have_link 'edit'
   end
 
-  step 'The edit button is disabled' do
-    expect(page).to have_css '.disabled', text: 'Edit'
-  end
-
   step 'I can edit code' do
     set_new_content
     expect(evaluate_script('blob.editor.getValue()')).to eq new_gitignore_content
@@ -142,7 +138,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can see new file page' do
-    expect(page).to have_content "Create New File"
+    expect(page).to have_content "New File"
     expect(page).to have_content "Commit message"
   end
 
@@ -303,6 +299,33 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I see the commit data for a directory with a leading dot' do
     expect(page).to have_css('.tree-commit-link', visible: true)
     expect(page).not_to have_content('Loading commit data...')
+  end
+
+  step 'I click on "files/lfs/lfs_object.iso" file in repo' do
+    visit namespace_project_tree_path(@project.namespace, @project, "lfs")
+    click_link 'files'
+    click_link "lfs"
+    click_link "lfs_object.iso"
+  end
+
+  step 'I should see download link and object size' do
+    expect(page).to have_content 'Download (1.5 MB)'
+  end
+
+  step 'I should not see lfs pointer details' do
+    expect(page).not_to have_content 'version https://git-lfs.github.com/spec/v1'
+    expect(page).not_to have_content 'oid sha256:91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897'
+    expect(page).not_to have_content 'size 1575078'
+  end
+
+  step 'I should see buttons for allowed commands' do
+    expect(page).to have_content 'Raw'
+    expect(page).to have_content 'History'
+    expect(page).to have_content 'Permalink'
+    expect(page).not_to have_content 'Edit'
+    expect(page).not_to have_content 'Blame'
+    expect(page).not_to have_content 'Delete'
+    expect(page).not_to have_content 'Replace'
   end
 
   private
