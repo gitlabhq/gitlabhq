@@ -147,6 +147,7 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     colorize (0.7.7)
+    concurrent-ruby (1.0.0)
     connection_pool (2.2.0)
     coveralls (0.8.9)
       json (~> 1.8)
@@ -682,15 +683,15 @@ GEM
       rack
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    sidekiq (3.5.3)
-      celluloid (~> 0.17.2)
+    sidekiq (4.0.1)
+      concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       json (~> 1.0)
       redis (~> 3.2, >= 3.2.1)
-      redis-namespace (~> 1.5, >= 1.5.2)
-    sidekiq-cron (0.3.1)
+    sidekiq-cron (0.4.0)
+      redis-namespace (>= 1.5.2)
       rufus-scheduler (>= 2.0.24)
-      sidekiq (>= 2.17.3)
+      sidekiq (>= 4.0.0)
     simple_oauth (0.1.9)
     simplecov (0.10.0)
       docile (~> 1.1.0)
@@ -934,6 +935,7 @@ DEPENDENCIES
   rblineprof
   rdoc (~> 3.6)
   redcarpet (~> 3.3.3)
+  redis-namespace
   redis-rails (~> 4.0.0)
   request_store (~> 1.2.0)
   rerun (~> 0.10.0)
@@ -951,8 +953,8 @@ DEPENDENCIES
   settingslogic (~> 2.0.9)
   sham_rack
   shoulda-matchers (~> 2.8.0)
-  sidekiq (~> 3.5.0)
-  sidekiq-cron (~> 0.3.0)
+  sidekiq (~> 4.0)
+  sidekiq-cron (~> 0.4.0)
   simplecov (~> 0.10.0)
   sinatra (~> 1.4.4)
   six (~> 0.2.0)
