@@ -22,4 +22,4 @@
 
   .gray-content-block.middle-block
     %h2.issue-title
-      = gfm escape_once(@snippet.title)
+      = markdown escape_once(@snippet.title), pipeline: :single_line
