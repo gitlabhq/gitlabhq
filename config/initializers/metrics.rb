@@ -18,6 +18,18 @@ if Gitlab::Metrics.enabled?
     end
   end
 
+  Gitlab::Metrics::Instrumentation.configure do |config|
+    config.instrument_instance_methods(Gitlab::Shell)
+
+    config.instrument_methods(Gitlab::Git)
+
+    Gitlab::Git.constants.each do |name|
+      const = Gitlab::Git.const_get(name)
+
+      config.instrument_methods(const) if const.is_a?(Module)
+    end
+  end
+
   GC::Profiler.enable
 
   Gitlab::Metrics::Sampler.new.start
