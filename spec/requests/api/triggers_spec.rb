@@ -25,7 +25,7 @@ describe API::API do
       end
 
       it 'should return not found if project is not found' do
-        post api('/projects/0/refs/master/trigger/builds'), options.merge(ref: 'master')
+        post api('/projects/0/trigger/builds'), options.merge(ref: 'master')
         expect(response.status).to eq(404)
       end
 
@@ -57,19 +57,19 @@ describe API::API do
         end
 
         it 'should validate variables to be a hash' do
-          post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: 'value', refs: 'master')
+          post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: 'value', ref: 'master')
           expect(response.status).to eq(400)
           expect(json_response['message']).to eq('variables needs to be a hash')
         end
 
         it 'should validate variables needs to be a map of key-valued strings' do
-          post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: { key: %w(1 2) }, refs: 'master')
+          post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: { key: %w(1 2) }, ref: 'master')
           expect(response.status).to eq(400)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
         end
 
         it 'create trigger request with variables' do
-          post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: variables, refs: 'master')
+          post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: variables, ref: 'master')
           expect(response.status).to eq(201)
           commit.builds.reload
           expect(commit.builds.first.trigger_request.variables).to eq(variables)

@@ -14,7 +14,7 @@ module API
       post ":id/trigger/builds" do
         required_attributes! [:ref, :token]
 
-        project = Project.find_with_namespace(id) || Project.find_by(id: params[:id])
+        project = Project.find_with_namespace(params[:id]) || Project.find_by(id: params[:id])
         trigger = Ci::Trigger.find_by_token(params[:token].to_s)
         not_found! unless project && trigger
         unauthorized! unless trigger.project == project
