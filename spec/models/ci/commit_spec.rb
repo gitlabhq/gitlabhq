@@ -1,23 +1,24 @@
 # == Schema Information
 #
-# Table name: commits
+# Table name: ci_commits
 #
-#  id           :integer          not null, primary key
-#  project_id   :integer
-#  ref          :string(255)
-#  sha          :string(255)
-#  before_sha   :string(255)
-#  push_data    :text
-#  created_at   :datetime
-#  updated_at   :datetime
-#  tag          :boolean          default(FALSE)
-#  yaml_errors  :text
-#  committed_at :datetime
+#  id            :integer          not null, primary key
+#  project_id    :integer
+#  ref           :string(255)
+#  sha           :string(255)
+#  before_sha    :string(255)
+#  push_data     :text
+#  created_at    :datetime
+#  updated_at    :datetime
+#  tag           :boolean          default(FALSE)
+#  yaml_errors   :text
+#  committed_at  :datetime
+#  gl_project_id :integer
 #
 
 require 'spec_helper'
 
-describe Ci::Commit do
+describe Ci::Commit, models: true do
   let(:project) { FactoryGirl.create :ci_project }
   let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
   let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }

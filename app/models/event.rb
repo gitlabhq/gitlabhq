@@ -45,7 +45,7 @@ class Event < ActiveRecord::Base
   after_create :reset_project_activity
 
   # Scopes
-  scope :recent, -> { order(created_at: :desc) }
+  scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
   scope :with_associations, -> { includes(project: :namespace) }
@@ -62,6 +62,16 @@ class Event < ActiveRecord::Base
       where("action = ? OR (target_type in (?) AND action in (?))",
             Event::PUSHED, ["MergeRequest", "Issue"],
             [Event::CREATED, Event::CLOSED, Event::MERGED])
+    end
+
+    def latest_update_time
+      row = select(:updated_at, :project_id).reorder(id: :desc).take
+
+      row ? row.updated_at : nil
+    end
+
+    def limit_recent(limit = 20, offset = nil)
+      recent.limit(limit).offset(offset)
     end
   end
 
@@ -191,7 +201,7 @@ class Event < ActiveRecord::Base
     elsif commented?
       "commented on"
     elsif created_project?
-      if project.import?
+      if project.external_import?
         "imported"
       else
         "created"

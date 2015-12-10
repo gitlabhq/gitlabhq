@@ -21,7 +21,7 @@ module ProjectsHelper
   end
 
   def link_to_member(project, author, opts = {})
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author' }
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -39,7 +39,8 @@ module ProjectsHelper
     if opts[:name]
       link_to(author_html, user_path(author), class: "author_link").html_safe
     else
-      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => sanitize(author.name) } ).html_safe
+      title = opts[:title].sub(":name", sanitize(author.name))
+      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => title, container: 'body' } ).html_safe
     end
   end
 
@@ -117,7 +118,7 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if project.gitlab_ci? && can?(current_user, :read_build, project)
+    if project.builds_enabled? && can?(current_user, :read_build, project)
       nav_tabs << :builds
     end
 
@@ -173,13 +174,20 @@ module ProjectsHelper
     'unknown'
   end
 
-  def default_url_to_repo(project = nil)
-    project = project || @project
-    current_user ? project.url_to_repo : project.http_url_to_repo
+  def default_url_to_repo(project = @project)
+    if default_clone_protocol == "ssh"
+      project.ssh_url_to_repo
+    else
+      project.http_url_to_repo
+    end
   end
 
   def default_clone_protocol
-    current_user ? "ssh" : "http"
+    if !current_user || current_user.require_ssh_key?
+      "http"
+    else
+      "ssh"
+    end
   end
 
   def project_last_activity(project)
@@ -251,14 +259,6 @@ module ProjectsHelper
 
   def version_path(project)
     filename_path(project, :version)
-  end
-
-  def hidden_pass_url(original_url)
-    result = URI(original_url)
-    result.password = '*****' unless result.password.nil?
-    result
-  rescue
-    original_url
   end
 
   def project_wiki_path_with_version(proj, page, version, is_newest)

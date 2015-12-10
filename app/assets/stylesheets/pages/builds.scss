@@ -21,7 +21,7 @@
 
   .autoscroll-container {
     position: fixed;
-    bottom: 10px;
+    bottom: 20px;
     right: 20px;
     z-index: 100;
   }
@@ -34,7 +34,7 @@
 
     a {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
   }
 
@@ -66,10 +66,5 @@
     a {
       color: #3084bb !important;
     }
-  }
-
-  .build-top-menu {
-    margin-top: 0;
-    margin-bottom: 2px;
   }
 }

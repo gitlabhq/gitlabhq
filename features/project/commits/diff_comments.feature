@@ -1,3 +1,4 @@
+@project_commits
 Feature: Project Commits Diff Comments
   Background:
     Given I sign in as a user
@@ -12,6 +13,12 @@ Feature: Project Commits Diff Comments
   Scenario: I can comment on a commit diff
     Given I leave a diff comment like "Typo, please fix"
     Then I should see a diff comment saying "Typo, please fix"
+
+  @javascript
+  Scenario: I can add a diff comment with a single emoji
+    Given I open a diff comment form
+    And I write a diff comment like ":smile:"
+    Then I should see a diff comment with an emoji image
 
   @javascript
   Scenario: I get a temporary form for the first comment on a diff line

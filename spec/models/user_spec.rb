@@ -54,11 +54,14 @@
 #  public_email               :string(255)      default(""), not null
 #  dashboard                  :integer          default(0)
 #  project_view               :integer          default(0)
+#  consumed_timestep          :integer
+#  layout                     :integer          default(0)
+#  hide_project_limit         :boolean          default(FALSE)
 #
 
 require 'spec_helper'
 
-describe User do
+describe User, models: true do
   include Gitlab::CurrentSettings
 
   describe 'modules' do
@@ -89,7 +92,23 @@ describe User do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:username) }
+    describe 'username' do
+      it 'validates presence' do
+        expect(subject).to validate_presence_of(:username)
+      end
+
+      it 'rejects blacklisted names' do
+        user = build(:user, username: 'dashboard')
+
+        expect(user).not_to be_valid
+        expect(user.errors.values).to eq [['dashboard is a reserved name']]
+      end
+
+      it 'validates uniqueness' do
+        expect(subject).to validate_uniqueness_of(:username)
+      end
+    end
+
     it { is_expected.to validate_presence_of(:projects_limit) }
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
@@ -684,7 +703,7 @@ describe User do
     end
   end
 
-  describe "#contributed_projects_ids" do
+  describe "#contributed_projects" do
     subject { create(:user) }
     let!(:project1) { create(:project) }
     let!(:project2) { create(:project, forked_from_project: project3) }
@@ -699,15 +718,15 @@ describe User do
     end
 
     it "includes IDs for projects the user has pushed to" do
-      expect(subject.contributed_projects_ids).to include(project1.id)
+      expect(subject.contributed_projects).to include(project1)
     end
 
     it "includes IDs for projects the user has had merge requests merged into" do
-      expect(subject.contributed_projects_ids).to include(project3.id)
+      expect(subject.contributed_projects).to include(project3)
     end
 
     it "doesn't include IDs for unrelated projects" do
-      expect(subject.contributed_projects_ids).not_to include(project2.id)
+      expect(subject.contributed_projects).not_to include(project2)
     end
   end
 
@@ -755,5 +774,31 @@ describe User do
 
       expect(subject.recent_push).to eq(nil)
     end
+  end
+
+  describe '#authorized_groups' do
+    let!(:user) { create(:user) }
+    let!(:private_group) { create(:group) }
+
+    before do
+      private_group.add_user(user, Gitlab::Access::MASTER)
+    end
+
+    subject { user.authorized_groups }
+
+    it { is_expected.to eq([private_group]) }
+  end
+
+  describe '#authorized_projects' do
+    let!(:user) { create(:user) }
+    let!(:private_project) { create(:project, :private) }
+
+    before do
+      private_project.team << [user, Gitlab::Access::MASTER]
+    end
+
+    subject { user.authorized_projects }
+
+    it { is_expected.to eq([private_project]) }
   end
 end

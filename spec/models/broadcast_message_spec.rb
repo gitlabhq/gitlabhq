@@ -15,10 +15,25 @@
 
 require 'spec_helper'
 
-describe BroadcastMessage do
+describe BroadcastMessage, models: true do
   subject { create(:broadcast_message) }
 
   it { is_expected.to be_valid }
+
+  describe 'validations' do
+    let(:triplet) { '#000' }
+    let(:hex)     { '#AABBCC' }
+
+    it { is_expected.to allow_value(nil).for(:color) }
+    it { is_expected.to allow_value(triplet).for(:color) }
+    it { is_expected.to allow_value(hex).for(:color) }
+    it { is_expected.not_to allow_value('000').for(:color) }
+
+    it { is_expected.to allow_value(nil).for(:font) }
+    it { is_expected.to allow_value(triplet).for(:font) }
+    it { is_expected.to allow_value(hex).for(:font) }
+    it { is_expected.not_to allow_value('000').for(:font) }
+  end
 
   describe :current do
     it "should return last message if time match" do

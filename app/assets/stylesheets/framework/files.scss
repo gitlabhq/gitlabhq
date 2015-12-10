@@ -8,7 +8,6 @@
   border: none;
   border-top: 1px solid #E7E9EE;
   border-bottom: 1px solid #E7E9EE;
-  margin-bottom: 1em;
 
   &.readme-holder {
     border-bottom: 0;
@@ -22,10 +21,9 @@
     position: relative;
     background: $background-color;
     border-bottom: 1px solid $border-color;
-    text-shadow: 0 1px 1px #fff;
     margin: 0;
     text-align: left;
-    padding: 10px 15px;
+    padding: 10px $gl-padding;
 
     .file-actions {
       float: right;
@@ -171,4 +169,3 @@
     }
   }
 }
-

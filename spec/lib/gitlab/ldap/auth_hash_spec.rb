@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::AuthHash do
+describe Gitlab::LDAP::AuthHash, lib: true do
   let(:auth_hash) do
     Gitlab::LDAP::AuthHash.new(
       OmniAuth::AuthHash.new(

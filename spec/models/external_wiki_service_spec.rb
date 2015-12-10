@@ -20,7 +20,7 @@
 
 require 'spec_helper'
 
-describe ExternalWikiService do
+describe ExternalWikiService, models: true do
   include ExternalWikiHelper
   describe "Associations" do
     it { should belong_to :project }

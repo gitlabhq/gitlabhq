@@ -1,7 +1,8 @@
 require 'sidekiq/web'
+require 'sidekiq/cron/web'
 require 'api/api'
 
-Gitlab::Application.routes.draw do
+Rails.application.routes.draw do
   if Gitlab::Sherlock.enabled?
     namespace :sherlock do
       resources :transactions, only: [:index, :show] do
@@ -32,7 +33,6 @@ Gitlab::Application.routes.draw do
         get :status, to: 'projects#badge'
         get :integration
         post :toggle_shared_runners
-        get :dumped_yaml
       end
 
       resources :runner_projects, only: [:create, :destroy]
@@ -94,7 +94,7 @@ Gitlab::Application.routes.draw do
   end
 
   # Enable Grack support
-  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
+  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
   get 'help'                  => 'help#index'
@@ -223,6 +223,8 @@ Gitlab::Application.routes.draw do
       resources :keys, only: [:show, :destroy]
       resources :identities, only: [:index, :edit, :update, :destroy]
 
+      delete 'stop_impersonation' => 'impersonation#destroy', on: :collection
+
       member do
         get :projects
         get :keys
@@ -232,7 +234,7 @@ Gitlab::Application.routes.draw do
         put :unblock
         put :unlock
         put :confirm
-        post :login_as
+        post 'impersonate' => 'impersonation#create'
         patch :disable_two_factor
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
@@ -367,7 +369,7 @@ Gitlab::Application.routes.draw do
       end
 
       resource :avatar, only: [:destroy]
-      resources :milestones, only: [:index, :show, :update]
+      resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
     end
   end
 
@@ -498,6 +500,7 @@ Gitlab::Application.routes.draw do
           member do
             get :commits
             get :ci
+            get :languages
           end
         end
 
@@ -567,10 +570,12 @@ Gitlab::Application.routes.draw do
 
         resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
           member do
-            get :diffs
             get :commits
-            post :merge
+            get :diffs
+            get :builds
             get :merge_check
+            post :merge
+            post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
           end
@@ -611,6 +616,7 @@ Gitlab::Application.routes.draw do
           member do
             get :status
             post :cancel
+            get :download
             post :retry
           end
         end
@@ -661,6 +667,10 @@ Gitlab::Application.routes.draw do
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
+          end
+
+          collection do
+            post :award_toggle
           end
         end
 

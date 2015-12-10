@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Charts" do
+describe Ci::Charts, lib: true do
 
   context "build_times" do
     before do

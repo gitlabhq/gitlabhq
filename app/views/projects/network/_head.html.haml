@@ -1,3 +1,6 @@
-.append-bottom-20
-  = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
-  .pull-right.visible-lg.light You can move around the graph by using the arrow keys.
+.gray-content-block.append-bottom-default
+  .tree-ref-holder
+    = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
+
+  .oneline
+    You can move around the graph by using the arrow keys.

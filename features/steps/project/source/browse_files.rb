@@ -53,10 +53,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).not_to have_link 'edit'
   end
 
-  step 'The edit button is disabled' do
-    expect(page).to have_css '.disabled', text: 'Edit'
-  end
-
   step 'I can edit code' do
     set_new_content
     expect(evaluate_script('blob.editor.getValue()')).to eq new_gitignore_content
@@ -87,7 +83,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Diff"' do
-    click_link 'Preview changes'
+    click_link 'Preview Changes'
   end
 
   step 'I click on "Commit Changes"' do
@@ -98,12 +94,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_button 'Create directory'
   end
 
-  step 'I click on "Remove"' do
-    click_button 'Remove'
+  step 'I click on "Delete"' do
+    click_button 'Delete'
   end
 
-  step 'I click on "Remove file"' do
-    click_button 'Remove file'
+  step 'I click on "Delete file"' do
+    click_button 'Delete file'
   end
 
   step 'I click on "Replace"' do
@@ -142,7 +138,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can see new file page' do
-    expect(page).to have_content "new file"
+    expect(page).to have_content "New File"
     expect(page).to have_content "Commit message"
   end
 
@@ -192,7 +188,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see Browse dir link' do
-    expect(page).to have_link 'Browse Dir »'
+    expect(page).to have_link 'Browse Directory »'
     expect(page).not_to have_link 'Browse Code »'
   end
 
@@ -204,13 +200,13 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I see Browse file link' do
     expect(page).to have_link 'Browse File »'
-    expect(page).not_to have_link 'Browse Code »'
+    expect(page).not_to have_link 'Browse Files »'
   end
 
   step 'I see Browse code link' do
-    expect(page).to have_link 'Browse Code »'
+    expect(page).to have_link 'Browse Files »'
     expect(page).not_to have_link 'Browse File »'
-    expect(page).not_to have_link 'Browse Dir »'
+    expect(page).not_to have_link 'Browse Directory »'
   end
 
   step 'I click on Permalink' do
@@ -223,10 +219,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I am redirected to the ".gitignore"' do
     expect(current_path).to eq(namespace_project_blob_path(@project.namespace, @project, 'master/.gitignore'))
-  end
-
-  step 'I am redirected to the ".gitignore" on new branch' do
-    expect(current_path).to eq(namespace_project_blob_path(@project.namespace, @project, 'new_branch_name/.gitignore'))
   end
 
   step 'I am redirected to the permalink URL' do
@@ -247,20 +239,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       @project.namespace, @project, 'master/' + new_file_name_with_directory))
   end
 
-  step 'I am redirected to the new file on new branch' do
-    expect(current_path).to eq(namespace_project_blob_path(
-      @project.namespace, @project, 'new_branch_name/' + new_file_name))
-  end
-
-  step 'I am redirected to the uploaded file on new branch' do
-    expect(current_path).to eq(namespace_project_blob_path(
-      @project.namespace, @project,
-      'new_branch_name/' + File.basename(test_text_file)))
-  end
-
-  step 'I am redirected to the new directory' do
-    expect(current_path).to eq(namespace_project_tree_path(
-      @project.namespace, @project, 'new_branch_name/' + new_dir_name))
+  step 'I am redirected to the new merge request page' do
+    expect(current_path).to eq(new_namespace_project_merge_request_path(@project.namespace, @project))
   end
 
   step 'I am redirected to the root directory' do
@@ -319,6 +299,33 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I see the commit data for a directory with a leading dot' do
     expect(page).to have_css('.tree-commit-link', visible: true)
     expect(page).not_to have_content('Loading commit data...')
+  end
+
+  step 'I click on "files/lfs/lfs_object.iso" file in repo' do
+    visit namespace_project_tree_path(@project.namespace, @project, "lfs")
+    click_link 'files'
+    click_link "lfs"
+    click_link "lfs_object.iso"
+  end
+
+  step 'I should see download link and object size' do
+    expect(page).to have_content 'Download (1.5 MB)'
+  end
+
+  step 'I should not see lfs pointer details' do
+    expect(page).not_to have_content 'version https://git-lfs.github.com/spec/v1'
+    expect(page).not_to have_content 'oid sha256:91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897'
+    expect(page).not_to have_content 'size 1575078'
+  end
+
+  step 'I should see buttons for allowed commands' do
+    expect(page).to have_content 'Raw'
+    expect(page).to have_content 'History'
+    expect(page).to have_content 'Permalink'
+    expect(page).not_to have_content 'Edit'
+    expect(page).not_to have_content 'Blame'
+    expect(page).not_to have_content 'Delete'
+    expect(page).not_to have_content 'Replace'
   end
 
   private

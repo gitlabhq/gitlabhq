@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Sherlock::Transaction do
+describe Gitlab::Sherlock::Transaction, lib: true do
   let(:transaction) { described_class.new('POST', '/cat_pictures') }
 
   describe '#id' do
@@ -81,6 +81,19 @@ describe Gitlab::Sherlock::Transaction do
       allow(transaction).to receive(:finished_at).and_return(start_time + 5)
 
       expect(transaction.duration).to be_within(0.1).of(5.0)
+    end
+  end
+
+  describe '#query_duration' do
+    it 'returns the total query duration in seconds' do
+      time   = Time.now
+      query1 = Gitlab::Sherlock::Query.new('SELECT 1', time, time + 5)
+      query2 = Gitlab::Sherlock::Query.new('SELECT 2', time, time + 2)
+
+      transaction.queries << query1
+      transaction.queries << query2
+
+      expect(transaction.query_duration).to be_within(0.1).of(7.0)
     end
   end
 

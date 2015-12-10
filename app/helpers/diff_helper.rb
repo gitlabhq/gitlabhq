@@ -1,4 +1,8 @@
 module DiffHelper
+  def diff_view
+    params[:view] == 'parallel' ? 'parallel' : 'inline'
+  end
+
   def allowed_diff_size
     if diff_hard_limit_enabled?
       Commit::DIFF_HARD_LIMIT_FILES
@@ -132,33 +136,19 @@ module DiffHelper
   end
 
   def inline_diff_btn
-    params_copy = params.dup
-    params_copy[:view] = 'inline'
-    # Always use HTML to handle case where JSON diff rendered this button
-    params_copy.delete(:format)
-
-    link_to url_for(params_copy), id: "inline-diff-btn", class: (params[:view] != 'parallel' ? 'btn active' : 'btn') do
-      'Inline'
-    end
+    diff_btn('Inline', 'inline', diff_view == 'inline')
   end
 
   def parallel_diff_btn
-    params_copy = params.dup
-    params_copy[:view] = 'parallel'
-    # Always use HTML to handle case where JSON diff rendered this button
-    params_copy.delete(:format)
-
-    link_to url_for(params_copy), id: "parallel-diff-btn", class: (params[:view] == 'parallel' ? 'btn active' : 'btn') do
-      'Side-by-side'
-    end
+    diff_btn('Side-by-side', 'parallel', diff_view == 'parallel')
   end
 
   def submodule_link(blob, ref, repository = @repository)
     tree, commit = submodule_links(blob, ref, repository)
     commit_id = if commit.nil?
-                  blob.id[0..10]
+                  Commit.truncate_sha(blob.id)
                 else
-                  link_to "#{blob.id[0..10]}", commit
+                  link_to Commit.truncate_sha(blob.id), commit
                 end
 
     [
@@ -171,7 +161,7 @@ module DiffHelper
   def commit_for_diff(diff)
     if diff.deleted_file
       first_commit = @first_commit || @commit
-      first_commit.parent
+      first_commit.parent || @first_commit
     else
       @commit
     end
@@ -186,5 +176,19 @@ module DiffHelper
 
   def editable_diff?(diff)
     !diff.deleted_file && @merge_request && @merge_request.source_project
+  end
+
+  private
+
+  def diff_btn(title, name, selected)
+    params_copy = params.dup
+    params_copy[:view] = name
+
+    # Always use HTML to handle case where JSON diff rendered this button
+    params_copy.delete(:format)
+
+    link_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'btn active' : 'btn') do
+      title
+    end
   end
 end

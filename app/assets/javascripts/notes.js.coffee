@@ -111,14 +111,24 @@ class @Notes
   Note: for rendering inline notes use renderDiscussionNote
   ###
   renderNote: (note) ->
+    unless note.valid
+      if note.award
+        flash = new Flash('You have already used this award emoji!', 'alert')
+        flash.pin()
+      return
+
     # render note if it not present in loaded list
     # or skip if rendered
-    if @isNewNote(note)
+    if @isNewNote(note) && !note.award
       @note_ids.push(note.id)
       $('ul.main-notes-list').
         append(note.html).
         syntaxHighlight()
       @initTaskList()
+
+    if note.award
+      awards_handler.addAwardToEmojiBar(note.note, note.emoji_path)
+      awards_handler.scrollToAwards()
 
   ###
   Check if note does not exists on page
@@ -255,7 +265,6 @@ class @Notes
   ###
   addNote: (xhr, note, status) =>
     @renderNote(note)
-    @updateVotes()
 
   ###
   Called in response to the new note form being submitted
@@ -360,8 +369,8 @@ class @Notes
     note = $(this).closest(".note")
     note.find(".note-attachment").remove()
     note.find(".note-body > .note-text").show()
-    note.find(".js-note-attachment-delete").hide()
-    note.find(".note-edit-form").hide()
+    note.find(".note-header").show()
+    note.find(".current-note-edit-form").remove()
 
   ###
   Called when clicking on the "reply" button for a diff line.
@@ -472,9 +481,6 @@ class @Notes
     form = $(".js-new-note-form")
     form = $(e.target).closest(".js-discussion-note-form")
     @removeDiscussionNoteForm(form)
-
-  updateVotes: ->
-    true
 
   ###
   Called after an attachment file has been selected.

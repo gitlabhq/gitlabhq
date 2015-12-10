@@ -6,37 +6,42 @@
   .issue-title
     %span.issue-title-text
       = link_to_gfm issue.title, issue_path(issue), class: "row_title"
-    .issue-labels
-      - issue.labels.each do |label|
-        = link_to_label(label, project: issue.project)
-    .pull-right.light
+    %ul.controls.light
       - if issue.closed?
-        %span
+        %li
           CLOSED
+
       - if issue.assignee
-        = link_to_member(@project, issue.assignee, name: false)
+        %li
+          = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
+
       - note_count = issue.notes.user.count
       - if note_count > 0
-        &nbsp;
-        %span
-          %i.fa.fa-comments
-          = note_count
+        %li
+          = link_to issue_path(issue) + "#notes" do
+            = icon('comments')
+            = note_count
       - else
-        &nbsp;
-        %span.issue-no-comments
-          %i.fa.fa-comments
-          = 0
+        %li
+          = link_to issue_path(issue) + "#notes", class: "issue-no-comments" do
+            = icon('comments')
+            = note_count
 
   .issue-info
-    = "#{issue.to_reference} opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')} by #{link_to_member(@project, issue.author, avatar: false)}".html_safe
-    - if issue.votes_count > 0
-      = render 'votes/votes_inline', votable: issue
+    #{issue.to_reference} &middot;
+    opened #{time_ago_with_tooltip(issue.created_at, placement: 'bottom')}
+    by #{link_to_member(@project, issue.author, avatar: false)}
     - if issue.milestone
       &nbsp;
-      %span
-        %i.fa.fa-clock-o
+      = link_to namespace_project_issues_path(issue.project.namespace, issue.project, milestone_title: issue.milestone.title) do
+        = icon('clock-o')
         = issue.milestone.title
+    - if issue.labels.any?
+      &nbsp;
+      - issue.labels.each do |label|
+        = link_to_label(label, project: issue.project)
     - if issue.tasks?
+      &nbsp;
       %span.task-status
         = issue.task_status
 

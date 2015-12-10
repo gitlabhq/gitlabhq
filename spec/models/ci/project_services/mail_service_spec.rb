@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 
-describe Ci::MailService do
+describe Ci::MailService, models: true do
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -44,13 +44,10 @@ describe Ci::MailService do
       end
 
       it do
-        should_email("git@example.com")
-        mail.execute(build)
-      end
-
-      def should_email(email)
-        expect(Ci::Notify).to receive(:build_fail_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
+        perform_enqueued_jobs do
+          expect{ mail.execute(build) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+          expect(ActionMailer::Base.deliveries.last.to).to eq(["git@example.com"])
+        end
       end
     end
 
@@ -67,13 +64,10 @@ describe Ci::MailService do
       end
 
       it do
-        should_email("git@example.com")
-        mail.execute(build)
-      end
-
-      def should_email(email)
-        expect(Ci::Notify).to receive(:build_success_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
+        perform_enqueued_jobs do
+          expect{ mail.execute(build) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+          expect(ActionMailer::Base.deliveries.last.to).to eq(["git@example.com"])
+        end
       end
     end
 
@@ -95,14 +89,12 @@ describe Ci::MailService do
       end
 
       it do
-        should_email("git@example.com")
-        should_email("jeroen@example.com")
-        mail.execute(build)
-      end
-
-      def should_email(email)
-        expect(Ci::Notify).to receive(:build_success_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
+        perform_enqueued_jobs do
+          expect{ mail.execute(build) }.to change{ ActionMailer::Base.deliveries.size }.by(2)
+          expect(
+            ActionMailer::Base.deliveries.map(&:to).flatten
+          ).to include("git@example.com", "jeroen@example.com")
+        end
       end
     end
 
@@ -124,14 +116,11 @@ describe Ci::MailService do
       end
 
       it do
-        should_email(commit.git_author_email)
-        should_email("jeroen@example.com")
-        mail.execute(build) if mail.can_execute?(build)
-      end
-
-      def should_email(email)
-        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
+        perform_enqueued_jobs do
+          expect do
+            mail.execute(build) if mail.can_execute?(build)
+          end.to_not change{ ActionMailer::Base.deliveries.size }
+        end
       end
     end
 
@@ -177,14 +166,11 @@ describe Ci::MailService do
 
       it do
         Ci::Build.retry(build)
-        should_email(commit.git_author_email)
-        should_email("jeroen@example.com")
-        mail.execute(build) if mail.can_execute?(build)
-      end
-
-      def should_email(email)
-        expect(Ci::Notify).not_to receive(:build_success_email).with(build.id, email)
-        expect(Ci::Notify).not_to receive(:build_fail_email).with(build.id, email)
+        perform_enqueued_jobs do
+          expect do
+            mail.execute(build) if mail.can_execute?(build)
+          end.to_not change{ ActionMailer::Base.deliveries.size }
+        end
       end
     end
   end

@@ -1,21 +1,20 @@
-.alert_holder
+= content_for :flash_message do
   - if current_user && can?(current_user, :download_code, @project)
     = render 'shared/no_ssh'
     = render 'shared/no_password'
 
 = render "home_panel"
 
-.gray-content-block.center
+.gray-content-block.second-block.center
   %h3.page-title
     The repository for this project is empty
-  - if can?(current_user, :download_code, @project)
+  - if can?(current_user, :push_code, @project)
     %p
       If you already have files you can push them using command line instructions below.
-      %br
-      - if can?(current_user, :push_code, @project)
-        Otherwise you can start with
-        = link_to "adding README", new_readme_path, class: 'underlined-link'
-        file to this project.
+    %p
+      Otherwise you can start with
+      = link_to "adding README", new_readme_path, class: 'underlined-link'
+      file to this project.
 
 - if can?(current_user, :download_code, @project)
   .prepend-top-20

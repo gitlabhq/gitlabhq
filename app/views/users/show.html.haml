@@ -32,11 +32,11 @@
           = icon('skype')
     - unless @user.linkedin.blank?
       .profile-link-holder
-        = link_to "http://www.linkedin.com/in/#{@user.linkedin}", title: "LinkedIn" do
+        = link_to "https://www.linkedin.com/in/#{@user.linkedin}", title: "LinkedIn" do
           = icon('linkedin-square')
     - unless @user.twitter.blank?
       .profile-link-holder
-        = link_to "http://www.twitter.com/#{@user.twitter}", title: "Twitter" do
+        = link_to "https://twitter.com/#{@user.twitter}", title: "Twitter" do
           = icon('twitter-square')
     - unless @user.website_url.blank?
       .profile-link-holder
@@ -73,7 +73,7 @@
   .user-calendar-activities
 
 
-%ul.center-middle-menu
+%ul.center-top-menu.no-top.no-bottom.bottom-border
   %li.active
     = link_to "#activity", 'data-toggle' => 'tab' do
       Activity

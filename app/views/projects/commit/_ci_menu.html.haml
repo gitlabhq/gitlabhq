@@ -1,4 +1,4 @@
-%ul.center-top-menu.commit-ci-menu
+%ul.center-top-menu.no-top.no-bottom.commit-ci-menu
   = nav_link(path: 'commit#show') do
     = link_to namespace_project_commit_path(@project.namespace, @project, @commit.id) do
       Changes
@@ -6,4 +6,4 @@
   = nav_link(path: 'commit#builds') do
     = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
       Builds
-      %span.badge= @builds.count(:id)
+      %span.badge= @statuses.count

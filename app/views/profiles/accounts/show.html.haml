@@ -23,11 +23,14 @@
           %p.cgray
             - if current_user.private_token
               = text_field_tag "token", current_user.private_token, class: "form-control"
-              %div
-                = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default btn-build-token"
             - else
               %span You don`t have one yet. Click generate to fix it.
-              = f.submit 'Generate', class: "btn btn-default btn-build-token"
+
+        .form-actions
+          - if current_user.private_token
+            = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
+          - else
+            = f.submit 'Generate', class: "btn btn-default"
 
   - unless current_user.ldap_user?
     .panel.panel-default
@@ -54,7 +57,8 @@
           %p
             Each time you log in you’ll be required to provide your username and
             password as usual, plus a randomly-generated code from your phone.
-          %div
+
+          .form-actions
             = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
 
   - if button_based_providers.any?
@@ -81,15 +85,16 @@
           %p
             Changing your username will change path to all personal projects!
           %div
-            = f.text_field :username, required: true, class: 'form-control'
+            .input-group
+              .input-group-addon
+                = "#{root_url}u/"
+              = f.text_field :username, required: true, class: 'form-control'
             &nbsp;
           .loading-gif.hide
             %p
               = icon('spinner spin')
               Saving new username
-          %p.light
-            = user_url(@user)
-          %div
+          .form-actions
             = f.submit 'Save username', class: "btn btn-warning"
 
   - if signup_enabled?
@@ -104,7 +109,8 @@
             - rp = current_user.personal_projects.count
             - unless rp.zero?
               %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
-          = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+          .form-actions
+            = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
         - else
           - if @user.solo_owned_groups.present?
             %p

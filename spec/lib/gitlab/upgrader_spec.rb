@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Upgrader do
+describe Gitlab::Upgrader, lib: true do
   let(:upgrader) { Gitlab::Upgrader.new }
   let(:current_version) { Gitlab::VERSION }
 

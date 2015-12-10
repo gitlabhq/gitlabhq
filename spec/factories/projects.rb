@@ -28,6 +28,7 @@
 #  import_type            :string(255)
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
+#  import_error           :text
 #
 
 FactoryGirl.define do

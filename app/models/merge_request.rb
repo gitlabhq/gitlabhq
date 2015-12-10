@@ -2,24 +2,28 @@
 #
 # Table name: merge_requests
 #
-#  id                :integer          not null, primary key
-#  target_branch     :string(255)      not null
-#  source_branch     :string(255)      not null
-#  source_project_id :integer          not null
-#  author_id         :integer
-#  assignee_id       :integer
-#  title             :string(255)
-#  created_at        :datetime
-#  updated_at        :datetime
-#  milestone_id      :integer
-#  state             :string(255)
-#  merge_status      :string(255)
-#  target_project_id :integer          not null
-#  iid               :integer
-#  description       :text
-#  position          :integer          default(0)
-#  locked_at         :datetime
-#  updated_by_id     :integer
+#  id                         :integer          not null, primary key
+#  target_branch              :string(255)      not null
+#  source_branch              :string(255)      not null
+#  source_project_id          :integer          not null
+#  author_id                  :integer
+#  assignee_id                :integer
+#  title                      :string(255)
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  milestone_id               :integer
+#  state                      :string(255)
+#  merge_status               :string(255)
+#  target_project_id          :integer          not null
+#  iid                        :integer
+#  description                :text
+#  position                   :integer          default(0)
+#  locked_at                  :datetime
+#  updated_by_id              :integer
+#  merge_error                :string(255)
+#  merge_params               :text (serialized to hash)
+#  merge_when_build_succeeds  :boolean          default(false), not null
+#  merge_user_id              :integer
 #
 
 require Rails.root.join("app/models/commit")
@@ -34,13 +38,16 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
+  belongs_to :merge_user, class_name: "User"
 
   has_one :merge_request_diff, dependent: :destroy
+
+  serialize :merge_params, Hash
 
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, to: :merge_request_diff, prefix: nil
+  delegate :commits, :diffs, :diffs_no_whitespace, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -120,6 +127,7 @@ class MergeRequest < ActiveRecord::Base
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
+  validates :merge_user, presence: true, if: :merge_when_build_succeeds?
   validate :validate_branches
   validate :validate_fork
 
@@ -133,6 +141,9 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
+  scope :join_project, -> { joins(:target_project) }
+  scope :references_project, -> { references(:target_project) }
+
   def self.reference_prefix
     '!'
   end
@@ -145,6 +156,10 @@ class MergeRequest < ActiveRecord::Base
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}(?<merge_request>\d+)
     }x
+  end
+
+  def self.link_reference_pattern
+    super("merge_requests", /(?<merge_request>\d+)/)
   end
 
   def to_reference(from_project = nil)
@@ -250,6 +265,16 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def can_cancel_merge_when_build_succeeds?(current_user)
+    can_be_merged_by?(current_user) || self.author == current_user
+  end
+
+  def can_remove_source_branch?(current_user)
+    !source_project.protected_branch?(source_branch) &&
+      !source_project.root_ref?(source_branch) &&
+      Ability.abilities.allowed?(current_user, :push_code, source_project)
+  end
+
   def mr_and_commit_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
@@ -287,7 +312,7 @@ class MergeRequest < ActiveRecord::Base
       work_in_progress: work_in_progress?
     }
 
-    unless last_commit.nil?
+    if last_commit
       attrs.merge!(last_commit: last_commit.hook_attrs)
     end
 
@@ -312,7 +337,7 @@ class MergeRequest < ActiveRecord::Base
       issues = commits.flat_map { |c| c.closes_issues(current_user) }
       issues.push(*Gitlab::ClosingIssueExtractor.new(project, current_user).
                   closed_by_message(description))
-      issues.uniq.sort_by(&:id)
+      issues.uniq
     else
       []
     end
@@ -383,6 +408,16 @@ class MergeRequest < ActiveRecord::Base
     message << "\n\n"
     message << "See merge request !#{iid}"
     message
+  end
+
+  def reset_merge_when_build_succeeds
+    return unless merge_when_build_succeeds?
+
+    self.merge_when_build_succeeds = false
+    self.merge_user = nil
+    self.merge_params = nil
+
+    self.save
   end
 
   # Return array of possible target branches
@@ -472,8 +507,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ci_commit
-    if last_commit
-      source_project.ci_commit(last_commit.id)
-    end
+    @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
+  end
+
+  def broken?
+    self.commits.blank? || branch_missing? || cannot_be_merged?
   end
 end

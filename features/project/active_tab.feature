@@ -20,11 +20,6 @@ Feature: Project Active Tab
     Then the active main tab should be Commits
     And no other main tabs should be active
 
-  Scenario: On Project Network
-    Given I visit my project's network page
-    Then the active main tab should be Network
-    And no other main tabs should be active
-
   Scenario: On Project Issues
     Given I visit my project's issues page
     Then the active main tab should be Issues
@@ -80,6 +75,12 @@ Feature: Project Active Tab
   Scenario: On Project Commits/Commits
     Given I visit my project's commits page
     Then the active sub tab should be Commits
+    And no other sub tabs should be active
+    And the active main tab should be Commits
+
+  Scenario: On Project Commits/Network
+    Given I visit my project's network page
+    Then the active sub tab should be Network
     And no other sub tabs should be active
     And the active main tab should be Commits
 

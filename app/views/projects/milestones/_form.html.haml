@@ -1,10 +1,3 @@
-%h3.page-title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.iid}"
-.back-link
-  = link_to namespace_project_milestones_path(@project.namespace, @project) do
-    &larr; To milestones
-
-%hr
-
 = form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form js-requires-input'}  do |f|
   -if @milestone.errors.any?
     .alert.alert-danger
@@ -16,16 +9,13 @@
       .form-group
         = f.label :title, "Title", class: "control-label"
         .col-sm-10
-          = f.text_field :title, maxlength: 255, class: "form-control js-quick-submit", required: true
-          %p.hint Required
+          = f.text_field :title, maxlength: 255, class: "form-control js-quick-submit", required: true, autofocus: true
       .form-group.milestone-description
         = f.label :description, "Description", class: "control-label"
         .col-sm-10
           = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
             = render 'projects/zen', f: f, attr: :description, classes: 'description form-control js-quick-submit'
-            .hint
-              .pull-left Milestones are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
-              .pull-left Attach files by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
+            = render 'projects/notes/hints'
           .clearfix
           .error-alert
     .col-md-6
@@ -45,7 +35,7 @@
 
 
 :javascript
-  $( ".datepicker" ).datepicker({
+  $(".datepicker").datepicker({
     dateFormat: "yy-mm-dd",
     onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
   }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));

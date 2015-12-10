@@ -9,9 +9,21 @@ module SharedUser
     user_exists("Mary Jane", { username: "mary_jane" })
   end
 
+  step 'gitlab user "Mike"' do
+    create(:user, name: "Mike")
+  end
+
   protected
 
   def user_exists(name, options = {})
     User.find_by(name: name) || create(:user, { name: name, admin: false }.merge(options))
+  end
+
+  step 'I have an ssh key' do
+    create(:personal_key, user: @user)
+  end
+
+  step 'I have no ssh keys' do
+    @user.keys.delete_all
   end
 end

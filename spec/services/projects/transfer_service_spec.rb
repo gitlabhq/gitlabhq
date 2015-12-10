@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::TransferService do
+describe Projects::TransferService, services: true do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: user.namespace) }

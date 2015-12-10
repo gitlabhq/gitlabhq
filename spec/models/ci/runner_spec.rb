@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: runners
+# Table name: ci_runners
 #
 #  id           :integer          not null, primary key
 #  token        :string(255)
@@ -19,7 +19,7 @@
 
 require 'spec_helper'
 
-describe Ci::Runner do
+describe Ci::Runner, models: true do
   describe '#display_name' do
     it 'should return the description if it has a value' do
       runner = FactoryGirl.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')

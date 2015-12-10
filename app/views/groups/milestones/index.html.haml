@@ -1,17 +1,28 @@
 - page_title "Milestones"
 - header_title group_title(@group, "Milestones", group_milestones_path(@group))
 
-= render 'shared/milestones_filter'
+.project-issuable-filter
+  .controls
+    - if can?(current_user, :admin_milestones, @group)
+      .pull-right
+        %span.pull-right.hidden-xs
+          = link_to new_group_milestone_path(@group), class: "btn btn-new" do
+            = icon('plus')
+            New Milestone
+
+  = render 'shared/milestones_filter'
+
 .gray-content-block
   Only milestones from
   %strong #{@group.name}
   group are listed here.
+
 .milestones
   %ul.content-list
-    - if @group_milestones.blank?
+    - if @milestones.blank?
       %li
         .nothing-here-block No milestones to show
     - else
-      - @group_milestones.each do |milestone|
+      - @milestones.each do |milestone|
         = render 'milestone', milestone: milestone
-  = paginate @group_milestones, theme: "gitlab"
+  = paginate @milestones, theme: "gitlab"

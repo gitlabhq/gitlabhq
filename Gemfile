@@ -1,6 +1,10 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.1.12'
+gem 'rails', '4.2.4'
+gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+
+# Responders respond_to and respond_with
+gem 'responders', '~> 2.0'
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -16,7 +20,7 @@ gem "pg", '~> 0.18.2', group: :postgres
 # Authentication libraries
 gem 'devise',                 '~> 3.5.2'
 gem 'devise-async',           '~> 0.9.0'
-gem 'doorkeeper',             '~> 2.1.3'
+gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-facebook',      '~> 3.0.0'
@@ -28,7 +32,7 @@ gem 'omniauth-saml',          '~> 1.4.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
-gem 'rack-oauth2',            '~> 1.0.5'
+gem 'rack-oauth2',            '~> 1.2.1'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
@@ -48,22 +52,19 @@ gem "gitlab_git", '~> 7.2.20'
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 
 # Git Wiki
-gem 'gollum-lib', '~> 4.0.2'
+gem 'gollum-lib', '~> 4.1.0'
 
 # Language detection
 gem "github-linguist", "~> 4.7.0", require: "linguist"
 
 # API
-gem 'grape',        '~> 0.6.1'
+gem 'grape',        '~> 0.13.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Format dates and times
 # based on human-friendly examples
 gem "stamp", '~> 0.6.0'
-
-# Enumeration fields
-gem 'enumerize', '~> 0.7.0'
 
 # Pagination
 gem "kaminari", "~> 0.16.3"
@@ -92,12 +93,12 @@ gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
 gem 'github-markup', '~> 1.3.1'
 gem 'redcarpet',     '~> 3.3.3'
-gem 'RedCloth',      '~> 4.2.9'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '~> 0.9.12'
-gem 'creole',        '~>0.3.6'
+gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
+gem 'rouge',         '~> 1.10.1'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
@@ -118,15 +119,14 @@ gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
 gem 'sinatra', '~> 1.4.4', require: nil
-gem 'sidekiq', '3.3.0'
-gem 'sidetiq', '~> 0.6.3'
+gem 'sidekiq', '~> 3.5.0'
+gem 'sidekiq-cron', '~> 0.3.0'
 
 # HTTP requests
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colored", '~> 1.2'
-gem "colorize", '~> 0.5.8'
+gem "colorize", '~> 0.7.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -154,7 +154,7 @@ gem "gemnasium-gitlab-service", "~> 0.2"
 gem "slack-notifier", "~> 1.2.0"
 
 # Asana integration
-gem 'asana', '~> 0.0.6'
+gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
@@ -170,6 +170,7 @@ gem "underscore-rails", "~> 1.4.4"
 
 # Sanitize user input
 gem "sanitize", '~> 2.0'
+gem 'babosa', '~> 1.0.2'
 
 # Protect against bruteforcing
 gem "rack-attack", '~> 4.3.0'
@@ -187,13 +188,13 @@ gem "sass-rails", '~> 4.0.5'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
-gem 'jquery-turbolinks', '~> 2.0.1'
+gem 'jquery-turbolinks', '~> 2.1.0'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.0'
 gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.1'
-gem 'gon',                '~> 5.0.0'
+gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 3.1.3'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
@@ -203,6 +204,7 @@ gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
+gem 'net-ssh',            '~> 3.0.1'
 
 group :development do
   gem "foreman"
@@ -214,6 +216,7 @@ group :development do
   gem 'rerun', '~> 0.10.0'
   gem 'bullet', require: false
   gem 'rblineprof', platform: :mri, require: false
+  gem 'web-console', '~> 2.0'
 
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
@@ -259,6 +262,9 @@ group :development, :test do
   gem 'rubocop',  '~> 0.28.0',  require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
+  gem 'flog', require: false
+  gem 'flay', require: false
+  gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
 end
@@ -267,7 +273,7 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
-  gem 'test_after_commit', '~> 0.2.2'
+  gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack'
 end
 

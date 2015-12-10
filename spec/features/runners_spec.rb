@@ -14,13 +14,23 @@ describe "Runners" do
       @project2 = FactoryGirl.create :ci_project
       @project2.gl_project.team << [user, :master]
 
+      @project3 = FactoryGirl.create :ci_project
+      @project3.gl_project.team << [user, :developer]
+
       @shared_runner = FactoryGirl.create :ci_shared_runner
       @specific_runner = FactoryGirl.create :ci_specific_runner
       @specific_runner2 = FactoryGirl.create :ci_specific_runner
+      @specific_runner3 = FactoryGirl.create :ci_specific_runner
       @project.runners << @specific_runner
       @project2.runners << @specific_runner2
+      @project3.runners << @specific_runner3
 
       visit runners_path(@project.gl_project)
+    end
+
+    before do
+      expect(page).to_not have_content(@specific_runner3.display_name)
+      expect(page).to_not have_content(@specific_runner3.display_name)
     end
 
     it "places runners in right places" do
@@ -76,10 +86,10 @@ describe "Runners" do
       @project.gl_project.team << [user, :master]
       @specific_runner = FactoryGirl.create :ci_specific_runner
       @project.runners << @specific_runner
-      visit runners_path(@project.gl_project)
     end
 
     it "shows runner information" do
+      visit runners_path(@project.gl_project)
       click_on @specific_runner.short_sha
       expect(page).to have_content(@specific_runner.platform)
     end

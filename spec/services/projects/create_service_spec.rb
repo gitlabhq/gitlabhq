@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CreateService do
+describe Projects::CreateService, services: true do
   describe :create_by_user do
     before do
       @user = create :user
@@ -67,6 +67,28 @@ describe Projects::CreateService do
         end
 
         it { expect(File.exists?(@path)).to be_falsey }
+      end
+    end
+
+    context 'builds_enabled global setting' do
+      let(:project) { create_project(@user, @opts) }
+
+      subject { project.builds_enabled? }
+
+      context 'global builds_enabled false does not enable CI by default' do
+        before do
+          @opts.merge!(builds_enabled: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'global builds_enabled true does enable CI by default' do
+        before do
+          @opts.merge!(builds_enabled: true)
+        end
+
+        it { is_expected.to be_truthy }
       end
     end
 

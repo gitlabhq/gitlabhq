@@ -28,11 +28,12 @@
 #  import_type            :string(255)
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
+#  import_error           :text
 #
 
 require 'spec_helper'
 
-describe Project do
+describe Project, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -345,17 +346,6 @@ describe Project do
       expect(project1.star_count).to eq(0)
       expect(project2.star_count).to eq(0)
     end
-
-    it 'is decremented when an upvoter account is deleted' do
-      user = create :user
-      project = create :project, :public
-      user.toggle_star(project)
-      project.reload
-      expect(project.star_count).to eq(1)
-      user.destroy
-      project.reload
-      expect(project.star_count).to eq(0)
-    end
   end
 
   describe :avatar_type do
@@ -415,12 +405,15 @@ describe Project do
     it { expect(project.ci_commit(commit.sha)).to eq(commit) }
   end
 
-  describe :enable_ci do
+  describe :builds_enabled do
     let(:project) { create :project }
 
-    before { project.enable_ci }
+    before { project.builds_enabled = true }
 
-    it { expect(project.gitlab_ci?).to be_truthy }
+    subject { project.builds_enabled }
+
+    it { is_expected.to eq(project.gitlab_ci_service.active) }
+    it { expect(project.builds_enabled?).to be_truthy }
     it { expect(project.gitlab_ci_project).to be_a(Ci::Project) }
   end
 
@@ -452,13 +445,34 @@ describe Project do
 
       before do
         2.times do
-          create(:note_on_commit, project: project2, created_at: date)
+          # Little fix for special issue related to Fractional Seconds support for MySQL.
+          # See: https://github.com/rails/rails/pull/14359/files
+          create(:note_on_commit, project: project2, created_at: date + 1)
         end
       end
 
       it 'sorts Projects by the amount of notes in descending order' do
         expect(subject).to eq([project2, project1])
       end
+    end
+  end
+
+  describe '.visible_to_user' do
+    let!(:project) { create(:project, :private) }
+    let!(:user)    { create(:user) }
+
+    subject { described_class.visible_to_user(user) }
+
+    describe 'when a user has access to a project' do
+      before do
+        project.team.add_user(user, Gitlab::Access::MASTER)
+      end
+
+      it { is_expected.to eq([project]) }
+    end
+
+    describe 'when a user does not have access to any projects' do
+      it { is_expected.to eq([]) }
     end
   end
 end

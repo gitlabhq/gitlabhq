@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Project do
+describe Project, models: true do
   describe :authorization do
     before do
       @p1 = create(:project)

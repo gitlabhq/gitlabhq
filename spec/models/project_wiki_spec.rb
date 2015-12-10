@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProjectWiki do
+describe ProjectWiki, models: true do
   let(:project) { create(:empty_project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
@@ -184,6 +184,12 @@ describe ProjectWiki do
       subject.create_page("test page", "some content", :markdown, "commit message")
       expect(subject.pages.first.page.version.message).to eq("commit message")
     end
+
+    it 'updates project activity' do
+      expect(subject).to receive(:update_project_activity)
+
+      subject.create_page('Test Page', 'This is content')
+    end
   end
 
   describe "#update_page" do
@@ -205,6 +211,12 @@ describe ProjectWiki do
     it "sets the correct commit message" do
       expect(@page.version.message).to eq("updated page")
     end
+
+    it 'updates project activity' do
+      expect(subject).to receive(:update_project_activity)
+
+      subject.update_page(@gollum_page, 'Yet more content', :markdown, 'Updated page again')
+    end
   end
 
   describe "#delete_page" do
@@ -216,6 +228,12 @@ describe ProjectWiki do
     it "deletes the page" do
       subject.delete_page(@page)
       expect(subject.pages.count).to eq(0)
+    end
+
+    it 'updates project activity' do
+      expect(subject).to receive(:update_project_activity)
+
+      subject.delete_page(@page)
     end
   end
 

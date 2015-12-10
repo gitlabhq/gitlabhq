@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: web_hooks
+# Table name: ci_web_hooks
 #
 #  id         :integer          not null, primary key
 #  url        :string(255)      not null
@@ -11,7 +11,7 @@
 
 require 'spec_helper'
 
-describe Ci::WebHook do
+describe Ci::WebHook, models: true do
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end

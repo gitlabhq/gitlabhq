@@ -27,3 +27,19 @@ Feature: Admin Projects
     And I visit admin project page
     When I transfer project to group 'Web'
     Then I should see project transfered
+
+  @javascript
+  Scenario: Signed in admin should be able to add himself to a project
+    Given "John Doe" owns private project "Enterprise"
+    When I visit project "Enterprise" members page
+    When I select current user as "Developer"
+    Then I should see current user as "Developer"
+
+  @javascript
+  Scenario: Signed in admin should be able to remove himself from a project
+    Given "John Doe" owns private project "Enterprise"
+    And current user is developer of project "Enterprise"
+    When I visit project "Enterprise" members page
+    Then I should see current user as "Developer"
+    When I click on the "Remove User From Project" button for current user
+    Then I should not see current user as "Developer"

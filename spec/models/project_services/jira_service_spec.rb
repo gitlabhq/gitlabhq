@@ -20,7 +20,7 @@
 
 require 'spec_helper'
 
-describe JiraService do
+describe JiraService, models: true do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -94,9 +94,9 @@ describe JiraService do
       end
 
       it 'should be prepopulated with the settings' do
-        expect(@service.properties[:project_url]).to eq('http://jira.sample/projects/project_a')
-        expect(@service.properties[:issues_url]).to eq("http://jira.sample/issues/:id")
-        expect(@service.properties[:new_issue_url]).to eq("http://jira.sample/projects/project_a/issues/new")
+        expect(@service.properties["project_url"]).to eq('http://jira.sample/projects/project_a')
+        expect(@service.properties["issues_url"]).to eq("http://jira.sample/issues/:id")
+        expect(@service.properties["new_issue_url"]).to eq("http://jira.sample/projects/project_a/issues/new")
       end
     end
   end

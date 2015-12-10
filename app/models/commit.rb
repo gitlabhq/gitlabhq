@@ -7,7 +7,7 @@ class Commit
   include Referable
   include StaticModel
 
-  attr_mentionable :safe_message
+  attr_mentionable :safe_message, pipeline: :single_line
   participant :author, :committer, :notes
 
   attr_accessor :project
@@ -78,11 +78,23 @@ class Commit
     }x
   end
 
+  def self.link_reference_pattern
+    super("commit", /(?<commit>\h{6,40})/)
+  end
+
   def to_reference(from_project = nil)
     if cross_project_reference?(from_project)
-      "#{project.to_reference}@#{id}"
+      project.to_reference + self.class.reference_prefix + self.id
     else
-      id
+      self.id
+    end
+  end
+
+  def reference_link_text(from_project = nil)
+    if cross_project_reference?(from_project)
+      project.to_reference + self.class.reference_prefix + self.short_id
+    else
+      self.short_id
     end
   end
 
@@ -135,10 +147,10 @@ class Commit
     description.present?
   end
 
-  def hook_attrs
+  def hook_attrs(with_changed_files: false)
     path_with_namespace = project.path_with_namespace
 
-    {
+    data = {
       id: id,
       message: safe_message,
       timestamp: committed_date.xmlschema,
@@ -148,6 +160,12 @@ class Commit
         email: author_email
       }
     }
+
+    if with_changed_files
+      data.merge!(repo_changes)
+    end
+
+    data
   end
 
   # Discover issues should be closed when this commit is pushed to a project's
@@ -157,11 +175,11 @@ class Commit
   end
 
   def author
-    @author ||= User.find_by_any_email(author_email)
+    @author ||= User.find_by_any_email(author_email.downcase)
   end
 
   def committer
-    @committer ||= User.find_by_any_email(committer_email)
+    @committer ||= User.find_by_any_email(committer_email.downcase)
   end
 
   def parents
@@ -195,5 +213,23 @@ class Commit
 
   def status
     ci_commit.try(:status) || :not_found
+  end
+
+  private
+
+  def repo_changes
+    changes = { added: [], modified: [], removed: [] }
+
+    diffs.each do |diff|
+      if diff.deleted_file
+        changes[:removed] << diff.old_path
+      elsif diff.renamed_file || diff.new_file
+        changes[:added] << diff.new_path
+      else
+        changes[:modified] << diff.new_path
+      end
+    end
+
+    changes
   end
 end

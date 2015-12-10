@@ -27,6 +27,12 @@
           = t('sherlock.seconds')
       %li
         %span.light
+          #{t('sherlock.query_time')}
+        %strong
+          = @transaction.query_duration.round(2)
+          = t('sherlock.seconds')
+      %li
+        %span.light
           #{t('sherlock.finished_at')}:
         %strong
           = time_ago_in_words(@transaction.finished_at)

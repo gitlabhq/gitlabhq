@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::CloseService do
+describe Issues::CloseService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:issue) { create(:issue, assignee: user2) }
@@ -14,7 +14,9 @@ describe Issues::CloseService do
   describe :execute do
     context "valid params" do
       before do
-        @issue = Issues::CloseService.new(project, user, {}).execute(issue)
+        perform_enqueued_jobs do
+          @issue = Issues::CloseService.new(project, user, {}).execute(issue)
+        end
       end
 
       it { expect(@issue).to be_valid }

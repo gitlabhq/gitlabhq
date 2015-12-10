@@ -1,19 +1,21 @@
 - page_title "Milestones"
-- header_title  "Milestones", dashboard_milestones_path
+- header_title "Milestones", dashboard_milestones_path
 
+.project-issuable-filter
+  .controls
+    = render 'shared/new_project_item_select', path: 'milestones/new', label: "New Milestone", include_groups: true
 
-= render 'shared/milestones_filter'
+  = render 'shared/milestones_filter'
 
 .gray-content-block
-  .oneline
-    List all milestones from all projects you have access to.
+  List all milestones from all projects you have access to.
 
 .milestones
   %ul.content-list
-    - if @dashboard_milestones.blank?
+    - if @milestones.blank?
       %li
         .nothing-here-block No milestones to show
     - else
-      - @dashboard_milestones.each do |milestone|
+      - @milestones.each do |milestone|
         = render 'milestone', milestone: milestone
-  = paginate @dashboard_milestones, theme: "gitlab"
+  = paginate @milestones, theme: "gitlab"

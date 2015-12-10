@@ -1,3 +1,32 @@
+# == Schema Information
+#
+#  project_id            integer
+#  status                string
+#  finished_at           datetime
+#  trace                 text
+#  created_at            datetime
+#  updated_at            datetime
+#  started_at            datetime
+#  runner_id             integer
+#  coverage              float
+#  commit_id             integer
+#  commands              text
+#  job_id                integer
+#  name                  string
+#  deploy                boolean           default: false
+#  options               text
+#  allow_failure         boolean           default: false, null: false
+#  stage                 string
+#  trigger_request_id    integer
+#  stage_idx             integer
+#  tag                   boolean
+#  ref                   string
+#  user_id               integer
+#  type                  string
+#  target_url            string
+#  description           string
+#
+
 class CommitStatus < ActiveRecord::Base
   self.table_name = 'ci_builds'
 
@@ -46,6 +75,10 @@ class CommitStatus < ActiveRecord::Base
       build.update_attributes finished_at: Time.now
     end
 
+    after_transition [:pending, :running] => :success do |build, transition|
+      MergeRequests::MergeWhenBuildSucceedsService.new(build.commit.gl_project, nil).trigger(build)
+    end
+
     state :pending, value: 'pending'
     state :running, value: 'running'
     state :failed, value: 'failed'
@@ -91,5 +124,9 @@ class CommitStatus < ActiveRecord::Base
 
   def show_warning?
     false
+  end
+
+  def download_url
+    nil
   end
 end

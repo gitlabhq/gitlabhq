@@ -181,6 +181,10 @@ body {
   line-height: 1.3;
   font-size: 1.25em;
   font-weight: 600;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .page-title-empty {
@@ -216,6 +220,7 @@ pre {
 
 .monospace {
   font-family: $monospace_font;
+  font-size: 90%;
 }
 
 code {
@@ -255,4 +260,10 @@ textarea.js-gfm-input {
 
 .strikethrough {
   text-decoration: line-through;
+}
+
+h1, h2, h3, h4 {
+  small {
+    color: $gl-gray;
+  }
 }

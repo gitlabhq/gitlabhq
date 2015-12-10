@@ -1,21 +1,13 @@
 - page_title "New File", @path.presence, @ref
 = render "header_title"
 
-.gray-content-block.top-block
-  Create a new file
+%h3.page-title
+  New File
 
 .file-editor
-  = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal form-new-file js-requires-input') do
+  = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal js-new-blob-form js-requires-input') do
     = render 'projects/blob/editor', ref: @ref
-    = render 'shared/commit_message_container', params: params,
-             placeholder: 'Add new file'
-
-    - unless @project.empty_repo?
-      .form-group.branch
-        = label_tag 'branch', class: 'control-label' do
-          Branch
-        .col-sm-10
-          = text_field_tag 'new_branch', @ref, class: "form-control js-quick-submit"
+    = render 'shared/new_commit_form', placeholder: "Add new file"
 
     = hidden_field_tag 'content', '', id: 'file-content'
     = render 'projects/commit_button', ref: @ref,
@@ -23,3 +15,4 @@
 
 :javascript
   blob = new NewBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", null)
+  new NewCommitForm($('.js-new-blob-form'))

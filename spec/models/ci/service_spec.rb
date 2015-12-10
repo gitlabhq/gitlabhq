@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: services
+# Table name: ci_services
 #
 #  id         :integer          not null, primary key
 #  type       :string(255)
@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 
-describe Ci::Service do
+describe Ci::Service, models: true do
 
   describe "Associations" do
     it { is_expected.to belong_to :project }

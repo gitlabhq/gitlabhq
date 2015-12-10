@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::EventService do
+describe Ci::EventService, services: true do
   let(:project) { FactoryGirl.create :ci_project }
   let(:user)   { double(username: "root", id: 1) }
 

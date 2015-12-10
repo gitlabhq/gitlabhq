@@ -42,7 +42,7 @@ Feature: Project Source Browse Files
     And I fill the new branch name
     And I click on "Upload file"
     Then I can see the new text file
-    And I am redirected to the uploaded file on new branch
+    And I am redirected to the new merge request page
     And I can see the new commit message
 
   @javascript
@@ -64,7 +64,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I fill the new branch name
     And I click on "Commit Changes"
-    Then I am redirected to the new file on new branch
+    Then I am redirected to the new merge request page
     And I should see its new content
 
   @javascript
@@ -110,12 +110,6 @@ Feature: Project Source Browse Files
     Given I visit a binary file in the repo
     Then I cannot see the edit button
 
-  Scenario: If I don't have edit permission the edit link is disabled
-    Given public project "Community"
-    And I visit project "Community" source page
-    And I click on ".gitignore" file in repo
-    Then The edit button is disabled
-
   @javascript
   Scenario: I can edit and commit file
     Given I click on ".gitignore" file in repo
@@ -134,7 +128,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I fill the new branch name
     And I click on "Commit Changes"
-    Then I am redirected to the ".gitignore" on new branch
+    Then I am redirected to the new merge request page
     And I should see its new content
 
   @javascript  @wip
@@ -154,7 +148,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I fill the new branch name
     And I click on "Create directory"
-    Then I am redirected to the new directory
+    Then I am redirected to the new merge request page
 
   @javascript
   Scenario: I attempt to create an existing directory
@@ -174,12 +168,12 @@ Feature: Project Source Browse Files
     Then I see diff
 
   @javascript
-  Scenario: I can remove file and commit
+  Scenario: I can delete file and commit
     Given I click on ".gitignore" file in repo
     And I see the ".gitignore"
-    And I click on "Remove"
+    And I click on "Delete"
     And I fill the commit message
-    And I click on "Remove file"
+    And I click on "Delete file"
     Then I am redirected to the files URL
     And I don't see the ".gitignore"
 
@@ -221,3 +215,9 @@ Feature: Project Source Browse Files
     Given I switch ref to fix
     And I visit the fix tree
     Then I see the commit data for a directory with a leading dot
+
+  Scenario: I browse LFS object
+    Given I click on "files/lfs/lfs_object.iso" file in repo
+    Then I should see download link and object size
+    And I should not see lfs pointer details
+    And I should see buttons for allowed commands

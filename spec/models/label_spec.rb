@@ -8,11 +8,12 @@
 #  project_id :integer
 #  created_at :datetime
 #  updated_at :datetime
+#  template   :boolean          default(FALSE)
 #
 
 require 'spec_helper'
 
-describe Label do
+describe Label, models: true do
   let(:label) { create(:label) }
 
   describe 'associations' do

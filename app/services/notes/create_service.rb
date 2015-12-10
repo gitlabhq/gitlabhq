@@ -8,8 +8,8 @@ module Notes
       if note.save
         notification_service.new_note(note)
 
-        # Skip system notes, like status changes and cross-references.
-        unless note.system
+        # Skip system notes, like status changes and cross-references and awards
+        unless note.system || note.is_award
           event_service.leave_note(note, note.author)
           note.create_cross_references!
           execute_hooks(note)

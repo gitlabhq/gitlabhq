@@ -28,6 +28,8 @@ class Dispatcher
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
         new DropzoneInput($('.milestone-form'))
+      when 'groups:milestones:new'
+        new ZenMode()
       when 'projects:compare:show'
         new Diff()
       when 'projects:issues:new','projects:issues:edit'
@@ -81,7 +83,7 @@ class Dispatcher
       when 'projects:project_members:index'
         new ProjectMembers()
         new UsersSelect()
-      when 'groups:new', 'groups:edit', 'admin:groups:edit'
+      when 'groups:new', 'groups:edit', 'admin:groups:edit', 'admin:groups:new'
         new GroupAvatar()
       when 'projects:tree:show'
         new TreeView()

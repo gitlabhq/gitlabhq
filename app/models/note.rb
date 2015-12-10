@@ -16,6 +16,7 @@
 #  system        :boolean          default(FALSE), not null
 #  st_diff       :text
 #  updated_by_id :integer
+#  is_award      :boolean          default(FALSE), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -28,7 +29,7 @@ class Note < ActiveRecord::Base
 
   default_value_for :system, false
 
-  attr_mentionable :note
+  attr_mentionable :note, cache: true, pipeline: :note
   participant :author
 
   belongs_to :project
@@ -39,17 +40,24 @@ class Note < ActiveRecord::Base
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 
+  before_validation :set_award!
+
   validates :note, :project, presence: true
-  validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
+  validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
+  validates :note, inclusion: { in: Emoji.emojis_names }, if: ->(n) { n.is_award }
+  validates :line_code, line_code: true, allow_blank: true
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
   validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
   validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
+  validates :author, presence: true
 
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
+  scope :awards, ->{ where(is_award: true) }
+  scope :nonawards, ->{ where(is_award: false) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
   scope :not_inline, ->{ where(line_code: [nil, '']) }
@@ -96,6 +104,12 @@ class Note < ActiveRecord::Base
 
     def search(query)
       where("LOWER(note) like :query", query: "%#{query.downcase}%")
+    end
+
+    def grouped_awards
+      awards.select(:note).distinct.map do |note|
+        [ note.note, where(note: note.note) ]
+      end
     end
   end
 
@@ -288,44 +302,6 @@ class Note < ActiveRecord::Base
     nil
   end
 
-  DOWNVOTES = %w(-1 :-1: :thumbsdown: :thumbs_down_sign:)
-
-  # Check if the note is a downvote
-  def downvote?
-    votable? && note.start_with?(*DOWNVOTES)
-  end
-
-  UPVOTES = %w(+1 :+1: :thumbsup: :thumbs_up_sign:)
-
-  # Check if the note is an upvote
-  def upvote?
-    votable? && note.start_with?(*UPVOTES)
-  end
-
-  def superceded?(notes)
-    return false unless vote?
-
-    notes.each do |note|
-      next if note == self
-
-      if note.vote? &&
-        self[:author_id] == note[:author_id] &&
-        self[:created_at] <= note[:created_at]
-        return true
-      end
-    end
-
-    false
-  end
-
-  def vote?
-    upvote? || downvote?
-  end
-
-  def votable?
-    for_issue? || (for_merge_request? && !for_diff_line?)
-  end
-
   # Mentionable override.
   def gfm_reference(from_project = nil)
     noteable.gfm_reference(from_project)
@@ -363,7 +339,44 @@ class Note < ActiveRecord::Base
     read_attribute(:system)
   end
 
+  # Deprecated. Still exists to preserve API compatibility.
+  def downvote?
+    false
+  end
+
+  # Deprecated. Still exists to preserve API compatibility.
+  def upvote?
+    false
+  end
+
   def editable?
     !system?
+  end
+
+  # Checks if note is an award added as a comment
+  #
+  # If note is an award, this method sets is_award to true
+  #   and changes content of the note to award name.
+  #
+  # Method is executed as a before_validation callback.
+  #
+  def set_award!
+    return unless awards_supported? && contains_emoji_only?
+    self.is_award = true
+    self.note = award_emoji_name
+  end
+
+  private
+
+  def awards_supported?
+    noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)
+  end
+
+  def contains_emoji_only?
+    note =~ /\A#{Gitlab::Markdown::EmojiFilter.emoji_pattern}\s?\Z/
+  end
+
+  def award_emoji_name
+    note.match(Gitlab::Markdown::EmojiFilter.emoji_pattern)[1]
   end
 end

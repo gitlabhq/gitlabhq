@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: application_settings
+# Table name: ci_application_settings
 #
 #  id                :integer          not null, primary key
 #  all_broken_builds :boolean
@@ -12,9 +12,20 @@
 module Ci
   class ApplicationSetting < ActiveRecord::Base
     extend Ci::Model
-    
+    CACHE_KEY = 'ci_application_setting.last'
+
+    after_commit do
+      Rails.cache.write(CACHE_KEY, self)
+    end
+
+    def self.expire
+      Rails.cache.delete(CACHE_KEY)
+    end
+
     def self.current
-      Ci::ApplicationSetting.last
+      Rails.cache.fetch(CACHE_KEY) do
+        Ci::ApplicationSetting.last
+      end
     end
 
     def self.create_from_defaults

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Gitlab::NoteDataBuilder' do
+describe 'Gitlab::NoteDataBuilder', lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:data) { Gitlab::NoteDataBuilder.build(note, user) }

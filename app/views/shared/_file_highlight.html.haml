@@ -8,5 +8,6 @@
         %a{href: "#L#{i}", id: "L#{i}", 'data-line-number' => i}
           %i.fa.fa-link
           = i
-  :preserve
-    #{highlight(blob.name, blob.data)}
+  .blob-content{data: {blob_id: blob.id}}
+    :preserve
+      #{highlight(blob.name, blob.data)}

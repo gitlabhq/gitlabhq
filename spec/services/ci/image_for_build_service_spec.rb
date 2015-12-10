@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ci
-  describe ImageForBuildService do
+  describe ImageForBuildService, services: true do
     let(:service) { ImageForBuildService.new }
     let(:project) { FactoryGirl.create(:ci_project) }
     let(:gl_project) { FactoryGirl.create(:project, gitlab_ci_project: project) }

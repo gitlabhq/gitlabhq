@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Sherlock::Collection do
+describe Gitlab::Sherlock::Collection, lib: true do
   let(:collection) { described_class.new }
 
   let(:transaction) do

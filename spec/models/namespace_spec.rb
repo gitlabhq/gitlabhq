@@ -11,11 +11,12 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
+#  public      :boolean          default(FALSE)
 #
 
 require 'spec_helper'
 
-describe Namespace do
+describe Namespace, models: true do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_many :projects }

@@ -86,7 +86,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     select "feature", from: "merge_request_target_branch"
     click_button "Compare branches"
     fill_in "merge_request_title", with: "Wiki Feature"
-    click_button "Submit new merge request"
+    click_button "Submit merge request"
   end
 
   step 'project "Shop" have "Bug NS-04" open merge request' do
@@ -367,7 +367,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see merge request "Bug NS-05" with CI status' do
     page.within ".mr-list" do
-      expect(page).to have_link "Build status: pending"
+      expect(page).to have_link "Build pending"
     end
   end
 

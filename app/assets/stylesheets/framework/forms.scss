@@ -22,9 +22,10 @@ input[type='text'].danger {
 }
 
 .form-actions {
-  padding: 17px 20px 18px;
-  margin-top: 18px;
-  margin-bottom: 18px;
+  margin: -$gl-padding;
+  margin-top: 0;
+  margin-bottom: -$gl-padding;
+  padding: $gl-padding;
   background-color: $background-color;
   border-top: 1px solid $border-color;
 }
@@ -73,6 +74,8 @@ label {
 
 .form-control {
   @include box-shadow(none);
+  height: 42px;
+  padding: 8px $gl-padding;
 }
 
 .wiki-content {
@@ -88,7 +91,19 @@ label {
 }
 
 .input-group {
+  .select2-container {
+    display: table-cell;
+    width: 200px !important;
+  }
   .input-group-addon {
     background-color: #f7f8fa;
   }
+  .input-group-addon:not(:first-child):not(:last-child) {
+    border-left: 0;
+    border-right: 0;
+  }
+}
+
+.help-block {
+  margin-bottom: 0;
 }

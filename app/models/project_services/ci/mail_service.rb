@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: services
+# Table name: ci_services
 #
 #  id         :integer          not null, primary key
 #  type       :string(255)
@@ -64,9 +64,9 @@ module Ci
       build.project_recipients.each do |recipient|
         case build.status.to_sym
         when :success
-          mailer.build_success_email(build.id, recipient)
+          mailer.build_success_email(build.id, recipient).deliver_later
         when :failed
-          mailer.build_fail_email(build.id, recipient)
+          mailer.build_fail_email(build.id, recipient).deliver_later
         end
       end
     end
@@ -78,7 +78,7 @@ module Ci
     end
 
     def mailer
-      Ci::Notify.delay
+      Ci::Notify
     end
   end
 end

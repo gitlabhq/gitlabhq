@@ -131,6 +131,23 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/:id/merge_request/:merge_request_id/commits' do
+    context 'valid merge request' do
+      before { get api("/projects/#{project.id}/merge_request/#{merge_request.id}/commits", user) }
+      let(:commit) { merge_request.commits.first }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(json_response.size).to eq(merge_request.commits.size) }
+      it { expect(json_response.first['id']).to eq(commit.id) }
+      it { expect(json_response.first['title']).to eq(commit.title) }
+    end
+
+    it 'returns a 404 when merge_request_id not found' do
+      get api("/projects/#{project.id}/merge_request/999/commits", user)
+      expect(response.status).to eq(404)
+    end
+  end
+
   describe 'GET /projects/:id/merge_request/:merge_request_id/changes' do
     it 'should return the change information of the merge_request' do
       get api("/projects/#{project.id}/merge_request/#{merge_request.id}/changes", user)
@@ -303,19 +320,21 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_request/:merge_request_id/merge" do
+    let(:ci_commit) { create(:ci_commit_without_jobs) }
+
     it "should return merge_request in case of success" do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
 
       expect(response.status).to eq(200)
     end
 
-    it "should return 405 if branch can't be merged" do
+    it "should return 406 if branch can't be merged" do
       allow_any_instance_of(MergeRequest).
         to receive(:can_be_merged?).and_return(false)
 
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
 
-      expect(response.status).to eq(405)
+      expect(response.status).to eq(406)
       expect(json_response['message']).to eq('Branch cannot be merged')
     end
 
@@ -339,6 +358,17 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user2)
       expect(response.status).to eq(401)
       expect(json_response['message']).to eq('401 Unauthorized')
+    end
+
+    it "enables merge when build succeeds if the ci is active" do
+      allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
+      allow(ci_commit).to receive(:active?).and_return(true)
+
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
+
+      expect(response.status).to eq(200)
+      expect(json_response['title']).to eq('Test')
+      expect(json_response['merge_when_build_succeeds']).to eq(true)
     end
   end
 
