@@ -54,16 +54,19 @@
     margin-top: -$gl-padding;
     padding: 7px 0;
     margin-bottom: 0;
-    color: #5c5d5e;
-    font-size: 16px;
+    color: #8F8F8F;
+    font-size: 15px;
+    font-weight: 500;
     line-height: 36px;
 
     .author {
-      color: #5c5d5e;
+      color: #323232;
+      font-weight: 500;
     }
 
     .issue-id {
-      color: #5c5d5e;
+      color: #323232;
+      font-weight: 500;
     }
   }
 
