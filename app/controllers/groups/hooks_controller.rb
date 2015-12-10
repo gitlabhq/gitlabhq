@@ -26,7 +26,7 @@ class Groups::HooksController < Groups::ApplicationController
 
   def test
     if @group.first_non_empty_project
-      status = TestHookService.new.execute(hook, current_user)
+      status, message = TestHookService.new.execute(hook, current_user)
 
       if status
         flash[:notice] = 'Hook successfully executed.'
