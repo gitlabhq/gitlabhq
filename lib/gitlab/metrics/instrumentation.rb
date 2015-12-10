@@ -30,7 +30,8 @@ module Gitlab
       def self.instrument(type, mod, name)
         return unless Metrics.enabled?
 
-        alias_name = "_original_#{name}"
+        name       = name.to_sym
+        alias_name = :"_original_#{name}"
         target     = type == :instance ? mod : mod.singleton_class
 
         if type == :instance
@@ -42,14 +43,14 @@ module Gitlab
         end
 
         target.class_eval <<-EOF, __FILE__, __LINE__ + 1
-          alias_method :#{alias_name}, :#{name}
+          alias_method #{alias_name.inspect}, #{name.inspect}
 
           def #{name}(*args, &block)
             trans = Gitlab::Metrics::Instrumentation.transaction
 
             if trans
               start    = Time.now
-              retval   = #{alias_name}(*args, &block)
+              retval   =
               duration = (Time.now - start) * 1000.0
 
               trans.add_metric(Gitlab::Metrics::Instrumentation::SERIES,
@@ -58,7 +59,7 @@ module Gitlab
 
               retval
             else
-              #{alias_name}(*args, &block)
+              __send__(#{alias_name.inspect}, *args, &block)
             end
           end
         EOF
