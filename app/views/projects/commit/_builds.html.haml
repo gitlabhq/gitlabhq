@@ -22,6 +22,7 @@
     %ul
       - @ci_commit.yaml_errors.split(",").each do |error|
         %li= error
+    You can also test your .gitlab-ci.yml in the #{link_to "Lint", ci_lint_path}
 
 - if @ci_commit.project.builds_enabled? && !@ci_commit.ci_yaml_file
   .bs-callout.bs-callout-warning
