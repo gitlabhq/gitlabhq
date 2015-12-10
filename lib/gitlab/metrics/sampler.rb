@@ -53,7 +53,9 @@ module Gitlab
       end
 
       def sample_objects
-        @metrics << Metric.new('object_counts', ObjectSpace.count_objects)
+        ObjectSpace.count_objects.each do |type, count|
+          @metrics << Metric.new('object_counts', { count: count }, type: type)
+        end
       end
 
       def sample_gc

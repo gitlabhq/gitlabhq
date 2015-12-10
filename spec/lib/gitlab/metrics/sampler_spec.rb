@@ -71,7 +71,8 @@ describe Gitlab::Metrics::Sampler do
   describe '#sample_objects' do
     it 'adds a metric containing the amount of allocated objects' do
       expect(Gitlab::Metrics::Metric).to receive(:new).
-        with('object_counts', an_instance_of(Hash)).
+        with('object_counts', an_instance_of(Hash), an_instance_of(Hash)).
+        at_least(:once).
         and_call_original
 
       sampler.sample_objects
