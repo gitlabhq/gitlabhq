@@ -28,11 +28,12 @@
 #  import_type            :string(255)
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
+#  import_error           :text
 #
 
 require 'spec_helper'
 
-describe Project do
+describe Project, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }

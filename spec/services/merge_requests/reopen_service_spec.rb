@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::ReopenService do
+describe MergeRequests::ReopenService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, assignee: user2) }

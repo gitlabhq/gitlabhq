@@ -79,6 +79,6 @@ describe "User Feed", feature: true  do
   end
 
   def safe_name
-    html_escape(user.name)
+    CGI.escapeHTML(user.name)
   end
 end

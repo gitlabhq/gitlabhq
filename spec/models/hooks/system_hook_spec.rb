@@ -18,7 +18,7 @@
 
 require "spec_helper"
 
-describe SystemHook do
+describe SystemHook, models: true do
   describe "execute" do
     before(:each) do
       @system_hook = create(:system_hook)

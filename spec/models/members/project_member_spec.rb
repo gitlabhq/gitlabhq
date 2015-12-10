@@ -19,7 +19,7 @@
 
 require 'spec_helper'
 
-describe ProjectMember do
+describe ProjectMember, models: true do
   describe :import_team do
     before do
       @abilities = Six.new

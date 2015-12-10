@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Markdown::UploadLinkFilter do
+describe Gitlab::Markdown::UploadLinkFilter, lib: true do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       project: project

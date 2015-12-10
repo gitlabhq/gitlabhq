@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::CommitReferenceFilter do
+describe Gitlab::Markdown::CommitReferenceFilter, lib: true do
   include FilterSpecHelper
 
   let(:project) { create(:project, :public) }

@@ -32,7 +32,7 @@ GitHub will generate an application ID and secret key for you to use.
       sudo editor /etc/gitlab/gitlab.rb
     ```
 
-    For instalations from source:
+    For installations from source:
 
     ```sh
       cd /home/git/gitlab

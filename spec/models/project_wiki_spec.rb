@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProjectWiki do
+describe ProjectWiki, models: true do
   let(:project) { create(:empty_project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }

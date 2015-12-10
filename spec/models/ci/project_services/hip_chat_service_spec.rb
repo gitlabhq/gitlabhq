@@ -15,7 +15,7 @@
 
 require 'spec_helper'
 
-describe Ci::HipChatService do
+describe Ci::HipChatService, models: true do
 
   describe "Validations" do
 

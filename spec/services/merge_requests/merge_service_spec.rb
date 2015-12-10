@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::MergeService do
+describe MergeRequests::MergeService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, assignee: user2) }
@@ -13,12 +13,13 @@ describe MergeRequests::MergeService do
 
   describe :execute do
     context 'valid params' do
-      let(:service) { MergeRequests::MergeService.new(project, user, {}) }
+      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
 
       before do
         allow(service).to receive(:execute_hooks)
+
         perform_enqueued_jobs do
-          service.execute(merge_request, 'Awesome message')
+          service.execute(merge_request)
         end
       end
 
@@ -38,14 +39,14 @@ describe MergeRequests::MergeService do
     end
 
     context "error handling" do
-      let(:service) { MergeRequests::MergeService.new(project, user, {}) }
+      let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
 
       it 'saves error if there is an exception' do
         allow(service).to receive(:repository).and_raise("error")
 
         allow(service).to receive(:execute_hooks)
 
-        service.execute(merge_request, 'Awesome message')
+        service.execute(merge_request)
 
         expect(merge_request.merge_error).to eq("Something went wrong during merge")
       end

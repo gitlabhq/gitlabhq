@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::UpdateService do
+describe MergeRequests::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }

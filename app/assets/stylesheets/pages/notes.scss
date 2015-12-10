@@ -109,13 +109,9 @@ ul.notes {
           }
         }
 
-        // Reduce left padding of first task list ul element
-        ul.task-list:first-child {
-          padding-left: 10px;
-
-          // sub-tasks should be padded normally
-          ul {
-            padding-left: 20px;
+        ul.task-list {
+          ul:not(.task-list) {
+            padding-left: 1.3em;
           }
         }
 

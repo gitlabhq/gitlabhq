@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Access do
+describe Gitlab::LDAP::Access, lib: true do
   let(:access) { Gitlab::LDAP::Access.new user }
   let(:user) { create(:omniauth_user) }
 

@@ -58,7 +58,7 @@ module CiStatusHelper
   def render_ci_status(ci_commit)
     link_to ci_status_path(ci_commit),
       class: "c#{ci_status_color(ci_commit)}",
-      title: "Build status: #{ci_status_label(ci_commit)}",
+      title: "Build #{ci_status_label(ci_commit)}",
       data: { toggle: 'tooltip', placement: 'left' } do
       ci_status_icon(ci_commit)
     end

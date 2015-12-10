@@ -10,7 +10,7 @@ To enable the Crowd OmniAuth provider you must register your application with Cr
       sudo editor /etc/gitlab/gitlab.rb
     ```
 
-    For instalations from source:
+    For installations from source:
 
     ```sh
       cd /home/git/gitlab

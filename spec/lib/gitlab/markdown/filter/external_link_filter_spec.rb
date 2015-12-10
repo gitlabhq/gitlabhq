@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::ExternalLinkFilter do
+describe Gitlab::Markdown::ExternalLinkFilter, lib: true do
   include FilterSpecHelper
 
   it 'ignores elements without an href attribute' do

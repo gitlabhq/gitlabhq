@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Grack::Auth do
+describe Grack::Auth, lib: true do
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
 

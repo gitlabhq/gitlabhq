@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::EmojiFilter do
+describe Gitlab::Markdown::EmojiFilter, lib: true do
   include FilterSpecHelper
 
   before do

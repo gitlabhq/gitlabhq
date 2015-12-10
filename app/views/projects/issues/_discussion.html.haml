@@ -17,7 +17,7 @@
       .input-group.cross-project-reference
         %span#cross-project-reference.slead.has_tooltip{title: 'Cross-project reference'}
           = cross_project_reference(@project, @issue)
-        = clipboard_button(clipboard_target: '#cross-project-reference')
+        = clipboard_button(clipboard_target: 'span#cross-project-reference')
 
 .row
   %section.col-md-9

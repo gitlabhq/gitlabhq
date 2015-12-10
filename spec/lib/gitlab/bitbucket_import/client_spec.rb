@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BitbucketImport::Client do
+describe Gitlab::BitbucketImport::Client, lib: true do
   let(:token) { '123456' }
   let(:secret) { 'secret' }
   let(:client) { Gitlab::BitbucketImport::Client.new(token, secret) }

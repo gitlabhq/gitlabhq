@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NotificationService do
+describe NotificationService, services: true do
   let(:notification) { NotificationService.new }
 
   around(:each) do |example|

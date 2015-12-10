@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SlackService::PushMessage do
+describe SlackService::PushMessage, models: true do
   subject { SlackService::PushMessage.new(args) }
 
   let(:args) do

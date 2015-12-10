@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::RedactorFilter do
+describe Gitlab::Markdown::RedactorFilter, lib: true do
   include ActionView::Helpers::UrlHelper
   include FilterSpecHelper
 

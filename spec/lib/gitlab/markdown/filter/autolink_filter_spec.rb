@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::AutolinkFilter do
+describe Gitlab::Markdown::AutolinkFilter, lib: true do
   include FilterSpecHelper
 
   let(:link) { 'http://about.gitlab.com/' }

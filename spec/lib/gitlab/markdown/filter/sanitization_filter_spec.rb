@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::SanitizationFilter do
+describe Gitlab::Markdown::SanitizationFilter, lib: true do
   include FilterSpecHelper
 
   describe 'default whitelist' do

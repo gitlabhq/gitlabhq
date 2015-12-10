@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::ExternalIssueReferenceFilter do
+describe Gitlab::Markdown::ExternalIssueReferenceFilter, lib: true do
   include FilterSpecHelper
 
   def helper

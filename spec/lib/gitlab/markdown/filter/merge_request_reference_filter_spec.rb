@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::MergeRequestReferenceFilter do
+describe Gitlab::Markdown::MergeRequestReferenceFilter, lib: true do
   include FilterSpecHelper
 
   let(:project) { create(:project, :public) }

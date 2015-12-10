@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ci
-  describe RegisterBuildService do
+  describe RegisterBuildService, services: true do
     let!(:service) { RegisterBuildService.new }
     let!(:gl_project) { FactoryGirl.create :empty_project }
     let!(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }

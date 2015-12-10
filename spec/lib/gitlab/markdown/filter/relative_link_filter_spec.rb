@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Markdown::RelativeLinkFilter do
+describe Gitlab::Markdown::RelativeLinkFilter, lib: true do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       commit:         project.commit,

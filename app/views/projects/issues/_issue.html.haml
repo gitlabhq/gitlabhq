@@ -6,23 +6,26 @@
   .issue-title
     %span.issue-title-text
       = link_to_gfm issue.title, issue_path(issue), class: "row_title"
-    .pull-right.light
+    %ul.controls.light
       - if issue.closed?
-        %span
+        %li
           CLOSED
+
       - if issue.assignee
-        = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
+        %li
+          = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
+
       - note_count = issue.notes.user.count
       - if note_count > 0
-        &nbsp;
-        = link_to issue_path(issue) + "#notes" do
-          = icon('comments')
-          = note_count
+        %li
+          = link_to issue_path(issue) + "#notes" do
+            = icon('comments')
+            = note_count
       - else
-        &nbsp;
-        = link_to issue_path(issue) + "#notes", class: "issue-no-comments" do
-          = icon('comments')
-          = 0
+        %li
+          = link_to issue_path(issue) + "#notes", class: "issue-no-comments" do
+            = icon('comments')
+            = note_count
 
   .issue-info
     #{issue.to_reference} &middot;

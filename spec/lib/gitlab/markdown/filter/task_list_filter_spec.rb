@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::TaskListFilter do
+describe Gitlab::Markdown::TaskListFilter, lib: true do
   include FilterSpecHelper
 
   it 'does not apply `task-list` class to non-task lists' do
