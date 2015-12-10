@@ -27,6 +27,7 @@ v 8.3.0 (unreleased)
   - Improve wording on project visibility levels (Zeger-Jan van de Weg)
   - Automatically select default clone protocol based on user preferences (Eirik Lygre)
   - Make Network page as sub tab of Commits
+  - Prevent possible XSS attack with award-emoji
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
