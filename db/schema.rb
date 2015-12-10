@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151204123933) do
+ActiveRecord::Schema.define(version: 20151210125932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -655,9 +655,10 @@ ActiveRecord::Schema.define(version: 20151204123933) do
     t.string   "import_source"
     t.integer  "commit_count",           default: 0
     t.text     "import_error"
+    t.integer  "ci_id"
     t.boolean  "builds_enabled",         default: true,     null: false
     t.boolean  "shared_runners_enabled", default: true,     null: false
-    t.string   "token"
+    t.string   "runners_token"
     t.string   "build_coverage_regex"
     t.boolean  "build_allow_git_fetch",  default: true,     null: false
     t.integer  "build_timeout",          default: 3600,     null: false
@@ -665,13 +666,14 @@ ActiveRecord::Schema.define(version: 20151204123933) do
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
   add_index "projects", ["builds_enabled"], name: "index_projects_on_builds_enabled", using: :btree
+  add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
+  add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
-  add_index "projects", ["token"], name: "index_projects_on_token", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branches", force: :cascade do |t|
