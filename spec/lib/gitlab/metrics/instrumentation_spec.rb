@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Instrumentation do
+  let(:transaction) { Gitlab::Metrics::Transaction.new }
+
   before do
     @dummy = Class.new do
       def self.foo(text = 'foo')
@@ -31,9 +33,13 @@ describe Gitlab::Metrics::Instrumentation do
         expect(@dummy.foo).to eq('foo')
       end
 
-      it 'fires an ActiveSupport notification upon calling the method' do
-        expect(ActiveSupport::Notifications).to receive(:instrument).
-          with('class_method.method_call', module: 'Dummy', name: :foo)
+      it 'tracks the call duration upon calling the method' do
+        allow(Gitlab::Metrics::Instrumentation).to receive(:transaction).
+          and_return(transaction)
+
+        expect(transaction).to receive(:add_metric).
+          with(described_class::SERIES, an_instance_of(Hash),
+               method: 'Dummy.foo')
 
         @dummy.foo
       end
@@ -69,9 +75,13 @@ describe Gitlab::Metrics::Instrumentation do
         expect(@dummy.new.bar).to eq('bar')
       end
 
-      it 'fires an ActiveSupport notification upon calling the method' do
-        expect(ActiveSupport::Notifications).to receive(:instrument).
-          with('instance_method.method_call', module: 'Dummy', name: :bar)
+      it 'tracks the call duration upon calling the method' do
+        allow(Gitlab::Metrics::Instrumentation).to receive(:transaction).
+          and_return(transaction)
+
+        expect(transaction).to receive(:add_metric).
+          with(described_class::SERIES, an_instance_of(Hash),
+               method: 'Dummy#bar')
 
         @dummy.new.bar
       end
