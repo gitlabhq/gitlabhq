@@ -8,7 +8,7 @@ before_script:
   - touch log/application.log
   - touch log/test.log
   - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
-  - bundle exec rake db:create RAILS_ENV=test
+  - bundle exec rake db:reset db:create RAILS_ENV=test
 
 spec:feature:
   script:
