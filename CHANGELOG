@@ -1,7 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
-  - Merge when build succeeds (Zeger-Jan van de Weg)
+  - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
   - Bump gollum-lib to 4.1.0 (Stan Hu)
   - Fix broken group avatar upload under "New group" (Stan Hu)
   - Update project repositorize size and commit count during import:repos task (Stan Hu)
@@ -28,6 +28,13 @@ v 8.3.0 (unreleased)
   - Automatically select default clone protocol based on user preferences (Eirik Lygre)
   - Make Network page as sub tab of Commits
   - Add copy-to-clipboard button for Snippets
+  - Add indication to merge request list item that MR cannot be merged automatically
+  - Default target branch to patch-n when editing file in protected branch
+  - Add Builds tab to merge request detail page
+  - Allow milestones, issues and MRs to be created from dashboard and group indexes
+  - Use new style for wiki
+  - Use new style for milestone detail page
+  - Fix sidebar tooltips when collapsed
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
