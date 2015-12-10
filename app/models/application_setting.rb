@@ -27,6 +27,7 @@
 #  admin_notification_email     :string(255)
 #  shared_runners_enabled       :boolean          default(TRUE), not null
 #  max_artifacts_size           :integer          default(100), not null
+#  runners_registration_token   :string(255)
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -128,5 +129,4 @@ class ApplicationSetting < ActiveRecord::Base
         /x)
     self.restricted_signup_domains.reject! { |d| d.empty? }
   end
-
 end
