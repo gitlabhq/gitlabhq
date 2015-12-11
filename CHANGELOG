@@ -40,6 +40,7 @@ v 8.3.0 (unreleased)
   - Fix sidebar tooltips when collapsed
   - Prevent possible XSS attack with award-emoji
   - Upgraded Sidekiq to 4.x
+  - Fix deleting notes on a merge request diff
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
