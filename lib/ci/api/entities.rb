@@ -37,15 +37,6 @@ module Ci
         expose :id, :token
       end
 
-      class Project < Grape::Entity
-        expose :id, :name, :token, :default_ref, :gitlab_url, :path,
-          :always_build, :polling_interval, :public, :ssh_url_to_repo, :gitlab_id
-
-        expose :timeout do |model|
-          model.timeout
-        end
-      end
-
       class RunnerProject < Grape::Entity
         expose :id, :project_id, :runner_id
       end

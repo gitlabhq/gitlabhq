@@ -131,7 +131,7 @@ describe Ci::API::API do
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:get_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:headers) { { "GitLab-Workhorse" => "1.0" } }
-      let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.project.token) }
+      let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token) }
 
       describe "POST /builds/:id/artifacts/authorize" do
         context "should authorize posting artifact to running build" do
@@ -140,7 +140,7 @@ describe Ci::API::API do
           end
 
           it "using token as parameter" do
-            post authorize_url, { token: build.project.token }, headers
+            post authorize_url, { token: build.token }, headers
             expect(response.status).to eq(200)
             expect(json_response["TempPath"]).to_not be_nil
           end
@@ -159,7 +159,7 @@ describe Ci::API::API do
 
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
-            post authorize_url, { token: build.project.token, filesize: 100 }, headers
+            post authorize_url, { token: build.token, filesize: 100 }, headers
             expect(response.status).to eq(413)
           end
 
@@ -239,7 +239,7 @@ describe Ci::API::API do
             end
 
             it do
-              post post_url, { token: build.project.token }, {}
+              post post_url, { token: build.token }, {}
               expect(response.status).to eq(403)
             end
           end
@@ -279,12 +279,12 @@ describe Ci::API::API do
       describe "DELETE /builds/:id/artifacts" do
         before do
           build.run!
-          post delete_url, token: build.project.token, file: file_upload
+          post delete_url, token: build.token, file: file_upload
         end
 
         it "should delete artifact build" do
           build.success
-          delete delete_url, token: build.project.token
+          delete delete_url, token: build.token
           expect(response.status).to eq(200)
         end
       end
@@ -296,12 +296,12 @@ describe Ci::API::API do
 
         it "should download artifact" do
           build.update_attributes(artifacts_file: file_upload)
-          get get_url, token: build.project.token
+          get get_url, token: build.token
           expect(response.status).to eq(200)
         end
 
         it "should fail to download if no artifact uploaded" do
-          get get_url, token: build.project.token
+          get get_url, token: build.token
           expect(response.status).to eq(404)
         end
       end

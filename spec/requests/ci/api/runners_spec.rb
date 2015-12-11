@@ -31,7 +31,7 @@ describe Ci::API::API do
 
     describe "should create a runner if project token provided" do
       let(:project) { FactoryGirl.create(:empty_project) }
-      before { post ci_api("/runners/register"), token: project.token }
+      before { post ci_api("/runners/register"), token: project.runners_token }
 
       it { expect(response.status).to eq(201) }
       it { expect(project.runners.size).to eq(1) }

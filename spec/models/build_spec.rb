@@ -111,7 +111,7 @@ describe Ci::Build, models: true do
       let(:token) { 'my_secret_token' }
 
       before do
-        build.project.update_attributes(token: token)
+        build.project.update_attributes(runners_token: token)
         build.update_attributes(trace: token)
       end
 

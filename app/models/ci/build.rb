@@ -194,7 +194,7 @@ module Ci
     def trace
       trace = raw_trace
       if project && trace.present?
-        trace.gsub(project.token, 'xxxxxx')
+        trace.gsub(project.runners_token, 'xxxxxx')
       else
         trace
       end
@@ -221,7 +221,7 @@ module Ci
     end
 
     def token
-      project.token
+      project.runners_token
     end
 
     def valid_token? token

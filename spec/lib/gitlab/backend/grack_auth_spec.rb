@@ -191,10 +191,10 @@ describe Grack::Auth, lib: true do
 
         context "when a gitlab ci token is provided" do
           let(:token) { "123" }
-          let(:project) { FactoryGirl.create :empty_project, token: token }
+          let(:project) { FactoryGirl.create :empty_project }
 
           before do
-            project.update_attributes(token: token, builds_enabled: true)
+            project.update_attributes(runners_token: token, builds_enabled: true)
 
             env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials("gitlab-ci-token", token)
           end

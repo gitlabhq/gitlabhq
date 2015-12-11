@@ -98,13 +98,13 @@ describe Project, models: true do
   
   describe 'project token' do
     it 'should set an random token if none provided' do
-      project = FactoryGirl.create :empty_project, token: ''
-      expect(project.token).not_to eq('')
+      project = FactoryGirl.create :empty_project, runners_token: ''
+      expect(project.runners_token).not_to eq('')
     end
 
     it 'should not set an random toke if one provided' do
-      project = FactoryGirl.create :empty_project, token: 'my-token'
-      expect(project.token).to eq('my-token')
+      project = FactoryGirl.create :empty_project, runners_token: 'my-token'
+      expect(project.runners_token).to eq('my-token')
     end
   end
 
