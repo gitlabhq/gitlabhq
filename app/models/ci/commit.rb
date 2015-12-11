@@ -53,7 +53,7 @@ module Ci
     end
 
     def valid_commit_sha
-      if self.sha == Ci::Git::BLANK_SHA
+      if self.sha == Gitlab::Git::BLANK_SHA
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
       end
     end
