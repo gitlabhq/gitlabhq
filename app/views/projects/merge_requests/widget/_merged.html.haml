@@ -33,7 +33,7 @@
         .remove_source_branch_in_progress.hide
           %p
             = icon('spinner spin')
-            Removing source branch '#{@merge_request.source_branch}'. Please wait. This page will be automatically reload.
+            Removing source branch '#{@merge_request.source_branch}'. Please wait, this page will be automatically reloaded.
 
         :javascript
           $('.remove_source_branch').on('click', function() {
