@@ -13,7 +13,7 @@ describe User, 'TokenAuthenticatable' do
   let(:token_field) { :authentication_token }
   it_behaves_like 'TokenAuthenticatable'
 
-  describe 'ensured authentication token' do
+  describe 'ensures authentication token' do
     subject { create(:user).send(token_field) }
     it { is_expected.to be_a String }
   end
@@ -29,6 +29,13 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
 
     context 'token is not generated yet' do
       it { expect(token).to be nil }
+
+      describe 'ensured token' do
+        subject { described_class.new.send("ensure_#{token_field}") }
+
+        it { is_expected.to be_a String }
+        it { is_expected.to_not be_blank }
+      end
     end
 
     context 'token is generated' do

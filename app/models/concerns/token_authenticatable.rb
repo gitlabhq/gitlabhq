@@ -17,8 +17,12 @@ module TokenAuthenticatable
       end
 
       define_method("ensure_#{token_field}") do
-        write_attribute(token_field, generate_token_for(token_field)) if
-          read_attribute(token_field).blank?
+        current_token = read_attribute(token_field)
+        if current_token.blank?
+          write_attribute(token_field, generate_token_for(token_field))
+        else
+          current_token
+        end
       end
 
       define_method("reset_#{token_field}!") do
