@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (2.3.2)
+    RedCloth (4.2.9)
     ace-rails-ap (2.0.1)
     actionmailer (4.2.4)
       actionpack (= 4.2.4)
@@ -826,6 +827,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  RedCloth (~> 4.2.9)
   ace-rails-ap (~> 2.0.1)
   activerecord-deprecated_finders (~> 1.0.3)
   activerecord-session_store (~> 0.1.0)
