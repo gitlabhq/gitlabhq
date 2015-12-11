@@ -59,85 +59,17 @@ module Emails
            subject: subject("Project was moved"))
     end
 
-    def repository_push_email(project_id, recipient,  author_id: nil, 
-                                                      ref: nil, 
-                                                      action: nil, 
-                                                      compare: nil, 
-                                                      reverse_compare: false, 
-                                                      send_from_committer_email: false, 
-                                                      disable_diffs: false)
-      unless author_id && ref && action
-        raise ArgumentError, "missing keywords: author_id, ref, action"
-      end
+    def repository_push_email(project_id, recipient, opts = {})
+      @message =
+        Gitlab::Email::Message::RepositoryPush.new(self, project_id, recipient, opts)
 
-      @project = Project.find(project_id)
-      @current_user = @author  = User.find(author_id)
-      @reverse_compare = reverse_compare
-      @compare = compare
-      @ref_name  = Gitlab::Git.ref_name(ref)
-      @ref_type  = Gitlab::Git.tag_ref?(ref) ? "tag" : "branch"
-      @action  = action
-      @disable_diffs = disable_diffs
+      # used in notify layout
+      @target_url = @message.target_url
 
-      if @compare
-        @commits = Commit.decorate(compare.commits, @project)
-        @diffs   = compare.diffs
-      end
-
-      @action_name = 
-        case action
-        when :create
-          "pushed new"
-        when :delete
-          "deleted"
-        else
-          "pushed to"
-        end
-
-      @subject = "[Git]"
-      @subject << "[#{@project.path_with_namespace}]"
-      @subject << "[#{@ref_name}]" if action == :push
-      @subject << " "
-
-      if action == :push
-        if @commits.length > 1
-          @target_url = namespace_project_compare_url(@project.namespace,
-                                                      @project,
-                                                      from: Commit.new(@compare.base, @project),
-                                                      to:   Commit.new(@compare.head, @project))
-          @subject << "Deleted " if @reverse_compare
-          @subject << "#{@commits.length} commits: #{@commits.first.title}"
-        else
-          @target_url = namespace_project_commit_url(@project.namespace,
-                                                     @project, @commits.first)
-
-          @subject << "Deleted 1 commit: " if @reverse_compare
-          @subject << @commits.first.title
-        end
-      else
-        unless action == :delete
-          @target_url = namespace_project_tree_url(@project.namespace,
-                                                   @project, @ref_name)
-        end
-
-        subject_action = @action_name.dup
-        subject_action[0] = subject_action[0].capitalize
-        @subject << "#{subject_action} #{@ref_type} #{@ref_name}"
-      end
-
-      @disable_footer = true
-
-      reply_to = 
-        if send_from_committer_email && can_send_from_user_email?(@author)
-          @author.email
-        else
-          Gitlab.config.gitlab.email_reply_to
-        end
-
-      mail(from:      sender(author_id, send_from_committer_email),
-           reply_to:  reply_to,
-           to:        recipient,
-           subject:   @subject)
+      mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
+           reply_to:  @message.reply_to,
+           to:        @message.recipient,
+           subject:   @message.subject)
     end
   end
 end

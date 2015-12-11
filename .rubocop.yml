@@ -735,21 +735,37 @@ Metrics/AbcSize:
   Description: >-
                  A calculated magnitude based on number of assignments,
                  branches, and conditions.
-  Enabled: false
-
-Metrics/BlockNesting:
-  Description: 'Avoid excessive block nesting'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#three-is-the-number-thou-shalt-count'
-  Enabled: false
-
-Metrics/ClassLength:
-  Description: 'Avoid classes longer than 100 lines of code.'
-  Enabled: false
+  Enabled: true
+  Max: 70
 
 Metrics/CyclomaticComplexity:
   Description: >-
                  A complexity metric that is strongly correlated to the number
                  of test cases needed to validate a method.
+  Enabled: true
+  Max: 17
+
+Metrics/PerceivedComplexity:
+  Description: >-
+                 A complexity metric geared towards measuring complexity for a
+                 human reader.
+  Enabled: true
+  Max: 17
+
+Metrics/ParameterLists:
+  Description: 'Avoid parameter lists longer than three or four parameters.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#too-many-params'
+  Enabled: true
+  Max: 8
+
+Metrics/BlockNesting:
+  Description: 'Avoid excessive block nesting'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#three-is-the-number-thou-shalt-count'
+  Enabled: true
+  Max: 4
+
+Metrics/ClassLength:
+  Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: false
 
 Metrics/LineLength:
@@ -760,17 +776,6 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#short-methods'
-  Enabled: false
-
-Metrics/ParameterLists:
-  Description: 'Avoid parameter lists longer than three or four parameters.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#too-many-params'
-  Enabled: false
-
-Metrics/PerceivedComplexity:
-  Description: >-
-                 A complexity metric geared towards measuring complexity for a
-                 human reader.
   Enabled: false
 
 #################### Lint ################################
