@@ -211,6 +211,25 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I delete the comment "Line is wrong" on diff' do
+    page.within('.diff-file:nth-of-type(5) .note') do
+      find('.js-note-delete').click
+    end
+  end
+
+  step 'I click on the Discussion tab' do
+    page.within '.merge-request-tabs' do
+      click_link 'Discussion'
+    end
+
+    # Waits for load
+    expect(page).to have_css('.tab-content #notes.active')
+  end
+
+  step 'I should not see any discussion' do
+    expect(page).not_to have_css('.notes .discussion')
+  end
+
   step 'I should see a discussion has started on diff' do
     page.within(".notes .discussion") do
       page.should have_content "#{current_user.name} started a discussion"
