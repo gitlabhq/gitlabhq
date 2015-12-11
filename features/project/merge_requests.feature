@@ -95,6 +95,16 @@ Feature: Project Merge Requests
     And I should see a diff comment saying "Typo, please fix"
 
   @javascript
+  Scenario: I delete a comment on a merge request diff
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I click on the Changes tab
+    And I leave a comment like "Line is wrong" on diff
+    And I delete the comment "Line is wrong" on diff
+    And I click on the Discussion tab
+    Then I should not see any discussion
+
+  @javascript
   Scenario: I comment on a line of a commit in merge request
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
