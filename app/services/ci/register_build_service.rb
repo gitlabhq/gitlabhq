@@ -11,7 +11,7 @@ module Ci
           builds.joins(:project).where(projects: { builds_enabled: true, shared_runners_enabled: true })
         else
           # do run projects which are only assigned to this runner
-          builds.where(project: current_runner.projects)
+          builds.where(project: current_runner.projects.where(builds_enabled: true))
         end
 
       builds = builds.order('created_at ASC')
