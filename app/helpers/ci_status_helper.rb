@@ -52,7 +52,7 @@ module CiStatusHelper
         'circle'
       end
 
-    icon(icon_name)
+    icon(icon_name + ' fw')
   end
 
   def render_ci_status(ci_commit)
