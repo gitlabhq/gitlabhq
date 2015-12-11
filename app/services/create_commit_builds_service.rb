@@ -26,4 +26,3 @@ class CreateCommitBuildsService
     commit
   end
 end
-

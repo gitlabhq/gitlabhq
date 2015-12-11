@@ -77,7 +77,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition [:pending, :running] => :success do |build, transition|
-      MergeRequests::MergeWhenBuildSucceedsService.new(build.commit.gl_project, nil).trigger(build)
+      MergeRequests::MergeWhenBuildSucceedsService.new(build.commit.project, nil).trigger(build)
     end
 
     state :pending, value: 'pending'

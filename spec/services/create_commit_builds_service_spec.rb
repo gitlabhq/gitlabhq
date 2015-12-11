@@ -168,4 +168,3 @@ describe CreateCommitBuildsService, services: true do
     end
   end
 end
-
