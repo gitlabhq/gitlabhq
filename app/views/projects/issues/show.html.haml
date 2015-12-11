@@ -53,8 +53,6 @@
             .merge-requests
               = render 'merge_requests'
 
-            = render 'votes/votes_block', votable: @issue
-
         - if @closed_by_merge_requests.present?
           = render 'projects/issues/closed_by_box'
         .issue-discussion

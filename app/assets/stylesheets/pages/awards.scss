@@ -1,7 +1,6 @@
 .awards {
   @include clearfix;
   line-height: 34px;
-  margin-top: $gl-padding;
 
   .award {
     @include border-radius(5px);
