@@ -101,19 +101,14 @@
 
 // Nav tabs
 .nav.nav-tabs {
-  margin-bottom: 15px;
-
+  border: none;
   li {
     > a {
-      margin-right: 5px;
       line-height: 20px;
-      border-color: #EEE;
       color: #888;
-      border-bottom: 1px solid #ddd;
       .badge {
-        background-color: #eee;
+
         color: #888;
-        text-shadow: 0 1px 1px #fff;
       }
       i.fa {
         line-height: 14px;
@@ -121,8 +116,6 @@
     }
     &.active {
       > a {
-        border-color: #CCC;
-        border-bottom: 1px solid #fff;
         color: #333;
         font-weight: bold;
       }
@@ -133,6 +126,7 @@
 .nav-tabs > li > a,
 .nav-pills > li > a {
   color: #666;
+  padding: 0;
 }
 
 .nav-pills > .active > a > span > .badge {

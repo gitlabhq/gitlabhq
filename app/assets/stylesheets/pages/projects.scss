@@ -278,16 +278,12 @@
 
 ul.nav.nav-projects-tabs {
   @extend .nav-tabs;
-
   padding-left: 8px;
 
   li {
     a {
-      padding: 6px 25px;
       margin-top: 2px;
-      border-color: #DDD;
       background-color: #EEE;
-      text-shadow: 0 1px 1px white;
       color: #555;
     }
     &.active {
