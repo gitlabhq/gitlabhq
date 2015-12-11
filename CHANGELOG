@@ -46,6 +46,7 @@ v 8.3.0 (unreleased)
   - Fix emoji aliases problem
   - Fix award-emojis Flash alert's width
   - Fix deleting notes on a merge request diff
+  - Display referenced merge request statuses in the issue description (Greg Smethells)
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
