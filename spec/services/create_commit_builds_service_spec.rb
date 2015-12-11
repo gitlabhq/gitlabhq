@@ -20,11 +20,11 @@ describe CreateCommitBuildsService, services: true do
         )
       end
 
-      it { expect(commit).to be_kind_of(Commit) }
+      it { expect(commit).to be_kind_of(Ci::Commit) }
       it { expect(commit).to be_valid }
       it { expect(commit).to be_persisted }
       it { expect(commit).to eq(project.ci_commits.last) }
-      it { expect(commit.builds.first).to be_kind_of(Build) }
+      it { expect(commit.builds.first).to be_kind_of(Ci::Build) }
     end
 
     context "skip tag if there is no build for it" do

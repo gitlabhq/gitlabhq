@@ -386,7 +386,7 @@ describe Ci::Build, models: true do
     it { is_expected.to be_a(String) }
     it { is_expected.to end_with(".git") }
     it { is_expected.to start_with(project.web_url[0..6]) }
-    it { is_expected.to include(project.token) }
+    it { is_expected.to include(build.token) }
     it { is_expected.to include('gitlab-ci-token') }
     it { is_expected.to include(project.web_url[7..-1]) }
   end

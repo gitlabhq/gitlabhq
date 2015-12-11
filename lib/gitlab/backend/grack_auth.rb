@@ -78,7 +78,7 @@ module Grack
         underscored_service = matched_login['s'].underscore
 
         if underscored_service == 'gitlab_ci'
-          return project && project.builds_enabled? && project.valid_build_token?(password)
+          return project && project.valid_build_token?(password)
         elsif Service.available_services_names.include?(underscored_service)
           service_method = "#{underscored_service}_service"
           service = project.send(service_method)
