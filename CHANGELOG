@@ -24,6 +24,7 @@ v 8.5.0 (unreleased)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
   - Optimized performance of finding issues to be closed by a merge request
   - Revert "Add IP check against DNSBLs at account sign-up"
+  - Actually use the `skip_merges` option in Repository#commits (Tony Chu)
   - Fix API to keep request parameters in Link header (Michael Potthoff)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
