@@ -12,5 +12,5 @@ class @Flash
     @flash.click -> $(@).fadeOut()
     @flash.show()
 
-  pin: ->
-    @flash.addClass('flash-pinned flash-raised')
+  pinTo: (selector) ->
+    @flash.detach().appendTo(selector)
