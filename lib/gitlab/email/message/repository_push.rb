@@ -5,6 +5,8 @@ module Gitlab
         attr_accessor :recipient
         attr_reader :author_id, :ref, :action
 
+        include Gitlab::Application.routes.url_helpers
+
         delegate :namespace, :name_with_namespace, to: :project, prefix: :project
         delegate :name, to: :author, prefix: :author
 
@@ -16,7 +18,6 @@ module Gitlab
           @project_id = project_id
           @recipient = recipient
           @opts = opts.dup
-          @urls = Gitlab::Application.routes.url_helpers
 
           @author_id = @opts.delete(:author_id)
           @ref = @opts.delete(:ref)
@@ -86,18 +87,18 @@ module Gitlab
         def target_url
           if @action == :push && commits
             if commits.length > 1
-              @urls.namespace_project_compare_url(project_namespace,
-                                                  project,
-                                                  from: Commit.new(compare.base, project),
-                                                  to:   Commit.new(compare.head, project))
+              namespace_project_compare_url(project_namespace,
+                                            project,
+                                            from: Commit.new(compare.base, project),
+                                            to:   Commit.new(compare.head, project))
             else
-              @urls.namespace_project_commit_url(project_namespace,
-                                                 project, commits.first)
+              namespace_project_commit_url(project_namespace,
+                                           project, commits.first)
             end
           else
             unless @action == :delete
-              @urls.namespace_project_tree_url(project_namespace,
-                                               project, ref_name)
+              namespace_project_tree_url(project_namespace,
+                                         project, ref_name)
             end
           end
         end
