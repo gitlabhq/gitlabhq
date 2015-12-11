@@ -5,9 +5,9 @@ class @IssuableContext
     new UsersSelect()
     $('select.select2').select2({width: 'resolve', dropdownAutoWidth: true})
 
-    $(".context .inline-update").on "change", "select", ->
+    $(".issuable-sidebar .inline-update").on "change", "select", ->
       $(this).submit()
-    $(".context .inline-update").on "change", ".js-assignee", ->
+    $(".issuable-sidebar .inline-update").on "change", ".js-assignee", ->
       $(this).submit()
 
     $('.issuable-details').waitForImages ->
@@ -18,6 +18,12 @@ class @IssuableContext
 
       $('.issuable-affix').affix offset:
         top: ->
-          @top = ($('.issuable-affix').offset().top - 70)
+          @top = ($('.issuable-affix').offset().top - 60)
         bottom: ->
           @bottom = $('.footer').outerHeight(true)
+
+    $(".edit-link").click (e) ->
+      block = $(@).parents('.block')
+      block.find('.selectbox').show()
+      block.find('.value').hide()
+      block.find('.js-select2').select2("open")

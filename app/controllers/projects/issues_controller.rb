@@ -58,7 +58,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    @participants = @issue.participants(current_user)
     @note = @project.notes.new(noteable: @issue)
     @notes = @issue.notes.nonawards.with_associations.fresh
     @noteable = @issue

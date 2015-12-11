@@ -7,71 +7,79 @@
 .merge-request{'data-url' => merge_request_path(@merge_request)}
   .merge-request-details.issuable-details
     = render "projects/merge_requests/show/mr_title"
-    = render "projects/merge_requests/show/mr_box"
-    .append-bottom-default.mr-source-target.prepend-top-default
-      - if @merge_request.open?
-        .pull-right
-          - if @merge_request.source_branch_exists?
-            = link_to "#modal_merge_info", class: "btn btn-sm", "data-toggle" => "modal" do
-              = icon('cloud-download fw')
-              Check out branch
+    .row
+      %section.col-md-9
+        = render "projects/merge_requests/show/mr_box"
+        .append-bottom-default.mr-source-target.prepend-top-default
+          - if @merge_request.open?
+            .pull-right
+              - if @merge_request.source_branch_exists?
+                = link_to "#modal_merge_info", class: "btn btn-sm", "data-toggle" => "modal" do
+                  = icon('cloud-download fw')
+                  Check out branch
 
-          %span.dropdown
-            %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
-              = icon('download')
-              Download as
-              %span.caret
-            %ul.dropdown-menu
-              %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
-              %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
-      .normal
-        %span Request to merge
-        %span.label-branch= source_branch_with_namespace(@merge_request)
-        %span into
-        = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
-          = @merge_request.target_branch
+              %span.dropdown
+                %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
+                  = icon('download')
+                  Download as
+                  %span.caret
+                %ul.dropdown-menu
+                  %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
+                  %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)
+          .normal
+            %span Request to merge
+            %span.label-branch= source_branch_with_namespace(@merge_request)
+            %span into
+            = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
+              = @merge_request.target_branch
 
-    = render "projects/merge_requests/show/how_to_merge"
-    = render "projects/merge_requests/widget/show.html.haml"
+        = render "projects/merge_requests/show/how_to_merge"
+        = render "projects/merge_requests/widget/show.html.haml"
 
-    - if @merge_request.open? && @merge_request.source_branch_exists? && @merge_request.can_be_merged? && @merge_request.can_be_merged_by?(current_user)
-      .light.prepend-top-default
-        You can also accept this merge request manually using the
-        = succeed '.' do
-          = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
+        - if @merge_request.open? && @merge_request.source_branch_exists? && @merge_request.can_be_merged? && @merge_request.can_be_merged_by?(current_user)
+          .light.prepend-top-default
+            You can also accept this merge request manually using the
+            = succeed '.' do
+              = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
-  - if @commits.present?
-    %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
-      %li.notes-tab
-        = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
-          Discussion
-          %span.badge= @merge_request.mr_and_commit_notes.user.count
-      %li.commits-tab
-        = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
-          Commits
-          %span.badge= @commits.size
-      %li.diffs-tab
-        = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
-          Changes
-          %span.badge= @merge_request.diffs.size
-      - if @ci_commit
-        %li.builds-tab
-          = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
-            Builds
-            %span.badge= @statuses.size
+        - if @commits.present?
+          %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
+            %li.notes-tab
+              = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
+                Discussion
+                %span.badge= @merge_request.mr_and_commit_notes.user.count
+            %li.commits-tab
+              = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
+                Commits
+                %span.badge= @commits.size
+            %li.diffs-tab
+              = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
+                Changes
+                %span.badge= @merge_request.diffs.size
+            - if @ci_commit
+              %li.builds-tab
+                = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
+                  Builds
+                  %span.badge= @statuses.size
 
-  .tab-content
-    #notes.notes.tab-pane.voting_notes
-      = render "projects/merge_requests/discussion"
-    #commits.commits.tab-pane
-      - # This tab is always loaded via AJAX
-    #diffs.diffs.tab-pane
-      - # This tab is always loaded via AJAX
-    #builds.builds.tab-pane
-      - # This tab is always loaded via AJAX
+        .tab-content
+          #notes.notes.tab-pane.voting_notes
+            = render "projects/merge_requests/discussion"
+          #commits.commits.tab-pane
+            - # This tab is always loaded via AJAX
+          #diffs.diffs.tab-pane
+            - # This tab is always loaded via AJAX
+          #builds.builds.tab-pane
+            - # This tab is always loaded via AJAX
 
-  .mr-loading-status
-    = spinner
+        .mr-loading-status
+          = spinner
+
+      %aside.col-md-3
+        = render 'shared/issuable/sidebar', issuable: @merge_request
+
+      = render 'shared/show_aside'
+
 
 :javascript
   var merge_request;

@@ -18,23 +18,9 @@
 
     &.affix {
       position: fixed;
-      top: 70px;
+      top: 60px;
       margin-right: 35px;
     }
-  }
-}
-
-.issuable-context-title {
-  margin-bottom: 5px;
-
-  .avatar {
-    margin-left: 0;
-  }
-
-  label {
-    color: $gl-gray;
-    font-weight: normal;
-    margin-right: 4px;
   }
 }
 
@@ -50,23 +36,6 @@
 }
 
 .issuable-details {
-  .page-title {
-    margin-top: -$gl-padding;
-    padding: 7px 0;
-    margin-bottom: 0;
-    color: #5c5d5e;
-    font-size: 16px;
-    line-height: 42px;
-
-    .author {
-      color: #5c5d5e;
-    }
-
-    .issue-id {
-      color: #5c5d5e;
-    }
-  }
-
   .issue-title {
     margin: 0;
     font-size: 23px;
@@ -78,6 +47,21 @@
 
     p:last-child {
       margin-bottom: 0;
+    }
+  }
+
+  section {
+    border-right: 1px solid #ECEEF1;
+
+    > .tab-content {
+      margin-right: 1px;
+    }
+
+    .issue-discussion > .gray-content-block,
+    > .gray-content-block {
+      margin-top: 0;
+      border-top: none;
+      margin-right: -15px;
     }
   }
 }
@@ -101,84 +85,72 @@
   }
 }
 
-.cross-project-reference {
-  text-align: center;
-  width: 100%;
+.issuable-sidebar {
+  .block {
+    @include clearfix;
+    padding:  $gl-padding 0;
+    border-bottom: 1px solid #F0F0F0;
 
-  .slead {
-    padding: 5px;
+    &:last-child {
+      border: none;
+    }
   }
 
-  span, button {
-    background-color: $background-color;
+  .title {
+    color: $gl-text-color;
+    margin-bottom: 8px;
+
+    .avatar {
+      margin-left: 0;
+    }
+
+    label {
+      font-weight: normal;
+      margin-right: 4px;
+    }
+
+    .edit-link {
+      color: $gl-gray;
+    }
+  }
+
+  .cross-project-reference {
+    font-weight: bold;
+    color: $gl-link-color;
+
+    button {
+      float: right;
+    }
+  }
+
+  .selectbox {
+    display: none
+  }
+
+  .btn-clipboard {
+    color: $gl-gray;
+  }
+
+  .participants .avatar {
+    margin-top: 6px;
+    margin-right: 2px;
   }
 }
 
-.awards {
-  @include clearfix;
-  line-height: 34px;
-  margin: 2px 0;
+.issuable-title {
+  margin: -$gl-padding;
+  padding: 7px $gl-padding;
+  margin-bottom: 0px;
+  border-bottom: 1px solid $border-color;
+  color: #5c5d5e;
+  font-size: 16px;
+  line-height: 42px;
 
-  .award {
-    @include border-radius(5px);
-
-    border: 1px solid;
-    padding: 0px 10px;
-    float: left;
-    margin: 0 5px;
-    border-color: $border-color;
-    cursor: pointer;
-
-    &.active {
-      border-color: $border-gray-light;
-      background-color: $gray-light;
-
-      .counter {
-        font-weight: bold;
-      }
-    }
-
-    .icon {
-      float: left;
-      margin-right: 10px;
-    }
-
-    .counter {
-      float: left;
-    }
+  .author {
+    color: #5c5d5e;
   }
 
-  .awards-controls {
-    margin-left: 10px;
-    float: left;
-
-    .add-award {
-      font-size: 24px;
-      color: $gl-gray;
-      position: relative;
-      top: 2px;
-
-      &:hover,
-      &:link {
-        text-decoration: none;
-      }
-    }
-
-    .awards-menu {
-      padding: $gl-padding;
-      min-width: 214px;
-
-      > li {
-        cursor: pointer;
-        margin: 5px;
-      }
-    }
-  }
-
-  .awards-menu{
-    li {
-      float: left;
-      margin: 3px;
-    }
+  .issuable-id {
+    color: #5c5d5e;
   }
 }
