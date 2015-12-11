@@ -19,7 +19,8 @@
     post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
     noteable_type = "#{votable.class.name.underscore}"
     noteable_id = "#{votable.id}"
-    window.awards_handler = new AwardsHandler(post_emoji_url, noteable_type, noteable_id)
+    aliases = #{AwardEmoji::ALIASES.to_json}
+    window.awards_handler = new AwardsHandler(post_emoji_url, noteable_type, noteable_id, aliases)
 
     $(".awards-menu li").click (e)->
       emoji = $(this).data("emoji")
