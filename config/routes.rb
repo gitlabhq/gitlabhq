@@ -188,7 +188,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
       resources :keys, only: [:show, :destroy]
-      resources :identities, only: [:index, :edit, :update, :destroy]
+      resources :identities, except: [:show]
 
       delete 'stop_impersonation' => 'impersonation#destroy', on: :collection
 
