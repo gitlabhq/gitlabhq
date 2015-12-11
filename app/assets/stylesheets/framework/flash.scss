@@ -15,13 +15,3 @@
     @extend .alert-danger;
   }
 }
-
-.flash-pinned {
-  position: fixed;
-  top: 80px;
-  width: 80%;
-}
-
-.flash-raised {
-  z-index: 1000;
-}

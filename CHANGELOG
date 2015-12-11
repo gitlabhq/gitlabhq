@@ -44,6 +44,7 @@ v 8.3.0 (unreleased)
   - Upgraded Sidekiq to 4.x
   - Accept COPYING,COPYING.lesser, and licence as license file (Zeger-Jan van de Weg)
   - Fix emoji aliases problem
+  - Fix award-emojis Flash alert's width
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
