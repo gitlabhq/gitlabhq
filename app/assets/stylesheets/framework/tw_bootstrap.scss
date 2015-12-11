@@ -116,6 +116,7 @@
     }
     &.active {
       > a {
+        border: none;
         color: #333;
         font-weight: bold;
       }
@@ -127,6 +128,7 @@
 .nav-pills > li > a {
   color: #666;
   padding: 0;
+  border: none;
 }
 
 .nav-pills > .active > a > span > .badge {
