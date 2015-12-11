@@ -1,11 +1,13 @@
 class @AwardsHandler
-  constructor: (@post_emoji_url, @noteable_type, @noteable_id) ->
+  constructor: (@post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
 
   addAward: (emoji) ->
+    emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
       @addAwardToEmojiBar(emoji)
     
   addAwardToEmojiBar: (emoji, custom_path = '') ->
+    emoji = @normilizeEmojiName(emoji)
     if @exist(emoji)
       if @isActive(emoji)
         @decrementCounter(emoji)
@@ -94,3 +96,6 @@ class @AwardsHandler
     $('body, html').animate({
       scrollTop: $('.awards').offset().top - 80
     }, 200)
+
+  normilizeEmojiName: (emoji) ->
+    @aliases[emoji] || emoji
