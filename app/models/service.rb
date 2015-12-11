@@ -31,7 +31,6 @@ class Service < ActiveRecord::Base
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
   default_value_for :build_events, true
-  default_value_for :properties, {}
 
   after_initialize :initialize_properties
 

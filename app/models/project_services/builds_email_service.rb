@@ -24,7 +24,12 @@ class BuildsEmailService < Service
   boolean_accessor :notify_only_broken_builds
   validates :recipients, presence: true, if: :activated?
 
-  default_value_for :notify_only_broken_builds, true
+  def initialize_properties
+    if properties.nil?
+      self.properties = {}
+      self.notify_only_broken_builds = true
+    end
+  end
 
   def title
     'Builds emails'
