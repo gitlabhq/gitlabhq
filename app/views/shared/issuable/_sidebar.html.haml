@@ -4,14 +4,14 @@
       .title
         Cross-project reference
       .cross-project-reference
-        %span#cross-project-reference.has_tooltip{title: 'Cross-project reference'}
+        %span#cross-project-reference
           = cross_project_reference(@project, issuable)
         = clipboard_button(clipboard_target: 'span#cross-project-reference')
 
     .block.assignee
       .title
         %label
-          Assignee:
+          Assignee
         - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
           .pull-right
             = link_to 'Edit', '#', class: 'edit-link'
@@ -19,7 +19,7 @@
         - if issuable.assignee
           %strong= link_to_member(@project, issuable.assignee, size: 24)
         - else
-          None
+          .light None
 
       .selectbox
         = users_select_tag("#{issuable.class.table_name.singularize}[assignee_id]", placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: issuable.assignee_id, project: @target_project, null_user: true, current_user: true, first_user: true)
@@ -27,7 +27,7 @@
     .block.milestone
       .title
         %label
-          Milestone:
+          Milestone
         - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
           .pull-right
             = link_to 'Edit', '#', class: 'edit-link'
@@ -39,7 +39,7 @@
                 = icon('clock-o')
                 = issuable.milestone.title
         - else
-          None
+          .light None
       .selectbox
         = f.select(:milestone_id, milestone_options(issuable), { include_blank: true }, { class: 'select2 select2-compact js-select2 js-milestone', data: { placeholder: 'Select milestone' }})
         = hidden_field_tag :issuable_context
@@ -57,7 +57,7 @@
             - issuable.labels.each do |label|
               = link_to_label(label)
           - else
-            None
+            .light None
         .selectbox
           = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
             { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }

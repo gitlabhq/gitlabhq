@@ -18,7 +18,7 @@
 
     &.affix {
       position: fixed;
-      top: 70px;
+      top: 60px;
       margin-right: 35px;
     }
   }
@@ -128,6 +128,11 @@
 
   .btn-clipboard {
     color: $gl-gray;
+  }
+
+  .participants .avatar {
+    margin-top: 6px;
+    margin-right: 2px;
   }
 }
 
