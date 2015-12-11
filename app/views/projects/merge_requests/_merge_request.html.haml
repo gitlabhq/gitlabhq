@@ -5,7 +5,6 @@
     %ul.controls.light
       - if merge_request.merged?
         %li
-          = icon('check')
           MERGED
       - elsif merge_request.closed?
         %li
