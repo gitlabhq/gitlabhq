@@ -79,8 +79,7 @@ class BuildsEmailService < Service
   end
 
   def all_recipients(data)
-    all_recipients = []
-    all_recipients <<= recipients.split(',')
+    all_recipients = recipients.split(',')
 
     if add_pusher? && data[:user][:email]
       all_recipients << "#{data[:user][:email]}"
