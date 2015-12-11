@@ -209,7 +209,7 @@ describe 'Issues', feature: true do
           set project.team.members.first.id
         click_button 'Update Issue'
 
-        expect(page).to have_content 'Assignee:'
+        expect(page).to have_content 'Assignee'
         has_select?('issue_assignee_id',
                     selected: project.team.members.first.name)
       end
