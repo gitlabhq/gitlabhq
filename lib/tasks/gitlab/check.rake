@@ -331,7 +331,7 @@ namespace :gitlab do
     end
 
     def check_redis_version
-      min_redis_version = "2.4.0"
+      min_redis_version = "2.8.0"
       print "Redis version >= #{min_redis_version}? ... "
 
       redis_version = run(%W(redis-cli --version))
