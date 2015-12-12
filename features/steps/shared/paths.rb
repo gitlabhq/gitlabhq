@@ -259,6 +259,10 @@ module SharedPaths
     visit namespace_project_deploy_keys_path(@project.namespace, @project)
   end
 
+  step 'I visit project find file page' do
+    visit namespace_project_find_file_path(@project.namespace, @project, root_ref)
+  end
+
   # ----------------------------------------
   # "Shop" Project
   # ----------------------------------------

@@ -434,6 +434,18 @@ describe Projects::TreeController, 'routing' do
   end
 end
 
+# project_find_file GET /:namespace_id/:project_id/find_file/*id(.:format)  projects/find_file#show {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/html/}
+# project_files     GET /:namespace_id/:project_id/files/*id(.:format)      projects/find_file#list {:id=>/(?:[^.]|\.(?!json$))+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/json/}
+describe Projects::FindFileController, 'routing' do
+  it 'to #show' do
+    expect(get('/gitlab/gitlabhq/find_file/master')).to route_to('projects/find_file#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
+  end
+
+  it 'to #list' do
+    expect(get('/gitlab/gitlabhq/files/master.json')).to route_to('projects/find_file#list', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
+  end
+end
+
 describe Projects::BlobController, 'routing' do
   it 'to #edit' do
     expect(get('/gitlab/gitlabhq/edit/master/app/models/project.rb')).to(
