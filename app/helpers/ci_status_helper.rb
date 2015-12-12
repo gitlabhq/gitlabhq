@@ -12,19 +12,6 @@ module CiStatusHelper
     ci_label_for_status(ci_commit.status)
   end
 
-  def ci_status_color(ci_commit)
-    case ci_commit.status
-    when 'success'
-      'green'
-    when 'failed'
-      'red'
-    when 'running', 'pending'
-      'yellow'
-    else
-      'gray'
-    end
-  end
-
   def ci_status_with_icon(status)
     content_tag :span, class: "ci-status ci-#{status}" do
       ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
@@ -56,11 +43,10 @@ module CiStatusHelper
   end
 
   def render_ci_status(ci_commit)
-    link_to ci_status_path(ci_commit),
-      class: "c#{ci_status_color(ci_commit)}",
+    link_to ci_status_icon(ci_commit),
+      ci_status_path(ci_commit),
+      class: "ci-status-icon-#{ci_commit.status.dasherize}",
       title: "Build #{ci_status_label(ci_commit)}",
-      data: { toggle: 'tooltip', placement: 'left' } do
-      ci_status_icon(ci_commit)
-    end
+      data: { toggle: 'tooltip', placement: 'left' }
   end
 end
