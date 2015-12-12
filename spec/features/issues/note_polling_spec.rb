@@ -9,10 +9,8 @@ feature 'Issue notes polling' do
   end
 
   scenario 'Another user adds a comment to an issue', js: true do
-    note = create(:note_on_issue, noteable: issue,
-                  project_id: project.project_id,
-                  note: 'Looks good!')
-    sleep 16 # refresh interval in notes.js.coffee, 15 seconds
+    note = create(:note_on_issue, noteable: issue, note: 'Looks good!')
+    sleep 15 # refresh interval in notes.js.coffee is 15 seconds
     expect(page).to have_selector("#note_#{note.id}", text: 'Looks good!')
   end
 end
