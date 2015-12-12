@@ -825,4 +825,8 @@ class Project < ActiveRecord::Base
       forked_project_link.destroy
     end
   end
+
+  def open_issues_count
+    issues.opened.count
+  end
 end

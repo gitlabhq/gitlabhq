@@ -153,11 +153,15 @@ describe Project, models: true do
 
   describe '#get_issue' do
     let(:project) { create(:empty_project) }
-    let(:issue)   { create(:issue, project: project) }
+    let!(:issue)  { create(:issue, project: project) }
 
     context 'with default issues tracker' do
       it 'returns an issue' do
         expect(project.get_issue(issue.iid)).to eq issue
+      end
+
+      it 'returns count of open issues' do
+        expect(project.open_issues_count).to eq(1)
       end
 
       it 'returns nil when no issue found' do
