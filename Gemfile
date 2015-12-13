@@ -215,7 +215,7 @@ group :development do
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'
   gem 'quiet_assets', '~> 1.0.2'
-  gem 'rerun', '~> 0.10.0'
+  gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
   gem 'rblineprof', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
