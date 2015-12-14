@@ -13,25 +13,30 @@ module Gitlab
         def sql(event)
           return unless current_transaction
 
-          sql    = ObfuscatedSQL.new(event.payload[:sql]).to_s
           values = values_for(event)
+          tags   = tags_for(event)
 
-          current_transaction.add_metric(SERIES, values, sql: sql)
+          current_transaction.add_metric(SERIES, values, tags)
         end
 
         private
 
         def values_for(event)
-          values = { duration: event.duration }
+          { duration: event.duration }
+        end
+
+        def tags_for(event)
+          sql  = ObfuscatedSQL.new(event.payload[:sql]).to_s
+          tags = { sql: sql }
 
           file, line = Metrics.last_relative_application_frame
 
           if file and line
-            values[:file] = file
-            values[:line] = line
+            tags[:file] = file
+            tags[:line] = line
           end
 
-          values
+          tags
         end
 
         def current_transaction

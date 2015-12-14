@@ -21,10 +21,15 @@ describe Gitlab::Metrics::Subscribers::ActionView do
 
   describe '#render_template' do
     it 'tracks rendering of a template' do
-      values = { duration: 2.1, file: 'app/views/x.html.haml', line: 4 }
+      values = { duration: 2.1 }
+      tags   = {
+        view: 'app/views/x.html.haml',
+        file: 'app/views/x.html.haml',
+        line: 4
+      }
 
       expect(transaction).to receive(:add_metric).
-        with(described_class::SERIES, values, path: 'app/views/x.html.haml')
+        with(described_class::SERIES, values, tags)
 
       subscriber.render_template(event)
     end

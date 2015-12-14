@@ -16,10 +16,10 @@ module Gitlab
         private
 
         def track(event)
-          path   = relative_path(event.payload[:identifier])
           values = values_for(event)
+          tags   = tags_for(event)
 
-          current_transaction.add_metric(SERIES, values, path: path)
+          current_transaction.add_metric(SERIES, values, tags)
         end
 
         def relative_path(path)
@@ -27,16 +27,21 @@ module Gitlab
         end
 
         def values_for(event)
-          values = { duration: event.duration }
+          { duration: event.duration }
+        end
+
+        def tags_for(event)
+          path = relative_path(event.payload[:identifier])
+          tags = { view: path }
 
           file, line = Metrics.last_relative_application_frame
 
           if file and line
-            values[:file] = file
-            values[:line] = line
+            tags[:file] = file
+            tags[:line] = line
           end
 
-          values
+          tags
         end
 
         def current_transaction

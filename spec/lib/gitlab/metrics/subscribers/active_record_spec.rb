@@ -19,11 +19,12 @@ describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
   describe '#sql' do
     it 'tracks the execution of a SQL query' do
-      values = { duration: 0.2, file: 'app/models/foo.rb', line: 4 }
       sql    = 'SELECT * FROM users WHERE id = ?'
+      values = { duration: 0.2 }
+      tags   = { sql: sql, file: 'app/models/foo.rb', line: 4 }
 
       expect(transaction).to receive(:add_metric).
-        with(described_class::SERIES, values, sql: sql)
+        with(described_class::SERIES, values, tags)
 
       subscriber.sql(event)
     end
