@@ -51,6 +51,9 @@ v 8.3.0 (unreleased)
   - Display referenced merge request statuses in the issue description (Greg Smethells)
   - Implement new sidebar for issue and merge request pages
   - Emoji picker improvements
+  - Suppress warning about missing `.gitlab-ci.yml` if builds are disabled
+  - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
+  - Persist runners registration token in database
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
