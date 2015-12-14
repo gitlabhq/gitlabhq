@@ -405,7 +405,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step '"Bug NS-05" has CI status' do
     project = merge_request.source_project
     project.enable_ci
-    ci_commit = create :ci_commit, gl_project: project, sha: merge_request.last_commit.id
+    ci_commit = create :ci_commit, project: project, sha: merge_request.last_commit.id
     create :ci_build, commit: ci_commit
   end
 

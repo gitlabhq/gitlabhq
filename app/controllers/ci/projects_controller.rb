@@ -3,13 +3,12 @@ module Ci
     before_action :project, except: [:index]
     before_action :authenticate_user!, except: [:index, :build, :badge]
     before_action :authorize_access_project!, except: [:index, :badge]
-    before_action :authorize_manage_project!, only: [:toggle_shared_runners, :dumped_yaml]
     before_action :no_cache, only: [:badge]
     protect_from_forgery
 
     def show
       # Temporary compatibility with CI badges pointing to CI project page
-      redirect_to namespace_project_path(project.gl_project.namespace, project.gl_project)
+      redirect_to namespace_project_path(project.namespace, project)
     end
 
     # Project status badge
@@ -20,16 +19,10 @@ module Ci
       send_file image.path, filename: image.name, disposition: 'inline', type:"image/svg+xml"
     end
 
-    def toggle_shared_runners
-      project.toggle!(:shared_runners_enabled)
-
-      redirect_to namespace_project_runners_path(project.gl_project.namespace, project.gl_project)
-    end
-
     protected
 
     def project
-      @project ||= Ci::Project.find(params[:id])
+      @project ||= Project.find_by(ci_id: params[:id].to_i)
     end
 
     def no_cache

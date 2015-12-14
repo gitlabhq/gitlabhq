@@ -9,12 +9,11 @@ describe 'Commits' do
     before do
       login_as :user
       project.team << [@user, :master]
-      project.ensure_gitlab_ci_project
       stub_ci_commit_to_return_yaml_file
     end
 
     let!(:commit) do
-      FactoryGirl.create :ci_commit, gl_project: project, sha: project.commit.sha
+      FactoryGirl.create :ci_commit, project: project, sha: project.commit.sha
     end
 
     let!(:build) { FactoryGirl.create :ci_build, commit: commit }
@@ -89,7 +88,7 @@ describe 'Commits' do
     end
 
     describe '.gitlab-ci.yml not found warning' do
-      context 'ci service enabled' do
+      context 'ci builds enabled' do
         it "does not show warning" do
           visit ci_status_path(commit)
           expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
@@ -102,9 +101,9 @@ describe 'Commits' do
         end
       end
 
-      context 'ci service disabled' do
+      context 'ci builds disabled' do
         before do
-          stub_ci_service_disabled
+          stub_ci_builds_disabled
           stub_ci_commit_yaml_file(nil)
           visit ci_status_path(commit)
         end

@@ -15,10 +15,10 @@
         - if runner.belongs_to_one_project?
           = link_to 'Remove runner', runner_path(runner), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
         - else
-          - runner_project = @ci_project.runner_projects.find_by(runner_id: runner)
-          = link_to 'Disable for this project', [:ci, @ci_project, runner_project], data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
+          - runner_project = @project.runner_projects.find_by(runner_id: runner)
+          = link_to 'Disable for this project', namespace_project_runner_project_path(@project.namespace, @project, runner_project), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-danger btn-sm'
       - elsif runner.specific?
-        = form_for [:ci, @ci_project, @ci_project.runner_projects.new] do |f|
+        = form_for [@project.namespace, @project, @project.runner_projects.new] do |f|
           = f.hidden_field :runner_id, value: runner.id
           = f.submit 'Enable for this project', class: 'btn btn-sm'
   .pull-right

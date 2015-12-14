@@ -10,6 +10,9 @@ class SlackService
       format(message)
     end
 
+    def fallback
+    end
+
     def attachments
       raise NotImplementedError
     end

@@ -104,7 +104,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'commit has ci status' do
     @project.enable_ci
-    ci_commit = create :ci_commit, gl_project: @project, sha: sample_commit.id
+    ci_commit = create :ci_commit, project: @project, sha: sample_commit.id
     create :ci_build, commit: ci_commit
   end
 

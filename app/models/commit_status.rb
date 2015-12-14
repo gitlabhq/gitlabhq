@@ -30,6 +30,7 @@
 class CommitStatus < ActiveRecord::Base
   self.table_name = 'ci_builds'
 
+  belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
   belongs_to :commit, class_name: 'Ci::Commit'
   belongs_to :user
 
@@ -76,7 +77,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition [:pending, :running] => :success do |build, transition|
-      MergeRequests::MergeWhenBuildSucceedsService.new(build.commit.gl_project, nil).trigger(build)
+      MergeRequests::MergeWhenBuildSucceedsService.new(build.commit.project, nil).trigger(build)
     end
 
     state :pending, value: 'pending'
@@ -86,8 +87,7 @@ class CommitStatus < ActiveRecord::Base
     state :canceled, value: 'canceled'
   end
 
-  delegate :sha, :short_sha, :gl_project,
-           to: :commit, prefix: false
+  delegate :sha, :short_sha, to: :commit, prefix: false
 
   # TODO: this should be removed with all references
   def before_sha

@@ -6,13 +6,12 @@ describe "Variables" do
 
   describe "specific runners" do
     before do
-      @project = FactoryGirl.create :ci_project
-      @gl_project = @project.gl_project
-      @gl_project.team << [user, :master]
+      @project = FactoryGirl.create :empty_project
+      @project.team << [user, :master]
     end
 
     it "creates variable", js: true do
-      visit namespace_project_variables_path(@gl_project.namespace, @gl_project)
+      visit namespace_project_variables_path(@project.namespace, @project)
       click_on "Add a variable"
       fill_in "Key", with: "SECRET_KEY"
       fill_in "Value", with: "SECRET_VALUE"

@@ -21,8 +21,8 @@ module StubGitlabCalls
     allow_any_instance_of(Ci::Commit).to receive(:ci_yaml_file) { ci_yaml }
   end
 
-  def stub_ci_service_disabled
-    allow_any_instance_of(GitlabCiService).to receive(:active).and_return(false)
+  def stub_ci_builds_disabled
+    allow_any_instance_of(Project).to receive(:builds_enabled?).and_return(false)
   end
 
   private

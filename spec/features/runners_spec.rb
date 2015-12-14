@@ -8,14 +8,14 @@ describe "Runners" do
 
   describe "specific runners" do
     before do
-      @project = FactoryGirl.create :ci_project
-      @project.gl_project.team << [user, :master]
+      @project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      @project.team << [user, :master]
 
-      @project2 = FactoryGirl.create :ci_project
-      @project2.gl_project.team << [user, :master]
+      @project2 = FactoryGirl.create :empty_project
+      @project2.team << [user, :master]
 
-      @project3 = FactoryGirl.create :ci_project
-      @project3.gl_project.team << [user, :developer]
+      @project3 = FactoryGirl.create :empty_project
+      @project3.team << [user, :developer]
 
       @shared_runner = FactoryGirl.create :ci_shared_runner
       @specific_runner = FactoryGirl.create :ci_specific_runner
@@ -25,7 +25,7 @@ describe "Runners" do
       @project2.runners << @specific_runner2
       @project3.runners << @specific_runner3
 
-      visit runners_path(@project.gl_project)
+      visit runners_path(@project)
     end
 
     before do
@@ -49,7 +49,7 @@ describe "Runners" do
 
     it "disables specific runner for project" do
       @project2.runners << @specific_runner
-      visit runners_path(@project.gl_project)
+      visit runners_path(@project)
 
       within ".activated-specific-runners" do
         click_on "Disable for this project"
@@ -69,9 +69,9 @@ describe "Runners" do
 
   describe "shared runners" do
     before do
-      @project = FactoryGirl.create :ci_project
-      @project.gl_project.team << [user, :master]
-      visit runners_path(@project.gl_project)
+      @project = FactoryGirl.create :empty_project, shared_runners_enabled: false
+      @project.team << [user, :master]
+      visit runners_path(@project)
     end
 
     it "enables shared runners" do
@@ -82,14 +82,14 @@ describe "Runners" do
 
   describe "show page" do
     before do
-      @project = FactoryGirl.create :ci_project
-      @project.gl_project.team << [user, :master]
+      @project = FactoryGirl.create :empty_project
+      @project.team << [user, :master]
       @specific_runner = FactoryGirl.create :ci_specific_runner
       @project.runners << @specific_runner
     end
 
     it "shows runner information" do
-      visit runners_path(@project.gl_project)
+      visit runners_path(@project)
       click_on @specific_runner.short_sha
       expect(page).to have_content(@specific_runner.platform)
     end

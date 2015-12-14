@@ -31,7 +31,6 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def builds
-    @ci_project = @project.gitlab_ci_project
   end
 
   def cancel_builds
