@@ -9,7 +9,7 @@
 - cache_key.push(ci_commit.status) if ci_commit
 
 = cache(cache_key) do
-  %li.commit.js-toggle-container
+  %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     .commit-row-title
       %strong.str-truncated
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
@@ -17,7 +17,7 @@
           %a.text-expander.js-toggle-button ...
 
       .pull-right
-        - if ci_commit
+        - if ci_commit && ci_commit.show_build_status?
           = render_ci_status(ci_commit)
           &nbsp;
         = clipboard_button(clipboard_text: commit.id)

@@ -19,7 +19,36 @@ describe 'Commits' do
 
     let!(:build) { FactoryGirl.create :ci_build, commit: commit }
 
-    describe 'GET /:project/commits/:sha/ci' do
+    describe 'Project commits' do
+      context 'builds enabled' do
+        context '.gitlab-ci.yml found' do
+          before do
+            visit namespace_project_commits_path(project.namespace, project, :master)
+          end
+
+          it 'should show build status' do
+            page.within("//li[@id='commit-#{commit.short_sha}']") do
+              expect(page).to have_css(".ci-status-link")
+            end
+          end
+        end
+
+        context 'no .gitlab-ci.yml found' do
+          before do
+            stub_ci_commit_yaml_file(nil)
+            visit namespace_project_commits_path(project.namespace, project, :master)
+          end
+
+          it 'should not show build status' do
+            page.within("//li[@id='commit-#{commit.short_sha}']") do
+              expect(page).to have_no_css(".ci-status-link")
+            end
+          end
+        end
+      end
+    end
+
+    describe 'Commit builds' do
       before do
         visit ci_status_path(commit)
       end
