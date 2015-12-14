@@ -25,7 +25,11 @@ class MigrateCiEmails < ActiveRecord::Migration
 
   # This function escapes double-quotes and slash
   def escape_text(name)
-    "REPLACE(REPLACE(#{name}, '\\', '\\\\'), '\"', '\\\"')"
+    if Gitlab::Database.postgresql?
+      "REPLACE(REPLACE(#{name}, '\\', '\\\\'), '\"', '\\\"')"
+    else
+      "REPLACE(REPLACE(#{name}, '\\\\', '\\\\\\\\'), '\\\"', '\\\\\\\"')"
+    end
   end
 
   # This function returns 0 or 1 for column
