@@ -60,7 +60,7 @@
                   = project.name_with_namespace
               %td
                 .pull-right
-                  = link_to 'Disable', [:admin, project.namespace, project, runner_project], method: :delete, class: 'btn btn-danger btn-xs'
+                  = link_to 'Disable', [:admin, project.namespace.becomes(Namespace), project, runner_project], method: :delete, class: 'btn btn-danger btn-xs'
 
     %table.table
       %thead
