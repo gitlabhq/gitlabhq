@@ -27,11 +27,11 @@ class MigrateCiToProject < ActiveRecord::Migration
   def migrate_project_column(column, new_column = nil)
     new_column ||= column
     subquery = "SELECT ci_projects.#{column} FROM ci_projects WHERE projects.id = ci_projects.gitlab_id"
-    execute("UPDATE projects SET #{new_column}=(#{subquery}) WHERE #{new_column} IS NULL AND (#{subquery}) IS NOT NULL")
+    execute("UPDATE projects SET #{new_column}=(#{subquery}) WHERE (#{subquery}) IS NOT NULL")
   end
 
   def migrate_ci_service
-    subquery = "SELECT active FROM services WHERE projects.id = services.project_id AND type='GitlabCiService'"
-    execute("UPDATE projects SET builds_enabled=(#{subquery}) WHERE builds_enabled IS NULL AND (#{subquery}) IS NOT NULL")
+    subquery = "SELECT active FROM services WHERE projects.id = services.project_id AND type='GitlabCiService' LIMIT 1"
+    execute("UPDATE projects SET builds_enabled=(#{subquery}) WHERE (#{subquery}) IS NOT NULL")
   end
 end
