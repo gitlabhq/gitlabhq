@@ -29,6 +29,7 @@ Feature: Project Create
   Scenario: Empty project instructions with Kerberos enabled
     Given I sign in as a user
     Given KRB5 enabled
+    And I have an ssh key
     When I visit new project page
     And fill project form with valid data
     Then I see empty project instuctions
