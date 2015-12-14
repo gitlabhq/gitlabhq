@@ -76,7 +76,7 @@ Style/BlockEndNewline:
   Description: 'Put end statement of multiline block on its own line.'
   Enabled: true
 
-Style/Blocks:
+Style/BlockDelimiters:
   Description: >-
                 Avoid using {...} for multi-line blocks (multiline chaining is
                 always ugly).
@@ -230,6 +230,10 @@ Style/EndOfLine:
 Style/EvenOdd:
   Description: 'Favor the use of Fixnum#even? && Fixnum#odd?'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
+  Enabled: false
+
+Style/ExtraSpacing:
+  Description: 'Do not use unnecessary spacing.'
   Enabled: false
 
 Style/FileName:
@@ -429,6 +433,14 @@ Style/OneLineConditional:
 Style/OpMethod:
   Description: 'When defining binary operators, name the argument other.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#other-arg'
+  Enabled: false
+
+Style/ParallelAssignment:
+  Description: >-
+                  Check for simple usages of parallel assignment.
+                  It will only warn when the number of variables
+                  matches on both sides of the assignment.
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#parallel-assignment'
   Enabled: false
 
 Style/ParenthesesAroundCondition:
@@ -669,6 +681,13 @@ Style/TrailingWhitespace:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace'
   Enabled: false
 
+Style/TrailingUnderscoreVariable:
+  Description: >-
+                 Checks for the usage of unneeded trailing underscores at the
+                 end of parallel variable assignment.
+  AllowNamedUnderscoreVariables: true
+  Enabled: false
+
 Style/TrivialAccessors:
   Description: 'Prefer attr_* methods to trivial readers/writers.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
@@ -688,11 +707,6 @@ Style/UnneededCapitalW:
 Style/UnneededPercentQ:
   Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-q'
-  Enabled: false
-
-Style/UnneededPercentX:
-  Description: 'Checks for %x when `` would do.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-x'
   Enabled: false
 
 Style/VariableInterpolation:
@@ -776,6 +790,10 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#short-methods'
+  Enabled: false
+
+Metrics/ModuleLength:
+  Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: false
 
 #################### Lint ################################
@@ -985,6 +1003,12 @@ Rails/ReadWriteAttribute:
 
 Rails/ScopeArgs:
   Description: 'Checks the arguments of ActiveRecord scopes.'
+  Enabled: false
+
+Rails/TimeZone:
+  Description: 'Checks the correct usage of time zone aware methods.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#time'
+  Reference: 'http://danilenko.org/2012/7/6/rails_timezones'
   Enabled: false
 
 Rails/Validation:
