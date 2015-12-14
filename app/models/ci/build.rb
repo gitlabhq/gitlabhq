@@ -96,21 +96,21 @@ module Ci
     end
 
     state_machine :status, initial: :pending do
+      after_transition pending: :running do |build, transition|
+        build.execute_hooks
+      end
+
       after_transition any => [:success, :failed, :canceled] do |build, transition|
         return unless build.gl_project
 
         project = build.project
 
-        if project.web_hooks?
-          Ci::WebHookService.new.build_end(build)
-        end
-
-        build.commit.create_next_builds(build)
-        project.execute_services(build)
-
         if project.coverage_enabled?
           build.update_coverage
         end
+
+        build.commit.create_next_builds(build)
+        build.execute_hooks
       end
     end
 
@@ -273,6 +273,12 @@ module Ci
         Gitlab::Application.routes.url_helpers.
           download_namespace_project_build_path(gl_project.namespace, gl_project, self)
       end
+    end
+
+    def execute_hooks
+      build_data = Gitlab::BuildDataBuilder.build(self)
+      gl_project.execute_hooks(build_data.dup, :build_hooks)
+      gl_project.execute_services(build_data.dup, :build_hooks)
     end
 
     private

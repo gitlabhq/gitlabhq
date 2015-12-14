@@ -21,6 +21,7 @@ v 8.3.0 (unreleased)
   - Fire update hook from GitLab
   - Style warning about mentioning many people in a comment
   - Fix: sort milestones by due date once again (Greg Smethells)
+  - Migrate all CI::Services and CI::WebHooks to Services and WebHooks
   - Don't show project fork event as "imported"
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info

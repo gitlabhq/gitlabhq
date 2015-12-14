@@ -596,17 +596,6 @@ Rails.application.routes.draw do
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
         resource :ci_settings, only: [:edit, :update, :destroy]
-        resources :ci_web_hooks, only: [:index, :create, :destroy] do
-          member do
-            get :test
-          end
-        end
-
-        resources :ci_services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
-          member do
-            get :test
-          end
-        end
 
         resources :builds, only: [:index, :show] do
           collection do

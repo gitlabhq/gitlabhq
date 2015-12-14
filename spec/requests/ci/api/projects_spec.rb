@@ -58,57 +58,6 @@ describe Ci::API::API do
     end
   end
 
-  describe "POST /projects/:project_id/webhooks" do
-    let!(:project) { FactoryGirl.create(:ci_project) }
-
-    context "Valid Webhook URL" do
-      let!(:webhook) { { web_hook: "http://example.com/sth/1/ala_ma_kota" } }
-
-      before do
-        options.merge!(webhook)
-      end
-
-      it "should create webhook for specified project" do
-        project.gl_project.team << [user, :master]
-        post ci_api("/projects/#{project.id}/webhooks"), options
-        expect(response.status).to eq(201)
-        expect(json_response["url"]).to eq(webhook[:web_hook])
-      end
-
-      it "fails to create webhook for non existsing project" do
-        post ci_api("/projects/non-existant-id/webhooks"), options
-        expect(response.status).to eq(404)
-      end
-
-      it "non-manager is not authorized" do
-        post ci_api("/projects/#{project.id}/webhooks"), options
-        expect(response.status).to eq(401)
-      end
-    end
-
-    context "Invalid Webhook URL" do
-      let!(:webhook) { { web_hook: "ala_ma_kota" } }
-
-      before do
-        options.merge!(webhook)
-      end
-
-      it "fails to create webhook for not valid url" do
-        project.gl_project.team << [user, :master]
-        post ci_api("/projects/#{project.id}/webhooks"), options
-        expect(response.status).to eq(400)
-      end
-    end
-
-    context "Missed web_hook parameter" do
-      it "fails to create webhook for not provided url" do
-        project.gl_project.team << [user, :master]
-        post ci_api("/projects/#{project.id}/webhooks"), options
-        expect(response.status).to eq(400)
-      end
-    end
-  end
-
   describe "GET /projects/:id" do
     let!(:project) { FactoryGirl.create(:ci_project) }
 
@@ -155,28 +104,6 @@ describe Ci::API::API do
     it "non-manager is not authorized" do
       put ci_api("/projects/#{project.id}"), options
       expect(response.status).to eq(401)
-    end
-  end
-
-  describe "DELETE /projects/:id" do
-    let!(:project) { FactoryGirl.create(:ci_project) }
-
-    it "should delete a specific project" do
-      project.gl_project.team << [user, :master]
-      delete ci_api("/projects/#{project.id}"), options
-      expect(response.status).to eq(200)
-      expect { project.reload }.
-        to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it "non-manager is not authorized" do
-      delete ci_api("/projects/#{project.id}"), options
-      expect(response.status).to eq(401)
-    end
-
-    it "is getting not found error" do
-      delete ci_api("/projects/not-existing_id"), options
-      expect(response.status).to eq(404)
     end
   end
 

@@ -30,6 +30,7 @@ class Service < ActiveRecord::Base
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
+  default_value_for :build_events, true
 
   after_initialize :initialize_properties
 
@@ -47,6 +48,7 @@ class Service < ActiveRecord::Base
   scope :issue_hooks, -> { where(issues_events: true, active: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
+  scope :build_hooks, -> { where(build_events: true, active: true) }
 
   def activated?
     active
@@ -133,6 +135,21 @@ class Service < ActiveRecord::Base
     end
   end
 
+  # Provide convenient boolean accessor methods
+  # for each serialized property.
+  # Also keep track of updated properties in a similar way as ActiveModel::Dirty
+  def self.boolean_accessor(*args)
+    self.prop_accessor(*args)
+
+    args.each do |arg|
+      class_eval %{
+        def #{arg}?
+          ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(#{arg})
+        end
+      }
+    end
+  end
+
   # Returns a hash of the properties that have been assigned a new value since last save,
   # indicating their original values (attr => original value).
   # ActiveRecord does not provide a mechanism to track changes in serialized keys, 
@@ -163,6 +180,7 @@ class Service < ActiveRecord::Base
       assembla
       bamboo
       buildkite
+      builds_email
       campfire
       custom_issue_tracker
       drone_ci

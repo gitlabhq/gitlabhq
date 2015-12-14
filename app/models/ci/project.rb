@@ -35,16 +35,9 @@ module Ci
 
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
     has_many :runners, through: :runner_projects, class_name: 'Ci::Runner'
-    has_many :web_hooks, dependent: :destroy, class_name: 'Ci::WebHook'
     has_many :events, dependent: :destroy, class_name: 'Ci::Event'
     has_many :variables, dependent: :destroy, class_name: 'Ci::Variable'
     has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
-
-    # Project services
-    has_many :services, dependent: :destroy, class_name: 'Ci::Service'
-    has_one :hip_chat_service, dependent: :destroy, class_name: 'Ci::HipChatService'
-    has_one :slack_service, dependent: :destroy, class_name: 'Ci::SlackService'
-    has_one :mail_service, dependent: :destroy, class_name: 'Ci::MailService'
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -122,14 +115,6 @@ module Ci
       email_add_pusher || email_recipients.present?
     end
 
-    def web_hooks?
-      web_hooks.any?
-    end
-
-    def services?
-      services.any?
-    end
-
     def timeout_in_minutes
       timeout / 60
     end
@@ -148,32 +133,6 @@ module Ci
       auth = "gitlab-ci-token:#{token}@"
       http_url_to_repo.sub(/^https?:\/\//) do |prefix|
         prefix + auth
-      end
-    end
-
-    def available_services_names
-      %w(slack mail hip_chat)
-    end
-
-    def build_missing_services
-      available_services_names.each do |service_name|
-        service = services.find { |service| service.to_param == service_name }
-
-        # If service is available but missing in db
-        # we should create an instance. Ex `create_gitlab_ci_service`
-        self.send :"create_#{service_name}_service" if service.nil?
-      end
-    end
-
-    def execute_services(data)
-      services.each do |service|
-
-        # Call service hook only if it is active
-        begin
-          service.execute(data) if service.active && service.can_execute?(data)
-        rescue => e
-          logger.error(e)
-        end
       end
     end
 

@@ -178,6 +178,10 @@ module Ci
       duration_array.reduce(:+).to_i
     end
 
+    def started_at
+      @started_at ||= statuses.order('started_at ASC').first.try(:started_at)
+    end
+
     def finished_at
       @finished_at ||= statuses.order('finished_at DESC').first.try(:finished_at)
     end

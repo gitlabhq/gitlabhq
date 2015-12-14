@@ -34,11 +34,9 @@ describe Ci::Project, models: true do
 
   it { is_expected.to have_many(:runner_projects) }
   it { is_expected.to have_many(:runners) }
-  it { is_expected.to have_many(:web_hooks) }
   it { is_expected.to have_many(:events) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:triggers) }
-  it { is_expected.to have_many(:services) }
 
   it { is_expected.to validate_presence_of :timeout }
   it { is_expected.to validate_presence_of :gitlab_id }
