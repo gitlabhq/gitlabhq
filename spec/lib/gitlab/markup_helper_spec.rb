@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::MarkupHelper do
+describe Gitlab::MarkupHelper, lib: true do
   describe '#markup?' do
     %w(textile rdoc org creole wiki
        mediawiki rst adoc ad asciidoc mdown md markdown).each do |type|

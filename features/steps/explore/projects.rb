@@ -2,6 +2,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
+  include SharedUser
 
   step 'I should see project "Empty Public Project"' do
     expect(page).to have_content "Empty Public Project"

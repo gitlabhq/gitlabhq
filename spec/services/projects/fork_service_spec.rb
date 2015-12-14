@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ForkService do
+describe Projects::ForkService, services: true do
   describe :fork_by_user do
     before do
       @from_namespace = create(:namespace)

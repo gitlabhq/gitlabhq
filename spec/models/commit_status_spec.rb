@@ -33,7 +33,7 @@
 
 require 'spec_helper'
 
-describe CommitStatus do
+describe CommitStatus, models: true do
   let(:commit) { FactoryGirl.create :ci_commit }
   let(:commit_status) { FactoryGirl.create :commit_status, commit: commit }
 

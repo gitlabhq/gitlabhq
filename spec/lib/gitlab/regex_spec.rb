@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Gitlab::Regex do
+describe Gitlab::Regex, lib: true do
   describe 'project path regex' do
     it { expect('gitlab-ce').to match(Gitlab::Regex.project_path_regex) }
     it { expect('gitlab_git').to match(Gitlab::Regex.project_path_regex) }

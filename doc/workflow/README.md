@@ -26,5 +26,6 @@
 - [Merge Requests](merge_requests.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)
 - [Repository Mirroring](repository_mirroring.md)
+- [Merge When Build Succeeds](merge_when_build_succeeds.md)
 - [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
 

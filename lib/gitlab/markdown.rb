@@ -19,24 +19,21 @@ module Gitlab
     # context  - Hash of context options passed to our HTML Pipeline
     #
     # Returns an HTML-safe String
-    def self.render(markdown, context = {})
-      html = renderer.render(markdown)
-      html = gfm(html, context)
+    def self.render(text, context = {})
+      cache_key = context.delete(:cache_key)
+      cache_key = full_cache_key(cache_key, context[:pipeline])
 
-      html.html_safe
+      if cache_key
+        Rails.cache.fetch(cache_key) do
+          cacheless_render(text, context)
+        end
+      else
+        cacheless_render(text, context)
+      end
     end
 
-    # Convert a Markdown String into HTML without going through the HTML
-    # Pipeline.
-    #
-    # Note that because the pipeline is skipped, SanitizationFilter is as well.
-    # Do not output the result of this method to the user.
-    #
-    # markdown - Markdown String
-    #
-    # Returns a String
-    def self.render_without_gfm(markdown)
-      renderer.render(markdown)
+    def self.render_result(text, context = {})
+      Pipeline[context[:pipeline]].call(text, context)
     end
 
     # Perform post-processing on an HTML String
@@ -46,156 +43,73 @@ module Gitlab
     # permission to make (`RedactorFilter`).
     #
     # html     - String to process
-    # options  - Hash of options to customize output
+    # context  - Hash of options to customize output
     #            :pipeline  - Symbol pipeline type
     #            :project   - Project
     #            :user      - User object
     #
     # Returns an HTML-safe String
-    def self.post_process(html, options)
-      context = {
-        project:      options[:project],
-        current_user: options[:user]
-      }
-      doc = post_processor.to_document(html, context)
+    def self.post_process(html, context)
+      context = Pipeline[context[:pipeline]].transform_context(context)
 
-      if options[:pipeline] == :atom
-        doc.to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
+      pipeline = Pipeline[:post_process]
+      if context[:xhtml]
+        pipeline.to_document(html, context).to_html(save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML)
       else
-        doc.to_html
+        pipeline.to_html(html, context)
       end.html_safe
-    end
-
-    # Provide autoload paths for filters to prevent a circular dependency error
-    autoload :AutolinkFilter,               'gitlab/markdown/autolink_filter'
-    autoload :CommitRangeReferenceFilter,   'gitlab/markdown/commit_range_reference_filter'
-    autoload :CommitReferenceFilter,        'gitlab/markdown/commit_reference_filter'
-    autoload :EmojiFilter,                  'gitlab/markdown/emoji_filter'
-    autoload :ExternalIssueReferenceFilter, 'gitlab/markdown/external_issue_reference_filter'
-    autoload :ExternalLinkFilter,           'gitlab/markdown/external_link_filter'
-    autoload :IssueReferenceFilter,         'gitlab/markdown/issue_reference_filter'
-    autoload :LabelReferenceFilter,         'gitlab/markdown/label_reference_filter'
-    autoload :MergeRequestReferenceFilter,  'gitlab/markdown/merge_request_reference_filter'
-    autoload :RedactorFilter,               'gitlab/markdown/redactor_filter'
-    autoload :RelativeLinkFilter,           'gitlab/markdown/relative_link_filter'
-    autoload :SanitizationFilter,           'gitlab/markdown/sanitization_filter'
-    autoload :SnippetReferenceFilter,       'gitlab/markdown/snippet_reference_filter'
-    autoload :SyntaxHighlightFilter,        'gitlab/markdown/syntax_highlight_filter'
-    autoload :TableOfContentsFilter,        'gitlab/markdown/table_of_contents_filter'
-    autoload :TaskListFilter,               'gitlab/markdown/task_list_filter'
-    autoload :UserReferenceFilter,          'gitlab/markdown/user_reference_filter'
-    autoload :UploadLinkFilter,             'gitlab/markdown/upload_link_filter'
-
-    # Public: Parse the provided HTML with GitLab-Flavored Markdown
-    #
-    # html    - HTML String
-    # options - A Hash of options used to customize output (default: {})
-    #           :no_header_anchors - Disable header anchors in TableOfContentsFilter
-    #           :path              - Current path String
-    #           :pipeline          - Symbol pipeline type
-    #           :project           - Current Project object
-    #           :project_wiki      - Current ProjectWiki object
-    #           :ref               - Current ref String
-    #
-    # Returns an HTML-safe String
-    def self.gfm(html, options = {})
-      return '' unless html.present?
-
-      @pipeline ||= HTML::Pipeline.new(filters)
-
-      context = {
-        # SanitizationFilter
-        pipeline: options[:pipeline],
-
-        # EmojiFilter
-        asset_host: Gitlab::Application.config.asset_host,
-        asset_root: Gitlab.config.gitlab.base_url,
-
-        # ReferenceFilter
-        only_path: only_path_pipeline?(options[:pipeline]),
-        project:   options[:project],
-
-        # RelativeLinkFilter
-        project_wiki:   options[:project_wiki],
-        ref:            options[:ref],
-        requested_path: options[:path],
-
-        # TableOfContentsFilter
-        no_header_anchors: options[:no_header_anchors]
-      }
-
-      @pipeline.to_html(html, context).html_safe
     end
 
     private
 
-    # Check if a pipeline enables the `only_path` context option
-    #
-    # Returns Boolean
-    def self.only_path_pipeline?(pipeline)
-      case pipeline
-      when :atom, :email
-        false
+    def self.cacheless_render(text, context = {})
+      result = render_result(text, context)
+
+      output = result[:output]
+      if output.respond_to?(:to_html)
+        output.to_html
       else
-        true
+        output.to_s
       end
     end
 
-    def self.redcarpet_options
-      # https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
-      @redcarpet_options ||= {
-        fenced_code_blocks:  true,
-        footnotes:           true,
-        lax_spacing:         true,
-        no_intra_emphasis:   true,
-        space_after_headers: true,
-        strikethrough:       true,
-        superscript:         true,
-        tables:              true
-      }.freeze
+    def self.full_cache_key(cache_key, pipeline_name)
+      return unless cache_key
+      ["markdown", *cache_key, pipeline_name || :full]
     end
 
-    def self.renderer
-      @markdown ||= begin
-        renderer = Redcarpet::Render::HTML.new
-        Redcarpet::Markdown.new(renderer, redcarpet_options)
-      end
-    end
+    # Provide autoload paths for filters to prevent a circular dependency error
+    autoload :AutolinkFilter,               'gitlab/markdown/filter/autolink_filter'
+    autoload :CommitRangeReferenceFilter,   'gitlab/markdown/filter/commit_range_reference_filter'
+    autoload :CommitReferenceFilter,        'gitlab/markdown/filter/commit_reference_filter'
+    autoload :EmojiFilter,                  'gitlab/markdown/filter/emoji_filter'
+    autoload :ExternalIssueReferenceFilter, 'gitlab/markdown/filter/external_issue_reference_filter'
+    autoload :ExternalLinkFilter,           'gitlab/markdown/filter/external_link_filter'
+    autoload :IssueReferenceFilter,         'gitlab/markdown/filter/issue_reference_filter'
+    autoload :LabelReferenceFilter,         'gitlab/markdown/filter/label_reference_filter'
+    autoload :MarkdownFilter,               'gitlab/markdown/filter/markdown_filter'
+    autoload :MergeRequestReferenceFilter,  'gitlab/markdown/filter/merge_request_reference_filter'
+    autoload :RedactorFilter,               'gitlab/markdown/filter/redactor_filter'
+    autoload :ReferenceGathererFilter,      'gitlab/markdown/filter/reference_gatherer_filter'
+    autoload :RelativeLinkFilter,           'gitlab/markdown/filter/relative_link_filter'
+    autoload :SanitizationFilter,           'gitlab/markdown/filter/sanitization_filter'
+    autoload :SnippetReferenceFilter,       'gitlab/markdown/filter/snippet_reference_filter'
+    autoload :SyntaxHighlightFilter,        'gitlab/markdown/filter/syntax_highlight_filter'
+    autoload :TableOfContentsFilter,        'gitlab/markdown/filter/table_of_contents_filter'
+    autoload :TaskListFilter,               'gitlab/markdown/filter/task_list_filter'
+    autoload :UserReferenceFilter,          'gitlab/markdown/filter/user_reference_filter'
+    autoload :UploadLinkFilter,             'gitlab/markdown/filter/upload_link_filter'
 
-    def self.post_processor
-      @post_processor ||= HTML::Pipeline.new([Gitlab::Markdown::RedactorFilter])
-    end
-
-    # Filters used in our pipeline
-    #
-    # SanitizationFilter should come first so that all generated reference HTML
-    # goes through untouched.
-    #
-    # See https://github.com/jch/html-pipeline#filters for more filters.
-    def self.filters
-      [
-        Gitlab::Markdown::SyntaxHighlightFilter,
-        Gitlab::Markdown::SanitizationFilter,
-
-        Gitlab::Markdown::UploadLinkFilter,
-        Gitlab::Markdown::EmojiFilter,
-        Gitlab::Markdown::TableOfContentsFilter,
-        Gitlab::Markdown::AutolinkFilter,
-        Gitlab::Markdown::ExternalLinkFilter,
-
-        Gitlab::Markdown::UserReferenceFilter,
-        Gitlab::Markdown::IssueReferenceFilter,
-        Gitlab::Markdown::ExternalIssueReferenceFilter,
-        Gitlab::Markdown::MergeRequestReferenceFilter,
-        Gitlab::Markdown::SnippetReferenceFilter,
-        Gitlab::Markdown::CommitRangeReferenceFilter,
-        Gitlab::Markdown::CommitReferenceFilter,
-        Gitlab::Markdown::LabelReferenceFilter,
-
-        Gitlab::Markdown::RelativeLinkFilter,
-
-        Gitlab::Markdown::TaskListFilter
-      ]
-    end
+    autoload :AsciidocPipeline,             'gitlab/markdown/pipeline/asciidoc_pipeline'
+    autoload :AtomPipeline,                 'gitlab/markdown/pipeline/atom_pipeline'
+    autoload :DescriptionPipeline,          'gitlab/markdown/pipeline/description_pipeline'
+    autoload :EmailPipeline,                'gitlab/markdown/pipeline/email_pipeline'
+    autoload :FullPipeline,                 'gitlab/markdown/pipeline/full_pipeline'
+    autoload :GfmPipeline,                  'gitlab/markdown/pipeline/gfm_pipeline'
+    autoload :NotePipeline,                 'gitlab/markdown/pipeline/note_pipeline'
+    autoload :PlainMarkdownPipeline,        'gitlab/markdown/pipeline/plain_markdown_pipeline'
+    autoload :PostProcessPipeline,          'gitlab/markdown/pipeline/post_process_pipeline'
+    autoload :ReferenceExtractionPipeline,  'gitlab/markdown/pipeline/reference_extraction_pipeline'
+    autoload :SingleLinePipeline,           'gitlab/markdown/pipeline/single_line_pipeline'
   end
 end

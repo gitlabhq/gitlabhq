@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 
-describe Ci::SlackService do
+describe Ci::SlackService, models: true do
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end

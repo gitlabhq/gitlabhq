@@ -18,6 +18,7 @@
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
+      float: left;
 
       .accept_merge_request {
         &.ci-pending,
@@ -36,14 +37,15 @@
 
     .accept-control {
       display: inline-block;
+      float: left;
       margin: 0;
       margin-left: 20px;
       padding: 5px;
+      padding-top: 12px;
       line-height: 20px;
 
       &.right {
         float: right;
-        padding-top: 12px;
         a {
           color: $gl-gray;
         }
@@ -117,10 +119,6 @@
   .ci-coverage {
     float: right;
   }
-}
-
-.merge-request-details {
-  margin-bottom: $gl-padding;
 }
 
 .mr_source_commit,

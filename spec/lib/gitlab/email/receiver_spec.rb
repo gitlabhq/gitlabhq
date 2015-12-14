@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::Email::Receiver do
+describe Gitlab::Email::Receiver, lib: true do
   before do
     stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
   end

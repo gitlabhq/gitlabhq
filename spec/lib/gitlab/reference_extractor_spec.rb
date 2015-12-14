@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ReferenceExtractor do
+describe Gitlab::ReferenceExtractor, lib: true do
   let(:project) { create(:project) }
   subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
 

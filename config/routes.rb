@@ -614,8 +614,9 @@ Rails.application.routes.draw do
             get :commits
             get :diffs
             get :builds
-            post :merge
             get :merge_check
+            post :merge
+            post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
             post :approve

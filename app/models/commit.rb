@@ -7,7 +7,7 @@ class Commit
   include Referable
   include StaticModel
 
-  attr_mentionable :safe_message
+  attr_mentionable :safe_message, pipeline: :single_line
   participant :author, :committer, :notes
 
   attr_accessor :project
@@ -175,11 +175,11 @@ class Commit
   end
 
   def author
-    @author ||= User.find_by_any_email(author_email)
+    @author ||= User.find_by_any_email(author_email.downcase)
   end
 
   def committer
-    @committer ||= User.find_by_any_email(committer_email)
+    @committer ||= User.find_by_any_email(committer_email.downcase)
   end
 
   def parents

@@ -762,6 +762,7 @@ class Project < ActiveRecord::Base
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
         reset_events_cache
+        @repository = nil
       rescue
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GoogleCodeImport::ProjectCreator do
+describe Gitlab::GoogleCodeImport::ProjectCreator, lib: true do
   let(:user) { create(:user) }
   let(:repo) do
     Gitlab::GoogleCodeImport::Repository.new(

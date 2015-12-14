@@ -1,4 +1,4 @@
-# Importing a database dump into a staging enviroment
+# Importing a database dump into a staging environment
 
 Sometimes it is useful to import the database from a production environment
 into a staging environment for testing. The procedure below assumes you have

@@ -114,7 +114,7 @@ class @Notes
     unless note.valid
       if note.award
         flash = new Flash('You have already used this award emoji!', 'alert')
-        flash.pin()
+        flash.pinTo('.header-content')
       return
 
     # render note if it not present in loaded list
@@ -148,6 +148,8 @@ class @Notes
     @note_ids.push(note.id)
     form = $("form[rel='" + note.discussion_id + "']")
     row = form.closest("tr")
+    note_html = $(note.html)
+    note_html.syntaxHighlight()
 
     # is this the first note of discussion?
     if row.is(".js-temp-notes-holder")
@@ -158,14 +160,16 @@ class @Notes
       row.next().find(".note").remove()
 
       # Add note to 'Changes' page discussions
-      $(".notes[rel='" + note.discussion_id + "']").append note.html
+      $(".notes[rel='" + note.discussion_id + "']").append note_html
 
       # Init discussion on 'Discussion' page if it is merge request page
       if $('body').attr('data-page').indexOf('projects:merge_request') == 0
-        $('ul.main-notes-list').append(note.discussion_with_diff_html)
+        discussion_html = $(note.discussion_with_diff_html)
+        discussion_html.syntaxHighlight()
+        $('ul.main-notes-list').append(discussion_html)
     else
       # append new note to all matching discussions
-      $(".notes[rel='" + note.discussion_id + "']").append note.html
+      $(".notes[rel='" + note.discussion_id + "']").append note_html
 
     # cleanup after successfully creating a diff/discussion note
     @removeDiscussionNoteForm(form)
@@ -286,7 +290,7 @@ class @Notes
     $html.find('.js-task-list-container').taskList('enable')
 
     # Find the note's `li` element by ID and replace it with the updated HTML
-    $note_li = $("#note_#{note.id}")
+    $note_li = $('.note-row-' + note.id)
     $note_li.replaceWith($html)
 
   ###
@@ -346,18 +350,26 @@ class @Notes
   ###
   removeNote: ->
     note = $(this).closest(".note")
-    notes = note.closest(".notes")
+    note_id = note.attr('id')
 
-    # check if this is the last note for this line
-    if notes.find(".note").length is 1
+    $('.note[id="' + note_id + '"]').each ->
+      note = $(this)
+      notes = note.closest(".notes")
+      count = notes.closest(".notes_holder").find(".discussion-notes-count")
 
-      # for discussions
-      notes.closest(".discussion").remove()
+      # check if this is the last note for this line
+      if notes.find(".note").length is 1
 
-      # for diff lines
-      notes.closest("tr").remove()
+        # for discussions
+        notes.closest(".discussion").remove()
 
-    note.remove()
+        # for diff lines
+        notes.closest("tr").remove()
+      else
+        # update notes count
+        count.get(0).lastChild.nodeValue = " #{notes.children().length - 1}"
+
+      note.remove()
 
   ###
   Called in response to clicking the delete attachment link

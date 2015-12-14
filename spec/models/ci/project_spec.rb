@@ -27,7 +27,7 @@
 
 require 'spec_helper'
 
-describe Ci::Project do
+describe Ci::Project, models: true do
   let(:project) { FactoryGirl.create :ci_project }
   let(:gl_project) { project.gl_project }
   subject { project }

@@ -29,7 +29,7 @@ class Note < ActiveRecord::Base
 
   default_value_for :system, false
 
-  attr_mentionable :note
+  attr_mentionable :note, cache: true, pipeline: :note
   participant :author
 
   belongs_to :project
@@ -350,7 +350,7 @@ class Note < ActiveRecord::Base
   end
 
   def editable?
-    !system?
+    !system? && !is_award
   end
 
   # Checks if note is an award added as a comment
@@ -377,6 +377,7 @@ class Note < ActiveRecord::Base
   end
 
   def award_emoji_name
-    note.match(Gitlab::Markdown::EmojiFilter.emoji_pattern)[1]
+    original_name = note.match(Gitlab::Markdown::EmojiFilter.emoji_pattern)[1]
+    AwardEmoji.normilize_emoji_name(original_name)
   end
 end

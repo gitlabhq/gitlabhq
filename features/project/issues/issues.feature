@@ -1,3 +1,4 @@
+@project_issues
 Feature: Project Issues
   Background:
     Given I sign in as a user
@@ -195,4 +196,3 @@ Feature: Project Issues
     And I should not see labels field
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
-

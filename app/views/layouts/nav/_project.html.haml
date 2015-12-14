@@ -32,7 +32,7 @@
           Files
 
   - if project_nav_tab? :commits
-    = nav_link(controller: %w(commit commits compare repositories tags branches releases)) do
+    = nav_link(controller: %w(commit commits compare repositories tags branches releases network)) do
       = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
         = icon('history fw')
         %span
@@ -45,13 +45,6 @@
         %span
           Builds
           %span.count.builds_counter= @project.ci_builds.running_or_pending.count(:all)
-
-  - if project_nav_tab? :network
-    = nav_link(controller: %w(network)) do
-      = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network' do
-        = icon('code-fork fw')
-        %span
-          Network
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do
@@ -118,3 +111,10 @@
         = icon('cogs fw')
         %span
           Settings
+
+  -# Global shortcut to network page for compatibility
+  - if project_nav_tab? :network
+    %li.hidden
+      = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network' do
+        Network
+

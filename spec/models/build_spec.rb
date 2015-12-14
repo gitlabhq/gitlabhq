@@ -25,7 +25,7 @@
 
 require 'spec_helper'
 
-describe Ci::Build do
+describe Ci::Build, models: true do
   let(:project) { FactoryGirl.create :ci_project }
   let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
   let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }

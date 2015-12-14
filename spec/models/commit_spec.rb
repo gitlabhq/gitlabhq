@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Commit do
+describe Commit, models: true do
   let(:project) { create(:project) }
   let(:commit)  { project.commit }
 

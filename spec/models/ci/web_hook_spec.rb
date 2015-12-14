@@ -11,7 +11,7 @@
 
 require 'spec_helper'
 
-describe Ci::WebHook do
+describe Ci::WebHook, models: true do
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end

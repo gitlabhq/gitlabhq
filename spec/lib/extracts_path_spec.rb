@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ExtractsPath do
+describe ExtractsPath, lib: true do
   include ExtractsPath
   include RepoHelpers
   include Gitlab::Application.routes.url_helpers

@@ -470,3 +470,9 @@ table {
     visibility: hidden;
   }
 }
+
+.content-separator {
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  border-top: 1px solid $border-color;
+}

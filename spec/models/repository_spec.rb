@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Repository do
+describe Repository, models: true do
   include RepoHelpers
 
   let(:repository) { create(:project).repository }
@@ -103,6 +103,26 @@ describe Repository do
 
   end
 
+  describe "#license" do
+    before do
+      repository.send(:cache).expire(:license)
+      TestBlob = Struct.new(:name)
+    end
+
+    it 'test selection preference' do
+      files = [TestBlob.new('file'), TestBlob.new('license'), TestBlob.new('copying')]
+      expect(repository.tree).to receive(:blobs).and_return(files)
+
+      expect(repository.license.name).to eq('license')
+    end
+
+    it 'also accepts licence instead of license' do
+      expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('licence')])
+
+      expect(repository.license.name).to eq('licence')
+    end
+  end
+
   describe :add_branch do
     context 'when pre hooks were successful' do
       it 'should run without errors' do
@@ -199,5 +219,4 @@ describe Repository do
       end
     end
   end
-
 end

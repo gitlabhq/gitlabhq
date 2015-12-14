@@ -1,0 +1,86 @@
+.awards {
+  @include clearfix;
+  line-height: 34px;
+
+  .award {
+    @include border-radius(5px);
+
+    border: 1px solid;
+    padding: 0px 10px;
+    float: left;
+    margin-right: 5px;
+    border-color: $border-color;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #dce0e5;
+    }
+
+    &.active {
+      border-color: $border-gray-light;
+      background-color: $gray-light;
+
+      &:hover {
+        background-color: #dce0e5;
+      }
+
+      .counter {
+        font-weight: bold;
+      }
+    }
+
+    .icon {
+      float: left;
+      margin-right: 10px;
+    }
+
+    .counter {
+      float: left;
+    }
+  }
+
+  .awards-controls {
+    margin-left: 10px;
+    float: left;
+
+    .add-award {
+      font-size: 24px;
+      color: $gl-gray;
+      position: relative;
+      top: 2px;
+
+      &:hover,
+      &:link {
+        text-decoration: none;
+      }
+    }
+
+    .awards-menu {
+      padding: $gl-padding;
+      min-width: 214px;
+
+      > li {
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        @include border-radius(5px);
+
+        img {
+          margin-bottom: 2px;
+        }
+
+        &:hover {
+          background-color: #ccc;
+        }
+      }
+    }
+  }
+
+  .awards-menu{
+    li {
+      float: left;
+      margin: 3px;
+    }
+  }
+}

@@ -10,7 +10,9 @@ rescue
   Settings.gitlab['session_expire_delay'] ||= 10080
 end
 
-unless Rails.env.test?
+if Rails.env.test?
+  Gitlab::Application.config.session_store :cookie_store, key: "_gitlab_session"
+else
   Gitlab::Application.config.session_store(
     :redis_store, # Using the cookie_store would enable session replay attacks.
     servers: Rails.application.config.cache_store[1].merge(namespace: 'session:gitlab'), # re-use the Redis config from the Rails cache store

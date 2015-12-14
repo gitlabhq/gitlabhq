@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UploadsTransfer do
+describe Gitlab::UploadsTransfer, lib: true do
   before do
     @root_dir = File.join(Rails.root, "public", "uploads")
     @upload_transfer = Gitlab::UploadsTransfer.new

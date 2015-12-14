@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ClosingIssueExtractor do
+describe Gitlab::ClosingIssueExtractor, lib: true do
   let(:project)   { create(:project) }
   let(:project2)   { create(:project) }
   let(:issue)     { create(:issue, project: project) }
