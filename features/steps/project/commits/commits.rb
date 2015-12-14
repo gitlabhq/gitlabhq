@@ -108,6 +108,10 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     create :ci_build, commit: ci_commit
   end
 
+  step 'repository contains ".gitlab-ci.yml" file' do
+    allow_any_instance_of(Ci::Commit).to receive(:ci_yaml_file).and_return(String.new)
+  end
+
   step 'I see commit ci info' do
     expect(page).to have_content "build: pending"
   end
