@@ -36,5 +36,9 @@ describe MetricsWorker do
     it 'escapes an equals sign' do
       expect(worker.escape_value('foo=')).to eq('foo\\=')
     end
+
+    it 'casts values to Strings' do
+      expect(worker.escape_value(10)).to eq('10')
+    end
   end
 end

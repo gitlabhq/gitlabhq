@@ -24,6 +24,6 @@ class MetricsWorker
   end
 
   def escape_value(value)
-    value.gsub('=', '\\=')
+    value.to_s.gsub('=', '\\=')
   end
 end
