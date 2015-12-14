@@ -48,11 +48,12 @@ When submitting an issue please conform to the issue submission guidelines liste
 Not all issues will be addressed and your issue is more likely to be addressed
 if you submit a merge request which partially or fully addresses the issue.
 
-Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can.
 If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq)
 or [Stack Overflow](https://stackoverflow.com/questions/tagged/gitlab) first.
 There are a lot of helpful GitLab users there who may be able to help you quickly.
 If your particular issue turns out to be a bug, it will find its way from there.
+
+Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can.
 
 ### Feature proposals
 
