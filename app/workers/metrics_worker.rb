@@ -16,7 +16,11 @@ class MetricsWorker
       new_hash = hash.symbolize_keys
 
       new_hash[:tags].each do |key, value|
-        new_hash[:tags][key] = escape_value(value)
+        if value.blank?
+          new_hash[:tags].delete(key)
+        else
+          new_hash[:tags][key] = escape_value(value)
+        end
       end
 
       new_hash

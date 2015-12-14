@@ -30,6 +30,14 @@ describe MetricsWorker do
 
       expect(metrics).to eq([{ values: {}, tags: { 'foo' => 'bar\\=' } }])
     end
+
+    it 'drops empty tags' do
+      metrics = worker.prepare_metrics([
+        { 'values' => {}, 'tags' => { 'cats' => '', 'dogs' => nil }}
+      ])
+
+      expect(metrics).to eq([{ values: {}, tags: {} }])
+    end
   end
 
   describe '#escape_value' do
