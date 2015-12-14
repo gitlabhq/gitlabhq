@@ -14,7 +14,7 @@ describe Gitlab::LDAP::Config, lib: true do
     end
 
     it "raises an error if a unknow provider is used" do
-      expect{ Gitlab::LDAP::Config.new 'unknown' }.to raise_error(RuntimeError)
+      expect{ Gitlab::LDAP::Config.new 'unknown' }.to raise_error(Gitlab::LDAP::Config::InvalidProvider)
     end
   end
 end
