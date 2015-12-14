@@ -1,6 +1,20 @@
 %p.lead
-  %span To register a new runner you should enter the following registration token. With this token the runner will request a unique runner token and use that for future communication.
-  %code #{GitlabCi::REGISTRATION_TOKEN}
+  %span
+    To register a new runner you should enter the following registration token.
+    With this token the runner will request a unique runner token and use that for future communication.
+    Registration token is
+    %code{ id: 'runners-token' } #{current_application_settings.ensure_runners_registration_token}
+
+.bs-callout.clearfix
+  .pull-left
+    %p
+      You can reset runners registration token by pressing a button below.
+    %p
+      = button_to reset_runners_token_admin_application_settings_path,
+        method: :put, class: 'btn btn-default',
+        data: { confirm: 'Are you sure you want to reset registration token?' } do
+        = icon('refresh')
+        Reset runners registration token
 
 .bs-callout
   %p

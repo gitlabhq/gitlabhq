@@ -6,7 +6,7 @@ module Ci
       UPDATE_RUNNER_EVERY = 60
 
       def authenticate_runners!
-        forbidden! unless params[:token] == GitlabCi::REGISTRATION_TOKEN
+        forbidden! unless runner_registration_token_valid?
       end
 
       def authenticate_runner!
@@ -16,6 +16,10 @@ module Ci
       def authenticate_build_token!(build)
         token = (params[BUILD_TOKEN_PARAM] || env[BUILD_TOKEN_HEADER]).to_s
         forbidden! unless token && build.valid_token?(token)
+      end
+
+      def runner_registration_token_valid?
+        params[:token] == current_application_settings.ensure_runners_registration_token
       end
 
       def update_runner_last_contact

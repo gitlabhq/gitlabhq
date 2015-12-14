@@ -29,7 +29,7 @@ module Ci
           required_attributes! [:token]
 
           runner =
-            if params[:token] == GitlabCi::REGISTRATION_TOKEN
+            if runner_registration_token_valid?
               # Create shared runner. Requires admin access
               Ci::Runner.create(
                 description: params[:description],

@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 20151210125932) do
     t.string   "admin_notification_email"
     t.boolean  "shared_runners_enabled",       default: true,  null: false
     t.integer  "max_artifacts_size",           default: 100,   null: false
+    t.string   "runners_registration_token"
   end
 
   create_table "audit_events", force: :cascade do |t|

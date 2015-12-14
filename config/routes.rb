@@ -245,6 +245,7 @@ Rails.application.routes.draw do
 
     resource :application_settings, only: [:show, :update] do
       resources :services
+      put :reset_runners_token
     end
 
     resources :labels

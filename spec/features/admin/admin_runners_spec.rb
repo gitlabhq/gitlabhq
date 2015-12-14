@@ -61,4 +61,26 @@ describe "Admin Runners" do
       it { expect(page).not_to have_content(@project2.name_with_namespace) }
     end
   end
+
+  describe 'runners registration token' do
+    let!(:token) { current_application_settings.ensure_runners_registration_token }
+    before { visit admin_runners_path }
+
+    it 'has a registration token' do
+      expect(page).to have_content("Registration token is #{token}")
+      expect(page).to have_selector('#runners-token', text: token)
+    end
+
+    describe 'reload registration token' do
+      let(:page_token) { find('#runners-token').text }
+
+      before do
+        click_button 'Reset runners registration token'
+      end
+
+      it 'changes registration token' do
+        expect(page_token).to_not eq token
+      end
+    end
+  end
 end

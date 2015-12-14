@@ -69,8 +69,10 @@ class User < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Referable
   include Sortable
-  include TokenAuthenticatable
   include CaseSensitivity
+  include TokenAuthenticatable
+
+  add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
