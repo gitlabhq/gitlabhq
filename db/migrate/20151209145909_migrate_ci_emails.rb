@@ -30,9 +30,9 @@ class MigrateCiEmails < ActiveRecord::Migration
 
   # This function returns 0 or 1 for column
   def convert_bool(name)
-    if self.postgresql?
+    if Gitlab::Database.postgresql?
       # PostgreSQL uses BOOLEAN type
-      "CASE WHEN #{name} IS TRUE THEN '1' ELSE '0' END;"
+      "CASE WHEN #{name} IS TRUE THEN '1' ELSE '0' END"
     else
       # MySQL uses TINYINT
       "#{name}"
