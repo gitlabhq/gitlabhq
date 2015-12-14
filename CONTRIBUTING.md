@@ -24,7 +24,7 @@ Issues and merge requests should be in English and contain appropriate language 
 
 Please help other GitLab users when you can.
 The channels people will reach out on can be found on the [getting help page](https://about.gitlab.com/getting-help/).
-Sign up for the mailinglist, answer GitLab questions on StackOverflow or respond in the IRC channel.
+Sign up for the mailing list, answer GitLab questions on StackOverflow or respond in the IRC channel.
 You can also sign up on [CodeTriage](http://www.codetriage.com/gitlabhq/gitlabhq) to help with one issue every day.
 
 ## I want to contribute!
