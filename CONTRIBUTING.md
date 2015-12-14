@@ -4,6 +4,11 @@ Thank you for your interest in contributing to GitLab.
 This guide details how contribute to GitLab in a way that is efficient for everyone.
 If you have read this guide and want to know how the GitLab core-team operates please see [the GitLab contributing process](PROCESS.md).
 
+GitLab comes into two flavors, GitLab Community Edition (CE) our free and open
+source edition, and GitLab Enterprise Edition (EE) which is our commercial
+edition. Throughout this guide you will see references to CE and EE for
+abbreviation.
+
 ## Contributor license agreement
 
 By submitting code as an individual you agree to the [individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md). By submitting code as an entity you agree to the [corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
