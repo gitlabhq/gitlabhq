@@ -38,6 +38,7 @@ The GitLab installation consists of setting up the following components:
 
 1. Packages / Dependencies
 1. Ruby
+1. Go
 1. System Users
 1. Database
 1. Redis
@@ -175,48 +176,52 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ## 6. Redis
 
 As of this writing, most Debian/Ubuntu distributions ship with Redis 2.2 or
-2.4. GitLab requires at least Redis 2.8. If your platform doesn't provide
-this, the following instructions cover building and installing Redis from
-scratch.
+2.4. GitLab requires at least Redis 2.8.
 
-Ubuntu users [can also use a PPA](https://launchpad.net/~chris-lea/+archive/ubuntu/redis-server)
+Ubuntu users [can use a PPA](https://launchpad.net/~chris-lea/+archive/ubuntu/redis-server)
 to install a recent version of Redis.
 
-    # Build Redis
-    wget http://download.redis.io/releases/redis-2.8.23.tar.gz
-    tar xzf redis-2.8.23.tar.gz
-    cd redis-2.8.23
-    make
+The following instructions cover building and installing Redis from scratch:
 
-    # Install Redis
-    cd utils
-    sudo ./install_server.sh
+```sh
+# Build Redis
+wget http://download.redis.io/releases/redis-2.8.23.tar.gz
+tar xzf redis-2.8.23.tar.gz
+cd redis-2.8.23
+make
 
-    # Configure redis to use sockets
-    sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
+# Install Redis
+cd utils
+sudo ./install_server.sh
 
-    # Disable Redis listening on TCP by setting 'port' to 0
-    sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+# Configure redis to use sockets
+sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
 
-    # Enable Redis socket for default Debian / Ubuntu path
-    echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
-    # Grant permission to the socket to all members of the redis group
-    echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
+# Disable Redis listening on TCP by setting 'port' to 0
+sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
 
-    # Create the directory which contains the socket
-    mkdir /var/run/redis
-    chown redis:redis /var/run/redis
-    chmod 755 /var/run/redis
-    # Persist the directory which contains the socket, if applicable
-    if [ -d /etc/tmpfiles.d ]; then
-      echo 'd  /var/run/redis  0755  redis  redis  10d  -' | sudo tee -a /etc/tmpfiles.d/redis.conf
-    fi
+# Enable Redis socket for default Debian / Ubuntu path
+echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
 
-    # Activate the changes to redis.conf
-    sudo service redis_6379 start
+# Grant permission to the socket to all members of the redis group
+echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
 
-    # Add git to the redis group
-    sudo usermod -aG redis git
+# Create the directory which contains the socket
+mkdir /var/run/redis
+chown redis:redis /var/run/redis
+chmod 755 /var/run/redis
+
+# Persist the directory which contains the socket, if applicable
+if [ -d /etc/tmpfiles.d ]; then
+  echo 'd  /var/run/redis  0755  redis  redis  10d  -' | sudo tee -a /etc/tmpfiles.d/redis.conf
+fi
+
+# Activate the changes to redis.conf
+sudo service redis_6379 start
+
+# Add git to the redis group
+sudo usermod -aG redis git
+```
 
 ## 7. GitLab
 
@@ -226,9 +231,9 @@ to install a recent version of Redis.
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ee.git -b 8-2-stable-ee gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable-ee gitlab
 
-**Note:** You can change `8-2-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-3-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
