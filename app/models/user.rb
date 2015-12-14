@@ -136,7 +136,7 @@ class User < ActiveRecord::Base
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
-  has_many :ci_builds,                dependent: :nullify, class_name: 'Ci::Build'
+  has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
 
 
   #
@@ -771,10 +771,9 @@ class User < ActiveRecord::Base
 
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject.joins(:project).
-        where("ci_projects.gitlab_id IN (#{ci_projects_union.to_sql})").
+      runner_ids = Ci::RunnerProject.
+        where("ci_runner_projects.gl_project_id IN (#{ci_projects_union.to_sql})").
         select(:runner_id)
-
       Ci::Runner.specific.where(id: runner_ids)
     end
   end

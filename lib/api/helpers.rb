@@ -266,12 +266,7 @@ module API
         projects = projects.search(params[:search])
       end
 
-      if params[:ci_enabled_first].present?
-        projects.includes(:gitlab_ci_service).
-          reorder("services.active DESC, projects.#{project_order_by} #{project_sort}")
-      else
-        projects.reorder(project_order_by => project_sort)
-      end
+      projects.reorder(project_order_by => project_sort)
     end
 
     def project_order_by

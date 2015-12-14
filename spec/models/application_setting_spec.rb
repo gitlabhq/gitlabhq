@@ -73,26 +73,4 @@ describe ApplicationSetting, models: true do
       expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
     end
   end
-
-  context 'shared runners' do
-    let(:gl_project) { create(:empty_project) }
-
-    before do
-      allow_any_instance_of(Project).to receive(:current_application_settings).and_return(setting)
-    end
-
-    subject { gl_project.ensure_gitlab_ci_project.shared_runners_enabled }
-
-    context 'enabled' do
-      before { setting.update_attributes(shared_runners_enabled: true) }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'disabled' do
-      before { setting.update_attributes(shared_runners_enabled: false) }
-
-      it { is_expected.to be_falsey }
-    end
-  end
 end

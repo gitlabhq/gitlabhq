@@ -12,29 +12,6 @@ describe Ci::API::API do
     stub_application_setting(runners_registration_token: registration_token)
   end
 
-  describe "GET /runners" do
-    let(:gitlab_url) { GitlabCi.config.gitlab_ci.url }
-    let(:private_token) { create(:user).private_token }
-    let(:options) do
-      {
-        private_token: private_token,
-        url: gitlab_url
-      }
-    end
-
-    before do
-      5.times { FactoryGirl.create(:ci_runner) }
-    end
-
-    it "should retrieve a list of all runners" do
-      get ci_api("/runners", nil), options
-      expect(response.status).to eq(200)
-      expect(json_response.count).to eq(5)
-      expect(json_response.last).to have_key("id")
-      expect(json_response.last).to have_key("token")
-    end
-  end
-
   describe "POST /runners/register" do
     describe "should create a runner if token provided" do
       before { post ci_api("/runners/register"), token: registration_token }
@@ -57,8 +34,8 @@ describe Ci::API::API do
     end
 
     describe "should create a runner if project token provided" do
-      let(:project) { FactoryGirl.create(:ci_project) }
-      before { post ci_api("/runners/register"), token: project.token }
+      let(:project) { FactoryGirl.create(:empty_project) }
+      before { post ci_api("/runners/register"), token: project.runners_token }
 
       it { expect(response.status).to eq(201) }
       it { expect(project.runners.size).to eq(1) }

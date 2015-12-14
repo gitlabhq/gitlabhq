@@ -3,13 +3,13 @@
 
 .issue
   .issue-details.issuable-details
-    .page-title
+    .issuable-title
       .issue-box{ class: issue_box_class(@issue) }
         - if @issue.closed?
           Closed
         - else
           Open
-      %span.issue-id Issue ##{@issue.iid}
+      %span.issuable-id Issue ##{@issue.iid}
       %span.creator
         &middot;
         opened by #{link_to_member(@project, @issue.author, size: 24)}
@@ -36,18 +36,29 @@
             = icon('pencil-square-o')
             Edit
 
-    .gray-content-block.middle-block
-      %h2.issue-title
-        = markdown escape_once(@issue.title), pipeline: :single_line
-      %div
-        - if @issue.description.present?
-          .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
-            .wiki
-              = preserve do
-                = markdown(@issue.description, cache_key: [@issue, "description"])
-            %textarea.hidden.js-task-list-field
-              = @issue.description
-  - if @closed_by_merge_requests.present?
-    = render 'projects/issues/closed_by_box'
-  .issue-discussion
-    = render 'projects/issues/discussion'
+    .row
+      %section.col-md-9
+        .gray-content-block
+          %h2.issue-title
+            = markdown escape_once(@issue.title), pipeline: :single_line
+          %div
+            - if @issue.description.present?
+              .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
+                .wiki
+                  = preserve do
+                    = markdown(@issue.description, cache_key: [@issue, "description"])
+                %textarea.hidden.js-task-list-field
+                  = @issue.description
+
+            .merge-requests
+              = render 'merge_requests'
+
+        - if @closed_by_merge_requests.present?
+          = render 'projects/issues/closed_by_box'
+        .issue-discussion
+          = render 'projects/issues/discussion'
+
+      %aside.col-md-3
+        = render 'shared/issuable/sidebar', issuable: @issue
+
+      = render 'shared/show_aside'

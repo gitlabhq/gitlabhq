@@ -114,7 +114,7 @@ class @Notes
     unless note.valid
       if note.award
         flash = new Flash('You have already used this award emoji!', 'alert')
-        flash.pin()
+        flash.pinTo('.header-content')
       return
 
     # render note if it not present in loaded list
@@ -350,18 +350,26 @@ class @Notes
   ###
   removeNote: ->
     note = $(this).closest(".note")
-    notes = note.closest(".notes")
+    note_id = note.attr('id')
 
-    # check if this is the last note for this line
-    if notes.find(".note").length is 1
+    $('.note[id="' + note_id + '"]').each ->
+      note = $(this)
+      notes = note.closest(".notes")
+      count = notes.closest(".notes_holder").find(".discussion-notes-count")
 
-      # for discussions
-      notes.closest(".discussion").remove()
+      # check if this is the last note for this line
+      if notes.find(".note").length is 1
 
-      # for diff lines
-      notes.closest("tr").remove()
+        # for discussions
+        notes.closest(".discussion").remove()
 
-    note.remove()
+        # for diff lines
+        notes.closest("tr").remove()
+      else
+        # update notes count
+        count.get(0).lastChild.nodeValue = " #{notes.children().length - 1}"
+
+      note.remove()
 
   ###
   Called in response to clicking the delete attachment link

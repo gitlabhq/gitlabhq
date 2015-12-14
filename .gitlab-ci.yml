@@ -117,9 +117,10 @@ flay:
     - mysql
 
 bundler:audit:
-  script:
+  script: 
     - "bundle exec bundle-audit update"
     - "bundle exec bundle-audit check"
   tags:
     - ruby
     - mysql
+  allow_failure: true

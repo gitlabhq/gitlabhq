@@ -27,7 +27,6 @@
     - if commit.finished_at
       %span #{time_ago_in_words commit.finished_at} ago
 
-  - if commit.project.coverage_enabled?
+  - if commit.coverage
     %td.coverage
-      - if commit.coverage
-        #{commit.coverage}%
+      #{commit.coverage}%

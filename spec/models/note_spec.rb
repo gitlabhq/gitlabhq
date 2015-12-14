@@ -159,4 +159,13 @@ describe Note, models: true do
       expect(note.editable?).to be_falsy
     end
   end
+  
+  describe "set_award!" do
+    let(:issue) { create :issue }
+
+    it "converts aliases to actual name" do
+      note = create :note, note: ":thumbsup:", noteable: issue
+      expect(note.reload.note).to eq("+1")
+    end
+  end
 end

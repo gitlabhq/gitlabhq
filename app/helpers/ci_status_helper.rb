@@ -1,6 +1,6 @@
 module CiStatusHelper
   def ci_status_path(ci_commit)
-    project = ci_commit.gl_project
+    project = ci_commit.project
     builds_namespace_project_commit_path(project.namespace, project, ci_commit.sha)
   end
 
@@ -52,7 +52,7 @@ module CiStatusHelper
         'circle'
       end
 
-    icon(icon_name)
+    icon(icon_name + ' fw')
   end
 
   def render_ci_status(ci_commit)
@@ -62,5 +62,10 @@ module CiStatusHelper
       data: { toggle: 'tooltip', placement: 'left' } do
       ci_status_icon(ci_commit)
     end
+  end
+
+  def no_runners_for_project?(project)
+    project.runners.blank? &&
+      Ci::Runner.shared.blank?
   end
 end

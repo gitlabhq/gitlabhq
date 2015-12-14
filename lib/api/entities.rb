@@ -45,7 +45,8 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :push_events
-      expose :issues_events, :merge_requests_events, :tag_push_events, :note_events, :enable_ssl_verification
+      expose :issues_events, :merge_requests_events, :tag_push_events, :note_events, :build_events
+      expose :enable_ssl_verification
     end
 
     class ForkedFromProject < Grape::Entity
@@ -63,6 +64,7 @@ module API
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
@@ -252,7 +254,7 @@ module API
 
     class ProjectService < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
-      expose :push_events, :issues_events, :merge_requests_events, :tag_push_events, :note_events
+      expose :push_events, :issues_events, :merge_requests_events, :tag_push_events, :note_events, :build_events
       # Expose serialized properties
       expose :properties do |service, options|
         field_names = service.fields.
@@ -358,6 +360,10 @@ module API
           options[:project].releases.find_by(tag: repo_obj.name)
         end
       end
+    end
+
+    class TriggerRequest < Grape::Entity
+      expose :id, :variables
     end
   end
 end
