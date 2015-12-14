@@ -4,10 +4,6 @@
     = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
   .project-home-desc
     %h1= @project.name
-    .has_tooltip{title: project_visibility_level_description(@project.visibility_level), data: { container: 'body' } }
-    = visibility_level_icon(@project.visibility_level, fw: false)
-        
-    
     - if @project.description.present?
       = markdown(@project.description, pipeline: :description)
 
@@ -16,16 +12,18 @@
         Forked from
         = link_to project_path(forked_from_project) do
           = forked_from_project.namespace.try(:name)
-          
-          
+  .cover-controls.left
+    .visibility-level-label.has_tooltip{title: project_visibility_level_description(@project.visibility_level), data: { container: 'body' } }
+      = visibility_level_icon(@project.visibility_level, fw: false)
+      = visibility_level_label(@project.visibility_level)
+
   .cover-controls
     - if can?(current_user, :admin_project, @project)
+      &nbsp;
       = link_to edit_project_path(@project), class: 'btn btn-gray' do
         = icon('pencil')
-    - if current_user
-      &nbsp;
-      = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), class: 'btn btn-gray' do
-        = icon('rss')
+    = render 'projects/buttons/notifications'
+        
 
   .project-repo-buttons
     .split-one
@@ -37,5 +35,3 @@
     .split-repo-buttons
       = render "projects/buttons/download"
       = render 'projects/buttons/dropdown'
-
-    = render 'projects/buttons/notifications'
