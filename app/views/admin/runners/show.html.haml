@@ -82,7 +82,7 @@
             = project.name_with_namespace
           %td
             .pull-right
-              = form_for [:admin, project.namespace, project, project.runner_projects.new] do |f|
+              = form_for [:admin, project.namespace.becomes(Namespace), project, project.runner_projects.new] do |f|
                 = f.hidden_field :runner_id, value: @runner.id
                 = f.submit 'Enable', class: 'btn btn-xs'
     = paginate @projects
