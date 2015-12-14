@@ -260,7 +260,7 @@ merge request:
 1. Upgrader https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/upgrader.md#2-run-gitlab-upgrade-tool
 1. Installation guide https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies
 1. GitLab Development Kit https://gitlab.com/gitlab-org/gitlab-development-kit
-1. Test suite https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/examples/configure_a_runner_to_run_the_gitlab_ce_test_suite.md
+1. Test suite https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/prepare_build.sh
 1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
 
 ## Merge request description format
@@ -303,13 +303,13 @@ merge request:
 ## Style guides
 
 1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
-    Important sections include [Source Code Layout](https://github.com/bbatsov/ruby-style-guide#source-code-layout)
-    and [Naming](https://github.com/bbatsov/ruby-style-guide#naming). Use:
+    Important sections include [Source Code Layout][rss-source] and
+    [Naming][rss-naming]. Use:
     - multi-line method chaining style **Option B**: dot `.` on previous line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
-1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
-1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
+1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style/testing)
+1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
@@ -350,7 +350,7 @@ This code of conduct applies both within project spaces and in public spaces
 when an individual is representing the project or its community.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior can be
-reported by emailing contact@gitlab.com
+reported by emailing `contact@gitlab.com`.
 
 This Code of Conduct is adapted from the [Contributor Covenant][], version 1.1.0,
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
@@ -359,7 +359,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [getting help page]: https://about.gitlab.com/getting-help/
 [Codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up+for+grabs
-[medium-up-for-grabs]: https://medium.com/@kentcdodds/first-timers-only-78281ea47455#.i2f363mx4
+[medium-up-for-grabs]: https://medium.com/@kentcdodds/first-timers-only-78281ea47455
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
 [ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
 [google-group]: https://groups.google.com/forum/#!forum/gitlabhq
@@ -373,4 +373,6 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [git-squash]: https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits
 [closed merge requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed
 [definition of done]: http://guide.agilealliance.org/guide/definition-of-done.html
-[Contribution Covenant]: http://contributor-covenant.org
+[Contributor Covenant]: http://contributor-covenant.org
+[rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
+[rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
