@@ -1,14 +1,13 @@
 class Projects::RunnersController < Projects::ApplicationController
-  before_action :ci_project
   before_action :set_runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
   before_action :authorize_admin_project!
 
   layout 'project_settings'
 
   def index
-    @runners = @ci_project.runners.ordered
+    @runners = project.runners.ordered
     @specific_runners = current_user.ci_authorized_runners.
-      where.not(id: @ci_project.runners).
+      where.not(id: project.runners).
       ordered.page(params[:page]).per(20)
     @shared_runners = Ci::Runner.shared.active
     @shared_runners_count = @shared_runners.count(:all)
@@ -26,7 +25,7 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def destroy
-    if @runner.only_for?(@ci_project)
+    if @runner.only_for?(project)
       @runner.destroy
     end
 
@@ -52,10 +51,16 @@ class Projects::RunnersController < Projects::ApplicationController
   def show
   end
 
+  def toggle_shared_runners
+    project.toggle!(:shared_runners_enabled)
+
+    redirect_to namespace_project_runners_path(project.namespace, project)
+  end
+
   protected
 
   def set_runner
-    @runner ||= @ci_project.runners.find(params[:id])
+    @runner ||= project.runners.find(params[:id])
   end
 
   def runner_params

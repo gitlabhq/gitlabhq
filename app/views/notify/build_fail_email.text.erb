@@ -8,4 +8,4 @@ Stage:    <%= @build.stage %>
 Job:      <%= @build.name %>
 Message:  <%= @build.commit.git_commit_message %>
 
-Url:      <%= namespace_project_build_url(@build.gl_project.namespace, @build.gl_project, @build) %>
+Url:      <%= namespace_project_build_url(@build.project.namespace, @build.project, @build) %>

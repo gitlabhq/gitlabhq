@@ -64,6 +64,7 @@ module API
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
@@ -359,6 +360,10 @@ module API
           options[:project].releases.find_by(tag: repo_obj.name)
         end
       end
+    end
+
+    class TriggerRequest < Grape::Entity
+      expose :id, :variables
     end
   end
 end

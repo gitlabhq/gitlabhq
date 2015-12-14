@@ -2,7 +2,7 @@ module Gitlab
   class BuildDataBuilder
     class << self
       def build(build)
-        project = build.gl_project
+        project = build.project
         commit = build.commit
         user = build.user
 
