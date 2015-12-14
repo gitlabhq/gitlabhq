@@ -26,7 +26,7 @@ module Gitlab
 
     def issues
       if project && project.jira_tracker?
-        @references[:external_issue]
+        @references[:external_issue] ||= pipeline_result(:external_issue)
       else
         @references[:issue] ||= pipeline_result(:issue)
       end
