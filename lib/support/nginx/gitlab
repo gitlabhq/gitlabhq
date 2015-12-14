@@ -113,6 +113,7 @@ server {
     proxy_pass http://gitlab;
   }
 
+  ## If you use relative url, please change ^/ to ^/YOUR_RELATIVE_URL/
   location ~ ^/[\w\.-]+/[\w\.-]+/gitlab-lfs/objects {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
@@ -120,6 +121,7 @@ server {
     return 418;
   }
 
+  ## If you use relative url, please change ^/ to ^/YOUR_RELATIVE_URL/
   location ~ ^/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
@@ -127,6 +129,7 @@ server {
     return 418;
   }
 
+  ## If you use relative url, please change ^/ to ^/YOUR_RELATIVE_URL/
   location ~ ^/[\w\.-]+/[\w\.-]+/repository/archive {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
@@ -134,6 +137,7 @@ server {
     return 418;
   }
 
+  ## If you use relative url, please change ^/ to ^/YOUR_RELATIVE_URL/
   location ~ ^/api/v3/projects/.*/repository/archive {
     client_max_body_size 0;
     # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
@@ -141,6 +145,7 @@ server {
     return 418;
   }
 
+  ## If you use relative url, please change ^/ to ^/YOUR_RELATIVE_URL/
   # Build artifacts should be submitted to this location
   location ~ ^/[\w\.-]+/[\w\.-]+/builds/download {
     client_max_body_size 0;
