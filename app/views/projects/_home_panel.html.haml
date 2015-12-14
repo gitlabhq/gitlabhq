@@ -19,12 +19,11 @@
 
   .cover-controls
     - if can?(current_user, :admin_project, @project)
-      &nbsp;
       = link_to edit_project_path(@project), class: 'btn btn-gray' do
         = icon('pencil')
+      &nbsp; 
     = render 'projects/buttons/notifications'
         
-
   .project-repo-buttons
     .split-one
       = render 'projects/buttons/star'
