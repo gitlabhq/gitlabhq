@@ -15,7 +15,7 @@
 
 require 'spec_helper'
 
-describe Key do
+describe Key, models: true do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end

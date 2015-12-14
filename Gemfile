@@ -18,7 +18,7 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.2'
+gem 'devise',                 '~> 3.5.3'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
@@ -125,8 +125,9 @@ gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
 gem 'sinatra', '~> 1.4.4', require: nil
-gem 'sidekiq', '~> 3.5.0'
-gem 'sidekiq-cron', '~> 0.3.0'
+gem 'sidekiq', '~> 4.0'
+gem 'sidekiq-cron', '~> 0.4.0'
+gem 'redis-namespace'
 
 # HTTP requests
 gem "httparty", '~> 0.13.3'
@@ -199,7 +200,7 @@ gem 'jquery-turbolinks', '~> 2.1.0'
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.0'
 gem 'font-awesome-rails', '~> 4.2'
-gem 'gitlab_emoji',       '~> 0.1'
+gem 'gitlab_emoji',       '~> 0.2.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 3.1.3'

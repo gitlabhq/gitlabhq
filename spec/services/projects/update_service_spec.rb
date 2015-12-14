@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::UpdateService do
+describe Projects::UpdateService, services: true do
   describe :update_by_user do
     before do
       @user = create :user

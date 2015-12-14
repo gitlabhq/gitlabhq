@@ -1,3 +1,4 @@
+@project_issues
 Feature: Project Issues Milestones
   Background:
     Given I sign in as a user

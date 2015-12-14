@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ci
-  describe GitlabCiYamlProcessor do
+  describe GitlabCiYamlProcessor, lib: true do
     let(:path) { 'path' }
     
     describe "#builds_for_ref" do
@@ -532,21 +532,21 @@ module Ci
       end
 
       it "returns errors if job stage is not a string" do
-        config = YAML.dump({ rspec: { script: "test", type: 1, allow_failure: "string" } })
+        config = YAML.dump({ rspec: { script: "test", type: 1 } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
       end
 
       it "returns errors if job stage is not a pre-defined stage" do
-        config = YAML.dump({ rspec: { script: "test", type: "acceptance", allow_failure: "string" } })
+        config = YAML.dump({ rspec: { script: "test", type: "acceptance" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
       end
 
       it "returns errors if job stage is not a defined stage" do
-        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", type: "acceptance", allow_failure: "string" } })
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", type: "acceptance" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test")

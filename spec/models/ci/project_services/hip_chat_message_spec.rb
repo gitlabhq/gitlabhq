@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::HipChatMessage do
+describe Ci::HipChatMessage, models: true do
   subject { Ci::HipChatMessage.new(build) }
 
   let(:commit) { FactoryGirl.create(:ci_commit_with_two_jobs) }

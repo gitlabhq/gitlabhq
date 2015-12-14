@@ -19,7 +19,7 @@
 
 require 'spec_helper'
 
-describe GroupMember do
+describe GroupMember, models: true do
   context 'notification' do
     describe "#after_create" do
       it "should send email to user" do

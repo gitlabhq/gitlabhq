@@ -10,8 +10,9 @@ module Mentionable
 
   module ClassMethods
     # Indicate which attributes of the Mentionable to search for GFM references.
-    def attr_mentionable(*attrs)
-      mentionable_attrs.concat(attrs.map(&:to_s))
+    def attr_mentionable(attr, options = {})
+      attr = attr.to_s
+      mentionable_attrs << [attr, options]
     end
 
     # Accessor for attributes marked mentionable.
@@ -37,19 +38,24 @@ module Mentionable
     "#{friendly_name} #{to_reference(from_project)}"
   end
 
-  # Construct a String that contains possible GFM references.
-  def mentionable_text
-    self.class.mentionable_attrs.map { |attr| send(attr) }.compact.join("\n\n")
-  end
-
   # The GFM reference to this Mentionable, which shouldn't be included in its #references.
   def local_reference
     self
   end
 
-  def all_references(current_user = self.author, text = self.mentionable_text, load_lazy_references: true)
+  def all_references(current_user = self.author, text = nil, load_lazy_references: true)
     ext = Gitlab::ReferenceExtractor.new(self.project, current_user, load_lazy_references: load_lazy_references)
-    ext.analyze(text)
+    
+    if text
+      ext.analyze(text)
+    else
+      self.class.mentionable_attrs.each do |attr, options|
+        text = send(attr)
+        options[:cache_key] = [self, attr] if options.delete(:cache)
+        ext.analyze(text, options)
+      end
+    end
+
     ext
   end
 
@@ -58,9 +64,7 @@ module Mentionable
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def referenced_mentionables(current_user = self.author, text = self.mentionable_text, load_lazy_references: true)
-    return [] if text.blank?
-
+  def referenced_mentionables(current_user = self.author, text = nil, load_lazy_references: true)
     refs = all_references(current_user, text, load_lazy_references: load_lazy_references)
     refs = (refs.issues + refs.merge_requests + refs.commits)
 
@@ -70,8 +74,8 @@ module Mentionable
     refs.reject { |ref| ref == local_reference }
   end
 
-  # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
-  def create_cross_references!(author = self.author, without = [], text = self.mentionable_text)
+  # Create a cross-reference Note for each GFM reference to another Mentionable found in the +mentionable_attrs+.
+  def create_cross_references!(author = self.author, without = [], text = nil)
     refs = referenced_mentionables(author, text)
 
     # We're using this method instead of Array diffing because that requires
@@ -111,7 +115,7 @@ module Mentionable
   def detect_mentionable_changes
     source = (changes.present? ? changes : previous_changes).dup
 
-    mentionable = self.class.mentionable_attrs
+    mentionable = self.class.mentionable_attrs.map { |attr, options| attr }
 
     # Only include changed fields that are mentionable
     source.select { |key, val| mentionable.include?(key) }

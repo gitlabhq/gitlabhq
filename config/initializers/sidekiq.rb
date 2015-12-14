@@ -23,6 +23,14 @@ Sidekiq.configure_server do |config|
   if File.exists?(schedule_file)
     Sidekiq::Cron::Job.load_from_hash YAML.load(ERB.new(File.read(schedule_file)).result)
   end
+
+  # Database pool should be at least `sidekiq_concurrency` + 2
+  # For more info, see: https://github.com/mperham/sidekiq/blob/master/4.0-Upgrade.md
+  config = ActiveRecord::Base.configurations[Rails.env] ||
+                Rails.application.config.database_configuration[Rails.env]
+  config['pool'] = Sidekiq.options[:concurrency] + 2
+  ActiveRecord::Base.establish_connection(config)
+  Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
 end
 
 Sidekiq.configure_client do |config|

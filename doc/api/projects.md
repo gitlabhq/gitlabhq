@@ -398,7 +398,6 @@ Parameters:
 - `user_id` (required) - user_id of owner
 - `name` (required) - new project name
 - `description` (optional) - short project description
-- `default_branch` (optional) - 'master' by default
 - `issues_enabled` (optional)
 - `merge_requests_enabled` (optional)
 - `builds_enabled` (optional)

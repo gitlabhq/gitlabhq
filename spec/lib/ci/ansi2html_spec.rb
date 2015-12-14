@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Ansi2html do
+describe Ci::Ansi2html, lib: true do
   subject { Ci::Ansi2html }
 
   it "prints non-ansi as-is" do

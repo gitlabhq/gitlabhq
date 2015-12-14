@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitTagPushService do
+describe GitTagPushService, services: true do
   include RepoHelpers
 
   let(:user) { create :user }

@@ -1,33 +1,40 @@
-- ci_commit = merge_request.ci_commit
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
     %span.merge-request-title-text
       = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
-    .pull-right.light
-      - if ci_commit
-        = render_ci_status(ci_commit)
+    %ul.controls.light
       - if merge_request.merged?
-        %span
-          = icon('check')
+        %li
           MERGED
       - elsif merge_request.closed?
-        %span
+        %li
           = icon('ban')
           CLOSED
-      - note_count = merge_request.mr_and_commit_notes.user.count
+
+      - if merge_request.ci_commit
+        %li
+          = render_ci_status(merge_request.ci_commit)
+
+      - if merge_request.open? && merge_request.broken?
+        %li
+          = link_to merge_request_path(merge_request), class: "has_tooltip", title: "Cannot be merged automatically", data: {container: 'body'} do
+            = icon('exclamation-triangle')
+
       - if merge_request.assignee
-        &nbsp;
-        = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
+        %li
+          = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
+
+      - note_count = merge_request.mr_and_commit_notes.user.count
       - if note_count > 0
-        &nbsp;
-        = link_to merge_request_path(merge_request) + "#notes" do
-          = icon('comments')
-          = note_count
+        %li
+          = link_to merge_request_path(merge_request) + "#notes" do
+            = icon('comments')
+            = note_count
       - else
-        &nbsp;
-        = link_to merge_request_path(merge_request) + "#notes", class: "merge-request-no-comments" do
-          = icon('comments')
-          = 0
+        %li
+          = link_to merge_request_path(merge_request) + "#notes", class: "merge-request-no-comments" do
+            = icon('comments')
+            = note_count
 
   .merge-request-info
     \##{merge_request.iid} &middot;

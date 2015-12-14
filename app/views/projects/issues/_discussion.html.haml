@@ -5,24 +5,8 @@
     - else
       = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-grouped btn-close js-note-target-close', title: 'Close Issue'
 
-= render 'shared/show_aside'
-
 .gray-content-block.second-block.oneline-block
-  .row
-    .col-md-9
-      .votes-holder.pull-right
-        #votes= render 'votes/votes_block', votable: @issue
-      = render "shared/issuable/participants"
-    .col-md-3
-      .input-group.cross-project-reference
-        %span#cross-project-reference.slead.has_tooltip{title: 'Cross-project reference'}
-          = cross_project_reference(@project, @issue)
-        = clipboard_button(clipboard_target: 'span#cross-project-reference')
+  = render 'votes/votes_block', votable: @issue
 
-.row
-  %section.col-md-9
-    .voting_notes#notes= render 'projects/notes/notes_with_form'
-  %aside.col-md-3
-    .issuable-affix
-      .context
-        = render 'shared/issuable/context', issuable: @issue
+#notes
+  = render 'projects/notes/notes_with_form'

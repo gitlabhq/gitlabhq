@@ -130,6 +130,20 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when 'merge when build succeeds' is executed
+  def self.merge_when_build_succeeds(noteable, project, author, last_commit)
+    body = "Enabled an automatic merge when the build for #{last_commit.to_reference(project)} succeeds"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when 'merge when build succeeds' is canceled
+  def self.cancel_merge_when_build_succeeds(noteable, project, author)
+    body = "Canceled the automatic merge"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when the title of a Noteable is changed
   #
   # noteable  - Noteable object that responds to `title`

@@ -15,7 +15,7 @@
 
 require 'spec_helper'
 
-describe BroadcastMessage do
+describe BroadcastMessage, models: true do
   subject { create(:broadcast_message) }
 
   it { is_expected.to be_valid }

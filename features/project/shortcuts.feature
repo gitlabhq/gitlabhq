@@ -19,7 +19,8 @@ Feature: Project Shortcuts
   @javascript
   Scenario: Navigate to network tab
     Given I press "g" and "n"
-    Then the active main tab should be Network
+    Then the active sub tab should be Network
+    And the active main tab should be Commits
 
   @javascript
   Scenario: Navigate to graphs tab

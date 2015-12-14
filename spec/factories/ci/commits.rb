@@ -2,17 +2,18 @@
 #
 # Table name: commits
 #
-#  id           :integer          not null, primary key
-#  project_id   :integer
-#  ref          :string(255)
-#  sha          :string(255)
-#  before_sha   :string(255)
-#  push_data    :text
-#  created_at   :datetime
-#  updated_at   :datetime
-#  tag          :boolean          default(FALSE)
-#  yaml_errors  :text
-#  committed_at :datetime
+#  id             :integer          not null, primary key
+#  project_id     :integer
+#  ref            :string(255)
+#  sha            :string(255)
+#  before_sha     :string(255)
+#  push_data      :text
+#  created_at     :datetime
+#  updated_at     :datetime
+#  tag            :boolean          default(FALSE)
+#  yaml_errors    :text
+#  committed_at   :datetime
+#  gl_project_id  :integer
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl

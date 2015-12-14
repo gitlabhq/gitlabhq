@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Gitlab::PushDataBuilder' do
+describe 'Gitlab::PushDataBuilder', lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

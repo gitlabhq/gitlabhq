@@ -1,6 +1,6 @@
 class InitSchema < ActiveRecord::Migration
   def up
-    
+
     create_table "events", force: true do |t|
       t.string   "target_type"
       t.integer  "target_id"
@@ -12,14 +12,14 @@ class InitSchema < ActiveRecord::Migration
       t.integer  "action"
       t.integer  "author_id"
     end
-    
+
     add_index "events", ["action"], name: "index_events_on_action", using: :btree
     add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
     add_index "events", ["created_at"], name: "index_events_on_created_at", using: :btree
     add_index "events", ["project_id"], name: "index_events_on_project_id", using: :btree
     add_index "events", ["target_id"], name: "index_events_on_target_id", using: :btree
     add_index "events", ["target_type"], name: "index_events_on_target_type", using: :btree
-    
+
     create_table "issues", force: true do |t|
       t.string   "title"
       t.integer  "assignee_id"
@@ -33,7 +33,7 @@ class InitSchema < ActiveRecord::Migration
       t.text     "description"
       t.integer  "milestone_id"
     end
-    
+
     add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
     add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
     add_index "issues", ["closed"], name: "index_issues_on_closed", using: :btree
@@ -41,7 +41,7 @@ class InitSchema < ActiveRecord::Migration
     add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
     add_index "issues", ["project_id"], name: "index_issues_on_project_id", using: :btree
     add_index "issues", ["title"], name: "index_issues_on_title", using: :btree
-    
+
     create_table "keys", force: true do |t|
       t.integer  "user_id"
       t.datetime "created_at"
@@ -51,11 +51,11 @@ class InitSchema < ActiveRecord::Migration
       t.string   "identifier"
       t.integer  "project_id"
     end
-    
+
     add_index "keys", ["identifier"], name: "index_keys_on_identifier", using: :btree
     add_index "keys", ["project_id"], name: "index_keys_on_project_id", using: :btree
     add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
-    
+
     create_table "merge_requests", force: true do |t|
       t.string   "target_branch",                                    null: false
       t.string   "source_branch",                                    null: false
@@ -66,13 +66,13 @@ class InitSchema < ActiveRecord::Migration
       t.boolean  "closed",                           default: false, null: false
       t.datetime "created_at"
       t.datetime "updated_at"
-      t.text     "st_commits",    limit: 2147483647
-      t.text     "st_diffs",      limit: 2147483647
+      t.text     "st_commits"
+      t.text     "st_diffs"
       t.boolean  "merged",                           default: false, null: false
       t.integer  "state",                            default: 1,     null: false
       t.integer  "milestone_id"
     end
-    
+
     add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
     add_index "merge_requests", ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
     add_index "merge_requests", ["closed"], name: "index_merge_requests_on_closed", using: :btree
@@ -82,7 +82,7 @@ class InitSchema < ActiveRecord::Migration
     add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
     add_index "merge_requests", ["target_branch"], name: "index_merge_requests_on_target_branch", using: :btree
     add_index "merge_requests", ["title"], name: "index_merge_requests_on_title", using: :btree
-    
+
     create_table "milestones", force: true do |t|
       t.string   "title",                       null: false
       t.integer  "project_id",                  null: false
@@ -92,10 +92,10 @@ class InitSchema < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    
+
     add_index "milestones", ["due_date"], name: "index_milestones_on_due_date", using: :btree
     add_index "milestones", ["project_id"], name: "index_milestones_on_project_id", using: :btree
-    
+
     create_table "namespaces", force: true do |t|
       t.string   "name",       null: false
       t.string   "path",       null: false
@@ -104,12 +104,12 @@ class InitSchema < ActiveRecord::Migration
       t.datetime "updated_at"
       t.string   "type"
     end
-    
+
     add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
     add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
     add_index "namespaces", ["path"], name: "index_namespaces_on_path", using: :btree
     add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
-    
+
     create_table "notes", force: true do |t|
       t.text     "note"
       t.string   "noteable_type"
@@ -122,13 +122,13 @@ class InitSchema < ActiveRecord::Migration
       t.string   "commit_id"
       t.integer  "noteable_id"
     end
-    
+
     add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
     add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
     add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
     add_index "notes", ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
     add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
-    
+
     create_table "projects", force: true do |t|
       t.string   "name"
       t.string   "path"
@@ -144,17 +144,17 @@ class InitSchema < ActiveRecord::Migration
       t.boolean  "wiki_enabled",           default: true, null: false
       t.integer  "namespace_id"
     end
-    
+
     add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
     add_index "projects", ["owner_id"], name: "index_projects_on_owner_id", using: :btree
-    
+
     create_table "protected_branches", force: true do |t|
       t.integer  "project_id", null: false
       t.string   "name",       null: false
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    
+
     create_table "services", force: true do |t|
       t.string   "type"
       t.string   "title"
@@ -165,9 +165,9 @@ class InitSchema < ActiveRecord::Migration
       t.boolean  "active",      default: false, null: false
       t.string   "project_url"
     end
-    
+
     add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
-    
+
     create_table "snippets", force: true do |t|
       t.string   "title"
       t.text     "content"
@@ -178,11 +178,11 @@ class InitSchema < ActiveRecord::Migration
       t.string   "file_name"
       t.datetime "expires_at"
     end
-    
+
     add_index "snippets", ["created_at"], name: "index_snippets_on_created_at", using: :btree
     add_index "snippets", ["expires_at"], name: "index_snippets_on_expires_at", using: :btree
     add_index "snippets", ["project_id"], name: "index_snippets_on_project_id", using: :btree
-    
+
     create_table "taggings", force: true do |t|
       t.integer  "tag_id"
       t.integer  "taggable_id"
@@ -192,14 +192,14 @@ class InitSchema < ActiveRecord::Migration
       t.string   "context"
       t.datetime "created_at"
     end
-    
+
     add_index "taggings", ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
     add_index "taggings", ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
-    
+
     create_table "tags", force: true do |t|
       t.string "name"
     end
-    
+
     create_table "user_team_project_relationships", force: true do |t|
       t.integer  "project_id"
       t.integer  "user_team_id"
@@ -207,7 +207,7 @@ class InitSchema < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    
+
     create_table "user_team_user_relationships", force: true do |t|
       t.integer  "user_id"
       t.integer  "user_team_id"
@@ -216,7 +216,7 @@ class InitSchema < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    
+
     create_table "user_teams", force: true do |t|
       t.string   "name"
       t.string   "path"
@@ -224,7 +224,7 @@ class InitSchema < ActiveRecord::Migration
       t.datetime "created_at"
       t.datetime "updated_at"
     end
-    
+
     create_table "users", force: true do |t|
       t.string   "email",                  default: "",    null: false
       t.string   "encrypted_password",     default: "",    null: false
@@ -255,7 +255,7 @@ class InitSchema < ActiveRecord::Migration
       t.string   "provider"
       t.string   "username"
     end
-    
+
     add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
     add_index "users", ["blocked"], name: "index_users_on_blocked", using: :btree
     add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
@@ -263,7 +263,7 @@ class InitSchema < ActiveRecord::Migration
     add_index "users", ["name"], name: "index_users_on_name", using: :btree
     add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
     add_index "users", ["username"], name: "index_users_on_username", using: :btree
-    
+
     create_table "users_projects", force: true do |t|
       t.integer  "user_id",                    null: false
       t.integer  "project_id",                 null: false
@@ -271,11 +271,11 @@ class InitSchema < ActiveRecord::Migration
       t.datetime "updated_at"
       t.integer  "project_access", default: 0, null: false
     end
-    
+
     add_index "users_projects", ["project_access"], name: "index_users_projects_on_project_access", using: :btree
     add_index "users_projects", ["project_id"], name: "index_users_projects_on_project_id", using: :btree
     add_index "users_projects", ["user_id"], name: "index_users_projects_on_user_id", using: :btree
-    
+
     create_table "web_hooks", force: true do |t|
       t.string   "url"
       t.integer  "project_id"
@@ -284,7 +284,7 @@ class InitSchema < ActiveRecord::Migration
       t.string   "type",       default: "ProjectHook"
       t.integer  "service_id"
     end
-    
+
     create_table "wikis", force: true do |t|
       t.string   "title"
       t.text     "content"
@@ -294,10 +294,10 @@ class InitSchema < ActiveRecord::Migration
       t.string   "slug"
       t.integer  "user_id"
     end
-    
+
     add_index "wikis", ["project_id"], name: "index_wikis_on_project_id", using: :btree
     add_index "wikis", ["slug"], name: "index_wikis_on_slug", using: :btree
-    
+
   end
 
   def down

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CreateService do
+describe Projects::CreateService, services: true do
   describe :create_by_user do
     before do
       @user = create :user
@@ -47,6 +47,13 @@ describe Projects::CreateService do
       it { expect(@project).to be_valid }
       it { expect(@project.owner).to eq(@group) }
       it { expect(@project.namespace).to eq(@group) }
+    end
+
+    context 'error handling' do
+      it 'handles invalid options' do
+        @opts.merge!({ default_branch: 'master' } )
+        expect(create_project(@user, @opts)).to eq(nil)
+      end
     end
 
     context 'wiki_enabled creates repository directory' do
