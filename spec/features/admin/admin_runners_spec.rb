@@ -64,7 +64,7 @@ describe "Admin Runners" do
 
   describe 'runners registration token' do
     let!(:token) { current_application_settings.ensure_runners_registration_token }
-    before { visit ci_admin_runners_path }
+    before { visit admin_runners_path }
 
     it 'has a registration token' do
       expect(page).to have_content("Registration token is #{token}")
