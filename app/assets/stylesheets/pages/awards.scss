@@ -12,9 +12,17 @@
     border-color: $border-color;
     cursor: pointer;
 
+    &:hover {
+      background-color: #dce0e5;
+    }
+
     &.active {
       border-color: $border-gray-light;
       background-color: $gray-light;
+
+      &:hover {
+        background-color: #dce0e5;
+      }
 
       .counter {
         font-weight: bold;
@@ -53,7 +61,18 @@
 
       > li {
         cursor: pointer;
-        margin: 5px;
+        width: 30px;
+        height: 30px;
+        text-align: center;
+        @include border-radius(5px);
+
+        img {
+          margin-bottom: 2px;
+        }
+
+        &:hover {
+          background-color: #ccc;
+        }
       }
     }
   }
