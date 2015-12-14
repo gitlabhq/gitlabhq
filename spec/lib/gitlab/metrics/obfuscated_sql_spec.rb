@@ -75,5 +75,13 @@ describe Gitlab::Metrics::ObfuscatedSQL do
         expect(sql.to_s).to eq('SELECT x FROM y WHERE z IN (2 values)')
       end
     end
+
+    if Gitlab::Database.postgresql?
+      it 'replaces double quotes' do
+        sql = described_class.new('SELECT "x" FROM "y"')
+
+        expect(sql.to_s).to eq('SELECT x FROM y')
+      end
+    end
   end
 end

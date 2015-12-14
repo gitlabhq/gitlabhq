@@ -30,9 +30,17 @@ module Gitlab
           regex = Regexp.union(regex, MYSQL_REPLACEMENTS)
         end
 
-        @sql.gsub(regex, '?').gsub(CONSECUTIVE) do |match|
+        sql = @sql.gsub(regex, '?').gsub(CONSECUTIVE) do |match|
           "#{match.count(',') + 1} values"
         end
+
+        # InfluxDB escapes double quotes upon output, so lets get rid of them
+        # whenever we can.
+        if Gitlab::Database.postgresql?
+          sql = sql.gsub('"', '')
+        end
+
+        sql
       end
     end
   end
