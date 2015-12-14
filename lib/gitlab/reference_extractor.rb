@@ -18,7 +18,7 @@ module Gitlab
       @texts << Gitlab::Markdown.render(text, options.merge(project: project))
     end
 
-    %i(user label issue merge_request snippet commit commit_range).each do |type|
+    %i(user label merge_request snippet commit commit_range).each do |type|
       define_method("#{type}s") do
         @references[type] ||= pipeline_result(type)
       end
@@ -26,9 +26,9 @@ module Gitlab
 
     def issues
       if project && project.jira_tracker?
-        references[:external_issue]
+        @references[:external_issue]
       else
-        references[:issue]
+        @references[:issue] ||= pipeline_result(:issue)
       end
     end
 
