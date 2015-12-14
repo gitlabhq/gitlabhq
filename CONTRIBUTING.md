@@ -41,15 +41,45 @@ This was inspired by [an article by Kent C. Dodds](https://medium.com/@kentcdodd
 
 To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/getting-help/).
 
-The [GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md). If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request. When submitting an issue please conform to the issue submission guidelines listed below. Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
+The [GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues) is
+for bugs in the latest GitLab release and feature proposals.
 
-Do not use the issue tracker for feature requests. We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose. Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
+When submitting an issue please conform to the issue submission guidelines listed below.
+Not all issues will be addressed and your issue is more likely to be addressed
+if you submit a merge request which partially or fully addresses the issue.
 
-Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](https://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
+If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq)
+or [Stack Overflow](https://stackoverflow.com/questions/tagged/gitlab) first.
+There are a lot of helpful GitLab users there who may be able to help you quickly.
+If your particular issue turns out to be a bug, it will find its way from there.
+
+Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can.
+
+### Feature proposals
+
+To create a feature proposal for CE and CI, open an issue on the
+[issue tracker of CE](https://gitlab.com/gitlab-org/gitlab-ce/issues).
+
+For feature proposals for EE, open an issue on
+[the issue tracker of EE](https://gitlab.com/gitlab-org/gitlab-ce/issues).
+
+Add the label `feature proposal` to the issue.
+
+Please keep feature proposals as small and simple as possible,
+complex proposals might be edited to make them small and simple.
+
+For changes in the interface, it can be helpful to create a mockup first.
+If you want to create something yourself, consider opening an issue first to
+discuss whether it is interesting to include this in GitLab.
 
 ### Issue tracker guidelines
 
-**[Search the issues](https://gitlab.com/gitlab-org/gitlab-ce/issues)** for similar entries before submitting your own, there's a good chance somebody else had the same issue. Show your support with `:+1:` and/or join the discussion. Please submit issues in the following format (as the first post):
+**[Search the issues](https://gitlab.com/gitlab-org/gitlab-ce/issues)**
+for similar entries before submitting your own,
+there's a good chance somebody else had the same issue or feature proposal.
+Show your support with `:+1:` and/or join the discussion.
+
+Please submit bugs in the following format (as the first post):
 
 1. **Summary:** Summarize your issue in one sentence (what goes wrong, what did you expect to happen)
 1. **Steps to reproduce:** How can we reproduce the issue
@@ -65,7 +95,12 @@ Please send a merge request with a tested solution or a merge request with a fai
 
 ## Merge requests
 
-We welcome merge requests with fixes and improvements to GitLab code, tests, and/or documentation. The features we would really like a merge request for are listed with the [status 'accepting merge requests' on our feature request forum](http://feedback.gitlab.com/forums/176466-general/status/796455) but other improvements are also welcome. If you want to add a new feature that is not marked it is best to first create a feedback issue (if there isn't one already) and leave a comment asking for it to be marked accepting merge requests. Please include screenshots or wireframes if the feature will also change the UI.
+We welcome merge requests with fixes and improvements to GitLab code, tests, and/or documentation. The features we would really like a merge request for are listed with the
+[label 'accepting merge requests' on our issue tracker for CE](https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=Accepting+Merge+Requests)
+and [EE](https://gitlab.com/gitlab-org/gitlab-ee/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=Accepting+Merge+Requests)
+but other improvements are also welcome.
+If you want to add a new feature that is not labeled it is best to first create a feedback issue (if there isn't one already) and leave a comment asking for it to be marked accepting merge requests.
+Please include screenshots or wireframes if the feature will also change the UI.
 
 Merge requests can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests) or [github.com](https://github.com/gitlabhq/gitlabhq/pulls).
 
@@ -89,7 +124,8 @@ If you can, please submit a merge request with the fix or improvements including
 1. The MR description should give a motive for your change and the method you used to achieve it
 1. If the MR changes the UI it should include before and after screenshots
 1. If the MR changes CSS classes please include the list of affected pages `grep css-class ./app -R`
-1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues) and/or [feature requests](http://feedback.gitlab.com/) from the merge request description and leave a comment on them with a link back to the MR
+1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues)
+from the merge request description and leave a comment on them with a link back to the MR
 1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submission
 1. If your MR touches code that executes shell commands, make sure it adheres to the [shell command guidelines](    doc/development/shell_commands.md).
 1. Also have a look at the [shell command guidelines](doc/development/shell_commands.md) if your code reads or opens files, or handles paths to files on disk.
@@ -136,7 +172,7 @@ If you add a dependency in GitLab (such as an operating system package) please c
 1. What does this MR do?
 1. Are there points in the code the reviewer needs to double check?
 1. Why was this MR needed?
-1. What are the relevant issue numbers / [Feature requests](http://feedback.gitlab.com/)?
+1. What are the relevant issue numbers?
 1. Screenshots (if relevant)
 
 ## Contribution acceptance criteria
