@@ -25,13 +25,11 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def ci
-    ci_project = @project.gitlab_ci_project
-
     @charts = {}
-    @charts[:week] = Ci::Charts::WeekChart.new(ci_project)
-    @charts[:month] = Ci::Charts::MonthChart.new(ci_project)
-    @charts[:year] = Ci::Charts::YearChart.new(ci_project)
-    @charts[:build_times] = Ci::Charts::BuildTime.new(ci_project)
+    @charts[:week] = Ci::Charts::WeekChart.new(project)
+    @charts[:month] = Ci::Charts::MonthChart.new(project)
+    @charts[:year] = Ci::Charts::YearChart.new(project)
+    @charts[:build_times] = Ci::Charts::BuildTime.new(project)
   end
 
   def languages

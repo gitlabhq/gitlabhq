@@ -28,9 +28,13 @@
 #  admin_notification_email     :string(255)
 #  shared_runners_enabled       :boolean          default(TRUE), not null
 #  max_artifacts_size           :integer          default(100), not null
+#  runners_registration_token   :string(255)
 #
 
 class ApplicationSetting < ActiveRecord::Base
+  include TokenAuthenticatable
+  add_authentication_token_field :runners_registration_token
+
   CACHE_KEY = 'application_setting.last'
 
   serialize :restricted_visibility_levels
@@ -74,6 +78,8 @@ class ApplicationSetting < ActiveRecord::Base
       end
     end
   end
+
+  before_save :ensure_runners_registration_token
 
   after_commit do
     Rails.cache.write(CACHE_KEY, self)
@@ -129,5 +135,4 @@ class ApplicationSetting < ActiveRecord::Base
         /x)
     self.restricted_signup_domains.reject! { |d| d.empty? }
   end
-
 end

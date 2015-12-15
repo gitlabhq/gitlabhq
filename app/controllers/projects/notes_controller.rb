@@ -13,7 +13,8 @@ class Projects::NotesController < Projects::ApplicationController
     @notes.each do |note|
       notes_json[:notes] << {
         id: note.id,
-        html: note_to_html(note)
+        html: note_to_html(note),
+        valid: note.valid?
       }
     end
 

@@ -7,7 +7,7 @@ class Projects::ServicesController < Projects::ApplicationController
                     :colorize_messages, :channels,
                     :push_events, :issues_events, :merge_requests_events, :tag_push_events,
                     :note_events, :send_from_committer_email, :disable_diffs, :external_wiki_url,
-                    :jira_issue_transition_id,
+                    :jira_issue_transition_id, :build_events, :notify_only_broken_builds, :add_pusher,
                     :notify, :color,
                     :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
                     :multiproject_enabled, :pass_unstable]

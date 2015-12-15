@@ -4,10 +4,10 @@ module Ci
       sha = params[:sha]
       sha ||=
         if params[:ref]
-          project.gl_project.commit(params[:ref]).try(:sha)
+          project.commit(params[:ref]).try(:sha)
         end
 
-      commit = project.commits.ordered.find_by(sha: sha)
+      commit = project.ci_commits.ordered.find_by(sha: sha)
       image_name = image_for_commit(commit)
 
       image_path = Rails.root.join('public/ci', image_name)

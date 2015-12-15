@@ -3,7 +3,6 @@
 
   .panel-heading {
     padding: 7px $gl-padding;
-    line-height: 42px !important;
   }
 
   .panel-body {
@@ -14,4 +13,8 @@
       margin-top: $gl-padding;
     }
   }
+}
+
+.container-blank .panel .panel-heading {
+  line-height: 42px !important;  
 }

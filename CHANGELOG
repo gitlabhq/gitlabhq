@@ -22,6 +22,7 @@ v 8.3.0 (unreleased)
   - Fire update hook from GitLab
   - Style warning about mentioning many people in a comment
   - Fix: sort milestones by due date once again (Greg Smethells)
+  - Migrate all CI::Services and CI::WebHooks to Services and WebHooks
   - Don't show project fork event as "imported"
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info
@@ -52,6 +53,10 @@ v 8.3.0 (unreleased)
   - Display referenced merge request statuses in the issue description (Greg Smethells)
   - Implement new sidebar for issue and merge request pages
   - Emoji picker improvements
+  - Suppress warning about missing `.gitlab-ci.yml` if builds are disabled
+  - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
+  - Persist runners registration token in database
+  - Fix online editor should not remove newlines at the end of the file
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
