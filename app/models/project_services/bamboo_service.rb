@@ -27,10 +27,10 @@ class BambooService < CiService
   validates :build_key, presence: true, if: :activated?
   validates :username,
     presence: true,
-    if: ->(service) { service.activated? && service.password? }
+    if: ->(service) { service.activated? && service.password }
   validates :password,
     presence: true,
-    if: ->(service) { service.activated? && service.username? }
+    if: ->(service) { service.activated? && service.username }
 
   attr_accessor :response
 
