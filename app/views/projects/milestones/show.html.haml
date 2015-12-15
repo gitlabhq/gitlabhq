@@ -18,10 +18,6 @@
         = @milestone.expires_at
     .pull-right
       - if can?(current_user, :admin_milestone, @project)
-        = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped" do
-          %i.fa.fa-pencil-square-o
-          Edit
-
         - if @milestone.active?
           = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-grouped"
         - else
@@ -30,6 +26,10 @@
         = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-remove" do
           %i.fa.fa-trash-o
           Delete
+        
+        = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped" do
+          %i.fa.fa-pencil-square-o
+          Edit
 
   .gray-content-block.second-block
     %h2.issue-title
