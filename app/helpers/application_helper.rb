@@ -326,4 +326,10 @@ module ApplicationHelper
   def truncate_first_line(message, length = 50)
     truncate(message.each_line.first.chomp, length: length) if message
   end
+
+  def unescape_html(content)
+    text = CGI.unescapeHTML(content)
+    text.gsub!('&nbsp;', ' ')
+    text
+  end
 end

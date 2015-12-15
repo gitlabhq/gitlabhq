@@ -1,11 +1,17 @@
 module BlobHelper
-  def highlight(blob_name, blob_content, nowrap: false, continue: false)
-    @formatter ||= Rouge::Formatters::HTMLGitlab.new(
-      nowrap: nowrap,
+  def rouge_formatter(options = {})
+    default_options = {
+      nowrap: false,
       cssclass: 'code highlight',
       lineanchors: true,
       lineanchorsid: 'LC'
-    )
+    }
+
+    Rouge::Formatters::HTMLGitlab.new(default_options.merge!(options))
+  end
+
+  def highlight(blob_name, blob_content, nowrap: false, continue: false)
+    @formatter ||= rouge_formatter(nowrap: nowrap)
 
     begin
       @lexer ||= Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
@@ -16,6 +22,21 @@ module BlobHelper
     end
 
     result
+  end
+
+  def highlight_line(blob_name, content, continue: false)
+    if @previous_blob_name != blob_name
+      @parent  = Rouge::Lexer.guess(filename: blob_name, source: content).new rescue Rouge::Lexers::PlainText.new
+      @lexer   = Rouge::Lexers::GitlabDiff.new(parent_lexer: @parent)
+      @options = Rouge::Lexers::PlainText === @parent ? {} : { continue: continue }
+    end
+
+    @previous_blob_name = blob_name
+    @formatter ||= rouge_formatter(nowrap: true)
+
+    content.sub!(/\A((?:\+|-)\s*)/, '') # Don't format '+' or '-' indicators.
+
+    "#{$1}#{@formatter.format(@lexer.lex(content, @options))}".html_safe
   end
 
   def no_highlight_files
