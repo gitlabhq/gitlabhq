@@ -84,11 +84,11 @@ class Issue < ActiveRecord::Base
   end
 
   def referenced_merge_requests
-    references = [self, *notes].flat_map do |note|
-      note.all_references(load_lazy_references: false).merge_requests
-    end.uniq
-
-    Gitlab::Markdown::ReferenceFilter::LazyReference.load(references).uniq.sort_by(&:iid)
+    Gitlab::ReferenceExtractor.lazily do
+      [self, *notes].flat_map do |note|
+        note.all_references(load_lazy_references: false).merge_requests
+      end
+    end.sort_by(&:iid)
   end
 
   # Reset issue events cache

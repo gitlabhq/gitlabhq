@@ -1,6 +1,7 @@
 # Rake tasks
 
 - [Backup restore](backup_restore.md)
+- [Check](check.md)
 - [Cleanup](cleanup.md)
 - [Features](features.md)
 - [Maintenance](maintenance.md) and self-checks

@@ -54,6 +54,7 @@ v 8.3.0 (unreleased)
   - Suppress warning about missing `.gitlab-ci.yml` if builds are disabled
   - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
   - Persist runners registration token in database
+  - Fix online editor should not remove newlines at the end of the file
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
@@ -61,8 +62,6 @@ v 8.2.3
   - Update documentation for "Guest" permissions
   - Properly convert Emoji-only comments into Award Emojis
   - Enable devise paranoid mode to prevent user enumeration attack
-
-v 8.2.3
   - Webhook payload has an added, modified and removed properties for each commit
   - Fix 500 error when creating a merge request that removes a submodule
 
