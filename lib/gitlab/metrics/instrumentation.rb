@@ -31,6 +31,29 @@ module Gitlab
         instrument(:instance, mod, name)
       end
 
+      # Recursively instruments all subclasses of the given root module.
+      #
+      # This can be used to for example instrument all ActiveRecord models (as
+      # these all inherit from ActiveRecord::Base).
+      #
+      # This method can optionally take a block to pass to `instrument_methods`
+      # and `instrument_instance_methods`.
+      #
+      # root - The root module for which to instrument subclasses. The root
+      #        module itself is not instrumented.
+      def self.instrument_class_hierarchy(root, &block)
+        visit = root.subclasses
+
+        until visit.empty?
+          klass = visit.pop
+
+          instrument_methods(klass, &block)
+          instrument_instance_methods(klass, &block)
+
+          klass.subclasses.each { |c| visit << c }
+        end
+      end
+
       # Instruments all public methods of a module.
       #
       # This method optionally takes a block that can be used to determine if a

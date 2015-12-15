@@ -133,6 +133,39 @@ describe Gitlab::Metrics::Instrumentation do
     end
   end
 
+  describe '.instrument_class_hierarchy' do
+    before do
+      allow(Gitlab::Metrics).to receive(:enabled?).and_return(true)
+
+      @child1 = Class.new(@dummy) do
+        def self.child1_foo; end
+        def child1_bar; end
+      end
+
+      @child2 = Class.new(@child1) do
+        def self.child2_foo; end
+        def child2_bar; end
+      end
+    end
+
+    it 'recursively instruments a class hierarchy' do
+      described_class.instrument_class_hierarchy(@dummy)
+
+      expect(@child1).to respond_to(:_original_child1_foo)
+      expect(@child2).to respond_to(:_original_child2_foo)
+
+      expect(@child1.method_defined?(:_original_child1_bar)).to eq(true)
+      expect(@child2.method_defined?(:_original_child2_bar)).to eq(true)
+    end
+
+    it 'does not instrument the root module' do
+      described_class.instrument_class_hierarchy(@dummy)
+
+      expect(@dummy).to_not respond_to(:_original_foo)
+      expect(@dummy.method_defined?(:_original_bar)).to eq(false)
+    end
+  end
+
   describe '.instrument_methods' do
     before do
       allow(Gitlab::Metrics).to receive(:enabled?).and_return(true)
