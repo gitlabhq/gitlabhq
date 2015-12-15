@@ -225,6 +225,7 @@ Parameters:
 - `description` (optional)       - Description of MR
 - `target_project_id` (optional) - The target project (numeric id)
 - `labels` (optional)            - Labels for MR as a comma-separated list
+- `milestone_id` (optional)      - Milestone ID
 
 ```json
 {
@@ -277,6 +278,7 @@ Parameters:
 - `description`                 - Description of MR
 - `state_event`                 - New state (close|reopen|merge)
 - `labels` (optional)           - Labels for MR as a comma-separated list
+- `milestone_id` (optional)     - Milestone ID
 
 ```json
 {
