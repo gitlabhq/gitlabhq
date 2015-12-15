@@ -34,7 +34,8 @@ class PagesWorker
       # We manually extract the archive and limit the archive size with dd
       results = Open3.pipeline(%W(gunzip -c #{artifacts}),
                                %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                               %W(tar -x -C #{temp_path} public/))
+                               %W(tar -x -C #{temp_path} public/),
+                               err: '/dev/null')
       return unless results.compact.all?(&:success?)
 
       # Check if we did extract public directory

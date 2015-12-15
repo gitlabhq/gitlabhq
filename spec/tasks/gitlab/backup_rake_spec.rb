@@ -16,7 +16,7 @@ describe 'gitlab:app namespace rake task' do
   end
 
   def reenable_backup_sub_tasks
-    %w{db repo uploads builds artifacts lfs}.each do |subtask|
+    %w{db repo uploads builds artifacts pages lfs}.each do |subtask|
       Rake::Task["gitlab:backup:#{subtask}:create"].reenable
     end
   end
@@ -131,7 +131,7 @@ describe 'gitlab:app namespace rake task' do
 
     it 'should delete temp directories' do
       temp_dirs = Dir.glob(
-        File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,lfs}')
+        File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,pages,lfs}')
       )
 
       expect(temp_dirs).to be_empty
