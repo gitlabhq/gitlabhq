@@ -5,10 +5,9 @@ describe 'Triggers' do
   before { login_as(user) }
 
   before do
-    @project = FactoryGirl.create :ci_project
-    @gl_project = @project.gl_project
-    @gl_project.team << [user, :master]
-    visit namespace_project_triggers_path(@gl_project.namespace, @gl_project)
+    @project = FactoryGirl.create :empty_project
+    @project.team << [user, :master]
+    visit namespace_project_triggers_path(@project.namespace, @project)
   end
 
   context 'create a trigger' do

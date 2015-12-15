@@ -69,8 +69,10 @@ class User < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Referable
   include Sortable
-  include TokenAuthenticatable
   include CaseSensitivity
+  include TokenAuthenticatable
+
+  add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
@@ -135,7 +137,7 @@ class User < ActiveRecord::Base
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_many :approvals, dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
-  has_many :ci_builds,                dependent: :nullify, class_name: 'Ci::Build'
+  has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
 
 
   #
@@ -801,10 +803,9 @@ class User < ActiveRecord::Base
 
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject.joins(:project).
-        where("ci_projects.gitlab_id IN (#{ci_projects_union.to_sql})").
+      runner_ids = Ci::RunnerProject.
+        where("ci_runner_projects.gl_project_id IN (#{ci_projects_union.to_sql})").
         select(:runner_id)
-
       Ci::Runner.specific.where(id: runner_ids)
     end
   end

@@ -57,5 +57,6 @@ module API
     mount Keys
     mount Tags
     mount LicenseInfo
+    mount Triggers
   end
 end

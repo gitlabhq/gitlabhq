@@ -7,15 +7,15 @@ describe "Builds" do
     login_as(:user)
     @commit = FactoryGirl.create :ci_commit
     @build = FactoryGirl.create :ci_build, commit: @commit
-    @gl_project = @commit.project.gl_project
-    @gl_project.team << [@user, :master]
+    @project = @commit.project
+    @project.team << [@user, :master]
   end
 
   describe "GET /:project/builds" do
     context "Running scope" do
       before do
         @build.run!
-        visit namespace_project_builds_path(@gl_project.namespace, @gl_project)
+        visit namespace_project_builds_path(@project.namespace, @project)
       end
 
       it { expect(page).to have_content 'Running' }
@@ -28,7 +28,7 @@ describe "Builds" do
     context "Finished scope" do
       before do
         @build.run!
-        visit namespace_project_builds_path(@gl_project.namespace, @gl_project, scope: :finished)
+        visit namespace_project_builds_path(@project.namespace, @project, scope: :finished)
       end
 
       it { expect(page).to have_content 'No builds to show' }
@@ -37,8 +37,8 @@ describe "Builds" do
 
     context "All builds" do
       before do
-        @gl_project.ci_builds.running_or_pending.each(&:success)
-        visit namespace_project_builds_path(@gl_project.namespace, @gl_project, scope: :all)
+        @project.builds.running_or_pending.each(&:success)
+        visit namespace_project_builds_path(@project.namespace, @project, scope: :all)
       end
 
       it { expect(page).to have_content 'All' }
@@ -52,7 +52,7 @@ describe "Builds" do
   describe "POST /:project/builds/:id/cancel_all" do
     before do
       @build.run!
-      visit namespace_project_builds_path(@gl_project.namespace, @gl_project)
+      visit namespace_project_builds_path(@project.namespace, @project)
       click_link "Cancel running"
     end
 
@@ -62,7 +62,7 @@ describe "Builds" do
 
   describe "GET /:project/builds/:id" do
     before do
-      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      visit namespace_project_build_path(@project.namespace, @project, @build)
     end
 
     it { expect(page).to have_content @commit.sha[0..7] }
@@ -72,7 +72,7 @@ describe "Builds" do
     context "Download artifacts" do
       before do
         @build.update_attributes(artifacts_file: artifacts_file)
-        visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+        visit namespace_project_build_path(@project.namespace, @project, @build)
       end
 
       it { expect(page).to have_content 'Download artifacts' }
@@ -82,7 +82,7 @@ describe "Builds" do
   describe "POST /:project/builds/:id/cancel" do
     before do
       @build.run!
-      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      visit namespace_project_build_path(@project.namespace, @project, @build)
       click_link "Cancel"
     end
 
@@ -93,7 +93,7 @@ describe "Builds" do
   describe "POST /:project/builds/:id/retry" do
     before do
       @build.run!
-      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      visit namespace_project_build_path(@project.namespace, @project, @build)
       click_link "Cancel"
       click_link 'Retry'
     end
@@ -105,7 +105,7 @@ describe "Builds" do
   describe "GET /:project/builds/:id/download" do
     before do
       @build.update_attributes(artifacts_file: artifacts_file)
-      visit namespace_project_build_path(@gl_project.namespace, @gl_project, @build)
+      visit namespace_project_build_path(@project.namespace, @project, @build)
       click_link 'Download artifacts'
     end
 

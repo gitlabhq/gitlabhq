@@ -71,18 +71,3 @@
           = icon('retweet fw')
           %span
             Triggers
-      = nav_link path: 'ci_web_hooks#index' do
-        = link_to namespace_project_ci_web_hooks_path(@project.namespace, @project), title: 'CI Web Hooks' do
-          = icon('link fw')
-          %span
-            CI Web Hooks
-      = nav_link path: 'ci_settings#edit' do
-        = link_to edit_namespace_project_ci_settings_path(@project.namespace, @project), title: 'CI Settings' do
-          = icon('building fw')
-          %span
-            CI Settings
-      = nav_link controller: 'ci_services' do
-        = link_to namespace_project_ci_services_path(@project.namespace, @project), title: 'CI Services' do
-          = icon('share fw')
-          %span
-            CI Services

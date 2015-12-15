@@ -212,6 +212,9 @@ class ProjectsController < ApplicationController
   def project_params
     params.require(:project).permit(
       :avatar,
+      :build_allow_git_fetch,
+      :build_coverage_regex,
+      :build_timeout_in_minutes,
       :builds_enabled,
       :default_branch,
       :description,
@@ -224,6 +227,7 @@ class ProjectsController < ApplicationController
       :name,
       :namespace_id,
       :path,
+      :runners_token,
       :snippets_enabled,
       :tag_list,
       :visibility_level,

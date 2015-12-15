@@ -5,9 +5,8 @@ describe Ci::API::API do
 
   describe 'POST /projects/:project_id/refs/:ref/trigger' do
     let!(:trigger_token) { 'secure token' }
-    let!(:gl_project) { FactoryGirl.create(:project) }
-    let!(:project) { gl_project.ensure_gitlab_ci_project }
-    let!(:project2) { FactoryGirl.create(:ci_project) }
+    let!(:project) { FactoryGirl.create(:project, ci_id: 10) }
+    let!(:project2) { FactoryGirl.create(:empty_project, ci_id: 11) }
     let!(:trigger) { FactoryGirl.create(:ci_trigger, project: project, token: trigger_token) }
     let(:options) do
       {
@@ -21,7 +20,7 @@ describe Ci::API::API do
 
     context 'Handles errors' do
       it 'should return bad request if token is missing' do
-        post ci_api("/projects/#{project.id}/refs/master/trigger")
+        post ci_api("/projects/#{project.ci_id}/refs/master/trigger")
         expect(response.status).to eq(400)
       end
 
@@ -31,23 +30,23 @@ describe Ci::API::API do
       end
 
       it 'should return unauthorized if token is for different project' do
-        post ci_api("/projects/#{project2.id}/refs/master/trigger"), options
+        post ci_api("/projects/#{project2.ci_id}/refs/master/trigger"), options
         expect(response.status).to eq(401)
       end
     end
 
     context 'Have a commit' do
-      let(:commit) { project.commits.last }
+      let(:commit) { project.ci_commits.last }
 
       it 'should create builds' do
-        post ci_api("/projects/#{project.id}/refs/master/trigger"), options
+        post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options
         expect(response.status).to eq(201)
         commit.builds.reload
         expect(commit.builds.size).to eq(2)
       end
 
       it 'should return bad request with no builds created if there\'s no commit for that ref' do
-        post ci_api("/projects/#{project.id}/refs/other-branch/trigger"), options
+        post ci_api("/projects/#{project.ci_id}/refs/other-branch/trigger"), options
         expect(response.status).to eq(400)
         expect(json_response['message']).to eq('No builds created')
       end
@@ -58,19 +57,19 @@ describe Ci::API::API do
         end
 
         it 'should validate variables to be a hash' do
-          post ci_api("/projects/#{project.id}/refs/master/trigger"), options.merge(variables: 'value')
+          post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: 'value')
           expect(response.status).to eq(400)
           expect(json_response['message']).to eq('variables needs to be a hash')
         end
 
         it 'should validate variables needs to be a map of key-valued strings' do
-          post ci_api("/projects/#{project.id}/refs/master/trigger"), options.merge(variables: { key: %w(1 2) })
+          post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: { key: %w(1 2) })
           expect(response.status).to eq(400)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
         end
 
         it 'create trigger request with variables' do
-          post ci_api("/projects/#{project.id}/refs/master/trigger"), options.merge(variables: variables)
+          post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: variables)
           expect(response.status).to eq(201)
           commit.builds.reload
           expect(commit.builds.first.trigger_request.variables).to eq(variables)

@@ -37,6 +37,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content new_gitignore_content
   end
 
+  step 'I should see its content with new lines preserved at end of file' do
+    expect(evaluate_script('blob.editor.getValue()')).to eq "Sample\n\n\n"
+  end
+
   step 'I click link "Raw"' do
     click_link 'Raw'
   end
@@ -60,6 +64,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I edit code' do
     set_new_content
+  end
+
+  step 'I edit code with new lines at end of file' do
+    execute_script('blob.editor.setValue("Sample\n\n\n")')
   end
 
   step 'I fill the new file name' do

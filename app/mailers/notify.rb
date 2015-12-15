@@ -8,6 +8,7 @@ class Notify < BaseMailer
   include Emails::Projects
   include Emails::Profile
   include Emails::Groups
+  include Emails::Builds
 
   add_template_helper MergeRequestsHelper
   add_template_helper EmailsHelper

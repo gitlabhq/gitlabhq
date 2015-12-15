@@ -13,17 +13,16 @@
 #  tag           :boolean          default(FALSE)
 #  yaml_errors   :text
 #  committed_at  :datetime
-#  gl_project_id :integer
+#  project_id :integer
 #
 
 require 'spec_helper'
 
 describe Ci::Commit, models: true do
-  let(:project) { FactoryGirl.create :ci_project }
-  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
-  let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+  let(:project) { FactoryGirl.create :empty_project }
+  let(:commit) { FactoryGirl.create :ci_commit, project: project }
 
-  it { is_expected.to belong_to(:gl_project) }
+  it { is_expected.to belong_to(:project) }
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:builds) }
@@ -37,16 +36,16 @@ describe Ci::Commit, models: true do
     let(:project) { FactoryGirl.create :empty_project }
 
     it 'returns ordered list of commits' do
-      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
+      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
+      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: project
       expect(project.ci_commits.ordered).to eq([commit2, commit1])
     end
 
     it 'returns commits ordered by committed_at and id, with nulls last' do
-      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, gl_project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
-      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, gl_project: project
-      commit4 = FactoryGirl.create :ci_commit, committed_at: nil, gl_project: project
+      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
+      commit2 = FactoryGirl.create :ci_commit, committed_at: nil, project: project
+      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: project
+      commit4 = FactoryGirl.create :ci_commit, committed_at: nil, project: project
       expect(project.ci_commits.ordered).to eq([commit2, commit4, commit3, commit1])
     end
   end
@@ -162,7 +161,7 @@ describe Ci::Commit, models: true do
   end
 
   describe :create_builds do
-    let!(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+    let!(:commit) { FactoryGirl.create :ci_commit, project: project }
 
     def create_builds(trigger_request = nil)
       commit.create_builds('master', false, nil, trigger_request)
@@ -390,9 +389,8 @@ describe Ci::Commit, models: true do
   end
 
   describe "coverage" do
-    let(:project) { FactoryGirl.create :ci_project, coverage_regex: "/.*/" }
-    let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
-    let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+    let(:project) { FactoryGirl.create :empty_project, build_coverage_regex: "/.*/" }
+    let(:commit) { FactoryGirl.create :ci_commit, project: project }
 
     it "calculates average when there are two builds with coverage" do
       FactoryGirl.create :ci_build, name: "rspec", coverage: 30, commit: commit

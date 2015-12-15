@@ -13,6 +13,7 @@ describe Notify do
   let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
+  let(:build) { create(:ci_build) }
 
   before(:each) do
     ActionMailer::Base.deliveries.clear
@@ -908,6 +909,34 @@ describe Notify do
     it 'includes unsubscribe link' do
       unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
       should have_body_text(unsubscribe_link)
+    end
+  end
+
+  describe 'build success' do
+    before { build.success }
+
+    subject { Notify.build_success_email(build.id, 'wow@example.com') }
+
+    it 'has the correct subject' do
+      should have_subject /Build success for/
+    end
+
+    it 'contains name of project' do
+      should have_body_text build.project_name
+    end
+  end
+
+  describe 'build fail' do
+    before { build.drop }
+
+    subject { Notify.build_fail_email(build.id, 'wow@example.com') }
+
+    it 'has the correct subject' do
+      should have_subject /Build failed for/
+    end
+
+    it 'contains name of project' do
+      should have_body_text build.project_name
     end
   end
 end
