@@ -5,6 +5,10 @@ describe UpdatePagesService, services: true do
   let(:data) { Gitlab::BuildDataBuilder.build(build) }
   let(:service) { UpdatePagesService.new(data) }
 
+  before do
+    allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+  end
+
   context 'execute asynchronously for pages job' do
     before { build.name = 'pages' }
 
