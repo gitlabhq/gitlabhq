@@ -2,13 +2,14 @@
 = render "header_title"
 
 .issuable-details
-  .page-title
+  .issuable-title
     .issue-box{ class: "issue-box-#{@milestone.closed? ? 'closed' : 'open'}" }
       - if @milestone.closed?
         Closed
       - else
         Open
-    Milestone #{@milestone.title}
+    %span.issuable-id
+      Milestone #{@milestone.title}
     .pull-right
       - if can?(current_user, :admin_milestones, @group)
         - if @milestone.active?
@@ -16,7 +17,7 @@
         - else
           = link_to 'Reopen Milestone', group_milestone_path(@group, @milestone.safe_title, title: @milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
 
-  .gray-content-block.middle-block
+  .gray-content-block.second-block
     %h2.issue-title
       = markdown escape_once(@milestone.title), pipeline: :single_line
 

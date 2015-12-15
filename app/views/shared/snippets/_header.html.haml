@@ -1,9 +1,10 @@
 .issuable-details
-  .page-title
+  .issuable-title
     .snippet-box.has_tooltip{class: visibility_level_color(@snippet.visibility_level), title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: 'body' }}
       = visibility_level_icon(@snippet.visibility_level, fw: false)
       = visibility_level_label(@snippet.visibility_level)
-    Snippet ##{@snippet.id}
+    %span.issuable-id
+      Snippet ##{@snippet.id}
     %span.creator
       &middot; created by #{link_to_member(@project, @snippet.author, size: 24)}
       &middot;
@@ -20,6 +21,6 @@
       - else
         = render "snippets/actions"
 
-  .gray-content-block.middle-block
+  .gray-content-block.second-block
     %h2.issue-title
       = markdown escape_once(@snippet.title), pipeline: :single_line
