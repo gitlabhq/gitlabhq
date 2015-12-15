@@ -11,7 +11,7 @@ module Banzai
       end
 
       def lazily(values = nil, &block)
-        return values || block.call if lazy?
+        return (values || block.call).uniq if lazy?
 
         begin
           Thread.current[LAZY_KEY] = true
