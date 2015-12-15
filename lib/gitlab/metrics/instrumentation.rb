@@ -33,23 +33,38 @@ module Gitlab
 
       # Instruments all public methods of a module.
       #
+      # This method optionally takes a block that can be used to determine if a
+      # method should be instrumented or not. The block is passed the receiving
+      # module and an UnboundMethod. If the block returns a non truthy value the
+      # method is not instrumented.
+      #
       # mod - The module to instrument.
       def self.instrument_methods(mod)
         mod.public_methods(false).each do |name|
           method = mod.method(name)
 
-          instrument_method(mod, name) if method.owner == mod.singleton_class
+          if method.owner == mod.singleton_class
+            if !block_given? || block_given? && yield(mod, method)
+              instrument_method(mod, name)
+            end
+          end
         end
       end
 
       # Instruments all public instance methods of a module.
+      #
+      # See `instrument_methods` for more information.
       #
       # mod - The module to instrument.
       def self.instrument_instance_methods(mod)
         mod.public_instance_methods(false).each do |name|
           method = mod.instance_method(name)
 
-          instrument_instance_method(mod, name) if method.owner == mod
+          if method.owner == mod
+            if !block_given? || block_given? && yield(mod, method)
+              instrument_instance_method(mod, name)
+            end
+          end
         end
       end
 

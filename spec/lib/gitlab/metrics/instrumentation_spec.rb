@@ -132,6 +132,14 @@ describe Gitlab::Metrics::Instrumentation do
 
       expect(@dummy).to_not respond_to(:_original_kittens)
     end
+
+    it 'can take a block to determine if a method should be instrumented' do
+      described_class.instrument_methods(@dummy) do
+        false
+      end
+
+      expect(@dummy).to_not respond_to(:_original_foo)
+    end
   end
 
   describe '.instrument_instance_methods' do
@@ -156,6 +164,14 @@ describe Gitlab::Metrics::Instrumentation do
       described_class.instrument_instance_methods(@dummy)
 
       expect(@dummy.method_defined?(:_original_kittens)).to eq(false)
+    end
+
+    it 'can take a block to determine if a method should be instrumented' do
+      described_class.instrument_instance_methods(@dummy) do
+        false
+      end
+
+      expect(@dummy.method_defined?(:_original_bar)).to eq(false)
     end
   end
 end
