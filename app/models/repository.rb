@@ -157,9 +157,12 @@ class Repository
   end
   
   def diverging_commit_counts(branch)
+    root_ref_hash = raw_repository.rev_parse_target(root_ref).oid
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
-      number_commits_behind = commits_between(branch.name, root_ref).size
-      number_commits_ahead = commits_between(root_ref, branch.name).size
+      # Rugged seems to throw a `ReferenceError` when given branch_names rather
+      # than SHA-1 hashes
+      number_commits_behind = commits_between(branch.target, root_ref_hash).size
+      number_commits_ahead = commits_between(root_ref_hash, branch.target).size
       
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
