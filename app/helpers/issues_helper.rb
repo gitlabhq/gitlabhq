@@ -121,6 +121,6 @@ module IssuesHelper
     end
   end
 
-  # Required for Banzai::IssueReferenceFilter
+  # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
 end
