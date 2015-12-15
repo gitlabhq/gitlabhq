@@ -104,8 +104,12 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'commit has ci status' do
     @project.enable_ci
-    ci_commit = create :ci_commit, gl_project: @project, sha: sample_commit.id
+    ci_commit = create :ci_commit, project: @project, sha: sample_commit.id
     create :ci_build, commit: ci_commit
+  end
+
+  step 'repository contains ".gitlab-ci.yml" file' do
+    allow_any_instance_of(Ci::Commit).to receive(:ci_yaml_file).and_return(String.new)
   end
 
   step 'I see commit ci info' do

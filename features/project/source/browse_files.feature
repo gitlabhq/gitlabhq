@@ -35,6 +35,17 @@ Feature: Project Source Browse Files
     And I should see its new content
 
   @javascript
+  Scenario: I can create and commit file with new lines at the end of file
+    Given I click on "New file" link in repo
+    And I edit code with new lines at end of file
+    And I fill the new file name
+    And I fill the commit message
+    And I click on "Commit Changes"
+    Then I am redirected to the new file
+    And I click button "Edit"
+    And I should see its content with new lines preserved at end of file
+
+  @javascript
   Scenario: I can upload file and commit
     Given I click on "Upload file" link in repo
     And I upload a new text file

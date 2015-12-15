@@ -81,8 +81,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def builds
-    @ci_project = @merge_request.source_project.gitlab_ci_project
-
     respond_to do |format|
       format.html { render 'show' }
       format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_builds') } }
@@ -106,7 +104,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @first_commit = @merge_request.first_commit
     @diffs = @merge_request.compare_diffs
 
-    @ci_project = @source_project.gitlab_ci_project
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit
 
@@ -279,8 +276,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_show_vars
-    @participants = @merge_request.participants(current_user)
-
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
     @notes = @merge_request.mr_and_commit_notes.nonawards.inc_author.fresh

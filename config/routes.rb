@@ -24,43 +24,10 @@ Rails.application.routes.draw do
     resource :lint, only: [:show, :create]
 
     resources :projects do
-      collection do
-        post :add
-        get :disabled
-      end
-
       member do
         get :status, to: 'projects#badge'
         get :integration
-        post :toggle_shared_runners
       end
-
-      resources :runner_projects, only: [:create, :destroy]
-    end
-
-    resource :user_sessions do
-      get :auth
-      get :callback
-    end
-
-    namespace :admin do
-      resources :runners, only: [:index, :show, :update, :destroy] do
-        member do
-          put :assign_all
-          get :resume
-          get :pause
-        end
-      end
-
-      resources :events, only: [:index]
-
-      resources :projects do
-        resources :runner_projects
-      end
-
-      resources :builds, only: :index
-
-      resource :application_settings, only: [:show, :update]
     end
 
     root to: 'projects#index'
@@ -271,14 +238,30 @@ Rails.application.routes.draw do
         member do
           put :transfer
         end
+
+        resources :runner_projects
       end
     end
 
     resource :application_settings, only: [:show, :update] do
       resources :services
+      put :reset_runners_token
     end
 
     resources :labels
+
+    resources :runners, only: [:index, :show, :update, :destroy] do
+      member do
+        get :resume
+        get :pause
+      end
+    end
+
+    resources :builds, only: :index do
+      collection do
+        post :cancel_all
+      end
+    end
 
     root to: 'dashboard#index'
   end
@@ -595,18 +578,6 @@ Rails.application.routes.draw do
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
-        resource :ci_settings, only: [:edit, :update, :destroy]
-        resources :ci_web_hooks, only: [:index, :create, :destroy] do
-          member do
-            get :test
-          end
-        end
-
-        resources :ci_services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
-          member do
-            get :test
-          end
-        end
 
         resources :builds, only: [:index, :show] do
           collection do
@@ -685,7 +656,13 @@ Rails.application.routes.draw do
             get :resume
             get :pause
           end
+
+          collection do
+            post :toggle_shared_runners
+          end
         end
+
+        resources :runner_projects, only: [:create, :destroy]
       end
     end
   end

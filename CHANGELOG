@@ -11,6 +11,7 @@ v 8.3.0 (unreleased)
   - Update project repositorize size and commit count during import:repos task (Stan Hu)
   - Fix API setting of 'public' attribute to false will make a project private (Stan Hu)
   - Handle and report SSL errors in Web hook test (Stan Hu)
+  - Bump Redis requirement to 2.8 for Sidekiq 4 (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
@@ -20,6 +21,7 @@ v 8.3.0 (unreleased)
   - Fire update hook from GitLab
   - Style warning about mentioning many people in a comment
   - Fix: sort milestones by due date once again (Greg Smethells)
+  - Migrate all CI::Services and CI::WebHooks to Services and WebHooks
   - Don't show project fork event as "imported"
   - Add API endpoint to fetch merge request commits list
   - Expose events API with comment information and author info
@@ -45,6 +47,14 @@ v 8.3.0 (unreleased)
   - Accept COPYING,COPYING.lesser, and licence as license file (Zeger-Jan van de Weg)
   - Fix emoji aliases problem
   - Fix award-emojis Flash alert's width
+  - Fix deleting notes on a merge request diff
+  - Display referenced merge request statuses in the issue description (Greg Smethells)
+  - Implement new sidebar for issue and merge request pages
+  - Emoji picker improvements
+  - Suppress warning about missing `.gitlab-ci.yml` if builds are disabled
+  - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
+  - Persist runners registration token in database
+  - Fix online editor should not remove newlines at the end of the file
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)

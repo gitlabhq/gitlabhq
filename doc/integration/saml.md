@@ -38,7 +38,8 @@ First configure SAML 2.0 support in GitLab, then register the GitLab application
                    idp_sso_target_url: 'https://login.example.com/idp',
                    issuer: 'https://gitlab.example.com',
                    name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-                 }
+                 },
+          "label" => "Company Login" # optional label for SAML login button, defaults to "Saml"
         }
       ]
     ```

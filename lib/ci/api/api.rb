@@ -30,9 +30,7 @@ module Ci
       helpers Gitlab::CurrentSettings
 
       mount Builds
-      mount Commits
       mount Runners
-      mount Projects
       mount Triggers
     end
   end

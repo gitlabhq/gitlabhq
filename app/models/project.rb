@@ -56,6 +56,7 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+  default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -77,10 +78,10 @@ class Project < ActiveRecord::Base
 
   # Project services
   has_many :services
-  has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
+  has_one :builds_email_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
@@ -121,14 +122,21 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
-  has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
-  has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
+
+  has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
+  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
+  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
+  has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
+  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
+
+  accepts_nested_attributes_for :variables, allow_destroy: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -160,6 +168,11 @@ class Project < ActiveRecord::Base
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+
+  before_validation :set_runners_token_token
+  def set_runners_token_token
+    self.runners_token = SecureRandom.hex(15) if self.runners_token.blank?
+  end
 
   mount_uploader :avatar, AvatarUploader
 
@@ -254,6 +267,10 @@ class Project < ActiveRecord::Base
 
       projects.where('projects.path' => project_path).take ||
         projects.iwhere('projects.path' => project_path).take
+    end
+
+    def find_by_ci_id(id)
+      find_by(ci_id: id.to_i)
     end
 
     def visibility_levels
@@ -790,28 +807,6 @@ class Project < ActiveRecord::Base
     ci_commit(sha) || ci_commits.create(sha: sha)
   end
 
-  def ensure_gitlab_ci_project
-    gitlab_ci_project || create_gitlab_ci_project(
-      shared_runners_enabled: current_application_settings.shared_runners_enabled
-    )
-  end
-
-  # TODO: this should be migrated to Project table,
-  # the same as issues_enabled
-  def builds_enabled
-    gitlab_ci_service && gitlab_ci_service.active
-  end
-
-  def builds_enabled?
-    builds_enabled
-  end
-
-  def builds_enabled=(value)
-    service = gitlab_ci_service || create_gitlab_ci_service
-    service.active = value
-    service.save
-  end
-
   def enable_ci
     self.builds_enabled = true
   end
@@ -824,5 +819,35 @@ class Project < ActiveRecord::Base
 
       forked_project_link.destroy
     end
+  end
+
+  def any_runners?(&block)
+    if runners.active.any?(&block)
+      return true
+    end
+
+    shared_runners_enabled? && Ci::Runner.shared.active.any?(&block)
+  end
+
+  def valid_runners_token? token
+    self.runners_token && self.runners_token == token
+  end
+
+  # TODO (ayufan): For now we use runners_token (backward compatibility)
+  # In 8.4 every build will have its own individual token valid for time of build
+  def valid_build_token? token
+    self.builds_enabled? && self.runners_token && self.runners_token == token
+  end
+
+  def build_coverage_enabled?
+    build_coverage_regex.present?
+  end
+
+  def build_timeout_in_minutes
+    build_timeout / 60
+  end
+
+  def build_timeout_in_minutes=(value)
+    self.build_timeout = value.to_i * 60
   end
 end

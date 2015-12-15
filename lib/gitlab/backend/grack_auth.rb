@@ -77,7 +77,9 @@ module Grack
       if project && matched_login.present? && git_cmd == 'git-upload-pack'
         underscored_service = matched_login['s'].underscore
 
-        if Service.available_services_names.include?(underscored_service)
+        if underscored_service == 'gitlab_ci'
+          return project && project.valid_build_token?(password)
+        elsif Service.available_services_names.include?(underscored_service)
           service_method = "#{underscored_service}_service"
           service = project.send(service_method)
 
