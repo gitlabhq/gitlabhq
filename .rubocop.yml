@@ -979,6 +979,12 @@ Rails/ActionFilter:
   Description: 'Enforces consistent use of action filter methods.'
   Enabled: true
 
+Rails/Date:
+  Description: >-
+                  Checks the correct usage of date aware methods,
+                  such as Date.today, Date.current etc.
+  Enabled: false
+
 Rails/DefaultScope:
   Description: 'Checks if the argument passed to default_scope is a block.'
   Enabled: false
