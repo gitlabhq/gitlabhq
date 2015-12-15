@@ -171,8 +171,6 @@ module Gitlab
         when /\AMilestone:/
           "#fee3ff"
 
-        when *@closed_statuses.map { |s| nice_status_name(s) }
-          "#cfcfcf"
         when "Status: New"
           "#428bca"
         when "Status: Accepted"
@@ -199,6 +197,8 @@ module Gitlab
           "#8e44ad"
         when "Type: Other"
           "#7f8c8d"
+        when *@closed_statuses.map { |s| nice_status_name(s) }
+          "#cfcfcf"
         else
           "#e2e2e2"
         end
@@ -227,7 +227,7 @@ module Gitlab
         s = s.gsub("`", "\\`")
 
         # Carriage returns make me sad
-        s = s.gsub("\r", "")
+        s = s.delete("\r")
 
         # Markdown ignores single newlines, but we need them as <br />.
         s = s.gsub("\n", "  \n")

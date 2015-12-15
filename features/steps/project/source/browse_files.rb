@@ -230,13 +230,13 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I am redirected to the new file' do
-    expect(current_path).to eq(namespace_project_blob_path(
-      @project.namespace, @project, 'master/' + new_file_name))
+    expect(current_path).to eq(
+      namespace_project_blob_path(@project.namespace, @project, 'master/' + new_file_name))
   end
 
   step 'I am redirected to the new file with directory' do
-    expect(current_path).to eq(namespace_project_blob_path(
-      @project.namespace, @project, 'master/' + new_file_name_with_directory))
+    expect(current_path).to eq(
+      namespace_project_blob_path(@project.namespace, @project, 'master/' + new_file_name_with_directory))
   end
 
   step 'I am redirected to the new merge request page' do
@@ -244,8 +244,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I am redirected to the root directory' do
-    expect(current_path).to eq(namespace_project_tree_path(
-      @project.namespace, @project, 'master/'))
+    expect(current_path).to eq(
+      namespace_project_tree_path(@project.namespace, @project, 'master/'))
   end
 
   step "I don't see the permalink link" do

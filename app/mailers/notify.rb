@@ -17,7 +17,7 @@ class Notify < BaseMailer
          subject: subject,
          body: body.html_safe,
          content_type: 'text/html'
-    )
+        )
   end
 
   # Splits "gitlab.corp.company.com" up into "gitlab.corp.company.com",
