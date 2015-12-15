@@ -20,7 +20,7 @@ module GitlabMarkdownHelper
                    end
 
     user = current_user if defined?(current_user)
-    gfm_body = Gitlab::Markdown.render(escaped_body, project: @project, current_user: user, pipeline: :single_line)
+    gfm_body = Banzai.render(escaped_body, project: @project, current_user: user, pipeline: :single_line)
 
     fragment = Nokogiri::HTML::DocumentFragment.parse(gfm_body)
     if fragment.children.size == 1 && fragment.children[0].name == 'a'
@@ -50,7 +50,7 @@ module GitlabMarkdownHelper
 
     context[:project] ||= @project
 
-    html = Gitlab::Markdown.render(text, context)
+    html = Banzai.render(text, context)
 
     context.merge!(
       current_user:   (current_user if defined?(current_user)),
@@ -61,7 +61,7 @@ module GitlabMarkdownHelper
       ref:            @ref
     )
 
-    Gitlab::Markdown.post_process(html, context)
+    Banzai.post_process(html, context)
   end
 
   def asciidoc(text)
