@@ -373,11 +373,11 @@ class Note < ActiveRecord::Base
   end
 
   def contains_emoji_only?
-    note =~ /\A#{Gitlab::Markdown::EmojiFilter.emoji_pattern}\s?\Z/
+    note =~ /\A#{Banzai::EmojiFilter.emoji_pattern}\s?\Z/
   end
 
   def award_emoji_name
-    original_name = note.match(Gitlab::Markdown::EmojiFilter.emoji_pattern)[1]
+    original_name = note.match(Banzai::EmojiFilter.emoji_pattern)[1]
     AwardEmoji.normilize_emoji_name(original_name)
   end
 end

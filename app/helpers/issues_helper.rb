@@ -121,6 +121,6 @@ module IssuesHelper
     end
   end
 
-  # Required for Gitlab::Markdown::IssueReferenceFilter
+  # Required for Banzai::IssueReferenceFilter
   module_function :url_for_issue
 end
