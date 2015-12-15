@@ -16,6 +16,10 @@ module Gitlab
       !!Settings.metrics['enabled']
     end
 
+    def self.method_call_threshold
+      Settings.metrics['method_call_threshold'] || 10
+    end
+
     def self.pool
       @pool
     end

@@ -42,12 +42,24 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'tracks the call duration upon calling the method' do
+        allow(Gitlab::Metrics).to receive(:method_call_threshold).
+          and_return(0)
+
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
         expect(transaction).to receive(:add_metric).
           with(described_class::SERIES, an_instance_of(Hash),
                method: 'Dummy.foo')
+
+        @dummy.foo
+      end
+
+      it 'does not track method calls below a given duration threshold' do
+        allow(Gitlab::Metrics).to receive(:method_call_threshold).
+          and_return(100)
+
+        expect(transaction).to_not receive(:add_metric)
 
         @dummy.foo
       end
@@ -84,12 +96,24 @@ describe Gitlab::Metrics::Instrumentation do
       end
 
       it 'tracks the call duration upon calling the method' do
+        allow(Gitlab::Metrics).to receive(:method_call_threshold).
+          and_return(0)
+
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
         expect(transaction).to receive(:add_metric).
           with(described_class::SERIES, an_instance_of(Hash),
                method: 'Dummy#bar')
+
+        @dummy.new.bar
+      end
+
+      it 'does not track method calls below a given duration threshold' do
+        allow(Gitlab::Metrics).to receive(:method_call_threshold).
+          and_return(100)
+
+        expect(transaction).to_not receive(:add_metric)
 
         @dummy.new.bar
       end

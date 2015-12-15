@@ -99,9 +99,11 @@ module Gitlab
               retval   = __send__(#{alias_name.inspect}, *args, &block)
               duration = (Time.now - start) * 1000.0
 
-              trans.add_metric(Gitlab::Metrics::Instrumentation::SERIES,
-                               { duration: duration },
-                               method: #{label.inspect})
+              if duration >= Gitlab::Metrics.method_call_threshold
+                trans.add_metric(Gitlab::Metrics::Instrumentation::SERIES,
+                                 { duration: duration },
+                                 method: #{label.inspect})
+              end
 
               retval
             else

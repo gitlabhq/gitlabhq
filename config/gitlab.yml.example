@@ -432,6 +432,9 @@ production: &base
     # pool_size: 16
     # The timeout of a connection in seconds.
     # timeout: 10
+    # The minimum amount of milliseconds a method call has to take before it's
+    # tracked. Defaults to 10.
+    # method_call_threshold: 10
 
 development:
   <<: *base
