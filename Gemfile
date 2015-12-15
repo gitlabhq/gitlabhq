@@ -210,6 +210,7 @@ gem 'net-ssh',            '~> 3.0.1'
 
 # Metrics
 group :metrics do
+  gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
   gem 'connection_pool', '~> 2.0', require: false
 end

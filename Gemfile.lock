@@ -887,6 +887,7 @@ DEPENDENCIES
   kaminari (~> 0.16.3)
   letter_opener (~> 1.1.2)
   mail_room (~> 0.6.1)
+  method_source (~> 0.8)
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.3.16)

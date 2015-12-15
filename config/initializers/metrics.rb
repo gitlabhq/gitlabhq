@@ -2,6 +2,7 @@ if Gitlab::Metrics.enabled?
   require 'influxdb'
   require 'socket'
   require 'connection_pool'
+  require 'method_source'
 
   # These are manually require'd so the classes are registered properly with
   # ActiveSupport.
@@ -16,6 +17,26 @@ if Gitlab::Metrics.enabled?
     config.server_middleware do |chain|
       chain.add Gitlab::Metrics::SidekiqMiddleware
     end
+  end
+
+  # This instruments all methods residing in app/models that (appear to) use any
+  # of the ActiveRecord methods. This has to take place _after_ initializing as
+  # for some unknown reason calling eager_load! earlier breaks Devise.
+  Gitlab::Application.config.after_initialize do
+    Rails.application.eager_load!
+
+    models = Rails.root.join('app', 'models').to_s
+
+    regex = Regexp.union(
+      ActiveRecord::Querying.public_instance_methods(false).map(&:to_s)
+    )
+
+    Gitlab::Metrics::Instrumentation.
+      instrument_class_hierarchy(ActiveRecord::Base) do |_, method|
+        loc = method.source_location
+
+        loc && loc[0].start_with?(models) && method.source =~ regex
+      end
   end
 
   Gitlab::Metrics::Instrumentation.configure do |config|
