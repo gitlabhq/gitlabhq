@@ -378,7 +378,7 @@ table {
   @include nav-menu;
   text-align: center;
   margin-top: 5px;
-  margin-top: -$gl-padding;
+  margin-top: -$gl-padding-top;
 
   &.no-bottom {
     margin-bottom: 0;
@@ -390,7 +390,7 @@ table {
 
   li a {
     display: inline-block;
-    padding-top: $gl-padding;
+    padding-top: 4px;
     padding-bottom: 11px;
     margin-bottom: -1px;
   }

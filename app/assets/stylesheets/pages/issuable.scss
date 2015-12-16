@@ -138,14 +138,14 @@
 }
 
 .issuable-title {
-  margin-top: -$gl-padding;
-  padding: 10px 0;
-  margin-bottom: 0;
+  margin: -$gl-padding;
+  padding: 10px $gl-padding;
+  margin-bottom: 0px;
+  border-bottom: 1px solid $border-color;
   color: #8F8F8F;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 16px;
   line-height: 34px;
-
+  
   .author {
     color: #323232;
     font-weight: 500;
