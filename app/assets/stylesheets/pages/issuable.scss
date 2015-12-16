@@ -138,19 +138,21 @@
 }
 
 .issuable-title {
-  margin: -$gl-padding;
-  padding: 7px $gl-padding;
-  margin-bottom: 0px;
-  border-bottom: 1px solid $border-color;
-  color: #5c5d5e;
-  font-size: 16px;
-  line-height: 42px;
+  margin-top: -$gl-padding;
+  padding: 10px 0;
+  margin-bottom: 0;
+  color: #8F8F8F;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 34px;
 
   .author {
-    color: #5c5d5e;
+    color: #323232;
+    font-weight: 500;
   }
 
   .issuable-id {
-    color: #5c5d5e;
+    color: #323232;
+    font-weight: 500;
   }
 }
