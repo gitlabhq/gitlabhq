@@ -6,7 +6,7 @@
 
 .merge-request{'data-url' => merge_request_path(@merge_request)}
   = render "projects/merge_requests/show/mr_title"
-  
+
   .merge-request-details.issuable-details
     .row
       %section.col-md-9
@@ -53,24 +53,24 @@
               = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
                 Commits
                 %span.badge= @commits.size
-            %li.diffs-tab
-              = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
-                Changes
-                %span.badge= @merge_request.diffs.size
             - if @ci_commit
               %li.builds-tab
                 = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
                   Builds
                   %span.badge= @statuses.size
+            %li.diffs-tab
+              = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
+                Changes
+                %span.badge= @merge_request.diffs.size
 
         .tab-content
           #notes.notes.tab-pane.voting_notes
             = render "projects/merge_requests/discussion"
           #commits.commits.tab-pane
             - # This tab is always loaded via AJAX
-          #diffs.diffs.tab-pane
-            - # This tab is always loaded via AJAX
           #builds.builds.tab-pane
+            - # This tab is always loaded via AJAX
+          #diffs.diffs.tab-pane
             - # This tab is always loaded via AJAX
 
         .mr-loading-status
