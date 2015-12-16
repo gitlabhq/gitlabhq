@@ -23,15 +23,15 @@
       = link_to url_for(params), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
         Commits
         %span.badge= @commits.size
-    %li.diffs-tab.active
-      = link_to url_for(params), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
-        Changes
-        %span.badge= @diffs.size
     - if @ci_commit
       %li.builds-tab.active
         = link_to url_for(params), data: {target: 'div#builds', action: 'builds', toggle: 'tab'} do
           Builds
           %span.badge= @statuses.size
+    %li.diffs-tab.active
+      = link_to url_for(params), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
+        Changes
+        %span.badge= @diffs.size
 
   .tab-content
     #commits.commits.tab-pane
