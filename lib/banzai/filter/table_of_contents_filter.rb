@@ -31,7 +31,7 @@ module Banzai
 
           id = text.downcase
           id.gsub!(PUNCTUATION_REGEXP, '') # remove punctuation
-          id.gsub!(' ', '-') # replace spaces with dash
+          id.tr!(' ', '-') # replace spaces with dash
           id.squeeze!('-') # replace multiple dashes with one
 
           uniq = (headers[id] > 0) ? "-#{headers[id]}" : ''

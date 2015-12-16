@@ -212,8 +212,8 @@ module SharedPaths
   end
 
   step 'I visit a binary file in the repo' do
-    visit namespace_project_blob_path(@project.namespace, @project, File.join(
-      root_ref, 'files/images/logo-black.png'))
+    visit namespace_project_blob_path(@project.namespace, @project,
+      File.join(root_ref, 'files/images/logo-black.png'))
   end
 
   step "I visit my project's commits page" do
@@ -316,8 +316,8 @@ module SharedPaths
   end
 
   step 'I am on the ".gitignore" edit file page' do
-    expect(current_path).to eq(namespace_project_edit_blob_path(
-      @project.namespace, @project, File.join(root_ref, '.gitignore')))
+    expect(current_path).to eq(
+      namespace_project_edit_blob_path(@project.namespace, @project, File.join(root_ref, '.gitignore')))
   end
 
   step 'I visit project source page for "6d39438"' do

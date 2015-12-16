@@ -46,11 +46,11 @@ module Gitlab
       end
 
       def added_lines
-        diff_lines.select(&:added?).size
+        diff_lines.count(&:added?)
       end
 
       def removed_lines
-        diff_lines.select(&:removed?).size
+        diff_lines.count(&:removed?)
       end
     end
   end

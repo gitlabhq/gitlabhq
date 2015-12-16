@@ -61,7 +61,7 @@ module ApplicationHelper
     options[:class] ||= ''
     options[:class] << ' identicon'
     bg_key = project.id % 7
-    style = "background-color: ##{ allowed_colors.values[bg_key] }; color: #555"
+    style = "background-color: ##{allowed_colors.values[bg_key]}; color: #555"
 
     content_tag(:div, class: options[:class], style: style) do
       project.name[0, 1].upcase

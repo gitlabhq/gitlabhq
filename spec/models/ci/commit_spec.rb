@@ -37,14 +37,14 @@ describe Ci::Commit, models: true do
 
     it 'returns ordered list of commits' do
       commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: project
+      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hours.ago, project: project
       expect(project.ci_commits.ordered).to eq([commit2, commit1])
     end
 
     it 'returns commits ordered by committed_at and id, with nulls last' do
       commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
       commit2 = FactoryGirl.create :ci_commit, committed_at: nil, project: project
-      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hour.ago, project: project
+      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hours.ago, project: project
       commit4 = FactoryGirl.create :ci_commit, committed_at: nil, project: project
       expect(project.ci_commits.ordered).to eq([commit2, commit4, commit3, commit1])
     end
