@@ -4,7 +4,7 @@ class CreateBranchService < BaseService
   def execute(branch_name, ref)
     valid_branch = Gitlab::GitRefValidator.validate(branch_name)
     if valid_branch == false
-      return error('Branch name invalid')
+      return error("Branch name can't contains space, '~', '^', ':', '?', '*', '[', '\', '..', '@{', and consecutive slashes, start with '/' or '.' or end in '/' or '.' or '.lock'")
     end
 
     repository = project.repository

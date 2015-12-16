@@ -61,7 +61,7 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
   end
 
   step 'I should see new an error that branch is invalid' do
-    expect(page).to have_content 'Branch name invalid'
+    expect(page).to have_content "Branch name can't contains space, '~', '^', ':', '?', '*', '[', '\', '..', '@{', and consecutive slashes, start with '/' or '.' or end in '/' or '.' or '.lock'"
   end
 
   step 'I should see new an error that ref is invalid' do
