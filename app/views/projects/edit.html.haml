@@ -24,10 +24,10 @@
               .col-sm-10
                 = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
-            - if @project.repository.exists? && @project.repository.branch_names.any?
+            - unless @project.empty_repo?
               .form-group
                 = f.label :default_branch, "Default Branch", class: 'control-label'
-                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'select2 select-wide'})
+                .col-sm-10= f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
 
           = render 'shared/visibility_level', f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can_change_visibility_level?(@project, current_user), form_model: @project
@@ -111,6 +111,62 @@
                 - if @project.avatar?
                   %hr
                   = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+
+          %fieldset.features
+            %legend
+              Continuous Integration
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                %p Get recent application code using the following command:
+                .radio
+                  = f.label :build_allow_git_fetch do
+                    = f.radio_button :build_allow_git_fetch, 'false'
+                    %strong git clone
+                    %br
+                    %span.descr Slower but makes sure you have a clean dir before every build
+                .radio
+                  = f.label :build_allow_git_fetch do
+                    = f.radio_button :build_allow_git_fetch, 'true'
+                    %strong git fetch
+                    %br
+                    %span.descr Faster
+            .form-group
+              = f.label :build_timeout_in_minutes, 'Timeout', class: 'control-label'
+              .col-sm-10
+                = f.number_field :build_timeout_in_minutes, class: 'form-control', min: '0'
+                %p.help-block per build in minutes
+            .form-group
+              = f.label :build_coverage_regex, "Test coverage parsing", class: 'control-label'
+              .col-sm-10
+                .input-group
+                  %span.input-group-addon /
+                  = f.text_field :build_coverage_regex, class: 'form-control', placeholder: '\(\d+.\d+\%\) covered'
+                  %span.input-group-addon /
+                %p.help-block
+                  We will use this regular expression to find test coverage output in build trace.
+                  Leave blank if you want to disable this feature
+                .bs-callout.bs-callout-info
+                  %p Below are examples of regex for existing tools:
+                  %ul
+                    %li
+                      Simplecov (Ruby) -
+                      %code \(\d+.\d+\%\) covered
+                    %li
+                      pytest-cov (Python) -
+                      %code \d+\%\s*$
+                    %li
+                      phpunit --coverage-text --colors=never (PHP) -
+                      %code ^\s*Lines:\s*\d+.\d+\%
+
+
+          %fieldset.features
+            %legend
+              Advanced settings
+            .form-group
+              = f.label :runners_token, "CI token", class: 'control-label'
+              .col-sm-10
+                = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
+                %p.help-block The secure token used to checkout project.
 
           .form-actions
             = f.submit 'Save changes', class: "btn btn-save"

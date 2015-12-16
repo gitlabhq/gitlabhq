@@ -175,11 +175,19 @@ module ProjectsHelper
   end
 
   def default_url_to_repo(project = @project)
-    current_user ? project.url_to_repo : project.http_url_to_repo
+    if default_clone_protocol == "ssh"
+      project.ssh_url_to_repo
+    else
+      project.http_url_to_repo
+    end
   end
 
   def default_clone_protocol
-    current_user ? "ssh" : "http"
+    if !current_user || current_user.require_ssh_key?
+      "http"
+    else
+      "ssh"
+    end
   end
 
   def project_last_activity(project)
@@ -322,10 +330,9 @@ module ProjectsHelper
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
       namespace_project_blob_path(
-          project.namespace,
-          project,
-          tree_join(project.default_branch,
-                    blob.name)
+        project.namespace,
+        project,
+        tree_join(project.default_branch, blob.name)
       )
     end
   end

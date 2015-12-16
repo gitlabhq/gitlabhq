@@ -40,7 +40,9 @@ class PasswordsController < Devise::PasswordsController
   def throttle_reset
     return unless resource && resource.recently_sent_password_reset?
 
-    redirect_to new_password_path(resource_name),
-      alert: I18n.t('devise.passwords.recently_reset')
+    # Throttle reset attempts, but return a normal message to
+    # avoid user enumeration attack.
+    redirect_to new_user_session_path,
+      notice: I18n.t('devise.passwords.send_paranoid_instructions')
   end
 end

@@ -18,7 +18,7 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.2'
+gem 'devise',                 '~> 3.5.3'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
@@ -52,7 +52,7 @@ gem "gitlab_git", '~> 7.2.20'
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 
 # Git Wiki
-gem 'gollum-lib', '~> 4.0.2'
+gem 'gollum-lib', '~> 4.1.0'
 
 # Language detection
 gem "github-linguist", "~> 4.7.0", require: "linguist"
@@ -99,7 +99,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
-gem 'net-ssh',       '~> 3.0.1'
+gem 'rouge',         '~> 1.10.1'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
@@ -120,8 +120,9 @@ gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
 gem 'sinatra', '~> 1.4.4', require: nil
-gem 'sidekiq', '3.3.0'
-gem 'sidetiq', '~> 0.6.3'
+gem 'sidekiq', '~> 4.0'
+gem 'sidekiq-cron', '~> 0.4.0'
+gem 'redis-namespace'
 
 # HTTP requests
 gem "httparty", '~> 0.13.3'
@@ -171,6 +172,7 @@ gem "underscore-rails", "~> 1.4.4"
 
 # Sanitize user input
 gem "sanitize", '~> 2.0'
+gem 'babosa', '~> 1.0.2'
 
 # Protect against bruteforcing
 gem "rack-attack", '~> 4.3.0'
@@ -193,7 +195,7 @@ gem 'jquery-turbolinks', '~> 2.1.0'
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.0'
 gem 'font-awesome-rails', '~> 4.2'
-gem 'gitlab_emoji',       '~> 0.1'
+gem 'gitlab_emoji',       '~> 0.2.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 3.1.3'
@@ -204,6 +206,7 @@ gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
+gem 'net-ssh',            '~> 3.0.1'
 
 group :development do
   gem "foreman"
@@ -258,7 +261,7 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop',  '~> 0.28.0',  require: false
+  gem 'rubocop', '~> 0.35.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
   gem 'flog', require: false

@@ -3,6 +3,8 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
   include SharedPaths
   include SharedAdmin
   include SharedProject
+  include SharedUser
+  include Select2Helper
 
   step 'I should see all non-archived projects' do
     Project.non_archived.each do |p|
@@ -54,6 +56,41 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
   step 'I should see project transfered' do
     expect(page).to have_content 'Web / ' + project.name
     expect(page).to have_content 'Namespace: Web'
+  end
+
+  step 'I visit project "Enterprise" members page' do
+    project = Project.find_by!(name: "Enterprise")
+    visit namespace_project_project_members_path(project.namespace, project)
+  end
+
+  step 'I select current user as "Developer"' do
+    page.within ".users-project-form" do
+      select2(current_user.id, from: "#user_ids", multiple: true)
+      select "Developer", from: "access_level"
+    end
+
+    click_button "Add users to project"
+  end
+
+  step 'I should see current user as "Developer"' do
+    page.within '.content-list' do
+      expect(page).to have_content(current_user.name)
+      expect(page).to have_content('Developer')
+    end
+  end
+
+  step 'current user is developer of project "Enterprise"' do
+    project = Project.find_by!(name: "Enterprise")
+    project.team << [current_user, :developer]
+  end
+
+  step 'I click on the "Remove User From Project" button for current user' do
+    find(:css, 'li', text: current_user.name).find(:css, 'a.btn-remove').click
+    # poltergeist always confirms popups.
+  end
+
+  step 'I should not see current_user as "Developer"' do
+    expect(page).not_to have_selector(:css, '.content-list')
   end
 
   def project

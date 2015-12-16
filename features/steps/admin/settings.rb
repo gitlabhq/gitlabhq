@@ -32,6 +32,7 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
     page.check('Comments')
     page.check('Issues events')
     page.check('Merge Request events')
+    page.check('Build events')
     click_on 'Save'
   end
 
@@ -39,6 +40,7 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
     fill_in 'Webhook', with: 'http://localhost'
     fill_in 'Username', with: 'test_user'
     fill_in 'Channel', with: '#test_channel'
+    page.check('Notify only broken builds')
   end
 
   step 'I should see service template settings saved' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::InlineDiff do
+describe Gitlab::InlineDiff, lib: true do
   describe '#processing' do
     let(:diff) do
       <<eos

@@ -33,3 +33,19 @@ Feature: Admin Groups
     When I visit admin group page
     When I select user "johndoe@gitlab.com" from user list as "Reporter"
     Then I should see "johndoe@gitlab.com" in team list in every project as "Reporter"
+
+  @javascript
+  Scenario: Signed in admin should be able to add himself to a group
+    Given "John Doe" is owner of group "Owned"
+    When I visit group "Owned" members page
+    When I select current user as "Developer"
+    Then I should see current user as "Developer"
+
+  @javascript
+  Scenario: Signed in admin should be able to remove himself from group
+    Given current user is developer of group "Owned"
+    When I visit group "Owned" members page
+    Then I should see current user as "Developer"
+    When I click on the "Remove User From Group" button for current user
+    When I visit group "Owned" members page
+    Then I should not see current user as "Developer"

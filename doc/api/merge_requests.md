@@ -101,6 +101,43 @@ Parameters:
 }
 ```
 
+## Get single MR commits
+
+Get a list of merge request commits.
+
+```
+GET /projects/:id/merge_request/:merge_request_id/commits
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `merge_request_id` (required) - The ID of MR
+
+
+```json
+[
+  {
+    "id": "ed899a2f4b50b4370feeea94676502b42383c746",
+    "short_id": "ed899a2f4b5",
+    "title": "Replace sanitize with escape once",
+    "author_name": "Dmitriy Zaporozhets",
+    "author_email": "dzaporozhets@sphereconsultinginc.com",
+    "created_at": "2012-09-20T11:50:22+03:00",
+    "message": "Replace sanitize with escape once"
+  },
+  {
+    "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
+    "short_id": "6104942438c",
+    "title": "Sanitize for network graph",
+    "author_name": "randx",
+    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "created_at": "2012-09-20T09:06:12+03:00",
+    "message": "Sanitize for network graph"
+  }
+]
+```
+
 ## Get single MR changes
 
 Shows information about the merge request including its files and changes.
@@ -159,7 +196,7 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
-  "files": [
+  "changes": [
     {
     "old_path": "VERSION",
     "new_path": "VERSION",
@@ -298,9 +335,57 @@ PUT /projects/:id/merge_request/:merge_request_id/merge
 
 Parameters:
 
-- `id` (required)                   - The ID of a project
-- `merge_request_id` (required)     - ID of MR
-- `merge_commit_message` (optional) - Custom merge commit message
+- `id` (required)                           - The ID of a project
+- `merge_request_id` (required)             - ID of MR
+- `merge_commit_message` (optional)         - Custom merge commit message
+- `should_remove_source_branch` (optional)  - if `true` removes the source branch
+- `merged_when_build_succeeds` (optional)    - if `true` the MR is merge when the build succeeds
+
+```json
+{
+  "id": 1,
+  "target_branch": "master",
+  "source_branch": "test1",
+  "project_id": 3,
+  "title": "test1",
+  "state": "merged",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "assignee": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@example.com",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  }
+}
+```
+
+## Cancel Merge When Build Succeeds
+
+If successful you'll get `200 OK`.
+
+If you don't have permissions to accept this merge request - you'll get a 401
+
+If the merge request is already merged or closed - you get 405 and error message 'Method Not Allowed'
+
+In case the merge request is not set to be merged when the build succeeds, you'll also get a 406 error.
+```
+PUT /projects/:id/merge_request/:merge_request_id/cancel_merge_when_build_succeeds
+```
+Parameters:
+
+- `id` (required)                           - The ID of a project
+- `merge_request_id` (required)             - ID of MR
 
 ```json
 {

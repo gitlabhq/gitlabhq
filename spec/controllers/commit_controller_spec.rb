@@ -110,6 +110,26 @@ describe Projects::CommitController do
         expect(response.body).to match(/^diff --git/)
       end
     end
+
+    context 'commit that removes a submodule' do
+      render_views
+
+      let(:fork_project) { create(:forked_project_with_submodules) }
+      let(:commit) { fork_project.commit('remove-submodule') }
+
+      before do
+        fork_project.team << [user, :master]
+      end
+
+      it 'renders it' do
+        get(:show,
+            namespace_id: fork_project.namespace.to_param,
+            project_id: fork_project.to_param,
+            id: commit.id)
+
+        expect(response).to be_success
+      end
+    end
   end
 
   describe "#branches" do

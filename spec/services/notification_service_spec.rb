@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NotificationService do
+describe NotificationService, services: true do
   let(:notification) { NotificationService.new }
 
   around(:each) do |example|
@@ -45,6 +45,7 @@ describe NotificationService do
         project.team << [issue.author, :master]
         project.team << [issue.assignee, :master]
         project.team << [note.author, :master]
+        create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@subscribed_participant cc this guy')
       end
 
       describe :new_note do
@@ -60,6 +61,7 @@ describe NotificationService do
           should_email(note.noteable.assignee)
           should_email(@u_mentioned)
           should_email(@subscriber)
+          should_email(@subscribed_participant)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
@@ -381,18 +383,19 @@ describe NotificationService do
   def add_users_with_subscription(project, issuable)
     @subscriber = create :user
     @unsubscriber = create :user
+    @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: Notification::N_PARTICIPATING)
 
+    project.team << [@subscribed_participant, :master]
     project.team << [@subscriber, :master]
     project.team << [@unsubscriber, :master]
 
     issuable.subscriptions.create(user: @subscriber, subscribed: true)
+    issuable.subscriptions.create(user: @subscribed_participant, subscribed: true)
     issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
   end
 
   def sent_to_user?(user)
-    ActionMailer::Base.deliveries.any? do |message|
-      message.to.include?(user.email)
-    end
+    ActionMailer::Base.deliveries.map(&:to).flatten.count(user.email) == 1
   end
 
   def should_email(user)

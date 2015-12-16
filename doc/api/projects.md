@@ -32,7 +32,6 @@ Parameters:
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
-- `ci_enabled_first` - Return projects ordered by ci_enabled flag. Projects with enabled GitLab CI go first
 
 ```json
 [
@@ -137,7 +136,6 @@ Parameters:
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
-- `ci_enabled_first` - Return projects ordered by ci_enabled flag. Projects with enabled GitLab CI go first
 
 ### List ALL projects
 
@@ -153,7 +151,6 @@ Parameters:
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
-- `ci_enabled_first` - Return projects ordered by ci_enabled flag. Projects with enabled GitLab CI go first
 
 ### Get single project
 
@@ -245,9 +242,17 @@ Parameters:
     "target_id": 830,
     "target_type": "Issue",
     "author_id": 1,
-    "author_username": "john",
     "data": null,
-    "target_title": "Public project search field"
+    "target_title": "Public project search field",
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/u/root"
+    },
+    "author_username": "root"
   },
   {
     "title": null,
@@ -256,6 +261,14 @@ Parameters:
     "target_id": null,
     "target_type": null,
     "author_id": 1,
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/u/root"
+    },
     "author_username": "john",
     "data": {
       "before": "50d4420237a9de7be1304607147aec22e4a14af7",
@@ -292,9 +305,56 @@ Parameters:
     "target_id": 840,
     "target_type": "Issue",
     "author_id": 1,
-    "author_username": "john",
     "data": null,
-    "target_title": "Finish & merge Code search PR"
+    "target_title": "Finish & merge Code search PR",
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/u/root"
+    },
+    "author_username": "root"
+  },
+  {
+    "title": null,
+    "project_id": 15,
+    "action_name": "commented on",
+    "target_id": 1312,
+    "target_type": "Note",
+    "author_id": 1,
+    "data": null,
+    "target_title": null,
+    "created_at": "2015-12-04T10:33:58.089Z",
+    "note": {
+      "id": 1312,
+      "body": "What an awesome day!",
+      "attachment": null,
+      "author": {
+        "name": "Dmitriy Zaporozhets",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+        "web_url": "http://localhost:3000/u/root"
+      },
+      "created_at": "2015-12-04T10:33:56.698Z",
+      "system": false,
+      "upvote": false,
+      "downvote": false,
+      "noteable_id": 377,
+      "noteable_type": "Issue"
+    },
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/u/root"
+    },
+    "author_username": "root"
   }
 ]
 ```
@@ -335,7 +395,6 @@ Parameters:
 - `user_id` (required) - user_id of owner
 - `name` (required) - new project name
 - `description` (optional) - short project description
-- `default_branch` (optional) - 'master' by default
 - `issues_enabled` (optional)
 - `merge_requests_enabled` (optional)
 - `builds_enabled` (optional)

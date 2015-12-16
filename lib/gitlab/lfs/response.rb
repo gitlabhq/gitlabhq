@@ -220,7 +220,7 @@ module Gitlab
 
       def storage_project(project)
         if project.forked?
-          project.forked_from_project
+          storage_project(project.forked_from_project)
         else
           project
         end

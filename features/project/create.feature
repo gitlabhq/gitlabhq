@@ -7,6 +7,7 @@ Feature: Project Create
   Scenario: User create a project
     Given I sign in as a user
     When I visit new project page
+    And I have an ssh key
     And fill project form with valid data
     Then I should see project page
     And I should see empty project instuctions
@@ -14,6 +15,7 @@ Feature: Project Create
   @javascript
   Scenario: Empty project instructions
     Given I sign in as a user
+    And I have an ssh key
     When I visit new project page
     And fill project form with valid data
     Then I see empty project instuctions

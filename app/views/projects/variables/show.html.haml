@@ -10,13 +10,13 @@
 %hr
 
 
-= nested_form_for @ci_project, url: url_for(controller: 'projects/variables', action: 'update'), html: { class: 'form-horizontal' }  do |f|
+= nested_form_for @project, url: url_for(controller: 'projects/variables', action: 'update'), html: { class: 'form-horizontal' }  do |f|
   - if @project.errors.any?
     #error_explanation
-      %p.lead= "#{pluralize(@ci_project.errors.count, "error")} prohibited this project from being saved:"
+      %p.lead= "#{pluralize(@project.errors.count, "error")} prohibited this project from being saved:"
       .alert.alert-error
         %ul
-          - @ci_project.errors.full_messages.each do |msg|
+          - @project.errors.full_messages.each do |msg|
             %li= msg
 
   = f.fields_for :variables do |variable_form|

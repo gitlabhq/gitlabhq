@@ -7,6 +7,7 @@ class Notify < BaseMailer
   include Emails::Projects
   include Emails::Profile
   include Emails::Groups
+  include Emails::Builds
 
   add_template_helper MergeRequestsHelper
   add_template_helper EmailsHelper
@@ -16,7 +17,7 @@ class Notify < BaseMailer
          subject: subject,
          body: body.html_safe,
          content_type: 'text/html'
-    )
+        )
   end
 
   # Splits "gitlab.corp.company.com" up into "gitlab.corp.company.com",
@@ -33,12 +34,12 @@ class Notify < BaseMailer
     allowed_domains
   end
 
-  private
-
   def can_send_from_user_email?(sender)
     sender_domain = sender.email.split("@").last
     self.class.allowed_email_domains.include?(sender_domain)
   end
+
+  private
 
   # Return an email address that displays the name of the sender.
   # Only the displayed name changes; the actual email address is always the same.

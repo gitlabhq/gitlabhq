@@ -13,6 +13,12 @@ An LDAP user who is allowed to change their email on the LDAP server can [take o
 
 We recommend against using GitLab LDAP integration if your LDAP users are allowed to change their 'mail', 'email' or 'userPrincipalName'  attribute on the LDAP server.
 
+If a user is deleted from the LDAP server, they will be blocked in GitLab as well.
+Users will be immediately blocked from logging in. However, there is an LDAP check
+cache time of one hour. The means users that are already logged in or are using Git
+over SSH will still be able to access GitLab for up to one hour. Manually block
+the user in the GitLab Admin area to immediately block all access.
+
 ## Configuring GitLab for LDAP integration
 
 To enable GitLab LDAP integration you need to add your LDAP server settings in `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.

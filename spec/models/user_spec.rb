@@ -56,11 +56,12 @@
 #  project_view               :integer          default(0)
 #  consumed_timestep          :integer
 #  layout                     :integer          default(0)
+#  hide_project_limit         :boolean          default(FALSE)
 #
 
 require 'spec_helper'
 
-describe User do
+describe User, models: true do
   include Gitlab::CurrentSettings
 
   describe 'modules' do
@@ -91,7 +92,23 @@ describe User do
   end
 
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:username) }
+    describe 'username' do
+      it 'validates presence' do
+        expect(subject).to validate_presence_of(:username)
+      end
+
+      it 'rejects blacklisted names' do
+        user = build(:user, username: 'dashboard')
+
+        expect(user).not_to be_valid
+        expect(user.errors.values).to eq [['dashboard is a reserved name']]
+      end
+
+      it 'validates uniqueness' do
+        expect(subject).to validate_uniqueness_of(:username)
+      end
+    end
+
     it { is_expected.to validate_presence_of(:projects_limit) }
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
@@ -445,8 +462,8 @@ describe User do
       expect(User.search(user1.username.downcase).to_a).to eq([user1])
       expect(User.search(user2.username.upcase).to_a).to eq([user2])
       expect(User.search(user2.username.downcase).to_a).to eq([user2])
-      expect(User.search(user1.username.downcase).to_a.count).to eq(2)
-      expect(User.search(user2.username.downcase).to_a.count).to eq(1)
+      expect(User.search(user1.username.downcase).to_a.size).to eq(2)
+      expect(User.search(user2.username.downcase).to_a.size).to eq(1)
     end
   end
 

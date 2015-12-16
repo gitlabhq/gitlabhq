@@ -18,6 +18,7 @@
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
+      float: left;
 
       .accept_merge_request {
         &.ci-pending,
@@ -36,14 +37,15 @@
 
     .accept-control {
       display: inline-block;
+      float: left;
       margin: 0;
       margin-left: 20px;
       padding: 5px;
+      padding-top: 12px;
       line-height: 20px;
 
       &.right {
         float: right;
-        padding-top: 12px;
         a {
           color: $gl-gray;
         }
@@ -81,6 +83,10 @@
     &.ci-error {
       color: $gl-danger;
     }
+
+    a.monospace {
+      color: inherit;
+    }
   }
 
   .mr-widget-body,
@@ -115,10 +121,6 @@
   }
 }
 
-.merge-request-details {
-  margin-bottom: $gl-padding;
-}
-
 .mr_source_commit,
 .mr_target_commit {
   .commit {
@@ -136,7 +138,7 @@
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
-  font-size: 14px;
+  font-size: 90%;
   margin: 0 3px;
 }
 
@@ -179,17 +181,6 @@
   display: none;
 }
 
-.merge-request-show-labels {
-  a {
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: inline-block;
-    .color-label {
-      padding: 6px 10px;
-    }
-  }
-}
-
 .merge-request-form .select2-container {
   width: 250px !important;
 }
@@ -200,7 +191,7 @@
   .btn-clipboard {
     @extend .pull-right;
 
-    margin-right: 18px;
+    margin-right: 20px;
     margin-top: 5px;
     position: absolute;
     right: 0;

@@ -21,6 +21,7 @@
 %p
   %span.light Commit
   = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
+  = clipboard_button(clipboard_text: @commit.id)
 .commit-info-row
   %span.light Authored by
   %strong
@@ -39,22 +40,22 @@
   - @commit.parents.each do |parent|
     = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
 
-- if @ci_commit
+- if @ci_commit && @ci_commit.show_build_status?
   .pull-right
     = link_to ci_status_path(@ci_commit), class: "ci-status ci-#{@ci_commit.status}" do
       = ci_status_icon(@ci_commit)
       build:
-      = @ci_commit.status
+      = ci_status_label(@ci_commit)
 
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin
 
 .commit-box.gray-content-block.middle-block
   %h3.commit-title
-    = gfm escape_once(@commit.title)
+    = markdown escape_once(@commit.title), pipeline: :single_line
   - if @commit.description.present?
     %pre.commit-description
-      = preserve(gfm(escape_once(@commit.description)))
+      = preserve(markdown(escape_once(@commit.description), pipeline: :single_line))
 
 :javascript
   $(".commit-info-row.branches").load("#{branches_namespace_project_commit_path(@project.namespace, @project, @commit.id)}");

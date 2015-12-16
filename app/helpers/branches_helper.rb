@@ -11,7 +11,7 @@ module BranchesHelper
 
   def can_push_branch?(project, branch_name)
     return false unless project.repository.branch_names.include?(branch_name)
-    
+
     ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(branch_name)
   end
 end

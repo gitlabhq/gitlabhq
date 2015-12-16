@@ -333,7 +333,7 @@ table {
 }
 
 .well {
-  margin-bottom: 0;
+  margin-bottom: $gl-padding;
 }
 
 .search_box {
@@ -379,7 +379,6 @@ table {
   text-align: center;
   margin-top: 5px;
   margin-top: -$gl-padding;
-  padding-top: $gl-padding;
 
   &.no-bottom {
     margin-bottom: 0;
@@ -387,6 +386,23 @@ table {
 
   &.no-top {
     margin-top: 0;
+  }
+
+  li a {
+    display: inline-block;
+    padding-top: $gl-padding;
+    padding-bottom: 11px;
+    margin-bottom: -1px;
+  }
+
+  &.bottom-border {
+    border-bottom: 1px solid $border-color;
+    height: 57px;
+  }
+
+  &.wide {
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
   }
 }
 
@@ -434,4 +450,23 @@ table {
 
 .alert, .progress {
   margin-bottom: $gl-padding;
+}
+
+.new-project-item-select-holder {
+  display: inline-block;
+  position: relative;
+
+  .new-project-item-select {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px !important;
+    visibility: hidden;
+  }
+}
+
+.content-separator {
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  border-top: 1px solid $border-color;
 }

@@ -12,22 +12,22 @@ module VisibilityLevelHelper
 
   # Return the description for the +level+ argument.
   #
-  # +level+ One of the Gitlab::VisibilityLevel constants
-  # +form_model+ Either a model object (Project, Snippet, etc.) or the name of
-  #              a Project or Snippet class.
+  # +level+       One of the Gitlab::VisibilityLevel constants
+  # +form_model+  Either a model object (Project, Snippet, etc.) or the name of
+  #               a Project or Snippet class.
   def visibility_level_description(level, form_model)
-    case form_model.is_a?(String) ? form_model : form_model.class.name
-    when 'PersonalSnippet', 'ProjectSnippet', 'Snippet'
-      snippet_visibility_level_description(level)
-    when 'Project'
+    case form_model
+    when Project
       project_visibility_level_description(level)
+    when Snippet
+      snippet_visibility_level_description(level, form_model)
     end
   end
 
   def project_visibility_level_description(level)
     case level
     when Gitlab::VisibilityLevel::PRIVATE
-      "Project access must be granted explicitly for each user."
+      "Project access must be granted explicitly to each user."
     when Gitlab::VisibilityLevel::INTERNAL
       "The project can be cloned by any logged in user."
     when Gitlab::VisibilityLevel::PUBLIC
@@ -35,12 +35,16 @@ module VisibilityLevelHelper
     end
   end
 
-  def snippet_visibility_level_description(level)
+  def snippet_visibility_level_description(level, snippet = nil)
     case level
     when Gitlab::VisibilityLevel::PRIVATE
-      "The snippet is visible only for me."
+      if snippet.is_a? ProjectSnippet
+        "The snippet is visible only to project members."
+      else
+        "The snippet is visible only to me."
+      end
     when Gitlab::VisibilityLevel::INTERNAL
-      "The snippet is visible for any logged in user."
+      "The snippet is visible to any logged in user."
     when Gitlab::VisibilityLevel::PUBLIC
       "The snippet can be accessed without any authentication."
     end

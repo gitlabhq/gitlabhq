@@ -64,8 +64,10 @@ module Projects
       after_create_actions if @project.persisted?
 
       @project
-    rescue
-      @project.errors.add(:base, "Can't save project. Please try again later")
+    rescue => e
+      message = "Unable to save project: #{e.message}"
+      Rails.logger.error(message)
+      @project.errors.add(:base, message) if @project
       @project
     end
 

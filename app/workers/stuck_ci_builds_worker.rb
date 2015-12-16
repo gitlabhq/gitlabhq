@@ -1,10 +1,7 @@
 class StuckCiBuildsWorker
   include Sidekiq::Worker
-  include Sidetiq::Schedulable
 
   BUILD_STUCK_TIMEOUT = 1.day
-
-  recurrence { daily }
 
   def perform
     Rails.logger.info 'Cleaning stuck builds'

@@ -30,26 +30,24 @@ module BlobHelper
         nil
       end
 
-    if blob && blob.text?
-      text = 'Edit'
-      after = options[:after] || ''
-      from_mr = options[:from_merge_request_id]
-      link_opts = {}
-      link_opts[:from_merge_request_id] = from_mr if from_mr
-      cls = 'btn btn-small'
-      if allowed_tree_edit?(project, ref)
-        link_to(text,
-                namespace_project_edit_blob_path(project.namespace, project,
-                                                 tree_join(ref, path),
-                                                 link_opts),
-                class: cls
-               )
-      else
-        content_tag :span, text, class: cls + ' disabled'
-      end + after.html_safe
-    else
-      ''
-    end
+    return unless blob && blob.text? && blob_editable?(blob)
+
+    text = 'Edit'
+    after = options[:after] || ''
+    from_mr = options[:from_merge_request_id]
+    link_opts = {}
+    link_opts[:from_merge_request_id] = from_mr if from_mr
+    cls = 'btn btn-small'
+    link_to(text,
+            namespace_project_edit_blob_path(project.namespace, project,
+                                             tree_join(ref, path),
+                                             link_opts),
+            class: cls
+           ) + after.html_safe
+  end
+
+  def blob_editable?(blob, project = @project, ref = @ref)
+    !blob.lfs_pointer? && allowed_tree_edit?(project, ref)
   end
 
   def leave_edit_message
@@ -70,5 +68,17 @@ module BlobHelper
   # mode - File name
   def blob_icon(mode, name)
     icon("#{file_type_icon_class('file', mode, name)} fw")
+  end
+
+  def blob_viewable?(blob)
+    blob && blob.text? && !blob.lfs_pointer?
+  end
+
+  def blob_size(blob)
+    if blob.lfs_pointer?
+      blob.lfs_size
+    else
+      blob.size
+    end
   end
 end

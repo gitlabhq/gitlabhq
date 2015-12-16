@@ -331,7 +331,7 @@ namespace :gitlab do
     end
 
     def check_redis_version
-      min_redis_version = "2.4.0"
+      min_redis_version = "2.8.0"
       print "Redis version >= #{min_redis_version}? ... "
 
       redis_version = run(%W(redis-cli --version))
@@ -822,10 +822,27 @@ namespace :gitlab do
 
       namespace_dirs.each do |namespace_dir|
         repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
-        repo_dirs.each do |dir|
-          puts "\nChecking repo at #{dir}"
-          system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: dir)
-        end
+        repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
+      end
+    end
+  end
+
+  namespace :user do
+    desc "GitLab | Check the integrity of a specific user's repositories"
+    task :check_repos, [:username] => :environment do |t, args|
+      username = args[:username] || prompt("Check repository integrity for which username? ".blue)
+      user = User.find_by(username: username)
+      if user
+        repo_dirs = user.authorized_projects.map do |p|
+                      File.join(
+                        Gitlab.config.gitlab_shell.repos_path,
+                        "#{p.path_with_namespace}.git"
+                      )
+                    end
+
+        repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
+      else
+        puts "\nUser '#{username}' not found".red
       end
     end
   end
@@ -950,6 +967,37 @@ namespace :gitlab do
       true
     else
       false
+    end
+  end
+
+  def check_repo_integrity(repo_dir)
+    puts "\nChecking repo at #{repo_dir.yellow}"
+
+    git_fsck(repo_dir)
+    check_config_lock(repo_dir)
+    check_ref_locks(repo_dir)
+  end
+
+  def git_fsck(repo_dir)
+    puts "Running `git fsck`".yellow
+    system(*%W(#{Gitlab.config.git.bin_path} fsck), chdir: repo_dir)
+  end
+
+  def check_config_lock(repo_dir)
+    config_exists = File.exist?(File.join(repo_dir,'config.lock'))
+    config_output = config_exists ? 'yes'.red : 'no'.green
+    puts "'config.lock' file exists?".yellow + " ... #{config_output}"
+  end
+
+  def check_ref_locks(repo_dir)
+    lock_files = Dir.glob(File.join(repo_dir,'refs/heads/*.lock'))
+    if lock_files.present?
+      puts "Ref lock files exist:".red
+      lock_files.each do |lock_file|
+        puts "  #{lock_file}"
+      end
+    else
+      puts "No ref lock files exist".green
     end
   end
 end

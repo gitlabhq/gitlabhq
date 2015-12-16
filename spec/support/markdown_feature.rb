@@ -93,6 +93,10 @@ class MarkdownFeature
     end
   end
 
+  def urls
+    Gitlab::Application.routes.url_helpers
+  end
+
   def raw_markdown
     markdown = File.read(Rails.root.join('spec/fixtures/markdown.md.erb'))
     ERB.new(markdown).result(binding)

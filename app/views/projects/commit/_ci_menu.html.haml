@@ -6,4 +6,4 @@
   = nav_link(path: 'commit#builds') do
     = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id) do
       Builds
-      %span.badge= @builds.count(:id)
+      %span.badge= @statuses.count

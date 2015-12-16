@@ -263,11 +263,12 @@ describe ApplicationHelper do
     end
 
     it 'includes a default js-timeago class' do
-      expect(element.attr('class')).to eq 'time_ago js-timeago'
+      expect(element.attr('class')).to eq 'time_ago js-timeago js-timeago-pending'
     end
 
     it 'accepts a custom html_class' do
-      expect(element(html_class: 'custom_class').attr('class')).to eq 'custom_class js-timeago'
+      expect(element(html_class: 'custom_class').attr('class')).
+        to eq 'custom_class js-timeago js-timeago-pending'
     end
 
     it 'accepts a custom tooltip placement' do
@@ -278,7 +279,7 @@ describe ApplicationHelper do
       el = element.next_element
 
       expect(el.name).to eq 'script'
-      expect(el.text).to include "$('.js-timeago').timeago()"
+      expect(el.text).to include "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
     end
 
     it 'allows the script tag to be excluded' do

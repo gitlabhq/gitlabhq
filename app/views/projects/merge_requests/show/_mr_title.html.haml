@@ -1,10 +1,10 @@
-.page-title
+.issuable-title
   .issue-box{ class: issue_box_class(@merge_request) }
     = @merge_request.state_human_name
-  %span.issue-id Merge Request ##{@merge_request.iid}
+  %span.issuable-id Merge Request ##{@merge_request.iid}
   %span.creator
     &middot;
-    created by #{link_to_member(@project, @merge_request.author, size: 24)}
+    opened by #{link_to_member(@project, @merge_request.author, size: 24)}
     &middot;
     = time_ago_with_tooltip(@merge_request.created_at)
     - if @merge_request.updated_at != @merge_request.created_at

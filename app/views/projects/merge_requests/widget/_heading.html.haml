@@ -1,30 +1,33 @@
-- ci_commit = @merge_request.ci_commit
-- if ci_commit
-  - status = ci_commit.status
+- if @ci_commit
   .mr-widget-heading
-    .ci_widget{class: "ci-#{status}"}
-      = ci_status_icon(ci_commit)
-      %span CI build #{status}
-      for #{@merge_request.last_commit_short_sha}.
+    .ci_widget{class: "ci-#{@ci_commit.status}"}
+      = ci_status_icon(@ci_commit)
+      %span
+        Build
+        = ci_status_label(@ci_commit)
+      for
+      = succeed "." do
+        = link_to @ci_commit.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @ci_commit.sha), class: "monospace"
       %span.ci-coverage
-      = link_to "View build details", ci_status_path(ci_commit)
+      = link_to "View details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
   - # Remove in later versions when services like Jenkins will set CI status via Commit status API
   .mr-widget-heading
-    - [:success, :skipped, :canceled, :failed, :running, :pending].each do |status|
+    - %w[success skipped canceled failed running pending].each do |status|
       .ci_widget{class: "ci-#{status}", style: "display:none"}
-        - if status == :success
-          - status = "passed"
-          = icon("check-circle")
-        - else
-          = icon("circle")
-        %span CI build #{status}
-        for #{@merge_request.last_commit_short_sha}.
+        = ci_icon_for_status(status)
+        %span
+          CI build
+          = ci_label_for_status(status)
+        for
+        - commit = @merge_request.last_commit
+        = succeed "." do
+          = link_to commit.short_id, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, commit), class: "monospace"
         %span.ci-coverage
-        - if ci_build_details_path(@merge_request)
-          = link_to "View build details", ci_build_details_path(@merge_request), :"data-no-turbolink" => "data-no-turbolink"
+        - if details_path = ci_build_details_path(@merge_request)
+          = link_to "View details", details_path, :"data-no-turbolink" => "data-no-turbolink"
 
     .ci_widget
       = icon("spinner spin")

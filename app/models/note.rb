@@ -16,6 +16,7 @@
 #  system        :boolean          default(FALSE), not null
 #  st_diff       :text
 #  updated_by_id :integer
+#  is_award      :boolean          default(FALSE), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -28,7 +29,7 @@ class Note < ActiveRecord::Base
 
   default_value_for :system, false
 
-  attr_mentionable :note
+  attr_mentionable :note, cache: true, pipeline: :note
   participant :author
 
   belongs_to :project
@@ -39,9 +40,12 @@ class Note < ActiveRecord::Base
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 
+  before_validation :set_award!
+
   validates :note, :project, presence: true
   validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
-  validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
+  validates :note, inclusion: { in: Emoji.emojis_names }, if: ->(n) { n.is_award }
+  validates :line_code, line_code: true, allow_blank: true
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
 
@@ -346,6 +350,34 @@ class Note < ActiveRecord::Base
   end
 
   def editable?
-    !system?
+    !system? && !is_award
+  end
+
+  # Checks if note is an award added as a comment
+  #
+  # If note is an award, this method sets is_award to true
+  #   and changes content of the note to award name.
+  #
+  # Method is executed as a before_validation callback.
+  #
+  def set_award!
+    return unless awards_supported? && contains_emoji_only?
+    self.is_award = true
+    self.note = award_emoji_name
+  end
+
+  private
+
+  def awards_supported?
+    noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)
+  end
+
+  def contains_emoji_only?
+    note =~ /\A#{Banzai::Filter::EmojiFilter.emoji_pattern}\s?\Z/
+  end
+
+  def award_emoji_name
+    original_name = note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
+    AwardEmoji.normilize_emoji_name(original_name)
   end
 end

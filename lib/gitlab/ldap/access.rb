@@ -37,13 +37,15 @@ module Gitlab
 
           # Block user in GitLab if he/she was blocked in AD
           if Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
-            user.block unless user.blocked?
+            user.block
             false
           else
             user.activate if user.blocked? && !ldap_config.block_auto_created_users
             true
           end
         else
+          # Block the user if they no longer exist in LDAP/AD
+          user.block 
           false
         end
       rescue

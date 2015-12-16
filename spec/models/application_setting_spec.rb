@@ -36,6 +36,22 @@ describe ApplicationSetting, models: true do
 
   it { expect(setting).to be_valid }
 
+  describe 'validations' do
+    let(:http)  { 'http://example.com' }
+    let(:https) { 'https://example.com' }
+    let(:ftp)   { 'ftp://example.com' }
+
+    it { is_expected.to allow_value(nil).for(:home_page_url) }
+    it { is_expected.to allow_value(http).for(:home_page_url) }
+    it { is_expected.to allow_value(https).for(:home_page_url) }
+    it { is_expected.not_to allow_value(ftp).for(:home_page_url) }
+
+    it { is_expected.to allow_value(nil).for(:after_sign_out_path) }
+    it { is_expected.to allow_value(http).for(:after_sign_out_path) }
+    it { is_expected.to allow_value(https).for(:after_sign_out_path) }
+    it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
+  end
+
   context 'restricted signup domains' do
     it 'set single domain' do
       setting.restricted_signup_domains_raw = 'example.com'
@@ -55,28 +71,6 @@ describe ApplicationSetting, models: true do
     it 'set multiple domains with commas' do
       setting.restricted_signup_domains_raw = "example.com, *.example.com"
       expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
-    end
-  end
-
-  context 'shared runners' do
-    let(:gl_project) { create(:empty_project) }
-
-    before do
-      allow_any_instance_of(Project).to receive(:current_application_settings).and_return(setting)
-    end
-
-    subject { gl_project.ensure_gitlab_ci_project.shared_runners_enabled }
-
-    context 'enabled' do
-      before { setting.update_attributes(shared_runners_enabled: true) }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'disabled' do
-      before { setting.update_attributes(shared_runners_enabled: false) }
-
-      it { is_expected.to be_falsey }
     end
   end
 end

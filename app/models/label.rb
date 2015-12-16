@@ -27,9 +27,7 @@ class Label < ActiveRecord::Base
   has_many :label_links, dependent: :destroy
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
 
-  validates :color,
-            format: { with: /\A#[0-9A-Fa-f]{6}\Z/ },
-            allow_blank: false
+  validates :color, color: true, allow_blank: false
   validates :project, presence: true, unless: Proc.new { |service| service.template? }
 
   # Don't allow '?', '&', and ',' for label titles

@@ -33,12 +33,13 @@ app_user="git"
 app_root="/home/$app_user/gitlab"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
+rails_socket="$socket_path/gitlab.socket"
 web_server_pid_path="$pid_path/unicorn.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
 mail_room_enabled=false
 mail_room_pid_path="$pid_path/mail_room.pid"
 gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
-gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080"
+gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080 -authSocket $rails_socket -documentRoot $app_root/public"
 gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
 shell_path="/bin/bash"
 
@@ -327,7 +328,7 @@ print_status() {
         printf "The GitLab MailRoom email processor is \033[31mnot running\033[0m.\n"
     fi
   fi
-  if [ "$web_status" = "0" ] && [ "$sidekiq_status" = "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" = "0" ]; }; then
+  if [ "$web_status" = "0" ] && [ "$sidekiq_status" = "0" ] && [ "$gitlab_workhorse_status" = "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" = "0" ]; }; then
     printf "GitLab and all its components are \033[32mup and running\033[0m.\n"
   fi
 }

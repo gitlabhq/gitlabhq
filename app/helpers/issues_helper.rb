@@ -51,8 +51,10 @@ module IssuesHelper
   end
 
   def milestone_options(object)
-    options_from_collection_for_select(object.project.milestones.active,
-                                       'id', 'title', object.milestone_id)
+    milestones = object.project.milestones.active.to_a
+    milestones.unshift(Milestone::None)
+
+    options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)
   end
 
   def issue_box_class(item)
@@ -85,7 +87,11 @@ module IssuesHelper
   end
 
   def merge_requests_sentence(merge_requests)
-    merge_requests.map(&:to_reference).to_sentence(last_word_connector: ', or ')
+    # Sorting based on the `!123` or `group/project!123` reference will sort
+    # local merge requests first.
+    merge_requests.map do |merge_request|
+      merge_request.to_reference(@project)
+    end.sort.to_sentence(last_word_connector: ', or ')
   end
 
   def url_to_emoji(name)
@@ -115,6 +121,6 @@ module IssuesHelper
     end
   end
 
-  # Required for Gitlab::Markdown::IssueReferenceFilter
+  # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
 end

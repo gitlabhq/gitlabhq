@@ -113,6 +113,9 @@ The YAML-defined variables are also set to all created service containers, thus 
 
 ### cache
 `cache` is used to specify list of files and directories which should be cached between builds.
+Caches are stored according to the branch/ref and the job name. Caches are not
+currently shared between different job names or between branches/refs. This means
+caching will benefit you if you push subsequent commits to an existing feature branch.
 
 **The global setting allows to specify default cached files for all jobs.**
 

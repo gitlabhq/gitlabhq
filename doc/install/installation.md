@@ -38,6 +38,7 @@ The GitLab installation consists of setting up the following components:
 
 1. Packages / Dependencies
 1. Ruby
+1. Go
 1. System Users
 1. Database
 1. Redis
@@ -62,7 +63,7 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake nodejs
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake nodejs
 
 If you want to use Kerberos for user authentication, then install libkrb5-dev:
 
@@ -174,33 +175,53 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 ## 6. Redis
 
-    sudo apt-get install redis-server
+As of this writing, most Debian/Ubuntu distributions ship with Redis 2.2 or
+2.4. GitLab requires at least Redis 2.8.
 
-    # Configure redis to use sockets
-    sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
+Ubuntu users [can use a PPA](https://launchpad.net/~chris-lea/+archive/ubuntu/redis-server)
+to install a recent version of Redis.
 
-    # Disable Redis listening on TCP by setting 'port' to 0
-    sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+The following instructions cover building and installing Redis from scratch:
 
-    # Enable Redis socket for default Debian / Ubuntu path
-    echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
-    # Grant permission to the socket to all members of the redis group
-    echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
+```sh
+# Build Redis
+wget http://download.redis.io/releases/redis-2.8.23.tar.gz
+tar xzf redis-2.8.23.tar.gz
+cd redis-2.8.23
+make
 
-    # Create the directory which contains the socket
-    mkdir /var/run/redis
-    chown redis:redis /var/run/redis
-    chmod 755 /var/run/redis
-    # Persist the directory which contains the socket, if applicable
-    if [ -d /etc/tmpfiles.d ]; then
-      echo 'd  /var/run/redis  0755  redis  redis  10d  -' | sudo tee -a /etc/tmpfiles.d/redis.conf
-    fi
+# Install Redis
+cd utils
+sudo ./install_server.sh
 
-    # Activate the changes to redis.conf
-    sudo service redis-server restart
+# Configure redis to use sockets
+sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
 
-    # Add git to the redis group
-    sudo usermod -aG redis git
+# Disable Redis listening on TCP by setting 'port' to 0
+sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+
+# Enable Redis socket for default Debian / Ubuntu path
+echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
+
+# Grant permission to the socket to all members of the redis group
+echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
+
+# Create the directory which contains the socket
+mkdir /var/run/redis
+chown redis:redis /var/run/redis
+chmod 755 /var/run/redis
+
+# Persist the directory which contains the socket, if applicable
+if [ -d /etc/tmpfiles.d ]; then
+  echo 'd  /var/run/redis  0755  redis  redis  10d  -' | sudo tee -a /etc/tmpfiles.d/redis.conf
+fi
+
+# Activate the changes to redis.conf
+sudo service redis_6379 start
+
+# Add git to the redis group
+sudo usermod -aG redis git
+```
 
 ## 7. GitLab
 
@@ -210,9 +231,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-2-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable gitlab
 
-**Note:** You can change `8-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -327,7 +348,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout 0.4.2
+    sudo -u git -H git checkout 0.5.0
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
