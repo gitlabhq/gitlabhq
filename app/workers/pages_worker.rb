@@ -12,7 +12,31 @@ class PagesWorker
     return unless valid?
 
     # Create status notifying the deployment of pages
-    @status = GenericCommitStatus.new(
+    @status = create_status
+    @status.run!
+    raise 'pages are outdated' unless latest?
+
+    # Create temporary directory in which we will extract the artifacts
+    Dir.mktmpdir(nil, tmp_path) do |archive_path|
+      results = extract_archive(archive_path)
+      raise 'pages failed to extract' unless results.all?(&:success?)
+
+      # Check if we did extract public directory
+      archive_public_path = File.join(archive_path, 'public')
+      raise 'pages miss the public folder' unless Dir.exists?(archive_public_path)
+      raise 'pages are outdated' unless latest?
+      deploy_page!(archive_public_path)
+
+      @status.success
+    end
+  rescue => e
+    fail(e.message, !latest?)
+  end
+
+  private
+
+  def create_status
+    GenericCommitStatus.new(
       project: project,
       commit: build.commit,
       user: build.user,
@@ -20,54 +44,51 @@ class PagesWorker
       stage: 'deploy',
       name: 'pages:deploy'
     )
-    @status.run!
+  end
 
-    FileUtils.mkdir_p(tmp_path)
+  def extract_archive(temp_path)
+    results = Open3.pipeline(%W(gunzip -c #{artifacts}),
+                             %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
+                             %W(tar -x -C #{temp_path} public/),
+                             err: '/dev/null')
+    results.compact
+  end
 
+  def deploy_page!(archive_public_path)
+    # Do atomic move of pages
+    # Move and removal may not be atomic, but they are significantly faster then extracting and removal
+    # 1. We move deployed public to previous public path (file removal is slow)
+    # 2. We move temporary public to be deployed public
+    # 3. We remove previous public path
+    FileUtils.mkdir_p(pages_path)
+    FileUtils.move(public_path, previous_public_path, force: true)
+    FileUtils.move(archive_public_path, public_path)
+  ensure
+    FileUtils.rm_r(previous_public_path, force: true)
+  end
+
+  def fail(message, allow_failure = true)
+    @status.allow_failure = allow_failure
+    @status.description = message
+    @status.drop
+  end
+
+  def valid?
+    build && build.artifacts_file?
+  end
+
+  def latest?
+    # check if sha for the ref is still the most recent one
+    # this helps in case when multiple deployments happens
+    sha == latest_sha
+  end
+
+  def blocks
     # Calculate dd parameters: we limit the size of pages
     max_size = current_application_settings.max_pages_size.megabytes
     max_size ||= MAX_SIZE
     blocks = 1 + max_size / BLOCK_SIZE
-
-    # Create temporary directory in which we will extract the artifacts
-    Dir.mktmpdir(nil, tmp_path) do |temp_path|
-      # We manually extract the archive and limit the archive size with dd
-      results = Open3.pipeline(%W(gunzip -c #{artifacts}),
-                               %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                               %W(tar -x -C #{temp_path} public/),
-                               err: '/dev/null')
-      return unless results.compact.all?(&:success?)
-
-      # Check if we did extract public directory
-      temp_public_path = File.join(temp_path, 'public')
-      return unless Dir.exists?(temp_public_path)
-
-      FileUtils.mkdir_p(pages_path)
-
-      # Ignore deployment if the HEAD changed when we were extracting the archive
-      return unless valid?
-
-      # Do atomic move of pages
-      # Move and removal may not be atomic, but they are significantly faster then extracting and removal
-      # 1. We move deployed public to previous public path (file removal is slow)
-      # 2. We move temporary public to be deployed public
-      # 3. We remove previous public path
-      FileUtils.move(public_path, previous_public_path, force: true)
-      FileUtils.move(temp_public_path, public_path)
-      FileUtils.rm_r(previous_public_path, force: true)
-
-      @status.success
-    end
-  ensure
-    @status.drop if @status && @status.active?
-  end
-
-  private
-
-  def valid?
-    # check if sha for the ref is still the most recent one
-    # this helps in case when multiple deployments happens
-    build && build.artifacts_file? && sha == latest_sha
+    blocks
   end
 
   def build
