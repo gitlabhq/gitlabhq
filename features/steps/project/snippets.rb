@@ -42,7 +42,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I click link "Edit"' do
-    page.within ".issuable-title" do
+    page.within ".detail-page-header" do
       click_link "Edit"
     end
   end

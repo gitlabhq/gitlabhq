@@ -5,8 +5,9 @@
   - fluid_layout true
 
 .merge-request{'data-url' => merge_request_path(@merge_request)}
+  = render "projects/merge_requests/show/mr_title"
+  
   .merge-request-details.issuable-details
-    = render "projects/merge_requests/show/mr_title"
     .row
       %section.col-md-9
         = render "projects/merge_requests/show/mr_box"

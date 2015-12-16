@@ -36,20 +36,6 @@
 }
 
 .issuable-details {
-  .issue-title {
-    margin: 0;
-    font-size: 23px;
-    color: #313236;
-  }
-
-  .description {
-    margin-top: 6px;
-
-    p:last-child {
-      margin-bottom: 0;
-    }
-  }
-
   section {
     border-right: 1px solid #ECEEF1;
 
@@ -134,23 +120,5 @@
   .participants .avatar {
     margin-top: 6px;
     margin-right: 2px;
-  }
-}
-
-.issuable-title {
-  margin: -$gl-padding;
-  padding: 7px $gl-padding;
-  margin-bottom: 0px;
-  border-bottom: 1px solid $border-color;
-  color: #5c5d5e;
-  font-size: 16px;
-  line-height: 42px;
-
-  .author {
-    color: #5c5d5e;
-  }
-
-  .issuable-id {
-    color: #5c5d5e;
   }
 }

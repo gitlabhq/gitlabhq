@@ -4,7 +4,7 @@
  *
  */
 
-.issue-box {
+.status-box {
   @include border-radius(2px);
 
   display: block;
@@ -14,22 +14,22 @@
   margin-right: 10px;
   font-size: $gl-font-size;
 
-  &.issue-box-closed {
+  &.status-box-closed {
     background-color: $gl-danger;
     color: #FFF;
   }
 
-  &.issue-box-merged {
+  &.status-box-merged {
     background-color: $gl-primary;
     color: #FFF;
   }
 
-  &.issue-box-open {
+  &.status-box-open {
     background-color: #019875;
     color: #FFF;
   }
 
-  &.issue-box-expired {
+  &.status-box-expired {
     background: #cea61b;
     color: #FFF;
   }
