@@ -68,7 +68,7 @@
       - subscribed = issuable.subscribed?(current_user)
       .block.light
         .title
-          %label Notifications
+          %label.light Notifications
         - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
         %button.btn.btn-block.btn-gray.subscribe-button{:type => 'button'}
           %span= subscribed ? 'Unsubscribe' : 'Subscribe'
