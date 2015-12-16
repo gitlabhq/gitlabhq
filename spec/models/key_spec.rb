@@ -81,7 +81,7 @@ describe Key, models: true do
 
     it 'rejects the multiple line key' do
       key = build(:key)
-      key.key.gsub!(' ', "\n")
+      key.key.tr!(' ', "\n")
       expect(key).not_to be_valid
     end
   end

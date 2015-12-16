@@ -112,7 +112,7 @@ module MergeRequests
 
       merge_requests_for_source_branch.each do |merge_request|
         SystemNoteService.change_branch_presence(
-            merge_request, merge_request.project, @current_user,
+          merge_request, merge_request.project, @current_user,
             :source, @branch_name, presence)
       end
     end

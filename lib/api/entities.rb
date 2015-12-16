@@ -67,7 +67,7 @@ module API
       expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
-      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
+      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
     end

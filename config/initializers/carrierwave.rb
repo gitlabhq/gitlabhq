@@ -31,11 +31,11 @@ if File.exists?(aws_file)
   if Rails.env.test?
     Fog.mock!
     connection = ::Fog::Storage.new(
-        aws_access_key_id: AWS_CONFIG['access_key_id'],
-        aws_secret_access_key: AWS_CONFIG['secret_access_key'],
-        provider: 'AWS',
-        region: AWS_CONFIG['region']
-      )
+      aws_access_key_id: AWS_CONFIG['access_key_id'],
+      aws_secret_access_key: AWS_CONFIG['secret_access_key'],
+      provider: 'AWS',
+      region: AWS_CONFIG['region']
+    )
     connection.directories.create(key: AWS_CONFIG['bucket'])
   end
 end

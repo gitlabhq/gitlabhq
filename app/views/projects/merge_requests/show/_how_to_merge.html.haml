@@ -8,8 +8,8 @@
         %p
           %strong Step 1.
           Fetch and check out the branch for this merge request
-        = clipboard_button
-        %pre.dark
+        = clipboard_button(clipboard_target: 'pre#merge-info-1')
+        %pre.dark#merge-info-1
           - if @merge_request.for_fork?
             :preserve
               git fetch #{h @merge_request.source_project.http_url_to_repo} #{h @merge_request.source_branch}
@@ -25,8 +25,8 @@
         %p
           %strong Step 3.
           Merge the branch and fix any conflicts that come up
-        = clipboard_button
-        %pre.dark
+        = clipboard_button(clipboard_target: 'pre#merge-info-3')
+        %pre.dark#merge-info-3
           - if @merge_request.for_fork?
             :preserve
               git checkout #{h @merge_request.target_branch}
@@ -38,8 +38,8 @@
         %p
           %strong Step 4.
           Push the result of the merge to GitLab
-        = clipboard_button
-        %pre.dark
+        = clipboard_button(clipboard_target: 'pre#merge-info-4')
+        %pre.dark#merge-info-4
           :preserve
             git push origin #{h @merge_request.target_branch}
         - unless @merge_request.can_be_merged_by?(current_user)

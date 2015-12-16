@@ -107,6 +107,6 @@ module LabelsHelper
     options_from_collection_for_select(grouped_labels, 'name', 'title', params[:label_name])
   end
 
-  # Required for Gitlab::Markdown::LabelReferenceFilter
+  # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :text_color_for_bg, :escape_once
 end
