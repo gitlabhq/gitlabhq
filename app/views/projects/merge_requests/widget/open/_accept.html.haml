@@ -7,9 +7,9 @@
       .accept-action
         - if @ci_commit && @ci_commit.active?
           %span.btn-group
-            = link_to "#", class: "btn btn-create merge_when_build_succeeds" do
+            = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
               Merge When Build Succeeds
-            %a.btn.btn-success.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+            = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
               %span.caret
               %span.sr-only
                 Select Merge Moment
@@ -23,7 +23,7 @@
                   = icon('warning fw')
                   Merge Immediately
         - else
-          = f.button class: "btn btn-create btn-grouped accept_merge_request #{status_class}" do
+          = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}" do
             Accept Merge Request
       - if @merge_request.can_remove_source_branch?(current_user)
         .accept-control.checkbox
@@ -43,7 +43,7 @@
 
   :javascript
     $('.accept_merge_request').on('click', function() {
-      $(this).html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
+      $('.js-merge-button').html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
     });
 
     $('.accept-mr-form').on('ajax:send', function() {
