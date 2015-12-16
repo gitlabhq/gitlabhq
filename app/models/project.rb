@@ -821,7 +821,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-<<<<<<< HEAD
   def any_runners?(&block)
     if runners.active.any?(&block)
       return true
