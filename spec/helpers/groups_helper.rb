@@ -9,7 +9,7 @@ describe GroupsHelper do
       group.avatar = File.open(avatar_file_path)
       group.save!
       expect(group_icon(group.path).to_s).
-        to match("/uploads/group/avatar/#{ group.id }/banana_sample.gif")
+        to match("/uploads/group/avatar/#{group.id}/banana_sample.gif")
     end
 
     it 'should give default avatar_icon when no avatar is present' do

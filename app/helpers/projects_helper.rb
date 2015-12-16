@@ -330,10 +330,9 @@ module ProjectsHelper
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
       namespace_project_blob_path(
-          project.namespace,
-          project,
-          tree_join(project.default_branch,
-                    blob.name)
+        project.namespace,
+        project,
+        tree_join(project.default_branch, blob.name)
       )
     end
   end

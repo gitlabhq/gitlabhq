@@ -57,15 +57,15 @@ module IssuesHelper
     options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)
   end
 
-  def issue_box_class(item)
+  def status_box_class(item)
     if item.respond_to?(:expired?) && item.expired?
-      'issue-box-expired'
+      'status-box-expired'
     elsif item.respond_to?(:merged?) && item.merged?
-      'issue-box-merged'
+      'status-box-merged'
     elsif item.closed?
-      'issue-box-closed'
+      'status-box-closed'
     else
-      'issue-box-open'
+      'status-box-open'
     end
   end
 

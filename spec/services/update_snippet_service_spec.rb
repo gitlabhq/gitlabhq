@@ -42,7 +42,7 @@ describe UpdateSnippetService, services: true do
     CreateSnippetService.new(project, user, opts).execute
   end
 
-  def update_snippet(project = nil, user, snippet, opts)
+  def update_snippet(project, user, snippet, opts)
     UpdateSnippetService.new(project, user, snippet, opts).execute
   end
 end

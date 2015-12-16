@@ -441,7 +441,7 @@ Rails.application.routes.draw do
 
         scope do
           post(
-              '/create_dir/*id',
+            '/create_dir/*id',
               to: 'tree#create_dir',
               constraints: { id: /.+/ },
               as: 'create_dir'

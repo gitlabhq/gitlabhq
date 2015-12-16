@@ -79,7 +79,7 @@ module TreeHelper
         part_path = File.join(part_path, part) unless part_path.empty?
         part_path = part if part_path.empty?
 
-        next unless parts.last(2).include?(part) if parts.count > max_links
+        next if parts.count > max_links && !parts.last(2).include?(part)
         yield(part, tree_join(@ref, part_path))
       end
     end

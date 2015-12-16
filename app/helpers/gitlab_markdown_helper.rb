@@ -65,7 +65,8 @@ module GitlabMarkdownHelper
   end
 
   def asciidoc(text)
-    Gitlab::Asciidoc.render(text,
+    Gitlab::Asciidoc.render(
+      text,
       project:      @project,
       current_user: (current_user if defined?(current_user)),
 

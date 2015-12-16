@@ -149,3 +149,10 @@ form.edit-issue {
 .issue-form .select2-container {
   width: 250px !important;
 }
+
+
+.issue-discussion {
+  .common-note-form {
+    border-right: 1px solid $border-white-light;
+  }
+}

@@ -20,8 +20,8 @@
 
 %p
   %span.light Commit
-  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace", data: { clipboard_text: @commit.id }
-  = clipboard_button
+  = link_to @commit.id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
+  = clipboard_button(clipboard_text: @commit.id)
 .commit-info-row
   %span.light Authored by
   %strong
