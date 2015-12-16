@@ -985,7 +985,7 @@ class Project < ActiveRecord::Base
 
   def pages_url
     if Dir.exist?(public_pages_path)
-      host = "#{namespace.path}.#{Settings.pages.domain}"
+      host = "#{namespace.path}.#{Settings.pages.host}"
       url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
         "#{prefix}#{namespace.path}."
       end

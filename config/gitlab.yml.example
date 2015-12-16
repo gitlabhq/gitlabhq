@@ -145,7 +145,7 @@ production: &base
     # The domain under which the pages are served:
     # http://group.example.com/project
     # or project path can be a group page: group.example.com
-    domain: example.com
+    host: example.com
     port: 80 # Set to 443 if you serve the pages with HTTPS
     https: false # Set to true if you serve the pages with HTTPS
 
