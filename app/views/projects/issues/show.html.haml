@@ -2,44 +2,45 @@
 = render "header_title"
 
 .issue
-  .issue-details.issuable-details
-    .issuable-title
-      .issue-box{ class: issue_box_class(@issue) }
+  .detail-page-header
+    .status-box{ class: status_box_class(@issue) }
+      - if @issue.closed?
+        Closed
+      - else
+        Open
+    %span.identifier
+      Issue ##{@issue.iid}
+    %span.creator
+      &middot;
+      opened by #{link_to_member(@project, @issue.author, size: 24)}
+      &middot;
+      = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
+      - if @issue.updated_at != @issue.created_at
+        %span
+          &middot;
+          = icon('edit', title: 'edited')
+          = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
+
+    .pull-right
+      - if can?(current_user, :create_issue, @project)
+        = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'btn btn-grouped new-issue-link', title: 'New Issue', id: 'new_issue_link' do
+          = icon('plus')
+          New Issue
+      - if can?(current_user, :update_issue, @issue)
         - if @issue.closed?
-          Closed
+          = link_to 'Reopen', issue_path(@issue, issue: {state_event: :reopen}, status_only: true), method: :put, class: 'btn btn-grouped btn-reopen'
         - else
-          Open
-      %span.issuable-id Issue ##{@issue.iid}
-      %span.creator
-        &middot;
-        opened by #{link_to_member(@project, @issue.author, size: 24)}
-        &middot;
-        = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
-        - if @issue.updated_at != @issue.created_at
-          %span
-            &middot;
-            = icon('edit', title: 'edited')
-            = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
+          = link_to 'Close', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-grouped btn-close', title: 'Close Issue'
 
-      .pull-right
-        - if can?(current_user, :create_issue, @project)
-          = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'btn btn-grouped new-issue-link', title: 'New Issue', id: 'new_issue_link' do
-            = icon('plus')
-            New Issue
-        - if can?(current_user, :update_issue, @issue)
-          - if @issue.closed?
-            = link_to 'Reopen', issue_path(@issue, issue: {state_event: :reopen}, status_only: true), method: :put, class: 'btn btn-grouped btn-reopen'
-          - else
-            = link_to 'Close', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-grouped btn-close', title: 'Close Issue'
+        = link_to edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'btn btn-grouped issuable-edit' do
+          = icon('pencil-square-o')
+          Edit
 
-          = link_to edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'btn btn-grouped issuable-edit' do
-            = icon('pencil-square-o')
-            Edit
-
+  .issue-details.issuable-details
     .row
       %section.col-md-9
-        .gray-content-block
-          %h2.issue-title
+        .detail-page-description.gray-content-block
+          %h2.title
             = markdown escape_once(@issue.title), pipeline: :single_line
           %div
             - if @issue.description.present?
