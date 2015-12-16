@@ -10,8 +10,7 @@
     margin-left: -$gl-padding;
     margin-right: -$gl-padding;
     color: $gl-gray;
-    border-bottom: 1px solid #ECEEF1;
-    border-right: 1px solid #ECEEF1;
+    border-bottom: 1px solid $border-white-light;
 
     &:target {
       background: $hover;
