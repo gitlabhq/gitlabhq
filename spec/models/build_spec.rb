@@ -440,7 +440,7 @@ describe Ci::Build, models: true do
     context 'when a Build is created after the MR' do
       before do
         @merge_request = create_mr(build, commit, factory: :merge_request_with_diffs)
-        commit2 = FactoryGirl.create :ci_commit, gl_project: gl_project
+        commit2 = FactoryGirl.create :ci_commit, project: project
         @build2 = FactoryGirl.create :ci_build, commit: commit2
 
         commits = [double(id: commit.sha), double(id: commit2.sha)]
