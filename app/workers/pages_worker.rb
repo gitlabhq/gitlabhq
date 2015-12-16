@@ -5,7 +5,7 @@ class PagesWorker
   BLOCK_SIZE = 32.kilobytes
   MAX_SIZE = 1.terabyte
 
-  sidekiq_options queue: :pages
+  sidekiq_options queue: :pages, retry: false
 
   def perform(build_id)
     @build_id = build_id
@@ -44,25 +44,17 @@ class PagesWorker
 
       FileUtils.mkdir_p(pages_path)
 
-      # Lock file for time of deployment to prevent the two processes from doing the concurrent deployment
-      File.open(lock_path, File::RDWR|File::CREAT, 0644) do |f|
-        f.flock(File::LOCK_EX)
-        return unless valid?
+      # Ignore deployment if the HEAD changed when we were extracting the archive
+      return unless valid?
 
-        # Do atomic move of pages
-        # Move and removal may not be atomic, but they are significantly faster then extracting and removal
-        # 1. We move deployed public to previous public path (file removal is slow)
-        # 2. We move temporary public to be deployed public
-        # 3. We remove previous public path
-        if File.exists?(public_path)
-          FileUtils.move(public_path, previous_public_path)
-        end
-        FileUtils.move(temp_public_path, public_path)
-      end
-
-      if File.exists?(previous_public_path)
-        FileUtils.rm_r(previous_public_path, force: true)
-      end
+      # Do atomic move of pages
+      # Move and removal may not be atomic, but they are significantly faster then extracting and removal
+      # 1. We move deployed public to previous public path (file removal is slow)
+      # 2. We move temporary public to be deployed public
+      # 3. We remove previous public path
+      FileUtils.move(public_path, previous_public_path, force: true)
+      FileUtils.move(temp_public_path, public_path)
+      FileUtils.rm_r(previous_public_path, force: true)
 
       @status.success
     end
