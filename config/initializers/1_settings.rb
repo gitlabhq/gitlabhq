@@ -5,8 +5,8 @@ class Settings < Settingslogic
   namespace Rails.env
 
   class << self
-    def on_standard_port?(config)
-      config.port.to_i == (config.https ? 443 : 80)
+    def gitlab_on_standard_port?
+      on_standard_port?(gitlab)
     end
 
     def host_without_www(url)
@@ -85,6 +85,10 @@ class Settings < Settingslogic
         config.host,
         custom_port
       ]
+    end
+
+    def on_standard_port?(config)
+      config.port.to_i == (config.https ? 443 : 80)
     end
 
     # Extract the host part of the given +url+.
