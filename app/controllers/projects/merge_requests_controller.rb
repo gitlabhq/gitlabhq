@@ -178,7 +178,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds] && @merge_request.ci_commit && @merge_request.ci_commit.active?
+    if params[:merge_when_build_succeeds].present? && @merge_request.ci_commit && @merge_request.ci_commit.active?
       MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
                                                       .execute(@merge_request)
       @status = :merge_when_build_succeeds
