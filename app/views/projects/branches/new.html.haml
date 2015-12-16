@@ -14,7 +14,6 @@
     = label_tag :branch_name, nil, class: 'control-label'
     .col-sm-10
       = text_field_tag :branch_name, params[:branch_name], required: true, tabindex: 1, autofocus: true, class: 'form-control'
-      .help-block Can't contains space, '~', '^', ':', '?', '*', '[', '\', '..', '@{', and consecutive slashes, start with '/' or '.' or end in '/' or '.' or '.lock'
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
     .col-sm-10
