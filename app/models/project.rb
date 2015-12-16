@@ -821,6 +821,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+<<<<<<< HEAD
   def any_runners?(&block)
     if runners.active.any?(&block)
       return true
@@ -849,5 +850,9 @@ class Project < ActiveRecord::Base
 
   def build_timeout_in_minutes=(value)
     self.build_timeout = value.to_i * 60
+  end
+
+  def open_issues_count
+    issues.opened.count
   end
 end

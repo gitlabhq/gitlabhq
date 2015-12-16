@@ -70,6 +70,7 @@ module API
       expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
+      expose :open_issues_count, if: lambda { | project, options | project.issues_enabled? && project.default_issues_tracker? }
     end
 
     class ProjectMember < UserBasic

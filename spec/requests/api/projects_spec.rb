@@ -65,6 +65,22 @@ describe API::API, api: true  do
         expect(json_response.first.keys).to include('tag_list')
       end
 
+      it 'should include open_issues_count' do
+        get api('/projects', user)
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        expect(json_response.first.keys).to include('open_issues_count')
+      end
+
+      it 'should not include open_issues_count' do
+        project.update_attributes( { issues_enabled: false } )
+
+        get api('/projects', user)
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        expect(json_response.first.keys).not_to include('open_issues_count')
+      end
+
       context 'and using search' do
         it 'should return searched project' do
           get api('/projects', user), { search: project.name }
