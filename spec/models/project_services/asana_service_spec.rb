@@ -62,5 +62,26 @@ describe AsanaService, models: true do
 
       @asana.check_commit('fix #456789', 'pushed')
     end
+
+    it 'should be able to close via url' do
+      expect(Asana::Task).to receive(:find).with('42').twice
+
+      @asana.check_commit('closes https://app.asana.com/19292/956299/42', 'pushed')
+    end
+
+    it 'should allow multiple matches per line' do
+      expect(Asana::Task).to receive(:find).with('123').twice
+      expect(Asana::Task).to receive(:find).with('456').twice
+      expect(Asana::Task).to receive(:find).with('789').once
+
+      expect(Asana::Task).to receive(:find).with('42').once
+      expect(Asana::Task).to receive(:find).with('12').twice
+
+      message = <<-EOF
+      minor bigfix, refactoring, fixed #123 and Closes #456 work on #789
+      ref https://app.asana.com/19292/956299/42 and closing https://app.asana.com/19292/956299/12
+      EOF
+      @asana.check_commit(message, 'pushed')
+    end
   end
 end

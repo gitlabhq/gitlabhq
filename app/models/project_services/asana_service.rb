@@ -98,17 +98,29 @@ automatically inspected. Leave blank to include all branches.'
     task_list = []
     close_list = []
 
-    message.split("\n").each do |line|
-      # look for a task ID or a full Asana url
-      task_list.concat(line.scan(/#(\d+)/))
-      task_list.concat(line.scan(/https:\/\/app\.asana\.com\/\d+\/\d+\/(\d+)/))
-      # look for a word starting with 'fix' followed by a task ID
-      close_list.concat(line.scan(/(fix\w*)\W*#(\d+)/i))
+    # matches either:
+    # - #1234
+    # - https://app.asana.com/0/0/1234
+    # optionally preceded with:
+    # - fix/ed/es/ing
+    # - close/s/d
+    # - closing
+    issue_finder = /(fix\w*|clos[ei]\w*+)?\W*(?:https:\/\/app\.asana\.com\/\d+\/\d+\/(\d+)|#(\d+))/i
+
+    message.scan(issue_finder).each do |tuple|
+      # tuple will be
+      # [ 'fix', 'id_from_url', 'id_from_pound' ]
+      taskid = tuple[2] || tuple[1]
+      task_list.push(taskid)
+
+      if tuple[0]
+        close_list.push(taskid)
+      end
     end
 
     # post commit to every taskid found
     task_list.each do |taskid|
-      task = Asana::Task.find(taskid[0])
+      task = Asana::Task.find(taskid)
 
       if task
         task.create_story(text: push_msg + ' ' + message)
@@ -117,7 +129,7 @@ automatically inspected. Leave blank to include all branches.'
 
     # close all tasks that had 'fix(ed/es/ing) #:id' in them
     close_list.each do |taskid|
-      task = Asana::Task.find(taskid.last)
+      task = Asana::Task.find(taskid)
 
       if task
         task.modify(completed: true)
