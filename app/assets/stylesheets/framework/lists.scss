@@ -143,7 +143,11 @@ ul.controls {
 
   > li {
     float: left;
-    padding-right: 10px;
+    margin-right: 10px;
+    
+    &:last-child {
+      margin-right: 0;
+    }
 
     .author_link {
       display: inline-block;
