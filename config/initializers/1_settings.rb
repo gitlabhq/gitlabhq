@@ -5,8 +5,8 @@ class Settings < Settingslogic
   namespace Rails.env
 
   class << self
-    def gitlab_on_standard_port?
-      gitlab.port.to_i == (gitlab.https ? 443 : 80)
+    def on_standard_port?(config)
+      config.port.to_i == (config.https ? 443 : 80)
     end
 
     # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
@@ -19,7 +19,7 @@ class Settings < Settingslogic
     end
 
     def build_gitlab_ci_url
-      if gitlab_on_standard_port?
+      if on_standard_port?(gitlab)
         custom_port = nil
       else
         custom_port = ":#{gitlab.port}"
@@ -30,6 +30,10 @@ class Settings < Settingslogic
         custom_port,
         gitlab.relative_url_root
       ].join('')
+    end
+
+    def build_pages_url
+      base_url(pages).join('')
     end
 
     def build_gitlab_shell_ssh_path_prefix
@@ -47,11 +51,11 @@ class Settings < Settingslogic
     end
 
     def build_base_gitlab_url
-      base_gitlab_url.join('')
+      base_url(gitlab).join('')
     end
 
     def build_gitlab_url
-      (base_gitlab_url + [gitlab.relative_url_root]).join('')
+      (base_url(gitlab) + [gitlab.relative_url_root]).join('')
     end
 
     def kerberos_protocol
@@ -103,11 +107,11 @@ class Settings < Settingslogic
 
     private
 
-    def base_gitlab_url
-      custom_port = gitlab_on_standard_port? ? nil : ":#{gitlab.port}"
-      [ gitlab.protocol,
+    def base_url(config)
+      custom_port = on_standard_port?(config) ? nil : ":#{config.port}"
+      [ config.protocol,
         "://",
-        gitlab.host,
+        config.host,
         custom_port
       ]
     end
@@ -261,11 +265,17 @@ Settings.artifacts['enabled']      = true if Settings.artifacts['enabled'].nil?
 Settings.artifacts['path']         = File.expand_path(Settings.artifacts['path'] || File.join(Settings.shared['path'], "artifacts"), Rails.root)
 Settings.artifacts['max_size']    ||= 100 # in megabytes
 
+#
 # Pages
+#
 Settings['pages'] ||= Settingslogic.new({})
 Settings.pages['enabled']         = false if Settings.pages['enabled'].nil?
 Settings.pages['path']            = File.expand_path('shared/pages/', Rails.root)
 Settings.pages['domain']          ||= "example.com"
+Settings.pages['https']           = false if Settings.pages['https'].nil?
+Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
+Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
+Settings.pages['url']             ||= Settings.send(:build_pages_url)
 
 #
 # Git LFS
