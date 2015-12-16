@@ -10,8 +10,8 @@ module ButtonHelper
   #   # => "<button class='...' data-clipboard-text='Foo'>...</button>"
   #
   #   # Define the target element
-  #   clipboard_button(clipboard_target: "#foo")
-  #   # => "<button class='...' data-clipboard-target='#foo'>...</button>"
+  #   clipboard_button(clipboard_target: "div#foo")
+  #   # => "<button class='...' data-clipboard-target='div#foo'>...</button>"
   #
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
