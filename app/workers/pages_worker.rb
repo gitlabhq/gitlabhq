@@ -14,23 +14,26 @@ class PagesWorker
     # Create status notifying the deployment of pages
     @status = create_status
     @status.run!
+
     raise 'pages are outdated' unless latest?
 
     # Create temporary directory in which we will extract the artifacts
+    FileUtils.mkdir_p(tmp_path)
     Dir.mktmpdir(nil, tmp_path) do |archive_path|
-      results = extract_archive(archive_path)
-      raise 'pages failed to extract' unless results.all?(&:success?)
+      extract_archive!(archive_path)
 
       # Check if we did extract public directory
       archive_public_path = File.join(archive_path, 'public')
       raise 'pages miss the public folder' unless Dir.exists?(archive_public_path)
       raise 'pages are outdated' unless latest?
+
       deploy_page!(archive_public_path)
 
       @status.success
     end
   rescue => e
     fail(e.message, !latest?)
+    return false
   end
 
   private
@@ -46,12 +49,12 @@ class PagesWorker
     )
   end
 
-  def extract_archive(temp_path)
+  def extract_archive!(temp_path)
     results = Open3.pipeline(%W(gunzip -c #{artifacts}),
                              %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
                              %W(tar -x -C #{temp_path} public/),
                              err: '/dev/null')
-    results.compact
+    raise 'pages failed to extract' unless results.compact.all?(&:success?)
   end
 
   def deploy_page!(archive_public_path)
@@ -61,7 +64,10 @@ class PagesWorker
     # 2. We move temporary public to be deployed public
     # 3. We remove previous public path
     FileUtils.mkdir_p(pages_path)
-    FileUtils.move(public_path, previous_public_path, force: true)
+    begin
+      FileUtils.move(public_path, previous_public_path)
+    rescue
+    end
     FileUtils.move(archive_public_path, public_path)
   ensure
     FileUtils.rm_r(previous_public_path, force: true)
