@@ -62,8 +62,6 @@ v 8.2.3
   - Update documentation for "Guest" permissions
   - Properly convert Emoji-only comments into Award Emojis
   - Enable devise paranoid mode to prevent user enumeration attack
-
-v 8.2.3
   - Webhook payload has an added, modified and removed properties for each commit
   - Fix 500 error when creating a merge request that removes a submodule
 
