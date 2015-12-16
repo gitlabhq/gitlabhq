@@ -12,10 +12,6 @@
         Forked from
         = link_to project_path(forked_from_project) do
           = forked_from_project.namespace.try(:name)
-  .cover-controls.left
-    .visibility-level-label.has_tooltip{title: project_visibility_level_description(@project.visibility_level), data: { container: 'body' } }
-      = visibility_level_icon(@project.visibility_level, fw: false)
-      = visibility_level_label(@project.visibility_level)
 
     - if @project.mirror?
       - import_url = @project.safe_import_url
@@ -23,6 +19,10 @@
         Mirrored from #{link_to import_url, import_url}.
 
         = render "shared/mirror_status"
+  .cover-controls.left
+    .visibility-level-label.has_tooltip{title: project_visibility_level_description(@project.visibility_level), data: { container: 'body' } }
+      = visibility_level_icon(@project.visibility_level, fw: false)
+      = visibility_level_label(@project.visibility_level)
 
   .cover-controls
     - if can?(current_user, :admin_project, @project)
@@ -46,4 +46,3 @@
       = render 'projects/buttons/dropdown'
 
     = render 'projects/buttons/notifications'
-
