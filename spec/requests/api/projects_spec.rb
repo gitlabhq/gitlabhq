@@ -139,6 +139,25 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/starred' do
+    before do
+      admin.starred_projects << project
+      admin.save!
+    end
+
+    it 'should return the starred projects' do
+      get api('/projects/all', admin)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+
+      expect(json_response).to satisfy do |response|
+        response.one? do |entry|
+          entry['name'] == project.name
+        end
+      end
+    end
+  end
+
   describe 'POST /projects' do
     context 'maximum number of projects reached' do
       it 'should not create new project and respond with 403' do
@@ -471,7 +490,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'PUT /projects/:id/snippets/:shippet_id' do
+  describe 'PUT /projects/:id/snippets/:snippet_id' do
     it 'should update an existing project snippet' do
       put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
         code: 'updated code'
