@@ -251,7 +251,7 @@ group :development, :test do
 
   gem 'capybara',            '~> 2.4.0'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist',         '~> 1.6.0'
+  gem 'poltergeist',         '~> 1.8.1'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
