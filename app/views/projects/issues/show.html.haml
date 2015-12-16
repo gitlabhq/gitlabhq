@@ -54,8 +54,6 @@
             .merge-requests
               = render 'merge_requests'
 
-        - if @closed_by_merge_requests.present?
-          = render 'projects/issues/closed_by_box'
         .issue-discussion
           = render 'projects/issues/discussion'
 
