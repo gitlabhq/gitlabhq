@@ -74,22 +74,16 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
     your GitLab pages domain is `gitlabpages.com`, replace
 
     ```bash
-    server_name ~^(?<group>.*)\.YOUR_GITLAB_PAGES\.DOMAIN$;
+    server_name *.YOUR_GITLAB_PAGES.DOMAIN;
     ```
 
     with
 
     ```
-    server_name ~^(?<group>.*)\.gitlabpages\.com$;
+    server_name *.gitlabpages.com;
     ```
 
-    You must be extra careful to not remove the backslashes. If you are using
-    a subdomain, make sure to escape all dots (`.`) with a backslash (\).
-    For example `pages.gitlab.io` would be:
-
-    ```
-    server_name ~^(?<group>.*)\.pages\.gitlab\.io$;
-    ```
+    You must be add `*` in front of your domain, this is required to catch all subdomains of gitlabpages.com.
 
 1. Restart Nginx and GitLab:
 

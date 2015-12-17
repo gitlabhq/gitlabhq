@@ -121,10 +121,6 @@ class PagesWorker
     @previous_public_path ||= File.join(pages_path, "public.#{SecureRandom.hex}")
   end
 
-  def lock_path
-    @lock_path ||= File.join(pages_path, 'deploy.lock')
-  end
-
   def ref
     build.ref
   end
