@@ -30,6 +30,7 @@
 #  description        :string(255)
 #  artifacts_file     :text
 #  gl_project_id      :integer
+#  artifacts_metadata :text
 #
 
 module Ci
@@ -40,6 +41,7 @@ module Ci
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
 
     serialize :options
+    serialize :artifacts_metadata
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
