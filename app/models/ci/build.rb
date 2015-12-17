@@ -336,8 +336,6 @@ module Ci
       project.execute_services(build_data.dup, :build_hooks)
     end
 
-
-
     private
 
     def yaml_variables

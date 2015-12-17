@@ -609,9 +609,10 @@ Rails.application.routes.draw do
           end
 
           scope module: :builds do
-            resources :artifacts do
+            resource :artifacts, only: [] do
               collection do
                 get :download
+                get 'view(/:path)', as: :view, to: 'artifacts#view'
               end
             end
           end

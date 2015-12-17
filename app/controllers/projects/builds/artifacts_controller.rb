@@ -14,6 +14,10 @@ class Projects::Builds::ArtifactsController < Projects::ApplicationController
     send_file artifacts_file.path, disposition: 'attachment'
   end
 
+  def view
+    @metadata = build.artifacts_metadata
+  end
+
   private
 
   def build
