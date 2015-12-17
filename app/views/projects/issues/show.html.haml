@@ -37,24 +37,30 @@
           Edit
 
   .issue-details.issuable-details
+    .detail-page-description.gray-content-block.second-block
+      %h2.title
+        = markdown escape_once(@issue.title), pipeline: :single_line
+      %div
+        - if @issue.description.present?
+          .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
+            .wiki
+              = preserve do
+                = markdown(@issue.description, cache_key: [@issue, "description"])
+            %textarea.hidden.js-task-list-field
+              = @issue.description
+
+        .merge-requests
+          = render 'merge_requests'
+
+    .gray-content-block.second-block.oneline-block
+      = render 'votes/votes_block', votable: @issue
+
+    - if @closed_by_merge_requests.present?
+      = render 'projects/issues/closed_by_box'
+
     .row
       %section.col-md-9
-        .detail-page-description.gray-content-block
-          %h2.title
-            = markdown escape_once(@issue.title), pipeline: :single_line
-          %div
-            - if @issue.description.present?
-              .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
-                .wiki
-                  = preserve do
-                    = markdown(@issue.description, cache_key: [@issue, "description"])
-                %textarea.hidden.js-task-list-field
-                  = @issue.description
-
-            .merge-requests
-              = render 'merge_requests'
-
-        .issue-discussion
+        .issuable-discussion
           = render 'projects/issues/discussion'
 
       %aside.col-md-3
