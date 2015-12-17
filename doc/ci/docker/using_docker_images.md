@@ -1,11 +1,11 @@
 # Using Docker Images
 
-GitLab CI in conjuction with [GitLab Runner](../runners/README.md) can use
+GitLab CI in conjunction with [GitLab Runner](../runners/README.md) can use
 [Docker Engine](https://www.docker.com/) to test and build any application.
 
 Docker is an open-source project that allows you to use predefined images to
 run applications in independent "containers" that are run within a single Linux
-instance. [Docker Hub][hub] has a rich database of prebuilt images that can be
+instance. [Docker Hub][hub] has a rich database of pre-built images that can be
 used to test and build your applications.
 
 Docker, when used with GitLab CI, runs each build in a separate and isolated
@@ -136,6 +136,24 @@ Look for the `[runners.docker]` section:
 The image and services defined this way will be added to all builds run by
 that runner.
 
+## Define an image from a private Docker registry
+
+Starting with GitLab Runner 0.6.0, you are able to define images located to
+private registries that could also require authentication.
+
+All you have to do is be explicit on the image definition in `.gitlab-ci.yml`.
+
+```yaml
+image: my.registry.tld:5000/namepace/image:tag
+```
+
+In the example above, GitLab Runner will look at `my.registry.tld:5000` for the
+image `namespace/image:tag`.
+
+If the repository is private you need to authenticate your GitLab Runner in the
+registry. Learn how to do that on
+[GitLab Runner's documentation][runner-priv-reg].
+
 ## Accessing the services
 
 Let's say that you need a Wordpress instance to test some API integration with
@@ -258,3 +276,4 @@ creation.
 [tutum/wordpress]: https://registry.hub.docker.com/u/tutum/wordpress/
 [postgres-hub]: https://registry.hub.docker.com/u/library/postgres/
 [mysql-hub]: https://registry.hub.docker.com/u/library/mysql/
+[runner-priv-reg]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/configuration/advanced-configuration.md#using-a-private-docker-registry

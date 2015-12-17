@@ -18,7 +18,7 @@
 
     &.affix {
       position: fixed;
-      top: 60px;
+      top: 70px;
       margin-right: 35px;
     }
   }
@@ -39,15 +39,8 @@
   section {
     border-right: 1px solid $border-white-light;
 
-    > .tab-content {
+    .issuable-discussion {
       margin-right: 1px;
-    }
-
-    .issue-discussion > .gray-content-block,
-    > .gray-content-block {
-      margin-top: 0;
-      border-top: none;
-      margin-right: -15px;
     }
   }
 }
