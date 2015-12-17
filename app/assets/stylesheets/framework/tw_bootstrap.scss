@@ -218,11 +218,35 @@
 }
 
 .panel-success {
+  background-color: $green-normal;
   .panel-body {
-    background-color: #2faa60;
     color: #fff;
   }
+  .panel-heading {
+    border-bottom: 1px solid #289957;
+  }
 }
+
+.panel-info {
+  background-color: $blue-normal;
+  .panel-body {
+    color: #fff;
+  }
+  .panel-heading {
+    border-bottom: 1px solid #2b8dbe;
+  }
+}
+
+.panel-primary {
+  background-color: $blue-normal;
+  .panel-body {
+    color: #fff;
+  }
+  .panel-heading {
+    border-bottom: 1px solid #2b8dbe;
+  }
+}
+
 
 .alert-help {
   background-color: $background-color;
