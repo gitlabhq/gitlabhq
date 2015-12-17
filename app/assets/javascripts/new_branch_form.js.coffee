@@ -34,13 +34,19 @@ class @NewBranchForm
       conjunction: "or"
     }
 
-    characters = {
+    invalid = {
       pattern: /(\s|~|\^|:|\?|\*|\[|\\|\.\.|@\{|\/{2,}){1}/g
       prefix: "can't contains",
       conjunction: ", "
     }
 
-    @restrictions = [startsWith, characters, endsWith]
+    single = {
+      pattern: /^@+$/g
+      prefix: "can't be",
+      conjunction: "or"
+    }
+
+    @restrictions = [startsWith, invalid, endsWith, single]
 
   validate: =>
     @branchNameError.empty()
