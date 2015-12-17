@@ -40,7 +40,7 @@
   - @commit.parents.each do |parent|
     = link_to parent.short_id, namespace_project_commit_path(@project.namespace, @project, parent), class: "monospace"
 
-- if @ci_commit && @ci_commit.show_build_status?
+- if @ci_commit
   .pull-right
     = link_to ci_status_path(@ci_commit), class: "ci-status ci-#{@ci_commit.status}" do
       = ci_status_icon(@ci_commit)
