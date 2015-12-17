@@ -45,7 +45,8 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
      cd /home/git/gitlab
      ```
 
-1. Edit `gitlab.yml` and under the `pages` setting, set `enabled` to `true`:
+1. Edit `gitlab.yml` and under the `pages` setting, set `enabled` to `true` and
+   the `host` to the FQDN under which GitLab Pages will be served:
 
      ```bash
      ## GitLab Pages
@@ -82,7 +83,13 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
     server_name ~^(?<group>.*)\.gitlabpages\.com$;
     ```
 
-    You must be extra careful to not remove the backslashes.
+    You must be extra careful to not remove the backslashes. If you are using
+    a subdomain, make sure to escape all dots (`.`) with a backslash (\).
+    For example `pages.gitlab.io` would be:
+
+    ```
+    server_name ~^(?<group>.*)\.pages\.gitlab\.io$;
+    ```
 
 1. Restart Nginx and GitLab:
 
@@ -108,7 +115,7 @@ required.
        # The domain under which the pages are served:
        # http://group.example.com/project
        # or project path can be a group page: group.example.com
-       host: gitlabpages.com
+       host: example.com
        port: 443 # Set to 443 if you serve the pages with HTTPS
        https: true # Set to true if you serve the pages with HTTPS
      ```
@@ -120,7 +127,8 @@ required.
     ```
 
     Make sure to edit the config to add your domain as well as correctly point
-    to the right location where the SSL certificates reside.
+    to the right location where the SSL certificates reside. After all changes
+    restart Nginx.
 
 ## Set maximum pages size
 
