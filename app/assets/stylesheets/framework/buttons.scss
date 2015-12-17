@@ -5,7 +5,7 @@
   font-size: 15px;
   font-weight: 500;
   line-height: 18px;
-  padding: 7px $gl-padding;
+  padding: 11px $gl-padding;
   letter-spacing: .4px;
 
   &:focus,
@@ -71,7 +71,7 @@
   @include btn-white;
 
   &.btn-sm {
-    padding: 5px 10px;
+    padding: 7px 10px;
   }
 
   &.btn-xs {

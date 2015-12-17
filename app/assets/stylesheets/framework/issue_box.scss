@@ -4,9 +4,9 @@
  *
  */
 
-.issue-box {
-  @include border-radius(3px);
 
+.status-box {
+  @include border-radius(3px);
   display: block;
   float: left;
   padding: 0 $gl-padding;
@@ -23,8 +23,8 @@
     background-color: $gl-primary;
     color: #FFF;
   }
-  
-  &.issue-box-open {
+
+  &.status-box-open {
     background-color: #31af64;
     color: #FFF;
   }

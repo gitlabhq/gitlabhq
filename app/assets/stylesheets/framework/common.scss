@@ -378,7 +378,9 @@ table {
   @include nav-menu;
   text-align: center;
   margin-top: 5px;
-  margin-top: -$gl-padding-top;
+  margin-bottom: $gl-padding;
+  height: auto;
+  margin-top: -$gl-padding;
 
   &.no-bottom {
     margin-bottom: 0;
@@ -390,8 +392,8 @@ table {
 
   li a {
     display: inline-block;
-    padding-top: 4px;
-    padding-bottom: 11px;
+    padding-top: $gl-padding;
+    padding-bottom: 16px;
     margin-bottom: -1px;
   }
 
@@ -435,6 +437,7 @@ table {
     }
   }
 }
+
 
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
