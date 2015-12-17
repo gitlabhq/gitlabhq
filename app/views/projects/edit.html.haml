@@ -183,25 +183,32 @@
           .panel-body
             - if @project.pages_url
               %strong
-                Congratulations. Your pages are served at:
+                Congratulations! Your pages are served at:
                 %p= link_to @project.pages_url, @project.pages_url
             - else
               %p
-                To publish pages create .gitlab-ci.yml with
-                %strong pages job
-                and send public/ folder to GitLab.
+                Learn how to upload your static site and have it served by
+                GitLab by following the #{link_to "documentation on GitLab Pages", "http://doc.gitlab.com/pages/README.html", target: :blank}.
               %p
-                Use existing tools:
+                In the example below we define a special job named
+                %code pages
+                which is using Jekyll to build a static site. The generated
+                HTML will be stored in the
+                %code public/
+                directory which will then be archived and uploaded to GitLab.
+                The name of the directory should not be different than
+                %code public/
+                in order for the pages to work.
                 %ul
                   %li
                     %pre
                       :plain
                         pages:
-                          image: jekyll
-                          script: jekyll build
+                          image: jekyll/jekyll
+                          script: jekyll build -d public/
                           artifacts:
                             paths:
-                            - public
+                            - public/
 
             - if @project.pages_url && can?(current_user, :remove_pages, @project)
               .form-actions
