@@ -1,11 +1,11 @@
-require 'gitlab/markdown'
+require 'banzai'
 
 module Gitlab
   module Markdown
     class Pipeline
       def self.[](name)
         name ||= :full
-        Markdown.const_get("#{name.to_s.camelize}Pipeline")
+        const_get("#{name.to_s.camelize}Pipeline")
       end
 
       def self.filters

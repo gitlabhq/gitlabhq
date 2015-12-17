@@ -291,7 +291,7 @@ class Project < ActiveRecord::Base
         joins(:namespace).
         iwhere('namespaces.path' => namespace_path)
 
-      projects.where('projects.path' => project_path).take ||
+      projects.find_by('projects.path' => project_path) ||
         projects.iwhere('projects.path' => project_path).take
     end
 
@@ -532,7 +532,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
-    @external_issues_tracker ||= external_issues_trackers.select(&:activated?).first
+    @external_issues_tracker ||= external_issues_trackers.find(&:activated?)
   end
 
   def can_have_issues_tracker_id?
@@ -578,7 +578,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= ci_services.select(&:activated?).first
+    @ci_service ||= ci_services.find(&:activated?)
   end
 
   def jira_tracker?
@@ -637,7 +637,7 @@ class Project < ActiveRecord::Base
   end
 
   def project_member_by_name_or_email(name = nil, email = nil)
-    user = users.where('name like ? or email like ?', name, email).first
+    user = users.find_by('name like ? or email like ?', name, email)
     project_members.where(user: user) if user
   end
 
@@ -822,7 +822,7 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    project_members.where(user_id: user).first
+    project_members.find_by(user_id: user)
   end
 
   def default_branch
@@ -975,5 +975,9 @@ class Project < ActiveRecord::Base
 
   def build_timeout_in_minutes=(value)
     self.build_timeout = value.to_i * 60
+  end
+
+  def open_issues_count
+    issues.opened.count
   end
 end

@@ -13,7 +13,7 @@ module TokenAuthenticatable
       @token_fields << token_field
 
       define_singleton_method("find_by_#{token_field}") do |token|
-        where(token_field => token).first if token
+        find_by(token_field => token) if token
       end
 
       define_method("ensure_#{token_field}") do
@@ -37,7 +37,7 @@ module TokenAuthenticatable
   def generate_token_for(token_field)
     loop do
       token = Devise.friendly_token
-      break token unless self.class.unscoped.where(token_field => token).first
+      break token unless self.class.unscoped.find_by(token_field => token)
     end
   end
 end

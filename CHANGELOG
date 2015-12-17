@@ -2,6 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
   - Merge when build succeeds (Zeger-Jan van de Weg)
+  - API support for starred projects for authorized user (Zeger-Jan van de Weg)
+  - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
   - Merge when build succeeds (Zeger-Jan van de Weg)
@@ -64,8 +66,6 @@ v 8.2.3
   - Update documentation for "Guest" permissions
   - Properly convert Emoji-only comments into Award Emojis
   - Enable devise paranoid mode to prevent user enumeration attack
-
-v 8.2.3
   - Webhook payload has an added, modified and removed properties for each commit
   - Update documentation for "Guest" permissions
   - Properly convert Emoji-only comments into Award Emojis

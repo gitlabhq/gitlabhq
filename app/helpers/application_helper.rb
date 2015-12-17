@@ -61,7 +61,7 @@ module ApplicationHelper
     options[:class] ||= ''
     options[:class] << ' identicon'
     bg_key = project.id % 7
-    style = "background-color: ##{ allowed_colors.values[bg_key] }; color: #555"
+    style = "background-color: ##{allowed_colors.values[bg_key]}; color: #555"
 
     content_tag(:div, class: options[:class], style: style) do
       project.name[0, 1].upcase
@@ -204,12 +204,16 @@ module ApplicationHelper
   # Returns an HTML-safe String
   def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
     element = content_tag :time, time.to_s,
-      class: "#{html_class} js-timeago",
+      class: "#{html_class} js-timeago js-timeago-pending",
       datetime: time.to_time.getutc.iso8601,
       title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
-    element += javascript_tag "$('.js-timeago').last().timeago()" unless skip_js
+    unless skip_js
+      element << javascript_tag(
+        "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
+      )
+    end
 
     element
   end

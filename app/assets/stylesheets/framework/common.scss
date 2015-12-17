@@ -410,6 +410,11 @@ table {
     border-bottom: 1px solid $border-color;
     height: 57px;
   }
+
+  &.wide {
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+  }
 }
 
 .center-middle-menu {

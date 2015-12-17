@@ -27,12 +27,10 @@ class TeamcityService < CiService
   validates :build_type, presence: true, if: :activated?
   validates :username,
     presence: true,
-    if: ->(service) { service.password? },
-    if: :activated?
+    if: ->(service) { service.activated? && service.password }
   validates :password,
     presence: true,
-    if: ->(service) { service.username? },
-    if: :activated?
+    if: ->(service) { service.activated? && service.username }
 
   attr_accessor :response
 
@@ -147,6 +145,6 @@ class TeamcityService < CiService
                           '</build>',
                     headers: { 'Content-type' => 'application/xml' },
                     basic_auth: auth
-        )
+                   )
   end
 end

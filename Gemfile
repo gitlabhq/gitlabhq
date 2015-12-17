@@ -222,7 +222,7 @@ group :development do
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'
   gem 'quiet_assets', '~> 1.0.2'
-  gem 'rerun', '~> 0.10.0'
+  gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
   gem 'rblineprof', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
@@ -258,7 +258,7 @@ group :development, :test do
 
   gem 'capybara',            '~> 2.4.0'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist',         '~> 1.6.0'
+  gem 'poltergeist',         '~> 1.8.1'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
@@ -268,7 +268,7 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop',  '~> 0.28.0',  require: false
+  gem 'rubocop', '~> 0.35.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
   gem 'flog', require: false

@@ -223,9 +223,9 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       if login = conditions.delete(:login)
-        where(conditions).where(["lower(username) = :value OR lower(email) = :value", { value: login.downcase }]).first
+        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase)
       else
-        where(conditions).first
+        find_by(conditions)
       end
     end
 
@@ -292,7 +292,7 @@ class User < ActiveRecord::Base
     end
 
     def by_username_or_id(name_or_id)
-      where('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i).first
+      find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
 
     def build_user(attrs = {})

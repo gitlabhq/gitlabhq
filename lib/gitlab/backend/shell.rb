@@ -2,7 +2,7 @@ module Gitlab
   class Shell
     class Error < StandardError; end
 
-    class KeyAdder < Struct.new(:io)
+    KeyAdder = Struct.new(:io) do
       def add_key(id, key)
         key.gsub!(/[[:space:]]+/, ' ').strip!
         io.puts("#{id}\t#{key}")

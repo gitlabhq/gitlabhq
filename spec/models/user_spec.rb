@@ -475,8 +475,8 @@ describe User, models: true do
       expect(User.search(user1.username.downcase).to_a).to eq([user1])
       expect(User.search(user2.username.upcase).to_a).to eq([user2])
       expect(User.search(user2.username.downcase).to_a).to eq([user2])
-      expect(User.search(user1.username.downcase).to_a.count).to eq(2)
-      expect(User.search(user2.username.downcase).to_a.count).to eq(1)
+      expect(User.search(user1.username.downcase).to_a.size).to eq(2)
+      expect(User.search(user2.username.downcase).to_a.size).to eq(1)
     end
   end
 

@@ -35,3 +35,20 @@
     border-color: $gl-warning;
   }
 }
+
+.ci-status-icon-success {
+  @extend .cgreen;
+}
+.ci-status-icon-failed {
+  @extend .cred;
+}
+.ci-status-icon-running,
+.ci-status-icon-pending {
+  // These are standard text color
+}
+.ci-status-icon-canceled,
+.ci-status-icon-disabled,
+.ci-status-icon-not-found,
+.ci-status-icon-skipped {
+  @extend .cgray;
+}

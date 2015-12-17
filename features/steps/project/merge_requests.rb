@@ -273,7 +273,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merged request' do
-    page.within '.issue-box' do
+    page.within '.status-box' do
       expect(page).to have_content "Merged"
     end
   end
@@ -283,7 +283,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
-    page.within '.issue-box' do
+    page.within '.status-box' do
       expect(page).to have_content "Open"
     end
   end

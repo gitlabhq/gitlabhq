@@ -23,7 +23,7 @@ module Mentionable
 
   included do
     if self < Participable
-      participant ->(current_user) { mentioned_users(current_user, load_lazy_references: false) }
+      participant ->(current_user) { mentioned_users(current_user) }
     end
   end
 
@@ -43,15 +43,15 @@ module Mentionable
     self
   end
 
-  def all_references(current_user = self.author, text = nil, load_lazy_references: true)
-    ext = Gitlab::ReferenceExtractor.new(self.project, current_user, load_lazy_references: load_lazy_references)
-    
+  def all_references(current_user = self.author, text = nil)
+    ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
+
     if text
       ext.analyze(text)
     else
       self.class.mentionable_attrs.each do |attr, options|
         text = send(attr)
-        options[:cache_key] = [self, attr] if options.delete(:cache)
+        options[:cache_key] = [self, attr] if options.delete(:cache) && self.persisted?
         ext.analyze(text, options)
       end
     end
@@ -59,13 +59,13 @@ module Mentionable
     ext
   end
 
-  def mentioned_users(current_user = nil, load_lazy_references: true)
-    all_references(current_user, load_lazy_references: load_lazy_references).users
+  def mentioned_users(current_user = nil)
+    all_references(current_user).users
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def referenced_mentionables(current_user = self.author, text = nil, load_lazy_references: true)
-    refs = all_references(current_user, text, load_lazy_references: load_lazy_references)
+  def referenced_mentionables(current_user = self.author, text = nil)
+    refs = all_references(current_user, text)
     refs = (refs.issues + refs.merge_requests + refs.commits)
 
     # We're using this method instead of Array diffing because that requires

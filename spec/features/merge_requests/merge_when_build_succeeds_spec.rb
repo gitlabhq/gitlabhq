@@ -21,12 +21,12 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     end
 
     it 'displays the Merge When Build Succeeds button' do
-      expect(page).to have_link "Merge When Build Succeeds"
+      expect(page).to have_button "Merge When Build Succeeds"
     end
 
     context "Merge When Build succeeds enabled" do
       before do
-        click_link "Merge When Build Succeeds"
+        click_button "Merge When Build Succeeds"
       end
 
       it 'activates Merge When Build Succeeds feature' do
@@ -58,7 +58,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     it 'cancels the automatic merge' do
       click_link "Cancel Automatic Merge"
 
-      expect(page).to have_link  "Merge When Build Succeeds"
+      expect(page).to have_button "Merge When Build Succeeds"
 
       visit_merge_request(merge_request) # Needed to refresh the page
       expect(page).to have_content "Canceled the automatic merge"

@@ -7,7 +7,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
-  before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds]
+  before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
 
   # Allow read any merge_request
@@ -159,11 +159,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_check
-    if @merge_request.unchecked?
-      @merge_request.check_if_can_be_merged
-    end
-
-    closes_issues
+    @merge_request.check_if_can_be_merged if @merge_request.unchecked?
 
     render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
@@ -185,7 +181,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds] && @merge_request.ci_commit && @merge_request.ci_commit.active?
+    if params[:merge_when_build_succeeds].present? && @merge_request.ci_commit && @merge_request.ci_commit.active?
       MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
                                                       .execute(@merge_request)
       @status = :merge_when_build_succeeds
@@ -341,6 +337,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def define_widget_vars
     @ci_commit = @merge_request.ci_commit
+    closes_issues
   end
 
   def invalid_mr

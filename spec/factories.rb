@@ -43,7 +43,8 @@ FactoryGirl.define do
       end
 
       after(:create) do |user, evaluator|
-        user.identities << create(:identity,
+        user.identities << create(
+          :identity,
           provider: evaluator.provider,
           extern_uid: evaluator.extern_uid
         )

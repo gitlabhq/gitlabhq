@@ -10,12 +10,12 @@ class @Issue
       @initTaskList()
 
   initTaskList: ->
-    $('.issue-details .js-task-list-container').taskList('enable')
-    $(document).on 'tasklist:changed', '.issue-details .js-task-list-container', @updateTaskList
+    $('.detail-page-description .js-task-list-container').taskList('enable')
+    $(document).on 'tasklist:changed', '.detail-page-description .js-task-list-container', @updateTaskList
 
   disableTaskList: ->
-    $('.issue-details .js-task-list-container').taskList('disable')
-    $(document).off 'tasklist:changed', '.issue-details .js-task-list-container'
+    $('.detail-page-description .js-task-list-container').taskList('disable')
+    $(document).off 'tasklist:changed', '.detail-page-description .js-task-list-container'
 
   # TODO (rspeicher): Make the issue description inline-editable like a note so
   # that we can re-use its form here
