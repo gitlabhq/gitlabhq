@@ -93,7 +93,7 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
     sudo service gitlab restart
     ```
 
-### Running GitLab pages with HTTPS
+### Running GitLab Pages with HTTPS
 
 If you want the pages to be served under HTTPS, a wildcard SSL certificate is
 required.
