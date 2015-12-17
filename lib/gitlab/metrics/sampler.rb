@@ -13,6 +13,12 @@ module Gitlab
 
         @last_minor_gc = Delta.new(GC.stat[:minor_gc_count])
         @last_major_gc = Delta.new(GC.stat[:major_gc_count])
+
+        if Gitlab::Metrics.mri?
+          require 'allocations'
+
+          Allocations.start
+        end
       end
 
       def start
@@ -52,9 +58,22 @@ module Gitlab
           new('file_descriptors', value: System.file_descriptor_count)
       end
 
-      def sample_objects
-        ObjectSpace.count_objects.each do |type, count|
-          @metrics << Metric.new('object_counts', { count: count }, type: type)
+      if Metrics.mri?
+        def sample_objects
+          sample = Allocations.to_hash
+          counts = sample.each_with_object({}) do |(klass, count), hash|
+            hash[klass.name] = count
+          end
+
+          # Symbols aren't allocated so we'll need to add those manually.
+          counts['Symbol'] = Symbol.all_symbols.length
+
+          counts.each do |name, count|
+            @metrics << Metric.new('object_counts', { count: count }, type: name)
+          end
+        end
+      else
+        def sample_objects
         end
       end
 

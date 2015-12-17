@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Gitlab::Metrics::Sampler do
   let(:sampler) { described_class.new(5) }
 
+  after do
+    Allocations.stop if Gitlab::Metrics.mri?
+  end
+
   describe '#start' do
     it 'gathers a sample at a given interval' do
       expect(sampler).to receive(:sleep).with(5)
