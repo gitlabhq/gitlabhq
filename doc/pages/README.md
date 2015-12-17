@@ -4,8 +4,7 @@ _**Note:** This feature was introduced in GitLab EE 8.3_
 
 To start using GitLab Pages add to your project `.gitlab-ci.yml` the special
 `pages` job. The example below is using [jekyll][] and assumes the created
-HTML files are generated under the `public/` directory which resides under the
-root directory of your Git repository.
+HTML files are generated under the `public/` directory.
 
 ```yaml
 pages:
