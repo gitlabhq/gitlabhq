@@ -39,6 +39,17 @@ module API
         present @projects, with: Entities::Project
       end
 
+      # Gets starred project for the authenticated user
+      #
+      # Example Request:
+      #   GET /projects/starred
+      get '/starred' do
+        @projects = current_user.starred_projects
+        @projects = filter_projects(@projects)
+        @projects = paginate @projects
+        present @projects, with: Entities::Project
+      end
+
       # Get all projects for admin user
       #
       # Example Request:

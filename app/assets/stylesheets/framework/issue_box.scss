@@ -14,22 +14,27 @@
   margin-right: 10px;
   font-size: $gl-font-size;
 
-  &.issue-box-closed {
+  &.status-box-closed {
     background-color: $gl-danger;
     color: #FFF;
   }
 
-  &.issue-box-merged {
+  &.status-box-merged {
     background-color: $gl-primary;
     color: #FFF;
   }
 
+<<<<<<< HEAD
   &.issue-box-open {
     background-color: #31af64;
+=======
+  &.status-box-open {
+    background-color: #019875;
+>>>>>>> 110a5f9c96457ac314f30630735dd827d9d96a4c
     color: #FFF;
   }
 
-  &.issue-box-expired {
+  &.status-box-expired {
     background: #cea61b;
     color: #FFF;
   }

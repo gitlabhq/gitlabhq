@@ -47,7 +47,7 @@ feature 'Task Lists', feature: true do
     it 'contains the required selectors' do
       visit_issue(project, issue)
 
-      container = '.issue-details .description.js-task-list-container'
+      container = '.detail-page-description .description.js-task-list-container'
 
       expect(page).to have_selector(container)
       expect(page).to have_selector("#{container} .wiki .task-list .task-list-item .task-list-item-checkbox")
@@ -123,7 +123,7 @@ feature 'Task Lists', feature: true do
     it 'contains the required selectors' do
       visit_merge_request(project, merge)
 
-      container = '.merge-request-details .description.js-task-list-container'
+      container = '.detail-page-description .description.js-task-list-container'
 
       expect(page).to have_selector(container)
       expect(page).to have_selector("#{container} .wiki .task-list .task-list-item .task-list-item-checkbox")

@@ -2,60 +2,65 @@
 = render "header_title"
 
 .issue
-  .issue-details.issuable-details
-    .issuable-title
-      .issue-box{ class: issue_box_class(@issue) }
+  .detail-page-header
+    .status-box{ class: status_box_class(@issue) }
+      - if @issue.closed?
+        Closed
+      - else
+        Open
+    %span.identifier
+      Issue ##{@issue.iid}
+    %span.creator
+      &middot;
+      opened by #{link_to_member(@project, @issue.author, size: 24)}
+      &middot;
+      = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
+      - if @issue.updated_at != @issue.created_at
+        %span
+          &middot;
+          = icon('edit', title: 'edited')
+          = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
+
+    .pull-right
+      - if can?(current_user, :create_issue, @project)
+        = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'btn btn-grouped new-issue-link', title: 'New Issue', id: 'new_issue_link' do
+          = icon('plus')
+          New Issue
+      - if can?(current_user, :update_issue, @issue)
         - if @issue.closed?
-          Closed
+          = link_to 'Reopen', issue_path(@issue, issue: {state_event: :reopen}, status_only: true), method: :put, class: 'btn btn-grouped btn-reopen'
         - else
-          Open
-      %span.issuable-id Issue ##{@issue.iid}
-      %span.creator
-        &middot;
-        opened by #{link_to_member(@project, @issue.author, size: 24)}
-        &middot;
-        = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
-        - if @issue.updated_at != @issue.created_at
-          %span
-            &middot;
-            = icon('edit', title: 'edited')
-            = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
+          = link_to 'Close', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-grouped btn-close', title: 'Close Issue'
 
-      .pull-right
-        - if can?(current_user, :create_issue, @project)
-          = link_to new_namespace_project_issue_path(@project.namespace, @project), class: 'btn btn-grouped btn-success', title: 'New Issue', id: 'new_issue_link' do
-            = icon('plus')
-            New Issue
-        - if can?(current_user, :update_issue, @issue)
-          - if @issue.closed?
-            = link_to 'Reopen Issue', issue_path(@issue, issue: {state_event: :reopen}, status_only: true), method: :put, class: 'btn btn-grouped btn-default'
-          - else
-            = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-grouped btn-warning', title: 'Close Issue'
+        = link_to edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'btn btn-grouped issuable-edit' do
+          = icon('pencil-square-o')
+          Edit
 
-          = link_to edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'btn btn-grouped btn-default' do
-            = icon('pencil-square-o')
-            Edit
+  .issue-details.issuable-details
+    .detail-page-description.gray-content-block.second-block
+      %h2.title
+        = markdown escape_once(@issue.title), pipeline: :single_line
+      %div
+        - if @issue.description.present?
+          .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
+            .wiki
+              = preserve do
+                = markdown(@issue.description, cache_key: [@issue, "description"])
+            %textarea.hidden.js-task-list-field
+              = @issue.description
+
+        .merge-requests
+          = render 'merge_requests'
+
+    .gray-content-block.second-block.oneline-block
+      = render 'votes/votes_block', votable: @issue
+
+    - if @closed_by_merge_requests.present?
+      = render 'projects/issues/closed_by_box'
 
     .row
       %section.col-md-9
-        .gray-content-block
-          %h2.issue-title
-            = markdown escape_once(@issue.title), pipeline: :single_line
-          %div
-            - if @issue.description.present?
-              .description{class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : ''}
-                .wiki
-                  = preserve do
-                    = markdown(@issue.description, cache_key: [@issue, "description"])
-                %textarea.hidden.js-task-list-field
-                  = @issue.description
-
-            .merge-requests
-              = render 'merge_requests'
-
-        - if @closed_by_merge_requests.present?
-          = render 'projects/issues/closed_by_box'
-        .issue-discussion
+        .issuable-discussion
           = render 'projects/issues/discussion'
 
       %aside.col-md-3

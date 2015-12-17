@@ -1,13 +1,5 @@
 .issuable-sidebar.issuable-affix
   = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
-    .block
-      .title
-        Cross-project reference
-      .cross-project-reference
-        %span#cross-project-reference
-          = cross_project_reference(@project, issuable)
-        = clipboard_button(clipboard_target: 'span#cross-project-reference')
-
     .block.assignee
       .title
         %label
@@ -61,6 +53,14 @@
         .selectbox
           = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
             { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }
+
+    .block
+      .title
+        Cross-project reference
+      .cross-project-reference
+        %span#cross-project-reference
+          = cross_project_reference(@project, issuable)
+        = clipboard_button(clipboard_target: 'span#cross-project-reference')
 
     = render "shared/issuable/participants", participants: issuable.participants(current_user)
 

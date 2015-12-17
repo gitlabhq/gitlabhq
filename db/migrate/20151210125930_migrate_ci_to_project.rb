@@ -26,7 +26,8 @@ class MigrateCiToProject < ActiveRecord::Migration
 
   def migrate_project_column(column, new_column = nil)
     new_column ||= column
-    subquery = "SELECT ci_projects.#{column} FROM ci_projects WHERE projects.id = ci_projects.gitlab_id"
+    subquery = "SELECT ci_projects.#{column} FROM ci_projects WHERE projects.id = ci_projects.gitlab_id " \
+      'ORDER BY ci_projects.updated_at DESC LIMIT 1'
     execute("UPDATE projects SET #{new_column}=(#{subquery}) WHERE (#{subquery}) IS NOT NULL")
   end
 

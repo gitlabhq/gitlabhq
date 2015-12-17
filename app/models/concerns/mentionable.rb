@@ -51,7 +51,7 @@ module Mentionable
     else
       self.class.mentionable_attrs.each do |attr, options|
         text = send(attr)
-        options[:cache_key] = [self, attr] if options.delete(:cache)
+        options[:cache_key] = [self, attr] if options.delete(:cache) && self.persisted?
         ext.analyze(text, options)
       end
     end

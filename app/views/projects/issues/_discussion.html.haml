@@ -5,8 +5,5 @@
     - else
       = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-warning js-note-target-close', title: 'Close Issue'
 
-.gray-content-block.second-block.oneline-block
-  = render 'votes/votes_block', votable: @issue
-
 #notes
   = render 'projects/notes/notes_with_form'
