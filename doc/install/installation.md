@@ -269,7 +269,7 @@ sudo usermod -aG redis git
     # Change the permissions of the directory where CI artifacts are stored
     sudo chmod -R u+rwX shared/artifacts/
 
-    # Change the permissions of the directory where CI artifacts are stored
+    # Change the permissions of the directory where GitLab Pages are stored
     sudo chmod -R ug+rwX shared/pages/
 
     # Copy the example Unicorn config
@@ -436,16 +436,10 @@ Make sure to edit the config file to match your setup:
     # or else sudo rm -f /etc/nginx/sites-enabled/default
     sudo editor /etc/nginx/sites-available/gitlab
 
-Copy the GitLab pages site config:
+If you intend to enable GitLab pages, there is a separate Nginx config you need
+to use. Read all about the needed configuration at the
+[GitLab Pages administration guide](../pages/administration.md).
 
-    sudo cp lib/support/nginx/gitlab-pages /etc/nginx/sites-available/gitlab-pages
-    sudo ln -s /etc/nginx/sites-available/gitlab-pages /etc/nginx/sites-enabled/gitlab-pages
-    
-    # Change YOUR_GITLAB_PAGES\.DOMAIN to the fully-qualified
-    # domain name under which the pages will be served.
-    # The . (dot) replace with \. (backslash+dot)
-    sudo editor /etc/nginx/sites-available/gitlab-pages
-    
 **Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
 ### Test Configuration
