@@ -5,11 +5,5 @@
     - else
       = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-grouped btn-close js-note-target-close', title: 'Close Issue'
 
-.gray-content-block.second-block.oneline-block
-  = render 'votes/votes_block', votable: @issue
-
-- if @closed_by_merge_requests.present?
-  = render 'projects/issues/closed_by_box'
-
 #notes
   = render 'projects/notes/notes_with_form'
