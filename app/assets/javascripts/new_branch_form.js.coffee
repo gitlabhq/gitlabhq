@@ -24,19 +24,19 @@ class @NewBranchForm
   setupRestrictions: ->
     startsWith = {
       pattern: /^(\/|\.)/g,
-      prefix: "can't start with ",
+      prefix: "can't start with",
       conjunction: "or"
     }
 
     endsWith = {
       pattern: /(\/|\.|\.lock)$/g,
-      prefix: "can't end in ",
+      prefix: "can't end in",
       conjunction: "or"
     }
 
     characters = {
       pattern: /(\s|~|\^|:|\?|\*|\[|\\|\.\.|@\{|\/{2,}){1}/g
-      prefix: "can't contains ",
+      prefix: "can't contains",
       conjunction: ", "
     }
 
