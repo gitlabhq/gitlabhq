@@ -2,7 +2,9 @@
 
 _**Note:** This feature was [introduced][ee-80] in GitLab EE 8.3_
 
-GitLab Pages allow you to host static content
+With GitLab Pages you can host for free your static websites on GitLab.
+Combined with the power of GitLab CI and the help of GitLab Runner you can
+deploy static pages for your individual projects your user or your group.
 
 ## Enable the pages feature in your GitLab EE instance
 
