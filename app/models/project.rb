@@ -983,22 +983,23 @@ class Project < ActiveRecord::Base
     issues.opened.count
   end
 
+  def pages_host
+    "#{namespace.path}.#{Settings.pages.host}"
+  end
+
   def pages_url
     if Dir.exist?(public_pages_path)
-      host = "#{namespace.path}.#{Settings.pages.host}"
-      url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
-        "#{prefix}#{namespace.path}."
-      end
+      url = Gitlab.config.pages.url.sub(Settings.pages.host, pages_host)
 
       # If the project path is the same as host, leave the short version
-      return url if host == path
+      return url if pages_host == path
 
       "#{url}/#{path}"
     end
   end
 
   def pages_path
-    File.join(Settings.pages.path, path_with_namespace)
+    File.join(Settings.pages.path, pages_host, path)
   end
 
   def public_pages_path
