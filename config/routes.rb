@@ -603,9 +603,17 @@ Rails.application.routes.draw do
 
           member do
             get :status
-            post :cancel
             get :download
+            post :cancel
             post :retry
+          end
+
+          scope module: :builds do
+            resources :artifacts do
+              collection do
+                get :download
+              end
+            end
           end
         end
 

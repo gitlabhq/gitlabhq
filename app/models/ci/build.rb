@@ -326,7 +326,7 @@ module Ci
     def download_url
       if artifacts_file.exists?
         Gitlab::Application.routes.url_helpers.
-          download_namespace_project_build_path(project.namespace, project, self)
+          download_namespace_project_build_artifacts_path(project.namespace, project, self)
       end
     end
 
