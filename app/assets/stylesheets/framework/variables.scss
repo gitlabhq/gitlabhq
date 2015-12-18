@@ -1,9 +1,9 @@
-$hover: #FFFAF1;
+$hover: #faf9f9;
 $gl-text-color: #54565B;
 $gl-text-green: #4A2;
 $gl-text-red: #D12F19;
 $gl-text-orange: #D90;
-$gl-header-color: #4c4e54;
+$gl-header-color: #323232;
 $gl-link-color: #333c48;
 $md-text-color: #444;
 $md-link-color: #3084bb;
@@ -15,13 +15,14 @@ $sidebar_width: 230px;
 $avatar_radius: 50%;
 $code_font_size: 13px;
 $code_line_height: 1.5;
-$border-color: #dce0e6;
+$border-color: #efeff1;
 $table-border-color: #eef0f2;
-$background-color: #F7F8FA;
+$background-color: #faf9f9;
 $header-height: 58px;
 $fixed-layout-width: 1280px;
-$gl-gray: #7f8fa4;
+$gl-gray: #5a5a5a;
 $gl-padding: 16px;
+$gl-padding-top:10px;
 $gl-avatar-size: 46px;
 
 /*
@@ -29,12 +30,12 @@ $gl-avatar-size: 46px;
  */
 
 $white-light: #FFFFFF;
-$white-normal: #DCE0E5;
-$white-dark: #E4E7ED;
+$white-normal: #ededed;
+$white-dark: #ededed;
 
-$gray-light: #F0F2F5;
-$gray-normal: #DCE0E5;
-$gray-dark: #E4E7ED;
+$gray-light: #f7f7f7;
+$gray-normal: #ededed;
+$gray-dark: #ededed;
 
 $green-light: #31AF64;
 $green-normal: #2FAA60;
@@ -52,11 +53,11 @@ $red-light: #F43263;
 $red-normal: #E52C5A;
 $red-dark: #D22852;
 
-$border-white-light: #E3E7EC;
+$border-white-light: #F1F2F4;
 $border-white-normal: #D6DAE2;
 $border-white-dark: #C6CACF;
 
-$border-gray-light: #DCE0E5;
+$border-gray-light: #d1d1d1;
 $border-gray-normal: #D6DAE2;
 $border-gray-dark: #C6CACF;
 
@@ -76,6 +77,8 @@ $border-red-light: #E52C5A;
 $border-red-normal: #D22852;
 $border-red-dark: #CA264F;
 
+/* header */
+$light-grey-header: #faf9f9;
 
 /*
  * State colors:
