@@ -1,4 +1,4 @@
-class Projects::Builds::ArtifactsController < Projects::ApplicationController
+class Projects::ArtifactsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_download_build_artifacts!
 
@@ -14,7 +14,7 @@ class Projects::Builds::ArtifactsController < Projects::ApplicationController
     send_file artifacts_file.path, disposition: 'attachment'
   end
 
-  def view
+  def browse
     @metadata = build.artifacts_metadata
   end
 

@@ -608,13 +608,9 @@ Rails.application.routes.draw do
             post :retry
           end
 
-          scope module: :builds do
-            resource :artifacts, only: [] do
-              collection do
-                get :download
-                get 'view(/:path)', as: :view, to: 'artifacts#view'
-              end
-            end
+          resource :artifacts, only: [] do
+            get :download
+            get 'browse(/*path)', action: :browse, as: :browse
           end
         end
 
