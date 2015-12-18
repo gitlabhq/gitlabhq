@@ -80,11 +80,16 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
     with
 
     ```
-    server_name *.gitlab.io;
+    server_name ~^(?<group>.*)\.gitlabpages\.com$;
     ```
 
-    You must be add `*` in front of your domain, this is required to catch all
-    subdomains of `gitlab.io`.
+    You must be extra careful to not remove the backslashes. If you are using
+    a subdomain, make sure to escape all dots (`.`) with a backslash (\).
+    For example `pages.gitlab.io` would be:
+
+    ```
+    server_name ~^(?<group>.*)\.pages\.gitlab\.io$;
+    ```
 
 1. Restart Nginx and GitLab:
 
