@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
   - API support for starred projects for authorized user (Zeger-Jan van de Weg)
   - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
