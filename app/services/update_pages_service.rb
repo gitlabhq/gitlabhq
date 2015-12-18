@@ -10,6 +10,6 @@ class UpdatePagesService
     return unless data[:build_name] == 'pages'
     return unless data[:build_status] == 'success'
 
-    PagesWorker.perform_async(data[:build_id])
+    PagesWorker.perform_async(:deploy, data[:build_id])
   end
 end
