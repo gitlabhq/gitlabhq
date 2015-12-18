@@ -68,7 +68,7 @@ class TeamcityService < CiService
   end
 
   def supported_events
-    %w(push)
+    %w(push tag_push merge_request)
   end
 
   def fields
