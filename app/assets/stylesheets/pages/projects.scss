@@ -115,7 +115,6 @@
       margin-left: 4px;
 
       .arrow {
-
           &:before {
             content: '';
             display: inline-block;
@@ -165,6 +164,10 @@
         background-image: none;
         white-space: nowrap;
         margin: 0 11px 0px 4px;
+
+        &:hover {
+          background: #FFF;
+        }
       }
     }
   }
