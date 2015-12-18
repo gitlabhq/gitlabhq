@@ -7,9 +7,15 @@ module Gitlab
   #
   #
   class StringPath
+    attr_reader :path, :universe
+
     def initialize(path, universe)
       @path = path
       @universe = universe
+    end
+
+    def to_s
+      @path
     end
 
     def absolute?
@@ -28,8 +34,17 @@ module Gitlab
       !directory?
     end
 
-    def to_s
-      @path
+    def files
+      raise NotImplementedError
+    end
+
+    def basename
+      name = @path.split(::File::SEPARATOR).last
+      directory? ? name + ::File::SEPARATOR : name
+    end
+
+    def ==(other)
+      @path == other.path && @universe == other.universe
     end
   end
 end
