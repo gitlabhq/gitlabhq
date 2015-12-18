@@ -83,8 +83,7 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
     server_name *.gitlabpages.com;
     ```
 
-    You must be add `*` in front of your domain, this is required to catch all
-    subdomains of `gitlabpages.com`.
+    You must be add `*` in front of your domain, this is required to catch all subdomains of gitlabpages.com.
 
 1. Restart Nginx and GitLab:
 
@@ -114,7 +113,6 @@ required.
        port: 443 # Set to 443 if you serve the pages with HTTPS
        https: true # Set to true if you serve the pages with HTTPS
      ```
-
 1. Copy the `gitlab-pages-ssl` Nginx configuration file:
 
     ```bash
