@@ -7,7 +7,11 @@ class PagesWorker
 
   sidekiq_options queue: :pages, retry: false
 
-  def perform(build_id)
+  def perform(action, *arg)
+    send(action, *arg)
+  end
+
+  def deploy(build_id)
     @build_id = build_id
     return unless valid?
 
@@ -34,6 +38,11 @@ class PagesWorker
   rescue => e
     fail(e.message, !latest?)
     return false
+  end
+
+  def remove(namespace_path, project_path)
+    full_path = File.join(Settings.pages.path, namespace_path, project_path)
+    FileUtils.rm_r(full_path, force: true)
   end
 
   private

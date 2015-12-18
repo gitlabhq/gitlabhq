@@ -1186,7 +1186,11 @@ class Project < ActiveRecord::Base
   end
 
   def remove_pages
-    FileUtils.rm_r(pages_path, force: true)
+    temp_path = "#{path}.#{SecureRandom.hex}"
+
+    if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
+      PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)
+    end
   end
 
   def wiki
