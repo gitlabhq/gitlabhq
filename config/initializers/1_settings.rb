@@ -274,7 +274,7 @@ Settings.artifacts['max_size']    ||= 100 # in megabytes
 #
 Settings['pages'] ||= Settingslogic.new({})
 Settings.pages['enabled']         = false if Settings.pages['enabled'].nil?
-Settings.pages['path']            ||= File.expand_path('shared/pages/', Rails.root)
+Settings.pages['path']            = File.expand_path(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"), Rails.root)
 Settings.pages['host']            ||= "example.com"
 Settings.pages['https']           = false if Settings.pages['https'].nil?
 Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
