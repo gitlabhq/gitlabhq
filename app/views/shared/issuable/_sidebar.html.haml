@@ -54,13 +54,22 @@
           = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
             { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }
 
-    - if issuable.respond_to?(:weight) && issuable.weight
-      .block
+    - if issuable.respond_to?(:weight)
+      .block.weight
         .title
           %label Weight
+          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            .pull-right
+              = link_to 'Edit', '#', class: 'edit-link'
         .value
-          = icon('magnet')
-          = issuable.weight
+          - if issuable.weight
+            = icon('magnet')
+            = issuable.weight
+          - else
+            .light None
+        .selectbox
+          = f.select :weight, projects_weight_options, { include_blank: true },
+            { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
 
     .block
       .title

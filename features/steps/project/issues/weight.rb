@@ -9,8 +9,8 @@ class Spinach::Features::ProjectIssuesWeight < Spinach::FeatureSteps
 
   step 'I submit new issue "500 error on profile" with weight' do
     fill_in "issue_title", with: "500 error on profile"
-    fill_in "issue_weight", with: 7
-    click_button "Submit new issue"
+    select "7", from: "issue_weight"
+    click_button "Submit issue"
   end
 
   step 'I should see issue "500 error on profile" with weight' do
