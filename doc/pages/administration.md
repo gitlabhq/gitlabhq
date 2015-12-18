@@ -12,26 +12,26 @@ GitLab EE instance.
 
 1. You need to properly configure your DNS to point to the domain that pages
    will be served
-1. Pages use a separate nginx configuration file which needs to be explicitly
+1. Pages use a separate Nginx configuration file which needs to be explicitly
    added in the server under which GitLab EE runs
 
 Both of these settings are described in detail in the sections below.
 
 ### DNS configuration
 
-GitLab Pages expect to run on their own virtual host. In your DNS you need to
-add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the host that
-GitLab runs. For example, an entry would look like this:
+GitLab Pages expect to run on their own virtual host. In your DNS server/provider
+you need to add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the
+host that GitLab runs. For example, an entry would look like this:
 
 ```
-*.gitlabpages.com. 60 IN A 1.2.3.4
+*.gitlab.io. 60 IN A 1.2.3.4
 ```
 
-where `gitlabpages.com` is the domain under which GitLab Pages will be served
+where `gitlab.io` is the domain under which GitLab Pages will be served
 and `1.2.3.4` is the IP address of your GitLab instance.
 
 It is strongly advised to **not** use the GitLab domain to serve user pages.
-See [security](#security).
+For more information see the [security section](#security).
 
 ### Omnibus package installations
 
@@ -58,7 +58,7 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
        # The domain under which the pages are served:
        # http://group.example.com/project
        # or project path can be a group page: group.example.com
-       host: example.com
+       host: gitlab.io
        port: 80 # Set to 443 if you serve the pages with HTTPS
        https: false # Set to true if you serve the pages with HTTPS
      ```
@@ -71,7 +71,7 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
     ```
 
     Don't forget to add your domain name in the Nginx config. For example if
-    your GitLab pages domain is `gitlabpages.com`, replace
+    your GitLab pages domain is `gitlab.io`, replace
 
     ```bash
     server_name ~^(?<group>.*)\.YOUR_GITLAB_PAGES\.DOMAIN$;
@@ -80,16 +80,11 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
     with
 
     ```
-    server_name ~^(?<group>.*)\.gitlabpages\.com$;
+    server_name *.gitlab.io;
     ```
 
-    You must be extra careful to not remove the backslashes. If you are using
-    a subdomain, make sure to escape all dots (`.`) with a backslash (\).
-    For example `pages.gitlab.io` would be:
-
-    ```
-    server_name ~^(?<group>.*)\.pages\.gitlab\.io$;
-    ```
+    You must be add `*` in front of your domain, this is required to catch all
+    subdomains of `gitlab.io`.
 
 1. Restart Nginx and GitLab:
 
@@ -115,7 +110,7 @@ required.
        # The domain under which the pages are served:
        # http://group.example.com/project
        # or project path can be a group page: group.example.com
-       host: example.com
+       host: gitlab.io
        port: 443 # Set to 443 if you serve the pages with HTTPS
        https: true # Set to true if you serve the pages with HTTPS
      ```
@@ -128,13 +123,13 @@ required.
     ```
 
     Make sure to edit the config to add your domain as well as correctly point
-    to the right location where the SSL certificates reside. After all changes
-    restart Nginx.
+    to the right location of the SSL certificate files. Restart Nginx for the
+    changes to take effect.
 
 ## Set maximum pages size
 
-The maximum size of the unpacked archive can be configured in the Admin area
-under the Application settings in the **Maximum size of pages (MB)**.
+The maximum size of the unpacked archive per project can be configured in the
+Admin area under the Application settings in the **Maximum size of pages (MB)**.
 The default is 100MB.
 
 ## Change storage path
