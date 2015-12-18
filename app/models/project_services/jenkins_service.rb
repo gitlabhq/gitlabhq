@@ -67,7 +67,7 @@ class JenkinsService < CiService
 
   def build_page(sha, ref = nil)
     if multiproject_enabled? && ref.present?
-      URI.encode("#{base_project_url}/#{project.name}_#{ref.gsub('/', '_')}/scm/bySHA1/#{sha}").to_s
+      URI.encode("#{base_project_url}/#{project.name}_#{ref.tr('/', '_')}/scm/bySHA1/#{sha}").to_s
     else
       "#{project_url}/scm/bySHA1/#{sha}"
     end
