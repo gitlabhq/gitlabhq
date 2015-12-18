@@ -13,15 +13,13 @@ class Projects::ForksController < Projects::ApplicationController
     @forked_project = ::Projects::ForkService.new(project, current_user, namespace: namespace).execute
 
     if @forked_project.saved? && @forked_project.forked?
-      continue_params[:notice] ||= "The project was successfully forked."
-
       if @forked_project.import_in_progress?
         redirect_to namespace_project_import_path(@forked_project.namespace, @forked_project, continue: continue_params)
       else
         if continue_params
           redirect_to continue_params[:to], notice: continue_params[:notice]
         else
-          redirect_to namespace_project_path(@forked_project.namespace, @forked_project)
+          redirect_to namespace_project_path(@forked_project.namespace, @forked_project), notice: "The project was successfully forked."
         end
       end
     else
@@ -32,6 +30,11 @@ class Projects::ForksController < Projects::ApplicationController
   private
 
   def continue_params
-    params[:continue].permit(:to, :notice, :notice_now)
+    continue_params = params[:continue]
+    if continue_params
+      continue_params.permit(:to, :notice, :notice_now)
+    else
+      nil
+    end
   end
 end

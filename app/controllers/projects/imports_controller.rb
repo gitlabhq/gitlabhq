@@ -28,7 +28,7 @@ class Projects::ImportsController < Projects::ApplicationController
       if continue_params
         redirect_to continue_params[:to], notice: continue_params[:notice]
       else
-        redirect_to project_path(@project)
+        redirect_to project_path(@project), notice: "The project was successfully forked."
       end
     elsif @project.import_failed?
       redirect_to new_namespace_project_import_path(@project.namespace, @project)
@@ -43,7 +43,12 @@ class Projects::ImportsController < Projects::ApplicationController
   private
 
   def continue_params
-    @continue_params ||= params[:continue].permit(:to, :notice, :notice_now)
+    continue_params = params[:continue]
+    if continue_params
+      continue_params.permit(:to, :notice, :notice_now)
+    else
+      nil
+    end
   end
 
   def require_no_repo

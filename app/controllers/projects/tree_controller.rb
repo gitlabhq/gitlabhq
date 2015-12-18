@@ -35,7 +35,7 @@ class Projects::TreeController < Projects::ApplicationController
     return render_404 unless @commit_params.values.all?
 
     create_commit(Files::CreateDirService,  success_notice: "The directory has been successfully created.",
-                                            success_path: namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @dir_name)),
+                                            success_path: namespace_project_tree_path(@project.namespace, @project, File.join(@target_branch, @dir_name)),
                                             failure_path: namespace_project_tree_path(@project.namespace, @project, @ref))
   end
 

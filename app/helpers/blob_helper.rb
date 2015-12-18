@@ -27,7 +27,7 @@ module BlobHelper
 
     blob = project.repository.blob_at(ref, path) rescue nil
 
-    return unless blob && blob_text_editable?(blob)
+    return unless blob && blob_text_viewable?(blob)
 
     from_mr = options[:from_merge_request_id]
     link_opts = {}
@@ -63,6 +63,8 @@ module BlobHelper
 
     if !on_top_of_branch?
       button_tag label, class: "btn btn-#{btn_class} disabled has_tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
+    elsif blob.lfs_pointer?
+      button_tag label, class: "btn btn-#{btn_class} disabled has_tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
     elsif can_edit_blob?(blob)
       button_tag label, class: "btn btn-#{btn_class}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
@@ -102,10 +104,6 @@ module BlobHelper
     )
   end
 
-  def blob_text_editable?(blob)
-    blob.text? && !blob.lfs_pointer?
-  end
-
   def can_edit_blob?(blob, project = @project, ref = @ref)
     !blob.lfs_pointer? && can_edit_tree?(project, ref)
   end
@@ -130,7 +128,7 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def blob_viewable?(blob)
+  def blob_text_viewable?(blob)
     blob && blob.text? && !blob.lfs_pointer?
   end
 

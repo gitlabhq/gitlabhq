@@ -253,7 +253,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I am redirected to the root directory' do
     expect(current_path).to eq(
-      namespace_project_tree_path(@project.namespace, @project, 'master/'))
+      namespace_project_tree_path(@project.namespace, @project, 'master'))
   end
 
   step "I don't see the permalink link" do
@@ -332,8 +332,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content 'Permalink'
     expect(page).not_to have_content 'Edit'
     expect(page).not_to have_content 'Blame'
-    expect(page).not_to have_content 'Delete'
-    expect(page).not_to have_content 'Replace'
+    expect(page).to have_content 'Delete'
+    expect(page).to have_content 'Replace'
   end
 
   private

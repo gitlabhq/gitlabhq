@@ -24,7 +24,7 @@
             = "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
       .diff-controls
-        - if blob_viewable?(blob)
+        - if blob_text_viewable?(blob)
           = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active has_tooltip', title: "Toggle comments for this file" do
             %i.fa.fa-comments
           &nbsp;
@@ -40,7 +40,7 @@
   .diff-content.diff-wrap-lines
     -# Skipp all non non-supported blobs
     - return unless blob.respond_to?('text?')
-    - if blob_viewable?(blob)
+    - if blob_text_viewable?(blob)
       - if diff_view == 'parallel'
         = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
       - else
