@@ -1,7 +1,10 @@
 - if current_user
   = link_to toggle_star_namespace_project_path(@project.namespace, @project), class: 'btn star-btn toggle-star has_tooltip', method: :post, remote: true, title: "Star project" do
     = icon('star fw')
-    Star
+    - if current_user.starred?(@project)
+      %span.starred Unstar
+    - else
+      %span Star
   %div.count-with-arrow
     %span.arrow
     %span.count
@@ -9,7 +12,19 @@
 
   :javascript
     $('.project-home-panel .toggle-star').on('ajax:success', function (e, data, status, xhr) {
-      $(this).replaceWith(data.html);
+      var $this = $(this);
+      var $starSpan = $this.find('span');
+      $this
+        .parent()
+        .find('span.count')
+        .text(data.star_count);
+      if($starSpan.hasClass('starred')){
+        $starSpan.removeClass('starred');
+        $starSpan.text('Star');
+      } else {
+        $starSpan.addClass('starred');
+        $starSpan.text('Unstar');
+      }
     })
     .on('ajax:error', function (e, xhr, status, error) {
       new Flash('Star toggle failed. Try again later.', 'alert');
