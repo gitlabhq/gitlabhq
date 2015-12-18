@@ -101,6 +101,9 @@ gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
 gem 'rouge',         '~> 1.10.1'
 
+# See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
+gem 'nokogiri', '1.6.7.1'
+
 # Diffs
 gem 'diffy', '~> 3.0.3'
 
