@@ -1,11 +1,13 @@
-# Issue weight
+# Issue Weight
 
-Some issues are bigger than others. It can be time, complexity or value criteria. 
-To distinguish such issues we implemented issue weight attribute. 
-It allows you to set numeric value from 1 to 9 per issue. You can see issue weight on next pages: 
+When you have a lot of issues, it can be hard to get an overview.
+By adding a weight to each issue, you can get a better idea of how much time,
+value or complexity a given issue has or will cost.
 
-* issue page
-* list of issues
-* Total weight of issues on milestone page
+To set the weight of issue, simply change the value in the dropdown menu.
+You can set it to a numeric value from 1 to 9.
+
+This value will appear on issues, in the list of issues and you can see the 
+total sum of all issues on the milestone page.
 
 ![issue page](issue_weight/issue.png)
