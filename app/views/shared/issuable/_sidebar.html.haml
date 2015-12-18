@@ -90,7 +90,7 @@
           .value.issuable-show-labels
             - if issuable.labels.any?
               - issuable.labels.each do |label|
-                = link_to_label(label)
+                = link_to_label(label, type: issuable.to_ability_name)
             - else
               .light None
           .selectbox
