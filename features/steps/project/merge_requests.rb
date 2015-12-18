@@ -432,7 +432,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     click_button "Submit merge request"
 
-    page.within '.issuable-title' do
+    page.within '.detail-page-header' do
       click_link "Edit"
     end
 
