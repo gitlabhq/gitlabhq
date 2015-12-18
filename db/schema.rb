@@ -50,6 +50,8 @@ ActiveRecord::Schema.define(version: 20151224123230) do
     t.boolean  "shared_runners_enabled",       default: true,  null: false
     t.integer  "max_artifacts_size",           default: 100,   null: false
     t.string   "runners_registration_token"
+    t.boolean  "require_two_factor_authentication",             default: false
+    t.integer  "two_factor_grace_period",                       default: 48
   end
 
   create_table "audit_events", force: :cascade do |t|

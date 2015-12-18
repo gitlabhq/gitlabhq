@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   before_action :validate_user_service_ticket!
   before_action :reject_blocked!
   before_action :check_password_expiration
+  before_action :check_tfa_requirement
   before_action :ldap_security_check
   before_action :default_headers
   before_action :add_gon_variables
@@ -223,6 +224,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def check_tfa_requirement
+    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled
+      redirect_to new_profile_two_factor_auth_path,
+                  alert: 'You must configure Two-Factor Authentication in your account'
+    end
+  end
+
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
       unless Gitlab::LDAP::Access.allowed?(current_user)
@@ -355,6 +363,10 @@ class ApplicationController < ActionController::Base
 
   def git_import_enabled?
     current_application_settings.import_sources.include?('git')
+  end
+
+  def two_factor_authentication_required?
+    current_application_settings.require_two_factor_authentication
   end
 
   def redirect_to_home_page_url?
