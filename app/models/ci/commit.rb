@@ -218,16 +218,6 @@ module Ci
       update!(committed_at: DateTime.now)
     end
 
-    ##
-    # This method checks if build status should be displayed.
-    #
-    # Build status should be available only if builds are enabled
-    # on project level and `.gitlab-ci.yml` file is present.
-    #
-    def show_build_status?
-      project.builds_enabled? && ci_yaml_file
-    end
-
     private
 
     def save_yaml_error(error)
