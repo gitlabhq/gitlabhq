@@ -62,7 +62,7 @@ following our [quick start guide](../ci/quick_start/README.md).
 
 ---
 
-To make use of GitLab Pages your `.gitlab-ci.yml` must follow the rules below:
+To make use of GitLab Pages, your `.gitlab-ci.yml` must follow the rules below:
 
 1. A special `pages` job must be defined
 1. Any static content must be placed under a `public/` directory
@@ -105,7 +105,7 @@ in the artifacts.
 
 **A:** All content is located by default under `shared/pages/` in the root
 directory of the GitLab installation. To be exact, all specific projects under
-a namespace are stored ind `shared/pages/${namespace}/${project}/public/` and
+a namespace are stored in `shared/pages/${namespace}/${project}/public/` and
 all user/group pages in `shared/pages/${namespace}/${namespace}/public/`.
 
 ---
