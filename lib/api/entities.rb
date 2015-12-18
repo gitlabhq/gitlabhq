@@ -72,7 +72,7 @@ module API
       expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
-      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ |project, options| project.forked? }
+      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda { |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
@@ -90,7 +90,7 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :ldap_cn, :ldap_access, :description
-      expose :ldap_group_links, using: Entities::LdapGroupLink, if: lambda{ | group, options | group.ldap_group_links.any? }
+      expose :ldap_group_links, using: Entities::LdapGroupLink, if: lambda { |group, options| group.ldap_group_links.any? }
       expose :avatar_url
 
       expose :web_url do |group, options|

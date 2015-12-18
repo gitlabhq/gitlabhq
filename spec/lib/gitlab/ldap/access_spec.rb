@@ -13,7 +13,7 @@ describe Gitlab::LDAP::Access, lib: true do
       end
 
       it { is_expected.to be_falsey }
-      
+
       it 'should block user in GitLab' do
         access.allowed?
         expect(user).to be_blocked
@@ -211,7 +211,7 @@ describe Gitlab::LDAP::Access, lib: true do
 
     it "should give admin privileges to an User" do
       admin_group = Net::LDAP::Entry.from_single_ldif_string(
-%Q{dn: cn=#{access.admin_group},ou=groups,dc=bar,dc=com
+        %Q{dn: cn=#{access.admin_group},ou=groups,dc=bar,dc=com
 cn: #{access.admin_group}
 description: GitLab admins
 gidnumber: 42
@@ -220,7 +220,7 @@ memberuid: admin2
 memberuid: admin3
 objectclass: top
 objectclass: posixGroup
-})
+      })
       allow_any_instance_of(Gitlab::LDAP::Adapter).to receive(:group) { Gitlab::LDAP::Group.new(admin_group) }
 
       expect{ access.update_admin_status }.to change(user, :admin?).to(true)
@@ -229,7 +229,7 @@ objectclass: posixGroup
     it "should remove admin privileges from an User" do
       user.update_attribute(:admin, true)
       admin_group = Net::LDAP::Entry.from_single_ldif_string(
-%Q{dn: cn=#{access.admin_group},ou=groups,dc=bar,dc=com
+        %Q{dn: cn=#{access.admin_group},ou=groups,dc=bar,dc=com
 cn: #{access.admin_group}
 description: GitLab admins
 gidnumber: 42
@@ -237,7 +237,7 @@ memberuid: admin1
 memberuid: admin3
 objectclass: top
 objectclass: posixGroup
-})
+      })
       allow_any_instance_of(Gitlab::LDAP::Adapter).to receive(:group) { Gitlab::LDAP::Group.new(admin_group) }
       expect{ access.update_admin_status }.to change(user, :admin?).to(false)
     end
@@ -350,7 +350,7 @@ objectclass: posixGroup
   describe 'ldap_groups' do
     let(:ldap_group_1) do
       Net::LDAP::Entry.from_single_ldif_string(
-%Q{dn: cn=#{access.ldap_config.admin_group},ou=groups,dc=bar,dc=com
+        %Q{dn: cn=#{access.ldap_config.admin_group},ou=groups,dc=bar,dc=com
 cn: #{access.ldap_config.admin_group}
 description: GitLab group 1
 gidnumber: 42
@@ -358,7 +358,7 @@ memberuid: user1
 memberuid: user2
 objectclass: top
 objectclass: posixGroup
-})
+      })
     end
 
     it "returns an interator of LDAP Groups" do
@@ -380,7 +380,7 @@ objectclass: posixGroup
   describe :cns_with_access do
     let(:ldap_group_response_1) do
       Net::LDAP::Entry.from_single_ldif_string(
-%Q{dn: cn=group1,ou=groups,dc=bar,dc=com
+        %Q{dn: cn=group1,ou=groups,dc=bar,dc=com
 cn: group1
 description: GitLab group 1
 gidnumber: 21
@@ -388,11 +388,12 @@ uniquemember: #{ldap_user.dn.downcase}
 uniquemember: uid=user2,ou=people,dc=example
 objectclass: top
 objectclass: posixGroup
-})
+      })
     end
+
     let(:ldap_group_response_2) do
       Net::LDAP::Entry.from_single_ldif_string(
-%Q{dn: cn=group2,ou=groups,dc=bar,dc=com
+        %Q{dn: cn=group2,ou=groups,dc=bar,dc=com
 cn: group2
 description: GitLab group 2
 gidnumber: 42
@@ -400,14 +401,16 @@ memberuid: user3
 memberuid: user4
 objectclass: top
 objectclass: posixGroup
-})
+      })
     end
+
     let(:ldap_groups) do
       [
         Gitlab::LDAP::Group.new(ldap_group_response_1),
         Gitlab::LDAP::Group.new(ldap_group_response_2)
       ]
     end
+
     let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, user.ldap_identity.provider) }
 
     before do
