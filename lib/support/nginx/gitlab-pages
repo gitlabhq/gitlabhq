@@ -1,3 +1,6 @@
+## GitLab
+##
+
 ## Pages serving host
 server {
   listen 0.0.0.0:80;
