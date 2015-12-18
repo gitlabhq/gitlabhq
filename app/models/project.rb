@@ -1007,6 +1007,9 @@ class Project < ActiveRecord::Base
   end
 
   def remove_pages
+    # 1. We rename pages to temporary directory
+    # 2. We wait 5 minutes, due to NFS caching
+    # 3. We asynchronously remove pages with force
     temp_path = "#{path}.#{SecureRandom.hex}"
 
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
