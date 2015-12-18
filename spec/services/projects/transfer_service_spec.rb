@@ -9,6 +9,8 @@ describe Projects::TransferService, services: true do
     before do
       allow_any_instance_of(Gitlab::UploadsTransfer).
         to receive(:move_project).and_return(true)
+      allow_any_instance_of(Gitlab::PagesTransfer).
+        to receive(:move_project).and_return(true)
       group.add_owner(user)
       @result = transfer_project(project, user, group)
     end

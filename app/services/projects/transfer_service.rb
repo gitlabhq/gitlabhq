@@ -55,6 +55,9 @@ module Projects
         # Move uploads
         Gitlab::UploadsTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
 
+        # Move pages
+        Gitlab::PagesTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
+
         true
       end
     end

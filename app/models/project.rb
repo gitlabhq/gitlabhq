@@ -794,6 +794,7 @@ class Project < ActiveRecord::Base
     end
 
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
+    Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
   def hook_attrs
