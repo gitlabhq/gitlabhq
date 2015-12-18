@@ -4,7 +4,7 @@ _**Note:** This feature was [introduced][ee-80] in GitLab EE 8.3_
 
 With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of GitLab CI and the help of GitLab Runner you can
-deploy static pages for your individual projects your user or your group.
+deploy static pages for your individual projects, your user or your group.
 
 ## Enable the pages feature in your GitLab EE instance
 
@@ -101,19 +101,10 @@ in the artifacts.
 
 ## Frequently Asked Questions
 
-**Q:** Where are my generated pages stored?
-
-**A:** All content is located by default under `shared/pages/` in the root
-directory of the GitLab installation. To be exact, all specific projects under
-a namespace are stored in `shared/pages/${namespace}/${project}/public/` and
-all user/group pages in `shared/pages/${namespace}/${namespace}/public/`.
-
----
-
 **Q:** Can I download my generated pages?
 
-**A:** Sure. All you need is to download the artifacts archive from the build
-    page.
+**A:** Sure. All you need to do is download the artifacts archive from the
+    build page.
 
 ---
 
