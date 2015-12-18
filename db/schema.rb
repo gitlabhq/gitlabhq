@@ -745,12 +745,12 @@ ActiveRecord::Schema.define(version: 20151215132013) do
     t.integer  "mirror_user_id"
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",         default: true,     null: false
-    t.boolean  "shared_runners_enabled", default: true,     null: false
+    t.boolean  "builds_enabled",                   default: true,     null: false
+    t.boolean  "shared_runners_enabled",           default: true,     null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",  default: true,     null: false
-    t.integer  "build_timeout",          default: 3600,     null: false
+    t.boolean  "build_allow_git_fetch",            default: true,     null: false
+    t.integer  "build_timeout",                    default: 3600,     null: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

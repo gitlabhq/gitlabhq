@@ -191,6 +191,7 @@ class Service < ActiveRecord::Base
       hipchat
       irker
       jenkins
+      jenkins_deprecated
       jira
       pivotaltracker
       pushover

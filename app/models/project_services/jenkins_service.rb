@@ -2,33 +2,83 @@
 #
 # Table name: services
 #
-#  id          :integer          not null, primary key
-#  type        :string(255)
-#  title       :string(255)
-#  project_id  :integer          not null
-#  created_at  :datetime
-#  updated_at  :datetime
-#  active      :boolean          default(FALSE), not null
-#  properties  :text
+#  id                    :integer          not null, primary key
+#  type                  :string(255)
+#  title                 :string(255)
+#  project_id            :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  active                :boolean          default(FALSE), not null
+#  properties            :text
+#  template              :boolean          default(FALSE)
+#  push_events           :boolean          default(TRUE)
+#  issues_events         :boolean          default(TRUE)
+#  merge_requests_events :boolean          default(TRUE)
+#  tag_push_events       :boolean          default(TRUE)
+#  note_events           :boolean          default(TRUE), not null
 #
-require 'uri'
-
 class JenkinsService < CiService
-  prop_accessor :project_url
-  prop_accessor :multiproject_enabled
-  prop_accessor :pass_unstable
+  include HTTParty
+  prop_accessor :jenkins_url, :project_name, :username, :password
 
-  validates :project_url, presence: true, if: :activated?
+  before_update :reset_password
+  validates :username,
+            presence: true,
+            if: ->(service) { service.activated? && service.password.present? }
 
-  delegate :execute, to: :service_hook, prefix: nil
+  default_value_for :push_events, true
+  default_value_for :merge_requests_events, false
+  default_value_for :tag_push_events, false
 
   after_save :compose_service_hook, if: :activated?
 
+  def reset_password
+    # don't reset the password if a new one is provided
+    if jenkins_url_changed? && !password_touched?
+      self.password = nil
+    end
+  end
+
   def compose_service_hook
     hook = service_hook || build_service_hook
-    jenkins_url = project_url.sub(/job\/.*/, '')
-    hook.url = jenkins_url + "/gitlab/build_now"
+    hook.url = hook_url
     hook.save
+  end
+
+  def execute(data)
+    self.post(
+      hook_url,
+      body: data.to_json,
+      headers: {
+        'Content-Type' => 'application/json',
+        'Authorization' => "Basic #{auth}"
+      }
+    )
+  end
+
+  def test(data)
+    begin
+      result = execute(data)
+      message = result.message || result unless result.nil?
+      return { success: false, result: message } if result.code != 200
+    rescue StandardError => error
+      return { success: false, result: error }
+    end
+
+    { success: true, result: result }
+  end
+
+  def auth
+    require 'base64'
+    Base64.urlsafe_encode64("#{username}:#{password}")
+  end
+
+  def hook_url
+    File.join(jenkins_url, "project/#{project_name}").to_s
+  end
+
+  def supported_events
+    %w(push merge_request tag_push)
   end
 
   def title
@@ -40,7 +90,7 @@ class JenkinsService < CiService
   end
 
   def help
-    'You must have installed GitLab Hook plugin into Jenkins.'
+    'You must have installed the Git Plugin and GitLab Plugin in Jenkins'
   end
 
   def to_param
@@ -49,66 +99,16 @@ class JenkinsService < CiService
 
   def fields
     [
-      { type: 'text', name: 'project_url', placeholder: 'Jenkins project URL like http://jenkins.example.com/job/my-project/' },
-      { type: 'checkbox', name: 'multiproject_enabled', title: "Multi-project setup enabled?",
-        help: "Multi-project mode is configured in Jenkins Gitlab Hook plugin." },
-      { type: 'checkbox', name: 'pass_unstable', title: 'Should unstable builds be treated as passing?',
-        help: 'Unstable builds will be treated as passing.' }
+      {
+        type: 'text', name: 'jenkins_url',
+        placeholder: 'Jenkins URL like http://jenkins.example.com'
+      },
+      {
+        type: 'text', name: 'project_name', placeholder: 'Project Name',
+        help: 'The URL-friendly project name. Example: my_project_name'
+      },
+      { type: 'text', name: 'username' },
+      { type: 'password', name: 'password' },
     ]
-  end
-
-  def multiproject_enabled?
-    self.multiproject_enabled == '1'
-  end
-
-  def pass_unstable?
-    self.pass_unstable == '1'
-  end
-
-  def build_page(sha, ref = nil)
-    if multiproject_enabled? && ref.present?
-      URI.encode("#{base_project_url}/#{project.name}_#{ref.tr('/', '_')}/scm/bySHA1/#{sha}").to_s
-    else
-      "#{project_url}/scm/bySHA1/#{sha}"
-    end
-  end
-
-  # When multi-project is enabled we need to have a different URL. Rather than
-  # relying on the user to provide the proper URL depending on multi-project
-  # we just parse the URL and make sure it's how we want it.
-  def base_project_url
-    url = URI.parse(project_url)
-    URI.join(url, '/job').to_s
-  end
-
-  def commit_status(sha, ref = nil)
-    parsed_url = URI.parse(build_page(sha, ref))
-
-    if parsed_url.userinfo.blank?
-      response = HTTParty.get(build_page(sha, ref), verify: false)
-    else
-      get_url = build_page(sha, ref).gsub("#{parsed_url.userinfo}@", "")
-      auth = {
-          username: URI.decode(parsed_url.user),
-          password: URI.decode(parsed_url.password),
-      }
-      response = HTTParty.get(get_url, verify: false, basic_auth: auth)
-    end
-
-    if response.code == 200
-      # img.build-caption-status-icon for old jenkins version
-      src = Nokogiri.parse(response).css('img.build-caption-status-icon,.build-caption>img').first.attributes['src'].value
-      if src =~ /blue\.png$/ || (src =~ /yellow\.png/ && pass_unstable?)
-        'success'
-      elsif src =~ /(red|aborted|yellow)\.png$/
-        'failed'
-      elsif src =~ /anime\.gif$/
-        'running'
-      else
-        'pending'
-      end
-    else
-      :error
-    end
   end
 end

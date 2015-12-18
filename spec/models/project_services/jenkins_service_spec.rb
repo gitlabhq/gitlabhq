@@ -24,96 +24,118 @@ describe JenkinsService do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
   end
+  let(:project) { create(:project) }
 
-  describe 'commits methods' do
-    def status_body_for_icon(state)
-      <<eos
-        <h1 class="build-caption page-headline"><img style="width: 48px; height: 48px; " alt="Success" class="icon-#{state} icon-xlg" src="/static/855d7c3c/images/48x48/#{state}" tooltip="Success" title="Success">
-                Build #188
-              (Oct 15, 2014 9:45:21 PM)
-                    </h1>
-eos
+  describe 'username validation' do
+    before do
+      @jenkins_service = JenkinsService.create(
+        active: active,
+        project: project,
+        properties: {
+          jenkins_url: 'http://jenkins.example.com/',
+          password: 'password',
+          username: nil,
+        }
+      )
+    end
+    subject { @jenkins_service }
+
+    context 'when the service is active' do
+      let(:active) { true }
+      it { is_expected.to validate_presence_of :username }
     end
 
-    describe :commit_status do
+    context 'when the service is inactive' do
+      let(:active) { false }
+      it { is_expected.not_to validate_presence_of :username }
+    end
+  end
+
+  describe '#hook_url' do
+    before do
+      @jenkins_service = JenkinsService.create(
+        project: project,
+        properties: {
+          jenkins_url: jenkins_url,
+          project_name: 'my_project'
+        }
+      )
+    end
+    subject { @jenkins_service.hook_url }
+
+    context 'when the jenkins_url has no relative path' do
+      let(:jenkins_url) { 'http://jenkins.example.com/' }
+      it { is_expected.to eq('http://jenkins.example.com/project/my_project') }
+    end
+
+    context 'when the jenkins_url has relative path' do
+      let(:jenkins_url) { 'http://organization.example.com/jenkins' }
+      it { is_expected.to eq('http://organization.example.com/jenkins/project/my_project') }
+    end
+  end
+
+  describe 'Stored password invalidation' do
+    let(:project) { create(:project) }
+
+    context 'when a password was previously set' do
       before do
-        @service = JenkinsService.new
-        allow(@service).to receive_messages(
-          service_hook: true,
-          project_url: 'http://jenkins.gitlab.org/job/2',
-          multiproject_enabled: '0',
-          pass_unstable: '0',
-          token: 'verySecret'
+        @jenkins_service = JenkinsService.create(
+          project: project,
+          properties: {
+            jenkins_url: 'http://jenkins.example.com/',
+            username: 'jenkins',
+            password: 'password'
+          }
         )
       end
 
-      statuses = { 'blue.png' => 'success', 'yellow.png' => 'failed', 'red.png' => 'failed', 'aborted.png' => 'failed', 'blue-anime.gif' => 'running', 'grey.png' => 'pending' }
-      statuses.each do |icon, state|
-        it "should have a status of #{state} when the icon #{icon} exists." do
-          stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon(icon), headers: {})
-          expect(@service.commit_status("2ab7834c", 'master')).to eq(state)
-        end
+      it 'reset password if url changed' do
+        @jenkins_service.jenkins_url = 'http://jenkins-edited.example.com/'
+        @jenkins_service.save
+        expect(@jenkins_service.password).to be_nil
+      end
+
+      it 'does not reset password if username changed' do
+        @jenkins_service.username = 'some_name'
+        @jenkins_service.save
+        expect(@jenkins_service.password).to eq('password')
+      end
+
+      it 'does not reset password if new url is set together with password, even if it\'s the same password' do
+        @jenkins_service.jenkins_url = 'http://jenkins_edited.example.com/'
+        @jenkins_service.password = 'password'
+        @jenkins_service.save
+        expect(@jenkins_service.password).to eq('password')
+        expect(@jenkins_service.jenkins_url).to eq('http://jenkins_edited.example.com/')
+      end
+
+      it 'should reset password if url changed, even if setter called multiple times' do
+        @jenkins_service.jenkins_url = 'http://jenkins1.example.com/'
+        @jenkins_service.jenkins_url = 'http://jenkins1.example.com/'
+        @jenkins_service.save
+        expect(@jenkins_service.password).to be_nil
       end
     end
 
-    describe 'commit status with passing unstable' do
+    context 'when no password was previously set' do
       before do
-        @service = JenkinsService.new
-        allow(@service).to receive_messages(
-          service_hook: true,
-          project_url: 'http://jenkins.gitlab.org/job/2',
-          multiproject_enabled: '0',
-          pass_unstable: '1',
-          token: 'verySecret'
+        @jenkins_service = JenkinsService.create(
+          project: create(:project),
+          properties: {
+            jenkins_url: 'http://jenkins.example.com/',
+            username: 'jenkins'
+          }
         )
       end
 
-      it "should have a status of success when the icon yellow exists." do
-        stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon('yellow.png'), headers: {})
-        expect(@service.commit_status("2ab7834c", 'master')).to eq('success')
-      end
-    end
-
-    describe 'multiproject enabled' do
-      let!(:project) { create(:project) }
-      before do
-        @service = JenkinsService.new
-        allow(@service).to receive_messages(
-          service_hook: true,
-          project_url: 'http://jenkins.gitlab.org/job/2',
-          multiproject_enabled: '1',
-          token: 'verySecret',
-          project: project
-        )
+      it 'saves password if new url is set together with password' do
+        @jenkins_service.jenkins_url = 'http://jenkins_edited.example.com/'
+        @jenkins_service.password = 'password'
+        @jenkins_service.save
+        expect(@jenkins_service.password).to eq('password')
+        expect(@jenkins_service.jenkins_url).to eq('http://jenkins_edited.example.com/')
       end
 
-      describe :build_page do
-        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/job/#{project.name}_master/scm/bySHA1/2ab7834c") }
-      end
-
-      describe :build_page_with_branch do
-        it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/job/#{project.name}_test_branch/scm/bySHA1/2ab7834c") }
-      end
-    end
-
-    describe 'multiproject disabled' do
-      before do
-        @service = JenkinsService.new
-        allow(@service).to receive_messages(
-          service_hook: true,
-          project_url: 'http://jenkins.gitlab.org/job/2',
-          multiproject_enabled: '0',
-          token: 'verySecret'
-        )
-      end
-
-      describe :build_page do
-        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c") }
-      end
-
-      describe :build_page_with_branch do
-        it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c") }
-      end
     end
   end
 end

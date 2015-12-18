@@ -1,20 +1,102 @@
 # Jenkins CI integration
 
-GitLab can be configured to interact with Jenkins
+In GitLab 8.3, Jenkins integration using the
+[GitLab Hook Plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+Hook+Plugin)
+was deprecated in favor of the
+[GitLab Plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+Plugin).
+The deprecated integration has been renamed to 'Jenkins CI (Deprecated)' in the
+project service settings. We may remove this in a future release and recommend
+using the new 'Jenkins CI' project service instead. See
+[documentation for 'Jenkins CI (Deprecated)'](#jenkins-ci-deprecated-service)
+below.
 
-Integration includes: 
+## Jenkins CI Service
+
+Integration includes:
+
+* Trigger a Jenkins build after push to a repository and/or when a merge request
+  is created
+* Show build status on Merge Request page, on each commit and on the project
+  home page
+
+### Requirements:
+
+* [Jenkins GitLab Plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+Plugin)
+* [Jenkins Git Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Git+Plugin)
+* Git clone access for Jenkins from the GitLab repository
+* GitLab API access to report build status
+
+### Configure GitLab users
+
+Create a user or choose an existing user that Jenkins will use to interact
+through the GitLab API. This user will need to be a global Admin or added
+as a member to each Group/Project. Reporter permission is all that's required
+for cloning, building, and reporting build status. Some features of the GitLab
+Plugin may require additional privileges. For example, there is an option to
+accept a merge request if the build is successful. Using this feature would
+require developer, master or owner-level permission.
+
+Copy the private API token from **Profile Settings -> Account**. You will need this
+when configuring the Jenkins server later.
+
+### Configure the Jenkins server
+
+Install [Jenkins GitLab Plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+Plugin)
+and [Jenkins Git Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Git+Plugin).
+
+Go to Manage Jenkins -> Configure System and scroll down to the 'GitLab' section.
+Enter the GitLab server URL in the 'GitLab host URL' field and paste the API token
+copied earlier in the 'API Token' field.
+
+![Jenkins GitLab plugin configuration](jenkins_gitlab_plugin_config.png)
+
+### Configure a Jenkins project
+
+Follow the GitLab Plugin documentation under the
+[Using it With a Job](https://github.com/jenkinsci/gitlab-plugin#using-it-with-a-job)
+heading. You *do not* need to complete instructions under the 'GitLab
+Configuration (>= 8.0)'. Be sure to check the 'Use GitLab CI features' checkbox
+as described under the 'GitLab Configuration (>= 8.1)'.
+
+### Configure a GitLab project
+
+Create a new GitLab project or choose an existing one. Then, go to **Services ->
+Jenkins CI**.
+
+Check the 'Active' box. Select whether you want GitLab to trigger a build
+on push, Merge Request creation, tag push, or any combination of these. We
+recommend unchecking 'Merge Request events' unless you have a specific use-case
+that requires re-building a commit when a merge request is created. With 'Push
+events' selected, GitLab will build the latest commit on each push and the build
+status will be displayed in the merge request.
+
+Enter the Jenkins URL and Project name. The project name should be URL-friendly
+where spaces are replaced with underscores. To be safe, copy the project name
+from the URL bar of your browser while viewing the Jenkins project.
+
+Optionally, enter a username and password if your Jenkins server requires
+authentication.
+
+![GitLab service settings](jenkins_gitlab_service_settings.png)
+
+# Jenkins CI (Deprecated) Service
+
+This service is deprecated and may be removed in a future version of GitLab.
+Please see documentation for the new Jenkins CI service above.
+
+Integration includes:
 
 * Trigger Jenkins build after push to repo
 * Show build status on Merge Request page
 
 Requirements: 
 
-* Jenkins GitLab Hook plugin
+* [Jenkins GitLab Hook plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+Hook+Plugin)
 * git clone access for Jenkins from GitLab repo (via ssh key)
 
 ## Jenkins
 
-1. Install GitLab Hook plugin
+1. Install [GitLab Hook plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+Hook+Plugin)
 2. Setup jenkins project
 
 ![screen](jenkins_project.png)
@@ -23,12 +105,12 @@ Requirements:
 ## GitLab
 
 
-### Read access to repository 
+### Read access to repository
 
-Jenkins need read access to GitLab repository. We already specified private key to use in Jenkins. Now we need to add public key to GitLab project
-
-![screen](jenkins_gitlab_deploy.png)
-
+Jenkins needs read access to the GitLab repository. We already specified a
+private key to use in Jenkins, now we need to add a public one to the GitLab
+project. For that case we will need a Deploy key. Read the documentation on
+[how to setup a Deploy key](../../ssh/README.md#deploy-keys).
 
 ### Jenkins service
 
