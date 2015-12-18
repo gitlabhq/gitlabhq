@@ -118,6 +118,7 @@ class Namespace < ActiveRecord::Base
 
     if gitlab_shell.mv_namespace(path_was, path)
       Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+      Gitlab::PagesTransfer.new.rename_namespace(path_was, path)
 
       # If repositories moved successfully we need to
       # send update instructions to users.

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151210125932) do
+ActiveRecord::Schema.define(version: 20151215132013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 20151210125932) do
     t.boolean  "shared_runners_enabled",       default: true,  null: false
     t.integer  "max_artifacts_size",           default: 100,   null: false
     t.string   "runners_registration_token"
+    t.integer  "max_pages_size",               default: 100,   null: false
   end
 
   create_table "approvals", force: :cascade do |t|

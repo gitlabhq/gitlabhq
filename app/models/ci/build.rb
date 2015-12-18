@@ -135,12 +135,8 @@ module Ci
       predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
-    def project
-      commit.project
-    end
-
     def project_id
-      commit.project.id
+      gl_project_id
     end
 
     def project_name
@@ -270,9 +266,8 @@ module Ci
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
+      UpdatePagesService.new(build_data).execute
     end
-
-
 
     private
 

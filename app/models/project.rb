@@ -64,6 +64,8 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
+  after_destroy :remove_pages
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 
@@ -792,6 +794,7 @@ class Project < ActiveRecord::Base
     end
 
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
+    Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
   def hook_attrs
@@ -979,5 +982,38 @@ class Project < ActiveRecord::Base
 
   def open_issues_count
     issues.opened.count
+  end
+
+  def pages_url
+    if Dir.exist?(public_pages_path)
+      host = "#{namespace.path}.#{Settings.pages.host}"
+      url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
+        "#{prefix}#{namespace.path}."
+      end
+
+      # If the project path is the same as host, leave the short version
+      return url if host == path
+
+      "#{url}/#{path}"
+    end
+  end
+
+  def pages_path
+    File.join(Settings.pages.path, path_with_namespace)
+  end
+
+  def public_pages_path
+    File.join(pages_path, 'public')
+  end
+
+  def remove_pages
+    # 1. We rename pages to temporary directory
+    # 2. We wait 5 minutes, due to NFS caching
+    # 3. We asynchronously remove pages with force
+    temp_path = "#{path}.#{SecureRandom.hex}"
+
+    if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
+      PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)
+    end
   end
 end

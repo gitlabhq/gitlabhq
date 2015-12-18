@@ -175,7 +175,46 @@
           .form-actions
             = f.submit 'Save changes', class: "btn btn-save"
 
+    - if Settings.pages.enabled
+      .pages-settings
+        .panel.panel-default
+          .panel-heading Pages
+          .errors-holder
+          .panel-body
+            - if @project.pages_url
+              %strong
+                Congratulations! Your pages are served at:
+                %p= link_to @project.pages_url, @project.pages_url
+            - else
+              %p
+                Learn how to upload your static site and have it served by
+                GitLab by following the #{link_to "documentation on GitLab Pages", "http://doc.gitlab.com/pages/README.html", target: :blank}.
+              %p
+                In the example below we define a special job named
+                %code pages
+                which is using Jekyll to build a static site. The generated
+                HTML will be stored in the
+                %code public/
+                directory which will then be archived and uploaded to GitLab.
+                The name of the directory should not be different than
+                %code public/
+                in order for the pages to work.
+                %ul
+                  %li
+                    %pre
+                      :plain
+                        pages:
+                          image: jekyll/jekyll
+                          script: jekyll build -d public/
+                          artifacts:
+                            paths:
+                            - public/
 
+            - if @project.pages_url && can?(current_user, :remove_pages, @project)
+              .form-actions
+                = link_to 'Remove pages', remove_pages_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to remove pages for this project?" },
+                    method: :post, class: "btn btn-warning"
 
     .danger-settings
       - if can? current_user, :archive_project, @project

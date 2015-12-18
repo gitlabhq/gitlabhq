@@ -136,6 +136,14 @@
         .help-block Markdown enabled
 
   %fieldset
+    %legend Pages
+    .form-group
+      = f.label :max_pages_size, 'Maximum size of pages (MB)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :max_pages_size, class: 'form-control'
+        .help-block Zero for unlimited
+
+  %fieldset
     %legend Continuous Integration
     .form-group
       .col-sm-offset-2.col-sm-10

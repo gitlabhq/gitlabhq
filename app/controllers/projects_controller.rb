@@ -167,6 +167,16 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def remove_pages
+    return access_denied! unless can?(current_user, :remove_pages, @project)
+
+    @project.remove_pages
+
+    respond_to do |format|
+      format.html { redirect_to project_path(@project) }
+    end
+  end
+
   def toggle_star
     current_user.toggle_star(@project)
     @project.reload
