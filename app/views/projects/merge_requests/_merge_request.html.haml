@@ -17,7 +17,7 @@
 
       - if merge_request.open? && merge_request.broken?
         %li
-          = link_to merge_request_path(merge_request), class: "has_tooltip", title: "Cannot be merged automatically", data: {container: 'body'} do
+          = link_to merge_request_path(merge_request), class: "has_tooltip", title: "Cannot be merged automatically", data: { container: 'body' } do
             = icon('exclamation-triangle')
 
       - if merge_request.assignee

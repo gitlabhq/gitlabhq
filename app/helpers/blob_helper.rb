@@ -38,7 +38,7 @@ module BlobHelper
                                      link_opts)
 
     if !on_top_of_branch?
-      button_tag "Edit", class: "btn btn-default disabled has_tooltip", title: "You can only edit files when you are on a branch", data: {container: 'body'}
+      button_tag "Edit", class: "btn btn-default disabled has_tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
     elsif can_edit_blob?(blob)
       link_to "Edit", edit_path, class: 'btn btn-small'
     elsif can?(current_user, :fork_project, project)
@@ -62,7 +62,7 @@ module BlobHelper
     return unless blob
 
     if !on_top_of_branch?
-      button_tag label, class: "btn btn-#{btn_class} disabled has_tooltip", title: "You can only #{action} files when you are on a branch", data: {container: 'body'}
+      button_tag label, class: "btn btn-#{btn_class} disabled has_tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
     elsif can_edit_blob?(blob)
       button_tag label, class: "btn btn-#{btn_class}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
