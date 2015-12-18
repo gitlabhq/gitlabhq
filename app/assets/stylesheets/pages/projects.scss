@@ -91,10 +91,9 @@
     }
   }
 
-  .input-group {
+  .git-clone-holder {
     display: inline-table;
     position: relative;
-    top: 17px;
   }
 
   .project-repo-buttons {
@@ -103,6 +102,7 @@
 
     .count-buttons {
       display: block;
+      margin-bottom: 12px;
     }
 
     .btn {
@@ -185,6 +185,13 @@
 .git-clone-holder {
   .project-home-dropdown + & {
     margin-right: 45px;
+  }
+
+  .clone-options {
+    display: table-cell;
+    a.btn {
+      width: 100%;
+    }
   }
 
   .form-control {
