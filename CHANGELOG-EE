@@ -3,6 +3,7 @@ v 8.3.0 (unreleased)
   - Show Kerberos clone url when Kerberos enabled and url different than HTTP url (Borja Aparicio)
   - Fix bug with negative approvals required
   - Add group contribution statistics page 
+  - Add GitLab Pages
 
 v 8.2.3
   - No EE-specific changes
