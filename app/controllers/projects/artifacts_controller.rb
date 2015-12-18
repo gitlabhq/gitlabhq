@@ -15,7 +15,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def browse
-    @metadata = build.artifacts_metadata
+    path = params[:path].to_s
+    @paths = artifacts_metadata.map do |_artifact_file|
+      Gitlab::StringPath.new(path, artifacts_metadata)
+    end
   end
 
   private
@@ -26,6 +29,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def artifacts_file
     @artifacts_file ||= build.artifacts_file
+  end
+
+  def artifacts_metadata
+    @artifacts_metadata ||= build.artifacts_metadata
   end
 
   def authorize_download_build_artifacts!

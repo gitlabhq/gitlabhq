@@ -34,6 +34,18 @@ module Gitlab
       !directory?
     end
 
+    def has_parent?
+      raise NotImplementedError
+    end
+
+    def parent
+      raise NotImplementedError
+    end
+
+    def directories
+      raise NotImplementedError
+    end
+
     def files
       raise NotImplementedError
     end
