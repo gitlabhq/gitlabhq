@@ -30,8 +30,8 @@ host that GitLab runs. For example, an entry would look like this:
 where `gitlab.io` is the domain under which GitLab Pages will be served
 and `1.2.3.4` is the IP address of your GitLab instance.
 
-It is strongly advised to **not** use the GitLab domain to serve user pages.
-For more information see the [security section](#security).
+You should not use the GitLab domain to serve user pages. For more information
+see the [security section](#security).
 
 ### Omnibus package installations
 
