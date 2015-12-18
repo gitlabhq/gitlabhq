@@ -14,13 +14,8 @@
   = link_to 'Permalink', namespace_project_blob_path(@project.namespace, @project,
       tree_join(@commit.sha, @path)), class: 'btn btn-sm'
 
-- if blob_editable?(@blob)
+- if current_user
   .btn-group{ role: "group" }
-    = edit_blob_link(@project, @ref, @path)
-    %button.btn.btn-default{ 'data-target' => '#modal-upload-blob', 'data-toggle' => 'modal' } Replace
-    %button.btn.btn-remove{ 'data-target' => '#modal-remove-blob', 'data-toggle' => 'modal' } Delete
-- elsif !on_top_of_branch?
-  .btn-group{ role: "group" }
-    %button.btn.btn-default.disabled.has_tooltip{title: "You can only edit files when you are on a branch.", data: {container: 'body'}} Edit
-    %button.btn.btn-default.disabled.has_tooltip{title: "You can only replace files when you are on a branch.", data: {container: 'body'}} Replace
-    %button.btn.btn-remove.disabled.has_tooltip{title: "You can only delete files when you are on a branch.", data: {container: 'body'}} Delete
+    = edit_blob_link
+    = replace_blob_link
+    = delete_blob_link

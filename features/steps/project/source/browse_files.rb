@@ -75,7 +75,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new branch name' do
-    fill_in :new_branch, with: 'new_branch_name', visible: true
+    fill_in :target_branch, with: 'new_branch_name', visible: true
   end
 
   step 'I fill the new file name with an illegal name' do
