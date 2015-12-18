@@ -48,7 +48,7 @@ See the relevant documentation at <http://doc.gitlab.com/omnibus/settings/pages.
 1. Edit `gitlab.yml` and under the `pages` setting, set `enabled` to `true` and
    the `host` to the FQDN under which GitLab Pages will be served:
 
-     ```bash
+     ```yaml
      ## GitLab Pages
      pages:
        enabled: true
@@ -131,6 +131,25 @@ required.
 The maximum size of the unpacked archive can be configured in the Admin area
 under the Application settings in the **Maximum size of pages (MB)**.
 The default is 100MB.
+
+## Change storage path
+
+Pages are stored by default in `/home/git/gitlab/shared/pages`.
+If you wish to store them in another location you must set it up in
+`gitlab.yml` under the `pages` section:
+
+```yaml
+pages:
+  enabled: true
+  # The location where pages are stored (default: shared/pages).
+  path: /mnt/storage/pages
+```
+
+Restart GitLab for the changes to take effect:
+
+```bash
+sudo service gitlab restart
+```
 
 ## Backup
 
