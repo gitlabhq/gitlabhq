@@ -130,6 +130,7 @@ class Namespace < ActiveRecord::Base
     end
 
     Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+    Gitlab::PagesTransfer.new.rename_namespace(path_was, path)
 
     remove_exports!
 

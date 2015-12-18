@@ -119,6 +119,7 @@ required.
        port: 443 # Set to 443 if you serve the pages with HTTPS
        https: true # Set to true if you serve the pages with HTTPS
      ```
+
 1. Copy the `gitlab-pages-ssl` Nginx configuration file:
 
     ```bash

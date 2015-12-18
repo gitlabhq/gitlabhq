@@ -961,6 +961,7 @@ class Project < ActiveRecord::Base
     Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
+    Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.path)
   end
 
   # Expires various caches before a project is renamed.
