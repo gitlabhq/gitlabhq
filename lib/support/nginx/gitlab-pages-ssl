@@ -53,8 +53,6 @@ server {
   # ssl_stapling on;
   # ssl_stapling_verify on;
   # ssl_trusted_certificate /etc/nginx/ssl/stapling.trusted.crt;
-  # resolver 208.67.222.222 208.67.222.220 valid=300s; # Can change to your DNS resolver if desired
-  # resolver_timeout 5s;
 
   ## [Optional] Generate a stronger DHE parameter:
   ##   sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
@@ -65,8 +63,8 @@ server {
   access_log  /var/log/nginx/gitlab_pages_access.log;
   error_log   /var/log/nginx/gitlab_pages_error.log;
 
-  # 1. Try to get /project/ to => shared/pages/${group}/public/ or index.html
-  # 2. Try to get / to => shared/pages/${group}/${host}/public/ or index.html
+  # 1. Try to get /path/ from shared/pages/${group}/${path}/public/
+  # 2. Try to get / from shared/pages/${group}/${host}/public/
   location ~ ^/([^/]*)(/.*)?$ {
     try_files "/$1/public$2"
               "/$1/public$2/index.html"
