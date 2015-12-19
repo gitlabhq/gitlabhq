@@ -124,7 +124,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I click on "New file" link in repo' do
     find('.add-to-tree').click
-    click_link 'Create file'
+    click_link 'New file'
   end
 
   step 'I click on "Upload file" link in repo' do
