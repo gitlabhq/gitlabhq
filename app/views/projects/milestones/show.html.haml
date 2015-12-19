@@ -81,7 +81,10 @@
           = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
 
       .oneline
-        All issues in this milestone
+        All issues in this milestone.
+        - total_weight = @issues.sum(:weight)
+        - unless total_weight.zero?
+          Total weight of issues #{total_weight}
 
     .row.prepend-top-default
       .col-md-4

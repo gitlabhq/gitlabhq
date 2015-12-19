@@ -25,14 +25,14 @@ ActiveRecord::Schema.define(version: 20151215132013) do
   end
 
   create_table "appearances", force: :cascade do |t|
-    t.string   "title",       limit: 255
+    t.string   "title"
     t.text     "description"
-    t.string   "logo",        limit: 255
+    t.string   "logo"
     t.integer  "updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "dark_logo",   limit: 255
-    t.string   "light_logo",  limit: 255
+    t.string   "dark_logo"
+    t.string   "light_logo"
   end
 
   create_table "application_settings", force: :cascade do |t|
@@ -73,9 +73,9 @@ ActiveRecord::Schema.define(version: 20151215132013) do
   end
 
   create_table "approvers", force: :cascade do |t|
-    t.integer  "target_id",               null: false
-    t.string   "target_type", limit: 255
-    t.integer  "user_id",                 null: false
+    t.integer  "target_id",   null: false
+    t.string   "target_type"
+    t.integer  "user_id",     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -389,18 +389,18 @@ ActiveRecord::Schema.define(version: 20151215132013) do
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
   create_table "git_hooks", force: :cascade do |t|
-    t.string   "force_push_regex",     limit: 255
-    t.string   "delete_branch_regex",  limit: 255
-    t.string   "commit_message_regex", limit: 255
+    t.string   "force_push_regex"
+    t.string   "delete_branch_regex"
+    t.string   "commit_message_regex"
     t.boolean  "deny_delete_tag"
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "author_email_regex",   limit: 255
-    t.boolean  "member_check",                     default: false, null: false
-    t.string   "file_name_regex",      limit: 255
-    t.boolean  "is_sample",                        default: false
-    t.integer  "max_file_size",                    default: 0
+    t.string   "author_email_regex"
+    t.boolean  "member_check",         default: false, null: false
+    t.string   "file_name_regex"
+    t.boolean  "is_sample",            default: false
+    t.integer  "max_file_size",        default: 0
   end
 
   create_table "historical_data", force: :cascade do |t|
@@ -435,6 +435,7 @@ ActiveRecord::Schema.define(version: 20151215132013) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
+    t.integer  "weight"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -484,12 +485,12 @@ ActiveRecord::Schema.define(version: 20151215132013) do
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "ldap_group_links", force: :cascade do |t|
-    t.string   "cn",           limit: 255, null: false
-    t.integer  "group_access",             null: false
-    t.integer  "group_id",                 null: false
+    t.string   "cn",           null: false
+    t.integer  "group_access", null: false
+    t.integer  "group_id",     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "provider",     limit: 255
+    t.string   "provider"
   end
 
   create_table "lfs_objects", force: :cascade do |t|
@@ -745,12 +746,12 @@ ActiveRecord::Schema.define(version: 20151215132013) do
     t.integer  "mirror_user_id"
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",         default: true,     null: false
-    t.boolean  "shared_runners_enabled", default: true,     null: false
+    t.boolean  "builds_enabled",                   default: true,     null: false
+    t.boolean  "shared_runners_enabled",           default: true,     null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",  default: true,     null: false
-    t.integer  "build_timeout",          default: 3600,     null: false
+    t.boolean  "build_allow_git_fetch",            default: true,     null: false
+    t.integer  "build_timeout",                    default: 3600,     null: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

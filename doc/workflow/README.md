@@ -8,6 +8,7 @@
 - [Importing to GitLab](doc/importing/README.md)
 - [Keyboard shortcuts](shortcuts.md)
 - [Labels](labels.md)
+- [Issue weight](issue_weight.md)
 - [Manage large binaries with git annex](git_annex.md)
 - [Merge Request Approvals](merge_request_approvals.md)
 - [Notification emails](notifications.md)
