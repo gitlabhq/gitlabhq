@@ -19,6 +19,7 @@ describe Gitlab::StringPath do
     it { is_expected.to be_absolute } 
     it { is_expected.to_not be_relative }
     it { is_expected.to be_file }
+    it { is_expected.to_not have_parent }
 
     describe '#basename' do
       subject { described_class.new('/file/with/absolute_path', universe).basename }
@@ -32,9 +33,13 @@ describe Gitlab::StringPath do
 
     it { is_expected.to be_directory }
     it { is_expected.to be_relative }
+    it { is_expected.to_not have_parent }
   end
 
   describe 'path/dir_1/' do
+    subject { described_class.new('path/dir_1/', universe) }
+    it { is_expected.to have_parent }
+
     describe '#files' do
       subject { described_class.new('path/dir_1/', universe).files }
 
@@ -45,8 +50,12 @@ describe Gitlab::StringPath do
 
     describe '#basename' do
       subject { described_class.new('path/dir_1/', universe).basename }
-
       it { is_expected.to eq 'dir_1/' }
+    end
+
+    describe '#parent' do
+      subject { described_class.new('path/dir_1/', universe).parent }
+      it { is_expected.to eq Gitlab::StringPath.new('path/', universe) }
     end
   end
 end

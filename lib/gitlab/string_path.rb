@@ -35,11 +35,12 @@ module Gitlab
     end
 
     def has_parent?
-      raise NotImplementedError
+      @universe.include?(@path.sub(basename, ''))
     end
 
     def parent
-      raise NotImplementedError
+      return nil unless has_parent?
+      new(@path.sub(basename, ''))
     end
 
     def directories
@@ -57,6 +58,12 @@ module Gitlab
 
     def ==(other)
       @path == other.path && @universe == other.universe
+    end
+
+    private
+
+    def new(path)
+      self.class.new(path, @universe)
     end
   end
 end
