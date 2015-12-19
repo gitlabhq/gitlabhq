@@ -6,3 +6,4 @@
 - [Information exclusivity](information_exclusivity.md)
 - [Reset your root password](reset_root_password.md)
 - [User File Uploads](user_file_uploads.md)
+- [How we manage the CRIME vulnerability](crime_vulnerability.md)
