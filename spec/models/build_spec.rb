@@ -189,6 +189,12 @@ describe Ci::Build, models: true do
 
       it { is_expected.to eq(98.29) }
     end
+
+    context 'using a regex capture' do
+      subject { build.extract_coverage('TOTAL      9926   3489    65%', 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)') }
+
+      it { is_expected.to eq(65) }
+    end
   end
 
   describe :variables do
