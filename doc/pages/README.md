@@ -28,7 +28,7 @@ As a user, you should normally be concerned only with the first three items.
 In general there are four kinds of pages one might create. This is better
 explained with an example so let's make some assumptions.
 
-The domain under which the pages are hosted is named `gitlab.io`. There is a
+The domain under which the pages are hosted is named `example.com`. There is a
 user with the username `walter` and they are the owner of an organization named
 `therug`. The personal project of `walter` is named `area51` and don't forget
 that the organization has also a project under its namespace, called
@@ -39,10 +39,10 @@ URL it will be accessible.
 
 | Pages type | Repository name | URL schema |
 | ---------- | --------------- | ---------- |
-| User page  | `walter/walter.gitlab.io`  | `https://walter.gitlab.io`  |
-| Group page | `therug/therug.gitlab.io`  | `https://therug.gitlab.io`  |
-| Specific project under a user's page  | `walter/area51`     | `https://walter.gitlab.io/area51`     |
-| Specific project under a group's page | `therug/welovecats` | `https://therug.gitlab.io/welovecats` |
+| User page  | `walter/walter.example.com`  | `https://walter.example.com`  |
+| Group page | `therug/therug.example.com`  | `https://therug.example.com`  |
+| Specific project under a user's page  | `walter/area51`     | `https://walter.example.com/area51`     |
+| Specific project under a group's page | `therug/welovecats` | `https://therug.example.com/welovecats` |
 
 ## Enable the pages feature in your project
 
