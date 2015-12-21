@@ -10,7 +10,11 @@ class Projects::ForksController < Projects::ApplicationController
 
   def create
     namespace = Namespace.find(params[:namespace_key])
-    @forked_project = ::Projects::ForkService.new(project, current_user, namespace: namespace).execute
+    
+    @forked_project = namespace.projects.find_by(path: project.path)
+    @forked_project = nil unless @forked_project && @forked_project.forked_from_project == project
+
+    @forked_project ||= ::Projects::ForkService.new(project, current_user, namespace: namespace).execute
 
     if @forked_project.saved? && @forked_project.forked?
       if @forked_project.import_in_progress?
