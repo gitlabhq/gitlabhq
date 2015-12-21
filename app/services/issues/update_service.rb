@@ -13,10 +13,6 @@ module Issues
         create_assignee_note(issue)
         notification_service.reassigned_issue(issue, current_user)
       end
-
-      if issue.previous_changes.include?('title')
-        create_title_change_note(issue, issue.previous_changes['title'].first)
-      end
     end
 
     def reopen_service

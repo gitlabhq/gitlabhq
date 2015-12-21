@@ -1,5 +1,5 @@
 %h3.page-title
-  New merge request
+  New Merge Request
 %p.slead
   - source_title, target_title = format_mr_branch_names(@merge_request)
   From
@@ -11,27 +11,31 @@
     = link_to 'Change branches', mr_change_branches_path(@merge_request)
 %hr
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form js-requires-input' } do |f|
-  .merge-request-form-info
-    = render 'shared/issuable/form', f: f, issuable: @merge_request
-    = f.hidden_field :source_project_id
-    = f.hidden_field :source_branch
-    = f.hidden_field :target_project_id
-    = f.hidden_field :target_branch
+  = render 'shared/issuable/form', f: f, issuable: @merge_request
+  = f.hidden_field :source_project_id
+  = f.hidden_field :source_branch
+  = f.hidden_field :target_project_id
+  = f.hidden_field :target_branch
 
 .mr-compare.merge-request
-  %ul.merge-request-tabs
+  %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
     %li.commits-tab
-      = link_to url_for(params), data: {target: '#commits', action: 'commits', toggle: 'tab'} do
+      = link_to url_for(params), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
         Commits
         %span.badge= @commits.size
+    - if @ci_commit
+      %li.builds-tab.active
+        = link_to url_for(params), data: {target: 'div#builds', action: 'builds', toggle: 'tab'} do
+          Builds
+          %span.badge= @statuses.size
     %li.diffs-tab.active
-      = link_to url_for(params), data: {target: '#diffs', action: 'diffs', toggle: 'tab'} do
+      = link_to url_for(params), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
         Changes
         %span.badge= @diffs.size
 
   .tab-content
     #commits.commits.tab-pane
-      = render "projects/commits/commits", project: @project
+      = render "projects/merge_requests/show/commits"
     #diffs.diffs.tab-pane.active
       - if @diffs.present?
         = render "projects/diffs/diffs", diffs: @diffs, project: @project
@@ -43,6 +47,9 @@
         .alert.alert-danger
           %h4 This comparison includes a huge diff.
           %p To preserve performance the line changes are not shown.
+    - if @ci_commit
+      #builds.builds.tab-pane
+        = render "projects/merge_requests/show/builds"
 
 :javascript
   $('.assign-to-me-link').on('click', function(e){
@@ -57,4 +64,3 @@
     diffs_loaded: true,
     commits_loaded: true
   });
-

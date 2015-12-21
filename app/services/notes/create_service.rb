@@ -5,11 +5,6 @@ module Notes
       note.author = current_user
       note.system = false
 
-      if contains_emoji_only?(params[:note])
-        note.is_award = true
-        note.note = emoji_name(params[:note])
-      end
-
       if note.save
         notification_service.new_note(note)
 
@@ -32,14 +27,6 @@ module Notes
       note_data = hook_data(note)
       note.project.execute_hooks(note_data, :note_hooks)
       note.project.execute_services(note_data, :note_hooks)
-    end
-
-    def contains_emoji_only?(note)
-      note =~ /\A:?[-_+[:alnum:]]*:?\s?\z/
-    end
-
-    def emoji_name(note)
-      note.match(/\A:?([-_+[:alnum:]]*):?\s?/)[1]
     end
   end
 end

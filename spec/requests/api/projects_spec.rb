@@ -65,6 +65,22 @@ describe API::API, api: true  do
         expect(json_response.first.keys).to include('tag_list')
       end
 
+      it 'should include open_issues_count' do
+        get api('/projects', user)
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        expect(json_response.first.keys).to include('open_issues_count')
+      end
+
+      it 'should not include open_issues_count' do
+        project.update_attributes( { issues_enabled: false } )
+
+        get api('/projects', user)
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        expect(json_response.first.keys).not_to include('open_issues_count')
+      end
+
       context 'and using search' do
         it 'should return searched project' do
           get api('/projects', user), { search: project.name }
@@ -85,18 +101,6 @@ describe API::API, api: true  do
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.first['id']).to eq(project3.id)
-        end
-
-        it 'returns projects in the correct order when ci_enabled_first parameter is passed' do
-          [project, project2, project3].each do |project|
-            project.builds_enabled = false
-            project.build_missing_services
-          end
-          project2.builds_enabled = true
-          get api('/projects', user), { ci_enabled_first: 'true' }
-          expect(response.status).to eq(200)
-          expect(json_response).to be_an Array
-          expect(json_response.first['id']).to eq(project2.id)
         end
       end
     end
@@ -130,6 +134,25 @@ describe API::API, api: true  do
             entry['name'] == project.name &&
               entry['owner']['username'] == user.username
           end
+        end
+      end
+    end
+  end
+
+  describe 'GET /projects/starred' do
+    before do
+      admin.starred_projects << project
+      admin.save!
+    end
+
+    it 'should return the starred projects' do
+      get api('/projects/all', admin)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+
+      expect(json_response).to satisfy do |response|
+        response.one? do |entry|
+          entry['name'] == project.name
         end
       end
     end
@@ -389,14 +412,30 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/events' do
     before { project_member2 }
 
-    it 'should return a project events' do
-      get api("/projects/#{project.id}/events", user)
-      expect(response.status).to eq(200)
-      json_event = json_response.first
+    context 'valid request' do
+      before do
+        note = create(:note_on_issue, note: 'What an awesome day!', project: project)
+        EventCreateService.new.leave_note(note, note.author)
+        get api("/projects/#{project.id}/events", user)
+      end
 
-      expect(json_event['action_name']).to eq('joined')
-      expect(json_event['project_id'].to_i).to eq(project.id)
-      expect(json_event['author_username']).to eq(user3.username)
+      it { expect(response.status).to eq(200) }
+
+      context 'joined event' do
+        let(:json_event) { json_response[1] }
+
+        it { expect(json_event['action_name']).to eq('joined') }
+        it { expect(json_event['project_id'].to_i).to eq(project.id) }
+        it { expect(json_event['author_username']).to eq(user3.username) }
+        it { expect(json_event['author']['name']).to eq(user3.name) }
+      end
+
+      context 'comment event' do
+        let(:json_event) { json_response.first }
+
+        it { expect(json_event['action_name']).to eq('commented on') }
+        it { expect(json_event['note']['body']).to eq('What an awesome day!') }
+      end
     end
 
     it 'should return a 404 error if not found' do
@@ -451,7 +490,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'PUT /projects/:id/snippets/:shippet_id' do
+  describe 'PUT /projects/:id/snippets/:snippet_id' do
     it 'should update an existing project snippet' do
       put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
         code: 'updated code'
@@ -724,6 +763,18 @@ describe API::API, api: true  do
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
+      end
+
+      it 'should update visibility_level from public to private' do
+        project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+
+        project_param = { public: false }
+        put api("/projects/#{project3.id}", user), project_param
+        expect(response.status).to eq(200)
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+        expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
       end
 
       it 'should not update name to existing name' do

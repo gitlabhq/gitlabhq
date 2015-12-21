@@ -40,12 +40,12 @@ class @MergeRequest
     this.$('.all-commits').removeClass 'hide'
 
   initTaskList: ->
-    $('.merge-request-details .js-task-list-container').taskList('enable')
-    $(document).on 'tasklist:changed', '.merge-request-details .js-task-list-container', @updateTaskList
+    $('.detail-page-description .js-task-list-container').taskList('enable')
+    $(document).on 'tasklist:changed', '.detail-page-description .js-task-list-container', @updateTaskList
 
   disableTaskList: ->
-    $('.merge-request-details .js-task-list-container').taskList('disable')
-    $(document).off 'tasklist:changed', '.merge-request-details .js-task-list-container'
+    $('.detail-page-description .js-task-list-container').taskList('disable')
+    $(document).off 'tasklist:changed', '.detail-page-description .js-task-list-container'
 
   # TODO (rspeicher): Make the merge request description inline-editable like a
   # note so that we can re-use its form here

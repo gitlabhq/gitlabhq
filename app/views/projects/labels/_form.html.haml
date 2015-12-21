@@ -10,9 +10,9 @@
   .form-group
     = f.label :title, class: 'control-label'
     .col-sm-10
-      = f.text_field :title, class: "form-control js-quick-submit", required: true
+      = f.text_field :title, class: "form-control js-quick-submit", required: true, autofocus: true
   .form-group
-    = f.label :color, "Background Color", class: 'control-label'
+    = f.label :color, "Background color", class: 'control-label'
     .col-sm-10
       .input-group
         .input-group-addon.label-color-preview &nbsp;
@@ -28,6 +28,8 @@
             &nbsp;
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save js-save-button'
+    - if @label.persisted?
+      = f.submit 'Save changes', class: 'btn btn-save js-save-button'
+    - else
+      = f.submit 'Create Label', class: 'btn btn-create js-save-button'
     = link_to "Cancel", namespace_project_labels_path(@project.namespace, @project), class: 'btn btn-cancel'
-

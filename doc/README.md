@@ -7,6 +7,7 @@
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
 - [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
+- [Migrating from SVN](migration/README.md) Convert a SVN repository to Git and GitLab
 - [Permissions](permissions/permissions.md) Learn what each role in a project (guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
@@ -24,8 +25,20 @@
 - [Using Docker Images](ci/docker/using_docker_images.md)
 - [Using Docker Build](ci/docker/using_docker_build.md)
 - [Using Variables](ci/variables/README.md)
+- [Using SSH keys](ci/ssh_keys/README.md)
 - [User permissions](ci/permissions/README.md)
 - [API](ci/api/README.md)
+
+### CI Languages
+
++ [Testing PHP](ci/languages/php.md)
+
+### CI Services
+
++ [Using MySQL](ci/services/mysql.md)
++ [Using PostgreSQL](ci/services/postgres.md)
++ [Using Redis](ci/services/redis.md)
++ [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
 
 ### CI Examples
 
@@ -50,6 +63,7 @@
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
+- [Git LFS configuration](workflow/lfs/lfs_administration.md)
 
 ## Contributor documentation
 

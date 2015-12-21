@@ -15,7 +15,7 @@
 
 require 'spec_helper'
 
-describe DeployKey do
+describe DeployKey, models: true do
   let(:project) { create(:project) }
   let(:deploy_key) { create(:deploy_key, projects: [project]) }
 

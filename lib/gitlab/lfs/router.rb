@@ -34,7 +34,7 @@ module Gitlab
 
         case path_match[1]
         when "info/lfs"
-          lfs.render_download_hypermedia_response(oid)
+          lfs.render_unsupported_deprecated_api
         when "gitlab-lfs"
           lfs.render_download_object_response(oid)
         else
@@ -48,7 +48,9 @@ module Gitlab
 
         # Check for Batch API
         if post_path[0].ends_with?("/info/lfs/objects/batch")
-          lfs.render_lfs_api_auth
+          lfs.render_batch_operation_response
+        elsif post_path[0].ends_with?("/info/lfs/objects")
+          lfs.render_unsupported_deprecated_api
         else
           nil
         end

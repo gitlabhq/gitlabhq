@@ -30,10 +30,6 @@ module MergeRequests
         notification_service.reassigned_merge_request(merge_request, current_user)
       end
 
-      if merge_request.previous_changes.include?('title')
-        create_title_change_note(merge_request, merge_request.previous_changes['title'].first)
-      end
-
       if merge_request.previous_changes.include?('target_branch') ||
           merge_request.previous_changes.include?('source_branch')
         merge_request.mark_as_unchecked

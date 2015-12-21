@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::OAuth::AuthHash do
+describe Gitlab::OAuth::AuthHash, lib: true do
   let(:auth_hash) do
     Gitlab::OAuth::AuthHash.new(
       OmniAuth::AuthHash.new(
@@ -14,7 +14,7 @@ describe Gitlab::OAuth::AuthHash do
   let(:uid_raw) do
     "CN=Onur K\xC3\xBC\xC3\xA7\xC3\xBCk,OU=Test,DC=example,DC=net"
   end
-  let(:email_raw) { "onur.k\xC3\xBC\xC3\xA7\xC3\xBCk@example.net" }
+  let(:email_raw) { "onur.k\xC3\xBC\xC3\xA7\xC3\xBCk_ABC-123@example.net" }
   let(:nickname_raw) { "ok\xC3\xBC\xC3\xA7\xC3\xBCk" }
   let(:first_name_raw) { 'Onur' }
   let(:last_name_raw) { "K\xC3\xBC\xC3\xA7\xC3\xBCk" }
@@ -66,7 +66,7 @@ describe Gitlab::OAuth::AuthHash do
     before { info_hash.delete(:nickname) }
 
     it 'takes the first part of the email as username' do
-      expect(auth_hash.username).to eql 'onur-kucuk'
+      expect(auth_hash.username).to eql 'onur.kucuk_ABC-123'
     end
   end
 

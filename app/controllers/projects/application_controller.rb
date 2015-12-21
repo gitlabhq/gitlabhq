@@ -21,18 +21,14 @@ class Projects::ApplicationController < ApplicationController
     unless @repository.branch_names.include?(@ref)
       redirect_to(
         namespace_project_tree_path(@project.namespace, @project, @ref),
-        notice: "This action is not allowed unless you are on top of a branch"
+        notice: "This action is not allowed unless you are on a branch"
       )
     end
   end
 
   private
 
-  def ci_enabled
+  def builds_enabled
     return render_404 unless @project.builds_enabled?
-  end
-
-  def ci_project
-    @ci_project ||= @project.ensure_gitlab_ci_project
   end
 end

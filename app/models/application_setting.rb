@@ -27,9 +27,15 @@
 #  admin_notification_email     :string(255)
 #  shared_runners_enabled       :boolean          default(TRUE), not null
 #  max_artifacts_size           :integer          default(100), not null
+#  runners_registration_token   :string(255)
 #
 
 class ApplicationSetting < ActiveRecord::Base
+  include TokenAuthenticatable
+  add_authentication_token_field :runners_registration_token
+
+  CACHE_KEY = 'application_setting.last'
+
   serialize :restricted_visibility_levels
   serialize :import_sources
   serialize :restricted_signup_domains, Array
@@ -41,12 +47,12 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates :home_page_url,
     allow_blank: true,
-    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" },
+    url: true,
     if: :home_page_url_column_exist
 
   validates :after_sign_out_path,
     allow_blank: true,
-    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }
+    url: true
 
   validates :admin_notification_email,
     allow_blank: true,
@@ -72,14 +78,20 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  before_save :ensure_runners_registration_token
+
   after_commit do
-    Rails.cache.write('application_setting.last', self)
+    Rails.cache.write(CACHE_KEY, self)
   end
 
   def self.current
-    Rails.cache.fetch('application_setting.last') do
+    Rails.cache.fetch(CACHE_KEY) do
       ApplicationSetting.last
     end
+  end
+
+  def self.expire
+    Rails.cache.delete(CACHE_KEY)
   end
 
   def self.create_from_defaults
@@ -99,7 +111,7 @@ class ApplicationSetting < ActiveRecord::Base
       restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
       import_sources: ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git'],
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
-      max_artifacts_size: Settings.gitlab_ci['max_artifacts_size'],
+      max_artifacts_size: Settings.artifacts['max_size'],
     )
   end
 
@@ -114,13 +126,12 @@ class ApplicationSetting < ActiveRecord::Base
   def restricted_signup_domains_raw=(values)
     self.restricted_signup_domains = []
     self.restricted_signup_domains = values.split(
-        /\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
-        |               # or
-        \s              # any whitespace character
-        |               # or
-        [\r\n]          # any number of newline characters
-        /x)
+      /\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
+      |               # or
+      \s              # any whitespace character
+      |               # or
+      [\r\n]          # any number of newline characters
+      /x)
     self.restricted_signup_domains.reject! { |d| d.empty? }
   end
-
 end

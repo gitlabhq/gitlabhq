@@ -13,7 +13,8 @@ class Projects::NotesController < Projects::ApplicationController
     @notes.each do |note|
       notes_json[:notes] << {
         id: note.id,
-        html: note_to_html(note)
+        html: note_to_html(note),
+        valid: note.valid?
       }
     end
 
@@ -59,13 +60,16 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def award_toggle
-    noteable = note_params[:noteable_type] == "issue" ? Issue : MergeRequest
-    noteable = noteable.find_by!(id: note_params[:noteable_id], project: project)
+    noteable = if note_params[:noteable_type] == "issue"
+                 project.issues.find(note_params[:noteable_id])
+               else
+                 project.merge_requests.find(note_params[:noteable_id])
+               end
 
     data = {
       author: current_user,
       is_award: true,
-      note: note_params[:note]
+      note: note_params[:note].delete(":")
     }
 
     note = noteable.notes.find_by(data)
@@ -128,16 +132,25 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def render_note_json(note)
-    render json: {
-      id: note.id,
-      discussion_id: note.discussion_id,
-      html: note_to_html(note),
-      award: note.is_award,
-      emoji_path: note.is_award ? ::AwardEmoji.path_to_emoji_image(note.note) : "",
-      note: note.note,
-      discussion_html: note_to_discussion_html(note),
-      discussion_with_diff_html: note_to_discussion_with_diff_html(note)
-    }
+    if note.valid?
+      render json: {
+        valid: true,
+        id: note.id,
+        discussion_id: note.discussion_id,
+        html: note_to_html(note),
+        award: note.is_award,
+        emoji_path: note.is_award ? view_context.image_url(::AwardEmoji.path_to_emoji_image(note.note)) : "",
+        note: note.note,
+        discussion_html: note_to_discussion_html(note),
+        discussion_with_diff_html: note_to_discussion_with_diff_html(note)
+      }
+    else
+      render json: {
+        valid: false,
+        award: note.is_award,
+        errors: note.errors
+      }
+    end
   end
 
   def authorize_admin_note!

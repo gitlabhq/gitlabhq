@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::UpdateService do
+describe MergeRequests::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -14,6 +14,17 @@ describe MergeRequests::UpdateService do
   end
 
   describe 'execute' do
+    def find_note(starting_with)
+      @merge_request.notes.find do |note|
+        note && note.note.start_with?(starting_with)
+      end
+    end
+
+    def update_merge_request(opts)
+      @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+      @merge_request.reload
+    end
+
     context 'valid params' do
       let(:opts) do
         {
@@ -31,8 +42,10 @@ describe MergeRequests::UpdateService do
       before do
         allow(service).to receive(:execute_hooks)
 
-        @merge_request = service.execute(merge_request)
-        @merge_request.reload
+        perform_enqueued_jobs do
+          @merge_request = service.execute(merge_request)
+          @merge_request.reload
+        end
       end
 
       it { expect(@merge_request).to be_valid }
@@ -54,12 +67,6 @@ describe MergeRequests::UpdateService do
         recipients = deliveries.last(2).map(&:to).flatten
         expect(recipients).to include(user2.email, user3.email)
         expect(email.subject).to include(merge_request.title)
-      end
-
-      def find_note(starting_with)
-        @merge_request.notes.find do |note|
-          note && note.note.start_with?(starting_with)
-        end
       end
 
       it 'should create system note about merge_request reassign' do
@@ -90,5 +97,39 @@ describe MergeRequests::UpdateService do
         expect(note.note).to eq 'Target branch changed from `master` to `target`'
       end
     end
+
+    context 'when MergeRequest has tasks' do
+      before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
+
+      it { expect(@merge_request.tasks?).to eq(true) }
+
+      context 'when tasks are marked as completed' do
+        before { update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" }) }
+
+        it 'creates system note about task status change' do
+          note1 = find_note('Marked the task **Task 1** as completed')
+          note2 = find_note('Marked the task **Task 2** as completed')
+
+          expect(note1).not_to be_nil
+          expect(note2).not_to be_nil
+        end
+      end
+
+      context 'when tasks are marked as incomplete' do
+        before do
+          update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" })
+          update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" })
+        end
+
+        it 'creates system note about task status change' do
+          note1 = find_note('Marked the task **Task 1** as incomplete')
+          note2 = find_note('Marked the task **Task 2** as incomplete')
+
+          expect(note1).not_to be_nil
+          expect(note2).not_to be_nil
+        end
+      end
+    end
+
   end
 end

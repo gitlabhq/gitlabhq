@@ -1,17 +1,16 @@
-- page_title "#{@build.name} (#{@build.id})", "Builds"
+- page_title "#{@build.name} (##{@build.id})", "Builds"
 = render "header_title"
 
 .build-page
-  .gray-content-block
+  .gray-content-block.top-block
     Build ##{@build.id} for commit
-    %strong.monospace
-      = link_to @build.commit.short_sha, ci_status_path(@build.commit)
+    %strong.monospace= link_to @build.commit.short_sha, ci_status_path(@build.commit)
     from
     = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
 
   #up-build-trace
   - if @commit.matrix_for_ref?(@build.ref)
-    %ul.center-top-menu.build-top-menu
+    %ul.center-top-menu.no-top.no-bottom
       - @commit.latest_builds_for_ref(@build.ref).each do |build|
         %li{class: ('active' if build == @build) }
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
@@ -22,7 +21,6 @@
               - else
                 = build.id
 
-
       - if @build.retried?
         %li.active
           %a
@@ -31,7 +29,7 @@
             %i.fa.fa-warning
             This build was retried.
 
-  .gray-content-block.second-block
+  .gray-content-block.middle-block
     .build-head
       .clearfix
         = ci_status_with_icon(@build.status)
@@ -58,7 +56,7 @@
 
           %br
           Go to
-          = link_to namespace_project_runners_path(@build.gl_project.namespace, @build.gl_project) do
+          = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
             Runners page
 
   .row.prepend-top-default
@@ -115,7 +113,7 @@
         %p
           %span.attr-name Runner:
           - if @build.runner && current_user && current_user.admin
-            = link_to "##{@build.runner.id}", ci_admin_runner_path(@build.runner.id)
+            = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
           - elsif @build.runner
             \##{@build.runner.id}
 
@@ -140,7 +138,7 @@
         %h4.title
           Commit
           .pull-right
-            %small 
+            %small
               = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
         %p
           %span.attr-name Branch:
@@ -162,7 +160,7 @@
 
       - if @builds.present?
         .build-widget
-          %h4.title #{pluralize(@builds.count(:id), "other build")} for 
+          %h4.title #{pluralize(@builds.count(:id), "other build")} for
           = succeed ":" do
             = link_to @build.commit.short_sha, ci_status_path(@build.commit), class: "monospace"
           %table.table.builds

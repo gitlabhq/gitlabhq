@@ -1,6 +1,5 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form js-requires-input' } do |f|
-  .merge-request-form-info
-    = render 'shared/issuable/form', f: f, issuable: @merge_request
+  = render 'shared/issuable/form', f: f, issuable: @merge_request
 
 :javascript
   $('.assign-to-me-link').on('click', function(e){

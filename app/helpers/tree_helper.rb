@@ -46,12 +46,26 @@ module TreeHelper
     File.join(*args)
   end
 
+  def on_top_of_branch?(project = @project, ref = @ref)
+    project.repository.branch_names.include?(ref)
+  end
+
   def allowed_tree_edit?(project = nil, ref = nil)
     project ||= @project
     ref ||= @ref
-    return false unless project.repository.branch_names.include?(ref)
+    return false unless on_top_of_branch?(project, ref)
 
-    ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(ref)
+    can?(current_user, :push_code, project)
+  end
+
+  def tree_edit_branch(project = @project, ref = @ref)
+    if allowed_tree_edit?(project, ref)
+      if can_push_branch?(project, ref)
+        ref
+      else
+        project.repository.next_patch_branch
+      end
+    end
   end
 
   def tree_breadcrumbs(tree, max_links = 2)
@@ -65,7 +79,7 @@ module TreeHelper
         part_path = File.join(part_path, part) unless part_path.empty?
         part_path = part if part_path.empty?
 
-        next unless parts.last(2).include?(part) if parts.count > max_links
+        next if parts.count > max_links && !parts.last(2).include?(part)
         yield(part, tree_join(@ref, part_path))
       end
     end

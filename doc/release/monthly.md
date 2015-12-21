@@ -159,7 +159,7 @@ Please do not raise issues directly in this issue but link to issues that might 
 The decision to create a patch release or not is with the release manager who is assigned to this issue.
 The release manager will comment here about the plans for patch releases.
 
-Assign the issue to the release manager and at mention all members of gitlab core team. If there are any known bugs in the release add them immediately.
+Assign the issue to the release manager and at mention all members of GitLab core team. If there are any known bugs in the release add them immediately.
 
 ## Tweet about RC1
 
@@ -176,7 +176,7 @@ Tweet about the RC release:
 1. Also check the CI changelog
 1. Add a proposed tweet text to the blog post WIP MR description.
 1. Create a WIP MR for the blog post
-1. Make sure merge request title starts with `WIP` so it can not be accidently merged until ready.
+1. Make sure merge request title starts with `WIP` so it can not be accidentally merged until ready.
 1. Ask Dmitriy (or a team member with OS X) to add screenshots to the WIP MR.
 1. Decide with core team who will be the MVP user.
 1. Create WIP MR for adding MVP to MVP page on website

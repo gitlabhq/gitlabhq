@@ -1,10 +1,7 @@
 class StuckCiBuildsWorker
   include Sidekiq::Worker
-  include Sidetiq::Schedulable
 
   BUILD_STUCK_TIMEOUT = 1.day
-
-  recurrence { daily }
 
   def perform
     Rails.logger.info 'Cleaning stuck builds'
@@ -14,5 +11,8 @@ class StuckCiBuildsWorker
       Rails.logger.debug "Dropping stuck #{build.status} build #{build.id} for runner #{build.runner_id}"
       build.drop
     end
+
+    # Update builds that failed to drop
+    builds.update_all(status: 'failed')
   end
 end

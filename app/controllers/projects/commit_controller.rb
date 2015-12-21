@@ -31,13 +31,12 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def builds
-    @ci_project = @project.gitlab_ci_project
   end
 
   def cancel_builds
     ci_commit.builds.running_or_pending.each(&:cancel)
 
-    redirect_to builds_namespace_project_commit_path(project.namespace, project, commit.sha)
+    redirect_back_or_default default: builds_namespace_project_commit_path(project.namespace, project, commit.sha)
   end
 
   def retry_builds
@@ -47,7 +46,7 @@ class Projects::CommitController < Projects::ApplicationController
       end
     end
 
-    redirect_to builds_namespace_project_commit_path(project.namespace, project, commit.sha)
+    redirect_back_or_default default: builds_namespace_project_commit_path(project.namespace, project, commit.sha)
   end
 
   def branches
@@ -67,10 +66,15 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def define_show_vars
-    @diffs = commit.diffs
+    if params[:w].to_i == 1
+      @diffs = commit.diffs({ ignore_whitespace_change: true })
+    else
+      @diffs = commit.diffs
+    end
+
     @notes_count = commit.notes.count
-    
-    @builds = ci_commit.builds if ci_commit
+
+    @statuses = ci_commit.statuses if ci_commit
   end
 
   def authorize_manage_builds!

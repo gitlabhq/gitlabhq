@@ -20,7 +20,7 @@
 
 require 'spec_helper'
 
-describe Issue do
+describe Issue, models: true do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
   end

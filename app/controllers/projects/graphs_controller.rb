@@ -5,7 +5,7 @@ class Projects::GraphsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :assign_ref_vars
   before_action :authorize_download_code!
-  before_action :ci_enabled, only: :ci
+  before_action :builds_enabled, only: :ci
 
   def show
     respond_to do |format|
@@ -25,13 +25,31 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def ci
-    ci_project = @project.gitlab_ci_project
-
     @charts = {}
-    @charts[:week] = Ci::Charts::WeekChart.new(ci_project)
-    @charts[:month] = Ci::Charts::MonthChart.new(ci_project)
-    @charts[:year] = Ci::Charts::YearChart.new(ci_project)
-    @charts[:build_times] = Ci::Charts::BuildTime.new(ci_project)
+    @charts[:week] = Ci::Charts::WeekChart.new(project)
+    @charts[:month] = Ci::Charts::MonthChart.new(project)
+    @charts[:year] = Ci::Charts::YearChart.new(project)
+    @charts[:build_times] = Ci::Charts::BuildTime.new(project)
+  end
+
+  def languages
+    @languages = Linguist::Repository.new(@repository.rugged, @repository.rugged.head.target_id).languages
+    total = @languages.map(&:last).sum
+
+    @languages = @languages.map do |language|
+      name, share = language
+      color = Digest::SHA256.hexdigest(name)[0...6]
+      {
+        value: (share.to_f * 100 / total).round(2),
+        label: name,
+        color: "##{color}",
+        highlight: "##{color}"
+      }
+    end
+
+    @languages.sort! do |x, y|
+      y[:value] <=> x[:value]
+    end
   end
 
   private

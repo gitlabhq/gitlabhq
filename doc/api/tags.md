@@ -29,7 +29,7 @@ Parameters:
       ]
     },
     "release": {
-      "tag": "1.0.0",
+      "tag_name": "1.0.0",
       "description": "Amazing release. Wow"
     },
     "name": "v1.0.0",
@@ -70,7 +70,7 @@ Parameters:
     ]
   },
   "release": {
-    "tag": "1.0.0",
+    "tag_name": "1.0.0",
     "description": "Amazing release. Wow"
   },
   "name": "v1.0.0",
@@ -84,23 +84,48 @@ It returns 200 if the operation succeed. In case of an error,
 405 with an explaining error message is returned.
 
 
-## New release
+## Create a new release
 
-Add release notes to the existing git tag
+Add release notes to the existing git tag. It returns 201 if the release is
+created successfully. If the tag does not exist, 404 is returned. If there
+already exists a release for the given tag, 409 is returned.
 
 ```
-PUT /projects/:id/repository/:tag/release
+POST /projects/:id/repository/tags/:tag_name/release
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
-- `tag` (required) - The name of a tag
+- `tag_name` (required) - The name of a tag
 - `description` (required) - Release notes with markdown support
 
 ```json
 {
-  "tag": "1.0.0",
+  "tag_name": "1.0.0",
+  "description": "Amazing release. Wow"
+}
+```
+
+## Update a release
+
+Updates the release notes of a given release. It returns 200 if the release is
+successfully updated. If the tag or the release does not exist, it returns 404
+with a proper error message.
+
+```
+PUT /projects/:id/repository/tags/:tag_name/release
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `tag_name` (required) - The name of a tag
+- `description` (required) - Release notes with markdown support
+
+```json
+{
+  "tag_name": "1.0.0",
   "description": "Amazing release. Wow"
 }
 ```

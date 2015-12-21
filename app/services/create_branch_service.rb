@@ -13,8 +13,7 @@ class CreateBranchService < BaseService
       return error('Branch already exists')
     end
 
-    repository.add_branch(branch_name, ref)
-    new_branch = repository.find_branch(branch_name)
+    new_branch = repository.add_branch(current_user, branch_name, ref)
 
     if new_branch
       push_data = build_push_data(project, current_user, new_branch)
@@ -27,6 +26,8 @@ class CreateBranchService < BaseService
     else
       error('Invalid reference name')
     end
+  rescue GitHooksService::PreReceiveError
+    error('Branch creation was rejected by Git hook')
   end
 
   def success(branch)

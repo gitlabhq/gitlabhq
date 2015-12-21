@@ -83,7 +83,7 @@ class Dispatcher
       when 'projects:project_members:index'
         new ProjectMembers()
         new UsersSelect()
-      when 'groups:new', 'groups:edit', 'admin:groups:edit'
+      when 'groups:new', 'groups:edit', 'admin:groups:edit', 'admin:groups:new'
         new GroupAvatar()
       when 'projects:tree:show'
         new TreeView()

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::SQL::Union do
+describe Gitlab::SQL::Union, lib: true do
   describe '#to_sql' do
     it 'returns a String joining relations together using a UNION' do
       rel1  = User.where(email: 'alice@example.com')

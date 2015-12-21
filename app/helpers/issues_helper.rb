@@ -44,25 +44,28 @@ module IssuesHelper
   end
 
   def bulk_update_milestone_options
-    options_for_select([['None (backlog)', -1]]) +
-        options_from_collection_for_select(project_active_milestones, 'id',
-                                           'title', params[:milestone_id])
+    milestones = project_active_milestones.to_a
+    milestones.unshift(Milestone::None)
+
+    options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
   end
 
   def milestone_options(object)
-    options_from_collection_for_select(object.project.milestones.active,
-                                       'id', 'title', object.milestone_id)
+    milestones = object.project.milestones.active.to_a
+    milestones.unshift(Milestone::None)
+
+    options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)
   end
 
-  def issue_box_class(item)
+  def status_box_class(item)
     if item.respond_to?(:expired?) && item.expired?
-      'issue-box-expired'
+      'status-box-expired'
     elsif item.respond_to?(:merged?) && item.merged?
-      'issue-box-merged'
+      'status-box-merged'
     elsif item.closed?
-      'issue-box-closed'
+      'status-box-closed'
     else
-      'issue-box-open'
+      'status-box-open'
     end
   end
 
@@ -84,17 +87,23 @@ module IssuesHelper
   end
 
   def merge_requests_sentence(merge_requests)
-    merge_requests.map(&:to_reference).to_sentence(last_word_connector: ', or ')
+    # Sorting based on the `!123` or `group/project!123` reference will sort
+    # local merge requests first.
+    merge_requests.map do |merge_request|
+      merge_request.to_reference(@project)
+    end.sort.to_sentence(last_word_connector: ', or ')
   end
 
   def url_to_emoji(name)
     emoji_path = ::AwardEmoji.path_to_emoji_image(name)
     url_to_image(emoji_path)
+  rescue StandardError
+    ""
   end
 
   def emoji_author_list(notes, current_user)
     list = notes.map do |note|
-             note.author == current_user ? "me" : note.author.username
+             note.author == current_user ? "me" : note.author.name
            end
 
     list.join(", ")
@@ -112,6 +121,6 @@ module IssuesHelper
     end
   end
 
-  # Required for Gitlab::Markdown::IssueReferenceFilter
+  # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
 end

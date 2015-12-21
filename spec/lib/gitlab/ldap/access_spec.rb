@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Access do
+describe Gitlab::LDAP::Access, lib: true do
   let(:access) { Gitlab::LDAP::Access.new user }
   let(:user) { create(:omniauth_user) }
 
@@ -13,6 +13,11 @@ describe Gitlab::LDAP::Access do
       end
 
       it { is_expected.to be_falsey }
+      
+      it 'should block user in GitLab' do
+        access.allowed?
+        expect(user).to be_blocked
+      end
     end
 
     context 'when the user is found' do

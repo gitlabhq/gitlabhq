@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GlobalMilestone do
+describe GlobalMilestone, models: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:group) { create(:group) }

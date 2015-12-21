@@ -1,6 +1,10 @@
 module SharedGroup
   include Spinach::DSL
 
+  step 'current user is developer of group "Owned"' do
+    is_member_of(current_user.name, "Owned", Gitlab::Access::DEVELOPER)
+  end
+
   step '"John Doe" is owner of group "Owned"' do
     is_member_of("John Doe", "Owned", Gitlab::Access::OWNER)
   end
@@ -40,5 +44,9 @@ module SharedGroup
     create(:closed_issue_event, project: project)
     project.team << [user, :master]
     @project_count += 1
+  end
+
+  def owned_group
+    @owned_group ||= Group.find_by(name: "Owned")
   end
 end

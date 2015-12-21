@@ -29,7 +29,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 Also you can choose what should be backed up by adding environment variable SKIP. Available options: db,
-uploads (attachments), repositories, builds(CI build output logs), artifacts (CI build artifacts).
+uploads (attachments), repositories, builds(CI build output logs), artifacts (CI build artifacts), lfs (LFS objects).
 Use a comma to specify several options at the same time.
 
 ```
@@ -274,9 +274,6 @@ sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
 # Start GitLab
 sudo gitlab-ctl start
 
-# Create satellites
-sudo gitlab-rake gitlab:satellites:create
-
 # Check GitLab
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
@@ -360,8 +357,8 @@ If you are using backup restore procedures you might encounter the following war
 
 ```
 psql:/var/opt/gitlab/backups/db/database.sql:22: ERROR:  must be owner of extension plpgsql
-psql:/var/opt/gitlab/backups/db/database.sql:2931: WARNING:  no privileges could be revoked for "public" (two occurences)
-psql:/var/opt/gitlab/backups/db/database.sql:2933: WARNING:  no privileges were granted for "public" (two occurences)
+psql:/var/opt/gitlab/backups/db/database.sql:2931: WARNING:  no privileges could be revoked for "public" (two occurrences)
+psql:/var/opt/gitlab/backups/db/database.sql:2933: WARNING:  no privileges were granted for "public" (two occurrences)
 
 ```
 

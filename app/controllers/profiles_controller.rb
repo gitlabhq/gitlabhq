@@ -70,6 +70,7 @@ class ProfilesController < Profiles::ApplicationController
       :email,
       :hide_no_password,
       :hide_no_ssh_key,
+      :hide_project_limit,
       :linkedin,
       :location,
       :name,

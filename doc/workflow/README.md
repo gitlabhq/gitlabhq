@@ -17,3 +17,6 @@
 - [Milestones](milestones.md)
 - [Merge Requests](merge_requests.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)
+- [Merge When Build Succeeds](merge_when_build_succeeds.md)
+- [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
+- [Importing from SVN, GitHub, BitBucket, etc](importing/README.md)

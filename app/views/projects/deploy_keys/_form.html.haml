@@ -1,5 +1,5 @@
 %div
-  = form_for [@project.namespace.becomes(Namespace), @project, @key], url: namespace_project_deploy_keys_path, html: { class: 'deploy-key-form form-horizontal' } do |f|
+  = form_for [@project.namespace.becomes(Namespace), @project, @key], url: namespace_project_deploy_keys_path, html: { class: 'deploy-key-form form-horizontal js-requires-input' } do |f|
     -if @key.errors.any?
       .alert.alert-danger
         %ul
@@ -8,16 +8,15 @@
 
     .form-group
       = f.label :title, class: "control-label"
-      .col-sm-10= f.text_field :title, class: 'form-control'
+      .col-sm-10= f.text_field :title, class: 'form-control', autofocus: true, required: true
     .form-group
       = f.label :key, class: "control-label"
       .col-sm-10
         %p.light
           Paste a machine public key here. Read more about how to generate it
           = link_to "here", help_page_path("ssh", "README")
-        = f.text_area :key, class: "form-control thin_area", rows: 5
+        = f.text_area :key, class: "form-control thin_area", rows: 5, required: true
 
     .form-actions
-      = f.submit 'Create', class: "btn-create btn"
+      = f.submit 'Create Deploy Key', class: "btn-create btn"
       = link_to "Cancel", namespace_project_deploy_keys_path(@project.namespace, @project), class: "btn btn-cancel"
-

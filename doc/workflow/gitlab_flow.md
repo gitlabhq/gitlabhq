@@ -244,13 +244,12 @@ Developing software happen in small messy steps and it is OK to have your histor
 You can use tools to view the network graphs of commits and understand the messy history that created your code.
 If you rebase code the history is incorrect, and there is no way for tools to remedy this because they can't deal with changing commit identifiers.
 
-## Voting on merge requests
+## Award emojis on issues and merge requests
 
-![Voting slider in GitLab](voting_slider.png)
+![Emoji bar in GitLab](award_emoji.png)
 
-It is common to voice approval or disapproval by using +1 or -1 emoticons.
-In GitLab the +1 and -1 are aggregated and shown at the top of the merge request.
-As a rule of thumb anything that doesn't have two times more +1's than -1's is suspect and should not be merged yet.
+It is common to voice approval or disapproval by using +1 or -1. In GitLab you
+can use emojis to give a virtual high five on issues and merge requests.
 
 ## Pushing and removing branches
 

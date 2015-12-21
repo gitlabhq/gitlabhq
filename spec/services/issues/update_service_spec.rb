@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::UpdateService do
+describe Issues::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -15,6 +15,17 @@ describe Issues::UpdateService do
   end
 
   describe 'execute' do
+    def find_note(starting_with)
+      @issue.notes.find do |note|
+        note && note.note.start_with?(starting_with)
+      end
+    end
+
+    def update_issue(opts)
+      @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+      @issue.reload
+    end
+
     context "valid params" do
       before do
         opts = {
@@ -25,7 +36,10 @@ describe Issues::UpdateService do
           label_ids: [label.id]
         }
 
-        @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        perform_enqueued_jobs do
+          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        end
+
         @issue.reload
       end
 
@@ -42,12 +56,6 @@ describe Issues::UpdateService do
         recipients = deliveries.last(2).map(&:to).flatten
         expect(recipients).to include(user2.email, user3.email)
         expect(email.subject).to include(issue.title)
-      end
-
-      def find_note(starting_with)
-        @issue.notes.find do |note|
-          note && note.note.start_with?(starting_with)
-        end
       end
 
       it 'should create system note about issue reassign' do
@@ -71,5 +79,71 @@ describe Issues::UpdateService do
         expect(note.note).to eq 'Title changed from **Old title** to **New title**'
       end
     end
+
+    context 'when Issue has tasks' do
+      before { update_issue({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
+
+      it { expect(@issue.tasks?).to eq(true) }
+
+      context 'when tasks are marked as completed' do
+        before { update_issue({ description: "- [x] Task 1\n- [X] Task 2" }) }
+
+        it 'creates system note about task status change' do
+          note1 = find_note('Marked the task **Task 1** as completed')
+          note2 = find_note('Marked the task **Task 2** as completed')
+
+          expect(note1).not_to be_nil
+          expect(note2).not_to be_nil
+        end
+      end
+
+      context 'when tasks are marked as incomplete' do
+        before do
+          update_issue({ description: "- [x] Task 1\n- [X] Task 2" })
+          update_issue({ description: "- [ ] Task 1\n- [ ] Task 2" })
+        end
+
+        it 'creates system note about task status change' do
+          note1 = find_note('Marked the task **Task 1** as incomplete')
+          note2 = find_note('Marked the task **Task 2** as incomplete')
+
+          expect(note1).not_to be_nil
+          expect(note2).not_to be_nil
+        end
+      end
+
+      context 'when tasks position has been modified' do
+        before do
+          update_issue({ description: "- [x] Task 1\n- [X] Task 2" })
+          update_issue({ description: "- [x] Task 1\n- [ ] Task 3\n- [ ] Task 2" })
+        end
+
+        it 'does not create a system note' do
+          note = find_note('Marked the task **Task 2** as incomplete')
+
+          expect(note).to be_nil
+        end
+      end
+
+      context 'when a Task list with a completed item is totally replaced' do
+        before do
+          update_issue({ description: "- [ ] Task 1\n- [X] Task 2" })
+          update_issue({ description: "- [ ] One\n- [ ] Two\n- [ ] Three" })
+        end
+
+        it 'does not create a system note referencing the position the old item' do
+          note = find_note('Marked the task **Two** as incomplete')
+
+          expect(note).to be_nil
+        end
+
+        it 'should not generate a new note at all' do
+          expect do
+            update_issue({ description: "- [ ] One\n- [ ] Two\n- [ ] Three" })
+          end.not_to change { Note.count }
+        end
+      end
+    end
+
   end
 end

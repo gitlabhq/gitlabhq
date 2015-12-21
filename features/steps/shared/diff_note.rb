@@ -87,6 +87,17 @@ module SharedDiffNote
     end
   end
 
+  step 'I write a diff comment like ":smile:"' do
+    page.within(diff_file_selector) do
+      click_diff_line(sample_commit.line_code)
+
+      page.within("form[rel$='#{sample_commit.line_code}']") do
+        fill_in 'note[note]', with: ':smile:'
+        click_button('Add Comment')
+      end
+    end
+  end
+
   step 'I submit the diff comment' do
     page.within(diff_file_selector) do
       click_button("Add Comment")
@@ -155,7 +166,7 @@ module SharedDiffNote
   end
 
   step 'I should see add a diff comment button' do
-    expect(page).to have_css('.js-add-diff-note-button', visible: true)
+    expect(page).to have_css('.js-add-diff-note-button')
   end
 
   step 'I should see an empty diff comment form' do
@@ -194,6 +205,12 @@ module SharedDiffNote
       expect(page).to have_css('.js-md-preview', visible: true, count: 2)
       expect(page).to have_content('Should fix it')
       expect(page).to have_content('DRY this up')
+    end
+  end
+
+  step 'I should see a diff comment with an emoji image' do
+    page.within("#{diff_file_selector} .note") do
+      expect(page).to have_xpath("//img[@alt=':smile:']")
     end
   end
 

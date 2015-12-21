@@ -25,10 +25,9 @@
 
 require 'spec_helper'
 
-describe Ci::Build do
-  let(:project) { FactoryGirl.create :ci_project }
-  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
-  let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+describe Ci::Build, models: true do
+  let(:project) { FactoryGirl.create :empty_project }
+  let(:commit) { FactoryGirl.create :ci_commit, project: project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
   it { is_expected.to validate_presence_of :ref }
@@ -112,7 +111,7 @@ describe Ci::Build do
       let(:token) { 'my_secret_token' }
 
       before do
-        build.project.update_attributes(token: token)
+        build.project.update_attributes(runners_token: token)
         build.update_attributes(trace: token)
       end
 
@@ -120,11 +119,12 @@ describe Ci::Build do
     end
   end
 
-  describe :timeout do
-    subject { build.timeout }
-
-    it { is_expected.to eq(commit.project.timeout) }
-  end
+  # TODO: build timeout
+  # describe :timeout do
+  #   subject { build.timeout }
+  #
+  #   it { is_expected.to eq(commit.project.timeout) }
+  # end
 
   describe :options do
     let(:options) do
@@ -140,11 +140,12 @@ describe Ci::Build do
     it { is_expected.to eq(options) }
   end
 
-  describe :allow_git_fetch do
-    subject { build.allow_git_fetch }
-
-    it { is_expected.to eq(project.allow_git_fetch) }
-  end
+  # TODO: allow_git_fetch
+  # describe :allow_git_fetch do
+  #   subject { build.allow_git_fetch }
+  #
+  #   it { is_expected.to eq(project.allow_git_fetch) }
+  # end
 
   describe :project do
     subject { build.project }
@@ -162,12 +163,6 @@ describe Ci::Build do
     subject { build.project_name }
 
     it { is_expected.to eq(project.name) }
-  end
-
-  describe :repo_url do
-    subject { build.repo_url }
-
-    it { is_expected.to eq(project.repo_url_with_auth) }
   end
 
   describe :extract_coverage do
@@ -263,40 +258,6 @@ describe Ci::Build do
           it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
         end
       end
-    end
-  end
-
-  describe :project_recipients do
-    let(:pusher_email) { 'pusher@gitlab.test' }
-    let(:user) { User.new(notification_email: pusher_email) }
-    subject { build.project_recipients }
-
-    before do
-      build.update_attributes(user: user)
-    end
-
-    it 'should return pusher_email as only recipient when no additional recipients are given' do
-      project.update_attributes(email_add_pusher: true,
-                                email_recipients: '')
-      is_expected.to eq([pusher_email])
-    end
-
-    it 'should return pusher_email and additional recipients' do
-      project.update_attributes(email_add_pusher: true,
-                                email_recipients: 'rec1 rec2')
-      is_expected.to eq(['rec1', 'rec2', pusher_email])
-    end
-
-    it 'should return recipients' do
-      project.update_attributes(email_add_pusher: false,
-                                email_recipients: 'rec1 rec2')
-      is_expected.to eq(['rec1', 'rec2'])
-    end
-
-    it 'should return unique recipients only' do
-      project.update_attributes(email_add_pusher: true,
-                                email_recipients: "rec1 rec1 #{pusher_email}")
-      is_expected.to eq(['rec1', pusher_email])
     end
   end
 
@@ -414,5 +375,19 @@ describe Ci::Build do
       build.update_attributes(artifacts_file: gif)
       is_expected.to_not be_nil
     end
+  end
+
+  describe :repo_url do
+    let(:build) { FactoryGirl.create :ci_build }
+    let(:project) { build.project }
+
+    subject { build.repo_url }
+
+    it { is_expected.to be_a(String) }
+    it { is_expected.to end_with(".git") }
+    it { is_expected.to start_with(project.web_url[0..6]) }
+    it { is_expected.to include(build.token) }
+    it { is_expected.to include('gitlab-ci-token') }
+    it { is_expected.to include(project.web_url[7..-1]) }
   end
 end

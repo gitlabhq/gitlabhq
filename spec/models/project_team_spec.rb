@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProjectTeam do
+describe ProjectTeam, models: true do
   let(:master) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }

@@ -3,7 +3,9 @@
 
 .gray-content-block.top-block
   .pull-right
-    = link_to "Add SSH Key", new_profile_key_path, class: "btn btn-new"
+    = link_to new_profile_key_path, class: "btn btn-new" do
+      = icon('plus')
+      Add SSH Key
   .oneline
     Before you can add an SSH key you need to
     = link_to "generate it.", help_page_path("ssh", "README")

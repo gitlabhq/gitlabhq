@@ -1,11 +1,13 @@
 class @AwardsHandler
-  constructor: (@post_emoji_url, @noteable_type, @noteable_id) ->
+  constructor: (@post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
 
   addAward: (emoji) ->
+    emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
       @addAwardToEmojiBar(emoji)
     
   addAwardToEmojiBar: (emoji, custom_path = '') ->
+    emoji = @normilizeEmojiName(emoji)
     if @exist(emoji)
       if @isActive(emoji)
         @decrementCounter(emoji)
@@ -73,14 +75,14 @@ class @AwardsHandler
 
   getImage: (emoji, custom_path) ->
     if custom_path
-      $(".awards-menu li").first().html().replace(/emoji\/.*\.png/, custom_path)
+      $("<img>").attr({src: custom_path, width: 20, height: 20}).wrap("<div>").parent().html()
     else
       $("li[data-emoji='" + emoji + "']").html()
 
 
   postEmoji: (emoji, callback) ->
     $.post @post_emoji_url, { note: {
-      note: emoji
+      note: ":" + emoji + ":"
       noteable_type: @noteable_type
       noteable_id: @noteable_id
     }},(data) ->
@@ -89,3 +91,11 @@ class @AwardsHandler
 
   findEmojiIcon: (emoji) ->
     $(".icon[data-emoji='" + emoji + "']")
+
+  scrollToAwards: ->
+    $('body, html').animate({
+      scrollTop: $('.awards').offset().top - 80
+    }, 200)
+
+  normilizeEmojiName: (emoji) ->
+    @aliases[emoji] || emoji

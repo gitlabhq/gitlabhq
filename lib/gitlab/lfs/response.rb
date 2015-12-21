@@ -10,23 +10,9 @@ module Gitlab
         @request = request
       end
 
-      # Return a response for a download request
-      # Can be a response to:
-      # Request from a user to get the file
-      # Request from gitlab-workhorse which file to serve to the user
-      def render_download_hypermedia_response(oid)
-        render_response_to_download do
-          if check_download_accept_header?
-            render_lfs_download_hypermedia(oid)
-          else
-            render_not_found
-          end
-        end
-      end
-
       def render_download_object_response(oid)
         render_response_to_download do
-          if check_download_sendfile_header? && check_download_accept_header?
+          if check_download_sendfile_header?
             render_lfs_sendfile(oid)
           else
             render_not_found
@@ -34,20 +20,15 @@ module Gitlab
         end
       end
 
-      def render_lfs_api_auth
-        render_response_to_push do
-          request_body = JSON.parse(@request.body.read)
-          return render_not_found if request_body.empty? || request_body['objects'].empty?
-
-          response = build_response(request_body['objects'])
-          [
-            200,
-            {
-              "Content-Type" => "application/json; charset=utf-8",
-              "Cache-Control" => "private",
-            },
-            [JSON.dump(response)]
-          ]
+      def render_batch_operation_response
+        request_body = JSON.parse(@request.body.read)
+        case request_body["operation"]
+        when "download"
+          render_batch_download(request_body)
+        when "upload"
+          render_batch_upload(request_body)
+        else
+          render_not_found
         end
       end
 
@@ -71,13 +52,24 @@ module Gitlab
         end
       end
 
+      def render_unsupported_deprecated_api
+        [
+          501,
+          { "Content-Type" => "application/json; charset=utf-8" },
+          [JSON.dump({
+            'message' => 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.',
+            'documentation_url' => "#{Gitlab.config.gitlab.url}/help",
+          })]
+        ]
+      end
+
       private
 
       def render_not_enabled
         [
           501,
           {
-            "Content-Type" => "application/vnd.git-lfs+json",
+            "Content-Type" => "application/json; charset=utf-8",
           },
           [JSON.dump({
             'message' => 'Git LFS is not enabled on this GitLab server, contact your admin.',
@@ -142,18 +134,35 @@ module Gitlab
         end
       end
 
-      def render_lfs_download_hypermedia(oid)
-        return render_not_found unless oid.present?
+      def render_batch_upload(body)
+        return render_not_found if body.empty? || body['objects'].nil?
 
-        lfs_object = object_for_download(oid)
-        if lfs_object
+        render_response_to_push do
+          response = build_upload_batch_response(body['objects'])
           [
             200,
-            { "Content-Type" => "application/vnd.git-lfs+json" },
-            [JSON.dump(download_hypermedia(oid))]
+            {
+              "Content-Type" => "application/json; charset=utf-8",
+              "Cache-Control" => "private",
+            },
+            [JSON.dump(response)]
           ]
-        else
-          render_not_found
+        end
+      end
+
+      def render_batch_download(body)
+        return render_not_found if body.empty? || body['objects'].nil?
+
+        render_response_to_download do
+          response = build_download_batch_response(body['objects'])
+          [
+            200,
+            {
+              "Content-Type" => "application/json; charset=utf-8",
+              "Cache-Control" => "private",
+            },
+            [JSON.dump(response)]
+          ]
         end
       end
 
@@ -199,10 +208,6 @@ module Gitlab
         @env['HTTP_X_SENDFILE_TYPE'].to_s == "X-Sendfile"
       end
 
-      def check_download_accept_header?
-        @env['HTTP_ACCEPT'].to_s == "application/vnd.git-lfs+json; charset=utf-8"
-      end
-
       def user_can_fetch?
         # Check user access against the project they used to initiate the pull
         @user.can?(:download_code, @origin_project)
@@ -215,7 +220,7 @@ module Gitlab
 
       def storage_project(project)
         if project.forked?
-          project.forked_from_project
+          storage_project(project.forked_from_project)
         else
           project
         end
@@ -255,7 +260,7 @@ module Gitlab
       end
 
       def link_to_project(object)
-        if object && !object.projects.exists?(@project)
+        if object && !object.projects.exists?(@project.id)
           object.projects << @project
           object.save
         end
@@ -266,42 +271,56 @@ module Gitlab
         @project.lfs_objects.where(oid: objects_oids).pluck(:oid).to_set
       end
 
-      def build_response(objects)
+      def build_upload_batch_response(objects)
         selected_objects = select_existing_objects(objects)
 
-        upload_hypermedia(objects, selected_objects)
+        upload_hypermedia_links(objects, selected_objects)
       end
 
-      def download_hypermedia(oid)
-        {
-         '_links' => {
-           'download' =>
-             {
-              'href' => "#{@origin_project.http_url_to_repo}/gitlab-lfs/objects/#{oid}",
-              'header' => {
-                'Accept' => "application/vnd.git-lfs+json; charset=utf-8",
-                'Authorization' => @env['HTTP_AUTHORIZATION']
-              }.compact
-            }
-          }
-        }
+      def build_download_batch_response(objects)
+        selected_objects = select_existing_objects(objects)
+
+        download_hypermedia_links(objects, selected_objects)
       end
 
-      def upload_hypermedia(all_objects, existing_objects)
+      def download_hypermedia_links(all_objects, existing_objects)
         all_objects.each do |object|
-          object['_links'] = hypermedia_links(object) unless existing_objects.include?(object['oid'])
+          if existing_objects.include?(object['oid'])
+            object['actions'] = {
+              'download' => {
+                'href' => "#{@origin_project.http_url_to_repo}/gitlab-lfs/objects/#{object['oid']}",
+                'header' => {
+                  'Authorization' => @env['HTTP_AUTHORIZATION']
+                }.compact
+              }
+            }
+          else
+            object['error'] = {
+              'code' => 404,
+              'message' => "Object does not exist on the server or you don't have permissions to access it",
+            }
+          end
         end
 
         { 'objects' => all_objects }
       end
 
-      def hypermedia_links(object)
-        {
-          "upload" => {
-            'href' => "#{@origin_project.http_url_to_repo}/gitlab-lfs/objects/#{object['oid']}/#{object['size']}",
-            'header' => { 'Authorization' => @env['HTTP_AUTHORIZATION'] }
-          }.compact
-        }
+      def upload_hypermedia_links(all_objects, existing_objects)
+        all_objects.each do |object|
+          # generate actions only for non-existing objects
+          next if existing_objects.include?(object['oid'])
+
+          object['actions'] = {
+            'upload' => {
+              'href' => "#{@origin_project.http_url_to_repo}/gitlab-lfs/objects/#{object['oid']}/#{object['size']}",
+              'header' => {
+                'Authorization' => @env['HTTP_AUTHORIZATION']
+              }.compact
+            }
+          }
+        end
+
+        { 'objects' => all_objects }
       end
     end
   end

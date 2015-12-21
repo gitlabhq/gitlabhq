@@ -114,7 +114,7 @@ describe AutocompleteController do
         get(:users, project_id: project.id)
       end
 
-      it { expect(response.status).to eq(302) }
+      it { expect(response.status).to eq(404) }
     end
 
     describe 'GET #users with unknown project' do
@@ -122,7 +122,7 @@ describe AutocompleteController do
         get(:users, project_id: 'unknown')
       end
 
-      it { expect(response.status).to eq(302) }
+      it { expect(response.status).to eq(404) }
     end
 
     describe 'GET #users with inaccessible group' do
@@ -131,7 +131,7 @@ describe AutocompleteController do
         get(:users, group_id: user.namespace.id)
       end
 
-      it { expect(response.status).to eq(302) }
+      it { expect(response.status).to eq(404) }
     end
 
     describe 'GET #users with no project' do
@@ -139,7 +139,8 @@ describe AutocompleteController do
         get(:users)
       end
 
-      it { expect(response.status).to eq(302) }
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 0 }
     end
   end
 end

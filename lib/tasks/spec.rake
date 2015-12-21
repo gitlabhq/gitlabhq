@@ -19,6 +19,33 @@ namespace :spec do
     run_commands(cmds)
   end
 
+  desc 'GitLab | Rspec | Run model specs'
+  task :models do
+    cmds = [
+      %W(rake gitlab:setup),
+      %W(rspec spec --tag @models)
+    ]
+    run_commands(cmds)
+  end
+
+  desc 'GitLab | Rspec | Run service specs'
+  task :services do
+    cmds = [
+      %W(rake gitlab:setup),
+      %W(rspec spec --tag @services)
+    ]
+    run_commands(cmds)
+  end
+
+  desc 'GitLab | Rspec | Run lib specs'
+  task :lib do
+    cmds = [
+      %W(rake gitlab:setup),
+      %W(rspec spec --tag @lib)
+    ]
+    run_commands(cmds)
+  end
+
   desc 'GitLab | Rspec | Run benchmark specs'
   task :benchmark do
     cmds = [
@@ -32,7 +59,7 @@ namespace :spec do
   task :other do
     cmds = [
       %W(rake gitlab:setup),
-      %W(rspec spec --tag ~@api --tag ~@feature --tag ~@benchmark)
+      %W(rspec spec --tag ~@api --tag ~@feature --tag ~@models --tag ~@lib --tag ~@services --tag ~@benchmark)
     ]
     run_commands(cmds)
   end

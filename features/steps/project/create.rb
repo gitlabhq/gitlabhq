@@ -1,6 +1,7 @@
 class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
+  include SharedUser
 
   step 'fill project form with valid data' do
     fill_in 'project_path', with: 'Empty'

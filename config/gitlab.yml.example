@@ -76,7 +76,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com.
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -124,9 +124,15 @@ production: &base
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
 
+  ## Build Artifacts
+  artifacts:
+    enabled: true
+    # The location where build artifacts are stored (default: shared/artifacts).
+    # path: shared/artifacts
+
   ## Git LFS
   lfs:
-    enabled: false
+    enabled: true
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 

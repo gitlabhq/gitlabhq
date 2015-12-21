@@ -1,50 +1,61 @@
-- ci_commit = merge_request.ci_commit
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
     %span.merge-request-title-text
       = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
-    .merge-request-labels
-      - merge_request.labels.each do |label|
-        = link_to_label(label, project: merge_request.project)
-    .pull-right.light
-      - if ci_commit
-        = render_ci_status(ci_commit)
+    %ul.controls.light
       - if merge_request.merged?
-        %span
-          %i.fa.fa-check
+        %li
           MERGED
       - elsif merge_request.closed?
-        %span
-          %i.fa.fa-ban
+        %li
+          = icon('ban')
           CLOSED
-      - note_count = merge_request.mr_and_commit_notes.user.count
+
+      - if merge_request.ci_commit
+        %li
+          = render_ci_status(merge_request.ci_commit)
+
+      - if merge_request.open? && merge_request.broken?
+        %li
+          = link_to merge_request_path(merge_request), class: "has_tooltip", title: "Cannot be merged automatically", data: {container: 'body'} do
+            = icon('exclamation-triangle')
+
       - if merge_request.assignee
-        &nbsp;
-        = link_to_member(merge_request.source_project, merge_request.assignee, name: false)
+        %li
+          = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
+
+      - note_count = merge_request.mr_and_commit_notes.user.count
       - if note_count > 0
-        &nbsp;
-        %span
-          %i.fa.fa-comments
-          = note_count
+        %li
+          = link_to merge_request_path(merge_request) + "#notes" do
+            = icon('comments')
+            = note_count
       - else
-        &nbsp;
-        %span.merge-request-no-comments
-          %i.fa.fa-comments
-          = 0
+        %li
+          = link_to merge_request_path(merge_request) + "#notes", class: "merge-request-no-comments" do
+            = icon('comments')
+            = note_count
 
   .merge-request-info
-    = "##{merge_request.iid} opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')} by #{link_to_member(@project, merge_request.author, avatar: false)}".html_safe
-    - if merge_request.milestone_id?
-      &nbsp;
-      %span
-        %i.fa.fa-clock-o
-        = merge_request.milestone.title
+    \##{merge_request.iid} &middot;
+    opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
+    by #{link_to_member(@project, merge_request.author, avatar: false)}
     - if merge_request.target_project.default_branch != merge_request.target_branch
       &nbsp;
-      %span
-        %i.fa.fa-code-fork
+      = link_to namespace_project_commits_path(merge_request.project.namespace, merge_request.project, merge_request.target_branch) do
+        = icon('code-fork')
         = merge_request.target_branch
+    - if merge_request.milestone
+      &nbsp;
+      = link_to namespace_project_merge_requests_path(merge_request.project.namespace, merge_request.project, milestone_title: merge_request.milestone.title) do
+        = icon('clock-o')
+        = merge_request.milestone.title
+    - if merge_request.labels.any?
+      &nbsp;
+      - merge_request.labels.each do |label|
+        = link_to_label(label, project: merge_request.project)
     - if merge_request.tasks?
+      &nbsp;
       %span.task-status
         = merge_request.task_status
 

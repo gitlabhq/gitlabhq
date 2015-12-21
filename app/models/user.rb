@@ -56,6 +56,7 @@
 #  project_view               :integer          default(0)
 #  consumed_timestep          :integer
 #  layout                     :integer          default(0)
+#  hide_project_limit         :boolean          default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -68,8 +69,10 @@ class User < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Referable
   include Sortable
-  include TokenAuthenticatable
   include CaseSensitivity
+  include TokenAuthenticatable
+
+  add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
@@ -133,7 +136,7 @@ class User < ActiveRecord::Base
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
-  has_many :ci_builds,                dependent: :nullify, class_name: 'Ci::Build'
+  has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
 
 
   #
@@ -148,11 +151,9 @@ class User < ActiveRecord::Base
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
+    namespace: true,
     presence: true,
-    uniqueness: { case_sensitive: false },
-    exclusion: { in: Gitlab::Blacklist.path },
-    format: { with: Gitlab::Regex.namespace_regex,
-              message: Gitlab::Regex.namespace_regex_message }
+    uniqueness: { case_sensitive: false }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
@@ -219,9 +220,9 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       if login = conditions.delete(:login)
-        where(conditions).where(["lower(username) = :value OR lower(email) = :value", { value: login.downcase }]).first
+        where(conditions).find_by("lower(username) = :value OR lower(email) = :value", value: login.downcase)
       else
-        where(conditions).first
+        find_by(conditions)
       end
     end
 
@@ -284,7 +285,7 @@ class User < ActiveRecord::Base
     end
 
     def by_username_or_id(name_or_id)
-      where('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i).first
+      find_by('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i)
     end
 
     def build_user(attrs = {})
@@ -637,11 +638,11 @@ class User < ActiveRecord::Base
     email.start_with?('temp-email-for-oauth')
   end
 
-  def avatar_url(size = nil)
+  def avatar_url(size = nil, scale = 2)
     if avatar.present?
       [gitlab_config.url, avatar.url].join
     else
-      GravatarService.new.execute(email, size)
+      GravatarService.new.execute(email, size, scale)
     end
   end
 
@@ -690,7 +691,7 @@ class User < ActiveRecord::Base
   end
 
   def starred?(project)
-    starred_projects.exists?(project)
+    starred_projects.exists?(project.id)
   end
 
   def toggle_star(project)
@@ -770,10 +771,9 @@ class User < ActiveRecord::Base
 
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
-      runner_ids = Ci::RunnerProject.joins(:project).
-        where("ci_projects.gitlab_id IN (#{ci_projects_union.to_sql})").
+      runner_ids = Ci::RunnerProject.
+        where("ci_runner_projects.gl_project_id IN (#{ci_projects_union.to_sql})").
         select(:runner_id)
-
       Ci::Runner.specific.where(id: runner_ids)
     end
   end
@@ -793,5 +793,10 @@ class User < ActiveRecord::Base
 
     Gitlab::SQL::Union.new([personal_projects.select(:id), groups.select(:id),
                             other.select(:id)])
+  end
+
+  # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
   end
 end

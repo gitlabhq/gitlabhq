@@ -58,10 +58,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    @participants = @issue.participants(current_user)
     @note = @project.notes.new(noteable: @issue)
     @notes = @issue.notes.nonawards.with_associations.fresh
     @noteable = @issue
+    @merge_requests = @issue.referenced_merge_requests
 
     respond_with(@issue)
   end
@@ -158,12 +158,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issue_params
-    permitted = params.require(:issue).permit(
+    params.require(:issue).permit(
       :title, :assignee_id, :position, :description,
       :milestone_id, :state_event, :task_num, label_ids: []
     )
-    params[:issue][:title].strip! if params[:issue][:title]
-    permitted
   end
 
   def bulk_update_params

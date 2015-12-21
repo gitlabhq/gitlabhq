@@ -65,20 +65,20 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   step 'I see current user as the first user' do
     expect(page).to have_selector('.user-result', visible: true, count: 4)
     users = page.all('.user-name')
-    expect(users[0].text).to eq 'Any'
+    expect(users[0].text).to eq 'Any Assignee'
     expect(users[1].text).to eq 'Unassigned'
     expect(users[2].text).to eq current_user.name
   end
 
   step 'I submit new issue "500 error on profile"' do
     fill_in "issue_title", with: "500 error on profile"
-    click_button "Submit new issue"
+    click_button "Submit issue"
   end
 
   step 'I submit new issue "500 error on profile" with label \'bug\'' do
     fill_in "issue_title", with: "500 error on profile"
     select 'bug', from: "Labels"
-    click_button "Submit new issue"
+    click_button "Submit issue"
   end
 
   step 'I click link "500 error on profile"' do
@@ -86,7 +86,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see label \'bug\' with issue' do
-    page.within '.issue-show-labels' do
+    page.within '.issuable-show-labels' do
       expect(page).to have_content 'bug'
     end
   end
@@ -284,6 +284,16 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     end
   end
 
+  step 'another user adds a comment with text "Yay!" to issue "Release 0.4"' do
+    issue = Issue.find_by!(title: 'Release 0.4')
+    create(:note_on_issue, noteable: issue,  note: 'Yay!')
+  end
+
+  step 'I should see a new comment with text "Yay!"' do
+    page.within '#notes' do
+      expect(page).to have_content('Yay!')
+    end
+  end
   def filter_issue(text)
     fill_in 'issue_search', with: text
   end

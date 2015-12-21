@@ -25,13 +25,13 @@
 
 require 'spec_helper'
 
-describe MergeRequest do
+describe MergeRequest, models: true do
   subject { create(:merge_request) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:target_project).with_foreign_key(:target_project_id).class_name('Project') }
     it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
-
+    it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to have_one(:merge_request_diff).dependent(:destroy) }
   end
 
@@ -48,12 +48,32 @@ describe MergeRequest do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }
+
+    context "Validation of merge user with Merge When Build succeeds" do
+      it "allows user to be nil when the feature is disabled" do
+        expect(subject).to be_valid
+      end
+
+      it "is invalid without merge user" do
+        subject.merge_when_build_succeeds = true
+        expect(subject).not_to be_valid
+      end
+
+      it "is valid with merge user" do
+        subject.merge_when_build_succeeds = true
+        subject.merge_user = build(:user)
+
+        expect(subject).to be_valid
+      end
+    end
   end
 
   describe 'respond to' do
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
+    it { is_expected.to respond_to(:merge_params) }
+    it { is_expected.to respond_to(:merge_when_build_succeeds) }
   end
 
   describe '#to_reference' do
@@ -172,6 +192,50 @@ describe MergeRequest do
     end
   end
 
+  describe '#can_remove_source_branch?' do
+    let(:user) { create(:user) }
+    let(:user2) { create(:user) }
+
+    before do
+      subject.source_project.team << [user, :master]
+
+      subject.source_branch = "feature"
+      subject.target_branch = "master"
+      subject.save!
+    end
+
+    it "can't be removed when its a protected branch" do
+      allow(subject.source_project).to receive(:protected_branch?).and_return(true)
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
+    end
+
+    it "cant remove a root ref" do
+      subject.source_branch = "master"
+      subject.target_branch = "feature"
+
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
+    end
+
+    it "is unable to remove the source branch for a project the user cannot push to" do
+      expect(subject.can_remove_source_branch?(user2)).to be_falsey
+    end
+
+    it "is can be removed in all other cases" do
+      expect(subject.can_remove_source_branch?(user)).to be_truthy
+    end
+  end
+
+  describe "#reset_merge_when_build_succeeds" do
+    let(:merge_if_green) { create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user) }
+
+    it "sets the item to false" do
+      merge_if_green.reset_merge_when_build_succeeds
+      merge_if_green.reload
+
+      expect(merge_if_green.merge_when_build_succeeds).to be_falsey
+    end
+  end
+
   describe "#hook_attrs" do
     it "has all the required keys" do
       attrs = subject.hook_attrs
@@ -192,5 +256,30 @@ describe MergeRequest do
 
   it_behaves_like 'a Taskable' do
     subject { create :merge_request, :simple }
+  end
+
+  describe '#ci_commit' do
+    describe 'when the source project exists' do
+      it 'returns the latest commit' do
+        commit    = double(:commit, id: '123abc')
+        ci_commit = double(:ci_commit)
+
+        allow(subject).to receive(:last_commit).and_return(commit)
+
+        expect(subject.source_project).to receive(:ci_commit).
+          with('123abc').
+          and_return(ci_commit)
+
+        expect(subject.ci_commit).to eq(ci_commit)
+      end
+    end
+
+    describe 'when the source project does not exist' do
+      it 'returns nil' do
+        allow(subject).to receive(:source_project).and_return(nil)
+
+        expect(subject.ci_commit).to be_nil
+      end
+    end
   end
 end

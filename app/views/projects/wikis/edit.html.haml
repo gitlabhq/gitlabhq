@@ -1,16 +1,16 @@
-- page_title "Edit", @page.title, "Wiki"
+- page_title "Edit", @page.title.capitalize, "Wiki"
 = render "header_title"
 
 = render 'nav'
-.pull-right
-  = render 'main_links'
-%h3.page-title
-  Editing -
-  %span.light #{@page.title}
-%hr
-= render 'form'
+.gray-content-block
+  .pull-right
+    = render 'main_links'
 
-.pull-right
-  - if @page.persisted? && can?(current_user, :admin_wiki, @project)
-    = link_to namespace_project_wiki_path(@project.namespace, @project, @page), data: { confirm: "Are you sure you want to delete this page?"}, method: :delete, class: "btn btn-sm btn-remove" do
-      Delete this page
+  %h3.page-title.oneline
+    %span.light Edit Page
+    - if @page.persisted?
+      = link_to @page.title, namespace_project_wiki_path(@project.namespace, @project, @page)
+    - else
+      = @page.title
+
+= render 'form'

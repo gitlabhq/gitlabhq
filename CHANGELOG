@@ -1,13 +1,94 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
+  - API support for starred projects for authorized user (Zeger-Jan van de Weg)
+  - Add open_issues_count to project API (Stan Hu)
+  - Expand character set of usernames created by Omniauth (Corey Hinshaw)
+  - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
+  - Provide better diagnostic message upon project creation errors (Stan Hu)
+  - Bump devise to 3.5.3 to fix reset token expiring after account creation (Stan Hu)
+  - Bump gollum-lib to 4.1.0 (Stan Hu)
+  - Fix broken group avatar upload under "New group" (Stan Hu)
+  - Update project repositorize size and commit count during import:repos task (Stan Hu)
+  - Fix API setting of 'public' attribute to false will make a project private (Stan Hu)
+  - Handle and report SSL errors in Web hook test (Stan Hu)
+  - Bump Redis requirement to 2.8 for Sidekiq 4 (Stan Hu)
+  - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
+  - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
+  - Fix 500 error when update group member permission
+  - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
+  - Recognize issue/MR/snippet/commit links as references
+  - Add ignore whitespace change option to commit view
+  - Fire update hook from GitLab
+  - Style warning about mentioning many people in a comment
+  - Fix: sort milestones by due date once again (Greg Smethells)
+  - Migrate all CI::Services and CI::WebHooks to Services and WebHooks
+  - Don't show project fork event as "imported"
+  - Add API endpoint to fetch merge request commits list
+  - Don't create CI status for refs that doesn't have .gitlab-ci.yml, even if the builds are enabled
+  - Expose events API with comment information and author info
+  - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
+  - Run custom Git hooks when branch is created or deleted.
+  - Fix bug when simultaneously accepting multiple MRs results in MRs that are of "merged" status, but not merged to the target branch
+  - Add languages page to graphs
+  - Block LDAP user when they are no longer found in the LDAP server
+  - Improve wording on project visibility levels (Zeger-Jan van de Weg)
+  - Fix editing notes on a merge request diff
+  - Automatically select default clone protocol based on user preferences (Eirik Lygre)
+  - Make Network page as sub tab of Commits
+  - Add copy-to-clipboard button for Snippets
+  - Add indication to merge request list item that MR cannot be merged automatically
+  - Default target branch to patch-n when editing file in protected branch
+  - Add Builds tab to merge request detail page
+  - Allow milestones, issues and MRs to be created from dashboard and group indexes
+  - Use new style for wiki
+  - Use new style for milestone detail page
+  - Fix sidebar tooltips when collapsed
+  - Prevent possible XSS attack with award-emoji
+  - Upgraded Sidekiq to 4.x
+  - Accept COPYING,COPYING.lesser, and licence as license file (Zeger-Jan van de Weg)
+  - Fix emoji aliases problem
+  - Fix award-emojis Flash alert's width
+  - Fix deleting notes on a merge request diff
+  - Display referenced merge request statuses in the issue description (Greg Smethells)
+  - Implement new sidebar for issue and merge request pages
+  - Emoji picker improvements
+  - Suppress warning about missing `.gitlab-ci.yml` if builds are disabled
+  - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
+  - Persist runners registration token in database
+  - Fix online editor should not remove newlines at the end of the file
+
+v 8.2.3
+  - Fix application settings cache not expiring after changes (Stan Hu)
+  - Fix Error 500s when creating global milestones with Unicode characters (Stan Hu)
+  - Update documentation for "Guest" permissions
+  - Properly convert Emoji-only comments into Award Emojis
+  - Enable devise paranoid mode to prevent user enumeration attack
+  - Webhook payload has an added, modified and removed properties for each commit
+  - Fix 500 error when creating a merge request that removes a submodule
+
+v 8.2.2
+  - Fix 404 in redirection after removing a project (Stan Hu)
+  - Ensure cached application settings are refreshed at startup (Stan Hu)
+  - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
+  - Fix: Raw private snippets access workflow
+  - Prevent "413 Request entity too large" errors when pushing large files with LFS
+  - Fix: As an admin, cannot add oneself as a member to a group/project
+  - Fix invalid links within projects dashboard header
+  - Make current user the first user in assignee dropdown in issues detail page (Stan Hu)
+  - Fix: duplicate email notifications on issue comments
+
+v 8.2.1
+  - Forcefully update builds that didn't want to update with state machine
+  - Fix: saving GitLabCiService as Admin Template
 
 v 8.2.0
   - Improved performance of finding projects and groups in various places
   - Improved performance of rendering user profile pages and Atom feeds
+  - Expose build artifacts path as config option
   - Fix grouping of contributors by email in graph.
   - Improved performance of finding issues with/without labels
-  - Remove CSS property preventing hard tabs from rendering in Chromium 45 (Stan Hu)
   - Fix Drone CI service template not saving properly (Stan Hu)
   - Fix avatars not showing in Atom feeds and project issues when Gravatar disabled (Stan Hu)
   - Added a GitLab specific profiling tool called "Sherlock" (see GitLab CE merge request #1749)
@@ -46,7 +127,6 @@ v 8.2.0
   - Add email notification to former assignee upon unassignment (Adam Lieskovský)
   - New design for project graphs page
   - Remove deprecated dumped yaml file generated from previous job definitions
-  - Fix incoming email config defaults
   - Show specific runners from projects where user is master or owner
   - MR target branch is now visible on a list view when it is different from project's default one
   - Improve Continuous Integration graphs page
@@ -204,7 +284,6 @@ v 8.0.2
   - Allow AWS S3 Server-Side Encryption with Amazon S3-Managed Keys for backups (Paul Beattie)
 
 v 8.0.1
-  - Remove git refs used internally by GitLab from network graph (Stan Hu)
   - Improve CI migration procedure and documentation
 
 v 8.0.0

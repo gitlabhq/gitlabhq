@@ -1,12 +1,16 @@
 class @Flash
   constructor: (message, type)->
-    flash = $(".flash-container")
-    flash.html("")
+    @flash = $(".flash-container")
+    @flash.html("")
 
-    $('<div/>',
+    innerDiv = $('<div/>',
       class: "flash-#{type}",
       text: message
-    ).appendTo(".flash-container")
+    )
+    innerDiv.appendTo(".flash-container")
 
-    flash.click -> $(@).fadeOut()
-    flash.show()
+    @flash.click -> $(@).fadeOut()
+    @flash.show()
+
+  pinTo: (selector) ->
+    @flash.detach().appendTo(selector)

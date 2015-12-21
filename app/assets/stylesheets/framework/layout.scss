@@ -2,9 +2,13 @@ html {
   overflow-y: scroll;
 
   &.touch .tooltip { display: none !important; }
+}
 
-  body {
-    padding-top: $header-height;
+body {
+  background-color: #EAEBEC !important;
+
+  &.navless {
+    background-color: white !important;
   }
 }
 
@@ -18,7 +22,8 @@ html {
 }
 
 .navless-container {
-  margin-top: 30px;
+  margin-top: $header-height;
+  padding-top: $gl-padding * 2;
 }
 
 .container-limited {

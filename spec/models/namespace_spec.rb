@@ -16,7 +16,7 @@
 
 require 'spec_helper'
 
-describe Namespace do
+describe Namespace, models: true do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_many :projects }

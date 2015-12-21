@@ -1,0 +1,33 @@
+.detail-page-header {
+  margin: -$gl-padding;
+  padding: 7px $gl-padding;
+  margin-bottom: 0px;
+  border-bottom: 1px solid $border-color;
+  color: #5c5d5e;
+  font-size: 16px;
+  line-height: 42px;
+
+  .author {
+    color: #5c5d5e;
+  }
+
+  .identifier {
+    color: #5c5d5e;
+  }
+}
+
+.detail-page-description {
+  .title {
+    margin: 0;
+    font-size: 23px;
+    color: #313236;
+  }
+
+  .description {
+    margin-top: 6px;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

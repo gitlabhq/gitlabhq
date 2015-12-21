@@ -5,7 +5,7 @@ FactoryGirl.define do
     name 'default'
     status 'success'
     description 'commit status'
-    commit factory: :ci_commit
+    commit factory: :ci_commit_with_one_job
 
     factory :generic_commit_status, class: GenericCommitStatus do
       name 'generic'

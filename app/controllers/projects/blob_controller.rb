@@ -162,12 +162,20 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def sanitized_new_branch_name
-    @new_branch ||= sanitize(strip_tags(params[:new_branch]))
+    sanitize(strip_tags(params[:new_branch]))
   end
 
   def editor_variables
     @current_branch = @ref
-    @new_branch = params[:new_branch].present? ? sanitized_new_branch_name : @ref
+
+    @new_branch =
+      if params[:new_branch].present?
+        sanitized_new_branch_name
+      elsif ::Gitlab::GitAccess.new(current_user, @project).can_push_to_branch?(@ref)
+        @ref
+      else
+        @repository.next_patch_branch
+      end
 
     @file_path =
       if action_name.to_s == 'create'

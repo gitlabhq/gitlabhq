@@ -13,14 +13,14 @@ class NotificationService
   # even if user disabled notifications
   def new_key(key)
     if key.user
-      mailer.new_ssh_key_email(key.id)
+      mailer.new_ssh_key_email(key.id).deliver_later
     end
   end
 
   # Always notify user about email added to profile
   def new_email(email)
     if email.user
-      mailer.new_email_email(email.id)
+      mailer.new_email_email(email.id).deliver_later
     end
   end
 
@@ -79,17 +79,27 @@ class NotificationService
   end
 
   def merge_mr(merge_request, current_user)
-    close_resource_email(merge_request, merge_request.target_project, current_user, 'merged_merge_request_email')
+    close_resource_email(
+      merge_request,
+      merge_request.target_project,
+      current_user,
+      'merged_merge_request_email'
+    )
   end
 
   def reopen_mr(merge_request, current_user)
-    reopen_resource_email(merge_request, merge_request.target_project, current_user, 'merge_request_status_email', 'reopened')
+    reopen_resource_email(
+      merge_request,
+      merge_request.target_project,
+      current_user, 'merge_request_status_email',
+      'reopened'
+    )
   end
 
   # Notify new user with email after creation
   def new_user(user, token = nil)
     # Don't email omniauth created users
-    mailer.new_user_email(user.id, token) unless user.identities.any?
+    mailer.new_user_email(user.id, token).deliver_later unless user.identities.any?
   end
 
   # Notify users on new note in system
@@ -135,53 +145,63 @@ class NotificationService
     recipients = reject_unsubscribed_users(recipients, note.noteable)
 
     recipients.delete(note.author)
+    recipients = recipients.uniq
 
     # build notify method like 'note_commit_email'
     notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
-
     recipients.each do |recipient|
-      mailer.send(notify_method, recipient.id, note.id)
+      mailer.send(notify_method, recipient.id, note.id).deliver_later
     end
   end
 
   def invite_project_member(project_member, token)
-    mailer.project_member_invited_email(project_member.id, token)
+    mailer.project_member_invited_email(project_member.id, token).deliver_later
   end
 
   def accept_project_invite(project_member)
-    mailer.project_invite_accepted_email(project_member.id)
+    mailer.project_invite_accepted_email(project_member.id).deliver_later
   end
 
   def decline_project_invite(project_member)
-    mailer.project_invite_declined_email(project_member.project.id, project_member.invite_email, project_member.access_level, project_member.created_by_id)
+    mailer.project_invite_declined_email(
+      project_member.project.id,
+      project_member.invite_email,
+      project_member.access_level,
+      project_member.created_by_id
+    ).deliver_later
   end
 
   def new_project_member(project_member)
-    mailer.project_access_granted_email(project_member.id)
+    mailer.project_access_granted_email(project_member.id).deliver_later
   end
 
   def update_project_member(project_member)
-    mailer.project_access_granted_email(project_member.id)
+    mailer.project_access_granted_email(project_member.id).deliver_later
   end
 
   def invite_group_member(group_member, token)
-    mailer.group_member_invited_email(group_member.id, token)
+    mailer.group_member_invited_email(group_member.id, token).deliver_later
   end
 
   def accept_group_invite(group_member)
-    mailer.group_invite_accepted_email(group_member.id)
+    mailer.group_invite_accepted_email(group_member.id).deliver_later
   end
 
   def decline_group_invite(group_member)
-    mailer.group_invite_declined_email(group_member.group.id, group_member.invite_email, group_member.access_level, group_member.created_by_id)
+    mailer.group_invite_declined_email(
+      group_member.group.id,
+      group_member.invite_email,
+      group_member.access_level,
+      group_member.created_by_id
+    ).deliver_later
   end
 
   def new_group_member(group_member)
-    mailer.group_access_granted_email(group_member.id)
+    mailer.group_access_granted_email(group_member.id).deliver_later
   end
 
   def update_group_member(group_member)
-    mailer.group_access_granted_email(group_member.id)
+    mailer.group_access_granted_email(group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)
@@ -189,7 +209,11 @@ class NotificationService
     recipients = reject_muted_users(recipients, project)
 
     recipients.each do |recipient|
-      mailer.project_was_moved_email(project.id, recipient.id, old_path_with_namespace)
+      mailer.project_was_moved_email(
+        project.id,
+        recipient.id,
+        old_path_with_namespace
+      ).deliver_later
     end
   end
 
@@ -339,7 +363,7 @@ class NotificationService
     recipients = build_recipients(target, project, target.author)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id)
+      mailer.send(method, recipient.id, target.id).deliver_later
     end
   end
 
@@ -347,7 +371,7 @@ class NotificationService
     recipients = build_recipients(target, project, current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, current_user.id)
+      mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
     end
   end
 
@@ -358,7 +382,13 @@ class NotificationService
     recipients = build_recipients(target, project, current_user, [previous_assignee])
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, previous_assignee_id, current_user.id)
+      mailer.send(
+        method,
+        recipient.id,
+        target.id,
+        previous_assignee_id,
+        current_user.id
+      ).deliver_later
     end
   end
 
@@ -366,7 +396,7 @@ class NotificationService
     recipients = build_recipients(target, project, current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, status, current_user.id)
+      mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
     end
   end
 
@@ -388,7 +418,7 @@ class NotificationService
   end
 
   def mailer
-    Notify.delay
+    Notify
   end
 
   def previous_record(object, attribute)

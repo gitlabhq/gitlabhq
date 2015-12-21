@@ -1,50 +1,50 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: 'home'}) do
-    = link_to dashboard_projects_path, title: 'Projects', data: {placement: 'right'} do
+    = link_to dashboard_projects_path, title: 'Projects' do
       = icon('home fw')
       %span
         Projects
   = nav_link(path: 'dashboard#activity') do
-    = link_to activity_dashboard_path, class: 'shortcuts-activity', title: 'Activity', data: {placement: 'right'} do
+    = link_to activity_dashboard_path, class: 'shortcuts-activity', title: 'Activity' do
       = icon('dashboard fw')
       %span
         Activity
   = nav_link(controller: :groups) do
-    = link_to dashboard_groups_path, title: 'Groups', data: {placement: 'right'} do
+    = link_to dashboard_groups_path, title: 'Groups' do
       = icon('group fw')
       %span
         Groups
   = nav_link(controller: :milestones) do
-    = link_to dashboard_milestones_path, title: 'Milestones', data: {placement: 'right'} do
+    = link_to dashboard_milestones_path, title: 'Milestones' do
       = icon('clock-o fw')
       %span
         Milestones
   = nav_link(path: 'dashboard#issues') do
-    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues', data: {placement: 'right'} do
+    = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'shortcuts-issues' do
       = icon('exclamation-circle fw')
       %span
         Issues
         %span.count= current_user.assigned_issues.opened.count
     = nav_link(path: 'dashboard#merge_requests') do
-      = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests', data: {placement: 'right'} do
+      = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests' do
         = icon('tasks fw')
         %span
           Merge Requests
           %span.count= current_user.assigned_merge_requests.opened.count
   = nav_link(controller: :snippets) do
-    = link_to dashboard_snippets_path, title: 'Your snippets', data: {placement: 'right'} do
+    = link_to dashboard_snippets_path, title: 'Snippets' do
       = icon('clipboard fw')
       %span
         Snippets
   = nav_link(controller: :help) do
-    = link_to help_path, title: 'Help', data: {placement: 'right'} do
+    = link_to help_path, title: 'Help' do
       = icon('question-circle fw')
       %span
         Help
 
   %li.separate-item
   = nav_link(controller: :profile) do
-    = link_to profile_path, title: 'Profile settings', data: {placement: 'bottom'} do
+    = link_to profile_path, title: 'Profile Settings', data: {placement: 'bottom'} do
       = icon('user fw')
       %span
         Profile Settings

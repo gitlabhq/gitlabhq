@@ -84,6 +84,7 @@ module Ci
         new_build.options = build.options
         new_build.commands = build.commands
         new_build.tag_list = build.tag_list
+        new_build.gl_project_id = build.gl_project_id
         new_build.commit_id = build.commit_id
         new_build.name = build.name
         new_build.allow_failure = build.allow_failure
@@ -96,19 +97,16 @@ module Ci
     end
 
     state_machine :status, initial: :pending do
+      after_transition pending: :running do |build, transition|
+        build.execute_hooks
+      end
+
       after_transition any => [:success, :failed, :canceled] do |build, transition|
-        project = build.project
+        return unless build.project
 
-        if project.web_hooks?
-          Ci::WebHookService.new.build_end(build)
-        end
-
+        build.update_coverage
         build.commit.create_next_builds(build)
-        project.execute_services(build)
-
-        if project.coverage_enabled?
-          build.update_coverage
-        end
+        build.execute_hooks
       end
     end
 
@@ -117,7 +115,7 @@ module Ci
     end
 
     def retryable?
-      commands.present?
+      project.builds_enabled? && commands.present?
     end
 
     def retried?
@@ -130,7 +128,7 @@ module Ci
     end
 
     def timeout
-      project.timeout
+      project.build_timeout
     end
 
     def variables
@@ -149,26 +147,21 @@ module Ci
       project.name
     end
 
-    def project_recipients
-      recipients = project.email_recipients.split(' ')
-
-      if project.email_add_pusher? && user.present? && user.notification_email.present?
-        recipients << user.notification_email
-      end
-
-      recipients.uniq
-    end
-
     def repo_url
-      project.repo_url_with_auth
+      auth = "gitlab-ci-token:#{token}@"
+      project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
+        prefix + auth
+      end
     end
 
     def allow_git_fetch
-      project.allow_git_fetch
+      project.build_allow_git_fetch
     end
 
     def update_coverage
-      coverage = extract_coverage(trace, project.coverage_regex)
+      coverage_regex = project.build_coverage_regex
+      return unless coverage_regex
+      coverage = extract_coverage(trace, coverage_regex)
 
       if coverage.is_a? Numeric
         update_attributes(coverage: coverage)
@@ -201,7 +194,7 @@ module Ci
     def trace
       trace = raw_trace
       if project && trace.present?
-        trace.gsub(project.token, 'xxxxxx')
+        trace.gsub(project.runners_token, 'xxxxxx')
       else
         trace
       end
@@ -228,29 +221,29 @@ module Ci
     end
 
     def token
-      project.token
+      project.runners_token
     end
 
     def valid_token? token
-      project.valid_token? token
+      project.valid_runners_token? token
     end
 
     def target_url
       Gitlab::Application.routes.url_helpers.
-        namespace_project_build_url(gl_project.namespace, gl_project, self)
+        namespace_project_build_url(project.namespace, project, self)
     end
 
     def cancel_url
       if active?
         Gitlab::Application.routes.url_helpers.
-          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self)
+          cancel_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
     def retry_url
       if retryable?
         Gitlab::Application.routes.url_helpers.
-          retry_namespace_project_build_path(gl_project.namespace, gl_project, self)
+          retry_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
@@ -269,9 +262,17 @@ module Ci
     def download_url
       if artifacts_file.exists?
         Gitlab::Application.routes.url_helpers.
-          download_namespace_project_build_path(gl_project.namespace, gl_project, self)
+          download_namespace_project_build_path(project.namespace, project, self)
       end
     end
+
+    def execute_hooks
+      build_data = Gitlab::BuildDataBuilder.build(self)
+      project.execute_hooks(build_data.dup, :build_hooks)
+      project.execute_services(build_data.dup, :build_hooks)
+    end
+
+
 
     private
 

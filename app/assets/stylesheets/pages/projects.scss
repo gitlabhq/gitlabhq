@@ -5,7 +5,7 @@
     font-weight: normal;
   }
 }
-.no-ssh-key-message {
+.no-ssh-key-message, .project-limit-message {
   background-color: #f28d35;
   margin-bottom: 16px;
 }
@@ -18,10 +18,6 @@
   }
 }
 
-.project-edit-content {
-  padding: 7px;
-}
-
 .project-name-holder {
   .help-inline {
     vertical-align: top;
@@ -30,12 +26,6 @@
 }
 
 .project-home-panel {
-  text-align: center;
-  background: #f7f8fa;
-  margin: -$gl-padding;
-  padding: $gl-padding;
-  padding: 44px 0 17px 0;
-
   .project-identicon-holder {
     margin-bottom: 16px;
 
@@ -90,7 +80,12 @@
   }
 
   .visibility-level-label {
+    @extend .btn;
+    @extend .btn-gray;
+
     color: $gray;
+    cursor: default;
+
     i {
       color: inherit;
     }
@@ -100,7 +95,6 @@
     display: inline-table;
     position: relative;
     top: 17px;
-    margin-bottom: 44px;
   }
 
   .project-repo-buttons {
@@ -177,6 +171,11 @@
 
     &:active {
       outline: none;
+    }
+
+    &.btn-clipboard {
+      padding-left: 15px;
+      padding-right: 15px;
     }
   }
 
@@ -366,7 +365,7 @@ table.table.protected-branches-list tr.no-border {
 
 .project-stats {
   text-align: center;
-  margin-top: 15px;
+  margin-top: $gl-padding;
   margin-bottom: 0;
   padding-top: 10px;
   padding-bottom: 4px;

@@ -1,10 +1,10 @@
 module NamespacesHelper
-  def namespaces_options(selected = :current_user, scope = :default)
+  def namespaces_options(selected = :current_user, display_path: false)
     groups = current_user.owned_groups + current_user.masters_groups
     users = [current_user.namespace]
 
-    group_opts = ["Groups", groups.sort_by(&:human_name).map {|g| [g.human_name, g.id]} ]
-    users_opts = [ "Users", users.sort_by(&:human_name).map {|u| [u.human_name, u.id]} ]
+    group_opts = ["Groups", groups.sort_by(&:human_name).map {|g| [display_path ? g.path : g.human_name, g.id]} ]
+    users_opts = [ "Users", users.sort_by(&:human_name).map {|u| [display_path ? u.path : u.human_name, u.id]} ]
 
     options = []
     options << group_opts

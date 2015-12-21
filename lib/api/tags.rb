@@ -44,17 +44,42 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   tag (required) - The name of the tag
+      #   tag_name (required) - The name of the tag
       #   description (required) - Release notes with markdown support
       # Example Request:
-      #   PUT /projects/:id/repository/tags
-      put ':id/repository/:tag/release', requirements: { tag: /.*/ } do
+      #   POST /projects/:id/repository/tags/:tag_name/release
+      post ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
         authorize_push_project
         required_attributes! [:description]
-        release = user_project.releases.find_or_initialize_by(tag: params[:tag])
-        release.update_attributes(description: params[:description])
+        result = CreateReleaseService.new(user_project, current_user).
+          execute(params[:tag_name], params[:description])
 
-        present release, with: Entities::Release
+        if result[:status] == :success
+          present result[:release], with: Entities::Release
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
+      end
+
+      # Updates a release notes of a tag
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   tag_name (required) - The name of the tag
+      #   description (required) - Release notes with markdown support
+      # Example Request:
+      #   PUT /projects/:id/repository/tags/:tag_name/release
+      put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
+        authorize_push_project
+        required_attributes! [:description]
+        result = UpdateReleaseService.new(user_project, current_user).
+          execute(params[:tag_name], params[:description])
+
+        if result[:status] == :success
+          present result[:release], with: Entities::Release
+        else
+          render_api_error!(result[:message], result[:http_status])
+        end
       end
     end
   end

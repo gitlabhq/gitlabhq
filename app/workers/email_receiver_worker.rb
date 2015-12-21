@@ -46,6 +46,6 @@ class EmailReceiverWorker
       return
     end
 
-    EmailRejectionMailer.delay.rejection(reason, raw, can_retry)
+    EmailRejectionMailer.rejection(reason, raw, can_retry).deliver_later
   end
 end

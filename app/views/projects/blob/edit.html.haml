@@ -5,12 +5,12 @@
   %ul.center-top-menu.no-bottom.js-edit-mode
     %li.active
       = link_to '#editor' do
-        %i.fa.fa-edit
-        Edit file
+        = icon('edit')
+        Edit File
 
     %li
       = link_to '#preview', 'data-preview-url' => namespace_project_preview_blob_path(@project.namespace, @project, @id) do
-        %i.fa.fa-eye
+        = icon('eye')
         = editing_preview_title(@blob.name)
 
   = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-requires-input js-edit-blob-form') do

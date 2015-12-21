@@ -57,6 +57,6 @@ class GemnasiumService < Service
       token: token,
       api_key: api_key,
       repo: project.repository.path_to_repo
-      )
+    )
   end
 end
