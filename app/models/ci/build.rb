@@ -170,7 +170,8 @@ module Ci
 
     def extract_coverage(text, regex)
       begin
-        matches = text.gsub(Regexp.new(regex)).to_a.last
+        matches = text.scan(Regexp.new(regex)).last
+        matches = matches.last if matches.kind_of?(Array)
         coverage = matches.gsub(/\d+(\.\d+)?/).first
 
         if coverage.present?
