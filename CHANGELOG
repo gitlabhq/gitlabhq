@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.3.0 (unreleased)
+v 8.4.0 (unreleased)
+
+v 8.3.0
   - Add CAS support (tduehr)
   - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
   - API support for starred projects for authorized user (Zeger-Jan van de Weg)
@@ -63,7 +65,6 @@ v 8.3.0 (unreleased)
   - Persist runners registration token in database
   - Fix online editor should not remove newlines at the end of the file
   - Expose Git's version in the admin area
-
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
