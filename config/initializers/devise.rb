@@ -241,6 +241,16 @@ Devise.setup do |config|
       # An Array from the configuration will be expanded.
       provider_arguments.concat provider['args']
     when Hash
+      # Add procs for handling SLO
+      if provider['name'] == 'cas3'
+        provider['args'][:on_single_sign_out]  = lambda do |request|
+          ticket = request.params[:session_index]
+          raise "Service Ticket not found." unless Gitlab::OAuth::Session.valid?(:cas3, ticket)
+          Gitlab::OAuth::Session.destroy(:cas3, ticket)
+          true
+        end
+      end
+
       # A Hash from the configuration will be passed as is.
       provider_arguments << provider['args'].symbolize_keys
     end

@@ -70,6 +70,7 @@ v 8.2.3
   - Enable devise paranoid mode to prevent user enumeration attack
   - Webhook payload has an added, modified and removed properties for each commit
   - Fix 500 error when creating a merge request that removes a submodule
+  - Add CAS support (tduehr)
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
