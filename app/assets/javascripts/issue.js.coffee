@@ -6,7 +6,7 @@ class @Issue
     # Prevent duplicate event bindings
     @disableTaskList()
 
-    if $("a.btn-close").length
+    if $('a.btn-close').length
       @initTaskList()
       @initIssueBtnEventListeners()
 
@@ -15,32 +15,32 @@ class @Issue
     $(document).on 'tasklist:changed', '.detail-page-description .js-task-list-container', @updateTaskList
 
   initIssueBtnEventListeners: ->
-    $("a.btn-close, a.btn-reopen").on "click", (e) ->
+    $('a.btn-close, a.btn-reopen').on 'click', (e) ->
       e.preventDefault()
       e.stopImmediatePropagation()
       $this = $(this)
       isClose = $this.hasClass('btn-close')
-      $this.prop("disabled", true)
+      $this.prop('disabled', true)
       url = $this.attr('href')
       $.ajax
         type: 'PUT'
         url: url,
         error: (jqXHR, textStatus, errorThrown) ->
           issueStatus = if isClose then 'close' else 'open'
-          new Flash("Issues update failed", 'alert')
+          new Flash('Issues update failed', 'alert')
         success: (data, textStatus, jqXHR) ->
           if data.saved
             $this.addClass('hidden')
             if isClose
               $('a.btn-reopen').removeClass('hidden')
-              $('div.issue-box-closed').removeClass('hidden')
-              $('div.issue-box-open').addClass('hidden')
+              $('div.status-box-closed').removeClass('hidden')
+              $('div.status-box-open').addClass('hidden')
             else
               $('a.btn-close').removeClass('hidden')
-              $('div.issue-box-closed').addClass('hidden')
-              $('div.issue-box-open').removeClass('hidden')
+              $('div.status-box-closed').addClass('hidden')
+              $('div.status-box-open').removeClass('hidden')
           else
-            new Flash("Issues update failed", 'alert')
+            new Flash('Issues update failed', 'alert')
           $this.prop('disabled', false)
 
   disableTaskList: ->
