@@ -71,7 +71,21 @@ module Gitlab
             created_at: pull_request.created_at,
             updated_at: pull_request.updated_at
           )
+
+          client.issue_comments(project.import_source, pull_request.number).each do |c|
+            merge_request.notes.create!(
+              project: project,
+              note: format_body(c.user.login, c.body),
+              author_id: gl_author_id(project, c.user.id),
+              created_at: c.created_at,
+              updated_at: c.updated_at
+            )
+          end
         end
+      end
+
+      def format_body(author, body)
+        @formatter.author_line(author) + (body || "")
       end
 
       def merge_request_state(pull_request)
