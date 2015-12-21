@@ -59,6 +59,8 @@ v 8.3.0 (unreleased)
   - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
   - Persist runners registration token in database
   - Fix online editor should not remove newlines at the end of the file
+  - Expose Git's version in the admin area
+
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)

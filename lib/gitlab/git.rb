@@ -20,6 +20,10 @@ module Gitlab
       def blank_ref?(ref)
         ref == BLANK_SHA
       end
+
+      def version
+        Gitlab::VersionInfo.parse(Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} --version)).first)
+      end
     end
   end
 end
