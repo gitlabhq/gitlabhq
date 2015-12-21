@@ -70,7 +70,7 @@ Feature: Project Source Browse Files
     And I fill the commit message
     And I fill the new branch name
     And I click on "Commit Changes"
-    Then I am redirected to the fork's new merge request page
+    Then I am redirected to the new merge request page
     And I should see its new content
 
   @javascript
@@ -120,7 +120,7 @@ Feature: Project Source Browse Files
     And I fill the replace file commit message
     And I click on "Replace file"
     Then I can see the new text file
-    And I am redirected to the new merge request page
+    And I am redirected to the fork's new merge request page
     And I can see the replacement commit message
 
   @javascript
