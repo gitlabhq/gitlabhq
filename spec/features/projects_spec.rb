@@ -70,6 +70,20 @@ feature 'Project', feature: true do
     end
   end
 
+  describe 'leave project link' do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, namespace: user.namespace) }
+
+    before do
+      login_with(user)
+      project.team.add_user(user, Gitlab::Access::MASTER)
+      visit namespace_project_path(project.namespace, project)
+    end
+
+    it { expect(page).to have_content('You have Master access to this project.') }
+    it { expect(page).to have_link('Leave this project') }
+  end
+
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with
