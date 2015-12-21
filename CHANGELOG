@@ -4,6 +4,7 @@ v 8.3.0 (unreleased)
   - Add CAS support (tduehr)
   - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
   - API support for starred projects for authorized user (Zeger-Jan van de Weg)
+  - Add link to merge request on build detail page.
   - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
