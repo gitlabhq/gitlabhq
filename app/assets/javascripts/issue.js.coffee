@@ -8,10 +8,40 @@ class @Issue
 
     if $("a.btn-close").length
       @initTaskList()
+      @initIssueBtnEventListeners()
 
   initTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('enable')
     $(document).on 'tasklist:changed', '.detail-page-description .js-task-list-container', @updateTaskList
+
+  initIssueBtnEventListeners: ->
+    $("a.btn-close, a.btn-reopen").on "click", (e) ->
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      $this = $(this)
+      isClose = $this.hasClass('btn-close')
+      $this.prop("disabled", true)
+      url = $this.data('url')
+      $.ajax
+        type: 'PUT'
+        url: url,
+        error: (jqXHR, textStatus, errorThrown) ->
+          issueStatus = if isClose then 'close' else 'open'
+          console.log("Cannot #{issueStatus} this issue, at this time.")
+        success: (data, textStatus, jqXHR) ->
+          if data.saved
+            $this.addClass('hidden')
+            if isClose
+              $('a.btn-reopen').removeClass('hidden')
+              $('div.issue-box-closed').removeClass('hidden')
+              $('div.issue-box-open').addClass('hidden')
+            else
+              $('a.btn-close').removeClass('hidden')
+              $('div.issue-box-closed').addClass('hidden')
+              $('div.issue-box-open').removeClass('hidden')
+          else
+            console.log("Did not work")
+          $this.prop('disabled', false)
 
   disableTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('disable')
