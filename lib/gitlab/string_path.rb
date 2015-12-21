@@ -43,12 +43,24 @@ module Gitlab
       new(@path.sub(basename, ''))
     end
 
+    def descendants
+      return [] unless directory?
+      children = @universe.select { |entry| entry =~ /^#{@path}.+/ }
+      children.map { |path| new(path) }
+    end
+
+    def children
+      descendants.select { |descendant| descendant.parent == self }
+    end
+
     def directories
-      raise NotImplementedError
+      return [] unless directory?
+      children.select { |child| child.directory? }
     end
 
     def files
-      raise NotImplementedError
+      return [] unless directory?
+      children.select { |child| child.file? }
     end
 
     def basename

@@ -16,7 +16,11 @@ describe Gitlab::StringPath do
   end
 
   def path(example)
-    described_class.new(example.metadata[:path], universe)
+    string_path(example.metadata[:path])
+  end
+
+  def string_path(string_path)
+    described_class.new(string_path, universe)
   end
 
   describe '/file/with/absolute_path', path: '/file/with/absolute_path' do
@@ -47,14 +51,6 @@ describe Gitlab::StringPath do
 
     it { is_expected.to have_parent }
 
-    describe '#files' do
-      subject { |example| path(example).files }
-
-      pending { is_expected.to all(be_an_instance_of described_class) }
-      pending { is_expected.to be eq [Gitlab::StringPath.new('path/dir_1/file_1', universe),
-                                      Gitlab::StringPath.new('path/dir_1/file_b', universe)] }
-    end
-
     describe '#basename' do
       subject { |example| path(example).basename }
 
@@ -64,7 +60,44 @@ describe Gitlab::StringPath do
     describe '#parent' do
       subject { |example| path(example).parent }
 
-      it { is_expected.to eq Gitlab::StringPath.new('path/', universe) }
+      it { is_expected.to eq string_path('path/') }
+    end
+
+    describe '#descendants' do
+      subject { |example| path(example).descendants }
+
+      it { is_expected.to be_an_instance_of Array }
+      it { is_expected.to all(be_an_instance_of described_class) }
+      it { is_expected.to contain_exactly string_path('path/dir_1/file_1'),
+                                          string_path('path/dir_1/file_b'),
+                                          string_path('path/dir_1/subdir/'),
+                                          string_path('path/dir_1/subdir/subfile') }
+    end
+
+    describe '#children' do
+      subject { |example| path(example).children }
+
+      it { is_expected.to all(be_an_instance_of described_class) }
+      it { is_expected.to contain_exactly string_path('path/dir_1/file_1'),
+                                          string_path('path/dir_1/file_b'),
+                                          string_path('path/dir_1/subdir/') }
+    end
+
+    describe '#files' do
+      subject { |example| path(example).files }
+
+      it { is_expected.to all(be_file) }
+      it { is_expected.to all(be_an_instance_of described_class) }
+      it { is_expected.to contain_exactly string_path('path/dir_1/file_1'),
+                                          string_path('path/dir_1/file_b') }
+    end
+
+    describe '#directories' do
+      subject { |example| path(example).directories }
+
+      it { is_expected.to all(be_directory) }
+      it { is_expected.to all(be_an_instance_of described_class) }
+      it { is_expected.to contain_exactly string_path('path/dir_1/subdir/') }
     end
   end
 end
