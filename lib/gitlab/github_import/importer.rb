@@ -56,7 +56,6 @@ module Gitlab
           target_branch = find_branch(pull_request.base.ref)
 
           if source_branch && target_branch
-            # Pull Request
             merge_request = MergeRequest.create!(
               title: pull_request.title,
               description: format_body(pull_request.user.login, pull_request.body),
@@ -71,30 +70,35 @@ module Gitlab
               updated_at: pull_request.updated_at
             )
 
-            # Comments on Pull Request
-            client.issue_comments(project.import_source, pull_request.number).each do |c|
-              merge_request.notes.create!(
-                project: project,
-                note: format_body(c.user.login, c.body),
-                author_id: gl_author_id(project, c.user.id),
-                created_at: c.created_at,
-                updated_at: c.updated_at
-              )
-            end
-
-            # Comments on Pull Request diff
-            client.pull_request_comments(project.import_source, pull_request.number).each do |c|
-              merge_request.notes.create!(
-                project: project,
-                note: format_body(c.user.login, c.body),
-                commit_id: c.commit_id,
-                line_code: generate_line_code(c.path, c.position),
-                author_id: gl_author_id(project, c.user.id),
-                created_at: c.created_at,
-                updated_at: c.updated_at
-              )
-            end
+            import_comments_on_pull_request(merge_request, pull_request)
+            import_comments_on_pull_request_diff(merge_request, pull_request)
           end
+        end
+      end
+
+      def import_comments_on_pull_request(merge_request, pull_request)
+        client.issue_comments(project.import_source, pull_request.number).each do |c|
+          merge_request.notes.create!(
+            project: project,
+            note: format_body(c.user.login, c.body),
+            author_id: gl_author_id(project, c.user.id),
+            created_at: c.created_at,
+            updated_at: c.updated_at
+          )
+        end
+      end
+
+      def import_comments_on_pull_request_diff(merge_request, pull_request)
+        client.pull_request_comments(project.import_source, pull_request.number).each do |c|
+          merge_request.notes.create!(
+            project: project,
+            note: format_body(c.user.login, c.body),
+            commit_id: c.commit_id,
+            line_code: generate_line_code(c.path, c.position),
+            author_id: gl_author_id(project, c.user.id),
+            created_at: c.created_at,
+            updated_at: c.updated_at
+          )
         end
       end
 
