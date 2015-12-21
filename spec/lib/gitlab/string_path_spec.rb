@@ -6,6 +6,8 @@ describe Gitlab::StringPath do
      'path/dir_1/',
      'path/dir_1/file_1',
      'path/dir_1/file_b',
+     'path/dir_1/subdir/',
+     'path/dir_1/subdir/subfile',
      'path/second_dir',
      'path/second_dir/dir_3/file_2',
      'path/second_dir/dir_3/file_3',
@@ -13,8 +15,12 @@ describe Gitlab::StringPath do
      '/file/with/absolute_path']
   end
 
-  describe '/file/with/absolute_path' do
-    subject { described_class.new('/file/with/absolute_path', universe) }
+  def path(example)
+    described_class.new(example.metadata[:path], universe)
+  end
+
+  describe '/file/with/absolute_path', path: '/file/with/absolute_path' do
+    subject { |example| path(example) }
 
     it { is_expected.to be_absolute } 
     it { is_expected.to_not be_relative }
@@ -22,26 +28,27 @@ describe Gitlab::StringPath do
     it { is_expected.to_not have_parent }
 
     describe '#basename' do
-      subject { described_class.new('/file/with/absolute_path', universe).basename }
+      subject { |example| path(example).basename }
 
       it { is_expected.to eq 'absolute_path' }
     end
   end
 
-  describe 'path/' do
-    subject { described_class.new('path/', universe) }
+  describe 'path/', path: 'path/' do
+    subject { |example| path(example) }
 
     it { is_expected.to be_directory }
     it { is_expected.to be_relative }
     it { is_expected.to_not have_parent }
   end
 
-  describe 'path/dir_1/' do
-    subject { described_class.new('path/dir_1/', universe) }
+  describe 'path/dir_1/', path: 'path/dir_1/' do
+    subject { |example| path(example) }
+
     it { is_expected.to have_parent }
 
     describe '#files' do
-      subject { described_class.new('path/dir_1/', universe).files }
+      subject { |example| path(example).files }
 
       pending { is_expected.to all(be_an_instance_of described_class) }
       pending { is_expected.to be eq [Gitlab::StringPath.new('path/dir_1/file_1', universe),
@@ -49,12 +56,14 @@ describe Gitlab::StringPath do
     end
 
     describe '#basename' do
-      subject { described_class.new('path/dir_1/', universe).basename }
+      subject { |example| path(example).basename }
+
       it { is_expected.to eq 'dir_1/' }
     end
 
     describe '#parent' do
-      subject { described_class.new('path/dir_1/', universe).parent }
+      subject { |example| path(example).parent }
+
       it { is_expected.to eq Gitlab::StringPath.new('path/', universe) }
     end
   end
