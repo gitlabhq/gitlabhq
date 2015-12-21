@@ -3,3 +3,4 @@
     = tree_icon('folder', '755', directory.basename)
     %span.str-truncated
       = link_to directory.basename, browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build, path: directory.path)  
+  %td

@@ -1,6 +1,20 @@
 - page_title "#{@build.name} (##{@build.id})", 'Build artifacts'
 - header_title project_title(@project, "Build artifacts", namespace_project_build_path(@project.namespace, @project, @build))
 
-%table.table.table-hover
-  = render partial: 'tree_directory', collection: @path.directories, as: :directory
-  = render partial: 'tree_file', collection: @path.files, as: :file
+#tree-holder.tree-holder
+  .gray-content-block.top-block.clearfix
+    .pull-right
+      = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build),
+        class: 'btn btn-default', method: :get do
+        = icon('download')
+        Download artifacts archive
+
+%div.tree-content-holder
+  .table-holder
+    %table.table.tree-table.table-striped
+      %thead
+        %tr
+          %th Name
+          %th Download
+      = render partial: 'tree_directory', collection: @path.directories, as: :directory
+      = render partial: 'tree_file', collection: @path.files, as: :file
