@@ -16,12 +16,13 @@ class @Issue
 
   initIssueBtnEventListeners: ->
     $("a.btn-close, a.btn-reopen").on "click", (e) ->
+      console.log('closing')
       e.preventDefault()
       e.stopImmediatePropagation()
       $this = $(this)
       isClose = $this.hasClass('btn-close')
       $this.prop("disabled", true)
-      url = $this.data('url')
+      url = $this.attr('href')
       $.ajax
         type: 'PUT'
         url: url,
