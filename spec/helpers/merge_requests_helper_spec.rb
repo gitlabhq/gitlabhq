@@ -1,24 +1,37 @@
 require 'spec_helper'
 
 describe MergeRequestsHelper do
-  describe "#issues_sentence" do
+  describe '#issues_sentence' do
     subject { issues_sentence(issues) }
     let(:issues) do
       [build(:issue, iid: 1), build(:issue, iid: 2), build(:issue, iid: 3)]
     end
 
     it { is_expected.to eq('#1, #2, and #3') }
+
+    context 'for JIRA issues' do
+      let(:project) { create(:project) }
+      let(:issues) do
+        [
+          JiraIssue.new('JIRA-123', project),
+          JiraIssue.new('JIRA-456', project),
+          JiraIssue.new('FOOBAR-7890', project)
+        ]
+      end
+
+      it { is_expected.to eq('FOOBAR-7890, JIRA-123, and JIRA-456') }
+    end
   end
 
-  describe "#format_mr_branch_names" do
-    describe "within the same project" do
+  describe '#format_mr_branch_names' do
+    describe 'within the same project' do
       let(:merge_request) { create(:merge_request) }
       subject { format_mr_branch_names(merge_request) }
 
       it { is_expected.to eq([merge_request.source_branch, merge_request.target_branch]) }
     end
 
-    describe "within different projects" do
+    describe 'within different projects' do
       let(:project) { create(:project) }
       let(:fork_project) { create(:project, forked_from_project: project) }
       let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: project) }

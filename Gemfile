@@ -175,7 +175,7 @@ gem "sanitize", '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
 # Protect against bruteforcing
-gem "rack-attack", '~> 4.3.0'
+gem "rack-attack", '~> 4.3.1'
 
 # Ace editor
 gem 'ace-rails-ap', '~> 2.0.1'

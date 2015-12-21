@@ -17,7 +17,7 @@
           %a.text-expander.js-toggle-button ...
 
       .pull-right
-        - if ci_commit && ci_commit.show_build_status?
+        - if ci_commit
           = render_ci_status(ci_commit)
           &nbsp;
         = clipboard_button(clipboard_text: commit.id)

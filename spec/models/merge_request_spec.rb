@@ -164,6 +164,17 @@ describe MergeRequest, models: true do
 
       expect(subject.closes_issues).to include(issue2)
     end
+
+    context 'for a project with JIRA integration' do
+      let(:issue0) { JiraIssue.new('JIRA-123', subject.project) }
+      let(:issue1) { JiraIssue.new('FOOBAR-4567', subject.project) }
+
+      it 'returns sorted JiraIssues' do
+        allow(subject.project).to receive_messages(default_branch: subject.target_branch)
+
+        expect(subject.closes_issues).to eq([issue0, issue1])
+      end
+    end
   end
 
   describe "#work_in_progress?" do

@@ -499,6 +499,10 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.find(&:activated?)
   end
 
+  def jira_tracker?
+    issues_tracker.to_param == 'jira'
+  end
+
   def avatar_type
     unless self.avatar.image?
       self.errors.add :avatar, 'only images allowed'
@@ -797,6 +801,10 @@ class Project < ActiveRecord::Base
   rescue ProjectWiki::CouldNotCreateWikiError
     errors.add(:base, 'Failed create wiki')
     false
+  end
+
+  def jira_tracker_active?
+    jira_tracker? && jira_service.active
   end
 
   def ci_commit(sha)

@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
   - API support for starred projects for authorized user (Zeger-Jan van de Weg)
   - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
@@ -18,6 +19,7 @@ v 8.3.0 (unreleased)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
+  - Backport JIRA features from EE to CE
   - Add ignore whitespace change option to commit view
   - Fire update hook from GitLab
   - Style warning about mentioning many people in a comment
@@ -25,6 +27,7 @@ v 8.3.0 (unreleased)
   - Migrate all CI::Services and CI::WebHooks to Services and WebHooks
   - Don't show project fork event as "imported"
   - Add API endpoint to fetch merge request commits list
+  - Don't create CI status for refs that doesn't have .gitlab-ci.yml, even if the builds are enabled
   - Expose events API with comment information and author info
   - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
   - Run custom Git hooks when branch is created or deleted.
