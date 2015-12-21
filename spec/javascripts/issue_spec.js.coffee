@@ -30,29 +30,45 @@ describe 'reopen/close issue', ->
       expect(obj.type).toBe('PUT')
       expect(obj.url).toBe('http://gitlab/issues/6/close')
       obj.success saved: true
+    
+    # setup
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
     expect($btnReopen.hasClass('hidden')).toBe(true)
     expect($btnClose.text()).toBe('Close')
     expect(typeof $btnClose.prop('disabled')).toBe('undefined')
+
+    # excerize
     $btnClose.trigger('click')
+    
+    # verify
     expect($btnClose.hasClass('hidden')).toBe(true)
     expect($btnReopen.hasClass('hidden')).toBe(false)
     expect($btnClose.prop('disabled')).toBe(false)
     expect($('div.issue-box-open').hasClass('hidden')).toBe(true)
     expect($('div.issue-box-closed').hasClass('hidden')).toBe(false)
+
+    # teardown
   it 'reopens an issue', ->
     $.ajax = (obj) ->
       expect(obj.type).toBe('PUT')
       expect(obj.url).toBe('http://gitlab/issues/6/reopen')
       obj.success saved: true
+
+    # setup
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
     expect(typeof $btnReopen.prop('disabled')).toBe('undefined')
     expect($btnReopen.text()).toBe('Reopen')
+
+    # excerize
     $btnReopen.trigger('click')
+
+    # verify
     expect($btnReopen.hasClass('hidden')).toBe(true)
     expect($btnClose.hasClass('hidden')).toBe(false)
     expect($btnReopen.prop('disabled')).toBe(false)
     expect($('div.issue-box-open').hasClass('hidden')).toBe(false)
     expect($('div.issue-box-closed').hasClass('hidden')).toBe(true)
+
+    # teardown
