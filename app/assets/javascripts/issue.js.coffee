@@ -27,7 +27,6 @@ class @Issue
         url: url,
         error: (jqXHR, textStatus, errorThrown) ->
           issueStatus = if isClose then 'close' else 'open'
-          console.log("Cannot #{issueStatus} this issue, at this time.")
         success: (data, textStatus, jqXHR) ->
           if data.saved
             $this.addClass('hidden')
@@ -40,7 +39,6 @@ class @Issue
               $('div.issue-box-closed').addClass('hidden')
               $('div.issue-box-open').removeClass('hidden')
           else
-            console.log("Did not work")
           $this.prop('disabled', false)
 
   disableTaskList: ->
