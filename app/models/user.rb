@@ -26,6 +26,7 @@
 #  bio                        :string(255)
 #  failed_attempts            :integer          default(0)
 #  locked_at                  :datetime
+#  unlock_token               :string(255)
 #  username                   :string(255)
 #  can_create_group           :boolean          default(TRUE), not null
 #  can_create_team            :boolean          default(TRUE), not null

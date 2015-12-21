@@ -24,6 +24,7 @@ v 8.3.0 (unreleased)
   - Backport JIRA features from EE to CE
   - Add ignore whitespace change option to commit view
   - Fire update hook from GitLab
+  - Allow account unlock via email
   - Style warning about mentioning many people in a comment
   - Fix: sort milestones by due date once again (Greg Smethells)
   - Migrate all CI::Services and CI::WebHooks to Services and WebHooks
