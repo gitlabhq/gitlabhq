@@ -10,7 +10,8 @@ class Projects::ServicesController < Projects::ApplicationController
                     :jira_issue_transition_id, :build_events, :notify_only_broken_builds, :add_pusher,
                     :notify, :color,
                     :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
-                    :multiproject_enabled, :pass_unstable]
+                    :multiproject_enabled, :pass_unstable,
+                    :jenkins_url, :project_name]
 
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password]
