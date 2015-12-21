@@ -1,6 +1,6 @@
 # CAS OmniAuth Provider
 
-To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL gitlab will supply to CAS. It should be something like: `https://gitlab.example.com:443/users/auth/cas3/callback?url`. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.
+To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL GitLab will supply to CAS. It should be something like: `https://gitlab.example.com:443/users/auth/cas3/callback?url`. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.
 
 1.  On your GitLab server, open the configuration file.
 
@@ -10,7 +10,7 @@ To enable the CAS OmniAuth provider you must register your application with your
       sudo editor /etc/gitlab/gitlab.rb
     ```
 
-    For instalations from source:
+    For installations from source:
 
     ```sh
       cd /home/git/gitlab
