@@ -11,6 +11,7 @@ describe Gitlab::StringPath do
      'path/second_dir',
      'path/second_dir/dir_3/file_2',
      'path/second_dir/dir_3/file_3',
+     'another_directory/',
      'another_file',
      '/file/with/absolute_path']
   end
@@ -30,6 +31,7 @@ describe Gitlab::StringPath do
     it { is_expected.to_not be_relative }
     it { is_expected.to be_file }
     it { is_expected.to_not have_parent }
+    it { is_expected.to_not have_descendants }
 
     describe '#basename' do
       subject { |example| path(example).basename }
@@ -43,7 +45,7 @@ describe Gitlab::StringPath do
 
     it { is_expected.to be_directory }
     it { is_expected.to be_relative }
-    it { is_expected.to_not have_parent }
+    it { is_expected.to have_parent }
   end
 
   describe 'path/dir_1/', path: 'path/dir_1/' do
@@ -98,6 +100,26 @@ describe Gitlab::StringPath do
       it { is_expected.to all(be_directory) }
       it { is_expected.to all(be_an_instance_of described_class) }
       it { is_expected.to contain_exactly string_path('path/dir_1/subdir/') }
+    end
+  end
+
+  describe './', path: './' do
+    subject { |example| path(example) }
+
+    it { is_expected.to_not have_parent }
+    it { is_expected.to have_descendants }
+
+    describe '#descendants' do
+      subject { |example| path(example).descendants }
+
+      it { expect(subject.count).to eq universe.count - 1 }
+      it { is_expected.to_not include string_path('./') }
+    end
+
+    describe '#children' do
+      subject { |example| path(example).children }
+
+      it { expect(subject.count).to eq 3 }
     end
   end
 end
