@@ -19,6 +19,7 @@ v 8.3.0 (unreleased)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
+  - Backport JIRA features from EE to CE
   - Add ignore whitespace change option to commit view
   - Fire update hook from GitLab
   - Style warning about mentioning many people in a comment
