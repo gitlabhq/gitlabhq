@@ -1,4 +1,6 @@
-v 8.3.0 (unreleased)
+v 8.4.0 (unreleased)
+
+v 8.3.0
   - License information can now be retrieved via the API
   - Show Kerberos clone url when Kerberos enabled and url different than HTTP url (Borja Aparicio)
   - Fix bug with negative approvals required
