@@ -81,6 +81,18 @@ module Gitlab
               updated_at: c.updated_at
             )
           end
+
+          client.pull_request_comments(project.import_source, pull_request.number).each do |c|
+            merge_request.notes.create!(
+              project: project,
+              note: format_body(c.user.login, c.body),
+              commit_id: c.commit_id,
+              line_code: generate_line_code(c.path, c.position),
+              author_id: gl_author_id(project, c.user.id),
+              created_at: c.created_at,
+              updated_at: c.updated_at
+            )
+          end
         end
       end
 
@@ -97,6 +109,10 @@ module Gitlab
         else
           'opened'
         end
+      end
+
+      def generate_line_code(file_path, position)
+        Gitlab::Diff::LineCode.generate(file_path, position, 0)
       end
 
       def gl_author_id(project, github_id)
