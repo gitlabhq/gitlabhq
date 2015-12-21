@@ -22,91 +22,91 @@ describe 'Branch', ->
 
     it "can't have two consecutive dots", ->
       @name.val('foo..bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '..'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '..'")
 
     it "can't have spaces anywhere", ->
       @name.val(' foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains spaces")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain spaces")
       @name.val('foo bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains spaces")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain spaces")
       @name.val('foo ').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains spaces")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain spaces")
 
     it "can't have ~ anywhere", ->
       @name.val('~foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '~'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '~'")
       @name.val('foo~bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '~'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '~'")
       @name.val('foo~').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '~'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '~'")
 
     it "can't have tilde anwhere", ->
       @name.val('~foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '~'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '~'")
       @name.val('foo~bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '~'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '~'")
       @name.val('foo~').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '~'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '~'")
 
     it "can't have caret anywhere", ->
       @name.val('^foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '^'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '^'")
       @name.val('foo^bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '^'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '^'")
       @name.val('foo^').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '^'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '^'")
 
     it "can't have : anywhere", ->
       @name.val(':foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains ':'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain ':'")
       @name.val('foo:bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains ':'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain ':'")
       @name.val(':foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains ':'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain ':'")
 
     it "can't have question mark anywhere", ->
       @name.val('?foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '?'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '?'")
       @name.val('foo?bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '?'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '?'")
       @name.val('foo?').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '?'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '?'")
 
     it "can't have asterisk anywhere", ->
       @name.val('*foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '*'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '*'")
       @name.val('foo*bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '*'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '*'")
       @name.val('foo*').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '*'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '*'")
 
     it "can't have open bracket anywhere", ->
       @name.val('[foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '['")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '['")
       @name.val('foo[bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '['")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '['")
       @name.val('foo[').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '['")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '['")
 
     it "can't have a backslash anywhere", ->
       @name.val('\\foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '\\'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '\\'")
       @name.val('foo\\bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '\\'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '\\'")
       @name.val('foo\\').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '\\'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '\\'")
 
     it "can't contain a sequence @{ anywhere", ->
       @name.val('@{foo').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '@{'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '@{'")
       @name.val('foo@{bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '@{'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '@{'")
       @name.val('foo@{').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '@{'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '@{'")
 
     it "can't have consecutive slashes", ->
       @name.val('foo//bar').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains consecutive slashes")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain consecutive slashes")
 
     it "can't end with a slash", ->
       @name.val('foo/').trigger('blur')
@@ -126,11 +126,11 @@ describe 'Branch', ->
 
     it "concatenates all error messages", ->
       @name.val('/foo bar?~.').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't start with '/', can't contains spaces, '?', '~', can't end in '.'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't start with '/', can't contain spaces, '?', '~', can't end in '.'")
 
     it "doesn't duplicate error messages", ->
       @name.val('?foo?bar?zoo?').trigger('blur')
-      expect($('.js-branch-name-error span').text()).toEqual("can't contains '?'")
+      expect($('.js-branch-name-error span').text()).toEqual("can't contain '?'")
 
     it "removes the error message when is a valid name", ->
       @name.val('foo?bar').trigger('blur')

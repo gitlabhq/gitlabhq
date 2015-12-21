@@ -13,13 +13,12 @@ class @NewBranchForm
     @name.on 'blur', @validate
 
   init: ->
-    @name.trigger 'blur'if @name.val().length > 0
+    @name.trigger 'blur' if @name.val().length > 0
 
   setupAvailableRefs: (availableRefs) ->
-    @ref.autocomplete {
+    @ref.autocomplete
       source: availableRefs,
       minLength: 1
-    }
 
   setupRestrictions: ->
     startsWith = {
@@ -36,7 +35,7 @@ class @NewBranchForm
 
     invalid = {
       pattern: /(\s|~|\^|:|\?|\*|\[|\\|\.\.|@\{|\/{2,}){1}/g
-      prefix: "can't contains",
+      prefix: "can't contain",
       conjunction: ", "
     }
 
