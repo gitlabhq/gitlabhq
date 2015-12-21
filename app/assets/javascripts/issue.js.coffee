@@ -16,7 +16,6 @@ class @Issue
 
   initIssueBtnEventListeners: ->
     $("a.btn-close, a.btn-reopen").on "click", (e) ->
-      console.log('closing')
       e.preventDefault()
       e.stopImmediatePropagation()
       $this = $(this)
