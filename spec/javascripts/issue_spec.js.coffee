@@ -34,7 +34,7 @@ describe 'reopen/close issue', ->
     # setup
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
-    expect($btnReopen.hasClass('hidden')).toBe(true)
+    expect($btnReopen.toBeHidden())
     expect($btnClose.text()).toBe('Close')
     expect(typeof $btnClose.prop('disabled')).toBe('undefined')
 
@@ -42,11 +42,10 @@ describe 'reopen/close issue', ->
     $btnClose.trigger('click')
     
     # verify
-    expect($btnClose.hasClass('hidden')).toBe(true)
-    expect($btnReopen.hasClass('hidden')).toBe(false)
-    expect($btnClose.prop('disabled')).toBe(false)
-    expect($('div.issue-box-open').hasClass('hidden')).toBe(true)
-    expect($('div.issue-box-closed').hasClass('hidden')).toBe(false)
+    expect($btnClose.toBeHidden())
+    expect($btnReopen.toBeVisible())
+    expect($('div.issue-box-open').toBeVisible())
+    expect($('div.issue-box-closed').toBeHidden())
 
     # teardown
   it 'reopens an issue', ->
@@ -58,17 +57,15 @@ describe 'reopen/close issue', ->
     # setup
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
-    expect(typeof $btnReopen.prop('disabled')).toBe('undefined')
     expect($btnReopen.text()).toBe('Reopen')
 
     # excerize
     $btnReopen.trigger('click')
 
     # verify
-    expect($btnReopen.hasClass('hidden')).toBe(true)
-    expect($btnClose.hasClass('hidden')).toBe(false)
-    expect($btnReopen.prop('disabled')).toBe(false)
-    expect($('div.issue-box-open').hasClass('hidden')).toBe(false)
-    expect($('div.issue-box-closed').hasClass('hidden')).toBe(true)
+    expect($btnReopen.toBeHidden())
+    expect($btnClose.toBeVisible())
+    expect($('div.issue-box-open').toBeVisible())
+    expect($('div.issue-box-closed').toBeHidden())
 
     # teardown
