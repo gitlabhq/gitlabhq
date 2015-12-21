@@ -15,10 +15,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def browse
-    path = params[:path].to_s
-    @paths = artifacts_metadata.map do |_artifact_file|
-      Gitlab::StringPath.new(path, artifacts_metadata)
-    end
+    current_path = params[:path] ? "./#{params[:path]}/" : './'
+    @path = Gitlab::StringPath.new(current_path, artifacts_metadata)
   end
 
   private
