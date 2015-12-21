@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.0 (unreleased)
+  - Add CAS support (tduehr)
   - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
   - API support for starred projects for authorized user (Zeger-Jan van de Weg)
   - Add open_issues_count to project API (Stan Hu)
@@ -70,7 +71,6 @@ v 8.2.3
   - Enable devise paranoid mode to prevent user enumeration attack
   - Webhook payload has an added, modified and removed properties for each commit
   - Fix 500 error when creating a merge request that removes a submodule
-  - Add CAS support (tduehr)
 
 v 8.2.2
   - Fix 404 in redirection after removing a project (Stan Hu)
