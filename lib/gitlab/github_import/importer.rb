@@ -52,48 +52,54 @@ module Gitlab
         client.pull_requests(project.import_source, state: :all,
                                                     sort: :created,
                                                     direction: :asc).each do |pull_request|
-          body = @formatter.author_line(pull_request.user.login)
-          body += pull_request.body || ""
+          source_branch = find_branch(pull_request.head.ref)
+          target_branch = find_branch(pull_request.base.ref)
 
-          source_branch = pull_request.head.ref
-          target_branch = pull_request.base.ref
-
-          merge_request = MergeRequest.create!(
-            title: pull_request.title,
-            description: body,
-            source_project: project,
-            source_branch: source_branch,
-            target_project: project,
-            target_branch: target_branch,
-            state: merge_request_state(pull_request),
-            author_id: gl_author_id(project, pull_request.user.id),
-            assignee_id: gl_user_id(pull_request.assignee.try(:id)),
-            created_at: pull_request.created_at,
-            updated_at: pull_request.updated_at
-          )
-
-          client.issue_comments(project.import_source, pull_request.number).each do |c|
-            merge_request.notes.create!(
-              project: project,
-              note: format_body(c.user.login, c.body),
-              author_id: gl_author_id(project, c.user.id),
-              created_at: c.created_at,
-              updated_at: c.updated_at
+          if source_branch && target_branch
+            # Pull Request
+            merge_request = MergeRequest.create!(
+              title: pull_request.title,
+              description: format_body(pull_request.user.login, pull_request.body),
+              source_project: project,
+              source_branch: source_branch.name,
+              target_project: project,
+              target_branch: target_branch.name,
+              state: merge_request_state(pull_request),
+              author_id: gl_author_id(project, pull_request.user.id),
+              assignee_id: gl_user_id(pull_request.assignee.try(:id)),
+              created_at: pull_request.created_at,
+              updated_at: pull_request.updated_at
             )
-          end
 
-          client.pull_request_comments(project.import_source, pull_request.number).each do |c|
-            merge_request.notes.create!(
-              project: project,
-              note: format_body(c.user.login, c.body),
-              commit_id: c.commit_id,
-              line_code: generate_line_code(c.path, c.position),
-              author_id: gl_author_id(project, c.user.id),
-              created_at: c.created_at,
-              updated_at: c.updated_at
-            )
+            # Comments on Pull Request
+            client.issue_comments(project.import_source, pull_request.number).each do |c|
+              merge_request.notes.create!(
+                project: project,
+                note: format_body(c.user.login, c.body),
+                author_id: gl_author_id(project, c.user.id),
+                created_at: c.created_at,
+                updated_at: c.updated_at
+              )
+            end
+
+            # Comments on Pull Request diff
+            client.pull_request_comments(project.import_source, pull_request.number).each do |c|
+              merge_request.notes.create!(
+                project: project,
+                note: format_body(c.user.login, c.body),
+                commit_id: c.commit_id,
+                line_code: generate_line_code(c.path, c.position),
+                author_id: gl_author_id(project, c.user.id),
+                created_at: c.created_at,
+                updated_at: c.updated_at
+              )
+            end
           end
         end
+      end
+
+      def find_branch(name)
+        project.repository.find_branch(name)
       end
 
       def format_body(author, body)
