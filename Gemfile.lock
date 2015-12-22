@@ -420,7 +420,7 @@ GEM
       grape
       newrelic_rpm
     newrelic_rpm (3.9.4.245)
-    nokogiri (1.6.7)
+    nokogiri (1.6.7.1)
       mini_portile2 (~> 2.0.0.rc2)
     nprogress-rails (0.1.6.7)
     oauth (0.4.7)
@@ -892,6 +892,7 @@ DEPENDENCIES
   net-ssh (~> 3.0.1)
   newrelic-grape
   newrelic_rpm (~> 3.9.4.245)
+  nokogiri (= 1.6.7.1)
   nprogress-rails (~> 0.1.6.7)
   oauth2 (~> 1.0.0)
   octokit (~> 3.7.0)
