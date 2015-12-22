@@ -16,7 +16,7 @@ module LicenseHelper
     message << "No GitLab Enterprise Edition license has been provided yet."
     message << "Pushing code and creation of issues and merge requests has been disabled."
 
-    message << 
+    message <<
       if is_admin
         "Upload a license in the admin area"
       else
@@ -44,7 +44,7 @@ module LicenseHelper
     if license.expired? && license.will_block_changes?
       message << "Pushing code and creation of issues and merge requests"
 
-      message << 
+      message <<
         if license.block_changes?
           "has been disabled."
         else
@@ -52,7 +52,7 @@ module LicenseHelper
         end
     end
 
-    message << 
+    message <<
       if is_admin
         "Upload a new license in the admin area"
       else
