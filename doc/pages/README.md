@@ -71,8 +71,8 @@ To make use of GitLab Pages, your `.gitlab-ci.yml` must follow the rules below:
 The pages are created after the build completes successfully and the artifacts
 for the `pages` job are uploaded to GitLab.
 
-The example below is using [Jekyll][] and assumes that the created HTML files
-are generated under the `public/` directory.
+The example below uses [Jekyll][] and generates the created HTML files
+under the `public/` directory.
 
 ```yaml
 image: ruby:2.1
@@ -86,11 +86,29 @@ pages:
     - public
 ```
 
+The example below doesn't use any static site generator, but simply moves all files
+from the root of the project to the `public/` directory.
+
+```yaml
+pages:
+  stage: deploy
+  script:
+  - mkdir .public
+  - cp -r * .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+```
+
 ## Example projects
 
-Below is a list of example projects that make use of static generators.
+Below is a list of example projects for GitLab Pages with a plain HTML website or various static site generators.
 Contributions are very welcome.
 
+* [Plain HTML](https://gitlab.com/gitlab-examples/pages-plain-html)
 * [Jekyll](https://gitlab.com/gitlab-examples/pages-jekyll)
 
 ## Custom error codes pages
