@@ -15,8 +15,8 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I click to emoji in the picker' do
-    page.within '.awards-menu' do
-      page.first('img').click
+    page.within '.emoji-menu' do
+      page.first('.emoji-icon').click
     end
   end
 

@@ -97,8 +97,10 @@ module IssuesHelper
   def emoji_icon(name, unicode = nil)
     unicode ||= Emoji.emoji_filename(name)
 
-    content_tag :div, "", class: "icon emoji-icon emoji-#{unicode}",
-      "data-emoji" => name, "data-unicode-name" => unicode
+    content_tag :div, "",
+      class: "icon emoji-icon emoji-#{unicode}",
+      "data-emoji" => name,
+      "data-unicode-name" => unicode
   end
 
   def emoji_author_list(notes, current_user)
