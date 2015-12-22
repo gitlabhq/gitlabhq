@@ -50,6 +50,10 @@
   @include btn-color($blue-light, $border-blue-light, $blue-normal, $border-blue-normal, $blue-dark, $border-blue-dark, #FFFFFF);
 }
 
+@mixin btn-blue-medium {
+  @include btn-color($blue-medium-light, $border-blue-light, $blue-medium, $border-blue-normal, $blue-medium-dark, $border-blue-dark, #FFFFFF);
+}
+
 @mixin btn-orange {
   @include btn-color($orange-light, $border-orange-light, $orange-normal, $border-orange-normal, $orange-dark, $border-orange-dark, #FFFFFF);
 }
@@ -94,7 +98,10 @@
     @include btn-gray;
   }
 
-  &.btn-primary,
+  &.btn-primary {
+    @include btn-blue-medium;
+  }
+  
   &.btn-info {
     @include btn-blue;
   }
