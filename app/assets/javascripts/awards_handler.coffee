@@ -65,7 +65,7 @@ class @AwardsHandler
   resetTooltip: (award) ->
     award.tooltip("destroy")
 
-    # "destroy" call is asynchronous and there is no appropriate callnack on it, this is why we need to set timeout.
+    # "destroy" call is asynchronous and there is no appropriate callback on it, this is why we need to set timeout.
     setTimeout (->
       award.tooltip()
     ), 200
