@@ -1,6 +1,26 @@
 require 'spec_helper'
 
 describe MergeRequestsHelper do
+  describe 'ci_build_details_path' do
+    let(:project) { create :project }
+    let(:merge_request) { MergeRequest.new }
+    let(:ci_service) { CiService.new }
+    let(:last_commit) { Ci::Commit.new({}) }
+
+    before do
+      allow(merge_request).to receive(:source_project).and_return(project)
+      allow(merge_request).to receive(:last_commit).and_return(last_commit)
+      allow(project).to receive(:ci_service).and_return(ci_service)
+      allow(last_commit).to receive(:sha).and_return('12d65c')
+    end
+
+    it 'does not include api credentials in a link' do
+      allow(ci_service).
+        to receive(:build_page).and_return("http://secretuser:secretpass@jenkins.example.com:8888/job/test1/scm/bySHA1/12d65c")
+      expect(helper.ci_build_details_path(merge_request)).to_not match("secret")
+    end
+  end
+
   describe '#issues_sentence' do
     subject { issues_sentence(issues) }
     let(:issues) do
