@@ -45,14 +45,6 @@ class AwardEmoji
     food_drink: "Food"
   }.with_indifferent_access
 
-  def self.positions_by_name(name)
-    emoji = emojis_json.find do |emoji|
-      emoji["short_names"].include?(name)
-    end
-
-    [emoji["sheet_x"], emoji["sheet_y"]]
-  end
-
   def self.normilize_emoji_name(name)
     ALIASES[name] || name
   end
