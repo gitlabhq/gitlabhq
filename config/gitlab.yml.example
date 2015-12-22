@@ -144,6 +144,15 @@ production: &base
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
+  ## Auxiliary jobs
+  # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
+  # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
+  cron_jobs:
+    # Flag stuck CI builds as failed
+    stuck_ci_builds_worker:
+      cron: "0 0 * * *"
+
+
   #
   # 2. GitLab CI settings
   # ==========================
