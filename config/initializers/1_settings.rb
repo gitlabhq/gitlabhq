@@ -303,16 +303,16 @@ Settings.gravatar['host']         = Settings.get_host_without_www(Settings.grava
 Settings['cron_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker']['cron'] ||= '0 0 * * *'
-Settings.cron_jobs['stuck_ci_builds_worker']['class'] = 'StuckCiBuildsWorker'
+Settings.cron_jobs['stuck_ci_builds_worker']['job_class'] = 'StuckCiBuildsWorker'
 Settings.cron_jobs['historical_data_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['historical_data_worker']['cron'] ||= '0 12 * * *'
-Settings.cron_jobs['historical_data_worker']['class'] = 'HistoricalDataWorker'
+Settings.cron_jobs['historical_data_worker']['job_class'] = 'HistoricalDataWorker'
 Settings.cron_jobs['update_all_mirrors_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['update_all_mirrors_worker']['cron'] ||= '0 * * * *'
-Settings.cron_jobs['update_all_mirrors_worker']['class'] = 'UpdateAllMirrorsWorker'
+Settings.cron_jobs['update_all_mirrors_worker']['job_class'] = 'UpdateAllMirrorsWorker'
 Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
-Settings.cron_jobs['ldap_sync_worker']['class'] = 'LdapSyncWorker'
+Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
 
 #
 # GitLab Shell
