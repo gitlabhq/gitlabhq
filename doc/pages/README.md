@@ -70,7 +70,7 @@ To make use of GitLab Pages, your `.gitlab-ci.yml` must follow the rules below:
 1. `artifacts` with a path to the `public/` directory must be defined
 
 Be aware that Pages are by default branch/tag agnostic and their deployment
-relies solely on what you specify in `gitlab-ci.yml`. If you don't limit the
+relies solely on what you specify in `.gitlab-ci.yml`. If you don't limit the
 `pages` job with the [`only` parameter](../ci/yaml/README.md#only-and-except),
 whenever a new commit is pushed to whatever branch or tag, the Pages will be
 overwritten. In the examples below, we limit the Pages to be deployed whenever
