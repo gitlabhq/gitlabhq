@@ -72,19 +72,23 @@ describe Gitlab::StringPath do
 
       it { is_expected.to be_an_instance_of Array }
       it { is_expected.to all(be_an_instance_of described_class) }
-      it { is_expected.to contain_exactly string_path('path/dir_1/file_1'),
-                                          string_path('path/dir_1/file_b'),
-                                          string_path('path/dir_1/subdir/'),
-                                          string_path('path/dir_1/subdir/subfile') }
+      it do
+        is_expected.to contain_exactly string_path('path/dir_1/file_1'),
+                                       string_path('path/dir_1/file_b'),
+                                       string_path('path/dir_1/subdir/'),
+                                       string_path('path/dir_1/subdir/subfile')
+      end
     end
 
     describe '#children' do
       subject { |example| path(example).children }
 
       it { is_expected.to all(be_an_instance_of described_class) }
-      it { is_expected.to contain_exactly string_path('path/dir_1/file_1'),
-                                          string_path('path/dir_1/file_b'),
-                                          string_path('path/dir_1/subdir/') }
+      it do
+        is_expected.to contain_exactly string_path('path/dir_1/file_1'),
+                                       string_path('path/dir_1/file_b'),
+                                       string_path('path/dir_1/subdir/')
+      end
     end
 
     describe '#files' do
@@ -92,8 +96,10 @@ describe Gitlab::StringPath do
 
       it { is_expected.to all(be_file) }
       it { is_expected.to all(be_an_instance_of described_class) }
-      it { is_expected.to contain_exactly string_path('path/dir_1/file_1'),
-                                          string_path('path/dir_1/file_b') }
+      it do
+        is_expected.to contain_exactly string_path('path/dir_1/file_1'),
+                                       string_path('path/dir_1/file_b')
+      end
     end
 
     describe '#directories' do
@@ -109,8 +115,10 @@ describe Gitlab::StringPath do
 
       it { is_expected.to all(be_directory) }
       it { is_expected.to all(be_an_instance_of described_class) }
-      it { is_expected.to contain_exactly string_path('path/dir_1/subdir/'),
-                                          string_path('path/dir_1/../') }
+      it do
+        is_expected.to contain_exactly string_path('path/dir_1/subdir/'),
+                                       string_path('path/dir_1/../')
+      end
     end
   end
 
