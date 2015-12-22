@@ -1,28 +1,39 @@
 require 'spec_helper'
 
-describe "Lint" do
+describe 'CI Lint' do
   before do
     login_as :user
   end
 
-  it "Yaml parsing", js: true do
-    content = File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
-    visit ci_lint_path 
-    fill_in "content", with: content
-    click_on "Validate"
-    within "table" do
-      expect(page).to have_content("Job - rspec")
-      expect(page).to have_content("Job - spinach")
-      expect(page).to have_content("Deploy Job - staging")
-      expect(page).to have_content("Deploy Job - production")
+  describe 'YAML parsing', js: true do
+    before do
+      visit ci_lint_path
+      fill_in 'content', with: yaml_content
+      click_on 'Validate'
     end
-  end
 
-  it "Yaml parsing with error", js: true do
-    visit ci_lint_path
-    fill_in "content", with: ""
-    click_on "Validate"
-    expect(page).to have_content("Status: syntax is incorrect")
-    expect(page).to have_content("Error: Please provide content of .gitlab-ci.yml")
+    context 'YAML is correct' do
+      let(:yaml_content) do
+        File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+      end
+
+      it 'Yaml parsing' do
+        within "table" do
+          expect(page).to have_content('Job - rspec')
+          expect(page).to have_content('Job - spinach')
+          expect(page).to have_content('Deploy Job - staging')
+          expect(page).to have_content('Deploy Job - production')
+        end
+      end
+    end
+
+    context 'YAML is incorrect' do
+      let(:yaml_content) { '' }
+
+      it 'displays information about an error' do
+        expect(page).to have_content('Status: syntax is incorrect')
+        expect(page).to have_content('Error: Please provide content of .gitlab-ci.yml')
+      end
+    end
   end
 end
