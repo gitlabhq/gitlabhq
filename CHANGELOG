@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.4.0 (unreleased)
+  - Add "Frequently used" category to emoji picker
+
 v 8.3.0 (unreleased)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)

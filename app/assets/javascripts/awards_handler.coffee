@@ -10,6 +10,8 @@ class @AwardsHandler
         if $(".emoji-menu").is(":visible")
           $(".emoji-menu").hide()
 
+    @renderFrequentlyUsedBlock()
+
   addAward: (emoji) ->
     emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
@@ -18,6 +20,8 @@ class @AwardsHandler
     $(".emoji-menu").hide()
     
   addAwardToEmojiBar: (emoji) ->
+    @addEmojiToFrequentlyUsedList(emoji)
+
     emoji = @normilizeEmojiName(emoji)
     if @exist(emoji)
       if @isActive(emoji)
@@ -108,3 +112,25 @@ class @AwardsHandler
 
   normilizeEmojiName: (emoji) ->
     @aliases[emoji] || emoji
+
+  addEmojiToFrequentlyUsedList: (emoji) ->
+    frequently_used_emojis = @getFrequentlyUsedEmojis()
+    frequently_used_emojis.push(emoji)
+    $.cookie('frequently_used_emojis', frequently_used_emojis.join(","), { expires: 365 })
+
+  getFrequentlyUsedEmojis: ->
+    frequently_used_emojis = ($.cookie('frequently_used_emojis') || "").split(",")
+    _.compact(_.uniq(frequently_used_emojis))
+
+  renderFrequentlyUsedBlock: ->
+    if $.cookie('frequently_used_emojis')
+      frequently_used_emojis = @getFrequentlyUsedEmojis()
+
+      ul = $("<ul>")
+
+      for emoji in frequently_used_emojis
+        do (emoji) ->
+          $(".emoji-menu-content [data-emoji='" + emoji + "']").closest("li").clone().appendTo(ul)
+
+      $(".emoji-menu-content").prepend(ul).prepend($("<h4>").text("Frequently used"))
+
