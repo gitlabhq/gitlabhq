@@ -5,15 +5,15 @@ module Gitlab
   # This is IO-operations safe class, that does similar job to 
   # Ruby's Pathname but without the risk of accessing filesystem.
   #
-  # TODO: better support for './' and '../'
+  # TODO: better support for '../' and './'
   #
   class StringPath
     attr_reader :path, :universe
 
     def initialize(path, universe)
       @path = prepare(path)
-      @universe = universe.map { |entry| prepare(entry) }
-      @universe.unshift('./') unless @universe.include?('./')
+      @universe = Set.new(universe.map { |entry| prepare(entry) })
+      @universe.add('./')
     end
 
     def to_s
@@ -64,7 +64,10 @@ module Gitlab
     end
 
     def children
-      descendants.select { |descendant| descendant.parent == self }
+      return [] unless directory?
+      return @children if @children
+      children = @universe.select { |entry| entry =~ %r{^#{@path}[^/]+/?$} }
+      @children = children.map { |path| new(path) }
     end
 
     def directories
@@ -83,6 +86,10 @@ module Gitlab
 
     def ==(other)
       @path == other.path && @universe == other.universe
+    end
+
+    def inspect
+      "#{self.class.name}: #{@path}"
     end
 
     private
