@@ -27,6 +27,13 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     end
   end
 
+  step 'I can see the activity and food categories' do
+    page.within '.emoji-menu' do
+      expect(page).to_not have_selector 'Activity'
+      expect(page).to_not have_selector 'Food'
+    end
+  end
+
   step 'I have award added' do
     page.within '.awards' do
       expect(page).to have_selector '.award'
