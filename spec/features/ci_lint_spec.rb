@@ -5,7 +5,7 @@ describe 'CI Lint' do
     login_as :user
   end
 
-  describe 'YAML parsing', js: true do
+  describe 'YAML parsing' do
     before do
       visit ci_lint_path
       fill_in 'content', with: yaml_content
