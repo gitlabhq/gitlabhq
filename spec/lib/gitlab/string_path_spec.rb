@@ -50,18 +50,20 @@ describe Gitlab::StringPath do
 
   describe 'path/dir_1/', path: 'path/dir_1/' do
     subject { |example| path(example) }
-
     it { is_expected.to have_parent }
 
     describe '#basename' do
       subject { |example| path(example).basename }
-
       it { is_expected.to eq 'dir_1/' }
+    end
+
+    describe '#name' do
+      subject { |example| path(example).name }
+      it { is_expected.to eq 'dir_1' }
     end
 
     describe '#parent' do
       subject { |example| path(example).parent }
-
       it { is_expected.to eq string_path('path/') }
     end
 
@@ -101,6 +103,15 @@ describe Gitlab::StringPath do
       it { is_expected.to all(be_an_instance_of described_class) }
       it { is_expected.to contain_exactly string_path('path/dir_1/subdir/') }
     end
+
+    describe '#directories!' do
+      subject { |example| path(example).directories! }
+
+      it { is_expected.to all(be_directory) }
+      it { is_expected.to all(be_an_instance_of described_class) }
+      it { is_expected.to contain_exactly string_path('path/dir_1/subdir/'),
+                                          string_path('path/dir_1/../') }
+    end
   end
 
   describe './', path: './' do
@@ -118,7 +129,6 @@ describe Gitlab::StringPath do
 
     describe '#children' do
       subject { |example| path(example).children }
-
       it { expect(subject.count).to eq 3 }
     end
   end

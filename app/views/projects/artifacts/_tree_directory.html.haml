@@ -1,6 +1,6 @@
 %tr{ class: 'tree-item' }
   %td.tree-item-file-name
-    = tree_icon('folder', '755', directory.basename)
+    = tree_icon('folder', '755', directory.name)
     %span.str-truncated
-      = link_to directory.basename, browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build, path: directory.path)  
+      = link_to directory.name, browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build, path: directory.path)
   %td

@@ -5,6 +5,7 @@ module Gitlab
   # This is IO-operations safe class, that does similar job to 
   # Ruby's Pathname but without the risk of accessing filesystem.
   #
+  # TODO: better support for './' and '../'
   #
   class StringPath
     attr_reader :path, :universe
@@ -45,8 +46,11 @@ module Gitlab
     end
 
     def basename
-      name = @path.split(::File::SEPARATOR).last
       directory? ? name + ::File::SEPARATOR : name
+    end
+
+    def name
+      @path.split(::File::SEPARATOR).last
     end
 
     def has_descendants?
@@ -66,6 +70,10 @@ module Gitlab
     def directories
       return [] unless directory?
       children.select { |child| child.directory? }
+    end
+
+    def directories!
+      has_parent? ? directories.prepend(new(@path + '../')) : directories
     end
 
     def files
