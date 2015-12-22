@@ -17,13 +17,14 @@ The steps that are performed from the initialization of a project to the
 creation of the static content, can be summed up to:
 
 1. Create project (its name could be specific according to the case)
-1. Enable the GitLab Pages feature under the project's settings
 1. Provide a specific job in `.gitlab-ci.yml`
 1. GitLab Runner builds the project
 1. GitLab CI uploads the artifacts
 1. Nginx serves the content
 
 As a user, you should normally be concerned only with the first three items.
+If [shared runners](../ci/runners/README.md) are enabled by your GitLab
+administrator, you should be able to use them instead of bringing your own.
 
 In general there are four kinds of pages one might create. This is better
 explained with an example so let's make some assumptions.
@@ -68,6 +69,13 @@ To make use of GitLab Pages, your `.gitlab-ci.yml` must follow the rules below:
 1. Any static content must be placed under a `public/` directory
 1. `artifacts` with a path to the `public/` directory must be defined
 
+Be aware that Pages are by default branch/tag agnostic and their deployment
+relies solely on what you specify in `.gitlab-ci.yml`. If you don't limit the
+`pages` job with the [`only` parameter](../ci/yaml/README.md#only-and-except),
+whenever a new commit is pushed to whatever branch or tag, the Pages will be
+overwritten. In the examples below, we limit the Pages to be deployed whenever
+a commit is pushed only on the `master` branch, which is advisable to do so.
+
 The pages are created after the build completes successfully and the artifacts
 for the `pages` job are uploaded to GitLab.
 
@@ -84,10 +92,14 @@ pages:
   artifacts:
     paths:
     - public
+  only:
+  - master
 ```
 
-The example below doesn't use any static site generator, but simply moves all files
-from the root of the project to the `public/` directory.
+The example below doesn't use any static site generator, but simply moves all
+files from the root of the project to the `public/` directory. The `.public`
+workaround is so `cp` doesn’t also copy `public/` to itself in an infinite
+loop.
 
 ```yaml
 pages:
@@ -105,8 +117,8 @@ pages:
 
 ## Example projects
 
-Below is a list of example projects for GitLab Pages with a plain HTML website or various static site generators.
-Contributions are very welcome.
+Below is a list of example projects for GitLab Pages with a plain HTML website
+or various static site generators. Contributions are very welcome.
 
 * [Plain HTML](https://gitlab.com/gitlab-examples/pages-plain-html)
 * [Jekyll](https://gitlab.com/gitlab-examples/pages-jekyll)
@@ -119,10 +131,9 @@ in the artifacts.
 
 ## Frequently Asked Questions
 
-**Q:** Can I download my generated pages?
+**Q: Can I download my generated pages?**
 
-**A:** Sure. All you need to do is download the artifacts archive from the
-    build page.
+Sure. All you need to do is download the artifacts archive from the build page.
 
 ---
 
