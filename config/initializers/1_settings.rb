@@ -298,6 +298,23 @@ Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?
 Settings.gravatar['host']         = Settings.get_host_without_www(Settings.gravatar['plain_url'])
 
 #
+# Cron Jobs
+#
+Settings['cron_jobs'] ||= Settingslogic.new({})
+Settings.cron_jobs['stuck_ci_builds_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['stuck_ci_builds_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['stuck_ci_builds_worker']['class'] = 'StuckCiBuildsWorker'
+Settings.cron_jobs['historical_data_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['historical_data_worker']['cron'] ||= '0 12 * * *'
+Settings.cron_jobs['historical_data_worker']['class'] = 'HistoricalDataWorker'
+Settings.cron_jobs['update_all_mirrors_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['update_all_mirrors_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['update_all_mirrors_worker']['class'] = 'UpdateAllMirrorsWorker'
+Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
+Settings.cron_jobs['ldap_sync_worker']['class'] = 'LdapSyncWorker'
+
+#
 # GitLab Shell
 #
 Settings['gitlab_shell'] ||= Settingslogic.new({})
@@ -351,7 +368,7 @@ Settings['kerberos'] ||= Settingslogic.new({})
 Settings.kerberos['enabled'] = false if Settings.kerberos['enabled'].nil?
 Settings.kerberos['keytab'] = nil if Settings.kerberos['keytab'].blank? #nil means use default keytab
 Settings.kerberos['service_principal_name'] = nil if Settings.kerberos['service_principal_name'].blank? #nil means any SPN in keytab
-Settings.kerberos['use_dedicated_port'] = false if Settings.kerberos['use_dedicated_port'].nil? 
+Settings.kerberos['use_dedicated_port'] = false if Settings.kerberos['use_dedicated_port'].nil?
 Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
 Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
 
