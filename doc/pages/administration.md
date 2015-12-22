@@ -14,6 +14,9 @@ GitLab EE instance.
    will be served
 1. Pages use a separate Nginx configuration file which needs to be explicitly
    added in the server under which GitLab EE runs
+1. Optionally but recommended, you can add some
+   [shared runners](../ci/runners/README.md) so that your users don't have to
+   bring their own.
 
 Both of these settings are described in detail in the sections below.
 
