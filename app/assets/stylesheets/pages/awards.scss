@@ -90,13 +90,15 @@
         height: 300px;
         overflow-y: scroll;
 
-        h4 {
+        h5 {
           clear: left;
         }
 
         ul {
           list-style-type: none;
           margin-left: -20px;
+          margin-bottom: 20px;
+          overflow: auto;
         }
 
         li {

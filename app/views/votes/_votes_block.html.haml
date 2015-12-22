@@ -12,7 +12,7 @@
       .emoji-menu
         .emoji-menu-content
           - AwardEmoji.emoji_by_category.each do |category, emojis|
-            %h4= AwardEmoji::CATEGORIES[category]
+            %h5= AwardEmoji::CATEGORIES[category]
             %ul
               - emojis.each do |emoji|
                 %li
