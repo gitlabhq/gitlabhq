@@ -234,7 +234,7 @@ Settings.gravatar['host']         = Settings.get_host_without_www(Settings.grava
 Settings['cron_jobs'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_ci_builds_worker']['cron'] ||= '0 0 * * *'
-Settings.cron_jobs['stuck_ci_builds_worker']['class'] = 'StuckCiBuildsWorker'
+Settings.cron_jobs['stuck_ci_builds_worker']['job_class'] = 'StuckCiBuildsWorker'
 
 
 #
