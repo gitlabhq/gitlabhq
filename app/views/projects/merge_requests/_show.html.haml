@@ -1,4 +1,6 @@
-- page_title "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
+- page_title       "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
+- page_description @merge_request.description
+
 = render "header_title"
 
 - if params[:view] == 'parallel'
