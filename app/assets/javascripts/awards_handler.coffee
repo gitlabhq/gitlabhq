@@ -1,12 +1,23 @@
 class @AwardsHandler
   constructor: (@post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
+    $(".add-award").click (event)->
+      event.stopPropagation()
+      event.preventDefault()
+      $(".emoji-menu").show()
+
+    $("html").click ->
+      if !$(event.target).closest(".emoji-menu").length
+        if $(".emoji-menu").is(":visible")
+          $(".emoji-menu").hide()
 
   addAward: (emoji) ->
     emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
       @addAwardToEmojiBar(emoji)
+
+    $(".emoji-menu").hide()
     
-  addAwardToEmojiBar: (emoji, custom_path = '') ->
+  addAwardToEmojiBar: (emoji) ->
     emoji = @normilizeEmojiName(emoji)
     if @exist(emoji)
       if @isActive(emoji)
@@ -17,7 +28,7 @@ class @AwardsHandler
         counter.parent().addClass("active")
         @addMeToAuthorList(emoji)
     else
-      @createEmoji(emoji, custom_path)
+      @createEmoji(emoji)
 
   exist: (emoji) ->
     @findEmojiIcon(emoji).length > 0
@@ -54,31 +65,29 @@ class @AwardsHandler
   resetTooltip: (award) ->
     award.tooltip("destroy")
 
-    # "destroy" call is asynchronous, this is why we need to set timeout.
+    # "destroy" call is asynchronous and there is no appropriate callback on it, this is why we need to set timeout.
     setTimeout (->
       award.tooltip()
     ), 200
     
 
-  createEmoji: (emoji, custom_path) ->
+  createEmoji: (emoji) ->
+    emojiCssClass = @resolveNameToCssClass(emoji)
+
     nodes = []
     nodes.push("<div class='award active' title='me'>")
-    nodes.push("<div class='icon' data-emoji='" + emoji + "'>")
-    nodes.push(@getImage(emoji, custom_path))
+    nodes.push("<div class='icon emoji-icon " + emojiCssClass + "' data-emoji='" + emoji + "'></div>")
+    nodes.push("<div class='counter'>1</div>")
     nodes.push("</div>")
-    nodes.push("<div class='counter'>1")
-    nodes.push("</div></div>")
 
-    $(".awards-controls").before(nodes.join("\n"))
+    emoji_node = $(nodes.join("\n")).insertBefore(".awards-controls").find(".emoji-icon").data("emoji", emoji)
 
     $(".award").tooltip()
 
-  getImage: (emoji, custom_path) ->
-    if custom_path
-      $("<img>").attr({src: custom_path, width: 20, height: 20}).wrap("<div>").parent().html()
-    else
-      $("li[data-emoji='" + emoji + "']").html()
+  resolveNameToCssClass: (emoji) ->
+    unicodeName = $(".emoji-menu-content [data-emoji='?']".replace("?", emoji)).data("unicode-name")
 
+    "emoji-" + unicodeName
 
   postEmoji: (emoji, callback) ->
     $.post @post_emoji_url, { note: {
@@ -90,7 +99,7 @@ class @AwardsHandler
         callback.call()
 
   findEmojiIcon: (emoji) ->
-    $(".icon[data-emoji='" + emoji + "']")
+    $(".award [data-emoji='" + emoji + "']")
 
   scrollToAwards: ->
     $('body, html').animate({

@@ -1,11 +1,4 @@
 class AwardEmoji
-  EMOJI_LIST = [
-    "+1", "-1", "100", "blush", "heart", "smile", "rage",
-    "beers", "disappointed", "ok_hand",
-    "helicopter", "shit", "airplane", "alarm_clock",
-    "ambulance", "anguished", "two_hearts", "wink"
-  ]
-
   ALIASES = {
     pout: "rage",
     satisfied: "laughing",
@@ -37,11 +30,41 @@ class AwardEmoji
     squirrel: "shipit"
   }.with_indifferent_access
 
-  def self.path_to_emoji_image(name)
-    "emoji/#{Emoji.emoji_filename(name)}.png"
-  end
+  CATEGORIES = {
+    other: "Other",
+    objects: "Objects",
+    places: "Places",
+    travel_places: "Travel",
+    emoticons: "Emoticons",
+    objects_symbols: "Symbols",
+    nature: "Nature",
+    celebration: "Celebration",
+    people: "People",
+    activity: "Activity",
+    flags: "Flags",
+    food_drink: "Food"
+  }.with_indifferent_access
 
   def self.normilize_emoji_name(name)
     ALIASES[name] || name
+  end
+
+  def self.emoji_by_category
+    unless @emoji_by_category
+      @emoji_by_category = {}
+      emojis_added = []
+
+      Emoji.emojis.each do |emoji_name, data|
+        next if emojis_added.include?(data["name"])
+        emojis_added << data["name"]
+
+        @emoji_by_category[data["category"]] ||= []
+        @emoji_by_category[data["category"]] << data
+      end
+
+      @emoji_by_category = @emoji_by_category.sort.to_h
+    end
+
+    @emoji_by_category
   end
 end

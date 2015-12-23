@@ -127,7 +127,7 @@ class @Notes
       @initTaskList()
 
     if note.award
-      awards_handler.addAwardToEmojiBar(note.note, note.emoji_path)
+      awards_handler.addAwardToEmojiBar(note.note)
       awards_handler.scrollToAwards()
 
   ###

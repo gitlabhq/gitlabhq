@@ -15,8 +15,8 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I click to emoji in the picker' do
-    page.within '.awards-menu' do
-      page.first('img').click
+    page.within '.emoji-menu' do
+      page.first('.emoji-icon').click
     end
   end
 
@@ -24,6 +24,13 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     page.within '.awards' do
       page.first('.award').click
       expect(page).to_not have_selector '.award'
+    end
+  end
+
+  step 'I can see the activity and food categories' do
+    page.within '.emoji-menu' do
+      expect(page).to_not have_selector 'Activity'
+      expect(page).to_not have_selector 'Food'
     end
   end
 
