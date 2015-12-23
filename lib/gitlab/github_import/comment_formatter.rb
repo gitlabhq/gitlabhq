@@ -1,14 +1,6 @@
 module Gitlab
   module GithubImport
-    class Comment
-      attr_reader :project, :raw_data
-
-      def initialize(project, raw_data)
-        @project = project
-        @raw_data = raw_data
-        @formatter = Gitlab::ImportFormatter.new
-      end
-
+    class CommentFormatter < BaseFormatter
       def attributes
         {
           project: project,
@@ -46,13 +38,7 @@ module Gitlab
       end
 
       def note
-        @formatter.author_line(author) + body
-      end
-
-      def gl_user_id(github_id)
-        User.joins(:identities).
-          find_by("identities.extern_uid = ? AND identities.provider = 'github'", github_id.to_s).
-          try(:id)
+        formatter.author_line(author) + body
       end
     end
   end

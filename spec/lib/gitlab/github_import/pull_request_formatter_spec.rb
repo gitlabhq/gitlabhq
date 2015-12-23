@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::PullRequest, lib: true do
+describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:project) { create(:project) }
   let(:source_branch) { OpenStruct.new(ref: 'feature') }
   let(:target_branch) { OpenStruct.new(ref: 'master') }
@@ -9,6 +9,7 @@ describe Gitlab::GithubImport::PullRequest, lib: true do
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
   let(:base_data) do
     {
+      number: 1347,
       state: 'open',
       title: 'New feature',
       body: 'Please pull these awesome changes',
@@ -97,11 +98,11 @@ describe Gitlab::GithubImport::PullRequest, lib: true do
     context 'when it is assigned to someone' do
       let(:raw_data) { OpenStruct.new(base_data.merge(assignee: octocat)) }
 
-      it 'returns nil as assigned_id when is not a GitLab user' do
+      it 'returns nil as assignee_id when is not a GitLab user' do
         expect(pull_request.attributes.fetch(:assignee_id)).to be_nil
       end
 
-      it 'returns GitLab user id as assigned_id when is a GitLab user' do
+      it 'returns GitLab user id as assignee_id when is a GitLab user' do
         gl_user = create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
 
         expect(pull_request.attributes.fetch(:assignee_id)).to eq gl_user.id
@@ -120,6 +121,14 @@ describe Gitlab::GithubImport::PullRequest, lib: true do
 
         expect(pull_request.attributes.fetch(:author_id)).to eq gl_user.id
       end
+    end
+  end
+
+  describe '#number' do
+    let(:raw_data) { OpenStruct.new(base_data.merge(number: 1347)) }
+
+    it 'returns pull request number' do
+      expect(pull_request.number).to eq 1347
     end
   end
 

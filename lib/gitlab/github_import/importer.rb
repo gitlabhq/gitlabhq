@@ -21,29 +21,17 @@ module Gitlab
       private
 
       def import_issues
-        # Issues && Comments
         client.list_issues(project.import_source, state: :all,
                                                   sort: :created,
-                                                  direction: :asc).each do |issue|
-          if issue.pull_request.nil?
+                                                  direction: :asc).each do |raw_data|
+          gh_issue = IssueFormatter.new(project, raw_data)
 
-            body = @formatter.author_line(issue.user.login)
-            body += issue.body || ""
+          if gh_issue.valid?
+            issue = Issue.create!(gh_issue.attributes)
 
-            if issue.comments > 0
-              body += @formatter.comments_header
-
-              client.issue_comments(project.import_source, issue.number).each do |c|
-                body += @formatter.comment(c.user.login, c.created_at, c.body)
-              end
+            if gh_issue.has_comments?
+              import_comments(gh_issue.number, issue)
             end
-
-            project.issues.create!(
-              description: body,
-              title: issue.title,
-              state: issue.state == 'closed' ? 'closed' : 'opened',
-              author_id: gl_author_id(project, issue.user.id)
-            )
           end
         end
       end
@@ -52,39 +40,30 @@ module Gitlab
         client.pull_requests(project.import_source, state: :all,
                                                     sort: :created,
                                                     direction: :asc).each do |raw_data|
-          pull_request = PullRequest.new(project, raw_data)
+          pull_request = PullRequestFormatter.new(project, raw_data)
 
           if pull_request.valid?
             merge_request = MergeRequest.create!(pull_request.attributes)
-            import_comments_on_pull_request(merge_request, raw_data)
-            import_comments_on_pull_request_diff(merge_request, raw_data)
+            import_comments(pull_request.number, merge_request)
+            import_comments_on_diff(pull_request.number, merge_request)
           end
         end
       end
 
-      def import_comments_on_pull_request(merge_request, pull_request)
-        client.issue_comments(project.import_source, pull_request.number).each do |raw_data|
-          comment = Comment.new(project, raw_data)
-          merge_request.notes.create!(comment.attributes)
-        end
+      def import_comments(issue_number, noteable)
+        comments = client.issue_comments(project.import_source, issue_number)
+        create_comments(comments, noteable)
       end
 
-      def import_comments_on_pull_request_diff(merge_request, pull_request)
-        client.pull_request_comments(project.import_source, pull_request.number).each do |raw_data|
-          comment = Comment.new(project, raw_data)
-          merge_request.notes.create!(comment.attributes)
-        end
+      def import_comments_on_diff(pull_request_number, merge_request)
+        comments = client.pull_request_comments(project.import_source, pull_request_number)
+        create_comments(comments, merge_request)
       end
 
-      def gl_author_id(project, github_id)
-        gl_user_id(github_id) || project.creator_id
-      end
-
-      def gl_user_id(github_id)
-        if github_id
-          User.joins(:identities).
-            find_by("identities.extern_uid = ? AND identities.provider = 'github'", github_id.to_s).
-            try(:id)
+      def create_comments(comments, noteable)
+        comments.each do |raw_data|
+          comment = CommentFormatter.new(project, raw_data)
+          noteable.notes.create!(comment.attributes)
         end
       end
     end

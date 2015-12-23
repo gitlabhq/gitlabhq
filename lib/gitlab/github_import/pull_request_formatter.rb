@@ -1,14 +1,6 @@
 module Gitlab
   module GithubImport
-    class PullRequest
-      attr_reader :project, :raw_data
-
-      def initialize(project, raw_data)
-        @project = project
-        @raw_data = raw_data
-        @formatter = Gitlab::ImportFormatter.new
-      end
-
+    class PullRequestFormatter < BaseFormatter
       def attributes
         {
           title: raw_data.title,
@@ -23,6 +15,10 @@ module Gitlab
           created_at: raw_data.created_at,
           updated_at: updated_at
         }
+      end
+
+      def number
+        raw_data.number
       end
 
       def valid?
@@ -54,7 +50,7 @@ module Gitlab
       end
 
       def description
-        @formatter.author_line(author) + body
+        formatter.author_line(author) + body
       end
 
       def source_project
@@ -91,12 +87,6 @@ module Gitlab
         else
           raw_data.updated_at
         end
-      end
-
-      def gl_user_id(github_id)
-        User.joins(:identities).
-          find_by("identities.extern_uid = ? AND identities.provider = 'github'", github_id.to_s).
-          try(:id)
       end
     end
   end
