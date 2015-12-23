@@ -1,3 +1,4 @@
+#= require flash
 #= require issue
 
 describe 'Issue', ->
@@ -28,7 +29,7 @@ describe 'reopen/close issue', ->
   it 'closes an issue', ->
     $.ajax = (obj) ->
       expect(obj.type).toBe('PUT')
-      expect(obj.url).toBe('http://gitlab/issues/6/close')
+      expect(obj.url).toBe('http://gitlab.com/issues/6/close')
       obj.success saved: true
     
     $btnClose = $('a.btn-close')
@@ -44,10 +45,56 @@ describe 'reopen/close issue', ->
     expect($('div.status-box-closed')).toBeVisible()
     expect($('div.status-box-open')).toBeHidden()
 
+  it 'fails to closes an issue with success:false', ->
+
+    $.ajax = (obj) ->
+      expect(obj.type).toBe('PUT')
+      expect(obj.url).toBe('http://goesnowhere.nothing/whereami')
+      obj.success saved: false
+    
+    $btnClose = $('a.btn-close')
+    $btnReopen = $('a.btn-reopen')
+    $btnClose.attr('href','http://goesnowhere.nothing/whereami')
+    expect($btnReopen).toBeHidden()
+    expect($btnClose.text()).toBe('Close')
+    expect(typeof $btnClose.prop('disabled')).toBe('undefined')
+
+    $btnClose.trigger('click')
+    
+    expect($btnReopen).toBeHidden()
+    expect($btnClose).toBeVisible()
+    expect($('div.status-box-closed')).toBeHidden()
+    expect($('div.status-box-open')).toBeVisible()
+    expect($('div.flash-alert')).toBeVisible()
+    expect($('div.flash-alert').text()).toBe('Unable to update this issue at this time.')
+
+  it 'fails to closes an issue with HTTP error', ->
+
+    $.ajax = (obj) ->
+      expect(obj.type).toBe('PUT')
+      expect(obj.url).toBe('http://goesnowhere.nothing/whereami')
+      obj.error()
+    
+    $btnClose = $('a.btn-close')
+    $btnReopen = $('a.btn-reopen')
+    $btnClose.attr('href','http://goesnowhere.nothing/whereami')
+    expect($btnReopen).toBeHidden()
+    expect($btnClose.text()).toBe('Close')
+    expect(typeof $btnClose.prop('disabled')).toBe('undefined')
+
+    $btnClose.trigger('click')
+    
+    expect($btnReopen).toBeHidden()
+    expect($btnClose).toBeVisible()
+    expect($('div.status-box-closed')).toBeHidden()
+    expect($('div.status-box-open')).toBeVisible()
+    expect($('div.flash-alert')).toBeVisible()
+    expect($('div.flash-alert').text()).toBe('Unable to update this issue at this time.')
+
   it 'reopens an issue', ->
     $.ajax = (obj) ->
       expect(obj.type).toBe('PUT')
-      expect(obj.url).toBe('http://gitlab/issues/6/reopen')
+      expect(obj.url).toBe('http://gitlab.com/issues/6/reopen')
       obj.success saved: true
 
     $btnClose = $('a.btn-close')

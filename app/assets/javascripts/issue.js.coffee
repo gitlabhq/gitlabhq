@@ -15,6 +15,7 @@ class @Issue
     $(document).on 'tasklist:changed', '.detail-page-description .js-task-list-container', @updateTaskList
 
   initIssueBtnEventListeners: ->
+    issueFailMessage = 'Unable to update this issue at this time.'
     $('a.btn-close, a.btn-reopen').on 'click', (e) ->
       e.preventDefault()
       e.stopImmediatePropagation()
@@ -27,7 +28,7 @@ class @Issue
         url: url,
         error: (jqXHR, textStatus, errorThrown) ->
           issueStatus = if isClose then 'close' else 'open'
-          new Flash('Issues update failed', 'alert')
+          new Flash(issueFailMessage, 'alert')
         success: (data, textStatus, jqXHR) ->
           if data.saved
             $this.addClass('hidden')
@@ -40,7 +41,7 @@ class @Issue
               $('div.status-box-closed').addClass('hidden')
               $('div.status-box-open').removeClass('hidden')
           else
-            new Flash('Issues update failed', 'alert')
+            new Flash(issueFailMessage, 'alert')
           $this.prop('disabled', false)
 
   disableTaskList: ->
