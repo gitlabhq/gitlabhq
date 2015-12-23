@@ -10,4 +10,7 @@ class MigrateCiWebHooks < ActiveRecord::Migration
       'JOIN projects ON ci_projects.gitlab_id = projects.id'
     )
   end
+
+  def down
+  end
 end
