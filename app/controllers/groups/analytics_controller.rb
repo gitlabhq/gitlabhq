@@ -1,4 +1,4 @@
-class Groups::StatsController < Groups::ApplicationController
+class Groups::AnalyticsController < Groups::ApplicationController
   before_action :group
 
   layout 'group'

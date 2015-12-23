@@ -1,5 +1,5 @@
-- page_title "Statistics"
-- header_title group_title(@group, "Statistics", group_stats_path(@group))
+- page_title "Contribution Analytics"
+- header_title group_title(@group, "Contribution Analytics", group_analytics_path(@group))
 
 .gray-content-block
   .pull-right
@@ -9,16 +9,16 @@
         %b.caret
       %ul.dropdown-menu
         %li
-          = link_to group_stats_path(@group, start_date: Date.today - 1.week) do
+          = link_to group_analytics_path(@group, start_date: Date.today - 1.week) do
             Last week
         %li
-          = link_to group_stats_path(@group, start_date: Date.today - 1.month) do
+          = link_to group_analytics_path(@group, start_date: Date.today - 1.month) do
             Last month
         %li
-          = link_to group_stats_path(@group, start_date: Date.today - 3.months) do
+          = link_to group_analytics_path(@group, start_date: Date.today - 3.months) do
             Last 3 months
   .oneline
-    Contribution statistics for issues, merge requests and push events since #{@start_date}
+    Contribution analytics for issues, merge requests and push events since #{@start_date}
 
 %h3 Push
 
