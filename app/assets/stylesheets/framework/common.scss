@@ -376,12 +376,11 @@ table {
 
 .center-top-menu, .left-top-menu {
   @include nav-menu;
-  text-align: left;
+  text-align: center;
   margin-top: 5px;
   margin-bottom: $gl-padding;
   height: auto;
   margin-top: -$gl-padding;
-  border-bottom: 1px solid #EEE;
 
   &.no-bottom {
     margin-bottom: 0;
@@ -411,6 +410,7 @@ table {
 
 .left-top-menu {
   text-align: left;
+  border-bottom: 1px solid #EEE;
 }
 
 .center-middle-menu {
