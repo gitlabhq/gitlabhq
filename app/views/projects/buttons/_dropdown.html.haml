@@ -8,7 +8,7 @@
           = link_to url_for_new_issue(@project, only_path: true) do
             = icon('exclamation-circle fw')
             New issue
-      - merge_project = can?(current_user, :create_merge_request, @project) ? @project : current_user.fork_of(@project)
+      - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
       - if merge_project
         %li
           = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project) do

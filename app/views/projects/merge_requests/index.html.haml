@@ -6,7 +6,7 @@
   .controls
     = render 'shared/issuable/search_form', path: namespace_project_merge_requests_path(@project.namespace, @project)
 
-    - merge_project = can?(current_user, :create_merge_request, @project) ? @project : current_user.fork_of(@project)
+    - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
     - if merge_project
       .pull-left.hidden-xs
         = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New Merge Request" do
