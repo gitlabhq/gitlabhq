@@ -51,78 +51,29 @@ module Gitlab
       def import_pull_requests
         client.pull_requests(project.import_source, state: :all,
                                                     sort: :created,
-                                                    direction: :asc).each do |pull_request|
-          source_branch = find_branch(pull_request.head.ref)
-          target_branch = find_branch(pull_request.base.ref)
+                                                    direction: :asc).each do |raw_data|
+          pull_request = PullRequest.new(project, raw_data)
 
-          if source_branch && target_branch
-            merge_request = MergeRequest.create!(
-              title: pull_request.title,
-              description: format_body(pull_request.user.login, pull_request.body),
-              source_project: project,
-              source_branch: source_branch.name,
-              target_project: project,
-              target_branch: target_branch.name,
-              state: merge_request_state(pull_request),
-              author_id: gl_author_id(project, pull_request.user.id),
-              assignee_id: gl_user_id(pull_request.assignee.try(:id)),
-              created_at: pull_request.created_at,
-              updated_at: pull_request.updated_at
-            )
-
-            import_comments_on_pull_request(merge_request, pull_request)
-            import_comments_on_pull_request_diff(merge_request, pull_request)
+          if pull_request.valid?
+            merge_request = MergeRequest.create!(pull_request.attributes)
+            import_comments_on_pull_request(merge_request, raw_data)
+            import_comments_on_pull_request_diff(merge_request, raw_data)
           end
         end
       end
 
       def import_comments_on_pull_request(merge_request, pull_request)
-        client.issue_comments(project.import_source, pull_request.number).each do |c|
-          merge_request.notes.create!(
-            project: project,
-            note: format_body(c.user.login, c.body),
-            author_id: gl_author_id(project, c.user.id),
-            created_at: c.created_at,
-            updated_at: c.updated_at
-          )
+        client.issue_comments(project.import_source, pull_request.number).each do |raw_data|
+          comment = Comment.new(project, raw_data)
+          merge_request.notes.create!(comment.attributes)
         end
       end
 
       def import_comments_on_pull_request_diff(merge_request, pull_request)
-        client.pull_request_comments(project.import_source, pull_request.number).each do |c|
-          merge_request.notes.create!(
-            project: project,
-            note: format_body(c.user.login, c.body),
-            commit_id: c.commit_id,
-            line_code: generate_line_code(c.path, c.position),
-            author_id: gl_author_id(project, c.user.id),
-            created_at: c.created_at,
-            updated_at: c.updated_at
-          )
+        client.pull_request_comments(project.import_source, pull_request.number).each do |raw_data|
+          comment = Comment.new(project, raw_data)
+          merge_request.notes.create!(comment.attributes)
         end
-      end
-
-      def find_branch(name)
-        project.repository.find_branch(name)
-      end
-
-      def format_body(author, body)
-        @formatter.author_line(author) + (body || "")
-      end
-
-      def merge_request_state(pull_request)
-        case true
-        when pull_request.state == 'closed' && pull_request.merged_at.present?
-          'merged'
-        when pull_request.state == 'closed'
-          'closed'
-        else
-          'opened'
-        end
-      end
-
-      def generate_line_code(file_path, position)
-        Gitlab::Diff::LineCode.generate(file_path, position, 0)
       end
 
       def gl_author_id(project, github_id)
