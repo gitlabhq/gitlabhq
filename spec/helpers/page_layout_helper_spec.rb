@@ -37,6 +37,14 @@ describe PageLayoutHelper do
       expect(helper.page_description_default).to eq 'Project Description'
     end
 
+    it 'uses brand_title when Project description is nil' do
+      project = double(description: nil)
+      helper.instance_variable_set(:@project, project)
+
+      expect(helper).to receive(:brand_title).and_return('Brand Title')
+      expect(helper.page_description_default).to eq 'Brand Title'
+    end
+
     it 'falls back to brand_title' do
       allow(helper).to receive(:brand_title).and_return('Brand Title')
 

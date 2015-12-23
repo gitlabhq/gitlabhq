@@ -40,7 +40,7 @@ module PageLayoutHelper
   # a view
   def page_description_default
     if @project
-      @project.description
+      @project.description || brand_title
     else
       brand_title
     end
