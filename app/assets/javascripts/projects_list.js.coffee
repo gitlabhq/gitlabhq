@@ -8,17 +8,17 @@ class @ProjectsList
 
     $(".projects-list-filter").keyup ->
       terms = $(this).val()
-      uiBox = $(this).closest('.projects-list-holder')
+      uiBox = $('div.projects-list-holder')
       if terms == "" || terms == undefined
-        uiBox.find(".projects-list li").show()
+        uiBox.find("ul.projects-list li").show()
       else
-        uiBox.find(".projects-list li").each (index) ->
-          name = $(this).find(".filter-title").text()
+        uiBox.find("ul.projects-list li").each (index) ->
+          name = $(this).find("span.filter-title").text()
 
           if name.toLowerCase().search(terms.toLowerCase()) == -1
             $(this).hide()
           else
             $(this).show()
-      uiBox.find(".projects-list li.bottom").hide()
+      uiBox.find("ul.projects-list li.bottom").hide()
 
 
