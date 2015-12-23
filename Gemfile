@@ -190,7 +190,7 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
-gem "sass-rails", '~> 4.0.5'
+gem "sass-rails", '~> 5.0.0'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
