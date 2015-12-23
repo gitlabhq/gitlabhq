@@ -97,6 +97,16 @@ describe Gitlab::ReferenceExtractor, lib: true do
     expect(extracted.first.commit_to).to eq commit
   end
 
+  context 'with an external issue tracker' do
+    let(:project) { create(:jira_project) }
+    subject { described_class.new(project, project.creator) }
+
+    it 'returns JIRA issues for a JIRA-integrated project' do
+      subject.analyze('JIRA-123 and FOOBAR-4567')
+      expect(subject.issues).to eq [JiraIssue.new('JIRA-123', project), JiraIssue.new('FOOBAR-4567', project)]
+    end
+  end
+
   context 'with a project with an underscore' do
     let(:other_project) { create(:project, path: 'test_project') }
     let(:issue) { create(:issue, project: other_project) }

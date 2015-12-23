@@ -14,6 +14,11 @@ Feature: Award Emoji
     And I can remove it by clicking to icon
 
   @javascript
+  Scenario: I can see the list of emoji categories
+    Given I click to emoji-picker
+    Then I can see the activity and food categories
+
+  @javascript
   Scenario: I add award emoji using regular comment
   Given I leave comment with a single emoji
   Then I have award added

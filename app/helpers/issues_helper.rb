@@ -98,11 +98,13 @@ module IssuesHelper
     end.sort.to_sentence(last_word_connector: ', or ')
   end
 
-  def url_to_emoji(name)
-    emoji_path = ::AwardEmoji.path_to_emoji_image(name)
-    url_to_image(emoji_path)
-  rescue StandardError
-    ""
+  def emoji_icon(name, unicode = nil)
+    unicode ||= Emoji.emoji_filename(name)
+
+    content_tag :div, "",
+      class: "icon emoji-icon emoji-#{unicode}",
+      "data-emoji" => name,
+      "data-unicode-name" => unicode
   end
 
   def emoji_author_list(notes, current_user)
@@ -111,10 +113,6 @@ module IssuesHelper
            end
 
     list.join(", ")
-  end
-
-  def emoji_list
-    ::AwardEmoji::EMOJI_LIST
   end
 
   def note_active_class(notes, current_user)

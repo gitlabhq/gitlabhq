@@ -241,8 +241,13 @@ class SystemNoteService
       note_options.merge!(noteable: noteable)
     end
 
-    create_note(note_options)
+    if noteable.is_a?(ExternalIssue)
+      noteable.project.issues_tracker.create_cross_reference_note(noteable, mentioner, author)
+    else
+      create_note(note_options)
+    end
   end
+
 
   def self.cross_reference?(note_text)
     note_text.start_with?(cross_reference_note_prefix)
@@ -259,7 +264,7 @@ class SystemNoteService
   #
   # Returns Boolean
   def self.cross_reference_disallowed?(noteable, mentioner)
-    return true if noteable.is_a?(ExternalIssue)
+    return true if noteable.is_a?(ExternalIssue) && !noteable.project.jira_tracker_active?
     return false unless mentioner.is_a?(MergeRequest)
     return false unless noteable.is_a?(Commit)
 

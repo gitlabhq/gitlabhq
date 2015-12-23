@@ -123,7 +123,6 @@
   padding: 0;
   margin: 0;
   list-style: none;
-  margin-top: 5px;
   height: 56px;
 
   li {
@@ -131,9 +130,9 @@
 
     a {
       padding: 14px;
-      font-size: 17px;
+      font-size: 15px;
       line-height: 28px;
-      color: #7f8fa4;
+      color: #959494;
       border-bottom: 2px solid transparent;
 
       &:hover, &:active, &:focus {
@@ -143,8 +142,8 @@
     }
 
     &.active a {
-      color: #4c4e54;
-      border-bottom: 2px solid #1cacfc;
+      color: #616060;
+      border-bottom: 2px solid #4688f1;
     }
 
     .badge {

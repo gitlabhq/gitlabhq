@@ -86,7 +86,7 @@ class Issue < ActiveRecord::Base
   def referenced_merge_requests
     Gitlab::ReferenceExtractor.lazily do
       [self, *notes].flat_map do |note|
-        note.all_references(load_lazy_references: false).merge_requests
+        note.all_references.merge_requests
       end
     end.sort_by(&:iid)
   end
