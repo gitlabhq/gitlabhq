@@ -1,3 +1,4 @@
+@forks
 Feature: Project Fork
   Background:
     Given I sign in as a user
@@ -14,3 +15,12 @@ Feature: Project Fork
     And I click link "Fork"
     When I fork to my namespace
     Then I should see a "Name has already been taken" warning
+
+  Scenario: Merge request on canonical repo goes to fork merge request page
+    Given I click link "Fork"
+    And I fork to my namespace
+    Then I should see the forked project page
+    When I visit project "Shop" page
+    Then I should see "New merge request"
+    And I goto the Merge Requests page
+    Then I should see "New merge request"

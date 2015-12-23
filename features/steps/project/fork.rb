@@ -30,4 +30,14 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
       click_link current_user.name
     end
   end
+
+  step 'I should see "New Merge Request"' do
+    expect(page).to have_content "New Merge Request"
+  end
+
+  step 'I goto the Merge Requests page' do
+    page.within '.page-sidebar-expanded' do
+      click_link "Merge Requests"
+    end
+  end
 end
