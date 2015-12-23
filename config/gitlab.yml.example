@@ -209,11 +209,6 @@ production: &base
   ldap:
     enabled: false
 
-    #
-    # Gitlab EE only:
-    # Since Gitlab 8.3, LDAP refresh job execution can be configured in schedule.yml
-    #
-
     servers:
       ##########################################################################
       #
