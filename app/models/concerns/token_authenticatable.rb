@@ -46,5 +46,4 @@ module TokenAuthenticatable
       break token unless self.class.unscoped.find_by(token_field => token)
     end
   end
-
 end
