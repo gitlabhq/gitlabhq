@@ -5,7 +5,7 @@
  */
 
 .status-box {
-  @include border-radius(2px);
+  @include border-radius(3px);
 
   display: block;
   float: left;
@@ -25,7 +25,7 @@
   }
 
   &.status-box-open {
-    background-color: #019875;
+    background-color: $green-light;
     color: #FFF;
   }
 

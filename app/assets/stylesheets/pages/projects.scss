@@ -404,6 +404,36 @@ ul.nav.nav-projects-tabs {
   }
 }
 
+.top-area {
+  border-bottom: 1px solid #EEE;
+
+  ul.left-top-menu {
+    display: inline-block;
+    width: 50%;
+    margin-bottom: 0px;
+    border-bottom: none;
+  }
+
+  .projects-search-form {
+    width: 50%;
+    display: inline-block;
+    float: right;
+    padding-top: 7px;
+    text-align: right;
+
+    .btn-green {
+      margin-top: -2px;
+      margin-left: 10px;
+    }
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .projects-search-form {
+      padding-top: 15px;
+    }
+  }
+}
+
 .fork-namespaces {
   .fork-thumbnail {
     text-align: center;
@@ -481,11 +511,18 @@ pre.light-well {
 
 .projects-search-form {
   margin: -$gl-padding;
-  background-color: #f8fafc;
   padding: $gl-padding;
   margin-bottom: 0px;
-  border-top: 1px solid #e7e9ed;
-  border-bottom: 1px solid #e7e9ed;
+
+  input {
+    display: inline-block;
+    width: calc(100% - 151px);
+  }
+
+  .btn {
+    display: inline-block;
+    width: 135px;
+  }
 }
 
 .git-empty {

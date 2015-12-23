@@ -1,5 +1,5 @@
 class AddCiToProject < ActiveRecord::Migration
-  def up
+  def change
     add_column :projects, :ci_id, :integer
     add_column :projects, :builds_enabled, :boolean, default: true, null: false
     add_column :projects, :shared_runners_enabled, :boolean, default: true, null: false
