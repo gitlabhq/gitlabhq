@@ -1,4 +1,3 @@
-@forks
 Feature: Project Fork
   Background:
     Given I sign in as a user
