@@ -18,6 +18,12 @@ Feature: Award Emoji
     Given I click to emoji-picker
     Then I can see the activity and food categories
 
+   @javascript
+  Scenario: I can search emoji
+    Given I click to emoji-picker
+    And I search "hand"
+    Then I see search result for "hand"
+
   @javascript
   Scenario: I add award emoji using regular comment
   Given I leave comment with a single emoji

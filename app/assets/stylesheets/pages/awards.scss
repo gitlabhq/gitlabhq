@@ -101,6 +101,10 @@
           overflow: auto;
         }
 
+        input.emoji-search{
+          background: url(/assets/icon-search.png) 240px no-repeat;
+        }
+
         li {
           cursor: pointer;
           width: 30px;
