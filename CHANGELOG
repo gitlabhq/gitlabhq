@@ -20,6 +20,7 @@ v 8.4.0 (unreleased)
   - Fix API project lookups when querying with a namespace with dots (Stan Hu)
   - Update version check images to use SVG
   - Validate README format before displaying
+  - Enable Microsoft Azure OAuth2 support (Janis Meybohm)
 
 v 8.3.3 (unreleased)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
