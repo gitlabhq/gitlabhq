@@ -338,7 +338,7 @@ ul.nav.nav-projects-tabs {
 .top-area {
   border-bottom: 1px solid #EEE;
 
-  ul.center-top-menu {
+  ul.left-top-menu {
     display: inline-block;
     width: 50%;
     margin-bottom: 0px;
@@ -350,10 +350,17 @@ ul.nav.nav-projects-tabs {
     display: inline-block;
     float: right;
     padding-top: 7px;
+    text-align: right;
 
     .btn-green {
       margin-top: -2px;
       margin-left: 10px;
+    }
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .projects-search-form {
+      padding-top: 15px;
     }
   }
 }

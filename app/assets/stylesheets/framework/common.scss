@@ -374,9 +374,9 @@ table {
   }
 }
 
-.center-top-menu {
+.center-top-menu, .left-top-menu {
   @include nav-menu;
-  text-align: left;
+  text-align: center;
   margin-top: 5px;
   margin-bottom: $gl-padding;
   height: auto;
@@ -407,6 +407,10 @@ table {
     margin-left: -$gl-padding;
     margin-right: -$gl-padding;
   }
+}
+
+.left-top-menu {
+  text-align: left;
 }
 
 .center-middle-menu {
