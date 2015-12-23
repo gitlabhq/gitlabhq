@@ -376,7 +376,7 @@ table {
 
 .center-top-menu, .left-top-menu {
   @include nav-menu;
-  text-align: center;
+  text-align: left;
   margin-top: 5px;
   margin-bottom: $gl-padding;
   height: auto;
