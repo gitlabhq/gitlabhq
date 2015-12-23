@@ -358,7 +358,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [core team]: https://about.gitlab.com/core-team/
 [getting help page]: https://about.gitlab.com/getting-help/
 [Codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
-[up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up+for+grabs
+[up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up-for-grabs
 [medium-up-for-grabs]: https://medium.com/@kentcdodds/first-timers-only-78281ea47455
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
 [ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues

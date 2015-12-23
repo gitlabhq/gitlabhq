@@ -1,0 +1,10 @@
+%p
+Hello #{@resource.name}!
+
+%p
+  Your GitLab account has been locked due to an excessive amount of unsuccessful
+  sign in attempts. Your account will automatically unlock in
+  = time_ago_in_words(Devise.unlock_in.from_now)
+  or you may click the link below to unlock now.
+
+%p= link_to 'Unlock your account', unlock_url(@resource, unlock_token: @token)

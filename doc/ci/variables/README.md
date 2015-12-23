@@ -27,7 +27,6 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 | **CI_BUILD_TAG**        | 0.5 | The commit tag name. Present only when building tags. |
 | **CI_BUILD_NAME**       | 0.5 | The name of the build as defined in `.gitlab-ci.yml` |
 | **CI_BUILD_STAGE**      | 0.5 | The name of the stage as defined in `.gitlab-ci.yml` |
-| **CI_BUILD_BEFORE_SHA** | all | The first commit that were included in push request |
 | **CI_BUILD_REF_NAME**   | all | The branch or tag name for which project is built |
 | **CI_BUILD_ID**         | all | The unique id of the current build that GitLab CI uses internally |
 | **CI_BUILD_REPO**       | all | The URL to clone the Git repository |
@@ -40,7 +39,6 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 Example values:
 
 ```bash
-export CI_BUILD_BEFORE_SHA="9df57456fa9de2a6d335ca5edf9750ed812b9df0"
 export CI_BUILD_ID="50"
 export CI_BUILD_REF="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_BUILD_REF_NAME="master"

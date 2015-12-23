@@ -1,7 +1,7 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
 
-  protect_from_forgery except: [:kerberos, :saml]
+  protect_from_forgery except: [:kerberos, :saml, :cas3]
 
   Gitlab.config.omniauth.providers.each do |provider|
     define_method provider['name'] do
@@ -47,6 +47,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     render 'errors/omniauth_error', layout: "errors", status: 422
   end
 
+  def cas3
+    ticket = params['ticket']
+    if ticket
+      handle_service_ticket oauth['provider'], ticket
+    end
+    handle_omniauth
+  end
+
   private
 
   def handle_omniauth
@@ -87,6 +95,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     flash[:notice] = message
 
     redirect_to new_user_session_path
+  end
+
+  def handle_service_ticket provider, ticket
+    Gitlab::OAuth::Session.create provider, ticket
+    session[:service_tickets] ||= {}
+    session[:service_tickets][provider] = ticket
   end
 
   def oauth

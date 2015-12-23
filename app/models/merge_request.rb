@@ -338,7 +338,7 @@ class MergeRequest < ActiveRecord::Base
       issues = commits.flat_map { |c| c.closes_issues(current_user) }
       issues.push(*Gitlab::ClosingIssueExtractor.new(project, current_user).
                   closed_by_message(description))
-      issues.uniq
+      issues.uniq(&:id)
     else
       []
     end

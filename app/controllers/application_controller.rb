@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user_from_token!
   before_action :authenticate_user!
+  before_action :validate_user_service_ticket!
   before_action :reject_blocked!
   before_action :check_password_expiration
   before_action :ldap_security_check
@@ -199,6 +200,20 @@ class ApplicationController < ActionController::Base
     if current_user
       gon.current_user_id = current_user.id
       gon.api_token = current_user.private_token
+    end
+  end
+
+  def validate_user_service_ticket!
+    return unless signed_in? && session[:service_tickets]
+
+    valid = session[:service_tickets].all? do |provider, ticket|
+      Gitlab::OAuth::Session.valid?(provider, ticket)
+    end
+
+    unless valid
+      session[:service_tickets] = nil
+      sign_out current_user
+      redirect_to new_user_session_path
     end
   end
 
