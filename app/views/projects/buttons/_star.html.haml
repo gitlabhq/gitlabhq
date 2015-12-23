@@ -16,26 +16,31 @@
       var $this = $(this);
       var $starSpan = $this.find('span');
       var $starIcon = $this.find('i');
-      $this
-        .parent()
-        .find('span.count')
-        .text(data.star_count);
-      if($starSpan.hasClass('starred')){
-        $starSpan
-          .removeClass('starred')
-          .text('Star');
-        $starIcon
-          .removeClass('fa-star')
-          .addClass('fa-star-o');
 
-      } else {
-        $starSpan
-          .addClass('starred')
-          .text('Unstar');
-        $starIcon
-          .removeClass('fa-star-o')
-          .addClass('fa-star');
-      }
+      var toggleStar = function(isStarred) {
+        $this
+          .parent()
+          .find('span.count')
+          .text(data.star_count);
+        if(isStarred){
+          $starSpan
+            .removeClass('starred')
+            .text('Star');
+          $starIcon
+            .removeClass('fa-star')
+            .addClass('fa-star-o');
+
+        } else {
+          $starSpan
+            .addClass('starred')
+            .text('Unstar');
+          $starIcon
+            .removeClass('fa-star-o')
+            .addClass('fa-star');
+        }
+      };
+
+      toggleStar($starSpan.hasClass('starred'));
     })
     .on('ajax:error', function (e, xhr, status, error) {
       new Flash('Star toggle failed. Try again later.', 'alert');
