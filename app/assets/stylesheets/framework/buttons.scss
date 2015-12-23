@@ -77,7 +77,7 @@
   &.btn-sm {
     padding: 5px 10px;
   }
-  
+
   &.btn-nr {
     padding: 7px 10px;
   }
@@ -101,11 +101,12 @@
   &.btn-primary {
     @include btn-blue-medium;
   }
-  
+
   &.btn-info {
     @include btn-blue;
   }
 
+  &.btn-close,
   &.btn-warning {
     @include btn-orange;
   }
@@ -120,20 +121,8 @@
     float: right;
   }
 
-  &.btn-close {
-    color: $gl-danger;
-    border-color: $gl-danger;
-    &:hover {
-      color: #B94A48;
-    }
-  }
-
   &.btn-reopen {
-    color: $gl-success;
-    border-color: $gl-success;
-    &:hover {
-      color: #468847;
-    }
+    /* should be same as parent class for now */
   }
 
   &.btn-grouped {
