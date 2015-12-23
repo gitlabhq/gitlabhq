@@ -39,10 +39,10 @@
         %span
           Members
     = nav_link(controller: [:stats]) do
-      = link_to group_stats_path(@group), title: 'Stats', data: {placement: 'right'} do
-        = icon('table fw')
+      = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
+        = icon('bar-chart fw')
         %span
-          Statistics
+          Contribution Analytics
     - if can?(current_user, :admin_group, @group)
       = nav_link(html_options: { class: "separate-item" }) do
         = link_to edit_group_path(@group), title: 'Settings' do

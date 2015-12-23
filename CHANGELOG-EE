@@ -4,7 +4,7 @@ v 8.3.0
   - License information can now be retrieved via the API
   - Show Kerberos clone url when Kerberos enabled and url different than HTTP url (Borja Aparicio)
   - Fix bug with negative approvals required
-  - Add group contribution statistics page 
+  - Add group contribution analytics page 
   - Add GitLab Pages
 
 v 8.2.3
