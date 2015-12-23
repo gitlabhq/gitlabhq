@@ -35,6 +35,10 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
 
         it { is_expected.to be_a String }
         it { is_expected.to_not be_blank }
+
+        it 'should persist new token' do
+          expect(subject).to eq described_class.current[token_field]
+        end
       end
     end
 
