@@ -33,16 +33,16 @@ describe 'reopen/close issue', ->
     
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
-    expect($btnReopen.toBeHidden())
+    expect($btnReopen).toBeHidden()
     expect($btnClose.text()).toBe('Close')
     expect(typeof $btnClose.prop('disabled')).toBe('undefined')
 
     $btnClose.trigger('click')
     
-    expect($btnClose.toBeHidden())
-    expect($btnReopen.toBeVisible())
-    expect($('div.issue-box-open').toBeVisible())
-    expect($('div.issue-box-closed').toBeHidden())
+    expect($btnReopen).toBeVisible()
+    expect($btnClose).toBeHidden()
+    expect($('div.status-box-closed')).toBeVisible()
+    expect($('div.status-box-open')).toBeHidden()
 
   it 'reopens an issue', ->
     $.ajax = (obj) ->
@@ -56,7 +56,7 @@ describe 'reopen/close issue', ->
 
     $btnReopen.trigger('click')
 
-    expect($btnReopen.toBeHidden())
-    expect($btnClose.toBeVisible())
-    expect($('div.issue-box-open').toBeVisible())
-    expect($('div.issue-box-closed').toBeHidden())
+    expect($btnReopen).toBeHidden()
+    expect($btnClose).toBeVisible()
+    expect($('div.status-box-open')).toBeVisible()
+    expect($('div.status-box-closed')).toBeHidden()
