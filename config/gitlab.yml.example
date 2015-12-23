@@ -380,6 +380,15 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
+      # See omniauth-cas3 for more configuration details
+      # - { name: 'cas3',
+      #     label: 'cas3',
+      #     args: {
+      #             url: 'https://sso.example.com',
+      #             disable_ssl_verification: false,
+      #             login_url: '/cas/login',
+      #             service_validate_url: '/cas/p3/serviceValidate',
+      #             logout_url: '/cas/logout'} }
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
@@ -417,6 +426,10 @@ production: &base
       #       crowd_server_url: 'CROWD SERVER URL',
       #       application_name: 'YOUR_APP_NAME',
       #       application_password: 'YOUR_APP_PASSWORD' } }
+
+    # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
+    # cas3:
+    #   session_duration: 28800
 
   # Shared file storage settings
   shared:

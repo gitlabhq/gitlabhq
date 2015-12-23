@@ -135,6 +135,20 @@ module Ci
       predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
+    def merge_request
+      merge_requests = MergeRequest.includes(:merge_request_diff)
+                                   .where(source_branch: ref, source_project_id: commit.gl_project_id)
+                                   .reorder(iid: :asc)
+
+      merge_requests.find do |merge_request|
+        merge_request.commits.any? { |ci| ci.id == commit.sha }
+      end
+    end
+
+    def project
+      commit.project
+    end
+
     def project_id
       gl_project_id
     end
@@ -166,7 +180,8 @@ module Ci
 
     def extract_coverage(text, regex)
       begin
-        matches = text.gsub(Regexp.new(regex)).to_a.last
+        matches = text.scan(Regexp.new(regex)).last
+        matches = matches.last if matches.kind_of?(Array)
         coverage = matches.gsub(/\d+(\.\d+)?/).first
 
         if coverage.present?

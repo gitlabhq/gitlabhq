@@ -164,6 +164,10 @@ Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
 
 Settings.omniauth['providers']  ||= []
+Settings.omniauth['cas3'] ||= Settingslogic.new({})
+Settings.omniauth.cas3['session_duration'] ||= 8.hours
+Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
+Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
 # Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
 

@@ -16,9 +16,23 @@ class CreateCommitBuildsService
       return false
     end
 
-    tag = Gitlab::Git.tag_ref?(origin_ref)
-    commit = project.ensure_ci_commit(sha)
+    commit = project.ci_commit(sha)
+    unless commit
+      commit = project.ci_commits.new(sha: sha)
+
+      # Skip creating ci_commit when no gitlab-ci.yml is found
+      unless commit.ci_yaml_file
+        return false
+      end
+
+      # Create a new ci_commit
+      commit.save!
+    end
+
+    # Skip creating builds for commits that have [ci skip]
     unless commit.skip_ci?
+      # Create builds for commit
+      tag = Gitlab::Git.tag_ref?(origin_ref)
       commit.update_committed!
       commit.create_builds(ref, tag, user)
     end
