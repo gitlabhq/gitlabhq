@@ -11,7 +11,7 @@
   %meta{property: 'og:title',       content: page_title}
   %meta{property: 'og:description', content: page_description}
   %meta{property: 'og:image',       content: page_image}
-  %meta{property: 'og:url',         content: url_for(only_path: false)}
+  %meta{property: 'og:url',         content: request.base_url + request.fullpath}
 
   %title= page_title
 
