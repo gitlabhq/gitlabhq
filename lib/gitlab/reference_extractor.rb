@@ -18,7 +18,7 @@ module Gitlab
       super(text, context.merge(project: project))
     end
 
-    %i(user label merge_request snippet commit commit_range).each do |type|
+    %i(user label milestone merge_request snippet commit commit_range).each do |type|
       define_method("#{type}s") do
         @references[type] ||= references(type, project: project, current_user: current_user)
       end

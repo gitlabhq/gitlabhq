@@ -214,6 +214,14 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Ignored in links: [Link to <%= simple_label.to_reference %>](#label-link)
 - Link to label by reference: [Label](<%= label.to_reference %>)
 
+#### MilestoneReferenceFilter
+
+- Milestone: <%= milestone.to_reference %>
+- Milestone in another project: <%= xmilestone.to_reference(project) %>
+- Ignored in code: `<%= milestone.to_reference %>`
+- Ignored in links: [Link to <%= milestone.to_reference %>](#milestone-link)
+- Link to milestone by URL: [Milestone](<%= urls.namespace_project_milestone_url(milestone.project.namespace, milestone.project, milestone) %>)
+
 ### Task Lists
 
 - [ ] Incomplete task 1
