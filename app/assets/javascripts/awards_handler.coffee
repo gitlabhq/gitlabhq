@@ -137,9 +137,9 @@ class @AwardsHandler
 
       for emoji in frequently_used_emojis
         do (emoji) ->
-          $(".emoji-menu-content [data-emoji='" + emoji + "']").closest("li").clone().appendTo(ul)
+          $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
 
-      $(".emoji-menu-content").prepend(ul).prepend($("<h4>").text("Frequently used"))
+      $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
 
   setupSearch: ->
     $("input.emoji-search").keyup (ev) =>
@@ -149,7 +149,7 @@ class @AwardsHandler
       $("ul.emoji-search,h5.emoji-search").remove()
 
       if term
-        # Generate search result block
+        # Generate a search result block
         h5 = $("<h5>").text("Search results").addClass("emoji-search")
         found_emojis = @searchEmojis(term).show()
         ul = $("<ul>").addClass("emoji-search").append(found_emojis)
