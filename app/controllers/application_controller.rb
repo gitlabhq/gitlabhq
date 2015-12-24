@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   before_action :validate_user_service_ticket!
   before_action :reject_blocked!
   before_action :check_password_expiration
-  before_action :check_tfa_requirement
+  before_action :check_2fa_requirement
   before_action :ldap_security_check
   before_action :default_headers
   before_action :add_gon_variables
@@ -224,7 +224,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def check_tfa_requirement
+  def check_2fa_requirement
     if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled && !skip_two_factor?
       redirect_to new_profile_two_factor_auth_path
     end

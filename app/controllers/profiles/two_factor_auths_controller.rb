@@ -1,13 +1,15 @@
 class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
-  skip_before_action :check_tfa_requirement
+  skip_before_action :check_2fa_requirement
 
   def new
     unless current_user.otp_secret
       current_user.otp_secret = User.generate_otp_secret(32)
     end
+
     unless current_user.otp_grace_period_started_at && two_factor_grace_period
       current_user.otp_grace_period_started_at = Time.current
     end
+
     current_user.save! if current_user.changed?
 
     if two_factor_grace_period_expired?
