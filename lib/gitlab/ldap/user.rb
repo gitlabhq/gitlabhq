@@ -14,7 +14,7 @@ module Gitlab
           # LDAP distinguished name is case-insensitive
           identity = ::Identity.
             where(provider: provider).
-            where('lower(extern_uid) = ?', uid.mb_chars.downcase.to_s).last
+            iwhere(extern_uid: uid).last
           identity && identity.user
         end
       end
@@ -31,7 +31,7 @@ module Gitlab
 
       def find_by_uid_and_provider
         self.class.find_by_uid_and_provider(
-          auth_hash.uid.downcase, auth_hash.provider)
+          auth_hash.uid, auth_hash.provider)
       end
 
       def find_by_email
@@ -47,7 +47,7 @@ module Gitlab
         # find_or_initialize_by doesn't update `gl_user.identities`, and isn't autosaved.
         identity = gl_user.identities.find { |identity|  identity.provider == auth_hash.provider }
         identity ||= gl_user.identities.build(provider: auth_hash.provider)
-        
+
         # For a new user set extern_uid to the LDAP DN
         # For an existing user with matching email but changed DN, update the DN.
         # For an existing user with no change in DN, this line changes nothing.

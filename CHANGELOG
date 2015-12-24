@@ -1,20 +1,24 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
-  - Fix Error 500 when doing a search in dashboard before visiting any project (Stan Hu)
   - Implement new UI for group page
   - Implement search inside emoji picker
   - Add project permissions to all project API endpoints (Stan Hu)
   - Only allow group/project members to mention `@all`
+  - Expose Git's version in the admin area
+  - Add "Frequently used" category to emoji picker
+  - Add CAS support (tduehr)
+  - Add link to merge request on build detail page.
 
-v 8.3.1 (unreleased)
+v 8.3.1
   - Fix Error 500 when global milestones have slashes (Stan Hu)
+  - Fix Error 500 when doing a search in dashboard before visiting any project (Stan Hu)
+  - Fix LDAP identity and user retrieval when special characters are used
+  - Move Sidekiq-cron configuration to gitlab.yml
 
 v 8.3.0
-  - Add CAS support (tduehr)
   - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
   - API support for starred projects for authorized user (Zeger-Jan van de Weg)
-  - Add link to merge request on build detail page.
   - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
@@ -74,7 +78,6 @@ v 8.3.0
   - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
   - Persist runners registration token in database
   - Fix online editor should not remove newlines at the end of the file
-  - Expose Git's version in the admin area
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)

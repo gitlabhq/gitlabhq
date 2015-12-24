@@ -171,7 +171,7 @@ class ProjectsController < ApplicationController
     @project.reload
 
     render json: {
-      html: view_to_html_string("projects/buttons/_star")
+      star_count: @project.star_count
     }
   end
 
