@@ -1,4 +1,3 @@
-#= require flash
 #= require issue
 
 describe 'Issue', ->

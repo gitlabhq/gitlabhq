@@ -1,3 +1,4 @@
+#= require flash
 #= require jquery.waitforimages
 #= require task_list
 

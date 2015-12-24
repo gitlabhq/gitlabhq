@@ -2,13 +2,8 @@
   .hidden { display: none !important; }
 
 .flash-container
-  - if alert
-    .flash-alert
-      = alert
-
-  - elsif notice
-    .flash-notice
-      = notice
+  .flash-alert
+  .flash-notice
 
 .status-box.status-box-open Open
 .status-box.status-box-closed.hidden Closed
