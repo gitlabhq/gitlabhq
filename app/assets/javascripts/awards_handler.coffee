@@ -118,7 +118,7 @@ class @AwardsHandler
     @aliases[emoji] || emoji
 
   setupSearch: ->
-    $("input.emoji-search").keyup (ev)=>
+    $("input.emoji-search").keyup (ev) =>
       term = $(ev.target).val()
 
       # Clean previous search results
@@ -135,4 +135,4 @@ class @AwardsHandler
         $(".emoji-menu-content").children().show()
 
   searchEmojis: (term)->
-    $(".emoji-menu-content [data-emoji*='" + term + "']").closest("li").clone()
+    $(".emoji-menu-content [data-emoji*='#{term}']").closest("li").clone()

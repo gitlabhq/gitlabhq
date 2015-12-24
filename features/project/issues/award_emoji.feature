@@ -18,7 +18,7 @@ Feature: Award Emoji
     Given I click to emoji-picker
     Then I can see the activity and food categories
 
-   @javascript
+  @javascript
   Scenario: I can search emoji
     Given I click to emoji-picker
     And I search "hand"
