@@ -12,7 +12,7 @@ module API
       #   page (optional) - The page number for pagination (default: 1)
       #   per_page (ooptional) - The value of items per page to show (default 30)
       # Example Request:
-      #   GET /projects/:id/builds/all
+      #   GET /projects/:id/builds
       get ':id/builds' do
         all_builds = user_project.builds
         builds = all_builds.order('created_at DESC')
