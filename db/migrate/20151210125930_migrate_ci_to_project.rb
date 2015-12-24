@@ -14,6 +14,10 @@ class MigrateCiToProject < ActiveRecord::Migration
     migrate_ci_service
   end
 
+  def down
+    # We can't reverse the data
+  end
+
   def migrate_project_id_for_table(table)
     subquery = "SELECT gitlab_id FROM ci_projects WHERE ci_projects.id = #{table}.project_id"
     execute("UPDATE #{table} SET gl_project_id=(#{subquery}) WHERE gl_project_id IS NULL")
