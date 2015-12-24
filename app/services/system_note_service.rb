@@ -41,7 +41,7 @@ class SystemNoteService
   #
   # Returns the created Note object
   def self.change_assignee(noteable, project, author, assignee)
-    body = assignee.nil? ? 'Assignee removed' : "Reassigned to @#{assignee.username}"
+    body = assignee.nil? ? 'Assignee removed' : "Reassigned to #{assignee.to_reference}"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -103,7 +103,7 @@ class SystemNoteService
   # Returns the created Note object
   def self.change_milestone(noteable, project, author, milestone)
     body = 'Milestone '
-    body += milestone.nil? ? 'removed' : "changed to #{milestone.title}"
+    body += milestone.nil? ? 'removed' : "changed to #{milestone.to_reference(project)}"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
