@@ -76,7 +76,7 @@ class @AwardsHandler
 
     nodes = []
     nodes.push("<div class='award active' title='me'>")
-    nodes.push("<div class='icon emoji-icon " + emojiCssClass + "' data-emoji='" + emoji + "'></div>")
+    nodes.push("<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>")
     nodes.push("<div class='counter'>1</div>")
     nodes.push("</div>")
 
@@ -85,13 +85,19 @@ class @AwardsHandler
     $(".award").tooltip()
 
   resolveNameToCssClass: (emoji) ->
-    unicodeName = $(".emoji-menu-content [data-emoji='?']".replace("?", emoji)).data("unicode-name")
+    emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
 
-    "emoji-" + unicodeName
+    if emoji_icon.length > 0
+      unicodeName = emoji_icon.data("unicode-name")
+    else
+      # Find by alias
+      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data("unicode-name")
+
+    "emoji-#{unicodeName}"
 
   postEmoji: (emoji, callback) ->
     $.post @post_emoji_url, { note: {
-      note: ":" + emoji + ":"
+      note: ":#{emoji}:"
       noteable_type: @noteable_type
       noteable_id: @noteable_id
     }},(data) ->
@@ -99,7 +105,7 @@ class @AwardsHandler
         callback.call()
 
   findEmojiIcon: (emoji) ->
-    $(".award [data-emoji='" + emoji + "']")
+    $(".award [data-emoji='#{emoji}']")
 
   scrollToAwards: ->
     $('body, html').animate({
