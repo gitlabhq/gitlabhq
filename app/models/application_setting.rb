@@ -134,4 +134,8 @@ class ApplicationSetting < ActiveRecord::Base
       /x)
     self.restricted_signup_domains.reject! { |d| d.empty? }
   end
+
+  def runners_registration_token
+    ensure_runners_registration_token!
+  end
 end

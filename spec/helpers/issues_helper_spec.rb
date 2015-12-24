@@ -127,18 +127,6 @@ describe IssuesHelper do
     it { is_expected.to eq("!1, !2, or !3") }
   end
 
-  describe "#url_to_emoji" do
-    it "returns url" do
-      expect(url_to_emoji("smile")).to include("emoji/1F604.png")
-    end
-  end
-
-  describe "#emoji_list" do
-    it "returns url" do
-      expect(emoji_list).to be_kind_of(Array)
-    end
-  end
-
   describe "#note_active_class" do
     before do
       @note = create :note

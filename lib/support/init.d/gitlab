@@ -92,7 +92,7 @@ check_pids(){
 
 ## Called when we have started the two processes and are waiting for their pid files.
 wait_for_pids(){
-  # We are sleeping a bit here mostly because sidekiq is slow at writing it's pid
+  # We are sleeping a bit here mostly because sidekiq is slow at writing its pid
   i=0;
   while [ ! -f $web_server_pid_path ] || [ ! -f $sidekiq_pid_path ] || [ ! -f $gitlab_workhorse_pid_path ] || { [ "$mail_room_enabled" = true ] && [ ! -f $mail_room_pid_path ]; }; do
     sleep 0.1;
@@ -108,7 +108,7 @@ wait_for_pids(){
 }
 
 # We use the pids in so many parts of the script it makes sense to always check them.
-# Only after start() is run should the pids change. Sidekiq sets it's own pid.
+# Only after start() is run should the pids change. Sidekiq sets its own pid.
 check_pids
 
 
@@ -290,7 +290,7 @@ stop_gitlab() {
   sleep 1
   # Cleaning up unused pids
   rm "$web_server_pid_path" 2>/dev/null
-  # rm "$sidekiq_pid_path" 2>/dev/null # Sidekiq seems to be cleaning up it's own pid.
+  # rm "$sidekiq_pid_path" 2>/dev/null # Sidekiq seems to be cleaning up its own pid.
   rm -f "$gitlab_workhorse_pid_path"
   if [ "$mail_room_enabled" = true ]; then
     rm "$mail_room_pid_path" 2>/dev/null
@@ -299,7 +299,7 @@ stop_gitlab() {
   print_status
 }
 
-## Prints the status of GitLab and it's components.
+## Prints the status of GitLab and its components.
 print_status() {
   check_status
   if [ "$web_status" != "0" ] && [ "$sidekiq_status" != "0" ] && [ "$gitlab_workhorse_status" != "0" ] && { [ "$mail_room_enabled" != true ] || [ "$mail_room_status" != "0" ]; }; then
@@ -333,7 +333,7 @@ print_status() {
   fi
 }
 
-## Tells unicorn to reload it's config and Sidekiq to restart
+## Tells unicorn to reload its config and Sidekiq to restart
 reload_gitlab(){
   exit_if_not_running
   if [ "$wpid" = "0" ];then

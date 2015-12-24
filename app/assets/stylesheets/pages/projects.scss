@@ -91,21 +91,83 @@
     }
   }
 
-  .input-group {
+  .git-clone-holder {
     display: inline-table;
     position: relative;
-    top: 17px;
   }
 
   .project-repo-buttons {
     margin-top: 12px;
     margin-bottom: 0px;
 
+    .count-buttons {
+      display: block;
+      margin-bottom: 12px;
+    }
+
     .btn {
       @include btn-gray;
+      text-transform: none;
+    }
+    .count-with-arrow {
+      display: inline-block;
+      position: relative;
+      margin-left: 4px;
 
+      .arrow {
+        &:before {
+          content: '';
+          display: inline-block;
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-color: transparent;
+          border-style: solid;
+          top: 50%;
+          left: 0;
+          margin-top: -6px;
+          border-width: 7px 5px 7px 0;
+          border-right-color: #dce0e5;
+        }
+
+        &:after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-color: transparent;
+          border-style: solid;
+          top: 50%;
+          left: 1px;
+          margin-top: -9px;
+          border-width: 10px 7px 10px 0;
+          border-right-color: #FFF;
+        }
+      }
       .count {
+        @include btn-gray;
         display: inline-block;
+        background: white;
+        border-radius: 2px;
+        border-width: 1px;
+        border-style: solid;
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 20px;
+        padding: 11px 16px;
+        letter-spacing: .4px;
+        padding: 10px;
+        text-align: center;
+        vertical-align: middle;
+        touch-action: manipulation;
+        cursor: pointer;
+        background-image: none;
+        white-space: nowrap;
+        margin: 0 11px 0px 4px;
+
+        &:hover {
+          background: #FFF;
+        }
       }
     }
   }
@@ -123,6 +185,13 @@
 .git-clone-holder {
   .project-home-dropdown + & {
     margin-right: 45px;
+  }
+
+  .clone-options {
+    display: table-cell;
+    a.btn {
+      width: 100%;
+    }
   }
 
   .form-control {
@@ -335,6 +404,38 @@ ul.nav.nav-projects-tabs {
   }
 }
 
+.top-area {
+  border-bottom: 1px solid #EEE;
+  margin: 0 -16px;
+  padding: 0 $gl-padding;
+
+  ul.left-top-menu {
+    display: inline-block;
+    width: 50%;
+    margin-bottom: 0px;
+    border-bottom: none;
+  }
+
+  .projects-search-form {
+    width: 50%;
+    display: inline-block;
+    float: right;
+    padding-top: 7px;
+    text-align: right;
+
+    .btn-green {
+      margin-top: -2px;
+      margin-left: 10px;
+    }
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .projects-search-form {
+      padding-top: 15px;
+    }
+  }
+}
+
 .fork-namespaces {
   .fork-thumbnail {
     text-align: center;
@@ -412,11 +513,18 @@ pre.light-well {
 
 .projects-search-form {
   margin: -$gl-padding;
-  background-color: #f8fafc;
   padding: $gl-padding;
   margin-bottom: 0px;
-  border-top: 1px solid #e7e9ed;
-  border-bottom: 1px solid #e7e9ed;
+
+  input {
+    display: inline-block;
+    width: calc(100% - 151px);
+  }
+
+  .btn {
+    display: inline-block;
+    width: 135px;
+  }
 }
 
 .git-empty {

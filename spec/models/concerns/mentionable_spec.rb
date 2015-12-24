@@ -1,5 +1,18 @@
 require 'spec_helper'
 
+describe Mentionable do
+  include Mentionable
+
+  describe :references do
+    let(:project) { create(:project) }
+
+    it 'excludes JIRA references' do
+      allow(project).to receive_messages(jira_tracker?: true)
+      expect(referenced_mentionables(project, 'JIRA-123')).to be_empty
+    end
+  end
+end
+
 describe Issue, "Mentionable" do
   describe '#mentioned_users' do
     let!(:user) { create(:user, username: 'stranger') }

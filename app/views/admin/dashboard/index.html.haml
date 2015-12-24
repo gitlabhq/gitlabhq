@@ -80,6 +80,10 @@
         %span.pull-right
           = API::API::version
       %p
+        Git
+        %span.pull-right
+          = Gitlab::Git.version
+      %p
         Ruby
         %span.pull-right
           #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
