@@ -840,6 +840,7 @@ ActiveRecord::Schema.define(version: 20151224123230) do
     t.integer  "layout",                     default: 0
     t.boolean  "hide_project_limit",         default: false
     t.string   "unlock_token"
+    t.datetime "otp_grace_period_started_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

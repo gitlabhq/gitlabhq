@@ -225,9 +225,13 @@ class ApplicationController < ActionController::Base
   end
 
   def check_tfa_requirement
-    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled
+    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled && !skip_two_factor?
+      grace_period_started = current_user.otp_grace_period_started_at
+      grace_period_deadline = grace_period_started + two_factor_grace_period.hours
+
+      deadline_text = "until #{l(grace_period_deadline)}" unless two_factor_grace_period_expired?(grace_period_started)
       redirect_to new_profile_two_factor_auth_path,
-                  alert: 'You must configure Two-Factor Authentication in your account'
+                  alert: "You must configure Two-Factor Authentication in your account #{deadline_text}"
     end
   end
 
@@ -367,6 +371,18 @@ class ApplicationController < ActionController::Base
 
   def two_factor_authentication_required?
     current_application_settings.require_two_factor_authentication
+  end
+
+  def two_factor_grace_period
+    current_application_settings.two_factor_grace_period
+  end
+
+  def two_factor_grace_period_expired?(date)
+    date && (date + two_factor_grace_period.hours) < Time.current
+  end
+
+  def skip_two_factor?
+    session[:skip_tfa] && session[:skip_tfa] > Time.current
   end
 
   def redirect_to_home_page_url?
