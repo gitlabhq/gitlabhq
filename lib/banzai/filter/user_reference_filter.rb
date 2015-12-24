@@ -122,7 +122,7 @@ module Banzai
       end
 
       def link_tag(url, data, text)
-        %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
+        %(<a href="#{url}" #{data} class="#{link_class}">#{escape_once(text)}</a>)
       end
     end
   end

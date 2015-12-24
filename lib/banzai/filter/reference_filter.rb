@@ -44,11 +44,11 @@ module Banzai
       # Returns a String
       def data_attribute(attributes = {})
         attributes[:reference_filter] = self.class.name.demodulize
-        attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{value}") }.join(" ")
+        attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}") }.join(" ")
       end
 
       def escape_once(html)
-        ERB::Util.html_escape_once(html)
+        html.html_safe? ? html : ERB::Util.html_escape_once(html)
       end
 
       def ignore_parents
