@@ -10,6 +10,13 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     end
     current_user.save! if current_user.changed?
 
+    if two_factor_grace_period_expired?
+      flash.now[:alert] = 'You must configure Two-Factor Authentication in your account.'
+    else
+      grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
+      flash.now[:alert] = "You must configure Two-Factor Authentication in your account until #{l(grace_period_deadline)}."
+    end
+
     @qr_code = build_qr_code
   end
 
@@ -40,7 +47,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def skip
-    if two_factor_grace_period_expired?(current_user.otp_grace_period_started_at)
+    if two_factor_grace_period_expired?
       redirect_to new_profile_two_factor_auth_path, alert: 'Cannot skip two factor authentication setup'
     else
       session[:skip_tfa] = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
