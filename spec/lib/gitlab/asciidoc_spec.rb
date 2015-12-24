@@ -50,7 +50,7 @@ module Gitlab
         filtered_html = '<b>ASCII</b>'
 
         allow(Asciidoctor).to receive(:convert).and_return(html)
-        expect(Gitlab::Markdown).to receive(:render)
+        expect(Banzai).to receive(:render)
           .with(html, context.merge(pipeline: :asciidoc))
           .and_return(filtered_html)
 

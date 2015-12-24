@@ -126,12 +126,16 @@ class ApplicationSetting < ActiveRecord::Base
   def restricted_signup_domains_raw=(values)
     self.restricted_signup_domains = []
     self.restricted_signup_domains = values.split(
-        /\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
-        |               # or
-        \s              # any whitespace character
-        |               # or
-        [\r\n]          # any number of newline characters
-        /x)
+      /\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
+      |               # or
+      \s              # any whitespace character
+      |               # or
+      [\r\n]          # any number of newline characters
+      /x)
     self.restricted_signup_domains.reject! { |d| d.empty? }
+  end
+
+  def runners_registration_token
+    ensure_runners_registration_token!
   end
 end

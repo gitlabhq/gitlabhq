@@ -374,7 +374,7 @@ table {
   }
 }
 
-.center-top-menu {
+.center-top-menu, .left-top-menu {
   @include nav-menu;
   text-align: center;
   margin-top: 5px;
@@ -401,6 +401,16 @@ table {
     border-bottom: 1px solid $border-color;
     height: 57px;
   }
+
+  &.wide {
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+  }
+}
+
+.left-top-menu {
+  text-align: left;
+  border-bottom: 1px solid #EEE;
 }
 
 .center-middle-menu {

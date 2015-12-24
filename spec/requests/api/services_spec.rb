@@ -29,7 +29,7 @@ describe API::API, api: true  do
         if required_attributes.empty?
           expected_code = 200
         else
-          attrs.delete(required_attributes.shuffle.first)
+          attrs.delete(required_attributes.sample)
           expected_code = 400
         end
         

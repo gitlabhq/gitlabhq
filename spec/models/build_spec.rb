@@ -189,6 +189,12 @@ describe Ci::Build, models: true do
 
       it { is_expected.to eq(98.29) }
     end
+
+    context 'using a regex capture' do
+      subject { build.extract_coverage('TOTAL      9926   3489    65%', 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)') }
+
+      it { is_expected.to eq(65) }
+    end
   end
 
   describe :variables do
@@ -389,5 +395,69 @@ describe Ci::Build, models: true do
     it { is_expected.to include(build.token) }
     it { is_expected.to include('gitlab-ci-token') }
     it { is_expected.to include(project.web_url[7..-1]) }
+  end
+
+  def create_mr(build, commit, factory: :merge_request, created_at: Time.now)
+    FactoryGirl.create(factory,
+                       source_project_id: commit.gl_project_id,
+                       target_project_id: commit.gl_project_id,
+                       source_branch: build.ref,
+                       created_at: created_at)
+  end
+
+  describe :merge_request do
+    context 'when a MR has a reference to the commit' do
+      before do
+        @merge_request = create_mr(build, commit, factory: :merge_request)
+
+        commits = [double(id: commit.sha)]
+        allow(@merge_request).to receive(:commits).and_return(commits)
+        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
+      end
+
+      it 'returns the single associated MR' do
+        expect(build.merge_request.id).to eq(@merge_request.id)
+      end
+    end
+
+    context 'when there is not a MR referencing the commit' do
+      it 'returns nil' do
+        expect(build.merge_request).to be_nil
+      end
+    end
+
+    context 'when more than one MR have a reference to the commit' do
+      before do
+        @merge_request = create_mr(build, commit, factory: :merge_request)
+        @merge_request.close!
+        @merge_request2 = create_mr(build, commit, factory: :merge_request)
+
+        commits = [double(id: commit.sha)]
+        allow(@merge_request).to receive(:commits).and_return(commits)
+        allow(@merge_request2).to receive(:commits).and_return(commits)
+        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request, @merge_request2])
+      end
+
+      it 'returns the first MR' do
+        expect(build.merge_request.id).to eq(@merge_request.id)
+      end
+    end
+
+    context 'when a Build is created after the MR' do
+      before do
+        @merge_request = create_mr(build, commit, factory: :merge_request_with_diffs)
+        commit2 = FactoryGirl.create :ci_commit, project: project
+        @build2 = FactoryGirl.create :ci_build, commit: commit2
+
+        commits = [double(id: commit.sha), double(id: commit2.sha)]
+        allow(@merge_request).to receive(:commits).and_return(commits)
+        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
+      end
+
+      it 'returns the current MR' do
+        expect(@build2.merge_request.id).to eq(@merge_request.id)
+      end
+    end
+
   end
 end

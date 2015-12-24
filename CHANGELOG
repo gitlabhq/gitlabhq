@@ -4,11 +4,23 @@ v 8.4.0 (unreleased)
   - Add "Frequently used" category to emoji picker
 
 v 8.3.0 (unreleased)
+  - Fix Error 500 when doing a search in dashboard before visiting any project (Stan Hu)
+  - Implement new UI for group page
+  - Implement search inside emoji picker
+  - Add project permissions to all project API endpoints (Stan Hu)
+
+v 8.3.0
+  - Add CAS support (tduehr)
+  - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
+  - API support for starred projects for authorized user (Zeger-Jan van de Weg)
+  - Add link to merge request on build detail page.
+  - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
-  - Merge when build succeeds (Zeger-Jan van de Weg)
   - Provide better diagnostic message upon project creation errors (Stan Hu)
   - Bump devise to 3.5.3 to fix reset token expiring after account creation (Stan Hu)
+  - Remove api credentials from link to build_page
+  - Deprecate GitLabCiService making it to always be inactive
   - Bump gollum-lib to 4.1.0 (Stan Hu)
   - Fix broken group avatar upload under "New group" (Stan Hu)
   - Update project repositorize size and commit count during import:repos task (Stan Hu)
@@ -20,13 +32,16 @@ v 8.3.0 (unreleased)
   - Fix 500 error when update group member permission
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
+  - Backport JIRA features from EE to CE
   - Add ignore whitespace change option to commit view
   - Fire update hook from GitLab
+  - Allow account unlock via email
   - Style warning about mentioning many people in a comment
   - Fix: sort milestones by due date once again (Greg Smethells)
   - Migrate all CI::Services and CI::WebHooks to Services and WebHooks
   - Don't show project fork event as "imported"
   - Add API endpoint to fetch merge request commits list
+  - Don't create CI status for refs that doesn't have .gitlab-ci.yml, even if the builds are enabled
   - Expose events API with comment information and author info
   - Fix: Ensure "Remove Source Branch" button is not shown when branch is being deleted. #3583
   - Run custom Git hooks when branch is created or deleted.
@@ -58,6 +73,7 @@ v 8.3.0 (unreleased)
   - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
   - Persist runners registration token in database
   - Fix online editor should not remove newlines at the end of the file
+  - Expose Git's version in the admin area
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
@@ -65,8 +81,6 @@ v 8.2.3
   - Update documentation for "Guest" permissions
   - Properly convert Emoji-only comments into Award Emojis
   - Enable devise paranoid mode to prevent user enumeration attack
-
-v 8.2.3
   - Webhook payload has an added, modified and removed properties for each commit
   - Fix 500 error when creating a merge request that removes a submodule
 

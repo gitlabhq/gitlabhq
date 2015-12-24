@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Markdown::ReferenceFilter, benchmark: true do
+describe Banzai::Filter::ReferenceFilter, benchmark: true do
   let(:input) do
     html = <<-EOF
 <p>Hello @alice and @bob, how are you doing today?</p>

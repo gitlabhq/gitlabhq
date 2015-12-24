@@ -11,19 +11,20 @@
         = icon('smile-o')
       .emoji-menu
         .emoji-menu-content
+          = text_field_tag :emoji_search, "", class: "emoji-search search-input form-control"
           - AwardEmoji.emoji_by_category.each do |category, emojis|
-            %h4= AwardEmoji::CATEGORIES[category]
+            %h5= AwardEmoji::CATEGORIES[category]
             %ul
               - emojis.each do |emoji|
                 %li
-                  = emoji_icon(emoji["name"], emoji["unicode"])
+                  = emoji_icon(emoji["name"], emoji["unicode"], emoji["aliases"])
 
 - if current_user
   :coffeescript
     post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
     noteable_type = "#{votable.class.name.underscore}"
     noteable_id = "#{votable.id}"
-    aliases = #{AwardEmoji::ALIASES.to_json}
+    aliases = #{AwardEmoji.aliases.to_json}
 
     window.awards_handler = new AwardsHandler(
       post_emoji_url,
@@ -32,11 +33,11 @@
       aliases
     )
 
-    $(".emoji-menu-content li").click (e)->
+    $(".awards").on "click", ".emoji-menu-content li", (e) ->
       emoji = $(this).find(".emoji-icon").data("emoji")
       awards_handler.addAward(emoji)
 
-    $(".awards").on "click", ".award", (e)->
+    $(".awards").on "click", ".award", (e) ->
       emoji = $(this).find(".icon").data("emoji")
       awards_handler.addAward(emoji)
 

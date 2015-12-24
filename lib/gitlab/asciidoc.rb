@@ -32,7 +32,7 @@ module Gitlab
       html = ::Asciidoctor.convert(input, asciidoc_opts)
 
       if context[:project]
-        html = Gitlab::Markdown.render(html, context.merge(pipeline: :asciidoc))
+        html = Banzai.render(html, context.merge(pipeline: :asciidoc))
       end
 
       html.html_safe

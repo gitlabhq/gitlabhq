@@ -57,15 +57,15 @@ module IssuesHelper
     options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)
   end
 
-  def issue_box_class(item)
+  def status_box_class(item)
     if item.respond_to?(:expired?) && item.expired?
-      'issue-box-expired'
+      'status-box-expired'
     elsif item.respond_to?(:merged?) && item.merged?
-      'issue-box-merged'
+      'status-box-merged'
     elsif item.closed?
-      'issue-box-closed'
+      'status-box-closed'
     else
-      'issue-box-open'
+      'status-box-open'
     end
   end
 
@@ -94,12 +94,13 @@ module IssuesHelper
     end.sort.to_sentence(last_word_connector: ', or ')
   end
 
-  def emoji_icon(name, unicode = nil)
+  def emoji_icon(name, unicode = nil, aliases = [])
     unicode ||= Emoji.emoji_filename(name)
 
     content_tag :div, "",
       class: "icon emoji-icon emoji-#{unicode}",
       "data-emoji" => name,
+      "data-aliases" => aliases.join(" "),
       "data-unicode-name" => unicode
   end
 
@@ -119,6 +120,6 @@ module IssuesHelper
     end
   end
 
-  # Required for Gitlab::Markdown::IssueReferenceFilter
+  # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
 end

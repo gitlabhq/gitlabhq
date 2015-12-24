@@ -26,6 +26,7 @@
 #  bio                        :string(255)
 #  failed_attempts            :integer          default(0)
 #  locked_at                  :datetime
+#  unlock_token               :string(255)
 #  username                   :string(255)
 #  can_create_group           :boolean          default(TRUE), not null
 #  can_create_team            :boolean          default(TRUE), not null
@@ -462,8 +463,8 @@ describe User, models: true do
       expect(User.search(user1.username.downcase).to_a).to eq([user1])
       expect(User.search(user2.username.upcase).to_a).to eq([user2])
       expect(User.search(user2.username.downcase).to_a).to eq([user2])
-      expect(User.search(user1.username.downcase).to_a.count).to eq(2)
-      expect(User.search(user2.username.downcase).to_a.count).to eq(1)
+      expect(User.search(user1.username.downcase).to_a.size).to eq(2)
+      expect(User.search(user2.username.downcase).to_a.size).to eq(1)
     end
   end
 

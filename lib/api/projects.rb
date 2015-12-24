@@ -25,7 +25,7 @@ module API
         @projects = current_user.authorized_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::Project
+        present @projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Get an owned projects list for authenticated user
@@ -34,6 +34,17 @@ module API
       #   GET /projects/owned
       get '/owned' do
         @projects = current_user.owned_projects
+        @projects = filter_projects(@projects)
+        @projects = paginate @projects
+        present @projects, with: Entities::ProjectWithAccess, user: current_user
+      end
+
+      # Gets starred project for the authenticated user
+      #
+      # Example Request:
+      #   GET /projects/starred
+      get '/starred' do
+        @projects = current_user.starred_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::Project
@@ -48,7 +59,7 @@ module API
         @projects = Project.all
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::Project
+        present @projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Get a single project

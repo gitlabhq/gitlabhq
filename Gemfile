@@ -23,6 +23,7 @@ gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
+gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 3.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
@@ -101,6 +102,9 @@ gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
 gem 'rouge',         '~> 1.10.1'
 
+# See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
+gem 'nokogiri', '1.6.7.1'
+
 # Diffs
 gem 'diffy', '~> 3.0.3'
 
@@ -175,7 +179,7 @@ gem "sanitize", '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
 # Protect against bruteforcing
-gem "rack-attack", '~> 4.3.0'
+gem "rack-attack", '~> 4.3.1'
 
 # Ace editor
 gem 'ace-rails-ap', '~> 2.0.1'
@@ -186,7 +190,7 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
-gem "sass-rails", '~> 4.0.5'
+gem "sass-rails", '~> 5.0.0'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
@@ -198,9 +202,9 @@ gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.2.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails',       '~> 3.1.3'
+gem 'jquery-rails',       '~> 4.0.0'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
-gem 'jquery-ui-rails',    '~> 4.2.1'
+gem 'jquery-ui-rails',    '~> 5.0.0'
 gem 'nprogress-rails',    '~> 0.1.6.7'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'
@@ -215,7 +219,7 @@ group :development do
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'
   gem 'quiet_assets', '~> 1.0.2'
-  gem 'rerun', '~> 0.10.0'
+  gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
   gem 'rblineprof', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
@@ -251,7 +255,7 @@ group :development, :test do
 
   gem 'capybara',            '~> 2.4.0'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist',         '~> 1.6.0'
+  gem 'poltergeist',         '~> 1.8.1'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
@@ -261,7 +265,7 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop',  '~> 0.28.0',  require: false
+  gem 'rubocop', '~> 0.35.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
   gem 'flog', require: false

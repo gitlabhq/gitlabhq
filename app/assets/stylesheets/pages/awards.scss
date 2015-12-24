@@ -90,13 +90,19 @@
         height: 300px;
         overflow-y: scroll;
 
-        h4 {
+        h5 {
           clear: left;
         }
 
         ul {
           list-style-type: none;
           margin-left: -20px;
+          margin-bottom: 20px;
+          overflow: auto;
+        }
+
+        input.emoji-search{
+          background: image-url(/assets/icon-search.png) 240px no-repeat;
         }
 
         li {

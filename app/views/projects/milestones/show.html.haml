@@ -1,44 +1,44 @@
 - page_title @milestone.title, "Milestones"
 = render "header_title"
 
-.issuable-details
-  .page-title
-    .issue-box{ class: issue_box_class(@milestone) }
-      - if @milestone.closed?
-        Closed
-      - elsif @milestone.expired?
-        Expired
-      - else
-        Open
+.detail-page-header
+  .status-box{ class: status_box_class(@milestone) }
+    - if @milestone.closed?
+      Closed
+    - elsif @milestone.expired?
+      Expired
+    - else
+      Open
+  %span.identifier
     Milestone ##{@milestone.iid}
-    - if @milestone.expires_at
-      %span.creator
-        &middot;
-        = @milestone.expires_at
-    .pull-right
-      - if can?(current_user, :admin_milestone, @project)
-        = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped" do
-          %i.fa.fa-pencil-square-o
-          Edit
+  - if @milestone.expires_at
+    %span.creator
+      &middot;
+      = @milestone.expires_at
+  .pull-right
+    - if can?(current_user, :admin_milestone, @project)
+      - if @milestone.active?
+        = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-grouped"
+      - else
+        = link_to 'Reopen Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-grouped"
 
-        - if @milestone.active?
-          = link_to 'Close Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-grouped"
-        - else
-          = link_to 'Reopen Milestone', namespace_project_milestone_path(@project.namespace, @project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-grouped"
+      = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-remove" do
+        %i.fa.fa-trash-o
+        Delete
 
-        = link_to namespace_project_milestone_path(@project.namespace, @project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-remove" do
-          %i.fa.fa-trash-o
-          Delete
+      = link_to edit_namespace_project_milestone_path(@project.namespace, @project, @milestone), class: "btn btn-grouped" do
+        %i.fa.fa-pencil-square-o
+        Edit
 
-  .gray-content-block.middle-block
-    %h2.issue-title
-      = markdown escape_once(@milestone.title), pipeline: :single_line
-    %div
-      - if @milestone.description.present?
-        .description
-          .wiki
-            = preserve do
-              = markdown @milestone.description
+.detail-page-description.gray-content-block.second-block
+  %h2.title
+    = markdown escape_once(@milestone.title), pipeline: :single_line
+  %div
+    - if @milestone.description.present?
+      .description
+        .wiki
+          = preserve do
+            = markdown @milestone.description
 
 - if @milestone.issues.any? && @milestone.can_be_closed?
   .alert.alert-success.prepend-top-default

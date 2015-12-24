@@ -166,7 +166,7 @@ module SharedDiffNote
   end
 
   step 'I should see add a diff comment button' do
-    expect(page).to have_css('.js-add-diff-note-button', visible: true)
+    expect(page).to have_css('.js-add-diff-note-button')
   end
 
   step 'I should see an empty diff comment form' do

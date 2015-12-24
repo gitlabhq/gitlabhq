@@ -11,6 +11,7 @@ class @AwardsHandler
           $(".emoji-menu").hide()
 
     @renderFrequentlyUsedBlock()
+    @setupSearch()
 
   addAward: (emoji) ->
     emoji = @normilizeEmojiName(emoji)
@@ -80,7 +81,7 @@ class @AwardsHandler
 
     nodes = []
     nodes.push("<div class='award active' title='me'>")
-    nodes.push("<div class='icon emoji-icon " + emojiCssClass + "' data-emoji='" + emoji + "'></div>")
+    nodes.push("<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>")
     nodes.push("<div class='counter'>1</div>")
     nodes.push("</div>")
 
@@ -89,13 +90,19 @@ class @AwardsHandler
     $(".award").tooltip()
 
   resolveNameToCssClass: (emoji) ->
-    unicodeName = $(".emoji-menu-content [data-emoji='?']".replace("?", emoji)).data("unicode-name")
+    emoji_icon = $(".emoji-menu-content [data-emoji='#{emoji}']")
 
-    "emoji-" + unicodeName
+    if emoji_icon.length > 0
+      unicodeName = emoji_icon.data("unicode-name")
+    else
+      # Find by alias
+      unicodeName = $(".emoji-menu-content [data-aliases*=':#{emoji}:']").data("unicode-name")
+
+    "emoji-#{unicodeName}"
 
   postEmoji: (emoji, callback) ->
     $.post @post_emoji_url, { note: {
-      note: ":" + emoji + ":"
+      note: ":#{emoji}:"
       noteable_type: @noteable_type
       noteable_id: @noteable_id
     }},(data) ->
@@ -103,7 +110,7 @@ class @AwardsHandler
         callback.call()
 
   findEmojiIcon: (emoji) ->
-    $(".award [data-emoji='" + emoji + "']")
+    $(".award [data-emoji='#{emoji}']")
 
   scrollToAwards: ->
     $('body, html').animate({
@@ -134,3 +141,22 @@ class @AwardsHandler
 
       $(".emoji-menu-content").prepend(ul).prepend($("<h4>").text("Frequently used"))
 
+  setupSearch: ->
+    $("input.emoji-search").keyup (ev) =>
+      term = $(ev.target).val()
+
+      # Clean previous search results
+      $("ul.emoji-search,h5.emoji-search").remove()
+
+      if term
+        # Generate search result block
+        h5 = $("<h5>").text("Search results").addClass("emoji-search")
+        found_emojis = @searchEmojis(term).show()
+        ul = $("<ul>").addClass("emoji-search").append(found_emojis)
+        $(".emoji-menu-content ul, .emoji-menu-content h5").hide()
+        $(".emoji-menu-content").append(h5).append(ul)
+      else
+        $(".emoji-menu-content").children().show()
+
+  searchEmojis: (term)->
+    $(".emoji-menu-content [data-emoji*='#{term}']").closest("li").clone()
