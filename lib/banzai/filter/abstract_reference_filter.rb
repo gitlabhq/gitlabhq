@@ -102,7 +102,7 @@ module Banzai
           project = project_from_ref(project_ref)
 
           if project && object = find_object(project, id)
-            title = escape_once(object_link_title(object))
+            title = object_link_title(object)
             klass = reference_class(object_sym)
 
             data  = data_attribute(
@@ -114,11 +114,11 @@ module Banzai
             url = matches[:url] if matches.names.include?("url")
             url ||= url_for_object(object, project)
 
-            text = link_text || escape_once(object_link_text(object, matches))
+            text = link_text || object_link_text(object, matches)
 
             %(<a href="#{url}" #{data}
-                 title="#{title}"
-                 class="#{klass}">#{text}</a>)
+                 title="#{escape_once(title)}"
+                 class="#{klass}">#{escape_once(text)}</a>)
           else
             match
           end
