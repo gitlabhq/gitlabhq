@@ -5,6 +5,8 @@ v 8.4.0 (unreleased)
   - Implement new UI for group page
   - Implement search inside emoji picker
   - Add project permissions to all project API endpoints (Stan Hu)
+  - Add "Frequently used" category to emoji picker
+
 
 v 8.3.1 (unreleased)
   - Fix Error 500 when global milestones have slashes (Stan Hu)

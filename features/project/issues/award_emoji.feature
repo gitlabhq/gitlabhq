@@ -26,5 +26,5 @@ Feature: Award Emoji
 
   @javascript
   Scenario: I add award emoji using regular comment
-  Given I leave comment with a single emoji
-  Then I have award added
+    Given I leave comment with a single emoji
+    Then I have award added
