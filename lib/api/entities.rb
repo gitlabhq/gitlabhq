@@ -366,5 +366,18 @@ module API
     class TriggerRequest < Grape::Entity
       expose :id, :variables
     end
+
+    class Build < Grape::Entity
+      expose :id
+      expose :status
+      expose :stage
+      expose :name
+      expose :ref
+      expose :commit
+      expose :runner
+      expose :created_at
+      expose :started_at
+      expose :finished_at
+    end
   end
 end
