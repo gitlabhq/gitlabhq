@@ -9,6 +9,7 @@ v 8.4.0 (unreleased)
   - Add "Frequently used" category to emoji picker
   - Add CAS support (tduehr)
   - Add link to merge request on build detail page.
+  - Revert back upvote and downvote button to the issue and MR pages
 
 v 8.3.2 (unreleased)
   - Enable "Add key" button when user fills in a proper key
