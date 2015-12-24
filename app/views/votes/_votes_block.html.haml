@@ -17,14 +17,14 @@
             %ul
               - emojis.each do |emoji|
                 %li
-                  = emoji_icon(emoji["name"], emoji["unicode"])
+                  = emoji_icon(emoji["name"], emoji["unicode"], emoji["aliases"])
 
 - if current_user
   :coffeescript
     post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
     noteable_type = "#{votable.class.name.underscore}"
     noteable_id = "#{votable.id}"
-    aliases = #{AwardEmoji::ALIASES.to_json}
+    aliases = #{AwardEmoji.aliases.to_json}
 
     window.awards_handler = new AwardsHandler(
       post_emoji_url,

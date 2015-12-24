@@ -94,12 +94,13 @@ module IssuesHelper
     end.sort.to_sentence(last_word_connector: ', or ')
   end
 
-  def emoji_icon(name, unicode = nil)
+  def emoji_icon(name, unicode = nil, aliases = [])
     unicode ||= Emoji.emoji_filename(name)
 
     content_tag :div, "",
       class: "icon emoji-icon emoji-#{unicode}",
       "data-emoji" => name,
+      "data-aliases" => aliases.join(" "),
       "data-unicode-name" => unicode
   end
 
