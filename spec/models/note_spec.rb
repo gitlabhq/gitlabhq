@@ -164,8 +164,8 @@ describe Note, models: true do
     let(:issue) { create :issue }
 
     it "converts aliases to actual name" do
-      note = create :note, note: ":thumbsup:", noteable: issue
-      expect(note.reload.note).to eq("+1")
+      note = create :note, note: ":+1:", noteable: issue
+      expect(note.reload.note).to eq("thumbsup")
     end
   end
 end
