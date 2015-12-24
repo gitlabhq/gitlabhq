@@ -4,7 +4,7 @@ class CreateBranchService < BaseService
   def execute(branch_name, ref)
     valid_branch = Gitlab::GitRefValidator.validate(branch_name)
     if valid_branch == false
-      return error('Branch name invalid')
+      return error('Branch name is invalid')
     end
 
     repository = project.repository
