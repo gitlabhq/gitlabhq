@@ -64,6 +64,19 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
+  # update visibility_levet of forks
+  after_update :update_forks_visibility_level
+  def update_forks_visibility_level
+    return unless visibility_level < visibility_level_was
+
+    forks.each do |forked_project|
+      if forked_project.visibility_level > visibility_level
+        forked_project.visibility_level = visibility_level
+        forked_project.save!
+      end
+    end
+  end
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 
@@ -100,9 +113,12 @@ class Project < ActiveRecord::Base
   has_one :gitlab_issue_tracker_service, dependent: :destroy
   has_one :external_wiki_service, dependent: :destroy
 
-  has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one  :forked_from_project,  through:   :forked_project_link
 
-  has_one :forked_from_project, through: :forked_project_link
+  has_many :forked_project_links, foreign_key: "forked_from_project_id"
+  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
+
   # Merge Requests for target project should be removed with it
   has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
   # Merge requests from source project should be kept when source project was removed
@@ -768,7 +784,7 @@ class Project < ActiveRecord::Base
   end
 
   def forks_count
-    ForkedProjectLink.where(forked_from_project_id: self.id).count
+    forks.count
   end
 
   def find_label(name)
@@ -861,5 +877,10 @@ class Project < ActiveRecord::Base
 
   def open_issues_count
     issues.opened.count
+  end
+
+  def visibility_level_allowed?(level)
+    return true unless forked?
+    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i)
   end
 end

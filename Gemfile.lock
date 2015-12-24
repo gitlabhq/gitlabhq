@@ -769,7 +769,7 @@ GEM
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    underscore-rails (1.4.4)
+    underscore-rails (1.8.3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
@@ -965,7 +965,7 @@ DEPENDENCIES
   tinder (~> 1.10.0)
   turbolinks (~> 2.5.0)
   uglifier (~> 2.7.2)
-  underscore-rails (~> 1.4.4)
+  underscore-rails (~> 1.8.0)
   unf (~> 0.1.4)
   unicorn (~> 4.8.2)
   unicorn-worker-killer (~> 0.4.2)
