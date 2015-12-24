@@ -115,6 +115,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
+        note.project.team << [note.author, :master]
         ActionMailer::Base.deliveries.clear
       end
 
