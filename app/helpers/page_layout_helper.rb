@@ -30,9 +30,9 @@ module PageLayoutHelper
     @page_description ||= page_description_default
 
     if description.present?
-      @page_description = description
+      @page_description = description.squish
     else
-      sanitize(@page_description.squish, tags: [])
+      sanitize(@page_description, tags: []).truncate_words(30)
     end
   end
 

@@ -22,6 +22,19 @@ describe PageLayoutHelper do
       expect(helper.page_description).to eq 'Foo Bar Baz'
     end
 
+    it 'truncates' do
+      helper.page_description <<-LOREM.strip_heredoc
+        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+        ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis
+        dis parturient montes, nascetur ridiculus mus. Donec quam felis,
+        ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa
+        quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget,
+        arcu.
+      LOREM
+
+      expect(helper.page_description).to end_with 'quam felis,...'
+    end
+
     it 'sanitizes all HTML' do
       helper.page_description("<b>Bold</b> <h1>Header</h1>")
 
