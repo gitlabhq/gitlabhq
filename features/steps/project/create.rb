@@ -26,18 +26,20 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   end
 
   step 'I click on HTTP' do
-    click_button 'HTTP'
+    find('#clone-dropdown').click
+    find('#http-selector').click
   end
 
   step 'Remote url should update to http link' do
-    expect(page).to have_content "git remote add origin #{Project.last.http_url_to_repo}"
+    expect(page).to have_content Project.last.http_url_to_repo
   end
 
   step 'If I click on SSH' do
-    click_button 'SSH'
+    find('#clone-dropdown').click
+    find('#ssh-selector').click
   end
 
   step 'Remote url should update to ssh link' do
-    expect(page).to have_content "git remote add origin #{Project.last.url_to_repo}"
+    expect(page).to have_content Project.last.ssh_url_to_repo
   end
 end

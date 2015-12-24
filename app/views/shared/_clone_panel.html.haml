@@ -2,16 +2,16 @@
 
 .git-clone-holder
   .btn-group.clone-options
-    %a.clone-dropdown-btn.btn{href: '#', 'data-toggle' => 'dropdown'}
+    %a#clone-dropdown.clone-dropdown-btn.btn{href: '#', 'data-toggle' => 'dropdown'}
       %span
         = default_clone_protocol.upcase
       = icon('angle-down')
     %ul.dropdown-menu.dropdown-menu-right.clone-options-dropdown
       %li
-        %a{href: '#', "data-url" => @project.ssh_url_to_repo}
+        %a#ssh-selector{href: @project.ssh_url_to_repo}
           SSH
       %li
-        %a{href: '#', "data-url" => @project.http_url_to_repo}
+        %a#http-selector{href: @project.http_url_to_repo}
           HTTPS
 
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
@@ -23,5 +23,5 @@
     e.preventDefault();
     var $this = $(this);
     $('a.clone-dropdown-btn span').text($this.text());
-    $('#project_clone').val($this.data('url'));
+    $('#project_clone').val($this.attr('href'));
   });
