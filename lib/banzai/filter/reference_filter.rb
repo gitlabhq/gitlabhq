@@ -48,7 +48,7 @@ module Banzai
       end
 
       def escape_once(html)
-        ERB::Util.html_escape_once(html)
+        html.html_safe? ? html : ERB::Util.html_escape_once(html)
       end
 
       def ignore_parents

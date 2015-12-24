@@ -110,13 +110,7 @@ module Banzai
             url = matches[:url] if matches.names.include?("url")
             url ||= url_for_object(object, project)
 
-            text = link_text
-            unless text
-              text = object.reference_link_text(context[:project])
-
-              extras = object_link_text_extras(object, matches)
-              text += " (#{extras.join(", ")})" if extras.any?
-            end
+            text = link_text || escape_once(object_link_text(object, matches))
 
             %(<a href="#{url}" #{data}
                  title="#{title}"
@@ -139,6 +133,15 @@ module Banzai
 
       def object_link_title(object)
         "#{object_class.name.titleize}: #{object.title}"
+      end
+
+      def object_link_text(object, matches)
+        text = object.reference_link_text(context[:project])
+
+        extras = object_link_text_extras(object, matches)
+        text += " (#{extras.join(", ")})" if extras.any?
+
+        text
       end
     end
   end
