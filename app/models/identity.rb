@@ -12,6 +12,7 @@
 
 class Identity < ActiveRecord::Base
   include Sortable
+  include CaseSensitivity
   belongs_to :user
 
   validates :provider, presence: true
