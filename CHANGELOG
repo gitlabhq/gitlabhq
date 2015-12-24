@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.3.3 (unreleased)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
+  - Enable "Add key" button when user fills in a proper key
 
 v 8.3.2
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
