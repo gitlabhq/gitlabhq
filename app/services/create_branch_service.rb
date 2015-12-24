@@ -1,10 +1,10 @@
 require_relative 'base_service'
 
 class CreateBranchService < BaseService
-  def execute(branch_name, ref)
+  def execute(branch_name, ref, source_project: @project)
     valid_branch = Gitlab::GitRefValidator.validate(branch_name)
     if valid_branch == false
-      return error('Branch name invalid')
+      return error('Branch name is invalid')
     end
 
     repository = project.repository
@@ -13,7 +13,20 @@ class CreateBranchService < BaseService
       return error('Branch already exists')
     end
 
-    new_branch = repository.add_branch(current_user, branch_name, ref)
+    new_branch = nil
+    if source_project != @project
+      repository.with_tmp_ref do |tmp_ref|
+        repository.fetch_ref(
+          source_project.repository.path_to_repo,
+          "refs/heads/#{ref}",
+          tmp_ref
+        )
+
+        new_branch = repository.add_branch(current_user, branch_name, tmp_ref)
+      end
+    else
+      new_branch = repository.add_branch(current_user, branch_name, ref)
+    end
 
     if new_branch
       push_data = build_push_data(project, current_user, new_branch)

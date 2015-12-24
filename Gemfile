@@ -172,7 +172,7 @@ gem 'd3_rails', '~> 3.5.5'
 gem "cal-heatmap-rails", "~> 0.0.1"
 
 # underscore-rails
-gem "underscore-rails", "~> 1.4.4"
+gem "underscore-rails", "~> 1.8.0"
 
 # Sanitize user input
 gem "sanitize", '~> 2.0'
