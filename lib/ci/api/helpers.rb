@@ -19,7 +19,7 @@ module Ci
       end
 
       def runner_registration_token_valid?
-        params[:token] == current_application_settings.ensure_runners_registration_token
+        params[:token] == current_application_settings.runners_registration_token
       end
 
       def update_runner_last_contact
