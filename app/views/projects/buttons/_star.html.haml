@@ -11,41 +11,6 @@
     %span.count.star-count
       = @project.star_count
 
-  :javascript
-    $('.project-home-panel .toggle-star').on('ajax:success', function (e, data, status, xhr) {
-      var $this = $(this);
-      var $starSpan = $this.find('span');
-      var $starIcon = $this.find('i');
-
-      var toggleStar = function(isStarred) {
-        $this
-          .parent()
-          .find('span.count')
-          .text(data.star_count);
-        if(isStarred){
-          $starSpan
-            .removeClass('starred')
-            .text('Star');
-          $starIcon
-            .removeClass('fa-star')
-            .addClass('fa-star-o');
-
-        } else {
-          $starSpan
-            .addClass('starred')
-            .text('Unstar');
-          $starIcon
-            .removeClass('fa-star-o')
-            .addClass('fa-star');
-        }
-      };
-
-      toggleStar($starSpan.hasClass('starred'));
-    })
-    .on('ajax:error', function (e, xhr, status, error) {
-      new Flash('Star toggle failed. Try again later.', 'alert');
-    });
-
 - else
   = link_to new_user_session_path, class: 'btn has_tooltip star-btn', title: 'You must sign in to star a project' do
     = icon('star fw')
