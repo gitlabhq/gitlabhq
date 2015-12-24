@@ -66,7 +66,6 @@ There are a few reserved `keywords` that **cannot** be used as job names:
 | before_script | no | Define commands that run before each job's script |
 | variables     | no | Define build variables |
 | cache         | no | Define list of files that should be cached between subsequent runs |
-| trigger       | no | Force a rebuild of a specific branch or tag with an API call |
 
 ### image and services
 
@@ -152,32 +151,6 @@ cache:
   paths:
   - binaries/
 ```
-
-### trigger
-
-Triggers can be used to force a rebuild of a specific branch or tag with an API
-call. You can add a trigger by visiting the project's **Settings > Triggers**.
-
-Every new trigger you create, gets assigned a different token which you can
-then use inside your `.gitlab-ci.yml`:
-
-```yaml
-trigger:
-  stage: deploy
-  script:
-    - "curl -X POST -F token=TOKEN -F ref=master https://gitlab.com/api/v3/projects/9/trigger/builds"
-```
-
-In the example above, a rebuild on master branch will be triggered after all
-previous stages build successfully (denoted by `stage: deploy`).
-
-You can find the endpoint containing the ID of the project on the **Triggers**
-page.
-
-_**Warning:** Be careful how you set up your triggers, because you could end up
-in an infinite loop._
-
-Read more in the dedicated [triggers documentation](../triggers/README.md).
 
 ## Jobs
 
