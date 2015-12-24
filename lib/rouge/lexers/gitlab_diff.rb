@@ -15,6 +15,10 @@ module Rouge
           delegate option(:parent_lexer)
         end
       end
+
+      start do
+        option(:parent_lexer).reset!
+      end
     end
   end
 end
