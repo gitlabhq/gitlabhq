@@ -10,6 +10,9 @@ v 8.4.0 (unreleased)
   - Add CAS support (tduehr)
   - Add link to merge request on build detail page.
 
+v 8.3.2 (unreleased)
+  - Enable "Add key" button when user fills in a proper key
+
 v 8.3.1
   - Fix Error 500 when global milestones have slashes (Stan Hu)
 
