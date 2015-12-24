@@ -337,6 +337,8 @@ ul.nav.nav-projects-tabs {
 
 .top-area {
   border-bottom: 1px solid #EEE;
+  margin: 0 -16px;
+  padding: 0 $gl-padding;
 
   ul.left-top-menu {
     display: inline-block;
@@ -354,7 +356,7 @@ ul.nav.nav-projects-tabs {
 
     .btn-green {
       margin-top: -2px;
-      margin-left: 10px;
+      margin-left: 8px;
     }
   }
 
