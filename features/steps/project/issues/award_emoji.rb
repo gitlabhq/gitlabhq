@@ -52,4 +52,16 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
       click_button 'Add Comment'
     end
   end
+
+  step 'I search "hand"' do
+    page.within('.emoji-menu-content') do
+      fill_in 'emoji_search', with: 'hand'
+    end
+  end
+
+  step 'I see search result for "hand"' do
+    page.within '.emoji-menu-content' do
+      expect(page).to have_selector '[data-emoji="raised_hand"]'
+    end
+  end
 end

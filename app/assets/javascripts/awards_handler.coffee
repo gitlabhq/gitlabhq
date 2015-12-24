@@ -10,6 +10,8 @@ class @AwardsHandler
         if $(".emoji-menu").is(":visible")
           $(".emoji-menu").hide()
 
+    @setupSearch()
+
   addAward: (emoji) ->
     emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
@@ -114,3 +116,23 @@ class @AwardsHandler
 
   normilizeEmojiName: (emoji) ->
     @aliases[emoji] || emoji
+
+  setupSearch: ->
+    $("input.emoji-search").keyup (ev) =>
+      term = $(ev.target).val()
+
+      # Clean previous search results
+      $("ul.emoji-search,h5.emoji-search").remove()
+
+      if term
+        # Generate search result block
+        h5 = $("<h5>").text("Search results").addClass("emoji-search")
+        found_emojis = @searchEmojis(term).show()
+        ul = $("<ul>").addClass("emoji-search").append(found_emojis)
+        $(".emoji-menu-content ul, .emoji-menu-content h5").hide()
+        $(".emoji-menu-content").append(h5).append(ul)
+      else
+        $(".emoji-menu-content").children().show()
+
+  searchEmojis: (term)->
+    $(".emoji-menu-content [data-emoji*='#{term}']").closest("li").clone()
