@@ -97,4 +97,33 @@ describe PageLayoutHelper do
       end
     end
   end
+
+  describe 'page_card_attributes' do
+    it 'raises ArgumentError when given more than two attributes' do
+      map = { foo: 'foo', bar: 'bar', baz: 'baz' }
+
+      expect { helper.page_card_attributes(map) }.
+        to raise_error(ArgumentError, /more than two attributes/)
+    end
+
+    it 'rejects blank values' do
+      map = { foo: 'foo', bar: '' }
+      helper.page_card_attributes(map)
+
+      expect(helper.page_card_attributes).to eq({ foo: 'foo' })
+    end
+  end
+
+  describe 'page_card_meta_tags' do
+    it 'returns the twitter:label and twitter:data tags' do
+      allow(helper).to receive(:page_card_attributes).and_return(foo: 'bar')
+
+      tags = helper.page_card_meta_tags
+
+      aggregate_failures do
+        expect(tags).to include %q(<meta property="twitter:label1" content="foo" />)
+        expect(tags).to include %q(<meta property="twitter:data1" content="bar" />)
+      end
+    end
+  end
 end

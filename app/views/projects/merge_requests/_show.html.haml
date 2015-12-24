@@ -1,5 +1,6 @@
-- page_title       "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
-- page_description @merge_request.description
+- page_title           "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
+- page_description     @merge_request.description
+- page_card_attributes @merge_request.card_attributes
 
 = render "header_title"
 

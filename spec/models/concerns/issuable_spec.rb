@@ -81,4 +81,22 @@ describe Issue, "Issuable" do
       expect(hook_data[:object_attributes]).to eq(issue.hook_attrs)
     end
   end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
+      allow(issue).to receive(:assignee).and_return(nil)
+
+      expect(issue.card_attributes).
+        to eq({'Author' => 'Robert', 'Assignee' => nil})
+    end
+
+    it 'includes the assignee name' do
+      allow(issue).to receive(:author).and_return(double(name: 'Robert'))
+      allow(issue).to receive(:assignee).and_return(double(name: 'Douwe'))
+
+      expect(issue.card_attributes).
+        to eq({'Author' => 'Robert', 'Assignee' => 'Douwe'})
+    end
+  end
 end

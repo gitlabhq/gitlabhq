@@ -58,6 +58,30 @@ module PageLayoutHelper
     end
   end
 
+  # Define or get attributes to be used as Twitter card metadata
+  #
+  # map - Hash of label => data pairs. Keys become labels, values become data
+  #
+  # Raises ArgumentError if given more than two attributes
+  def page_card_attributes(map = {})
+    raise ArgumentError, 'cannot provide more than two attributes' if map.length > 2
+
+    @page_card_attributes ||= {}
+    @page_card_attributes = map.reject { |_,v| v.blank? } if map.present?
+    @page_card_attributes
+  end
+
+  def page_card_meta_tags
+    tags = ''
+
+    page_card_attributes.each_with_index do |pair, i|
+      tags << tag(:meta, property: "twitter:label#{i + 1}", content: pair[0])
+      tags << tag(:meta, property: "twitter:data#{i + 1}",  content: pair[1])
+    end
+
+    tags.html_safe
+  end
+
   def header_title(title = nil, title_url = nil)
     if title
       @header_title     = title
