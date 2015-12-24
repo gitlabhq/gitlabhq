@@ -10,6 +10,9 @@ class @AwardsHandler
         if $(".emoji-menu").is(":visible")
           $(".emoji-menu").hide()
 
+    @renderFrequentlyUsedBlock()
+    @setupSearch()
+
   addAward: (emoji) ->
     emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
@@ -18,6 +21,8 @@ class @AwardsHandler
     $(".emoji-menu").hide()
     
   addAwardToEmojiBar: (emoji) ->
+    @addEmojiToFrequentlyUsedList(emoji)
+
     emoji = @normilizeEmojiName(emoji)
     if @exist(emoji)
       if @isActive(emoji)
@@ -114,3 +119,46 @@ class @AwardsHandler
 
   normilizeEmojiName: (emoji) ->
     @aliases[emoji] || emoji
+
+  addEmojiToFrequentlyUsedList: (emoji) ->
+    frequently_used_emojis = @getFrequentlyUsedEmojis()
+    frequently_used_emojis.push(emoji)
+    $.cookie('frequently_used_emojis', frequently_used_emojis.join(","), { expires: 365 })
+
+  getFrequentlyUsedEmojis: ->
+    frequently_used_emojis = ($.cookie('frequently_used_emojis') || "").split(",")
+
+    frequently_used_emojis = ["thumbsup", "thumbsdown"].concat(frequently_used_emojis)
+
+    _.compact(_.uniq(frequently_used_emojis))
+
+  renderFrequentlyUsedBlock: ->
+    frequently_used_emojis = @getFrequentlyUsedEmojis()
+
+    ul = $("<ul>")
+
+    for emoji in frequently_used_emojis
+      do (emoji) ->
+        $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
+
+    $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
+
+  setupSearch: ->
+    $("input.emoji-search").keyup (ev) =>
+      term = $(ev.target).val()
+
+      # Clean previous search results
+      $("ul.emoji-search,h5.emoji-search").remove()
+
+      if term
+        # Generate a search result block
+        h5 = $("<h5>").text("Search results").addClass("emoji-search")
+        found_emojis = @searchEmojis(term).show()
+        ul = $("<ul>").addClass("emoji-search").append(found_emojis)
+        $(".emoji-menu-content ul, .emoji-menu-content h5").hide()
+        $(".emoji-menu-content").append(h5).append(ul)
+      else
+        $(".emoji-menu-content").children().show()
+
+  searchEmojis: (term)->
+    $(".emoji-menu-content [data-emoji*='#{term}']").closest("li").clone()

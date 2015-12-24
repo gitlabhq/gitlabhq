@@ -11,6 +11,7 @@
         = icon('smile-o')
       .emoji-menu
         .emoji-menu-content
+          = text_field_tag :emoji_search, "", class: "emoji-search search-input form-control"
           - AwardEmoji.emoji_by_category.each do |category, emojis|
             %h5= AwardEmoji::CATEGORIES[category]
             %ul
@@ -32,11 +33,11 @@
       aliases
     )
 
-    $(".emoji-menu-content li").click (e)->
+    $(".awards").on "click", ".emoji-menu-content li", (e) ->
       emoji = $(this).find(".emoji-icon").data("emoji")
       awards_handler.addAward(emoji)
 
-    $(".awards").on "click", ".award", (e)->
+    $(".awards").on "click", ".award", (e) ->
       emoji = $(this).find(".icon").data("emoji")
       awards_handler.addAward(emoji)
 

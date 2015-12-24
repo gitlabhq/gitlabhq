@@ -1,6 +1,6 @@
 class @NewCommitForm
   constructor: (form) ->
-    @newBranch = form.find('.js-new-branch')
+    @newBranch = form.find('.js-target-branch')
     @originalBranch = form.find('.js-original-branch')
     @createMergeRequest = form.find('.js-create-merge-request')
     @createMergeRequestContainer = form.find('.js-create-merge-request-container')

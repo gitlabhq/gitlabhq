@@ -24,7 +24,7 @@
             = "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
       .diff-controls
-        - if blob_viewable?(blob)
+        - if blob_text_viewable?(blob)
           = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active has_tooltip', title: "Toggle comments for this file" do
             %i.fa.fa-comments
           &nbsp;
@@ -32,14 +32,15 @@
         - if editable_diff?(diff_file)
           = edit_blob_link(@merge_request.source_project,
               @merge_request.source_branch, diff_file.new_path,
-              after: '&nbsp;', from_merge_request_id: @merge_request.id)
+              from_merge_request_id: @merge_request.id)
+          &nbsp;
 
         = view_file_btn(diff_commit.id, diff_file, project)
 
   .diff-content.diff-wrap-lines
     -# Skipp all non non-supported blobs
     - return unless blob.respond_to?('text?')
-    - if blob_viewable?(blob)
+    - if blob_text_viewable?(blob)
       - if diff_view == 'parallel'
         = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
       - else

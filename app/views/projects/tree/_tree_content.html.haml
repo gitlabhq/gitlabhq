@@ -29,7 +29,7 @@
   - if tree.readme
     = render "projects/tree/readme", readme: tree.readme
 
-- if allowed_tree_edit?
+- if can_edit_tree?
   = render 'projects/blob/upload', title: 'Upload New File', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
   = render 'projects/blob/new_dir'
 

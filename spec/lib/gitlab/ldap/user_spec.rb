@@ -42,6 +42,21 @@ describe Gitlab::LDAP::User, lib: true do
     end
   end
 
+  describe '.find_by_uid_and_provider' do
+    it 'retrieves the correct user' do
+      special_info = {
+        name: 'John Åström',
+        email: 'john@example.com',
+        nickname: 'jastrom'
+      }
+      special_hash = OmniAuth::AuthHash.new(uid: 'CN=John Åström,CN=Users,DC=Example,DC=com', provider: 'ldapmain', info: special_info)
+      special_chars_user = described_class.new(special_hash)
+      user = special_chars_user.save
+
+      expect(described_class.find_by_uid_and_provider(special_hash.uid, special_hash.provider)).to eq user
+    end
+  end
+
   describe :find_or_create do
     it "finds the user if already existing" do
       create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
