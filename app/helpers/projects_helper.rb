@@ -105,6 +105,14 @@ module ProjectsHelper
     end
   end
 
+  def user_max_access_in_project(user_id, project)
+    level = project.team.max_member_access(user_id)
+
+    if level
+      Gitlab::Access.options_with_owner.key(level)
+    end
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -274,14 +282,6 @@ module ProjectsHelper
       "danger"
     when "finished"
       "success"
-    end
-  end
-
-  def user_max_access_in_project(user, project)
-    level = project.team.max_member_access(user)
-
-    if level
-      Gitlab::Access.options_with_owner.key(level)
     end
   end
 

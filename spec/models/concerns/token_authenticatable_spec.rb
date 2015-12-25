@@ -2,7 +2,8 @@ require 'spec_helper'
 
 shared_examples 'TokenAuthenticatable' do
   describe 'dynamically defined methods' do
-    it { expect(described_class).to be_private_method_defined(:generate_token_for) }
+    it { expect(described_class).to be_private_method_defined(:generate_token) }
+    it { expect(described_class).to be_private_method_defined(:write_new_token) }
     it { expect(described_class).to respond_to("find_by_#{token_field}") }
     it { is_expected.to respond_to("ensure_#{token_field}") }
     it { is_expected.to respond_to("reset_#{token_field}!") }
@@ -24,11 +25,11 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
   it_behaves_like 'TokenAuthenticatable'
 
   describe 'generating new token' do
-    subject { described_class.new }
-    let(:token) { subject.send(token_field) }
-
     context 'token is not generated yet' do
-      it { expect(token).to be nil }
+      describe 'token field accessor' do
+        subject { described_class.new.send(token_field) }
+        it { is_expected.to_not be_blank }
+      end
 
       describe 'ensured token' do
         subject { described_class.new.send("ensure_#{token_field}") }
@@ -36,11 +37,21 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
         it { is_expected.to be_a String }
         it { is_expected.to_not be_blank }
       end
+
+      describe 'ensured! token' do
+        subject { described_class.new.send("ensure_#{token_field}!") }
+
+        it 'should persist new token' do
+          expect(subject).to eq described_class.current[token_field]
+        end
+      end
     end
 
     context 'token is generated' do
       before { subject.send("reset_#{token_field}!") }
-      it { expect(token).to be_a String }
+      it 'persists a new token 'do
+        expect(subject.send(:read_attribute, token_field)).to be_a String
+      end
     end
   end
 

@@ -131,6 +131,7 @@ describe API::API, api: true  do
 
         expect(json_response).to satisfy do |response|
           response.one? do |entry|
+            entry.has_key?('permissions') &&
             entry['name'] == project.name &&
               entry['owner']['username'] == user.username
           end
@@ -382,6 +383,18 @@ describe API::API, api: true  do
     end
 
     describe 'permissions' do
+      context 'all projects' do
+        it 'Contains permission information' do
+          project.team << [user, :master]
+          get api("/projects", user)
+
+          expect(response.status).to eq(200)
+          expect(json_response.first['permissions']['project_access']['access_level']).
+              to eq(Gitlab::Access::MASTER)
+          expect(json_response.first['permissions']['group_access']).to be_nil
+        end
+      end
+
       context 'personal project' do
         it 'Sets project access and returns 200' do
           project.team << [user, :master]

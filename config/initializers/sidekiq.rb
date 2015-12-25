@@ -18,11 +18,12 @@ Sidekiq.configure_server do |config|
     chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
   end
 
-  # Sidekiq-cron: load recurring jobs from schedule.yml
-  schedule_file = 'config/schedule.yml'
-  if File.exists?(schedule_file)
-    Sidekiq::Cron::Job.load_from_hash YAML.load_file(schedule_file)
-  end
+  # Sidekiq-cron: load recurring jobs from gitlab.yml
+  # UGLY Hack to get nested hash from settingslogic
+  cron_jobs = JSON.parse(Gitlab.config.cron_jobs.to_json)
+  # UGLY hack: Settingslogic doesn't allow 'class' key
+  cron_jobs.each { |k,v| cron_jobs[k]['class'] = cron_jobs[k].delete('job_class') }
+  Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
   # Database pool should be at least `sidekiq_concurrency` + 2
   # For more info, see: https://github.com/mperham/sidekiq/blob/master/4.0-Upgrade.md

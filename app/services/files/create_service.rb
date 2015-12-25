@@ -26,7 +26,7 @@ module Files
       unless project.empty_repo?
         @file_path.slice!(0) if @file_path.start_with?('/')
 
-        blob = repository.blob_at_branch(@current_branch, @file_path)
+        blob = repository.blob_at_branch(@source_branch, @file_path)
 
         if blob
           raise_error("Your changes could not be committed because a file with the same name already exists")

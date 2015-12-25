@@ -5,37 +5,47 @@
   - if current_user
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
 
-.dashboard
-  .header-with-avatar.clearfix
-    = image_tag group_icon(@group), class: "avatar group-avatar s90"
-    %h3
-      = @group.name
-    .username
-      @#{@group.path}
-    - if @group.description.present?
-      .description
-        = markdown(@group.description, pipeline: :description)
-  %hr
+.cover-block
+  .avatar-holder
+    = link_to group_icon(@group), target: '_blank' do
+      = image_tag group_icon(@group), class: "avatar group-avatar s90"
+  .cover-title
+    = @group.name
 
-  = render 'shared/show_aside'
+  .cover-desc.username
+    @#{@group.path}
 
-  - if can?(current_user, :read_group, @group)
-    .row
-      %section.activities.col-md-7
-        .hidden-xs
-          - if current_user
-            = render "events/event_last_push", event: @last_push
-            .pull-right
-              = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn' do
-                %i.fa.fa-rss
+  - if @group.description.present?
+    .cover-desc.description
+      = markdown(@group.description, pipeline: :description)
 
-            = render 'shared/event_filter'
-            %hr
+- if can?(current_user, :read_group, @group)
+  %ul.center-top-menu.no-top
+    %li.active
+      = link_to "#activity", 'data-toggle' => 'tab' do
+        Activity
+    - if @projects.present?
+      %li
+        = link_to "#projects", 'data-toggle' => 'tab' do
+          Projects
 
-        .content_list
-        = spinner
-      %aside.side.col-md-5
-        = render "projects", projects: @projects
-  - else
-    %p
-      This group does not have public projects
+  .tab-content
+    .tab-pane.active#activity
+      .gray-content-block.activity-filter-block
+        - if current_user
+          = render "events/event_last_push", event: @last_push
+          .pull-right
+            = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn' do
+              %i.fa.fa-rss
+
+          = render 'shared/event_filter'
+
+      .content_list
+      = spinner
+
+    .tab-pane#projects
+      = render "projects", projects: @projects
+
+- else
+  %p
+    This group does not have public projects

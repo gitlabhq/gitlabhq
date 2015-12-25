@@ -1,5 +1,5 @@
 class AddIndexToCiTables < ActiveRecord::Migration
-  def up
+  def change
     add_index :ci_builds, :gl_project_id
     add_index :ci_runner_projects, :gl_project_id
     add_index :ci_triggers, :gl_project_id

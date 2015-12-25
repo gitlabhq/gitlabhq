@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151210125932) do
+ActiveRecord::Schema.define(version: 20151224123230) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,8 @@ ActiveRecord::Schema.define(version: 20151210125932) do
     t.boolean  "shared_runners_enabled",       default: true,  null: false
     t.integer  "max_artifacts_size",           default: 100,   null: false
     t.string   "runners_registration_token"
+    t.boolean  "require_two_factor_authentication",             default: false
+    t.integer  "two_factor_grace_period",                       default: 48
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -837,6 +839,8 @@ ActiveRecord::Schema.define(version: 20151210125932) do
     t.integer  "consumed_timestep"
     t.integer  "layout",                     default: 0
     t.boolean  "hide_project_limit",         default: false
+    t.string   "unlock_token"
+    t.datetime "otp_grace_period_started_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

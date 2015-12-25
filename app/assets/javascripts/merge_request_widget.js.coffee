@@ -18,7 +18,7 @@ class @MergeRequestWidget
         if data.state == "merged"
           urlSuffix = if deleteSourceBranch then '?delete_source=true' else ''
 
-          window.location.href = window.location.href + urlSuffix
+          window.location.href = window.location.pathname + urlSuffix
         else if data.merge_error
           $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>")
         else
