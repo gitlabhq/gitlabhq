@@ -2,25 +2,26 @@
 
 ### User documentation
 
-+ [Quick Start](quick_start/README.md)
-+ [Configuring project (.gitlab-ci.yml)](yaml/README.md)
-+ [Configuring runner](runners/README.md)
-+ [Configuring deployment](deployment/README.md)
-+ [Using Docker Images](docker/using_docker_images.md)
-+ [Using Docker Build](docker/using_docker_build.md)
-+ [Using Variables](variables/README.md)
-+ [Using SSH keys](ssh_keys/README.md)
+* [Quick Start](quick_start/README.md)
+* [Configuring project (.gitlab-ci.yml)](yaml/README.md)
+* [Configuring runner](runners/README.md)
+* [Configuring deployment](deployment/README.md)
+* [Using Docker Images](docker/using_docker_images.md)
+* [Using Docker Build](docker/using_docker_build.md)
+* [Using Variables](variables/README.md)
+* [Using SSH keys](ssh_keys/README.md)
+* [Triggering builds through the API](triggers/README.md)
 
 ### Languages
 
-+ [Testing PHP](languages/php.md)
+* [Testing PHP](languages/php.md)
 
 ### Services
 
-+ [Using MySQL](services/mysql.md)
-+ [Using PostgreSQL](services/postgres.md)
-+ [Using Redis](services/redis.md)
-+ [Using Other Services](docker/using_docker_images.md#how-to-use-other-images-as-services)
+* [Using MySQL](services/mysql.md)
+* [Using PostgreSQL](services/postgres.md)
+* [Using Redis](services/redis.md)
+* [Using Other Services](docker/using_docker_images.md#how-to-use-other-images-as-services)
 
 ### Examples
 
@@ -32,5 +33,5 @@
 
 ### Administrator documentation
 
-+ [User permissions](permissions/README.md)
-+ [API](api/README.md)
+* [User permissions](permissions/README.md)
+* [API](api/README.md)

@@ -38,3 +38,4 @@
       = text_field_tag :pin_code, nil, class: "form-control", required: true, autofocus: true
   .form-actions
     = submit_tag 'Submit', class: 'btn btn-success'
+    = link_to 'Configure it later', skip_profile_two_factor_auth_path, :method => :patch,  class: 'btn btn-cancel' if two_factor_skippable?

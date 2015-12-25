@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.4.0 (unreleased)
   - Implement new UI for group page
   - Implement search inside emoji picker
+  - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
   - Link to milestone in "Milestone changed" system note
   - Expose Git's version in the admin area
@@ -10,11 +11,15 @@ v 8.4.0 (unreleased)
   - Add CAS support (tduehr)
   - Add link to merge request on build detail page.
 
+v 8.3.2 (unreleased)
+  - Enable "Add key" button when user fills in a proper key
+
 v 8.3.1
   - Fix Error 500 when global milestones have slashes (Stan Hu)
   - Fix Error 500 when doing a search in dashboard before visiting any project (Stan Hu)
   - Fix LDAP identity and user retrieval when special characters are used
   - Move Sidekiq-cron configuration to gitlab.yml
+  - Enable forcing Two-Factor authentication sitewide, with optional grace period
 
 v 8.3.0
   - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
