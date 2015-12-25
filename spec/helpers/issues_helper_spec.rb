@@ -144,7 +144,7 @@ describe IssuesHelper do
 
   describe "#awards_sort" do
     it "sorts a hash so thumbsup and thumbsdown are always on top" do
-      data = {"thumbsdown" => "some value", "lifter" => "some value", "thumbsup" => "some value"}
+      data = { "thumbsdown" => "some value", "lifter" => "some value", "thumbsup" => "some value" }
       expect(awards_sort(data).keys).to eq(["thumbsup", "thumbsdown", "lifter"])
     end
   end
