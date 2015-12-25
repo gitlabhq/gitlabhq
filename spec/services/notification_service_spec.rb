@@ -127,6 +127,8 @@ describe NotificationService, services: true do
           note.project.team.members.each do |member|
             # User with disabled notification should not be notified
             next if member.id == @u_disabled.id
+            # Author should not be notified
+            next if member.id == note.author.id
             should_email(member)
           end
 
