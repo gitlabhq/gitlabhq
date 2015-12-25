@@ -1,5 +1,3 @@
-- page_title "GitLab"
-
 %head{prefix: "og: http://ogp.me/ns#"}
   %meta{charset: "utf-8"}
   %meta{'http-equiv' => 'X-UA-Compatible', content: 'IE=edge'}
@@ -8,12 +6,14 @@
   %meta{name: 'referrer',    content: 'origin-when-cross-origin'}
 
   -# Open Graph - http://ogp.me/
+  %meta{property: 'og:site_name',   content: "GitLab"}
   %meta{property: 'og:title',       content: page_title}
   %meta{property: 'og:description', content: page_description}
   %meta{property: 'og:image',       content: page_image}
   %meta{property: 'og:url',         content: request.base_url + request.fullpath}
   = page_card_meta_tags
 
+  - page_title "GitLab"
   %title= page_title
 
   = favicon_link_tag 'favicon.ico'
