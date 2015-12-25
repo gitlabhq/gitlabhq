@@ -141,4 +141,11 @@ describe IssuesHelper do
       expect(note_active_class(Note.all, @note.author)).to eq("active")
     end
   end
+
+  describe "#awards_sort" do
+    it "sorts a hash so thumbsup and thumbsdown are always on top" do
+      data = {"thumbsdown" => "some value", "lifter" => "some value", "thumbsup" => "some value"}
+      expect(awards_sort(data).keys).to eq(["thumbsup", "thumbsdown", "lifter"])
+    end
+  end
 end

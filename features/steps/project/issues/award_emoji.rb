@@ -37,7 +37,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   step 'I have award added' do
     page.within '.awards' do
       expect(page).to have_selector '.award'
-      expect(page.find('.award .counter')).to have_content '1'
+      expect(page.find('.award.active .counter')).to have_content '1'
     end
   end
 
