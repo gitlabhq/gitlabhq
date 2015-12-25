@@ -2,6 +2,35 @@ require "spec_helper"
 
 describe Gitlab::LDAP::Person do
 
+  describe "#kerberos_principal" do
+
+    let(:entry) do
+      ldif = "dn: cn=foo, dc=bar, dc=com\n"
+      ldif += "sAMAccountName: #{sam_account_name}\n" if sam_account_name
+      Net::LDAP::Entry.from_single_ldif_string(ldif)
+    end
+
+    subject { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+
+    context "when sAMAccountName is not defined (non-AD LDAP server)" do
+
+      let(:sam_account_name) { nil }
+
+      it "returns nil" do
+        expect(subject.kerberos_principal).to be_nil
+      end
+    end
+
+    context "when sAMAccountName is defined (AD server)" do
+
+      let(:sam_account_name) { "mylogin" }
+
+      it "returns the principal combining sAMAccountName and DC components of the distinguishedName" do
+        expect(subject.kerberos_principal).to eq("mylogin@BAR.COM")
+      end
+    end
+  end
+
   describe "#ssh_keys" do
 
     let(:ssh_key) { "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrSQHff6a1rMqBdHFt+FwIbytMZ+hJKN3KLkTtOWtSvNIriGhnTdn4rs+tjD/w+z+revytyWnMDM9dS7J8vQi006B16+hc9Xf82crqRoPRDnBytgAFFQY1G/55ql2zdfsC5yvpDOFzuwIJq5dNGsojS82t6HNmmKPq130fzsenFnj5v1pl3OJvk513oduUyKiZBGTroWTn7H/eOPtu7s9MD7pAdEjqYKFLeaKmyidiLmLqQlCRj3Tl2U9oyFg4PYNc0bL5FZJ/Z6t0Ds3i/a2RanQiKxrvgu3GSnUKMx7WIX373baL4jeM7cprRGiOY/1NcS+1cAjfJ8oaxQF/1dYj" }

@@ -93,31 +93,78 @@ describe Gitlab::LDAP::Access, lib: true do
     subject { access.update_permissions }
 
     it "syncs ssh keys if enabled by configuration" do
-      allow(access).to receive_messages(sync_ssh_keys?: 'sshpublickey')
+      allow(access).to receive_messages(group_base: '', sync_ssh_keys?: 'sshpublickey', import_kerberos_identities?: false)
       expect(access).to receive(:update_ssh_keys).once
 
       subject
     end
 
     it "does update group permissions with a group base configured" do
-      allow(access).to receive_messages(group_base: 'my-group-base')
+      allow(access).to receive_messages(group_base: 'my-group-base', sync_ssh_keys?: false, import_kerberos_identities?: false)
       expect(access).to receive(:update_ldap_group_links)
 
       subject
     end
 
     it "does not update group permissions without a group base configured" do
-      allow(access).to receive_messages(group_base: '')
+      allow(access).to receive_messages(group_base: '', sync_ssh_keys?: false, import_kerberos_identities?: false)
       expect(access).not_to receive(:update_ldap_group_links)
 
       subject
     end
 
     it "does update admin group permissions if admin group is configured" do
-      allow(access).to receive_messages(admin_group: 'my-admin-group', update_ldap_group_links: nil)
+      allow(access).to receive_messages(admin_group: 'my-admin-group', update_ldap_group_links: nil, sync_ssh_keys?: false, import_kerberos_identities?: false)
       expect(access).to receive(:update_admin_status)
 
       subject
+    end
+
+    it "does update Kerberos identities if Kerberos is enabled and the LDAP server is Active Directory" do
+      allow(access).to receive_messages(group_base: '', sync_ssh_keys?: false, import_kerberos_identities?: true)
+
+      expect(access).to receive(:update_kerberos_identity)
+
+      subject
+    end
+  end
+
+  describe :update_kerberos_identity do
+    let(:entry) do
+      Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com")
+    end
+
+    before do
+      allow(access).to receive_messages(ldap_user: Gitlab::LDAP::Person.new(entry, user.ldap_identity.provider))
+    end
+
+    it "should add a Kerberos identity if it is in Active Directory but not in GitLab" do
+      allow_any_instance_of(Gitlab::LDAP::Person).to receive_messages(kerberos_principal: "mylogin@FOO.COM")
+
+      expect{ access.update_kerberos_identity }.to change(user.identities.where(provider: :kerberos), :count).from(0).to(1)
+      expect(user.identities.where(provider: "kerberos").last.extern_uid).to eq("mylogin@FOO.COM")
+    end
+
+    it "should update existing Kerberos identity in GitLab if Active Directory has a different one" do
+      allow_any_instance_of(Gitlab::LDAP::Person).to receive_messages(kerberos_principal: "otherlogin@BAR.COM")
+      user.identities.build(provider: "kerberos", extern_uid: "mylogin@FOO.COM").save
+
+      expect{ access.update_kerberos_identity }.not_to change(user.identities.where(provider: "kerberos"), :count)
+      expect(user.identities.where(provider: "kerberos").last.extern_uid).to eq("otherlogin@BAR.COM")
+    end
+
+    it "should not remove Kerberos identities from GitLab if they are none in the LDAP provider" do
+      allow_any_instance_of(Gitlab::LDAP::Person).to receive_messages(kerberos_principal: nil)
+      user.identities.build(provider: "kerberos", extern_uid: "otherlogin@BAR.COM").save
+
+      expect{ access.update_kerberos_identity }.not_to change(user.identities.where(provider: "kerberos"), :count)
+      expect(user.identities.where(provider: "kerberos").last.extern_uid).to eq("otherlogin@BAR.COM")
+    end
+
+    it "should not modify identities in GitLab if they are no kerberos principal in the LDAP provider" do
+      allow_any_instance_of(Gitlab::LDAP::Person).to receive_messages(kerberos_principal: nil)
+
+      expect{ access.update_kerberos_identity }.not_to change(user.identities, :count)
     end
   end
 

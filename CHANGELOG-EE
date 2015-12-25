@@ -6,6 +6,9 @@ v 8.3.0
   - Fix bug with negative approvals required
   - Add group contribution analytics page 
   - Add GitLab Pages
+  - Add group contribution statistics page 
+  - Automatically import Kerberos identities from Active Directory when Kerberos is enabled (Alex Lossent)
+  - Canonicalization of Kerberos identities to always include realm (Alex Lossent)
 
 v 8.2.3
   - No EE-specific changes

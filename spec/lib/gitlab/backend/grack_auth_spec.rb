@@ -5,7 +5,6 @@ describe Grack::Auth, lib: true do
   let(:project) { create(:project) }
 
   let(:app)   { lambda { |env| [200, {}, "Success!"] } }
-  let!(:auth) { Grack::Auth.new(app) }
   let(:env) do
     {
       'rack.input'     => '',
@@ -13,7 +12,7 @@ describe Grack::Auth, lib: true do
       'QUERY_STRING'   => 'service=git-upload-pack'
     }
   end
-  let(:status) { auth.call(env).first }
+  let(:status) { Grack::AuthSpawner::call(env).first }
 
   describe "#call" do
     context "when the project doesn't exist" do
@@ -58,7 +57,7 @@ describe Grack::Auth, lib: true do
       end
 
       it "responds with the right project" do
-        response = auth.call(env)
+        response = Grack::AuthSpawner::call(env)
         json_body = ActiveSupport::JSON.decode(response[2][0])
 
         expect(response.first).to eq(200)
@@ -89,6 +88,83 @@ describe Grack::Auth, lib: true do
         context "when no authentication is provided" do
           it "responds with status 401" do
             expect(status).to eq(401)
+          end
+        end
+
+        context "when Kerberos token is provided" do
+          before do
+            allow_any_instance_of(Grack::Auth).to receive(:allow_kerberos_auth?).and_return(true)
+            env["HTTP_AUTHORIZATION"] = "Negotiate #{::Base64.strict_encode64('opaque_request_token')}"
+          end
+
+          shared_examples "RFC4559 compliance" do
+            it "complies with RFC4559" do
+              allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_response_token).and_return("opaque_response_token")
+
+              headers = Grack::AuthSpawner::call(env)[1]
+              expect(headers['WWW-Authenticate'].split("\n")).to include("Negotiate #{::Base64.strict_encode64('opaque_response_token')}")
+            end
+          end
+
+          context "when authentication fails because of invalid Kerberos token" do
+            before do
+              allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return(nil)
+            end
+
+            it "responds with status 401" do
+              expect(status).to eq(401)
+            end
+          end
+
+          context "when authentication fails because of unknown Kerberos identity" do
+            before do
+              allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
+            end
+
+            it "responds with status 401" do
+              expect(status).to eq(401)
+            end
+
+          end
+
+          context "when authentication succeeds" do
+            before do
+              allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
+              user.identities.build(provider: "kerberos", extern_uid:"mylogin@FOO.COM").save
+            end
+
+            context "when the user has access to the project" do
+              before do
+                project.team << [user, :master]
+              end
+
+              context "when the user is blocked" do
+                before do
+                  user.block
+                  project.team << [user, :master]
+                end
+
+                it "responds with status 404" do
+                  expect(status).to eq(404)
+                end
+              end
+
+              context "when the user isn't blocked" do
+                it "responds with status 200" do
+                  expect(status).to eq(200)
+                end
+              end
+
+              include_examples "RFC4559 compliance"
+            end
+
+            context "when the user doesn't have access to the project" do
+              it "responds with status 404" do
+                expect(status).to eq(404)
+              end
+
+              include_examples "RFC4559 compliance"
+            end
           end
         end
 
@@ -162,8 +238,7 @@ describe Grack::Auth, lib: true do
                 def attempt_login(include_password)
                   password = include_password ? user.password : ""
                   env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials(user.username, password)
-                  Grack::Auth.new(app)
-                  auth.call(env).first
+                  Grack::AuthSpawner::call(env).first
                 end
 
                 it "repeated attempts followed by successful attempt" do
