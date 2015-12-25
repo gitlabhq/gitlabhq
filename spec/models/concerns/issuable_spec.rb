@@ -88,7 +88,7 @@ describe Issue, "Issuable" do
       allow(issue).to receive(:assignee).and_return(nil)
 
       expect(issue.card_attributes).
-        to eq({'Author' => 'Robert', 'Assignee' => nil})
+        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
     end
 
     it 'includes the assignee name' do
@@ -96,7 +96,7 @@ describe Issue, "Issuable" do
       allow(issue).to receive(:assignee).and_return(double(name: 'Douwe'))
 
       expect(issue.card_attributes).
-        to eq({'Author' => 'Robert', 'Assignee' => 'Douwe'})
+        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 end
