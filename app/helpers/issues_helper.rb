@@ -120,6 +120,18 @@ module IssuesHelper
     end
   end
 
+  def awards_sort(awards)
+    awards.sort_by do |award, notes|
+      if award == "thumbsup"
+        0
+      elsif award == "thumbsdown"
+        1
+      else
+        2
+      end
+    end.to_h
+  end
+
   # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
 end

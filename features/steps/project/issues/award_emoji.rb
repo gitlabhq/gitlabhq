@@ -15,15 +15,17 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I click to emoji in the picker' do
-    page.within '.emoji-menu' do
+    page.within '.emoji-menu-content' do
       page.first('.emoji-icon').click
     end
   end
 
   step 'I can remove it by clicking to icon' do
     page.within '.awards' do
-      page.first('.award').click
-      expect(page).to_not have_selector '.award'
+      expect do
+        page.find('.award.active').click
+        sleep 0.1
+      end.to change{ page.all(".award").size }.from(3).to(2)
     end
   end
 
@@ -37,7 +39,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   step 'I have award added' do
     page.within '.awards' do
       expect(page).to have_selector '.award'
-      expect(page.find('.award .counter')).to have_content '1'
+      expect(page.find('.award.active .counter')).to have_content '1'
     end
   end
 

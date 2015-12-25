@@ -137,9 +137,14 @@ describe Note, models: true do
       create :note, note: "smile", is_award: true
     end
 
-    it "returns grouped array of notes" do
-      expect(Note.grouped_awards.first.first).to eq("smile")
-      expect(Note.grouped_awards.first.last).to match_array(Note.all)
+    it "returns grouped hash of notes" do
+      expect(Note.grouped_awards.keys.size).to eq(3)
+      expect(Note.grouped_awards["smile"]).to match_array(Note.all)
+    end
+
+    it "returns thumbsup and thumbsdown always" do
+      expect(Note.grouped_awards["thumbsup"]).to match_array(Note.none)
+      expect(Note.grouped_awards["thumbsdown"]).to match_array(Note.none)
     end
   end
 
