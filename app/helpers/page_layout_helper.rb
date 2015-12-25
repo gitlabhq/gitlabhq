@@ -53,6 +53,8 @@ module PageLayoutHelper
       @project.avatar_url || default
     elsif @user
       avatar_icon(@user)
+    elsif @group
+      @group.avatar_url || default
     else
       default
     end
