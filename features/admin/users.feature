@@ -63,3 +63,9 @@ Feature: Admin Users
     And I visit "Pete" identities page in admin
     And I remove twitter identity
     Then I should not see twitter details
+
+  Scenario: Add note to user attributes
+    Given I visit admin users page
+    And click edit on my user
+    When I submit a note
+    Then I see note tooltip
