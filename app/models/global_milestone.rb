@@ -16,7 +16,7 @@ class GlobalMilestone
   end
 
   def safe_title
-    @title.to_slug.to_s
+    @title.to_slug.normalize.to_s
   end
 
   def expired?

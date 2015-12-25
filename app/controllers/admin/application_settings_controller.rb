@@ -49,6 +49,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :default_branch_protection,
       :signup_enabled,
       :signin_enabled,
+      :require_two_factor_authentication,
+      :two_factor_grace_period,
       :gravatar_enabled,
       :twitter_sharing_enabled,
       :sign_in_text,

@@ -107,9 +107,16 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_awards
+      notes = {}
+
       awards.select(:note).distinct.map do |note|
-        [ note.note, where(note: note.note) ]
+        notes[note.note] = where(note: note.note)
       end
+
+      notes["thumbsup"] ||= Note.none
+      notes["thumbsdown"] ||= Note.none
+
+      notes
     end
   end
 

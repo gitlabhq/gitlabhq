@@ -105,6 +105,18 @@
             = f.check_box :signin_enabled
             Sign-in enabled
     .form-group
+      = f.label :two_factor_authentication, 'Two-Factor authentication', class: 'control-label col-sm-2'
+      .col-sm-10
+        .checkbox
+          = f.label :require_two_factor_authentication do
+            = f.check_box :require_two_factor_authentication
+            Require all users to setup Two-Factor authentication
+    .form-group
+      = f.label :two_factor_authentication, 'Two-Factor grace period (hours)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
+        .help-block Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
+    .form-group
       = f.label :restricted_signup_domains, 'Restricted domains for sign-ups', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com', class: 'form-control'

@@ -6,6 +6,10 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
     visit merge_request_path(@merge_request)
   end
 
+  step 'I am on the Merge Request detail with note anchor page' do
+    visit merge_request_path(@merge_request, anchor: 'note_123')
+  end
+
   step 'I click on "Remove source branch" option' do
     check('Remove source branch')
   end

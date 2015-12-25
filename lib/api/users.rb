@@ -8,14 +8,19 @@ module API
       #
       # Example Request:
       #  GET /users
+      #  GET /users?search=Admin
+      #  GET /users?username=root
       get do
-        skip_ldap = params[:skip_ldap].present? && params[:skip_ldap] == 'true'
-
-        @users = User.all
-        @users = @users.active if params[:active].present?
-        @users = @users.non_ldap if skip_ldap
-        @users = @users.search(params[:search]) if params[:search].present?
-        @users = paginate @users
+        if params[:username].present?
+          @users = User.where(username: params[:username])
+        else
+          skip_ldap = params[:skip_ldap].present? && params[:skip_ldap] == 'true'
+          @users = User.all
+          @users = @users.active if params[:active].present?
+          @users = @users.non_ldap if skip_ldap
+          @users = @users.search(params[:search]) if params[:search].present?
+          @users = paginate @users
+       end
 
         if current_user.is_admin?
           present @users, with: Entities::UserFull

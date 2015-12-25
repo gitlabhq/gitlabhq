@@ -98,7 +98,7 @@ describe Projects::TreeController do
            project_id: project.to_param,
            id: 'master',
            dir_name: path,
-           new_branch: target_branch,
+           target_branch: target_branch,
            commit_message: 'Test commit message')
     end
 
@@ -108,8 +108,8 @@ describe Projects::TreeController do
 
       it 'redirects to the new directory' do
         expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/blob/#{target_branch}/#{path}")
-        expect(flash[:notice]).to eq('The directory has been successfully created')
+            to redirect_to("/#{project.path_with_namespace}/tree/#{target_branch}/#{path}")
+        expect(flash[:notice]).to eq('The directory has been successfully created.')
       end
     end
 
@@ -119,7 +119,7 @@ describe Projects::TreeController do
 
       it 'does not allow overwriting of existing files' do
         expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/blob/master")
+            to redirect_to("/#{project.path_with_namespace}/tree/master")
         expect(flash[:alert]).to eq('Directory already exists as a file')
       end
     end

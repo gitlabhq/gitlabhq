@@ -1,7 +1,7 @@
 class @Project
   constructor: ->
     # Git protocol switcher
-    $('.js-protocol-switch').click ->
+    $('ul.clone-options-dropdown a').click ->
       return if $(@).hasClass('active')
 
 
@@ -10,7 +10,8 @@ class @Project
       # Add the active class for the clicked button
       $(@).toggleClass('active')
 
-      url = $(@).data('clone')
+      url = $("#project_clone").val()
+      console.log("url",url)
 
       # Update the input field
       $('#project_clone').val(url)
