@@ -200,8 +200,10 @@ If you accidentally lock yourself out of your own GitLab group, ask another owne
 
 ### Non-LDAP GitLab users
 
-Your GitLab instance may have users on it for whom LDAP is not enabled.
-If this is the case, these users will not be affected by LDAP group synchronization settings: they will be neither added nor removed automatically.
+If there are also non-LDAP users in your GitLab instance, they will remain
+members of the GitLab group until they choose to leave the group on their own.
+Administrators, owners, and masters cannot add or remove users from GitLab
+groups when LDAP group sync is enabled.
 
 ### ActiveDirectory nested group support
 
