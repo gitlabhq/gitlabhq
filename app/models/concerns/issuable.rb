@@ -161,6 +161,14 @@ module Issuable
     self.class.to_s.underscore
   end
 
+  # Returns a Hash of attributes to be used for Twitter card metadata
+  def card_attributes
+    {
+      'Author'   => author.try(:name),
+      'Assignee' => assignee.try(:name)
+    }
+  end
+
   def notes_with_associations
     notes.includes(:author, :project)
   end
