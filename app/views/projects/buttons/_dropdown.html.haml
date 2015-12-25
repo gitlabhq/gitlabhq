@@ -13,7 +13,7 @@
         %li
           = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project) do
             = icon('tasks fw')
-            New Merge Request
+            New merge request
       - if can?(current_user, :create_snippet, @project)
         %li
           = link_to new_namespace_project_snippet_path(@project.namespace, @project) do
