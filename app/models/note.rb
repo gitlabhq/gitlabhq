@@ -346,12 +346,10 @@ class Note < ActiveRecord::Base
     read_attribute(:system)
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def downvote?
     false
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def upvote?
     false
   end
