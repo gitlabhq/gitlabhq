@@ -11,9 +11,6 @@ You can add a new trigger by going to your project's **Settings > Triggers**.
 The **Add trigger** button will create a new token which you can then use to
 trigger a rebuild of this particular project.
 
-Once at least one trigger is created, on the **Triggers** page you will find
-some descriptive information on how you can
-
 Every new trigger you create, gets assigned a different token which you can
 then use inside your scripts or `.gitlab-ci.yml`. You also have a nice
 overview of the time the triggers were last used.
