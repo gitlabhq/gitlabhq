@@ -108,7 +108,7 @@ Now, whenever a new tag is pushed on project A, the build will run and the
 `stage: test` complete successfully.
 
 _**Note:** If your project is public, passing the token in plain text is
-probably not the wiser idea, so you might want to use a
+probably not the wisest idea, so you might want to use a
 [secure variable](../variables/README.md#user-defined-variables-secure-variables)
 for that purpose._
 
