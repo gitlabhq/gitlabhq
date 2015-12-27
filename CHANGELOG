@@ -5,6 +5,7 @@ v 8.4.0 (unreleased)
   - Implement search inside emoji picker
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
+  - Only allow group/project members to mention `@all`
   - Expose Git's version in the admin area
   - Add "Frequently used" category to emoji picker
   - Add CAS support (tduehr)
