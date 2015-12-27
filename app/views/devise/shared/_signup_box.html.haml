@@ -18,6 +18,9 @@
       .form-group.append-bottom-20#password-strength
         = f.password_field :password, class: "form-control bottom", id: "user_password_sign_up", placeholder: "Password", required: true
       %div
+      - if Gitlab.config.recaptcha.enabled
+        = recaptcha_tags
+      %div
         = f.submit "Sign up", class: "btn-create btn"
 
 .clearfix.prepend-top-20
