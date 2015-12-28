@@ -91,7 +91,12 @@
 
       - if current_user && can?(current_user, :download_build_artifacts, @project) && @build.download_url
         .build-widget.center
-          = link_to "Download artifacts", @build.download_url, class: 'btn btn-sm btn-primary'
+          .panel.panel-default
+            .panel-heading Build artifacts
+            .panel-body
+              .btn-group{ role: :group }
+                = link_to "Download", @build.download_url, class: 'btn btn-sm btn-primary'
+                = link_to "Browse", @build.artifacts_browse_url, class: 'btn btn-sm btn-primary'
 
       .build-widget
         %h4.title

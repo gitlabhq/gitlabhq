@@ -328,6 +328,13 @@ module Ci
       end
     end
 
+    def artifacts_browse_url
+      if artifacts_file.exists?
+        Gitlab::Application.routes.url_helpers.
+          browse_namespace_project_build_artifacts_path(project.namespace, project, self)
+      end
+    end
+
     def execute_hooks
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
