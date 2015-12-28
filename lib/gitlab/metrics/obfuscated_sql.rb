@@ -37,7 +37,7 @@ module Gitlab
         # InfluxDB escapes double quotes upon output, so lets get rid of them
         # whenever we can.
         if Gitlab::Database.postgresql?
-          sql = sql.gsub('"', '')
+          sql = sql.delete('"')
         end
 
         sql
