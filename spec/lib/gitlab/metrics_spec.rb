@@ -29,7 +29,7 @@ describe Gitlab::Metrics do
     it 'returns an Array containing a file path and line number' do
       file, line = described_class.last_relative_application_frame
 
-      expect(line).to eq(30)
+      expect(line).to eq(__LINE__ - 2)
       expect(file).to eq('spec/lib/gitlab/metrics_spec.rb')
     end
   end
