@@ -194,8 +194,11 @@ module Ci
     end
 
     def raw_trace
-      if File.exist?(path_to_trace)
+      if File.file?(path_to_trace)
         File.read(path_to_trace)
+      elsif File.file?(old_path_to_trace)
+        # Temporary fix for build trace data integrity
+        File.read(old_path_to_trace)
       else
         # backward compatibility
         read_attribute :trace
@@ -229,6 +232,24 @@ module Ci
 
     def path_to_trace
       "#{dir_to_trace}/#{id}.log"
+    end
+
+    ##
+    # Deprecated
+    #
+    def old_dir_to_trace
+      File.join(
+        Settings.gitlab_ci.builds_path,
+        created_at.utc.strftime("%Y_%m"),
+        project.ci_id.to_s
+      )
+    end
+
+    ##
+    # Deprecated
+    #
+    def old_path_to_trace
+      "#{old_dir_to_trace}/#{id}.log"
     end
 
     def token
