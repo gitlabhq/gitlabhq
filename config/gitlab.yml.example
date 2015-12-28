@@ -422,6 +422,7 @@ production: &base
       # Ban an IP for one hour (3600s) after too many auth attempts
       # bantime: 3600
   metrics:
+    host: localhost
     enabled: false
     # The name of the InfluxDB database to store metrics in.
     database: gitlab

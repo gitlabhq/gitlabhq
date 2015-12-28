@@ -52,11 +52,12 @@ module Gitlab
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
       @pool = ConnectionPool.new(size: pool_size, timeout: timeout) do
+        host = Settings.metrics['host']
         db   = Settings.metrics['database']
         user = Settings.metrics['username']
         pw   = Settings.metrics['password']
 
-        InfluxDB::Client.new(db, username: user, password: pw)
+        InfluxDB::Client.new(db, host: host, username: user, password: pw)
       end
     end
   end
