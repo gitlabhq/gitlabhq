@@ -64,6 +64,42 @@ module API
         trace = build.trace
         body trace
       end
+
+      # cancel a specific build of a project
+      #
+      # parameters:
+      #   id (required) - the id of a project
+      #   build_id (required) - the id of a build
+      # example request:
+      #   post /projects/:id/build/:build_id/cancel
+      post ':id/builds/:build_id/cancel' do
+        authorize_manage_builds!
+
+        build = get_build(params[:build_id])
+        return not_found!(build) unless build
+
+        build.cancel
+
+        present build, with: Entities::Build
+      end
+
+      # cancel a specific build of a project
+      #
+      # parameters:
+      #   id (required) - the id of a project
+      #   build_id (required) - the id of a build
+      # example request:
+      #   post /projects/:id/build/:build_id/retry
+      post ':id/builds/:build_id/retry' do
+        authorize_manage_builds!
+
+        build = get_build(params[:build_id])
+        return not_found!(build) unless build && build.retryable?
+
+        build = Ci::Build.retry(build)
+
+        present build, with: Entities::Build
+      end
     end
 
     helpers do
@@ -80,6 +116,10 @@ module API
         else
           builds
         end
+      end
+
+      def authorize_manage_builds!
+        authorize! :manage_builds, user_project
       end
     end
   end
