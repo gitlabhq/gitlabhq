@@ -81,7 +81,10 @@ feature 'Project', feature: true do
     end
 
     it { expect(page).to have_content('You have Master access to this project.') }
-    it { expect(page).to have_link('Leave this project') }
+    it { 
+      find('#project-settings').click
+      expect(page).to have_link('Leave Project') 
+    }
   end
 
   def remove_with_confirm(button_text, confirm_with)

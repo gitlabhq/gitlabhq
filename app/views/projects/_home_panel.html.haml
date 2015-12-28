@@ -25,7 +25,7 @@
       - can_edit = can?(current_user, :admin_project, @project)
       - if access || can_edit
         %span.dropdown.project-settings-dropdown
-          %a.dropdown-new.btn.btn-gray.notifications-btn#notifications-button{href: '#', 'data-toggle' => 'dropdown'}
+          %a.dropdown-new.btn.btn-gray#project-settings-button{href: '#', 'data-toggle' => 'dropdown'}
             = icon('cog')
             = icon('angle-down')
           %ul.dropdown-menu.dropdown-menu-right
@@ -37,7 +37,7 @@
               %li
                 = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
                   data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
-                  Leave project
+                  Leave Project
 
   .project-repo-buttons
     .split-one.count-buttons
