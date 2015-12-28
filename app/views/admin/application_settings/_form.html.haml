@@ -144,5 +144,27 @@
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
 
+  %fieldset
+    %legend Spam and Anti-bot Protection
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :recaptcha_enabled do
+            = f.check_box :recaptcha_enabled
+            Enable reCAPTCHA
+          %span.help-block#recaptcha_help_block Helps preventing bots from creating accounts
+
+    .form-group
+      = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :recaptcha_site_key, class: 'form-control'
+        .help-block
+          Generate site and private keys here:
+          %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
+    .form-group
+      = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :recaptcha_private_key, class: 'form-control'
+
   .form-actions
     = f.submit 'Save', class: 'btn btn-primary'

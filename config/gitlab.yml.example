@@ -333,12 +333,6 @@ production: &base
       #       application_name: 'YOUR_APP_NAME',
       #       application_password: 'YOUR_APP_PASSWORD' } }
 
-  # reCAPTCHA settings. See: http://www.google.com/recaptcha
-  recaptcha:
-    enabled: false
-    public_key: 'YOUR_PUBLIC_KEY'
-    private_key: 'YOUR_PRIVATE_KEY'
-
   # Shared file storage settings
   shared:
     # path: /mnt/gitlab # Default: shared

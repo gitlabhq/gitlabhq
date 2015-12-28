@@ -7,7 +7,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    if !Gitlab.config.recaptcha.enabled || verify_recaptcha
+    if Gitlab::Recaptcha.load_configurations! && verify_recaptcha
       super
     else
       flash[:alert] = "There was an error with the reCAPTCHA code below. Please re-enter the code."
