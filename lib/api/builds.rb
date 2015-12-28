@@ -4,7 +4,7 @@ module API
     before { authenticate! }
 
     resource :projects do
-      # Get a project repository commits
+      # Get a project builds
       #
       # Parameters:
       #   id (required) - The ID of a project
@@ -14,18 +14,21 @@ module API
       # Example Request:
       #   GET /projects/:id/builds
       get ':id/builds' do
-        all_builds = user_project.builds
-        builds = all_builds.order('id DESC')
-        builds =
-          case params[:scope]
-          when 'finished'
-            builds.finished
-          when 'running'
-            builds.running
-          else
-            builds
-          end
+        builds = user_project.builds.order('id DESC')
+        builds = filter_builds(builds, params[:scope])
+        present paginate(builds), with: Entities::Build
+      end
 
+      # GET builds for a specific commit of a project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   sha (required) - The SHA id of a commit
+      # Example Request:
+      #   GET /projects/:id/builds/commit/:sha
+      get ':id/builds/commit/:sha' do
+        builds = user_project.ci_commits.find_by_sha(params[:sha]).builds.order('id DESC')
+        builds = filter_builds(builds, params[:scope])
         present paginate(builds), with: Entities::Build
       end
 
@@ -62,6 +65,17 @@ module API
     helpers do
       def get_build(id)
         user_project.builds.where(id: id).first
+      end
+
+      def filter_builds(builds, scope)
+        case scope
+        when 'finished'
+          builds.finished
+        when 'running'
+          builds.running
+        else
+          builds
+        end
       end
     end
   end
