@@ -368,8 +368,8 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :download_url do
-    subject { build.download_url }
+  describe :artifacts_download_url do
+    subject { build.artifacts_download_url }
 
     it "should be nil if artifact doesn't exist" do
       build.update_attributes(artifacts_file: nil)

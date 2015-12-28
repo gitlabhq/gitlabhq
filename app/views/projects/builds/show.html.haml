@@ -89,13 +89,13 @@
             Test coverage
           %h1 #{@build.coverage}%
 
-      - if current_user && can?(current_user, :download_build_artifacts, @project) && @build.download_url
+      - if current_user && can?(current_user, :download_build_artifacts, @project) && @build.artifacts_file.exist?
         .build-widget.center
           .panel.panel-default
             .panel-heading Build artifacts
             .panel-body
               .btn-group{ role: :group }
-                = link_to "Download", @build.download_url, class: 'btn btn-sm btn-primary'
+                = link_to "Download", @build.artifacts_download_url, class: 'btn btn-sm btn-primary'
                 = link_to "Browse", @build.artifacts_browse_url, class: 'btn btn-sm btn-primary'
 
       .build-widget

@@ -319,7 +319,7 @@ module Ci
       pending? && !any_runners_online?
     end
 
-    def download_url
+    def artifacts_download_url
       if artifacts_file.exists?
         download_namespace_project_build_artifacts_path(project.namespace, project, self)
       end
