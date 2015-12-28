@@ -14,6 +14,7 @@ v 8.4.0 (unreleased)
   - Revert back upvote and downvote button to the issue and MR pages
 
 v 8.3.2 (unreleased)
+  - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
   - Enable "Add key" button when user fills in a proper key
 
 v 8.3.1
