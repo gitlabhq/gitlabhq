@@ -96,6 +96,22 @@ describe PageLayoutHelper do
         helper.page_image
       end
     end
+
+    context 'with @group' do
+      it 'uses Group avatar if available' do
+        group = double(avatar_url: 'http://example.com/uploads/avatar.png')
+        helper.instance_variable_set(:@group, group)
+
+        expect(helper.page_image).to eq group.avatar_url
+      end
+
+      it 'falls back to the default' do
+        group = double(avatar_url: nil)
+        helper.instance_variable_set(:@group, group)
+
+        expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+      end
+    end
   end
 
   describe 'page_card_attributes' do
