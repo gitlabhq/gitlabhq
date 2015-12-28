@@ -1,28 +1,3 @@
-# == Schema Information
-#
-# Table name: builds
-#
-#  id                 :integer          not null, primary key
-#  project_id         :integer
-#  status             :string(255)
-#  finished_at        :datetime
-#  trace              :text
-#  created_at         :datetime
-#  updated_at         :datetime
-#  started_at         :datetime
-#  runner_id          :integer
-#  commit_id          :integer
-#  coverage           :float
-#  commands           :text
-#  job_id             :integer
-#  name               :string(255)
-#  deploy             :boolean          default(FALSE)
-#  options            :text
-#  allow_failure      :boolean          default(FALSE), not null
-#  stage              :string(255)
-#  trigger_request_id :integer
-#
-
 require 'spec_helper'
 
 describe Ci::Build, models: true do
@@ -376,10 +351,43 @@ describe Ci::Build, models: true do
       is_expected.to be_nil
     end
 
-    it 'should be nil if artifact exist' do
+    it 'should not be nil if artifact exist' do
       gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
       build.update_attributes(artifacts_file: gif)
       is_expected.to_not be_nil
+    end
+  end
+
+  describe :artifacts_browse_url do
+    subject { build.artifacts_browse_url }
+
+    it "should be nil if artifact doesn't exist" do
+      build.update_attributes(artifacts_file: nil)
+      is_expected.to be_nil
+    end
+
+    it 'should not be nil if artifact exist' do
+      gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+      build.update_attributes(artifacts_file: gif)
+      is_expected.to_not be_nil
+    end
+  end
+
+  describe :artifacts? do
+    subject { build.artifacts? }
+
+    context 'artifacts archive does not exist' do
+      before { build.update_attributes(artifacts_file: nil) }
+      it { is_expected.to be_falsy }
+    end
+
+    context 'artifacts archive exists' do
+      before do
+        gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+        build.update_attributes(artifacts_file: gif)
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 

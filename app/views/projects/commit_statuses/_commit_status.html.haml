@@ -66,7 +66,7 @@
 
   %td
     .pull-right
-      - if current_user && can?(current_user, :download_build_artifacts, commit_status.project) && commit_status.artifacts_file.exist?
+      - if current_user && can?(current_user, :download_build_artifacts, commit_status.project) && commit_status.artifacts?
         = link_to commit_status.artifacts_download_url, title: 'Download artifacts' do
           %i.fa.fa-download
       - if current_user && can?(current_user, :manage_builds, commit_status.project)

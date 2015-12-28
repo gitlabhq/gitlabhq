@@ -319,22 +319,24 @@ module Ci
       pending? && !any_runners_online?
     end
 
-    def artifacts_download_url
-      if artifacts_file.exists?
-        download_namespace_project_build_artifacts_path(project.namespace, project, self)
-      end
-    end
-
-    def artifacts_browse_url
-      if artifacts_file.exists?
-        browse_namespace_project_build_artifacts_path(project.namespace, project, self)
-      end
-    end
-
     def execute_hooks
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
+    end
+
+    def artifacts?
+      artifacts_file.exists?
+    end
+
+    def artifacts_download_url
+      download_namespace_project_build_artifacts_path(project.namespace, project, self) if
+        artifacts?
+    end
+
+    def artifacts_browse_url
+      browse_namespace_project_build_artifacts_path(project.namespace, project, self) if
+        artifacts?
     end
 
     def artifacts_metadata(path)
