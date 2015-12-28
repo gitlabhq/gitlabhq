@@ -131,6 +131,13 @@ Settings.omniauth.cas3['session_duration'] ||= 8.hours
 Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
 Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
+# ReCAPTCHA settings
+Settings['recaptcha'] ||= Settingslogic.new({})
+Settings.recaptcha['enabled'] = false if Settings.recaptcha['enabled'].nil?
+Settings.recaptcha['public_key'] ||= Settings.recaptcha['public_key']
+Settings.recaptcha['private_key'] ||= Settings.recaptcha['private_key']
+
+
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
 
