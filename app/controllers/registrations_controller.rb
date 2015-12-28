@@ -55,7 +55,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def resource
-    @resource ||= User.new
+    @resource ||= User.new(sign_up_params)
   end
 
   def devise_mapping
