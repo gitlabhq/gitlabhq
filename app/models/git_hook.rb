@@ -2,6 +2,7 @@ class GitHook < ActiveRecord::Base
   belongs_to :project
 
   validates :project, presence: true, unless: "is_sample?"
+  validates :max_file_size, numericality: { greater_than_or_equal_to: 0, only_integer: true }
 
   def commit_validation?
     commit_message_regex.present? ||
