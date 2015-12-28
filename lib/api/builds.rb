@@ -19,7 +19,7 @@ module API
         present paginate(builds), with: Entities::Build
       end
 
-      # GET builds for a specific commit of a project
+      # Get builds for a specific commit of a project
       #
       # Parameters:
       #   id (required) - The ID of a project
@@ -40,7 +40,10 @@ module API
       # Example Request:
       #   GET /projects/:id/builds/:build_id
       get ':id/builds/:build_id' do
-        present get_build(params[:build_id]), with: Entities::Build
+        build = get_build(params[:build_id])
+        return not_found!(build) unless build
+
+        present build, with: Entities::Build
       end
 
       # Get a trace of a specific build of a project
@@ -52,6 +55,7 @@ module API
       #   GET /projects/:id/build/:build_id/trace
       get ':id/builds/:build_id/trace' do
         build = get_build(params[:build_id])
+        return not_found!(build) unless build
 
         header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
         content_type 'text/plain'
