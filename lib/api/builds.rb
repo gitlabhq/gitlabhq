@@ -15,23 +15,15 @@ module API
       #   GET /projects/:id/builds
       get ':id/builds' do
         all_builds = user_project.builds
-        builds = all_builds.order('created_at DESC')
+        builds = all_builds.order('id DESC')
         builds =
           case params[:scope]
-          when 'all'
-            builds
           when 'finished'
             builds.finished
           when 'running'
             builds.running
-          when 'pending'
-            builds.pending
-          when 'success'
-            builds.success
-          when 'failed'
-            builds.failed
           else
-            builds.running_or_pending.reverse_order
+            builds
           end
 
         page = (params[:page] || 1).to_i
@@ -59,15 +51,14 @@ module API
       # Example Request:
       #   GET /projects/:id/build/:build_id/trace
       get ':id/builds/:build_id/trace' do
-        trace = get_build(params[:build_id]).trace
-        trace =
-          unless trace.nil?
-            trace.split("\n")
-          else
-            []
-          end
+        build = get_build(params[:build_id])
 
-        present trace
+        header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
+        content_type 'text/plain'
+        env['api.format'] = :binary
+
+        trace = build.trace
+        body trace
       end
     end
 

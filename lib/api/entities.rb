@@ -367,14 +367,30 @@ module API
       expose :id, :variables
     end
 
+    class CiCommit < Grape::Entity
+      expose :id
+      expose :ref
+      expose :sha
+      expose :committed_at
+    end
+
+    class CiRunner < Grape::Entity
+      expose :id
+      expose :token
+      expose :description
+      expose :active
+      expose :is_shared
+      expose :name
+    end
+
     class Build < Grape::Entity
       expose :id
       expose :status
       expose :stage
       expose :name
       expose :ref
-      expose :commit
-      expose :runner
+      expose :commit, with: CiCommit
+      expose :runner, with: CiRunner
       expose :created_at
       expose :started_at
       expose :finished_at
