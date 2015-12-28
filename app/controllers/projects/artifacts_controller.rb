@@ -16,6 +16,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def browse
     current_path = params[:path] ? "./#{params[:path]}/" : './'
+    artifacts_metadata = build.artifacts_metadata(current_path)
     @path = Gitlab::StringPath.new(current_path, artifacts_metadata)
   end
 
@@ -27,10 +28,6 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def artifacts_file
     @artifacts_file ||= build.artifacts_file
-  end
-
-  def artifacts_metadata
-    @artifacts_metadata ||= build.artifacts_metadata
   end
 
   def authorize_download_build_artifacts!

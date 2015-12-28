@@ -12,7 +12,6 @@ class Gitlab::Seeder::Builds
       FileUtils.copy(artifacts_path, artifacts_cache_file_path)
       File.open(artifacts_cache_file_path, 'r') do |file|
         build.artifacts_file = file
-        build.artifacts_metadata = artifacts_metadata
       end
 
       begin
@@ -56,12 +55,6 @@ class Gitlab::Seeder::Builds
 
   def artifacts_cache_file_path
     artifacts_path.to_s.gsub('ci_', "p#{@project.id}_")
-  end
-
-  def artifacts_metadata
-    return @artifacts_metadata if @artifacts_metadata
-    logs, _exit_status = Gitlab::Popen.popen(%W(tar tzf #{artifacts_path}))
-    @artifacts_metadata = logs.split(/\n/)
   end
 end
 
