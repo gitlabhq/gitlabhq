@@ -34,6 +34,7 @@
 
 module Ci
   class Build < CommitStatus
+    include Gitlab::Application.routes.url_helpers
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :runner, class_name: 'Ci::Runner'
@@ -291,21 +292,18 @@ module Ci
     end
 
     def target_url
-      Gitlab::Application.routes.url_helpers.
-        namespace_project_build_url(project.namespace, project, self)
+      namespace_project_build_url(project.namespace, project, self)
     end
 
     def cancel_url
       if active?
-        Gitlab::Application.routes.url_helpers.
-          cancel_namespace_project_build_path(project.namespace, project, self)
+        cancel_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
     def retry_url
       if retryable?
-        Gitlab::Application.routes.url_helpers.
-          retry_namespace_project_build_path(project.namespace, project, self)
+        retry_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
@@ -323,15 +321,13 @@ module Ci
 
     def download_url
       if artifacts_file.exists?
-        Gitlab::Application.routes.url_helpers.
-          download_namespace_project_build_artifacts_path(project.namespace, project, self)
+        download_namespace_project_build_artifacts_path(project.namespace, project, self)
       end
     end
 
     def artifacts_browse_url
       if artifacts_file.exists?
-        Gitlab::Application.routes.url_helpers.
-          browse_namespace_project_build_artifacts_path(project.namespace, project, self)
+        browse_namespace_project_build_artifacts_path(project.namespace, project, self)
       end
     end
 
