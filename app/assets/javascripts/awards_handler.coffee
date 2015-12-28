@@ -134,15 +134,16 @@ class @AwardsHandler
     _.compact(_.uniq(frequently_used_emojis))
 
   renderFrequentlyUsedBlock: ->
-    frequently_used_emojis = @getFrequentlyUsedEmojis()
+    if $.cookie('frequently_used_emojis')
+      frequently_used_emojis = @getFrequentlyUsedEmojis()
 
-    ul = $("<ul>")
+      ul = $("<ul>")
 
-    for emoji in frequently_used_emojis
-      do (emoji) ->
-        $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
+      for emoji in frequently_used_emojis
+        do (emoji) ->
+          $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
 
-    $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
+      $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
 
   setupSearch: ->
     $("input.emoji-search").keyup (ev) =>
