@@ -449,26 +449,9 @@ production: &base
       #
       # Ban an IP for one hour (3600s) after too many auth attempts
       # bantime: 3600
-  metrics:
-    host: localhost
-    enabled: false
-    # The name of the InfluxDB database to store metrics in.
-    database: gitlab
-    # Credentials to use for logging in to InfluxDB.
-    # username:
-    # password:
-    # The amount of InfluxDB connections to open.
-    # pool_size: 16
-    # The timeout of a connection in seconds.
-    # timeout: 10
-    # The minimum amount of milliseconds a method call has to take before it's
-    # tracked. Defaults to 10.
-    # method_call_threshold: 10
 
 development:
   <<: *base
-  metrics:
-    enabled: false
 
 test:
   <<: *base
@@ -511,10 +494,6 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
-  metrics:
-    enabled: false
 
 staging:
   <<: *base
-  metrics:
-    enabled: false

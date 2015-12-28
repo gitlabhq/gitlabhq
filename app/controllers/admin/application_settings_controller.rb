@@ -67,6 +67,14 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :user_oauth_applications,
       :shared_runners_enabled,
       :max_artifacts_size,
+      :metrics_enabled,
+      :metrics_host,
+      :metrics_database,
+      :metrics_username,
+      :metrics_password,
+      :metrics_pool_size,
+      :metrics_timeout,
+      :metrics_method_call_threshold,
       restricted_visibility_levels: [],
       import_sources: []
     )
