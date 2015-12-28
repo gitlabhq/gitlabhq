@@ -33,7 +33,7 @@ describe MetricsWorker do
 
     it 'drops empty tags' do
       metrics = worker.prepare_metrics([
-        { 'values' => {}, 'tags' => { 'cats' => '', 'dogs' => nil }}
+        { 'values' => {}, 'tags' => { 'cats' => '', 'dogs' => nil } }
       ])
 
       expect(metrics).to eq([{ values: {}, tags: {} }])
