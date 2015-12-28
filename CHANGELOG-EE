@@ -1,5 +1,6 @@
 v 8.4.0 (unreleased)
   - Add ability to create a note for user by admin
+  - Fix "Commit was rejected by git hook", when max_file_size was set null in project's Git hooks
 
 v 8.3.0
   - License information can now be retrieved via the API
