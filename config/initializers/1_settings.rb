@@ -133,7 +133,7 @@ Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
 # ReCAPTCHA settings
 Settings['recaptcha'] ||= Settingslogic.new({})
-Settings.recaptcha['enabled']      = false if Settings.recaptcha['enabled'].nil?
+Settings.recaptcha['enabled'] = false if Settings.recaptcha['enabled'].nil?
 Settings.recaptcha['public_key'] ||= Settings.recaptcha['public_key']
 Settings.recaptcha['private_key'] ||= Settings.recaptcha['private_key']
 
