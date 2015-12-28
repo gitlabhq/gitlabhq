@@ -97,10 +97,8 @@ module API
     end
 
     def paginate(relation)
-      page = (params[:page] || 1).to_i
-      per_page = (params[:per_page] || 30).to_i
-
-      paginated = relation.page(page).per(per_page)
+      per_page  = params[:per_page].to_i
+      paginated = relation.page(params[:page]).per(per_page)
       add_pagination_headers(paginated, per_page)
 
       paginated
