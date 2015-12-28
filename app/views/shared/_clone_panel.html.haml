@@ -1,15 +1,4 @@
 - project = project || @project
-<<<<<<< HEAD
-.git-clone-holder.input-group
-  .input-group-addon.git-protocols
-    .input-group-btn
-      = ssh_clone_button(project)
-    .input-group-btn
-      = http_clone_button(project)
-    - if alternative_kerberos_url?
-      .input-group-btn
-        = kerberos_clone_button(project)
-=======
 
 .git-clone-holder
   .btn-group.clone-options
@@ -24,8 +13,11 @@
       %li
         %a#http-selector{href: @project.http_url_to_repo}
           HTTPS
+      - if alternative_kerberos_url?
+      %li
+        %a#kerberos-btn{href: @project.kerberos_url_to_repo}
+          KRB5
 
->>>>>>> origin/master
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
   .input-group-btn
     = clipboard_button(clipboard_target: '#project_clone')
