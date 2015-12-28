@@ -32,10 +32,17 @@ if Gitlab::Metrics.enabled?
     )
 
     Gitlab::Metrics::Instrumentation.
-      instrument_class_hierarchy(ActiveRecord::Base) do |_, method|
-        loc = method.source_location
+      instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
+        # Instrumenting the ApplicationSetting class can lead to an infinite
+        # loop. Since the data is cached any way we don't really need to
+        # instrument it.
+        if klass == ApplicationSetting
+          false
+        else
+          loc = method.source_location
 
-        loc && loc[0].start_with?(models) && method.source =~ regex
+          loc && loc[0].start_with?(models) && method.source =~ regex
+        end
       end
   end
 

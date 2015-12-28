@@ -4,16 +4,29 @@ module Gitlab
     METRICS_ROOT = Rails.root.join('lib', 'gitlab', 'metrics').to_s
     PATH_REGEX   = /^#{RAILS_ROOT}\/?/
 
+    # Returns the current settings, ensuring we _always_ have a default set of
+    # metrics settings (even during tests, when the migrations are lacking,
+    # etc). This ensures the application is able to boot up even when the
+    # migrations have not been executed.
+    def self.settings
+      ApplicationSetting.current || {
+        metrics_pool_size:             16,
+        metrics_timeout:               10,
+        metrics_enabled:               false,
+        metrics_method_call_threshold: 10
+      }
+    end
+
     def self.pool_size
-      Settings.metrics['pool_size'] || 16
+      settings[:metrics_pool_size]
     end
 
     def self.timeout
-      Settings.metrics['timeout'] || 10
+      settings[:metrics_timeout]
     end
 
     def self.enabled?
-      !!Settings.metrics['enabled']
+      settings[:metrics_enabled]
     end
 
     def self.mri?
@@ -21,7 +34,10 @@ module Gitlab
     end
 
     def self.method_call_threshold
-      Settings.metrics['method_call_threshold'] || 10
+      # This is memoized since this method is called for every instrumented
+      # method. Loading data from an external cache on every method call slows
+      # things down too much.
+      @method_call_threshold ||= settings[:metrics_method_call_threshold]
     end
 
     def self.pool
@@ -52,10 +68,10 @@ module Gitlab
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
       @pool = ConnectionPool.new(size: pool_size, timeout: timeout) do
-        host = Settings.metrics['host']
-        db   = Settings.metrics['database']
-        user = Settings.metrics['username']
-        pw   = Settings.metrics['password']
+        host = settings[:metrics_host]
+        db   = settings[:metrics_database]
+        user = settings[:metrics_username]
+        pw   = settings[:metrics_password]
 
         InfluxDB::Client.new(db, host: host, username: user, password: pw)
       end
