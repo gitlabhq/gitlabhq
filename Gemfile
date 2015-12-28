@@ -260,10 +260,10 @@ group :development, :test do
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
-  gem 'database_cleaner', '~> 1.4.0'
-  gem 'factory_girl_rails', '~> 4.3.0'
-  gem 'rspec-rails',      '~> 3.3.0'
-  gem 'spinach-rails', '~> 0.2.1'
+  gem 'database_cleaner',   '~> 1.4.0'
+  gem 'factory_girl_rails', '~> 4.6.0'
+  gem 'rspec-rails',        '~> 3.3.0'
+  gem 'spinach-rails',      '~> 0.2.1'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
