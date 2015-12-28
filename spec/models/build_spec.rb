@@ -391,6 +391,29 @@ describe Ci::Build, models: true do
     end
   end
 
+
+  describe :artifacts_browser_supported? do
+    subject { build.artifacts_browser_supported? }
+    before do
+      file = fixture_file_upload(archive_file, archive_type)
+      build.update_attributes(artifacts_file: file)
+    end
+
+    context 'artifacts archive is not a zip file' do
+      let(:archive_file) { Rails.root + 'spec/fixtures/banana_sample.gif' }
+      let(:archive_type) { 'image/gif' }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'artifacts archive is a zip file' do
+      let(:archive_file) { Rails.root + 'spec/fixtures/ci_build_artifacts.zip' }
+      let(:archive_type) { 'application/zip' }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe :repo_url do
     let(:build) { FactoryGirl.create :ci_build }
     let(:project) { build.project }

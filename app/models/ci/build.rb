@@ -339,6 +339,12 @@ module Ci
         artifacts?
     end
 
+    def artifacts_browser_supported?
+      # TODO, since carrierwave 0.10.0 we will be able to check mime type here
+      #
+      artifacts? && artifacts_file.path.end_with?('zip')
+    end
+
     def artifacts_metadata(path)
       []
     end
