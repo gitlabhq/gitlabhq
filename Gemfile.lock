@@ -561,6 +561,8 @@ GEM
       trollop
     rdoc (3.12.2)
       json (~> 1.4)
+    recaptcha (1.0.2)
+      json
     redcarpet (3.3.3)
     redis (3.2.2)
     redis-actionpack (4.0.1)
@@ -917,6 +919,7 @@ DEPENDENCIES
   raphael-rails (~> 2.1.2)
   rblineprof
   rdoc (~> 3.6)
+  recaptcha
   redcarpet (~> 3.3.3)
   redis-namespace
   redis-rails (~> 4.0.0)
