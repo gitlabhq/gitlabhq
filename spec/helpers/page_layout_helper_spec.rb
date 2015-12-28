@@ -45,14 +45,14 @@ describe PageLayoutHelper do
   describe 'page_description_default' do
     it 'uses Project description when available' do
       project = double(description: 'Project Description')
-      helper.instance_variable_set(:@project, project)
+      assign(:project, project)
 
       expect(helper.page_description_default).to eq 'Project Description'
     end
 
     it 'uses brand_title when Project description is nil' do
       project = double(description: nil)
-      helper.instance_variable_set(:@project, project)
+      assign(:project, project)
 
       expect(helper).to receive(:brand_title).and_return('Brand Title')
       expect(helper.page_description_default).to eq 'Brand Title'
@@ -73,14 +73,14 @@ describe PageLayoutHelper do
     context 'with @project' do
       it 'uses Project avatar if available' do
         project = double(avatar_url: 'http://example.com/uploads/avatar.png')
-        helper.instance_variable_set(:@project, project)
+        assign(:project, project)
 
         expect(helper.page_image).to eq project.avatar_url
       end
 
       it 'falls back to the default' do
         project = double(avatar_url: nil)
-        helper.instance_variable_set(:@project, project)
+        assign(:project, project)
 
         expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
       end
@@ -89,7 +89,7 @@ describe PageLayoutHelper do
     context 'with @user' do
       it 'delegates to avatar_icon helper' do
         user = double('User')
-        helper.instance_variable_set(:@user, user)
+        assign(:user, user)
 
         expect(helper).to receive(:avatar_icon).with(user)
 
@@ -100,14 +100,14 @@ describe PageLayoutHelper do
     context 'with @group' do
       it 'uses Group avatar if available' do
         group = double(avatar_url: 'http://example.com/uploads/avatar.png')
-        helper.instance_variable_set(:@group, group)
+        assign(:group, group)
 
         expect(helper.page_image).to eq group.avatar_url
       end
 
       it 'falls back to the default' do
         group = double(avatar_url: nil)
-        helper.instance_variable_set(:@group, group)
+        assign(:group, group)
 
         expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
       end
