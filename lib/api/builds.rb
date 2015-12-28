@@ -26,10 +26,7 @@ module API
             builds
           end
 
-        page = (params[:page] || 1).to_i
-        per_page = (params[:per_page] || 30).to_i
-
-        present builds.page(page).per(per_page), with: Entities::Build
+        present paginate(builds), with: Entities::Build
       end
 
       # Get a specific build of a project
