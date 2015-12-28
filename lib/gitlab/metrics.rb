@@ -9,12 +9,16 @@ module Gitlab
     # etc). This ensures the application is able to boot up even when the
     # migrations have not been executed.
     def self.settings
-      ApplicationSetting.current || {
-        metrics_pool_size:             16,
-        metrics_timeout:               10,
-        metrics_enabled:               false,
-        metrics_method_call_threshold: 10
-      }
+      if ApplicationSetting.table_exists? and curr = ApplicationSetting.current
+        curr
+      else
+        {
+          metrics_pool_size:             16,
+          metrics_timeout:               10,
+          metrics_enabled:               false,
+          metrics_method_call_threshold: 10
+        }
+      end
     end
 
     def self.pool_size
