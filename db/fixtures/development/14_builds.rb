@@ -50,7 +50,7 @@ class Gitlab::Seeder::Builds
   end
 
   def artifacts_path
-    Rails.root + 'spec/fixtures/ci_build_artifacts.tar.gz'
+    Rails.root + 'spec/fixtures/ci_build_artifacts.zip'
   end
 
   def artifacts_cache_file_path
