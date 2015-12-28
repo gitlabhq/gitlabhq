@@ -90,14 +90,14 @@
           %h1 #{@build.coverage}%
 
       - if current_user && can?(current_user, :download_build_artifacts, @project) && @build.artifacts?
-        .build-widget.center
-          .panel.panel-default
-            .panel-heading Build artifacts
-            .panel-body
-              .btn-group{ role: :group }
-                = link_to "Download", @build.artifacts_download_url, class: 'btn btn-sm btn-primary'
-                - if @build.artifacts_browser_supported?
-                  = link_to "Browse", @build.artifacts_browse_url, class: 'btn btn-sm btn-primary'
+
+        .build-widget.artifacts
+          %h4.title Build artifacts
+          .center
+            .btn-group{ role: :group }
+              = link_to "Download", @build.artifacts_download_url, class: 'btn btn-sm btn-primary'
+              - if @build.artifacts_browser_supported?
+                = link_to "Browse", @build.artifacts_browse_url, class: 'btn btn-sm btn-primary'
 
       .build-widget
         %h4.title

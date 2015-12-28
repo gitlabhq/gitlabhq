@@ -80,7 +80,11 @@ describe "Builds" do
         visit namespace_project_build_path(@project.namespace, @project, @build)
       end
 
-      it { expect(page).to have_content 'Download artifacts' }
+      it 'has button to download artifacts' do
+        page.within('.artifacts') do
+          expect(page).to have_content 'Download'
+        end
+      end
     end
   end
 
@@ -111,7 +115,7 @@ describe "Builds" do
     before do
       @build.update_attributes(artifacts_file: artifacts_file)
       visit namespace_project_build_path(@project.namespace, @project, @build)
-      click_link 'Download artifacts'
+      page.within('.artifacts') { click_link 'Download' }
     end
 
     it { expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type) }
