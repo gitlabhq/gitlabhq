@@ -26,7 +26,7 @@ As explained in the [Heroku documentation](https://devcenter.heroku.com/articles
 - host
 - port
 
-To do set these please `cp config/database.yml.rb config/database.yml` and use the following variables:
+To do so please `cp config/database.yml.env config/database.yml` and use the following variables:
 
 Variable | Default
 --- | ---
