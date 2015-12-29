@@ -132,6 +132,9 @@
       margin-right: 0px;
     }
   }
+  &.disabled {
+    pointer-events: auto !important;
+  }
 }
 
 .btn-block {

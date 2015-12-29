@@ -90,7 +90,12 @@
               &nbsp;
               = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn btn-xs"
               - unless user == current_user
-                - if user.blocked?
+                - if user.ldap_blocked?
+                  = link_to '#', title: 'Cannot unblock LDAP blocked users', data: {toggle: 'tooltip'}, class: 'btn btn-xs btn-success disabled' do
+                    %i.fa.fa-lock
+                    Unblock
+                  = ''
+                - elsif user.blocked?
                   = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-xs btn-success"
                 - else
                   = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-xs btn-warning"
