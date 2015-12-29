@@ -52,30 +52,54 @@ describe AsanaService, models: true do
     end
 
     it 'should call Asana service to created a story' do
-      expect(Asana::Task).to receive(:find).with('123456').once
+      d1 = double('Asana::Task', add_comment: true)
+      expect(d1).to receive(:add_comment)
+      expect(Asana::Task).to receive(:find_by_id).with(anything, '123456').once.and_return(d1)
 
       @asana.check_commit('related to #123456', 'pushed')
     end
 
     it 'should call Asana service to created a story and close a task' do
-      expect(Asana::Task).to receive(:find).with('456789').twice
+      d1 = double('Asana::Task', add_comment: true)
+      expect(d1).to receive(:add_comment)
+      expect(d1).to receive(:update).with(completed: true)
+      expect(Asana::Task).to receive(:find_by_id).with(anything, '456789').once.and_return(d1)
 
       @asana.check_commit('fix #456789', 'pushed')
     end
 
     it 'should be able to close via url' do
-      expect(Asana::Task).to receive(:find).with('42').twice
+      d1 = double('Asana::Task', add_comment: true)
+      expect(d1).to receive(:add_comment)
+      expect(d1).to receive(:update).with(completed: true)
+      expect(Asana::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d1)
 
       @asana.check_commit('closes https://app.asana.com/19292/956299/42', 'pushed')
     end
 
     it 'should allow multiple matches per line' do
-      expect(Asana::Task).to receive(:find).with('123').twice
-      expect(Asana::Task).to receive(:find).with('456').twice
-      expect(Asana::Task).to receive(:find).with('789').once
+      d1 = double('Asana::Task', add_comment: true)
+      expect(d1).to receive(:add_comment)
+      expect(d1).to receive(:update).with(completed: true)
+      expect(Asana::Task).to receive(:find_by_id).with(anything, '123').once.and_return(d1)
 
-      expect(Asana::Task).to receive(:find).with('42').once
-      expect(Asana::Task).to receive(:find).with('12').twice
+      d2 = double('Asana::Task', add_comment: true)
+      expect(d2).to receive(:add_comment)
+      expect(d2).to receive(:update).with(completed: true)
+      expect(Asana::Task).to receive(:find_by_id).with(anything, '456').once.and_return(d2)
+
+      d3 = double('Asana::Task', add_comment: true)
+      expect(d3).to receive(:add_comment)
+      expect(Asana::Task).to receive(:find_by_id).with(anything, '789').once.and_return(d3)
+
+      d4 = double('Asana::Task', add_comment: true)
+      expect(d4).to receive(:add_comment)
+      expect(Asana::Task).to receive(:find_by_id).with(anything, '42').once.and_return(d4)
+
+      d5 = double('Asana::Task', add_comment: true)
+      expect(d5).to receive(:add_comment)
+      expect(d5).to receive(:update).with(completed: true)
+      expect(Asana::Task).to receive(:find_by_id).with(anything, '12').once.and_return(d5)
 
       message = <<-EOF
       minor bigfix, refactoring, fixed #123 and Closes #456 work on #789
