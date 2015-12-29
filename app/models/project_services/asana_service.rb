@@ -87,9 +87,9 @@ http://developer.asana.com/documentation/#api_keys'
 
     user = data[:user_name]
     project_name = project.name_with_namespace
-    push_msg = "#{user} pushed to branch #{branch} of #{project_name} ( #{commit[:url]} )"
 
     data[:commits].each do |commit|
+      push_msg = "#{user} pushed to branch #{branch} of #{project_name} ( #{commit[:url]} )"
       check_commit(commit[:message], push_msg)
     end
   end
