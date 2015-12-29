@@ -39,7 +39,12 @@ GITLAB_DATABASE_PASSWORD |
 GITLAB_DATABASE_HOST | localhost
 GITLAB_DATABASE_PORT | 5432
 
-## Other variables
+## Adding more variables
 
 We welcome merge requests to make more settings configurable via variables.
 Please stick to the naming scheme "GITLAB_#{name 1_settings.rb in upper case}".
+
+## Omnibus configuration
+
+It's possible to preconfigure the GitLab image by adding the environment variable: `GITLAB_OMNIBUS_CONFIG` to docker run command.
+For more information see the ['preconfigure-docker-container' section in the Omnibus documentation](http://doc.gitlab.com/omnibus/docker/#preconfigure-docker-container).
