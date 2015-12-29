@@ -72,8 +72,8 @@ automatically inspected. Leave blank to include all branches.'
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    Asana.configure do |client|
-      client.api_key = api_key
+    asana_client = Asana::Client.new do |c|
+      c.authentication :access_token, api_key
     end
 
     user = data[:user_name]
@@ -108,19 +108,19 @@ automatically inspected. Leave blank to include all branches.'
 
     # post commit to every taskid found
     task_list.each do |taskid|
-      task = Asana::Task.find(taskid[0])
+      task = asana_client.tasks.find_by_id(taskid[0])
 
       if task
-        task.create_story(text: push_msg + ' ' + message)
+        task.add_comment(text: push_msg + ' ' + message)
       end
     end
 
     # close all tasks that had 'fix(ed/es/ing) #:id' in them
     close_list.each do |taskid|
-      task = Asana::Task.find(taskid.last)
+      task = asana_client.tasks.find_by_id(taskid.last)
 
       if task
-        task.modify(completed: true)
+        task.update(completed: true)
       end
     end
   end
