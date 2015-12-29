@@ -1,6 +1,6 @@
 module AppearancesHelper
   def brand_title
-    if brand_item
+    if brand_item && brand_item.title
       brand_item.title
     else
       'GitLab Enterprise Edition'
