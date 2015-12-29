@@ -19,6 +19,8 @@ class @Notes
     @cleanBinding()
     @addBinding()
     @initTaskList()
+    # for updating the comment disscussion buttons once that issue #5534 is approved.
+    # @updateTargetButtons({target:$("#note_note")})
 
   addBinding: ->
     # add note to UI after creation
@@ -33,8 +35,6 @@ class @Notes
     $(document).on "click", ".note-edit-cancel", @cancelEdit
 
     # Reopen and close actions for Issue/MR combined with note form submit
-    $(document).on "click", ".js-note-target-reopen", @targetReopen
-    $(document).on "click", ".js-note-target-close", @targetClose
     $(document).on "click", ".js-comment-button", @updateCloseButton
     $(document).on "keyup", ".js-note-text", @updateTargetButtons
 
@@ -512,17 +512,6 @@ class @Notes
   visibilityChange: =>
     @refresh()
 
-  targetReopen: (e) =>
-    @submitNoteForm($(e.target).parents('form'))
-
-  targetClose: (e) =>
-    @submitNoteForm($(e.target).parents('form'))
-
-  submitNoteForm: (form) =>
-    noteText = form.find(".js-note-text").val()
-    if noteText.trim().length > 0
-      form.submit()
-
   updateCloseButton: (e) =>
     textarea = $(e.target)
     form = textarea.parents('form')
@@ -531,7 +520,6 @@ class @Notes
   updateTargetButtons: (e) =>
     textarea = $(e.target)
     form = textarea.parents('form')
-
     if textarea.val().trim().length > 0
       form.find('.js-note-target-reopen').text('Comment & reopen')
       form.find('.js-note-target-close').text('Comment & close')
