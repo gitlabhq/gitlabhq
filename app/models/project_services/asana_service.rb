@@ -67,35 +67,34 @@ http://developer.asana.com/documentation/#api_keys'
     %w(push)
   end
 
+  def client
+    @_client ||= begin
+      Asana::Client.new do |c|
+        c.authentication :access_token, api_key
+      end
+    end
+  end
+
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    Asana.configure do |client|
-      client.api_key = api_key
-    end
-
-    user = data[:user_name]
-    branch = Gitlab::Git.ref_name(data[:ref])
-
-    branch_restriction = restrict_to_branch.to_s
-
     # check the branch restriction is poplulated and branch is not included
+    branch = Gitlab::Git.ref_name(data[:ref])
+    branch_restriction = restrict_to_branch.to_s
     if branch_restriction.length > 0 && branch_restriction.index(branch).nil?
       return
     end
 
+    user = data[:user_name]
     project_name = project.name_with_namespace
-    push_msg = user + ' pushed to branch ' + branch + ' of ' + project_name
+    push_msg = "#{user} pushed to branch #{branch} of #{project_name} ( #{commit[:url]} )"
 
     data[:commits].each do |commit|
-      check_commit(' ( ' + commit[:url] + ' ): ' + commit[:message], push_msg)
+      check_commit(commit[:message], push_msg)
     end
   end
 
   def check_commit(message, push_msg)
-    task_list = []
-    close_list = []
-
     # matches either:
     # - #1234
     # - https://app.asana.com/0/0/1234
@@ -109,28 +108,19 @@ http://developer.asana.com/documentation/#api_keys'
       # tuple will be
       # [ 'fix', 'id_from_url', 'id_from_pound' ]
       taskid = tuple[2] || tuple[1]
-      task_list.push(taskid)
+
+      begin
+        task = Asana::Task.find_by_id(client, taskid)
+      rescue Exception => e
+        puts e.message
+        puts e.backtrace.inspect
+        next
+      end
+
+      task.add_comment(text: "#{push_msg} #{message}")
 
       if tuple[0]
-        close_list.push(taskid)
-      end
-    end
-
-    # post commit to every taskid found
-    task_list.each do |taskid|
-      task = Asana::Task.find(taskid)
-
-      if task
-        task.create_story(text: push_msg + ' ' + message)
-      end
-    end
-
-    # close all tasks that had 'fix(ed/es/ing) #:id' in them
-    close_list.each do |taskid|
-      task = Asana::Task.find(taskid)
-
-      if task
-        task.modify(completed: true)
+        task.update(completed: true)
       end
     end
   end
