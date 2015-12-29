@@ -1,9 +1,8 @@
 - page_title "New File", @path.presence, @ref
 = render "header_title"
 
-.gray-content-block.top-block
-  %h3.page-title
-    Create New File
+%h3.page-title
+  New File
 
 .file-editor
   = form_tag(namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post, class: 'form-horizontal js-new-blob-form js-requires-input') do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitTagPushService do
+describe GitTagPushService, services: true do
   include RepoHelpers
 
   let(:user) { create :user }
@@ -58,14 +58,14 @@ describe GitTagPushService do
         it { is_expected.to include(timestamp: @commit.date.xmlschema) }
         it do
           is_expected.to include(
-                           url: [
-                             Gitlab.config.gitlab.url,
-                             project.namespace.to_param,
-                             project.to_param,
-                             'commit',
-                             @commit.id
-                           ].join('/')
-                         )
+            url: [
+             Gitlab.config.gitlab.url,
+             project.namespace.to_param,
+             project.to_param,
+             'commit',
+             @commit.id
+            ].join('/')
+          )
         end
 
         context "with a author" do

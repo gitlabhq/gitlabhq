@@ -1,3 +1,4 @@
+@project_issues
 Feature: Project Issues
   Background:
     Given I sign in as a user
@@ -197,3 +198,8 @@ Feature: Project Issues
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
 
+  @javascript
+  Scenario: Another user adds a comment to issue I'm currently viewing
+    Given I visit issue page "Release 0.4"
+    And another user adds a comment with text "Yay!" to issue "Release 0.4"
+    Then I should see a new comment with text "Yay!"

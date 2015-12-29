@@ -6,15 +6,17 @@ header {
   transition-duration: .3s;
 
   &.navbar-empty {
+    height: 58px;
     background: #FFF;
     border-bottom: 1px solid #EEE;
 
     .center-logo {
-      margin: 8px 0;
+      margin: 11px 0;
       text-align: center;
 
-      img {
-        height: 32px;
+      #tanuki-logo, img {
+        width: 36px;
+        height: 36px;
       }
     }
   }

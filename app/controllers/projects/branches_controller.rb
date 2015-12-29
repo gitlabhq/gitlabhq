@@ -3,7 +3,7 @@ class Projects::BranchesController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
-  before_action :authorize_push_code!, only: [:create, :destroy]
+  before_action :authorize_push_code!, only: [:new, :create, :destroy]
 
   def index
     @sort = params[:sort] || 'name'

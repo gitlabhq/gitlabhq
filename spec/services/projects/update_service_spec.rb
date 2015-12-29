@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::UpdateService do
+describe Projects::UpdateService, services: true do
   describe :update_by_user do
     before do
       @user = create :user
@@ -97,6 +97,45 @@ describe Projects::UpdateService do
         it { expect(@created_private).to be_truthy }
         it { expect(@project.public?).to be_truthy }
       end
+    end
+  end
+
+  describe :visibility_level do
+    let(:user) { create :user, admin: true }
+    let(:project) { create :project, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+    let(:forked_project) { create :forked_project_with_submodules, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+    let(:opts) { {} }
+
+    before do
+      forked_project.build_forked_project_link(forked_to_project_id: forked_project.id, forked_from_project_id: project.id)
+      forked_project.save
+
+      @created_internal = project.internal?
+      @fork_created_internal = forked_project.internal?
+    end
+
+    context 'should update forks visibility level when parent set to more restrictive' do
+      before do
+        opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        update_project(project, user, opts).inspect
+      end
+
+      it { expect(@created_internal).to be_truthy }
+      it { expect(@fork_created_internal).to be_truthy }
+      it { expect(project.private?).to be_truthy }
+      it { expect(project.forks.first.private?).to be_truthy }
+    end
+
+    context 'should not update forks visibility level when parent set to less restrictive' do
+      before do
+        opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        update_project(project, user, opts).inspect
+      end
+
+      it { expect(@created_internal).to be_truthy }
+      it { expect(@fork_created_internal).to be_truthy }
+      it { expect(project.public?).to be_truthy }
+      it { expect(project.forks.first.internal?).to be_truthy }
     end
   end
 

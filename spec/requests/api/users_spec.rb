@@ -27,6 +27,13 @@ describe API::API, api: true  do
           user['username'] == username
         end['username']).to eq(username)
       end
+
+      it "should return one user" do
+        get api("/users?username=#{omniauth_user.username}", user)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
     end
 
     context "when admin" do
@@ -153,7 +160,7 @@ describe API::API, api: true  do
       expect(json_response['message']['projects_limit']).
         to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
-        to eq([Gitlab::Regex.send(:namespace_regex_message)])
+        to eq([Gitlab::Regex.namespace_regex_message])
     end
 
     it "shouldn't available for non admin users" do
@@ -296,7 +303,7 @@ describe API::API, api: true  do
       expect(json_response['message']['projects_limit']).
         to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
-        to eq([Gitlab::Regex.send(:namespace_regex_message)])
+        to eq([Gitlab::Regex.namespace_regex_message])
     end
 
     context "with existing user" do

@@ -61,7 +61,7 @@ describe 'Issues', feature: true do
     it 'allows user to select unasigned', js: true do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
 
-      expect(page).to have_content "Assign to #{@user.name}"
+      expect(page).to have_content "Assignee #{@user.name}"
 
       first('#s2id_issue_assignee_id').click
       sleep 2 # wait for ajax stuff to complete
@@ -69,7 +69,10 @@ describe 'Issues', feature: true do
 
       click_button 'Save changes'
 
-      expect(page).to have_content 'Assignee: none'
+      page.within('.assignee') do
+        expect(page).to have_content 'None'
+      end
+
       expect(issue.reload.assignee).to be_nil
     end
   end
@@ -202,11 +205,11 @@ describe 'Issues', feature: true do
       it 'with dropdown menu' do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
-        find('.context #issue_assignee_id').
+        find('.issuable-sidebar #issue_assignee_id').
           set project.team.members.first.id
         click_button 'Update Issue'
 
-        expect(page).to have_content 'Assignee:'
+        expect(page).to have_content 'Assignee'
         has_select?('issue_assignee_id',
                     selected: project.team.members.first.name)
       end
@@ -241,12 +244,16 @@ describe 'Issues', feature: true do
       it 'with dropdown menu' do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
-        find('.context').
+        find('.issuable-sidebar').
           select(milestone.title, from: 'issue_milestone_id')
         click_button 'Update Issue'
 
         expect(page).to have_content "Milestone changed to #{milestone.title}"
-        expect(page).to have_content "Milestone: #{milestone.title}"
+
+        page.within('.milestone') do
+          expect(page).to have_content milestone.title
+        end
+
         has_select?('issue_assignee_id', selected: milestone.title)
       end
     end
@@ -279,13 +286,19 @@ describe 'Issues', feature: true do
 
       it 'allows user to remove assignee', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
-        expect(page).to have_content "Assignee: #{user2.name}"
 
-        first('#s2id_issue_assignee_id').click
+        page.within('.assignee') do
+          expect(page).to have_content user2.name
+        end
+
+        find('.assignee .edit-link').click
         sleep 2 # wait for ajax stuff to complete
         first('.user-result').click
 
-        expect(page).to have_content 'Assignee: none'
+        page.within('.assignee') do
+          expect(page).to have_content 'None'
+        end
+
         sleep 2 # wait for ajax stuff to complete
         expect(issue.reload.assignee).to be_nil
       end
@@ -293,10 +306,10 @@ describe 'Issues', feature: true do
   end
 
   def first_issue
-    page.all('ul.issues-list li').first.text
+    page.all('ul.issues-list > li').first.text
   end
 
   def last_issue
-    page.all('ul.issues-list li').last.text
+    page.all('ul.issues-list > li').last.text
   end
 end

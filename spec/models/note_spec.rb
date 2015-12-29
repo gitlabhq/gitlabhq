@@ -16,11 +16,12 @@
 #  system        :boolean          default(FALSE), not null
 #  st_diff       :text
 #  updated_by_id :integer
+#  is_award      :boolean          default(FALSE), not null
 #
 
 require 'spec_helper'
 
-describe Note do
+describe Note, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:noteable) }
@@ -136,9 +137,40 @@ describe Note do
       create :note, note: "smile", is_award: true
     end
 
-    it "returns grouped array of notes" do
-      expect(Note.grouped_awards.first.first).to eq("smile")
-      expect(Note.grouped_awards.first.last).to match_array(Note.all)
+    it "returns grouped hash of notes" do
+      expect(Note.grouped_awards.keys.size).to eq(3)
+      expect(Note.grouped_awards["smile"]).to match_array(Note.all)
+    end
+
+    it "returns thumbsup and thumbsdown always" do
+      expect(Note.grouped_awards["thumbsup"]).to match_array(Note.none)
+      expect(Note.grouped_awards["thumbsdown"]).to match_array(Note.none)
+    end
+  end
+
+  describe "editable?" do
+    it "returns true" do
+      note = build(:note)
+      expect(note.editable?).to be_truthy
+    end
+
+    it "returns false" do
+      note = build(:note, system: true)
+      expect(note.editable?).to be_falsy
+    end
+
+    it "returns false" do
+      note = build(:note, is_award: true, note: "smiley")
+      expect(note.editable?).to be_falsy
+    end
+  end
+  
+  describe "set_award!" do
+    let(:issue) { create :issue }
+
+    it "converts aliases to actual name" do
+      note = create :note, note: ":+1:", noteable: issue
+      expect(note.reload.note).to eq("thumbsup")
     end
   end
 end

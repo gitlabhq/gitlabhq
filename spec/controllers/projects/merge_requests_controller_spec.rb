@@ -10,6 +10,30 @@ describe Projects::MergeRequestsController do
     project.team << [user, :master]
   end
 
+  describe '#new' do
+    context 'merge request that removes a submodule' do
+      render_views
+
+      let(:fork_project) { create(:forked_project_with_submodules) }
+
+      before do
+        fork_project.team << [user, :master]
+      end
+
+      it 'renders it' do
+        get :new,
+            namespace_id: fork_project.namespace.to_param,
+            project_id: fork_project.to_param,
+            merge_request: {
+              source_branch: 'remove-submodule',
+              target_branch: 'master'
+            }
+
+        expect(response).to be_success
+      end
+    end
+  end
+
   describe "#show" do
     shared_examples "export merge as" do |format|
       it "should generally work" do

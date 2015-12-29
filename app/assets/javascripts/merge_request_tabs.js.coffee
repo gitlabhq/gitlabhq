@@ -43,6 +43,7 @@
 #
 class @MergeRequestTabs
   diffsLoaded: false
+  buildsLoaded: false
   commitsLoaded: false
 
   constructor: (@opts = {}) ->
@@ -54,6 +55,12 @@ class @MergeRequestTabs
 
   bindEvents: ->
     $(document).on 'shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', @tabShown
+    $(document).on 'click', '.js-show-tab', @showTab
+
+  showTab: (event) =>
+    event.preventDefault()
+
+    @activateTab $(event.target).data('action')
 
   tabShown: (event) =>
     $target = $(event.target)
@@ -63,12 +70,14 @@ class @MergeRequestTabs
       @loadCommits($target.attr('href'))
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
+    else if action == 'builds'
+      @loadBuilds($target.attr('href'))
 
     @setCurrentAction(action)
 
   scrollToElement: (container) ->
     if window.location.hash
-      $el = $("#{container} #{window.location.hash}")
+      $el = $("div#{container} #{window.location.hash}")
       $('body').scrollTo($el.offset().top) if $el.length
 
   # Activate a tab based on the current action
@@ -101,7 +110,7 @@ class @MergeRequestTabs
     action = 'notes' if action == 'show'
 
     # Remove a trailing '/commits' or '/diffs'
-    new_state = @_location.pathname.replace(/\/(commits|diffs)(\.html)?\/?$/, '')
+    new_state = @_location.pathname.replace(/\/(commits|diffs|builds)(\.html)?\/?$/, '')
 
     # Append the new action if we're on a tab other than 'notes'
     unless action == 'notes'
@@ -124,7 +133,7 @@ class @MergeRequestTabs
     @_get
       url: "#{source}.json"
       success: (data) =>
-        document.getElementById('commits').innerHTML = data.html
+        document.querySelector("div#commits").innerHTML = data.html
         $('.js-timeago').timeago()
         @commitsLoaded = true
         @scrollToElement("#commits")
@@ -135,9 +144,21 @@ class @MergeRequestTabs
     @_get
       url: "#{source}.json" + @_location.search
       success: (data) =>
-        document.getElementById('diffs').innerHTML = data.html
+        document.querySelector("div#diffs").innerHTML = data.html
+        $('div#diffs .js-syntax-highlight').syntaxHighlight()
         @diffsLoaded = true
         @scrollToElement("#diffs")
+
+  loadBuilds: (source) ->
+    return if @buildsLoaded
+
+    @_get
+      url: "#{source}.json"
+      success: (data) =>
+        document.querySelector("div#builds").innerHTML = data.html
+        $('.js-timeago').timeago()
+        @buildsLoaded = true
+        @scrollToElement("#builds")
 
   # Show or hide the loading spinner
   #

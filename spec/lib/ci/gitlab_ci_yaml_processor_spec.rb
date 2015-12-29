@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 module Ci
-  describe GitlabCiYamlProcessor do
+  describe GitlabCiYamlProcessor, lib: true do
     let(:path) { 'path' }
-    
+
     describe "#builds_for_ref" do
       let(:type) { 'test' }
 
@@ -29,7 +29,7 @@ module Ci
           when: "on_success"
         })
       end
-      
+
       describe :only do
         it "does not return builds if only has another branch" do
           config = YAML.dump({
@@ -517,7 +517,7 @@ module Ci
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Unknown parameter: extra")
       end
 
-      it "returns errors if there is no any jobs defined" do
+      it "returns errors if there are no jobs defined" do
         config = YAML.dump({ before_script: ["bundle update"] })
         expect do
           GitlabCiYamlProcessor.new(config, path)
@@ -532,21 +532,21 @@ module Ci
       end
 
       it "returns errors if job stage is not a string" do
-        config = YAML.dump({ rspec: { script: "test", type: 1, allow_failure: "string" } })
+        config = YAML.dump({ rspec: { script: "test", type: 1 } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
       end
 
       it "returns errors if job stage is not a pre-defined stage" do
-        config = YAML.dump({ rspec: { script: "test", type: "acceptance", allow_failure: "string" } })
+        config = YAML.dump({ rspec: { script: "test", type: "acceptance" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
       end
 
       it "returns errors if job stage is not a defined stage" do
-        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", type: "acceptance", allow_failure: "string" } })
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", type: "acceptance" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test")

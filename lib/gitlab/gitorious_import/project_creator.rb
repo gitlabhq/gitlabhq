@@ -10,7 +10,8 @@ module Gitlab
       end
 
       def execute
-        ::Projects::CreateService.new(current_user,
+        ::Projects::CreateService.new(
+          current_user,
           name: repo.name,
           path: repo.path,
           description: repo.description,

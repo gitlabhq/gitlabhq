@@ -11,7 +11,7 @@
 
 = render "home_panel"
 
-.project-stats.gray-content-block
+.project-stats.gray-content-block.second-block
   %ul.nav.nav-pills
     %li
       = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
@@ -71,7 +71,7 @@
   = render default_project_view
 
 - if current_user
-  - access = user_max_access_in_project(current_user, @project)
+  - access = user_max_access_in_project(current_user.id, @project)
   - if access
     .prepend-top-20.project-footer
       .gray-content-block.footer-block.center

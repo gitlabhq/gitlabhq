@@ -3,7 +3,7 @@
     .form-group
       = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input", id: "projects_search", spellcheck: false
     .form-group
-      = button_tag 'Search', class: "btn btn-success"
+      = button_tag 'Search', class: "btn"
 
 .pull-right.hidden-sm.hidden-xs
   - if current_user

@@ -132,14 +132,14 @@ class Ability
     end
 
     def public_project_rules
-      project_guest_rules + [
+      @public_project_rules ||= project_guest_rules + [
         :download_code,
         :fork_project
       ]
     end
 
     def project_guest_rules
-      [
+      @project_guest_rules ||= [
         :read_project,
         :read_wiki,
         :read_issue,
@@ -157,7 +157,7 @@ class Ability
     end
 
     def project_report_rules
-      project_guest_rules + [
+      @project_report_rules ||= project_guest_rules + [
         :create_commit_status,
         :read_commit_statuses,
         :download_code,
@@ -170,7 +170,7 @@ class Ability
     end
 
     def project_dev_rules
-      project_report_rules + [
+      @project_dev_rules ||= project_report_rules + [
         :admin_merge_request,
         :create_merge_request,
         :create_wiki,
@@ -181,7 +181,7 @@ class Ability
     end
 
     def project_archived_rules
-      [
+      @project_archived_rules ||= [
         :create_merge_request,
         :push_code,
         :push_code_to_protected_branches,
@@ -191,7 +191,7 @@ class Ability
     end
 
     def project_master_rules
-      project_dev_rules + [
+      @project_master_rules ||= project_dev_rules + [
         :push_code_to_protected_branches,
         :update_project_snippet,
         :update_merge_request,
@@ -206,7 +206,7 @@ class Ability
     end
 
     def project_admin_rules
-      project_master_rules + [
+      @project_admin_rules ||= project_master_rules + [
         :change_namespace,
         :change_visibility_level,
         :rename_project,
@@ -332,7 +332,7 @@ class Ability
       end
 
       if snippet.public? || snippet.internal?
-        rules << :read_personal_snippet 
+        rules << :read_personal_snippet
       end
 
       rules
@@ -346,12 +346,10 @@ class Ability
       unless group.last_owner?(target_user)
         can_manage = group_abilities(user, group).include?(:admin_group_member)
 
-        if can_manage && user != target_user
+        if can_manage
           rules << :update_group_member
           rules << :destroy_group_member
-        end
-
-        if user == target_user
+        elsif user == target_user
           rules << :destroy_group_member
         end
       end
@@ -367,12 +365,10 @@ class Ability
       unless target_user == project.owner
         can_manage = project_abilities(user, project).include?(:admin_project_member)
 
-        if can_manage && user != target_user
+        if can_manage
           rules << :update_project_member
           rules << :destroy_project_member
-        end
-
-        if user == target_user
+        elsif user == target_user
           rules << :destroy_project_member
         end
       end

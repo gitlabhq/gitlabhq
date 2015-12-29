@@ -2,10 +2,6 @@
   display: block;
 }
 
-.commit-title{
-  margin-bottom: 10px;
-}
-
 .commit-author, .commit-committer{
   display: block;
   color: #999;
@@ -41,6 +37,8 @@
 .commit-box {
   .commit-title {
     margin: 0;
+    font-size: 23px;
+    color: #313236;
   }
 
   .commit-description {
@@ -107,17 +105,4 @@
     position: relative;
     z-index: 2;
   }
-}
-
-.commit-ci-menu {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  margin-top: 5px;
-  height: 56px;
-  margin: -16px;
-  padding: 16px;
-  text-align: center;
-  margin-top: 0px;
-  margin-bottom: 2px;
 }

@@ -15,7 +15,7 @@
 
 require 'spec_helper'
 
-describe Milestone do
+describe Milestone, models: true do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:issues) }

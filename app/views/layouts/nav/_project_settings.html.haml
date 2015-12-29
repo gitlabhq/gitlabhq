@@ -1,6 +1,6 @@
 %ul.nav.nav-sidebar
   = nav_link do
-    = link_to project_path(@project), title: 'Go to project', data: {placement: 'right'}, class: 'back-link' do
+    = link_to project_path(@project), title: 'Go to project', class: 'back-link' do
       = icon('caret-square-o-left fw')
       %span
         Go to project
@@ -9,59 +9,44 @@
 
   %ul.sidebar-subnav
     = nav_link(path: 'projects#edit') do
-      = link_to edit_project_path(@project), title: 'Project Settings', data: {placement: 'right'} do
+      = link_to edit_project_path(@project), title: 'Project Settings' do
         = icon('pencil-square-o fw')
         %span
           Project Settings
     = nav_link(controller: :deploy_keys) do
-      = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys', data: {placement: 'right'} do
+      = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys' do
         = icon('key fw')
         %span
           Deploy Keys
     = nav_link(controller: :hooks) do
-      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web Hooks', data: {placement: 'right'} do
+      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web Hooks' do
         = icon('link fw')
         %span
           Web Hooks
     = nav_link(controller: :services) do
-      = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services', data: {placement: 'right'} do
+      = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services' do
         = icon('cogs fw')
         %span
           Services
     = nav_link(controller: :protected_branches) do
-      = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches', data: {placement: 'right'} do
+      = link_to namespace_project_protected_branches_path(@project.namespace, @project), title: 'Protected Branches' do
         = icon('lock fw')
         %span
           Protected Branches
 
     - if @project.builds_enabled?
       = nav_link(controller: :runners) do
-        = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners', data: {placement: 'right'} do
+        = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners' do
           = icon('cog fw')
           %span
             Runners
       = nav_link(controller: :variables) do
-        = link_to namespace_project_variables_path(@project.namespace, @project) do
+        = link_to namespace_project_variables_path(@project.namespace, @project), title: 'Variables' do
           = icon('code fw')
           %span
             Variables
       = nav_link path: 'triggers#index' do
-        = link_to namespace_project_triggers_path(@project.namespace, @project) do
+        = link_to namespace_project_triggers_path(@project.namespace, @project), title: 'Triggers' do
           = icon('retweet fw')
           %span
             Triggers
-      = nav_link path: 'ci_web_hooks#index' do
-        = link_to namespace_project_ci_web_hooks_path(@project.namespace, @project) do
-          = icon('link fw')
-          %span
-            CI Web Hooks
-      = nav_link path: 'ci_settings#edit' do
-        = link_to edit_namespace_project_ci_settings_path(@project.namespace, @project) do
-          = icon('building fw')
-          %span
-            CI Settings
-      = nav_link controller: 'ci_services' do
-        = link_to namespace_project_ci_services_path(@project.namespace, @project) do
-          = icon('share fw')
-          %span
-            CI Services

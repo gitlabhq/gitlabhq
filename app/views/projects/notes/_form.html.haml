@@ -12,8 +12,7 @@
     = render 'projects/notes/hints'
     .error-alert
 
-  .note-form-actions
-    .buttons.clearfix
-      = f.submit 'Add Comment', class: "btn btn-green comment-btn btn-grouped js-comment-button"
-      = yield(:note_actions)
-      %a.btn.grouped.js-close-discussion-note-form Cancel
+  .note-form-actions.clearfix
+    = f.submit 'Add Comment', class: "btn btn-nr btn-create comment-btn btn-grouped js-comment-button"
+    = yield(:note_actions)
+    %a.btn.btn-cancel.js-close-discussion-note-form Cancel

@@ -1,0 +1,53 @@
+module Gitlab
+  module Metrics
+    module Subscribers
+      # Class for tracking the rendering timings of views.
+      class ActionView < ActiveSupport::Subscriber
+        attach_to :action_view
+
+        SERIES = 'views'
+
+        def render_template(event)
+          track(event) if current_transaction
+        end
+
+        alias_method :render_view, :render_template
+
+        private
+
+        def track(event)
+          values = values_for(event)
+          tags   = tags_for(event)
+
+          current_transaction.add_metric(SERIES, values, tags)
+        end
+
+        def relative_path(path)
+          path.gsub(/^#{Rails.root.to_s}\/?/, '')
+        end
+
+        def values_for(event)
+          { duration: event.duration }
+        end
+
+        def tags_for(event)
+          path = relative_path(event.payload[:identifier])
+          tags = { view: path }
+
+          file, line = Metrics.last_relative_application_frame
+
+          if file and line
+            tags[:file] = file
+            tags[:line] = line
+          end
+
+          tags
+        end
+
+        def current_transaction
+          Transaction.current
+        end
+      end
+    end
+  end
+end

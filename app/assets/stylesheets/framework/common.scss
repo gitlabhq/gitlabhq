@@ -7,7 +7,7 @@
 
 /** COMMON CLASSES **/
 .prepend-top-10 { margin-top:10px }
-.prepend-top-default { margin-top: $gl-padding; }
+.prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-20 { margin-top:20px }
 .prepend-left-10 { margin-left:10px }
 .prepend-left-20 { margin-left:20px }
@@ -50,6 +50,10 @@ pre {
     border-radius: 0;
     color: #555;
   }
+}
+
+hr {
+  margin: $gl-padding 0;
 }
 
 .dropdown-menu > li > a {
@@ -329,16 +333,12 @@ table {
 }
 
 .well {
-  margin-bottom: 0;
+  margin-bottom: $gl-padding;
 }
 
 .search_box {
   @extend .well;
   text-align: center;
-}
-
-.task-status {
-  margin-left: 10px;
 }
 
 #nprogress .spinner {
@@ -374,14 +374,13 @@ table {
   }
 }
 
-.center-top-menu {
+.center-top-menu, .left-top-menu {
   @include nav-menu;
   text-align: center;
   margin-top: 5px;
   margin-bottom: $gl-padding;
-  height: 56px;
+  height: auto;
   margin-top: -$gl-padding;
-  padding-top: $gl-padding;
 
   &.no-bottom {
     margin-bottom: 0;
@@ -390,6 +389,28 @@ table {
   &.no-top {
     margin-top: 0;
   }
+
+  li a {
+    display: inline-block;
+    padding-top: $gl-padding;
+    padding-bottom: 11px;
+    margin-bottom: -1px;
+  }
+
+  &.bottom-border {
+    border-bottom: 1px solid $border-color;
+    height: 57px;
+  }
+
+  &.wide {
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+  }
+}
+
+.left-top-menu {
+  text-align: left;
+  border-bottom: 1px solid #EEE;
 }
 
 .center-middle-menu {
@@ -432,4 +453,27 @@ table {
 
 .space-right {
   margin-right: 10px;
+}
+
+.alert, .progress {
+  margin-bottom: $gl-padding;
+}
+
+.new-project-item-select-holder {
+  display: inline-block;
+  position: relative;
+
+  .new-project-item-select {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px !important;
+    visibility: hidden;
+  }
+}
+
+.content-separator {
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  border-top: 1px solid $border-color;
 }

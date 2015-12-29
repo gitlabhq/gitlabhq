@@ -21,7 +21,7 @@ module ProjectsHelper
   end
 
   def link_to_member(project, author, opts = {})
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author' }
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -39,7 +39,8 @@ module ProjectsHelper
     if opts[:name]
       link_to(author_html, user_path(author), class: "author_link").html_safe
     else
-      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => sanitize(author.name) } ).html_safe
+      title = opts[:title].sub(":name", sanitize(author.name))
+      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => title, container: 'body' } ).html_safe
     end
   end
 
@@ -101,6 +102,14 @@ module ProjectsHelper
       project.forked_from_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE
     else
       true
+    end
+  end
+
+  def user_max_access_in_project(user_id, project)
+    level = project.team.max_member_access(user_id)
+
+    if level
+      Gitlab::Access.options_with_owner.key(level)
     end
   end
 
@@ -173,13 +182,20 @@ module ProjectsHelper
     'unknown'
   end
 
-  def default_url_to_repo(project = nil)
-    project = project || @project
-    current_user ? project.url_to_repo : project.http_url_to_repo
+  def default_url_to_repo(project = @project)
+    if default_clone_protocol == "ssh"
+      project.ssh_url_to_repo
+    else
+      project.http_url_to_repo
+    end
   end
 
   def default_clone_protocol
-    current_user ? "ssh" : "http"
+    if !current_user || current_user.require_ssh_key?
+      "http"
+    else
+      "ssh"
+    end
   end
 
   def project_last_activity(project)
@@ -269,14 +285,6 @@ module ProjectsHelper
     end
   end
 
-  def user_max_access_in_project(user, project)
-    level = project.team.max_member_access(user)
-
-    if level
-      Gitlab::Access.options_with_owner.key(level)
-    end
-  end
-
   def leave_project_message(project)
     "Are you sure you want to leave \"#{project.name}\" project?"
   end
@@ -322,10 +330,9 @@ module ProjectsHelper
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
       namespace_project_blob_path(
-          project.namespace,
-          project,
-          tree_join(project.default_branch,
-                    blob.name)
+        project.namespace,
+        project,
+        tree_join(project.default_branch, blob.name)
       )
     end
   end

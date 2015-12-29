@@ -68,11 +68,15 @@
   .oneline {
     line-height: 42px;
   }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .cover-block {
   text-align: center;
-  background: #f7f8fa;
+  background: $background-color;
   margin: -$gl-padding;
   margin-bottom: 0;
   padding: 44px $gl-padding;
@@ -112,5 +116,14 @@
     position: absolute;
     top: 10px;
     right: 10px;
+
+    &.left {
+      left: 10px;
+      right: auto;
+    }
   }
+}
+
+.block-connector {
+  margin-top: -1px;
 }

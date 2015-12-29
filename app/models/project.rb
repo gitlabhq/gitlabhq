@@ -28,6 +28,7 @@
 #  import_type            :string(255)
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
+#  import_error           :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -42,9 +43,8 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
-  
+
   extend Gitlab::ConfigHelper
-  extend Enumerize
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
@@ -56,11 +56,25 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, gitlab_config_features.snippets
+  default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
   def set_last_activity_at
     update_column(:last_activity_at, self.created_at)
+  end
+
+  # update visibility_levet of forks
+  after_update :update_forks_visibility_level
+  def update_forks_visibility_level
+    return unless visibility_level < visibility_level_was
+
+    forks.each do |forked_project|
+      if forked_project.visibility_level > visibility_level
+        forked_project.visibility_level = visibility_level
+        forked_project.save!
+      end
+    end
   end
 
   ActsAsTaggableOn.strict_case_match = true
@@ -77,10 +91,10 @@ class Project < ActiveRecord::Base
 
   # Project services
   has_many :services
-  has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
   has_one :drone_ci_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
+  has_one :builds_email_service, dependent: :destroy
   has_one :irker_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
@@ -99,9 +113,12 @@ class Project < ActiveRecord::Base
   has_one :gitlab_issue_tracker_service, dependent: :destroy
   has_one :external_wiki_service, dependent: :destroy
 
-  has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one  :forked_from_project,  through:   :forked_project_link
 
-  has_one :forked_from_project, through: :forked_project_link
+  has_many :forked_project_links, foreign_key: "forked_from_project_id"
+  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
+
   # Merge Requests for target project should be removed with it
   has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
   # Merge requests from source project should be kept when source project was removed
@@ -121,14 +138,21 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
-  has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
-  has_one :gitlab_ci_project, dependent: :destroy, class_name: "Ci::Project", foreign_key: :gitlab_id
+
+  has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
+  has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
+  has_many :builds, class_name: 'Ci::Build', foreign_key: :gl_project_id # the builds are created from the commit_statuses
+  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject', foreign_key: :gl_project_id
+  has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
+  has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
+  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
+
+  accepts_nested_attributes_for :variables, allow_destroy: true
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -153,13 +177,18 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url,
-    format: { with: /\A#{URI.regexp(%w(ssh git http https))}\z/, message: 'should be a valid url' },
+    url: { protocols: %w(ssh git http https) },
     if: :external_import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+
+  before_validation :set_runners_token_token
+  def set_runners_token_token
+    self.runners_token = SecureRandom.hex(15) if self.runners_token.blank?
+  end
 
   mount_uploader :avatar, AvatarUploader
 
@@ -252,8 +281,12 @@ class Project < ActiveRecord::Base
         joins(:namespace).
         iwhere('namespaces.path' => namespace_path)
 
-      projects.where('projects.path' => project_path).take ||
+      projects.find_by('projects.path' => project_path) ||
         projects.iwhere('projects.path' => project_path).take
+    end
+
+    def find_by_ci_id(id)
+      find_by(ci_id: id.to_i)
     end
 
     def visibility_levels
@@ -433,7 +466,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
-    @external_issues_tracker ||= external_issues_trackers.select(&:activated?).first
+    @external_issues_tracker ||= external_issues_trackers.find(&:activated?)
   end
 
   def can_have_issues_tracker_id?
@@ -479,7 +512,11 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= ci_services.select(&:activated?).first
+    @ci_service ||= ci_services.find(&:activated?)
+  end
+
+  def jira_tracker?
+    issues_tracker.to_param == 'jira'
   end
 
   def avatar_type
@@ -530,7 +567,7 @@ class Project < ActiveRecord::Base
   end
 
   def project_member_by_name_or_email(name = nil, email = nil)
-    user = users.where('name like ? or email like ?', name, email).first
+    user = users.find_by('name like ? or email like ?', name, email)
     project_members.where(user: user) if user
   end
 
@@ -662,6 +699,7 @@ class Project < ActiveRecord::Base
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
         reset_events_cache
+        @repository = nil
       rescue
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
@@ -704,7 +742,7 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    project_members.where(user_id: user).first
+    project_members.find_by(user_id: user)
   end
 
   def default_branch
@@ -746,7 +784,7 @@ class Project < ActiveRecord::Base
   end
 
   def forks_count
-    ForkedProjectLink.where(forked_from_project_id: self.id).count
+    forks.count
   end
 
   def find_label(name)
@@ -781,34 +819,16 @@ class Project < ActiveRecord::Base
     false
   end
 
+  def jira_tracker_active?
+    jira_tracker? && jira_service.active
+  end
+
   def ci_commit(sha)
     ci_commits.find_by(sha: sha)
   end
 
   def ensure_ci_commit(sha)
     ci_commit(sha) || ci_commits.create(sha: sha)
-  end
-
-  def ensure_gitlab_ci_project
-    gitlab_ci_project || create_gitlab_ci_project(
-      shared_runners_enabled: current_application_settings.shared_runners_enabled
-    )
-  end
-
-  # TODO: this should be migrated to Project table,
-  # the same as issues_enabled
-  def builds_enabled
-    gitlab_ci_service && gitlab_ci_service.active
-  end
-
-  def builds_enabled?
-    builds_enabled
-  end
-
-  def builds_enabled=(value)
-    service = gitlab_ci_service || create_gitlab_ci_service
-    service.active = value
-    service.save
   end
 
   def enable_ci
@@ -823,5 +843,44 @@ class Project < ActiveRecord::Base
 
       forked_project_link.destroy
     end
+  end
+
+  def any_runners?(&block)
+    if runners.active.any?(&block)
+      return true
+    end
+
+    shared_runners_enabled? && Ci::Runner.shared.active.any?(&block)
+  end
+
+  def valid_runners_token? token
+    self.runners_token && self.runners_token == token
+  end
+
+  # TODO (ayufan): For now we use runners_token (backward compatibility)
+  # In 8.4 every build will have its own individual token valid for time of build
+  def valid_build_token? token
+    self.builds_enabled? && self.runners_token && self.runners_token == token
+  end
+
+  def build_coverage_enabled?
+    build_coverage_regex.present?
+  end
+
+  def build_timeout_in_minutes
+    build_timeout / 60
+  end
+
+  def build_timeout_in_minutes=(value)
+    self.build_timeout = value.to_i * 60
+  end
+
+  def open_issues_count
+    issues.opened.count
+  end
+
+  def visibility_level_allowed?(level)
+    return true unless forked?
+    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i)
   end
 end

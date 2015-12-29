@@ -28,6 +28,8 @@ module EmailsHelper
         return "View #{action.humanize.singularize}"
       end
     end
+
+    nil
   end
 
   def color_email_diff(diffcontent)

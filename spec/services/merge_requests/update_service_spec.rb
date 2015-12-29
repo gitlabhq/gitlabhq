@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::UpdateService do
+describe MergeRequests::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -42,8 +42,10 @@ describe MergeRequests::UpdateService do
       before do
         allow(service).to receive(:execute_hooks)
 
-        @merge_request = service.execute(merge_request)
-        @merge_request.reload
+        perform_enqueued_jobs do
+          @merge_request = service.execute(merge_request)
+          @merge_request.reload
+        end
       end
 
       it { expect(@merge_request).to be_valid }

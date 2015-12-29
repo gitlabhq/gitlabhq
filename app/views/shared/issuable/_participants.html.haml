@@ -1,0 +1,5 @@
+.block.participants
+  .title
+    = pluralize participants.count, "participant"
+  - participants.each do |participant|
+    = link_to_member(@project, participant, name: false, size: 24)

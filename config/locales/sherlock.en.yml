@@ -35,3 +35,4 @@ en:
     events: Events
     percent: '%'
     count: Count
+    query_time: Query Time

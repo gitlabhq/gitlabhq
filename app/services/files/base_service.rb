@@ -3,8 +3,10 @@ module Files
     class ValidationError < StandardError; end
 
     def execute
-      @current_branch = params[:current_branch]
+      @source_project = params[:source_project] || @project
+      @source_branch = params[:source_branch]
       @target_branch  = params[:target_branch]
+
       @commit_message = params[:commit_message]
       @file_path      = params[:file_path]
       @file_content   = if params[:file_content_encoding] == 'base64'
@@ -16,8 +18,8 @@ module Files
       # Validate parameters
       validate
 
-      # Create new branch if it different from current_branch
-      if @target_branch != @current_branch
+      # Create new branch if it different from source_branch
+      if different_branch?
         create_target_branch
       end
 
@@ -26,18 +28,14 @@ module Files
       else
         error("Something went wrong. Your changes were not committed")
       end
-    rescue Repository::CommitError, Repository::PreReceiveError, ValidationError => ex
+    rescue Repository::CommitError, Gitlab::Git::Repository::InvalidBlobName, GitHooksService::PreReceiveError, ValidationError => ex
       error(ex.message)
     end
 
     private
 
-    def current_branch
-      @current_branch ||= params[:current_branch]
-    end
-
-    def target_branch
-      @target_branch ||= params[:target_branch]
+    def different_branch?
+      @source_branch != @target_branch || @source_project != @project
     end
 
     def raise_error(message)
@@ -52,11 +50,11 @@ module Files
       end
 
       unless project.empty_repo?
-        unless repository.branch_names.include?(@current_branch)
-          raise_error("You can only create files if you are on top of a branch")
+        unless @source_project.repository.branch_names.include?(@source_branch)
+          raise_error("You can only create or edit files when you are on a branch")
         end
 
-        if @current_branch != @target_branch
+        if different_branch?
           if repository.branch_names.include?(@target_branch)
             raise_error("Branch with such name already exists. You need to switch to this branch in order to make changes")
           end
@@ -65,10 +63,10 @@ module Files
     end
 
     def create_target_branch
-      result = CreateBranchService.new(project, current_user).execute(@target_branch, @current_branch)
+      result = CreateBranchService.new(project, current_user).execute(@target_branch, @source_branch, source_project: @source_project)
 
       unless result[:status] == :success
-        raise_error("Something went wrong when we tried to create #{@target_branch} for you")
+        raise_error("Something went wrong when we tried to create #{@target_branch} for you: #{result[:message]}")
       end
     end
   end

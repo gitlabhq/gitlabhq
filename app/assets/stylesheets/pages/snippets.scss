@@ -27,56 +27,28 @@
 }
 
 .snippet-holder {
-  .snippet-details {
-    .page-title {
-      margin-top: -15px;
-      padding: 10px 0;
-      margin-bottom: 0;
-      color: #5c5d5e;
-      font-size: 16px;
-
-      .author {
-        color: #5c5d5e;
-      }
-
-      .snippet-id {
-        color: #5c5d5e;
-      }
-    }
-
-    .snippet-title {
-      margin: 0;
-      font-size: 23px;
-      color: #313236;
-    }
-
-    @media (max-width: $screen-md-max) {
-      .new-snippet-link {
-        display: none;
-      }
-    }
-
-    @media (max-width: $screen-sm-max) {
-      .creator,
-      .page-title .btn-close {
-        display: none;
-      }
-    }
-  }
+  margin-bottom: -$gl-padding;
 
   .file-holder {
     border-top: 0;
   }
-}
 
+  .file-actions {
+    .btn-clipboard {
+      @extend .btn;
+    }
+  }
+}
 
 .snippet-box {
   @include border-radius(2px);
 
-  display: inline-block;
-  padding: 10px $gl-padding;
+  display: block;
+  float: left;
+  padding: 0 $gl-padding;
   font-weight: normal;
   margin-right: 10px;
   font-size: $gl-font-size;
   border: 1px solid;
+  line-height: 40px;
 }

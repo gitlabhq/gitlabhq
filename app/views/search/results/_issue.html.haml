@@ -6,7 +6,7 @@
   - if issue.description.present?
     .description.term
       = preserve do
-        = search_md_sanitize(markdown(issue.description))
+        = search_md_sanitize(markdown(issue.description, { project: issue.project }))
   %span.light
     #{issue.project.name_with_namespace}
   - if issue.closed?

@@ -1,5 +1,5 @@
-.panel.panel-default.projects-list-holder
-  .panel-heading.clearfix
+.projects-list-holder
+  .projects-search-form
     .input-group
       = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
       - if can? current_user, :create_projects, @group

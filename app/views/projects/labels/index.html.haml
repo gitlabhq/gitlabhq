@@ -4,6 +4,7 @@
 .gray-content-block.top-block
   - if can? current_user, :admin_label, @project
     = link_to new_namespace_project_label_path(@project.namespace, @project), class: "pull-right btn btn-new" do
+      = icon('plus')
       New label
   .oneline
     Labels can be applied to issues and merge requests.

@@ -1,5 +1,5 @@
 module Ci
-  class LintsController < Ci::ApplicationController
+  class LintsController < ApplicationController
     before_action :authenticate_user!
 
     def show
@@ -19,8 +19,10 @@ module Ci
       @error = e.message
       @status = false
     rescue
-      @error = "Undefined error"
+      @error = 'Undefined error'
       @status = false
+    ensure
+      render :show
     end
   end
 end

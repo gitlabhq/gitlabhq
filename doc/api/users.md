@@ -90,7 +90,17 @@ GET /users
 
 You can search for users by email or username with: `/users?search=John`
 
-Also see `def search query` in `app/models/user.rb`.
+In addition, you can lookup users by username:
+
+```
+GET /users?username=:username
+```
+
+For example:
+
+```
+GET /users?username=jack_smith
+```
 
 ## Single user
 

@@ -75,18 +75,18 @@ class Spinach::Features::ExploreGroups < Spinach::FeatureSteps
       name: projectname,
       path: "#{groupname}-#{projectname}",
       visibility_level: visibility_level
-    )
+                    )
     create(:issue,
       title: "#{projectname} feature",
       project: project
-    )
+          )
     create(:merge_request,
       title: "#{projectname} feature implemented",
       source_project: project,
       target_project: project
-    )
+          )
     create(:closed_issue_event,
       project: project
-    )
+          )
   end
 end

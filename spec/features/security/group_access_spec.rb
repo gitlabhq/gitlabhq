@@ -16,11 +16,11 @@ describe 'Group access', feature: true do
     end
   end
 
-  def group_member(access_level, group = group)
+  def group_member(access_level, grp = group())
     level = Object.const_get("Gitlab::Access::#{access_level.upcase}")
 
     create(:user).tap do |user|
-      group.add_user(user, level)
+      grp.add_user(user, level)
     end
   end
 

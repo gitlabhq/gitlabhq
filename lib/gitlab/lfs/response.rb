@@ -220,7 +220,7 @@ module Gitlab
 
       def storage_project(project)
         if project.forked?
-          project.forked_from_project
+          storage_project(project.forked_from_project)
         else
           project
         end
@@ -260,7 +260,7 @@ module Gitlab
       end
 
       def link_to_project(object)
-        if object && !object.projects.exists?(@project)
+        if object && !object.projects.exists?(@project.id)
           object.projects << @project
           object.save
         end

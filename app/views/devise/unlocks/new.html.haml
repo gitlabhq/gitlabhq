@@ -1,0 +1,14 @@
+.login-box
+  .login-heading
+    %h3 Resend unlock email
+  .login-body
+    = form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f|
+      .devise-errors
+        = devise_error_messages!
+      .clearfix.append-bottom-20
+        = f.email_field :email, class: 'form-control', placeholder: 'Email', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off'
+      .clearfix
+        = f.submit 'Resend unlock instructions', class: 'btn btn-success'
+
+.clearfix.prepend-top-20
+  = render 'devise/shared/sign_in_link'

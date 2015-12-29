@@ -1,7 +1,6 @@
 require 'securerandom'
 
 class Repository
-  class PreReceiveError < StandardError; end
   class CommitError < StandardError; end
 
   include Gitlab::ShellAdapter
@@ -77,7 +76,9 @@ class Repository
       path: path,
       limit: limit,
       offset: offset,
-      follow: path.present?
+      # --follow doesn't play well with --skip. See:
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
+      follow: false
     }
 
     commits = Gitlab::Git::Commit.where(options)
@@ -101,17 +102,26 @@ class Repository
   end
 
   def find_branch(name)
-    branches.find { |branch| branch.name == name }
+    raw_repository.branches.find { |branch| branch.name == name }
   end
 
   def find_tag(name)
-    tags.find { |tag| tag.name == name }
+    raw_repository.tags.find { |tag| tag.name == name }
   end
 
-  def add_branch(branch_name, ref)
-    expire_branches_cache
+  def add_branch(user, branch_name, target)
+    oldrev = Gitlab::Git::BLANK_SHA
+    ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
+    target = commit(target).try(:id)
 
-    gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
+    return false unless target
+
+    GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
+      rugged.branches.create(branch_name, target)
+    end
+
+    expire_branches_cache
+    find_branch(branch_name)
   end
 
   def add_tag(tag_name, ref, message = nil)
@@ -120,10 +130,20 @@ class Repository
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
-  def rm_branch(branch_name)
+  def rm_branch(user, branch_name)
     expire_branches_cache
 
-    gitlab_shell.rm_branch(path_with_namespace, branch_name)
+    branch = find_branch(branch_name)
+    oldrev = branch.try(:target)
+    newrev = Gitlab::Git::BLANK_SHA
+    ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
+
+    GitHooksService.new.execute(user, path_to_repo, oldrev, newrev, ref) do
+      rugged.branches.delete(branch_name)
+    end
+
+    expire_branches_cache
+    true
   end
 
   def rm_tag(tag_name)
@@ -253,9 +273,25 @@ class Repository
 
   def license
     cache.fetch(:license) do
-      tree(:head).blobs.find do |file|
-        file.name =~ /\Alicense/i
+      licenses =  tree(:head).blobs.find_all do |file|
+                    file.name =~ /\A(copying|license|licence)/i
+                  end
+
+      preferences = [
+        /\Alicen[sc]e\z/i,        # LICENSE, LICENCE
+        /\Alicen[sc]e\./i,        # LICENSE.md, LICENSE.txt
+        /\Acopying\z/i,           # COPYING
+        /\Acopying\.(?!lesser)/i, # COPYING.txt
+        /Acopying.lesser/i        # COPYING.LESSER
+      ]
+
+      license = nil
+      preferences.each do |r|
+        license = licenses.find { |l| l.name =~ r }
+        break if license
       end
+
+      license
     end
   end
 
@@ -309,6 +345,17 @@ class Repository
     args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
     sha = Gitlab::Popen.popen(args, path_to_repo).first.strip
     commit(sha)
+  end
+
+  def next_patch_branch
+    patch_branch_ids = self.branch_names.map do |n|
+      result = n.match(/\Apatch-([0-9]+)\z/)
+      result[1].to_i if result
+    end.compact
+
+    highest_patch_branch_id = patch_branch_ids.max || 0
+
+    "patch-#{highest_patch_branch_id + 1}"
   end
 
   # Remove archives older than 2 hours
@@ -547,56 +594,53 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
-  def commit_with_hooks(current_user, branch)
-    oldrev = Gitlab::Git::BLANK_SHA
-    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
-    gl_id = Gitlab::ShellEnv.gl_id(current_user)
-    was_empty = empty?
-
-    # Create temporary ref
+  def with_tmp_ref(oldrev = nil)
     random_string = SecureRandom.hex
     tmp_ref = "refs/tmp/#{random_string}/head"
 
-    unless was_empty
-      oldrev = find_branch(branch).target
+    if oldrev && !Gitlab::Git.blank_ref?(oldrev)
       rugged.references.create(tmp_ref, oldrev)
     end
 
     # Make commit in tmp ref
-    newrev = yield(tmp_ref)
+    yield(tmp_ref)
+  ensure
+    rugged.references.delete(tmp_ref) rescue nil
+  end
 
-    unless newrev
-      raise CommitError.new('Failed to create commit')
+  def commit_with_hooks(current_user, branch)
+    oldrev = Gitlab::Git::BLANK_SHA
+    ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
+    was_empty = empty?
+
+    unless was_empty
+      oldrev = find_branch(branch).target
     end
 
-    # Run GitLab pre-receive hook
-    pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', path_to_repo)
-    status = pre_receive_hook.trigger(gl_id, oldrev, newrev, ref)
+    with_tmp_ref(oldrev) do |tmp_ref|
+      # Make commit in tmp ref
+      newrev = yield(tmp_ref)
 
-    if status
-      if was_empty
-        # Create branch
-        rugged.references.create(ref, newrev)
-      else
-        # Update head
-        current_head = find_branch(branch).target
-
-        # Make sure target branch was not changed during pre-receive hook
-        if current_head == oldrev
-          rugged.references.update(ref, newrev)
-        else
-          raise CommitError.new('Commit was rejected because branch received new push')
-        end
+      unless newrev
+        raise CommitError.new('Failed to create commit')
       end
 
-      # Run GitLab post receive hook
-      post_receive_hook = Gitlab::Git::Hook.new('post-receive', path_to_repo)
-      post_receive_hook.trigger(gl_id, oldrev, newrev, ref)
-    else
-      # Remove tmp ref and return error to user
-      rugged.references.delete(tmp_ref)
+      GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
+        if was_empty
+          # Create branch
+          rugged.references.create(ref, newrev)
+        else
+          # Update head
+          current_head = find_branch(branch).target
 
-      raise PreReceiveError.new('Commit was rejected by pre-receive hook')
+          # Make sure target branch was not changed during pre-receive hook
+          if current_head == oldrev
+            rugged.references.update(ref, newrev)
+          else
+            raise CommitError.new('Commit was rejected because branch received new push')
+          end
+        end
+      end
     end
   end
 

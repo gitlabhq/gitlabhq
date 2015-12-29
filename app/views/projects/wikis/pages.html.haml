@@ -1,11 +1,10 @@
-- page_title "All Pages", "Wiki"
+- page_title "Pages", "Wiki"
 = render "header_title"
 
 = render 'nav'
 .gray-content-block
-  = render 'main_links'
-  %h3.page-title
-    All Pages
+  All pages in this wiki are listed below.
+  
 %ul.content-list
   - @wiki_pages.each do |wiki_page|
     %li

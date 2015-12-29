@@ -1,23 +1,22 @@
-.file-holder.file
-  .file-title
+.file-holder.file.append-bottom-default
+  .file-title.clearfix
     .editor-ref
-      %i.fa.fa-code-fork
+      = icon('code-fork')
       = ref
     %span.editor-file-name
-      - if @path
-        %span.monospace
-          = @path
+      = @path
 
-      - if current_action?(:new) || current_action?(:create)
+    - if current_action?(:new) || current_action?(:create)
+      %span.editor-file-name
         \/
-        = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
-          required: true, class: 'form-control new-file-name js-quick-submit'
-      .pull-right
-        = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'form-control'
+      = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
+        required: true, class: 'form-control new-file-name js-quick-submit'
+
+    .pull-right
+      = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2'
 
   .file-content.code
-    %pre.js-edit-mode-pane#editor
-      = params[:content] || local_assigns[:blob_data]
+    %pre.js-edit-mode-pane#editor #{params[:content] || local_assigns[:blob_data]}
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide
         .center

@@ -4,8 +4,8 @@
 #
 ###########################  NOTE  #####################################
 # This file should not receive new settings. All configuration options #
-# that do not require an application restart are being moved to        #
-# ApplicationSetting model!                                            #
+# * are being moved to ApplicationSetting model!                       #
+# If a setting requires an application restart say so in that screen.  #
 # If you change this file in a Merge Request, please also create       #
 # a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests  #
 ########################################################################
@@ -76,7 +76,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com.
-    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?))+)'
+    # issue_closing_pattern: '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?))+)'
 
     ## Default project features settings
     default_projects_features:
@@ -124,6 +124,12 @@ production: &base
     # The mailbox where incoming mail will end up. Usually "inbox".
     mailbox: "inbox"
 
+  ## Build Artifacts
+  artifacts:
+    enabled: true
+    # The location where build artifacts are stored (default: shared/artifacts).
+    # path: shared/artifacts
+
   ## Git LFS
   lfs:
     enabled: true
@@ -137,6 +143,15 @@ production: &base
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
+
+  ## Auxiliary jobs
+  # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
+  # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
+  cron_jobs:
+    # Flag stuck CI builds as failed
+    stuck_ci_builds_worker:
+      cron: "0 0 * * *"
+
 
   #
   # 2. GitLab CI settings
@@ -281,6 +296,15 @@ production: &base
     # arguments, followed by optional 'args' which can be either a hash or an array.
     # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
+      # See omniauth-cas3 for more configuration details
+      # - { name: 'cas3',
+      #     label: 'cas3',
+      #     args: {
+      #             url: 'https://sso.example.com',
+      #             disable_ssl_verification: false,
+      #             login_url: '/cas/login',
+      #             service_validate_url: '/cas/p3/serviceValidate',
+      #             logout_url: '/cas/logout'} }
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
@@ -317,6 +341,10 @@ production: &base
       #       crowd_server_url: 'CROWD SERVER URL',
       #       application_name: 'YOUR_APP_NAME',
       #       application_password: 'YOUR_APP_PASSWORD' } }
+
+    # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
+    # cas3:
+    #   session_duration: 28800
 
   # Shared file storage settings
   shared:

@@ -127,18 +127,6 @@ describe IssuesHelper do
     it { is_expected.to eq("!1, !2, or !3") }
   end
 
-  describe "#url_to_emoji" do
-    it "returns url" do
-      expect(url_to_emoji("smile")).to include("emoji/1F604.png")
-    end
-  end
-
-  describe "#emoji_list" do
-    it "returns url" do
-      expect(emoji_list).to be_kind_of(Array)
-    end
-  end
-
   describe "#note_active_class" do
     before do
       @note = create :note
@@ -151,6 +139,13 @@ describe IssuesHelper do
 
     it "returns active string for author" do
       expect(note_active_class(Note.all, @note.author)).to eq("active")
+    end
+  end
+
+  describe "#awards_sort" do
+    it "sorts a hash so thumbsup and thumbsdown are always on top" do
+      data = { "thumbsdown" => "some value", "lifter" => "some value", "thumbsup" => "some value" }
+      expect(awards_sort(data).keys).to eq(["thumbsup", "thumbsdown", "lifter"])
     end
   end
 end

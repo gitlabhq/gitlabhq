@@ -69,6 +69,10 @@ class Issue < ActiveRecord::Base
     }x
   end
 
+  def self.link_reference_pattern
+    super("issues", /(?<issue>\d+)/)
+  end
+
   def to_reference(from_project = nil)
     reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -77,6 +81,14 @@ class Issue < ActiveRecord::Base
     end
 
     reference
+  end
+
+  def referenced_merge_requests
+    Gitlab::ReferenceExtractor.lazily do
+      [self, *notes].flat_map do |note|
+        note.all_references.merge_requests
+      end
+    end.sort_by(&:iid)
   end
 
   # Reset issue events cache

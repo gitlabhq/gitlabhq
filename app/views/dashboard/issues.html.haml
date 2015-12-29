@@ -4,14 +4,20 @@
   - if current_user
     = auto_discovery_link_tag(:atom, issues_dashboard_url(format: :atom, private_token: current_user.private_token), title: "#{current_user.name} issues")
 
+.project-issuable-filter
+  .controls
+    .pull-left
+      - if current_user
+        .hidden-xs.pull-left
+          = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: 'btn' do
+            %i.fa.fa-rss
 
-.append-bottom-20
-  .pull-right
-    - if current_user
-      .hidden-xs.pull-left.prepend-top-20
-        = link_to issues_dashboard_url(format: :atom, private_token: current_user.private_token), class: '' do
-          %i.fa.fa-rss
+    = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
 
   = render 'shared/issuable/filter', type: :issues
 
-= render 'shared/issues'
+.gray-content-block.second-block
+  List all issues from all projects you have access to.
+
+.prepend-top-default
+  = render 'shared/issues'

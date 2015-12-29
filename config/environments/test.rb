@@ -1,4 +1,4 @@
-Gitlab::Application.configure do
+Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
   # The test environment is used exclusively to run your application's
@@ -7,8 +7,10 @@ Gitlab::Application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = false
 
+  config.cache_store = :null_store
+
   # Configure static asset server for tests with Cache-Control for performance
-  config.serve_static_assets = true
+  config.serve_static_files = true
   config.static_cache_control = "public, max-age=3600"
 
   # Show full error reports and disable caching
@@ -32,4 +34,6 @@ Gitlab::Application.configure do
   config.eager_load = false
 
   config.cache_store = :null_store
+
+  config.active_job.queue_adapter = :test
 end

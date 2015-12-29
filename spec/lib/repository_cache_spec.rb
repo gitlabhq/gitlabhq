@@ -1,6 +1,6 @@
 require_relative '../../lib/repository_cache'
 
-describe RepositoryCache do
+describe RepositoryCache, lib: true do
   let(:backend) { double('backend').as_null_object }
   let(:cache) { RepositoryCache.new('example', backend) }
 

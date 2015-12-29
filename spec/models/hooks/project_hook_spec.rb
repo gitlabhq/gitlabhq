@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe ProjectHook do
+describe ProjectHook, models: true do
   describe '.push_hooks' do
     it 'should return hooks for push events only' do
       hook = create(:project_hook, push_events: true)

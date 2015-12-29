@@ -37,7 +37,7 @@ class BuildkiteService < CiService
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.url = webhook_url
-    hook.enable_ssl_verification = enable_ssl_verification
+    hook.enable_ssl_verification = !!enable_ssl_verification
     hook.save
   end
 

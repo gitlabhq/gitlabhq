@@ -43,7 +43,7 @@
       .form-group
         = f.label :public_email, class: "control-label"
         .col-sm-10
-          = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), {include_blank: 'Do not show in profile'}, class: "form-control"
+          = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), {include_blank: 'Do not show on profile'}, class: "select2"
           %span.help-block This email will be displayed on your public profile.
       .form-group
         = f.label :skype, class: "control-label"
@@ -96,8 +96,6 @@
               = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
 
-  .row
-    .col-md-7
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          = f.submit 'Save changes', class: "btn btn-success"
+  .form-actions
+    = f.submit 'Save changes', class: "btn btn-success"
+    = link_to "Cancel", user_path(current_user), class: "btn btn-cancel"

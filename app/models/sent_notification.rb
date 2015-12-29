@@ -17,12 +17,11 @@ class SentNotification < ActiveRecord::Base
   belongs_to :noteable, polymorphic: true
   belongs_to :recipient, class_name: "User"
 
-  validate :project, :recipient, :reply_key, presence: true
-  validate :reply_key, uniqueness: true
-
+  validates :project, :recipient, :reply_key, presence: true
+  validates :reply_key, uniqueness: true
   validates :noteable_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
-  validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
+  validates :line_code, line_code: true, allow_blank: true
 
   class << self
     def reply_key

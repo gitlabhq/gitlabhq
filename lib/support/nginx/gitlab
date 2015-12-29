@@ -10,33 +10,11 @@
 ## If you change this file in a Merge Request, please also create
 ## a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
 ##
-##################################
-##        CHUNKED TRANSFER      ##
-##################################
-##
-## It is a known issue that Git-over-HTTP requires chunked transfer encoding [0]
-## which is not supported by Nginx < 1.3.9 [1]. As a result, pushing a large object
-## with Git (i.e. a single large file) can lead to a 411 error. In theory you can get
-## around this by tweaking this configuration file and either:
-## - installing an old version of Nginx with the chunkin module [2] compiled in, or
-## - using a newer version of Nginx.
-##
-## At the time of writing we do not know if either of these theoretical solutions works.
-## As a workaround users can use Git over SSH to push large files.
-##
-## [0] https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/http-protocol.txt#n99
-## [1] https://github.com/agentzh/chunkin-nginx-module#status
-## [2] https://github.com/agentzh/chunkin-nginx-module
-##
 ###################################
 ##         configuration         ##
 ###################################
 ##
 ## See installation.md#using-https for additional HTTPS configuration details.
-
-upstream gitlab {
-  server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
-}
 
 upstream gitlab-workhorse {
   server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
@@ -54,10 +32,6 @@ server {
   server_tokens off; ## Don't show the nginx version number, a security best practice
   root /home/git/gitlab/public;
 
-  ## Increase this if you want to upload large attachments
-  ## Or if you want to accept large git objects over http
-  client_max_body_size 20m;
-
   ## See app/controllers/application_controller.rb for headers set
 
   ## Individual nginx logs for this GitLab vhost
@@ -65,97 +39,8 @@ server {
   error_log   /var/log/nginx/gitlab_error.log;
 
   location / {
-    ## Serve static files from defined root folder.
-    ## @gitlab is a named location for the upstream fallback, see below.
-    try_files $uri /index.html $uri.html @gitlab;
-  }
-
-  ## We route uploads through GitLab to prevent XSS and enforce access control.
-  location /uploads/ {
-    ## If you use HTTPS make sure you disable gzip compression
-    ## to be safe against BREACH attack.
-    # gzip off;
-
-    ## https://github.com/gitlabhq/gitlabhq/issues/694
-    ## Some requests take more than 30 seconds.
-    proxy_read_timeout      300;
-    proxy_connect_timeout   300;
-    proxy_redirect          off;
-
-    proxy_set_header    Host                $http_host;
-    proxy_set_header    X-Real-IP           $remote_addr;
-    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
-    proxy_set_header    X-Forwarded-Proto   $scheme;
-    proxy_set_header    X-Frame-Options     SAMEORIGIN;
-
-    proxy_pass http://gitlab;
-  }
-
-  ## If a file, which is not found in the root folder is requested,
-  ## then the proxy passes the request to the upsteam (gitlab unicorn).
-  location @gitlab {
-    ## If you use HTTPS make sure you disable gzip compression
-    ## to be safe against BREACH attack.
-    # gzip off;
-
-    ## https://github.com/gitlabhq/gitlabhq/issues/694
-    ## Some requests take more than 30 seconds.
-    proxy_read_timeout      300;
-    proxy_connect_timeout   300;
-    proxy_redirect          off;
-
-    proxy_set_header    Host                $http_host;
-    proxy_set_header    X-Real-IP           $remote_addr;
-    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
-    proxy_set_header    X-Forwarded-Proto   $scheme;
-    proxy_set_header    X-Frame-Options     SAMEORIGIN;
-
-    proxy_pass http://gitlab;
-  }
-
-  location ~ ^/[\w\.-]+/[\w\.-]+/gitlab-lfs/objects {
-    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-    error_page 418 = @gitlab-workhorse;
-    return 418;
-  }
-
-  location ~ ^/[\w\.-]+/[\w\.-]+/(info/refs|git-upload-pack|git-receive-pack)$ {
-    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-    error_page 418 = @gitlab-workhorse;
-    return 418;
-  }
-
-  location ~ ^/[\w\.-]+/[\w\.-]+/repository/archive {
-    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-    error_page 418 = @gitlab-workhorse;
-    return 418;
-  }
-
-  location ~ ^/api/v3/projects/.*/repository/archive {
-    # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-    error_page 418 = @gitlab-workhorse;
-    return 418;
-  }
-
-  # Build artifacts should be submitted to this location
-  location ~ ^/[\w\.-]+/[\w\.-]+/builds/download {
-      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-      error_page 418 = @gitlab-workhorse;
-      return 418;
-  }
-
-  # Build artifacts should be submitted to this location
-  location ~ /ci/api/v1/builds/[0-9]+/artifacts {
-      # 'Error' 418 is a hack to re-use the @gitlab-workhorse block
-      error_page 418 = @gitlab-workhorse;
-      return 418;
-  }
-
-  location @gitlab-workhorse {
     client_max_body_size 0;
-    ## If you use HTTPS make sure you disable gzip compression
-    ## to be safe against BREACH attack.
-    # gzip off;
+    gzip off;
 
     ## https://github.com/gitlabhq/gitlabhq/issues/694
     ## Some requests take more than 30 seconds.
@@ -163,14 +48,7 @@ server {
     proxy_connect_timeout   300;
     proxy_redirect          off;
 
-    # Do not buffer Git HTTP responses
-    proxy_buffering off;
-
-    # The following settings only work with NGINX 1.7.11 or newer
-    #
-    # # Pass chunked request bodies to gitlab-workhorse as-is
-    # proxy_request_buffering off;
-    # proxy_http_version 1.1;
+    proxy_http_version 1.1;
 
     proxy_set_header    Host                $http_host;
     proxy_set_header    X-Real-IP           $remote_addr;
@@ -179,18 +57,4 @@ server {
 
     proxy_pass http://gitlab-workhorse;
   }
-
-  ## Enable gzip compression as per rails guide:
-  ## http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression
-  ## WARNING: If you are using relative urls remove the block below
-  ## See config/application.rb under "Relative url support" for the list of
-  ## other files that need to be changed for relative url support
-  location ~ ^/(assets)/ {
-    root /home/git/gitlab/public;
-    gzip_static on; # to serve pre-gzipped version
-    expires max;
-    add_header Cache-Control public;
-  }
-
-  error_page 502 /502.html;
 }

@@ -1,5 +1,5 @@
 - page_title    "Projects"
-- header_title  "Projects", root_path
+- header_title  "Projects", dashboard_projects_path
 
 - if current_user
   = render 'dashboard/projects_head'
@@ -7,7 +7,7 @@
   = render 'explore/head'
 
 .explore-trending-block
-  .gray-content-block
+  .gray-content-block.second-block
     .pull-right
       = render 'explore/projects/dropdown'
     .oneline

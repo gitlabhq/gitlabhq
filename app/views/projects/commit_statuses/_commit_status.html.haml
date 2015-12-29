@@ -1,24 +1,29 @@
 %tr.commit_status
   %td.status
-    = ci_status_with_icon(commit_status.status)
+    - if commit_status.target_url
+      = link_to commit_status.target_url, class: "ci-status ci-#{commit_status.status}" do
+        = ci_icon_for_status(commit_status.status)
+        = commit_status.status
+    - else
+      = ci_status_with_icon(commit_status.status)
 
   %td.commit_status-link
     - if commit_status.target_url
       = link_to commit_status.target_url do
-        %strong Build ##{commit_status.id}
+        %strong ##{commit_status.id}
     - else
-      %strong Build ##{commit_status.id}
+      %strong ##{commit_status.id}
 
     - if commit_status.show_warning?
       %i.fa.fa-warning.text-warning
 
   - if defined?(commit_sha) && commit_sha
     %td
-      = link_to commit_status.short_sha, namespace_project_commit_path(@project.namespace, @project, commit_status.sha), class: "monospace"
-
+      = link_to commit_status.short_sha, namespace_project_commit_path(commit_status.project.namespace, commit_status.project, commit_status.sha), class: "monospace"
+      
   %td
     - if commit_status.ref
-      = link_to commit_status.ref, namespace_project_commits_path(@project.namespace, @project, commit_status.ref)
+      = link_to commit_status.ref, namespace_project_commits_path(commit_status.project.namespace, commit_status.project, commit_status.ref)
     - else
       .light none
 
@@ -61,10 +66,10 @@
 
   %td
     .pull-right
-      - if current_user && can?(current_user, :download_build_artifacts, @project) && commit_status.download_url
+      - if current_user && can?(current_user, :download_build_artifacts, commit_status.project) && commit_status.download_url
         = link_to commit_status.download_url, title: 'Download artifacts' do
           %i.fa.fa-download
-      - if current_user && can?(current_user, :manage_builds, commit_status.gl_project)
+      - if current_user && can?(current_user, :manage_builds, commit_status.project)
         - if commit_status.active?
           - if commit_status.cancel_url
             = link_to commit_status.cancel_url, method: :post, title: 'Cancel' do

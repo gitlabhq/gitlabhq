@@ -3,17 +3,17 @@
   %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
       %strong.str-truncated= branch.name
-      &nbsp;
-      - if branch.name == @repository.root_ref
-        %span.label.label-primary default
-      - elsif @repository.merged_to_root_ref? branch.name
-        %span.label.label-info.has_tooltip(title="Merged into #{@repository.root_ref}")
-          merged
+    &nbsp;
+    - if branch.name == @repository.root_ref
+      %span.label.label-primary default
+    - elsif @repository.merged_to_root_ref? branch.name
+      %span.label.label-info.has_tooltip(title="Merged into #{@repository.root_ref}")
+        merged
 
-      - if @project.protected_branch? branch.name
-        %span.label.label-success
-          %i.fa.fa-lock
-          protected
+    - if @project.protected_branch? branch.name
+      %span.label.label-success
+        %i.fa.fa-lock
+        protected
     .controls.hidden-xs
       - if create_mr_button?(@repository.root_ref, branch.name)
         = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-grouped btn-xs' do
@@ -26,7 +26,7 @@
           Compare
 
       - if can_remove_branch?(@project, branch.name)
-        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-grouped btn-xs btn-remove remove-row', method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?" }, remote: true do
+        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has_tooltip', title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do
           = icon("trash-o")
 
   - if commit

@@ -14,6 +14,6 @@
       = render 'projects/zen', f: f, attr: :description, classes: 'description js-quick-submit form-control'
       = render 'projects/notes/hints'
       .error-alert
-      .prepend-top-default
+      .form-actions.prepend-top-default
         = f.submit 'Save changes', class: 'btn btn-save'
         = link_to "Cancel", namespace_project_tag_path(@project.namespace, @project, @tag.name), class: "btn btn-default btn-cancel"

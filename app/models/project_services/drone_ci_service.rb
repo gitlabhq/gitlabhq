@@ -19,14 +19,11 @@
 #
 
 class DroneCiService < CiService
-  
+
   prop_accessor :drone_url, :token, :enable_ssl_verification
-  validates :drone_url,
-    presence: true,
-    format: { with: /\A#{URI.regexp(%w(http https))}\z/, message: "should be a valid url" }, if: :activated?
-  validates :token,
-    presence: true,
-    if: :activated?
+
+  validates :drone_url, presence: true, url: true, if: :activated?
+  validates :token, presence: true, if: :activated?
 
   after_save :compose_service_hook, if: :activated?
 
@@ -34,7 +31,7 @@ class DroneCiService < CiService
     hook = service_hook || build_service_hook
     # If using a service template, project may not be available
     hook.url = [drone_url, "/api/hook", "?owner=#{project.namespace.path}", "&name=#{project.path}", "&access_token=#{token}"].join if project
-    hook.enable_ssl_verification = enable_ssl_verification
+    hook.enable_ssl_verification = !!enable_ssl_verification
     hook.save
   end
 
@@ -58,16 +55,16 @@ class DroneCiService < CiService
   end
 
   def merge_request_status_path(iid, sha = nil, ref = nil)
-    url = [drone_url, 
-           "gitlab/#{project.namespace.path}/#{project.path}/pulls/#{iid}", 
+    url = [drone_url,
+           "gitlab/#{project.namespace.path}/#{project.path}/pulls/#{iid}",
            "?access_token=#{token}"]
 
     URI.join(*url).to_s
   end
 
   def commit_status_path(sha, ref)
-    url = [drone_url, 
-           "gitlab/#{project.namespace.path}/#{project.path}/commits/#{sha}", 
+    url = [drone_url,
+           "gitlab/#{project.namespace.path}/#{project.path}/commits/#{sha}",
            "?branch=#{URI::encode(ref.to_s)}&access_token=#{token}"]
 
     URI.join(*url).to_s
@@ -114,15 +111,15 @@ class DroneCiService < CiService
   end
 
   def merge_request_page(iid, sha, ref)
-    url = [drone_url, 
+    url = [drone_url,
            "gitlab/#{project.namespace.path}/#{project.path}/redirect/pulls/#{iid}"]
 
     URI.join(*url).to_s
   end
 
   def commit_page(sha, ref)
-    url = [drone_url, 
-           "gitlab/#{project.namespace.path}/#{project.path}/redirect/commits/#{sha}", 
+    url = [drone_url,
+           "gitlab/#{project.namespace.path}/#{project.path}/redirect/commits/#{sha}",
            "?branch=#{URI::encode(ref.to_s)}"]
 
     URI.join(*url).to_s
@@ -163,10 +160,10 @@ class DroneCiService < CiService
   end
 
   def push_valid?(data)
-    opened_merge_requests = project.merge_requests.opened.where(source_project_id: project.id, 
+    opened_merge_requests = project.merge_requests.opened.where(source_project_id: project.id,
                                                                 source_branch: Gitlab::Git.ref_name(data[:ref]))
 
-    opened_merge_requests.empty? && data[:total_commits_count] > 0 && 
+    opened_merge_requests.empty? && data[:total_commits_count] > 0 &&
       !Gitlab::Git.blank_ref?(data[:after])
   end
 

@@ -32,6 +32,6 @@ class Spinach::Features::ProjectStar < Spinach::FeatureSteps
   protected
 
   def has_n_stars(n)
-    expect(page).to have_css(".star-btn .count", text: n, visible: true)
+    expect(page).to have_css(".star-count", text: n, visible: true)
   end
 end

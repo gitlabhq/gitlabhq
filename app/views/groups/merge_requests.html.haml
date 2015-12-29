@@ -1,13 +1,18 @@
 - page_title "Merge Requests"
 - header_title group_title(@group, "Merge Requests", merge_requests_group_path(@group))
 
-= render 'shared/issuable/filter', type: :merge_requests
+.project-issuable-filter
+  .controls
+    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New Merge Request"
+
+  = render 'shared/issuable/filter', type: :merge_requests
+
 .gray-content-block.second-block
-  %div
-    Only merge requests from
-    %strong #{@group.name}
-    group are listed here.
-    - if current_user
-      To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
+  Only merge requests from
+  %strong #{@group.name}
+  group are listed here.
+  - if current_user
+    To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
+
 .prepend-top-default
   = render 'shared/merge_requests'

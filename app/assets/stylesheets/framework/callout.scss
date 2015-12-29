@@ -7,8 +7,8 @@
 
 /* Common styles for all types */
 .bs-callout {
-  margin: 20px 0;
-  padding: 20px;
+  margin: $gl-padding 0;
+  padding: $gl-padding;
   border-left: 3px solid $border-color;
   color: $text-color;
   background: $background-color;
@@ -42,4 +42,3 @@
   border-color: #5cA64d;
   color: #3c763d;
 }
-

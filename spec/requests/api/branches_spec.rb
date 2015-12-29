@@ -118,7 +118,7 @@ describe API::API, api: true  do
            branch_name: 'new design',
            ref: branch_sha
       expect(response.status).to eq(400)
-      expect(json_response['message']).to eq('Branch name invalid')
+      expect(json_response['message']).to eq('Branch name is invalid')
     end
 
     it 'should return 400 if branch already exists' do

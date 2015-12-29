@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::ReopenService do
+describe MergeRequests::ReopenService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, assignee: user2) }
@@ -19,7 +19,9 @@ describe MergeRequests::ReopenService do
         allow(service).to receive(:execute_hooks)
 
         merge_request.state = :closed
-        service.execute(merge_request)
+        perform_enqueued_jobs do
+          service.execute(merge_request)
+        end
       end
 
       it { expect(merge_request).to be_valid }

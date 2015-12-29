@@ -7,8 +7,12 @@ module API
       helpers do
         def map_public_to_visibility_level(attrs)
           publik = attrs.delete(:public)
-          publik = parse_boolean(publik)
-          attrs[:visibility_level] = Gitlab::VisibilityLevel::PUBLIC if !attrs[:visibility_level].present? && publik == true
+          if publik.present? && !attrs[:visibility_level].present?
+            publik = parse_boolean(publik)
+            # Since setting the public attribute to private could mean either
+            # private or internal, use the more conservative option, private.
+            attrs[:visibility_level] = (publik == true) ? Gitlab::VisibilityLevel::PUBLIC : Gitlab::VisibilityLevel::PRIVATE
+          end
           attrs
         end
       end
@@ -21,7 +25,7 @@ module API
         @projects = current_user.authorized_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::Project
+        present @projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Get an owned projects list for authenticated user
@@ -30,6 +34,17 @@ module API
       #   GET /projects/owned
       get '/owned' do
         @projects = current_user.owned_projects
+        @projects = filter_projects(@projects)
+        @projects = paginate @projects
+        present @projects, with: Entities::ProjectWithAccess, user: current_user
+      end
+
+      # Gets starred project for the authenticated user
+      #
+      # Example Request:
+      #   GET /projects/starred
+      get '/starred' do
+        @projects = current_user.starred_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
         present @projects, with: Entities::Project
@@ -44,7 +59,7 @@ module API
         @projects = Project.all
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::Project
+        present @projects, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Get a single project
@@ -78,6 +93,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   shared_runners_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - 0 by default
@@ -94,6 +110,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
+                                     :shared_runners_enabled,
                                      :namespace_id,
                                      :public,
                                      :visibility_level,
@@ -122,6 +139,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
       #   import_url (optional)
@@ -138,6 +156,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
+                                     :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
                                      :import_url]
@@ -179,6 +198,7 @@ module API
       #   builds_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
       # Example Request
@@ -193,6 +213,7 @@ module API
                                      :builds_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
+                                     :shared_runners_enabled,
                                      :public,
                                      :visibility_level]
         attrs = map_public_to_visibility_level(attrs)

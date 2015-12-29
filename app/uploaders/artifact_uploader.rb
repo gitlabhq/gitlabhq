@@ -5,15 +5,15 @@ class ArtifactUploader < CarrierWave::Uploader::Base
   attr_accessor :build, :field
 
   def self.artifacts_path
-    File.expand_path('shared/artifacts/', Rails.root)
+    Gitlab.config.artifacts.path
   end
 
   def self.artifacts_upload_path
-    File.expand_path('shared/artifacts/tmp/uploads/', Rails.root)
+    File.join(self.artifacts_path, 'tmp/uploads/')
   end
 
   def self.artifacts_cache_path
-    File.expand_path('shared/artifacts/tmp/cache/', Rails.root)
+    File.join(self.artifacts_path, 'tmp/cache/')
   end
 
   def initialize(build, field)

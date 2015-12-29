@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::UpdateService do
+describe Issues::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -36,7 +36,10 @@ describe Issues::UpdateService do
           label_ids: [label.id]
         }
 
-        @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        perform_enqueued_jobs do
+          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        end
+
         @issue.reload
       end
 

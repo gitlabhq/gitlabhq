@@ -12,8 +12,8 @@
 
 require 'spec_helper'
 
-describe Ci::Trigger do
-  let(:project) { FactoryGirl.create :ci_project }
+describe Ci::Trigger, models: true do
+  let(:project) { FactoryGirl.create :empty_project }
 
   describe 'before_validation' do
     it 'should set an random token if none provided' do
