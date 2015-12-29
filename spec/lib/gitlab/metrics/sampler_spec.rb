@@ -38,7 +38,7 @@ describe Gitlab::Metrics::Sampler do
 
   describe '#flush' do
     it 'schedules the metrics using Sidekiq' do
-      expect(MetricsWorker).to receive(:perform_async).
+      expect(Gitlab::Metrics).to receive(:submit_metrics).
         with([an_instance_of(Hash)])
 
       sampler.sample_memory_usage

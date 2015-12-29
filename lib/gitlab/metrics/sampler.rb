@@ -46,7 +46,7 @@ module Gitlab
       end
 
       def flush
-        MetricsWorker.perform_async(@metrics.map(&:to_hash))
+        Metrics.submit_metrics(@metrics.map(&:to_hash))
       end
 
       def sample_memory_usage

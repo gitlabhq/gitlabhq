@@ -66,6 +66,39 @@ module Gitlab
       end
     end
 
+    def self.submit_metrics(metrics)
+      prepared = prepare_metrics(metrics)
+
+      pool.with do |connection|
+        prepared.each do |metric|
+          begin
+            connection.write_points([metric])
+          rescue StandardError
+          end
+        end
+      end
+    end
+
+    def self.prepare_metrics(metrics)
+      metrics.map do |hash|
+        new_hash = hash.symbolize_keys
+
+        new_hash[:tags].each do |key, value|
+          if value.blank?
+            new_hash[:tags].delete(key)
+          else
+            new_hash[:tags][key] = escape_value(value)
+          end
+        end
+
+        new_hash
+      end
+    end
+
+    def self.escape_value(value)
+      value.to_s.gsub('=', '\\=')
+    end
+
     @hostname = Socket.gethostname
 
     # When enabled this should be set before being used as the usual pattern
@@ -73,11 +106,12 @@ module Gitlab
     if enabled?
       @pool = ConnectionPool.new(size: pool_size, timeout: timeout) do
         host = settings[:metrics_host]
-        db   = settings[:metrics_database]
         user = settings[:metrics_username]
         pw   = settings[:metrics_password]
+        port = settings[:metrics_port]
 
-        InfluxDB::Client.new(db, host: host, username: user, password: pw)
+        InfluxDB::Client.
+          new(udp: { host: host, port: port }, username: user, password: pw)
       end
     end
   end

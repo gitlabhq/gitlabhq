@@ -2,6 +2,12 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::ObfuscatedSQL do
   describe '#to_s' do
+    it 'replaces newlines with a space' do
+      sql = described_class.new("SELECT x\nFROM y")
+
+      expect(sql.to_s).to eq('SELECT x FROM y')
+    end
+
     describe 'using single values' do
       it 'replaces a single integer' do
         sql = described_class.new('SELECT x FROM y WHERE a = 10')
