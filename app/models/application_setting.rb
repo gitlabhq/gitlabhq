@@ -42,21 +42,29 @@ class ApplicationSetting < ActiveRecord::Base
   attr_accessor :restricted_signup_domains_raw
 
   validates :session_expire_delay,
-    presence: true,
-    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :home_page_url,
-    allow_blank: true,
-    url: true,
-    if: :home_page_url_column_exist
+            allow_blank: true,
+            url: true,
+            if: :home_page_url_column_exist
 
   validates :after_sign_out_path,
-    allow_blank: true,
-    url: true
+            allow_blank: true,
+            url: true
 
   validates :admin_notification_email,
-    allow_blank: true,
-    email: true
+            allow_blank: true,
+            email: true
+
+  validates :recaptcha_site_key,
+            presence: true,
+            if: :recaptcha_enabled
+
+  validates :recaptcha_private_key,
+            presence: true,
+            if: :recaptcha_enabled
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?

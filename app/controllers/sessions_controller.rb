@@ -5,6 +5,7 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :authenticate_with_two_factor, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
+  before_action :load_recaptcha
 
   def new
     if Gitlab.config.ldap.enabled
@@ -107,5 +108,9 @@ class SessionsController < Devise::SessionsController
   def log_audit_event(user, options = {})
     AuditEventService.new(user, user, options).
       for_authentication.security_event
+  end
+
+  def load_recaptcha
+    Gitlab::Recaptcha.load_configurations!
   end
 end
