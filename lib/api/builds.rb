@@ -27,7 +27,10 @@ module API
       # Example Request:
       #   GET /projects/:id/builds/commit/:sha
       get ':id/builds/commit/:sha' do
-        builds = user_project.ci_commits.find_by_sha(params[:sha]).builds.order('id DESC')
+        commit = user_project.ci_commits.find_by_sha(params[:sha])
+        return not_found! unless commit
+
+        builds = commit.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
         present paginate(builds), with: Entities::Build
       end
@@ -65,7 +68,7 @@ module API
         body trace
       end
 
-      # cancel a specific build of a project
+      # Cancel a specific build of a project
       #
       # parameters:
       #   id (required) - the id of a project
@@ -83,7 +86,7 @@ module API
         present build, with: Entities::Build
       end
 
-      # cancel a specific build of a project
+      # Retry a specific build of a project
       #
       # parameters:
       #   id (required) - the id of a project
