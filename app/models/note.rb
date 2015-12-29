@@ -347,11 +347,11 @@ class Note < ActiveRecord::Base
   end
 
   def downvote?
-    false
+    is_award && note == "thumbsdown"
   end
 
   def upvote?
-    false
+    is_award && note == "thumbsup"
   end
 
   def editable?
