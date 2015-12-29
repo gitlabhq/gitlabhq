@@ -72,7 +72,7 @@ module Gitlab
 
     def directories
       return [] unless directory?
-      children.select { |child| child.directory? }
+      children.select(&:directory?)
     end
 
     def directories!
@@ -81,7 +81,7 @@ module Gitlab
 
     def files
       return [] unless directory?
-      children.select { |child| child.file? }
+      children.select(&:file?)
     end
 
     def ==(other)
