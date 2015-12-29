@@ -75,6 +75,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_pool_size,
       :metrics_timeout,
       :metrics_method_call_threshold,
+      :recaptcha_enabled,
+      :recaptcha_site_key,
+      :recaptcha_private_key,
       restricted_visibility_levels: [],
       import_sources: []
     )

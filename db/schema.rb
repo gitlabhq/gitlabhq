@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151228150906) do
+ActiveRecord::Schema.define(version: 20151228175719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,9 @@ ActiveRecord::Schema.define(version: 20151228150906) do
     t.integer  "metrics_pool_size",                             default: 16
     t.integer  "metrics_timeout",                               default: 10
     t.integer  "metrics_method_call_threshold",                 default: 10
+    t.boolean  "recaptcha_enabled",                 default: false
+    t.string   "recaptcha_site_key"
+    t.string   "recaptcha_private_key"
   end
 
   create_table "audit_events", force: :cascade do |t|

@@ -346,12 +346,6 @@ production: &base
     # cas3:
     #   session_duration: 28800
 
-  # reCAPTCHA settings. See: http://www.google.com/recaptcha
-  recaptcha:
-    enabled: false
-    public_key: 'YOUR_PUBLIC_KEY'
-    private_key: 'YOUR_PRIVATE_KEY'
-
   # Shared file storage settings
   shared:
     # path: /mnt/gitlab # Default: shared
