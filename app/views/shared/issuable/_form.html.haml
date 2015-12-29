@@ -57,7 +57,6 @@
   - if issuable.respond_to?(:weight)
     .form-group
       = f.label :label_ids, class: 'control-label' do
-        = icon('magnet')
         Weight
       .col-sm-10
         = f.select :weight, projects_weight_options(issuable.weight), { include_blank: true },
