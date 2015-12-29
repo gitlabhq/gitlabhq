@@ -330,13 +330,15 @@ module Ci
     end
 
     def artifacts_download_url
-      download_namespace_project_build_artifacts_path(project.namespace, project, self) if
-        artifacts?
+      if artifacts?
+        download_namespace_project_build_artifacts_path(project.namespace, project, self)
+      end
     end
 
     def artifacts_browse_url
-      browse_namespace_project_build_artifacts_path(project.namespace, project, self) if
-        artifacts?
+      if artifacts?
+        browse_namespace_project_build_artifacts_path(project.namespace, project, self)
+      end
     end
 
     def artifacts_browser_supported?
