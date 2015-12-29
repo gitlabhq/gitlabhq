@@ -539,7 +539,9 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions(old_path_with_namespace)
-    NotificationService.new.project_was_moved(self, old_path_with_namespace)
+    # New project path needs to be committed to the DB or notification will
+    # retrieve stale information
+    run_after_commit { NotificationService.new.project_was_moved(self, old_path_with_namespace) }
   end
 
   def owner
