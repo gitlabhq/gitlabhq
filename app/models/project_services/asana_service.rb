@@ -53,14 +53,12 @@ http://developer.asana.com/documentation/#api_keys'
       {
         type: 'text',
         name: 'api_key',
-        placeholder: 'User API token. User must have access to task,
-all comments will be attributed to this user.'
+        placeholder: 'User Personal Access Token. User must have access to task, all comments will be attributed to this user.'
       },
       {
         type: 'text',
         name: 'restrict_to_branch',
-        placeholder: 'Comma-separated list of branches which will be
-automatically inspected. Leave blank to include all branches.'
+        placeholder: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.'
       }
     ]
   end
