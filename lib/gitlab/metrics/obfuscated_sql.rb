@@ -40,7 +40,7 @@ module Gitlab
           sql = sql.delete('"')
         end
 
-        sql
+        sql.gsub("\n", ' ')
       end
     end
   end
