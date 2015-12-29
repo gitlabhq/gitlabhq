@@ -69,7 +69,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :max_artifacts_size,
       :metrics_enabled,
       :metrics_host,
-      :metrics_database,
+      :metrics_port,
       :metrics_username,
       :metrics_password,
       :metrics_pool_size,

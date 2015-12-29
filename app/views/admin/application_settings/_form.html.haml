@@ -171,12 +171,14 @@
       .col-sm-10
         = f.text_field :metrics_host, class: 'form-control', placeholder: 'influxdb.example.com'
     .form-group
-      = f.label :metrics_database, 'InfluxDB database', class: 'control-label col-sm-2'
+      = f.label :metrics_port, 'InfluxDB port', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.text_field :metrics_database, class: 'form-control', placeholder: 'gitlab'
+        = f.text_field :metrics_port, class: 'form-control', placeholder: '8089'
         .help-block
-          The name of the InfluxDB database to store data in. Users will have to
-          create this database manually, GitLab does not do so automatically.
+          The UDP port to use for connecting to InfluxDB. InfluxDB requires that
+          your server configuration specifies a database to store data in when
+          sending messages to this port, without it metrics data will not be
+          saved.
     .form-group
       = f.label :metrics_username, 'InfluxDB username', class: 'control-label col-sm-2'
       .col-sm-10

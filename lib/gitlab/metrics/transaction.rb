@@ -59,7 +59,7 @@ module Gitlab
       end
 
       def submit
-        MetricsWorker.perform_async(@metrics.map(&:to_hash))
+        Metrics.submit_metrics(@metrics.map(&:to_hash))
       end
     end
   end

@@ -5,13 +5,6 @@ module Gitlab
     # This middleware is intended to be used as a server-side middleware.
     class SidekiqMiddleware
       def call(worker, message, queue)
-        # We don't want to track the MetricsWorker itself as otherwise we'll end
-        # up in an infinite loop.
-        if worker.class == MetricsWorker
-          yield
-          return
-        end
-
         trans = Transaction.new
 
         begin

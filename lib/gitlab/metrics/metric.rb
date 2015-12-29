@@ -26,7 +26,7 @@ module Gitlab
             process_type:   Sidekiq.server? ? 'sidekiq' : 'rails'
           ),
           values:    @values,
-          timestamp: @created_at.to_i
+          timestamp: @created_at.to_i * 1_000_000_000
         }
       end
     end

@@ -68,7 +68,7 @@ describe Gitlab::Metrics::Transaction do
     it 'submits the metrics to Sidekiq' do
       transaction.track_self
 
-      expect(MetricsWorker).to receive(:perform_async).
+      expect(Gitlab::Metrics).to receive(:submit_metrics).
         with([an_instance_of(Hash)])
 
       transaction.submit

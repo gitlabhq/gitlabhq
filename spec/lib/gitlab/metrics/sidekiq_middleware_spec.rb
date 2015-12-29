@@ -11,14 +11,6 @@ describe Gitlab::Metrics::SidekiqMiddleware do
 
       middleware.call(worker, 'test', :test) { nil }
     end
-
-    it 'does not track jobs of the MetricsWorker' do
-      worker = MetricsWorker.new
-
-      expect(Gitlab::Metrics::Transaction).to_not receive(:new)
-
-      middleware.call(worker, 'test', :test) { nil }
-    end
   end
 
   describe '#tag_worker' do
