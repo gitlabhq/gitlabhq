@@ -1,36 +1,21 @@
 module Gitlab
   module Metrics
+    extend Gitlab::CurrentSettings
+
     RAILS_ROOT   = Rails.root.to_s
     METRICS_ROOT = Rails.root.join('lib', 'gitlab', 'metrics').to_s
     PATH_REGEX   = /^#{RAILS_ROOT}\/?/
 
-    # Returns the current settings, ensuring we _always_ have a default set of
-    # metrics settings (even during tests, when the migrations are lacking,
-    # etc). This ensures the application is able to boot up even when the
-    # migrations have not been executed.
-    def self.settings
-      if ApplicationSetting.table_exists? and curr = ApplicationSetting.current
-        curr
-      else
-        {
-          metrics_pool_size:             16,
-          metrics_timeout:               10,
-          metrics_enabled:               false,
-          metrics_method_call_threshold: 10
-        }
-      end
-    end
-
     def self.pool_size
-      settings[:metrics_pool_size]
+      current_application_settings[:metrics_pool_size] || 16
     end
 
     def self.timeout
-      settings[:metrics_timeout]
+      current_application_settings[:metrics_timeout] || 10
     end
 
     def self.enabled?
-      settings[:metrics_enabled]
+      current_application_settings[:metrics_enabled] || false
     end
 
     def self.mri?
@@ -41,7 +26,8 @@ module Gitlab
       # This is memoized since this method is called for every instrumented
       # method. Loading data from an external cache on every method call slows
       # things down too much.
-      @method_call_threshold ||= settings[:metrics_method_call_threshold]
+      @method_call_threshold ||=
+        (current_application_settings[:metrics_method_call_threshold] || 10)
     end
 
     def self.pool
@@ -105,10 +91,10 @@ module Gitlab
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
       @pool = ConnectionPool.new(size: pool_size, timeout: timeout) do
-        host = settings[:metrics_host]
-        user = settings[:metrics_username]
-        pw   = settings[:metrics_password]
-        port = settings[:metrics_port]
+        host = current_application_settings[:metrics_host]
+        user = current_application_settings[:metrics_username]
+        pw   = current_application_settings[:metrics_password]
+        port = current_application_settings[:metrics_port]
 
         InfluxDB::Client.
           new(udp: { host: host, port: port }, username: user, password: pw)
