@@ -1,13 +1,9 @@
 require 'banzai'
+require 'html/pipeline'
 
-module Gitlab
-  module Markdown
-    class Pipeline
-      def self.[](name)
-        name ||= :full
-        const_get("#{name.to_s.camelize}Pipeline")
-      end
-
+module Banzai
+  module Pipeline
+    class BasePipeline
       def self.filters
         []
       end

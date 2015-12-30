@@ -1,4 +1,4 @@
-# Helper methods for Gitlab::Markdown filter specs
+# Helper methods for Banzai filter specs
 #
 # Must be included into specs manually
 module FilterSpecHelper
@@ -10,49 +10,49 @@ module FilterSpecHelper
   # if none is provided.
   #
   # html     - HTML String to pass to the filter's `call` method.
-  # contexts - Hash context for the filter. (default: {project: project})
+  # context - Hash context for the filter. (default: {project: project})
   #
   # Returns a Nokogiri::XML::DocumentFragment
-  def filter(html, contexts = {})
+  def filter(html, context = {})
     if defined?(project)
-      contexts.reverse_merge!(project: project)
+      context.reverse_merge!(project: project)
     end
 
-    described_class.call(html, contexts)
+    described_class.call(html, context)
   end
 
   # Run text through HTML::Pipeline with the current filter and return the
   # result Hash
   #
   # body     - String text to run through the pipeline
-  # contexts - Hash context for the filter. (default: {project: project})
+  # context - Hash context for the filter. (default: {project: project})
   #
   # Returns the Hash
-  def pipeline_result(body, contexts = {})
-    contexts.reverse_merge!(project: project) if defined?(project)
+  def pipeline_result(body, context = {})
+    context.reverse_merge!(project: project) if defined?(project)
 
-    pipeline = HTML::Pipeline.new([described_class], contexts)
+    pipeline = HTML::Pipeline.new([described_class], context)
     pipeline.call(body)
   end
 
-  def reference_pipeline(contexts = {})
-    contexts.reverse_merge!(project: project) if defined?(project)
+  def reference_pipeline(context = {})
+    context.reverse_merge!(project: project) if defined?(project)
 
     filters = [
-      Gitlab::Markdown::AutolinkFilter,
+      Banzai::Filter::AutolinkFilter,
       described_class,
-      Gitlab::Markdown::ReferenceGathererFilter
+      Banzai::Filter::ReferenceGathererFilter
     ]
 
-    HTML::Pipeline.new(filters, contexts)
+    HTML::Pipeline.new(filters, context)
   end
 
-  def reference_pipeline_result(body, contexts = {})
-    reference_pipeline(contexts).call(body)
+  def reference_pipeline_result(body, context = {})
+    reference_pipeline(context).call(body)
   end
 
-  def reference_filter(html, contexts = {})
-    reference_pipeline(contexts).to_document(html)
+  def reference_filter(html, context = {})
+    reference_pipeline(context).to_document(html)
   end
 
   # Modify a String reference to make it invalid
