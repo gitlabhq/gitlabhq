@@ -122,8 +122,8 @@ class User < ActiveRecord::Base
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
-  has_many :users_star_projects, dependent: :destroy
-  has_many :starred_projects, through: :users_star_projects, source: :project
+  has_many :users_star_projects,      dependent: :destroy
+  has_many :starred_projects,         through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
@@ -135,8 +135,9 @@ class User < ActiveRecord::Base
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
-  has_many :approvals, dependent: :destroy
+  has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+  has_many :approvals,                dependent: :destroy
+  has_many :approvers,                dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
 
