@@ -30,6 +30,7 @@ FactoryGirl.define do
     name 'test'
     ref 'master'
     tag false
+    created_at 'Di 29. Okt 09:50:00 CET 2013'
     started_at 'Di 29. Okt 09:51:28 CET 2013'
     finished_at 'Di 29. Okt 09:53:28 CET 2013'
     commands 'ls -a'
@@ -53,6 +54,11 @@ FactoryGirl.define do
 
     factory :ci_build_tag do
       tag true
+    end
+
+    factory :ci_build_with_trace do
+      id 999
+      trace 'BUILD TRACE'
     end
   end
 end
