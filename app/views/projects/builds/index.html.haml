@@ -11,6 +11,12 @@
   %ul.center-top-menu
     %li{class: ('active' if @scope.nil?)}
       = link_to project_builds_path(@project) do
+        All
+        %span.badge.js-totalbuilds-count
+          = number_with_delimiter(@all_builds.count(:id))
+
+    %li{class: ('active' if @scope == 'running')}
+      = link_to project_builds_path(@project, scope: :running) do
         Running
         %span.badge.js-running-count
           = number_with_delimiter(@all_builds.running_or_pending.count(:id))
@@ -20,12 +26,6 @@
         Finished
         %span.badge.js-running-count
           = number_with_delimiter(@all_builds.finished.count(:id))
-
-    %li{class: ('active' if @scope == 'all')}
-      = link_to project_builds_path(@project, scope: :all) do
-        All
-        %span.badge.js-totalbuilds-count
-          = number_with_delimiter(@all_builds.count(:id))
 
 .gray-content-block
   #{(@scope || 'running').capitalize} builds from this project
