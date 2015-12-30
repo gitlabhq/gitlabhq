@@ -40,8 +40,8 @@ get the commit comment added to it.
 
 You can also close a task with a message containing: `fix #123456`.
 
-You can find your Api Keys here:
-http://developer.asana.com/documentation/#api_keys'
+You can create a Personal Access Token here:
+http://app.asana.com/-/account_api'
   end
 
   def to_param
