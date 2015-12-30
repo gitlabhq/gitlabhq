@@ -124,7 +124,7 @@ module Banzai
       def replace_link_nodes_with_text(pattern)
         return doc if project.nil?
 
-        doc.search('a').each do |node|
+        doc.xpath('descendant-or-self::a').each do |node|
           klass = node.attr('class')
           next if klass && klass.include?('gfm')
 
@@ -162,7 +162,7 @@ module Banzai
       def replace_link_nodes_with_href(pattern)
         return doc if project.nil?
 
-        doc.search('a').each do |node|
+        doc.xpath('descendant-or-self::a').each do |node|
           klass = node.attr('class')
           next if klass && klass.include?('gfm')
 
