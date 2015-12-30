@@ -111,16 +111,15 @@ http://app.asana.com/-/account_api'
 
       begin
         task = Asana::Task.find_by_id(client, taskid)
-      rescue Exception => e
-        puts e.message
-        puts e.backtrace.inspect
+        task.add_comment(text: "#{push_msg} #{message}")
+
+        if tuple[0]
+          task.update(completed: true)
+        end
+      rescue => e
+        Rails.logger.error(e.message)
+        Rails.logger.error(e.backtrace.join("\n"))
         next
-      end
-
-      task.add_comment(text: "#{push_msg} #{message}")
-
-      if tuple[0]
-        task.update(completed: true)
       end
     end
   end
