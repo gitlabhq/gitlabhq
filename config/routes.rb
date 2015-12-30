@@ -316,6 +316,7 @@ Rails.application.routes.draw do
       resource :two_factor_auth, only: [:new, :create, :destroy] do
         member do
           post :codes
+          patch :skip
         end
       end
     end

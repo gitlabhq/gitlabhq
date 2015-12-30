@@ -9,11 +9,12 @@
   New Branch
 %hr
 
-= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-requires-input" do
+= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "form-horizontal js-create-branch-form js-requires-input" do
   .form-group
     = label_tag :branch_name, nil, class: 'control-label'
     .col-sm-10
-      = text_field_tag :branch_name, params[:branch_name], required: true, tabindex: 1, autofocus: true, class: 'form-control'
+      = text_field_tag :branch_name, params[:branch_name], required: true, tabindex: 1, autofocus: true, class: 'form-control js-branch-name'
+      .help-block.text-danger.js-branch-name-error
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
     .col-sm-10
@@ -26,7 +27,4 @@
 :javascript
   var availableRefs = #{@project.repository.ref_names.to_json};
 
-  $("#ref").autocomplete({
-    source: availableRefs,
-    minLength: 1
-  });
+  new NewBranchForm($('.js-create-branch-form'), availableRefs)

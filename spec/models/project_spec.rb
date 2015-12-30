@@ -590,4 +590,28 @@ describe Project, models: true do
       end
     end
   end
+
+  describe '#visibility_level_allowed?' do
+    let(:project) { create :project, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+
+    context 'when checking on non-forked project' do
+      it { expect(project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
+      it { expect(project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
+      it { expect(project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_truthy }
+    end
+
+    context 'when checking on forked project' do
+      let(:forked_project) { create :forked_project_with_submodules }
+
+      before do
+        forked_project.build_forked_project_link(forked_to_project_id: forked_project.id, forked_from_project_id: project.id)
+        forked_project.save
+      end
+
+      it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
+      it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
+      it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
+    end
+
+  end
 end

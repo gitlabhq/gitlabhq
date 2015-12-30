@@ -137,9 +137,14 @@ describe Note, models: true do
       create :note, note: "smile", is_award: true
     end
 
-    it "returns grouped array of notes" do
-      expect(Note.grouped_awards.first.first).to eq("smile")
-      expect(Note.grouped_awards.first.last).to match_array(Note.all)
+    it "returns grouped hash of notes" do
+      expect(Note.grouped_awards.keys.size).to eq(3)
+      expect(Note.grouped_awards["smile"]).to match_array(Note.all)
+    end
+
+    it "returns thumbsup and thumbsdown always" do
+      expect(Note.grouped_awards["thumbsup"]).to match_array(Note.none)
+      expect(Note.grouped_awards["thumbsdown"]).to match_array(Note.none)
     end
   end
 
@@ -164,8 +169,8 @@ describe Note, models: true do
     let(:issue) { create :issue }
 
     it "converts aliases to actual name" do
-      note = create :note, note: ":thumbsup:", noteable: issue
-      expect(note.reload.note).to eq("+1")
+      note = create :note, note: ":+1:", noteable: issue
+      expect(note.reload.note).to eq("thumbsup")
     end
   end
 end

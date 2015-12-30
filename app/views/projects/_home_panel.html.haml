@@ -34,7 +34,7 @@
         = icon('rss')
 
   .project-repo-buttons
-    .split-one
+    .split-one.count-buttons
       = render 'projects/buttons/star'
       = render 'projects/buttons/fork'
 
@@ -46,3 +46,6 @@
       = render 'projects/buttons/dropdown'
 
     = render 'projects/buttons/notifications'
+
+:coffeescript
+  new Star()

@@ -648,47 +648,54 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
+  def with_tmp_ref(oldrev = nil)
+    random_string = SecureRandom.hex
+    tmp_ref = "refs/tmp/#{random_string}/head"
+
+    if oldrev && !Gitlab::Git.blank_ref?(oldrev)
+      rugged.references.create(tmp_ref, oldrev)
+    end
+
+    # Make commit in tmp ref
+    yield(tmp_ref)
+  ensure
+    rugged.references.delete(tmp_ref) rescue nil
+  end
+
   def commit_with_hooks(current_user, branch)
     oldrev = Gitlab::Git::BLANK_SHA
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
     was_empty = empty?
 
-    # Create temporary ref
-    random_string = SecureRandom.hex
-    tmp_ref = "refs/tmp/#{random_string}/head"
-
     unless was_empty
       oldrev = find_branch(branch).target
-      rugged.references.create(tmp_ref, oldrev)
     end
 
-    # Make commit in tmp ref
-    newrev = yield(tmp_ref)
+    with_tmp_ref(oldrev) do |tmp_ref|
+      # Make commit in tmp ref
+      newrev = yield(tmp_ref)
 
-    unless newrev
-      raise CommitError.new('Failed to create commit')
-    end
+      unless newrev
+        raise CommitError.new('Failed to create commit')
+      end
 
-    GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
-      if was_empty
-        # Create branch
-        rugged.references.create(ref, newrev)
-      else
-        # Update head
-        current_head = find_branch(branch).target
-
-        # Make sure target branch was not changed during pre-receive hook
-        if current_head == oldrev
-          rugged.references.update(ref, newrev)
+      GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
+        if was_empty
+          # Create branch
+          rugged.references.create(ref, newrev)
         else
-          raise CommitError.new('Commit was rejected because branch received new push')
+          # Update head
+          current_head = find_branch(branch).target
+
+          # Make sure target branch was not changed during pre-receive hook
+          if current_head == oldrev
+            rugged.references.update(ref, newrev)
+          else
+            raise CommitError.new('Commit was rejected because branch received new push')
+          end
         end
       end
     end
-  rescue GitHooksService::PreReceiveError
-    # Remove tmp ref and return error to user
-    rugged.references.delete(tmp_ref)
-    raise
   end
 
   private

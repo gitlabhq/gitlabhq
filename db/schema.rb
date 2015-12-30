@@ -43,26 +43,28 @@ ActiveRecord::Schema.define(version: 20151228203337) do
     t.text     "sign_in_text"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "home_page_url",                limit: 255
-    t.integer  "default_branch_protection",                default: 2
-    t.boolean  "twitter_sharing_enabled",                  default: true
+    t.string   "home_page_url",                     limit: 255
+    t.integer  "default_branch_protection",                     default: 2
+    t.boolean  "twitter_sharing_enabled",                       default: true
     t.text     "help_text"
     t.text     "restricted_visibility_levels"
-    t.boolean  "version_check_enabled",                    default: true
-    t.integer  "max_attachment_size",                      default: 10,    null: false
+    t.boolean  "version_check_enabled",                         default: true
+    t.integer  "max_attachment_size",                           default: 10,    null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
-    t.boolean  "user_oauth_applications",                  default: true
-    t.string   "after_sign_out_path",          limit: 255
-    t.integer  "session_expire_delay",                     default: 10080, null: false
+    t.boolean  "user_oauth_applications",                       default: true
+    t.string   "after_sign_out_path",               limit: 255
+    t.integer  "session_expire_delay",                          default: 10080, null: false
     t.text     "import_sources"
     t.text     "help_page_text"
-    t.string   "admin_notification_email",     limit: 255
-    t.boolean  "shared_runners_enabled",                   default: true,  null: false
-    t.integer  "max_artifacts_size",                       default: 100,   null: false
+    t.string   "admin_notification_email",          limit: 255
+    t.boolean  "shared_runners_enabled",                        default: true,  null: false
+    t.integer  "max_artifacts_size",                            default: 100,   null: false
     t.string   "runners_registration_token"
-    t.integer  "max_pages_size",                           default: 100,   null: false
+    t.integer  "max_pages_size",                                default: 100,   null: false
+    t.boolean  "require_two_factor_authentication",             default: false
+    t.integer  "two_factor_grace_period",                       default: 48
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -929,6 +931,7 @@ ActiveRecord::Schema.define(version: 20151228203337) do
     t.text     "note"
     t.boolean  "hide_project_limit",                      default: false
     t.string   "unlock_token"
+    t.datetime "otp_grace_period_started_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

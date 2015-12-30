@@ -27,6 +27,13 @@ describe API::API, api: true  do
           user['username'] == username
         end['username']).to eq(username)
       end
+
+      it "should return one user" do
+        get api("/users?username=#{omniauth_user.username}", user)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
     end
 
     context "when admin" do

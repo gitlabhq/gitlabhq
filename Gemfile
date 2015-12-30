@@ -177,7 +177,7 @@ gem 'd3_rails', '~> 3.5.5'
 gem "cal-heatmap-rails", "~> 0.0.1"
 
 # underscore-rails
-gem "underscore-rails", "~> 1.4.4"
+gem "underscore-rails", "~> 1.8.0"
 
 # Sanitize user input
 gem "sanitize", '~> 2.0'
@@ -195,7 +195,7 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
-gem "sass-rails", '~> 4.0.5'
+gem "sass-rails", '~> 5.0.0'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
@@ -207,9 +207,9 @@ gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.2.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails',       '~> 3.1.3'
+gem 'jquery-rails',       '~> 4.0.0'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
-gem 'jquery-ui-rails',    '~> 4.2.1'
+gem 'jquery-ui-rails',    '~> 5.0.0'
 gem 'nprogress-rails',    '~> 0.1.6.7'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'

@@ -19,8 +19,10 @@ module Ci
       @error = e.message
       @status = false
     rescue
-      @error = "Undefined error"
+      @error = 'Undefined error'
       @status = false
+    ensure
+      render :show
     end
   end
 end

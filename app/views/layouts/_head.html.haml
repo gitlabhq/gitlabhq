@@ -1,9 +1,25 @@
-- page_title "GitLab"
-%head
+%head{prefix: "og: http://ogp.me/ns#"}
   %meta{charset: "utf-8"}
   %meta{'http-equiv' => 'X-UA-Compatible', content: 'IE=edge'}
-  %meta{content: "GitLab Enterprise Edition", name: "description"}
   %meta{name: 'referrer', content: 'origin-when-cross-origin'}
+  %meta{name: "description", content: page_description}
+
+  -# Open Graph - http://ogp.me/
+  %meta{property: 'og:type',        content: "object"}
+  %meta{property: 'og:site_name',   content: "GitLab"}
+  %meta{property: 'og:title',       content: page_title}
+  %meta{property: 'og:description', content: page_description}
+  %meta{property: 'og:image',       content: page_image}
+  %meta{property: 'og:url',         content: request.base_url + request.fullpath}
+
+  -# Twitter Card - https://dev.twitter.com/cards/types/summary
+  %meta{property: 'twitter:card',         content: "summary"}
+  %meta{property: 'twitter:title',        content: page_title}
+  %meta{property: 'twitter:description',  content: page_description}
+  %meta{property: 'twitter:image',        content: page_image}
+  = page_card_meta_tags
+
+  - page_title "GitLab"
   %title= page_title
 
   = favicon_link_tag 'favicon.ico'

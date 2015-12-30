@@ -2,6 +2,12 @@
   @include clearfix;
   line-height: 34px;
 
+  .emoji-icon {
+    width: 20px;
+    height: 20px;
+    margin: 7px 0 0 5px;
+  }
+
   .award {
     @include border-radius(5px);
 
@@ -40,6 +46,7 @@
   }
 
   .awards-controls {
+    position: relative;
     margin-left: 10px;
     float: left;
 
@@ -55,32 +62,64 @@
       }
     }
 
-    .awards-menu {
-      padding: $gl-padding;
-      min-width: 214px;
+    .emoji-menu{
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 1000;
+      display: none;
+      float: left;
+      min-width: 160px;
+      padding: 5px 0;
+      margin: 2px 0 0;
+      font-size: 14px;
+      text-align: left;
+      list-style: none;
+      background-color: #fff;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      border: 1px solid #ccc;
+      border: 1px solid rgba(0,0,0,.15);
+      border-radius: 4px;
+      -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+      box-shadow: 0 6px 12px rgba(0,0,0,.175);
 
-      > li {
-        cursor: pointer;
-        width: 30px;
-        height: 30px;
-        text-align: center;
-        @include border-radius(5px);
+      .emoji-menu-content {
+        padding: $gl-padding;
+        width: 300px;
+        height: 300px;
+        overflow-y: scroll;
 
-        img {
-          margin-bottom: 2px;
+        h5 {
+          clear: left;
         }
 
-        &:hover {
-          background-color: #ccc;
+        ul {
+          list-style-type: none;
+          margin-left: -20px;
+          margin-bottom: 20px;
+          overflow: auto;
+        }
+
+        input.emoji-search{
+          background: image-url("icon-search.png") 240px no-repeat;
+        }
+
+        li {
+          cursor: pointer;
+          width: 30px;
+          height: 30px;
+          text-align: center;
+          float: left;
+          margin: 3px;
+          list-decorate: none;
+          @include border-radius(5px);
+
+          &:hover {
+            background-color: #ccc;
+          }
         }
       }
-    }
-  }
-
-  .awards-menu{
-    li {
-      float: left;
-      margin: 3px;
     }
   }
 }
