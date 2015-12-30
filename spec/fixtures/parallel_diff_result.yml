@@ -1,0 +1,274 @@
+---
+- - match
+  - 6
+  - |
+    <span id="LC1" class="line"><span class="err">@@</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="mi">12</span> <span class="o">+</span><span class="mi">6</span><span class="p">,</span><span class="mi">18</span> <span class="err">@@</span> <span class="k">module</span> <span class="nn">Popen</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
+  - match
+  - 6
+  - |
+    <span id="LC1" class="line"><span class="err">@@</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="mi">12</span> <span class="o">+</span><span class="mi">6</span><span class="p">,</span><span class="mi">18</span> <span class="err">@@</span> <span class="k">module</span> <span class="nn">Popen</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
+- - 
+  - 6
+  - |
+    <span id="LC2" class="line"> </span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
+  - 
+  - 6
+  - |
+    <span id="LC2" class="line"> </span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
+- - 
+  - 7
+  - |
+    <span id="LC3" class="line">   <span class="k">def</span> <span class="nf">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7
+  - 
+  - 7
+  - |
+    <span id="LC3" class="line">   <span class="k">def</span> <span class="nf">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7
+- - 
+  - 8
+  - |
+    <span id="LC4" class="line">     <span class="k">unless</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Array</span><span class="p">)</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8
+  - 
+  - 8
+  - |
+    <span id="LC4" class="line">     <span class="k">unless</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Array</span><span class="p">)</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8
+- - old
+  - 9
+  - |
+    -      <span id="LC5" class="line"><span class="k">raise</span> <span class="s2">&quot;System commands must be given as an array of strings&quot;</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9
+  - new
+  - 9
+  - |
+    +      <span id="LC6" class="line"><span class="k">raise</span> <span class="idiff">RuntimeError, </span><span class="s2">&quot;System commands must be given as an array of strings&quot;</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9
+- - 
+  - 10
+  - |
+    <span id="LC7" class="line">     <span class="k">end</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10
+  - 
+  - 10
+  - |
+    <span id="LC7" class="line">     <span class="k">end</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10
+- - 
+  - 11
+  - |
+    <span id="LC8" class="line"> </span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_11_11
+  - 
+  - 11
+  - |
+    <span id="LC8" class="line"> </span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_11_11
+- - 
+  - 12
+  - |
+    <span id="LC9" class="line">     <span class="n">path</span> <span class="o">||=</span> <span class="no">Dir</span><span class="p">.</span><span class="nf">pwd</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_12_12
+  - 
+  - 12
+  - |
+    <span id="LC9" class="line">     <span class="n">path</span> <span class="o">||=</span> <span class="no">Dir</span><span class="p">.</span><span class="nf">pwd</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_12_12
+- - old
+  - 13
+  - |
+    -    <span id="LC10" class="line"><span class="n">vars</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;PWD&quot;</span> <span class="o">=&gt;</span> <span class="n">path</span> <span class="p">}</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_13_13
+  - old
+  - 
+  - "&nbsp;"
+  - 
+- - old
+  - 14
+  - |
+    -    <span id="LC11" class="line"><span class="n">options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">chdir: </span><span class="n">path</span> <span class="p">}</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_13
+  - new
+  - 13
+  - |
+    +<span id="LC12" class="line"></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_13
+- - 
+  - 
+  - "&nbsp;"
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14
+  - new
+  - 14
+  - |
+    +    <span id="LC13" class="line"><span class="n">vars</span> <span class="o">=</span> <span class="p">{</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14
+- - 
+  - 
+  - "&nbsp;"
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15
+  - new
+  - 15
+  - |
+    +      <span id="LC14" class="line"><span class="s2">&quot;PWD&quot;</span> <span class="o">=&gt;</span> <span class="n">path</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15
+- - 
+  - 
+  - "&nbsp;"
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_16
+  - new
+  - 16
+  - |
+    +    <span id="LC15" class="line"><span class="p">}</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_16
+- - 
+  - 
+  - "&nbsp;"
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_17
+  - new
+  - 17
+  - |
+    +<span id="LC16" class="line"></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_17
+- - 
+  - 
+  - "&nbsp;"
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_18
+  - new
+  - 18
+  - |
+    +    <span id="LC17" class="line"><span class="n">options</span> <span class="o">=</span> <span class="p">{</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_18
+- - 
+  - 
+  - "&nbsp;"
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_19
+  - new
+  - 19
+  - |
+    +      <span id="LC18" class="line"><span class="ss">chdir: </span><span class="n">path</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_19
+- - 
+  - 
+  - "&nbsp;"
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_20
+  - new
+  - 20
+  - |
+    +    <span id="LC19" class="line"><span class="p">}</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_20
+- - 
+  - 15
+  - |
+    <span id="LC20" class="line"> </span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_21
+  - 
+  - 21
+  - |
+    <span id="LC20" class="line"> </span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_21
+- - 
+  - 16
+  - |
+    <span id="LC21" class="line">     <span class="k">unless</span> <span class="no">File</span><span class="p">.</span><span class="nf">directory?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_16_22
+  - 
+  - 22
+  - |
+    <span id="LC21" class="line">     <span class="k">unless</span> <span class="no">File</span><span class="p">.</span><span class="nf">directory?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_16_22
+- - 
+  - 17
+  - |
+    <span id="LC22" class="line">       <span class="no">FileUtils</span><span class="p">.</span><span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_17_23
+  - 
+  - 23
+  - |
+    <span id="LC22" class="line">       <span class="no">FileUtils</span><span class="p">.</span><span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_17_23
+- - match
+  - 19
+  - |
+    <span id="LC23" class="line"><span class="err">@@</span> <span class="o">-</span><span class="mi">19</span><span class="p">,</span><span class="mi">6</span> <span class="o">+</span><span class="mi">25</span><span class="p">,</span><span class="mi">7</span> <span class="err">@@</span> <span class="k">module</span> <span class="nn">Popen</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
+  - match
+  - 25
+  - |
+    <span id="LC23" class="line"><span class="err">@@</span> <span class="o">-</span><span class="mi">19</span><span class="p">,</span><span class="mi">6</span> <span class="o">+</span><span class="mi">25</span><span class="p">,</span><span class="mi">7</span> <span class="err">@@</span> <span class="k">module</span> <span class="nn">Popen</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
+- - 
+  - 19
+  - |
+    <span id="LC24" class="line"> </span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
+  - 
+  - 25
+  - |
+    <span id="LC24" class="line"> </span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
+- - 
+  - 20
+  - |
+    <span id="LC25" class="line">     <span class="vi">@cmd_output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_20_26
+  - 
+  - 26
+  - |
+    <span id="LC25" class="line">     <span class="vi">@cmd_output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_20_26
+- - 
+  - 21
+  - |
+    <span id="LC26" class="line">     <span class="vi">@cmd_status</span> <span class="o">=</span> <span class="mi">0</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_21_27
+  - 
+  - 27
+  - |
+    <span id="LC26" class="line">     <span class="vi">@cmd_status</span> <span class="o">=</span> <span class="mi">0</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_21_27
+- - 
+  - 
+  - "&nbsp;"
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_22_28
+  - new
+  - 28
+  - |
+    +<span id="LC27" class="line"></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_22_28
+- - 
+  - 22
+  - |
+    <span id="LC28" class="line">     <span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="n">vars</span><span class="p">,</span> <span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thr</span><span class="o">|</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_22_29
+  - 
+  - 29
+  - |
+    <span id="LC28" class="line">     <span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="n">vars</span><span class="p">,</span> <span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thr</span><span class="o">|</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_22_29
+- - 
+  - 23
+  - |
+    <span id="LC29" class="line">       <span class="vi">@cmd_output</span> <span class="o">&lt;&lt;</span> <span class="n">stdout</span><span class="p">.</span><span class="nf">read</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_23_30
+  - 
+  - 30
+  - |
+    <span id="LC29" class="line">       <span class="vi">@cmd_output</span> <span class="o">&lt;&lt;</span> <span class="n">stdout</span><span class="p">.</span><span class="nf">read</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_23_30
+- - 
+  - 24
+  - <span id="LC30" class="line">       <span class="vi">@cmd_output</span> <span
+    class="o">&lt;&lt;</span> <span class="n">stderr</span><span class="p">.</span><span
+    class="nf">read</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_24_31
+  - 
+  - 31
+  - <span id="LC30" class="line">       <span class="vi">@cmd_output</span> <span
+    class="o">&lt;&lt;</span> <span class="n">stderr</span><span class="p">.</span><span
+    class="nf">read</span></span>
+  - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_24_31
