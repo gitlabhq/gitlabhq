@@ -19,8 +19,6 @@ class @Notes
     @cleanBinding()
     @addBinding()
     @initTaskList()
-    # for updating the comment disscussion buttons once that issue #5534 is approved.
-    # @updateTargetButtons({target:$("#note_note")})
 
   addBinding: ->
     # add note to UI after creation
