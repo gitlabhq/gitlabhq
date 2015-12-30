@@ -60,5 +60,9 @@ FactoryGirl.define do
       id 999
       trace 'BUILD TRACE'
     end
+
+    factory :ci_build_canceled do
+      status 'canceled'
+    end
   end
 end

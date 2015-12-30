@@ -7,10 +7,11 @@ describe API::API, api: true  do
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
-  let!(:guest) { create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST) }
+  let!(:reporter) { create(:project_member, user: user2, project: project, access_level: ProjectMember::REPORTER) }
   let(:commit) { create(:ci_commit, project: project)}
   let(:build) { create(:ci_build, commit: commit) }
   let(:build_with_trace) { create(:ci_build_with_trace, commit: commit) }
+  let(:build_canceled) { create(:ci_build_canceled, commit: commit) }
 
   describe 'GET /projects/:id/builds ' do
     context 'authorized user' do
@@ -80,6 +81,65 @@ describe API::API, api: true  do
 
       it 'should not return specific build trace' do
         get api("/projects/#{project.id}/builds/#{build_with_trace.id}/trace")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/builds/:build_id/cancel' do
+    context 'authorized user' do
+      context 'user with :manage_builds persmission' do
+        it 'should cancel running or pending build' do
+          post api("/projects/#{project.id}/builds/#{build.id}/cancel", user)
+
+          expect(response.status).to eq(201)
+          expect(project.builds.first.status).to eq('canceled')
+        end
+      end
+
+      context 'user without :manage_builds permission' do
+        it 'should not cancel build' do
+          post api("/projects/#{project.id}/builds/#{build.id}/cancel", user2)
+
+          expect(response.status).to eq(403)
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'should not cancel build' do
+        post api("/projects/#{project.id}/builds/#{build.id}/cancel")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/builds/:build_id/retry' do
+    context 'authorized user' do
+      context 'user with :manage_builds persmission' do
+        it 'should retry non-running build' do
+          post api("/projects/#{project.id}/builds/#{build_canceled.id}/retry", user)
+
+          expect(response.status).to eq(201)
+          expect(project.builds.first.status).to eq('canceled')
+          expect(json_response['status']).to eq('pending')
+        end
+      end
+
+      context 'user without :manage_builds permission' do
+        it 'should not retry build' do
+          post api("/projects/#{project.id}/builds/#{build_canceled.id}/retry", user2)
+
+          expect(response.status).to eq(403)
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'should not retry build' do
+        post api("/projects/#{project.id}/builds/#{build_canceled.id}/retry")
 
         expect(response.status).to eq(401)
       end
