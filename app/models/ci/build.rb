@@ -30,6 +30,7 @@
 #  description        :string(255)
 #  artifacts_file     :text
 #  gl_project_id      :integer
+#  artifacts_metadata :text
 #
 
 module Ci
@@ -50,6 +51,7 @@ module Ci
     scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     mount_uploader :artifacts_file, ArtifactUploader
+    mount_uploader :artifacts_metadata, ArtifactUploader
 
     acts_as_taggable
 
@@ -344,11 +346,11 @@ module Ci
     def artifacts_browser_supported?
       # TODO, since carrierwave 0.10.0 we will be able to check mime type here
       #
-      artifacts? && artifacts_file.path.end_with?('zip')
+      artifacts? && artifacts_file.path.end_with?('zip') && artifacts_metadata.exists?
     end
 
-    def artifacts_metadata(path)
-      []
+    def artifacts_metadata_for(path)
+      {}
     end
 
     private

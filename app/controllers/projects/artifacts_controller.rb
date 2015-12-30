@@ -18,7 +18,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     return render_404 unless build.artifacts?
 
     current_path = params[:path] ? "./#{params[:path]}/" : './'
-    artifacts_metadata = build.artifacts_metadata(current_path)
+    artifacts_metadata = build.artifacts_metadata_for(current_path)
     @path = Gitlab::StringPath.new(current_path, artifacts_metadata)
   end
 
