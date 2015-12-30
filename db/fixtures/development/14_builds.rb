@@ -9,9 +9,12 @@ class Gitlab::Seeder::Builds
     ci_commits.each do |ci_commit|
       build = Ci::Build.new(build_attributes_for(ci_commit))
 
-      FileUtils.copy(artifacts_path, artifacts_cache_file_path)
-      File.open(artifacts_cache_file_path, 'r') do |file|
+      artifacts_cache_file(artifacts_archive_path) do |file|
         build.artifacts_file = file
+      end
+
+      artifacts_cache_file(artifacts_metadata_path) do |file|
+        build.artifacts_metadata = file
       end
 
       begin
@@ -49,12 +52,22 @@ class Gitlab::Seeder::Builds
     BUILD_STATUSES.sample
   end
 
-  def artifacts_path
+  def artifacts_archive_path
     Rails.root + 'spec/fixtures/ci_build_artifacts.zip'
   end
 
-  def artifacts_cache_file_path
-    artifacts_path.to_s.gsub('ci_', "p#{@project.id}_")
+  def artifacts_metadata_path
+    Rails.root + 'spec/fixtures/ci_build_artifacts_metadata.gz'
+
+  end
+
+  def artifacts_cache_file(file_path)
+    cache_path = file_path.to_s.gsub('ci_', "p#{@project.id}_")
+
+    FileUtils.copy(file_path, cache_path)
+    File.open(cache_path) do |file|
+      yield file
+    end
   end
 end
 
