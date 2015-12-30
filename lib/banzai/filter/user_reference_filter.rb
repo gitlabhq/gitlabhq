@@ -39,10 +39,22 @@ module Banzai
         end
       end
 
-      def self.user_can_reference?(user, node, context)
+      def self.user_can_see_reference?(user, node, context)
         if node.has_attribute?('data-group')
           group = Group.find(node.attr('data-group')) rescue nil
           Ability.abilities.allowed?(user, :read_group, group)
+        else
+          super
+        end
+      end
+
+      def self.user_can_reference?(user, node, context)
+        # Only team members can reference `@all`
+        if node.has_attribute?('data-project')
+          project = Project.find(node.attr('data-project')) rescue nil
+          return false unless project
+
+          user && project.team.member?(user)
         else
           super
         end
@@ -122,7 +134,7 @@ module Banzai
       end
 
       def link_tag(url, data, text)
-        %(<a href="#{url}" #{data} class="#{link_class}">#{text}</a>)
+        %(<a href="#{url}" #{data} class="#{link_class}">#{escape_once(text)}</a>)
       end
     end
   end

@@ -28,17 +28,18 @@
 - [Using SSH keys](ci/ssh_keys/README.md)
 - [User permissions](ci/permissions/README.md)
 - [API](ci/api/README.md)
+- [Triggering builds through the API](ci/triggers/README.md)
 
 ### CI Languages
 
-+ [Testing PHP](ci/languages/php.md)
+- [Testing PHP](ci/languages/php.md)
 
 ### CI Services
 
-+ [Using MySQL](ci/services/mysql.md)
-+ [Using PostgreSQL](ci/services/postgres.md)
-+ [Using Redis](ci/services/redis.md)
-+ [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
+- [Using MySQL](ci/services/mysql.md)
+- [Using PostgreSQL](ci/services/postgres.md)
+- [Using Redis](ci/services/redis.md)
+- [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
 
 ### CI Examples
 
@@ -55,6 +56,7 @@
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Log system](logs/logs.md) Log system.
+- [Environmental Variables](administration/environmental_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic web hook setup and the importing of projects.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.

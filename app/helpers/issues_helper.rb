@@ -69,6 +69,10 @@ module IssuesHelper
     end
   end
 
+  def issue_button_visibility(issue, closed)    
+    return 'hidden' if issue.closed? == closed
+  end
+
   def issue_to_atom(xml, issue)
     xml.entry do
       xml.id      namespace_project_issue_url(issue.project.namespace,
@@ -118,6 +122,18 @@ module IssuesHelper
     else
       ""
     end
+  end
+
+  def awards_sort(awards)
+    awards.sort_by do |award, notes|
+      if award == "thumbsup"
+        0
+      elsif award == "thumbsdown"
+        1
+      else
+        2
+      end
+    end.to_h
   end
 
   # Required for Banzai::Filter::IssueReferenceFilter

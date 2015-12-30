@@ -11,7 +11,7 @@ module Banzai
     class RedactorFilter < HTML::Pipeline::Filter
       def call
         doc.css('a.gfm').each do |node|
-          unless user_can_reference?(node)
+          unless user_can_see_reference?(node)
             # The reference should be replaced by the original text,
             # which is not always the same as the rendered text.
             text = node.attr('data-original') || node.text
@@ -24,12 +24,12 @@ module Banzai
 
       private
 
-      def user_can_reference?(node)
+      def user_can_see_reference?(node)
         if node.has_attribute?('data-reference-filter')
           reference_type = node.attr('data-reference-filter')
           reference_filter = Banzai::Filter.const_get(reference_type)
 
-          reference_filter.user_can_reference?(current_user, node, context)
+          reference_filter.user_can_see_reference?(current_user, node, context)
         else
           true
         end

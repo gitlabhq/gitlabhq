@@ -107,9 +107,16 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_awards
+      notes = {}
+
       awards.select(:note).distinct.map do |note|
-        [ note.note, where(note: note.note) ]
+        notes[note.note] = where(note: note.note)
       end
+
+      notes["thumbsup"] ||= Note.none
+      notes["thumbsdown"] ||= Note.none
+
+      notes
     end
   end
 
@@ -339,14 +346,12 @@ class Note < ActiveRecord::Base
     read_attribute(:system)
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def downvote?
-    false
+    is_award && note == "thumbsdown"
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def upvote?
-    false
+    is_award && note == "thumbsup"
   end
 
   def editable?

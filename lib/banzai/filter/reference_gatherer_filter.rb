@@ -35,7 +35,9 @@ module Banzai
 
         return if context[:reference_filter] && reference_filter != context[:reference_filter]
 
-        return unless reference_filter.user_can_reference?(current_user, node, context)
+        return if author && !reference_filter.user_can_reference?(author, node, context)
+
+        return unless reference_filter.user_can_see_reference?(current_user, node, context)
 
         references = reference_filter.referenced_by(node)
         return unless references
@@ -56,6 +58,10 @@ module Banzai
 
       def current_user
         context[:current_user]
+      end
+
+      def author
+        context[:author]
       end
     end
   end

@@ -35,6 +35,9 @@ gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
 gem 'rack-oauth2',            '~> 1.2.1'
 
+# reCAPTCHA protection
+gem 'recaptcha', require: 'recaptcha/rails'
+
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
@@ -212,9 +215,17 @@ gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 
+# Metrics
+group :metrics do
+  gem 'allocations', '~> 1.0', require: false, platform: :mri
+  gem 'method_source', '~> 0.8', require: false
+  gem 'influxdb', '~> 0.2', require: false
+  gem 'connection_pool', '~> 2.0', require: false
+end
+
 group :development do
   gem "foreman"
-  gem 'brakeman', '3.0.1', require: false
+  gem 'brakeman', '~> 3.1.0', require: false
 
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'
