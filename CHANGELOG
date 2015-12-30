@@ -11,6 +11,7 @@ v 8.4.0 (unreleased)
   - Add CAS support (tduehr)
   - Add link to merge request on build detail page
   - Revert back upvote and downvote button to the issue and MR pages
+  - Swap position of Assignee and Author selector on Issueables (Zeger-Jan van de Weg)
 
 v 8.3.3 (unreleased)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)

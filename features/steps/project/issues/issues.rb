@@ -59,15 +59,14 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click "author" dropdown' do
-    first('.ajax-users-select').click
+    first('#s2id_author_id').click
   end
 
   step 'I see current user as the first user' do
-    expect(page).to have_selector('.user-result', visible: true, count: 4)
+    expect(page).to have_selector('.user-result', visible: true, count: 3)
     users = page.all('.user-name')
-    expect(users[0].text).to eq 'Any Assignee'
-    expect(users[1].text).to eq 'Unassigned'
-    expect(users[2].text).to eq current_user.name
+    expect(users[0].text).to eq 'Any Author'
+    expect(users[1].text).to eq current_user.name
   end
 
   step 'I submit new issue "500 error on profile"' do
