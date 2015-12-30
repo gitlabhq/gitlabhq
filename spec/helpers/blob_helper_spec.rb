@@ -64,15 +64,4 @@ describe BlobHelper do
       end
     end
   end
-
-  describe 'highlight_line' do
-    let(:expected) do
-      %q(<span id="LC1" class="line"><span class="nb">puts</span> <span class="s1">&#39;Hello&#39;</span> <span class="idiff">world</span></span>)
-    end
-
-    it 'should respect the inline diff markup' do
-      result = highlight_line('demo.rb', "puts 'Hello' <span class='idiff'>world</span>")
-      expect(result).to eq(expected)
-    end
-  end
 end

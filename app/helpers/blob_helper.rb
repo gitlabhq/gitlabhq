@@ -24,21 +24,6 @@ module BlobHelper
     result
   end
 
-  def highlight_line(blob_name, content, continue: false)
-    if @previous_blob_name != blob_name
-      @parent  = Rouge::Lexer.guess(filename: blob_name, source: content).new rescue Rouge::Lexers::PlainText.new
-      @lexer   = Rouge::Lexers::GitlabDiff.new(parent_lexer: @parent)
-      @options = Rouge::Lexers::PlainText === @parent ? {} : { continue: continue }
-    end
-
-    @previous_blob_name = blob_name
-    @formatter ||= rouge_formatter(nowrap: true)
-
-    content.sub!(/\A((?:\+|-)\s*)/, '') # Don't format '+' or '-' indicators.
-
-    "#{$1}#{@formatter.format(@lexer.lex(content, @options))}".html_safe
-  end
-
   def no_highlight_files
     %w(credits changelog news copying copyright license authors)
   end

@@ -11,7 +11,7 @@ module Rouge
           token InlineDiff, match[1]
         end
 
-        rule /(?:(?!<span).)*/ do
+        rule /(?:(?!<span class='idiff').)*/m do
           delegate option(:parent_lexer)
         end
       end

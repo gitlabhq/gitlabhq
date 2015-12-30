@@ -15,6 +15,10 @@ module Gitlab
         @lines ||= parser.parse(raw_diff.lines)
       end
 
+      def highlighted_diff_lines
+        Gitlab::Diff::Highlight.process_diff_lines(self)
+      end
+
       def mode_changed?
         !!(diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode)
       end

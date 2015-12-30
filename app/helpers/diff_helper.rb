@@ -54,9 +54,9 @@ module DiffHelper
     # right_line_type, right_line_number, right_line_content, right_line_code
     # ]
     #
-    diff_file.diff_lines.each do |line|
+    diff_file.highlighted_diff_lines.each do |line|
 
-      full_line = line.text
+      full_line = line.highlighted_text
       type = line.type
       line_code = generate_line_code(diff_file.file_path, line)
       line_new = line.new_pos
@@ -67,7 +67,7 @@ module DiffHelper
       if next_line
         next_line_code = generate_line_code(diff_file.file_path, next_line)
         next_type = next_line.type
-        next_line = next_line.text
+        next_line = next_line.highlighted_text
       end
 
       if type == 'match' || type.nil?
