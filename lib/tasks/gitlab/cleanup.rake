@@ -2,11 +2,14 @@ namespace :gitlab do
   namespace :cleanup do
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :environment  do
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     desc "GITLAB | Cleanup | Clean gitolite config"
     task :config => :environment  do
       warn_user_is_not_gitlab
@@ -43,14 +46,18 @@ namespace :gitlab do
     desc "GITLAB | Cleanup | Clean namespaces"
     task :dirs => :environment  do
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
 
 
       namespaces = Namespace.pluck(:path)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
       git_base_path = Gitlab.config.gitlab_shell.repos_path
@@ -60,6 +67,9 @@ namespace :gitlab do
 =======
       git_base_path = Gitlab.config.gitolite.repos_path
 >>>>>>> origin/4-0-stable
+=======
+      git_base_path = Gitlab.config.gitolite.repos_path
+>>>>>>> gitlabhq/4-0-stable
       all_dirs = Dir.glob(git_base_path + '/*')
 
       puts git_base_path.yellow
@@ -95,6 +105,7 @@ namespace :gitlab do
       end
     end
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     desc "GitLab | Cleanup | Clean repositories"
@@ -145,6 +156,8 @@ namespace :gitlab do
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     desc "GITLAB | Cleanup | Clean respositories"
     task :repos => :environment  do
       warn_user_is_not_gitlab
@@ -192,9 +205,12 @@ namespace :gitlab do
       unless remove_flag
         puts "To cleanup this directories run this command with REMOVE=true".yellow
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
       end
     end
   end

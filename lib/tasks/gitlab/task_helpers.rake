@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 module Gitlab
   class TaskAbortedByUserError < StandardError; end
 end
@@ -24,6 +25,8 @@ namespace :gitlab do
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
 namespace :gitlab do
 
   # Check which OS is running
@@ -33,9 +36,12 @@ namespace :gitlab do
   def os_name
     os_name = run("lsb_release -irs")
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     os_name ||= if File.readable?('/etc/system-release')
                   File.read('/etc/system-release')
                 end
@@ -46,6 +52,7 @@ namespace :gitlab do
     os_name ||= if File.readable?('/etc/SuSE-release')
                   File.read('/etc/SuSE-release')
                 end
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     os_name ||= if os_x_version = run(%W(sw_vers -productVersion))
@@ -78,6 +85,8 @@ namespace :gitlab do
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     os_name ||= if os_x_version = run("sw_vers -productVersion")
                   "Mac OS X #{os_x_version}"
                 end
@@ -89,9 +98,12 @@ namespace :gitlab do
   # Returns nil if nothing matched
   # Retunrs the MatchData if the pattern matched
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
   #
   # see also #run
   # see also String#match
@@ -106,6 +118,7 @@ namespace :gitlab do
   #
   # see also #run_and_match
   def run(command)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     output, _ = Gitlab::Popen.popen(command)
@@ -127,6 +140,8 @@ namespace :gitlab do
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     unless `#{command} 2>/dev/null`.blank?
       `#{command}`
     end
@@ -140,13 +155,17 @@ namespace :gitlab do
     group_line = File.read("/etc/group").lines.select{|l| l.start_with?("#{group_name}:")}.first
     group_line.split(":")[2].to_i
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
   end
 
   def warn_user_is_not_gitlab
     unless @warned_user_not_gitlab
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
       gitlab_user = Gitlab.config.gitlab.user
@@ -159,6 +178,8 @@ namespace :gitlab do
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
       current_user = run("whoami").chomp
       unless current_user == "gitlab"
         puts "#{Colored.color(:black)+Colored.color(:on_yellow)} Warning #{Colored.extra(:clear)}"
@@ -166,14 +187,18 @@ namespace :gitlab do
         puts "  Things may work\/fail for the wrong reasons."
         puts "  For correct results you should run this as user #{"gitlab".magenta}."
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
         puts ""
       end
       @warned_user_not_gitlab = true
     end
   end
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -204,4 +229,6 @@ namespace :gitlab do
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
 end

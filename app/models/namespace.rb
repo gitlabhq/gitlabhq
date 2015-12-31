@@ -44,9 +44,12 @@ class Namespace < ActiveRecord::Base
   after_update :move_dir
   after_commit :update_gitolite, on: :update, if: :require_update_gitolite
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
@@ -66,6 +69,8 @@ class Namespace < ActiveRecord::Base
       where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
     end
 =======
+  attr_accessor :require_update_gitolite
+
   attr_accessor :require_update_gitolite
 
   attr_accessor :require_update_gitolite
@@ -114,6 +119,7 @@ class Namespace < ActiveRecord::Base
   def ensure_dir_exist
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     gitlab_shell.add_namespace(path)
   end
 
@@ -133,6 +139,8 @@ class Namespace < ActiveRecord::Base
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     unless dir_exists?
       system("mkdir -m 770 #{namespace_full_path}")
     end
@@ -145,9 +153,12 @@ class Namespace < ActiveRecord::Base
   def namespace_full_path
     @namespace_full_path ||= File.join(Gitlab.config.gitolite.repos_path, path)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
   end
 
   def move_dir
@@ -165,6 +176,7 @@ class Namespace < ActiveRecord::Base
         send_update_instructions
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       rescue
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
@@ -179,6 +191,11 @@ class Namespace < ActiveRecord::Base
       else
         raise "Namespace move error #{old_path} #{new_path}"
 >>>>>>> origin/4-0-stable
+=======
+        @require_update_gitolite = true
+      else
+        raise "Namespace move error #{old_path} #{new_path}"
+>>>>>>> gitlabhq/4-0-stable
       end
     else
       # if we cannot move namespace directory we should rollback
@@ -187,6 +204,7 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   def send_update_instructions
     projects.each do |project|
@@ -198,6 +216,8 @@ class Namespace < ActiveRecord::Base
     projects.each(&:update_repository)
   end
 
+=======
+>>>>>>> gitlabhq/4-0-stable
   def update_gitolite
     @require_update_gitolite = false
     projects.each(&:update_repository)

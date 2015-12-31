@@ -656,16 +656,18 @@ Check if GitLab and its environment are configured correctly:
 ### Compile Assets
 =======
 
-## Check Application Status
+## Install Init Script
 
-Check if GitLab and its environment is configured correctly:
+Download the init script (will be /etc/init.d/gitlab):
 
-    sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+    sudo chmod +x /etc/init.d/gitlab
 
-To make sure you didn't miss anything run a more thorough check with:
+Make GitLab start on boot:
 
-    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
+    sudo update-rc.d gitlab defaults 21
 
+<<<<<<< HEAD
 If all items are green, then congratulations on successfully installing GitLab!
 However there are still a few steps left.
 >>>>>>> origin/4-0-stable
@@ -690,6 +692,21 @@ However there are still a few steps left.
 **Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
 ### Installation
+=======
+
+## Check Application Status
+
+Check if GitLab and its environment is configured correctly:
+
+    sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
+
+To make sure you didn't miss anything run a more thorough check with:
+
+    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
+
+If all items are green, then congratulations on successfully installing GitLab!
+However there are still a few steps left.
+>>>>>>> gitlabhq/4-0-stable
 
 <<<<<<< HEAD
     sudo apt-get install -y nginx
@@ -721,6 +738,7 @@ Copy the example site config:
 =======
 >>>>>>> origin/4-1-stable
 
+<<<<<<< HEAD
 Make sure to edit the config file to match your setup:
 =======
 >>>>>>> gitlabhq/4-1-stable
@@ -796,6 +814,9 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 =======
     sudo service nginx reload
 >>>>>>> origin/5-4-stable
+=======
+## Start Your GitLab Instance
+>>>>>>> gitlabhq/4-0-stable
 
 ## Done!
 
@@ -811,7 +832,12 @@ NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit proj
 
 ### Initial Login
 
+<<<<<<< HEAD
 Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created a default admin account for you. You can use it to log in:
+=======
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/nginx/gitlab -P /etc/nginx/sites-available/
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+>>>>>>> gitlabhq/4-0-stable
 
     root
     5iveL!fe

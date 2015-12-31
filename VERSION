@@ -19,6 +19,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 8.4.0.pre
 =======
 4.0.1
@@ -83,3 +84,6 @@
 =======
 8.0.5
 >>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+4.0.1
+>>>>>>> gitlabhq/4-0-stable

@@ -1,7 +1,23 @@
 source "https://rubygems.org"
 
+<<<<<<< HEAD
 gem 'rails', '4.2.4'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+=======
+def darwin_only(require_as)
+  RUBY_PLATFORM.include?('darwin') && require_as
+end
+
+def linux_only(require_as)
+  RUBY_PLATFORM.include?('linux') && require_as
+end
+
+gem "rails", "3.2.11"
+
+# Supported DBs
+gem "mysql2", group: :mysql
+gem "pg", group: :postgres
+>>>>>>> gitlabhq/4-0-stable
 
 <<<<<<< HEAD
 <<<<<<< HEAD

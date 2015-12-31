@@ -47,6 +47,7 @@ GEM
   specs:
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     CFPropertyList (2.3.2)
     RedCloth (4.2.9)
     ace-rails-ap (2.0.1)
@@ -172,6 +173,8 @@ GEM
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     actionmailer (3.2.11)
       actionpack (= 3.2.11)
       mail (~> 2.4.4)
@@ -655,6 +658,7 @@ GEM
       railties (>= 3.1.0)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       turbolinks
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
@@ -664,6 +668,8 @@ GEM
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     json (1.7.6)
     jwt (0.1.5)
       multi_json (>= 1.0)
@@ -850,9 +856,12 @@ GEM
       railties (~> 3.1)
     rack (1.4.3)
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-attack (4.3.1)
@@ -870,6 +879,7 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     rails (4.2.4)
@@ -905,6 +915,8 @@ GEM
 =======
 =======
 >>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     rails (3.2.11)
       actionmailer (= 3.2.11)
       actionpack (= 3.2.11)
@@ -1096,6 +1108,7 @@ GEM
       spinach (>= 0.4)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     spring (1.3.6)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -1110,6 +1123,9 @@ GEM
 =======
     sprockets (2.2.2)
 >>>>>>> origin/4-0-stable
+=======
+    sprockets (2.2.2)
+>>>>>>> gitlabhq/4-0-stable
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
