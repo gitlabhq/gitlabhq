@@ -1,16 +1,24 @@
 module BroadcastMessagesHelper
-  def broadcast_styling(broadcast_message)
-    styling = ''
+  def broadcast_message(message = BroadcastMessage.current)
+    return unless message.present?
+
+    content_tag :div, class: 'broadcast-message', style: broadcast_message_style(message) do
+      icon('bullhorn') << ' ' << message.message
+    end
+  end
+
+  def broadcast_message_style(broadcast_message)
+    style = ''
 
     if broadcast_message.color.present?
-      styling << "background-color: #{broadcast_message.color}"
-      styling << '; ' if broadcast_message.font.present?
+      style << "background-color: #{broadcast_message.color}"
+      style << '; ' if broadcast_message.font.present?
     end
 
     if broadcast_message.font.present?
-      styling << "color: #{broadcast_message.font}"
+      style << "color: #{broadcast_message.font}"
     end
 
-    styling
+    style
   end
 end
