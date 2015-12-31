@@ -93,9 +93,14 @@ GEM
     acts-as-taggable-on (3.5.0)
       activerecord (>= 3.2, < 5)
     addressable (2.3.8)
+<<<<<<< HEAD
     after_commit_queue (1.3.0)
       activerecord (>= 3.0)
     allocations (1.0.3)
+=======
+    after_commit_queue (1.1.0)
+      rails (>= 3.0)
+>>>>>>> origin/8-0-stable
     annotate (2.6.10)
       activerecord (>= 3.2, <= 4.3)
       rake (~> 10.4)
@@ -651,7 +656,11 @@ GEM
       systemu (~> 2.6.2)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
+<<<<<<< HEAD
     mail_room (0.6.1)
+=======
+    mail_room (0.5.2)
+>>>>>>> origin/8-0-stable
     method_source (0.8.2)
     mime-types (1.25.1)
     mimemagic (0.3.0)
@@ -663,10 +672,19 @@ GEM
     multipart-post (2.0.0)
     mysql2 (0.3.20)
     nested_form (0.3.2)
+<<<<<<< HEAD
     net-ldap (0.12.1)
     net-ssh (3.0.1)
     netrc (0.11.0)
     newrelic-grape (2.1.0)
+=======
+    net-ldap (0.11)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-ssh (2.9.2)
+    netrc (0.10.3)
+    newrelic-grape (2.0.0)
+>>>>>>> origin/8-0-stable
       grape
       newrelic_rpm
     newrelic_rpm (3.9.4.245)
@@ -1159,7 +1177,10 @@ DEPENDENCIES
   acts-as-taggable-on (~> 3.4)
   addressable (~> 2.3.8)
   after_commit_queue
+<<<<<<< HEAD
   allocations (~> 1.0)
+=======
+>>>>>>> origin/8-0-stable
   annotate (~> 2.6.0)
   asana (~> 0.4.0)
   asciidoctor (~> 1.5.2)
@@ -1236,13 +1257,20 @@ DEPENDENCIES
   jquery-ui-rails (~> 5.0.0)
   kaminari (~> 0.16.3)
   letter_opener (~> 1.1.2)
+<<<<<<< HEAD
   mail_room (~> 0.6.1)
   method_source (~> 0.8)
+=======
+  mail_room (~> 0.5.2)
+>>>>>>> origin/8-0-stable
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.3.16)
   nested_form (~> 0.3.2)
+<<<<<<< HEAD
   net-ssh (~> 3.0.1)
+=======
+>>>>>>> origin/8-0-stable
   newrelic-grape
   newrelic_rpm (~> 3.9.4.245)
   nokogiri (= 1.6.7.1)
@@ -1326,6 +1354,7 @@ DEPENDENCIES
   web-console (~> 2.0)
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)
+<<<<<<< HEAD
 
 BUNDLED WITH
    1.10.6
@@ -1431,3 +1460,5 @@ BUNDLED WITH
   webmock
   yaml_db!
 >>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/8-0-stable

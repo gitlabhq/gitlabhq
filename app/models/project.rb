@@ -42,7 +42,10 @@ class Project < ActiveRecord::Base
   include Referable
   include Sortable
   include AfterCommitQueue
+<<<<<<< HEAD
   include CaseSensitivity
+=======
+>>>>>>> origin/8-0-stable
 
   extend Gitlab::ConfigHelper
 
@@ -349,7 +352,11 @@ class Project < ActiveRecord::Base
     if forked?
       RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
     else
+<<<<<<< HEAD
       RepositoryImportWorker.perform_async(self.id)
+=======
+      RepositoryImportWorker.perform_async(id)
+>>>>>>> origin/8-0-stable
     end
   end
 

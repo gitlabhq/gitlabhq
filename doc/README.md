@@ -65,7 +65,15 @@
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
+<<<<<<< HEAD
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
+=======
+
+### Administrator documentation
+
++ [User permissions](permissions/permissions.md)
++ [API](api/README.md)
+>>>>>>> origin/8-0-stable
 
 ## Contributor documentation
 

@@ -162,7 +162,11 @@ group :unicorn do
 end
 
 # State machine
+<<<<<<< HEAD
 gem "state_machines-activerecord", '~> 0.3.0'
+=======
+gem "state_machine", '~> 1.2.0'
+>>>>>>> origin/8-0-stable
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -361,7 +365,11 @@ gem 'newrelic-grape'
 
 gem 'octokit', '~> 3.7.0'
 
+<<<<<<< HEAD
 gem "mail_room", "~> 0.6.1"
+=======
+gem "mail_room", "~> 0.5.2"
+>>>>>>> origin/8-0-stable
 
 gem 'email_reply_parser', '~> 0.5.8'
 

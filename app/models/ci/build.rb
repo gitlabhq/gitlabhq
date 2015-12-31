@@ -104,6 +104,7 @@ module Ci
       after_transition any => [:success, :failed, :canceled] do |build, transition|
         return unless build.project
 
+<<<<<<< HEAD
         build.update_coverage
         build.commit.create_next_builds(build)
         build.execute_hooks
@@ -112,6 +113,25 @@ module Ci
 
     def ignored?
       failed? && allow_failure?
+=======
+      state :pending, value: 'pending'
+      state :running, value: 'running'
+      state :failed, value: 'failed'
+      state :success, value: 'success'
+      state :canceled, value: 'canceled'
+    end
+
+    delegate :sha, :short_sha, :before_sha, :ref,
+      to: :commit, prefix: false
+
+    def trace_html
+      html = Ci::Ansi2html::convert(trace) if trace.present?
+      html ||= ''
+    end
+
+    def started?
+      !pending? && !canceled? && started_at
+>>>>>>> origin/8-0-stable
     end
 
     def retryable?
@@ -194,7 +214,11 @@ module Ci
     end
 
     def raw_trace
+<<<<<<< HEAD
       if File.file?(path_to_trace)
+=======
+      if File.exist?(path_to_trace)
+>>>>>>> origin/8-0-stable
         File.read(path_to_trace)
       elsif project.ci_id && File.file?(old_path_to_trace)
         # Temporary fix for build trace data integrity
@@ -208,7 +232,11 @@ module Ci
     def trace
       trace = raw_trace
       if project && trace.present?
+<<<<<<< HEAD
         trace.gsub(project.runners_token, 'xxxxxx')
+=======
+        trace.gsub(project.token, 'xxxxxx')
+>>>>>>> origin/8-0-stable
       else
         trace
       end

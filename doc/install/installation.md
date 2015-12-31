@@ -137,10 +137,18 @@ Install the Bundler Gem:
 
 ## 3. Go
 
+<<<<<<< HEAD
 Since GitLab 8.0, Git HTTP requests are handled by gitlab-workhorse (formerly
 gitlab-git-http-server). This is a small daemon written in Go. To install
 gitlab-workhorse we need a Go compiler. The instructions below assume you
 use 64-bit Linux. You can find downloads for other platforms at the [Go download
+=======
+Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
+This is a small daemon written in Go.
+To install gitlab-git-http-server we need a Go compiler.
+The instructions below assume you use 64-bit Linux. You can find
+downloads for other platforms at the [Go download
+>>>>>>> origin/8-0-stable
 page](https://golang.org/dl).
 
     curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
@@ -489,9 +497,15 @@ GitLab Shell is an SSH access and repository management software developed speci
 ### Install gitlab-workhorse
 
     cd /home/git
+<<<<<<< HEAD
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
     sudo -u git -H git checkout 0.5.1
+=======
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
+    cd gitlab-git-http-server
+    sudo -u git -H git checkout 0.2.14
+>>>>>>> origin/8-0-stable
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -860,6 +874,7 @@ Apart from the always supported markdown style there are other rich text files t
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Troubleshooting
 =======
 =======
@@ -870,6 +885,9 @@ Apart from the always supported markdown style there are other rich text files t
 * Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-4-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
 * Restart GitLab
 >>>>>>> origin/5-4-stable
+=======
+## Troubleshooting
+>>>>>>> origin/8-0-stable
 
 ### "You appear to have cloned an empty repository."
 

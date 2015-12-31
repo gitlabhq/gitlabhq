@@ -285,6 +285,11 @@ v 8.1.0
 v 8.0.5
   - Correct lookup-by-email for LDAP logins
   - Fix loading spinner sometimes not being hidden on Merge Request tab switches
+v 8.0.6
+  - Fix loading spinner sometimes not being hidden on Merge Request tab switches
+
+v 8.0.5
+  - Correct lookup-by-email for LDAP logins
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)

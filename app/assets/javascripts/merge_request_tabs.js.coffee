@@ -77,7 +77,11 @@ class @MergeRequestTabs
 
   scrollToElement: (container) ->
     if window.location.hash
+<<<<<<< HEAD
       $el = $("div#{container} #{window.location.hash}")
+=======
+      $el = $("#{container} #{window.location.hash}")
+>>>>>>> origin/8-0-stable
       $('body').scrollTo($el.offset().top) if $el.length
 
   # Activate a tab based on the current action
@@ -148,6 +152,7 @@ class @MergeRequestTabs
         $('div#diffs .js-syntax-highlight').syntaxHighlight()
         @diffsLoaded = true
         @scrollToElement("#diffs")
+<<<<<<< HEAD
 
   loadBuilds: (source) ->
     return if @buildsLoaded
@@ -159,6 +164,8 @@ class @MergeRequestTabs
         $('.js-timeago').timeago()
         @buildsLoaded = true
         @scrollToElement("#builds")
+=======
+>>>>>>> origin/8-0-stable
 
   # Show or hide the loading spinner
   #
