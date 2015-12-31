@@ -1,15 +1,9 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics do
-  describe '.pool_size' do
-    it 'returns a Fixnum' do
-      expect(described_class.pool_size).to be_an_instance_of(Fixnum)
-    end
-  end
-
-  describe '.timeout' do
-    it 'returns a Fixnum' do
-      expect(described_class.timeout).to be_an_instance_of(Fixnum)
+  describe '.settings' do
+    it 'returns a Hash' do
+      expect(described_class.settings).to be_an_instance_of(Hash)
     end
   end
 
