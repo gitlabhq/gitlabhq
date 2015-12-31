@@ -171,8 +171,13 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Quit the database session
     template1=# \q
 
+<<<<<<< HEAD
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
+=======
+    # switch to right version
+    git checkout v1.3.0
+>>>>>>> gitlabhq/5-1-stable
 
     # Quit the database session
     gitlabhq_production> \q
@@ -249,7 +254,18 @@ sudo usermod -aG redis git
 
 **Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
+<<<<<<< HEAD
 ### Configure It
+=======
+    # Checkout to stable release
+    sudo -u git -H git checkout 5-1-stable
+
+**Note:**
+You can change `5-1-stable` to `master` if you want the *bleeding edge* version, but
+do so with caution!
+
+## Configure it
+>>>>>>> gitlabhq/5-1-stable
 
     # Go to GitLab installation folder
     cd /home/git/gitlab
@@ -267,6 +283,7 @@ sudo usermod -aG redis git
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
     sudo chown -R git tmp/
+<<<<<<< HEAD
     sudo chmod -R u+rwX,go-w log/
     sudo chmod -R u+rwX tmp/
 
@@ -292,9 +309,22 @@ sudo usermod -aG redis git
 
     # Change the permissions of the directory where CI artifacts are stored
     sudo chmod -R u+rwX shared/artifacts/
+=======
+    sudo chmod -R u+rwX  log/
+    sudo chmod -R u+rwX  tmp/
 
-    # Copy the example Unicorn config
-    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    # Create directory for satellites
+    sudo -u git -H mkdir /home/git/gitlab-satellites
+
+    # Create directories for sockets/pids and make sure GitLab can write to them
+    sudo -u git -H mkdir tmp/pids/
+    sudo -u git -H mkdir tmp/sockets/
+    sudo chmod -R u+rwX  tmp/pids/
+    sudo chmod -R u+rwX  tmp/sockets/
+>>>>>>> gitlabhq/5-1-stable
+
+    # Copy the example of Puma config
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
 
     # Find number of cores
     nproc
@@ -430,6 +460,7 @@ Download the init script (will be /etc/init.d/gitlab):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
@@ -443,6 +474,9 @@ Download the init script (will be /etc/init.d/gitlab):
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab
 >>>>>>> gitlabhq/5-0-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
+>>>>>>> gitlabhq/5-1-stable
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -593,6 +627,7 @@ Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following comm
 You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### Restart
 
 <<<<<<< HEAD
@@ -602,6 +637,9 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 =======
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/nginx/gitlab
 >>>>>>> gitlabhq/5-0-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
+>>>>>>> gitlabhq/5-1-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 >>>>>>> origin/4-2-stable
 

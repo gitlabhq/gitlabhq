@@ -339,13 +339,18 @@ Rails.application.routes.draw do
   #
   # Groups Area
   #
+<<<<<<< HEAD
   resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
+=======
+  resources :groups, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, except: [:index] do
+>>>>>>> gitlabhq/5-1-stable
     member do
       get :issues
       get :merge_requests
       get :projects
     end
 
+<<<<<<< HEAD
     scope module: :groups do
       resources :group_members, only: [:index, :create, :update, :destroy] do
         post :resend_invite, on: :member
@@ -354,6 +359,19 @@ Rails.application.routes.draw do
 
       resource :avatar, only: [:destroy]
       resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+=======
+  #
+  # Teams Area
+  #
+  resources :teams, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, except: [:index] do
+    member do
+      get :issues
+      get :merge_requests
+    end
+    scope module: :teams do
+      resources :members,   only: [:index, :new, :create, :edit, :update, :destroy]
+      resources :projects,  only: [:index, :new, :create, :edit, :update, :destroy], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }
+>>>>>>> gitlabhq/5-1-stable
     end
   end
 
