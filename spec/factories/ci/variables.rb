@@ -16,7 +16,7 @@
 
 FactoryGirl.define do
   factory :ci_variable, class: Ci::Variable do
-    id 1
+    id 10
     key 'TEST_VARIABLE_1'
     value 'VALUE_1'
 

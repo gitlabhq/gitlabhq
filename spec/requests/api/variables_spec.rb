@@ -79,6 +79,44 @@ describe API::API, api: true do
     end
   end
 
+  describe 'POST /projects/:id/variables' do
+    context 'authorized user with proper permissions' do
+      it 'should create variable' do
+        expect do
+          post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
+        end.to change{project.variables.count}.by(1)
+
+        expect(response.status).to eq(201)
+        expect(json_response['key']).to eq('TEST_VARIABLE_2')
+        expect(json_response['value']).to eq('VALUE_2')
+      end
+
+      it 'should not allow to duplicate variable key' do
+        expect do
+          post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_1', value: 'VALUE_2'
+        end.to change{project.variables.count}.by(0)
+
+        expect(response.status).to eq(400)
+      end
+    end
+
+    context 'authorized user with invalid permissions' do
+      it 'should not create variable' do
+        post api("/projects/#{project.id}/variables", user2)
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'should not create variable' do
+        post api("/projects/#{project.id}/variables")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
   describe 'PUT /projects/:id/variables/:variable_id' do
     context 'authorized user with proper permissions' do
       it 'should update variable data' do

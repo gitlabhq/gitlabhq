@@ -41,6 +41,24 @@ module API
         present variables.first, with: Entities::Variable
       end
 
+      # Create a new variable in project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   key (required) - The key of variable being created
+      #   value (required) - The value of variable being created
+      # Example Request:
+      #   POST /projects/:id/variables
+      post ':id/variables' do
+        required_attributes! [:key, :value]
+
+        variable = user_project.variables.create(key: params[:key], value: params[:value])
+        return render_validation_error!(variable) unless variable.valid?
+        variable.save!
+
+        present variable, with: Entities::Variable
+      end
+
       # Update existing variable of a project
       #
       # Parameters:
@@ -75,6 +93,8 @@ module API
         return not_found!('Variable') unless variable
 
         variable.destroy
+
+        present variable, with: Entities::Variable
       end
     end
   end
