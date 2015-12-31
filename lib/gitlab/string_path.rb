@@ -5,7 +5,7 @@ module Gitlab
   # This is IO-operations safe class, that does similar job to 
   # Ruby's Pathname but without the risk of accessing filesystem.
   #
-  # TODO: better support for '../' and './'
+  # TODO, better support for '../' and './'
   #
   class StringPath
     attr_reader :path, :universe

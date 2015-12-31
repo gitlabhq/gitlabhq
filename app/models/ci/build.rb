@@ -349,8 +349,23 @@ module Ci
       artifacts? && artifacts_file.path.end_with?('zip') && artifacts_metadata.exists?
     end
 
-    def artifacts_metadata_for(path)
-      {}
+    def artifacts_metadata_for_path(path)
+      return {} unless artifacts_metadata.exists?
+      metadata = []
+      meta_path = path.sub(/^\.\//, '')
+
+      File.open(artifacts_metadata.path) do |file|
+        gzip = Zlib::GzipReader.new(file)
+        gzip.each_line do |line|
+          if line =~ %r{^#{meta_path}[^/]+/?\s}
+            path, meta = line.split(' ')
+            metadata << path
+          end
+        end
+        gzip.close
+      end
+
+      metadata
     end
 
     private
