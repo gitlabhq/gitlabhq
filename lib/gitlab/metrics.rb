@@ -38,10 +38,6 @@ module Gitlab
       @pool
     end
 
-    def self.hostname
-      @hostname
-    end
-
     # Returns a relative path and line number based on the last application call
     # frame.
     def self.last_relative_application_frame
@@ -88,8 +84,6 @@ module Gitlab
     def self.escape_value(value)
       value.to_s.gsub('=', '\\=')
     end
-
-    @hostname = Socket.gethostname
 
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.

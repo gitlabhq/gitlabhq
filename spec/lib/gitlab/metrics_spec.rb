@@ -13,12 +13,6 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '.hostname' do
-    it 'returns a String containing the hostname' do
-      expect(described_class.hostname).to eq(Socket.gethostname)
-    end
-  end
-
   describe '.last_relative_application_frame' do
     it 'returns an Array containing a file path and line number' do
       file, line = described_class.last_relative_application_frame

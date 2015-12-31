@@ -1,6 +1,5 @@
 if Gitlab::Metrics.enabled?
   require 'influxdb'
-  require 'socket'
   require 'connection_pool'
   require 'method_source'
 
