@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Transaction do
-  let(:transaction) { described_class.new }
+  let(:transaction) { described_class.new('rspec') }
 
   describe '#duration' do
     it 'returns the duration of a transaction in seconds' do
@@ -58,7 +58,7 @@ describe Gitlab::Metrics::Transaction do
   describe '#track_self' do
     it 'adds a metric for the transaction itself' do
       expect(transaction).to receive(:add_metric).
-        with(described_class::SERIES, { duration: transaction.duration }, {})
+        with('rspec', { duration: transaction.duration }, {})
 
       transaction.track_self
     end

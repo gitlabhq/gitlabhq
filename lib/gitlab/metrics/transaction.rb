@@ -4,8 +4,6 @@ module Gitlab
     class Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
 
-      SERIES = 'transactions'
-
       attr_reader :uuid, :tags
 
       def self.current
@@ -13,7 +11,8 @@ module Gitlab
       end
 
       # name - The name of this transaction as a String.
-      def initialize
+      def initialize(series)
+        @series  = series
         @metrics = []
         @uuid    = SecureRandom.uuid
 
@@ -55,7 +54,7 @@ module Gitlab
       end
 
       def track_self
-        add_metric(SERIES, { duration: duration }, @tags)
+        add_metric(@series, { duration: duration }, @tags)
       end
 
       def submit

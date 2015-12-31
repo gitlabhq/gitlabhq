@@ -19,8 +19,7 @@ module Gitlab
         {
           series: @series,
           tags:   @tags.merge(
-            hostname:     Metrics.hostname,
-            process_type: Sidekiq.server? ? 'sidekiq' : 'rails'
+            hostname: Metrics.hostname
           ),
           values:    @values,
           timestamp: @created_at.to_i * 1_000_000_000

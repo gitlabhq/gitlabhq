@@ -39,7 +39,6 @@ describe Gitlab::Metrics::Metric do
         expect(hash[:tags]).to be_an_instance_of(Hash)
 
         expect(hash[:tags][:hostname]).to be_an_instance_of(String)
-        expect(hash[:tags][:process_type]).to be_an_instance_of(String)
       end
 
       it 'includes the values' do

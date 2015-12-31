@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Instrumentation do
-  let(:transaction) { Gitlab::Metrics::Transaction.new }
+  let(:transaction) { Gitlab::Metrics::Transaction.new('rspec') }
 
   before do
     @dummy = Class.new do
