@@ -44,6 +44,8 @@ class ProjectTeam
   end
 
   def add_users(users, access, current_user = nil)
+    return false if group_member_lock
+
     ProjectMember.add_users_into_projects(
       [project.id],
       users,
@@ -160,7 +162,27 @@ class ProjectTeam
       end
     end
 
-    access.max
+    if project.invited_groups.any? && project.allowed_to_share_with_group?
+      access << max_invited_level(user_id)
+    end
+
+    access.compact.max
+  end
+
+
+  def max_invited_level(user_id)
+    project.project_group_links.map do |group_link|
+      invited_group = group_link.group
+      access = invited_group.group_members.find_by(user_id: user_id).try(:access_field)
+
+      # If group member has higher access level we should restrict it
+      # to max allowed access level
+      if access && access > group_link.group_access
+        access = group_link.group_access
+      end
+
+      access
+    end.compact.max
   end
 
   private
@@ -168,6 +190,35 @@ class ProjectTeam
   def fetch_members(level = nil)
     project_members = project.project_members
     group_members = group ? group.group_members : []
+    invited_members = []
+
+    if project.invited_groups.any? && project.allowed_to_share_with_group?
+      project.project_group_links.each do |group_link|
+        invited_group = group_link.group
+        im = invited_group.group_members
+
+        if level
+          int_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]
+
+          # Skip group members if we ask for masters
+          # but max group access is developers
+          next if int_level > group_link.group_access
+
+          # If we ask for developers and max
+          # group access is developers we need to provide
+          # both group master, developers as devs
+          if int_level == group_link.group_access
+            im.where("access_level >= ?)", group_link.group_access)
+          else
+            im.send(level)
+          end
+        end
+
+        invited_members << im
+      end
+
+      invited_members = invited_members.flatten.compact
+    end
 
     if level
       project_members = project_members.send(level)
@@ -175,6 +226,7 @@ class ProjectTeam
     end
 
     user_ids = project_members.pluck(:user_id)
+    user_ids.push(*invited_members.map(&:user_id)) if invited_members.any?
     user_ids.push(*group_members.pluck(:user_id)) if group
 
     User.where(id: user_ids)
@@ -182,5 +234,9 @@ class ProjectTeam
 
   def group
     project.group
+  end
+
+  def group_member_lock
+    group && group.membership_lock
   end
 end

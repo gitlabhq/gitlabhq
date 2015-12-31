@@ -1,0 +1,11 @@
+%fieldset.issues-feature
+  %legend
+    Issues:
+
+  .form-group
+    = f.label :issues_template, class: 'control-label' do
+      Description template
+    .col-sm-10
+      = f.text_area :issues_template, class: "form-control", rows: 3
+
+

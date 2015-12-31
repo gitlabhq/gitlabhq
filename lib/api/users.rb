@@ -11,6 +11,7 @@ module API
       #  GET /users?search=Admin
       #  GET /users?username=root
       get do
+<<<<<<< HEAD
         if params[:username].present?
           @users = User.where(username: params[:username])
         else
@@ -19,6 +20,15 @@ module API
           @users = @users.search(params[:search]) if params[:search].present?
           @users = paginate @users
         end
+=======
+        skip_ldap = params[:skip_ldap].present? && params[:skip_ldap] == 'true'
+
+        @users = User.all
+        @users = @users.active if params[:active].present?
+        @users = @users.non_ldap if skip_ldap
+        @users = @users.search(params[:search]) if params[:search].present?
+        @users = paginate @users
+>>>>>>> gitlabhq/ce_upstream
 
         if current_user.is_admin?
           present @users, with: Entities::UserFull

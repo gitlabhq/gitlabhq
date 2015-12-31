@@ -88,7 +88,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    if @project.import_in_progress?
+    # If we're importing while we do have a repository, we're simply updating the mirror.
+    if @project.import_in_progress? && !@project.updating_mirror?
       redirect_to namespace_project_import_path(@project.namespace, @project)
       return
     end
@@ -210,10 +211,41 @@ class ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(
+<<<<<<< HEAD
       :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
       :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
+=======
+      :avatar,
+      :builds_enabled,
+      :default_branch,
+      :description,
+      :import_url,
+      :issues_enabled,
+      :issues_tracker,
+      :issues_tracker_id,
+      :last_activity_at,
+      :merge_requests_enabled,
+      :name,
+      :namespace_id,
+      :path,
+      :snippets_enabled,
+      :tag_list,
+      :visibility_level,
+      :wiki_enabled,
+
+      # EE-only
+      :approvals_before_merge,
+      :approver_ids,
+      :issues_template,
+      :merge_requests_ff_only_enabled,
+      :merge_requests_rebase_enabled,
+      :merge_requests_template,
+      :mirror,
+      :mirror_user_id,
+      :reset_approvals_on_push
+>>>>>>> gitlabhq/ce_upstream
     )
   end
 

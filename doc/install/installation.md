@@ -287,9 +287,15 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
+<<<<<<< HEAD
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable gitlab
 
 **Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+=======
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ee.git -b 8-2-stable-ee gitlab
+
+**Note:** You can change `8-2-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+>>>>>>> gitlabhq/ce_upstream
 
 <<<<<<< HEAD
 ### Configure It

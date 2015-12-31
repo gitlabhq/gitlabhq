@@ -3,6 +3,7 @@
   %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
       %strong.str-truncated= branch.name
+<<<<<<< HEAD
     &nbsp;
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
@@ -14,6 +15,27 @@
       %span.label.label-success
         %i.fa.fa-lock
         protected
+=======
+
+    - if branch.name == @repository.root_ref
+      %span.label.label-primary default
+    - elsif @repository.merged_to_root_ref? branch.name
+      %span.label.label-info.has_tooltip(title="Merged into #{@repository.root_ref}")
+        merged
+
+    - if @project.protected_branch? branch.name
+      %span.label.label-success
+        = icon('lock')
+        protected
+
+    - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
+      - tooltip_message = "The branch could not be updated automatically because it has diverged from its upstream counterpart."
+      - tooltip_message << "<br>To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above." if can?(current_user, :push_code, @project)
+      %span.label.label-danger.has_tooltip{data: { html: "true", title: tooltip_message }}
+        = icon('exclamation-triangle')
+        diverged from upstream
+
+>>>>>>> gitlabhq/ce_upstream
     .controls.hidden-xs
       - if create_mr_button?(@repository.root_ref, branch.name)
         = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-grouped btn-xs' do

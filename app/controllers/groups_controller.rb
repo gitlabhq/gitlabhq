@@ -41,6 +41,8 @@ class GroupsController < Groups::ApplicationController
     @last_push = current_user.recent_push if current_user
     @projects = @projects.includes(:namespace)
 
+    @shared_projects = @group.shared_projects
+
     respond_to do |format|
       format.html
 
@@ -79,6 +81,12 @@ class GroupsController < Groups::ApplicationController
 >>>>>>> gitlabhq/6-0-stable
 
     redirect_to root_path, alert: "Group '#{@group.name}' was successfully deleted."
+  end
+
+  def autocomplete
+    groups = GroupsFinder.new.execute(current_user).search(params[:search]).limit(params[:per_page])
+
+    render json: groups.to_json
   end
 
   protected
@@ -123,7 +131,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar, :public)
+    params.require(:group).permit(:name, :description, :path, :avatar, :membership_lock, :share_with_group_lock, :public)
   end
 
   def load_events

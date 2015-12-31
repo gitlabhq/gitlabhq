@@ -1,0 +1,8 @@
+- if @project.mirror? && can?(current_user, :push_code, @project)
+  - size = nil unless defined?(size) && size
+  - if @project.updating_mirror?
+    %span.btn.disabled.update-mirror-button.has_tooltip{title: "Updating from upstream..."}
+      = icon('refresh')
+  - else
+    = link_to update_now_namespace_project_mirror_path(@project.namespace, @project), method: :post, class: "btn update-mirror-button has_tooltip", title: "Update from upstream" do
+      = icon('refresh')

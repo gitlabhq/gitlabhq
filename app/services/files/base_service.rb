@@ -69,5 +69,9 @@ module Files
         raise_error("Something went wrong when we tried to create #{@target_branch} for you: #{result[:message]}")
       end
     end
+
+    def git_hook
+      project.git_hook
+    end
   end
 end

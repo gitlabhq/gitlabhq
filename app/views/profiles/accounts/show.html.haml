@@ -32,25 +32,25 @@
           - else
             = f.submit 'Generate', class: "btn btn-default"
 
-  - unless current_user.ldap_user?
-    .panel.panel-default
-      .panel-heading
-        Two-factor Authentication
-      .panel-body
-        - if current_user.two_factor_enabled?
-          .pull-right
-            = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
-                data: { confirm: 'Are you sure?' }
-          %p.text-success
-            %strong
-              Two-factor Authentication is enabled
-          %p
-            If you lose your recovery codes you can
-            %strong
-              = succeed ',' do
-                = link_to 'generate new ones', codes_profile_two_factor_auth_path, method: :post, data: { confirm: 'Are you sure?' }
-            invalidating all previous codes.
+  .panel.panel-default
+    .panel-heading
+      Two-factor Authentication
+    .panel-body
+      - if current_user.two_factor_enabled?
+        .pull-right
+          = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
+              data: { confirm: 'Are you sure?' }
+        %p.text-success
+          %strong
+            Two-factor Authentication is enabled
+        %p
+          If you lose your recovery codes you can
+          %strong
+            = succeed ',' do
+              = link_to 'generate new ones', codes_profile_two_factor_auth_path, method: :post, data: { confirm: 'Are you sure?' }
+          invalidating all previous codes.
 
+<<<<<<< HEAD
         - else
           %p
             Increase your account's security by enabling two-factor authentication (2FA).
@@ -60,6 +60,16 @@
 
           .form-actions
             = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
+=======
+      - else
+        %p
+          Increase your account's security by enabling two-factor authentication (2FA).
+        %p
+          Each time you log in you’ll be required to provide your username and
+          password as usual, plus a randomly-generated code from your phone.
+        %div
+          = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
+>>>>>>> gitlabhq/ce_upstream
 
   - if button_based_providers.any?
     .panel.panel-default

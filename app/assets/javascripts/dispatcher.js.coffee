@@ -102,6 +102,12 @@ class Dispatcher
       when 'users:show'
         new User()
         new Activities()
+      when 'projects:group_links:index'
+        new GroupsSelect()
+      when 'projects:mirrors:show', 'projects:mirrors:update'
+        new UsersSelect()
+      when 'admin:emails:show'
+        new AdminEmailSelect()
 
     switch path.first()
       when 'admin'

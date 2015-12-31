@@ -1,0 +1,80 @@
+%fieldset.merge-request-feature
+  %legend
+    Merge requests:
+
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :merge_requests_ff_only_enabled do
+          = f.check_box :merge_requests_ff_only_enabled
+          %strong Only fast-forward merging
+          %br
+          %span.descr The accept merge request button will only show when a merge without a merge commit is possible.
+
+  .form-group.rebase-feature
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :merge_requests_rebase_enabled do
+          = f.check_box :merge_requests_rebase_enabled
+          %strong Rebase button
+          %br
+          %span.descr Allows rebasing of merge requests before fast-forward merge.
+
+  .form-group
+    = f.label :merge_requests_template, class: 'control-label' do
+      Description template
+    .col-sm-10
+      = f.text_area :merge_requests_template, class: "form-control", rows: 3
+
+  .form-group
+    = f.label :approvals_before_merge, class: 'control-label' do
+      Approvals required
+    .col-sm-10
+      = f.number_field :approvals_before_merge, class: "form-control", min: 0
+      .help-block
+        Number of users to approve a merge request before it can be accepted. 0 - approving is disabled
+
+  .form-group.reset-approvals-on-push
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :reset_approvals_on_push do
+          = f.check_box :reset_approvals_on_push
+          %span.descr Reset approvals on push
+          .help-block Approvals are reset when new data is pushed to the merge request
+
+  .form-group
+    = f.label :approver_ids, class: 'control-label' do
+      Approvers
+    .col-sm-10
+      = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
+      .help-block
+        Add an approver suggestion for each merge request
+
+      .panel.panel-default.prepend-top-10
+        .panel-heading
+          Approvers
+          %small
+            (#{@project.approvers.count(:all)})
+        %ul.well-list
+          - @project.approvers.each do |approver|
+            %li
+              = link_to approver.user.name, approver.user
+              .pull-right
+                = link_to namespace_project_approver_path(@project.namespace, @project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                  = icon("sign-out")
+                  Remove
+          - if @project.approvers.empty?
+            %li There are no approvers
+
+
+:coffeescript
+  new UsersSelect()
+
+  mergeRequestsRebaseVisibilityCheck = ->
+    is_rebase_enabled = $("input#project_merge_requests_ff_only_enabled").prop("checked")
+    $(".rebase-feature").toggle(is_rebase_enabled)
+
+  mergeRequestsRebaseVisibilityCheck()
+
+  $("input#project_merge_requests_ff_only_enabled").change ->
+    mergeRequestsRebaseVisibilityCheck()

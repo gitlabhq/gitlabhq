@@ -1,12 +1,17 @@
 require 'spec_helper'
 
+<<<<<<< HEAD
 describe Gitlab::LDAP::Config, lib: true do
   let(:config) { Gitlab::LDAP::Config.new provider }
+=======
+describe Gitlab::LDAP::Config do
+  let(:config) { described_class.new provider }
+>>>>>>> gitlabhq/ce_upstream
   let(:provider) { 'ldapmain' }
 
   describe '#initalize' do
     it 'requires a provider' do
-      expect{ Gitlab::LDAP::Config.new }.to raise_error ArgumentError
+      expect{ described_class.new }.to raise_error ArgumentError
     end
 
     it "works" do
@@ -14,7 +19,8 @@ describe Gitlab::LDAP::Config, lib: true do
     end
 
     it "raises an error if a unknow provider is used" do
-      expect{ Gitlab::LDAP::Config.new 'unknown' }.to raise_error(RuntimeError)
+      expect { described_class.new 'unknown' }.
+        to raise_error(described_class::InvalidProvider)
     end
   end
 end

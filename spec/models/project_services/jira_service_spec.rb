@@ -20,7 +20,13 @@
 
 require 'spec_helper'
 
+<<<<<<< HEAD
 describe JiraService, models: true do
+=======
+describe JiraService do
+  include RepoHelpers
+
+>>>>>>> gitlabhq/ce_upstream
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -81,13 +87,21 @@ describe JiraService, models: true do
           }
         )
       end
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> gitlabhq/ce_upstream
       it "reset password if url changed" do
         @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
         @jira_service.save
         expect(@jira_service.password).to be_nil
       end
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> gitlabhq/ce_upstream
       it "does not reset password if username changed" do
         @jira_service.username = "some_name"
         @jira_service.save
@@ -109,7 +123,11 @@ describe JiraService, models: true do
         expect(@jira_service.password).to be_nil
       end
     end
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> gitlabhq/ce_upstream
     context "when no password was previously set" do
       before do
         @jira_service = JiraService.create(

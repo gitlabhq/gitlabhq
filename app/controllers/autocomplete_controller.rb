@@ -3,11 +3,16 @@ class AutocompleteController < ApplicationController
   before_action :find_users, only: [:users]
 
   def users
-    @users ||= User.none
+    @users = @users.non_ldap if params[:skip_ldap] == 'true'
     @users = @users.search(params[:search]) if params[:search].present?
     @users = @users.active
     @users = @users.reorder(:name)
-    @users = @users.page(params[:page]).per(PER_PAGE)
+
+    if params[:push_code_to_protected_branches] && project
+      @users = @users.to_a.select { |user| user.can?(:push_code_to_protected_branches, project) }.take(PER_PAGE)
+    else
+      @users = @users.page(params[:page]).per(PER_PAGE)
+    end
 
 <<<<<<< HEAD
     if params[:search].blank?

@@ -1,11 +1,13 @@
 # Import your project from GitHub to GitLab
 
-It takes just a couple of steps to import your existing GitHub projects to GitLab. Keep in mind that it is possible only if
-GitHub support is enabled on your GitLab instance. You can read more about GitHub support [here](http://doc.gitlab.com/ce/integration/github.html)
+You can import your existing GitHub Enterprise projects following these steps.
+
+* First, you need to [enable GitHub Enterprise support](http://doc.gitlab.com/ee/integration/github.html) on your GitLab instance.
 
 If you want to import from a GitHub Enterprise instance, you need to use GitLab Enterprise; please see the [EE docs for the GitHub integration](http://doc.gitlab.com/ee/integration/github.html).
 
 * Sign in to GitLab.com and go to your dashboard.
+
 * To get to the importer page, you need to go to the "New project" page.
 
 ![New project page](github_importer/new_project_page.png)

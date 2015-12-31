@@ -2,6 +2,7 @@ module Gitlab
   class GitAccess
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
     PUSH_COMMANDS = %w{ git-receive-pack }
+    GIT_ANNEX_COMMANDS = %w{ git-annex-shell }
 
     attr_reader :actor, :project
 
@@ -66,6 +67,8 @@ module Gitlab
         download_access_check
       when *PUSH_COMMANDS
         push_access_check(changes)
+      when *GIT_ANNEX_COMMANDS
+        git_annex_access_check(project, changes)
       else
         build_status_object(false, "The command you're trying to execute is not allowed.")
       end
@@ -106,6 +109,11 @@ module Gitlab
 
       unless project.repository.exists?
         return build_status_object(false, "A repository for this project does not exist yet.")
+      end
+
+      if ::License.block_changes?
+        message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
+        return build_status_object(false, message)
       end
 
       changes = changes.lines if changes.kind_of?(String)
@@ -152,14 +160,111 @@ module Gitlab
         return status
       end
 
-      build_status_object(true)
+      # Return build_status_object(true) if all git hook checks passed successfully
+      # or build_status_object(false) if any hook fails
+      git_hook_check(user, project, ref, oldrev, newrev)
     end
 
     def forced_push?(oldrev, newrev)
       Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
     end
 
+    def git_hook_check(user, project, ref, oldrev, newrev)
+      unless project.git_hook && newrev && oldrev
+        return build_status_object(true)
+      end
+
+      git_hook = project.git_hook
+
+      # Prevent tag removal
+      if Gitlab::Git.tag_ref?(ref)
+        if git_hook.deny_delete_tag && protected_tag?(tag_name(ref)) && Gitlab::Git.blank_ref?(newrev)
+          return build_status_object(false, "You can not delete tag")
+        end
+      else
+        if Gitlab::Git.blank_ref?(newrev) || !git_hook.commit_validation?
+          return build_status_object(true)
+        end
+
+        oldrev = project.default_branch if Gitlab::Git.blank_ref?(oldrev)
+
+        commits =
+          if oldrev
+            project.repository.commits_between(oldrev, newrev)
+          else
+            project.repository.commits(newrev)
+          end
+
+        commits.each do |commit|
+          if status_object = check_commit(commit, git_hook)
+            return status_object
+          end
+        end
+      end
+
+      build_status_object(true)
+    end
+
     private
+
+    # If commit does not pass git hook validation the whole push should be rejected.
+    # This method should return nil if no error found or status object if there are some errors.
+    # In case of errors - all other checks will be canceled and push will be rejected.
+    def check_commit(commit, git_hook)
+      unless git_hook.commit_message_allowed?(commit.safe_message)
+        return build_status_object(false, "Commit message does not follow the pattern '#{git_hook.commit_message_regex}'")
+      end
+
+      unless git_hook.author_email_allowed?(commit.committer_email)
+        return build_status_object(false, "Committer's email '#{commit.committer_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
+      end
+
+      unless git_hook.author_email_allowed?(commit.author_email)
+        return build_status_object(false, "Author's email '#{commit.author_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
+      end
+
+      # Check whether author is a GitLab member
+      if git_hook.member_check
+        unless User.existing_member?(commit.author_email.downcase)
+          return build_status_object(false, "Author '#{commit.author_email}' is not a member of team")
+        end
+
+        if commit.author_email.downcase != commit.committer_email.downcase
+          unless User.existing_member?(commit.committer_email.downcase)
+            return build_status_object(false, "Committer '#{commit.committer_email}' is not a member of team")
+          end
+        end
+      end
+
+      if status_object = check_commit_diff(commit, git_hook)
+        return status_object
+      end
+
+      nil
+    end
+
+    def check_commit_diff(commit, git_hook)
+      if git_hook.file_name_regex.present?
+        commit.diffs.each do |diff|
+          if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
+            return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern '#{git_hook.file_name_regex}'")
+          end
+        end
+      end
+
+      if git_hook.max_file_size > 0
+        commit.diffs.each do |diff|
+          next if diff.deleted_file
+
+          blob = project.repository.blob_at(commit.id, diff.new_path)
+          if blob.size > git_hook.max_file_size.megabytes
+            return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{git_hook.max_file_size} MB")
+          end
+        end
+      end
+
+      nil
+    end
 
     def protected_branch_action(oldrev, newrev, branch_name)
       # we dont allow force push to protected branch
@@ -201,10 +306,24 @@ module Gitlab
       end
     end
 
-    protected
-
     def build_status_object(status, message = '')
       GitAccessStatus.new(status, message)
+    end
+
+    def git_annex_access_check(project, changes)
+      unless user && user_allowed?
+        return build_status_object(false, "You don't have access")
+      end
+
+      unless project.repository.exists?
+        return build_status_object(false, "Repository does not exist")
+      end
+
+      if user.can?(:push_code, project)
+        build_status_object(true)
+      else
+        build_status_object(false, "You don't have permission")
+      end
     end
   end
 end

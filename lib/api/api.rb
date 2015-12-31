@@ -43,6 +43,9 @@ module API
     mount ProjectMembers
     mount DeployKeys
     mount ProjectHooks
+    mount ProjectGitHook
+    mount Ldap
+    mount LdapGroupLinks
     mount Services
     mount Files
     mount Commits
@@ -53,6 +56,10 @@ module API
     mount Settings
     mount Keys
     mount Tags
+<<<<<<< HEAD
     mount Triggers
+=======
+    mount LicenseInfo
+>>>>>>> gitlabhq/ce_upstream
   end
 end

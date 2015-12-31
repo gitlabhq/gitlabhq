@@ -27,10 +27,16 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
 
     @project_member = @project.project_members.new
+    @project_group_links = @project.project_group_links
   end
 
   def create
     @project.team.add_users(params[:user_ids].split(','), params[:access_level], current_user)
+    members = @project.project_members.where(user_id: params[:user_ids].split(','))
+
+    members.each do |member|
+      log_audit_event(member, action: :create)
+    end
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project)
   end
@@ -40,7 +46,11 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     return render_403 unless can?(current_user, :update_project_member, @project_member)
 
-    @project_member.update_attributes(member_params)
+    old_access_level = @project_member.human_access
+
+    if @project_member.update_attributes(member_params)
+      log_audit_event(@project_member, action: :update, old_access_level: old_access_level)
+    end
   end
 
   def destroy
@@ -49,6 +59,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     return render_403 unless can?(current_user, :destroy_project_member, @project_member)
 
     @project_member.destroy
+
+    log_audit_event(@project_member, action: :destroy)
 
     respond_to do |format|
       format.html do
@@ -78,6 +90,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     if can?(current_user, :destroy_project_member, @project_member)
       @project_member.destroy
 
+      log_audit_event(@project_member, action: :destroy)
+
       respond_to do |format|
         format.html { redirect_to dashboard_projects_path, notice: "You left the project." }
         format.js { render nothing: true }
@@ -105,5 +119,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def member_params
     params.require(:project_member).permit(:user_id, :access_level)
+  end
+
+  def log_audit_event(member, options = {})
+    AuditEventService.new(current_user, @project, options).
+      for_member(member).security_event
   end
 end

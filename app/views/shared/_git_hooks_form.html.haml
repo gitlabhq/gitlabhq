@@ -1,0 +1,60 @@
+.form-group
+  .col-sm-offset-2.col-sm-10
+    .checkbox
+      = f.label :deny_delete_tag do
+        = f.check_box :deny_delete_tag
+        %strong
+          Do not allow users to remove git tags with
+          %code git push
+        .help-block Tags can still be deleted through the web UI.
+
+.form-group
+  .col-sm-offset-2.col-sm-10
+    .checkbox
+      = f.label :member_check do
+        = f.check_box :member_check
+        %strong
+          Check whether author is a GitLab user
+        .help-block Restrict commits by author (email) to existing GitLab users
+
+.form-group
+  = f.label :commit_message_regex, "Commit message", class: 'control-label'
+  .col-sm-10
+    = f.text_field :commit_message_regex, class: "form-control", placeholder: 'Example: Fixes \d+\..*'
+    .help-block
+      All commit messages must match this
+      = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+      to be pushed.
+      If this field is empty it allows any commit message.
+      For example you can require that an issue number is always mentioned in the commit message.
+
+.form-group
+  = f.label :author_email_regex, "Commit author's email", class: 'control-label'
+  .col-sm-10
+    = f.text_field :author_email_regex, class: "form-control", placeholder: 'Example: Fixes @my-company.com$'
+    .help-block
+      All commit author's email must match this
+      = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+      to be pushed.
+      If this field is empty it allows any email.
+
+.form-group
+  = f.label :file_name_regex, "Prohibited file names", class: 'control-label'
+  .col-sm-10
+    = f.text_field :file_name_regex, class: "form-control", placeholder: 'Example: (jar|exe)$'
+    .help-block
+      All commited filenames must not match this
+      = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+      to be pushed.
+      If this field is empty it allows any filenames.
+
+.form-group
+  = f.label :max_file_size, "Maximum file size (MB)", class: 'control-label'
+  .col-sm-10
+    = f.number_field :max_file_size, class: "form-control", min: 0
+    .help-block
+      Pushes that contain added or updated files that exceed this file size are rejected.
+      Set to 0 to allow files of any size.
+
+.form-actions
+  = f.submit "Save Git hooks", class: "btn btn-create"

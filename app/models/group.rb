@@ -24,6 +24,10 @@ class Group < Namespace
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
   has_many :users, through: :group_members
+  has_many :project_group_links, dependent: :destroy
+  has_many :shared_projects, through: :project_group_links, source: :project
+  has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
+  has_many :hooks, dependent: :destroy, class_name: 'GroupHook'
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -77,14 +81,18 @@ class Group < Namespace
     @owners ||= group_members.owners.includes(:user).map(&:user)
   end
 
-  def add_users(user_ids, access_level, current_user = nil)
+  def add_users(user_ids, access_level, current_user = nil, skip_notification: false)
     user_ids.each do |user_id|
-      Member.add_user(self.group_members, user_id, access_level, current_user)
+      Member.add_user(self.group_members, user_id, access_level, current_user, skip_notification: skip_notification)
     end
   end
 
-  def add_user(user, access_level, current_user = nil)
-    add_users([user], access_level, current_user)
+  def add_user(user, access_level, current_user = nil, skip_notification: false)
+    add_users([user], access_level, current_user, skip_notification: skip_notification)
+  end
+
+  def add_owner(user, current_user = nil, skip_notification: false)
+    self.add_user(user, Gitlab::Access::OWNER, current_user, skip_notification: skip_notification)
   end
 
   def add_guest(user, current_user = nil)
@@ -101,10 +109,6 @@ class Group < Namespace
 
   def add_master(user, current_user = nil)
     add_user(user, Gitlab::Access::MASTER, current_user)
-  end
-
-  def add_owner(user, current_user = nil)
-    add_user(user, Gitlab::Access::OWNER, current_user)
   end
 
   def has_owner?(user)
@@ -125,8 +129,25 @@ class Group < Namespace
     end
   end
 
+  def human_ldap_access
+    Gitlab::Access.options_with_owner.key ldap_access
+  end
+
   def public_profile?
     self.public || projects.public_only.any?
+  end
+
+  # NOTE: Backwards compatibility with old ldap situation
+  def ldap_cn
+    ldap_group_links.first.try(:cn)
+  end
+
+  def ldap_access
+    ldap_group_links.first.try(:group_access)
+  end
+
+  def ldap_synced?
+    Gitlab.config.ldap.enabled && ldap_cn.present?
   end
 
   def post_create_hook
@@ -143,5 +164,9 @@ class Group < Namespace
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def first_non_empty_project
+    projects.detect{ |project| !project.empty_repo? }
   end
 end

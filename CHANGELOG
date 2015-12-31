@@ -119,6 +119,15 @@ v 8.2.1
   - Fix: saving GitLabCiService as Admin Template
 
 v 8.2.0
+v 8.0.1
+v 8.1.0 (unreleased)
+v 8.2.0 (unreleased)
+v 8.3.0 (unreleased)
+
+v 8.2.0
+  - Improved performance of finding projects and groups in various places
+  - Improved performance of rendering user profile pages and Atom feeds
+  - Fix grouping of contributors by email in graph.
   - Improved performance of finding projects and groups in various places
   - Improved performance of rendering user profile pages and Atom feeds
   - Expose build artifacts path as config option

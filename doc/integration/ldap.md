@@ -1,6 +1,7 @@
 # GitLab LDAP integration
 
 GitLab can be configured to allow your users to sign with their LDAP credentials to integrate with e.g. Active Directory.
+To enable LDAP integration, edit [gitlab.rb (omnibus-gitlab)`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#setting-up-ldap-sign-in) or [gitlab.yml (source installations)](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) on your GitLab server and restart GitLab.
 
 The first time a user signs in with LDAP credentials, GitLab will create a new GitLab user associated with the LDAP Distinguished Name (DN) of the LDAP user.
 
@@ -47,6 +48,9 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   method: 'plain' # "tls" or "ssl" or "plain"
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
+
+  # This setting allows an LDAP group to become GitLab administrators
+  admin_group: ''
 
   # This setting specifies if LDAP server is Active Directory LDAP server.
   # For non AD servers it skips the AD specific queries.
@@ -148,6 +152,106 @@ GitLab recognizes the following LDAP attributes as email addresses: `mail`, `ema
 
 If multiple LDAP email attributes are present, e.g. `mail: foo@bar.com` and `email: foo@example.com`, then the first attribute found wins -- in this case `foo@bar.com`.
 
+## LDAP group synchronization (GitLab Enterprise Edition)
+
+LDAP group synchronization in GitLab Enterprise Edition allows you to synchronize the members of a GitLab group with one or more LDAP groups.
+
+### Setting up LDAP group synchronization
+
+Before enabling group synchronization, you need to make sure that the `group_base` field is set in your LDAP settings on
+your `gitlab.rb` or `gitlab.yml` file. This setting will tell GitLab where to look for groups within your LDAP server.
+
+```
+group_base: 'OU=groups,DC=example,DC=com'
+```
+
+Suppose we want to synchronize the GitLab group 'example group' with the LDAP group 'Engineering'.
+
+1. As an owner, go to the group settings page for 'example group'.
+
+![LDAP group settings](ldap/select_group_cn.png)
+
+As an admin you can also go to the group edit page in the admin area.
+
+![LDAP group settings for admins](ldap/select_group_cn_admin.png)
+
+2. Enter 'Engineering' as the LDAP Common Name (CN) in the 'LDAP Group cn' field.
+
+3. Enter a default group access level in the 'LDAP Access' field; let's say Developer.
+
+![LDAP group settings filled in](ldap/select_group_cn_engineering.png)
+
+4. Click 'Add synchronization' to add the new LDAP group link.
+
+Now every time a member of the 'Engineering' LDAP group signs in, they automatically become a Developer-level member of the 'example group' GitLab group. Users who are already signed in will see the change in membership after up to one hour.
+
+### Synchronizing with more than one LDAP group (GitLab EE 7.3 and newer)
+
+If you want to add the members of LDAP group to your GitLab group you can add an additional LDAP group link.
+If you have two LDAP group links, e.g. 'cn=Engineering' at level 'Developer' and 'cn=QA' at level 'Reporter', and user Jane belongs to both the 'Engineering' and 'QA' LDAP groups, she will get the _highest_ access level of the two, namely 'Developer'.
+
+![Two linked LDAP groups](ldap/two_linked_ldap_groups.png)
+
+### Locking yourself out of your own group
+
+As an LDAP-enabled GitLab user, if you create a group and then set it to synchronize with an LDAP group you do not belong to, you will be removed from the group as soon as the synchronization takes effect for you, unless you are the last owner of the group.
+
+If you accidentally lock yourself out of your own GitLab group, ask another owner of the group or a GitLab administrator to change the LDAP synchronization settings for your group.
+
+### Non-LDAP GitLab users
+
+Your GitLab instance may have users on it for whom LDAP is not enabled.
+If this is the case, these users will not be affected by LDAP group synchronization settings: they will be neither added nor removed automatically.
+
+### ActiveDirectory nested group support
+
+If you are using ActiveDirectory, it is possible to create nested LDAP groups: the 'Engineering' LDAP group may contain another LDAP group 'Software', with 'Software' containing LDAP users Alice and Bob.
+GitLab will recognize Alice and Bob as members of the 'Engineering' group.
+
+## Define GitLab admin status via LDAP
+
+It is possible to configure GitLab Enterprise Edition (7.1 and newer) so that GitLab admin rights are bestowed on the members of a given LDAP group.
+GitLab administrator users who do not have LDAP enabled are not affected by the LDAP admin group feature.
+
+### Enabling the admin group feature
+
+Below we assume that you have an LDAP group with the common name (CN) 'GitLab administrators' containing the users that should be GitLab administrators.
+We recommend that you keep a non-LDAP GitLab administrator user around on your GitLab instance in case you accidentally remove the admin status from your own LDAP-enabled GitLab user.
+
+For omnibus-gitlab, add the following to the LDAP part of `/etc/gitlab/gitlab.rb` under one (or more) of the servers in
+the `servers:` section and run `gitlab-ctl reconfigure`.
+
+```yaml
+    admin_group: 'GitLab administrators'
+```
+
+For installations from source, add the following setting in the 'ldap' section of gitlab.yml, and run `service gitlab reload` afterwards.
+
+```yaml
+    admin_group: 'Gitlab administrators'
+```
+
+## Synchronising user SSH keys with LDAP
+
+It is possible to configure GitLab Enterprise Edition (7.1 and newer) so that users have their SSH public keys synchronised with an attribute in their LDAP object.
+Existing SSH public keys that are manually manged in GitLab are not affected by this feature.
+
+### Enabling the key synchronisation feature
+
+Below we assume that you have LDAP users with an attribute  'sshpublickey' containing the users ssh public key.
+
+For omnibus-gitlab, add the following to `/etc/gitlab/gitlab.rb` and run `gitlab-ctl reconfigure`.
+
+```ruby
+gitlab_rails['ldap_sync_ssh_keys'] = 'sshpublickey'
+```
+
+For installations from source, add the following setting in the 'ldap' section of gitlab.yml, and run `service gitlab reload` afterwards.
+
+```yaml
+    sync_ssh_keys: 'sshpublickey'
+```
+
 ## Using an LDAP filter to limit access to your GitLab server
 
 If you want to limit all GitLab access to a subset of the LDAP users on your LDAP server you can set up an LDAP user filter.
@@ -179,6 +283,129 @@ Tip: if you want to limit access to the nested members of an Active Directory gr
 ```
 
 Please note that GitLab does not support the custom filter syntax used by omniauth-ldap.
+
+## Integrate GitLab with more than one LDAP server (Enterprise Edition)
+
+Starting with GitLab Enterprise Edition 7.4 it is possible to give users from more than one LDAP server access to the same GitLab server.
+
+Please use the following steps to enable support for multiple LDAP servers.
+
+### 1. Check your GitLab version
+
+Go to gitlab.example.com/help and verify you are running GitLab Enterprise Edition 7.4.0 or newer.
+
+### 2. Make sure your GitLab server uses the new LDAP syntax
+
+```
+# For omnibus packages
+sudo gitlab-rails runner 'puts (Gitlab.config.ldap["host"] ? :old_syntax : :new_syntax)'
+
+# For installations from source
+cd /home/git/gitlab
+bundle exec rails runner -e production 'puts (Gitlab.config.ldap["host"] ? :old_syntax : :new_syntax)'
+```
+
+If you are not using the new syntax yet, please edit `/etc/gitlab/gitlab.rb` or
+`gitlab.yml` (for installations from source) and make your LDAP configuration
+setting look as above. With the new syntax, LDAP server blocks are named. Your
+existing LDAP server should be named 'main'.
+
+### 3. Add new LDAP servers
+
+Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (omnibus packages) or `gitlab.yml` (installations from source).
+Remember to run `sudo gitlab-ctl reconfigure` or `sudo service gitlab reload` for the new servers to become available.
+
+Tip: you can assign labels to the different servers to give them human-friendly names.
+
+```
+ldap:
+  servers:
+    main:
+      label: 'LDAP HQ'
+```
+
+## Automatic Daily LDAP Sync
+
+GitLab Enterprise Edition will now automatically sync all LDAP members on a daily basis. You can configure the time that it happens.
+
+LDAP group synchronization in GitLab Enterprise Edition works by GitLab periodically updating the group memberships of _active_ GitLab users.
+If a GitLab user becomes _inactive_ however, their group memberships in GitLab can start to lag behind the LDAP server group memberships.
+Starting with GitLab 7.5 Enterprise Edition, GitLab will also update the LDAP group memberships of inactive users, by doing a daily LDAP check for _all_ GitLab users.
+
+> Example:
+John Doe leaves the company and is removed from the LDAP server.
+At this point he can no longer log in to GitLab 7.4 EE.
+But because he is no longer active on the GitLab EE server (he cannot log in!), his LDAP group memberships in GitLab no longer get updated, and he stays listed as a group member on the GitLab server.
+
+> Now with GitLab 7.5 Enterprise Edition, within 24 hours of John being removed from the LDAP server, his user will also stop being listed as member of any GitLab groups.
+
+
+### Blocked users and Daily sync
+
+If you use Active directory and you block user in AD - user will be automatically blocked in GitLab during next LDAP Sync.
+
+
+## LDAP Synchronization
+
+LDAP membership is checked for a GitLab user:
+
+- when they sign in to the GitLab instance
+- on a daily basis
+- on any request that they do, once the LDAP cache has expired (default 1 hour, configurable, cache is per user)
+
+If you want a shorter or longer LDAP sync time, you can easily set this with the `sync_time` attribute in your config.
+
+For Omnibus package installations, simply add `"sync_time"` in `/etc/gitlab/gitlab.rb` to your LDAP config.
+A typical LDAP configuration for GitLab installed with an Omnibus package might look like this:
+
+```
+gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+main:
+  label: 'LDAP'
+  host: '_your_ldap_server'
+  port: 636
+  uid: 'sAMAccountName'
+  method: 'ssl' # "tls" or "ssl" or "plain"
+  bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+  password: '_the_password_of_the_bind_user'
+  active_directory: true
+  allow_username_or_email_login: false
+  base: ''
+  user_filter: ''
+  sync_time: 1800
+  ## EE only
+  group_base: ''
+  admin_group: ''
+  sync_ssh_keys: false
+EOS
+```
+
+Here, `sync_time` is set to `1800` seconds, meaning the LDAP cache will expire every 30 minutes.
+
+For manual GitLab installations, simply uncomment the `sync_time` entry in your `gitlab.yml` and set it to the value you desire.
+
+Please note that changing the LDAP sync time can influence the performance of your GitLab instance.
+
+## What sort of queries can my LDAP server expect from GitLab EE?
+
+Active GitLab users trigger 'permission updates' by signing in or
+interacting with GitLab, and in addtion all GitLab users (active or not) get a
+permission update during the daily sweep. The number of permission updates per
+day depends on how many of your GitLab users are active and on how many
+LDAP-enabled GitLab users exist in your GitLab SQL database.
+
+During a 'permission update' for a user, GitLab does 1-2 queries for the
+specific user, and 1 queries for each LDAP group known to GitLab. GitLab
+fetches all available attributes of LDAP user and group objects on most
+queries. If you use Active Directory, GitLab performs additional
+'extensibleMatch' queries to check for nested group membership and whether the
+user is blocked, one of each per user and group.
+
+Note that usually not all user and group objects in an organization's LDAP tree
+will be known to GitLab. GitLab only queries LDAP user objects corresponding to
+users who use or have used GitLab. Similarly, GitLab only queries LDAP group
+objects that have been (manually) linked to a GitLab group by a GitLab user or
+administrator.
 
 ## Limitations
 

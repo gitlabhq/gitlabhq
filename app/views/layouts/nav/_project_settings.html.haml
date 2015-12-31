@@ -13,6 +13,12 @@
         = icon('pencil-square-o fw')
         %span
           Project Settings
+    - if @project.allowed_to_share_with_group?
+      = nav_link(controller: :group_links) do
+        = link_to namespace_project_group_links_path(@project.namespace, @project) do
+          = icon('share-square-o fw')
+          %span
+            Groups
     = nav_link(controller: :deploy_keys) do
       = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys' do
         = icon('key fw')
@@ -23,6 +29,11 @@
         = icon('link fw')
         %span
           Web Hooks
+    = nav_link(controller: :git_hooks) do
+      = link_to namespace_project_git_hooks_path(@project.namespace, @project) do
+        = icon('git-square fw')
+        %span
+          Git Hooks
     = nav_link(controller: :services) do
       = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services' do
         = icon('cogs fw')
@@ -33,6 +44,16 @@
         = icon('lock fw')
         %span
           Protected Branches
+    = nav_link(controller: :mirrors) do
+      = link_to namespace_project_mirror_path(@project.namespace, @project), title: 'Mirror Repository', data: {placement: 'right'} do
+        = icon('clone fw')
+        %span
+          Mirror Repository
+    = nav_link(controller: :audit_events) do
+      = link_to namespace_project_audit_events_path(@project.namespace, @project) do
+        = icon('file-text-o fw')
+        %span
+          Audit Events
 
     - if @project.builds_enabled?
       = nav_link(controller: :runners) do

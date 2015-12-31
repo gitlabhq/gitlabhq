@@ -50,6 +50,12 @@ class Projects::IssuesController < Projects::ApplicationController
     )
 
     @issue = @project.issues.new(issue_params)
+
+    # Set Issue description based on project template
+    if @project.issues_template.present?
+      @issue.description = @project.issues_template
+    end
+
     respond_with(@issue)
   end
 

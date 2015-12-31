@@ -285,6 +285,25 @@ module ProjectsHelper
     end
   end
 
+<<<<<<< HEAD
+=======
+  def membership_locked?
+    if @project.group && @project.group.membership_lock
+      true
+    else
+      false
+    end
+  end
+
+  def user_max_access_in_project(user, project)
+    level = project.team.max_member_access(user)
+
+    if level
+      Gitlab::Access.options_with_owner.key(level)
+    end
+  end
+
+>>>>>>> gitlabhq/ce_upstream
   def leave_project_message(project)
     "Are you sure you want to leave \"#{project.name}\" project?"
   end

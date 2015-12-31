@@ -26,6 +26,9 @@
             = sort_title_oldest_updated
   .oneline
     Protected branches can be managed in project settings
+
+= render 'projects/commits/mirror_status'
+
 - unless @branches.empty?
   %ul.content-list.all-branches
     - @branches.each do |branch|

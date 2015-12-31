@@ -26,6 +26,18 @@ class @MergeRequestWidget
           setTimeout(callback, 2000)
       dataType: 'json'
 
+  rebaseInProgress: ->
+    $.ajax
+      type: 'GET'
+      url: $('.merge-request').data('url')
+      success: (data) =>
+        debugger
+        if data["rebase_in_progress?"]
+          setTimeout(merge_request_widget.rebaseInProgress, 2000)
+        else
+          location.reload()
+      dataType: 'json'
+
   getMergeStatus: ->
     $.get @opts.url_to_automerge_check, (data) ->
       $('.mr-state-widget').replaceWith(data)

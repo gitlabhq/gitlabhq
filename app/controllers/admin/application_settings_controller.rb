@@ -56,6 +56,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :sign_in_text,
       :help_page_text,
       :home_page_url,
+      :help_text,
       :after_sign_out_path,
       :max_attachment_size,
       :session_expire_delay,

@@ -118,3 +118,13 @@ describe Admin::DashboardController, "routing" do
     expect(get("/admin")).to route_to('admin/dashboard#index')
   end
 end
+
+describe Admin::EmailsController, "routing" do
+  it "to #show" do
+    expect(get("/admin/email")).to route_to('admin/emails#show')
+  end
+
+  it "to #create" do
+    expect(post("/admin/email")).to route_to('admin/emails#create')
+  end
+end

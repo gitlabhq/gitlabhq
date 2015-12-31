@@ -20,6 +20,10 @@ module SharedAuthentication
     login_with(user_exists("Mary Jane"))
   end
 
+  step 'I sign in as "Pete Peters"' do
+    login_with(user_exists("Pete Peters"))
+  end
+
   step 'I should be redirected to sign in page' do
     expect(current_path).to eq new_user_session_path
   end

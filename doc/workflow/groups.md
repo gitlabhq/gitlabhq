@@ -69,3 +69,29 @@ gitlab_rails['gitlab_default_can_create_group'] = false
 # For installations from source, uncomment the 'default_can_create_group'
 # line in /home/git/gitlab/config/gitlab.yml
 ```
+
+## Lock project membership to members of the group
+
+In GitLab Enterprise Edition it is possible to lock membership in project to the level of members in group.
+
+This allows group owner to lock down any new project membership to any of the projects within the group allowing tighter control over project membership.
+
+To enable this feature, navigate to group settings page, select `Member lock` and `Save group`.
+
+![Checkbox for membership lock](groups/membership_lock.png)
+
+This will disable the option for all users who previously had permissions to operate project memberships so no new users can be added. Furthermore, any request to add new user to project through API will not be possible.
+
+## Namespaces in groups
+
+By default, groups only get 20 namespaces at a time because the API results are paginated.
+
+To get more (up to 100), pass the following as an argument to the API call:
+```
+/groups?per_page=100
+```
+
+And to switch pages add: 
+```
+/groups?per_page=100&page=2
+```

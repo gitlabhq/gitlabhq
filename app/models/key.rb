@@ -41,6 +41,8 @@ class Key < ActiveRecord::Base
   validate :fingerprintable_key
 >>>>>>> gitlabhq/5-1-stable
 
+  scope :ldap, -> { where(type: 'LDAPKey') }
+
   delegate :name, :email, to: :user, prefix: true
 
   after_create :add_to_shell

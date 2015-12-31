@@ -187,7 +187,6 @@ Feature: Project Issues
     Then I should see that I am unsubscribed
 
   Scenario: I submit new unassigned issue as guest
-    Given I logout
     Given public project "Community"
     When I visit project "Community" page
     And I visit project "Community" issues page

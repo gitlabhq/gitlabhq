@@ -6,12 +6,20 @@ class Projects::ServicesController < Projects::ApplicationController
                     :description, :issues_url, :new_issue_url, :restrict_to_branch, :channel,
                     :colorize_messages, :channels,
                     :push_events, :issues_events, :merge_requests_events, :tag_push_events,
+<<<<<<< HEAD
                     :note_events, :build_events,
                     :notify_only_broken_builds, :add_pusher,
                     :send_from_committer_email, :disable_diffs, :external_wiki_url,
                     :notify, :color,
                     :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
                     :jira_issue_transition_id]
+=======
+                    :note_events, :send_from_committer_email, :disable_diffs, :external_wiki_url,
+                    :jira_issue_transition_id,
+                    :notify, :color,
+                    :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
+                    :multiproject_enabled, :pass_unstable]
+>>>>>>> gitlabhq/ce_upstream
 
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password]

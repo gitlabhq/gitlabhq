@@ -51,11 +51,21 @@
       = icon('external-link fw')
       %span
         Hooks
+  = nav_link(controller: :git_hooks) do
+    = link_to admin_git_hooks_path, title: 'Git Hooks', data: {placement: 'right'} do
+      = icon('git-square fw')
+      %span
+        Git Hooks
   = nav_link(controller: :background_jobs) do
     = link_to admin_background_jobs_path, title: 'Background Jobs' do
       = icon('cog fw')
       %span
         Background Jobs
+  = nav_link(controller: :appearances) do
+    = link_to admin_appearances_path do
+      %i.fa.fa-image
+      %span
+        Appearance
 
   = nav_link(controller: :applications) do
     = link_to admin_applications_path, title: 'Applications' do
@@ -87,3 +97,9 @@
       = icon('cogs fw')
       %span
         Settings
+
+  = nav_link(controller: :licenses) do
+    = link_to admin_license_path, title: 'License', data: {placement: 'right'} do
+      = icon('check fw')
+      %span
+        License

@@ -285,6 +285,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_ldap_enabled
+    unless Gitlab.config.ldap.enabled
+      render_404 and return
+    end
+  end
+
   def set_filters_params
     params[:sort] ||= 'created_desc'
     params[:scope] = 'all' if params[:scope].blank?

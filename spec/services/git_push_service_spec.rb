@@ -281,11 +281,19 @@ describe GitPushService, services: true do
         WebMock.stub_request(:get, jira_api_test_url)
 
         allow(closing_commit).to receive_messages({
+<<<<<<< HEAD
                                                     issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
                                                     safe_message: message,
                                                     author_name: commit_author.name,
                                                     author_email: commit_author.email
                                                   })
+=======
+          issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+          safe_message: message,
+          author_name: commit_author.name,
+          author_email: commit_author.email
+        })
+>>>>>>> gitlabhq/ce_upstream
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end

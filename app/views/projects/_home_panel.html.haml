@@ -17,6 +17,7 @@
       = visibility_level_icon(@project.visibility_level, fw: false)
       = visibility_level_label(@project.visibility_level)
 
+<<<<<<< HEAD
   .cover-controls
     - if can?(current_user, :admin_project, @project)
       = link_to edit_project_path(@project), class: 'btn btn-gray' do
@@ -25,6 +26,15 @@
       &nbsp;
       = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), class: 'btn btn-gray' do
         = icon('rss')
+=======
+    - if @project.mirror?
+      - import_url = @project.safe_import_url
+      %p
+        Mirrored from #{link_to import_url, import_url}.
+
+        = render "shared/mirror_status"
+
+>>>>>>> gitlabhq/ce_upstream
 
   .project-repo-buttons
     .split-one.count-buttons
@@ -34,10 +44,14 @@
     = render "shared/clone_panel"
 
     .split-repo-buttons
+      = render "projects/buttons/update_mirror"
       = render "projects/buttons/download"
       = render 'projects/buttons/dropdown'
 
     = render 'projects/buttons/notifications'
 
+<<<<<<< HEAD
 :coffeescript
   new Star()
+=======
+>>>>>>> gitlabhq/ce_upstream

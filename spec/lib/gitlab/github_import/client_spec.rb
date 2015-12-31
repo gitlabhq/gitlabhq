@@ -5,7 +5,8 @@ describe Gitlab::GithubImport::Client, lib: true do
   let(:client) { Gitlab::GithubImport::Client.new(token) }
 
   before do
-    Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "github")
+    github_provider = OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "github", args: { "client_options" => {} })
+    allow(Gitlab.config.omniauth).to receive(:providers).and_return([github_provider])
   end
 
   it 'all OAuth2 client options are symbols' do

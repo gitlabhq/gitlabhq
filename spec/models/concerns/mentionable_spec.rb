@@ -3,10 +3,13 @@ require 'spec_helper'
 describe Mentionable do
   include Mentionable
 
+<<<<<<< HEAD
   def author
     nil
   end
 
+=======
+>>>>>>> gitlabhq/ce_upstream
   describe :references do
     let(:project) { create(:project) }
 

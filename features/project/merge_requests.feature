@@ -186,6 +186,11 @@ Feature: Project Merge Requests
     Then I should see a comment like "Line is wrong" in the third file
     And I should still see a comment like "Line is correct" in the second file
 
+  Scenario: I submit new unassigned merge request with template description
+    Given I click link "New Merge Request"
+    And I select "fix" as source
+    Then I should see description field pre-filled
+
   @javascript
   Scenario: I unfold diff
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
@@ -263,3 +268,49 @@ Feature: Project Merge Requests
     When I click the "Target branch" dropdown
     And I select a new target branch
     Then I should see new target branch changes
+
+  Scenario: I approve merge request
+    Given merge request 'Bug NS-04' must be approved
+    And I click link "Bug NS-04"
+    And I should not see merge button
+    When I click link "Approve"
+    Then I should see approved merge request "Bug NS-04"
+
+  Scenario: Reporter can approve merge request
+    Given I am a "Shop" reporter
+    And I visit project "Shop" merge requests page
+    And merge request 'Bug NS-04' must be approved
+    And I click link "Bug NS-04"
+    And I should not see merge button
+    When I click link "Approve"
+    Then I should see message that merge request can be merged
+
+  Scenario: I approve merge request if I am an approver
+    Given merge request 'Bug NS-04' must be approved by current user
+    And I click link "Bug NS-04"
+    And I should not see merge button
+    And I should see message that MR require an approval from me
+    When I click link "Approve"
+    Then I should see approved merge request "Bug NS-04"
+
+  Scenario: I can not approve merge request if I am not an approver
+    Given merge request 'Bug NS-04' must be approved by some user
+    And I click link "Bug NS-04"
+    And I should not see merge button
+    When I should not see Approve button
+    And I should see message that MR require an approval
+
+  Scenario: I see suggested approvers on new merge request form
+    Given project settings contain list of approvers
+    When I click link "New Merge Request"
+    And I select "fix" as source
+    Then I see suggested approver
+
+  @javascript
+  Scenario: I see auto-suggested approvers on new merge request form
+    Given project settings contain list of approvers
+    And there is one auto-suggested approver
+    When I click link "New Merge Request"
+    And I select "fix" as source
+    Then I see auto-suggested approver
+    And I can add it to approver list

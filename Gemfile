@@ -41,6 +41,7 @@ gem 'omniauth-saml',          '~> 1.4.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
+gem 'gssapi', group: :kerberos
 gem 'rack-oauth2',            '~> 1.2.1'
 
 # reCAPTCHA protection
@@ -98,6 +99,7 @@ gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
+gem 'net-ldap'
 
 # Git Wiki
 gem 'gollum-lib', '~> 4.1.0'
@@ -113,6 +115,9 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 # Format dates and times
 # based on human-friendly examples
 gem "stamp", '~> 0.6.0'
+
+# Enumeration fields
+gem 'enumerize', '~> 0.7.0'
 
 # Pagination
 gem "kaminari", "~> 0.16.3"
@@ -284,6 +289,8 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
   gem 'connection_pool', '~> 2.0', require: false
 end
+
+gem "gitlab-license", "~> 0.0.4"
 
 group :development do
   gem "foreman"

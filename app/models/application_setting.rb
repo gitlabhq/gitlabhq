@@ -2,6 +2,7 @@
 #
 # Table name: application_settings
 #
+<<<<<<< HEAD
 #  id                                :integer          not null, primary key
 #  default_projects_limit            :integer
 #  signup_enabled                    :boolean
@@ -30,6 +31,34 @@
 #  runners_registration_token        :string(255)
 #  require_two_factor_authentication :boolean          default(TRUE)
 #  two_factor_grace_period           :integer          default(48)
+=======
+#  id                           :integer          not null, primary key
+#  default_projects_limit       :integer
+#  signup_enabled               :boolean
+#  signin_enabled               :boolean
+#  gravatar_enabled             :boolean
+#  sign_in_text                 :text
+#  created_at                   :datetime
+#  updated_at                   :datetime
+#  home_page_url                :string(255)
+#  default_branch_protection    :integer          default(2)
+#  twitter_sharing_enabled      :boolean          default(TRUE)
+#  help_text                    :text
+#  restricted_visibility_levels :text
+#  version_check_enabled        :boolean          default(TRUE)
+#  max_attachment_size          :integer          default(10), not null
+#  default_project_visibility   :integer
+#  default_snippet_visibility   :integer
+#  restricted_signup_domains    :text
+#  user_oauth_applications      :boolean          default(TRUE)
+#  after_sign_out_path          :string(255)
+#  session_expire_delay         :integer          default(10080), not null
+#  import_sources               :text
+#  help_page_text               :text
+#  admin_notification_email     :string(255)
+#  shared_runners_enabled       :boolean          default(TRUE), not null
+#  max_artifacts_size           :integer          default(100), not null
+>>>>>>> gitlabhq/ce_upstream
 #
 
 class ApplicationSetting < ActiveRecord::Base

@@ -1,4 +1,9 @@
 - if broadcast_message.present?
   .broadcast-message{ style: broadcast_styling(broadcast_message) }
-    %i.fa.fa-bullhorn
+    = icon('bullhorn')
     = broadcast_message.message
+
+- if license_message.present?
+  .broadcast-message
+    = icon('bullhorn')
+    = license_message
