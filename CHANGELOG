@@ -1679,6 +1679,7 @@ v 5.3.0
   - Fix bug with team assignation on project from #4109
   - Advanced snippets: public/private, project/personal (Andrew Kulakov)
   - Repository Graphs (Karlo Nicholas T. Soriano)
+v 5.2.1
   - Fix dashboard lost if comment on commit
   - Update gitlab-grack. Fixes issue with --depth option
   - Fix project events duplicate on project page

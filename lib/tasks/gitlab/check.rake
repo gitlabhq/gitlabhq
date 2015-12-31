@@ -203,6 +203,7 @@ namespace :gitlab do
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       recipe_content = File.read(recipe_path)
 =======
       recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab 2>/dev/null`
@@ -234,6 +235,9 @@ namespace :gitlab do
 =======
       recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab 2>/dev/null`
 >>>>>>> origin/5-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/5-2-stable
       script_content = File.read(script_path)
 
       if recipe_content == script_content
@@ -1396,6 +1400,7 @@ namespace :gitlab do
     end
   end
 
+<<<<<<< HEAD
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|
@@ -1410,6 +1415,30 @@ namespace :gitlab do
                     end
 
         repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
+=======
+
+
+  namespace :sidekiq do
+    desc "GITLAB | Check the configuration of Sidekiq"
+    task check: :environment  do
+      warn_user_is_not_gitlab
+      start_checking "Sidekiq"
+
+      check_sidekiq_running
+
+      finished_checking "Sidekiq"
+    end
+
+
+    # Checks
+    ########################
+
+    def check_sidekiq_running
+      print "Running? ... "
+
+      if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d+\.\d+\.\d+.+$/)
+        puts "yes".green
+>>>>>>> gitlabhq/5-2-stable
       else
 <<<<<<< HEAD
         puts "\nUser '#{username}' not found".red

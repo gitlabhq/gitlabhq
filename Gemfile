@@ -64,8 +64,12 @@ gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: 'c40a3
 gem 'grit_ext', '~> 0.6.2'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
+<<<<<<< HEAD
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
 >>>>>>> gitlabhq/5-0-stable
+=======
+gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
+>>>>>>> gitlabhq/5-2-stable
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes

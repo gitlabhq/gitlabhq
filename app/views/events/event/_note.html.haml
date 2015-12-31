@@ -1,9 +1,21 @@
 .event-title
   %span.author_name= link_to_author event
+<<<<<<< HEAD
   %span.event_label
     = event.action_name
     = event_note_title_html(event)
     at
+=======
+  %span.event_label commented on
+  - if event.note_target
+    - if event.note_commit?
+      = event.note_target_type
+      = link_to event.note_short_commit_id, project_commit_path(event.project, event.note_commit_id), class: "commit_short_id"
+    - else
+      = link_to event_note_target_path(event) do
+        %strong
+          #{event.note_target_type} ##{truncate event.note_target_id}
+>>>>>>> gitlabhq/5-2-stable
 
   - if event.project
     = link_to_project event.project

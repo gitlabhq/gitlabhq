@@ -422,7 +422,19 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markdown (0.5.3)
     github-markup (0.7.5)
+<<<<<<< HEAD
     gitlab-grack (1.0.0)
+=======
+    gitlab-gollum-lib (1.0.0)
+      github-markdown (~> 0.5.3)
+      github-markup (>= 0.7.5, < 1.0.0)
+      gitlab-grit (~> 2.5.1)
+      nokogiri (~> 1.5.9)
+      pygments.rb (~> 0.4.2)
+      sanitize (~> 2.0.3)
+      stringex (~> 1.5.1)
+    gitlab-grack (1.0.1)
+>>>>>>> gitlabhq/5-2-stable
       rack (~> 1.4.1)
     gitlab-pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
@@ -1221,6 +1233,7 @@ BUNDLED WITH
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
 <<<<<<< HEAD
+<<<<<<< HEAD
   gitlab_meta (= 4.0)
   gitolite (= 1.1.0)
   grack!
@@ -1229,6 +1242,10 @@ BUNDLED WITH
   grit_ext!
 =======
   gitlab-grack (~> 1.0.0)
+=======
+  gitlab-gollum-lib (~> 1.0.0)
+  gitlab-grack (~> 1.0.1)
+>>>>>>> gitlabhq/5-2-stable
   gitlab-pygments.rb (~> 0.3.2)
   gitlab_meta (= 5.0)
   gitlab_omniauth-ldap (= 1.0.2)
