@@ -24,7 +24,7 @@ module API
       #   id (required) - The ID of a project
       #   variable_id (required) - The ID OR `key` of variable to show; if variable_id contains only digits it's treated
       #                            as ID other ways it's treated as `key`
-      # Example Reuest:
+      # Example Request:
       #   GET /projects/:id/variables/:variable_id
       get ':id/variables/:variable_id' do
         variable_id = params[:variable_id]
@@ -37,6 +37,25 @@ module API
           end
 
         present variables.first, with: Entities::Variable
+      end
+
+      # Update existing variable of a project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   variable_id (required) - The ID of a variable
+      #   key (optional) - new value for `key` field of variable
+      #   value (optional) - new value for `value` field of variable
+      # Example Request:
+      #   PUT /projects/:id/variables/:variable_id
+      put ':id/variables/:variable_id' do
+        variable = user_project.variables.where(id: params[:variable_id].to_i).first
+
+        variable.key = params[:key]
+        variable.value = params[:value]
+        variable.save!
+
+        present variable, with: Entities::Variable
       end
     end
   end
