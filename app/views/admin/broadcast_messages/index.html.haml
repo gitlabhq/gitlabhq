@@ -6,39 +6,8 @@
   Broadcast messages are displayed for every user and can be used to notify
   users about scheduled maintenance, recent upgrades and more.
 
-.broadcast-message-preview
-  = icon('bullhorn')
-  %span Your message here
+= render 'form'
 
-= form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal js-requires-input'} do |f|
-  -if @broadcast_message.errors.any?
-    .alert.alert-danger
-      - @broadcast_message.errors.full_messages.each do |msg|
-        %p= msg
-  .form-group
-    = f.label :message, class: 'control-label'
-    .col-sm-10
-      = f.text_area :message, class: "form-control", rows: 2, required: true
-      %div
-        = link_to 'Customize colors', '#', class: 'js-toggle-colors-link'
-  .form-group.js-toggle-colors-container.hide
-    = f.label :color, "Background Color", class: 'control-label'
-    .col-sm-10
-      = f.color_field :color, value: "#E75E40", class: "form-control"
-  .form-group.js-toggle-colors-container.hide
-    = f.label :font, "Font Color", class: 'control-label'
-    .col-sm-10
-      = f.color_field :font, value: "#FFFFFF", class: "form-control"
-  .form-group
-    = f.label :starts_at, class: 'control-label'
-    .col-sm-10.datetime-controls
-      = f.datetime_select :starts_at, {}, class: 'form-control form-control-inline'
-  .form-group
-    = f.label :ends_at, class: 'control-label'
-    .col-sm-10.datetime-controls
-      = f.datetime_select :ends_at, {}, class: 'form-control form-control-inline'
-  .form-actions
-    = f.submit "Add broadcast message", class: "btn btn-create"
 
 -if @broadcast_messages.any?
   %ul.bordered-list.broadcast-messages
