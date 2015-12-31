@@ -211,6 +211,12 @@ class Commit
     project.ci_commit(sha)
   end
 
+  def last_build
+    commit = ci_commit
+    return unless commit
+    commit.builds.order('id DESC').first
+  end
+
   def status
     ci_commit.try(:status) || :not_found
   end

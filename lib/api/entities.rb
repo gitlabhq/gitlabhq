@@ -126,14 +126,35 @@ module API
       end
     end
 
+    class RepoCommitBuild < Grape::Entity
+      expose :id
+      expose :name
+      expose :description
+      expose :stage
+      expose :coverage
+      expose :status
+      expose :allow_failure
+      expose :deploy
+      expose :created_at
+      expose :started_at
+      expose :finished_at
+      expose :target_url
+    end
+
+    class RepoCommitDetailBuild < RepoCommitBuild
+      expose :commands
+    end
+
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
       expose :safe_message, as: :message
+      expose :last_build, with: Entities::RepoCommitBuild
     end
 
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
       expose :status
+      expose :last_build, with: Entities::RepoCommitDetailBuild
     end
 
     class ProjectSnippet < Grape::Entity
