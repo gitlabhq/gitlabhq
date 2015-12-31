@@ -1534,7 +1534,11 @@ namespace :gitlab do
 
   def check_gitlab_shell
 <<<<<<< HEAD
+<<<<<<< HEAD
     required_version = Gitlab::VersionInfo.new(gitlab_shell_major_version, gitlab_shell_minor_version, gitlab_shell_patch_version)
+=======
+    required_version = Gitlab::VersionInfo.new(1, 7, 8)
+>>>>>>> origin/5-4-stable
 =======
     required_version = Gitlab::VersionInfo.new(1, 7, 8)
 >>>>>>> origin/5-4-stable

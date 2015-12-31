@@ -183,6 +183,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     git checkout v1.3.0
 <<<<<<< HEAD
 >>>>>>> gitlabhq/5-1-stable
@@ -232,6 +233,9 @@ sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
 >>>>>>> gitlabhq/5-1-stable
 =======
     git checkout v1.3.0
+=======
+    sudo -u git -H git checkout v1.7.4
+>>>>>>> origin/5-4-stable
 
 >>>>>>> origin/5-1-stable
     cp config.yml.example config.yml
@@ -282,6 +286,7 @@ sudo usermod -aG redis git
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> gitlabhq/5-1-stable
 =======
@@ -292,10 +297,15 @@ sudo usermod -aG redis git
 You can change `5-1-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 =======
+=======
+>>>>>>> origin/5-4-stable
     sudo -u git -H git checkout 5-4-stable
 
 **Note:**
 You can change `5-4-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
+<<<<<<< HEAD
+>>>>>>> origin/5-4-stable
+=======
 >>>>>>> origin/5-4-stable
 
 ## Configure it
@@ -688,6 +698,7 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### Restart
 
 <<<<<<< HEAD
@@ -718,6 +729,9 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 >>>>>>> origin/5-1-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 >>>>>>> origin/4-2-stable
+=======
+    sudo service nginx reload
+>>>>>>> origin/5-4-stable
 =======
     sudo service nginx reload
 >>>>>>> origin/5-4-stable
@@ -822,8 +836,11 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Troubleshooting
 =======
+=======
+>>>>>>> origin/5-4-stable
 * Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/Gemfile#L19)
 * Run `sudo -u git -H bundle install` to install the new gem(s)
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/config/gitlab.yml.example#L113) as a reference)

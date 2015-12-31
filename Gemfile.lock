@@ -210,6 +210,7 @@ GEM
       activesupport (>= 3.2.0)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       json (>= 1.7)
     cause (0.1)
     charlock_holmes (0.7.3)
@@ -222,6 +223,8 @@ GEM
 =======
 =======
 >>>>>>> gitlabhq/5-3-stable
+=======
+>>>>>>> origin/5-4-stable
     celluloid (0.14.1)
       timers (>= 1.0.0)
     charlock_holmes (0.6.9.4)
@@ -474,10 +477,13 @@ GEM
       rack (~> 1.4.1)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     gitlab-pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
 =======
+=======
+>>>>>>> origin/5-4-stable
     gitlab-grit (2.5.2)
       charlock_holmes (~> 0.6.9)
       diff-lcs (~> 1.1)
@@ -492,6 +498,9 @@ GEM
       activesupport (~> 3.2.13)
       github-linguist (~> 2.3.4)
       gitlab-grit (~> 2.5.2)
+<<<<<<< HEAD
+>>>>>>> origin/5-4-stable
+=======
 >>>>>>> origin/5-4-stable
     gitlab_meta (5.0)
     gitlab_omniauth-ldap (1.0.2)
@@ -963,6 +972,7 @@ GEM
       activesupport (>= 3.0.0)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     sidekiq (4.0.1)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
@@ -975,6 +985,8 @@ GEM
 =======
 =======
 >>>>>>> gitlabhq/5-3-stable
+=======
+>>>>>>> origin/5-4-stable
     sidekiq (2.12.4)
       celluloid (>= 0.14.1)
       connection_pool (>= 1.0.0)
@@ -1325,6 +1337,10 @@ BUNDLED WITH
 >>>>>>> gitlabhq/5-2-stable
   gitlab-pygments.rb (~> 0.3.2)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  gitlab_git (~> 1.3.1)
+>>>>>>> origin/5-4-stable
 =======
   gitlab_git (~> 1.3.1)
 >>>>>>> origin/5-4-stable
