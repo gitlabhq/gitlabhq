@@ -182,6 +182,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # switch to right version
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     git checkout v1.3.0
 <<<<<<< HEAD
 >>>>>>> gitlabhq/5-1-stable
@@ -229,6 +230,10 @@ sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
     git checkout v1.3.0
 
 >>>>>>> gitlabhq/5-1-stable
+=======
+    git checkout v1.3.0
+
+>>>>>>> origin/5-1-stable
     cp config.yml.example config.yml
 >>>>>>> gitlabhq/5-0-stable
 
@@ -276,8 +281,11 @@ sudo usermod -aG redis git
     # Checkout to stable release
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> gitlabhq/5-1-stable
+=======
+>>>>>>> origin/5-1-stable
     sudo -u git -H git checkout 5-1-stable
 
 **Note:**
@@ -349,11 +357,14 @@ You can change `5-4-stable` to `master` if you want the *bleeding edge* version,
     sudo chmod -R u+rwX  tmp/sockets/
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/5-1-stable
 =======
 >>>>>>> origin/5-1-stable
 =======
 >>>>>>> gitlabhq/5-1-stable
+=======
+>>>>>>> origin/5-1-stable
 
     # Copy the example of Puma config
     sudo -u git -H cp config/puma.rb.example config/puma.rb
@@ -496,6 +507,7 @@ Download the init script (will be /etc/init.d/gitlab):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
@@ -521,6 +533,9 @@ Download the init script (will be /etc/init.d/gitlab):
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
 >>>>>>> gitlabhq/5-1-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
+>>>>>>> origin/5-1-stable
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -679,6 +694,7 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo service nginx restart
 =======
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/nginx/gitlab
@@ -697,6 +713,9 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 =======
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
 >>>>>>> gitlabhq/5-1-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
+>>>>>>> origin/5-1-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 >>>>>>> origin/4-2-stable
 =======
