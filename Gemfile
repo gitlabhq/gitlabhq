@@ -57,11 +57,15 @@ gem "browser", '~> 1.0.0'
 # Extracting information from a git repository
 <<<<<<< HEAD
 # Provide access to Gitlab::Git library
+<<<<<<< HEAD
 gem "gitlab_git", '~> 7.2.20'
 =======
 # Since gollum requires grit we cannot use gitlab-grit gem name any more. Use grit instead
 gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: 'c40a32432616a07fa7fc3c32c24ab73ad6a9718f'
 gem 'grit_ext', '~> 0.6.2'
+=======
+gem 'gitlab_git', '~> 1.3.1'
+>>>>>>> origin/5-4-stable
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 <<<<<<< HEAD

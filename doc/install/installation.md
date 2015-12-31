@@ -176,12 +176,16 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u git -H psql -d gitlabhq_production
 =======
     # switch to right version
+<<<<<<< HEAD
     git checkout v1.3.0
 <<<<<<< HEAD
 >>>>>>> gitlabhq/5-1-stable
 
     # Quit the database session
     gitlabhq_production> \q
+=======
+    sudo -u git -H git checkout v1.7.4
+>>>>>>> origin/5-4-stable
 
 ## 6. Redis
 
@@ -261,11 +265,18 @@ sudo usermod -aG redis git
 ### Configure It
 =======
     # Checkout to stable release
+<<<<<<< HEAD
     sudo -u git -H git checkout 5-1-stable
 
 **Note:**
 You can change `5-1-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
+=======
+    sudo -u git -H git checkout 5-4-stable
+
+**Note:**
+You can change `5-4-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
+>>>>>>> origin/5-4-stable
 
 ## Configure it
 >>>>>>> gitlabhq/5-1-stable
@@ -638,6 +649,7 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### Restart
 
 <<<<<<< HEAD
@@ -656,6 +668,9 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 >>>>>>> origin/5-1-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 >>>>>>> origin/4-2-stable
+=======
+    sudo service nginx reload
+>>>>>>> origin/5-4-stable
 
 ## Done!
 
@@ -756,7 +771,15 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 
 Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
+<<<<<<< HEAD
 ## Troubleshooting
+=======
+* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/Gemfile#L19)
+* Run `sudo -u git -H bundle install` to install the new gem(s)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/config/gitlab.yml.example#L113) as a reference)
+* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-4-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
+* Restart GitLab
+>>>>>>> origin/5-4-stable
 
 ### "You appear to have cloned an empty repository."
 

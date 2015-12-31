@@ -10,6 +10,7 @@ module API
     end
 
     def current_user
+<<<<<<< HEAD
       private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
       @current_user ||= (User.find_by(authentication_token: private_token) || doorkeeper_guard)
 
@@ -38,6 +39,10 @@ module API
       else
         identifier
       end
+=======
+      private_token = (params[:private_token] || env["HTTP_PRIVATE_TOKEN"]).to_s
+      @current_user ||= User.find_by_authentication_token(private_token)
+>>>>>>> origin/5-4-stable
     end
 
     def user_project
