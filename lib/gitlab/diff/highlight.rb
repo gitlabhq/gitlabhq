@@ -1,15 +1,15 @@
 module Gitlab
   module Diff
     class Highlight
-      def self.process_diff_lines(diff_file)
-        processor = new(diff_file)
+      def self.process_diff_lines(file_name, diff_lines)
+        processor = new(file_name, diff_lines)
         processor.highlight
       end
 
-      def initialize(diff_file)
-        text_lines          = diff_file.diff_lines.map(&:text)
-        @diff_file          = diff_file
-        @diff_lines         = diff_file.diff_lines
+      def initialize(file_name, diff_lines)
+        text_lines          = diff_lines.map(&:text)
+        @file_name          = file_name
+        @diff_lines         = diff_lines
         @diff_line_prefixes = text_lines.map { |line| line.sub!(/\A((\+|\-)\s*)/, '');$1 }
         @raw_lines          = text_lines.join("\n")
       end
@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def lexer
-        parent = Rouge::Lexer.guess(filename: @diff_file.new_path, source: @code).new rescue Rouge::Lexers::PlainText.new
+        parent = Rouge::Lexer.guess(filename: @file_name, source: @code).new rescue Rouge::Lexers::PlainText.new
         Rouge::Lexers::GitlabDiff.new(parent_lexer: parent)
       end
 
@@ -43,7 +43,7 @@ module Gitlab
       end
 
       def formatter
-        @formatter ||= Rouge::Formatters::HTMLGitlab.new(
+        Rouge::Formatters::HTMLGitlab.new(
           nowrap: true,
           cssclass: 'code highlight',
           lineanchors: true,

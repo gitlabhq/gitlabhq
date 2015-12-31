@@ -2,6 +2,8 @@ Rouge::Token::Tokens.token(:InlineDiff, 'idiff')
 
 module Rouge
   module Lexers
+    # This new Lexer is required in order to avoid the inline diff markup
+    # to be tokenized, it will be rendered as raw HTML code if that happens.
     class GitlabDiff < RegexLexer
       title "GitLab Diff"
       tag 'gitlab_diff'

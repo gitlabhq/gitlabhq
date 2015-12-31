@@ -9,7 +9,7 @@ describe Gitlab::Diff::Highlight, lib: true do
   let(:diff_file) { Gitlab::Diff::File.new(diff) }
 
   describe '.process_diff_lines' do
-    let(:diff_lines) { Gitlab::Diff::Highlight.process_diff_lines(diff_file) }
+    let(:diff_lines) { Gitlab::Diff::Highlight.process_diff_lines(diff_file.new_path, diff_file.diff_lines) }
 
     it 'should return Gitlab::Diff::Line elements' do
       expect(diff_lines.first).to be_an_instance_of(Gitlab::Diff::Line)
