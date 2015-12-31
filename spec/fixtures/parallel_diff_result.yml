@@ -1,13 +1,11 @@
 ---
 - - match
   - 6
-  - |
-    <span id="LC1" class="line"><span class="err">@@</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="mi">12</span> <span class="o">+</span><span class="mi">6</span><span class="p">,</span><span class="mi">18</span> <span class="err">@@</span> <span class="k">module</span> <span class="nn">Popen</span></span>
+  - '@@ -6,12 +6,18 @@ module Popen'
   - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
   - match
   - 6
-  - |
-    <span id="LC1" class="line"><span class="err">@@</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="mi">12</span> <span class="o">+</span><span class="mi">6</span><span class="p">,</span><span class="mi">18</span> <span class="err">@@</span> <span class="k">module</span> <span class="nn">Popen</span></span>
+  - '@@ -6,12 +6,18 @@ module Popen'
   - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
 - - 
   - 6
@@ -193,13 +191,11 @@
   - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_17_23
 - - match
   - 19
-  - |
-    <span id="LC23" class="line"><span class="err">@@</span> <span class="o">-</span><span class="mi">19</span><span class="p">,</span><span class="mi">6</span> <span class="o">+</span><span class="mi">25</span><span class="p">,</span><span class="mi">7</span> <span class="err">@@</span> <span class="k">module</span> <span class="nn">Popen</span></span>
+  - '@@ -19,6 +25,7 @@ module Popen'
   - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
   - match
   - 25
-  - |
-    <span id="LC23" class="line"><span class="err">@@</span> <span class="o">-</span><span class="mi">19</span><span class="p">,</span><span class="mi">6</span> <span class="o">+</span><span class="mi">25</span><span class="p">,</span><span class="mi">7</span> <span class="err">@@</span> <span class="k">module</span> <span class="nn">Popen</span></span>
+  - '@@ -19,6 +25,7 @@ module Popen'
   - 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
 - - 
   - 19
