@@ -415,7 +415,11 @@ Make GitLab start on boot:
 Download the init script (will be /etc/init.d/gitlab):
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
+>>>>>>> gitlabhq/4-1-stable
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
 >>>>>>> gitlabhq/4-1-stable
@@ -488,6 +492,7 @@ However there are still a few steps left.
 =======
 ## Installation
     sudo apt-get -y install nginx
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-1-stable
 
 ### Site Configuration
@@ -510,6 +515,8 @@ Copy the example site config:
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:
+=======
+>>>>>>> gitlabhq/4-1-stable
 
     # Change YOUR_SERVER_FQDN to the fully-qualified
     # domain name of your host serving GitLab.
@@ -520,7 +527,12 @@ Make sure to edit the config file to match your setup:
 
 **Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
+<<<<<<< HEAD
 ### Test Configuration
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/nginx/gitlab
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+>>>>>>> gitlabhq/4-1-stable
 
 Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following command:
 

@@ -68,6 +68,9 @@ namespace :gitlab do
           }
 
           project = Projects::CreateContext.new(user, project_params).execute
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
 >>>>>>> gitlabhq/4-1-stable
 
           if project.persisted?

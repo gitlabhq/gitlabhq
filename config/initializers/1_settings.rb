@@ -199,6 +199,9 @@ Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_c
 Settings.gitlab['user']       ||= 'gitlab'
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
 >>>>>>> gitlabhq/4-1-stable
 
 #

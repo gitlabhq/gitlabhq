@@ -91,6 +91,9 @@ class Notify < ActionMailer::Base
     @commit = CommitDecorator.decorate(@commit)
     @project = @note.project
     mail(to: recipient(recipient_id), subject: subject("note for commit #{@commit.short_id}", @commit.title))
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
 >>>>>>> gitlabhq/4-1-stable
   end
 

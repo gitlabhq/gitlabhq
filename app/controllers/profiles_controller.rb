@@ -47,7 +47,13 @@ class ProfilesController < Profiles::ApplicationController
 
   def update_username
 <<<<<<< HEAD
+<<<<<<< HEAD
     @user.update_attributes(username: user_params[:username])
+=======
+    if @user.can_change_username?
+      @user.update_attributes(username: params[:user][:username])
+    end
+>>>>>>> gitlabhq/4-1-stable
 =======
     if @user.can_change_username?
       @user.update_attributes(username: params[:user][:username])
