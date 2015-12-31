@@ -5,6 +5,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include SharedPaths
   include RepoHelpers
 
+  step "I don't have write access" do
+    @project = create(:project, name: "Other Project", path: "other-project")
+    @project.team << [@user, :reporter]
+    visit namespace_project_tree_path(@project.namespace, @project, root_ref)
+  end
+
   step 'I should see files from repository' do
     expect(page).to have_content "VERSION"
     expect(page).to have_content ".gitignore"
@@ -75,7 +81,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new branch name' do
-    fill_in :new_branch, with: 'new_branch_name', visible: true
+    fill_in :target_branch, with: 'new_branch_name', visible: true
   end
 
   step 'I fill the new file name with an illegal name' do
@@ -87,7 +93,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the commit message' do
-    fill_in :commit_message, with: 'Not yet a commit message.', visible: true
+    fill_in :commit_message, with: 'New commit message', visible: true
   end
 
   step 'I click link "Diff"' do
@@ -103,7 +109,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Delete"' do
-    click_button 'Delete'
+    click_on 'Delete'
   end
 
   step 'I click on "Delete file"' do
@@ -111,7 +117,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Replace"' do
-    click_button  "Replace"
+    click_on  "Replace"
   end
 
   step 'I click on "Replace file"' do
@@ -124,7 +130,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I click on "New file" link in repo' do
     find('.add-to-tree').click
-    click_link 'Create file'
+    click_link 'New file'
   end
 
   step 'I click on "Upload file" link in repo' do
@@ -155,7 +161,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can see the new commit message' do
-    expect(page).to have_content "New upload commit message"
+    expect(page).to have_content "New commit message"
   end
 
   step 'I upload a new text file' do
@@ -164,7 +170,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I fill the upload file commit message' do
     page.within('#modal-upload-blob') do
-      fill_in :commit_message, with: 'New upload commit message'
+      fill_in :commit_message, with: 'New commit message'
     end
   end
 
@@ -238,22 +244,27 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I am redirected to the new file' do
-    expect(current_path).to eq(namespace_project_blob_path(
-      @project.namespace, @project, 'master/' + new_file_name))
+    expect(current_path).to eq(
+      namespace_project_blob_path(@project.namespace, @project, 'master/' + new_file_name))
   end
 
   step 'I am redirected to the new file with directory' do
-    expect(current_path).to eq(namespace_project_blob_path(
-      @project.namespace, @project, 'master/' + new_file_name_with_directory))
+    expect(current_path).to eq(
+      namespace_project_blob_path(@project.namespace, @project, 'master/' + new_file_name_with_directory))
   end
 
   step 'I am redirected to the new merge request page' do
     expect(current_path).to eq(new_namespace_project_merge_request_path(@project.namespace, @project))
   end
 
+  step "I am redirected to the fork's new merge request page" do
+    fork = @user.fork_of(@project)
+    expect(current_path).to eq(new_namespace_project_merge_request_path(fork.namespace, fork))
+  end
+
   step 'I am redirected to the root directory' do
-    expect(current_path).to eq(namespace_project_tree_path(
-      @project.namespace, @project, 'master/'))
+    expect(current_path).to eq(
+      namespace_project_tree_path(@project.namespace, @project, 'master'))
   end
 
   step "I don't see the permalink link" do
@@ -332,8 +343,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content 'Permalink'
     expect(page).not_to have_content 'Edit'
     expect(page).not_to have_content 'Blame'
-    expect(page).not_to have_content 'Delete'
-    expect(page).not_to have_content 'Replace'
+    expect(page).to have_content 'Delete'
+    expect(page).to have_content 'Replace'
+  end
+
+  step 'I should see a notice about a new fork having been created' do
+    expect(page).to have_content "You're not allowed to make changes to this project directly. A fork of this project has been created that you can make changes in, so you can submit a merge request."
   end
 
   private

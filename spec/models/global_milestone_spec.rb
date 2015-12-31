@@ -62,4 +62,14 @@ describe GlobalMilestone, models: true do
       expect(@global_milestone.milestones.count).to eq(3)
     end
   end
+
+  describe :safe_title do
+    let(:milestone) { create(:milestone, title: "git / test", project: project1) }
+
+    it 'should strip out slashes and spaces' do
+      global_milestone = GlobalMilestone.new(milestone.title, [milestone])
+
+      expect(global_milestone.safe_title).to eq('git-test')
+    end
+  end
 end

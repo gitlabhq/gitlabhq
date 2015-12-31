@@ -58,6 +58,7 @@ Parameters:
     "path": "diaspora-client",
     "path_with_namespace": "diaspora/diaspora-client",
     "issues_enabled": true,
+    "open_issues_count": 1,
     "merge_requests_enabled": true,
     "builds_enabled": true,
     "wiki_enabled": true,
@@ -100,6 +101,7 @@ Parameters:
     "path": "puppet",
     "path_with_namespace": "brightbox/puppet",
     "issues_enabled": true,
+    "open_issues_count": 1,
     "merge_requests_enabled": true,
     "builds_enabled": true,
     "wiki_enabled": true,
@@ -116,6 +118,16 @@ Parameters:
       "path": "brightbox",
       "updated_at": "2013-09-30T13:46:02Z"
     },
+    "permissions": {
+      "project_access": {
+        "access_level": 10,
+        "notification_level": 3
+      },
+      "group_access": {
+        "access_level": 50,
+        "notification_level": 3
+      }
+    },
     "archived": false,
     "avatar_url": null
   }
@@ -128,6 +140,21 @@ Get a list of projects which are owned by the authenticated user.
 
 ```
 GET /projects/owned
+```
+
+Parameters:
+
+- `archived` (optional) - if passed, limit by archived status
+- `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+- `search` (optional) - Return list of authorized projects according to a search criteria
+
+### List starred projects
+
+Get a list of projects which are starred by the authenticated user.
+
+```
+GET /projects/starred
 ```
 
 Parameters:
@@ -189,6 +216,7 @@ Parameters:
   "path": "diaspora-project-site",
   "path_with_namespace": "diaspora/diaspora-project-site",
   "issues_enabled": true,
+  "open_issues_count": 1,
   "merge_requests_enabled": true,
   "builds_enabled": true,
   "wiki_enabled": true,

@@ -8,7 +8,6 @@ describe Ci::API::API do
 
   before do
     stub_gitlab_calls
-    stub_application_setting(ensure_runners_registration_token: registration_token)
     stub_application_setting(runners_registration_token: registration_token)
   end
 

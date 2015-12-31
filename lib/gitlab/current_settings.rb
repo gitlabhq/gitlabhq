@@ -38,7 +38,9 @@ module Gitlab
                  true
                end
 
-      use_db && ActiveRecord::Base.connection.active? && ActiveRecord::Base.connection.table_exists?('application_settings')
+      use_db && ActiveRecord::Base.connection.active? &&
+                !ActiveRecord::Migrator.needs_migration? &&
+                ActiveRecord::Base.connection.table_exists?('application_settings')
     end
   end
 end

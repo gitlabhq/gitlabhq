@@ -7,6 +7,10 @@
     %strong.monospace= link_to @build.commit.short_sha, ci_status_path(@build.commit)
     from
     = link_to @build.ref, namespace_project_commits_path(@project.namespace, @project, @build.ref)
+    - merge_request = @build.merge_request
+    - if merge_request
+      via
+      = link_to "merge request ##{merge_request.iid}", merge_request_path(merge_request)
 
   #up-build-trace
   - if @commit.matrix_for_ref?(@build.ref)

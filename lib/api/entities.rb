@@ -67,9 +67,10 @@ module API
       expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
-      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ | project, options | project.forked? }
+      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
+      expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
     end
 
     class ProjectMember < UserBasic
@@ -165,7 +166,6 @@ module API
 
     class MergeRequest < ProjectEntity
       expose :target_branch, :source_branch
-      # deprecated, always returns 0
       expose :upvotes,  :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id

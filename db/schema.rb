@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151210125932) do
+ActiveRecord::Schema.define(version: 20151229112614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,23 +33,36 @@ ActiveRecord::Schema.define(version: 20151210125932) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "home_page_url"
-    t.integer  "default_branch_protection",    default: 2
-    t.boolean  "twitter_sharing_enabled",      default: true
+    t.integer  "default_branch_protection",         default: 2
+    t.boolean  "twitter_sharing_enabled",           default: true
     t.text     "restricted_visibility_levels"
-    t.boolean  "version_check_enabled",        default: true
-    t.integer  "max_attachment_size",          default: 10,    null: false
+    t.boolean  "version_check_enabled",             default: true
+    t.integer  "max_attachment_size",               default: 10,          null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
     t.text     "restricted_signup_domains"
-    t.boolean  "user_oauth_applications",      default: true
+    t.boolean  "user_oauth_applications",           default: true
     t.string   "after_sign_out_path"
-    t.integer  "session_expire_delay",         default: 10080, null: false
+    t.integer  "session_expire_delay",              default: 10080,       null: false
     t.text     "import_sources"
     t.text     "help_page_text"
     t.string   "admin_notification_email"
-    t.boolean  "shared_runners_enabled",       default: true,  null: false
-    t.integer  "max_artifacts_size",           default: 100,   null: false
+    t.boolean  "shared_runners_enabled",            default: true,        null: false
+    t.integer  "max_artifacts_size",                default: 100,         null: false
     t.string   "runners_registration_token"
+    t.boolean  "require_two_factor_authentication", default: false
+    t.integer  "two_factor_grace_period",           default: 48
+    t.boolean  "metrics_enabled",                   default: false
+    t.string   "metrics_host",                      default: "localhost"
+    t.string   "metrics_username"
+    t.string   "metrics_password"
+    t.integer  "metrics_pool_size",                 default: 16
+    t.integer  "metrics_timeout",                   default: 10
+    t.integer  "metrics_method_call_threshold",     default: 10
+    t.boolean  "recaptcha_enabled",                 default: false
+    t.string   "recaptcha_site_key"
+    t.string   "recaptcha_private_key"
+    t.integer  "metrics_port",                      default: 8089
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -783,12 +796,12 @@ ActiveRecord::Schema.define(version: 20151210125932) do
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                      default: "",    null: false
-    t.string   "encrypted_password",         default: "",    null: false
+    t.string   "email",                       default: "",    null: false
+    t.string   "encrypted_password",          default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",              default: 0
+    t.integer  "sign_in_count",               default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
@@ -796,22 +809,22 @@ ActiveRecord::Schema.define(version: 20151210125932) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
-    t.boolean  "admin",                      default: false, null: false
-    t.integer  "projects_limit",             default: 10
-    t.string   "skype",                      default: "",    null: false
-    t.string   "linkedin",                   default: "",    null: false
-    t.string   "twitter",                    default: "",    null: false
+    t.boolean  "admin",                       default: false, null: false
+    t.integer  "projects_limit",              default: 10
+    t.string   "skype",                       default: "",    null: false
+    t.string   "linkedin",                    default: "",    null: false
+    t.string   "twitter",                     default: "",    null: false
     t.string   "authentication_token"
-    t.integer  "theme_id",                   default: 1,     null: false
+    t.integer  "theme_id",                    default: 1,     null: false
     t.string   "bio"
-    t.integer  "failed_attempts",            default: 0
+    t.integer  "failed_attempts",             default: 0
     t.datetime "locked_at"
     t.string   "username"
-    t.boolean  "can_create_group",           default: true,  null: false
-    t.boolean  "can_create_team",            default: true,  null: false
+    t.boolean  "can_create_group",            default: true,  null: false
+    t.boolean  "can_create_team",             default: true,  null: false
     t.string   "state"
-    t.integer  "color_scheme_id",            default: 1,     null: false
-    t.integer  "notification_level",         default: 1,     null: false
+    t.integer  "color_scheme_id",             default: 1,     null: false
+    t.integer  "notification_level",          default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
     t.datetime "last_credential_check_at"
@@ -820,23 +833,25 @@ ActiveRecord::Schema.define(version: 20151210125932) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
-    t.boolean  "hide_no_ssh_key",            default: false
-    t.string   "website_url",                default: "",    null: false
+    t.boolean  "hide_no_ssh_key",             default: false
+    t.string   "website_url",                 default: "",    null: false
     t.string   "notification_email"
-    t.boolean  "hide_no_password",           default: false
-    t.boolean  "password_automatically_set", default: false
+    t.boolean  "hide_no_password",            default: false
+    t.boolean  "password_automatically_set",  default: false
     t.string   "location"
     t.string   "encrypted_otp_secret"
     t.string   "encrypted_otp_secret_iv"
     t.string   "encrypted_otp_secret_salt"
-    t.boolean  "otp_required_for_login",     default: false, null: false
+    t.boolean  "otp_required_for_login",      default: false, null: false
     t.text     "otp_backup_codes"
-    t.string   "public_email",               default: "",    null: false
-    t.integer  "dashboard",                  default: 0
-    t.integer  "project_view",               default: 0
+    t.string   "public_email",                default: "",    null: false
+    t.integer  "dashboard",                   default: 0
+    t.integer  "project_view",                default: 0
     t.integer  "consumed_timestep"
-    t.integer  "layout",                     default: 0
-    t.boolean  "hide_project_limit",         default: false
+    t.integer  "layout",                      default: 0
+    t.boolean  "hide_project_limit",          default: false
+    t.string   "unlock_token"
+    t.datetime "otp_grace_period_started_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

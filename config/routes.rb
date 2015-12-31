@@ -188,7 +188,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
       resources :keys, only: [:show, :destroy]
-      resources :identities, only: [:index, :edit, :update, :destroy]
+      resources :identities, except: [:show]
 
       delete 'stop_impersonation' => 'impersonation#destroy', on: :collection
 
@@ -297,6 +297,7 @@ Rails.application.routes.draw do
       resource :two_factor_auth, only: [:new, :create, :destroy] do
         member do
           post :codes
+          patch :skip
         end
       end
     end
@@ -441,7 +442,7 @@ Rails.application.routes.draw do
 
         scope do
           post(
-              '/create_dir/*id',
+            '/create_dir/*id',
               to: 'tree#create_dir',
               constraints: { id: /.+/ },
               as: 'create_dir'

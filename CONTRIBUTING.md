@@ -155,6 +155,28 @@ sudo -u git -H bundle exec rake gitlab:env:info)
 
 ```
 
+### Issue weight
+
+Issue weight allows us to get an idea of the amount of work required to solve
+one or multiple issues. This makes it possible to schedule work more accurately.
+
+You are encouraged to set the weight of any issue. Following the guidelines
+below will make it easy to manage this, without unnecessary overhead.
+
+1. Set weight for any issue at the earliest possible convenience
+1. If you don't agree with a set weight, discuss with other developers until
+consensus is reached about the weight
+1. Issue weights are an abstract measurement of complexity of the issue. Do not
+relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring)
+and something you want to avoid.
+1. Something that has a weight of 1 (or no weight) is really small and simple.
+Something that is 9 is rewriting a large fundamental part of GitLab,
+which might lead to many hard problems to solve. Changing some text in GitLab
+is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
+1. If something is very large, it should probably be split up in multiple
+issues or chunks. You can simply not set the weight of a parent issue and set
+weights to children issues.
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
@@ -358,7 +380,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [core team]: https://about.gitlab.com/core-team/
 [getting help page]: https://about.gitlab.com/getting-help/
 [Codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
-[up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up+for+grabs
+[up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up-for-grabs
 [medium-up-for-grabs]: https://medium.com/@kentcdodds/first-timers-only-78281ea47455
 [ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
 [ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues

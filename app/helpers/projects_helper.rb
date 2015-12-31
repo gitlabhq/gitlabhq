@@ -105,6 +105,14 @@ module ProjectsHelper
     end
   end
 
+  def user_max_access_in_project(user_id, project)
+    level = project.team.max_member_access(user_id)
+
+    if level
+      Gitlab::Access.options_with_owner.key(level)
+    end
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -277,14 +285,6 @@ module ProjectsHelper
     end
   end
 
-  def user_max_access_in_project(user, project)
-    level = project.team.max_member_access(user)
-
-    if level
-      Gitlab::Access.options_with_owner.key(level)
-    end
-  end
-
   def leave_project_message(project)
     "Are you sure you want to leave \"#{project.name}\" project?"
   end
@@ -330,10 +330,9 @@ module ProjectsHelper
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
       namespace_project_blob_path(
-          project.namespace,
-          project,
-          tree_join(project.default_branch,
-                    blob.name)
+        project.namespace,
+        project,
+        tree_join(project.default_branch, blob.name)
       )
     end
   end

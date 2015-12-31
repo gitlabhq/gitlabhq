@@ -199,7 +199,7 @@ module Gitlab
         s = s.gsub(/^#/, "\\#")
         s = s.gsub(/^-/, "\\-")
         s = s.gsub("`", "\\~")
-        s = s.gsub("\r", "")
+        s = s.delete("\r")
         s = s.gsub("\n", "  \n")
         s
       end

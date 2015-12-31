@@ -57,23 +57,21 @@ describe HipchatService, models: true do
 
     it 'should use v1 if version is provided' do
       allow(hipchat).to receive(:api_version).and_return('v1')
-      expect(HipChat::Client).to receive(:new).
-                                     with(token,
-                                          api_version: 'v1',
-                                          server_url: server_url).
-                                     and_return(
-                                         double(:hipchat_service).as_null_object)
+      expect(HipChat::Client).to receive(:new).with(
+        token,
+        api_version: 'v1',
+        server_url: server_url
+      ).and_return(double(:hipchat_service).as_null_object)
       hipchat.execute(push_sample_data)
     end
 
     it 'should use v2 as the version when nothing is provided' do
       allow(hipchat).to receive(:api_version).and_return('')
-      expect(HipChat::Client).to receive(:new).
-                                     with(token,
-                                          api_version: 'v2',
-                                          server_url: server_url).
-                                     and_return(
-                                         double(:hipchat_service).as_null_object)
+      expect(HipChat::Client).to receive(:new).with(
+        token,
+        api_version: 'v2',
+        server_url: server_url
+      ).and_return(double(:hipchat_service).as_null_object)
       hipchat.execute(push_sample_data)
     end
 

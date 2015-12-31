@@ -12,7 +12,7 @@ module Banzai
     #   :project (required) - Current project, ignored if reference is cross-project.
     #   :only_path          - Generate path-only links.
     class ReferenceFilter < HTML::Pipeline::Filter
-      def self.user_can_reference?(user, node, context)
+      def self.user_can_see_reference?(user, node, context)
         if node.has_attribute?('data-project')
           project_id = node.attr('data-project').to_i
           return true if project_id == context[:project].try(:id)
@@ -22,6 +22,10 @@ module Banzai
         else
           true
         end
+      end
+
+      def self.user_can_reference?(user, node, context)
+        true
       end
 
       def self.referenced_by(node)
@@ -44,11 +48,11 @@ module Banzai
       # Returns a String
       def data_attribute(attributes = {})
         attributes[:reference_filter] = self.class.name.demodulize
-        attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{value}") }.join(" ")
+        attributes.map { |key, value| %Q(data-#{key.to_s.dasherize}="#{escape_once(value)}") }.join(" ")
       end
 
       def escape_once(html)
-        ERB::Util.html_escape_once(html)
+        html.html_safe? ? html : ERB::Util.html_escape_once(html)
       end
 
       def ignore_parents

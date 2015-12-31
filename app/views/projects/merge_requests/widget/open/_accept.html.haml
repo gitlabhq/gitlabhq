@@ -7,13 +7,13 @@
       .accept-action
         - if @ci_commit && @ci_commit.active?
           %span.btn-group
-            = link_to "#", class: "btn btn-create merge_when_build_succeeds" do
+            = button_tag class: "btn btn-create js-merge-button merge_when_build_succeeds" do
               Merge When Build Succeeds
-            %a.btn.btn-success.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+            = button_tag class: "btn btn-success dropdown-toggle", 'data-toggle' => 'dropdown' do
               %span.caret
               %span.sr-only
                 Select Merge Moment
-            %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
+            %ul.js-merge-dropdown.dropdown-menu.dropdown-menu-right{ role: 'menu' }
               %li
                 = link_to "#", class: "merge_when_build_succeeds" do
                   = icon('check fw')
@@ -23,7 +23,7 @@
                   = icon('warning fw')
                   Merge Immediately
         - else
-          = f.button class: "btn btn-create btn-grouped accept_merge_request #{status_class}" do
+          = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}" do
             Accept Merge Request
       - if @merge_request.can_remove_source_branch?(current_user)
         .accept-control.checkbox
@@ -42,21 +42,19 @@
     = hidden_field_tag :merge_when_build_succeeds, "", autocomplete: "off"
 
   :javascript
-    $('.accept_merge_request').on('click', function() {
-      $(this).html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
-    });
-
     $('.accept-mr-form').on('ajax:send', function() {
       $(".accept-mr-form :input").disable();
     });
 
-    $('a.accept_merge_request').on('click', function(e) {
-      e.preventDefault();
-      $(this).closest("form").submit();
+    $('.accept_merge_request').on('click', function() {
+      $('.js-merge-button').html("<i class='fa fa-spinner fa-spin'></i> Merge in progress");
     });
 
-    $('a.merge_when_build_succeeds').on('click', function(e) {
-      e.preventDefault();
+    $('.merge_when_build_succeeds').on('click', function() {
       $("#merge_when_build_succeeds").val("1");
+    });
+
+    $('.js-merge-dropdown a').on('click', function(e) {
+      e.preventDefault();
       $(this).closest("form").submit();
     });

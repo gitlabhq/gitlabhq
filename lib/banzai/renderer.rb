@@ -1,5 +1,7 @@
 module Banzai
   module Renderer
+    CACHE_ENABLED = false
+
     # Convert a Markdown String into an HTML-safe String of HTML
     #
     # Note that while the returned HTML will have been sanitized of dangerous
@@ -18,7 +20,7 @@ module Banzai
       cache_key = context.delete(:cache_key)
       cache_key = full_cache_key(cache_key, context[:pipeline])
 
-      if cache_key
+      if cache_key && CACHE_ENABLED
         Rails.cache.fetch(cache_key) do
           cacheless_render(text, context)
         end

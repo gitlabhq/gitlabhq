@@ -13,20 +13,21 @@ module TokenAuthenticatable
       @token_fields << token_field
 
       define_singleton_method("find_by_#{token_field}") do |token|
-        where(token_field => token).first if token
+        find_by(token_field => token) if token
       end
 
       define_method("ensure_#{token_field}") do
         current_token = read_attribute(token_field)
-        if current_token.blank?
-          write_attribute(token_field, generate_token_for(token_field))
-        else
-          current_token
-        end
+        current_token.blank? ? write_new_token(token_field) : current_token
+      end
+
+      define_method("ensure_#{token_field}!") do
+        send("reset_#{token_field}!") if read_attribute(token_field).blank?
+        read_attribute(token_field)
       end
 
       define_method("reset_#{token_field}!") do
-        write_attribute(token_field, generate_token_for(token_field))
+        write_new_token(token_field)
         save!
       end
     end
@@ -34,10 +35,15 @@ module TokenAuthenticatable
 
   private
 
-  def generate_token_for(token_field)
+  def write_new_token(token_field)
+    new_token = generate_token(token_field)
+    write_attribute(token_field, new_token)
+  end
+
+  def generate_token(token_field)
     loop do
       token = Devise.friendly_token
-      break token unless self.class.unscoped.where(token_field => token).first
+      break token unless self.class.unscoped.find_by(token_field => token)
     end
   end
 end

@@ -17,7 +17,7 @@ describe CreateCommitBuildsService, services: true do
                         before: '00000000',
                         after: '31das312',
                         commits: [{ message: "Message" }]
-        )
+                       )
       end
 
       it { expect(commit).to be_kind_of(Ci::Commit) }
@@ -34,7 +34,7 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: [{ message: "Message" }]
-        )
+                                )
         expect(result).to be_persisted
       end
 
@@ -47,26 +47,24 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: [{ message: "Message" }]
-        )
+                                )
         expect(result).to be_persisted
       end
     end
 
-    it 'skips commits without .gitlab-ci.yml' do
+    it 'skips creating ci_commit for refs without .gitlab-ci.yml' do
       stub_ci_commit_yaml_file(nil)
       result = service.execute(project, user,
                                ref: 'refs/heads/0_1',
                                before: '00000000',
                                after: '31das312',
                                commits: [{ message: 'Message' }]
-      )
-      expect(result).to be_persisted
-      expect(result.builds.any?).to be_falsey
-      expect(result.status).to eq('skipped')
-      expect(result.yaml_errors).to be_nil
+                              )
+      expect(result).to be_falsey
+      expect(Ci::Commit.count).to eq(0)
     end
 
-    it 'skips commits if yaml is invalid' do
+    it 'fails commits if yaml is invalid' do
       message = 'message'
       allow_any_instance_of(Ci::Commit).to receive(:git_commit_message) { message }
       stub_ci_commit_yaml_file('invalid: file: file')
@@ -76,7 +74,8 @@ describe CreateCommitBuildsService, services: true do
                                before: '00000000',
                                after: '31das312',
                                commits: commits
-      )
+                              )
+      expect(commit).to be_persisted
       expect(commit.builds.any?).to be false
       expect(commit.status).to eq('failed')
       expect(commit.yaml_errors).to_not be_nil
@@ -96,7 +95,8 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: commits
-        )
+                                )
+        expect(commit).to be_persisted
         expect(commit.builds.any?).to be false
         expect(commit.status).to eq("skipped")
       end
@@ -110,8 +110,9 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: commits
-        )
+                                )
 
+        expect(commit).to be_persisted
         expect(commit.builds.first.name).to eq("staging")
       end
 
@@ -123,7 +124,8 @@ describe CreateCommitBuildsService, services: true do
                                  before: '00000000',
                                  after: '31das312',
                                  commits: commits
-        )
+                                )
+        expect(commit).to be_persisted
         expect(commit.builds.any?).to be false
         expect(commit.status).to eq("skipped")
         expect(commit.yaml_errors).to be_nil
@@ -139,7 +141,8 @@ describe CreateCommitBuildsService, services: true do
                                before: '00000000',
                                after: '31das312',
                                commits: commits
-      )
+                              )
+      expect(commit).to be_persisted
       expect(commit.builds.count(:all)).to eq(2)
 
       commit = service.execute(project, user,
@@ -147,7 +150,8 @@ describe CreateCommitBuildsService, services: true do
                                before: '00000000',
                                after: '31das312',
                                commits: commits
-      )
+                              )
+      expect(commit).to be_persisted
       expect(commit.builds.count(:all)).to eq(2)
     end
 
@@ -161,8 +165,9 @@ describe CreateCommitBuildsService, services: true do
                                before: '00000000',
                                after: '31das312',
                                commits: commits
-      )
+                              )
 
+      expect(commit).to be_persisted
       expect(commit.status).to eq("failed")
       expect(commit.builds.any?).to be false
     end

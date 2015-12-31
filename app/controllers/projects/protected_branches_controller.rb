@@ -21,7 +21,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
     if protected_branch &&
        protected_branch.update_attributes(
-        developers_can_push: params[:developers_can_push]
+         developers_can_push: params[:developers_can_push]
        )
 
       respond_to do |format|

@@ -1,4 +1,2 @@
 %div
-  "#{link_to @note.author_name, user_url(@note.author)} wrote:"
-%div
   = markdown(@note.note, pipeline: :email)

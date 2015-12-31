@@ -35,7 +35,7 @@ class @BlobFileDropzone
           return
 
         this.on 'sending', (file, xhr, formData) ->
-          formData.append('new_branch', form.find('.js-new-branch').val())
+          formData.append('target_branch', form.find('.js-target-branch').val())
           formData.append('create_merge_request', form.find('.js-create-merge-request').val())
           formData.append('commit_message', form.find('.js-commit-message').val())
           return

@@ -95,14 +95,12 @@ module Issuable
     opened? || reopened?
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def downvotes
-    0
+    notes.awards.where(note: "thumbsdown").count
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def upvotes
-    0
+    notes.awards.where(note: "thumbsup").count
   end
 
   def subscribed?(user)
@@ -159,6 +157,14 @@ module Issuable
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
     self.class.to_s.underscore
+  end
+
+  # Returns a Hash of attributes to be used for Twitter card metadata
+  def card_attributes
+    {
+      'Author'   => author.try(:name),
+      'Assignee' => assignee.try(:name)
+    }
   end
 
   def notes_with_associations
