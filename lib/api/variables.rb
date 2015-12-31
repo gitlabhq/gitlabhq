@@ -18,7 +18,7 @@ module API
         present paginate(variables), with: Entities::Variable
       end
 
-      # Get specifica bariable of a project
+      # Get specifica variable of a project
       #
       # Parameters:
       #   id (required) - The ID of a project
