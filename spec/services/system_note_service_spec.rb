@@ -487,7 +487,10 @@ describe SystemNoteService, services: true do
     end
   end
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/ce_upstream
 
   describe '.approve_mr' do
     let(:noteable)    { create(:merge_request, source_project: project) }
@@ -501,5 +504,8 @@ describe SystemNoteService, services: true do
       end
     end
   end
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
 end

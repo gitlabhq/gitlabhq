@@ -43,6 +43,8 @@ class Key < ActiveRecord::Base
 
   scope :ldap, -> { where(type: 'LDAPKey') }
 
+  scope :ldap, -> { where(type: 'LDAPKey') }
+
   delegate :name, :email, to: :user, prefix: true
 
   after_create :add_to_shell

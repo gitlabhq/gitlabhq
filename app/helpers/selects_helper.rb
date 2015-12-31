@@ -33,12 +33,17 @@ module SelectsHelper
       'data-email-user' => email_user,
       'data-first-user' => first_user,
 <<<<<<< HEAD
+<<<<<<< HEAD
       'data-current-user' => current_user
 >>>>>>> origin/7-14-stable
 =======
       'data-current-user' => current_user,
       'data-push-code-to-protected-branches' => push_code_to_protected_branches
 >>>>>>> gitlabhq/ce_upstream
+=======
+      'data-current-user' => current_user,
+      'data-push-code-to-protected-branches' => push_code_to_protected_branches
+>>>>>>> origin/ce_upstream
     }
 
     unless opts[:scope] == :all

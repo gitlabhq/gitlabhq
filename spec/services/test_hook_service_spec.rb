@@ -1,18 +1,24 @@
 require 'spec_helper'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 describe TestHookService, services: true do
   let(:user)    { create :user }
   let(:project) { create :project }
   let(:hook)    { create :project_hook, project: project }
 =======
+=======
+>>>>>>> origin/ce_upstream
 describe TestHookService do
   let(:user)         { create :user }
   let(:group)        { create :group }
   let(:project)      { create :project, group: group }
   let(:project_hook) { create :project_hook, project: project }
   let(:group_hook)   { create :group_hook, group: group }
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
 
   describe :execute do
     it "should successfully execute the project hook" do

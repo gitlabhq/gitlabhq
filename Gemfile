@@ -292,6 +292,8 @@ end
 
 gem "gitlab-license", "~> 0.0.4"
 
+gem "gitlab-license", "~> 0.0.4"
+
 group :development do
   gem "foreman"
   gem 'brakeman', '~> 3.1.0', require: false

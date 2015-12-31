@@ -14,12 +14,17 @@
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'
 <<<<<<< HEAD
+<<<<<<< HEAD
     - elsif @merge_request.merge_when_build_succeeds?
       = render 'projects/merge_requests/widget/open/merge_when_build_succeeds'
 =======
     - elsif @merge_request.requires_approve? && !@merge_request.approved?
       = render 'projects/merge_requests/widget/open/approve'
 >>>>>>> gitlabhq/ce_upstream
+=======
+    - elsif @merge_request.requires_approve? && !@merge_request.approved?
+      = render 'projects/merge_requests/widget/open/approve'
+>>>>>>> origin/ce_upstream
     - elsif !@merge_request.can_be_merged_by?(current_user)
       = render 'projects/merge_requests/widget/open/not_allowed'
     - elsif @project.merge_requests_ff_only_enabled
@@ -43,4 +48,7 @@
       Approved by
       - @merge_request.approved_by_users.each do |user|
         = link_to_member(@project, user, name: false, size: 24)
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream

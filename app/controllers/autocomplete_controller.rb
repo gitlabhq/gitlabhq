@@ -7,6 +7,15 @@ class AutocompleteController < ApplicationController
     @users = @users.search(params[:search]) if params[:search].present?
     @users = @users.active
     @users = @users.reorder(:name)
+<<<<<<< HEAD
+=======
+
+    if params[:push_code_to_protected_branches] && project
+      @users = @users.to_a.select { |user| user.can?(:push_code_to_protected_branches, project) }.take(PER_PAGE)
+    else
+      @users = @users.page(params[:page]).per(PER_PAGE)
+    end
+>>>>>>> origin/ce_upstream
 
     if params[:push_code_to_protected_branches] && project
       @users = @users.to_a.select { |user| user.can?(:push_code_to_protected_branches, project) }.take(PER_PAGE)

@@ -4,12 +4,15 @@ describe Mentionable do
   include Mentionable
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   def author
     nil
   end
 
 =======
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
   describe :references do
     let(:project) { create(:project) }
 

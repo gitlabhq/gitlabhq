@@ -435,6 +435,23 @@ describe Project, models: true do
 
   describe :allowed_to_share_with_group? do
     let(:project) { create(:project) }
+<<<<<<< HEAD
+=======
+
+    it "returns true" do
+      expect(project.allowed_to_share_with_group?).to be_truthy
+    end
+
+    it "returns false" do
+      project.namespace.update(share_with_group_lock: true)
+      expect(project.allowed_to_share_with_group?).to be_falsey
+    end
+  end
+
+  describe :ci_commit do
+    let(:project) { create :project }
+    let(:commit) { create :ci_commit, gl_project: project }
+>>>>>>> origin/ce_upstream
 
     it "returns true" do
       expect(project.allowed_to_share_with_group?).to be_truthy

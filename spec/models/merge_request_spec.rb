@@ -173,10 +173,14 @@ describe MergeRequest, models: true do
         allow(subject.project).to receive_messages(default_branch: subject.target_branch)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         expect(subject.closes_issues).to eq([issue0, issue1])
 =======
         expect(subject.closes_issues).to eq([issue1, issue0])
 >>>>>>> gitlabhq/ce_upstream
+=======
+        expect(subject.closes_issues).to eq([issue1, issue0])
+>>>>>>> origin/ce_upstream
       end
     end
   end
@@ -207,6 +211,7 @@ describe MergeRequest, models: true do
     end
   end
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   describe '#can_remove_source_branch?' do
     let(:user) { create(:user) }
@@ -250,6 +255,8 @@ describe MergeRequest, models: true do
 
       expect(merge_if_green.merge_when_build_succeeds).to be_falsey
 =======
+=======
+>>>>>>> origin/ce_upstream
   describe "approvers_left" do
     let(:merge_request) {create :merge_request}
 
@@ -271,7 +278,10 @@ describe MergeRequest, models: true do
       merge_request.target_project.update(approvals_before_merge: 2)
 
       expect(merge_request.approvals_required).to eq 2
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     end
   end
 

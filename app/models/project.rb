@@ -120,12 +120,15 @@ class Project < ActiveRecord::Base
   has_one :external_wiki_service, dependent: :destroy
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
   has_many :forks,                through:     :forked_project_links, source: :forked_to_project
 =======
+=======
+>>>>>>> origin/ce_upstream
 
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
 >>>>>>> gitlabhq/ce_upstream
@@ -150,7 +153,10 @@ class Project < ActiveRecord::Base
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/ce_upstream
   has_many :approvers, as: :target, dependent: :destroy
   has_many :ci_commits, dependent: :destroy, class_name: 'Ci::Commit', foreign_key: :gl_project_id
   has_many :ci_builds, through: :ci_commits, source: :builds, dependent: :destroy, class_name: 'Ci::Build'
@@ -206,11 +212,14 @@ class Project < ActiveRecord::Base
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validates :approvals_before_merge, numericality: true, allow_blank: true
+<<<<<<< HEAD
 
   before_validation :set_runners_token_token
   def set_runners_token_token
     self.runners_token = SecureRandom.hex(15) if self.runners_token.blank?
   end
+=======
+>>>>>>> origin/ce_upstream
 
   mount_uploader :avatar, AvatarUploader
 
@@ -625,6 +634,14 @@ class Project < ActiveRecord::Base
     issues_tracker.to_param == 'redmine'
   end
 
+  def jira_tracker?
+    issues_tracker.to_param == 'jira'
+  end
+
+  def redmine_tracker?
+    issues_tracker.to_param == 'redmine'
+  end
+
   def avatar_type
     unless self.avatar.image?
       self.errors.add :avatar, 'only images allowed'
@@ -941,9 +958,32 @@ class Project < ActiveRecord::Base
   end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   def reference_issue_tracker?
     default_issues_tracker? || jira_tracker_active?
+=======
+  def reference_issue_tracker?
+    default_issues_tracker? || jira_tracker_active?
+  end
+
+  def jira_tracker_active?
+    jira_tracker? && jira_service.active
+  end
+
+  def approver_ids=(value)
+    value.split(",").map(&:strip).each do |user_id|
+      approvers.find_or_create_by(user_id: user_id, target_id: id)
+    end
+  end
+
+  def allowed_to_share_with_group?
+    !namespace.share_with_group_lock
+  end
+
+  def ci_commit(sha)
+    ci_commits.find_by(sha: sha)
+>>>>>>> origin/ce_upstream
   end
 
 >>>>>>> gitlabhq/ce_upstream

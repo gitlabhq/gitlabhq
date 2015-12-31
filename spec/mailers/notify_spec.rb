@@ -887,6 +887,7 @@ describe Notify do
   end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   describe 'build success' do
     before { build.success }
 
@@ -913,6 +914,8 @@ describe Notify do
     it 'contains name of project' do
       should have_body_text build.project_name
 =======
+=======
+>>>>>>> origin/ce_upstream
   describe 'admin notification' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
@@ -936,7 +939,10 @@ describe Notify do
     it 'includes unsubscribe link' do
       unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
       should have_body_text(unsubscribe_link)
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     end
   end
 end

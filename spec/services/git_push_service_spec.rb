@@ -282,18 +282,24 @@ describe GitPushService, services: true do
 
         allow(closing_commit).to receive_messages({
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                     issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
                                                     safe_message: message,
                                                     author_name: commit_author.name,
                                                     author_email: commit_author.email
                                                   })
 =======
+=======
+>>>>>>> origin/ce_upstream
           issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
           safe_message: message,
           author_name: commit_author.name,
           author_email: commit_author.email
         })
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end

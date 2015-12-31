@@ -19,7 +19,10 @@ class Projects::ServicesController < Projects::ApplicationController
                     :notify, :color,
                     :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
                     :multiproject_enabled, :pass_unstable]
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
 
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password]

@@ -57,9 +57,13 @@ module API
     mount Keys
     mount Tags
 <<<<<<< HEAD
+<<<<<<< HEAD
     mount Triggers
 =======
     mount LicenseInfo
 >>>>>>> gitlabhq/ce_upstream
+=======
+    mount LicenseInfo
+>>>>>>> origin/ce_upstream
   end
 end

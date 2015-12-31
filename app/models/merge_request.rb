@@ -43,8 +43,11 @@ class MergeRequest < ActiveRecord::Base
   has_one :merge_request_diff, dependent: :destroy
   has_many :approvals, dependent: :destroy
   has_many :approvers, as: :target, dependent: :destroy
+<<<<<<< HEAD
 
   serialize :merge_params, Hash
+=======
+>>>>>>> origin/ce_upstream
 
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
@@ -449,7 +452,10 @@ class MergeRequest < ActiveRecord::Base
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/ce_upstream
   def approvals_left
     approvals_required - approvals.count
   end
@@ -496,7 +502,10 @@ class MergeRequest < ActiveRecord::Base
     approvals_left > approvers_left.count
   end
 
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
   def has_ci?
     source_project.ci_service && commits.any?
   end

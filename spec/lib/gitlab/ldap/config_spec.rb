@@ -1,12 +1,17 @@
 require 'spec_helper'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 describe Gitlab::LDAP::Config, lib: true do
   let(:config) { Gitlab::LDAP::Config.new provider }
 =======
 describe Gitlab::LDAP::Config do
   let(:config) { described_class.new provider }
 >>>>>>> gitlabhq/ce_upstream
+=======
+describe Gitlab::LDAP::Config do
+  let(:config) { described_class.new provider }
+>>>>>>> origin/ce_upstream
   let(:provider) { 'ldapmain' }
 
   describe '#initalize' do

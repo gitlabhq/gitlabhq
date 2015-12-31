@@ -435,9 +435,13 @@ GEM
       posix-spawn (~> 0.3)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     gitlab-license (0.0.4)
 >>>>>>> gitlabhq/ce_upstream
+=======
+    gitlab-license (0.0.4)
+>>>>>>> origin/ce_upstream
     gitlab_emoji (0.2.0)
       gemojione (~> 2.1)
     gitlab_git (7.2.22)
@@ -566,10 +570,15 @@ GEM
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     gssapi (1.2.0)
       ffi (>= 1.0.1)
 >>>>>>> gitlabhq/ce_upstream
+=======
+    gssapi (1.2.0)
+      ffi (>= 1.0.1)
+>>>>>>> origin/ce_upstream
     haml (4.0.7)
 =======
 =======
@@ -1244,8 +1253,11 @@ DEPENDENCIES
   gitlab-flowdock-git-hook (~> 1.0.1)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   gitlab_emoji (~> 0.2.0)
 =======
+=======
+>>>>>>> origin/ce_upstream
   gitlab-license (~> 0.0.4)
   gitlab_emoji (~> 0.1)
 >>>>>>> gitlabhq/ce_upstream
@@ -1287,9 +1299,13 @@ DEPENDENCIES
   nested_form (~> 0.3.2)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   net-ldap
 >>>>>>> gitlabhq/ce_upstream
+=======
+  net-ldap
+>>>>>>> origin/ce_upstream
   net-ssh (~> 3.0.1)
 =======
 >>>>>>> origin/8-0-stable

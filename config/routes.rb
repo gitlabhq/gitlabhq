@@ -258,9 +258,21 @@ Rails.application.routes.draw do
       end
     end
 
+    resource :appearances, path: 'appearance' do
+      member do
+        get :preview
+        delete :logo
+        delete :header_logos
+      end
+    end
+
     resource :application_settings, only: [:show, :update] do
       resources :services
       put :reset_runners_token
+    end
+
+    resource :license, only: [:show, :new, :create, :destroy] do
+      get :download, on: :member
     end
 
     resource :license, only: [:show, :new, :create, :destroy] do
@@ -383,12 +395,18 @@ Rails.application.routes.draw do
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/ce_upstream
     collection do
       get :autocomplete
     end
 
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     scope module: :groups do
       resource :ldap, only: [] do
         member do
@@ -417,6 +435,14 @@ Rails.application.routes.draw do
       resources :members,   only: [:index, :new, :create, :edit, :update, :destroy]
       resources :projects,  only: [:index, :new, :create, :edit, :update, :destroy], constraints: { id: /[a-zA-Z.0-9_\-\/]+/ }
 >>>>>>> gitlabhq/5-1-stable
+    end
+
+    get "/audit_events" => "audit_events#group_log"
+
+    resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ }, module: :groups do
+      member do
+        get :test
+      end
     end
 
     get "/audit_events" => "audit_events#group_log"
@@ -655,6 +681,24 @@ Rails.application.routes.draw do
 
         resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resource :mirror, only: [:show, :update] do
+<<<<<<< HEAD
+=======
+          member do
+            post :update_now
+          end
+        end
+        resources :git_hooks, constraints: { id: /\d+/ }
+        resource :variables, only: [:show, :update]
+        resources :triggers, only: [:index, :create, :destroy]
+        resource :ci_settings, only: [:edit, :update, :destroy]
+        resources :ci_web_hooks, only: [:index, :create, :destroy] do
+          member do
+            get :test
+          end
+        end
+
+        resources :ci_services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+>>>>>>> origin/ce_upstream
           member do
             post :update_now
           end
@@ -749,10 +793,14 @@ Rails.application.routes.draw do
         end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         resources :runner_projects, only: [:create, :destroy]
 =======
         resources :approvers, only: :destroy
 >>>>>>> gitlabhq/ce_upstream
+=======
+        resources :approvers, only: :destroy
+>>>>>>> origin/ce_upstream
       end
 
       get "/audit_events" => "audit_events#project_log"

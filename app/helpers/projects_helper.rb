@@ -286,7 +286,10 @@ module ProjectsHelper
   end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/ce_upstream
   def membership_locked?
     if @project.group && @project.group.membership_lock
       true

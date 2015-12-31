@@ -78,9 +78,12 @@ module MergeRequests
     end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     def reset_merge_when_build_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_build_succeeds)
 =======
+=======
+>>>>>>> origin/ce_upstream
     # Reset approvals for merge request
     # Note: we should reset approvals for merge requests from forks too
     def reset_approvals_for_merge_requests
@@ -93,7 +96,10 @@ module MergeRequests
           merge_request.approvals.destroy_all
         end
       end
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     end
 
     def find_new_commits

@@ -7,7 +7,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 =======
     :edit, :update, :show, :diffs, :commits, :merge, :merge_check,
     :ci_status, :toggle_subscription, :approve, :ff_merge, :rebase
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]

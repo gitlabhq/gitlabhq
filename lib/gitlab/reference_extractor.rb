@@ -38,6 +38,14 @@ module Gitlab
       end
     end
 
+    def issues
+      if project && project.jira_tracker?
+        references[:external_issue]
+      else
+        references[:issue]
+      end
+    end
+
     private
 
     def references

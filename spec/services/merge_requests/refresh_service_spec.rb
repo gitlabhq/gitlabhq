@@ -52,10 +52,14 @@ describe MergeRequests::RefreshService, services: true do
       it { expect(@merge_request.notes).not_to be_empty }
       it { expect(@merge_request).to be_open }
 <<<<<<< HEAD
+<<<<<<< HEAD
       it { expect(@merge_request.merge_when_build_succeeds).to be_falsey}
 =======
       it { expect(@merge_request.approvals).to be_empty }
 >>>>>>> gitlabhq/ce_upstream
+=======
+      it { expect(@merge_request.approvals).to be_empty }
+>>>>>>> origin/ce_upstream
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }
       it { expect(@fork_merge_request.approvals).to be_empty }

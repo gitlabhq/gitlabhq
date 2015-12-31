@@ -6,10 +6,14 @@ See the documentation below for details on how to configure these services.
 
 - [Jira](jira.md) Integrate with the JIRA issue tracker
 <<<<<<< HEAD
+<<<<<<< HEAD
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 =======
 - [External issue tracker](external-issue-tracker.md) Redmine, bugzilla, etc.
 >>>>>>> gitlabhq/ce_upstream
+=======
+- [External issue tracker](external-issue-tracker.md) Redmine, bugzilla, etc.
+>>>>>>> origin/ce_upstream
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [Jenkins](jenkins.md) Integrate with the Jenkins CI
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab, and Google via OAuth.

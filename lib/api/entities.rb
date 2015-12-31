@@ -54,6 +54,11 @@ module API
       expose :commit_message_regex, :deny_delete_tag
     end
 
+    class ProjectGitHook < Grape::Entity
+      expose :id, :project_id, :created_at
+      expose :commit_message_regex, :deny_delete_tag
+    end
+
     class ForkedFromProject < Grape::Entity
       expose :id
       expose :name, :name_with_namespace
@@ -381,9 +386,12 @@ module API
     end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     class TriggerRequest < Grape::Entity
       expose :id, :variables
 =======
+=======
+>>>>>>> origin/ce_upstream
     class License < Grape::Entity
       expose :starts_at, :expires_at, :licensee
 
@@ -394,7 +402,10 @@ module API
       expose :active_users do |license, options|
         ::User.active.count
       end
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     end
   end
 end

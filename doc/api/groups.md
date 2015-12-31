@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Groups
 
 ## List groups
@@ -256,6 +257,8 @@ And to switch pages add:
 /groups?per_page=100&page=2
 ```
 =======
+=======
+>>>>>>> origin/ce_upstream
 # Groups
 
 ## List project groups
@@ -492,4 +495,7 @@ Parameters:
 - `id` (required) - The ID of a group
 - `cn` (required) - The CN of a LDAP group
 - `provider` (required) - Name of a LDAP provider
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream

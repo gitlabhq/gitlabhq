@@ -12,6 +12,7 @@ module API
       #  GET /users?username=root
       get do
 <<<<<<< HEAD
+<<<<<<< HEAD
         if params[:username].present?
           @users = User.where(username: params[:username])
         else
@@ -21,6 +22,8 @@ module API
           @users = paginate @users
         end
 =======
+=======
+>>>>>>> origin/ce_upstream
         skip_ldap = params[:skip_ldap].present? && params[:skip_ldap] == 'true'
 
         @users = User.all

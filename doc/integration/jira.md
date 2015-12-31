@@ -8,10 +8,14 @@ Each project can be configured to connect to a different Jira instance, configur
 If you have one Jira instance you can pre-fill the settings page with a default template. To configure the template [see external issue tracker document](external-issue-tracker.md#service-template)).
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Once the project is connected to Jira, you can reference and close the issues in Jira directly from GitLab.
 =======
 Once the project is connected to Jira, you can reference and close the issues in Jira directly from GitLab. This functionality is only available in GitLab Enterprise Edition as described in this document.
 >>>>>>> gitlabhq/ce_upstream
+=======
+Once the project is connected to Jira, you can reference and close the issues in Jira directly from GitLab. This functionality is only available in GitLab Enterprise Edition as described in this document.
+>>>>>>> origin/ce_upstream
 
 
 ## Table of Contents

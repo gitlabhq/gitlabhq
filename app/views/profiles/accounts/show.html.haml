@@ -26,12 +26,15 @@
             - else
               %span You don`t have one yet. Click generate to fix it.
 
+<<<<<<< HEAD
         .form-actions
           - if current_user.private_token
             = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
           - else
             = f.submit 'Generate', class: "btn btn-default"
 
+=======
+>>>>>>> origin/ce_upstream
   .panel.panel-default
     .panel-heading
       Two-factor Authentication
@@ -51,6 +54,7 @@
           invalidating all previous codes.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         - else
           %p
             Increase your account's security by enabling two-factor authentication (2FA).
@@ -61,6 +65,8 @@
           .form-actions
             = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
 =======
+=======
+>>>>>>> origin/ce_upstream
       - else
         %p
           Increase your account's security by enabling two-factor authentication (2FA).
@@ -69,7 +75,10 @@
           password as usual, plus a randomly-generated code from your phone.
         %div
           = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
 
   - if button_based_providers.any?
     .panel.panel-default

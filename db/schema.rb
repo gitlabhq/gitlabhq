@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.datetime "created_at"
     t.datetime "updated_at"
 <<<<<<< HEAD
+<<<<<<< HEAD
     t.string   "home_page_url"
     t.integer  "default_branch_protection",         default: 2
     t.boolean  "twitter_sharing_enabled",           default: true
@@ -101,6 +102,23 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.integer  "session_expire_delay",                     default: 10080, null: false
     t.text     "import_sources"
     t.text     "help_page_text"
+=======
+    t.string   "home_page_url",                limit: 255
+    t.integer  "default_branch_protection",                default: 2
+    t.boolean  "twitter_sharing_enabled",                  default: true
+    t.text     "help_text"
+    t.text     "restricted_visibility_levels"
+    t.boolean  "version_check_enabled",                    default: true
+    t.integer  "max_attachment_size",                      default: 10,    null: false
+    t.integer  "default_project_visibility"
+    t.integer  "default_snippet_visibility"
+    t.text     "restricted_signup_domains"
+    t.boolean  "user_oauth_applications",                  default: true
+    t.string   "after_sign_out_path",          limit: 255
+    t.integer  "session_expire_delay",                     default: 10080, null: false
+    t.text     "import_sources"
+    t.text     "help_page_text"
+>>>>>>> origin/ce_upstream
     t.string   "admin_notification_email",     limit: 255
     t.boolean  "shared_runners_enabled",                   default: true,  null: false
     t.integer  "max_artifacts_size",                       default: 100,   null: false
@@ -111,6 +129,7 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.integer  "user_id",          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
   end
 
@@ -122,6 +141,18 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.datetime "updated_at"
   end
 
+=======
+  end
+
+  create_table "approvers", force: :cascade do |t|
+    t.integer  "target_id",               null: false
+    t.string   "target_type", limit: 255
+    t.integer  "user_id",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+>>>>>>> origin/ce_upstream
   add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
   add_index "approvers", ["user_id"], name: "index_approvers_on_user_id", using: :btree
 
@@ -354,12 +385,17 @@ ActiveRecord::Schema.define(version: 20151228175719) do
 
   create_table "ci_triggers", force: :cascade do |t|
 <<<<<<< HEAD
+<<<<<<< HEAD
     t.string   "token"
     t.integer  "project_id"
 =======
     t.string   "token",      limit: 255
     t.integer  "project_id",             null: false
 >>>>>>> gitlabhq/ce_upstream
+=======
+    t.string   "token",      limit: 255
+    t.integer  "project_id",             null: false
+>>>>>>> origin/ce_upstream
     t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -370,6 +406,7 @@ ActiveRecord::Schema.define(version: 20151228175719) do
   add_index "ci_triggers", ["gl_project_id"], name: "index_ci_triggers_on_gl_project_id", using: :btree
 
   create_table "ci_variables", force: :cascade do |t|
+<<<<<<< HEAD
 <<<<<<< HEAD
     t.integer "project_id"
     t.string  "key"
@@ -386,6 +423,14 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.string  "encrypted_value_salt", limit: 255
     t.string  "encrypted_value_iv",   limit: 255
 >>>>>>> gitlabhq/ce_upstream
+=======
+    t.integer "project_id",                       null: false
+    t.string  "key",                  limit: 255
+    t.text    "value"
+    t.text    "encrypted_value"
+    t.string  "encrypted_value_salt", limit: 255
+    t.string  "encrypted_value_iv",   limit: 255
+>>>>>>> origin/ce_upstream
   end
 
   add_index "ci_variables", ["gl_project_id"], name: "index_ci_variables_on_gl_project_id", using: :btree
@@ -608,12 +653,17 @@ ActiveRecord::Schema.define(version: 20151228175719) do
 
   create_table "merge_requests", force: :cascade do |t|
 <<<<<<< HEAD
+<<<<<<< HEAD
     t.string   "target_branch",                             null: false
     t.string   "source_branch",                             null: false
 =======
     t.string   "target_branch",     limit: 255,             null: false
     t.string   "source_branch",     limit: 255,             null: false
 >>>>>>> gitlabhq/ce_upstream
+=======
+    t.string   "target_branch",     limit: 255,             null: false
+    t.string   "source_branch",     limit: 255,             null: false
+>>>>>>> origin/ce_upstream
     t.integer  "source_project_id",                         null: false
     t.integer  "author_id"
     t.integer  "assignee_id"
@@ -621,6 +671,7 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "milestone_id"
+<<<<<<< HEAD
 <<<<<<< HEAD
     t.string   "state"
     t.string   "merge_status"
@@ -645,6 +696,17 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.integer  "updated_by_id"
     t.string   "merge_error",       limit: 255
 >>>>>>> gitlabhq/ce_upstream
+=======
+    t.string   "state",             limit: 255
+    t.string   "merge_status",      limit: 255
+    t.integer  "target_project_id",                         null: false
+    t.integer  "iid"
+    t.text     "description"
+    t.integer  "position",                      default: 0
+    t.datetime "locked_at"
+    t.integer  "updated_by_id"
+    t.string   "merge_error",       limit: 255
+>>>>>>> origin/ce_upstream
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -880,6 +942,7 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.boolean  "active",                            default: false, null: false
     t.text     "properties"
 <<<<<<< HEAD
+<<<<<<< HEAD
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
     t.boolean  "issues_events",         default: true
@@ -888,13 +951,18 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.boolean  "note_events",           default: true,  null: false
     t.boolean  "build_events",          default: false, null: false
 =======
+=======
+>>>>>>> origin/ce_upstream
     t.boolean  "template",                          default: false
     t.boolean  "push_events",                       default: true
     t.boolean  "issues_events",                     default: true
     t.boolean  "merge_requests_events",             default: true
     t.boolean  "tag_push_events",                   default: true
     t.boolean  "note_events",                       default: true,  null: false
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
   end
 
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree
@@ -954,6 +1022,7 @@ ActiveRecord::Schema.define(version: 20151228175719) do
 
   create_table "users", force: :cascade do |t|
 <<<<<<< HEAD
+<<<<<<< HEAD
     t.string   "email",                       default: "",    null: false
     t.string   "encrypted_password",          default: "",    null: false
     t.string   "reset_password_token"
@@ -1007,13 +1076,41 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.string   "bio",                         limit: 255
     t.integer  "failed_attempts",                         default: 0
     t.datetime "locked_at"
+=======
+    t.string   "email",                       limit: 255, default: "",    null: false
+    t.string   "encrypted_password",          limit: 255, default: "",    null: false
+    t.string   "reset_password_token",        limit: 255
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                           default: 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip",          limit: 255
+    t.string   "last_sign_in_ip",             limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name",                        limit: 255
+    t.boolean  "admin",                                   default: false, null: false
+    t.integer  "projects_limit",                          default: 10
+    t.string   "skype",                       limit: 255, default: "",    null: false
+    t.string   "linkedin",                    limit: 255, default: "",    null: false
+    t.string   "twitter",                     limit: 255, default: "",    null: false
+    t.string   "authentication_token",        limit: 255
+    t.integer  "theme_id",                                default: 1,     null: false
+    t.string   "bio",                         limit: 255
+    t.integer  "failed_attempts",                         default: 0
+    t.datetime "locked_at"
+>>>>>>> origin/ce_upstream
     t.string   "username",                    limit: 255
     t.boolean  "can_create_group",                        default: true,  null: false
     t.boolean  "can_create_team",                         default: true,  null: false
     t.string   "state",                       limit: 255
     t.integer  "color_scheme_id",                         default: 1,     null: false
     t.integer  "notification_level",                      default: 1,     null: false
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
     t.datetime "last_credential_check_at"
@@ -1021,6 +1118,7 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.string   "confirmation_token",          limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
+<<<<<<< HEAD
 <<<<<<< HEAD
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",             default: false
@@ -1068,6 +1166,26 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.integer  "consumed_timestep"
     t.integer  "layout",                                  default: 0
 >>>>>>> gitlabhq/ce_upstream
+=======
+    t.string   "unconfirmed_email",           limit: 255
+    t.boolean  "hide_no_ssh_key",                         default: false
+    t.string   "website_url",                 limit: 255, default: "",    null: false
+    t.datetime "admin_email_unsubscribed_at"
+    t.string   "notification_email",          limit: 255
+    t.boolean  "hide_no_password",                        default: false
+    t.boolean  "password_automatically_set",              default: false
+    t.string   "location",                    limit: 255
+    t.string   "encrypted_otp_secret",        limit: 255
+    t.string   "encrypted_otp_secret_iv",     limit: 255
+    t.string   "encrypted_otp_secret_salt",   limit: 255
+    t.boolean  "otp_required_for_login",                  default: false, null: false
+    t.text     "otp_backup_codes"
+    t.string   "public_email",                limit: 255, default: "",    null: false
+    t.integer  "dashboard",                               default: 0
+    t.integer  "project_view",                            default: 0
+    t.integer  "consumed_timestep"
+    t.integer  "layout",                                  default: 0
+>>>>>>> origin/ce_upstream
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1099,6 +1217,7 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.string   "type",                    limit: 255, default: "ProjectHook"
     t.integer  "service_id"
 <<<<<<< HEAD
+<<<<<<< HEAD
     t.boolean  "push_events",             default: true,          null: false
     t.boolean  "issues_events",           default: false,         null: false
     t.boolean  "merge_requests_events",   default: false,         null: false
@@ -1107,6 +1226,8 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.boolean  "enable_ssl_verification", default: true
     t.boolean  "build_events",            default: false,         null: false
 =======
+=======
+>>>>>>> origin/ce_upstream
     t.boolean  "push_events",                         default: true,          null: false
     t.boolean  "issues_events",                       default: false,         null: false
     t.boolean  "merge_requests_events",               default: false,         null: false
@@ -1114,7 +1235,10 @@ ActiveRecord::Schema.define(version: 20151228175719) do
     t.integer  "group_id"
     t.boolean  "note_events",                         default: false,         null: false
     t.boolean  "enable_ssl_verification",             default: true
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

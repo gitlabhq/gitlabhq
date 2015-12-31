@@ -4,6 +4,7 @@
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
       %strong.str-truncated= branch.name
 <<<<<<< HEAD
+<<<<<<< HEAD
     &nbsp;
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
@@ -16,6 +17,8 @@
         %i.fa.fa-lock
         protected
 =======
+=======
+>>>>>>> origin/ce_upstream
 
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
@@ -35,7 +38,10 @@
         = icon('exclamation-triangle')
         diverged from upstream
 
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     .controls.hidden-xs
       - if create_mr_button?(@repository.root_ref, branch.name)
         = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-grouped btn-xs' do

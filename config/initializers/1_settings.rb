@@ -161,6 +161,29 @@ if github_settings
   end
 end
 
+# Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
+
+github_default_url = "https://github.com"
+github_settings = Settings.omniauth['providers'].find { |provider| provider["name"] == "github"}
+
+if github_settings
+  # For compatibility with old config files (before 7.8)
+  # where people dont have url in github settings
+  if github_settings['url'].blank?
+    github_settings['url'] = github_default_url
+  end
+
+  if github_settings["url"].include?(github_default_url)
+    github_settings["args"]["client_options"] = OmniAuth::Strategies::GitHub.default_options[:client_options]
+  else
+    github_settings["args"]["client_options"] = {
+      "site" =>          File.join(github_settings["url"], "api/v3"),
+      "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
+      "token_url" =>     File.join(github_settings["url"], "login/oauth/access_token")
+    }
+  end
+end
+
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
 
@@ -206,10 +229,14 @@ Settings.gitlab['twitter_sharing_enabled'] ||= true if Settings.gitlab['twitter_
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 <<<<<<< HEAD
+<<<<<<< HEAD
 Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z]*-\d*))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 =======
 Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?)|([A-Z]*-\d*))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 >>>>>>> gitlabhq/ce_upstream
+=======
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?)|([A-Z]*-\d*))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+>>>>>>> origin/ce_upstream
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10

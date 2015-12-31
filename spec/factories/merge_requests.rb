@@ -66,15 +66,21 @@ FactoryGirl.define do
     end
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     trait :merge_when_build_succeeds do
       merge_when_build_succeeds true
       merge_user author
 =======
+=======
+>>>>>>> origin/ce_upstream
     trait :with_approver do
       after :create do |merge_request|
         create :approver, target: merge_request
       end
+<<<<<<< HEAD
 >>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     end
 
     factory :closed_merge_request, traits: [:closed]
