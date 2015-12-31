@@ -340,10 +340,14 @@ Rails.application.routes.draw do
   # Groups Area
   #
 <<<<<<< HEAD
+<<<<<<< HEAD
   resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
 =======
   resources :groups, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, except: [:index] do
 >>>>>>> gitlabhq/5-1-stable
+=======
+  resources :groups, constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, except: [:index] do
+>>>>>>> origin/5-1-stable
     member do
       get :issues
       get :merge_requests
