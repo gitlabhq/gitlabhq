@@ -40,6 +40,20 @@ describe AsanaService, models: true do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
 
+    def create_data_for_commits(*messages)
+      data = {
+        object_kind: 'push',
+        ref: 'master',
+        user_name: user.name,
+        commits: messages.map do |m|
+          {
+            message: m,
+            url: 'https://gitlab.com/',
+          }
+        end
+      }
+    end
+
     before do
       @asana = AsanaService.new
       allow(@asana).to receive_messages(
@@ -51,12 +65,15 @@ describe AsanaService, models: true do
       )
     end
 
-    it 'should call Asana service to created a story' do
-      d1 = double('Asana::Task', add_comment: true)
-      expect(d1).to receive(:add_comment)
+    it 'should call Asana service to create a story' do
+      data = create_data_for_commits('Message from commit. related to #123456')
+      expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.name_with_namespace} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
+
+      d1 = double('Asana::Task')
+      expect(d1).to receive(:add_comment).with(text: expected_message)
       expect(Asana::Task).to receive(:find_by_id).with(anything, '123456').once.and_return(d1)
 
-      @asana.check_commit('related to #123456', 'pushed')
+      @asana.execute(data)
     end
 
     it 'should call Asana service to created a story and close a task' do
