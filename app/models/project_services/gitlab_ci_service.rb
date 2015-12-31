@@ -22,6 +22,7 @@
 class GitlabCiService < CiService
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> origin/8-3-stable
   # We override the active accessor to always make GitLabCiService disabled
@@ -30,6 +31,8 @@ class GitlabCiService < CiService
     false
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
   include Gitlab::Application.routes.url_helpers
 
   after_save :compose_service_hook, if: :activated?

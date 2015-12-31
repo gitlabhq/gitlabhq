@@ -148,7 +148,10 @@ This is a small daemon written in Go.
 To install gitlab-git-http-server we need a Go compiler.
 The instructions below assume you use 64-bit Linux. You can find
 downloads for other platforms at the [Go download
+<<<<<<< HEAD
 >>>>>>> origin/8-0-stable
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
 page](https://golang.org/dl).
 
     curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
@@ -517,7 +520,10 @@ GitLab Shell is an SSH access and repository management software developed speci
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
     cd gitlab-git-http-server
     sudo -u git -H git checkout 0.2.14
+<<<<<<< HEAD
 >>>>>>> origin/8-0-stable
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -887,6 +893,7 @@ Apart from the always supported markdown style there are other rich text files t
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Troubleshooting
 =======
 =======
@@ -900,6 +907,9 @@ Apart from the always supported markdown style there are other rich text files t
 =======
 ## Troubleshooting
 >>>>>>> origin/8-0-stable
+=======
+## Troubleshooting
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
 
 ### "You appear to have cloned an empty repository."
 

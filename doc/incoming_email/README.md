@@ -22,6 +22,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 
     ```ruby
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Configuration for Postfix mail server, assumes mailbox incoming@gitlab.example.com
     gitlab_rails['incoming_email_enabled'] = true
     
@@ -78,6 +79,8 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
     ```
 
 =======
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
     # Postfix mail server, assumes mailbox incoming@gitlab.example.com
     gitlab_rails['incoming_email_enabled'] = true
     gitlab_rails['incoming_email_address'] = "incoming+%{key}@gitlab.example.com"
@@ -101,7 +104,10 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
     gitlab_rails['incoming_email_mailbox_name'] = "inbox" # The name of the mailbox where incoming mail will end up. Usually "inbox".
     ```
 
+<<<<<<< HEAD
 >>>>>>> origin/8-0-stable
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
     As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `incoming@gitlab.example.com`/`gitlab-incoming@gmail.com`.
 
 1. Reconfigure GitLab for the changes to take effect:
@@ -134,9 +140,8 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 
     ```yaml
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Configuration for Postfix mail server, assumes mailbox incoming@gitlab.example.com
-    incoming_email:
-      enabled: true
 =======
     # Postfix mail server, assumes mailbox incoming@gitlab.example.com
     incoming_email:
@@ -146,10 +151,28 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 
     ```yaml
     # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+    incoming_email:
+      enabled: true
+=======
+    # Postfix mail server, assumes mailbox incoming@gitlab.example.com
+    incoming_email:
+      enabled: true
+      address: "incoming+%{key}@gitlab.example.com"
+    ```
+
+<<<<<<< HEAD
+    ```yaml
+    # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
     incoming_email:
       enabled: true
       address: "gitlab-incoming+%{key}@gmail.com"
     ```
+=======
+    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `incoming@gitlab.example.com`/`gitlab-incoming@gmail.com`.
+
+2. Copy `config/mail_room.yml.example` to `config/mail_room.yml`:
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
 
     As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `incoming@gitlab.example.com`/`gitlab-incoming@gmail.com`.
 >>>>>>> origin/8-0-stable
@@ -240,6 +263,42 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
     ```
 
     ```yaml
+<<<<<<< HEAD
+=======
+    # Postfix mail server
+    :mailboxes:
+      -
+        # IMAP server host
+        :host: "gitlab.example.com"
+        # IMAP server port
+        :port: 143
+        # Whether the IMAP server uses SSL
+        :ssl: false
+        # Whether the IMAP server uses StartTLS
+        :start_tls: false
+        # Email account username. Usually the full email address.
+        :email: "incoming"
+        # Email account password
+        :password: "[REDACTED]"
+        # The name of the mailbox where incoming mail will end up. Usually "inbox".
+        :name: "inbox"
+        # Always "sidekiq".
+        :delivery_method: sidekiq
+        # Always true.
+        :delete_after_delivery: true
+        :delivery_options:
+          # The URL to the Redis server used by Sidekiq. Should match the URL in config/resque.yml.
+          :redis_url: redis://localhost:6379
+          # Always "resque:gitlab".
+          :namespace: resque:gitlab
+          # Always "incoming_email".
+          :queue: incoming_email
+          # Always "EmailReceiverWorker"
+          :worker: EmailReceiverWorker
+    ```
+
+    ```yaml
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
     # Gmail / Google Apps
     :mailboxes:
       -
@@ -304,10 +363,14 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 
     ```yaml
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Configuration for Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
 =======
     # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
 >>>>>>> origin/8-0-stable
+=======
+    # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
     incoming_email:
       enabled: true
 

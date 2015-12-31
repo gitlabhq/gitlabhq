@@ -43,9 +43,12 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
 <<<<<<< HEAD
+<<<<<<< HEAD
   include CaseSensitivity
 =======
 >>>>>>> origin/8-0-stable
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
 
   extend Gitlab::ConfigHelper
 
@@ -405,10 +408,14 @@ class Project < ActiveRecord::Base
       RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
     else
 <<<<<<< HEAD
+<<<<<<< HEAD
       RepositoryImportWorker.perform_async(self.id)
 =======
       RepositoryImportWorker.perform_async(id)
 >>>>>>> origin/8-0-stable
+=======
+      RepositoryImportWorker.perform_async(id)
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
     end
   end
 

@@ -192,6 +192,7 @@ describe Grack::Auth, lib: true do
         context "when a gitlab ci token is provided" do
           let(:token) { "123" }
 <<<<<<< HEAD
+<<<<<<< HEAD
           let(:project) { FactoryGirl.create :empty_project }
 
           before do
@@ -200,6 +201,11 @@ describe Grack::Auth, lib: true do
           let(:gitlab_ci_project) { FactoryGirl.create :ci_project, token: token }
 
           before do
+=======
+          let(:gitlab_ci_project) { FactoryGirl.create :ci_project, token: token }
+
+          before do
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
             project.gitlab_ci_project = gitlab_ci_project
             project.save
 

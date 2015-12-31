@@ -17,6 +17,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 8.4.0.pre
 =======
 4.0.1
@@ -75,3 +76,6 @@
 =======
 8.3.0.pre-ee
 >>>>>>> origin/ce_upstream
+=======
+8.0.5
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
