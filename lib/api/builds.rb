@@ -9,8 +9,8 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   scope (optional) - The scope of builds to show (one of: all, finished, running)
-      #   page (optional) - The page number for pagination (default: 1)
-      #   per_page (ooptional) - The value of items per page to show (default 30)
+      #   page (optional) - The page number for pagination
+      #   per_page (ooptional) - The value of items per page to show
       # Example Request:
       #   GET /projects/:id/builds
       get ':id/builds' do
