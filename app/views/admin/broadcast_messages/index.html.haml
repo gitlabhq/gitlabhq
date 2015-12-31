@@ -8,24 +8,30 @@
 
 = render 'form'
 
+%br.clearfix
 
 -if @broadcast_messages.any?
-  %ul.bordered-list.broadcast-messages
-    - @broadcast_messages.each do |broadcast_message|
-      %li
-        .pull-right
-          - if broadcast_message.starts_at
-            %strong
-              #{broadcast_message.starts_at.to_s(:short)}
-            \...
-          - if broadcast_message.ends_at
-            %strong
-              #{broadcast_message.ends_at.to_s(:short)}
-          &nbsp;
-          = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-xs' do
-            %i.fa.fa-times.cred
-
-        .message= broadcast_message.message
-
+  %table.table
+    %thead
+      %tr
+        %th Status
+        %th Preview
+        %th Starts
+        %th Ends
+        %th &nbsp;
+    %tbody
+      - @broadcast_messages.each do |message|
+        %tr
+          %td
+            = message.status
+          %td
+            = broadcast_message(message)
+          %td
+            = message.starts_at.to_s(:iso861)
+          %td
+            = message.ends_at.to_s(:iso861)
+          %td
+            = link_to icon('pencil-square-o'), edit_admin_broadcast_message_path(message), title: 'Edit', class: 'btn btn-xs'
+            = link_to icon('times'), admin_broadcast_message_path(message), method: :delete, remote: true, title: 'Remove', class: 'js-remove-tr btn btn-xs btn-danger'
 
   = paginate @broadcast_messages

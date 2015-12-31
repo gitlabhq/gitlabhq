@@ -1,6 +1,6 @@
-.broadcast-message-preview
+.broadcast-message-preview{ style: broadcast_message_style(@broadcast_message) }
   = icon('bullhorn')
-  %span Your message here
+  %span= @broadcast_message.message || "Your message here"
 
 = form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal js-requires-input'} do |f|
   -if @broadcast_message.errors.any?
@@ -10,18 +10,18 @@
   .form-group
     = f.label :message, class: 'control-label'
     .col-sm-10
-      = f.text_area :message, class: "form-control", rows: 2, required: true
+      = f.text_area :message, class: "form-control js-quick-submit", rows: 2, required: true
   .form-group.js-toggle-colors-container
     .col-sm-10.col-sm-offset-2
       = link_to 'Customize colors', '#', class: 'js-toggle-colors-link'
   .form-group.js-toggle-colors-container.hide
     = f.label :color, "Background Color", class: 'control-label'
     .col-sm-10
-      = f.color_field :color, value: "#E75E40", class: "form-control"
+      = f.color_field :color, class: "form-control"
   .form-group.js-toggle-colors-container.hide
     = f.label :font, "Font Color", class: 'control-label'
     .col-sm-10
-      = f.color_field :font, value: "#FFFFFF", class: "form-control"
+      = f.color_field :font, class: "form-control"
   .form-group
     = f.label :starts_at, class: 'control-label'
     .col-sm-10.datetime-controls
