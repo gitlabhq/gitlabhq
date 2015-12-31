@@ -215,10 +215,14 @@ module Ci
 
     def raw_trace
 <<<<<<< HEAD
+<<<<<<< HEAD
       if File.file?(path_to_trace)
 =======
       if File.exist?(path_to_trace)
 >>>>>>> origin/8-0-stable
+=======
+      if File.file?(path_to_trace)
+>>>>>>> origin/8-3-stable
         File.read(path_to_trace)
       elsif project.ci_id && File.file?(old_path_to_trace)
         # Temporary fix for build trace data integrity

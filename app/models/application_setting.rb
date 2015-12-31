@@ -60,9 +60,12 @@ class ApplicationSetting < ActiveRecord::Base
             allow_blank: true,
             email: true
 
+<<<<<<< HEAD
   validates :two_factor_grace_period,
             numericality: { greater_than_or_equal_to: 0 }
 
+=======
+>>>>>>> origin/8-3-stable
   validates :recaptcha_site_key,
             presence: true,
             if: :recaptcha_enabled

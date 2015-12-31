@@ -158,6 +158,7 @@
         = f.number_field :max_artifacts_size, class: 'form-control'
 
   %fieldset
+<<<<<<< HEAD
     %legend Metrics
     %p
       These settings require a restart to take effect.
@@ -213,6 +214,8 @@
           the given amount of milliseconds.
 
   %fieldset
+=======
+>>>>>>> origin/8-3-stable
     %legend Spam and Anti-bot Protection
     .form-group
       .col-sm-offset-2.col-sm-10
@@ -233,11 +236,14 @@
       = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :recaptcha_private_key, class: 'form-control'
+<<<<<<< HEAD
 =======
           = f.label :ci_enabled do
             = f.check_box :ci_enabled
             When unchecked CI is disabled until rake ci:migrate is run (8.0 only)
 >>>>>>> origin/8-0-stable
+=======
+>>>>>>> origin/8-3-stable
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-primary'

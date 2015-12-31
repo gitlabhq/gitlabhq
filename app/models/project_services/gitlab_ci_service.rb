@@ -21,10 +21,14 @@
 # TODO(ayufan): The GitLabCiService is deprecated and the type should be removed when the database entries are removed
 class GitlabCiService < CiService
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/8-3-stable
   # We override the active accessor to always make GitLabCiService disabled
   # Otherwise the GitLabCiService can be picked, but should never be since it's deprecated
   def active
     false
+<<<<<<< HEAD
 =======
   include Gitlab::Application.routes.url_helpers
 
@@ -130,5 +134,7 @@ class GitlabCiService < CiService
   def repository
     project.repository
 >>>>>>> origin/8-0-stable
+=======
+>>>>>>> origin/8-3-stable
   end
 end

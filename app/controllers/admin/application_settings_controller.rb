@@ -67,6 +67,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :user_oauth_applications,
       :shared_runners_enabled,
       :max_artifacts_size,
+<<<<<<< HEAD
       :metrics_enabled,
       :metrics_host,
       :metrics_port,
@@ -75,6 +76,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_pool_size,
       :metrics_timeout,
       :metrics_method_call_threshold,
+=======
+>>>>>>> origin/8-3-stable
       :recaptcha_enabled,
       :recaptcha_site_key,
       :recaptcha_private_key,

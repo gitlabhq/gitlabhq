@@ -132,6 +132,7 @@ Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
 Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
 
+
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
 
