@@ -24,5 +24,10 @@ describe Gitlab::Diff::Highlight, lib: true do
     it 'should keep the inline diff markup' do
       expect(diff_lines[5].text).to match(Regexp.new(Regexp.escape('<span class="idiff">RuntimeError, </span>')))
     end
+
+    it 'should not modify "match" lines' do
+      expect(diff_lines[0].text).to eq('@@ -6,12 +6,18 @@ module Popen')
+      expect(diff_lines[22].text).to eq('@@ -19,6 +25,7 @@ module Popen')
+    end
   end
 end

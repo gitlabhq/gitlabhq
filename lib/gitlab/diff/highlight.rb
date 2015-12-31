@@ -25,7 +25,12 @@ module Gitlab
 
       def update_diff_lines
         @highlighted_code.lines.each_with_index do |line, i|
-          @diff_lines[i].text = "#{@diff_line_prefixes[i]}#{line}"
+          diff_line = @diff_lines[i]
+
+          # ignore highlighting for "match" lines
+          next if diff_line.type == 'match'
+
+          diff_line.text = "#{@diff_line_prefixes[i]}#{line}"
         end
 
         @diff_lines
