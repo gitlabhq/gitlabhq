@@ -39,9 +39,6 @@ describe Gitlab::Metrics::Metric do
         expect(hash[:tags]).to be_an_instance_of(Hash)
 
         expect(hash[:tags][:hostname]).to be_an_instance_of(String)
-        expect(hash[:tags][:ruby_engine]).to be_an_instance_of(String)
-        expect(hash[:tags][:ruby_version]).to be_an_instance_of(String)
-        expect(hash[:tags][:gitlab_version]).to be_an_instance_of(String)
         expect(hash[:tags][:process_type]).to be_an_instance_of(String)
       end
 
