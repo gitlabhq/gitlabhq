@@ -12,15 +12,14 @@
 #  gl_project_id        :integer
 #
 
-module Ci
-  class Variable < ActiveRecord::Base
-    extend Ci::Model
-    
-    belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+# Read about factories at https://github.com/thoughtbot/factory_girl
 
-    validates_presence_of :key
-    validates_uniqueness_of :key, scope: :gl_project_id
+FactoryGirl.define do
+  factory :ci_variable, class: Ci::Variable do
+    id 1
+    key 'TEST_VARIABLE_1'
+    value 'VALUE_1'
 
-    attr_encrypted :value, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
+    project factory: :empty_project
   end
 end
