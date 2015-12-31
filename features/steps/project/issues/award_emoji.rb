@@ -24,7 +24,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     page.within '.awards' do
       expect do
         page.find('.award.active').click
-        sleep 0.1
+        sleep 0.3
       end.to change{ page.all(".award").size }.from(3).to(2)
     end
   end
