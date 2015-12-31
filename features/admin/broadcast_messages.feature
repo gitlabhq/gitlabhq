@@ -6,7 +6,7 @@ Feature: Admin Broadcast Messages
     And I visit admin messages page
 
   Scenario: See broadcast messages list
-    Then I should be all broadcast messages
+    Then I should see all broadcast messages
 
   Scenario: Create a broadcast message
     When submit form with new broadcast message

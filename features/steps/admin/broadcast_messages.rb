@@ -4,10 +4,10 @@ class Spinach::Features::AdminBroadcastMessages < Spinach::FeatureSteps
   include SharedAdmin
 
   step 'application already has admin messages' do
-    FactoryGirl.create(:broadcast_message, message: "Migration to new server")
+    FactoryGirl.create(:broadcast_message, :expired, message: "Migration to new server")
   end
 
-  step 'I should be all broadcast messages' do
+  step 'I should see all broadcast messages' do
     expect(page).to have_content "Migration to new server"
   end
 
@@ -27,10 +27,9 @@ class Spinach::Features::AdminBroadcastMessages < Spinach::FeatureSteps
 
   step 'submit form with new customized broadcast message' do
     fill_in 'broadcast_message_message', with: 'Application update from 4:00 CST to 5:00 CST'
-    click_link "Customize colors"
     fill_in 'broadcast_message_color', with: '#f2dede'
     fill_in 'broadcast_message_font', with: '#b94a48'
-    select '2018', from: "broadcast_message_ends_at_1i"
+    select Date.today.next_year.year, from: "broadcast_message_ends_at_1i"
     click_button "Add broadcast message"
   end
 
