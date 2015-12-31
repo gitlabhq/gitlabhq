@@ -8,17 +8,17 @@
     %li{class: ('active' if @scope.nil?)}
       = link_to admin_builds_path do
         Running
-        %span.badge.js-running-count= @all_builds.running_or_pending.count(:id)
+        %span.badge.js-running-count= number_with_delimiter(@all_builds.running_or_pending.count(:id))
 
     %li{class: ('active' if @scope == 'finished')}
       = link_to admin_builds_path(scope: :finished) do
         Finished
-        %span.badge.js-running-count= @all_builds.finished.count(:id)
+        %span.badge.js-running-count= number_with_delimiter(@all_builds.finished.count(:id))
 
     %li{class: ('active' if @scope == 'all')}
       = link_to admin_builds_path(scope: :all) do
         All
-        %span.badge.js-totalbuilds-count= @all_builds.count(:id)
+        %span.badge.js-totalbuilds-count= number_with_delimiter(@all_builds.count(:id))
 
 .gray-content-block
   #{(@scope || 'running').capitalize} builds
