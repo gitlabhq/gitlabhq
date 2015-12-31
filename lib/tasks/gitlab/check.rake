@@ -197,6 +197,7 @@ namespace :gitlab do
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       recipe_content = File.read(recipe_path)
 =======
       recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab 2>/dev/null`
@@ -210,6 +211,9 @@ namespace :gitlab do
 =======
       recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab 2>/dev/null`
 >>>>>>> gitlabhq/4-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> origin/4-1-stable
       script_content = File.read(script_path)
 
       if recipe_content == script_content
@@ -1161,6 +1165,7 @@ namespace :gitlab do
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         correct_options = options.map do |name, value|
           run("git --git-dir=\"#{project.path_to_repo}\" config --get #{name}").try(:chomp) == value
         end
@@ -1185,6 +1190,11 @@ namespace :gitlab do
           puts "repository is empty".magenta
         else
 >>>>>>> gitlabhq/4-1-stable
+=======
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+>>>>>>> origin/4-1-stable
           correct_options = options.map do |name, value|
             run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
           end
@@ -1202,9 +1212,12 @@ namespace :gitlab do
             fix_and_rerun
           end
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-1-stable
 =======
 >>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
         end
       end
 >>>>>>> gitlabhq/4-0-stable
@@ -1225,6 +1238,7 @@ namespace :gitlab do
         puts 'LDAP is disabled in config/gitlab.yml'
       end
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       finished_checking "LDAP"
     end
@@ -1287,6 +1301,14 @@ namespace :gitlab do
           puts "repository is empty".magenta
         else
 >>>>>>> gitlabhq/4-1-stable
+=======
+      Project.find_each(batch_size: 100) do |project|
+        print "#{project.name_with_namespace.yellow} ... "
+
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+>>>>>>> origin/4-1-stable
           project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
 
           unless File.exists?(project_hook_file)
@@ -1315,9 +1337,12 @@ namespace :gitlab do
             fix_and_rerun
           end
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-1-stable
 =======
 >>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
         end
       end
     end

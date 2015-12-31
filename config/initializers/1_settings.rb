@@ -200,9 +200,12 @@ Settings.gitlab['user']       ||= 'gitlab'
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-1-stable
 =======
 >>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
 
 #
 # Reply by email

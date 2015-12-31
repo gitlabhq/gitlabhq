@@ -56,9 +56,12 @@ production: &base
   # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
   # username_changing_enabled: false # default: true - User can change her username/namespace
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-1-stable
 =======
 >>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
 
     ## Email settings
     # Uncomment and set to false if you need to disable email sending from GitLab (default: true)

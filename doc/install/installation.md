@@ -402,7 +402,11 @@ If you installed GitLab in another directory or as a user other than the default
 
 Download the init script (will be /etc/init.d/gitlab):
 
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
+>>>>>>> origin/4-1-stable
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -493,6 +497,7 @@ However there are still a few steps left.
 ## Installation
     sudo apt-get -y install nginx
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-1-stable
 
 ### Site Configuration
@@ -513,6 +518,8 @@ Copy the example site config:
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/nginx/gitlab
 >>>>>>> gitlabhq/4-1-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+=======
+>>>>>>> origin/4-1-stable
 
 Make sure to edit the config file to match your setup:
 =======
@@ -536,7 +543,12 @@ Make sure to edit the config file to match your setup:
 
 Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following command:
 
+<<<<<<< HEAD
     sudo nginx -t
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/nginx/gitlab
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+>>>>>>> origin/4-1-stable
 
 You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
 

@@ -69,9 +69,12 @@ namespace :gitlab do
 
           project = Projects::CreateContext.new(user, project_params).execute
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-1-stable
 =======
 >>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
 
           if project.persisted?
             puts " * Created #{project.name} (#{repo_path})".green

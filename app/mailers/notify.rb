@@ -92,9 +92,12 @@ class Notify < ActionMailer::Base
     @project = @note.project
     mail(to: recipient(recipient_id), subject: subject("note for commit #{@commit.short_id}", @commit.title))
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-1-stable
 =======
 >>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
   end
 
   # Splits "gitlab.corp.company.com" up into "gitlab.corp.company.com",
