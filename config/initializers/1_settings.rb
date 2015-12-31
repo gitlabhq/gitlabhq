@@ -225,6 +225,7 @@ Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || 
 #
 Settings['gravatar'] ||= Settingslogic.new({})
 <<<<<<< HEAD
+<<<<<<< HEAD
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
@@ -259,6 +260,8 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 # Backup
 #
 =======
+=======
+>>>>>>> origin/4-0-stable
 Settings.gravatar['enabled']      = Settings.pre_40_config ? !Settings.disable_gravatar? : true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= Settings.pre_40_config ? Settings.gravatar_url      : 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
 Settings.gravatar['ssl_url']    ||= Settings.pre_40_config ? Settings.gravatar_ssl_url  : 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'

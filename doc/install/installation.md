@@ -398,17 +398,23 @@ Make GitLab start on boot:
     sudo update-rc.d gitlab defaults 21
 
 
-## Check Application Status
+## Install Init Script
 
-Check if GitLab and its environment is configured correctly:
+Download the init script (will be /etc/init.d/gitlab):
 
-    sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+    sudo chmod +x /etc/init.d/gitlab
 
+<<<<<<< HEAD
 To make sure you didn't miss anything run a more thorough check with:
 >>>>>>> gitlabhq/4-0-stable
+=======
+Make GitLab start on boot:
+>>>>>>> origin/4-0-stable
 
-    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
+    sudo update-rc.d gitlab defaults 21
 
+<<<<<<< HEAD
 If all items are green, then congratulations on successfully installing GitLab!
 However there are still a few steps left.
 
@@ -424,13 +430,32 @@ Check if GitLab and its environment are configured correctly:
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
 ### Compile Assets
+=======
+
+## Check Application Status
+
+Check if GitLab and its environment is configured correctly:
+
+    sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
+
+To make sure you didn't miss anything run a more thorough check with:
+
+    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
+
+If all items are green, then congratulations on successfully installing GitLab!
+However there are still a few steps left.
+>>>>>>> origin/4-0-stable
 
     sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 
+<<<<<<< HEAD
 ### Start Your GitLab Instance
 =======
 ## Start Your GitLab Instance
 >>>>>>> gitlabhq/4-0-stable
+=======
+## Start Your GitLab Instance
+>>>>>>> origin/4-0-stable
 
     sudo service gitlab start
     # or
@@ -449,10 +474,14 @@ Check if GitLab and its environment are configured correctly:
 Copy the example site config:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
 =======
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/nginx/gitlab -P /etc/nginx/sites-available/
 >>>>>>> gitlabhq/4-0-stable
+=======
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/nginx/gitlab -P /etc/nginx/sites-available/
+>>>>>>> origin/4-0-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:

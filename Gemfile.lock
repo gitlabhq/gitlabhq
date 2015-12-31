@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
 <<<<<<< HEAD
+<<<<<<< HEAD
     CFPropertyList (2.3.2)
     RedCloth (4.2.9)
     ace-rails-ap (2.0.1)
@@ -110,6 +111,8 @@ GEM
     cal-heatmap-rails (0.0.1)
     capybara (2.4.4)
 =======
+=======
+>>>>>>> origin/4-0-stable
     actionmailer (3.2.11)
       actionpack (= 3.2.11)
       mail (~> 2.4.4)
@@ -430,6 +433,7 @@ GEM
     jquery-turbolinks (2.1.0)
       railties (>= 3.1.0)
 <<<<<<< HEAD
+<<<<<<< HEAD
       turbolinks
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
@@ -437,6 +441,8 @@ GEM
     jwt (1.5.2)
     kaminari (0.16.3)
 =======
+=======
+>>>>>>> origin/4-0-stable
     json (1.7.6)
     jwt (0.1.5)
       multi_json (>= 1.0)
@@ -595,7 +601,10 @@ GEM
     quiet_assets (1.0.1)
       railties (~> 3.1)
     rack (1.4.3)
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-attack (4.3.1)
@@ -613,6 +622,7 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
+<<<<<<< HEAD
 <<<<<<< HEAD
     rails (4.2.4)
       actionmailer (= 4.2.4)
@@ -645,6 +655,8 @@ GEM
     rb-fsevent (0.9.6)
     rb-inotify (0.9.5)
 =======
+=======
+>>>>>>> origin/4-0-stable
     rails (3.2.11)
       actionmailer (= 3.2.11)
       actionpack (= 3.2.11)
@@ -820,6 +832,7 @@ GEM
       railties (>= 3)
       spinach (>= 0.4)
 <<<<<<< HEAD
+<<<<<<< HEAD
     spring (1.3.6)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -831,6 +844,9 @@ GEM
 =======
     sprockets (2.2.2)
 >>>>>>> gitlabhq/4-0-stable
+=======
+    sprockets (2.2.2)
+>>>>>>> origin/4-0-stable
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
