@@ -209,6 +209,7 @@ GEM
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
 <<<<<<< HEAD
+<<<<<<< HEAD
       json (>= 1.7)
     cause (0.1)
     charlock_holmes (0.7.3)
@@ -219,6 +220,8 @@ GEM
       descendants_tracker (~> 0.0.1)
     coffee-rails (4.1.0)
 =======
+=======
+>>>>>>> gitlabhq/5-3-stable
     celluloid (0.14.1)
       timers (>= 1.0.0)
     charlock_holmes (0.6.9.4)
@@ -959,6 +962,7 @@ GEM
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
 <<<<<<< HEAD
+<<<<<<< HEAD
     sidekiq (4.0.1)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
@@ -969,6 +973,8 @@ GEM
       rufus-scheduler (>= 2.0.24)
       sidekiq (>= 4.0.0)
 =======
+=======
+>>>>>>> gitlabhq/5-3-stable
     sidekiq (2.12.4)
       celluloid (>= 0.14.1)
       connection_pool (>= 1.0.0)

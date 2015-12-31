@@ -4,6 +4,7 @@
 # Maintainer: @randx
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Authors: rovanion.luckey@gmail.com, @randx
 =======
 # App Version: 5.2
@@ -11,6 +12,9 @@
 =======
 # App Version: 5.2
 >>>>>>> gitlabhq/5-2-stable
+=======
+# App Version: 5.3
+>>>>>>> gitlabhq/5-3-stable
 
 ### BEGIN INIT INFO
 # Provides:          gitlab
