@@ -208,7 +208,7 @@ class Commit
   end
 
   def ci_commit
-    project.ci_commit(sha)
+    project.ci_commit(sha) if project
   end
 
   def last_build
