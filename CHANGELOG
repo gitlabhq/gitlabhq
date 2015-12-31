@@ -6,12 +6,12 @@ v 8.4.0 (unreleased)
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
   - Only allow group/project members to mention `@all`
-  - Expose Git's version in the admin area
+  - Expose Git's version in the admin area (Trey Davis)
   - Add "Frequently used" category to emoji picker
   - Add CAS support (tduehr)
   - Add link to merge request on build detail page
   - Revert back upvote and downvote button to the issue and MR pages
-  - Swap position of Assignee and Author selector on Issueables (Zeger-Jan van de Weg)
+  - Swap position of Assignee and Author selector on Issuables (Zeger-Jan van de Weg)
 
 v 8.3.3 (unreleased)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
