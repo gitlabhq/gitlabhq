@@ -79,6 +79,7 @@ class @MergeRequestTabs
     if window.location.hash
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       $el = $("div#{container} #{window.location.hash}")
 =======
       $el = $("#{container} #{window.location.hash}")
@@ -86,6 +87,9 @@ class @MergeRequestTabs
 =======
       $el = $("#{container} #{window.location.hash}")
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+      $el = $("#{container} #{window.location.hash}")
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
       $('body').scrollTo($el.offset().top) if $el.length
 
   # Activate a tab based on the current action
@@ -158,6 +162,7 @@ class @MergeRequestTabs
         @scrollToElement("#diffs")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   loadBuilds: (source) ->
     return if @buildsLoaded
@@ -174,6 +179,9 @@ class @MergeRequestTabs
 =======
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
 
+=======
+
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
   # Show or hide the loading spinner
   #
   # status - Boolean, true to show, false to hide

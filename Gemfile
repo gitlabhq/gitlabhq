@@ -172,9 +172,12 @@ gem "state_machines-activerecord", '~> 0.3.0'
 =======
 gem "state_machine", '~> 1.2.0'
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> origin/8-0-stable
 =======
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -379,6 +382,7 @@ gem 'octokit', '~> 3.7.0'
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 gem "mail_room", "~> 0.6.1"
 =======
 gem "mail_room", "~> 0.5.2"
@@ -386,6 +390,9 @@ gem "mail_room", "~> 0.5.2"
 =======
 gem "mail_room", "~> 0.5.2"
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+gem "mail_room", "~> 0.5.2"
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
 
 gem 'email_reply_parser', '~> 0.5.8'
 

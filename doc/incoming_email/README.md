@@ -23,6 +23,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
     ```ruby
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Configuration for Postfix mail server, assumes mailbox incoming@gitlab.example.com
     gitlab_rails['incoming_email_enabled'] = true
     
@@ -81,6 +82,8 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 =======
 =======
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
     # Postfix mail server, assumes mailbox incoming@gitlab.example.com
     gitlab_rails['incoming_email_enabled'] = true
     gitlab_rails['incoming_email_address'] = "incoming+%{key}@gitlab.example.com"
@@ -105,9 +108,12 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
     ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> origin/8-0-stable
 =======
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
     As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `incoming@gitlab.example.com`/`gitlab-incoming@gmail.com`.
 
 1. Reconfigure GitLab for the changes to take effect:
@@ -141,7 +147,10 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
     ```yaml
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Configuration for Postfix mail server, assumes mailbox incoming@gitlab.example.com
+=======
+    # Postfix mail server, assumes mailbox incoming@gitlab.example.com
 =======
     # Postfix mail server, assumes mailbox incoming@gitlab.example.com
     incoming_email:
@@ -149,6 +158,15 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
       address: "incoming+%{key}@gitlab.example.com"
     ```
 
+    ```yaml
+    # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
+    incoming_email:
+      enabled: true
+      address: "incoming+%{key}@gitlab.example.com"
+    ```
+
+<<<<<<< HEAD
     ```yaml
     # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
@@ -160,6 +178,9 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
       enabled: true
       address: "incoming+%{key}@gitlab.example.com"
     ```
+=======
+    As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `incoming@gitlab.example.com`/`gitlab-incoming@gmail.com`.
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
 
 <<<<<<< HEAD
     ```yaml
@@ -264,7 +285,10 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 
     ```yaml
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
     # Postfix mail server
     :mailboxes:
       -
@@ -298,7 +322,10 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
     ```
 
     ```yaml
+<<<<<<< HEAD
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
     # Gmail / Google Apps
     :mailboxes:
       -
@@ -364,6 +391,7 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
     ```yaml
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     # Configuration for Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
 =======
     # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
@@ -371,6 +399,9 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 =======
     # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+    # Gmail / Google Apps, assumes mailbox gitlab-incoming@gmail.com
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
     incoming_email:
       enabled: true
 

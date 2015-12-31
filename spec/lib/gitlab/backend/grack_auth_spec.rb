@@ -193,6 +193,7 @@ describe Grack::Auth, lib: true do
           let(:token) { "123" }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
           let(:project) { FactoryGirl.create :empty_project }
 
           before do
@@ -206,6 +207,11 @@ describe Grack::Auth, lib: true do
 
           before do
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+          let(:gitlab_ci_project) { FactoryGirl.create :ci_project, token: token }
+
+          before do
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
             project.gitlab_ci_project = gitlab_ci_project
             project.save
 

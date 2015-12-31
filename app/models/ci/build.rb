@@ -217,10 +217,13 @@ module Ci
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       if File.file?(path_to_trace)
 =======
 =======
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
       if File.exist?(path_to_trace)
 >>>>>>> origin/8-0-stable
 =======
@@ -241,6 +244,7 @@ module Ci
       if project && trace.present?
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         trace.gsub(project.runners_token, 'xxxxxx')
 =======
         trace.gsub(project.token, 'xxxxxx')
@@ -248,6 +252,9 @@ module Ci
 =======
         trace.gsub(project.token, 'xxxxxx')
 >>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+        trace.gsub(project.token, 'xxxxxx')
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
       else
         trace
       end
