@@ -36,6 +36,8 @@ module API
             variables.where(key: variable_id)
           end
 
+        return not_found!('Variable') if variables.empty?
+
         present variables.first, with: Entities::Variable
       end
 
@@ -50,6 +52,8 @@ module API
       #   PUT /projects/:id/variables/:variable_id
       put ':id/variables/:variable_id' do
         variable = user_project.variables.where(id: params[:variable_id].to_i).first
+
+        return not_found!('Variable') unless variable
 
         variable.key = params[:key]
         variable.value = params[:value]
@@ -67,6 +71,9 @@ module API
       #   DELETE /projects/:id/variables/:variable_id
       delete ':id/variables/:variable_id' do
         variable = user_project.variables.where(id: params[:variable_id].to_i).first
+
+        return not_found!('Variable') unless variable
+
         variable.destroy
       end
     end

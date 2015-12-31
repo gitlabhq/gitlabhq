@@ -54,6 +54,12 @@ describe API::API, api: true do
         expect(json_response['id']).to eq(variable.id)
         expect(json_response['value']).to eq(variable.value)
       end
+
+      it 'should responde with 404 Not Found if requesting non-existing variable' do
+        get api("/projects/#{project.id}/variables/9999", user)
+
+        expect(response.status).to eq(404)
+      end
     end
 
     context 'authorized user with invalid permissions' do
@@ -90,6 +96,12 @@ describe API::API, api: true do
         expect(updated_variable.key).to eq('TEST_VARIABLE_1_UP')
         expect(updated_variable.value).to eq('VALUE_1_UP')
       end
+
+      it 'should responde with 404 Not Found if requesting non-existing variable' do
+        put api("/projects/#{project.id}/variables/9999", user)
+
+        expect(response.status).to eq(404)
+      end
     end
 
     context 'authorized user with invalid permissions' do
@@ -116,6 +128,12 @@ describe API::API, api: true do
           delete api("/projects/#{project.id}/variables/#{variable.id}", user)
         end.to change{project.variables.count}.by(-1)
         expect(response.status).to eq(200)
+      end
+
+      it 'should responde with 404 Not Found if requesting non-existing variable' do
+        delete api("/projects/#{project.id}/variables/9999", user)
+
+        expect(response.status).to eq(404)
       end
     end
 
