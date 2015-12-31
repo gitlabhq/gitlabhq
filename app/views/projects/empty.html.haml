@@ -16,6 +16,7 @@
       = link_to "adding README", new_readme_path, class: 'underlined-link'
       file to this project.
 
+<<<<<<< HEAD
 - if can?(current_user, :download_code, @project)
   .prepend-top-20
   .empty_wrapper
@@ -39,6 +40,29 @@
             git add README.md
             git commit -m "add README"
             git push -u origin master
+=======
+.prepend-top-20
+%h3.page-title
+  Command line instructions
+%div.git-empty
+  %fieldset
+    %h5 Git global setup
+    %pre.light-well
+      :preserve
+        git config --global user.name "#{h git_user_name}"
+        git config --global user.email "#{h git_user_email}"
+
+  %fieldset
+    %h5 Create a new repository
+    %pre.light-well
+      :preserve
+        git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        cd #{h @project.path}
+        touch README.md
+        git add README.md
+        git commit -m "add README"
+        git push -u origin master
+>>>>>>> origin/7-14-stable
 
       %fieldset
         %h5 Existing folder or Git repository

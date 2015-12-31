@@ -397,6 +397,14 @@ v 7.14.1
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
   - Ability to enable SSL verification for Webhooks
+v 7.14.2
+  - Upgrade gitlab_git to 7.2.15 to fix `git blame` errors with ISO-encoded files (Stan Hu)
+
+v 7.14.1
+  - Only include base URL in OmniAuth full_host parameter (Stan Hu)
+  - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
+  - Fix "Reload with full diff" URL button in compare branch view (Stan Hu)
+  - Improve abuse reports management from admin area
 
 v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.

@@ -33,6 +33,7 @@ Feature: Admin Groups
     When I visit admin group page
     When I select user "johndoe@gitlab.com" from user list as "Reporter"
     Then I should see "johndoe@gitlab.com" in team list in every project as "Reporter"
+<<<<<<< HEAD
 
   @javascript
   Scenario: Signed in admin should be able to add himself to a group
@@ -49,3 +50,5 @@ Feature: Admin Groups
     When I click on the "Remove User From Group" button for current user
     When I visit group "Owned" members page
     Then I should not see current user as "Developer"
+=======
+>>>>>>> origin/7-14-stable

@@ -31,14 +31,24 @@
       .error-alert
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
   %hr
+<<<<<<< HEAD
+=======
+- if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
+>>>>>>> origin/7-14-stable
   .form-group
     .issue-assignee
       = f.label :assignee_id, "Assignee", class: 'control-label'
       .col-sm-10
         = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+<<<<<<< HEAD
             placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
             selected: issuable.assignee_id, project: @target_project || @project,
             first_user: true, current_user: true, include_blank: true)
+=======
+            placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
+            selected: issuable.assignee_id, project: @target_project || @project,
+            first_user: true, current_user: true)
+>>>>>>> origin/7-14-stable
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
   .form-group

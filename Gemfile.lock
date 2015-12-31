@@ -426,9 +426,19 @@ GEM
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3)
+<<<<<<< HEAD
     gitlab_emoji (0.2.0)
       gemojione (~> 2.1)
     gitlab_git (7.2.22)
+=======
+    gitlab-linguist (3.0.1)
+      charlock_holmes (~> 0.6.6)
+      escape_utils (~> 0.2.4)
+      mime-types (~> 1.19)
+    gitlab_emoji (0.1.0)
+      gemojione (~> 2.0)
+    gitlab_git (7.2.15)
+>>>>>>> origin/7-14-stable
       activesupport (~> 4.0)
       charlock_holmes (~> 0.7.3)
       github-linguist (~> 4.7.0)
@@ -1199,8 +1209,15 @@ DEPENDENCIES
   github-linguist (~> 4.7.0)
   github-markup (~> 1.3.1)
   gitlab-flowdock-git-hook (~> 1.0.1)
+<<<<<<< HEAD
   gitlab_emoji (~> 0.2.0)
   gitlab_git (~> 7.2.20)
+=======
+  gitlab-grack (~> 2.0.2)
+  gitlab-linguist (~> 3.0.1)
+  gitlab_emoji (~> 0.1)
+  gitlab_git (~> 7.2.15)
+>>>>>>> origin/7-14-stable
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.1.0)
