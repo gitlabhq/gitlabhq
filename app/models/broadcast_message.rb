@@ -6,7 +6,6 @@
 #  message    :text             not null
 #  starts_at  :datetime
 #  ends_at    :datetime
-#  alert_type :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  color      :string(255)
