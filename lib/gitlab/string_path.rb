@@ -10,10 +10,11 @@ module Gitlab
   class StringPath
     attr_reader :path, :universe
 
-    def initialize(path, universe)
+    def initialize(path, universe, metadata = [])
       @path = prepare(path)
-      @universe = Set.new(universe.map { |entry| prepare(entry) })
-      @universe.add('./')
+      @universe = universe.map { |entry| prepare(entry) }
+      @universe << './' unless @universe.include?('./')
+      @metadata = metadata
     end
 
     def to_s
@@ -82,6 +83,11 @@ module Gitlab
     def files
       return [] unless directory?
       children.select(&:file?)
+    end
+
+    def metadata
+      index = @universe.index(@path)
+      @metadata[index]
     end
 
     def ==(other)

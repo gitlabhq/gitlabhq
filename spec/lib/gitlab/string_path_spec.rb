@@ -140,4 +140,20 @@ describe Gitlab::StringPath do
       it { expect(subject.count).to eq 3 }
     end
   end
+
+  describe '#metadata' do
+    let(:universe) do
+      ['path/', 'path/file1', 'path/file2']
+    end
+
+    let(:metadata) do
+      [{ name: '/path/'}, { name: '/path/file1' }, { name: '/path/file2' }]
+    end
+
+    subject do
+      described_class.new('path/file1', universe, metadata).metadata[:name]
+    end
+
+    it { is_expected.to eq '/path/file1' }
+  end
 end
