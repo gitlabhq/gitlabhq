@@ -204,6 +204,7 @@ namespace :gitlab do
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       recipe_content = File.read(recipe_path)
 =======
       recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab 2>/dev/null`
@@ -238,6 +239,9 @@ namespace :gitlab do
 =======
       recipe_content = `curl https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/init.d/gitlab 2>/dev/null`
 >>>>>>> gitlabhq/5-2-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/5-0-stable
       script_content = File.read(script_path)
 
       if recipe_content == script_content

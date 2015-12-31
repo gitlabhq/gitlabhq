@@ -1,7 +1,11 @@
 # Installation from source
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Consider the Omnibus package installation
+=======
+This installation guide is recommended to set up a production server. If you want a development environment please use the [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
+>>>>>>> gitlabhq/5-0-stable
 =======
 This installation guide is recommended to set up a production server. If you want a development environment please use the [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
 >>>>>>> gitlabhq/5-0-stable
@@ -479,6 +483,7 @@ Download the init script (will be /etc/init.d/gitlab):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
@@ -498,6 +503,9 @@ Download the init script (will be /etc/init.d/gitlab):
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
 >>>>>>> origin/5-1-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab
+>>>>>>> gitlabhq/5-0-stable
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -654,6 +662,7 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo service nginx restart
 =======
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/nginx/gitlab
@@ -666,6 +675,9 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 =======
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
 >>>>>>> origin/5-1-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/nginx/gitlab
+>>>>>>> gitlabhq/5-0-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 >>>>>>> origin/4-2-stable
 =======

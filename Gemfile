@@ -56,10 +56,13 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Provide access to Gitlab::Git library
 <<<<<<< HEAD
 gem "gitlab_git", '~> 7.2.20'
 =======
+=======
+>>>>>>> gitlabhq/5-0-stable
 # Since gollum requires grit we cannot use gitlab-grit gem name any more. Use grit instead
 gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: 'c40a32432616a07fa7fc3c32c24ab73ad6a9718f'
 gem 'grit_ext', '~> 0.6.2'
@@ -174,6 +177,9 @@ gem 'settingslogic'
 # requires pygments 0.3.2. The latest master Gollum has been updated
 # to use pygments 0.4.2. Change this after next Gollum release.
 gem "gollum", "~> 2.4.0", git: "https://github.com/gollum/gollum.git", ref: "5dcd3c8c8f"
+<<<<<<< HEAD
+>>>>>>> gitlabhq/5-0-stable
+=======
 >>>>>>> gitlabhq/5-0-stable
 
 # Misc
