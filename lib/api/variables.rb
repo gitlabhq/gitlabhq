@@ -57,6 +57,18 @@ module API
 
         present variable, with: Entities::Variable
       end
+
+      # Delete existing variable of a project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   variable_id (required) - The ID of a variable
+      # Exanoke Reqyest:
+      #   DELETE /projects/:id/variables/:variable_id
+      delete ':id/variables/:variable_id' do
+        variable = user_project.variables.where(id: params[:variable_id].to_i).first
+        variable.destroy
+      end
     end
   end
 end

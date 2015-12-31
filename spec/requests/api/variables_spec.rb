@@ -101,8 +101,35 @@ describe API::API, api: true do
     end
 
     context 'unauthorized user' do
-      it 'should not return project variable details' do
+      it 'should not update variable' do
         put api("/projects/#{project.id}/variables/#{variable.id}")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/variables/:variable_id' do
+    context 'authorized user with proper permissions' do
+      it 'should delete variable' do
+        expect do
+          delete api("/projects/#{project.id}/variables/#{variable.id}", user)
+        end.to change{project.variables.count}.by(-1)
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'authorized user with invalid permissions' do
+      it 'should not delete variable' do
+        delete api("/projects/#{project.id}/variables/#{variable.id}", user2)
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'should not delete variable' do
+        delete api("/projects/#{project.id}/variables/#{variable.id}")
 
         expect(response.status).to eq(401)
       end
