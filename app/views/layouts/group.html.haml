@@ -1,5 +1,30 @@
+<<<<<<< HEAD
 - page_title    @group.name
 - header_title  group_title(@group) unless header_title
 - sidebar       "group"             unless sidebar
+=======
+!!! 5
+%html{ lang: "en"}
+  = render "layouts/head", title: "#{@group.name}"
+  %body{class: "#{app_theme} application"}
+    = render "layouts/flash"
+    = render "layouts/head_panel", title: "#{@group.name}"
+    .container
+      %ul.main_menu
+        = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
+          = link_to "Home", group_path(@group), title: "Home"
+        = nav_link(path: 'groups#issues') do
+          = link_to issues_group_path(@group) do
+            Issues
+            %span.count= current_user.assigned_issues.opened.of_group(@group).count
+        = nav_link(path: 'groups#merge_requests') do
+          = link_to merge_requests_group_path(@group) do
+            Merge Requests
+            %span.count= current_user.cared_merge_requests.opened.of_group(@group).count
+        = nav_link(path: 'groups#search') do
+          = link_to "Search", search_group_path(@group)
+        = nav_link(path: 'groups#people') do
+          = link_to "People", people_group_path(@group)
+>>>>>>> gitlabhq/4-0-stable
 
 = render template: "layouts/application"

@@ -328,6 +328,7 @@ sudo usermod -aG redis git
 
 **Note:** If you want to use Kerberos for user authentication, then omit `kerberos` in the `--without` option above.
 
+<<<<<<< HEAD
 ### Install GitLab Shell
 
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
@@ -384,10 +385,32 @@ And if you are installing with a non-default folder or user copy and edit the de
     sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
 
 If you installed GitLab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
+=======
+## Install Init Script
+
+Download the init script (will be /etc/init.d/gitlab):
+
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+    sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
+
+
+## Check Application Status
+
+Check if GitLab and its environment is configured correctly:
+
+    sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
+
+To make sure you didn't miss anything run a more thorough check with:
+>>>>>>> gitlabhq/4-0-stable
+
+    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
+
+If all items are green, then congratulations on successfully installing GitLab!
+However there are still a few steps left.
 
 ### Setup Logrotate
 
@@ -397,6 +420,7 @@ Make GitLab start on boot:
 
 Check if GitLab and its environment are configured correctly:
 
+<<<<<<< HEAD
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
 ### Compile Assets
@@ -404,6 +428,9 @@ Check if GitLab and its environment are configured correctly:
     sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 
 ### Start Your GitLab Instance
+=======
+## Start Your GitLab Instance
+>>>>>>> gitlabhq/4-0-stable
 
     sudo service gitlab start
     # or
@@ -421,7 +448,11 @@ Check if GitLab and its environment are configured correctly:
 
 Copy the example site config:
 
+<<<<<<< HEAD
     sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
+=======
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/nginx/gitlab -P /etc/nginx/sites-available/
+>>>>>>> gitlabhq/4-0-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:

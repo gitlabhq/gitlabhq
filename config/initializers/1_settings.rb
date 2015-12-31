@@ -224,6 +224,7 @@ Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || 
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
+<<<<<<< HEAD
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
@@ -257,6 +258,25 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 #
 # Backup
 #
+=======
+Settings.gravatar['enabled']      = Settings.pre_40_config ? !Settings.disable_gravatar? : true if Settings.gravatar['enabled'].nil?
+Settings.gravatar['plain_url']  ||= Settings.pre_40_config ? Settings.gravatar_url      : 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+Settings.gravatar['ssl_url']    ||= Settings.pre_40_config ? Settings.gravatar_ssl_url  : 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+
+Settings['gitolite'] ||= Settingslogic.new({})
+Settings.gitolite['admin_key']    ||= Settings.pre_40_config ? Settings.gitolite_admin_key : 'gitlab'
+Settings.gitolite['admin_uri']    ||= Settings.pre_40_config ? Settings.gitolite_admin_uri : 'git@localhost:gitolite-admin'
+Settings.gitolite['config_file']  ||= Settings.pre_40_config ? Settings.gitolite_config_file : 'gitolite.conf'
+Settings.gitolite['hooks_path']   ||= Settings.pre_40_config ? Settings.git_hooks_path : '/home/git/share/gitolite/hooks/'
+Settings.gitolite['receive_pack'] ||= Settings.pre_40_config ? Settings.git_receive_pack : (Settings.gitolite['receive_pack'] != false)
+Settings.gitolite['repos_path']   ||= Settings.pre_40_config ? Settings.git_base_path : '/home/git/repositories/'
+Settings.gitolite['upload_pack']  ||= Settings.pre_40_config ? Settings.git_upload_pack : (Settings.gitolite['upload_pack'] != false)
+Settings.gitolite['ssh_host']     ||= Settings.pre_40_config ? Settings.ssh_host : (Settings.gitlab.host || 'localhost')
+Settings.gitolite['ssh_port']     ||= Settings.pre_40_config ? Settings.ssh_port : 22
+Settings.gitolite['ssh_user']     ||= Settings.pre_40_config ? Settings.ssh_user : 'git'
+Settings.gitolite['ssh_path_prefix'] ||= Settings.pre_40_config ? Settings.ssh_path : Settings.send(:build_gitolite_ssh_path_prefix)
+
+>>>>>>> gitlabhq/4-0-stable
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['pg_schema']    = nil
