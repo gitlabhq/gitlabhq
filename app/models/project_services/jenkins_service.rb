@@ -46,7 +46,7 @@ class JenkinsService < CiService
   end
 
   def execute(data)
-    self.post(
+    self.class.post(
       hook_url,
       body: data.to_json,
       headers: {
