@@ -494,7 +494,11 @@ GEM
     gitlab-pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
+<<<<<<< HEAD
     gitlab_git (1.3.1)
+=======
+    gitlab_git (2.1.1)
+>>>>>>> gitlabhq/6-0-stable
       activesupport (~> 3.2.13)
       github-linguist (~> 2.3.4)
       gitlab-grit (~> 2.5.2)
@@ -1338,6 +1342,7 @@ BUNDLED WITH
   gitlab-pygments.rb (~> 0.3.2)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   gitlab_git (~> 1.3.1)
 >>>>>>> origin/5-4-stable
@@ -1348,6 +1353,11 @@ BUNDLED WITH
   gitlab_omniauth-ldap (= 1.0.2)
   gitlab_yaml_db (= 1.0.0)
   gollum (~> 2.4.0)!
+=======
+  gitlab_git (= 2.1.1)
+  gitlab_meta (= 6.0)
+  gitlab_omniauth-ldap (= 1.0.3)
+>>>>>>> gitlabhq/6-0-stable
   gon
   grape (~> 0.3.1)
   grape-entity (~> 0.2.0)

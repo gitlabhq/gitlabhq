@@ -60,6 +60,7 @@ gem "browser", '~> 1.0.0'
 # Provide access to Gitlab::Git library
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 gem "gitlab_git", '~> 7.2.20'
 =======
 =======
@@ -73,6 +74,9 @@ gem 'gitlab_git', '~> 1.3.1'
 =======
 gem 'gitlab_git', '~> 1.3.1'
 >>>>>>> origin/5-4-stable
+=======
+gem "gitlab_git", '2.1.1'
+>>>>>>> gitlabhq/6-0-stable
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 <<<<<<< HEAD

@@ -72,7 +72,11 @@ class GroupsController < Groups::ApplicationController
   end
 
   def destroy
+<<<<<<< HEAD
     DestroyGroupService.new(@group, current_user).execute
+=======
+    @group.destroy
+>>>>>>> gitlabhq/6-0-stable
 
     redirect_to root_path, alert: "Group '#{@group.name}' was successfully deleted."
   end

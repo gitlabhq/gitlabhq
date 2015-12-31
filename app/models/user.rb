@@ -508,7 +508,11 @@ class User < ActiveRecord::Base
   end
 
   def several_namespaces?
+<<<<<<< HEAD
     owned_groups.any? || masters_groups.any?
+=======
+    namespaces.many? || owned_groups.any?
+>>>>>>> gitlabhq/6-0-stable
   end
 
   def namespace_id

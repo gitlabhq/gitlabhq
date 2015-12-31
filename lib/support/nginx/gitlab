@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## GitLab
 ##
 ## Lines starting with two hashes (##) are comments with information.
@@ -18,6 +19,14 @@
 
 upstream gitlab-workhorse {
   server unix:/home/git/gitlab/tmp/sockets/gitlab-workhorse.socket fail_timeout=0;
+=======
+# GITLAB
+# Maintainer: @randx
+# App Version: 6.0
+
+upstream gitlab {
+  server unix:/home/git/gitlab/tmp/sockets/gitlab.socket;
+>>>>>>> gitlabhq/6-0-stable
 }
 
 ## Normal HTTP host

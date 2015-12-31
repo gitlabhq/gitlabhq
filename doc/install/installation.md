@@ -184,6 +184,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     git checkout v1.3.0
 <<<<<<< HEAD
 >>>>>>> gitlabhq/5-1-stable
@@ -240,6 +241,9 @@ sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
 >>>>>>> origin/5-1-stable
     cp config.yml.example config.yml
 >>>>>>> gitlabhq/5-0-stable
+=======
+    sudo -u git -H git checkout v1.7.1
+>>>>>>> gitlabhq/6-0-stable
 
 # Disable Redis listening on TCP by setting 'port' to 0
 sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
@@ -287,6 +291,7 @@ sudo usermod -aG redis git
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> gitlabhq/5-1-stable
 =======
@@ -307,6 +312,12 @@ You can change `5-4-stable` to `master` if you want the *bleeding edge* version,
 >>>>>>> origin/5-4-stable
 =======
 >>>>>>> origin/5-4-stable
+=======
+    sudo -u git -H git checkout 6-0-stable
+
+**Note:**
+You can change `6-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+>>>>>>> gitlabhq/6-0-stable
 
 ## Configure it
 >>>>>>> gitlabhq/5-1-stable
@@ -452,12 +463,20 @@ do so with caution!
 
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
+<<<<<<< HEAD
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
     sudo -u git -H bundle exec rake gitlab:shell:install REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
+=======
+    # For MySQL (note, the option says "without ... postgres")
+    sudo -u git -H bundle install --deployment --without development test postgres aws
+
+    # Or for PostgreSQL (note, the option says "without ... mysql")
+    sudo -u git -H bundle install --deployment --without development test mysql aws
+>>>>>>> gitlabhq/6-0-stable
 
 **Note:** If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
