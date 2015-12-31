@@ -1,3 +1,47 @@
+<<<<<<< HEAD
+=======
+GIT
+  remote: https://github.com/gollum/gollum.git
+  revision: 5dcd3c8c8f68158e43ff79861279088ee56d0ebe
+  ref: 5dcd3c8c8f
+  specs:
+    gollum (2.4.11)
+      github-markdown (~> 0.5.3)
+      github-markup (>= 0.7.5, < 1.0.0)
+      grit (~> 2.5.0)
+      mustache (>= 0.99.4, < 1.0.0)
+      nokogiri (~> 1.5.6)
+      pygments.rb (~> 0.4.2)
+      sanitize (~> 2.0.3)
+      sinatra (~> 1.3.5)
+      stringex (~> 1.5.1)
+      useragent (~> 0.4.16)
+
+GIT
+  remote: https://github.com/ctran/annotate_models.git
+  revision: be4e26825b521f0b2d86b181e2dff89901aa9b1e
+  specs:
+    annotate (2.6.0.beta1)
+      activerecord (>= 2.3.0)
+      rake (>= 0.8.7)
+
+GIT
+  remote: https://github.com/gitlabhq/grit.git
+  revision: c40a32432616a07fa7fc3c32c24ab73ad6a9718f
+  ref: c40a32432616a07fa7fc3c32c24ab73ad6a9718f
+  specs:
+    grit (2.5.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
+
+GIT
+  remote: https://github.com/gitlabhq/raphael-rails.git
+  revision: cb2c92a040b9b941a5f1aa1ea866cc26e944fe58
+  specs:
+    raphael-rails (2.1.0)
+
+>>>>>>> gitlabhq/5-0-stable
 GEM
   remote: https://rubygems.org/
   specs:
@@ -243,6 +287,7 @@ GEM
     factory_girl_rails (4.3.0)
       factory_girl (~> 4.3.0)
       railties (>= 3.0.0)
+<<<<<<< HEAD
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.10.0)
@@ -355,6 +400,37 @@ GEM
     gitlab_meta (7.0)
     gitlab_omniauth-ldap (1.2.1)
       net-ldap (~> 0.9)
+=======
+    faraday (0.8.6)
+      multipart-post (~> 1.1)
+    faye-websocket (0.4.7)
+      eventmachine (>= 0.12.0)
+    ffaker (1.15.0)
+    ffi (1.4.0)
+    font-awesome-sass-rails (3.0.0.1)
+      railties (>= 3.1.1)
+      sass-rails (>= 3.1.1)
+    foreman (0.61.0)
+      thor (>= 0.13.6)
+    gemoji (1.2.1)
+    gherkin-ruby (0.2.1)
+    git (1.2.5)
+    github-linguist (2.3.4)
+      charlock_holmes (~> 0.6.6)
+      escape_utils (~> 0.2.3)
+      mime-types (~> 1.19)
+      pygments.rb (>= 0.2.13)
+    github-markdown (0.5.3)
+    github-markup (0.7.5)
+    gitlab-grack (1.0.0)
+      rack (~> 1.4.1)
+    gitlab-pygments.rb (0.3.2)
+      posix-spawn (~> 0.3.6)
+      yajl-ruby (~> 1.1.0)
+    gitlab_meta (5.0)
+    gitlab_omniauth-ldap (1.0.2)
+      net-ldap (~> 0.2.2)
+>>>>>>> gitlabhq/5-0-stable
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.3)
@@ -387,7 +463,25 @@ GEM
     grape-entity (0.4.8)
       activesupport
       multi_json (>= 1.3.2)
+<<<<<<< HEAD
     haml (4.0.7)
+=======
+    grit_ext (0.6.2)
+      charlock_holmes (~> 0.6.9)
+    growl (1.0.3)
+    guard (1.5.4)
+      listen (>= 0.4.2)
+      lumberjack (>= 1.0.2)
+      pry (>= 0.9.10)
+      thor (>= 0.14.6)
+    guard-rspec (2.1.2)
+      guard (>= 1.1)
+      rspec (~> 2.11)
+    guard-spinach (0.0.2)
+      guard (>= 1.1)
+      spinach
+    haml (4.0.0)
+>>>>>>> gitlabhq/5-0-stable
       tilt
     haml-rails (0.9.0)
       actionpack (>= 4.0.1)
@@ -1126,12 +1220,26 @@ BUNDLED WITH
   git
   github-linguist (~> 2.3.4)
   github-markup (~> 0.7.4)
+<<<<<<< HEAD
   gitlab_meta (= 4.0)
   gitolite (= 1.1.0)
   grack!
   grape (~> 0.2.1)
   grit!
   grit_ext!
+=======
+  gitlab-grack (~> 1.0.0)
+  gitlab-pygments.rb (~> 0.3.2)
+  gitlab_meta (= 5.0)
+  gitlab_omniauth-ldap (= 1.0.2)
+  gitlab_yaml_db (= 1.0.0)
+  gollum (~> 2.4.0)!
+  gon
+  grape (~> 0.3.1)
+  grape-entity (~> 0.2.0)
+  grit (~> 2.5.0)!
+  grit_ext (~> 0.6.2)
+>>>>>>> gitlabhq/5-0-stable
   growl
   guard-rspec
   guard-spinach

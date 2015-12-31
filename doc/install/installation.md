@@ -1,6 +1,10 @@
 # Installation from source
 
+<<<<<<< HEAD
 ## Consider the Omnibus package installation
+=======
+This installation guide is recommended to set up a production server. If you want a development environment please use the [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
+>>>>>>> gitlabhq/5-0-stable
 
 Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
 
@@ -194,8 +198,18 @@ make
 cd utils
 sudo ./install_server.sh
 
+<<<<<<< HEAD
 # Configure redis to use sockets
 sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
+=======
+    cd gitlab-shell
+    
+    # switch to right version for v5.0
+    git checkout v1.1.0
+    git checkout -b v1.1.0
+    
+    cp config.yml.example config.yml
+>>>>>>> gitlabhq/5-0-stable
 
 # Disable Redis listening on TCP by setting 'port' to 0
 sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
@@ -415,6 +429,7 @@ Download the init script (will be /etc/init.d/gitlab):
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
@@ -425,6 +440,9 @@ Download the init script (will be /etc/init.d/gitlab):
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab
 >>>>>>> origin/4-2-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab
+>>>>>>> gitlabhq/5-0-stable
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -574,12 +592,16 @@ Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following comm
 
 You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
 
+<<<<<<< HEAD
 ### Restart
 
 <<<<<<< HEAD
     sudo service nginx restart
 =======
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/nginx/gitlab
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/nginx/gitlab
+>>>>>>> gitlabhq/5-0-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 >>>>>>> origin/4-2-stable
 
