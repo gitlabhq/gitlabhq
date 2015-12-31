@@ -1,0 +1,50 @@
+--- etc/gitlab.rb.template.bak	2015-09-22 20:55:42.088202003 +0000
++++ etc/gitlab.rb.template	2015-09-22 20:55:50.888202003 +0000
+@@ -3,7 +3,7 @@
+ ## Url on which GitLab will be reachable.
+ ## For more details on configuring external_url see:
+ ## https://gitlab.com/gitlab-org/omnibus-gitlab/blob/629def0a7a26e7c2326566f0758d4a27857b52a3/README.md#configuring-the-external-url-for-gitlab
+-external_url 'GENERATED_EXTERNAL_URL'
++# external_url 'GENERATED_EXTERNAL_URL' # default: http://hostname
+ 
+ 
+ ## Note: configuration settings below are optional.
+--- embedded/cookbooks/gitlab.bak/recipes/remove_accounts.rb	2015-09-22 20:50:46.964202003 +0000
++++ embedded/cookbooks/gitlab/recipes/remove_accounts.rb	2015-09-22 20:51:49.256202003 +0000
+@@ -16,8 +16,8 @@
+ #
+ 
+ Gitlab[:node] = node
+-if File.exists?("/etc/gitlab/gitlab.rb")
+-  Gitlab.from_file("/etc/gitlab/gitlab.rb")
++if File.exists?("/assets/gitlab.rb")
++  Gitlab.from_file("/assets/gitlab.rb")
+ end
+ node.consume_attributes(Gitlab.generate_config(node['fqdn']))
+ 
+--- embedded/cookbooks/gitlab.bak/recipes/show_config.rb	2015-09-22 20:50:46.964202003 +0000
++++ embedded/cookbooks/gitlab/recipes/show_config.rb	2015-09-22 20:52:02.716202003 +0000
+@@ -16,9 +16,9 @@
+ # limitations under the License.
+ #
+ 
+-if File.exists?("/etc/gitlab/gitlab.rb")
++if File.exists?("/assets/gitlab.rb")
+ 	Gitlab[:node] = node
+-	Gitlab.from_file("/etc/gitlab/gitlab.rb")
++	Gitlab.from_file("/assets/gitlab.rb")
+ end
+ config = Gitlab.generate_config(node['fqdn'])
+ 
+--- embedded/cookbooks/gitlab.bak/recipes/default.rb	2015-09-22 20:50:46.964202003 +0000
++++ embedded/cookbooks/gitlab/recipes/default.rb	2015-09-22 20:52:13.880202003 +0000
+@@ -31,8 +31,8 @@
+ end.run_action(:create)
+ 
+ Gitlab[:node] = node
+-if File.exists?("/etc/gitlab/gitlab.rb")
+-  Gitlab.from_file("/etc/gitlab/gitlab.rb")
++if File.exists?("/assets/gitlab.rb")
++  Gitlab.from_file("/assets/gitlab.rb")
+ end
+ node.consume_attributes(Gitlab.generate_config(node['fqdn']))

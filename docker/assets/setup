@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -xe
+
+# Create sshd daemon
+mkdir -p /opt/gitlab/sv/sshd/supervise
+mkfifo /opt/gitlab/sv/sshd/supervise/ok
+printf "#!/bin/sh\nexec 2>&1\numask 077\nexec /usr/sbin/sshd -D" > /opt/gitlab/sv/sshd/run
+chmod a+x /opt/gitlab/sv/sshd/run
+mkdir -p /var/run/sshd
+
+# Disabling use DNS in ssh since it tends to slow connecting
+echo "UseDNS no" >> /etc/ssh/sshd_config
+
+# Remove current gitlab.rb file
+rm -f /etc/gitlab/gitlab.rb
+
+# Patch omnibus package
+patch -p0 -d /opt/gitlab < /assets/gitlab-rb-location.patch
