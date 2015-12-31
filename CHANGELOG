@@ -1764,6 +1764,13 @@ v 5.0.0
 
 v 4.2.0
   - Teams
+  - Async gitolite calls
+  - Teams
+  - Project listing page
+  - Improved search
+  - Groups API
+  - Improved Network Graph
+  - Edit page for group
   - User show page. Via /u/username
   - Show help contents on pages for better navigation
   - Async gitolite calls

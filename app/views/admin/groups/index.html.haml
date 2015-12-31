@@ -38,6 +38,7 @@
 
 %ul.bordered-list
   - @groups.each do |group|
+<<<<<<< HEAD
     %li
       .clearfix
         .pull-right.prepend-top-10
@@ -61,3 +62,16 @@
 
 
 = paginate @groups, theme: "gitlab"
+=======
+    %tr
+      %td
+        %strong= link_to group.name, [:admin, group]
+      %td= group.path
+      %td= group.projects.count
+      %td
+        = link_to group.owner_name, admin_user_path(group.owner)
+      %td.bgred
+        = link_to 'Rename', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn btn-small"
+        = link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+= paginate @groups, theme: "admin"
+>>>>>>> gitlabhq/4-2-stable

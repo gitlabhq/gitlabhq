@@ -256,9 +256,16 @@ sudo usermod -aG redis git
     sudo chmod -R u+rwX,go-w log/
     sudo chmod -R u+rwX tmp/
 
+<<<<<<< HEAD
     # Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
     sudo chmod -R u+rwX tmp/pids/
     sudo chmod -R u+rwX tmp/sockets/
+=======
+    # Make sure the repositories dir is owned by git and it stays that way
+    sudo chmod -R ug+rwX,o-rwx /home/git/repositories/
+    sudo chown -R git:git /home/git/repositories/
+    sudo -u git -H find /home/git/repositories -type d -print0 | sudo xargs -0 chmod g+s
+>>>>>>> gitlabhq/4-2-stable
 
     # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
@@ -321,10 +328,10 @@ sudo usermod -aG redis git
     cd /home/gitlab/gitlab
    
     # Checkout to stable release
-    sudo -u gitlab -H git checkout 4-1-stable
+    sudo -u gitlab -H git checkout 4-2-stable
 
 **Note:**
-You can change `4-1-stable` to `master` if you want the *bleeding edge* version, but
+You can change `4-2-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 >>>>>>> gitlabhq/4-1-stable
 
@@ -403,10 +410,14 @@ If you installed GitLab in another directory or as a user other than the default
 Download the init script (will be /etc/init.d/gitlab):
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
 >>>>>>> origin/4-1-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab
+>>>>>>> gitlabhq/4-2-stable
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -544,9 +555,13 @@ Make sure to edit the config file to match your setup:
 Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following command:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo nginx -t
 =======
     sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/nginx/gitlab
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/nginx/gitlab
+>>>>>>> gitlabhq/4-2-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 >>>>>>> origin/4-1-stable
 
