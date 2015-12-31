@@ -501,6 +501,7 @@ class Repository
     file_name = self.path_with_namespace.gsub("/","_") + "-" + commit.id.to_s + ".tar.gz"
     storage_path = Rails.root.join("tmp", "repositories")
 <<<<<<< HEAD
+<<<<<<< HEAD
     file_path = File.join(storage_path, file_name)
 >>>>>>> gitlabhq/4-1-stable
 
@@ -599,6 +600,9 @@ class Repository
 =======
     file_path = File.join(storage_path, self.path_with_namespace, file_name)
 >>>>>>> gitlabhq/4-2-stable
+=======
+    file_path = File.join(storage_path, self.path_with_namespace, file_name)
+>>>>>>> origin/4-2-stable
 
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch -f #{source_path} #{source_ref}:#{target_ref})

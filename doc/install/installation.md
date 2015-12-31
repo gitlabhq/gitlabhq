@@ -265,7 +265,10 @@ sudo usermod -aG redis git
     sudo chmod -R ug+rwX,o-rwx /home/git/repositories/
     sudo chown -R git:git /home/git/repositories/
     sudo -u git -H find /home/git/repositories -type d -print0 | sudo xargs -0 chmod g+s
+<<<<<<< HEAD
 >>>>>>> gitlabhq/4-2-stable
+=======
+>>>>>>> origin/4-2-stable
 
     # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
@@ -411,6 +414,7 @@ Download the init script (will be /etc/init.d/gitlab):
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
@@ -418,6 +422,9 @@ Download the init script (will be /etc/init.d/gitlab):
 =======
     sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab
 >>>>>>> gitlabhq/4-2-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab
+>>>>>>> origin/4-2-stable
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -569,7 +576,12 @@ You should receive `syntax is okay` and `test is successful` messages. If you re
 
 ### Restart
 
+<<<<<<< HEAD
     sudo service nginx restart
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/nginx/gitlab
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+>>>>>>> origin/4-2-stable
 
 ## Done!
 
