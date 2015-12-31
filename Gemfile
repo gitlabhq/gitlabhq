@@ -72,8 +72,12 @@ gem 'gitlab_git', '~> 1.3.1'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 <<<<<<< HEAD
+<<<<<<< HEAD
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
 >>>>>>> gitlabhq/5-0-stable
+=======
+gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
+>>>>>>> gitlabhq/5-2-stable
 =======
 gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
 >>>>>>> gitlabhq/5-2-stable

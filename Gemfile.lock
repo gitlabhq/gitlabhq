@@ -464,6 +464,9 @@ GEM
       sanitize (~> 2.0.3)
       stringex (~> 1.5.1)
     gitlab-grack (1.0.1)
+<<<<<<< HEAD
+>>>>>>> gitlabhq/5-2-stable
+=======
 >>>>>>> gitlabhq/5-2-stable
       rack (~> 1.4.1)
 <<<<<<< HEAD
@@ -1294,6 +1297,7 @@ BUNDLED WITH
   github-markup (~> 0.7.4)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   gitlab_meta (= 4.0)
   gitolite (= 1.1.0)
   grack!
@@ -1309,6 +1313,10 @@ BUNDLED WITH
 >>>>>>> gitlabhq/5-2-stable
 =======
 >>>>>>> gitlabhq/5-0-stable
+=======
+  gitlab-gollum-lib (~> 1.0.0)
+  gitlab-grack (~> 1.0.1)
+>>>>>>> gitlabhq/5-2-stable
   gitlab-pygments.rb (~> 0.3.2)
 <<<<<<< HEAD
 =======

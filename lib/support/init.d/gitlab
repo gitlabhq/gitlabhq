@@ -3,7 +3,11 @@
 # GITLAB
 # Maintainer: @randx
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Authors: rovanion.luckey@gmail.com, @randx
+=======
+# App Version: 5.2
+>>>>>>> gitlabhq/5-2-stable
 =======
 # App Version: 5.2
 >>>>>>> gitlabhq/5-2-stable
