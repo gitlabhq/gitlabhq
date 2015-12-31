@@ -195,6 +195,7 @@ namespace :gitlab do
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       recipe_content = File.read(recipe_path)
 =======
       recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab 2>/dev/null`
@@ -202,6 +203,9 @@ namespace :gitlab do
 =======
       recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab 2>/dev/null`
 >>>>>>> origin/4-0-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/4-1-stable
       script_content = File.read(script_path)
 
       if recipe_content == script_content
@@ -1151,6 +1155,7 @@ namespace :gitlab do
       Project.find_each(batch_size: 100) do |project|
         print "#{project.name_with_namespace.yellow} ... "
 
+<<<<<<< HEAD
         correct_options = options.map do |name, value|
           run("git --git-dir=\"#{project.path_to_repo}\" config --get #{name}").try(:chomp) == value
         end
@@ -1166,6 +1171,27 @@ namespace :gitlab do
             "doc/raketasks/maintenance.md"
           )
           fix_and_rerun
+=======
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+          correct_options = options.map do |name, value|
+            run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
+          end
+
+          if correct_options.all?
+            puts "ok".green
+          else
+            puts "wrong or missing".red
+            try_fixing_it(
+              sudo_gitlab("bundle exec rake gitlab:gitolite:update_repos")
+            )
+            for_more_information(
+              "doc/raketasks/maintenance.md"
+            )
+            fix_and_rerun
+          end
+>>>>>>> gitlabhq/4-1-stable
         end
       end
 >>>>>>> gitlabhq/4-0-stable
@@ -1189,6 +1215,7 @@ namespace :gitlab do
       finished_checking "LDAP"
     end
 
+<<<<<<< HEAD
     def print_users(limit)
       puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
 
@@ -1231,6 +1258,41 @@ namespace :gitlab do
 >>>>>>> gitlabhq/4-0-stable
 =======
 >>>>>>> origin/4-0-stable
+=======
+      Project.find_each(batch_size: 100) do |project|
+        print "#{project.name_with_namespace.yellow} ... "
+
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+          project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
+
+          unless File.exists?(project_hook_file)
+            puts "missing".red
+            try_fixing_it(
+              "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            )
+            for_more_information(
+              "lib/support/rewrite-hooks.sh"
+            )
+            fix_and_rerun
+            next
+          end
+
+          if File.lstat(project_hook_file).symlink? &&
+              File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
+            puts "ok".green
+          else
+            puts "not a link to Gitolite's hook".red
+            try_fixing_it(
+              "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            )
+            for_more_information(
+              "lib/support/rewrite-hooks.sh"
+            )
+            fix_and_rerun
+          end
+>>>>>>> gitlabhq/4-1-stable
         end
       end
     end

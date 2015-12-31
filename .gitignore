@@ -9,8 +9,20 @@
 .idea
 .rbenv-version
 .rbx/
+<<<<<<< HEAD
 .ruby-gemset
 .ruby-version
+=======
+db/*.sqlite3
+db/*.sqlite3-journal
+log/*.log*
+tmp/
+.sass-cache/
+coverage/*
+backups/*
+*.swp
+public/uploads/
+>>>>>>> gitlabhq/4-1-stable
 .rvmrc
 .sass-cache/
 .secret

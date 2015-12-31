@@ -423,12 +423,17 @@ class User < ActiveRecord::Base
     keys.count == 0
   end
 
+<<<<<<< HEAD
   def require_password?
     password_automatically_set? && !ldap_user?
   end
 
   def can_change_username?
     gitlab_config.username_changing_enabled
+=======
+  def can_change_username?
+    Gitlab.config.gitlab.username_changing_enabled
+>>>>>>> gitlabhq/4-1-stable
   end
 
   def can_create_project?

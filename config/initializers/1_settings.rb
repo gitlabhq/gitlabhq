@@ -157,6 +157,7 @@ Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'G
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
+<<<<<<< HEAD
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['user_home']  ||= begin
   Etc.getpwnam(Settings.gitlab['user']).dir
@@ -194,6 +195,11 @@ Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_br
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
 Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+=======
+Settings.gitlab['user']       ||= 'gitlab'
+Settings.gitlab['signup_enabled'] ||= false
+Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
+>>>>>>> gitlabhq/4-1-stable
 
 #
 # Reply by email

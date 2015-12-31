@@ -45,10 +45,17 @@ production: &base
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 
+<<<<<<< HEAD
     ## Date & Time settings
     # Uncomment and customize if you want to change the default time zone of GitLab application.
     # To see all available zones, run `bundle exec rake time:zones:all RAILS_ENV=production`
     # time_zone: 'UTC'
+=======
+  ## Project settings
+  default_projects_limit: 10
+  # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
+  # username_changing_enabled: false # default: true - User can change her username/namespace
+>>>>>>> gitlabhq/4-1-stable
 
     ## Email settings
     # Uncomment and set to false if you need to disable email sending from GitLab (default: true)

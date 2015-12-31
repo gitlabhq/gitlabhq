@@ -304,6 +304,7 @@ sudo usermod -aG redis git
     # MySQL only:
     sudo -u git cp config/database.yml.mysql config/database.yml
 
+<<<<<<< HEAD
     # MySQL and remote PostgreSQL only:
     # Update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
@@ -315,6 +316,17 @@ sudo usermod -aG redis git
     # PostgreSQL and MySQL:
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
+=======
+    # Go to gitlab dir 
+    cd /home/gitlab/gitlab
+   
+    # Checkout to stable release
+    sudo -u gitlab -H git checkout 4-1-stable
+
+**Note:**
+You can change `4-1-stable` to `master` if you want the *bleeding edge* version, but
+do so with caution!
+>>>>>>> gitlabhq/4-1-stable
 
 ### Install Gems
 
@@ -402,7 +414,11 @@ Make GitLab start on boot:
 
 Download the init script (will be /etc/init.d/gitlab):
 
+<<<<<<< HEAD
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
+>>>>>>> gitlabhq/4-1-stable
     sudo chmod +x /etc/init.d/gitlab
 
 <<<<<<< HEAD
@@ -459,7 +475,7 @@ However there are still a few steps left.
 
     sudo service gitlab start
     # or
-    sudo /etc/init.d/gitlab restart
+    sudo /etc/init.d/gitlab start
 
 ## 8. Nginx
 
@@ -467,12 +483,18 @@ However there are still a few steps left.
 
 ### Installation
 
+<<<<<<< HEAD
     sudo apt-get install -y nginx
+=======
+## Installation
+    sudo apt-get -y install nginx
+>>>>>>> gitlabhq/4-1-stable
 
 ### Site Configuration
 
 Copy the example site config:
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
@@ -482,6 +504,9 @@ Copy the example site config:
 =======
     sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/nginx/gitlab -P /etc/nginx/sites-available/
 >>>>>>> origin/4-0-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/nginx/gitlab
+>>>>>>> gitlabhq/4-1-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:

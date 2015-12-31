@@ -358,6 +358,7 @@ class Repository
     "patch-#{highest_patch_branch_id + 1}"
   end
 
+<<<<<<< HEAD
   # Remove archives older than 2 hours
   def branches_sorted_by(value)
     case value
@@ -495,6 +496,12 @@ class Repository
       Gitlab::Git::Blob.remove(raw_repository, options)
     end
   end
+=======
+    # Build file path
+    file_name = self.path_with_namespace.gsub("/","_") + "-" + commit.id.to_s + ".tar.gz"
+    storage_path = Rails.root.join("tmp", "repositories")
+    file_path = File.join(storage_path, file_name)
+>>>>>>> gitlabhq/4-1-stable
 
   def user_to_committer(user)
     {
