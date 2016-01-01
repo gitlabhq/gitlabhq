@@ -54,7 +54,7 @@
     form = $("#issue_search_form")
     search = $("#issue_search").val()
     $('.issues-holder').css("opacity", '0.5')
-    issues_url = form.attr('action') + '? '+ form.serialize()
+    issues_url = form.attr('action') + '?' + form.serialize()
 
     $.ajax
       type: "GET"
@@ -65,7 +65,7 @@
       success: (data) ->
         $('.issues-holder').html(data.html)
         # Change url so if user reload a page - search results are saved
-        History.replaceState {page: issues_url}, document.title, issues_url
+        history.replaceState {page: issues_url}, document.title, issues_url
         Issues.reload()
       dataType: "json"
 
