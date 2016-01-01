@@ -14,7 +14,6 @@
 #= require jquery.waitforimages
 #= require jquery.atwho
 #= require jquery.scrollTo
-#= require jquery.blockUI
 #= require jquery.turbolinks
 #= require turbolinks
 #= require autosave
