@@ -45,7 +45,6 @@ describe Gitlab::StringPath do
 
     it { is_expected.to be_directory }
     it { is_expected.to be_relative }
-    it { is_expected.to have_parent }
   end
 
   describe 'path/dir_1/', path: 'path/dir_1/' do

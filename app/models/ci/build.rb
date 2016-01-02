@@ -352,15 +352,15 @@ module Ci
     def artifacts_metadata_for_path(path)
       return [] unless artifacts_metadata.exists?
       paths, metadata = [], []
-      meta_path = path.sub(/^\.\//, '')
 
+      metadata_path = path.sub(/^\.\//, '')
       File.open(artifacts_metadata.path) do |file|
         gzip = Zlib::GzipReader.new(file)
         gzip.each_line do |line|
-          if line =~ %r{^#{meta_path}[^/]+/?\s}
-            path, meta =  line.split(' ')
-            paths << path
-            metadata << JSON.parse(meta)
+          if line =~ %r{^#{Regexp.escape(metadata_path)}[^/\s]+/?\s}
+            matched_path, matched_meta =  line.split(' ')
+            paths << matched_path
+            metadata << JSON.parse(matched_meta)
           end
         end
         gzip.close

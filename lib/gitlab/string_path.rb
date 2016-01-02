@@ -57,7 +57,7 @@ module Gitlab
 
     def descendants
       return [] unless directory?
-      select { |entry| entry =~ /^#{@path}.+/ }
+      select { |entry| entry =~ /^#{Regexp.escape(@path)}.+/ }
     end
 
     def children
@@ -65,7 +65,7 @@ module Gitlab
       return @children if @children
 
       @children = select do |entry|
-        self.class.child?(@path, entry)
+        entry =~ %r{^#{Regexp.escape(@path)}[^/\s]+/?$}
       end
     end
 
@@ -75,7 +75,7 @@ module Gitlab
     end
 
     def directories!
-      has_parent? ? directories.prepend(new(@path + '../')) : directories
+      has_parent? ? directories.prepend(parent) : directories
     end
 
     def files
@@ -115,13 +115,12 @@ module Gitlab
       # It looks like Pathname#new doesn't touch a file system,
       # neither Pathname#cleanpath does, so it is, hopefully, filesystem safe
 
-      clean = Pathname.new(path).cleanpath.to_s
-      raise ArgumentError, 'Invalid path' if clean.start_with?('../')
-      clean + (path.end_with?('/') ? '/' : '')
-    end
+      clean_path = Pathname.new(path).cleanpath.to_s
+      raise ArgumentError, 'Invalid path' if clean_path.start_with?('../')
 
-    def self.child?(path, entry)
-      entry =~ %r{^#{path}[^/\s]+/?$}
+      prefix = './' unless clean_path =~ %r{^[\.|/]}
+      suffix = '/' if path.end_with?('/') || clean_path =~ /^[\.|\.\.]$/
+      prefix.to_s + clean_path + suffix.to_s
     end
   end
 end
