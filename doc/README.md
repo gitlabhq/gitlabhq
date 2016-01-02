@@ -50,7 +50,12 @@
 
 ## Administrator documentation
 
+- [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
+- [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
 - [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.
+- [Email](tools/email.md) Email GitLab users from GitLab
+- [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
+- [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
@@ -65,7 +70,23 @@
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+- [Downgrade back to CE](downgrade_ee_to_ce/README.md) Follow this guide if you need to downgrade from EE to CE.
+>>>>>>> gitlabhq/ce_upstream
+=======
+- [Downgrade back to CE](downgrade_ee_to_ce/README.md) Follow this guide if you need to downgrade from EE to CE.
+>>>>>>> origin/ce_upstream
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
+=======
+
+### Administrator documentation
+
++ [User permissions](permissions/permissions.md)
++ [API](api/README.md)
+>>>>>>> origin/8-0-stable
 
 ## Contributor documentation
 

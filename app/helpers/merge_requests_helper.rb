@@ -28,8 +28,14 @@ module MergeRequestsHelper
 
   def ci_build_details_path(merge_request)
     build_url = merge_request.source_project.ci_service.build_page(merge_request.last_commit.sha, merge_request.source_branch)
+<<<<<<< HEAD
+<<<<<<< HEAD
     return nil unless build_url
 
+=======
+>>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     parsed_url = URI.parse(build_url)
 
     unless parsed_url.userinfo.blank?
@@ -66,6 +72,44 @@ module MergeRequestsHelper
       },
       change_branches: true
     )
+  end
+
+  def render_items_list(items, separator = "and")
+    items_cnt = items.size
+
+    case items_cnt
+    when 1
+      items.first
+    when 2
+      "#{items.first} #{separator} #{items.last}"
+    else
+      last_item = items.pop
+      "#{items.join(", ")} #{separator} #{last_item}"
+    end
+  end
+
+  def render_require_section(merge_request)
+    str = if merge_request.approvals_left == 1
+            "Requires one more approval"
+          else
+            "Requires #{merge_request.approvals_left} more approvals"
+          end
+
+    if merge_request.approvers_left.any?
+      more_approvals = merge_request.approvals_left - merge_request.approvers_left.count
+      approvers_names = merge_request.approvers_left.map(&:name)
+
+      case true
+      when more_approvals > 0
+        str << " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
+      when more_approvals < 0
+        str << " (from #{render_items_list(approvers_names, "or")})"
+      else
+        str << " (from #{render_items_list(approvers_names)})"
+      end
+    end
+
+    str
   end
 
   def source_branch_with_namespace(merge_request)

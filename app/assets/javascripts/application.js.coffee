@@ -100,6 +100,8 @@ document.addEventListener("page:fetch", unbindEvents)
 
 window.addEventListener "hashchange", shiftWindow
 
+$.timeago.settings.allowFuture = true
+
 window.onload = ->
   # Scroll the window to avoid the topnav bar
   # https://github.com/twitter/bootstrap/issues/1768
@@ -201,7 +203,8 @@ $ ->
     e.preventDefault()
     btn = $(e.target)
     text = btn.data("confirm-danger-message")
+    warningMessage = btn.data("warning-message")
     form = btn.closest("form")
-    new ConfirmDangerModal(form, text)
+    new ConfirmDangerModal(form, text, warningMessage: warningMessage)
 
   new Aside()

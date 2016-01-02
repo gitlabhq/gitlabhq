@@ -7,6 +7,7 @@ class Projects::RawController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   def show
+<<<<<<< HEAD
     @blob = @repository.blob_at(@commit.id, @path)
 
     if @blob
@@ -17,6 +18,25 @@ class Projects::RawController < Projects::ApplicationController
       else
         stream_data
       end
+=======
+    @blob = Gitlab::Git::Blob.new(@repository, @commit.id, @ref, @path)
+
+    if @blob.exists?
+      type = if @blob.mime_type =~ /html|javascript/
+               'text/plain; charset=utf-8'
+             else
+               @blob.mime_type
+             end
+
+      headers['X-Content-Type-Options'] = 'nosniff'
+
+      send_data(
+        @blob.data,
+        type: type,
+        disposition: 'inline',
+        filename: @blob.name
+      )
+>>>>>>> gitlabhq/6-0-stable
     else
       render_404
     end

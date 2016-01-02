@@ -1,0 +1,10 @@
+- if @project.mirror?
+  .gray-content-block.second-block
+    .pull-right
+      = render "shared/mirror_update_button"
+
+    - import_url = @project.safe_import_url
+    .oneline
+      This project is mirrored from #{link_to import_url, import_url}.
+
+      = render "shared/mirror_status"

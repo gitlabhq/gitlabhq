@@ -60,11 +60,25 @@ GitHub will generate an application ID and secret key for you to use.
 
     For installation from source:
 
+    For GitHub.com:
+
     ```
       - { name: 'github', app_id: 'YOUR_APP_ID',
         app_secret: 'YOUR_APP_SECRET',
         args: { scope: 'user:email' } }
     ```
+
+
+    For GitHub Enterprise:
+
+    ```
+      - { name: 'github', app_id: 'YOUR_APP_ID',
+        app_secret: 'YOUR_APP_SECRET',
+        url: "https://github.example.com/",
+        args: { scope: 'user:email' } }
+    ```
+    
+    __Replace `https://github.example.com/` with your GitHub URL__
 
 1.  Change 'YOUR_APP_ID' to the client ID from the GitHub application page from step 7.
 

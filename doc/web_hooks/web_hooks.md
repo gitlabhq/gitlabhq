@@ -6,6 +6,10 @@ You can configure web hooks to listen for specific events like pushes, issues or
 
 Web hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
+If you have a big set of projects in the one group then it will be convenient for you to configure web hooks globally for the whole group. You can add the group level web hooks on the group settings page.
+
+If you send a web hook to an SSL endpoint [the certificate will not be verified](https://gitlab.com/gitlab-org/gitlab-ce/blob/ccd617e58ea71c42b6b073e692447d0fe3c00be6/app/models/web_hook.rb#L35) since many people use self-signed certificates.
+
 ## SSL Verification
 
 By default, the SSL certificate of the webhook endpoint is verified based on 

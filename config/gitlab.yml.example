@@ -45,10 +45,23 @@ production: &base
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 
+<<<<<<< HEAD
     ## Date & Time settings
     # Uncomment and customize if you want to change the default time zone of GitLab application.
     # To see all available zones, run `bundle exec rake time:zones:all RAILS_ENV=production`
     # time_zone: 'UTC'
+=======
+  ## Project settings
+  default_projects_limit: 10
+  # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
+  # username_changing_enabled: false # default: true - User can change her username/namespace
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
 
     ## Email settings
     # Uncomment and set to false if you need to disable email sending from GitLab (default: true)
@@ -178,6 +191,14 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
+
+    # GitLab EE only.
+    # In addition to refreshing users when they log in,
+    # enabling this setting will refresh LDAP user membership once a day.
+    # Default time of the day when this will happen is at 1:30am server time.
+    schedule_sync_hour: 1 # Hour of the day. Value from 0-23.
+    schedule_sync_minute: 30 # Minute of the hour. Value from 0-59.
+
     servers:
       ##########################################################################
       #
@@ -240,6 +261,33 @@ production: &base
         #
         user_filter: ''
 
+        # This setting controls the amount of time between LDAP permission checks for each user.
+        # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
+        # How much slower depends on your LDAP setup, but it is not uncommon for this check to add seconds of waiting time.
+        # The default value is to have a 'slow click' once every 3600 seconds, i.e. once per hour.
+        #
+        # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
+        # sync_time: 3600
+
+        # Base where we can search for groups
+        #
+        #   Ex. ou=Groups,dc=gitlab,dc=example
+        #
+        group_base: ''
+
+        # LDAP group of users who should be admins in GitLab
+        #
+        #   Ex. GLAdmins
+        #
+        admin_group: ''
+
+        # Name of attribute which holds a ssh public key of the user object.
+        # If false or nil, SSH key syncronisation will be disabled.
+        #
+        #   Ex. sshpublickey
+        #
+        sync_ssh_keys: false
+
         # LDAP attributes that GitLab will use to create an account for the LDAP user.
         # The specified attribute can either be the attribute name as a string (e.g. 'mail'),
         # or an array of attribute names to try in order (e.g. ['mail', 'email']).
@@ -268,6 +316,27 @@ production: &base
       #   host:
       #   ....
 
+  ## Kerberos settings
+  kerberos:
+    # Allow the HTTP Negotiate authentication method for Git clients
+    enabled: false
+
+    # Kerberos 5 keytab file. The keytab file must be readable by the GitLab user,
+    # and should be different from other keytabs in the system.
+    # (default: use default keytab from Krb5 config)
+    # keytab: /etc/http.keytab
+
+    # The Kerberos service name to be used by GitLab.
+    # (default: accept any service name in keytab file)
+    # service_principal_name: HTTP/gitlab.example.com@EXAMPLE.COM
+
+    # Dedicated port: Git before 2.4 does not fall back to Basic authentication if Negotiate fails.
+    # To support both Basic and Negotiate methods with older versions of Git, configure
+    # nginx to proxy GitLab on an extra port (e.g. 8443) and uncomment the following lines
+    # to dedicate this port to Kerberos authentication. (default: false)
+    # use_dedicated_port: true
+    # port: 8443
+    # https: true
 
   ## OmniAuth settings
   omniauth:
@@ -308,6 +377,7 @@ production: &base
       # - { name: 'github',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
+      #     url: "https://github.com/",
       #     args: { scope: 'user:email' } }
       # - { name: 'bitbucket',
       #     app_id: 'YOUR_APP_ID',
@@ -423,6 +493,7 @@ production: &base
     ## Google analytics. Uncomment if you want it
     # google_analytics_id: '_your_tracking_id'
 
+<<<<<<< HEAD
     ## Piwik analytics.
     # piwik_url: '_your_piwik_url'
     # piwik_site_id: '_your_piwik_site_id'
@@ -491,3 +562,38 @@ test:
 
 staging:
   <<: *base
+=======
+#
+# 3. Advanced settings
+# ==========================
+
+## Backup settings
+backup:
+  path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+  # keep_time: 604800   # default: 0 (forever) (in seconds)
+
+## Gitolite settings
+gitolite:
+  admin_uri: git@localhost:gitolite-admin
+  # repos_path must not be a symlink
+  repos_path: /home/git/repositories/
+  hooks_path: /home/git/.gitolite/hooks/
+  admin_key: gitlab
+  upload_pack: true
+  receive_pack: true
+  ssh_user: git
+  ssh_host: localhost
+  # ssh_port: 22
+  # config_file: gitolite.conf
+
+## Git settings
+# CAUTION!
+# Use the default values unless you really know what you are doing
+git:
+  bin_path: /usr/bin/git
+  # Max size of git object like commit, in bytes
+  # This value can be increased if you have a very large commits
+  max_size: 5242880 # 5.megabytes
+  # Git timeout to read commit, in seconds
+  timeout: 10
+>>>>>>> gitlabhq/4-0-stable

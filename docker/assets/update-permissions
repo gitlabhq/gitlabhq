@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -x
+
+# Fix GitLab permissions
+if id -u git; then
+	# Fix data storage
+	chown -R git:git /var/opt/gitlab/.ssh
+	chown -R git:git /var/opt/gitlab/.gitconfig
+	chown -R git:git /var/opt/gitlab/git-data
+	chown -R git:git /var/opt/gitlab/gitlab-ci/builds
+	chown -R git:git /var/opt/gitlab/gitlab-git-http-server
+	chown -R git:git /var/opt/gitlab/gitlab-rails
+	chown -R git:git /var/opt/gitlab/gitlab-shell
+
+	# Fix log storage
+	chown git /var/log/gitlab/gitlab-git-http-server
+	chown git /var/log/gitlab/gitlab-rails
+	chown git /var/log/gitlab/gitlab-shell
+	chown git /var/log/gitlab/sidekiq
+	chown git /var/log/gitlab/unicorn
+	chown gitlab-psql /var/log/gitlab/postgresql
+	chown gitlab-redis /var/log/gitlab/redis
+
+	# Update log files
+	chown -R git:git /var/log/gitlab/gitlab-rails/*.log
+	chown -R git:git /var/log/gitlab/gitlab-shell/*.log
+	chown -R git:git /var/log/gitlab/unicorn/*.log
+fi
+
+# Fix nginx buffering directory permission
+if id -u gitlab-www; then
+	chown -R gitlab-www:gitlab-www /var/opt/gitlab/nginx/*_temp
+fi
+
+# Fix database storage
+if id -u gitlab-psql; then
+	chown -R gitlab-psql:gitlab-psql /var/opt/gitlab/postgresql
+fi
+
+# Fix redis storage
+if id -u gitlab-redis; then
+	chown gitlab-redis:gitlab-redis /var/opt/gitlab/redis
+fi

@@ -44,13 +44,13 @@ module Gitlab
 
     def latest_version_raw
       git_tags = fetch_git_tags
-      git_tags = git_tags.select { |version| version =~ /v\d+\.\d+\.\d+\Z/ }
-      git_versions = git_tags.map { |tag| Gitlab::VersionInfo.parse(tag.match(/v\d+\.\d+\.\d+/).to_s) }
+      git_tags = git_tags.select { |version| version =~ /v\d+\.\d+\.\d+-ee\Z/ }
+      git_versions = git_tags.map { |tag| Gitlab::VersionInfo.parse(tag.match(/v\d+\.\d+\.\d+-ee/).to_s) }
       "v#{git_versions.sort.last.to_s}"
     end
 
     def fetch_git_tags
-      remote_tags, _ = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ce.git))
+      remote_tags, _ = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ee.git))
       remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
     end
 
@@ -58,7 +58,7 @@ module Gitlab
       {
         "Stash changed files" => %W(#{Gitlab.config.git.bin_path} stash),
         "Get latest code" => %W(#{Gitlab.config.git.bin_path} fetch),
-        "Switch to new version" => %W(#{Gitlab.config.git.bin_path} checkout v#{latest_version}),
+        "Switch to new version" => %W(#{Gitlab.config.git.bin_path} checkout v#{latest_version}-ee),
         "Install gems" => %W(bundle),
         "Migrate DB" => %W(bundle exec rake db:migrate),
         "Recompile assets" => %W(bundle exec rake assets:clean assets:precompile),

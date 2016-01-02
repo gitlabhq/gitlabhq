@@ -99,7 +99,10 @@
   .project-repo-buttons {
     margin-top: 12px;
     margin-bottom: 0px;
+  }
+<<<<<<< HEAD
 
+<<<<<<< HEAD
     .count-buttons {
       display: block;
       margin-bottom: 12px;
@@ -169,6 +172,19 @@
           background: #FFF;
         }
       }
+=======
+=======
+
+>>>>>>> origin/ce_upstream
+  .btn {
+    @include btn-gray;
+
+    .count {
+      display: inline-block;
+<<<<<<< HEAD
+>>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     }
   }
 }
@@ -272,6 +288,10 @@
 
   .dropdown-toggle  {
     margin: -5px;
+  }
+
+  .update-mirror-button {
+    margin-right: -1px;
   }
 }
 

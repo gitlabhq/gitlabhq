@@ -31,14 +31,24 @@
       .error-alert
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
   %hr
+<<<<<<< HEAD
+=======
+- if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
+>>>>>>> origin/7-14-stable
   .form-group
     .issue-assignee
       = f.label :assignee_id, "Assignee", class: 'control-label'
       .col-sm-10
         = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+<<<<<<< HEAD
             placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
             selected: issuable.assignee_id, project: @target_project || @project,
             first_user: true, current_user: true, include_blank: true)
+=======
+            placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
+            selected: issuable.assignee_id, project: @target_project || @project,
+            first_user: true, current_user: true)
+>>>>>>> origin/7-14-stable
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
   .form-group
@@ -68,6 +78,45 @@
         = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
 
 - if issuable.is_a?(MergeRequest)
+  - if @merge_request.requires_approve?
+    .form-group
+      = f.label :approver_ids, class: 'control-label' do
+        Approvers
+      .col-sm-10
+        = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
+        .help-block
+          Merge Request should be approved by these users. 
+          You can override the project settings by setting your own list of approvers.
+
+        .panel.panel-default.prepend-top-10
+          .panel-heading
+            Approvers
+          %ul.well-list.approver-list
+            - if @merge_request.new_record?
+              - @merge_request.target_project.approvers.each do |approver|
+                %li.project-approvers{id: dom_id(approver.user)}
+                  = link_to approver.user.name, approver.user
+                  .pull-right
+                    = link_to "#", data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                      = icon("sign-out")
+                      Remove
+              - if @merge_request.target_project.approvers.empty?
+                %li.no-approvers There are no approvers
+            - else
+              - @merge_request.approvers.each do |approver|
+                %li{id: dom_id(approver.user)}
+                  = link_to approver.user.name, approver.user
+                  .pull-right
+                    = link_to namespace_project_merge_request_approver_path(@project.namespace, @project, @merge_request, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                      = icon("sign-out")
+                      Remove
+              - if @merge_request.approvers.empty?
+                %li.no-approvers There are no approvers
+        .help-block.suggested-approvers
+          - if @suggested_approvers.any?
+            Suggested approvers: 
+            = raw @suggested_approvers.map{|approver| link_to sanitize(approver.name), "#", id: dom_id(approver) }.join(", ")
+
   %hr
     - if @merge_request.new_record?
       .form-group
@@ -100,3 +149,37 @@
   - else
     - cancel_project = issuable.project
   = link_to 'Cancel', [cancel_project.namespace.becomes(Namespace), cancel_project, issuable], class: 'btn btn-cancel'
+
+%li.project-approvers.hide.approver-template{id: "user_{user_id}"}
+  = link_to "{approver_name}", "#"
+  .pull-right
+    = link_to "#", data: { confirm: "Are you sure you want to remove approver {approver_name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+      = icon("sign-out")
+      Remove
+- if issuable.is_a?(MergeRequest)
+  :coffeescript
+    $(".approver-list").on "click", ".project-approvers .btn-remove", ->
+      $(this).closest("li").remove()
+      return false
+    $("form.merge-request-form").submit ->
+      if $("input#merge_request_approver_ids").length
+        approver_ids = $.map $("li.project-approvers").not(".approver-template"), (li, i) ->
+          li.id.replace("user_", "")
+        approvers_input = $(this).find("input#merge_request_approver_ids")
+        approver_ids = approver_ids.concat(approvers_input.val().split(","))
+        approvers_input.val(_.compact(approver_ids).join(","))
+    $(".suggested-approvers a").click ->
+      user_id = this.id.replace("user_", "")
+      user_name = this.text
+      return false if $(".approver-list #user_" + user_id).length
+
+      approver_item_html = $(".project-approvers.approver-template").clone().
+        removeClass("hide approver-template")[0].
+        outerHTML.
+        replace(/\{approver_name\}/g, user_name).
+        replace(/\{user_id\}/g, user_id)
+      $(".no-approvers").remove()
+      $(".approver-list").append(approver_item_html)
+      return false
+
+

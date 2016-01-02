@@ -1,0 +1,14 @@
+- page_title "Git Hooks"
+%h3.page-title
+  Pre-defined git hooks.
+%p.light
+  Rules that define what git pushes are accepted for this project. All newly created projects will use this settings.
+
+%hr.clearfix
+
+= form_for [:admin, @git_hook], html: { class: 'form-horizontal' } do |f|
+  -if @git_hook.errors.any?
+    .alert.alert-danger
+      - @git_hook.errors.full_messages.each do |msg|
+        %p= msg
+  = render "shared/git_hooks_form", f: f

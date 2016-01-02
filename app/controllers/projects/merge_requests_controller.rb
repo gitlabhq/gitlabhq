@@ -1,8 +1,16 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
+<<<<<<< HEAD
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds
+=======
+    :edit, :update, :show, :diffs, :commits, :merge, :merge_check,
+    :ci_status, :toggle_subscription, :approve, :ff_merge, :rebase
+<<<<<<< HEAD
+>>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -50,7 +58,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @merge_request }
+      format.json { render json: @merge_request, methods: :rebase_in_progress? }
       format.diff { render text: @merge_request.to_diff(current_user) }
       format.patch { render text: @merge_request.to_patch(current_user) }
     end
@@ -109,8 +117,21 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
+
+    set_suggested_approvers
   end
 
+<<<<<<< HEAD
+=======
+  def edit
+    @source_project = @merge_request.source_project
+    @target_project = @merge_request.target_project
+    @target_branches = @merge_request.target_project.repository.branch_names
+
+    set_suggested_approvers
+  end
+
+>>>>>>> gitlabhq/ce_upstream
   def create
     @target_branches ||= []
     @merge_request = MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
@@ -166,6 +187,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    return render_404 unless @merge_request.approved?
 
     unless @merge_request.mergeable?
       @status = :failed
@@ -224,6 +246,41 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.toggle_subscription(current_user)
 
     render nothing: true
+  end
+
+  def approve
+    unless @merge_request.can_approve?(current_user)
+      return render_404
+    end
+
+    @approval = @merge_request.approvals.new
+    @approval.user = current_user
+
+    if @approval.save
+      SystemNoteService.approve_mr(@merge_request, current_user)
+    end
+
+    redirect_to merge_request_path(@merge_request)
+  end
+
+  def ff_merge
+    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    return render_404 unless @merge_request.approved?
+
+    if @merge_request.ff_merge_possible?
+      MergeRequests::FfMergeService.new(merge_request.target_project, current_user).
+        execute(merge_request)
+      @status = true
+    else
+      @status = false
+    end
+  end
+
+  def rebase
+    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    return render_404 unless @merge_request.approved?
+
+    RebaseWorker.perform_async(@merge_request.id, current_user.id)
   end
 
   protected
@@ -303,10 +360,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render 'invalid'
   end
 
+  def set_suggested_approvers
+    if @merge_request.requires_approve?
+      @suggested_approvers = Gitlab::AuthorityAnalyzer.new(
+        @merge_request,
+        current_user
+      ).calculate(@merge_request.approvals_required)
+    end
+  end
+
   def merge_request_params
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
-      :target_project_id, :target_branch, :milestone_id,
+      :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, label_ids: []
     )
   end

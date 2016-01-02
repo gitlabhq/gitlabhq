@@ -60,14 +60,30 @@ module Banzai
 
         self.class.references_in(text) do |match, id|
           ExternalIssue.new(id, project)
+<<<<<<< HEAD:lib/banzai/filter/external_issue_reference_filter.rb
+<<<<<<< HEAD:lib/banzai/filter/external_issue_reference_filter.rb
+=======
+
+          url = url_for_issue(id, project, only_path: context[:only_path])
+>>>>>>> gitlabhq/ce_upstream:lib/gitlab/markdown/external_issue_reference_filter.rb
+=======
+
+          url = url_for_issue(id, project, only_path: context[:only_path])
+>>>>>>> origin/ce_upstream:lib/gitlab/markdown/external_issue_reference_filter.rb
 
           url = url_for_issue(id, project, only_path: context[:only_path])
 
           title = "Issue in #{project.external_issue_tracker.title}"
           klass = reference_class(:issue)
           data  = data_attribute(project: project.id, external_issue: id)
+<<<<<<< HEAD:lib/banzai/filter/external_issue_reference_filter.rb
+<<<<<<< HEAD:lib/banzai/filter/external_issue_reference_filter.rb
 
           text = link_text || match
+=======
+>>>>>>> gitlabhq/ce_upstream:lib/gitlab/markdown/external_issue_reference_filter.rb
+=======
+>>>>>>> origin/ce_upstream:lib/gitlab/markdown/external_issue_reference_filter.rb
 
           %(<a href="#{url}" #{data}
                title="#{escape_once(title)}"

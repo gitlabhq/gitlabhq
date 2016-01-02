@@ -124,8 +124,7 @@ https://about.gitlab.com/update/
 
 After you update, go to the admin panel and temporarily disable CI.  As
   an administrator, go to **Admin Area** -> **Settings**, and under
-**Continuous Integration** uncheck **Disable to prevent CI usage until rake
-ci:migrate is run (8.0 only)**.
+**Continuous Integration** uncheck **When unchecked CI is disabled until rake ci:migrate is run (8.0 only)**.
 
 #### 3. CI settings are now in GitLab
 
@@ -238,6 +237,8 @@ sudo gitlab-rake ci:migrate
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake ci:migrate RAILS_ENV=production
 ```
+
+(this rake task automatically unchecks the 'When unchecked CI is disabled until rake ci:migrate is run (8.0 only)' checkbox)
 
 #### 6. Restart GitLab
 

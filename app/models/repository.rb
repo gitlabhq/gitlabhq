@@ -3,6 +3,8 @@ require 'securerandom'
 class Repository
   class CommitError < StandardError; end
 
+  MIRROR_REMOTE = "upstream"
+
   include Gitlab::ShellAdapter
 
   attr_accessor :path_with_namespace, :project
@@ -152,8 +154,22 @@ class Repository
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
+  def add_remote(name, url)
+    raw_repository.remote_add(name, url)
+  rescue Rugged::ConfigError
+    raw_repository.remote_update(name, url: url)
+  end
+
+  def fetch_remote(remote)
+    gitlab_shell.fetch_remote(path_with_namespace, remote)
+  end
+
   def branch_names
     cache.fetch(:branch_names) { raw_repository.branch_names }
+  end
+
+  def branch_exists?(name)
+    branch_names.include?(name)
   end
 
   def tag_names
@@ -358,6 +374,7 @@ class Repository
     "patch-#{highest_patch_branch_id + 1}"
   end
 
+<<<<<<< HEAD
   # Remove archives older than 2 hours
   def branches_sorted_by(value)
     case value
@@ -495,6 +512,14 @@ class Repository
       Gitlab::Git::Blob.remove(raw_repository, options)
     end
   end
+=======
+    # Build file path
+    file_name = self.path_with_namespace.gsub("/","_") + "-" + commit.id.to_s + ".tar.gz"
+    storage_path = Rails.root.join("tmp", "repositories")
+<<<<<<< HEAD
+<<<<<<< HEAD
+    file_path = File.join(storage_path, file_name)
+>>>>>>> gitlabhq/4-1-stable
 
   def user_to_committer(user)
     {
@@ -512,6 +537,18 @@ class Repository
       !rugged.merge_commits(our_commit, their_commit).conflicts?
     else
       false
+    end
+  end
+
+  def ff_merge(user, source_sha, target_branch, options = {})
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.lookup(source_sha)
+
+    raise "Invalid merge target" if our_commit.nil?
+    raise "Invalid merge source" if their_commit.nil?
+
+    commit_with_hooks(user, target_branch) do |ref|
+      source_sha
     end
   end
 
@@ -544,6 +581,34 @@ class Repository
       is_ancestor?(branch_commit.id, root_ref_commit.id)
     else
       nil
+    end
+  end
+
+  def fetch_upstream(url)
+    add_remote(Repository::MIRROR_REMOTE, url)
+    fetch_remote(Repository::MIRROR_REMOTE)
+  end
+
+  def upstream_branches
+    rugged.references.each("refs/remotes/#{Repository::MIRROR_REMOTE}/*").map do |ref|
+      name = ref.name.sub(/\Arefs\/remotes\/#{Repository::MIRROR_REMOTE}\//, "")
+
+      begin
+        Gitlab::Git::Branch.new(name, ref.target)
+      rescue Rugged::ReferenceError
+        # Omit invalid branch
+      end
+    end.compact
+  end
+
+  def diverged_from_upstream?(branch_name)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
+
+    if upstream_commit
+      !is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
     end
   end
 
@@ -588,6 +653,12 @@ class Repository
       data: data
     )
   end
+=======
+    file_path = File.join(storage_path, self.path_with_namespace, file_name)
+>>>>>>> gitlabhq/4-2-stable
+=======
+    file_path = File.join(storage_path, self.path_with_namespace, file_name)
+>>>>>>> origin/4-2-stable
 
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch -f #{source_path} #{source_ref}:#{target_ref})
@@ -598,8 +669,15 @@ class Repository
     random_string = SecureRandom.hex
     tmp_ref = "refs/tmp/#{random_string}/head"
 
+<<<<<<< HEAD
     if oldrev && !Gitlab::Git.blank_ref?(oldrev)
       rugged.references.create(tmp_ref, oldrev)
+=======
+    # Create file if not exists
+    unless File.exists?(file_path)
+      FileUtils.mkdir_p File.dirname(file_path)
+      file = self.repo.archive_to_file(ref, prefix,  file_path)
+>>>>>>> gitlabhq/4-2-stable
     end
 
     # Make commit in tmp ref

@@ -190,6 +190,7 @@ class Service < ActiveRecord::Base
       gemnasium
       hipchat
       irker
+      jenkins
       jira
       pivotaltracker
       pushover

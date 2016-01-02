@@ -191,10 +191,34 @@ describe Grack::Auth, lib: true do
 
         context "when a gitlab ci token is provided" do
           let(:token) { "123" }
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
           let(:project) { FactoryGirl.create :empty_project }
 
           before do
             project.update_attributes(runners_token: token, builds_enabled: true)
+=======
+          let(:gitlab_ci_project) { FactoryGirl.create :ci_project, token: token }
+
+          before do
+=======
+          let(:gitlab_ci_project) { FactoryGirl.create :ci_project, token: token }
+
+          before do
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+          let(:gitlab_ci_project) { FactoryGirl.create :ci_project, token: token }
+
+          before do
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
+            project.gitlab_ci_project = gitlab_ci_project
+            project.save
+
+            gitlab_ci_service = project.build_gitlab_ci_service
+            gitlab_ci_service.active = true
+            gitlab_ci_service.save
+>>>>>>> origin/8-0-stable
 
             env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials("gitlab-ci-token", token)
           end

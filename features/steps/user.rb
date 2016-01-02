@@ -8,6 +8,23 @@ class Spinach::Features::User < Spinach::FeatureSteps
     expect(title).to match(/^\s*John Doe/)
   end
 
+  step 'I visit unsubscribe link' do
+    email = Base64.urlsafe_encode64("joh@doe.org")
+    visit "/unsubscribes/#{email}"
+  end
+
+  step 'I should see unsubscribe text and button' do
+    expect(page).to have_content "Unsubscribe from Admin notifications Yes, I want to unsubscribe joh@doe.org from any further admin emails."
+  end
+
+  step 'I press the unsubscribe button' do
+    click_button("Unsubscribe")
+  end
+
+  step 'I should be unsubscribed' do
+    expect(current_path).to eq root_path
+  end
+
   step '"John Doe" has contributions' do
     user = User.find_by(name: 'John Doe')
     project = contributed_project

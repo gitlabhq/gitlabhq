@@ -42,6 +42,10 @@ RSpec.configure do |config|
   config.before(:suite) do
     TestEnv.init
   end
+
+  config.before(:all) do
+    TestLicense.init
+  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

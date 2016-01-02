@@ -41,6 +41,20 @@ module Gitlab
       true
     end
 
+    # Fetch remote for repository
+    #
+    # name - project path with namespace
+    # remote - remote name
+    #
+    # Ex.
+    #   fetch_remote("gitlab/gitlab-ci", "upstream")
+    #
+    def fetch_remote(name, remote)
+      output, status = Popen::popen([gitlab_shell_projects_path, 'fetch-remote', "#{name}.git", remote, '600'])
+      raise Error, output unless status.zero?
+      true
+    end
+
     # Move repository
     #
     # path - project path with namespace

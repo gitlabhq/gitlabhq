@@ -49,6 +49,16 @@ module API
       expose :enable_ssl_verification
     end
 
+    class ProjectGitHook < Grape::Entity
+      expose :id, :project_id, :created_at
+      expose :commit_message_regex, :deny_delete_tag
+    end
+
+    class ProjectGitHook < Grape::Entity
+      expose :id, :project_id, :created_at
+      expose :commit_message_regex, :deny_delete_tag
+    end
+
     class ForkedFromProject < Grape::Entity
       expose :id
       expose :name, :name_with_namespace
@@ -79,8 +89,13 @@ module API
       end
     end
 
+    class LdapGroupLink < Grape::Entity
+      expose :cn, :group_access, :provider
+    end
+
     class Group < Grape::Entity
-      expose :id, :name, :path, :description
+      expose :id, :name, :path, :ldap_cn, :ldap_access, :description
+      expose :ldap_group_links, using: Entities::LdapGroupLink, if: lambda{ | group, options | group.ldap_group_links.any? }
       expose :avatar_url
 
       expose :web_url do |group, options|
@@ -238,6 +253,14 @@ module API
       end
     end
 
+    class LdapGroup < Grape::Entity
+      expose :cn
+    end
+
+    class ProjectGroupLink < Grape::Entity
+      expose :id, :project_id, :group_id, :group_access
+    end
+
     class Namespace < Grape::Entity
       expose :id, :path, :kind
     end
@@ -362,8 +385,27 @@ module API
       end
     end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
     class TriggerRequest < Grape::Entity
       expose :id, :variables
+=======
+=======
+>>>>>>> origin/ce_upstream
+    class License < Grape::Entity
+      expose :starts_at, :expires_at, :licensee
+
+      expose :user_limit do |license, options|
+        license.restricted?(:active_user_count) ? license.restrictions[:active_user_count] : 0
+      end
+
+      expose :active_users do |license, options|
+        ::User.active.count
+      end
+<<<<<<< HEAD
+>>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     end
   end
 end

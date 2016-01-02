@@ -21,6 +21,11 @@ Feature: Admin Groups
     When I select user "John Doe" from user list as "Reporter"
     Then I should see "John Doe" in team list in every project as "Reporter"
 
+  Scenario: Shared projects
+    Given group has shared projects
+    When I visit group page
+    Then I should see project shared with group
+
   @javascript
   Scenario: Remove user from group
     Given we have user "John Doe" in group
@@ -33,6 +38,7 @@ Feature: Admin Groups
     When I visit admin group page
     When I select user "johndoe@gitlab.com" from user list as "Reporter"
     Then I should see "johndoe@gitlab.com" in team list in every project as "Reporter"
+<<<<<<< HEAD
 
   @javascript
   Scenario: Signed in admin should be able to add himself to a group
@@ -49,3 +55,5 @@ Feature: Admin Groups
     When I click on the "Remove User From Group" button for current user
     When I visit group "Owned" members page
     Then I should not see current user as "Developer"
+=======
+>>>>>>> origin/7-14-stable

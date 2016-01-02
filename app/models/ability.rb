@@ -5,19 +5,35 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
-      case subject.class.name
-      when "Project" then project_abilities(user, subject)
-      when "Issue" then issue_abilities(user, subject)
-      when "Note" then note_abilities(user, subject)
-      when "ProjectSnippet" then project_snippet_abilities(user, subject)
-      when "PersonalSnippet" then personal_snippet_abilities(user, subject)
-      when "MergeRequest" then merge_request_abilities(user, subject)
-      when "Group" then group_abilities(user, subject)
-      when "Namespace" then namespace_abilities(user, subject)
-      when "GroupMember" then group_member_abilities(user, subject)
-      when "ProjectMember" then project_member_abilities(user, subject)
-      else []
-      end.concat(global_abilities(user))
+      abilities =
+        case subject.class.name
+        when "Project" then project_abilities(user, subject)
+        when "Issue" then issue_abilities(user, subject)
+        when "Note" then note_abilities(user, subject)
+        when "ProjectSnippet" then project_snippet_abilities(user, subject)
+        when "PersonalSnippet" then personal_snippet_abilities(user, subject)
+        when "MergeRequest" then merge_request_abilities(user, subject)
+        when "Group" then group_abilities(user, subject)
+        when "Namespace" then namespace_abilities(user, subject)
+        when "GroupMember" then group_member_abilities(user, subject)
+        when "ProjectMember" then project_member_abilities(user, subject)
+        else []
+        end
+
+      abilities.concat(global_abilities(user))
+
+      abilities -= license_blocked_abilities if License.block_changes?
+
+      abilities
+    end
+
+    def license_blocked_abilities
+      [
+        :create_issue,
+        :create_merge_request,
+        :push_code,
+        :push_code_to_protected_branches
+      ]
     end
 
     # List of possible abilities for anonymous user
@@ -265,6 +281,10 @@ class Ability
           :admin_namespace,
           :admin_group_member
         ]
+
+        if group.ldap_synced?
+          rules.delete(:admin_group_member)
+        end
       end
 
       rules.flatten
@@ -378,10 +398,10 @@ class Ability
 
     def abilities
       @abilities ||= begin
-        abilities = Six.new
-        abilities << self
-        abilities
-      end
+                       abilities = Six.new
+                       abilities << self
+                       abilities
+                     end
     end
 
     private

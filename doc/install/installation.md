@@ -1,6 +1,14 @@
 # Installation from source
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 ## Consider the Omnibus package installation
+=======
+This installation guide is recommended to set up a production server. If you want a development environment please use the [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
+>>>>>>> gitlabhq/5-0-stable
+=======
+This installation guide is recommended to set up a production server. If you want a development environment please use the [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
+>>>>>>> gitlabhq/5-0-stable
 
 Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
 
@@ -129,10 +137,24 @@ Install the Bundler Gem:
 
 ## 3. Go
 
+<<<<<<< HEAD
 Since GitLab 8.0, Git HTTP requests are handled by gitlab-workhorse (formerly
 gitlab-git-http-server). This is a small daemon written in Go. To install
 gitlab-workhorse we need a Go compiler. The instructions below assume you
 use 64-bit Linux. You can find downloads for other platforms at the [Go download
+=======
+Since GitLab 8.0, Git HTTP requests are handled by gitlab-git-http-server.
+This is a small daemon written in Go.
+To install gitlab-git-http-server we need a Go compiler.
+The instructions below assume you use 64-bit Linux. You can find
+downloads for other platforms at the [Go download
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> origin/8-0-stable
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
 page](https://golang.org/dl).
 
     curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
@@ -167,11 +189,25 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Quit the database session
     template1=# \q
 
+<<<<<<< HEAD
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
+=======
+    # switch to right version
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    git checkout v1.3.0
+<<<<<<< HEAD
+>>>>>>> gitlabhq/5-1-stable
 
     # Quit the database session
     gitlabhq_production> \q
+=======
+    sudo -u git -H git checkout v1.7.4
+>>>>>>> origin/5-4-stable
 
 ## 6. Redis
 
@@ -193,9 +229,35 @@ make
 # Install Redis
 cd utils
 sudo ./install_server.sh
+=======
+>>>>>>> origin/5-1-stable
 
+<<<<<<< HEAD
 # Configure redis to use sockets
 sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
+=======
+    cd gitlab-shell
+    
+    # switch to right version for v5.0
+    git checkout v1.1.0
+    git checkout -b v1.1.0
+    
+=======
+    git checkout v1.3.0
+
+>>>>>>> gitlabhq/5-1-stable
+=======
+    git checkout v1.3.0
+=======
+    sudo -u git -H git checkout v1.7.4
+>>>>>>> origin/5-4-stable
+
+>>>>>>> origin/5-1-stable
+    cp config.yml.example config.yml
+>>>>>>> gitlabhq/5-0-stable
+=======
+    sudo -u git -H git checkout v1.7.1
+>>>>>>> gitlabhq/6-0-stable
 
 # Disable Redis listening on TCP by setting 'port' to 0
 sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
@@ -231,11 +293,60 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
+<<<<<<< HEAD
+<<<<<<< HEAD
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable gitlab
 
 **Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+=======
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ee.git -b 8-2-stable-ee gitlab
+=======
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ee.git -b 8-2-stable-ee gitlab
 
+**Note:** You can change `8-2-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+>>>>>>> origin/ce_upstream
+
+**Note:** You can change `8-2-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+>>>>>>> gitlabhq/ce_upstream
+
+<<<<<<< HEAD
 ### Configure It
+=======
+    # Checkout to stable release
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gitlabhq/5-1-stable
+=======
+>>>>>>> origin/5-1-stable
+    sudo -u git -H git checkout 5-1-stable
+
+**Note:**
+You can change `5-1-stable` to `master` if you want the *bleeding edge* version, but
+do so with caution!
+=======
+=======
+>>>>>>> origin/5-4-stable
+    sudo -u git -H git checkout 5-4-stable
+
+**Note:**
+You can change `5-4-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
+<<<<<<< HEAD
+>>>>>>> origin/5-4-stable
+=======
+>>>>>>> origin/5-4-stable
+=======
+    sudo -u git -H git checkout 6-0-stable
+
+**Note:**
+You can change `6-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+>>>>>>> gitlabhq/6-0-stable
+
+## Configure it
+>>>>>>> gitlabhq/5-1-stable
 
     # Go to GitLab installation folder
     cd /home/git/gitlab
@@ -253,12 +364,23 @@ sudo usermod -aG redis git
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
     sudo chown -R git tmp/
+<<<<<<< HEAD
     sudo chmod -R u+rwX,go-w log/
     sudo chmod -R u+rwX tmp/
 
+<<<<<<< HEAD
     # Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
     sudo chmod -R u+rwX tmp/pids/
     sudo chmod -R u+rwX tmp/sockets/
+=======
+    # Make sure the repositories dir is owned by git and it stays that way
+    sudo chmod -R ug+rwX,o-rwx /home/git/repositories/
+    sudo chown -R git:git /home/git/repositories/
+    sudo -u git -H find /home/git/repositories -type d -print0 | sudo xargs -0 chmod g+s
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-2-stable
+=======
+>>>>>>> origin/4-2-stable
 
     # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
@@ -268,9 +390,31 @@ sudo usermod -aG redis git
 
     # Change the permissions of the directory where CI artifacts are stored
     sudo chmod -R u+rwX shared/artifacts/
+=======
+    sudo chmod -R u+rwX  log/
+    sudo chmod -R u+rwX  tmp/
 
-    # Copy the example Unicorn config
-    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    # Create directory for satellites
+    sudo -u git -H mkdir /home/git/gitlab-satellites
+
+    # Create directories for sockets/pids and make sure GitLab can write to them
+    sudo -u git -H mkdir tmp/pids/
+    sudo -u git -H mkdir tmp/sockets/
+    sudo chmod -R u+rwX  tmp/pids/
+    sudo chmod -R u+rwX  tmp/sockets/
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/5-1-stable
+=======
+>>>>>>> origin/5-1-stable
+=======
+>>>>>>> gitlabhq/5-1-stable
+=======
+>>>>>>> origin/5-1-stable
+
+    # Copy the example of Puma config
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
 
     # Find number of cores
     nproc
@@ -304,6 +448,7 @@ sudo usermod -aG redis git
     # MySQL only:
     sudo -u git cp config/database.yml.mysql config/database.yml
 
+<<<<<<< HEAD
     # MySQL and remote PostgreSQL only:
     # Update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
@@ -315,6 +460,17 @@ sudo usermod -aG redis git
     # PostgreSQL and MySQL:
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
+=======
+    # Go to gitlab dir 
+    cd /home/gitlab/gitlab
+   
+    # Checkout to stable release
+    sudo -u gitlab -H git checkout 4-2-stable
+
+**Note:**
+You can change `4-2-stable` to `master` if you want the *bleeding edge* version, but
+do so with caution!
+>>>>>>> gitlabhq/4-1-stable
 
 ### Install Gems
 
@@ -328,16 +484,29 @@ sudo usermod -aG redis git
 
 **Note:** If you want to use Kerberos for user authentication, then omit `kerberos` in the `--without` option above.
 
+<<<<<<< HEAD
 ### Install GitLab Shell
 
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
+<<<<<<< HEAD
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
+<<<<<<< HEAD
     sudo -u git -H bundle exec rake gitlab:shell:install REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+=======
+    sudo -u git -H bundle exec rake gitlab:shell:install[v2.6.5] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+>>>>>>> origin/7-14-stable
 
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
+=======
+    # For MySQL (note, the option says "without ... postgres")
+    sudo -u git -H bundle install --deployment --without development test postgres aws
+
+    # Or for PostgreSQL (note, the option says "without ... mysql")
+    sudo -u git -H bundle install --deployment --without development test mysql aws
+>>>>>>> gitlabhq/6-0-stable
 
 **Note:** If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
@@ -346,9 +515,21 @@ GitLab Shell is an SSH access and repository management software developed speci
 ### Install gitlab-workhorse
 
     cd /home/git
+<<<<<<< HEAD
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
     sudo -u git -H git checkout 0.5.1
+=======
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-git-http-server.git
+    cd gitlab-git-http-server
+    sudo -u git -H git checkout 0.2.14
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> origin/8-0-stable
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -384,10 +565,82 @@ And if you are installing with a non-default folder or user copy and edit the de
     sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
 
 If you installed GitLab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
+=======
+## Install Init Script
+
+Download the init script (will be /etc/init.d/gitlab):
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
+>>>>>>> origin/4-1-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab
+>>>>>>> gitlabhq/4-2-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab
+>>>>>>> origin/4-2-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab
+>>>>>>> gitlabhq/5-0-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
+>>>>>>> gitlabhq/5-1-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
+>>>>>>> origin/5-1-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab
+>>>>>>> gitlabhq/5-0-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
+>>>>>>> gitlabhq/5-1-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab
+>>>>>>> origin/5-1-stable
+    sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
+
+
+## Install Init Script
+
+Download the init script (will be /etc/init.d/gitlab):
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
+>>>>>>> gitlabhq/4-1-stable
+=======
+    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab
+>>>>>>> gitlabhq/4-1-stable
+    sudo chmod +x /etc/init.d/gitlab
+
+<<<<<<< HEAD
+To make sure you didn't miss anything run a more thorough check with:
+>>>>>>> gitlabhq/4-0-stable
+=======
+Make GitLab start on boot:
+>>>>>>> origin/4-0-stable
+
+    sudo update-rc.d gitlab defaults 21
+
+<<<<<<< HEAD
+If all items are green, then congratulations on successfully installing GitLab!
+However there are still a few steps left.
 
 ### Setup Logrotate
 
@@ -397,34 +650,98 @@ Make GitLab start on boot:
 
 Check if GitLab and its environment are configured correctly:
 
+<<<<<<< HEAD
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
 ### Compile Assets
+=======
+
+## Install Init Script
+
+Download the init script (will be /etc/init.d/gitlab):
+
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab -P /etc/init.d/
+    sudo chmod +x /etc/init.d/gitlab
+
+Make GitLab start on boot:
+
+    sudo update-rc.d gitlab defaults 21
+
+<<<<<<< HEAD
+If all items are green, then congratulations on successfully installing GitLab!
+However there are still a few steps left.
+>>>>>>> origin/4-0-stable
 
     sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 
+<<<<<<< HEAD
 ### Start Your GitLab Instance
+=======
+## Start Your GitLab Instance
+>>>>>>> gitlabhq/4-0-stable
+=======
+## Start Your GitLab Instance
+>>>>>>> origin/4-0-stable
 
     sudo service gitlab start
     # or
-    sudo /etc/init.d/gitlab restart
+    sudo /etc/init.d/gitlab start
 
 ## 8. Nginx
 
 **Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
 ### Installation
+=======
 
+## Check Application Status
+
+Check if GitLab and its environment is configured correctly:
+
+    sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
+
+To make sure you didn't miss anything run a more thorough check with:
+
+    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
+
+If all items are green, then congratulations on successfully installing GitLab!
+However there are still a few steps left.
+>>>>>>> gitlabhq/4-0-stable
+
+<<<<<<< HEAD
     sudo apt-get install -y nginx
+=======
+## Installation
+    sudo apt-get -y install nginx
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
 
 ### Site Configuration
 
 Copy the example site config:
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
     sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
+=======
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/nginx/gitlab -P /etc/nginx/sites-available/
+>>>>>>> gitlabhq/4-0-stable
+=======
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/nginx/gitlab -P /etc/nginx/sites-available/
+>>>>>>> origin/4-0-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/nginx/gitlab
+>>>>>>> gitlabhq/4-1-stable
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+=======
+>>>>>>> origin/4-1-stable
 
+<<<<<<< HEAD
 Make sure to edit the config file to match your setup:
+=======
+>>>>>>> gitlabhq/4-1-stable
 
     # Change YOUR_SERVER_FQDN to the fully-qualified
     # domain name of your host serving GitLab.
@@ -435,17 +752,71 @@ Make sure to edit the config file to match your setup:
 
 **Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
+<<<<<<< HEAD
 ### Test Configuration
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/nginx/gitlab
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+>>>>>>> gitlabhq/4-1-stable
 
 Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following command:
 
+<<<<<<< HEAD
+<<<<<<< HEAD
     sudo nginx -t
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/nginx/gitlab
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/nginx/gitlab
+>>>>>>> gitlabhq/4-2-stable
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+>>>>>>> origin/4-1-stable
 
 You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 ### Restart
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
     sudo service nginx restart
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/nginx/gitlab
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/nginx/gitlab
+>>>>>>> gitlabhq/5-0-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
+>>>>>>> gitlabhq/5-1-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
+>>>>>>> origin/5-1-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/nginx/gitlab
+>>>>>>> gitlabhq/5-0-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
+>>>>>>> gitlabhq/5-1-stable
+=======
+    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/nginx/gitlab
+>>>>>>> origin/5-1-stable
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+>>>>>>> origin/4-2-stable
+=======
+    sudo service nginx reload
+>>>>>>> origin/5-4-stable
+=======
+    sudo service nginx reload
+>>>>>>> origin/5-4-stable
+=======
+## Start Your GitLab Instance
+>>>>>>> gitlabhq/4-0-stable
 
 ## Done!
 
@@ -461,7 +832,12 @@ NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit proj
 
 ### Initial Login
 
+<<<<<<< HEAD
 Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created a default admin account for you. You can use it to log in:
+=======
+    sudo wget https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/nginx/gitlab -P /etc/nginx/sites-available/
+    sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
+>>>>>>> gitlabhq/4-0-stable
 
     root
     5iveL!fe
@@ -546,7 +922,30 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 
 Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 ## Troubleshooting
+=======
+=======
+>>>>>>> origin/5-4-stable
+* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/Gemfile#L19)
+* Run `sudo -u git -H bundle install` to install the new gem(s)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/config/gitlab.yml.example#L113) as a reference)
+* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-4-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
+* Restart GitLab
+>>>>>>> origin/5-4-stable
+=======
+## Troubleshooting
+>>>>>>> origin/8-0-stable
+=======
+## Troubleshooting
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+## Troubleshooting
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
 
 ### "You appear to have cloned an empty repository."
 

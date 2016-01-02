@@ -1,0 +1,267 @@
+v 8.3.0 (unreleased)
+  - License information can now be retrieved via the API
+
+v 8.2.0
+  - Invalidate stored jira password if the endpoint URL is changed
+  - Fix: Page is not reloaded periodically to check if rebase is finished
+  - When someone as marked as a required approver for a merge request, an email should be sent
+  - Allow configuring the Jira API path (Alex Lossent)
+  - Fix "Rebase onto master"
+  - Ensure a comment is properly recorded in JIRA when a merge request is accepted
+  - Allow groups to appear in the `Share with group` share if the group owner allows it
+  - Add option to mirror an upstream repository.
+
+v 8.1.4
+  - Fix bug in JIRA integration which prevented merge requests from being accepted when using issue closing pattern
+
+v 8.1.3
+  - Fix "Rebase onto master"
+
+v 8.1.2
+  - Prevent a 500 error related to the JIRA external issue tracker service
+
+v 8.1.1
+  - Removed, see 8.1.2
+
+v 8.1.0
+  - Add documentation for "Share project with group" API call
+  - Added an issues template (Hannes Rosenögger)
+  - Add documentation for "Share project with group" API call 
+  - Ability to disable 'Share with Group' feature (via UI and API)
+
+v 8.0.6
+  - No EE-specific changes
+
+v 8.0.5
+  - "Multi-project" and "Treat unstable builds as passing" parameters for
+    the Jenkins CI service are now correctly persisted.
+  - Correct the build URL when "Multi-project" is enabled for the Jenkins CI
+    service.
+
+v 8.0.4
+  - Fix multi-project setup for Jenkins
+
+v 8.0.3
+  - No EE-specific changes
+
+v 8.0.2
+  - No EE-specific changes
+
+v 8.0.1
+  - Correct gem dependency versions
+  - Re-add the "Help Text" feature that was inadvertently removed
+
+v 8.0.0
+  - Fix navigation issue when viewing Group Settings pages
+  - Guests and Reporters can approve merge request as well
+  - Add fast-forward merge option in project settings
+  - Separate rebase & fast-forward merge features
+
+v 7.14.3
+  - No changes
+
+v 7.14.2
+  - Fix the rebase before merge feature
+
+v 7.14.1
+  - Fix sign in form when just Kerberos is enabled
+
+v 7.14.0
+  - Disable adding, updating and removing members from a group that is synced with LDAP
+  - Don't send "Added to group" notifications when group is LDAP synched
+  - Fix importing projects from GitHub Enterprise Edition.
+  - Automatic approver suggestions (based on an authority of the code)
+  - Add support for Jenkins unstable status
+  - Automatic approver suggestions (based on an authority of the code)
+  - Support Kerberos ticket-based authentication for Git HTTP access
+
+v 7.13.3
+  - Merge community edition changes for version 7.13.3
+  - Improved validation for an approver
+  - Don't resend admin email to everyone if one delivery fails
+  - Added migration for removing of invalid approvers
+
+v 7.13.2
+  - Fix group web hook
+  - Don't resend admin email to everyone if one delivery fails
+
+v 7.13.1
+  - Merge community edition changes for version 7.13.1
+  - Fix: "Rebase before merge" doesn't work when source branch is in the same project
+
+v 7.13
+  - Fix git hook validation on initial push to master branch.
+  - Reset approvals on push
+  - Fix 500 error when the source project of an MR is deleted
+  - Ability to define merge request approvers
+
+v 7.12.2
+  - Fixed the alignment of project settings icons
+
+v 7.12.1
+  - No changes specific to EE
+
+v 7.12.0
+  - Fix error when viewing merge request with a commit that includes "Closes #<issue id>".
+  - Enhance LDAP group synchronization to check also for member attributes that only contain "uid=<username>"
+  - Enhance LDAP group synchronization to check also for submember attributes
+  - Prevent LDAP group sync from removing a group's last owner
+  - Add Git hook to validate maximum file size.
+  - Project setting: approve merge request by N users before accept
+  - Support automatic branch jobs created by Jenkins in CI Status
+  - Add API support for adding and removing LDAP group links
+
+v 7.11.4
+  - no changes specific to EE
+
+v 7.11.3
+  - Fixed an issue with git annex
+
+v 7.11.2
+  - Fixed license upload and verification mechanism
+
+v 7.11.0
+  - Skip git hooks commit validation when pushing new tag.
+  - Add Two-factor authentication (2FA) for LDAP logins
+
+v 7.10.1
+  - Check if comment exists in Jira before sending a reference
+
+v 7.10.0
+  - Improve UI for next pages: Group LDAP sync, Project git hooks, Project share with groups, Admin -> Appearance settigns
+  - Default git hooks for new projects
+  - Fix LDAP group links page by using new group members route.
+  - Skip email confirmation when updated via LDAP.
+
+v 7.9.0
+  - Strip prefixes and suffixes from synced SSH keys:
+    `SSHKey:ssh-rsa keykeykey` and `ssh-rsa keykeykey (SSH key)` will now work
+  - Check if LDAP admin group exists before querying for user membership
+  - Use one custom header logo for all GitLab themes in appearance settings
+  - Escape wildcards when searching LDAP by group name.
+  - Group level Web Hooks
+  - Don't allow project to be shared with the group it is already in.
+
+v 7.8.0
+  - Improved Jira issue closing integration
+  - Improved message logging for Jira integration
+  - Added option of referencing JIRA issues from GitLab
+  - Update Sidetiq to 0.6.3
+  - Added Github Enterprise importer
+  - When project has MR rebase enabled, MR will have rebase checkbox selected by default
+  - Minor UI fixes for sidebar navigation
+  - Manage large binaries with git annex
+
+v 7.7.0
+  - Added custom header logo support (Drew Blessing)
+  - Fixed preview appearance bug
+  - Improve performance for selectboxes: project share page, admin email users page
+
+v 7.6.2
+  - Fix failing migrations for MySQL, LDAP
+
+v 7.6.1
+  - No changes
+
+v 7.6.0
+  - Added Audit events related to membership changes for groups and projects
+  - Added option to attempt a rebase before merging merge request
+  - Dont show LDAP groups settings if LDAP disabled
+  - Added member lock for groups to disallow membership additions on project level
+  - Rebase on merge request. Introduced merge request option to rebase before merging
+  - Better message for failed pushes because of git hooks
+  - Kerberos support for web interface and git HTTP
+
+v 7.5.3
+  - Only set up Sidetiq from a Sidekiq server process (fixes Redis::InheritedError)
+
+v 7.5.0
+  - Added an ability to check each author commit's email by regex
+  - Added an ability to restrict commit authors to existing Gitlab users
+  - Add an option for automatic daily LDAP user sync
+  - Added git hook for preventing tag removal to API
+  - Added git hook for setting commit message regex to API
+  - Added an ability to block commits with certain filenames by regex expression
+  - Improved a jenkins parser
+
+v 7.4.4
+  - Fix broken ldap migration
+
+v 7.4.0
+  - Support for multiple LDAP servers
+  - Skip AD specific LDAP checks
+  - Do not show ldap users in dropdowns for groups with enabled ldap-sync
+  - Update the JIRA integration documentation
+  - Reset the homepage to show the GitLab logo by deleting the custom logo.
+
+v 7.3.0
+  - Add an option to change the LDAP sync time from default 1 hour
+  - User will receive an email when unsubscribed from admin notifications
+  - Show group sharing members on /my/project/team
+  - Improve explanation of the LDAP permission reset
+  - Fix some navigation issues
+  - Added support for multiple LDAP groups per Gitlab group
+
+v 7.2.0
+  - Improve Redmine integration
+  - Better logging for the JIRA issue closing service
+  - Administrators can now send email to all users through the admin interface
+  - JIRA issue transition ID is now customizable
+  - LDAP group settings are now visible in admin group show page and group members page
+
+v 7.1.0
+  - Synchronize LDAP-enabled GitLab administrators with an LDAP group (Marvin Frick, sponsored by SinnerSchrader)
+  - Synchronize SSH keys with LDAP (Oleg Girko (Jolla) and Marvin Frick (SinnerSchrader))
+  - Support Jenkins jobs with multiple modules (Marvin Frick, sponsored by SinnerSchrader)
+
+v 7.0.0
+  - Fix: empty brand images are displayed as empty image_tag on login page (Marvin Frick, sponsored by SinnerSchrader)
+
+v 6.9.4
+  - Fix bug in JIRA Issue closing triggered by commit messages
+  - Fix JIRA issue reference bug
+
+v 6.9.3
+  - Fix check CI status only when CI service is enabled(Daniel Aquino)
+
+v 6.9.2
+  - Merge community edition changes for version 6.9.2
+
+v 6.9.1
+  - Merge community edition changes for version 6.9.1
+
+v 6.9.0
+  - Add support for closing Jira tickets with commits and MR
+  - Template for Merge Request description can be added in project settings
+  - Jenkins CI service
+  - Fix LDAP email upper case bug
+
+v 6.8.0
+  - Customise sign-in page with custom text and logo
+
+v 6.7.1
+  - Handle LDAP errors in Adapter#dn_matches_filter?
+
+v 6.7.0
+  - Improve LDAP sign-in speed by reusing connections
+  - Add support for Active Directory nested LDAP groups
+  - Git hooks: Commit message regex
+  - Git hooks: Deny git tag removal
+  - Fix group edit in admin area
+
+v 6.5.0
+  - Add reset permissions button to Group#members page
+
+v 6.4.0
+  - Respect existing group permissions during sync with LDAP group (d3844662ec7ce816b0a85c8b40f66ee6c5ae90a1)
+
+v 6.3.0
+  - When looking up a user by DN, use single scope (bc8a875df1609728f1c7674abef46c01168a0d20)
+  - Try sAMAccountName if omniauth nickname is nil (9b7174c333fa07c44cc53b80459a115ef1856e38)
+
+v 6.2.0
+  - API: expose ldap_cn and ldap_access group attributes
+  - Use omniauth-ldap nickname attribute as GitLab username
+  - Improve group sharing UI for installation with many groups
+  - Fix empty LDAP group raises exception
+  - Respect LDAP user filter for git access

@@ -1,0 +1,23 @@
+- page_title "Email Notification"
+%h3.page-title
+  Send email notification
+%p.light
+  You can notify the app / group or a project by sending them an email notification
+
+= form_tag admin_email_path, class: 'form-horizontal', id: 'new-admin-email' do
+  .form-group
+    %label.control-label{for: :subject} Subject
+    .col-sm-10
+      = text_field_tag :subject, '', class: 'form-control', required: true
+
+  .form-group
+    %label.control-label{for: :body} Body
+    .col-sm-10
+      = text_area_tag :body, '', class: 'form-control', rows: 15, required: true
+
+  .form-group
+    %label.control-label{for: :recipients} Recipient group
+    .col-sm-10
+      = admin_email_select_tag(:recipients)
+  .form-actions
+    = submit_tag 'Send message', class: 'btn btn-create'

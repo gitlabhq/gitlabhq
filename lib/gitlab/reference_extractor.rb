@@ -27,9 +27,34 @@ module Gitlab
 
     def issues
       if project && project.jira_tracker?
+<<<<<<< HEAD
         @references[:external_issue] ||= references(:external_issue, reference_context)
       else
         @references[:issue] ||= references(:issue, reference_context)
+=======
+        references[:external_issue]
+      else
+        references[:issue]
+      end
+    end
+
+    def issues
+      if project && project.jira_tracker?
+        references[:external_issue]
+      else
+        references[:issue]
+      end
+    end
+
+    private
+
+    def references
+      @references ||= Hash.new do |references, type|
+        type = type.to_sym
+        next references[type] if references.has_key?(type)
+
+        references[type] = pipeline_result(type)
+>>>>>>> gitlabhq/ce_upstream
       end
     end
 

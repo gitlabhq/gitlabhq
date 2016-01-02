@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "#{@project.name} activity")
@@ -80,3 +81,56 @@
           = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
             data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project', class: 'cred' do
             Leave this project
+=======
+= render 'clone_panel'
+
+.row
+  .span9
+    = render "events/event_last_push", event: @last_push
+    .content_list
+    .loading.hide
+  .span3
+    .light-well
+      .dropdown.pull-right
+        %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+          %i.icon-plus-sign-alt
+          %b.caret
+        %ul.dropdown-menu
+          - if @project.issues_enabled && can?(current_user, :write_issue, @project)
+            %li
+              = link_to url_for_new_issue, title: "New Issue" do
+                Issue
+          - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
+            %li
+              = link_to new_project_merge_request_path(@project), title: "New Merge Request" do
+                Merge Request
+          - if @project.snippets_enabled && can?(current_user, :write_snippet, @project)
+            %li
+              = link_to new_project_snippet_path(@project), title: "New Snippet" do
+                Snippet
+          - if can?(current_user, :admin_team_member, @project)
+            %li.divider
+            %li
+              = link_to new_project_team_member_path(@project), title: "New Team member" do
+                Team member
+
+      %h3.page_title
+        = @project.name
+      - if @project.description.present?
+        %p.light= @project.description
+
+      %hr
+      %p
+      %p Repo Size: #{@project.repository.size} MB
+      %p Created on: #{@project.created_at.stamp('Aug 22, 2013')}
+      %p Owner: #{link_to @project.owner_name, @project.owner}
+      - if @project.forked_from_project
+        %p
+          Forked from:
+          = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+
+      - if @project.gitlab_ci?
+        %hr
+        = link_to @project.gitlab_ci_service.builds_path do
+          = image_tag @project.gitlab_ci_service.status_img_path, alt: "build status"
+>>>>>>> gitlabhq/5-2-stable

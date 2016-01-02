@@ -20,7 +20,7 @@ describe Issues::BulkUpdateService, services: true do
       end
       @params = {
         state_event: 'close',
-        issues_ids: @issues.map(&:id)
+        issues_ids: @issues.map(&:id).join(",")
       }
     end
 
@@ -43,7 +43,7 @@ describe Issues::BulkUpdateService, services: true do
       end
       @params = {
         state_event: 'reopen',
-        issues_ids: @issues.map(&:id)
+        issues_ids: @issues.map(&:id).join(",")
       }
     end
 
@@ -63,7 +63,7 @@ describe Issues::BulkUpdateService, services: true do
     before do
       @new_assignee = create :user
       @params = {
-        issues_ids: [issue.id],
+        issues_ids: issue.id.to_s,
         assignee_id: @new_assignee.id
       }
     end
@@ -102,7 +102,7 @@ describe Issues::BulkUpdateService, services: true do
     before do
       @milestone = create :milestone
       @params = {
-        issues_ids: [issue.id],
+        issues_ids: issue.id.to_s,
         milestone_id: @milestone.id
       }
     end

@@ -1,0 +1,9 @@
+- if @project.mirror? && can?(current_user, :push_code, @project)
+  - if @project.updating_mirror?
+    %span.btn.disabled
+      = icon('refresh')
+      Updating&hellip;
+  - else
+    = link_to update_now_namespace_project_mirror_path(@project.namespace, @project), method: :post, class: "btn" do
+      = icon('refresh')
+      Update Now

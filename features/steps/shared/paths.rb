@@ -7,6 +7,10 @@ module SharedPaths
     visit new_project_path
   end
 
+  step 'I visit login page' do
+    visit new_user_session_path
+  end
+
   # ----------------------------------------
   # User
   # ----------------------------------------
@@ -43,6 +47,10 @@ module SharedPaths
     visit edit_group_path(Group.find_by(name: "Owned"))
   end
 
+  step 'I visit group "Owned" LDAP settings page' do
+    visit group_ldap_group_links_path(Group.find_by(name:"Owned"))
+  end
+
   step 'I visit group "Owned" projects page' do
     visit projects_group_path(Group.find_by(name: "Owned"))
   end
@@ -65,6 +73,10 @@ module SharedPaths
 
   step 'I visit group "Guest" settings page' do
     visit edit_group_path(Group.find_by(name: "Guest"))
+  end
+
+  step 'I visit audit event page' do
+    visit namespace_project_audit_events_path(@project.namespace, @project)
   end
 
   # ----------------------------------------
@@ -183,8 +195,16 @@ module SharedPaths
     visit admin_groups_path
   end
 
+  step 'I visit admin appearance page' do
+    visit admin_appearances_path
+  end
+
   step 'I visit admin teams page' do
     visit admin_teams_path
+  end
+
+  step 'I visit admin email page' do
+    visit admin_email_path
   end
 
   step 'I visit admin settings page' do
@@ -193,6 +213,14 @@ module SharedPaths
 
   step 'I visit applications page' do
     visit admin_applications_path
+  end
+
+  step 'I visit git hooks page' do
+    visit admin_git_hooks_path
+  end
+
+  step 'I visit admin license page' do
+    visit admin_license_path
   end
 
   # ----------------------------------------
@@ -230,7 +258,7 @@ module SharedPaths
 
   step "I visit my project's network page" do
     # Stub Graph max_size to speed up test (10 commits vs. 650)
-    Network::Graph.stub(max_count: 10)
+    allow(Network::Graph).to receive(:max_count).and_return(10)
 
     visit namespace_project_network_path(@project.namespace, @project, root_ref)
   end
@@ -253,6 +281,14 @@ module SharedPaths
 
   step 'I visit project hooks page' do
     visit namespace_project_hooks_path(@project.namespace, @project)
+  end
+
+  step 'I visit group hooks page' do
+    visit group_hooks_path(@group)
+  end
+
+  step 'I visit project git hooks page' do
+    visit namespace_project_git_hooks_path(@project.namespace, @project)
   end
 
   step 'I visit project deploy keys page' do

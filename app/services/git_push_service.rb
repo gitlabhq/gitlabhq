@@ -94,7 +94,7 @@ class GitPushService
           Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit)
         end
       end
-
+      
       commit.create_cross_references!(authors[commit], closed_issues)
     end
   end

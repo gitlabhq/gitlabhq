@@ -12,7 +12,7 @@ module Gitlab
 
         if access_token
           ::Octokit.auto_paginate = true
-          @api = ::Octokit::Client.new(access_token: access_token)
+          @api = ::Octokit::Client.new(access_token: access_token, api_endpoint: github_options[:site])
         end
       end
 
@@ -42,7 +42,7 @@ module Gitlab
       private
 
       def config
-        Gitlab.config.omniauth.providers.find{|provider| provider.name == "github"}
+        Gitlab.config.omniauth.providers.find { |provider| provider.name == "github"}
       end
 
       def github_options

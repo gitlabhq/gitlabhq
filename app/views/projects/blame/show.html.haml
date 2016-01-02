@@ -29,7 +29,11 @@
                 .light
                   = commit_author_link(commit, avatar: false)
                   authored
+<<<<<<< HEAD
                   #{time_ago_with_tooltip(commit.committed_date, skip_js: true)}
+=======
+                  #{time_ago_with_tooltip(commit.committed_date)}
+>>>>>>> origin/7-14-stable
             %td.lines.blame-numbers
               %pre
                 - line_count = blame_group[:lines].count
@@ -43,3 +47,7 @@
                   - blame_group[:lines].each do |line|
                     :erb
                       <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/7-14-stable

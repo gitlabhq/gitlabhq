@@ -42,28 +42,79 @@ module Grack
       elsif @user.nil? && !@ci
         unauthorized
       else
-        render_not_found
+        apply_negotiate_final_leg(render_not_found)
       end
     end
 
     private
 
+    def allow_basic_auth?
+      return true unless Gitlab.config.kerberos.enabled &&
+                         Gitlab.config.kerberos.use_dedicated_port &&
+                         @env['SERVER_PORT'] == Gitlab.config.kerberos.port.to_s
+    end
+
+    def allow_kerberos_auth?
+      return false unless Gitlab.config.kerberos.enabled
+      return true unless Gitlab.config.kerberos.use_dedicated_port
+      # When using a dedicated port, allow Kerberos auth only if port matches the configured one
+      @env['SERVER_PORT'] == Gitlab.config.kerberos.port.to_s
+    end
+
+    def spnego_challenge
+      return "Negotiate" unless @auth.spnego_response_token
+      "Negotiate #{::Base64.strict_encode64(@auth.spnego_response_token)}"
+    end
+
+    def challenge
+      challenges = []
+      challenges << super if allow_basic_auth?
+      challenges << spnego_challenge if allow_kerberos_auth?
+      # Use \n separator to generate multiple WWW-Authenticate headers in case of multiple challenges
+      challenges.join("\n")
+    end
+
+    def apply_negotiate_final_leg(response)
+      return response unless allow_kerberos_auth? && @auth.spnego_response_token
+      # As per RFC4559, we may have a final WWW-Authenticate header to send in
+      # the response even if it's not a 401 status
+      status, headers, body = response
+      headers['WWW-Authenticate'] = spnego_challenge
+
+      [status, headers, body]
+    end
+
+    def valid_auth_method?
+      (allow_basic_auth? && @auth.basic?) || (allow_kerberos_auth? && @auth.negotiate?)
+    end
+
     def auth!
       return unless @auth.provided?
 
-      return bad_request unless @auth.basic?
+      return bad_request unless valid_auth_method?
 
-      # Authentication with username and password
-      login, password = @auth.credentials
+      if @auth.negotiate?
+        # Authentication with Kerberos token
+        krb_principal = @auth.spnego_credentials!
+        return unless krb_principal
 
-      # Allow authentication for GitLab CI service
-      # if valid token passed
-      if ci_request?(login, password)
-        @ci = true
-        return
+        # Set @user if authentication succeeded
+        identity = ::Identity.find_by(provider: 'kerberos', extern_uid: krb_principal)
+        identity ||= ::Identity.find_by(provider: 'kerberos', extern_uid: krb_principal.split("@")[0])
+        @user = identity.user if identity
+      else
+        # Authentication with username and password
+        login, password = @auth.credentials
+
+        # Allow authentication for GitLab CI service
+        # if valid token passed
+        if ci_request?(login, password)
+          @ci = true
+          return
+        end
+
+        @user = authenticate_user(login, password)
       end
-
-      @user = authenticate_user(login, password)
 
       if @user
         Gitlab::ShellEnv.set_env(@user)
@@ -217,6 +268,44 @@ module Grack
 
     def render_not_found
       [404, { "Content-Type" => "text/plain" }, ["Not Found"]]
+    end
+
+    class Request < Rack::Auth::Basic::Request
+      attr_reader :spnego_response_token
+
+      def negotiate?
+        parts.first && scheme == "negotiate"
+      end
+
+      def spnego_token
+        ::Base64.strict_decode64(params)
+      end
+
+      def spnego_credentials!
+        require 'gssapi'
+        gss = GSSAPI::Simple.new(nil, nil, Gitlab.config.kerberos.keytab)
+        # the GSSAPI::Simple constructor transforms a nil service name into a default value, so
+        # pass service name to acquire_credentials explicitly to support the special meaning of nil
+        gss_service_name =
+          if Gitlab.config.kerberos.service_principal_name.present?
+            gss.import_name(Gitlab.config.kerberos.service_principal_name)
+          else
+            nil # accept any valid service principal name from keytab
+          end
+        gss.acquire_credentials(gss_service_name) # grab credentials from keytab
+
+        # Decode token
+        gss_result = gss.accept_context(spnego_token)
+
+        # gss_result will be 'true' if nothing has to be returned to the client
+        @spnego_response_token = gss_result if gss_result && gss_result != true
+
+        # Return user principal name if authentication succeeded
+        gss.display_name
+      rescue GSSAPI::GssApiError => ex
+        Rails.logger.error "#{self.class.name}: failed to process Negotiate/Kerberos authentication: #{ex.message}"
+        false
+      end
     end
   end
 end

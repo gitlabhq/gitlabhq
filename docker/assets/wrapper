@@ -1,0 +1,29 @@
+#!/bin/bash
+
+function sigterm_handler() {
+    echo "SIGTERM signal received, try to gracefully shutdown all services..."
+    gitlab-ctl stop
+}
+
+trap "sigterm_handler; exit" TERM
+
+set -xe
+
+# Copy gitlab.rb for the first time
+if [[ ! -e /etc/gitlab/gitlab.rb ]]; then
+	cp /opt/gitlab/etc/gitlab.rb.template /etc/gitlab/gitlab.rb
+	chmod 0600 /etc/gitlab/gitlab.rb
+fi
+
+# Remove all services, the reconfigure will create them
+rm -f /opt/gitlab/service/*
+ln -s /opt/gitlab/sv/sshd /opt/gitlab/service
+
+# Start service manager
+/opt/gitlab/embedded/bin/runsvdir-start &
+
+# Configure gitlab package
+gitlab-ctl reconfigure
+
+# Tail all logs
+gitlab-ctl tail

@@ -5,18 +5,38 @@
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
 - [Groups](groups.md)
+- [Importing to GitLab](doc/importing/README.md)
 - [Keyboard shortcuts](shortcuts.md)
 - [Labels](labels.md)
+- [Manage large binaries with git annex](git_annex.md)
+- [Merge Request Approvals](merge_request_approvals.md)
 - [Notification emails](notifications.md)
 - [Project Features](project_features.md)
 - [Project forking workflow](forking_workflow.md)
 - [Project users](add-user/add-user.md)
 - [Protected branches](protected_branches.md)
+- [Fast-forward merge](ff_merge.md)
+- [Rebase before merge](rebase_before_merge.md)
+- [Sharing a project with a group](share_with_group.md)
+- [Share projects with other groups](share_projects_with_other_groups.md)
+- [Two-factor Authentication (2FA)](two_factor_authentication.md)
 - [Web Editor](web_editor.md)
 - [Releases](releases.md)
 - [Milestones](milestones.md)
 - [Merge Requests](merge_requests.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)
+<<<<<<< HEAD
+<<<<<<< HEAD
 - [Merge When Build Succeeds](merge_when_build_succeeds.md)
 - [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
 - [Importing from SVN, GitHub, BitBucket, etc](importing/README.md)
+=======
+- [Repository Mirroring](repository_mirroring.md)
+- [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
+
+>>>>>>> gitlabhq/ce_upstream
+=======
+- [Repository Mirroring](repository_mirroring.md)
+- [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
+
+>>>>>>> origin/ce_upstream

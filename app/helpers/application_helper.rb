@@ -204,8 +204,18 @@ module ApplicationHelper
   # Returns an HTML-safe String
   def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
     element = content_tag :time, time.to_s,
+<<<<<<< HEAD
+<<<<<<< HEAD
       class: "#{html_class} js-timeago js-timeago-pending",
       datetime: time.getutc.iso8601,
+=======
+      class: "#{html_class} js-timeago",
+      datetime: time.to_time.getutc.iso8601,
+>>>>>>> gitlabhq/ce_upstream
+=======
+      class: "#{html_class} js-timeago",
+      datetime: time.to_time.getutc.iso8601,
+>>>>>>> origin/ce_upstream
       title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 

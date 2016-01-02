@@ -312,6 +312,7 @@ describe Notify do
         let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
         let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: FFaker::Lorem.sentence) }
+        let(:merge_request_with_approver) { create(:merge_request_with_approver, author: current_user, assignee: assignee, source_project: project, target_project: project) }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
@@ -341,8 +342,26 @@ describe Notify do
           end
         end
 
+        describe "that are new with approver" do
+          subject do
+            Notify.new_merge_request_email(
+              merge_request_with_approver.assignee_id,
+              merge_request_with_approver.id
+            )
+          end
+
+          it "contains the approvers list" do
+            is_expected.to have_body_text /#{merge_request_with_approver.approvers.first.user.name}/
+          end
+        end
+
         describe 'that are new with a description' do
-          subject { Notify.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
+          subject do
+            Notify.new_merge_request_email(
+              merge_request_with_description.assignee_id,
+              merge_request_with_description.id
+            )
+          end
 
           it_behaves_like 'it should show Gmail Actions View Merge request link'
 
@@ -867,6 +886,8 @@ describe Notify do
     end
   end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   describe 'build success' do
     before { build.success }
 
@@ -892,6 +913,36 @@ describe Notify do
 
     it 'contains name of project' do
       should have_body_text build.project_name
+=======
+=======
+>>>>>>> origin/ce_upstream
+  describe 'admin notification' do
+    let(:example_site_path) { root_path }
+    let(:user) { create(:user) }
+
+    subject { @email = Notify.send_admin_notification(user.id, 'Admin announcement','Text') }
+
+    it 'is sent as the author' do
+      sender = subject.header[:from].addrs[0]
+      expect(sender.display_name).to eq("GitLab")
+      expect(sender.address).to eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      should deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      should have_subject 'Admin announcement'
+    end
+
+    it 'includes unsubscribe link' do
+      unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
+      should have_body_text(unsubscribe_link)
+<<<<<<< HEAD
+>>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     end
   end
 end

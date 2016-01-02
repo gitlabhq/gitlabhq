@@ -38,6 +38,7 @@ namespace :gitlab do
           user = User.admins.reorder("id").first
 
           project_params = {
+<<<<<<< HEAD
             name: name,
             path: name
           }
@@ -61,6 +62,19 @@ namespace :gitlab do
           end
 
           project = Projects::CreateService.new(user, project_params).execute
+=======
+            :name => path,
+            :namespace_id => Namespace.global_id,
+          }
+
+          project = Projects::CreateContext.new(user, project_params).execute
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
 
           if project.persisted?
             puts " * Created #{project.name} (#{repo_path})".green

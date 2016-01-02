@@ -41,8 +41,13 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :merge_user, class_name: "User"
 
   has_one :merge_request_diff, dependent: :destroy
+  has_many :approvals, dependent: :destroy
+  has_many :approvers, as: :target, dependent: :destroy
+<<<<<<< HEAD
 
   serialize :merge_params, Hash
+=======
+>>>>>>> origin/ce_upstream
 
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
@@ -140,9 +145,10 @@ class MergeRequest < ActiveRecord::Base
   scope :merged, -> { with_state(:merged) }
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
-
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
+
+  participant :approvers_left
 
   def self.reference_prefix
     '!'
@@ -444,9 +450,72 @@ class MergeRequest < ActiveRecord::Base
     locked_at.nil? || locked_at < (Time.now - 1.day)
   end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> origin/ce_upstream
+  def approvals_left
+    approvals_required - approvals.count
+  end
+
+  def approvers_left
+    user_ids = overall_approvers.map(&:user_id) - approvals.map(&:user_id)
+    User.where id: user_ids
+  end
+
+  def approvals_required
+    target_project.approvals_before_merge
+  end
+
+  def requires_approve?
+    approvals_required.nonzero?
+  end
+
+  def overall_approvers
+    if approvers.any?
+      approvers
+    else
+      target_project.approvers
+    end
+  end
+
+  def approved?
+    approvals_left.zero?
+  end
+
+  def approved_by?(user)
+    approved_by_users.include?(user)
+  end
+
+  def approved_by_users
+    approvals.map(&:user)
+  end
+
+  def can_approve?(user)
+    approvers_left.include?(user) ||
+    (any_approver_allowed? && !approved_by?(user))
+  end
+
+  def any_approver_allowed?
+    approvals_left > approvers_left.count
+  end
+
+<<<<<<< HEAD
+>>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
   def has_ci?
     source_project.ci_service && commits.any?
   end
+=======
+  def project
+    target_project
+  end
+
+  private
+>>>>>>> gitlabhq/6-0-stable
 
   def branch_missing?
     !source_branch_exists? || !target_branch_exists?
@@ -463,6 +532,12 @@ class MergeRequest < ActiveRecord::Base
       "Closed"
     else
       "Open"
+    end
+  end
+
+  def approver_ids=(value)
+    value.split(",").map(&:strip).each do |user_id|
+      approvers.find_or_initialize_by(user_id: user_id, target_id: id)
     end
   end
 
@@ -502,6 +577,22 @@ class MergeRequest < ActiveRecord::Base
     ensure
       unlock_mr if locked?
     end
+  end
+
+  def source_sha_parent
+    source_project.repository.commit(commits.last.sha).parents.first.sha
+  end
+
+  def ff_merge_possible?
+    target_sha == source_sha_parent
+  end
+
+  def rebase_dir_path
+    File.join(Gitlab.config.shared.path, 'tmp/rebase', source_project.id.to_s, id.to_s).to_s
+  end
+
+  def rebase_in_progress?
+    File.exist?(rebase_dir_path)
   end
 
   def ci_commit

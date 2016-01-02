@@ -1,15 +1,28 @@
 class @GroupsSelect
   constructor: ->
     $('.ajax-groups-select').each (i, select) =>
-      skip_ldap = $(select).hasClass('skip_ldap')
+      skip_group = $(select).data("skip-group")
+      url = $(select).data("url")
 
       $(select).select2
         placeholder: "Search for a group"
         multiple: $(select).hasClass('multiselect')
         minimumInputLength: 0
         query: (query) ->
-          Api.groups query.term, skip_ldap, (groups) ->
-            data = { results: groups }
+          $.ajax(
+            url: url
+            data:
+              search: query.term
+              per_page: 20
+            dataType: "json"
+          ).done (groups) ->
+            data = { results: [] }
+            
+            for group in groups
+              continue if skip_group && group.path == skip_group
+
+              data.results.push(group)
+              
             query.callback(data)
 
         initSelection: (element, callback) ->

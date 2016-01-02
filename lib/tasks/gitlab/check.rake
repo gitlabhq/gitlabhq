@@ -193,7 +193,71 @@ namespace :gitlab do
         return
       end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
       recipe_content = File.read(recipe_path)
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/4-0-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> origin/4-0-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/4-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/4-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> origin/4-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/4-2-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-2-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> origin/4-2-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/5-0-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/5-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> origin/5-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/5-2-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/5-0-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/5-0-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/5-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/5-1-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> origin/5-1-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/5-2-stable
+=======
+      recipe_content = `curl https://raw.github.com/gitlabhq/gitlab-recipes/4-0-stable/init.d/gitlab 2>/dev/null`
+>>>>>>> gitlabhq/4-0-stable
       script_content = File.read(script_path)
 
       if recipe_content == script_content
@@ -220,12 +284,25 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
           sudo_gitlab("bundle exec rake db:migrate RAILS_ENV=production")
+=======
+          "sudo -u gitlab -H bundle exec rake db:migrate RAILS_ENV=production"
+>>>>>>> gitlabhq/4-0-stable
+=======
+          "sudo -u gitlab -H bundle exec rake db:migrate RAILS_ENV=production"
+>>>>>>> origin/4-0-stable
+=======
+          "sudo -u gitlab -H bundle exec rake db:migrate RAILS_ENV=production"
+>>>>>>> gitlabhq/4-0-stable
         )
         fix_and_rerun
       end
     end
 
+<<<<<<< HEAD
     def check_orphaned_group_members
       print "Database contains orphaned GroupMembers? ... "
       if GroupMember.where("user_id not in (select id from users)").count > 0
@@ -236,6 +313,36 @@ namespace :gitlab do
         )
       else
         puts "no".green
+=======
+    def check_satellites_exist
+      print "Projects have satellites? ... "
+
+      unless Project.count > 0
+        puts "can't check, you have no projects".magenta
+        return
+      end
+      puts ""
+
+      Project.find_each(batch_size: 100) do |project|
+        print "#{project.name_with_namespace.yellow} ... "
+
+        if project.satellite.exists?
+          puts "yes".green
+        elsif project.empty_repo?
+          puts "can't create, repository is empty".magenta
+        else
+          puts "no".red
+          try_fixing_it(
+            "sudo -u gitlab -H bundle exec rake gitlab:satellites:create RAILS_ENV=production",
+            "If necessary, remove the tmp/repo_satellites directory ...",
+            "... and rerun the above command"
+          )
+          for_more_information(
+            "doc/raketasks/maintenance.md "
+          )
+          fix_and_rerun
+        end
+>>>>>>> gitlabhq/4-0-stable
       end
     end
 
@@ -278,6 +385,34 @@ namespace :gitlab do
         fix_and_rerun
       end
     end
+<<<<<<< HEAD
+=======
+  end
+
+
+
+  namespace :env do
+    desc "GITLAB | Check the configuration of the environment"
+    task check: :environment  do
+      warn_user_is_not_gitlab
+      start_checking "Environment"
+
+      check_gitlab_in_git_group
+      check_issue_1059_shell_profile_error
+      check_gitlab_git_config
+      check_python2_exists
+      check_python2_version
+
+      finished_checking "Environment"
+    end
+
+
+    # Checks
+    ########################
+
+    def check_gitlab_git_config
+      print "Git configured for gitlab user? ... "
+>>>>>>> gitlabhq/4-0-stable
 
     def check_uploads
       print "Uploads directory setup correctly? ... "
@@ -291,11 +426,64 @@ namespace :gitlab do
           see_installation_guide_section "GitLab"
         )
         fix_and_rerun
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
         return
       end
 
       upload_path = File.realpath(Rails.root.join('public/uploads'))
       upload_path_tmp = File.join(upload_path, 'tmp')
+=======
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
+      end
+    end
+
+    def check_gitlab_in_git_group
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
+      print "gitlab user is in #{gitolite_ssh_user} group? ... "
+
+      if run_and_match("id -rnG", /\Wgit\W/)
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "sudo usermod -a -G #{gitolite_ssh_user} gitlab"
+        )
+        for_more_information(
+          see_installation_guide_section "System Users"
+        )
+        fix_and_rerun
+      end
+    end
+
+    # see https://github.com/gitlabhq/gitlabhq/issues/1059
+    def check_issue_1059_shell_profile_error
+      gitolite_ssh_user = Gitlab.config.gitolite.ssh_user
+      print "Has no \"-e\" in ~#{gitolite_ssh_user}/.profile ... "
+
+      profile_file = File.join(gitolite_user_home, ".profile")
+
+      unless File.read(profile_file) =~ /^-e PATH/
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "Open #{profile_file}",
+          "Find the line starting with \"-e PATH\"",
+          "Remove \"-e \" so the line starts with PATH"
+        )
+        for_more_information(
+          see_installation_guide_section("Gitolite"),
+          "https://github.com/gitlabhq/gitlabhq/issues/1059"
+        )
+        fix_and_rerun
+      end
+    end
+>>>>>>> gitlabhq/4-0-stable
 
       if File.stat(upload_path).mode == 040750
         unless Dir.exists?(upload_path_tmp)
@@ -378,6 +566,7 @@ namespace :gitlab do
 
       repo_base_path = Gitlab.config.gitlab_shell.repos_path
 
+<<<<<<< HEAD
       if File.exists?(repo_base_path)
         puts "yes".green
       else
@@ -393,6 +582,27 @@ namespace :gitlab do
         )
         fix_and_rerun
       end
+=======
+      puts "yes".green
+    rescue
+      puts "no".red
+      try_fixing_it(
+        "Make sure the \"admin_uri\" is set correctly in config/gitlab.yml",
+        "Try cloning it yourself with:",
+        "  git clone -q #{Gitlab.config.gitolite.admin_uri} /tmp/gitolite-admin",
+        "Make sure Gitolite is installed correctly."
+      )
+      for_more_information(
+        see_installation_guide_section "Gitolite"
+      )
+      fix_and_rerun
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
     end
 
     def check_repo_base_is_not_symlink
@@ -413,16 +623,52 @@ namespace :gitlab do
         )
         fix_and_rerun
       end
+<<<<<<< HEAD
+=======
+
+      puts "yes".green
+    rescue
+      puts "no".red
+      try_fixing_it(
+        "Try committing to it yourself with:",
+        "  git clone -q #{Gitlab.config.gitolite.admin_uri} /tmp/gitolite-admin",
+        "  touch foo",
+        "  git add foo",
+        "  git commit -m \"foo\"",
+        "Make sure Gitolite is installed correctly."
+      )
+      for_more_information(
+        see_installation_guide_section "Gitolite"
+      )
+      fix_and_rerun
+    ensure
+      FileUtils.rm_rf("/tmp/gitolite_gitlab_test")
+>>>>>>> gitlabhq/4-0-stable
     end
 
+<<<<<<< HEAD
     def check_repo_base_permissions
       print "Repo base access is drwxrws---? ... "
+=======
+    def check_dot_gitolite_exists
+      print "Config directory exists? ... "
 
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
+>>>>>>> gitlabhq/4-0-stable
+
+<<<<<<< HEAD
+<<<<<<< HEAD
       repo_base_path = Gitlab.config.gitlab_shell.repos_path
       unless File.exists?(repo_base_path)
         puts "can't check because of previous errors".magenta
         return
       end
+=======
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
+>>>>>>> gitlabhq/4-0-stable
+=======
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
+>>>>>>> origin/4-0-stable
 
       if File.stat(repo_base_path).mode.to_s(8).ends_with?("2770")
         puts "yes".green
@@ -445,15 +691,38 @@ namespace :gitlab do
       gitlab_shell_owner_group = Gitlab.config.gitlab_shell.owner_group
       print "Repo base owned by #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group}? ... "
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
       repo_base_path = Gitlab.config.gitlab_shell.repos_path
       unless File.exists?(repo_base_path)
+=======
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
+      unless File.exists?(gitolite_config_path)
+>>>>>>> gitlabhq/4-0-stable
         puts "can't check because of previous errors".magenta
         return
       end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
       uid = uid_for(gitlab_shell_ssh_user)
       gid = gid_for(gitlab_shell_owner_group)
       if File.stat(repo_base_path).uid == uid && File.stat(repo_base_path).gid == gid
+=======
+      if File.stat(gitolite_config_path).mode.to_s(8).ends_with?("750")
+>>>>>>> gitlabhq/4-0-stable
+=======
+      if File.stat(gitolite_config_path).mode.to_s(8).ends_with?("750")
+>>>>>>> origin/4-0-stable
+=======
+      if File.stat(gitolite_config_path).mode.to_s(8).ends_with?("750")
+>>>>>>> gitlabhq/4-0-stable
         puts "yes".green
       else
         puts "no".red
@@ -471,14 +740,29 @@ namespace :gitlab do
     def check_repos_hooks_directory_is_link
       print "hooks directories in repos are links: ... "
 
+<<<<<<< HEAD
       gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       unless Project.count > 0
         puts "can't check, you have no projects".magenta
+=======
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
+      gitolite_config_path = File.join(gitolite_user_home, ".gitolite")
+      unless File.exists?(gitolite_config_path)
+        puts "can't check because of previous errors".magenta
+>>>>>>> gitlabhq/4-0-stable
         return
       end
       puts ""
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
       Project.find_each(batch_size: 100) do |project|
         print sanitized_message(project)
         project_hook_directory = File.join(project.repository.path_to_repo, "hooks")
@@ -512,15 +796,43 @@ namespace :gitlab do
         puts 'gitlab-shell self-check successful'.green
       else
         puts 'gitlab-shell self-check failed'.red
+=======
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
+      if File.stat(gitolite_config_path).uid == uid_for(gitolite_ssh_user) &&
+         File.stat(gitolite_config_path).gid == gid_for(gitolite_ssh_user)
+        puts "yes".green
+      else
+        puts "no".red
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
         try_fixing_it(
           'Make sure GitLab is running;',
           'Check the gitlab-shell configuration file:',
           sudo_gitlab("editor #{File.expand_path('config.yml', gitlab_shell_repo_base)}")
         )
+<<<<<<< HEAD
+=======
+        for_more_information(
+          see_installation_guide_section "Gitolite"
+        )
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
         fix_and_rerun
       end
     end
 
+<<<<<<< HEAD
     def check_projects_have_namespace
       print "projects have namespace: ... "
 
@@ -545,6 +857,9 @@ namespace :gitlab do
           )
           fix_and_rerun
         end
+=======
+        fix_and_rerun
+>>>>>>> origin/4-0-stable
       end
     end
 
@@ -594,6 +909,17 @@ namespace :gitlab do
       print "Running? ... "
 
       if sidekiq_process_count > 0
+=======
+    def check_gitolite_is_up_to_date
+      print "Using recommended version ... "
+      if gitolite_version.try(:start_with?, "v3.2")
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
         puts "yes".green
       else
         puts "no".red
@@ -608,6 +934,7 @@ namespace :gitlab do
       end
     end
 
+<<<<<<< HEAD
     def only_one_sidekiq_running
       process_count = sidekiq_process_count
       return if process_count.zero?
@@ -615,6 +942,23 @@ namespace :gitlab do
       print 'Number of Sidekiq processes ... '
       if process_count == 1
         puts '1'.green
+=======
+    def check_gitoliterc_git_config_keys
+      gitoliterc_path = File.join(gitolite_user_home, ".gitolite.rc")
+
+      print "Allow all Git config keys in .gitolite.rc ... "
+      option_name = if has_gitolite3?
+                      # see https://github.com/sitaramc/gitolite/blob/v3.04/src/lib/Gitolite/Rc.pm#L329
+                      "GIT_CONFIG_KEYS"
+                    else
+                      # assume older version
+                      # see https://github.com/sitaramc/gitolite/blob/v2.3/conf/example.gitolite.rc#L49
+                      "\\$GL_GITCONFIG_KEYS"
+                    end
+      option_value = ".*"
+      if open(gitoliterc_path).grep(/#{option_name}\s*=[>]?\s*["']#{option_value}["']/).any?
+        puts "yes".green
+>>>>>>> gitlabhq/4-0-stable
       else
         puts "#{process_count}".red
         try_fixing_it(
@@ -623,10 +967,20 @@ namespace :gitlab do
           "sleep 10 && sudo pkill -9 -u #{gitlab_user} -f sidekiq",
           'sudo service gitlab start'
         )
+<<<<<<< HEAD
+=======
+        for_more_information(
+          see_installation_guide_section "Gitolite"
+        )
+<<<<<<< HEAD
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
         fix_and_rerun
       end
     end
 
+<<<<<<< HEAD
     def sidekiq_process_count
       ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
       ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
@@ -652,6 +1006,40 @@ namespace :gitlab do
         end
       else
         puts 'Reply by email is disabled in config/gitlab.yml'
+=======
+    def check_gitoliterc_repo_umask
+      gitoliterc_path = File.join(gitolite_user_home, ".gitolite.rc")
+
+      print "Repo umask is 0007 in .gitolite.rc? ... "
+      option_name = if has_gitolite3?
+                      # see https://github.com/sitaramc/gitolite/blob/v3.04/src/lib/Gitolite/Rc.pm#L328
+                      "UMASK"
+                    else
+                      # assume older version
+                      # see https://github.com/sitaramc/gitolite/blob/v2.3/conf/example.gitolite.rc#L32
+                      "\\$REPO_UMASK"
+                    end
+      option_value = "0007"
+      if open(gitoliterc_path).grep(/#{option_name}\s*=[>]?\s*#{option_value}/).any?
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "Open #{gitoliterc_path}",
+          "Find the \"#{option_name}\" option",
+          "Change its value to \"0007\""
+        )
+        for_more_information(
+          see_installation_guide_section "Gitolite"
+        )
+        fix_and_rerun
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
       end
 
       finished_checking "Reply by email"
@@ -671,6 +1059,15 @@ namespace :gitlab do
         try_fixing_it(
           "Make sure that the address in config/gitlab.yml includes the '%{key}' placeholder."
         )
+<<<<<<< HEAD
+=======
+        for_more_information(
+          see_installation_guide_section "Setup GitLab Hooks"
+        )
+<<<<<<< HEAD
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
         fix_and_rerun
       end
     end
@@ -715,6 +1112,87 @@ namespace :gitlab do
           "doc/incoming_email/README.md"
         )
         fix_and_rerun
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+=======
+      end
+    end
+
+    def check_repo_base_is_not_symlink
+      print "Repo base directory is a symlink? ... "
+
+      repo_base_path = Gitlab.config.gitolite.repos_path
+      unless File.exists?(repo_base_path)
+        puts "can't check because of previous errors".magenta
+        return
+      end
+
+      unless File.symlink?(repo_base_path)
+        puts "no".green
+      else
+        puts "yes".red
+        try_fixing_it(
+          "Make sure it's set to the real directory in config/gitlab.yml"
+        )
+        fix_and_rerun
+>>>>>>> gitlabhq/4-0-stable
+      end
+    end
+
+    def check_repo_base_is_not_symlink
+      print "Repo base directory is a symlink? ... "
+
+      repo_base_path = Gitlab.config.gitolite.repos_path
+      unless File.exists?(repo_base_path)
+        puts "can't check because of previous errors".magenta
+        return
+      end
+
+<<<<<<< HEAD
+      unless File.symlink?(repo_base_path)
+        puts "no".green
+      else
+        puts "yes".red
+=======
+      if File.stat(repo_base_path).mode.to_s(8).ends_with?("6770")
+        puts "yes".green
+      else
+        puts "no".red
+>>>>>>> gitlabhq/4-0-stable
+        try_fixing_it(
+          "Make sure it's set to the real directory in config/gitlab.yml"
+        )
+        fix_and_rerun
+<<<<<<< HEAD
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
+      end
+    end
+
+    def check_repo_base_is_not_symlink
+      print "Repo base directory is a symlink? ... "
+
+      repo_base_path = Gitlab.config.gitolite.repos_path
+      unless File.exists?(repo_base_path)
+        puts "can't check because of previous errors".magenta
+        return
+      end
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+      unless File.symlink?(repo_base_path)
+        puts "no".green
+      else
+        puts "yes".red
+        try_fixing_it(
+          "Make sure it's set to the real directory in config/gitlab.yml"
+        )
+        fix_and_rerun
+>>>>>>> gitlabhq/4-0-stable
       end
     end
 
@@ -728,7 +1206,18 @@ namespace :gitlab do
         return
       end
 
+<<<<<<< HEAD
       if mail_room_running?
+=======
+      if File.stat(repo_base_path).mode.to_s(8).ends_with?("6770")
+>>>>>>> gitlabhq/4-0-stable
+=======
+      if File.stat(repo_base_path).mode.to_s(8).ends_with?("6770")
+>>>>>>> origin/4-0-stable
+=======
+      if File.stat(repo_base_path).uid == uid_for(gitolite_ssh_user) &&
+         File.stat(repo_base_path).gid == gid_for(gitolite_ssh_user)
+>>>>>>> gitlabhq/4-0-stable
         puts "yes".green
       else
         puts "no".red
@@ -759,23 +1248,115 @@ namespace :gitlab do
         end
       end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       if connected
+=======
+      if File.stat(repo_base_path).uid == uid_for(gitolite_ssh_user) &&
+         File.stat(repo_base_path).gid == gid_for(gitolite_ssh_user)
+>>>>>>> gitlabhq/4-0-stable
+=======
+      if File.stat(repo_base_path).uid == uid_for(gitolite_ssh_user) &&
+         File.stat(repo_base_path).gid == gid_for(gitolite_ssh_user)
+>>>>>>> origin/4-0-stable
         puts "yes".green
       else
         puts "no".red
         try_fixing_it(
           "Check that the information in config/gitlab.yml is correct"
         )
+<<<<<<< HEAD
         for_more_information(
           "doc/incoming_email/README.md"
         )
+=======
+>>>>>>> gitlabhq/4-0-stable
         fix_and_rerun
       end
     end
 
+<<<<<<< HEAD
     def mail_room_running?
       ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
       ps_ux.include?("mail_room")
+=======
+    def check_repos_git_config
+      print "Git config in repos: ... "
+
+      unless Project.count > 0
+        puts "can't check, you have no projects".magenta
+        return
+      end
+      puts ""
+
+      options = {
+        "core.sharedRepository" => "0660",
+      }
+
+      Project.find_each(batch_size: 100) do |project|
+        print "#{project.name_with_namespace.yellow} ... "
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+        correct_options = options.map do |name, value|
+          run("git --git-dir=\"#{project.path_to_repo}\" config --get #{name}").try(:chomp) == value
+        end
+
+        if correct_options.all?
+          puts "ok".green
+        else
+          puts "wrong or missing".red
+          try_fixing_it(
+            "sudo -u gitlab -H bundle exec rake gitlab:gitolite:update_repos RAILS_ENV=production"
+          )
+          for_more_information(
+            "doc/raketasks/maintenance.md"
+          )
+          fix_and_rerun
+<<<<<<< HEAD
+=======
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+=======
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+>>>>>>> gitlabhq/4-1-stable
+=======
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+>>>>>>> origin/4-1-stable
+          correct_options = options.map do |name, value|
+            run("git --git-dir=\"#{project.repository.path_to_repo}\" config --get #{name}").try(:chomp) == value
+          end
+
+          if correct_options.all?
+            puts "ok".green
+          else
+            puts "wrong or missing".red
+            try_fixing_it(
+              sudo_gitlab("bundle exec rake gitlab:gitolite:update_repos")
+            )
+            for_more_information(
+              "doc/raketasks/maintenance.md"
+            )
+            fix_and_rerun
+          end
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
+        end
+      end
+>>>>>>> gitlabhq/4-0-stable
     end
   end
 
@@ -793,12 +1374,16 @@ namespace :gitlab do
         puts 'LDAP is disabled in config/gitlab.yml'
       end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
       finished_checking "LDAP"
     end
 
+<<<<<<< HEAD
     def print_users(limit)
       puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
 
+<<<<<<< HEAD
       servers = Gitlab::LDAP::Config.providers
 
       servers.each do |server|
@@ -808,6 +1393,95 @@ namespace :gitlab do
           users.each do |user|
             puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
           end
+=======
+        unless File.exists?(project_hook_file)
+          puts "missing".red
+          try_fixing_it(
+            "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+          )
+          for_more_information(
+            "lib/support/rewrite-hooks.sh"
+          )
+          fix_and_rerun
+          next
+        end
+
+        if File.lstat(project_hook_file).symlink? &&
+            File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
+          puts "ok".green
+        else
+          puts "not a link to Gitolite's hook".red
+          try_fixing_it(
+            "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+          )
+          for_more_information(
+            "lib/support/rewrite-hooks.sh"
+          )
+          fix_and_rerun
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
+=======
+      Project.find_each(batch_size: 100) do |project|
+        print "#{project.name_with_namespace.yellow} ... "
+
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+=======
+      Project.find_each(batch_size: 100) do |project|
+        print "#{project.name_with_namespace.yellow} ... "
+
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+>>>>>>> gitlabhq/4-1-stable
+=======
+      Project.find_each(batch_size: 100) do |project|
+        print "#{project.name_with_namespace.yellow} ... "
+
+        if project.empty_repo?
+          puts "repository is empty".magenta
+        else
+>>>>>>> origin/4-1-stable
+          project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
+
+          unless File.exists?(project_hook_file)
+            puts "missing".red
+            try_fixing_it(
+              "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            )
+            for_more_information(
+              "lib/support/rewrite-hooks.sh"
+            )
+            fix_and_rerun
+            next
+          end
+
+          if File.lstat(project_hook_file).symlink? &&
+              File.realpath(project_hook_file) == File.realpath(gitolite_hook_file)
+            puts "ok".green
+          else
+            puts "not a link to Gitolite's hook".red
+            try_fixing_it(
+              "sudo -u #{gitolite_ssh_user} ln -sf #{gitolite_hook_file} #{project_hook_file}"
+            )
+            for_more_information(
+              "lib/support/rewrite-hooks.sh"
+            )
+            fix_and_rerun
+          end
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
         end
       end
     end
@@ -820,13 +1494,28 @@ namespace :gitlab do
         File.join(Gitlab.config.gitlab_shell.repos_path, '*')
       )
 
+<<<<<<< HEAD
       namespace_dirs.each do |namespace_dir|
         repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
         repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
+=======
+    # Helper methods
+    ########################
+
+    def gitolite_user_home
+      File.expand_path("~#{Gitlab.config.gitolite.ssh_user}")
+    end
+
+    def gitolite_version
+      gitolite_version_file = "#{gitolite_user_home}/gitolite/src/VERSION"
+      if File.readable?(gitolite_version_file)
+        File.read(gitolite_version_file)
+>>>>>>> gitlabhq/4-0-stable
       end
     end
   end
 
+<<<<<<< HEAD
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|
@@ -841,8 +1530,52 @@ namespace :gitlab do
                     end
 
         repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
+=======
+
+
+  namespace :sidekiq do
+    desc "GITLAB | Check the configuration of Sidekiq"
+    task check: :environment  do
+      warn_user_is_not_gitlab
+      start_checking "Sidekiq"
+
+      check_sidekiq_running
+
+      finished_checking "Sidekiq"
+    end
+
+
+    # Checks
+    ########################
+
+    def check_sidekiq_running
+      print "Running? ... "
+
+      if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d+\.\d+\.\d+.+$/)
+        puts "yes".green
+>>>>>>> gitlabhq/5-2-stable
       else
+<<<<<<< HEAD
         puts "\nUser '#{username}' not found".red
+=======
+        puts "no".red
+        try_fixing_it(
+          "sudo service gitlab restart",
+          "or",
+          "sudo /etc/init.d/gitlab restart"
+        )
+        for_more_information(
+          see_installation_guide_section("Install Init Script"),
+          "see log/resque.log for possible errors"
+        )
+        fix_and_rerun
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
       end
     end
   end
@@ -898,9 +1631,20 @@ namespace :gitlab do
       puts "  #{step}"
     end
   end
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
   def check_gitlab_shell
+<<<<<<< HEAD
+<<<<<<< HEAD
     required_version = Gitlab::VersionInfo.new(gitlab_shell_major_version, gitlab_shell_minor_version, gitlab_shell_patch_version)
+=======
+    required_version = Gitlab::VersionInfo.new(1, 7, 8)
+>>>>>>> origin/5-4-stable
+=======
+    required_version = Gitlab::VersionInfo.new(1, 7, 8)
+>>>>>>> origin/5-4-stable
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "
@@ -1000,4 +1744,10 @@ namespace :gitlab do
       puts "No ref lock files exist".green
     end
   end
+=======
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
 end

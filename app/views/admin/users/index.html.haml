@@ -44,6 +44,7 @@
       .panel-heading
         Users (#{@users.total_count})
         .panel-head-actions
+          = link_to 'Send email to users', admin_email_path, class: 'btn btn-sm'
           .dropdown.inline
             %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
               %span.light sort:

@@ -172,7 +172,15 @@ describe MergeRequest, models: true do
       it 'returns sorted JiraIssues' do
         allow(subject.project).to receive_messages(default_branch: subject.target_branch)
 
+<<<<<<< HEAD
+<<<<<<< HEAD
         expect(subject.closes_issues).to eq([issue0, issue1])
+=======
+        expect(subject.closes_issues).to eq([issue1, issue0])
+>>>>>>> gitlabhq/ce_upstream
+=======
+        expect(subject.closes_issues).to eq([issue1, issue0])
+>>>>>>> origin/ce_upstream
       end
     end
   end
@@ -203,6 +211,8 @@ describe MergeRequest, models: true do
     end
   end
 
+<<<<<<< HEAD
+<<<<<<< HEAD
   describe '#can_remove_source_branch?' do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
@@ -244,6 +254,34 @@ describe MergeRequest, models: true do
       merge_if_green.reload
 
       expect(merge_if_green.merge_when_build_succeeds).to be_falsey
+=======
+=======
+>>>>>>> origin/ce_upstream
+  describe "approvers_left" do
+    let(:merge_request) {create :merge_request}
+
+    it "returns correct value" do
+      user = create(:user)
+      user1 = create(:user)
+      merge_request.approvers.create(user_id: user.id)
+      merge_request.approvers.create(user_id: user1.id)
+      merge_request.approvals.create(user_id: user1.id)
+
+      expect(merge_request.approvers_left).to eq [user]
+    end
+  end
+
+  describe "approvals_required" do
+    let(:merge_request) {create :merge_request}
+
+    it "takes approvals_before_merge" do
+      merge_request.target_project.update(approvals_before_merge: 2)
+
+      expect(merge_request.approvals_required).to eq 2
+<<<<<<< HEAD
+>>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
     end
   end
 
@@ -255,6 +293,12 @@ describe MergeRequest, models: true do
       expect(attrs).to include(:target)
       expect(attrs).to include(:last_commit)
       expect(attrs).to include(:work_in_progress)
+    end
+  end
+
+  describe "#source_sha_parent" do
+    it "returns the sha of the parent commit of the first commit in the MR" do
+      expect(subject.source_sha_parent).to eq("ae73cb07c9eeaf35924a10f713b364d32b2dd34f")
     end
   end
 

@@ -8,6 +8,7 @@
 module Mentionable
   extend ActiveSupport::Concern
 
+<<<<<<< HEAD
   module ClassMethods
     # Indicate which attributes of the Mentionable to search for GFM references.
     def attr_mentionable(attr, options = {})
@@ -18,6 +19,21 @@ module Mentionable
     # Accessor for attributes marked mentionable.
     def mentionable_attrs
       @mentionable_attrs ||= []
+=======
+  def mentioned_users
+    users = []
+    return users if mentionable_text.blank?
+    has_project = self.respond_to? :project
+    matches = mentionable_text.scan(/@[a-zA-Z][a-zA-Z0-9_\-\.]*/)
+    matches.each do |match|
+      identifier = match.delete "@"
+      if has_project
+        id = project.team.members.find { |u| u.username == identifier }.try(:id)
+      else
+        id = User.where(username: identifier).pluck(:id).first
+      end
+      users << User.find(id) unless id.blank?
+>>>>>>> gitlabhq/6-0-stable
     end
   end
 

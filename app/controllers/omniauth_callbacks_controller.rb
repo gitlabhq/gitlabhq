@@ -1,4 +1,5 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  include AuthenticatesWithTwoFactor
 
   protect_from_forgery except: [:kerberos, :saml, :cas3]
 
@@ -28,8 +29,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     # Do additional LDAP checks for the user filter and EE features
     if @user.allowed?
-      log_audit_event(gl_user, with: :ldap)
-      sign_in_and_redirect(gl_user)
+      if @user.otp_required_for_login?
+        prompt_for_two_factor(gl_user)
+      else
+        log_audit_event(gl_user, with: :ldap)
+        sign_in_and_redirect(gl_user)
+      end
     else
       flash[:alert] = "Access denied for your LDAP account."
       redirect_to new_user_session_path

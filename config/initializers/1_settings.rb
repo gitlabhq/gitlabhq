@@ -90,10 +90,12 @@ class Settings < Settingslogic
   end
 end
 
-
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
+Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
+Settings.ldap['schedule_sync_hour'] = 1 if Settings.ldap['schedule_sync_hour'].nil?
+Settings.ldap['schedule_sync_minute'] = 30  if Settings.ldap['schedule_sync_minute'].nil?
 
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] || Rails.env.test?
@@ -107,13 +109,16 @@ if Settings.ldap['enabled'] || Rails.env.test?
   end
 
   Settings.ldap['servers'].each do |key, server|
+    server = Settingslogic.new(server)
     server['label'] ||= 'LDAP'
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
     server['attributes'] = {} if server['attributes'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
+    server['sync_time'] = 3600 if server['sync_time'].nil?
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+    Settings.ldap['servers'][key] = server
   end
 end
 
@@ -131,6 +136,53 @@ Settings.omniauth.cas3['session_duration'] ||= 8.hours
 Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
 Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
+
+
+# Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
+
+github_default_url = "https://github.com"
+github_settings = Settings.omniauth['providers'].find { |provider| provider["name"] == "github"}
+
+if github_settings
+  # For compatibility with old config files (before 7.8)
+  # where people dont have url in github settings
+  if github_settings['url'].blank?
+    github_settings['url'] = github_default_url
+  end
+
+  if github_settings["url"].include?(github_default_url)
+    github_settings["args"]["client_options"] = OmniAuth::Strategies::GitHub.default_options[:client_options]
+  else
+    github_settings["args"]["client_options"] = {
+      "site" =>          File.join(github_settings["url"], "api/v3"),
+      "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
+      "token_url" =>     File.join(github_settings["url"], "login/oauth/access_token")
+    }
+  end
+end
+
+# Fill out omniauth-gitlab settings. It is needed for easy set up GHE or GH by just specifying url.
+
+github_default_url = "https://github.com"
+github_settings = Settings.omniauth['providers'].find { |provider| provider["name"] == "github"}
+
+if github_settings
+  # For compatibility with old config files (before 7.8)
+  # where people dont have url in github settings
+  if github_settings['url'].blank?
+    github_settings['url'] = github_default_url
+  end
+
+  if github_settings["url"].include?(github_default_url)
+    github_settings["args"]["client_options"] = OmniAuth::Strategies::GitHub.default_options[:client_options]
+  else
+    github_settings["args"]["client_options"] = {
+      "site" =>          File.join(github_settings["url"], "api/v3"),
+      "authorize_url" => File.join(github_settings["url"], "login/oauth/authorize"),
+      "token_url" =>     File.join(github_settings["url"], "login/oauth/access_token")
+    }
+  end
+end
 
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
@@ -152,11 +204,18 @@ Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
+<<<<<<< HEAD
 Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
+=======
+Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
+Settings.gitlab['email_display_name'] ||= "GitLab"
+Settings.gitlab['email_reply_to'] ||= "noreply@#{Settings.gitlab.host}"
+>>>>>>> origin/7-14-stable
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
+<<<<<<< HEAD
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['user_home']  ||= begin
   Etc.getpwnam(Settings.gitlab['user']).dir
@@ -169,7 +228,15 @@ Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].
 Settings.gitlab['twitter_sharing_enabled'] ||= true if Settings.gitlab['twitter_sharing_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
+<<<<<<< HEAD
+<<<<<<< HEAD
 Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z]*-\d*))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+=======
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?)|([A-Z]*-\d*))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+>>>>>>> gitlabhq/ce_upstream
+=======
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?#\d+(?:(?:, *| +and +)?)|([A-Z]*-\d*))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+>>>>>>> origin/ce_upstream
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -194,6 +261,17 @@ Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_br
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
 Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+=======
+Settings.gitlab['user']       ||= 'gitlab'
+Settings.gitlab['signup_enabled'] ||= false
+Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
 
 #
 # Reply by email
@@ -224,6 +302,9 @@ Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || 
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
@@ -257,6 +338,29 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 #
 # Backup
 #
+=======
+=======
+>>>>>>> origin/4-0-stable
+=======
+>>>>>>> gitlabhq/4-0-stable
+Settings.gravatar['enabled']      = Settings.pre_40_config ? !Settings.disable_gravatar? : true if Settings.gravatar['enabled'].nil?
+Settings.gravatar['plain_url']  ||= Settings.pre_40_config ? Settings.gravatar_url      : 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+Settings.gravatar['ssl_url']    ||= Settings.pre_40_config ? Settings.gravatar_ssl_url  : 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+
+Settings['gitolite'] ||= Settingslogic.new({})
+Settings.gitolite['admin_key']    ||= Settings.pre_40_config ? Settings.gitolite_admin_key : 'gitlab'
+Settings.gitolite['admin_uri']    ||= Settings.pre_40_config ? Settings.gitolite_admin_uri : 'git@localhost:gitolite-admin'
+Settings.gitolite['config_file']  ||= Settings.pre_40_config ? Settings.gitolite_config_file : 'gitolite.conf'
+Settings.gitolite['hooks_path']   ||= Settings.pre_40_config ? Settings.git_hooks_path : '/home/git/share/gitolite/hooks/'
+Settings.gitolite['receive_pack'] ||= Settings.pre_40_config ? Settings.git_receive_pack : (Settings.gitolite['receive_pack'] != false)
+Settings.gitolite['repos_path']   ||= Settings.pre_40_config ? Settings.git_base_path : '/home/git/repositories/'
+Settings.gitolite['upload_pack']  ||= Settings.pre_40_config ? Settings.git_upload_pack : (Settings.gitolite['upload_pack'] != false)
+Settings.gitolite['ssh_host']     ||= Settings.pre_40_config ? Settings.ssh_host : (Settings.gitlab.host || 'localhost')
+Settings.gitolite['ssh_port']     ||= Settings.pre_40_config ? Settings.ssh_port : 22
+Settings.gitolite['ssh_user']     ||= Settings.pre_40_config ? Settings.ssh_user : 'git'
+Settings.gitolite['ssh_path_prefix'] ||= Settings.pre_40_config ? Settings.ssh_path : Settings.send(:build_gitolite_ssh_path_prefix)
+
+>>>>>>> gitlabhq/4-0-stable
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['pg_schema']    = nil
@@ -284,6 +388,17 @@ Settings.git['timeout']   ||= 10
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
 
+
+#
+# Kerberos
+#
+Settings['kerberos'] ||= Settingslogic.new({})
+Settings.kerberos['enabled'] = false if Settings.kerberos['enabled'].nil?
+Settings.kerberos['keytab'] = nil if Settings.kerberos['keytab'].blank? #nil means use default keytab
+Settings.kerberos['service_principal_name'] = nil if Settings.kerberos['service_principal_name'].blank? #nil means any SPN in keytab
+Settings.kerberos['use_dedicated_port'] = false if Settings.kerberos['use_dedicated_port'].nil? 
+Settings.kerberos['https'] = Settings.gitlab.https if Settings.kerberos['https'].nil?
+Settings.kerberos['port'] ||= Settings.kerberos.https ? 8443 : 8088
 
 #
 # Extra customization

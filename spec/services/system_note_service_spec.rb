@@ -486,4 +486,26 @@ describe SystemNoteService, services: true do
       end
     end
   end
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> origin/ce_upstream
+
+  describe '.approve_mr' do
+    let(:noteable)    { create(:merge_request, source_project: project) }
+    subject { described_class.approve_mr(noteable, author) }
+
+    it_behaves_like 'a system note'
+
+    context 'when merge request approved' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "Approved this merge request"
+      end
+    end
+  end
+<<<<<<< HEAD
+>>>>>>> gitlabhq/ce_upstream
+=======
+>>>>>>> origin/ce_upstream
 end

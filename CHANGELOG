@@ -16,6 +16,9 @@ v 8.4.0 (unreleased)
 v 8.3.3 (unreleased)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
   - Enable "Add key" button when user fills in a proper key (Stan Hu)
+v 8.3.3 (unreleased)
+  - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
+  - Enable "Add key" button when user fills in a proper key
 
 v 8.3.2
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
@@ -116,6 +119,15 @@ v 8.2.1
   - Fix: saving GitLabCiService as Admin Template
 
 v 8.2.0
+v 8.0.1
+v 8.1.0 (unreleased)
+v 8.2.0 (unreleased)
+v 8.3.0 (unreleased)
+
+v 8.2.0
+  - Improved performance of finding projects and groups in various places
+  - Improved performance of rendering user profile pages and Atom feeds
+  - Fix grouping of contributors by email in graph.
   - Improved performance of finding projects and groups in various places
   - Improved performance of rendering user profile pages and Atom feeds
   - Expose build artifacts path as config option
@@ -285,6 +297,11 @@ v 8.1.0
 v 8.0.5
   - Correct lookup-by-email for LDAP logins
   - Fix loading spinner sometimes not being hidden on Merge Request tab switches
+v 8.0.6
+  - Fix loading spinner sometimes not being hidden on Merge Request tab switches
+
+v 8.0.5
+  - Correct lookup-by-email for LDAP logins
 
 v 8.0.4
   - Fix Message-ID header to be RFC 2111-compliant to prevent e-mails being dropped (Stan Hu)
@@ -397,6 +414,14 @@ v 7.14.1
   - Only include base URL in OmniAuth full_host parameter (Stan Hu)
   - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
   - Ability to enable SSL verification for Webhooks
+v 7.14.2
+  - Upgrade gitlab_git to 7.2.15 to fix `git blame` errors with ISO-encoded files (Stan Hu)
+
+v 7.14.1
+  - Only include base URL in OmniAuth full_host parameter (Stan Hu)
+  - Fix Error 500 in API when accessing a group that has an avatar (Stan Hu)
+  - Fix "Reload with full diff" URL button in compare branch view (Stan Hu)
+  - Improve abuse reports management from admin area
 
 v 7.14.0
   - Fix bug where non-project members of the target project could set labels on new merge requests.
@@ -1679,6 +1704,7 @@ v 5.3.0
   - Fix bug with team assignation on project from #4109
   - Advanced snippets: public/private, project/personal (Andrew Kulakov)
   - Repository Graphs (Karlo Nicholas T. Soriano)
+v 5.2.1
   - Fix dashboard lost if comment on commit
   - Update gitlab-grack. Fixes issue with --depth option
   - Fix project events duplicate on project page
@@ -1731,6 +1757,8 @@ v 5.1.0
 
 v 5.0.1
   - Fixed issue with gitlab-grit being overridden by grit
+v 5.0.1
+  - Fixed issue with gitlab-grit being overrided by grit
 
 v 5.0.0
   - Replaced gitolite with gitlab-shell
@@ -1764,6 +1792,13 @@ v 5.0.0
 
 v 4.2.0
   - Teams
+  - Async gitolite calls
+  - Teams
+  - Project listing page
+  - Improved search
+  - Groups API
+  - Improved Network Graph
+  - Edit page for group
   - User show page. Via /u/username
   - Show help contents on pages for better navigation
   - Async gitolite calls

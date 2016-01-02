@@ -6,6 +6,7 @@ module Backup
 
     def initialize
       @config = YAML.load_file(File.join(Rails.root,'config','database.yml'))[Rails.env]
+<<<<<<< HEAD
       @db_file_name = File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
     end
 
@@ -17,6 +18,19 @@ module Backup
       compress_rd.close
 
       dump_pid = case config["adapter"]
+=======
+      @db_dir = File.join(Gitlab.config.backup.path, 'db')
+    end
+
+    def dump
+      FileUtils.rm_rf(@db_dir)
+      # Ensure the parent dir of @db_dir exists
+      FileUtils.mkdir_p(Gitlab.config.backup.path)
+      # Fail if somebody raced to create @db_dir before us
+      FileUtils.mkdir(@db_dir, mode: 0700)
+
+      success = case config["adapter"]
+>>>>>>> origin/7-14-stable
       when /^mysql/ then
         $progress.print "Dumping MySQL database #{config['database']} ... "
         # Workaround warnings from MySQL 5.6 about passwords on cmd line

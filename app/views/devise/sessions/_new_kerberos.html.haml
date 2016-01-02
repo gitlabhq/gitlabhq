@@ -1,0 +1,5 @@
+= form_tag(user_omniauth_callback_path(provider), id: 'new_kerberos_user' ) do
+  = text_field_tag :username, nil, {class: "form-control top", placeholder: "Kerberos Login", autofocus: "autofocus"}
+  = password_field_tag :password, nil, {class: "form-control bottom", placeholder: "Password"}
+  %br/
+  = button_tag "Kerberos Sign in", class: "btn-save btn"

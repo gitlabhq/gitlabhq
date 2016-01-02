@@ -1,6 +1,8 @@
 @Api =
   groups_path: "/api/:version/groups.json"
   group_path: "/api/:version/groups/:id.json"
+  projects_path: "/api/:version/projects.json"
+  ldap_groups_path: "/api/:version/ldap/:provider/groups.json"
   namespaces_path: "/api/:version/namespaces.json"
   group_projects_path: "/api/:version/groups/:id/projects.json"
   projects_path: "/api/:version/projects.json"
@@ -78,3 +80,33 @@
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?
     return url.replace(':version', gon.api_version)
+
+  # Return LDAP groups list. Filtered by query
+  ldap_groups: (query, provider, callback) ->
+    url = Api.buildUrl(Api.ldap_groups_path)
+    url = url.replace(':provider', provider);
+
+    $.ajax(
+      url: url
+      data:
+        private_token: gon.api_token
+        search: query
+        per_page: 20
+        active: true
+      dataType: "json"
+    ).done (groups) ->
+      callback(groups)
+
+  # Return projects list. Filtered by query
+  projects: (query, callback) ->
+    project_url = Api.buildUrl(Api.projects_path)
+
+    project_query = $.ajax(
+      url: project_url
+      data:
+        private_token: gon.api_token
+        search: query
+        per_page: 20
+      dataType: "json"
+    ).done (projects) ->
+      callback(projects)

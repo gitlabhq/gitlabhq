@@ -158,7 +158,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
 
   step 'I should not see twitter details' do
     expect(page).to have_content 'Pete'
-    expect(page).to_not have_content 'twitter'
+    expect(page).not_to have_content 'twitter'
   end
 
   step 'click on ssh keys tab' do

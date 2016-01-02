@@ -26,6 +26,24 @@
 
       .form-group
         %hr
+        = f.label :membership_lock, class: 'control-label' do
+          Member lock
+        .col-sm-10
+          .checkbox
+            = f.check_box :membership_lock
+            %span.descr Prevent adding new members to project membership within this group
+
+      .form-group
+        %hr
+        = f.label :share_with_group_lock, class: 'control-label' do
+          Share with group lock
+        .col-sm-10
+          .checkbox
+            = f.check_box :share_with_group_lock
+            %span.descr Prevent sharing a project with another group within this group
+
+      .form-group
+        %hr
         = f.label :public, class: 'control-label' do
           Public
         .col-sm-10
@@ -43,6 +61,13 @@
       Removing group will cause all child projects and resources to be removed.
       %br
       %strong Removed group can not be restored!
+<<<<<<< HEAD
+<<<<<<< HEAD
 
     .form-actions
       = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
+=======
+=======
+>>>>>>> origin/ce_upstream
+    = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
+>>>>>>> gitlabhq/ce_upstream

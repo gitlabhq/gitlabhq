@@ -2,6 +2,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include Select2Helper
 
   step 'change project settings' do
     fill_in 'project_name_edit', with: 'NewName'
@@ -14,6 +15,8 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'I should see project with new settings' do
     expect(find_field('project_name').value).to eq 'NewName'
+    expect(find('#project_issues_enabled')).not_to be_checked
+    expect(find('#project_merge_requests_enabled')).to be_checked
   end
 
   step 'change project path settings' do
@@ -66,6 +69,28 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     expect(page).not_to have_link('Remove avatar')
   end
 
+  step 'I fill in merge request template' do
+    fill_in 'project_merge_requests_template', with: "This merge request should contain the following."
+  end
+
+  step 'I should see project with merge request template saved' do
+    expect(find_field('project_merge_requests_template').value).to eq 'This merge request should contain the following.'
+  end
+
+  step 'I fill in issues template' do
+    fill_in 'project_issues_template', with: "This issue should contain the following."
+  end
+
+  step 'I should see project with issues template saved' do
+    expect(find_field('project_issues_template').value).to eq 'This issue should contain the following.'
+  end
+
+  step 'I should see project "Shop" README link' do
+    page.within '.project-side' do
+      expect(page).to have_content "README.md"
+    end
+  end
+
   step 'I should see project "Shop" version' do
     page.within '.project-side' do
       expect(page).to have_content '6.7.0.pre'
@@ -95,6 +120,14 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     page.within('.readme-holder') do
       expect(page).to have_content 'testme'
     end
+  end
+
+  step 'I visit project "Shop" settings page' do
+    click_link 'Settings'
+  end
+
+  step 'I go to "Members"' do
+    click_link 'Members'
   end
 
   step 'I add project tags' do

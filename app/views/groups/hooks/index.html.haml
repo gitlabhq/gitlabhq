@@ -1,0 +1,69 @@
+- page_title "Web Hooks"
+%h3.page-title
+  Web hooks
+
+%p.light
+  #{link_to "Web hooks ", help_page_path("web_hooks", "web_hooks"), class: "vlink"} can be
+  used for binding events when something is happening within any project inside this group.
+
+%hr.clearfix
+
+= form_for [@group, @hook], as: :hook, url: group_hooks_path(@group), html: { class: 'form-horizontal' } do |f|
+  -if @hook.errors.any?
+    .alert.alert-danger
+      - @hook.errors.full_messages.each do |msg|
+        %p= msg
+  .form-group
+    = f.label :url, "URL", class: 'control-label'
+    .col-sm-10
+      = f.text_field :url, class: "form-control", placeholder: 'http://example.com/trigger-ci.json'
+  .form-group
+    = f.label :url, "Trigger", class: 'control-label'
+    .col-sm-10
+      %div
+        = f.check_box :push_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :push_events, class: 'list-label' do
+            %strong Push events
+          %p.light
+            This url will be triggered by a push to the repository
+      %div
+        = f.check_box :tag_push_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :tag_push_events, class: 'list-label' do
+            %strong Tag push events
+          %p.light
+            This url will be triggered when a new tag is pushed to the repository
+      %div
+        = f.check_box :issues_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :issues_events, class: 'list-label' do
+            %strong Issues events
+          %p.light
+            This url will be triggered when an issue is created
+      %div
+        = f.check_box :merge_requests_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :merge_requests_events, class: 'list-label' do
+            %strong Merge Request events
+          %p.light
+            This url will be triggered when a merge request is created
+  .form-actions
+    = f.submit "Add Web Hook", class: "btn btn-create"
+
+-if @hooks.any?
+  .panel.panel-default
+    .panel-heading
+      Web hooks (#{@hooks.count})
+    %ul.well-list
+      - @hooks.each do |hook|
+        %li
+          .pull-right
+            = link_to 'Test Hook', test_group_hook_path(@group, hook), class: "btn btn-small btn-grouped"
+            = link_to 'Remove', group_hook_path(@group, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-small btn-grouped"
+          .clearfix
+            %span.monospace= hook.url
+          %p
+            - %w(push_events tag_push_events issues_events merge_requests_events).each do |trigger|
+              - if hook.send(trigger)
+                %span.label.label-gray= trigger.titleize

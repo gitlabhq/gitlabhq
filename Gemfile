@@ -1,10 +1,34 @@
 source "https://rubygems.org"
 
+<<<<<<< HEAD
 gem 'rails', '4.2.4'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+=======
+def darwin_only(require_as)
+  RUBY_PLATFORM.include?('darwin') && require_as
+end
 
+def linux_only(require_as)
+  RUBY_PLATFORM.include?('linux') && require_as
+end
+
+gem "rails", "3.2.11"
+
+# Supported DBs
+gem "mysql2", group: :mysql
+gem "pg", group: :postgres
+>>>>>>> gitlabhq/4-0-stable
+
+<<<<<<< HEAD
+<<<<<<< HEAD
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
+=======
+gem "rails", "3.2.11"
+>>>>>>> gitlabhq/4-0-stable
+=======
+gem "rails", "3.2.11"
+>>>>>>> origin/4-0-stable
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -33,6 +57,7 @@ gem 'omniauth-saml',          '~> 1.4.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
+gem 'gssapi', group: :kerberos
 gem 'rack-oauth2',            '~> 1.2.1'
 
 # reCAPTCHA protection
@@ -47,13 +72,50 @@ gem 'attr_encrypted', '~> 1.3.4'
 gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
+<<<<<<< HEAD
+<<<<<<< HEAD
 # Provide access to Gitlab::Git library
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 gem "gitlab_git", '~> 7.2.20'
+=======
+=======
+>>>>>>> gitlabhq/5-0-stable
+# Since gollum requires grit we cannot use gitlab-grit gem name any more. Use grit instead
+gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: 'c40a32432616a07fa7fc3c32c24ab73ad6a9718f'
+gem 'grit_ext', '~> 0.6.2'
+=======
+gem 'gitlab_git', '~> 1.3.1'
+>>>>>>> origin/5-4-stable
+=======
+gem 'gitlab_git', '~> 1.3.1'
+>>>>>>> origin/5-4-stable
+=======
+gem "gitlab_git", '2.1.1'
+>>>>>>> gitlabhq/6-0-stable
+=======
+gem "gitlab_git", '~> 7.2.15'
+>>>>>>> origin/7-14-stable
+
+# Ruby/Rack Git Smart-HTTP Server Handler
+<<<<<<< HEAD
+<<<<<<< HEAD
+gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
+>>>>>>> gitlabhq/5-0-stable
+=======
+gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
+>>>>>>> gitlabhq/5-2-stable
+=======
+gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
+>>>>>>> gitlabhq/5-2-stable
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
+gem 'net-ldap'
 
 # Git Wiki
 gem 'gollum-lib', '~> 4.1.0'
@@ -69,6 +131,9 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 # Format dates and times
 # based on human-friendly examples
 gem "stamp", '~> 0.6.0'
+
+# Enumeration fields
+gem 'enumerize', '~> 0.7.0'
 
 # Pagination
 gem "kaminari", "~> 0.16.3"
@@ -118,7 +183,17 @@ group :unicorn do
 end
 
 # State machine
+<<<<<<< HEAD
 gem "state_machines-activerecord", '~> 0.3.0'
+=======
+gem "state_machine", '~> 1.2.0'
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> origin/8-0-stable
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -138,7 +213,21 @@ gem "httparty", '~> 0.13.3'
 gem "colorize", '~> 0.7.0'
 
 # GitLab settings
+<<<<<<< HEAD
 gem 'settingslogic', '~> 2.0.9'
+=======
+gem 'settingslogic'
+
+# Wiki
+# - Use latest master to resolve Gem dependency with Pygemnts
+# github-linquist needs pygments 0.4.2 but Gollum 2.4.11
+# requires pygments 0.3.2. The latest master Gollum has been updated
+# to use pygments 0.4.2. Change this after next Gollum release.
+gem "gollum", "~> 2.4.0", git: "https://github.com/gollum/gollum.git", ref: "5dcd3c8c8f"
+<<<<<<< HEAD
+>>>>>>> gitlabhq/5-0-stable
+=======
+>>>>>>> gitlabhq/5-0-stable
 
 # Misc
 
@@ -223,6 +312,10 @@ group :metrics do
   gem 'connection_pool', '~> 2.0', require: false
 end
 
+gem "gitlab-license", "~> 0.0.4"
+
+gem "gitlab-license", "~> 0.0.4"
+
 group :development do
   gem "foreman"
   gem 'brakeman', '~> 3.1.0', require: false
@@ -303,7 +396,19 @@ gem 'newrelic-grape'
 
 gem 'octokit', '~> 3.7.0'
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 gem "mail_room", "~> 0.6.1"
+=======
+gem "mail_room", "~> 0.5.2"
+>>>>>>> origin/8-0-stable
+=======
+gem "mail_room", "~> 0.5.2"
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+gem "mail_room", "~> 0.5.2"
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
 
 gem 'email_reply_parser', '~> 0.5.8'
 

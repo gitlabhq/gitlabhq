@@ -385,6 +385,23 @@ describe Project, models: true do
     end
   end
 
+  describe :execute_hooks do
+    it "triggers project and group hooks" do
+      group = create :group, name: 'gitlab'
+      project = create(:project, name: 'gitlabhq', namespace: group)
+      project_hook = create(:project_hook, push_events: true, project: project)
+      group_hook = create(:group_hook, push_events: true, group: group)
+
+      stub_request(:post, project_hook.url)
+      stub_request(:post, group_hook.url)
+
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
+      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
+
+      project.execute_hooks({}, :push_hooks)
+    end
+  end
+
   describe :avatar_url do
     subject { project.avatar_url }
 
@@ -413,6 +430,36 @@ describe Project, models: true do
       end
 
       it { should eq "http://localhost#{avatar_path}" }
+    end
+  end
+
+  describe :allowed_to_share_with_group? do
+    let(:project) { create(:project) }
+<<<<<<< HEAD
+=======
+
+    it "returns true" do
+      expect(project.allowed_to_share_with_group?).to be_truthy
+    end
+
+    it "returns false" do
+      project.namespace.update(share_with_group_lock: true)
+      expect(project.allowed_to_share_with_group?).to be_falsey
+    end
+  end
+
+  describe :ci_commit do
+    let(:project) { create :project }
+    let(:commit) { create :ci_commit, gl_project: project }
+>>>>>>> origin/ce_upstream
+
+    it "returns true" do
+      expect(project.allowed_to_share_with_group?).to be_truthy
+    end
+
+    it "returns false" do
+      project.namespace.update(share_with_group_lock: true)
+      expect(project.allowed_to_share_with_group?).to be_falsey
     end
   end
 

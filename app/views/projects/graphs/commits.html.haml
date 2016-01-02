@@ -48,6 +48,9 @@
       %p.slead
         Commits per weekday
       %canvas#weekday-chart
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 :javascript
   var responsiveChart = function (selector, data) {
@@ -88,3 +91,55 @@
 
   var monthData = chartData(#{@commits_per_month.keys.to_json}, #{@commits_per_month.values.to_json});
   responsiveChart($('#month-chart'), monthData);
+=======
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
+
+:coffeescript
+  responsiveChart = (selector, data) ->
+    options = { "scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2, maintainAspectRatio: false }
+
+    # get selector by context
+    ctx = selector.get(0).getContext("2d")
+    # pointing parent container to make chart.js inherit its width
+    container = $(selector).parent()
+
+    generateChart = ->
+      selector.attr('width', $(container).width())
+      new Chart(ctx).Bar(data, options)
+
+    # enabling auto-resizing
+    $(window).resize( generateChart )
+
+    generateChart()
+
+  chartData = (keys, values) ->
+    data = {
+      labels : keys,
+      datasets : [{
+        fillColor : "rgba(220,220,220,0.5)",
+        strokeColor : "rgba(220,220,220,1)",
+        barStrokeWidth: 1,
+        barValueSpacing: 1,
+        barDatasetSpacing: 1,
+        data : values
+      }]
+  }
+
+  hourData = chartData(#{@commits_per_time.keys.to_json}, #{@commits_per_time.values.to_json})
+  responsiveChart($('#hour-chart'), hourData)
+
+  dayData = chartData(#{@commits_per_week_days.keys.to_json}, #{@commits_per_week_days.values.to_json})
+  responsiveChart($('#weekday-chart'), dayData)
+
+  monthData = chartData(#{@commits_per_month.keys.to_json}, #{@commits_per_month.values.to_json})
+  responsiveChart($('#month-chart'), monthData)
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> origin/8-0-stable
+=======
+>>>>>>> gitlabhq/revert-9758-fix/api-helpers-bad-autoload-name
+=======
+>>>>>>> origin/revert-9758-fix/api-helpers-bad-autoload-name
