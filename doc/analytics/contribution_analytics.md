@@ -18,9 +18,10 @@ display by using the dropdown calendar menu in the upper right corner.
 
 There are three main bar graphs that are deducted from the number of
 contributions per group member. These contributions include push events, merge
-requests and closed issues.
+requests and closed issues. Hovering on each bar you can see the number of
+events for a specific member.
 
-You can see below an example of the push events of the
+Below is an example of the push events of the
 [gitlab-org][https://gitlab.com/groups/gitlab-org] group.
 
 ![Contribution analytics bar graphs](img/group_stats_graph.png)
