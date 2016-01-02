@@ -5,15 +5,12 @@ module Gitlab
   # This is IO-operations safe class, that does similar job to 
   # Ruby's Pathname but without the risk of accessing filesystem.
   #
-  # TODO, better support for '../' and './'
-  #
   class StringPath
     attr_reader :path, :universe
 
     def initialize(path, universe, metadata = [])
-      @path = prepare(path)
-      @universe = universe.map { |entry| prepare(entry) }
-      @universe << './' unless @universe.include?('./')
+      @path = sanitize(path)
+      @universe = universe.map { |entry| sanitize(entry) }
       @metadata = metadata
     end
 
@@ -60,15 +57,16 @@ module Gitlab
 
     def descendants
       return [] unless directory?
-      children = @universe.select { |entry| entry =~ /^#{@path}.+/ }
-      children.map { |path| new(path) }
+      select { |entry| entry =~ /^#{@path}.+/ }
     end
 
     def children
       return [] unless directory?
       return @children if @children
-      children = @universe.select { |entry| entry =~ %r{^#{@path}[^/]+/?$} }
-      @children = children.map { |path| new(path) }
+
+      @children = select do |entry|
+        self.class.child?(@path, entry)
+      end
     end
 
     def directories
@@ -104,9 +102,26 @@ module Gitlab
       self.class.new(path, @universe)
     end
 
-    def prepare(path)
-      return path if path =~ %r{^(/|\.|\.\.)}
-      path.dup.prepend('./')
+    def select
+      selected = @universe.select { |entry| yield entry }
+      selected.map { |path| new(path) }
+    end
+
+    def sanitize(path)
+      self.class.sanitize(path)
+    end
+
+    def self.sanitize(path)
+      # It looks like Pathname#new doesn't touch a file system,
+      # neither Pathname#cleanpath does, so it is, hopefully, filesystem safe
+
+      clean = Pathname.new(path).cleanpath.to_s
+      raise ArgumentError, 'Invalid path' if clean.start_with?('../')
+      clean + (path.end_with?('/') ? '/' : '')
+    end
+
+    def self.child?(path, entry)
+      entry =~ %r{^#{path}[^/\s]+/?$}
     end
   end
 end
