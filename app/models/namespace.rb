@@ -38,11 +38,20 @@ class Namespace < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
   after_create :ensure_dir_exist
+<<<<<<< HEAD
   after_update :move_dir, if: :path_changed?
+=======
+  after_update :move_dir
+  after_commit :update_gitolite, on: :update, if: :require_update_gitolite
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
 
+<<<<<<< HEAD
   class << self
     def by_path(path)
       find_by('lower(path) = :value', value: path.downcase)
@@ -56,6 +65,15 @@ class Namespace < ActiveRecord::Base
     def search(query)
       where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
     end
+=======
+  attr_accessor :require_update_gitolite
+
+  attr_accessor :require_update_gitolite
+
+  def self.search query
+    where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
+  end
+>>>>>>> gitlabhq/4-0-stable
 
     def clean_path(path)
       path = path.dup
@@ -94,6 +112,8 @@ class Namespace < ActiveRecord::Base
   end
 
   def ensure_dir_exist
+<<<<<<< HEAD
+<<<<<<< HEAD
     gitlab_shell.add_namespace(path)
   end
 
@@ -110,6 +130,24 @@ class Namespace < ActiveRecord::Base
       # GitLab has time to remove all projects first
       GitlabShellWorker.perform_in(5.minutes, :rm_namespace, new_path)
     end
+=======
+=======
+>>>>>>> origin/4-0-stable
+    unless dir_exists?
+      system("mkdir -m 770 #{namespace_full_path}")
+    end
+  end
+
+  def dir_exists?
+    File.exists?(namespace_full_path)
+  end
+
+  def namespace_full_path
+    @namespace_full_path ||= File.join(Gitlab.config.gitolite.repos_path, path)
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-0-stable
+=======
+>>>>>>> origin/4-0-stable
   end
 
   def move_dir
@@ -125,10 +163,22 @@ class Namespace < ActiveRecord::Base
       # So we basically we mute exceptions in next actions
       begin
         send_update_instructions
+<<<<<<< HEAD
+<<<<<<< HEAD
       rescue
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
         false
+=======
+        @require_update_gitolite = true
+      else
+        raise "Namespace move error #{old_path} #{new_path}"
+>>>>>>> gitlabhq/4-0-stable
+=======
+        @require_update_gitolite = true
+      else
+        raise "Namespace move error #{old_path} #{new_path}"
+>>>>>>> origin/4-0-stable
       end
     else
       # if we cannot move namespace directory we should rollback
@@ -137,10 +187,26 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+<<<<<<< HEAD
   def send_update_instructions
     projects.each do |project|
       project.send_move_instructions("#{path_was}/#{project.path}")
     end
+=======
+  def update_gitolite
+    @require_update_gitolite = false
+    projects.each(&:update_repository)
+  end
+
+  def update_gitolite
+    @require_update_gitolite = false
+    projects.each(&:update_repository)
+  end
+
+  def rm_dir
+    dir_path = File.join(Gitlab.config.gitolite.repos_path, path)
+    system("rm -rf #{dir_path}")
+>>>>>>> gitlabhq/4-0-stable
   end
 
   def kind

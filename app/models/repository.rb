@@ -358,6 +358,7 @@ class Repository
     "patch-#{highest_patch_branch_id + 1}"
   end
 
+<<<<<<< HEAD
   # Remove archives older than 2 hours
   def branches_sorted_by(value)
     case value
@@ -495,6 +496,14 @@ class Repository
       Gitlab::Git::Blob.remove(raw_repository, options)
     end
   end
+=======
+    # Build file path
+    file_name = self.path_with_namespace.gsub("/","_") + "-" + commit.id.to_s + ".tar.gz"
+    storage_path = Rails.root.join("tmp", "repositories")
+<<<<<<< HEAD
+<<<<<<< HEAD
+    file_path = File.join(storage_path, file_name)
+>>>>>>> gitlabhq/4-1-stable
 
   def user_to_committer(user)
     {
@@ -588,6 +597,12 @@ class Repository
       data: data
     )
   end
+=======
+    file_path = File.join(storage_path, self.path_with_namespace, file_name)
+>>>>>>> gitlabhq/4-2-stable
+=======
+    file_path = File.join(storage_path, self.path_with_namespace, file_name)
+>>>>>>> origin/4-2-stable
 
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch -f #{source_path} #{source_ref}:#{target_ref})
@@ -598,8 +613,15 @@ class Repository
     random_string = SecureRandom.hex
     tmp_ref = "refs/tmp/#{random_string}/head"
 
+<<<<<<< HEAD
     if oldrev && !Gitlab::Git.blank_ref?(oldrev)
       rugged.references.create(tmp_ref, oldrev)
+=======
+    # Create file if not exists
+    unless File.exists?(file_path)
+      FileUtils.mkdir_p File.dirname(file_path)
+      file = self.repo.archive_to_file(ref, prefix,  file_path)
+>>>>>>> gitlabhq/4-2-stable
     end
 
     # Make commit in tmp ref

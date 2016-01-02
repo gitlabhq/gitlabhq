@@ -45,10 +45,23 @@ production: &base
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 
+<<<<<<< HEAD
     ## Date & Time settings
     # Uncomment and customize if you want to change the default time zone of GitLab application.
     # To see all available zones, run `bundle exec rake time:zones:all RAILS_ENV=production`
     # time_zone: 'UTC'
+=======
+  ## Project settings
+  default_projects_limit: 10
+  # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
+  # username_changing_enabled: false # default: true - User can change her username/namespace
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
 
     ## Email settings
     # Uncomment and set to false if you need to disable email sending from GitLab (default: true)
@@ -423,6 +436,7 @@ production: &base
     ## Google analytics. Uncomment if you want it
     # google_analytics_id: '_your_tracking_id'
 
+<<<<<<< HEAD
     ## Piwik analytics.
     # piwik_url: '_your_piwik_url'
     # piwik_site_id: '_your_piwik_site_id'
@@ -491,3 +505,38 @@ test:
 
 staging:
   <<: *base
+=======
+#
+# 3. Advanced settings
+# ==========================
+
+## Backup settings
+backup:
+  path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+  # keep_time: 604800   # default: 0 (forever) (in seconds)
+
+## Gitolite settings
+gitolite:
+  admin_uri: git@localhost:gitolite-admin
+  # repos_path must not be a symlink
+  repos_path: /home/git/repositories/
+  hooks_path: /home/git/.gitolite/hooks/
+  admin_key: gitlab
+  upload_pack: true
+  receive_pack: true
+  ssh_user: git
+  ssh_host: localhost
+  # ssh_port: 22
+  # config_file: gitolite.conf
+
+## Git settings
+# CAUTION!
+# Use the default values unless you really know what you are doing
+git:
+  bin_path: /usr/bin/git
+  # Max size of git object like commit, in bytes
+  # This value can be increased if you have a very large commits
+  max_size: 5242880 # 5.megabytes
+  # Git timeout to read commit, in seconds
+  timeout: 10
+>>>>>>> gitlabhq/4-0-stable

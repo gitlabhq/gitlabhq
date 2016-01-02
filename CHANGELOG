@@ -1679,6 +1679,7 @@ v 5.3.0
   - Fix bug with team assignation on project from #4109
   - Advanced snippets: public/private, project/personal (Andrew Kulakov)
   - Repository Graphs (Karlo Nicholas T. Soriano)
+v 5.2.1
   - Fix dashboard lost if comment on commit
   - Update gitlab-grack. Fixes issue with --depth option
   - Fix project events duplicate on project page
@@ -1731,6 +1732,8 @@ v 5.1.0
 
 v 5.0.1
   - Fixed issue with gitlab-grit being overridden by grit
+v 5.0.1
+  - Fixed issue with gitlab-grit being overrided by grit
 
 v 5.0.0
   - Replaced gitolite with gitlab-shell
@@ -1764,6 +1767,13 @@ v 5.0.0
 
 v 4.2.0
   - Teams
+  - Async gitolite calls
+  - Teams
+  - Project listing page
+  - Improved search
+  - Groups API
+  - Improved Network Graph
+  - Edit page for group
   - User show page. Via /u/username
   - Show help contents on pages for better navigation
   - Async gitolite calls

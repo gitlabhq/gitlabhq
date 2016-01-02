@@ -157,6 +157,7 @@ Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'G
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
+<<<<<<< HEAD
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['user_home']  ||= begin
   Etc.getpwnam(Settings.gitlab['user']).dir
@@ -194,6 +195,17 @@ Settings.gitlab_ci['all_broken_builds']     = true if Settings.gitlab_ci['all_br
 Settings.gitlab_ci['add_pusher']            = false if Settings.gitlab_ci['add_pusher'].nil?
 Settings.gitlab_ci['url']                   ||= Settings.send(:build_gitlab_ci_url)
 Settings.gitlab_ci['builds_path']           = File.expand_path(Settings.gitlab_ci['builds_path'] || "builds/", Rails.root)
+=======
+Settings.gitlab['user']       ||= 'gitlab'
+Settings.gitlab['signup_enabled'] ||= false
+Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> gitlabhq/4-1-stable
+=======
+>>>>>>> origin/4-1-stable
 
 #
 # Reply by email
@@ -224,6 +236,8 @@ Settings.lfs['storage_path'] = File.expand_path(Settings.lfs['storage_path'] || 
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})
+<<<<<<< HEAD
+<<<<<<< HEAD
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
@@ -257,6 +271,27 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 #
 # Backup
 #
+=======
+=======
+>>>>>>> origin/4-0-stable
+Settings.gravatar['enabled']      = Settings.pre_40_config ? !Settings.disable_gravatar? : true if Settings.gravatar['enabled'].nil?
+Settings.gravatar['plain_url']  ||= Settings.pre_40_config ? Settings.gravatar_url      : 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+Settings.gravatar['ssl_url']    ||= Settings.pre_40_config ? Settings.gravatar_ssl_url  : 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm'
+
+Settings['gitolite'] ||= Settingslogic.new({})
+Settings.gitolite['admin_key']    ||= Settings.pre_40_config ? Settings.gitolite_admin_key : 'gitlab'
+Settings.gitolite['admin_uri']    ||= Settings.pre_40_config ? Settings.gitolite_admin_uri : 'git@localhost:gitolite-admin'
+Settings.gitolite['config_file']  ||= Settings.pre_40_config ? Settings.gitolite_config_file : 'gitolite.conf'
+Settings.gitolite['hooks_path']   ||= Settings.pre_40_config ? Settings.git_hooks_path : '/home/git/share/gitolite/hooks/'
+Settings.gitolite['receive_pack'] ||= Settings.pre_40_config ? Settings.git_receive_pack : (Settings.gitolite['receive_pack'] != false)
+Settings.gitolite['repos_path']   ||= Settings.pre_40_config ? Settings.git_base_path : '/home/git/repositories/'
+Settings.gitolite['upload_pack']  ||= Settings.pre_40_config ? Settings.git_upload_pack : (Settings.gitolite['upload_pack'] != false)
+Settings.gitolite['ssh_host']     ||= Settings.pre_40_config ? Settings.ssh_host : (Settings.gitlab.host || 'localhost')
+Settings.gitolite['ssh_port']     ||= Settings.pre_40_config ? Settings.ssh_port : 22
+Settings.gitolite['ssh_user']     ||= Settings.pre_40_config ? Settings.ssh_user : 'git'
+Settings.gitolite['ssh_path_prefix'] ||= Settings.pre_40_config ? Settings.ssh_path : Settings.send(:build_gitolite_ssh_path_prefix)
+
+>>>>>>> gitlabhq/4-0-stable
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['pg_schema']    = nil

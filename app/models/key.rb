@@ -23,9 +23,17 @@ class Key < ActiveRecord::Base
   before_validation :strip_white_space, :generate_fingerprint
 
   validates :title, presence: true, length: { within: 0..255 }
+<<<<<<< HEAD
+<<<<<<< HEAD
   validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }, uniqueness: true
   validates :key, format: { without: /\n|\r/, message: 'should be a single line' }
   validates :fingerprint, uniqueness: true, presence: { message: 'cannot be generated' }
+=======
+=======
+>>>>>>> origin/5-1-stable
+  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\Assh-.*\Z/ }, uniqueness: true
+  validate :fingerprintable_key
+>>>>>>> gitlabhq/5-1-stable
 
   delegate :name, :email, to: :user, prefix: true
 

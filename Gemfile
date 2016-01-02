@@ -3,8 +3,16 @@ source "https://rubygems.org"
 gem 'rails', '4.2.4'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
+=======
+gem "rails", "3.2.11"
+>>>>>>> gitlabhq/4-0-stable
+=======
+gem "rails", "3.2.11"
+>>>>>>> origin/4-0-stable
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -47,8 +55,21 @@ gem 'attr_encrypted', '~> 1.3.4'
 gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
+<<<<<<< HEAD
 # Provide access to Gitlab::Git library
 gem "gitlab_git", '~> 7.2.20'
+=======
+# Since gollum requires grit we cannot use gitlab-grit gem name any more. Use grit instead
+gem "grit", '~> 2.5.0', git: 'https://github.com/gitlabhq/grit.git', ref: 'c40a32432616a07fa7fc3c32c24ab73ad6a9718f'
+gem 'grit_ext', '~> 0.6.2'
+
+# Ruby/Rack Git Smart-HTTP Server Handler
+<<<<<<< HEAD
+gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
+>>>>>>> gitlabhq/5-0-stable
+=======
+gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
+>>>>>>> gitlabhq/5-2-stable
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -138,7 +159,18 @@ gem "httparty", '~> 0.13.3'
 gem "colorize", '~> 0.7.0'
 
 # GitLab settings
+<<<<<<< HEAD
 gem 'settingslogic', '~> 2.0.9'
+=======
+gem 'settingslogic'
+
+# Wiki
+# - Use latest master to resolve Gem dependency with Pygemnts
+# github-linquist needs pygments 0.4.2 but Gollum 2.4.11
+# requires pygments 0.3.2. The latest master Gollum has been updated
+# to use pygments 0.4.2. Change this after next Gollum release.
+gem "gollum", "~> 2.4.0", git: "https://github.com/gollum/gollum.git", ref: "5dcd3c8c8f"
+>>>>>>> gitlabhq/5-0-stable
 
 # Misc
 
