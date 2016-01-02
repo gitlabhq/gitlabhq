@@ -169,7 +169,7 @@ gem 'asana', '~> 0.4.0'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # d3
-gem 'd3_rails', '~> 3.5.5'
+gem 'd3_rails', '~> 3.5.0'
 
 #cal-heatmap
 gem 'cal-heatmap-rails', '~> 3.5.0'

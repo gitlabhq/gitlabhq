@@ -859,7 +859,7 @@ DEPENDENCIES
   connection_pool (~> 2.0)
   coveralls (~> 0.8.2)
   creole (~> 0.5.0)
-  d3_rails (~> 3.5.5)
+  d3_rails (~> 3.5.0)
   database_cleaner (~> 1.4.0)
   default_value_for (~> 3.0.0)
   devise (~> 3.5.3)
