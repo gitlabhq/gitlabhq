@@ -1,14 +1,14 @@
 NProgress.configure(showSpinner: false)
 
 defaultClass = 'tanuki-shape'
-highlightClass = 'highlight'
 pieces = [
-  'path#tanuki-right-cheek',
-  'path#tanuki-right-eye, path#tanuki-right-ear',
-  'path#tanuki-nose',
-  'path#tanuki-left-eye, path#tanuki-left-ear',
   'path#tanuki-left-cheek',
+  'path#tanuki-left-eye, path#tanuki-left-ear',
+  'path#tanuki-nose',
+  'path#tanuki-right-eye, path#tanuki-right-ear',
+  'path#tanuki-right-cheek',
 ]
+firstPiece = pieces[0]
 timeout = null
 
 clearHighlights = ->
@@ -16,18 +16,19 @@ clearHighlights = ->
 
 start = ->
   clearHighlights()
+  pieces.reverse() unless pieces[0] == firstPiece
   work(0)
 
 stop = ->
   window.clearTimeout(timeout)
   clearHighlights()
 
-work = (pieceIndex) =>
+work = (pieceIndex) ->
   # jQuery's addClass won't work on an SVG. Who knew!
   $piece = $(pieces[pieceIndex])
-  $piece.attr('class', "#{defaultClass} #{highlightClass}")
+  $piece.attr('class', "#{defaultClass} highlight")
 
-  timeout = setTimeout(=>
+  timeout = setTimeout(->
     $piece.attr('class', defaultClass)
 
     # If we hit the last piece, reset the index and then reverse the array to
