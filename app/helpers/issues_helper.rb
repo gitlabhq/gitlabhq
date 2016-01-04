@@ -99,7 +99,7 @@ module IssuesHelper
   end
 
   def emoji_icon(name, unicode = nil, aliases = [])
-    unicode ||= Emoji.emoji_filename(name)
+    unicode ||= Emoji.emoji_filename(name) rescue ""
 
     content_tag :div, "",
       class: "icon emoji-icon emoji-#{unicode}",
