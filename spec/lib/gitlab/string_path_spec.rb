@@ -30,7 +30,7 @@ describe Gitlab::StringPath do
     it { is_expected.to be_absolute } 
     it { is_expected.to_not be_relative }
     it { is_expected.to be_file }
-    it { is_expected.to_not have_parent }
+    it { is_expected.to have_parent }
     it { is_expected.to_not have_descendants }
 
     describe '#basename' do
@@ -138,6 +138,21 @@ describe Gitlab::StringPath do
       subject { |example| path(example).children }
       it { expect(subject.count).to eq 3 }
     end
+  end
+
+  describe '#nodes', path: './' do
+    subject { |example| path(example).nodes }
+    it { is_expected.to eq 1 }
+  end
+
+  describe '#nodes', path: './test' do
+    subject { |example| path(example).nodes }
+    it { is_expected.to eq 2 }
+  end
+
+  describe '#nodes', path: './test/' do
+    subject { |example| path(example).nodes }
+    it { is_expected.to eq 2 }
   end
 
   describe '#metadata' do

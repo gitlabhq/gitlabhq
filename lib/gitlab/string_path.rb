@@ -7,6 +7,7 @@ module Gitlab
   #
   class StringPath
     attr_reader :path, :universe
+    attr_accessor :name
 
     def initialize(path, universe, metadata = [])
       @path = sanitize(path)
@@ -35,7 +36,7 @@ module Gitlab
     end
 
     def has_parent?
-      @universe.include?(@path.sub(basename, ''))
+      nodes > 1
     end
 
     def parent
@@ -48,7 +49,7 @@ module Gitlab
     end
 
     def name
-      @path.split(::File::SEPARATOR).last
+      @name || @path.split(::File::SEPARATOR).last
     end
 
     def has_descendants?
@@ -75,7 +76,11 @@ module Gitlab
     end
 
     def directories!
-      @path =~ %r{^\./[^/]/} ? directories.prepend(parent) : directories
+      return directories unless has_parent? && directory?
+
+      dotted_parent = parent
+      dotted_parent.name = '..'
+      directories.prepend(dotted_parent)
     end
 
     def files
@@ -86,6 +91,10 @@ module Gitlab
     def metadata
       index = @universe.index(@path)
       @metadata[index]
+    end
+
+    def nodes
+      @path.count('/') + (file? ? 1 : 0)
     end
 
     def ==(other)
