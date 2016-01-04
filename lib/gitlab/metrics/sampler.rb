@@ -50,12 +50,11 @@ module Gitlab
       end
 
       def sample_memory_usage
-        @metrics << Metric.new('memory_usage', value: System.memory_usage)
+        add_metric('memory_usage', value: System.memory_usage)
       end
 
       def sample_file_descriptors
-        @metrics << Metric.
-          new('file_descriptors', value: System.file_descriptor_count)
+        add_metric('file_descriptors', value: System.file_descriptor_count)
       end
 
       if Metrics.mri?
@@ -69,7 +68,7 @@ module Gitlab
           counts['Symbol'] = Symbol.all_symbols.length
 
           counts.each do |name, count|
-            @metrics << Metric.new('object_counts', { count: count }, type: name)
+            add_metric('object_counts', { count: count }, type: name)
           end
         end
       else
@@ -91,7 +90,17 @@ module Gitlab
 
         stats[:count] = stats[:minor_gc_count] + stats[:major_gc_count]
 
-        @metrics << Metric.new('gc_statistics', stats)
+        add_metric('gc_statistics', stats)
+      end
+
+      def add_metric(series, values, tags = {})
+        prefix = sidekiq? ? 'sidekiq_' : 'rails_'
+
+        @metrics << Metric.new("#{prefix}#{series}", values, tags)
+      end
+
+      def sidekiq?
+        Sidekiq.server?
       end
     end
   end
