@@ -10,9 +10,7 @@ module Gitlab
         Thread.current[THREAD_KEY]
       end
 
-      # name - The name of this transaction as a String.
-      def initialize(series)
-        @series  = series
+      def initialize
         @metrics = []
         @uuid    = SecureRandom.uuid
 
@@ -40,9 +38,10 @@ module Gitlab
       end
 
       def add_metric(series, values, tags = {})
-        tags = tags.merge(transaction_id: @uuid)
+        tags   = tags.merge(transaction_id: @uuid)
+        prefix = sidekiq? ? 'sidekiq_' : 'rails_'
 
-        @metrics << Metric.new(series, values, tags)
+        @metrics << Metric.new("#{prefix}#{series}", values, tags)
       end
 
       def increment(name, value)
@@ -65,11 +64,15 @@ module Gitlab
           values[name] = value
         end
 
-        add_metric(@series, values, @tags)
+        add_metric('transactions', values, @tags)
       end
 
       def submit
         Metrics.submit_metrics(@metrics.map(&:to_hash))
+      end
+
+      def sidekiq?
+        Sidekiq.server?
       end
     end
   end

@@ -15,7 +15,7 @@ describe Gitlab::Metrics::SidekiqMiddleware do
 
   describe '#tag_worker' do
     it 'adds the worker class and action to the transaction' do
-      trans  = Gitlab::Metrics::Transaction.new('rspec')
+      trans  = Gitlab::Metrics::Transaction.new
       worker = double(:worker, class: double(:class, name: 'TestWorker'))
 
       expect(trans).to receive(:add_tag).with(:action, 'TestWorker#perform')

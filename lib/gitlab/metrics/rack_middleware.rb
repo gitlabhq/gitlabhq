@@ -4,8 +4,6 @@ module Gitlab
     class RackMiddleware
       CONTROLLER_KEY = 'action_controller.instance'
 
-      SERIES = 'rails_transactions'
-
       def initialize(app)
         @app = app
       end
@@ -32,7 +30,7 @@ module Gitlab
       end
 
       def transaction_from_env(env)
-        trans = Transaction.new(SERIES)
+        trans = Transaction.new
 
         trans.add_tag(:request_method, env['REQUEST_METHOD'])
         trans.add_tag(:request_uri, env['REQUEST_URI'])

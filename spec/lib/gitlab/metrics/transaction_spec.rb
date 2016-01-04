@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Transaction do
-  let(:transaction) { described_class.new('rspec') }
+  let(:transaction) { described_class.new }
 
   describe '#duration' do
     it 'returns the duration of a transaction in seconds' do
@@ -32,7 +32,7 @@ describe Gitlab::Metrics::Transaction do
   describe '#add_metric' do
     it 'adds a metric tagged with the transaction UUID' do
       expect(Gitlab::Metrics::Metric).to receive(:new).
-        with('foo', { number: 10 }, { transaction_id: transaction.uuid })
+        with('rails_foo', { number: 10 }, { transaction_id: transaction.uuid })
 
       transaction.add_metric('foo', number: 10)
     end
@@ -44,7 +44,7 @@ describe Gitlab::Metrics::Transaction do
       transaction.increment(:time, 2)
 
       expect(transaction).to receive(:add_metric).
-        with('rspec', { duration: 0.0, time: 3 }, {})
+        with('transactions', { duration: 0.0, time: 3 }, {})
 
       transaction.track_self
     end
@@ -70,7 +70,7 @@ describe Gitlab::Metrics::Transaction do
   describe '#track_self' do
     it 'adds a metric for the transaction itself' do
       expect(transaction).to receive(:add_metric).
-        with('rspec', { duration: transaction.duration }, {})
+        with('transactions', { duration: transaction.duration }, {})
 
       transaction.track_self
     end

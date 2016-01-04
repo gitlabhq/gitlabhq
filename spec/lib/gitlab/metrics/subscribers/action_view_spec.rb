@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics::Subscribers::ActionView do
-  let(:transaction) { Gitlab::Metrics::Transaction.new('rspec') }
+  let(:transaction) { Gitlab::Metrics::Transaction.new }
 
   let(:subscriber) { described_class.new }
 

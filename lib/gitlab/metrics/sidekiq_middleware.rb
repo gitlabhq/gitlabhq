@@ -4,10 +4,8 @@ module Gitlab
     #
     # This middleware is intended to be used as a server-side middleware.
     class SidekiqMiddleware
-      SERIES = 'sidekiq_transactions'
-
       def call(worker, message, queue)
-        trans = Transaction.new(SERIES)
+        trans = Transaction.new
 
         begin
           trans.run { yield }
