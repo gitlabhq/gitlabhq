@@ -47,7 +47,17 @@ module Banzai
         { object_sym => LazyReference.new(object_class, node.attr(data_reference)) }
       end
 
-      delegate :object_class, :object_sym, :references_in, to: :class
+      def object_class
+        self.class.object_class
+      end
+
+      def object_sym
+        self.class.object_sym
+      end
+
+      def references_in(*args, &block)
+        self.class.references_in(*args, &block)
+      end
 
       def find_object(project, id)
         # Implement in child class
