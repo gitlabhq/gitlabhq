@@ -1,8 +1,10 @@
 %tr{ class: 'tree-item' }
   %td.tree-item-file-name
-    = tree_icon('file', '664', file.basename)
+    = tree_icon('file', '664', file.name)
     %span.str-truncated
-      = file.basename
+      = file.name
+  %td
+    = number_to_human_size(file.metadata[:uncompressed_size], precision: 2)
   %td
     = link_to '', class: 'btn btn-xs btn-default' do
       = icon('download')

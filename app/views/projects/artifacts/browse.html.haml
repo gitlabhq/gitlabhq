@@ -15,6 +15,7 @@
       %thead
         %tr
           %th Name
+          %th Size
           %th Download
       = render partial: 'tree_directory', collection: @path.directories!, as: :directory
       = render partial: 'tree_file', collection: @path.files, as: :file

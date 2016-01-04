@@ -162,7 +162,7 @@ describe Gitlab::StringPath do
     end
 
     let(:metadata) do
-      [{ name: '/path/'}, { name: '/path/file1' }, { name: '/path/file2' }]
+      [{ name: '/path/' }, { name: '/path/file1' }, { name: '/path/file2' }]
     end
 
     subject do

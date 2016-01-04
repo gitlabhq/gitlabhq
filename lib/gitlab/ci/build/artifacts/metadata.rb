@@ -23,13 +23,12 @@ module Gitlab
 
             each do |line|
               next unless line =~ %r{^#{Regexp.escape(@path)}[^/\s]*/?\s}
-
               path, meta = line.split(' ')
               paths.push(path)
               metadata.push(meta)
-           end
+            end
 
-            [paths, metadata.map { |meta| JSON.parse(meta) }]
+            [paths, metadata.map { |meta| JSON.parse(meta, symbolize_names: true) }]
           end
 
           def to_string_path

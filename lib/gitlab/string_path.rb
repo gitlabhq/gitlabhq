@@ -19,10 +19,6 @@ module Gitlab
       @path
     end
 
-    def exists?
-      @path == './' || @universe.include?(@path)
-    end
-
     def absolute?
       @path.start_with?('/')
     end
@@ -94,11 +90,15 @@ module Gitlab
 
     def metadata
       index = @universe.index(@path)
-      @metadata[index]
+      @metadata[index] || {}
     end
 
     def nodes
       @path.count('/') + (file? ? 1 : 0)
+    end
+
+    def exists?
+      @path == './' || @universe.include?(@path)
     end
 
     def ==(other)
@@ -112,7 +112,7 @@ module Gitlab
     private
 
     def new(path)
-      self.class.new(path, @universe)
+      self.class.new(path, @universe, @metadata)
     end
 
     def select
