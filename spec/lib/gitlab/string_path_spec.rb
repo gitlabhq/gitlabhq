@@ -32,6 +32,7 @@ describe Gitlab::StringPath do
     it { is_expected.to be_file }
     it { is_expected.to have_parent }
     it { is_expected.to_not have_descendants }
+    it { is_expected.to exist }
 
     describe '#basename' do
       subject { |example| path(example).basename }
@@ -169,5 +170,17 @@ describe Gitlab::StringPath do
     end
 
     it { is_expected.to eq '/path/file1' }
+  end
+
+  describe '#exists?', path: 'another_file' do
+    subject { |example| path(example).exists? }
+    it { is_expected.to be true }
+  end
+
+  describe '#exists?', path: './non_existent/' do
+    let(:universe) { ['./something'] }
+    subject { |example| path(example).exists? }
+
+    it { is_expected.to be false }
   end
 end

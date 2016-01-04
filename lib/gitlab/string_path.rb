@@ -19,6 +19,10 @@ module Gitlab
       @path
     end
 
+    def exists?
+      @path == './' || @universe.include?(@path)
+    end
+
     def absolute?
       @path.start_with?('/')
     end
