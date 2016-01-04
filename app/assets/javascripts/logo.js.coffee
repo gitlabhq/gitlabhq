@@ -1,6 +1,5 @@
 NProgress.configure(showSpinner: false)
 
-delay = 150
 defaultClass = 'tanuki-shape'
 pieces = [
   'path#tanuki-right-cheek',
@@ -9,39 +8,36 @@ pieces = [
   'path#tanuki-left-eye, path#tanuki-left-ear',
   'path#tanuki-left-cheek',
 ]
+pieceIndex = 0
 firstPiece = pieces[0]
-timeout = null
+
+currentTimer = null
+delay        = 150
 
 clearHighlights = ->
   $(".#{defaultClass}.highlight").attr('class', defaultClass)
 
 start = ->
   clearHighlights()
+  pieceIndex = 0
   pieces.reverse() unless pieces[0] == firstPiece
-  work(0)
+  currentTimer = setInterval(work, delay)
 
 stop = ->
-  window.clearTimeout(timeout)
+  clearInterval(currentTimer)
   clearHighlights()
 
-work = (pieceIndex) ->
-  # jQuery's addClass won't work on an SVG. Who knew!
-  $piece = $(pieces[pieceIndex])
-  $piece.attr('class', "#{defaultClass} highlight")
+work = ->
+  clearHighlights()
+  $(pieces[pieceIndex]).attr('class', "#{defaultClass} highlight")
 
-  timeout = setTimeout(->
-    $piece.attr('class', defaultClass)
+  # If we hit the last piece, reset the index and then reverse the array to
+  # get a nice back-and-forth sweeping look
+  if pieceIndex == pieces.length - 1
+    pieceIndex = 0
+    pieces.reverse()
+  else
+    pieceIndex++
 
-    # If we hit the last piece, reset the index and then reverse the array to
-    # get a nice back-and-forth sweeping look
-    if pieceIndex + 1 >= pieces.length
-      nextIndex = 0
-      pieces.reverse()
-    else
-      nextIndex = pieceIndex + 1
-
-    work(nextIndex)
-  , delay)
-
-$(document).on 'page:fetch',  start
-$(document).on 'page:change', stop
+$(document).on('page:fetch',  start)
+$(document).on('page:change', stop)
