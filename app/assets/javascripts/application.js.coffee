@@ -13,6 +13,7 @@
 #= require jquery.waitforimages
 #= require jquery.atwho
 #= require jquery.scrollTo
+#= require jquery.blockUI
 #= require jquery.turbolinks
 #= require d3
 #= require cal-heatmap
