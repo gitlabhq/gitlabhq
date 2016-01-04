@@ -106,7 +106,7 @@ describe User, models: true do
       end
 
       it 'validates uniqueness' do
-        expect(subject).to validate_uniqueness_of(:username)
+        expect(subject).to validate_uniqueness_of(:username).case_insensitive
       end
     end
 
