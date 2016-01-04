@@ -1,5 +1,6 @@
 NProgress.configure(showSpinner: false)
 
+delay = 150
 defaultClass = 'tanuki-shape'
 pieces = [
   'path#tanuki-right-cheek',
@@ -12,7 +13,7 @@ firstPiece = pieces[0]
 timeout = null
 
 clearHighlights = ->
-  $(".#{defaultClass}").attr('class', defaultClass)
+  $(".#{defaultClass}.highlight").attr('class', defaultClass)
 
 start = ->
   clearHighlights()
@@ -40,7 +41,7 @@ work = (pieceIndex) ->
       nextIndex = pieceIndex + 1
 
     work(nextIndex)
-  , 200)
+  , delay)
 
 $(document).on 'page:fetch',  start
 $(document).on 'page:change', stop
