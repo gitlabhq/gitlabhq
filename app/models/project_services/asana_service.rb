@@ -118,7 +118,6 @@ http://app.asana.com/-/account_api'
         end
       rescue => e
         Rails.logger.error(e.message)
-        Rails.logger.error(e.backtrace.join("\n"))
         next
       end
     end
