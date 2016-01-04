@@ -44,7 +44,7 @@
         = icon('cubes fw')
         %span
           Builds
-          %span.count.builds_counter= @project.builds.running_or_pending.count(:all)
+          %span.count.builds_counter= number_with_delimiter(@project.builds.running_or_pending.count(:all))
 
   - if project_nav_tab? :graphs
     = nav_link(controller: %w(graphs)) do
@@ -67,7 +67,7 @@
         %span
           Issues
           - if @project.default_issues_tracker?
-            %span.count.issue_counter= @project.issues.opened.count
+            %span.count.issue_counter= number_with_delimiter(@project.issues.opened.count)
 
   - if project_nav_tab? :merge_requests
     = nav_link(controller: :merge_requests) do
@@ -75,7 +75,7 @@
         = icon('tasks fw')
         %span
           Merge Requests
-          %span.count.merge_counter= @project.merge_requests.opened.count
+          %span.count.merge_counter= number_with_delimiter(@project.merge_requests.opened.count)
 
   - if project_nav_tab? :settings
     = nav_link(controller: [:project_members, :teams]) do
