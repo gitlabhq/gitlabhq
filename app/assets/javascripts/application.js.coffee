@@ -16,6 +16,8 @@
 #= require jquery.scrollTo
 #= require jquery.blockUI
 #= require jquery.turbolinks
+#= require d3
+#= require cal-heatmap
 #= require turbolinks
 #= require autosave
 #= require bootstrap
@@ -27,7 +29,6 @@
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
-#= require d3
 #= require underscore
 #= require nprogress
 #= require nprogress-turbolinks
@@ -39,7 +40,6 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issuable
 #= require shortcuts_network
-#= require cal-heatmap
 #= require jquery.nicescroll.min
 #= require_tree .
 
