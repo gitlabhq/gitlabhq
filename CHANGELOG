@@ -3,18 +3,28 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.3.0 (unreleased)
   - Merge when build succeeds (Zeger-Jan van de Weg)
 v 8.4.0 (unreleased)
+  - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
   - Implement new UI for group page
   - Implement search inside emoji picker
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
-  - Expose Git's version in the admin area
+  - Only allow group/project members to mention `@all`
+  - Expose Git's version in the admin area (Trey Davis)
   - Add "Frequently used" category to emoji picker
   - Add CAS support (tduehr)
-  - Add link to merge request on build detail page.
+  - Add link to merge request on build detail page
   - Revert back upvote and downvote button to the issue and MR pages
+  - Swap position of Assignee and Author selector on Issuables (Zeger-Jan van de Weg)
+  - Add system hook messages for project rename and transfer (Steve Norman)
+  - Fix version check image in Safari
 
-v 8.3.2 (unreleased)
-  - Enable "Add key" button when user fills in a proper key
+v 8.3.3 (unreleased)
+  - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
+  - Enable "Add key" button when user fills in a proper key (Stan Hu)
+
+v 8.3.2
+  - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
+  - Add support for Google reCAPTCHA in user registration
 
 v 8.3.1
   - Fix Error 500 when global milestones have slashes (Stan Hu)

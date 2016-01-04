@@ -99,4 +99,18 @@ describe Issue, "Issuable" do
         to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
+
+  describe "votes" do
+    before do
+      author = create :user
+      project = create :empty_project
+      issue.notes.awards.create!(note: "thumbsup", author: author, project: project)
+      issue.notes.awards.create!(note: "thumbsdown", author: author, project: project)
+    end
+
+    it "returns correct values" do
+      expect(issue.upvotes).to eq(1)
+      expect(issue.downvotes).to eq(1)
+    end
+  end
 end

@@ -176,7 +176,6 @@ module API
 
     class MergeRequest < ProjectEntity
       expose :target_branch, :source_branch
-      # deprecated, always returns 0
       expose :upvotes,  :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id

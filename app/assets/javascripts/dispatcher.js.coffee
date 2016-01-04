@@ -49,7 +49,7 @@ class Dispatcher
         new DropzoneInput($('.release-form'))
       when 'projects:merge_requests:show'
         new Diff()
-        shortcut_handler = new ShortcutsIssuable()
+        shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
       when "projects:merge_requests:diffs"
         new Diff()

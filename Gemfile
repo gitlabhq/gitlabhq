@@ -36,6 +36,9 @@ gem 'omniauth_crowd'
 gem 'gssapi', group: :kerberos
 gem 'rack-oauth2',            '~> 1.2.1'
 
+# reCAPTCHA protection
+gem 'recaptcha', require: 'recaptcha/rails'
+
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
 gem 'rqrcode-rails3', '~> 0.1.7'
@@ -171,10 +174,10 @@ gem 'asana', '~> 0.4.0'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # d3
-gem 'd3_rails', '~> 3.5.5'
+gem 'd3_rails', '~> 3.5.0'
 
 #cal-heatmap
-gem "cal-heatmap-rails", "~> 0.0.1"
+gem 'cal-heatmap-rails', '~> 3.5.0'
 
 # underscore-rails
 gem "underscore-rails", "~> 1.8.0"
@@ -202,7 +205,7 @@ gem 'turbolinks', '~> 2.5.0'
 gem 'jquery-turbolinks', '~> 2.1.0'
 
 gem 'addressable',        '~> 2.3.8'
-gem 'bootstrap-sass',     '~> 3.0'
+gem 'bootstrap-sass',     '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.2.0'
 gem 'gon',                '~> 6.0.1'
@@ -219,9 +222,17 @@ gem 'net-ssh',            '~> 3.0.1'
 
 gem "gitlab-license", "~> 0.0.4"
 
+# Metrics
+group :metrics do
+  gem 'allocations', '~> 1.0', require: false, platform: :mri
+  gem 'method_source', '~> 0.8', require: false
+  gem 'influxdb', '~> 0.2', require: false
+  gem 'connection_pool', '~> 2.0', require: false
+end
+
 group :development do
   gem "foreman"
-  gem 'brakeman', '3.0.1', require: false
+  gem 'brakeman', '~> 3.1.0', require: false
 
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'

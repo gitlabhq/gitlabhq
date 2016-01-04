@@ -7,7 +7,7 @@
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
 - [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
-- [Migrating from SVN](migration/README.md) Convert a SVN repository to Git and GitLab
+- [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab
 - [Permissions](permissions/permissions.md) Learn what each role in a project (guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
@@ -63,6 +63,7 @@
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Log system](logs/logs.md) Log system.
+- [Environmental Variables](administration/environment_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic web hook setup and the importing of projects.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.

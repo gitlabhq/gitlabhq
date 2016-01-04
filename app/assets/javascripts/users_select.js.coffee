@@ -121,5 +121,5 @@ class @UsersSelect
       callback(users)
 
   buildUrl: (url) ->
-    url = gon.relative_url_root + url if gon.relative_url_root?
+    url = gon.relative_url_root.replace(/\/$/, '') + url if gon.relative_url_root?
     return url

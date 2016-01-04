@@ -78,7 +78,9 @@ class Repository
       path: path,
       limit: limit,
       offset: offset,
-      follow: path.present?
+      # --follow doesn't play well with --skip. See:
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
+      follow: false
     }
 
     commits = Gitlab::Git::Commit.where(options)

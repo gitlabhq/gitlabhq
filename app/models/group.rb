@@ -54,10 +54,6 @@ class Group < Namespace
       User.reference_pattern
     end
 
-    def public_and_given_groups(ids)
-      where('public IS TRUE OR namespaces.id IN (?)', ids)
-    end
-
     def visible_to_user(user)
       where(id: user.authorized_groups.select(:id).reorder(nil))
     end
@@ -131,10 +127,6 @@ class Group < Namespace
 
   def human_ldap_access
     Gitlab::Access.options_with_owner.key ldap_access
-  end
-
-  def public_profile?
-    self.public || projects.public_only.any?
   end
 
   # NOTE: Backwards compatibility with old ldap situation

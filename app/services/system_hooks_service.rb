@@ -18,7 +18,8 @@ class SystemHooksService
   def build_event_data(model, event)
     data = {
       event_name: build_event_name(model, event),
-      created_at: model.created_at.xmlschema
+      created_at: model.created_at.xmlschema,
+      updated_at: model.updated_at.xmlschema
     }
 
     case model
@@ -34,6 +35,14 @@ class SystemHooksService
       end
     when Project
       data.merge!(project_data(model))
+
+      if event == :rename || event == :transfer
+        data.merge!({
+          old_path_with_namespace: model.old_path_with_namespace
+        })
+      end
+
+      data
     when User
       data.merge!({
         name: model.name,

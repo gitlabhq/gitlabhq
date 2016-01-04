@@ -15,6 +15,7 @@ See the documentation below for details on how to configure these services.
 - [Kerberos](kerberos.md) Integrate with Kerberos
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
+- [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
 
 GitLab Enterprise Edition contains [advanced JIRA support](http://doc.gitlab.com/ee/integration/jira.html) and [advanced Jenkins support](http://doc.gitlab.com/ee/integration/jenkins.html).
 
