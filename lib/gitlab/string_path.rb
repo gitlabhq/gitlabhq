@@ -75,7 +75,7 @@ module Gitlab
     end
 
     def directories!
-      has_parent? ? directories.prepend(parent) : directories
+      @path =~ %r{^\./[^/]/} ? directories.prepend(parent) : directories
     end
 
     def files
@@ -119,7 +119,7 @@ module Gitlab
       raise ArgumentError, 'Invalid path' if clean_path.start_with?('../')
 
       prefix = './' unless clean_path =~ %r{^[\.|/]}
-      suffix = '/' if path.end_with?('/') || clean_path =~ /^[\.|\.\.]$/
+      suffix = '/' if path.end_with?('/') || ['.', '..'].include?(clean_path)
       prefix.to_s + clean_path + suffix.to_s
     end
   end

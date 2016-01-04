@@ -349,24 +349,10 @@ module Ci
       artifacts? && artifacts_file.path.end_with?('zip') && artifacts_metadata.exists?
     end
 
-    def artifacts_metadata_for_path(path)
-      return [] unless artifacts_metadata.exists?
-      paths, metadata = [], []
 
-      metadata_path = path.sub(/^\.\//, '')
-      File.open(artifacts_metadata.path) do |file|
-        gzip = Zlib::GzipReader.new(file)
-        gzip.each_line do |line|
-          if line =~ %r{^#{Regexp.escape(metadata_path)}[^/\s]+/?\s}
-            matched_path, matched_meta =  line.split(' ')
-            paths << matched_path
-            metadata << JSON.parse(matched_meta)
-          end
-        end
-        gzip.close
-      end
-
-      [paths, metadata]
+    def artifacts_metadata_string_path(path)
+      file = artifacts_metadata.path
+      Gitlab::Ci::Build::Artifacts::Metadata.new(file, path).to_string_path
     end
 
     private

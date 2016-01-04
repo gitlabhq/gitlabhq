@@ -16,10 +16,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def browse
     return render_404 unless build.artifacts?
-
-    current_path = params[:path] ? "./#{params[:path]}/" : './'
-    paths, metadata = build.artifacts_metadata_for_path(current_path)
-    @path = Gitlab::StringPath.new(current_path, paths, metadata)
+    @path = build.artifacts_metadata_string_path(params[:path] || './')
   end
 
   private
