@@ -38,6 +38,18 @@ describe Gitlab::Metrics::Transaction do
     end
   end
 
+  describe '#increment' do
+    it 'increments a counter' do
+      transaction.increment(:time, 1)
+      transaction.increment(:time, 2)
+
+      expect(transaction).to receive(:add_metric).
+        with('rspec', { duration: 0.0, time: 3 }, {})
+
+      transaction.track_self
+    end
+  end
+
   describe '#add_tag' do
     it 'adds a tag' do
       transaction.add_tag(:foo, 'bar')

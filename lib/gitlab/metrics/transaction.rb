@@ -19,7 +19,8 @@ module Gitlab
         @started_at  = nil
         @finished_at = nil
 
-        @tags = {}
+        @values = Hash.new(0)
+        @tags   = {}
       end
 
       def duration
@@ -44,6 +45,10 @@ module Gitlab
         @metrics << Metric.new(series, values, tags)
       end
 
+      def increment(name, value)
+        @values[name] += value
+      end
+
       def add_tag(key, value)
         @tags[key] = value
       end
@@ -54,7 +59,13 @@ module Gitlab
       end
 
       def track_self
-        add_metric(@series, { duration: duration }, @tags)
+        values = { duration: duration }
+
+        @values.each do |name, value|
+          values[name] = value
+        end
+
+        add_metric(@series, values, @tags)
       end
 
       def submit
