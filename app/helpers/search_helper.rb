@@ -70,7 +70,7 @@ module SearchHelper
 
   # Autocomplete results for the current user's groups
   def groups_autocomplete(term, limit = 5)
-    GroupsFinder.new.execute(current_user).search(term).limit(limit).map do |group|
+    Group.search(term).limit(limit).map do |group|
       {
         label: "group: #{search_result_sanitize(group.name)}",
         url: group_path(group)
