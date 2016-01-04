@@ -38,7 +38,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
 
       it 'matches correct paths' do
         expect(subject.first).
-          to contain_exactly 'other_artifacts_0.1.2/doc_sample.txt',
+          to contain_exactly 'other_artifacts_0.1.2/',
+                             'other_artifacts_0.1.2/doc_sample.txt',
                              'other_artifacts_0.1.2/another-subdirectory/'
       end
     end
@@ -48,7 +49,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
 
       it 'matches correct paths' do
         expect(subject.first).
-          to contain_exactly 'other_artifacts_0.1.2/another-subdirectory/empty_directory/',
+          to contain_exactly 'other_artifacts_0.1.2/another-subdirectory/',
+                             'other_artifacts_0.1.2/another-subdirectory/empty_directory/',
                              'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
       end
     end

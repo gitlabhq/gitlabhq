@@ -22,7 +22,7 @@ module Gitlab
             paths, metadata = [], []
 
             each do |line|
-              next unless line =~ %r{^#{Regexp.escape(@path)}[^/\s]+/?\s}
+              next unless line =~ %r{^#{Regexp.escape(@path)}[^/\s]*/?\s}
 
               path, meta = line.split(' ')
               paths.push(path)
