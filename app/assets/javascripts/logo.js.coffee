@@ -2,11 +2,11 @@ NProgress.configure(showSpinner: false)
 
 defaultClass = 'tanuki-shape'
 pieces = [
-  'path#tanuki-left-cheek',
-  'path#tanuki-left-eye, path#tanuki-left-ear',
-  'path#tanuki-nose',
-  'path#tanuki-right-eye, path#tanuki-right-ear',
   'path#tanuki-right-cheek',
+  'path#tanuki-right-eye, path#tanuki-right-ear',
+  'path#tanuki-nose',
+  'path#tanuki-left-eye, path#tanuki-left-ear',
+  'path#tanuki-left-cheek',
 ]
 firstPiece = pieces[0]
 timeout = null
