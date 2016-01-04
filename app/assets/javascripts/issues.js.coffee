@@ -16,12 +16,12 @@
         else
           $(this).html totalIssues - 1
     $("body").on "click", ".issues-other-filters .dropdown-menu a", ->
-      $('.issues-list').block(
-        message: null,
-        overlayCSS:
-          backgroundColor: '#DDD'
-          opacity: .4
-      )
+      # $('.issues-list').block(
+      #   message: null,
+      #   overlayCSS:
+      #     backgroundColor: '#DDD'
+      #     opacity: .4
+      # )
 
   reload: ->
     Issues.initSelects()

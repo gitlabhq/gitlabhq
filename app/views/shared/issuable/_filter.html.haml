@@ -42,6 +42,11 @@
             class: 'select2 trigger-submit', include_blank: true,
             data: {placeholder: 'Milestone'})
 
+        .filter-item.inline.people-filter.btn-group
+          %button.btn.btn-default.dropdown-toggle{ "data-toggle" => 'dropdown' }
+            People
+            %span.caret
+          %ul.dropdown-menu.dropdown-multi-menu
         .filter-item.inline.labels-filter
           = select_tag('label_name', projects_labels_options,
             class: 'select2 trigger-submit', include_blank: true,
@@ -69,4 +74,12 @@
   $('form.filter-form').on('submit', function (event) {
     event.preventDefault();
     Turbolinks.visit(this.action + '&' + $(this).serialize());
+  });
+
+  $('ul.dropdown-multi-menu').multiawesome({
+    data: [{label:'milestone',data:1},{label:'no milestone',data:1}],
+    title: "Milestones",
+    onChange: function(item) {
+      console.log("changed",item)
+    }
   });

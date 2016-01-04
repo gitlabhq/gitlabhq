@@ -1,0 +1,105 @@
+.open>.dropdown-multi-menu {
+  max-width: 320px;
+  border-radius: 0px;
+}
+
+.dropdown-multi-menu input[type='text'] {
+  margin: 0 5px;
+  width: 309px;
+  height: 35px;
+  padding-left: 6px;
+}
+
+.dropdown-multi-menu input[type='checkbox'] {
+  margin: 0 5px;
+  display: none;
+}
+
+.dropdown-multi-menu>li>a {
+  padding-left: 0;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-title-area h3 {
+  font-size: 15px;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-title-area h3::after {
+  content: "";  
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAACGUlEQVQ4jZ2VMXbiMBCGf83KKcxzntOmI1VMEyj2BLpD9gRbwQVygeUCpMsdcgKfQaYJqeIu1RYGC/stNjNbJOaBY8hu/lrz69PoH0mJCBaLhVEArqMoxhf0vFgYARBFUawWT08my7KxiMD3/fhmOLz/H7PE2ruyLL8rpRCG4b0WEQjzeVXXxq3X59ba8zAMZ/1+Pz9l9PLyEiyXy0lRFGZb18bTOhYR6GgwiOdJcu3Wa9R1bZxz5r1mespwuVxOnHO/mBla69jv9R6jwSAmALgZDu9934+JCMyMoiiMtfYuTdOgbZSmaWCtvSuKwjAziOigVbpZGIbhDACKojCnSLMsOyTz/bipPTB879nUWgvnnNkjxdnZ2TMAbDab6zbZaDQ62FCjpS5SIgIAMDOOkTVSItLZ9CRJxnmez5gZzRqlFIgIQRBMhkfiRZ1uADzPeyUiiMiOTERARPA87/VY3VHDr+pDDxtVVXXJzLtjAm9HZmZUVXV5rO5DD9M0DbIsmzSXQkQ4dSntifpA2JWzdmxO5XRnuE92KmddOd0n3Rl+NgGNPpsoAoB5koy7yLpenH6/n49Go2l79udJMgaAbz9ub02+Wv2s69poreNer/cQhuHs4uJi0zbbV1mWcxHJt9sttnVtmPmPc+63VkpBEa205z36vh8fm4C2rq6ucgDTxFqUZbkiolwplavmCwDenvB/MWtr/wv5CwCanfXE6iK0AAAAAElFTkSuQmCC');
+  background-repeat: no-repeat;
+  background-size: 11px;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  position: absolute;
+  right: 13px;
+  top: 13px;
+  cursor: pointer;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-selections {
+  max-height: 150px;
+  overflow-y: scroll;
+  margin-top: 15px;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-category ul{ 
+  padding-left: 15px;
+  list-style: none;
+  max-height: 65px;
+  overflow-y: scroll;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-selections ul{
+  padding-left: 15px;
+  list-style: none;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-selections li{
+  margin-bottom: 10px;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-selections ul a, .dropdown-multi-menu .dropdown-multi-menu-category ul a{
+  text-decoration: none;
+  color: #333;
+  display: inline-block;
+  width: 285px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 30px;
+  padding-left: 30px;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-selections ul a.selected, .dropdown-multi-menu .dropdown-multi-menu-category ul a.selected {
+  background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAYCAMAAADat72NAAABtlBMVEX////b29vc29vc3NzZ2dna2dnb2trY19fZ2NjV1dXW1tbT09PU09PV1NTR0dHS0dHS0tLPz8/Qz8/Q0NDNzc3Ozc3Ly8vMy8vMzMzJycnKycnKysrIyMjJyMjKyMjFxcXGxcXGxsbHxcXHxsbEw8PExMTFxMTBwcHBwsLCwcG/v7+9vb2+vr6/vr67u7u8vLy5ubm6ubm7ubm3t7e4t7e4uLi1tbW3tra0s7OysbGysrKzsbGvr6+wr6+urq6vrq6sq6utrKypqamrqqqsqqqop6epp6eqqKimpaWnpaWnpqako6OkpKSlo6OioaGjoqKkoqKgn5+goKChn5+hoKCenp6fnp6cm5ucnJydm5udnJyenJx+fX1/fHx/fX2Afn6Af3+Bf3+BgICCgICCgYGDgYGDgoKEgoKFgoKFg4OGhISGhYWHhYWIh4eJh4eJiIiJiYmKiIiLiYmLioqMioqMi4uNi4uNjIyOjIyPjY2Qjo6Qj4+SkJCSkZGTkZGTkpKUk5OVk5OVlJSWlZWXlZWYlpaYl5eYmJiZmJiZmZmamJibmZmbmpqcm5uenp6fn5+op6erqqouFWZ5AAAAXHRSTlMADw8PFhYWHR0kJCwsLDMzMzo6OkJCSUlJUFBQV1dXX19fX19mZmZtbW11fHx8g4OKioqSkpKZmaCoqKivr7a2vb3FxcXMzMzT09Pb29vi4uLp6enp8PD4+Pj4+E8lS9YAAAEjSURBVCjPY2DACYRtrDhwywralTZL45RldymLb5LEJctkWBOXHiSAS9q8OSOzxRiXrGJPWmqdNTcOWY3ggtQyN15cXvIpTCnxVcIhK+pYnZwZLYdDls22Nj2rywiHLKNeW2p8oxaMK6vGgiKt05edVGXPDOWJB7S6KyPJSgVnxZRb8sC4Co2JJV4icFkJl6KYXB8hOJ8/KiW5wl8TyuN0KonP81BEMs24Iye10A8S+Kwm1bGZESoobtHszkwtDtUGMS0aUjM7TdG8YhRZmJIdLc/IpNqWktpoxonuVeWw3OTC3gkT+/NTK525MINCN6QsNSuvND+93FUGW1CJeZekJiSn5wSKYw9KNc/q9IS8cH1cCYDPoT63XR13ypQwczbAEAQAnkJCZAp/V+QAAAAASUVORK5CYII=');
+  background-repeat: no-repeat;
+  background-size: 16px;
+  background-position: 2px 4px;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-tip-area {
+  margin: 10px;
+  text-align: left;
+  max-height: 40px;
+  overflow-y: scroll;
+}
+
+.dropdown-multi-menu .dropdown-multi-menu-tip-area p {
+  margin-bottom: 0;
+}
+
+.dropdown-multi-menu .input-with-icon {
+  position: relative;
+  margin: 10px 0;
+}
+
+.dropdown-multi-menu .input-with-icon i {
+  position: absolute;
+  right: 0;
+  padding: 10px 12px;
+  color: #817F7F;
+  pointer-events: none;
+}
