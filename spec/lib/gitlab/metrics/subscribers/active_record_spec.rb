@@ -6,7 +6,7 @@ describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
   let(:event) do
     double(:event, duration: 0.2,
-           payload:  { sql: 'SELECT * FROM users WHERE id = 10' })
+                   payload:  { sql: 'SELECT * FROM users WHERE id = 10' })
   end
 
   describe '#sql' do
