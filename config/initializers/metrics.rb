@@ -6,6 +6,7 @@ if Gitlab::Metrics.enabled?
   # These are manually require'd so the classes are registered properly with
   # ActiveSupport.
   require 'gitlab/metrics/subscribers/action_view'
+  require 'gitlab/metrics/subscribers/active_record'
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
