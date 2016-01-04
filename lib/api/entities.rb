@@ -365,5 +365,15 @@ module API
     class TriggerRequest < Grape::Entity
       expose :id, :variables
     end
+
+    class Trigger < Grape::Entity
+      expose :id, :token, :created_at, :updated_at, :deleted_at
+      expose :last_used do |repo_obj, _options|
+        if repo_obj.respond_to?(:last_trigger_request)
+          request = repo_obj.last_trigger_request
+          request.created_at if request
+        end
+      end
+    end
   end
 end

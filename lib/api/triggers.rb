@@ -43,6 +43,24 @@ module API
           render_api_error!(errors, 400)
         end
       end
+
+      # Get triggers list
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   page (optional) - The page number for pagination
+      #   per_page (optional) - The value of items per page to show
+      # Example Request:
+      #   GET /projects/:id/triggers
+      get ':id/triggers' do
+        authenticate!
+        authorize_admin_project
+
+        triggers = user_project.triggers.includes(:trigger_requests)
+        triggers = paginate(triggers)
+
+        present triggers, with: Entities::Trigger
+      end
     end
   end
 end

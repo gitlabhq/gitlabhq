@@ -3,11 +3,19 @@ require 'spec_helper'
 describe API::API do
   include ApiHelpers
 
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
+  let!(:trigger_token) { 'secure token' }
+  let!(:trigger_token_2) { 'secure token 2' }
+  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
+  let!(:developer) { create(:project_member, user: user2, project: project, access_level: ProjectMember::DEVELOPER) }
+  let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token) }
+  let!(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2) }
+  let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
+
   describe 'POST /projects/:project_id/trigger' do
-    let!(:trigger_token) { 'secure token' }
-    let!(:project) { FactoryGirl.create(:project) }
-    let!(:project2) { FactoryGirl.create(:empty_project) }
-    let!(:trigger) { FactoryGirl.create(:ci_trigger, project: project, token: trigger_token) }
+    let!(:project2) { create(:empty_project) }
     let(:options) do
       {
         token: trigger_token
@@ -74,6 +82,35 @@ describe API::API do
           commit.builds.reload
           expect(commit.builds.first.trigger_request.variables).to eq(variables)
         end
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/triggets' do
+    context 'authenticated user with valid permissions' do
+      it 'should return list of triggers' do
+        get api("/projects/#{project.id}/triggers", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response).to be_a(Array)
+        expect(json_response[0]['token']).to eq(trigger_token)
+        expect(json_response[1]['token']).to eq(trigger_token_2)
+      end
+    end
+
+    context 'authenticated user with invalid permissions' do
+      it 'should not return triggers list' do
+        get api("/projects/#{project.id}/triggers", user2)
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'unauthentikated user' do
+      it 'should not return triggers list' do
+        get api("/projects/#{project.id}/triggers")
+
+        expect(response.status).to eq(401)
       end
     end
   end
