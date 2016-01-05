@@ -2,19 +2,21 @@
 - user = abuse_report.user
 %tr
   %td
-    - if reporter
-      = link_to reporter.name, reporter
-    - else
-      (removed)
-  %td
-    = abuse_report.created_at.to_s(:short)
-  %td
-    = abuse_report.message
-  %td
     - if user
-      = link_to user.name, user
+      = link_to user.name, [:admin, user]
+      .light.small
+        Joined #{time_ago_with_tooltip(user.created_at)}
     - else
       (removed)
+  %td
+    - if reporter
+      = link_to reporter.name, [:admin, reporter]
+    - else
+      (removed)
+    .light.small
+      = time_ago_with_tooltip(abuse_report.created_at)
+  %td
+    = markdown(abuse_report.message.squish!, pipeline: :single_line)
   %td
     - if user
       = link_to 'Remove user & report', admin_abuse_report_path(abuse_report, remove_user: true),
