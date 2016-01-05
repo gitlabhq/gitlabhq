@@ -28,7 +28,8 @@
           %span.back-to-milestone
             = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
               %strong
-                = issuable.milestone.reference_link_text
+                = icon('clock-o')
+                = issuable.milestone.title
         - else
           .light None
       .selectbox

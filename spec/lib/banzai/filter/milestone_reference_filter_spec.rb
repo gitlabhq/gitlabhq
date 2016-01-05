@@ -29,7 +29,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
     it 'links with adjacent text' do
       doc = reference_filter("milestone (#{reference}.)")
-      expect(doc.to_html).to match(/\(<a.+><i.+><\/i> #{Regexp.escape(milestone.title)}<\/a>\.\)/)
+      expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(milestone.title)}<\/a>\.\)/)
     end
 
     it 'includes a title attribute' do
@@ -41,7 +41,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       milestone.update_attribute(:title, %{"></a>whatever<a title="})
 
       doc = reference_filter("milestone #{reference}")
-      expect(doc.text).to eq "milestone  #{milestone.title}"
+      expect(doc.text).to eq "milestone #{milestone.title}"
     end
 
     it 'includes default classes' do

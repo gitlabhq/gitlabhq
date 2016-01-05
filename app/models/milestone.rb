@@ -76,7 +76,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def reference_link_text(from_project = nil)
-    %Q{<i class="fa fa-clock-o"></i> }.html_safe + self.title
+    self.title
   end
 
   def expired?

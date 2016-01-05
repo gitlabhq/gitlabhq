@@ -3,8 +3,6 @@ require 'banzai'
 module Banzai
   module Filter
     # HTML filter that replaces milestone references with links.
-    #
-    # This filter supports cross-project references.
     class MilestoneReferenceFilter < AbstractReferenceFilter
       def self.object_class
         Milestone
