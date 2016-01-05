@@ -62,6 +62,22 @@ module API
         present triggers, with: Entities::Trigger
       end
 
+      # Create trigger
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   POST /projects/:id/triggers
+      post ':id/triggers' do
+        authenticate!
+        authorize_admin_project
+
+        trigger = user_project.triggers.new
+        trigger.save
+
+        present trigger, with: Entities::Trigger
+      end
+
       # Delete trigger
       #
       # Parameters:

@@ -115,6 +115,35 @@ describe API::API do
     end
   end
 
+  describe 'POST /projects/:id/triggets' do
+    context 'authenticated user with valid permissions' do
+      it 'should create trigger' do
+        expect do
+          post api("/projects/#{project.id}/triggers", user)
+        end.to change{project.triggers.count}.by(1)
+
+        expect(response.status).to eq(201)
+        expect(json_response).to be_a(Hash)
+      end
+    end
+
+    context 'authenticated user with invalid permissions' do
+      it 'should not create trigger' do
+        post api("/projects/#{project.id}/triggers", user2)
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'unauthentikated user' do
+      it 'should not create trigger' do
+        post api("/projects/#{project.id}/triggers")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
   describe 'DELETE /projects/:id/triggets/:trigger_id' do
     context 'authenticated user with valid permissions' do
       it 'should delete trigger' do
