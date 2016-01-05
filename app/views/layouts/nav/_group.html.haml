@@ -25,14 +25,14 @@
         %span
           Issues
           - if current_user
-            %span.count= Issue.opened.of_group(@group).count
+            %span.count= number_with_delimiter(Issue.opened.of_group(@group).count)
     = nav_link(path: 'groups#merge_requests') do
       = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
         = icon('tasks fw')
         %span
           Merge Requests
           - if current_user
-            %span.count= MergeRequest.opened.of_group(@group).count
+            %span.count= number_with_delimiter(MergeRequest.opened.of_group(@group).count)
     = nav_link(controller: [:group_members]) do
       = link_to group_group_members_path(@group), title: 'Members' do
         = icon('users fw')

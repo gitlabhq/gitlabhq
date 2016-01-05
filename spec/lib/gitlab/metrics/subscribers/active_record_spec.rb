@@ -2,31 +2,34 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::Subscribers::ActiveRecord do
   let(:transaction) { Gitlab::Metrics::Transaction.new }
-
-  let(:subscriber) { described_class.new }
+  let(:subscriber)  { described_class.new }
 
   let(:event) do
     double(:event, duration: 0.2,
                    payload:  { sql: 'SELECT * FROM users WHERE id = 10' })
   end
 
-  before do
-    allow(subscriber).to receive(:current_transaction).and_return(transaction)
-
-    allow(Gitlab::Metrics).to receive(:last_relative_application_frame).
-      and_return(['app/models/foo.rb', 4])
-  end
-
   describe '#sql' do
-    it 'tracks the execution of a SQL query' do
-      sql    = 'SELECT * FROM users WHERE id = ?'
-      values = { duration: 0.2 }
-      tags   = { sql: sql, file: 'app/models/foo.rb', line: 4 }
+    describe 'without a current transaction' do
+      it 'simply returns' do
+        expect_any_instance_of(Gitlab::Metrics::Transaction).
+          to_not receive(:increment)
 
-      expect(transaction).to receive(:add_metric).
-        with(described_class::SERIES, values, tags)
+        subscriber.sql(event)
+      end
+    end
 
-      subscriber.sql(event)
+    describe 'with a current transaction' do
+      it 'increments the :sql_duration value' do
+        expect(subscriber).to receive(:current_transaction).
+          at_least(:once).
+          and_return(transaction)
+
+        expect(transaction).to receive(:increment).
+          with(:sql_duration, 0.2)
+
+        subscriber.sql(event)
+      end
     end
   end
 end

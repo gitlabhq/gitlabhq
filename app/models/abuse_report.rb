@@ -18,4 +18,10 @@ class AbuseReport < ActiveRecord::Base
   validates :user, presence: true
   validates :message, presence: true
   validates :user_id, uniqueness: true
+
+  def notify
+    return unless self.persisted?
+
+    AbuseReportMailer.notify(self.id).deliver_later
+  end
 end

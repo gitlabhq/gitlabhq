@@ -7,7 +7,7 @@
 - if @merge_requests.present?
   .issuable-filter-count
     %span.pull-right
-      = @merge_requests.total_count
+      = number_with_delimiter(@merge_requests.total_count)
       merge requests for this filter
 
   = paginate @merge_requests, theme: "gitlab"

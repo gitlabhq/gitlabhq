@@ -8,27 +8,27 @@
         %li{class: "#{'active' unless params[:filter]}"}
           = link_to admin_users_path do
             Active
-            %small.pull-right= User.active.count
+            %small.pull-right= number_with_delimiter(User.active.count)
         %li{class: "#{'active' if params[:filter] == "admins"}"}
           = link_to admin_users_path(filter: "admins") do
             Admins
-            %small.pull-right= User.admins.count
+            %small.pull-right= number_with_delimiter(User.admins.count)
         %li.filter-two-factor-enabled{class: "#{'active' if params[:filter] == 'two_factor_enabled'}"}
           = link_to admin_users_path(filter: 'two_factor_enabled') do
             2FA Enabled
-            %small.pull-right= User.with_two_factor.count
+            %small.pull-right= number_with_delimiter(User.with_two_factor.count)
         %li.filter-two-factor-disabled{class: "#{'active' if params[:filter] == 'two_factor_disabled'}"}
           = link_to admin_users_path(filter: 'two_factor_disabled') do
             2FA Disabled
-            %small.pull-right= User.without_two_factor.count
+            %small.pull-right= number_with_delimiter(User.without_two_factor.count)
         %li{class: "#{'active' if params[:filter] == "blocked"}"}
           = link_to admin_users_path(filter: "blocked") do
             Blocked
-            %small.pull-right= User.blocked.count
+            %small.pull-right= number_with_delimiter(User.blocked.count)
         %li{class: "#{'active' if params[:filter] == "wop"}"}
           = link_to admin_users_path(filter: "wop") do
             Without projects
-            %small.pull-right= User.without_projects.count
+            %small.pull-right= number_with_delimiter(User.without_projects.count)
       %hr
       = form_tag admin_users_path, method: :get, class: 'form-inline' do
         .form-group
@@ -42,7 +42,7 @@
   %section.col-md-9
     .panel.panel-default
       .panel-heading
-        Users (#{@users.total_count})
+        Users (#{number_with_delimiter(@users.total_count)})
         .panel-head-actions
           .dropdown.inline
             %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}

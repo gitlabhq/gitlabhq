@@ -43,7 +43,7 @@ describe SearchHelper do
       end
 
       it "includes the public group" do
-        group = create(:group, public: true)
+        group = create(:group)
         expect(search_autocomplete_opts(group.name).size).to eq(1)
       end
 

@@ -28,6 +28,9 @@ describe Gitlab::Metrics::Subscribers::ActionView do
         line: 4
       }
 
+      expect(transaction).to receive(:increment).
+        with(:view_duration, 2.1)
+
       expect(transaction).to receive(:add_metric).
         with(described_class::SERIES, values, tags)
 

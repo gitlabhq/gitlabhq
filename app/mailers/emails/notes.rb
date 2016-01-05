@@ -48,7 +48,7 @@ module Emails
 
       yield
 
-      SentNotification.record(@note, recipient_id, reply_key)
+      SentNotification.record_note(@note, recipient_id, reply_key)
     end
   end
 end
