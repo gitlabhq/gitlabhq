@@ -175,16 +175,40 @@ class Repository
   def size
     cache.fetch(:size) { raw_repository.size }
   end
+  
+  def diverging_commit_counts(branch)
+    root_ref_hash = raw_repository.rev_parse_target(root_ref).oid
+    cache.fetch(:"diverging_commit_counts_#{branch.name}") do
+      # Rugged seems to throw a `ReferenceError` when given branch_names rather
+      # than SHA-1 hashes
+      number_commits_behind = commits_between(branch.target, root_ref_hash).size
+      number_commits_ahead = commits_between(root_ref_hash, branch.target).size
+      
+      { behind: number_commits_behind, ahead: number_commits_ahead }
+    end
+  end
 
   def cache_keys
     %i(size branch_names tag_names commit_count
        readme version contribution_guide changelog license)
+  end
+  
+  def branch_cache_keys
+    branches.map do |branch|
+      :"diverging_commit_counts_#{branch.name}"
+    end
   end
 
   def build_cache
     cache_keys.each do |key|
       unless cache.exist?(key)
         send(key)
+      end
+    end
+    
+    branches.each do |branch|
+      unless cache.exist?(:"diverging_commit_counts_#{branch.name}")
+        send(:diverging_commit_counts, branch)
       end
     end
   end
@@ -203,12 +227,25 @@ class Repository
     cache_keys.each do |key|
       cache.expire(key)
     end
+    
+    expire_branch_cache
+  end
+  
+  def expire_branch_cache
+    branches.each do |branch|
+      cache.expire(:"diverging_commit_counts_#{branch.name}")
+    end
   end
 
   def rebuild_cache
     cache_keys.each do |key|
       cache.expire(key)
       send(key)
+    end
+    
+    branches.each do |branch|
+      cache.expire(:"diverging_commit_counts_#{branch.name}")
+      diverging_commit_counts(branch)
     end
   end
 
