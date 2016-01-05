@@ -71,6 +71,9 @@ module API
       expose :avatar_url
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
+
+      expose :build_allow_git_fetch, :build_timeout, :build_coverage_regex
+      expose :runners_token
     end
 
     class ProjectMember < UserBasic
