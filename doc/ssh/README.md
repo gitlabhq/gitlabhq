@@ -9,7 +9,7 @@ already has one by running the following command:
 cat ~/.ssh/id_rsa.pub
 ```
 
-If you see a long string starting with `ssh-rsa` or `ssh-dsa`, you can skip the `ssh-keygen` step.
+If you see a long string starting with `ssh-rsa`, you can skip the `ssh-keygen` step.
 
 Note: It is a best practice to use a password for an SSH key, but it is not
 required and you can skip creating a password by pressing enter. Note that
@@ -29,7 +29,7 @@ cat ~/.ssh/id_rsa.pub
 ```
 
 Copy-paste the key to the 'My SSH Keys' section under the 'SSH' tab in your
-user profile. Please copy the complete key starting with `ssh-` and ending
+user profile. Please copy the complete key starting with `ssh-rsa` and ending
 with your username and host.
 
 To copy your public key to the clipboard, use code below. Depending on your
