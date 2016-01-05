@@ -20,8 +20,9 @@ To generate a new SSH key, use the following command:
 ssh-keygen -t rsa -C "$your_email"
 ```
 This command will prompt you for a location and filename to store the key
-pair and for a password. When prompted for the location and filename, you
-can press enter to use the default.
+pair and for a password. When prompted for the location and filename, just
+press enter to use the default. If you use a different name, the key will not
+be used automatically.
 
 Use the command below to show your public key:
 ```bash
