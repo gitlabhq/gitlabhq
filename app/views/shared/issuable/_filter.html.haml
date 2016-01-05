@@ -38,9 +38,7 @@
           placeholder: 'Assignee', class: 'trigger-submit', any_user: "Any Assignee", null_user: true, first_user: true, current_user: true)
 
         .filter-item.inline.milestone-filter
-          = select_tag('milestone_title', projects_milestones_options,
-            class: 'select2 trigger-submit', include_blank: true,
-            data: {placeholder: 'Milestone'})
+          = multi_select_tag('Milestone', class: 'milestone-filter', header: projects_milestones_header_options)
 
         .filter-item.inline.labels-filter
           = select_tag('label_name', projects_labels_options,

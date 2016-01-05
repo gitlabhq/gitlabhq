@@ -36,6 +36,41 @@ module SelectsHelper
     hidden_field_tag(id, value, html)
   end
 
+  def multi_select_tag(name, opts = {})
+    css_class = "dropdown-menu "
+    css_class << (opts[:class] || '')
+    header = opts[:header] || ''
+    ul_html = {
+      class: css_class,
+      data: {
+        header: header,
+        data: opts[:header_url],
+        "multi-awesome" => '',
+        "data-object" => {
+          label: "title",
+          data: "id"
+        }
+      }
+    }
+
+    button_html = {
+      class: ["btn", "btn-default", "dropdown-toggle"],
+      type: "button",
+      data: {
+        toggle: "dropdown"
+      }
+    }
+
+    button_class = "btn btn-default dropdown-toggle"
+
+    content_tag :div, :class => "button-group" do
+      content_tag(:button, content_tag(:span, name) + 
+        content_tag(:span,nil ,:class => "caret"), 
+      button_html) +
+      content_tag(:ul, nil, ul_html)
+    end
+  end
+
   def groups_select_tag(id, opts = {})
     opts[:class] ||= ''
     opts[:class] << ' ajax-groups-select'

@@ -19,6 +19,10 @@ class Projects::MilestonesController < Projects::ApplicationController
 
     @milestones = @milestones.includes(:project)
     @milestones = @milestones.page(params[:page]).per(PER_PAGE)
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json  { render :json => @milestones }
+    end
   end
 
   def new
