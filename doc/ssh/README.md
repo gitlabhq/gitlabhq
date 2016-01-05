@@ -33,7 +33,7 @@ Copy-paste the key to the 'My SSH Keys' section under the 'SSH' tab in your
 user profile. Please copy the complete key starting with `ssh-rsa` and ending
 with your username and host.
 
-To copy your public key to the clipboard, use code below. Depending on your
+To copy your public key to the clipboard, use the code below. Depending on your
 OS you'll need to use a different command:
 
 **Windows:**
