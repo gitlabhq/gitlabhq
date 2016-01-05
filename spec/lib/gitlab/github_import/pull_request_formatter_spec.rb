@@ -124,6 +124,28 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
   end
 
+  describe '#cross_project?' do
+    context 'when source repo is not a fork' do
+      let(:local_repo) { OpenStruct.new(fork: false) }
+      let(:source_branch) { OpenStruct.new(ref: 'feature', repo: local_repo) }
+      let(:raw_data) { OpenStruct.new(base_data.merge(head: source_branch)) }
+
+      it 'returns false' do
+        expect(pull_request.cross_project?).to eq false
+      end
+    end
+
+    context 'when source repo is a fork' do
+      let(:forked_repo) { OpenStruct.new(fork: true) }
+      let(:source_branch) { OpenStruct.new(ref: 'feature', repo: forked_repo) }
+      let(:raw_data) { OpenStruct.new(base_data.merge(head: source_branch)) }
+
+      it 'returns true' do
+        expect(pull_request.cross_project?).to eq true
+      end
+    end
+  end
+
   describe '#number' do
     let(:raw_data) { OpenStruct.new(base_data.merge(number: 1347)) }
 
