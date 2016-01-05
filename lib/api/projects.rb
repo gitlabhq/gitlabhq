@@ -3,7 +3,7 @@ module API
   class Projects < Grape::API
     before { authenticate! }
 
-    resource :projects do
+    resource :projects, requirements: { id: /[^\/]+/ } do
       helpers do
         def map_public_to_visibility_level(attrs)
           publik = attrs.delete(:public)
