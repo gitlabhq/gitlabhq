@@ -70,46 +70,27 @@ describe PageLayoutHelper do
       expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
     end
 
-    context 'with @project' do
-      it 'uses Project avatar if available' do
-        project = double(avatar_url: 'http://example.com/uploads/avatar.png')
-        assign(:project, project)
+    %w(project user group).each do |type|
+      context "with @#{type} assigned" do
+        it "uses #{type.titlecase} avatar if available" do
+          object = double(avatar_url: 'http://example.com/uploads/avatar.png')
+          assign(type, object)
 
-        expect(helper.page_image).to eq project.avatar_url
+          expect(helper.page_image).to eq object.avatar_url
+        end
+
+        it 'falls back to the default when avatar_url is nil' do
+          object = double(avatar_url: nil)
+          assign(type, object)
+
+          expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+        end
       end
 
-      it 'falls back to the default' do
-        project = double(avatar_url: nil)
-        assign(:project, project)
-
-        expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
-      end
-    end
-
-    context 'with @user' do
-      it 'delegates to avatar_icon helper' do
-        user = double('User')
-        assign(:user, user)
-
-        expect(helper).to receive(:avatar_icon).with(user)
-
-        helper.page_image
-      end
-    end
-
-    context 'with @group' do
-      it 'uses Group avatar if available' do
-        group = double(avatar_url: 'http://example.com/uploads/avatar.png')
-        assign(:group, group)
-
-        expect(helper.page_image).to eq group.avatar_url
-      end
-
-      it 'falls back to the default' do
-        group = double(avatar_url: nil)
-        assign(:group, group)
-
-        expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+      context "with no assignments" do
+        it 'falls back to the default' do
+          expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+        end
       end
     end
   end

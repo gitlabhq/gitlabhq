@@ -49,12 +49,10 @@ module PageLayoutHelper
   def page_image
     default = image_url('gitlab_logo.png')
 
-    if @project
-      @project.avatar_url || default
-    elsif @user
-      avatar_icon(@user)
-    elsif @group
-      @group.avatar_url || default
+    subject = @project || @user || @group
+
+    if subject.present?
+      subject.avatar_url || default
     else
       default
     end
