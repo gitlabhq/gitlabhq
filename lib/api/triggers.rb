@@ -62,6 +62,32 @@ module API
         present triggers, with: Entities::Trigger
       end
 
+      # Get specific trigger of a project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   trigger_id (required) - The ID or `token` of a trigger to show; if trigger_id contains only digits it's
+      #                           treated as ID other ways it's reated as `key`
+      # Example Request:
+      #   GET /projects/:id/triggers/:trigger_id
+      get ':id/triggers/:trigger_id' do
+        authenticate!
+        authorize_admin_project
+
+        trigger_id = params[:trigger_id]
+        triggers = user_project.triggers
+        triggers =
+          if trigger_id.match(/^\d+$/)
+            triggers.where(id: trigger_id.to_i)
+          else
+            triggers.where(token: trigger_id)
+          end
+
+        return not_found!('Trigger') if triggers.empty?
+
+        present triggers.first, with: Entities::Trigger
+      end
+
       # Create trigger
       #
       # Parameters:

@@ -5,8 +5,8 @@ describe API::API do
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:trigger_token) { 'secure token' }
-  let!(:trigger_token_2) { 'secure token 2' }
+  let!(:trigger_token) { 'secure_token' }
+  let!(:trigger_token_2) { 'secure_token_2' }
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
   let!(:developer) { create(:project_member, user: user2, project: project, access_level: ProjectMember::DEVELOPER) }
@@ -86,7 +86,7 @@ describe API::API do
     end
   end
 
-  describe 'GET /projects/:id/triggets' do
+  describe 'GET /projects/:id/triggers' do
     context 'authenticated user with valid permissions' do
       it 'should return list of triggers' do
         get api("/projects/#{project.id}/triggers", user)
@@ -115,7 +115,53 @@ describe API::API do
     end
   end
 
-  describe 'POST /projects/:id/triggets' do
+  describe 'GET /projects/:id/triggers/:triggers_id' do
+    context 'authenticated user with valid permissions' do
+      context 'ID is used as :trigger_id' do
+        it 'should return trigger details' do
+          get api("/projects/#{project.id}/triggers/#{trigger.id}", user)
+
+          expect(response.status).to eq(200)
+          expect(json_response).to be_a(Hash)
+          expect(json_response['token']).to eq(trigger_token)
+        end
+      end
+
+      context '`token` is used as :trigger_id' do
+        it 'should return trigger details' do
+          get api("/projects/#{project.id}/triggers/#{trigger.token}", user)
+
+          expect(response.status).to eq(200)
+          expect(json_response).to be_a(Hash)
+          expect(json_response['id']).to eq(trigger.id)
+        end
+      end
+
+      it 'should responde with 404 Not Found if requesting non-existing trigger' do
+        get api("/projects/#{project.id}/triggers/9999", user)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'authenticated user with invalid permissions' do
+      it 'should not return triggers list' do
+        get api("/projects/#{project.id}/triggers/#{trigger.id}", user2)
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'unauthentikated user' do
+      it 'should not return triggers list' do
+        get api("/projects/#{project.id}/triggers/#{trigger.id}")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/triggers' do
     context 'authenticated user with valid permissions' do
       it 'should create trigger' do
         expect do
@@ -144,7 +190,7 @@ describe API::API do
     end
   end
 
-  describe 'DELETE /projects/:id/triggets/:trigger_id' do
+  describe 'DELETE /projects/:id/triggers/:trigger_id' do
     context 'authenticated user with valid permissions' do
       it 'should delete trigger' do
         expect do
