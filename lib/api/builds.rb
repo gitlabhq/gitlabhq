@@ -8,7 +8,7 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   scope (optional) - The scope of builds to show (one of: all, finished, running)
+      #   scope (optional) - The scope of builds to show (one of: all, finished, running; default: all)
       #   page (optional) - The page number for pagination
       #   per_page (ooptional) - The value of items per page to show
       # Example Request:
@@ -24,6 +24,7 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   sha (required) - The SHA id of a commit
+      #   scope (optional) - The scope of builds to show (one of: all, finished, running; default: all)
       # Example Request:
       #   GET /projects/:id/builds/commit/:sha
       get ':id/builds/commit/:sha' do
