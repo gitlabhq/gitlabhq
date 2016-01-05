@@ -40,8 +40,8 @@ get the commit comment added to it.
 
 You can also close a task with a message containing: `fix #123456`.
 
-You can find your Api Keys here:
-http://developer.asana.com/documentation/#api_keys'
+You can create a Personal Access Token here:
+http://app.asana.com/-/account_api'
   end
 
   def to_param
@@ -53,14 +53,12 @@ http://developer.asana.com/documentation/#api_keys'
       {
         type: 'text',
         name: 'api_key',
-        placeholder: 'User API token. User must have access to task,
-all comments will be attributed to this user.'
+        placeholder: 'User Personal Access Token. User must have access to task, all comments will be attributed to this user.'
       },
       {
         type: 'text',
         name: 'restrict_to_branch',
-        placeholder: 'Comma-separated list of branches which will be
-automatically inspected. Leave blank to include all branches.'
+        placeholder: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.'
       }
     ]
   end
@@ -69,58 +67,58 @@ automatically inspected. Leave blank to include all branches.'
     %w(push)
   end
 
+  def client
+    @_client ||= begin
+      Asana::Client.new do |c|
+        c.authentication :access_token, api_key
+      end
+    end
+  end
+
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    Asana.configure do |client|
-      client.api_key = api_key
-    end
-
-    user = data[:user_name]
-    branch = Gitlab::Git.ref_name(data[:ref])
-
-    branch_restriction = restrict_to_branch.to_s
-
     # check the branch restriction is poplulated and branch is not included
+    branch = Gitlab::Git.ref_name(data[:ref])
+    branch_restriction = restrict_to_branch.to_s
     if branch_restriction.length > 0 && branch_restriction.index(branch).nil?
       return
     end
 
+    user = data[:user_name]
     project_name = project.name_with_namespace
-    push_msg = user + ' pushed to branch ' + branch + ' of ' + project_name
 
     data[:commits].each do |commit|
-      check_commit(' ( ' + commit[:url] + ' ): ' + commit[:message], push_msg)
+      push_msg = "#{user} pushed to branch #{branch} of #{project_name} ( #{commit[:url]} ):"
+      check_commit(commit[:message], push_msg)
     end
   end
 
   def check_commit(message, push_msg)
-    task_list = []
-    close_list = []
+    # matches either:
+    # - #1234
+    # - https://app.asana.com/0/0/1234
+    # optionally preceded with:
+    # - fix/ed/es/ing
+    # - close/s/d
+    # - closing
+    issue_finder = /(fix\w*|clos[ei]\w*+)?\W*(?:https:\/\/app\.asana\.com\/\d+\/\d+\/(\d+)|#(\d+))/i
 
-    message.split("\n").each do |line|
-      # look for a task ID or a full Asana url
-      task_list.concat(line.scan(/#(\d+)/))
-      task_list.concat(line.scan(/https:\/\/app\.asana\.com\/\d+\/\d+\/(\d+)/))
-      # look for a word starting with 'fix' followed by a task ID
-      close_list.concat(line.scan(/(fix\w*)\W*#(\d+)/i))
-    end
+    message.scan(issue_finder).each do |tuple|
+      # tuple will be
+      # [ 'fix', 'id_from_url', 'id_from_pound' ]
+      taskid = tuple[2] || tuple[1]
 
-    # post commit to every taskid found
-    task_list.each do |taskid|
-      task = Asana::Task.find(taskid[0])
+      begin
+        task = Asana::Task.find_by_id(client, taskid)
+        task.add_comment(text: "#{push_msg} #{message}")
 
-      if task
-        task.create_story(text: push_msg + ' ' + message)
-      end
-    end
-
-    # close all tasks that had 'fix(ed/es/ing) #:id' in them
-    close_list.each do |taskid|
-      task = Asana::Task.find(taskid.last)
-
-      if task
-        task.modify(completed: true)
+        if tuple[0]
+          task.update(completed: true)
+        end
+      rescue => e
+        Rails.logger.error(e.message)
+        next
       end
     end
   end
