@@ -27,22 +27,12 @@ module PageLayoutHelper
   #
   # Returns an HTML-safe String.
   def page_description(description = nil)
-    @page_description ||= page_description_default
+    @page_description ||= brand_title
 
     if description.present?
       @page_description = description.squish
     else
       sanitize(@page_description, tags: []).truncate_words(30)
-    end
-  end
-
-  # Default value for page_description when one hasn't been defined manually by
-  # a view
-  def page_description_default
-    if @project
-      @project.description || brand_title
-    else
-      brand_title
     end
   end
 

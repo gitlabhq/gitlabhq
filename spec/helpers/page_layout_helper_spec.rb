@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe PageLayoutHelper do
   describe 'page_description' do
-    it 'defaults to value returned by page_description_default helper' do
-      allow(helper).to receive(:page_description_default).and_return('Foo')
+    it 'defaults to value returned by brand_title helper' do
+      allow(helper).to receive(:brand_title).and_return('Foo')
 
       expect(helper.page_description).to eq 'Foo'
     end
@@ -39,29 +39,6 @@ describe PageLayoutHelper do
       helper.page_description("<b>Bold</b> <h1>Header</h1>")
 
       expect(helper.page_description).to eq 'Bold Header'
-    end
-  end
-
-  describe 'page_description_default' do
-    it 'uses Project description when available' do
-      project = double(description: 'Project Description')
-      assign(:project, project)
-
-      expect(helper.page_description_default).to eq 'Project Description'
-    end
-
-    it 'uses brand_title when Project description is nil' do
-      project = double(description: nil)
-      assign(:project, project)
-
-      expect(helper).to receive(:brand_title).and_return('Brand Title')
-      expect(helper.page_description_default).to eq 'Brand Title'
-    end
-
-    it 'falls back to brand_title' do
-      allow(helper).to receive(:brand_title).and_return('Brand Title')
-
-      expect(helper.page_description_default).to eq 'Brand Title'
     end
   end
 
