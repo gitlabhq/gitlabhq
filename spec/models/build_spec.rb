@@ -394,21 +394,20 @@ describe Ci::Build, models: true do
 
   describe :artifacts_browser_supported? do
     subject { build.artifacts_browser_supported? }
-    before do
-      file = fixture_file_upload(archive_file, archive_type)
-      build.update_attributes(artifacts_file: file)
-    end
-
-    context 'artifacts archive is not a zip file' do
-      let(:archive_file) { Rails.root + 'spec/fixtures/banana_sample.gif' }
-      let(:archive_type) { 'image/gif' }
-
+    context 'artifacts metadata does not exist' do
       it { is_expected.to be_falsy }
     end
 
-    context 'artifacts archive is a zip file' do
-      let(:archive_file) { Rails.root + 'spec/fixtures/ci_build_artifacts.zip' }
-      let(:archive_type) { 'application/zip' }
+    context 'artifacts archive is a zip file and metadata exists' do
+      before do
+        fixture_dir = Rails.root + 'spec/fixtures/'
+        archive = fixture_file_upload(fixture_dir + 'ci_build_artifacts.zip',
+                                      'application/zip')
+        metadata = fixture_file_upload(fixture_dir + 'ci_build_artifacts_metadata.gz',
+                                       'application/x-gzip')
+        build.update_attributes(artifacts_file: archive)
+        build.update_attributes(artifacts_metadata: metadata)
+      end
 
       it { is_expected.to be_truthy }
     end
