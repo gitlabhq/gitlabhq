@@ -41,7 +41,7 @@ describe AsanaService, models: true do
     let(:project) { create(:project) }
 
     def create_data_for_commits(*messages)
-      data = {
+      {
         object_kind: 'push',
         ref: 'master',
         user_name: user.name,
