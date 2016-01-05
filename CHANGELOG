@@ -12,6 +12,7 @@ v 8.4.0 (unreleased)
   - Add CAS support (tduehr)
   - Add link to merge request on build detail page.
   - Revert back upvote and downvote button to the issue and MR pages
+  - Change single user API endpoint to return more detailed data (Michael Potthoff)
 
 v 8.3.2 (unreleased)
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
