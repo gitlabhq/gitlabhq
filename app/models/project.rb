@@ -51,6 +51,7 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
+  include ProjectsSearch
 
   extend Gitlab::ConfigHelper
 
