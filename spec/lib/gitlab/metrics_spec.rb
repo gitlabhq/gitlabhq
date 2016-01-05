@@ -1,27 +1,15 @@
 require 'spec_helper'
 
 describe Gitlab::Metrics do
-  describe '.pool_size' do
-    it 'returns a Fixnum' do
-      expect(described_class.pool_size).to be_an_instance_of(Fixnum)
-    end
-  end
-
-  describe '.timeout' do
-    it 'returns a Fixnum' do
-      expect(described_class.timeout).to be_an_instance_of(Fixnum)
+  describe '.settings' do
+    it 'returns a Hash' do
+      expect(described_class.settings).to be_an_instance_of(Hash)
     end
   end
 
   describe '.enabled?' do
     it 'returns a boolean' do
       expect([true, false].include?(described_class.enabled?)).to eq(true)
-    end
-  end
-
-  describe '.hostname' do
-    it 'returns a String containing the hostname' do
-      expect(described_class.hostname).to eq(Socket.gethostname)
     end
   end
 
