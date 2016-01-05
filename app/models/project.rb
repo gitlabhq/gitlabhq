@@ -43,6 +43,7 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
+  include ProjectsSearch
 
   extend Gitlab::ConfigHelper
 

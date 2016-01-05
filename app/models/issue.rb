@@ -27,6 +27,8 @@ class Issue < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include IssuesSearch
+
   WEIGHT_RANGE = 1..9
 
   ActsAsTaggableOn.strict_case_match = true
