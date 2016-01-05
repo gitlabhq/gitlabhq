@@ -69,14 +69,3 @@
 
 %div{class: "project-show-#{default_project_view}"}
   = render default_project_view
-
-- if current_user
-  - access = user_max_access_in_project(current_user.id, @project)
-  - if access
-    .prepend-top-20.project-footer
-      .gray-content-block.footer-block.center
-        You have #{access} access to this project.
-        - if @project.project_member_by_id(current_user)
-          = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
-            data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project', class: 'cred' do
-            Leave this project
