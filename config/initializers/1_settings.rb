@@ -131,6 +131,7 @@ Settings.omniauth.cas3['session_duration'] ||= 8.hours
 Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
 Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
+
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
 
@@ -144,16 +145,16 @@ Settings.gitlab['default_projects_limit'] ||= 10
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
-Settings.gitlab['host']       ||= 'localhost'
+Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
-Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
-Settings.gitlab['email_display_name'] ||= "GitLab"
-Settings.gitlab['email_reply_to'] ||= "noreply@#{Settings.gitlab.host}"
+Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
+Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
+Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'

@@ -37,9 +37,22 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
         .to eq urls.namespace_project_url(project.namespace, project)
     end
 
-    it 'adds to the results hash' do
-      result = reference_pipeline_result("Hey #{reference}")
-      expect(result[:references][:user]).to eq [project.creator]
+    context "when the author is a member of the project" do
+
+      it 'adds to the results hash' do
+        result = reference_pipeline_result("Hey #{reference}", author: project.creator)
+        expect(result[:references][:user]).to eq [project.creator]
+      end
+    end
+
+    context "when the author is not a member of the project" do
+
+      let(:other_user) { create(:user) }
+
+      it "doesn't add to the results hash" do
+        result = reference_pipeline_result("Hey #{reference}", author: other_user)
+        expect(result[:references][:user]).to eq []
+      end
     end
   end
 

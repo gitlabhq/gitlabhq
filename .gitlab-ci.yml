@@ -12,6 +12,7 @@ before_script:
 
 spec:feature:
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
   tags:
     - ruby

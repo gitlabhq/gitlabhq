@@ -18,8 +18,7 @@
   %meta{property: 'twitter:image',        content: page_image}
   = page_card_meta_tags
 
-  - page_title site_name
-  %title= page_title
+  %title= page_title(site_name)
   %meta{name: "description", content: page_description}
 
   = favicon_link_tag 'favicon.ico'
@@ -33,7 +32,8 @@
 
   = include_gon
 
-  %meta{name: 'referrer', content: 'origin-when-cross-origin'}
+  - unless browser.safari?
+    %meta{name: 'referrer', content: 'origin-when-cross-origin'}
   %meta{name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1'}
   %meta{name: 'theme-color', content: '#474D57'}
 
