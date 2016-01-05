@@ -311,6 +311,13 @@ describe Gitlab::GitAccess, lib: true do
         project.git_hook.update(max_file_size: 2)
         expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
       end
+
+      it "returns true when size is nil" do
+        allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
+        project.create_git_hook
+        project.git_hook.update(max_file_size: 2)
+        expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
+      end
     end
   end
 end
