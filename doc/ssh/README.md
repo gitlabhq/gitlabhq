@@ -9,7 +9,7 @@ already has one by running the following command:
 cat ~/.ssh/id_rsa.pub
 ```
 
-If you see a long string starting with `ssh-rsa` or `ssh-dsa`, you can skip the `ssh-keygen` step.
+If you see a long string starting with `ssh-rsa`, you can skip the `ssh-keygen` step.
 
 Note: It is a best practice to use a password for an SSH key, but it is not
 required and you can skip creating a password by pressing enter. Note that
@@ -20,8 +20,9 @@ To generate a new SSH key, use the following command:
 ssh-keygen -t rsa -C "$your_email"
 ```
 This command will prompt you for a location and filename to store the key
-pair and for a password. When prompted for the location and filename, you
-can press enter to use the default.
+pair and for a password. When prompted for the location and filename, just
+press enter to use the default. If you use a different name, the key will not
+be used automatically.
 
 Use the command below to show your public key:
 ```bash
@@ -29,10 +30,10 @@ cat ~/.ssh/id_rsa.pub
 ```
 
 Copy-paste the key to the 'My SSH Keys' section under the 'SSH' tab in your
-user profile. Please copy the complete key starting with `ssh-` and ending
+user profile. Please copy the complete key starting with `ssh-rsa` and ending
 with your username and host.
 
-To copy your public key to the clipboard, use code below. Depending on your
+To copy your public key to the clipboard, use the code below. Depending on your
 OS you'll need to use a different command:
 
 **Windows:**

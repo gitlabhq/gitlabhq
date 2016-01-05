@@ -18,13 +18,26 @@
       = visibility_level_label(@project.visibility_level)
 
   .cover-controls
-    - if can?(current_user, :admin_project, @project)
-      = link_to edit_project_path(@project), class: 'btn btn-gray' do
-        = icon('pencil')
     - if current_user
-      &nbsp;
       = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), class: 'btn btn-gray' do
         = icon('rss')
+      - access = user_max_access_in_project(current_user.id, @project)
+      - can_edit = can?(current_user, :admin_project, @project)
+      - if access || can_edit
+        %span.dropdown.project-settings-dropdown
+          %a.dropdown-new.btn.btn-gray#project-settings-button{href: '#', 'data-toggle' => 'dropdown'}
+            = icon('cog')
+            = icon('angle-down')
+          %ul.dropdown-menu.dropdown-menu-right
+            - if can_edit
+              %li
+                = link_to edit_project_path(@project) do
+                  Edit Project
+            - if access
+              %li
+                = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
+                  data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
+                  Leave Project
 
   .project-repo-buttons
     .split-one.count-buttons

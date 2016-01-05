@@ -43,15 +43,19 @@ class @AwardsHandler
 
   decrementCounter: (emoji) ->
     counter = @findEmojiIcon(emoji).siblings(".counter")
+    emojiIcon = counter.parent()
 
     if parseInt(counter.text()) > 1
       counter.text(parseInt(counter.text()) - 1)
-      counter.parent().removeClass("active")
+      emojiIcon.removeClass("active")
       @removeMeFromAuthorList(emoji)
+    else if emoji =="thumbsup" || emoji == "thumbsdown"
+      emojiIcon.tooltip("destroy")
+      counter.text(0)
+      emojiIcon.removeClass("active")
     else
-      award = counter.parent()
-      award.tooltip("destroy")
-      award.remove()
+      emojiIcon.tooltip("destroy")
+      emojiIcon.remove()
 
   removeMeFromAuthorList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
@@ -127,21 +131,19 @@ class @AwardsHandler
 
   getFrequentlyUsedEmojis: ->
     frequently_used_emojis = ($.cookie('frequently_used_emojis') || "").split(",")
-
-    frequently_used_emojis = ["thumbsup", "thumbsdown"].concat(frequently_used_emojis)
-
     _.compact(_.uniq(frequently_used_emojis))
 
   renderFrequentlyUsedBlock: ->
-    frequently_used_emojis = @getFrequentlyUsedEmojis()
+    if $.cookie('frequently_used_emojis')
+      frequently_used_emojis = @getFrequentlyUsedEmojis()
 
-    ul = $("<ul>")
+      ul = $("<ul>")
 
-    for emoji in frequently_used_emojis
-      do (emoji) ->
-        $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
+      for emoji in frequently_used_emojis
+        do (emoji) ->
+          $(".emoji-menu-content [data-emoji='#{emoji}']").closest("li").clone().appendTo(ul)
 
-    $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
+      $("input.emoji-search").after(ul).after($("<h5>").text("Frequently used"))
 
   setupSearch: ->
     $("input.emoji-search").keyup (ev) =>

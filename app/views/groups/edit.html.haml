@@ -24,15 +24,6 @@
             %hr
             = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
-      .form-group
-        %hr
-        = f.label :public, class: 'control-label' do
-          Public
-        .col-sm-10
-          .checkbox
-            = f.check_box :public
-            %span.descr Make this group public (even if there is no any public project inside this group)
-
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"
 

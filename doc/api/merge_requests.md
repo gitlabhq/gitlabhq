@@ -4,8 +4,7 @@
 
 Get all merge requests for this project. 
 The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
-The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests. With GitLab 8.2 the return fields `upvotes` and
-`downvotes` are deprecated and always return `0`.
+The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
 ```
 GET /projects/:id/merge_requests
@@ -58,7 +57,7 @@ Parameters:
 
 ## Get single MR
 
-Shows information about a single merge request. With GitLab 8.2 the return fields `upvotes` and `downvotes` are deprecated and always return `0`.
+Shows information about a single merge request.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id
@@ -141,8 +140,6 @@ Parameters:
 ## Get single MR changes
 
 Shows information about the merge request including its files and changes.
-With GitLab 8.2 the return fields `upvotes` and `downvotes` are deprecated and
-always return `0`.
 
 ```
 GET /projects/:id/merge_request/:merge_request_id/changes
@@ -213,9 +210,7 @@ Parameters:
 
 ## Create MR
 
-Creates a new merge request. With GitLab 8.2 the return fields `upvotes` and `
-downvotes` are deprecated and always return `0`.
-
+Creates a new merge request.
 ```
 POST /projects/:id/merge_requests
 ```
@@ -266,8 +261,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Update MR
 
-Updates an existing merge request. You can change the target branch, title, or even close the MR. With GitLab 8.2 the return fields `upvotes` and `downvotes`
-are deprecated and always return `0`.
+Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
 ```
 PUT /projects/:id/merge_request/:merge_request_id
@@ -318,8 +312,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Accept MR
 
-Merge changes submitted with MR using this API. With GitLab 8.2 the return
-fields `upvotes` and `downvotes` are deprecated and always return `0`.
+Merge changes submitted with MR using this API.
 
 If merge success you get `200 OK`.
 

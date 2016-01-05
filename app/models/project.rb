@@ -81,6 +81,7 @@ class Project < ActiveRecord::Base
   acts_as_taggable_on :tags
 
   attr_accessor :new_default_branch
+  attr_accessor :old_path_with_namespace
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
@@ -555,7 +556,9 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions(old_path_with_namespace)
-    NotificationService.new.project_was_moved(self, old_path_with_namespace)
+    # New project path needs to be committed to the DB or notification will
+    # retrieve stale information
+    run_after_commit { NotificationService.new.project_was_moved(self, old_path_with_namespace) }
   end
 
   def owner
@@ -699,6 +702,11 @@ class Project < ActiveRecord::Base
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
         reset_events_cache
+
+        @old_path_with_namespace = old_path_with_namespace
+
+        SystemHooksService.new.execute_hooks_for(self, :rename)
+
         @repository = nil
       rescue
         # Returning false does not rollback after_* transaction but gives
