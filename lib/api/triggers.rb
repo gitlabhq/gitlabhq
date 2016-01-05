@@ -61,6 +61,25 @@ module API
 
         present triggers, with: Entities::Trigger
       end
+
+      # Delete trigger
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   trigger_id - The ID of trigger to delete
+      # Example Request:
+      #   DELETE /projects/:id/triggers/:trigger_id
+      delete ':id/triggers/:trigger_id' do
+        authenticate!
+        authorize_admin_project
+
+        trigger = user_project.triggers.where(id: params[:trigger_id].to_i).first
+        return not_found!('Trigger') unless trigger
+
+        trigger.destroy
+
+        present trigger, with: Entities::Trigger
+      end
     end
   end
 end

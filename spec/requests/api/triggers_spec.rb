@@ -114,4 +114,37 @@ describe API::API do
       end
     end
   end
+
+  describe 'DELETE /projects/:id/triggets/:trigger_id' do
+    context 'authenticated user with valid permissions' do
+      it 'should delete trigger' do
+        expect do
+          delete api("/projects/#{project.id}/triggers/#{trigger.id}", user)
+        end.to change{project.triggers.count}.by(-1)
+        expect(response.status).to eq(200)
+      end
+
+      it 'should responde with 404 Not Found if requesting non-existing trigger' do
+        delete api("/projects/#{project.id}/triggers/9999", user)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'authenticated user with invalid permissions' do
+      it 'should not delete trigger' do
+        delete api("/projects/#{project.id}/triggers/#{trigger.id}", user2)
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'unauthentikated user' do
+      it 'should not delete trigger' do
+        delete api("/projects/#{project.id}/triggers/#{trigger.id}")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
 end
