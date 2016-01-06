@@ -33,6 +33,7 @@ gem 'omniauth-saml',          '~> 1.4.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
+gem 'omniauth-azure-oauth2'
 gem 'rack-oauth2',            '~> 1.2.1'
 
 # reCAPTCHA protection

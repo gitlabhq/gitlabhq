@@ -488,6 +488,10 @@ GEM
       activesupport
       nokogiri (>= 1.4.4)
       omniauth (~> 1.0)
+    omniauth-azure-oauth2 (0.0.6)
+      jwt (~> 1.0)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.1)
     opennebula (4.14.2)
       json
       nokogiri
@@ -927,6 +931,7 @@ DEPENDENCIES
   omniauth-shibboleth (~> 1.2.0)
   omniauth-twitter (~> 1.2.0)
   omniauth_crowd
+  omniauth-azure-oauth2
   org-ruby (~> 0.9.12)
   paranoia (~> 2.0)
   pg (~> 0.18.2)
