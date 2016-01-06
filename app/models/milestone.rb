@@ -112,9 +112,9 @@ class Milestone < ActiveRecord::Base
   def expires_at
     if due_date
       if due_date.past?
-        "expired at #{due_date.strftime('%b %-d, %Y')}"
+        "expired on #{due_date.to_s(:medium)}"
       else
-        "expires at #{due_date.strftime('%b %-d, %Y')}"
+        "expires on #{due_date.to_s(:medium)}"
       end
     end
   end

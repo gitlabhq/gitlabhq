@@ -4,7 +4,7 @@
   %ul.well-list
     %li
       %span.light Member since
-      %strong= user.created_at.strftime('%b %-d, %Y')
+      %strong= user.created_at.to_s(:medium)
     - unless user.public_email.blank?
       %li
         %span.light E-mail:

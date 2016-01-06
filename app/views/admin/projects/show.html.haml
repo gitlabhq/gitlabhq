@@ -38,7 +38,7 @@
         %li
           %span.light Created on:
           %strong
-            = @project.created_at.strftime('%B %-d, %Y')
+            = @project.created_at.to_s(:medium)
 
         %li
           %span.light http:

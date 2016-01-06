@@ -21,7 +21,7 @@
       %span
         #{@user.bio}.
     %span
-      Member since #{@user.created_at.strftime('%b %d, %Y')}
+      Member since #{@user.created_at.to_s(:medium)}
 
   .cover-desc
     - unless @user.public_email.blank?

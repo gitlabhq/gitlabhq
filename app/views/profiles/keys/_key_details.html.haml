@@ -10,7 +10,7 @@
           %strong= @key.title
         %li
           %span.light Created on:
-          %strong= @key.created_at.strftime('%b %-d, %Y')
+          %strong= @key.created_at.to_s(:medium)
 
   .col-md-8
     %p
