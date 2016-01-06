@@ -1,6 +1,8 @@
 module Gitlab
   module GithubImport
     class Importer
+      include Gitlab::ShellAdapter
+
       attr_reader :project, :client
 
       def initialize(project)
@@ -14,8 +16,11 @@ module Gitlab
       def execute
         import_issues
         import_pull_requests
+        import_wiki
 
         true
+      rescue Gitlab::Shell::Error
+        false
       end
 
       private
@@ -64,6 +69,14 @@ module Gitlab
         comments.each do |raw_data|
           comment = CommentFormatter.new(project, raw_data)
           noteable.notes.create!(comment.attributes)
+        end
+      end
+
+      def import_wiki
+        unless project.wiki_enabled?
+          wiki = WikiFormatter.new(project)
+          gitlab_shell.import_repository(wiki.path_with_namespace, wiki.import_url)
+          project.update_attribute(:wiki_enabled, true)
         end
       end
     end
