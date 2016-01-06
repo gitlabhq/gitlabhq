@@ -22,6 +22,7 @@ class @MergeRequest
 
     if $("a.btn-close").length
       @initTaskList()
+      @initMergeRequestBtnEventListeners()
 
   # Local jQuery finder
   $: (selector) ->
@@ -34,6 +35,48 @@ class @MergeRequest
     else
       # Show the first tab (Commits)
       $('.merge-request-tabs a[data-toggle="tab"]:first').tab('show')
+
+  initMergeRequestBtnEventListeners: ->
+    _this = @
+    mergeRequestFailMessage = 'Unable to update this merge request at this time.'
+    $('a.btn-close, a.btn-reopen').on 'click', (e) ->
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      $this = $(this)
+      isClose = $this.hasClass('btn-close')
+      shouldSubmit = $this.hasClass('btn-comment')
+      if shouldSubmit
+        _this.submitNoteForm($this.closest('form'))
+      $this.prop('disabled', true)
+      url = $this.attr('href')
+      $.ajax
+        type: 'PUT',
+        url: url,
+        error: (jqXHR, textStatus, errorThrown) ->
+          mergeRequestStatus = if isClose then 'close' else 'open'
+          new Flash(mergeRequestFailMessage, 'alert')
+        success: (data, textStatus, jqXHR) ->
+          if data.saved
+            if isClose
+              $('a.btn-close').addClass('hidden')
+              $('a.issuable-edit').addClass('hidden')
+              $('a.btn-reopen').removeClass('hidden')
+              $('div.status-box-closed').removeClass('hidden')
+              $('div.status-box-open').addClass('hidden')
+            else
+              $('a.btn-reopen').addClass('hidden')
+              $('a.issuable-edit').removeClass('hidden')
+              $('a.btn-close').removeClass('hidden')
+              $('div.status-box-closed').addClass('hidden')
+              $('div.status-box-open').removeClass('hidden')
+          else
+            new Flash(mergeRequestFailMessage, 'alert')
+          $this.prop('disabled', false)
+
+  submitNoteForm: (form) =>
+    noteText = form.find("textarea.js-note-text").val()
+    if noteText.trim().length > 0
+      form.submit()
 
   showAllCommits: ->
     this.$('.first-commits').remove()

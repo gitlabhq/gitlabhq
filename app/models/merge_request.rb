@@ -456,16 +456,6 @@ class MergeRequest < ActiveRecord::Base
     ::Gitlab::GitAccess.new(user, project).can_push_to_branch?(target_branch)
   end
 
-  def state_human_name
-    if merged?
-      "Merged"
-    elsif closed?
-      "Closed"
-    else
-      "Open"
-    end
-  end
-
   def target_sha
     @target_sha ||= target_project.
       repository.commit(target_branch).sha
