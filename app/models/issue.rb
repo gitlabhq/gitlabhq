@@ -33,7 +33,7 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   validates :project, presence: true
 
-  scope :of_group, ->(group) { where(project_id: group.project_ids) }
+  scope :of_group, ->(group) { where(project_id: group.projects.select(:id)) }
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
 
