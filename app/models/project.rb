@@ -775,6 +775,8 @@ class Project < ActiveRecord::Base
   end
 
   def change_head(branch)
+    # Cached divergent commit counts are based on repository head
+    repository.expire_branch_cache
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
