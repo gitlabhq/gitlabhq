@@ -29,6 +29,13 @@
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
 #  import_error           :text
+#  ci_id                  :integer
+#  builds_enabled         :boolean          default(TRUE), not null
+#  shared_runners_enabled :boolean          default(TRUE), not null
+#  runners_token          :string
+#  build_coverage_regex   :string
+#  build_allow_git_fetch  :boolean          default(TRUE), not null
+#  build_timeout          :integer          default(3600), not null
 #
 
 require 'carrierwave/orm/activerecord'
