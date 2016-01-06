@@ -21,7 +21,7 @@
       %span
         #{@user.bio}.
     %span
-      Member since #{@user.created_at.stamp("Aug 21, 2011")}
+      Member since #{@user.created_at.strftime('%b %d, %Y')}
 
   .cover-desc
     - unless @user.public_email.blank?

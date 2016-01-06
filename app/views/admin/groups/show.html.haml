@@ -30,7 +30,7 @@
         %li
           %span.light Created on:
           %strong
-            = @group.created_at.stamp("March 1, 1999")
+            = @group.created_at.strftime('%B %-d, %Y')
 
     .panel.panel-default
       .panel-heading
