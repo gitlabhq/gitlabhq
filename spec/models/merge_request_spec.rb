@@ -193,16 +193,6 @@ describe MergeRequest, models: true do
       expect(subject).to be_work_in_progress
     end
 
-    it "detects the 'WIP' prefix" do
-      subject.title = "WIP#{subject.title}"
-      expect(subject).to be_work_in_progress
-    end
-
-    it "detects the 'WIP:' prefix" do
-      subject.title = "WIP:#{subject.title}"
-      expect(subject).to be_work_in_progress
-    end
-
     it "detects the '[WIP]' prefix" do
       subject.title = "[WIP]#{subject.title}"
       expect(subject).to be_work_in_progress
