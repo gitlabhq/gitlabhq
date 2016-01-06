@@ -12,6 +12,7 @@ v 8.4.0 (unreleased)
   - Add "Frequently used" category to emoji picker
   - Add CAS support (tduehr)
   - Add link to merge request on build detail page
+  - Fix: Problem with projects ending with .keys (Jose Corcuera)
   - Revert back upvote and downvote button to the issue and MR pages
   - Swap position of Assignee and Author selector on Issuables (Zeger-Jan van de Weg)
   - Add system hook messages for project rename and transfer (Steve Norman)

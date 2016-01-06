@@ -80,6 +80,7 @@ describe ProjectsController, 'routing' do
 
   it 'to #show' do
     expect(get('/gitlab/gitlabhq')).to route_to('projects#show', namespace_id: 'gitlab', id: 'gitlabhq')
+    expect(get('/gitlab/gitlabhq.keys')).to route_to('projects#show', namespace_id: 'gitlab', id: 'gitlabhq.keys')
   end
 
   it 'to #update' do
