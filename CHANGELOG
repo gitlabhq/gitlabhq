@@ -26,6 +26,9 @@ v 8.3.3 (unreleased)
   - Enable "Add key" button when user fills in a proper key (Stan Hu)
 
 v 8.3.2
+  - Change single user API endpoint to return more detailed data (Michael Potthoff)
+
+v 8.3.2 (unreleased)
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
   - Add support for Google reCAPTCHA in user registration
 
