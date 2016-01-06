@@ -19,7 +19,7 @@ module Gitlab
           values = values_for(event)
           tags   = tags_for(event)
 
-          current_transaction.increment(:view_duration, event.duration)
+          current_transaction.increment(:view_duration, duration(event))
           current_transaction.add_metric(SERIES, values, tags)
         end
 
@@ -28,7 +28,7 @@ module Gitlab
         end
 
         def values_for(event)
-          { duration: event.duration }
+          { duration: duration(event) }
         end
 
         def tags_for(event)
@@ -47,6 +47,10 @@ module Gitlab
 
         def current_transaction
           Transaction.current
+        end
+
+        def duration(event)
+          event.duration * 1000.0
         end
       end
     end
