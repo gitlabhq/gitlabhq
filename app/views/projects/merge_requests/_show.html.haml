@@ -35,7 +35,7 @@
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
 
-    - if @merge_request.open? && @merge_request.source_branch_exists? && @merge_request.can_be_merged? && @merge_request.can_be_merged_by?(current_user)
+    - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
       .light.prepend-top-default
         You can also accept this merge request manually using the
         = succeed '.' do

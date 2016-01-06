@@ -229,6 +229,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
+    return unless unchecked?
+
     can_be_merged =
       project.repository.can_be_merged?(source_sha, target_branch)
 
@@ -252,7 +254,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    open? && !work_in_progress? && can_be_merged?
+    return false unless open? && !work_in_progress?
+
+    check_if_can_be_merged
+
+    can_be_merged?
   end
 
   def gitlab_merge_status
@@ -452,6 +458,10 @@ class MergeRequest < ActiveRecord::Base
     !source_branch_exists? || !target_branch_exists?
   end
 
+  def broken?
+    self.commits.blank? || branch_missing? || cannot_be_merged?
+  end
+
   def can_be_merged_by?(user)
     ::Gitlab::GitAccess.new(user, project).can_push_to_branch?(target_branch)
   end
@@ -506,9 +516,5 @@ class MergeRequest < ActiveRecord::Base
 
   def ci_commit
     @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
-  end
-
-  def broken?
-    self.commits.blank? || branch_missing? || cannot_be_merged?
   end
 end
