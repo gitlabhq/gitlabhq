@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151229112614) do
+ActiveRecord::Schema.define(version: 20160106164438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,16 +50,14 @@ ActiveRecord::Schema.define(version: 20151229112614) do
     t.boolean  "shared_runners_enabled",                        default: true,        null: false
     t.integer  "max_artifacts_size",                            default: 100,         null: false
     t.string   "runners_registration_token"
-    t.boolean  "require_two_factor_authentication",             default: false
-    t.integer  "two_factor_grace_period",                       default: 48
-    t.boolean  "metrics_enabled",                               default: false
-    t.string   "metrics_host",                                  default: "localhost"
-    t.string   "metrics_username"
-    t.string   "metrics_password"
-    t.integer  "metrics_pool_size",                             default: 16
-    t.integer  "metrics_timeout",                               default: 10
-    t.integer  "metrics_method_call_threshold",                 default: 10
-    t.boolean  "recaptcha_enabled",                             default: false
+    t.boolean  "require_two_factor_authentication", default: false
+    t.integer  "two_factor_grace_period",           default: 48
+    t.boolean  "metrics_enabled",                   default: false
+    t.string   "metrics_host",                      default: "localhost"
+    t.integer  "metrics_pool_size",                 default: 16
+    t.integer  "metrics_timeout",                   default: 10
+    t.integer  "metrics_method_call_threshold",     default: 10
+    t.boolean  "recaptcha_enabled",                 default: false
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                                  default: 8089
