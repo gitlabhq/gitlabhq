@@ -38,6 +38,7 @@ v 8.3.1
   - Fix LDAP identity and user retrieval when special characters are used
   - Move Sidekiq-cron configuration to gitlab.yml
   - Enable forcing Two-Factor authentication sitewide, with optional grace period
+  - Import GitHub Pull Requests into GitLab
 
 v 8.3.0
   - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
