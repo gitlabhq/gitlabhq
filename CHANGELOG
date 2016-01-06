@@ -17,6 +17,7 @@ v 8.4.0 (unreleased)
   - Add system hook messages for project rename and transfer (Steve Norman)
   - Fix version check image in Safari
   - Show 'All' tab by default in the builds page
+  - Change web_hooks url column to text from string so there isn't a size limit
   - Fix API project lookups when querying with a namespace with dots (Stan Hu)
   - Update version check images to use SVG
   - Validate README format before displaying

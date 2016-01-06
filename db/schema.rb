@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151229112614) do
+ActiveRecord::Schema.define(version: 20160105084704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -874,7 +874,7 @@ ActiveRecord::Schema.define(version: 20151229112614) do
   add_index "users_star_projects", ["user_id"], name: "index_users_star_projects_on_user_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|
-    t.string   "url",                     limit: 255
+    t.text     "url"
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
