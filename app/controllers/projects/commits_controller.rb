@@ -8,10 +8,16 @@ class Projects::CommitsController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   def show
-    @repo = @project.repository
     @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
+    search = params[:search]
 
-    @commits = @repo.commits(@ref, @path, @limit, @offset)
+    @commits =
+      if search.present?
+        @repository.find_commits_by_message(search).compact
+      else
+        @repository.commits(@ref, @path, @limit, @offset)
+      end
+
     @note_counts = project.notes.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
 
