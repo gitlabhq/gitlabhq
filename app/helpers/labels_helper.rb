@@ -100,13 +100,13 @@ module LabelsHelper
         Label.where(project_id: @projects)
       end
 
-    grouped_labels = Labels::GroupService.new(labels).execute
+    grouped_labels = GlobalLabel.build_collection(labels)
     grouped_labels.unshift(Label::None)
     grouped_labels.unshift(Label::Any)
 
     options_from_collection_for_select(grouped_labels, 'name', 'title', params[:label_name])
   end
 
-  # Required for Gitlab::Markdown::LabelReferenceFilter
+  # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :text_color_for_bg, :escape_once
 end

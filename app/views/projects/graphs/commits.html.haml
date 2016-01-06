@@ -1,8 +1,12 @@
 - page_title "Commits", "Graphs"
 = render "header_title"
-.tree-ref-holder
-  = render 'shared/ref_switcher', destination: 'graphs_commits'
 = render 'head'
+
+.gray-content-block.append-bottom-default
+  .tree-ref-holder
+    = render 'shared/ref_switcher', destination: 'graphs_commits'
+  %ul.breadcrumb.repo-breadcrumb
+    = commits_breadcrumbs
 
 %p.lead
   Commit statistics for
@@ -45,26 +49,24 @@
         Commits per weekday
       %canvas#weekday-chart
 
-:coffeescript
-  responsiveChart = (selector, data) ->
-    options = { "scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2, maintainAspectRatio: false }
+:javascript
+  var responsiveChart = function (selector, data) {
+    var options = { "scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2, maintainAspectRatio: false };
+    // get selector by context
+    var ctx = selector.get(0).getContext("2d");
+    // pointing parent container to make chart.js inherit its width
+    var container = $(selector).parent();
+    var generateChart = function() {
+      selector.attr('width', $(container).width());
+      return new Chart(ctx).Bar(data, options);
+    };
+    // enabling auto-resizing
+    $(window).resize(generateChart);
+    return generateChart();
+  };
 
-    # get selector by context
-    ctx = selector.get(0).getContext("2d")
-    # pointing parent container to make chart.js inherit its width
-    container = $(selector).parent()
-
-    generateChart = ->
-      selector.attr('width', $(container).width())
-      new Chart(ctx).Bar(data, options)
-
-    # enabling auto-resizing
-    $(window).resize( generateChart )
-
-    generateChart()
-
-  chartData = (keys, values) ->
-    data = {
+  var chartData = function (keys, values) {
+    var data = {
       labels : keys,
       datasets : [{
         fillColor : "rgba(220,220,220,0.5)",
@@ -74,13 +76,15 @@
         barDatasetSpacing: 1,
         data : values
       }]
-  }
+    };
+    return data;
+  };
 
-  hourData = chartData(#{@commits_per_time.keys.to_json}, #{@commits_per_time.values.to_json})
-  responsiveChart($('#hour-chart'), hourData)
+  var hourData = chartData(#{@commits_per_time.keys.to_json}, #{@commits_per_time.values.to_json});
+  responsiveChart($('#hour-chart'), hourData);
 
-  dayData = chartData(#{@commits_per_week_days.keys.to_json}, #{@commits_per_week_days.values.to_json})
-  responsiveChart($('#weekday-chart'), dayData)
+  var dayData = chartData(#{@commits_per_week_days.keys.to_json}, #{@commits_per_week_days.values.to_json});
+  responsiveChart($('#weekday-chart'), dayData);
 
-  monthData = chartData(#{@commits_per_month.keys.to_json}, #{@commits_per_month.values.to_json})
-  responsiveChart($('#month-chart'), monthData)
+  var monthData = chartData(#{@commits_per_month.keys.to_json}, #{@commits_per_month.values.to_json});
+  responsiveChart($('#month-chart'), monthData);

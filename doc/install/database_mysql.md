@@ -2,7 +2,7 @@
 
 ## Note
 
-We do not recommend using MySQL due to various issues. For example, case [(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html) and [problems](http://bugs.mysql.com/bug.php?id=65830) that [suggested](http://bugs.mysql.com/bug.php?id=50909) [fixes](http://bugs.mysql.com/bug.php?id=65830) [have](http://bugs.mysql.com/bug.php?id=63164).
+We do not recommend using MySQL due to various issues. For example, case [(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html) and [problems](https://bugs.mysql.com/bug.php?id=65830) that [suggested](https://bugs.mysql.com/bug.php?id=50909) [fixes](https://bugs.mysql.com/bug.php?id=65830) [have](https://bugs.mysql.com/bug.php?id=63164).
 
 ## MySQL
 

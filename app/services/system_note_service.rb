@@ -125,7 +125,21 @@ class SystemNoteService
   # Returns the created Note object
   def self.change_status(noteable, project, author, status, source)
     body = "Status changed to #{status}"
-    body += " by #{source.gfm_reference}" if source
+    body += " by #{source.gfm_reference(project)}" if source
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when 'merge when build succeeds' is executed
+  def self.merge_when_build_succeeds(noteable, project, author, last_commit)
+    body = "Enabled an automatic merge when the build for #{last_commit.to_reference(project)} succeeds"
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when 'merge when build succeeds' is canceled
+  def self.cancel_merge_when_build_succeeds(noteable, project, author)
+    body = "Canceled the automatic merge"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -227,8 +241,13 @@ class SystemNoteService
       note_options.merge!(noteable: noteable)
     end
 
-    create_note(note_options)
+    if noteable.is_a?(ExternalIssue)
+      noteable.project.issues_tracker.create_cross_reference_note(noteable, mentioner, author)
+    else
+      create_note(note_options)
+    end
   end
+
 
   def self.cross_reference?(note_text)
     note_text.start_with?(cross_reference_note_prefix)
@@ -245,7 +264,7 @@ class SystemNoteService
   #
   # Returns Boolean
   def self.cross_reference_disallowed?(noteable, mentioner)
-    return true if noteable.is_a?(ExternalIssue)
+    return true if noteable.is_a?(ExternalIssue) && !noteable.project.jira_tracker_active?
     return false unless mentioner.is_a?(MergeRequest)
     return false unless noteable.is_a?(Commit)
 
@@ -327,7 +346,7 @@ class SystemNoteService
     commit_ids = if count == 1
                    existing_commits.first.short_id
                  else
-                   if oldrev
+                   if oldrev && !Gitlab::Git.blank_ref?(oldrev)
                      "#{Commit.truncate_sha(oldrev)}...#{existing_commits.last.short_id}"
                    else
                      "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
@@ -340,5 +359,23 @@ class SystemNoteService
     branch = "#{noteable.target_project_namespace}:#{branch}" if noteable.for_fork?
 
     "* #{commit_ids} - #{commits_text} from branch `#{branch}`\n"
+  end
+
+  # Called when the status of a Task has changed
+  #
+  # noteable  - Noteable object.
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # new_task  - TaskList::Item object.
+  #
+  # Example Note text:
+  #
+  #   "Soandso marked the task Whatever as completed."
+  #
+  # Returns the created Note object
+  def self.change_task_status(noteable, project, author, new_task)
+    status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
+    body = "Marked the task **#{new_task.source}** as #{status_label}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
   end
 end

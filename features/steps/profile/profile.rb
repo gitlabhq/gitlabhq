@@ -34,7 +34,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I should see new avatar' do
     expect(@user.avatar).to be_instance_of AvatarUploader
-    expect(@user.avatar.url).to eq "/uploads/user/avatar/#{ @user.id }/banana_sample.gif"
+    expect(@user.avatar.url).to eq "/uploads/user/avatar/#{@user.id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -59,7 +59,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I should not see the "Remove avatar" button' do
     expect(page).not_to have_link("Remove avatar")
   end
-  
+
   step 'I should see the gravatar host link' do
     expect(page).to have_link("gravatar.com")
   end
@@ -159,10 +159,9 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see my user page' do
-    expect(page).to have_content "User Activity"
-
-    page.within '.navbar-gitlab' do
+    page.within ".cover-block" do
       expect(page).to have_content current_user.name
+      expect(page).to have_content current_user.username
     end
   end
 
@@ -176,7 +175,13 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see groups I belong to' do
-    expect(page).to have_css('.profile-groups-avatars', visible: true)
+    page.within ".content" do
+      click_link "Groups"
+    end
+
+    page.within "#groups" do
+      expect(page).to have_content @group.name
+    end
   end
 
   step 'I click on new application button' do

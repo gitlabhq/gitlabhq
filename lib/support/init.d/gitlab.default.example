@@ -9,11 +9,11 @@ RAILS_ENV="production"
 # The default is "git".
 app_user="git"
 
-# app_root defines the folder in which gitlab and it's components are installed.
+# app_root defines the folder in which gitlab and its components are installed.
 # The default is "/home/$app_user/gitlab"
 app_root="/home/$app_user/gitlab"
 
-# pid_path defines a folder in which the gitlab and it's components place their pids.
+# pid_path defines a folder in which the gitlab and its components place their pids.
 # This variable is also used below to define the relevant pids for the gitlab components.
 # The default is "$app_root/tmp/pids"
 pid_path="$app_root/tmp/pids"
@@ -30,15 +30,14 @@ web_server_pid_path="$pid_path/unicorn.pid"
 # The default is "$pid_path/sidekiq.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
 
-gitlab_git_http_server_pid_path="$pid_path/gitlab-git-http-server.pid"
-# The -listenXxx settings determine where gitlab-git-http-server
+gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
+# The -listenXxx settings determine where gitlab-workhorse
 # listens for connections from NGINX. To listen on localhost:8181, write
 # '-listenNetwork tcp -listenAddr localhost:8181'.
-# The -authBackend setting tells gitlab-git-http-server where it can reach
+# The -authBackend setting tells gitlab-workhorse where it can reach
 # Unicorn.
-gitlab_git_http_server_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-git-http-server.socket -authBackend http://127.0.0.1:8080"
-gitlab_git_http_server_repo_root="/home/git/repositories"
-gitlab_git_http_server_log="$app_root/log/gitlab-git-http-server.log"
+gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080 -authSocket $socket_path/gitlab.socket -documentRoot $app_root/public"
+gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
 
 # mail_room_enabled specifies whether mail_room, which is used to process incoming email, is enabled.
 # This is required for the Reply by email feature.

@@ -16,7 +16,10 @@
       = milestone_progress_bar(milestone)
   .row
     .col-sm-6
-      - milestone.milestones.each do |milestone|
-        = link_to milestone_path(milestone) do
-          %span.label.label-gray
-            = milestone.project.name_with_namespace
+      .expiration
+        = render 'shared/milestone_expired', milestone: milestone
+      .projects
+        - milestone.milestones.each do |milestone|
+          = link_to milestone_path(milestone) do
+            %span.label.label-gray
+              = milestone.project.name_with_namespace

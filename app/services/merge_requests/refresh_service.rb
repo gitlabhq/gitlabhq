@@ -5,20 +5,20 @@ module MergeRequests
 
       @oldrev, @newrev = oldrev, newrev
       @branch_name = Gitlab::Git.ref_name(ref)
-      @fork_merge_requests = @project.fork_merge_requests.opened
-      @commits = []
 
-      # Leave a system note if a branch were deleted/added
-      if Gitlab::Git.blank_ref?(oldrev) || Gitlab::Git.blank_ref?(newrev)
+      find_new_commits
+      # Be sure to close outstanding MRs before reloading them to avoid generating an
+      # empty diff during a manual merge
+      close_merge_requests
+      reload_merge_requests
+      reset_merge_when_build_succeeds
+
+      # Leave a system note if a branch was deleted/added
+      if branch_added? || branch_removed?
         comment_mr_branch_presence_changed
-        comment_mr_with_commits if @commits.present?
-      else
-        @commits = @project.repository.commits_between(oldrev, newrev)
-        comment_mr_with_commits
-        close_merge_requests
       end
 
-      reload_merge_requests
+      comment_mr_with_commits
       execute_mr_web_hooks
 
       true
@@ -54,11 +54,10 @@ module MergeRequests
     # Note: we should update merge requests from forks too
     def reload_merge_requests
       merge_requests = @project.merge_requests.opened.by_branch(@branch_name).to_a
-      merge_requests += @fork_merge_requests.by_branch(@branch_name).to_a
+      merge_requests += fork_merge_requests.by_branch(@branch_name).to_a
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
-
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_code
           merge_request.mark_as_unchecked
@@ -77,37 +76,51 @@ module MergeRequests
       end
     end
 
-    # Add comment about branches being deleted or added to merge requests
-    def comment_mr_branch_presence_changed
-      presence = Gitlab::Git.blank_ref?(@oldrev) ? :add : :delete
+    def reset_merge_when_build_succeeds
+      merge_requests_for_source_branch.each(&:reset_merge_when_build_succeeds)
+    end
 
-      merge_requests_for_source_branch.each do |merge_request|
+    def find_new_commits
+      if branch_added?
+        @commits = []
+
+        merge_request = merge_requests_for_source_branch.first
+        return unless merge_request
+
         last_commit = merge_request.last_commit
 
-        # Only look at changed commits in restore branch case
-        unless Gitlab::Git.blank_ref?(@newrev)
-          begin
-            # Since any number of commits could have been made to the restored branch,
-            # find the common root to see what has been added.
-            common_ref = @project.repository.merge_base(last_commit.id, @newrev)
-            # If the a commit no longer exists in this repo, gitlab_git throws
-            # a Rugged::OdbError. This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
-            @commits = @project.repository.commits_between(common_ref, @newrev) if common_ref
-          rescue
-          end
-
-          # Prevent system notes from seeing a blank SHA
-          @oldrev = nil
+        begin
+          # Since any number of commits could have been made to the restored branch,
+          # find the common root to see what has been added.
+          common_ref = @project.repository.merge_base(last_commit.id, @newrev)
+          # If the a commit no longer exists in this repo, gitlab_git throws
+          # a Rugged::OdbError. This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
+          @commits = @project.repository.commits_between(common_ref, @newrev) if common_ref
+        rescue
         end
+      elsif branch_removed?
+        # No commits for a deleted branch.
+        @commits = []
+      else
+        @commits = @project.repository.commits_between(@oldrev, @newrev)
+      end
+    end
 
+    # Add comment about branches being deleted or added to merge requests
+    def comment_mr_branch_presence_changed
+      presence = branch_added? ? :add : :delete
+
+      merge_requests_for_source_branch.each do |merge_request|
         SystemNoteService.change_branch_presence(
-            merge_request, merge_request.project, @current_user,
+          merge_request, merge_request.project, @current_user,
             :source, @branch_name, presence)
       end
     end
 
     # Add comment about pushing new commits to merge requests
     def comment_mr_with_commits
+      return unless @commits.present?
+
       merge_requests_for_source_branch.each do |merge_request|
         mr_commit_ids = Set.new(merge_request.commits.map(&:id))
 
@@ -135,9 +148,21 @@ module MergeRequests
     def merge_requests_for_source_branch
       @source_merge_requests ||= begin
         merge_requests = @project.origin_merge_requests.opened.where(source_branch: @branch_name).to_a
-        merge_requests += @fork_merge_requests.where(source_branch: @branch_name).to_a
+        merge_requests += fork_merge_requests.where(source_branch: @branch_name).to_a
         filter_merge_requests(merge_requests)
       end
+    end
+
+    def fork_merge_requests
+      @fork_merge_requests ||= @project.fork_merge_requests.opened
+    end
+
+    def branch_added?
+      Gitlab::Git.blank_ref?(@oldrev)
+    end
+
+    def branch_removed?
+      Gitlab::Git.blank_ref?(@newrev)
     end
   end
 end

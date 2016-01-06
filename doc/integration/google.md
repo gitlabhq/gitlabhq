@@ -35,7 +35,7 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
       sudo editor /etc/gitlab/gitlab.rb
     ```
 
-    For instalations from source:
+    For installations from source:
 
     ```sh
       cd /home/git/gitlab

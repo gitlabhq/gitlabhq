@@ -15,13 +15,6 @@
           $(this).html totalIssues + 1
         else
           $(this).html totalIssues - 1
-    $("body").on "click", ".issues-other-filters .dropdown-menu a", ->
-      $('.issues-list').block(
-        message: null,
-        overlayCSS:
-          backgroundColor: '#DDD'
-          opacity: .4
-      )
 
   reload: ->
     Issues.initSelects()
@@ -29,7 +22,7 @@
     $('#filter_issue_search').val($('#issue_search').val())
 
   initSelects: ->
-    $("select#update_status").select2(width: 'resolve', dropdownAutoWidth: true)
+    $("select#update_state_event").select2(width: 'resolve', dropdownAutoWidth: true)
     $("select#update_assignee_id").select2(width: 'resolve', dropdownAutoWidth: true)
     $("select#update_milestone_id").select2(width: 'resolve', dropdownAutoWidth: true)
     $("select#label_name").select2(width: 'resolve', dropdownAutoWidth: true)
@@ -54,7 +47,7 @@
     form = $("#issue_search_form")
     search = $("#issue_search").val()
     $('.issues-holder').css("opacity", '0.5')
-    issues_url = form.attr('action') + '? '+ form.serialize()
+    issues_url = form.attr('action') + '?' + form.serialize()
 
     $.ajax
       type: "GET"
@@ -65,7 +58,7 @@
       success: (data) ->
         $('.issues-holder').html(data.html)
         # Change url so if user reload a page - search results are saved
-        History.replaceState {page: issues_url}, document.title, issues_url
+        history.replaceState {page: issues_url}, document.title, issues_url
         Issues.reload()
       dataType: "json"
 

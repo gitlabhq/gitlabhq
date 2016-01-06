@@ -19,6 +19,7 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response['file_path']).to eq(file_path)
       expect(json_response['file_name']).to eq('popen.rb')
+      expect(json_response['last_commit_id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
       expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
     end
 

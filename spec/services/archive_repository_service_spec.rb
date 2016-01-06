@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ArchiveRepositoryService do
+describe ArchiveRepositoryService, services: true do
   let(:project) { create(:project) }
   subject { ArchiveRepositoryService.new(project, "master", "zip") }
 

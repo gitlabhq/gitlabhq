@@ -5,6 +5,14 @@ module NavHelper
 
   def nav_sidebar_class
     if nav_menu_collapsed?
+      "sidebar-collapsed"
+    else
+      "sidebar-expanded"
+    end
+  end
+
+  def page_sidebar_class
+    if nav_menu_collapsed?
       "page-sidebar-collapsed"
     else
       "page-sidebar-expanded"

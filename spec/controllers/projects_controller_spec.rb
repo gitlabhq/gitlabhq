@@ -51,17 +51,56 @@ describe ProjectsController do
     end
 
     context "when requested with case sensitive namespace and project path" do
-      it "redirects to the normalized path for case mismatch" do
-        get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+      context "when there is a match with the same casing" do
+        it "loads the project" do
+          get :show, namespace_id: public_project.namespace.path, id: public_project.path
 
-        expect(response).to redirect_to("/#{public_project.path_with_namespace}")
+          expect(assigns(:project)).to eq(public_project)
+          expect(response.status).to eq(200)
+        end
       end
 
-      it "loads the page if normalized path matches request path" do
-        get :show, namespace_id: public_project.namespace.path, id: public_project.path
+      context "when there is a match with different casing" do
+        it "redirects to the normalized path" do
+          get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
 
-        expect(response.status).to eq(200)
+          expect(assigns(:project)).to eq(public_project)
+          expect(response).to redirect_to("/#{public_project.path_with_namespace}")
+        end
+
+
+        # MySQL queries are case insensitive by default, so this spec would fail.
+        if Gitlab::Database.postgresql?
+          context "when there is also a match with the same casing" do
+
+            let!(:other_project) { create(:project, :public, namespace: public_project.namespace, path: public_project.path.upcase) }
+
+            it "loads the exactly matched project" do
+
+              get :show, namespace_id: public_project.namespace.path, id: public_project.path.upcase
+
+              expect(assigns(:project)).to eq(other_project)
+              expect(response.status).to eq(200)
+            end
+          end
+        end
       end
+    end
+  end
+
+  describe "#destroy" do
+    let(:admin) { create(:admin) }
+
+    it "redirects to the dashboard" do
+      controller.instance_variable_set(:@project, project)
+      sign_in(admin)
+
+      orig_id = project.id
+      delete :destroy, namespace_id: project.namespace.path, id: project.path
+
+      expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(response.status).to eq(302)
+      expect(response).to redirect_to(dashboard_projects_path)
     end
   end
 

@@ -26,12 +26,11 @@ module Ci
       format :json
 
       helpers Helpers
-      helpers ::API::APIHelpers
+      helpers ::API::Helpers
+      helpers Gitlab::CurrentSettings
 
       mount Builds
-      mount Commits
       mount Runners
-      mount Projects
       mount Triggers
     end
   end

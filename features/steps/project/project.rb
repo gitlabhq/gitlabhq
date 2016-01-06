@@ -37,7 +37,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should see new project avatar' do
     expect(@project.avatar).to be_instance_of AvatarUploader
     url = @project.avatar.url
-    expect(url).to eq "/uploads/project/avatar/#{ @project.id }/banana_sample.gif"
+    expect(url).to eq "/uploads/project/avatar/#{@project.id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -124,11 +124,11 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see back to dashboard button' do
-    expect(page).to have_content 'Back to dashboard'
+    expect(page).to have_content 'Go to dashboard'
   end
 
   step 'I should see back to group button' do
-    expect(page).to have_content 'Back to group'
+    expect(page).to have_content 'Go to group'
   end
 
   step 'I click notifications drop down button' do

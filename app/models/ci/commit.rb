@@ -1,26 +1,27 @@
 # == Schema Information
 #
-# Table name: commits
+# Table name: ci_commits
 #
-#  id           :integer          not null, primary key
-#  project_id   :integer
-#  ref          :string(255)
-#  sha          :string(255)
-#  before_sha   :string(255)
-#  push_data    :text
-#  created_at   :datetime
-#  updated_at   :datetime
-#  tag          :boolean          default(FALSE)
-#  yaml_errors  :text
-#  committed_at :datetime
+#  id            :integer          not null, primary key
+#  project_id    :integer
+#  ref           :string(255)
+#  sha           :string(255)
+#  before_sha    :string(255)
+#  push_data     :text
+#  created_at    :datetime
+#  updated_at    :datetime
+#  tag           :boolean          default(FALSE)
+#  yaml_errors   :text
+#  committed_at  :datetime
+#  gl_project_id :integer
 #
 
 module Ci
   class Commit < ActiveRecord::Base
     extend Ci::Model
 
-    belongs_to :gl_project, class_name: '::Project', foreign_key: :gl_project_id
-    has_many :statuses, dependent: :destroy, class_name: 'CommitStatus'
+    belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+    has_many :statuses, class_name: 'CommitStatus'
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
@@ -35,10 +36,6 @@ module Ci
 
     def to_param
       sha
-    end
-
-    def project
-      @project ||= gl_project.ensure_gitlab_ci_project
     end
 
     def project_id
@@ -56,7 +53,7 @@ module Ci
     end
 
     def valid_commit_sha
-      if self.sha == Ci::Git::BLANK_SHA
+      if self.sha == Gitlab::Git::BLANK_SHA
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
       end
     end
@@ -78,7 +75,7 @@ module Ci
     end
 
     def commit_data
-      @commit ||= gl_project.commit(sha)
+      @commit ||= project.commit(sha)
     rescue
       nil
     end
@@ -164,9 +161,21 @@ module Ci
       status == 'canceled'
     end
 
+    def active?
+      running? || pending?
+    end
+
+    def complete?
+      canceled? || success? || failed?
+    end
+
     def duration
       duration_array = latest_statuses.map(&:duration).compact
       duration_array.reduce(:+).to_i
+    end
+
+    def started_at
+      @started_at ||= statuses.order('started_at ASC').first.try(:started_at)
     end
 
     def finished_at
@@ -174,11 +183,9 @@ module Ci
     end
 
     def coverage
-      if project.coverage_enabled?
-        coverage_array = latest_builds.map(&:coverage).compact
-        if coverage_array.size >= 1
-          '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
-        end
+      coverage_array = latest_builds.map(&:coverage).compact
+      if coverage_array.size >= 1
+        '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
       end
     end
 
@@ -187,18 +194,18 @@ module Ci
     end
 
     def config_processor
-      @config_processor ||= Ci::GitlabCiYamlProcessor.new(ci_yaml_file)
-    rescue Ci::GitlabCiYamlProcessor::ValidationError => e
+      return nil unless ci_yaml_file
+      @config_processor ||= Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
+    rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
       save_yaml_error(e.message)
       nil
-    rescue Exception => e
-      logger.error e.message + "\n" + e.backtrace.join("\n")
-      save_yaml_error("Undefined yaml error")
+    rescue
+      save_yaml_error("Undefined error")
       nil
     end
 
     def ci_yaml_file
-      gl_project.repository.blob_at(sha, '.gitlab-ci.yml').data
+      @ci_yaml_file ||= project.repository.blob_at(sha, '.gitlab-ci.yml').data
     rescue
       nil
     end

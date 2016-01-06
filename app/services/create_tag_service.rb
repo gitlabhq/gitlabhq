@@ -1,7 +1,7 @@
 require_relative 'base_service'
 
 class CreateTagService < BaseService
-  def execute(tag_name, ref, message)
+  def execute(tag_name, ref, message, release_description = nil)
     valid_tag = Gitlab::GitRefValidator.validate(tag_name)
     if valid_tag == false
       return error('Tag name invalid')
@@ -20,10 +20,14 @@ class CreateTagService < BaseService
 
     if new_tag
       push_data = create_push_data(project, current_user, new_tag)
-
       EventCreateService.new.push(project, current_user, push_data)
       project.execute_hooks(push_data.dup, :tag_push_hooks)
       project.execute_services(push_data.dup, :tag_push_hooks)
+
+      if release_description
+        CreateReleaseService.new(@project, @current_user).
+          execute(tag_name, release_description)
+      end
 
       success(new_tag)
     else

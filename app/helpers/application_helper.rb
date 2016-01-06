@@ -61,29 +61,29 @@ module ApplicationHelper
     options[:class] ||= ''
     options[:class] << ' identicon'
     bg_key = project.id % 7
-    style = "background-color: ##{ allowed_colors.values[bg_key] }; color: #555"
+    style = "background-color: ##{allowed_colors.values[bg_key]}; color: #555"
 
     content_tag(:div, class: options[:class], style: style) do
       project.name[0, 1].upcase
     end
   end
 
-  def avatar_icon(user_or_email = nil, size = nil)
+  def avatar_icon(user_or_email = nil, size = nil, scale = 2)
     if user_or_email.is_a?(User)
       user = user_or_email
     else
-      user = User.find_by(email: user_or_email)
+      user = User.find_by(email: user_or_email.downcase)
     end
 
     if user
       user.avatar_url(size) || default_avatar
     else
-      gravatar_icon(user_or_email, size)
+      gravatar_icon(user_or_email, size, scale)
     end
   end
 
-  def gravatar_icon(user_email = '', size = nil)
-    GravatarService.new.execute(user_email, size) ||
+  def gravatar_icon(user_email = '', size = nil, scale = 2)
+    GravatarService.new.execute(user_email, size, scale) ||
       default_avatar
   end
 
@@ -204,12 +204,16 @@ module ApplicationHelper
   # Returns an HTML-safe String
   def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
     element = content_tag :time, time.to_s,
-      class: "#{html_class} js-timeago",
+      class: "#{html_class} js-timeago js-timeago-pending",
       datetime: time.getutc.iso8601,
       title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
-    element += javascript_tag "$('.js-timeago').timeago()" unless skip_js
+    unless skip_js
+      element << javascript_tag(
+        "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
+      )
+    end
 
     element
   end

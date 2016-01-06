@@ -1,21 +1,46 @@
 # Things to do when doing a patch release
 
-NOTE: This is a guide for GitLab developers. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update).
+NOTE: This is a guide for GitLab developers. If you are trying to install GitLab
+see the latest stable [installation guide](install/installation.md) and if you
+are trying to upgrade, see the [upgrade guides](update).
 
 ## When to do a patch release
 
-Do a patch release when there is a critical regression that needs to be addresses before the next monthly release.
-
-Otherwise include it in the monthly release and note there was a regression fix in the release announcement.
+Patch releases are done as-needed in order to fix regressions in the current
+major release that cannot or should not wait until the next major release.
+What's included and when to release is at the discretion of the release manager.
 
 ## Release Procedure
+
+### Create a patch issue
+
+Create an issue in the GitLab CE project. Name it "Release x.y.z", tag it with
+the `release` label, and assign it to the milestone of the corresponding major
+release.
+
+Use the following template:
+
+```
+- Picked into respective `stable` branches:
+- [ ] Merge `x-y-stable` into `x-y-stable-ee`
+- [ ] release-tools: `x.y.z`
+- gitlab-omnibus
+  - [ ] `x.y.z+ee.0`
+  - [ ] `x.y.z+ce.0`
+- [ ] Deploy
+- [ ] Add patch notice to [x.y regressions]()
+- [ ] [Blog post]()
+- [ ] [Tweet]()
+- [ ] Add entry to version.gitlab.com
+```
+
+Update the issue with links to merge requests that need to be/have been picked
+into the `stable` branches.
 
 ### Preparation
 
 1. Verify that the issue can be reproduced
 1. Note in the 'GitLab X.X regressions' that you will create a patch
-1. Create an issue on private GitLab development server
-1. Name the issue "Release X.X.X CE and X.X.X EE", this will make searching easier
 1. Fix the issue on a feature branch, do this on the private GitLab development server
 1. If it is a security issue, then assign it to the release manager and apply a 'security' label
 1. Consider creating and testing workarounds
@@ -24,7 +49,6 @@ Otherwise include it in the monthly release and note there was a regression fix 
 1. In a separate commit in the master branch update the CHANGELOG
 1. For EE, update the CHANGELOG-EE if it is EE specific fix. Otherwise, merge the stable CE branch and add to CHANGELOG-EE "Merge community edition changes for version X.X.X"
 1. Merge CE stable branch into EE stable branch
-
 
 ### Bump version
 

@@ -9,19 +9,24 @@ module Files
     def validate
       super
 
-      file_name = File.basename(@file_path)
-
-      unless file_name =~ Gitlab::Regex.file_name_regex
+      if @file_path =~ Gitlab::Regex.directory_traversal_regex
         raise_error(
           'Your changes could not be committed, because the file name ' +
-          Gitlab::Regex.file_name_regex_message
+          Gitlab::Regex.directory_traversal_regex_message
+        )
+      end
+
+      unless @file_path =~ Gitlab::Regex.file_path_regex
+        raise_error(
+          'Your changes could not be committed, because the file name ' +
+          Gitlab::Regex.file_path_regex_message
         )
       end
 
       unless project.empty_repo?
         @file_path.slice!(0) if @file_path.start_with?('/')
 
-        blob = repository.blob_at_branch(@current_branch, @file_path)
+        blob = repository.blob_at_branch(@source_branch, @file_path)
 
         if blob
           raise_error("Your changes could not be committed because a file with the same name already exists")

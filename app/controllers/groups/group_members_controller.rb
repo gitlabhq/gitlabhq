@@ -1,11 +1,9 @@
 class Groups::GroupMembersController < Groups::ApplicationController
   skip_before_action :authenticate_user!, only: [:index]
-  before_action :group
 
   # Authorize
   before_action :authorize_read_group!
-  before_action :authorize_admin_group!, except: [:index, :leave]
-  before_action :authorize_admin_group_member!, only: [:create, :resend_invite]
+  before_action :authorize_admin_group_member!, except: [:index, :leave]
 
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
@@ -18,7 +16,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
 
     @members = @members.order('access_level DESC').page(params[:page]).per(50)
-    @group_member = GroupMember.new
+
+    @group_member = @group.group_members.new
   end
 
   def create
@@ -28,24 +27,23 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def update
-    @member = @group.group_members.find(params[:id])
+    @group_member = @group.group_members.find(params[:id])
 
-    return render_403 unless can?(current_user, :update_group_member, @member)
+    return render_403 unless can?(current_user, :update_group_member, @group_member)
 
-    @member.update_attributes(member_params)
+    @group_member.update_attributes(member_params)
   end
 
   def destroy
     @group_member = @group.group_members.find(params[:id])
 
-    if can?(current_user, :destroy_group_member, @group_member)  # May fail if last owner.
-      @group_member.destroy
-      respond_to do |format|
-        format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
-        format.js { render nothing: true }
-      end
-    else
-      return render_403
+    return render_403 unless can?(current_user, :destroy_group_member, @group_member)
+
+    @group_member.destroy
+
+    respond_to do |format|
+      format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
+      format.js { render nothing: true }
     end
   end
 
@@ -64,10 +62,11 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def leave
-    @group_member = @group.group_members.where(user_id: current_user.id).first
+    @group_member = @group.group_members.find_by(user_id: current_user)
 
     if can?(current_user, :destroy_group_member, @group_member)
       @group_member.destroy
+
       redirect_to(dashboard_groups_path, notice: "You left #{group.name} group.")
     else
       if @group.last_owner?(current_user)
@@ -79,10 +78,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   protected
-
-  def group
-    @group ||= Group.find_by(path: params[:group_id])
-  end
 
   def member_params
     params.require(:group_member).permit(:access_level, :user_id)

@@ -1,3 +1,4 @@
+@project_merge_requests
 Feature: Project Merge Requests
   Background:
     Given I sign in as a user
@@ -9,6 +10,21 @@ Feature: Project Merge Requests
   Scenario: I should see open merge requests
     Then I should see "Bug NS-04" in merge requests
     And I should not see "Feature NS-03" in merge requests
+
+  Scenario: I should see CI status for merge requests
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    Given "Bug NS-05" has CI status
+    When I visit project "Shop" merge requests page
+    Then I should see merge request "Bug NS-05" with CI status
+
+  Scenario: I should not see target branch name when it is project's default branch
+    Then I should see "Bug NS-04" in merge requests
+    And I should not see "master" branch
+
+  Scenario: I should see target branch when it is different from default
+    Given project "Shop" have "Bug NS-06" open merge request
+    When I visit project "Shop" merge requests page
+    Then I should see "other_branch" branch
 
   Scenario: I should see rejected merge requests
     Given I click link "Closed"
@@ -67,6 +83,26 @@ Feature: Project Merge Requests
     And I leave a comment like "Line is wrong" on diff
     And I switch to the merge request's comments tab
     Then I should see a discussion has started on diff
+
+  @javascript
+  Scenario: I edit a comment on a merge request diff
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I click on the Changes tab
+    And I leave a comment like "Line is wrong" on diff
+    And I change the comment "Line is wrong" to "Typo, please fix" on diff
+    Then I should not see a diff comment saying "Line is wrong"
+    And I should see a diff comment saying "Typo, please fix"
+
+  @javascript
+  Scenario: I delete a comment on a merge request diff
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I click on the Changes tab
+    And I leave a comment like "Line is wrong" on diff
+    And I delete the comment "Line is wrong" on diff
+    And I click on the Discussion tab
+    Then I should not see any discussion
 
   @javascript
   Scenario: I comment on a line of a commit in merge request

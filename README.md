@@ -27,8 +27,6 @@ There are two editions of GitLab:
 - GitLab Community Edition (CE) is available freely under the MIT Expat license.
 - GitLab Enterprise Edition (EE) includes [extra features](https://about.gitlab.com/features/#compare) that are more useful for organizations with more than 100 users. To use EE and get official support please [become a subscriber](https://about.gitlab.com/pricing/).
 
-Included with the GitLab Omnibus Packages is [GitLab CI](https://about.gitlab.com/gitlab-ci/) that can easily build, test and deploy code.
-
 ## Website
 
 On [about.gitlab.com](https://about.gitlab.com/) you can find more information about:
@@ -71,7 +69,7 @@ GitLab is a Ruby on Rails application that runs on the following software:
 - Ubuntu/Debian/CentOS/RHEL
 - Ruby (MRI) 2.1
 - Git 1.7.10+
-- Redis 2.4+
+- Redis 2.8+
 - MySQL or PostgreSQL
 
 For more information please see the [architecture documentation](http://doc.gitlab.com/ce/development/architecture.html).
@@ -82,7 +80,7 @@ There are a lot of [third-party applications integrating with GitLab](https://ab
 
 ## GitLab release cycle
 
-Since 2011 a minor or major version of GitLab is released on the 22nd of every month. Patch and security releases are published when needed. New features are detailed on the [blog](https://about.gitlab.com/blog/) and in the [changelog](CHANGELOG). For more information about the release process see the [release documentation](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/release). Features that will likely be in the next releases can be found on the [feature request forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
+For more information about the release process see the [release documentation](http://doc.gitlab.com/ce/release/).
 
 ## Upgrading
 

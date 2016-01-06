@@ -22,4 +22,4 @@ You accept and agree to the following terms and conditions for Your present and 
 
 8.  It is your responsibility to notify GitLab B.V. when any change is required to the list of designated employees authorized to submit Contributions on behalf of the Corporation, or to the Corporation's Point of Contact with GitLab B.V..
 
-This text is licensed under the [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/) and the original source is the Google Open Source Programs Office.
+This text is licensed under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/) and the original source is the Google Open Source Programs Office.

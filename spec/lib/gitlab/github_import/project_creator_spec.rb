@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::ProjectCreator do
+describe Gitlab::GithubImport::ProjectCreator, lib: true do
   let(:user) { create(:user) }
   let(:repo) do
     OpenStruct.new(

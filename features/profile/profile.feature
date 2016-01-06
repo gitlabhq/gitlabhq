@@ -7,6 +7,7 @@ Feature: Profile
     Given I visit profile page
     Then I should see my profile info
 
+  @javascript
   Scenario: I can see groups I belong to
     Given I have group with projects
     When I visit profile page

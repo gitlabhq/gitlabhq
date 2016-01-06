@@ -1,20 +1,30 @@
-%fieldset
-  %legend
-    Builds chart for last week
+%h4 Build charts
+%p
+  &nbsp;
+  %span.cgreen
+    = icon("circle")
+    success
+  &nbsp;
+  %span.cgray
+    = icon("circle")
+    all
+
+.prepend-top-default
+  %p.light
+    Builds for last week
     (#{date_from_to(Date.today - 7.days, Date.today)})
+  %canvas#weekChart{height: 200}
 
-  %canvas#weekChart.padded{width: 800, height: 200}
-
-%fieldset
-  %legend
-    Builds chart for last month
+.prepend-top-default
+  %p.light
+    Builds for last month
     (#{date_from_to(Date.today - 30.days, Date.today)})
+  %canvas#monthChart{height: 200}
 
-  %canvas#monthChart.padded{width: 800, height: 300}
-
-%fieldset
-  %legend Builds chart for last year
-  %canvas#yearChart.padded{width: 800, height: 400}
+.prepend-top-default
+  %p.light
+    Builds for last year
+  %canvas#yearChart.padded{height: 250}
 
 - [:week, :month, :year].each do |scope|
   :javascript
@@ -22,20 +32,20 @@
       labels : #{@charts[scope].labels.to_json},
       datasets : [
         {
-          fillColor : "rgba(220,220,220,0.5)",
-          strokeColor : "rgba(220,220,220,1)",
-          pointColor : "rgba(220,220,220,1)",
+          fillColor : "#7f8fa4",
+          strokeColor : "#7f8fa4",
+          pointColor : "#7f8fa4",
           pointStrokeColor : "#EEE",
           data : #{@charts[scope].total.to_json}
         },
         {
-          fillColor : "#4A3",
-          strokeColor : "rgba(151,187,205,1)",
-          pointColor : "rgba(151,187,205,1)",
+          fillColor : "#44aa22",
+          strokeColor : "#44aa22",
+          pointColor : "#44aa22",
           pointStrokeColor : "#fff",
           data : #{@charts[scope].success.to_json}
         }
       ]
     }
     var ctx = $("##{scope}Chart").get(0).getContext("2d");
-    new Chart(ctx).Line(data,{"scaleOverlay": true});
+    new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});

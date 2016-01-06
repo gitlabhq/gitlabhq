@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UpdateSnippetService do
+describe UpdateSnippetService, services: true do
   before do
     @user = create :user
     @admin = create :user, admin: true
@@ -42,7 +42,7 @@ describe UpdateSnippetService do
     CreateSnippetService.new(project, user, opts).execute
   end
 
-  def update_snippet(project = nil, user, snippet, opts)
+  def update_snippet(project, user, snippet, opts)
     UpdateSnippetService.new(project, user, snippet, opts).execute
   end
 end

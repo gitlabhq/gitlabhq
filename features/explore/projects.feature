@@ -31,8 +31,17 @@ Feature: Explore Projects
     Then I should see empty public project details
     And I should see empty public project details with http clone info
 
-  Scenario: I visit an empty public project page as user
+  Scenario: I visit an empty public project page as user with no ssh-keys
     Given I sign in as a user
+    And I have no ssh keys
+    And public empty project "Empty Public Project"
+    When I visit empty project page
+    Then I should see empty public project details
+    And I should see empty public project details with http clone info
+
+  Scenario: I visit an empty public project page as user with an ssh-key
+    Given I sign in as a user
+    And I have an ssh key
     And public empty project "Empty Public Project"
     When I visit empty project page
     Then I should see empty public project details
@@ -57,8 +66,16 @@ Feature: Explore Projects
     Then I should see project "Community" home page
     And I should see an http link to the repository
 
-  Scenario: I visit public project page as user
+  Scenario: I visit public project page as user with no ssh-keys
     Given I sign in as a user
+    And I have no ssh keys
+    When I visit project "Community" page
+    Then I should see project "Community" home page
+    And I should see an http link to the repository
+
+  Scenario: I visit public project page as user with an ssh-key
+    Given I sign in as a user
+    And I have an ssh key
     When I visit project "Community" page
     Then I should see project "Community" home page
     And I should see an ssh link to the repository

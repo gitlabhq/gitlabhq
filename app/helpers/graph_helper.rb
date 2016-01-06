@@ -16,4 +16,14 @@ module GraphHelper
     ids = parents.map { |p| p.id }
     ids.zip(parent_spaces)
   end
+
+  def success_ratio(success_builds, failed_builds)
+    failed_builds = failed_builds.count(:all)
+    success_builds = success_builds.count(:all)
+
+    return 100 if failed_builds.zero?
+
+    ratio = (success_builds.to_f / (success_builds + failed_builds)) * 100
+    ratio.to_i
+  end
 end

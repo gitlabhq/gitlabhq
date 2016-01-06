@@ -39,7 +39,7 @@ module Rouge
           lineanchorsid: 'L',
           anchorlinenos: false,
           inline_theme: nil
-        )
+      )
         @nowrap = nowrap
         @cssclass = cssclass
         @linenos = linenos

@@ -1,0 +1,27 @@
+.prepend-top-default
+  .panel.panel-default
+    .panel-heading
+      %strong
+        = t('sherlock.application_backtrace')
+    %ul.well-list
+      - @query.application_backtrace.each do |location|
+        %li
+          = location.path
+          %small.light
+            = t('sherlock.line')
+            = location.line
+
+  .panel.panel-default
+    .panel-heading
+      %strong
+        = t('sherlock.full_backtrace')
+    %ul.well-list
+      - @query.backtrace.each do |location|
+        %li
+          - if location.application?
+            %strong= location.path
+          - else
+            = location.path
+          %small.light
+            = t('sherlock.line')
+            = location.line

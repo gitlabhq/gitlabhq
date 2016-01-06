@@ -3,8 +3,7 @@
 
 .panel.panel-default
   .panel-heading
-    %strong= @group.name
-    group settings:
+    Group settings
   .panel-body
     = form_for @group, html: { multipart: true, class: "form-horizontal" }, authenticity_token: true do |f|
       - if @group.errors.any?
@@ -36,4 +35,5 @@
       %br
       %strong Removed group can not be restored!
 
-    = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
+    .form-actions
+      = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"

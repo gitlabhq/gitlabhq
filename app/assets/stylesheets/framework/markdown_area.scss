@@ -73,11 +73,8 @@
 }
 
 .referenced-users {
-  padding: 10px 0;
-  color: #999;
-  margin-left: 10px;
-  margin-top: 1px;
-  margin-right: 130px;
+  color: #4c4e54;
+  padding-top: 10px;
 }
 
 .md-preview-holder {
@@ -90,7 +87,7 @@
 
 .new_note,
 .edit_note,
-.issuable-description,
+.detail-page-description,
 .milestone-description,
 .wiki-content,
 .merge-request-form {
@@ -106,6 +103,7 @@
 }
 
 .markdown-area {
+  @include border-radius(0);
   background: #FFF;
   border: 1px solid #ddd;
   min-height: 140px;

@@ -1,0 +1,42 @@
+- page_title t('sherlock.title')
+- header_title t('sherlock.title'), sherlock_transactions_path
+
+.gray-content-block
+  .pull-right
+    = link_to(destroy_all_sherlock_transactions_path,
+      class: 'btn btn-danger',
+      method: :delete) do
+      %i.fa.fa-trash
+      = t('sherlock.delete_all_transactions')
+  .oneline= t('sherlock.introduction')
+
+- if @transactions.empty?
+  .nothing-here-block= t('sherlock.no_transactions')
+- else
+  .table-holder
+    %table.table
+      %thead
+        %tr
+          %th= t('sherlock.type')
+          %th= t('sherlock.path')
+          %th= t('sherlock.time')
+          %th= t('sherlock.queries')
+          %th= t('sherlock.finished_at')
+          %th
+      %tbody
+        - @transactions.each do |trans|
+          %tr
+            %td= trans.type
+            %td
+              %span{title: trans.path}
+                = truncate(trans.path, length: 70)
+            %td
+              = trans.duration.round(2)
+              = t('sherlock.seconds')
+            %td= trans.queries.length
+            %td
+              = time_ago_in_words(trans.finished_at)
+              = t('sherlock.ago')
+            %td
+              = link_to(sherlock_transaction_path(trans), class: 'btn btn-xs') do
+                = t('sherlock.view')

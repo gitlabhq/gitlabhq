@@ -1,17 +1,18 @@
 require 'spec_helper'
 
 module Ci
-  describe ImageForBuildService do
+  describe ImageForBuildService, services: true do
     let(:service) { ImageForBuildService.new }
-    let(:project) { FactoryGirl.create(:ci_project) }
-    let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
-    let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project, ref: 'master') }
+    let(:project) { FactoryGirl.create(:empty_project) }
+    let(:commit_sha) { '01234567890123456789' }
+    let(:commit) { project.ensure_ci_commit(commit_sha) }
     let(:build) { FactoryGirl.create(:ci_build, commit: commit) }
 
     describe :execute do
       before { build }
 
       context 'branch name' do
+        before { allow(project).to receive(:commit).and_return(OpenStruct.new(sha: commit_sha)) }
         before { build.run! }
         let(:image) { service.execute(project, ref: 'master') }
 

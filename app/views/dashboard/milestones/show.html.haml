@@ -1,18 +1,22 @@
-- page_title @dashboard_milestone.title, "Milestones"
-%h4.page-title
-  .issue-box{ class: "issue-box-#{@dashboard_milestone.closed? ? 'closed' : 'open'}" }
-    - if @dashboard_milestone.closed?
+- page_title @milestone.title, "Milestones"
+- header_title "Milestones", dashboard_milestones_path
+
+.detail-page-header
+  .status-box{ class: "status-box-#{@milestone.closed? ? 'closed' : 'open'}" }
+    - if @milestone.closed?
       Closed
     - else
       Open
-  Milestone #{@dashboard_milestone.title}
+  %span.identifier
+    Milestone #{@milestone.title}
 
-%hr
-- if (@dashboard_milestone.total_items_count == @dashboard_milestone.closed_items_count) && @dashboard_milestone.active?
-  .alert.alert-success
+.detail-page-description.gray-content-block.second-block
+  %h2.title
+    = markdown escape_once(@milestone.title), pipeline: :single_line
+
+- if @milestone.complete? && @milestone.active?
+  .alert.alert-success.prepend-top-default
     %span All issues for this milestone are closed. You may close the milestone now.
-
-.description
 
 .table-holder
   %table.table
@@ -22,7 +26,7 @@
         %th Open issues
         %th State
         %th Due date
-    - @dashboard_milestone.milestones.each do |milestone|
+    - @milestone.milestones.each do |milestone|
       %tr
         %td
           = link_to "#{milestone.project.name_with_namespace}", namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone)
@@ -39,46 +43,60 @@
 .context
   %p.lead
     Progress:
-    #{@dashboard_milestone.closed_items_count} closed
+    #{@milestone.closed_items_count} closed
     &ndash;
-    #{@dashboard_milestone.open_items_count} open
-  = milestone_progress_bar(@dashboard_milestone)
+    #{@milestone.open_items_count} open
+  = milestone_progress_bar(@milestone)
 
-%ul.nav.nav-tabs
+%ul.center-top-menu.no-top.no-bottom
   %li.active
     = link_to '#tab-issues', 'data-toggle' => 'tab' do
       Issues
-      %span.badge= @dashboard_milestone.issue_count
+      %span.badge= @milestone.issue_count
   %li
     = link_to '#tab-merge-requests', 'data-toggle' => 'tab' do
       Merge Requests
-      %span.badge= @dashboard_milestone.merge_requests_count
+      %span.badge= @milestone.merge_requests_count
   %li
     = link_to '#tab-participants', 'data-toggle' => 'tab' do
       Participants
-      %span.badge= @dashboard_milestone.participants.count
-
-  .pull-right
-    = link_to 'Browse Issues', issues_dashboard_path(milestone_title: @dashboard_milestone.title), class: "btn  edit-milestone-link btn-grouped"
+      %span.badge= @milestone.participants.count
 
 .tab-content
   .tab-pane.active#tab-issues
-    .row
+    .gray-content-block.middle-block
+      .pull-right
+        = link_to 'Browse Issues', issues_dashboard_path(milestone_title: @milestone.title), class: "btn btn-grouped"
+
+      .oneline
+        All issues in this milestone
+
+    .row.prepend-top-default
       .col-md-6
-        = render 'issues', title: "Open", issues: @dashboard_milestone.opened_issues
+        = render 'issues', title: "Open", issues: @milestone.opened_issues
       .col-md-6
-        = render 'issues', title: "Closed", issues: @dashboard_milestone.closed_issues
+        = render 'issues', title: "Closed", issues: @milestone.closed_issues
 
   .tab-pane#tab-merge-requests
-    .row
+    .gray-content-block.middle-block
+      .pull-right
+        = link_to 'Browse Merge Requests', merge_requests_dashboard_path(milestone_title: @milestone.title), class: "btn btn-grouped"
+
+      .oneline
+        All merge requests in this milestone
+
+    .row.prepend-top-default
       .col-md-6
-        = render 'merge_requests', title: "Open", merge_requests: @dashboard_milestone.opened_merge_requests
+        = render 'merge_requests', title: "Open", merge_requests: @milestone.opened_merge_requests
       .col-md-6
-        = render 'merge_requests', title: "Closed", merge_requests: @dashboard_milestone.closed_merge_requests
+        = render 'merge_requests', title: "Closed", merge_requests: @milestone.closed_merge_requests
 
   .tab-pane#tab-participants
+    .gray-content-block.middle-block
+      .oneline
+        All participants to this milestone
     %ul.bordered-list
-      - @dashboard_milestone.participants.each do |user|
+      - @milestone.participants.each do |user|
         %li
           = link_to user, title: user.name, class: "darken" do
             = image_tag avatar_icon(user, 32), class: "avatar s32"

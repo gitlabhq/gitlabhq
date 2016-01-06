@@ -1,0 +1,33 @@
+table .sherlock-code {
+  max-width: 700px;
+}
+
+.sherlock-code {
+  pre {
+    word-wrap: normal;
+  }
+
+  pre code {
+    white-space: pre;
+  }
+}
+
+.sherlock-line-samples-table {
+  margin-bottom: 0px !important;
+
+  thead tr th,
+  tbody tr td {
+    font-size: 13px !important;
+    text-align: right;
+    padding: 0px 10px !important;
+  }
+}
+
+.sherlock-file-sample pre {
+  padding-top: 28px !important;
+}
+
+.sherlock-line-samples-table .slow {
+  color: $red-light;
+  font-weight: bold;
+}

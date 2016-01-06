@@ -1,3 +1,4 @@
+- page_title "Triggers"
 %h3.page-title
   Triggers
 
@@ -35,7 +36,8 @@
     :plain
       curl -X POST \
            -F token=TOKEN \
-           #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}
+           -F ref=REF_NAME \
+           #{builds_trigger_url(@project.id)}
   %h3
     Use .gitlab-ci.yml
 
@@ -50,7 +52,7 @@
       trigger:
         type: deploy
         script:
-          - "curl -X POST -F token=TOKEN #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}"
+          - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
   %h3
     Pass build variables
 
@@ -64,5 +66,6 @@
     :plain
       curl -X POST \
            -F token=TOKEN \
+           -F "ref=REF_NAME" \
            -F "variables[RUN_NIGHTLY_BUILD]=true" \
-           #{ci_build_trigger_url(@ci_project.id, 'REF_NAME')}
+           #{builds_trigger_url(@project.id)}

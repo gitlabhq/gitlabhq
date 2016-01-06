@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: runners
+# Table name: ci_runners
 #
 #  id           :integer          not null, primary key
 #  token        :string(255)
@@ -25,7 +25,7 @@ module Ci
     
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
-    has_many :projects, through: :runner_projects, class_name: 'Ci::Project'
+    has_many :projects, through: :runner_projects, class_name: '::Project', foreign_key: :gl_project_id
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
@@ -36,16 +36,13 @@ module Ci
     scope :active, ->() { where(active: true) }
     scope :paused, ->() { where(active: false) }
     scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
+    scope :ordered, ->() { order(id: :desc) }
 
     acts_as_taggable
 
     def self.search(query)
       where('LOWER(ci_runners.token) LIKE :query OR LOWER(ci_runners.description) like :query',
             query: "%#{query.try(:downcase)}%")
-    end
-
-    def gl_projects_ids
-      projects.select(:gitlab_id)
     end
 
     def set_default_values

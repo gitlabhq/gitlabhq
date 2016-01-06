@@ -8,7 +8,7 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 
 ### Issue team
 - Looks for issues without [workflow labels](#how-we-handle-issues) and triages issue
-- Closes invalid issues with a comment (duplicates, [feature requests](#feature-requests), [fixed in newer version](#issue-fixed-in-newer-version), [issue report for old version](#issue-report-for-old-version), not a problem in GitLab, etc.)
+- Closes invalid issues with a comment (duplicates, [fixed in newer version](#issue-fixed-in-newer-version), [issue report for old version](#issue-report-for-old-version), not a problem in GitLab, etc.)
 - Asks for feedback from issue reporter ([invalid issue reports](#improperly-formatted-issue), [format code](#code-format), etc.)
 - Monitors all issues for feedback (but especially ones commented on since automatically watching them)
 - Closes issues with no feedback from the reporter for two weeks
@@ -34,13 +34,21 @@ The most important thing is making sure valid issues receive feedback from the d
 
 ## Workflow labels
 
-Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to re-evaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue. 
+Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to re-evaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue.
 
 -   *Awaiting feedback*: Feedback pending from the reporter
 -   *Awaiting confirmation of fix*: The issue should already be solved in **master** (generally you can avoid this workflow item and just close the issue right away)
 -   *Attached MR*: There is a MR attached and the discussion should happen there
     - We need to let issues stay in sync with the MR's. We can do this with a "Closing #XXXX" or "Fixes #XXXX" comment in the MR. We can't close the issue when there is a merge request because sometimes a MR is not good and we just close the MR, then the issue must stay.
--   *Awaiting developer action/feedback*: Issue needs to be fixed or clarified by a developer
+- *Developer*: needs help from a developer
+- *UX* needs needs help from a UX designer
+- *Frontend* needs help from a Front-end engineer
+- *Graphics* needs help from a Graphics designer
+- *up-for-grabs* is an issue suitable for first-time contributors, of reasonable difficulty and size. Not exclusive with other labels.
+- *feature proposal* is a proposal for a new feature for GitLab. People are encouraged to vote
+in support or comment for further detail. Do not use `feature request`.
+
+Example workflow: when a UX designer provided a design but it needs frontend work they remove the UX label and add the frontend label.
 
 ## Functional labels
 
@@ -56,7 +64,6 @@ If an issue is complex and needs the attention of a specific person, assignment 
 -   Bright orange `#eb6420`: workflow labels for core team members (attached MR, awaiting developer action/feedback)
 -   Light blue `#82C5FF`: functional labels
 -   Green labels `#009800`: issues that can generally be ignored. For example, issues given the following labels normally can be closed immediately:
-    - Feature request (see copy & paste response: [Feature requests](#feature-requests))
     - Support (see copy & paste response: [Support requests and configuration questions](#support-requests-and-configuration-questions)
 
 ## Be kind
@@ -68,10 +75,6 @@ Be kind to people trying to contribute. Be aware that people may be a non-native
 ### Improperly formatted issue
 
 Thanks for the issue report. Please reformat your issue to conform to the issue tracker guidelines found in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
-
-### Feature requests
-
-Thank you for your interest in improving GitLab. We don't use the issue tracker for feature requests. Things that are wrong but are not a regression compared to older versions of GitLab are considered feature requests and not issues. Please use the \[feature request forum\]\(http://feedback.gitlab.com/) for this purpose or create a merge request implementing this feature. Have a look at the \[contribution guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) for more information.
 
 ### Issue report for old version
 
@@ -107,7 +110,12 @@ This merge request has been closed because a request for more information has no
 
 ### Accepting merge requests
 
-Is there a request on [the feature request forum](http://feedback.gitlab.com/forums/176466-general) that is similar to this? If so, can you make a comment with a link to it? Please be aware that new functionality that is not marked [accepting merge/pull requests](http://feedback.gitlab.com/forums/176466-general/status/796455) on the forum might not make it into GitLab. You might be asked to make changes and even after implementing them your feature might still be declined. If you want to reduce the chance of this happening please have a discussion in the forum first.
+Is there an issue on the [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues)
+that is similar to this?
+Could you please link it here?
+Please be aware that new functionality that is not marked
+[accepting merge requests](https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_id=&scope=all&sort=created_desc&state=opened&utf8=%E2%9C%93&assignee_id=&author_id=&milestone_title=&label_name=Accepting+Merge+Requests)
+might not make it into GitLab.
 
 ### Only accepting merge requests with green tests
 
@@ -115,3 +123,10 @@ We can only accept a merge request if all the tests are green. I've just
 restarted the build. When the tests are still not passing after this restart and
 you're sure that is does not have anything to do with your code changes, please
 rebase with master to see if that solves the issue.
+
+### Closing down the issue tracker on GitHub
+
+We are currently in the process of closing down the issue tracker on GitHub, to
+prevent duplication with the GitLab.com issue tracker.
+Since this is an older issue I'll be closing this for now. If you think this is
+still an issue I encourage you to open it on the \[GitLab.com issue tracker\](https://gitlab.com/gitlab-org/gitlab-ce/issues).

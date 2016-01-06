@@ -8,4 +8,10 @@ class Admin::ApplicationController < ApplicationController
   def authenticate_admin!
     return render_404 unless current_user.is_admin?
   end
+
+  def authorize_impersonator!
+    if session[:impersonator_id]
+      User.find_by!(username: session[:impersonator_id]).admin?
+    end
+  end
 end

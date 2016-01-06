@@ -8,7 +8,7 @@
       - else
         Import in progress.
     - unless @project.forked?
-      %p.monospace git clone --bare #{hidden_pass_url(@project.import_url)}
+      %p.monospace git clone --bare #{@project.safe_import_url}
     %p Please wait while we import the repository for you. Refresh at will.
     :javascript
       new ProjectImport();

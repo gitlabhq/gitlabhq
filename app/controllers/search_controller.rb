@@ -23,8 +23,8 @@ class SearchController < ApplicationController
 
     @search_results =
       if @project
-        unless %w(blobs notes issues merge_requests milestones wiki_blobs).
-          include?(@scope)
+        unless %w(blobs notes issues merge_requests milestones wiki_blobs
+                  commits).include?(@scope)
           @scope = 'blobs'
         end
 

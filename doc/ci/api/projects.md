@@ -1,7 +1,7 @@
 # Projects API
 
 This API is intended to aid in the setup and configuration of
-projects on Gitlab CI. 
+projects on GitLab CI.
 
 __Authentication is done by GitLab user token & GitLab url__
 
@@ -88,23 +88,23 @@ authorized.
 
 Parameters:
 
-  * `id` (required) - The ID of the Gitlab CI project
+  * `id` (required) - The ID of the GitLab CI project
 
 ### Create Project
 
-Creates a Gitlab CI project using Gitlab project details.
+Creates a GitLab CI project using GitLab project details.
 
     POST /ci/projects
 
 Parameters:
 
   * `name` (required) - The name of the project
-  * `gitlab_id` (required) - The ID of the project on the Gitlab instance
+  * `gitlab_id` (required) - The ID of the project on the GitLab instance
   * `default_ref` (optional) - The branch to run on (default to `master`)
 
 ### Update Project
 
-Updates a Gitlab CI project using Gitlab project details that the
+Updates a GitLab CI project using GitLab project details that the
 authenticated user has access to.
 
     PUT /ci/projects/:id
@@ -116,13 +116,13 @@ Parameters:
 
 ### Remove Project
 
-Removes a Gitlab CI project that the authenticated user has access to.
+Removes a GitLab CI project that the authenticated user has access to.
 
     DELETE /ci/projects/:id
 
 Parameters:
 
-  * `id` (required) - The ID of the Gitlab CI project
+  * `id` (required) - The ID of the GitLab CI project
 
 ### Link Project to Runner
 
@@ -133,8 +133,8 @@ authorized user).
 
 Parameters:
 
-  * `id` (required) - The ID of the Gitlab CI project
-  * `runner_id` (required) - The ID of the Gitlab CI runner
+  * `id` (required) - The ID of the GitLab CI project
+  * `runner_id` (required) - The ID of the GitLab CI runner
 
 ### Remove Project from Runner
 
@@ -145,5 +145,5 @@ via authorized user).
 
 Parameters:
 
-  * `id` (required) - The ID of the Gitlab CI project
-  * `runner_id` (required) - The ID of the Gitlab CI runner
+  * `id` (required) - The ID of the GitLab CI project
+  * `runner_id` (required) - The ID of the GitLab CI runner

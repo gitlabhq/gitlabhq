@@ -71,7 +71,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-project_member', count: 3)
+      expect(actual).to have_selector('a.gfm.gfm-project_member', count: 4)
     end
   end
 
@@ -80,7 +80,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-issue', count: 3)
+      expect(actual).to have_selector('a.gfm.gfm-issue', count: 6)
     end
   end
 
@@ -89,7 +89,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-merge_request', count: 3)
+      expect(actual).to have_selector('a.gfm.gfm-merge_request', count: 6)
       expect(actual).to have_selector('em a.gfm-merge_request')
     end
   end
@@ -99,7 +99,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-snippet', count: 2)
+      expect(actual).to have_selector('a.gfm.gfm-snippet', count: 5)
     end
   end
 
@@ -108,7 +108,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-commit_range', count: 2)
+      expect(actual).to have_selector('a.gfm.gfm-commit_range', count: 5)
     end
   end
 
@@ -117,7 +117,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-commit', count: 2)
+      expect(actual).to have_selector('a.gfm.gfm-commit', count: 5)
     end
   end
 
@@ -126,7 +126,7 @@ module MarkdownMatchers
     set_default_markdown_messages
 
     match do |actual|
-      expect(actual).to have_selector('a.gfm.gfm-label', count: 3)
+      expect(actual).to have_selector('a.gfm.gfm-label', count: 4)
     end
   end
 

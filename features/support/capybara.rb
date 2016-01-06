@@ -2,7 +2,7 @@ require 'spinach/capybara'
 require 'capybara/poltergeist'
 
 # Give CI some extra time
-timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 90 : 10
+timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 90 : 15
 
 Capybara.javascript_driver = :poltergeist
 Capybara.register_driver :poltergeist do |app|

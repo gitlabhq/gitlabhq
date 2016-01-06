@@ -11,9 +11,15 @@ module Ci
         expose :builds
       end
 
+      class ArtifactFile < Grape::Entity
+        expose :filename, :size
+      end
+
       class Build < Grape::Entity
         expose :id, :commands, :ref, :sha, :status, :project_id, :repo_url,
           :before_sha, :allow_git_fetch, :project_name
+
+        expose :name, :token, :stage
 
         expose :options do |model|
           model.options
@@ -24,19 +30,11 @@ module Ci
         end
 
         expose :variables
+        expose :artifacts_file, using: ArtifactFile
       end
 
       class Runner < Grape::Entity
         expose :id, :token
-      end
-
-      class Project < Grape::Entity
-        expose :id, :name, :token, :default_ref, :gitlab_url, :path,
-          :always_build, :polling_interval, :public, :ssh_url_to_repo, :gitlab_id
-
-        expose :timeout do |model|
-          model.timeout
-        end
       end
 
       class RunnerProject < Grape::Entity

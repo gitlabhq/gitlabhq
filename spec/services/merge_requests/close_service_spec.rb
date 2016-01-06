@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::CloseService do
+describe MergeRequests::CloseService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, assignee: user2) }
@@ -18,7 +18,9 @@ describe MergeRequests::CloseService do
       before do
         allow(service).to receive(:execute_hooks)
 
-        @merge_request = service.execute(merge_request)
+        perform_enqueued_jobs do
+          @merge_request = service.execute(merge_request)
+        end
       end
 
       it { expect(@merge_request).to be_valid }

@@ -1,4 +1,5 @@
 - page_title "Google Code import"
+- header_title "Projects", root_path
 %h3.page-title
   %i.fa.fa-google
   Import projects from Google Code
@@ -67,5 +68,5 @@
     = link_to "import flow", new_import_google_code_path
     again.
 
-:coffeescript
-  new ImporterStatus("#{jobs_import_google_code_path}", "#{import_google_code_path}")
+:javascript
+  new ImporterStatus("#{jobs_import_google_code_path}", "#{import_google_code_path}");

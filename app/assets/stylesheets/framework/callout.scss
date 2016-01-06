@@ -7,11 +7,11 @@
 
 /* Common styles for all types */
 .bs-callout {
-  margin: 20px 0;
-  padding: 20px;
-  border-left: 3px solid #eee;
-  color: #666;
-  background: #f9f9f9;
+  margin: $gl-padding 0;
+  padding: $gl-padding;
+  border-left: 3px solid $border-color;
+  color: $text-color;
+  background: $background-color;
 }
 .bs-callout h4 {
   margin-top: 0;
@@ -42,4 +42,3 @@
   border-color: #5cA64d;
   color: #3c763d;
 }
-

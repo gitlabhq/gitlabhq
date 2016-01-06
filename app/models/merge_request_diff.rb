@@ -19,7 +19,7 @@ class MergeRequestDiff < ActiveRecord::Base
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 500
 
-  attr_reader :commits, :diffs
+  attr_reader :commits, :diffs, :diffs_no_whitespace
 
   belongs_to :merge_request
 
@@ -45,6 +45,20 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def diffs
     @diffs ||= (load_diffs(st_diffs) || [])
+  end
+
+  def diffs_no_whitespace
+    # Get latest sha of branch from source project
+    source_sha = merge_request.source_project.commit(source_branch).sha
+
+    compare_result = Gitlab::CompareResult.new(
+      Gitlab::Git::Compare.new(
+        merge_request.target_project.repository.raw_repository,
+        merge_request.target_branch,
+        source_sha,
+      ), { ignore_whitespace_change: true }
+    )
+    @diffs_no_whitespace ||= load_diffs(dump_commits(compare_result.diffs))
   end
 
   def commits

@@ -1,8 +1,3 @@
-.my-snippets li:first-child {
-  h4 { margin-top: 0; }
-  padding-top: 0;
-}
-
 .snippet-form-holder .file-holder .file-title {
   padding: 2px;
 }
@@ -29,4 +24,31 @@
       color: #888;
     }
   }
+}
+
+.snippet-holder {
+  margin-bottom: -$gl-padding;
+
+  .file-holder {
+    border-top: 0;
+  }
+
+  .file-actions {
+    .btn-clipboard {
+      @extend .btn;
+    }
+  }
+}
+
+.snippet-box {
+  @include border-radius(2px);
+
+  display: block;
+  float: left;
+  padding: 0 $gl-padding;
+  font-weight: normal;
+  margin-right: 10px;
+  font-size: $gl-font-size;
+  border: 1px solid;
+  line-height: 40px;
 }

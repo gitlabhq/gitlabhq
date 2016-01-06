@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Gitlab::PushDataBuilder' do
+describe 'Gitlab::PushDataBuilder', lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -17,6 +17,9 @@ describe 'Gitlab::PushDataBuilder' do
     it { expect(data[:repository][:git_ssh_url]).to eq(project.ssh_url_to_repo) }
     it { expect(data[:repository][:visibility_level]).to eq(project.visibility_level) }
     it { expect(data[:total_commits_count]).to eq(3) }
+    it { expect(data[:commits].first[:added]).to eq(["gitlab-grack"]) }
+    it { expect(data[:commits].first[:modified]).to eq([".gitmodules"]) }
+    it { expect(data[:commits].first[:removed]).to eq([]) }
   end
 
   describe :build do

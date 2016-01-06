@@ -1,0 +1,24 @@
+- if @transaction.file_samples.empty?
+  .nothing-here-block
+    = t('sherlock.no_file_samples')
+- else
+  .table-holder
+    %table.table
+      %thead
+        %tr
+          %th= t('sherlock.time_inclusive')
+          %th= t('sherlock.count')
+          %th= t('sherlock.path')
+          %th
+      %tbody
+        - @transaction.sorted_file_samples.each do |sample|
+          %tr
+            %td
+              = sample.duration.round(2)
+              = t('sherlock.milliseconds')
+            %td= @transaction.view_counts.fetch(sample.file, 1)
+            %td= sample.relative_path
+            %td
+              = link_to(t('sherlock.view'),
+                sherlock_transaction_file_sample_path(@transaction, sample),
+                class: 'btn btn-xs')

@@ -1,5 +1,10 @@
 - page_title    'New Project'
-- header_title  'New Project'
+- header_title  "Projects", root_path
+
+%h3.page-title
+  New Project
+%hr
+
 .project-edit-container
   .project-edit-errors
     = render 'projects/errors'
@@ -11,19 +16,23 @@
           Project path
         .col-sm-10
           .input-group
-            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 1, autofocus: true, required: true
-            .input-group-addon
-              \.git
+            - if current_user.can_select_namespace?
+              .input-group-addon
+                = root_url
+              = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user, display_path: true), {}, {class: 'select2', tabindex: 1}
+              .input-group-addon
+                \/
+            - else
+              .input-group-addon
+                #{root_url}#{current_user.username}/
+            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
 
-      - if current_user.can_select_namespace?
-        .form-group
-          = f.label :namespace_id, class: 'control-label' do
-            %span Namespace
-          .col-sm-10
-            = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'select2', tabindex: 2}
+          - if current_user.can_create_group?
+            .help-block
+              Want to house several dependent projects under the same namespace?
+              = link_to "Create a group", new_group_path
 
       - if import_sources_enabled?
-
         .project-import.js-toggle-container
           .form-group
             %label.control-label Import project from
@@ -82,19 +91,7 @@
                   %span Any repo by URL
 
           .js-toggle-content.hide
-            .form-group.import-url-data
-              = f.label :import_url, class: 'control-label' do
-                %span Git repository URL
-              .col-sm-10
-                = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
-                .well.prepend-top-20
-                  %ul
-                    %li
-                      The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>.
-                    %li
-                      The import will time out after 4 minutes. For big repositories, use a clone/push combination.
-                    %li
-                      To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}.
+            = render "shared/import_form", f: f
 
       .prepend-botton-10
 
@@ -103,19 +100,12 @@
           Description
           %span.light (optional)
         .col-sm-10
-          = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250, tabindex: 3
+          = f.text_area :description, class: "form-control", rows: 3, maxlength: 250, tabindex: 3
       = render 'shared/visibility_level', f: f, visibility_level: default_project_visibility, can_change_visibility_level: true, form_model: @project
 
       .form-actions
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
-
-        - if current_user.can_create_group?
-          .pull-right
-            .light.inline
-              .space-right
-                Need a group for several dependent projects?
-            = link_to new_group_path, class: "btn" do
-              Create a group
+        = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
 
 .save-project-loader.hide
   .center
@@ -124,9 +114,11 @@
       Creating project &amp; repository.
     %p Please wait a moment, this page will automatically refresh when ready.
 
-:coffeescript
-  $('.how_to_import_link').bind 'click', (e) ->
-    e.preventDefault()
-    import_modal = $(this).next(".modal").show()
-  $('.modal-header .close').bind 'click', ->
-    $(".modal").hide()
+:javascript
+  $('.how_to_import_link').bind('click', function (e) {
+    e.preventDefault();
+    var import_modal = $(this).next(".modal").show();
+  });
+  $('.modal-header .close').bind('click', function() {
+    $(".modal").hide();
+  });

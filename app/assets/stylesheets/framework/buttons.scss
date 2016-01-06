@@ -1,10 +1,9 @@
 @mixin btn-default {
-  @include border-radius(2px);
+  @include border-radius(3px);
   border-width: 1px;
   border-style: solid;
-  text-transform: uppercase;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   line-height: 18px;
   padding: 11px $gl-padding;
   letter-spacing: .4px;
@@ -18,7 +17,7 @@
 
 @mixin btn-middle {
   @include btn-default;
-  @include border-radius(2px);
+  @include border-radius(3px);
   padding: 11px 24px;
 }
 
@@ -51,6 +50,10 @@
   @include btn-color($blue-light, $border-blue-light, $blue-normal, $border-blue-normal, $blue-dark, $border-blue-dark, #FFFFFF);
 }
 
+@mixin btn-blue-medium {
+  @include btn-color($blue-medium-light, $border-blue-light, $blue-medium, $border-blue-normal, $blue-medium-dark, $border-blue-dark, #FFFFFF);
+}
+
 @mixin btn-orange {
   @include btn-color($orange-light, $border-orange-light, $orange-normal, $border-orange-normal, $orange-dark, $border-orange-dark, #FFFFFF);
 }
@@ -60,7 +63,7 @@
 }
 
 @mixin btn-gray {
-  @include btn-color($gray-light, $border-gray-light, $gray-normal, $border-gray-normal, $gray-dark, $border-gray-dark, #313236);
+  @include btn-color($gray-light, $border-gray-light, $gray-normal, $border-gray-light, $gray-dark, $border-gray-dark, #313236);
 }
 
 @mixin btn-white {
@@ -73,6 +76,10 @@
 
   &.btn-sm {
     padding: 5px 10px;
+  }
+
+  &.btn-nr {
+    padding: 7px 10px;
   }
 
   &.btn-xs {
@@ -91,11 +98,15 @@
     @include btn-gray;
   }
 
-  &.btn-primary,
+  &.btn-primary {
+    @include btn-blue-medium;
+  }
+
   &.btn-info {
     @include btn-blue;
   }
 
+  &.btn-close,
   &.btn-warning {
     @include btn-orange;
   }
@@ -110,20 +121,8 @@
     float: right;
   }
 
-  &.btn-close {
-    color: $gl-danger;
-    border-color: $gl-danger;
-    &:hover {
-      color: #B94A48;
-    }
-  }
-
   &.btn-reopen {
-    color: $gl-success;
-    border-color: $gl-success;
-    &:hover {
-      color: #468847;
-    }
+    /* should be same as parent class for now */
   }
 
   &.btn-grouped {
@@ -162,10 +161,25 @@
     border-color: #e7e9ed;
     width: 140px;
 
+    .badge {
+      font-weight: normal;
+      background-color: #eee;
+      color: #78a;
+    }
+
     &.active {
       border-color: $gl-info;
       background: $gl-info;
       color: #fff;
+
+      .badge {
+        color: $gl-info;
+        background-color: white;
+      }
     }
   }
+}
+
+.btn-clipboard {
+  border: none;
 }

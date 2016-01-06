@@ -1,12 +1,18 @@
-- if current_user && can?(current_user, :fork_project, @project)
-  - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-    = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn' do
-      = icon('code-fork fw')
-      Fork
-      %span.count
-        = @project.forks_count
-  - else
-    = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn' do
-      = icon('code-fork fw')
-      %span.count
-        = @project.forks_count
+- unless @project.empty_repo?
+  - if current_user && can?(current_user, :fork_project, @project)
+    - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+      = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn has_tooltip' do
+        = icon('code-fork fw')
+        Fork
+      %div.count-with-arrow
+        %span.arrow
+        %span.count
+          = @project.forks_count
+    - else
+      = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn has_tooltip' do
+        = icon('code-fork fw')
+        Fork
+      %div.count-with-arrow
+        %span.arrow
+        %span.count
+          = @project.forks_count

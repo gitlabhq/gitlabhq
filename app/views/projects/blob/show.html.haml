@@ -6,10 +6,8 @@
 %div#tree-holder.tree-holder
   = render 'blob', blob: @blob
 
-- if allowed_tree_edit?
+- if can_edit_blob?(@blob)
   = render 'projects/blob/remove'
 
   - title = "Replace #{@blob.name}"
-  = render 'projects/blob/upload', title: title, placeholder: title,
-    button_title: 'Replace file', form_path: namespace_project_update_blob_path(@project.namespace, @project, @id),
-    method: :put
+  = render 'projects/blob/upload', title: title, placeholder: title, button_title: 'Replace file', form_path: namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put

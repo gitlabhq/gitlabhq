@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: variables
+# Table name: ci_variables
 #
 #  id                   :integer          not null, primary key
 #  project_id           :integer          not null
@@ -13,7 +13,7 @@
 
 require 'spec_helper'
 
-describe Ci::Variable do
+describe Ci::Variable, models: true do
   subject { Ci::Variable.new }
 
   let(:secret_value) { 'secret' }

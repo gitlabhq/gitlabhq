@@ -40,9 +40,10 @@
             Reply to this email directly or
             #{link_to "view it on GitLab", @target_url}.
           - else
-            #{link_to "View it on GitLab", @target_url}
+            #{link_to "View it on GitLab", @target_url}.
           %br
-          You're receiving this email because of your account on #{link_to Gitlab.config.gitlab.host, root_url}. 
+          -# Don't link the host is the line below, one link in the email is easier to quickly click than two.
+          You're receiving this email because of your account on #{Gitlab.config.gitlab.host}.
           If you'd like to receive fewer emails, you can adjust your notification settings.
 
           = email_action @target_url

@@ -21,6 +21,7 @@ class Projects::SnippetsController < Projects::ApplicationController
       filter: :by_project,
       project: @project
     })
+    @snippets = @snippets.page(params[:page]).per(PER_PAGE)
   end
 
   def new

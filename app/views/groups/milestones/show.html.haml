@@ -1,26 +1,28 @@
-- page_title @group_milestone.title, "Milestones"
+- page_title @milestone.title, "Milestones"
 = render "header_title"
 
-%h4.page-title
-  .issue-box{ class: "issue-box-#{@group_milestone.closed? ? 'closed' : 'open'}" }
-    - if @group_milestone.closed?
+.detail-page-header
+  .status-box{ class: "status-box-#{@milestone.closed? ? 'closed' : 'open'}" }
+    - if @milestone.closed?
       Closed
     - else
       Open
-  Milestone #{@group_milestone.title}
+  %span.identifier
+    Milestone #{@milestone.title}
   .pull-right
-    - if can?(current_user, :admin_group, @group)
-      - if @group_milestone.active?
-        = link_to 'Close Milestone', group_milestone_path(@group, @group_milestone.safe_title, title: @group_milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-sm btn-close"
+    - if can?(current_user, :admin_milestones, @group)
+      - if @milestone.active?
+        = link_to 'Close Milestone', group_milestone_path(@group, @milestone.safe_title, title: @milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close"
       - else
-        = link_to 'Reopen Milestone', group_milestone_path(@group, @group_milestone.safe_title, title: @group_milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
+        = link_to 'Reopen Milestone', group_milestone_path(@group, @milestone.safe_title, title: @milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
 
-%hr
-- if (@group_milestone.total_items_count == @group_milestone.closed_items_count) && @group_milestone.active?
-  .alert.alert-success
+.detail-page-description.gray-content-block.second-block
+  %h2.title
+    = markdown escape_once(@milestone.title), pipeline: :single_line
+
+- if @milestone.complete? && @milestone.active?
+  .alert.alert-success.prepend-top-default
     %span All issues for this milestone are closed. You may close the milestone now.
-
-.description
 
 .table-holder
   %table.table
@@ -30,7 +32,7 @@
         %th Open issues
         %th State
         %th Due date
-    - @group_milestone.milestones.each do |milestone|
+    - @milestone.milestones.each do |milestone|
       %tr
         %td
           = link_to "#{milestone.project.name}", namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone)
@@ -47,46 +49,61 @@
 .context
   %p.lead
     Progress:
-    #{@group_milestone.closed_items_count} closed
+    #{@milestone.closed_items_count} closed
     &ndash;
-    #{@group_milestone.open_items_count} open
-  = milestone_progress_bar(@group_milestone)
+    #{@milestone.open_items_count} open
+  = milestone_progress_bar(@milestone)
 
-%ul.nav.nav-tabs
+%ul.center-top-menu.no-top.no-bottom
   %li.active
     = link_to '#tab-issues', 'data-toggle' => 'tab' do
       Issues
-      %span.badge= @group_milestone.issue_count
+      %span.badge= @milestone.issue_count
   %li
     = link_to '#tab-merge-requests', 'data-toggle' => 'tab' do
       Merge Requests
-      %span.badge= @group_milestone.merge_requests_count
+      %span.badge= @milestone.merge_requests_count
   %li
     = link_to '#tab-participants', 'data-toggle' => 'tab' do
       Participants
-      %span.badge= @group_milestone.participants.count
-
-  .pull-right
-    = link_to 'Browse Issues', issues_group_path(@group, milestone_title: @group_milestone.title), class: "btn  edit-milestone-link btn-grouped"
+      %span.badge= @milestone.participants.count
 
 .tab-content
   .tab-pane.active#tab-issues
-    .row
+    .gray-content-block.middle-block
+      .pull-right
+        = link_to 'Browse Issues', issues_group_path(@group, milestone_title: @milestone.title), class: "btn btn-grouped"
+
+      .oneline
+        All issues in this milestone
+
+    .row.prepend-top-default
       .col-md-6
-        = render 'issues', title: "Open", issues: @group_milestone.opened_issues
+        = render 'issues', title: "Open", issues: @milestone.opened_issues
       .col-md-6
-        = render 'issues', title: "Closed", issues: @group_milestone.closed_issues
+        = render 'issues', title: "Closed", issues: @milestone.closed_issues
 
   .tab-pane#tab-merge-requests
-    .row
+    .gray-content-block.middle-block
+      .pull-right
+        = link_to 'Browse Merge Requests', merge_requests_group_path(@group, milestone_title: @milestone.title), class: "btn btn-grouped"
+
+      .oneline
+        All merge requests in this milestone
+
+    .row.prepend-top-default
       .col-md-6
-        = render 'merge_requests', title: "Open", merge_requests: @group_milestone.opened_merge_requests
+        = render 'merge_requests', title: "Open", merge_requests: @milestone.opened_merge_requests
       .col-md-6
-        = render 'merge_requests', title: "Closed", merge_requests: @group_milestone.closed_merge_requests
+        = render 'merge_requests', title: "Closed", merge_requests: @milestone.closed_merge_requests
 
   .tab-pane#tab-participants
+    .gray-content-block.middle-block
+      .oneline
+        All participants to this milestone
+
     %ul.bordered-list
-      - @group_milestone.participants.each do |user|
+      - @milestone.participants.each do |user|
         %li
           = link_to user, title: user.name, class: "darken" do
             = image_tag avatar_icon(user, 32), class: "avatar s32"

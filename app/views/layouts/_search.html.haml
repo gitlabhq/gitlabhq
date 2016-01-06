@@ -11,6 +11,8 @@
         = hidden_field_tag :scope, 'merge_requests'
       - elsif current_controller?(:wikis)
         = hidden_field_tag :scope, 'wiki_blobs'
+      - elsif current_controller?(:commits)
+        = hidden_field_tag :scope, 'commits'
       - else
         = hidden_field_tag :search_code, true
 
@@ -23,6 +25,6 @@
 :javascript
   $('.search-input').on('keyup', function(e) {
     if (e.keyCode == 27) {
-      $('.search-input').blur()
+      $('.search-input').blur();
     }
-  })
+  });

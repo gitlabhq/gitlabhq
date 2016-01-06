@@ -60,6 +60,9 @@ sudo -u git -H python mysql-postgresql-converter/db_converter.py gitlabhq_produc
 sudo -u git -H ed -s db/database.sql < mysql-postgresql-converter/move_drop_indexes.ed
 
 # Compress database backup
+# Warning: If you have Gitlab 7.12.0 or older skip this step and import the database.sql directly into the backup with:
+# sudo -u git -H tar rf TIMESTAMP_gitlab_backup.tar db/database.sql
+# The compressed databasedump is not supported at 7.12.0 and older.
 sudo -u git -H gzip db/database.sql
 
 # Replace the MySQL dump in TIMESTAMP_gitlab_backup.tar.
@@ -71,4 +74,5 @@ sudo -u git -H tar rf TIMESTAMP_gitlab_backup.tar db/database.sql.gz
 
 # Done! TIMESTAMP_gitlab_backup.tar can now be restored into a Postgres GitLab
 # installation.
+# See https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/raketasks/backup_restore.md for more information about backups.
 ```

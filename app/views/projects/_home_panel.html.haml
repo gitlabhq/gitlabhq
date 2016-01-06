@@ -1,5 +1,5 @@
 - empty_repo = @project.empty_repo?
-.project-home-panel.clearfix{:class => ("empty-project" if empty_repo)}
+.project-home-panel.cover-block.clearfix{:class => ("empty-project" if empty_repo)}
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
   .project-home-desc
@@ -12,23 +12,45 @@
         Forked from
         = link_to project_path(forked_from_project) do
           = forked_from_project.namespace.try(:name)
+  .cover-controls.left
+    .visibility-level-label.has_tooltip{title: project_visibility_level_description(@project.visibility_level), data: { container: 'body' } }
+      = visibility_level_icon(@project.visibility_level, fw: false)
+      = visibility_level_label(@project.visibility_level)
 
-
+  .cover-controls
+    - if current_user
+      = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), class: 'btn btn-gray' do
+        = icon('rss')
+      - access = user_max_access_in_project(current_user.id, @project)
+      - can_edit = can?(current_user, :admin_project, @project)
+      - if access || can_edit
+        %span.dropdown.project-settings-dropdown
+          %a.dropdown-new.btn.btn-gray#project-settings-button{href: '#', 'data-toggle' => 'dropdown'}
+            = icon('cog')
+            = icon('angle-down')
+          %ul.dropdown-menu.dropdown-menu-right
+            - if can_edit
+              %li
+                = link_to edit_project_path(@project) do
+                  Edit Project
+            - if access
+              %li
+                = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
+                  data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
+                  Leave Project
 
   .project-repo-buttons
-    .split-one
+    .split-one.count-buttons
       = render 'projects/buttons/star'
+      = render 'projects/buttons/fork'
 
-      - unless empty_repo
-        = render 'projects/buttons/fork'
-    
     = render "shared/clone_panel"
-    .split-repo-buttons 
-      - unless empty_repo
-        - if can? current_user, :download_code, @project
-          = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: @ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
-            = icon('download fw')
-            
+
+    .split-repo-buttons
+      = render "projects/buttons/download"
       = render 'projects/buttons/dropdown'
+
     = render 'projects/buttons/notifications'
-    
+
+:coffeescript
+  new Star()

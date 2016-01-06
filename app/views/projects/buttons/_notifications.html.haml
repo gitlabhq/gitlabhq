@@ -5,7 +5,7 @@
     = hidden_field_tag :notification_id, @membership.id
     = hidden_field_tag :notification_level
     %span.dropdown
-      %a.dropdown-new.btn.btn-new#notifications-button{href: '#', "data-toggle" => "dropdown"}
+      %a.dropdown-new.btn.notifications-btn#notifications-button{href: '#', "data-toggle" => "dropdown"}
         = icon('bell')
         = notification_label(@membership)
         = icon('angle-down')
@@ -14,7 +14,7 @@
           = notification_list_item(level, @membership)
 
 - when GroupMember
-  .btn.btn-new.disabled.has_tooltip{title: "To change the notification level, you need to be a member of the project itself, not only its group."}
+  .btn.disabled.notifications-btn.has_tooltip{title: "To change the notification level, you need to be a member of the project itself, not only its group."}
     = icon('bell')
     = notification_label(@membership)
     = icon('angle-down')

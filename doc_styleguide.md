@@ -15,6 +15,8 @@ For subtitles, use '##', '###' and so on.
 - Do not duplicate information.
 - Be brief and clear.
 - Whenever it applies, add documents in alphabetical order.
+- Write in US English
+- Use [single spaces](http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html) instead of double spaces.
 
 ## Images
 

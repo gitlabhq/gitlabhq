@@ -1,8 +1,12 @@
 - page_title "Contributors", "Graphs"
 = render "header_title"
-.tree-ref-holder
-  = render 'shared/ref_switcher', destination: 'graphs'
 = render 'head'
+
+.gray-content-block.append-bottom-default
+  .tree-ref-holder
+    = render 'shared/ref_switcher', destination: 'graphs'
+  %ul.breadcrumb.repo-breadcrumb
+    = commits_breadcrumbs
 
 .loading-graph
   .center
@@ -24,18 +28,21 @@
 
 
 
-:coffeescript
-  $.ajax
+:javascript
+  $.ajax({
     type: "GET",
     url: location.href,
-    success: (data) ->
-      graph = new ContributorsStatGraph()
-      graph.init(data)
+    dataType: "json",
+    success: function (data) {
+      var graph = new ContributorsStatGraph();
+      graph.init(data);
 
-      $("#brush_change").change ->
-        graph.change_date_header()
-        graph.redraw_authors()
+      $("#brush_change").change(function(){
+        graph.change_date_header();
+        graph.redraw_authors();
+      });
 
       $(".stat-graph").fadeIn();
       $(".loading-graph").hide();
-    dataType: "json"
+    }
+  });

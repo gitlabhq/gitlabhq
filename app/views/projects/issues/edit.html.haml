@@ -1,2 +1,8 @@
 - page_title "Edit", "#{@issue.title} (##{@issue.iid})", "Issues"
+= render "header_title"
+
+%h3.page-title
+  Edit Issue ##{@issue.iid}
+%hr
+
 = render "form"

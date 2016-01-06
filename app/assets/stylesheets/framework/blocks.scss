@@ -28,6 +28,10 @@
   border-bottom: 1px solid $border-color;
   color: $gl-gray;
 
+  &.oneline-block {
+    line-height: 42px;
+  }
+
   &.white {
     background-color: white;
   }
@@ -64,11 +68,15 @@
   .oneline {
     line-height: 42px;
   }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .cover-block {
   text-align: center;
-  background: #f7f8fa;
+  background: $background-color;
   margin: -$gl-padding;
   margin-bottom: 0;
   padding: 44px $gl-padding;
@@ -100,7 +108,7 @@
   }
 
   .cover-desc {
-    padding: 0 $gl-padding;
+    padding: 0 $gl-padding 3px;
     color: $gl-text-color;
   }
 
@@ -108,5 +116,14 @@
     position: absolute;
     top: 10px;
     right: 10px;
+
+    &.left {
+      left: 10px;
+      right: auto;
+    }
   }
+}
+
+.block-connector {
+  margin-top: -1px;
 }

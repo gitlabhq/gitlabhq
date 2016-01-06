@@ -20,7 +20,7 @@ module GitlabMarkdownHelper
                    end
 
     user = current_user if defined?(current_user)
-    gfm_body = Gitlab::Markdown.gfm(escaped_body, project: @project, current_user: user)
+    gfm_body = Banzai.render(escaped_body, project: @project, current_user: user, pipeline: :single_line)
 
     fragment = Nokogiri::HTML::DocumentFragment.parse(gfm_body)
     if fragment.children.size == 1 && fragment.children[0].name == 'a'
@@ -48,47 +48,34 @@ module GitlabMarkdownHelper
   def markdown(text, context = {})
     return "" unless text.present?
 
-    context.reverse_merge!(
-      path:         @path,
-      pipeline:     :default,
-      project:      @project,
-      project_wiki: @project_wiki,
-      ref:          @ref
+    context[:project] ||= @project
+
+    html = Banzai.render(text, context)
+
+    context.merge!(
+      current_user:   (current_user if defined?(current_user)),
+
+      # RelativeLinkFilter
+      requested_path: @path,
+      project_wiki:   @project_wiki,
+      ref:            @ref
     )
 
-    user = current_user if defined?(current_user)
-
-    html = Gitlab::Markdown.render(text, context)
-    Gitlab::Markdown.post_process(html, pipeline: context[:pipeline], project: @project, user: user)
-  end
-
-  # TODO (rspeicher): Remove all usages of this helper and just call `markdown`
-  # with a custom pipeline depending on the content being rendered
-  def gfm(text, options = {})
-    return "" unless text.present?
-
-    options.reverse_merge!(
-      path:         @path,
-      pipeline:     :default,
-      project:      @project,
-      project_wiki: @project_wiki,
-      ref:          @ref
-    )
-
-    user = current_user if defined?(current_user)
-
-    html = Gitlab::Markdown.gfm(text, options)
-    Gitlab::Markdown.post_process(html, pipeline: options[:pipeline], project: @project, user: user)
+    Banzai.post_process(html, context)
   end
 
   def asciidoc(text)
-    Gitlab::Asciidoc.render(text, {
-      commit: @commit,
-      project: @project,
-      project_wiki: @project_wiki,
+    Gitlab::Asciidoc.render(
+      text,
+      project:      @project,
+      current_user: (current_user if defined?(current_user)),
+
+      # RelativeLinkFilter
+      project_wiki:   @project_wiki,
       requested_path: @path,
-      ref: @ref
-    })
+      ref:            @ref,
+      commit:         @commit
+    )
   end
 
   # Return the first line of +text+, up to +max_chars+, after parsing the line

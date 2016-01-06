@@ -6,7 +6,7 @@
 
 __Authentication is done by GitLab user token & GitLab url__
 
-Used to get information about all runners registered on the Gitlab CI
+Used to get information about all runners registered on the GitLab CI
 instance.
 
     GET /ci/runners
@@ -31,7 +31,7 @@ Returns:
 
 __Authentication is done with a Shared runner registration token or a project Specific runner registration token__
 
-Used to make Gitlab CI aware of available runners.
+Used to make GitLab CI aware of available runners.
 
     POST /ci/runners/register
 

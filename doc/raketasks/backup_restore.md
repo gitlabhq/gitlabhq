@@ -29,7 +29,8 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 Also you can choose what should be backed up by adding environment variable SKIP. Available options: db,
-uploads (attachments), repositories. Use a comma to specify several options at the same time.
+uploads (attachments), repositories, builds(CI build output logs), artifacts (CI build artifacts), lfs (LFS objects).
+Use a comma to specify several options at the same time.
 
 ```
 sudo gitlab-rake gitlab:backup:create SKIP=db,uploads
@@ -150,6 +151,49 @@ with the name of your bucket:
     }
   ]
 }
+```
+
+### Uploading to locally mounted shares
+
+You may also send backups to a mounted share (`NFS` / `CIFS` / `SMB` / etc.) by
+using the [`Local`](https://github.com/fog/fog-local#usage) storage provider.
+The directory pointed to by the `local_root` key **must** be owned by the `git`
+user **when mounted** (mounting with the `uid=` of the `git` user for `CIFS` and
+`SMB`) or the user that you are executing the backup tasks under (for omnibus
+packages, this is the `git` user).
+
+The `backup_upload_remote_directory` **must** be set in addition to the
+`local_root` key. This is the sub directory inside the mounted directory that
+backups will be copied to, and will be created if it does not exist. If the
+directory that you want to copy the tarballs to is the root of your mounted
+directory, just use `.` instead.
+
+For omnibus packages:
+
+```ruby
+gitlab_rails['backup_upload_connection'] = {
+  :provider => 'Local',
+  :local_root => '/mnt/backups'
+}
+
+# The directory inside the mounted folder to copy backups to
+# Use '.' to store them in the root directory
+gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
+```
+
+For installations from source:
+
+```yaml
+  backup:
+    # snip
+    upload:
+      # Fog storage connection settings, see http://fog.io/storage/ .
+      connection:
+        provider: Local
+        local_root: '/mnt/backups'
+      # The directory inside the mounted folder to copy backups to
+      # Use '.' to store them in the root directory
+      remote_directory: 'gitlab_backups'
 ```
 
 ## Backup archive permissions
@@ -273,9 +317,6 @@ sudo gitlab-rake gitlab:backup:restore BACKUP=1393513186
 # Start GitLab
 sudo gitlab-ctl start
 
-# Create satellites
-sudo gitlab-rake gitlab:satellites:create
-
 # Check GitLab
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
@@ -359,8 +400,8 @@ If you are using backup restore procedures you might encounter the following war
 
 ```
 psql:/var/opt/gitlab/backups/db/database.sql:22: ERROR:  must be owner of extension plpgsql
-psql:/var/opt/gitlab/backups/db/database.sql:2931: WARNING:  no privileges could be revoked for "public" (two occurences)
-psql:/var/opt/gitlab/backups/db/database.sql:2933: WARNING:  no privileges were granted for "public" (two occurences)
+psql:/var/opt/gitlab/backups/db/database.sql:2931: WARNING:  no privileges could be revoked for "public" (two occurrences)
+psql:/var/opt/gitlab/backups/db/database.sql:2933: WARNING:  no privileges were granted for "public" (two occurrences)
 
 ```
 

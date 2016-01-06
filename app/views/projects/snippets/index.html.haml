@@ -1,17 +1,13 @@
 - page_title "Snippets"
 = render "header_title"
 
-%h3.page-title
-  Snippets
-  - if can? current_user, :create_project_snippet, @project
-    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new pull-right", title: "New Snippet" do
-      Add new snippet
+.gray-content-block.top-block
+  .pull-right
+    = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New Snippet" do
+      = icon('plus')
+      New Snippet
 
-%p.light
-  Share code pastes with others out of git repository
+  .oneline
+    Share code pastes with others out of git repository
 
-%ul.bordered-list
-  = render partial: "shared/snippets/snippet", collection: @snippets
-  - if @snippets.empty?
-    %li
-      .nothing-here-block Nothing here.
+= render 'snippets/snippets'

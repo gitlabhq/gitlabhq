@@ -9,7 +9,7 @@ module Gitlab
                         else
                           nil
                         end
-      @query = Shellwords.shellescape(query) if query.present?
+      @query = query
     end
 
     def objects(scope, page = nil)
@@ -20,6 +20,8 @@ module Gitlab
         Kaminari.paginate_array(blobs).page(page).per(per_page)
       when 'wiki_blobs'
         Kaminari.paginate_array(wiki_blobs).page(page).per(per_page)
+      when 'commits'
+        Kaminari.paginate_array(commits).page(page).per(per_page)
       else
         super
       end
@@ -27,7 +29,7 @@ module Gitlab
 
     def total_count
       @total_count ||= issues_count + merge_requests_count + blobs_count +
-                       notes_count + wiki_blobs_count
+                       notes_count + wiki_blobs_count + commits_count
     end
 
     def blobs_count
@@ -40,6 +42,10 @@ module Gitlab
 
     def wiki_blobs_count
       @wiki_blobs_count ||= wiki_blobs.count
+    end
+
+    def commits_count
+      @commits_count ||= commits.count
     end
 
     private
@@ -68,6 +74,14 @@ module Gitlab
 
     def notes
       Note.where(project_id: limit_project_ids).user.search(query).order('updated_at DESC')
+    end
+
+    def commits
+      if project.empty_repo? || query.blank?
+        []
+      else
+        project.repository.find_commits_by_message(query).compact
+      end
     end
 
     def limit_project_ids

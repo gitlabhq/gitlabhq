@@ -19,48 +19,38 @@
       color: #B94A48;
     }
   }
-  .commit-button-annotation {
-    display: inline-block;
-    margin: 0;
-    padding: 2px;
-
-    > * {
-      float: left;
-    }
-
-    .message {
-      display: inline-block;
-      margin: 5px 8px 0 8px;
-    }
-  }
 
   .file-title {
     @extend .monospace;
+
+    line-height: 42px;
+    padding-top: 7px;
+    padding-bottom: 7px;
   }
 
   .editor-ref {
     background: $background-color;
-    padding: 11px 15px;
+    padding-right: $gl-padding;
     border-right: 1px solid $border-color;
-    display: inline-block;
-    margin: -5px -5px;
+    display: block;
+    float: left;
     margin-right: 10px;
   }
 
   .editor-file-name {
-    .new-file-name {
-      display: inline-block;
-      width: 200px;
-    }
-
-    .form-control {
-      margin-top: -3px;
-    }
+    @extend .monospace;
+    
+    float: left;
+    margin-right: 10px;
   }
 
-  .form-actions {
-    margin: -$gl-padding;
-    margin-top: 0;
-    padding: $gl-padding
+  .new-file-name {
+    display: inline-block;
+    width: 450px;
+    float: left;
+  }
+
+  .select2 {
+    float: right;
   }
 }

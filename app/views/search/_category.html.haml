@@ -42,6 +42,13 @@
           Wiki
           %span.badge
             = @search_results.wiki_blobs_count
+    %li{class: ("active" if @scope == 'commits')}
+      = link_to search_filter_path(scope: 'commits') do
+        = icon('history fw')
+        %span
+          Commits
+          %span.badge
+            = @search_results.commits_count
 
   - elsif @show_snippets
     %li{class: ("active" if @scope == 'snippet_blobs')}

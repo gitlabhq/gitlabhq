@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: runners
+# Table name: ci_runners
 #
 #  id           :integer          not null, primary key
 #  token        :string(255)
@@ -19,7 +19,7 @@
 
 require 'spec_helper'
 
-describe Ci::Runner do
+describe Ci::Runner, models: true do
   describe '#display_name' do
     it 'should return the description if it has a value' do
       runner = FactoryGirl.build(:ci_runner, description: 'Linux/Ruby-1.9.3-p448')
@@ -38,7 +38,7 @@ describe Ci::Runner do
   end
 
   describe :assign_to do
-    let!(:project) { FactoryGirl.create :ci_project }
+    let!(:project) { FactoryGirl.create :empty_project }
     let!(:shared_runner) { FactoryGirl.create(:ci_shared_runner) }
 
     before { shared_runner.assign_to(project) }
@@ -116,8 +116,8 @@ describe Ci::Runner do
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
       runner = FactoryGirl.create(:ci_specific_runner)
-      project = FactoryGirl.create(:ci_project)
-      project1 = FactoryGirl.create(:ci_project)
+      project = FactoryGirl.create(:empty_project)
+      project1 = FactoryGirl.create(:empty_project)
       project.runners << runner
       project1.runners << runner
 
@@ -126,7 +126,7 @@ describe Ci::Runner do
 
     it "returns true" do
       runner = FactoryGirl.create(:ci_specific_runner)
-      project = FactoryGirl.create(:ci_project)
+      project = FactoryGirl.create(:empty_project)
       project.runners << runner
 
       expect(runner.belongs_to_one_project?).to be_truthy

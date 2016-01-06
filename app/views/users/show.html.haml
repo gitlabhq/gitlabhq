@@ -1,5 +1,6 @@
-- page_title    @user.name
-- header_title  @user.name, user_path(@user)
+- page_title       @user.name
+- page_description @user.bio
+- header_title     @user.name, user_path(@user)
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
@@ -24,22 +25,27 @@
 
   .cover-desc
     - unless @user.public_email.blank?
-      = link_to @user.public_email, "mailto:#{@user.public_email}"
+      .profile-link-holder
+        = link_to @user.public_email, "mailto:#{@user.public_email}"
     - unless @user.skype.blank?
-      &middot;
-      = link_to "Skype", "skype:#{@user.skype}"
+      .profile-link-holder
+        = link_to "skype:#{@user.skype}", title: "Skype" do
+          = icon('skype')
     - unless @user.linkedin.blank?
-      &middot;
-      = link_to "LinkedIn", "http://www.linkedin.com/in/#{@user.linkedin}"
+      .profile-link-holder
+        = link_to "https://www.linkedin.com/in/#{@user.linkedin}", title: "LinkedIn" do
+          = icon('linkedin-square')
     - unless @user.twitter.blank?
-      &middot;
-      = link_to "Twitter", "http://www.twitter.com/#{@user.twitter}"
+      .profile-link-holder
+        = link_to "https://twitter.com/#{@user.twitter}", title: "Twitter" do
+          = icon('twitter-square')
     - unless @user.website_url.blank?
-      &middot;
-      = link_to @user.short_website_url, @user.full_website_url
+      .profile-link-holder
+        = link_to @user.short_website_url, @user.full_website_url
     - unless @user.location.blank?
-      &middot;
-      = @user.location
+      .profile-link-holder
+        = icon('map-marker')
+        = @user.location
 
 
   .cover-controls
@@ -47,7 +53,7 @@
       = link_to profile_path, class: 'btn btn-gray' do
         = icon('pencil')
     - elsif current_user
-      .report-abuse
+      %span.report-abuse
         - if @user.abuse_report
           %button.btn.btn-danger{ title: 'Already reported for abuse',
             data: { toggle: 'tooltip', placement: 'left', container: 'body' }}
@@ -56,6 +62,10 @@
           = link_to new_abuse_report_path(user_id: @user.id), class: 'btn btn-gray',
             title: 'Report abuse', data: {toggle: 'tooltip', placement: 'left', container: 'body'} do
             = icon('exclamation-circle')
+    - if current_user
+      &nbsp;
+      = link_to user_path(@user, :atom, { private_token: current_user.private_token }), class: 'btn btn-gray' do
+        = icon('rss')
 
 .gray-content-block.second-block
   .user-calendar
@@ -64,27 +74,47 @@
   .user-calendar-activities
 
 
-.row.prepend-top-20
-  %section.col-md-7
-    - if @groups.any?
-      .prepend-top-20
-        %h4 Groups
-        = render 'groups', groups: @groups
-        %hr
+%ul.center-top-menu.no-top.no-bottom.bottom-border.wide
+  %li.active
+    = link_to "#activity", 'data-toggle' => 'tab' do
+      Activity
+  - if @groups.any?
+    %li
+      = link_to "#groups", 'data-toggle' => 'tab' do
+        Groups
+  - if @contributed_projects.present?
+    %li
+      = link_to "#contributed", 'data-toggle' => 'tab' do
+        Contributed projects
+  - if @projects.present?
+    %li
+      = link_to "#personal", 'data-toggle' => 'tab' do
+        Personal projects
 
-    %h4
-      User Activity
-
-      - if current_user
-        %span.rss-icon.pull-right
-          = link_to user_path(@user, :atom, { private_token: current_user.private_token }) do
-            %strong
-              %i.fa.fa-rss
-
+.tab-content
+  .tab-pane.active#activity
     .content_list
     = spinner
-  %aside.col-md-5
-    = render 'projects', projects: @projects, contributed_projects: @contributed_projects
 
-:coffeescript
-  $(".user-calendar").load("#{user_calendar_path}")
+  - if @groups.any?
+    .tab-pane#groups
+      %ul.content-list
+        - @groups.each do |group|
+          = render 'shared/groups/group', group: group
+
+  - if @contributed_projects.present?
+    .tab-pane#contributed
+      .contributed-projects
+        = render 'shared/projects/list',
+          projects: @contributed_projects.sort_by(&:star_count).reverse,
+          projects_limit: 5, stars: true, avatar: true
+
+  - if @projects.present?
+    .tab-pane#personal
+      .personal-projects
+        = render 'shared/projects/list',
+          projects: @projects.sort_by(&:star_count).reverse,
+          projects_limit: 10, stars: true, avatar: true
+
+:javascript
+  $(".user-calendar").load("#{user_calendar_path}");

@@ -40,6 +40,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content "Bug NS-04"
   end
 
+  step 'I should not see "master" branch' do
+    expect(page).not_to have_content "master"
+  end
+
+  step 'I should see "other_branch" branch' do
+    expect(page).to have_content "other_branch"
+  end
+
   step 'I should see "Bug NS-04" in merge requests' do
     expect(page).to have_content "Bug NS-04"
   end
@@ -78,7 +86,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     select "feature", from: "merge_request_target_branch"
     click_button "Compare branches"
     fill_in "merge_request_title", with: "Wiki Feature"
-    click_button "Submit new merge request"
+    click_button "Submit merge request"
   end
 
   step 'project "Shop" have "Bug NS-04" open merge request' do
@@ -88,6 +96,18 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            target_project: project,
            source_branch: 'fix',
            target_branch: 'master',
+           author: project.users.first,
+           description: "# Description header"
+          )
+  end
+
+  step 'project "Shop" have "Bug NS-06" open merge request' do
+    create(:merge_request,
+           title: "Bug NS-06",
+           source_project: project,
+           target_project: project,
+           source_branch: 'fix',
+           target_branch: 'other_branch',
            author: project.users.first,
            description: "# Description header"
           )
@@ -166,6 +186,50 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     leave_comment "Line is wrong"
   end
 
+  step 'I change the comment "Line is wrong" to "Typo, please fix" on diff' do
+    page.within('.diff-file:nth-of-type(5) .note') do
+      find('.js-note-edit').click
+
+      page.within('.current-note-edit-form', visible: true) do
+        fill_in 'note_note', with: 'Typo, please fix'
+        click_button 'Save Comment'
+      end
+
+      expect(page).not_to have_button 'Save Comment', disabled: true, visible: true
+    end
+  end
+
+  step 'I should not see a diff comment saying "Line is wrong"' do
+    page.within('.diff-file:nth-of-type(5) .note') do
+      expect(page).not_to have_visible_content 'Line is wrong'
+    end
+  end
+
+  step 'I should see a diff comment saying "Typo, please fix"' do
+    page.within('.diff-file:nth-of-type(5) .note') do
+      expect(page).to have_visible_content 'Typo, please fix'
+    end
+  end
+
+  step 'I delete the comment "Line is wrong" on diff' do
+    page.within('.diff-file:nth-of-type(5) .note') do
+      find('.js-note-delete').click
+    end
+  end
+
+  step 'I click on the Discussion tab' do
+    page.within '.merge-request-tabs' do
+      click_link 'Discussion'
+    end
+
+    # Waits for load
+    expect(page).to have_css('.tab-content #notes.active')
+  end
+
+  step 'I should not see any discussion' do
+    expect(page).not_to have_css('.notes .discussion')
+  end
+
   step 'I should see a discussion has started on diff' do
     page.within(".notes .discussion") do
       page.should have_content "#{current_user.name} started a discussion"
@@ -209,7 +273,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merged request' do
-    page.within '.issue-box' do
+    page.within '.status-box' do
       expect(page).to have_content "Merged"
     end
   end
@@ -219,7 +283,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
-    page.within '.issue-box' do
+    page.within '.status-box' do
       expect(page).to have_content "Open"
     end
   end
@@ -336,6 +400,19 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a patch diff' do
     expect(page).to have_content('diff --git')
+  end
+
+  step '"Bug NS-05" has CI status' do
+    project = merge_request.source_project
+    project.enable_ci
+    ci_commit = create :ci_commit, project: project, sha: merge_request.last_commit.id
+    create :ci_build, commit: ci_commit
+  end
+
+  step 'I should see merge request "Bug NS-05" with CI status' do
+    page.within ".mr-list" do
+      expect(page).to have_link "Build pending"
+    end
   end
 
   def merge_request

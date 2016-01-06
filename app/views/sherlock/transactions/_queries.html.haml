@@ -1,0 +1,24 @@
+- if @transaction.queries.empty?
+  .nothing-here-block
+    = t('sherlock.no_queries')
+- else
+  .table-holder
+    %table.table#sherlock-queries
+      %thead
+        %tr
+          %th= t('sherlock.time')
+          %th= t('sherlock.query')
+          %td
+      %tbody
+        - @transaction.sorted_queries.each do |query|
+          %tr
+            %td
+              = query.duration.round(2)
+              = t('sherlock.milliseconds')
+            %td
+              .code.js-syntax-highlight.sherlock-code
+                = highlight("#{query.id}.sql", query.formatted_query)
+            %td
+              = link_to(t('sherlock.view'),
+                sherlock_transaction_query_path(@transaction, query),
+                class: 'btn btn-xs')

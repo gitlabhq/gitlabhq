@@ -9,9 +9,9 @@
   $('#key_key').on('focusout', function(){
     var title = $('#key_title'),
         val      = $('#key_key').val(),
-        comment = val.match(/^\S+ \S+ (.+)$/);
+        comment = val.match(/^\S+ \S+ (.+)\n?$/);
 
     if( comment && comment.length > 1 && title.val() == '' ){
-      $('#key_title').val( comment[1] );
+      $('#key_title').val( comment[1] ).change();
     }
   });

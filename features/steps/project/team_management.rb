@@ -15,10 +15,6 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     expect(page).to have_content(user.username)
   end
 
-  step 'I click link "Add members"' do
-    find(:css, 'button.btn-new').click
-  end
-
   step 'I select "Mike" as "Reporter"' do
     user = User.find_by(name: "Mike")
 

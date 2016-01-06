@@ -1,5 +1,5 @@
 module Ci
-  class LintsController < Ci::ApplicationController
+  class LintsController < ApplicationController
     before_action :authenticate_user!
 
     def show
@@ -15,12 +15,14 @@ module Ci
         @builds = @config_processor.builds
         @status = true
       end
-    rescue Ci::GitlabCiYamlProcessor::ValidationError => e
+    rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
       @error = e.message
       @status = false
-    rescue Exception
-      @error = "Undefined error"
+    rescue
+      @error = 'Undefined error'
       @status = false
+    ensure
+      render :show
     end
   end
 end

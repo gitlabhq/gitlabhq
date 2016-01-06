@@ -11,11 +11,12 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
+#  public      :boolean          default(FALSE)
 #
 
 require 'spec_helper'
 
-describe Group do
+describe Group, models: true do
   let!(:group) { create(:group) }
 
   describe 'associations' do
@@ -35,6 +36,25 @@ describe Group do
     it { is_expected.to validate_presence_of :path }
     it { is_expected.to validate_uniqueness_of(:path) }
     it { is_expected.not_to validate_presence_of :owner }
+  end
+
+  describe '.visible_to_user' do
+    let!(:group) { create(:group) }
+    let!(:user)  { create(:user) }
+
+    subject { described_class.visible_to_user(user) }
+
+    describe 'when the user has access to a group' do
+      before do
+        group.add_user(user, Gitlab::Access::MASTER)
+      end
+
+      it { is_expected.to eq([group]) }
+    end
+
+    describe 'when the user does not have access to any groups' do
+      it { is_expected.to eq([]) }
+    end
   end
 
   describe '#to_reference' do

@@ -3,6 +3,11 @@
     = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
       Commits
       %span.badge= number_with_delimiter(@repository.commit_count)
+
+  = nav_link(controller: %w(network)) do
+    = link_to namespace_project_network_path(@project.namespace, @project, current_ref) do
+      Network
+
   = nav_link(controller: :compare) do
     = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: current_ref) do
       Compare
@@ -12,7 +17,7 @@
       Branches
       %span.badge.js-totalbranch-count= @repository.branches.size
 
-  = nav_link(controller: :tags) do
+  = nav_link(controller: [:tags, :releases]) do
     = link_to namespace_project_tags_path(@project.namespace, @project) do
       Tags
       %span.badge.js-totaltags-count= @repository.tags.length

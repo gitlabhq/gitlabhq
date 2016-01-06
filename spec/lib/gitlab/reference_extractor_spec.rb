@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ReferenceExtractor do
+describe Gitlab::ReferenceExtractor, lib: true do
   let(:project) { create(:project) }
   subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
 
@@ -95,6 +95,16 @@ describe Gitlab::ReferenceExtractor do
     expect(extracted.first).to be_kind_of(CommitRange)
     expect(extracted.first.commit_from).to eq earlier_commit
     expect(extracted.first.commit_to).to eq commit
+  end
+
+  context 'with an external issue tracker' do
+    let(:project) { create(:jira_project) }
+    subject { described_class.new(project, project.creator) }
+
+    it 'returns JIRA issues for a JIRA-integrated project' do
+      subject.analyze('JIRA-123 and FOOBAR-4567')
+      expect(subject.issues).to eq [JiraIssue.new('JIRA-123', project), JiraIssue.new('FOOBAR-4567', project)]
+    end
   end
 
   context 'with a project with an underscore' do

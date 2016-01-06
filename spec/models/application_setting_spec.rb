@@ -23,16 +23,37 @@
 #  after_sign_out_path          :string(255)
 #  session_expire_delay         :integer          default(10080), not null
 #  import_sources               :text
+#  help_page_text               :text
+#  admin_notification_email     :string(255)
+#  shared_runners_enabled       :boolean          default(TRUE), not null
+#  max_artifacts_size           :integer          default(100), not null
+#  runners_registration_token   :string(255)
 #
 
 require 'spec_helper'
 
 describe ApplicationSetting, models: true do
-  it { expect(ApplicationSetting.create_from_defaults).to be_valid }
+  let(:setting) { ApplicationSetting.create_from_defaults }
+
+  it { expect(setting).to be_valid }
+
+  describe 'validations' do
+    let(:http)  { 'http://example.com' }
+    let(:https) { 'https://example.com' }
+    let(:ftp)   { 'ftp://example.com' }
+
+    it { is_expected.to allow_value(nil).for(:home_page_url) }
+    it { is_expected.to allow_value(http).for(:home_page_url) }
+    it { is_expected.to allow_value(https).for(:home_page_url) }
+    it { is_expected.not_to allow_value(ftp).for(:home_page_url) }
+
+    it { is_expected.to allow_value(nil).for(:after_sign_out_path) }
+    it { is_expected.to allow_value(http).for(:after_sign_out_path) }
+    it { is_expected.to allow_value(https).for(:after_sign_out_path) }
+    it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
+  end
 
   context 'restricted signup domains' do
-    let(:setting) { ApplicationSetting.create_from_defaults }
-
     it 'set single domain' do
       setting.restricted_signup_domains_raw = 'example.com'
       expect(setting.restricted_signup_domains).to eq(['example.com'])

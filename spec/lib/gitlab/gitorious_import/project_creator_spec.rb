@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitoriousImport::ProjectCreator do
+describe Gitlab::GitoriousImport::ProjectCreator, lib: true do
   let(:user) { create(:user) }
   let(:repo) { Gitlab::GitoriousImport::Repository.new('foo/bar-baz-qux') }
   let(:namespace){ create(:group, owner: user) }

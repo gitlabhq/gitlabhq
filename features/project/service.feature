@@ -7,12 +7,6 @@ Feature: Project Services
     When I visit project "Shop" services page
     Then I should see list of available services
 
-  Scenario: Activate gitlab-ci service
-    When I visit project "Shop" services page
-    And I click gitlab-ci service link
-    And I fill gitlab-ci settings
-    Then I should see service settings saved
-
   Scenario: Activate hipchat service
     When I visit project "Shop" services page
     And I click hipchat service link
@@ -60,6 +54,12 @@ Feature: Project Services
     And I click email on push service link
     And I fill email on push settings
     Then I should see email on push service settings saved
+
+  Scenario: Activate JIRA service
+    When I visit project "Shop" services page
+    And I click jira service link
+    And I fill jira settings
+    Then I should see jira service settings saved
 
   Scenario: Activate Irker (IRC Gateway) service
     When I visit project "Shop" services page

@@ -13,14 +13,12 @@ Feature: Project Team Management
 
   @javascript
   Scenario: Add user to project
-    Given I click link "Add members"
-    And I select "Mike" as "Reporter"
+    When I select "Mike" as "Reporter"
     Then I should see "Mike" in team list as "Reporter"
 
   @javascript
   Scenario: Invite user to project
-    Given I click link "Add members"
-    And I select "sjobs@apple.com" as "Reporter"
+    When I select "sjobs@apple.com" as "Reporter"
     Then I should see "sjobs@apple.com" in team list as invited "Reporter"
 
   @javascript

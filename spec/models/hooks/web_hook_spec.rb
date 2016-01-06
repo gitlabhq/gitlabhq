@@ -18,7 +18,7 @@
 
 require 'spec_helper'
 
-describe ProjectHook do
+describe ProjectHook, models: true do
   describe "Associations" do
     it { is_expected.to belong_to :project }
   end
@@ -70,6 +70,12 @@ describe ProjectHook do
       expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
       expect { @project_hook.execute(@data, 'push_hooks') }.to raise_error(RuntimeError)
+    end
+
+    it "handles SSL exceptions" do
+      expect(WebHook).to receive(:post).and_raise(OpenSSL::SSL::SSLError.new('SSL error'))
+
+      expect(@project_hook.execute(@data, 'push_hooks')).to eq([false, 'SSL error'])
     end
   end
 end

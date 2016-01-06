@@ -8,10 +8,6 @@ class BaseMailer < ActionMailer::Base
   default from:     Proc.new { default_sender_address.format }
   default reply_to: Proc.new { default_reply_to_address.format }
 
-  def self.delay
-    delay_for(2.seconds)
-  end
-
   def can?
     Ability.abilities.allowed?(current_user, action, subject)
   end

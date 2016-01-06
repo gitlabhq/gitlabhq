@@ -10,8 +10,10 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user_from_token!
   before_action :authenticate_user!
+  before_action :validate_user_service_ticket!
   before_action :reject_blocked!
   before_action :check_password_expiration
+  before_action :check_2fa_requirement
   before_action :ldap_security_check
   before_action :default_headers
   before_action :add_gon_variables
@@ -59,13 +61,8 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!(*args)
-    # If user is not signed-in and tries to access root_path - redirect him to landing page
-    # Don't redirect to the default URL to prevent endless redirections
-    if current_application_settings.home_page_url.present? &&
-        current_application_settings.home_page_url.chomp('/') != Gitlab.config.gitlab['url'].chomp('/')
-      if current_user.nil? && root_path == request.path
-        redirect_to current_application_settings.home_page_url and return
-      end
+    if redirect_to_home_page_url?
+      redirect_to current_application_settings.home_page_url and return
     end
 
     super(*args)
@@ -123,7 +120,6 @@ class ApplicationController < ActionController::Base
 
       project_path = "#{namespace}/#{id}"
       @project = Project.find_with_namespace(project_path)
-
 
       if @project and can?(current_user, :read_project, @project)
         if @project.path_with_namespace != project_path
@@ -208,9 +204,29 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def validate_user_service_ticket!
+    return unless signed_in? && session[:service_tickets]
+
+    valid = session[:service_tickets].all? do |provider, ticket|
+      Gitlab::OAuth::Session.valid?(provider, ticket)
+    end
+
+    unless valid
+      session[:service_tickets] = nil
+      sign_out current_user
+      redirect_to new_user_session_path
+    end
+  end
+
   def check_password_expiration
     if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now  && !current_user.ldap_user?
       redirect_to new_profile_password_path and return
+    end
+  end
+
+  def check_2fa_requirement
+    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled && !skip_two_factor?
+      redirect_to new_profile_two_factor_auth_path
     end
   end
 
@@ -346,5 +362,35 @@ class ApplicationController < ActionController::Base
 
   def git_import_enabled?
     current_application_settings.import_sources.include?('git')
+  end
+
+  def two_factor_authentication_required?
+    current_application_settings.require_two_factor_authentication
+  end
+
+  def two_factor_grace_period
+    current_application_settings.two_factor_grace_period
+  end
+
+  def two_factor_grace_period_expired?
+    date = current_user.otp_grace_period_started_at
+    date && (date + two_factor_grace_period.hours) < Time.current
+  end
+
+  def skip_two_factor?
+    session[:skip_tfa] && session[:skip_tfa] > Time.current
+  end
+
+  def redirect_to_home_page_url?
+    # If user is not signed-in and tries to access root_path - redirect him to landing page
+    # Don't redirect to the default URL to prevent endless redirections
+    return false unless current_application_settings.home_page_url.present?
+
+    home_page_url = current_application_settings.home_page_url.chomp('/')
+    root_urls = [Gitlab.config.gitlab['url'].chomp('/'), root_url.chomp('/')]
+
+    return false if root_urls.include?(home_page_url)
+
+    current_user.nil? && root_path == request.path
   end
 end

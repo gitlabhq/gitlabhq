@@ -53,6 +53,16 @@ describe ProjectsHelper do
     end
   end
 
+  describe 'user_max_access_in_project' do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+    before do
+      project.team.add_user(user, Gitlab::Access::MASTER)
+    end
+
+    it { expect(helper.user_max_access_in_project(user.id, project)).to eq('Master') }
+  end
+
   describe "readme_cache_key" do
     let(:project) { create(:project) }
 

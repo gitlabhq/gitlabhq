@@ -172,7 +172,7 @@
   }
 
   .panel-body {
-    form {
+    form, pre {
       margin: 0;
     }
 
@@ -189,6 +189,10 @@
 
     .btn {
       min-width: 124px;
+    }
+
+    .btn-clipboard {
+      min-width: 0px;
     }
   }
 

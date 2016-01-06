@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::User do
+describe Gitlab::LDAP::User, lib: true do
   let(:ldap_user) { Gitlab::LDAP::User.new(auth_hash) }
   let(:gl_user) { ldap_user.gl_user }
   let(:info) do
@@ -39,6 +39,21 @@ describe Gitlab::LDAP::User do
     it "dont marks existing ldap user as changed" do
       create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
       expect(ldap_user.changed?).to be_falsey
+    end
+  end
+
+  describe '.find_by_uid_and_provider' do
+    it 'retrieves the correct user' do
+      special_info = {
+        name: 'John Åström',
+        email: 'john@example.com',
+        nickname: 'jastrom'
+      }
+      special_hash = OmniAuth::AuthHash.new(uid: 'CN=John Åström,CN=Users,DC=Example,DC=com', provider: 'ldapmain', info: special_info)
+      special_chars_user = described_class.new(special_hash)
+      user = special_chars_user.save
+
+      expect(described_class.find_by_uid_and_provider(special_hash.uid, special_hash.provider)).to eq user
     end
   end
 

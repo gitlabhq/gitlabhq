@@ -146,7 +146,7 @@ nginx
 
 Apache httpd
 
-- [Explanation of Apache logs](http://httpd.apache.org/docs/2.2/logs.html).
+- [Explanation of Apache logs](https://httpd.apache.org/docs/2.2/logs.html).
 - `/var/log/apache2/` contains error and output logs (on Ubuntu).
 - `/var/log/httpd/` contains error and output logs (on RHEL).
 

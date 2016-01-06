@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   include ExtractsPath
 
-  prepend_before_filter :render_go_import, only: [:show]
+  prepend_before_action :render_go_import, only: [:show]
   skip_before_action :authenticate_user!, only: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
@@ -72,8 +72,7 @@ class ProjectsController < ApplicationController
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
-    if @project.forked?
-      @project.forked_project_link.destroy
+    if @project.unlink_fork
       flash[:notice] = 'The fork relationship has been removed.'
     end
   end
@@ -124,11 +123,7 @@ class ProjectsController < ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).execute
     flash[:alert] = "Project '#{@project.name}' was deleted."
 
-    if request.referer.include?('/admin')
-      redirect_to admin_namespaces_projects_path
-    else
-      redirect_to dashboard_projects_path
-    end
+    redirect_to dashboard_projects_path
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), alert: ex.message
   end
@@ -185,14 +180,14 @@ class ProjectsController < ApplicationController
     @project.reload
 
     render json: {
-      html: view_to_html_string("projects/buttons/_star")
+      star_count: @project.star_count
     }
   end
 
   def markdown_preview
     text = params[:text]
 
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
+    ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
     ext.analyze(text)
 
     render json: {
@@ -224,9 +219,10 @@ class ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(
-      :name, :path, :description, :issues_tracker, :tag_list,
+      :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
-      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar
+      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
+      :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
     )
   end
 
@@ -255,7 +251,7 @@ class ProjectsController < ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
-  # Override get_id from ExtractsPath, which returns the branch and file path 
+  # Override get_id from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref

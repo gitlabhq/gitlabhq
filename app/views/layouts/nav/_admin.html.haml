@@ -5,78 +5,85 @@
       %span
         Overview
   = nav_link(controller: [:admin, :projects]) do
-    = link_to admin_namespaces_projects_path, title: 'Projects', data: {placement: 'right'} do
+    = link_to admin_namespaces_projects_path, title: 'Projects' do
       = icon('cube fw')
       %span
         Projects
   = nav_link(controller: :users) do
-    = link_to admin_users_path, title: 'Users', data: {placement: 'right'} do
+    = link_to admin_users_path, title: 'Users' do
       = icon('user fw')
       %span
         Users
   = nav_link(controller: :groups) do
-    = link_to admin_groups_path, title: 'Groups', data: {placement: 'right'} do
+    = link_to admin_groups_path, title: 'Groups' do
       = icon('group fw')
       %span
         Groups
   = nav_link(controller: :deploy_keys) do
-    = link_to admin_deploy_keys_path, title: 'Deploy Keys', data: {placement: 'right'} do
+    = link_to admin_deploy_keys_path, title: 'Deploy Keys' do
       = icon('key fw')
       %span
         Deploy Keys
-  = nav_link do
-    = link_to ci_admin_projects_path, title: 'Continuous Integration', data: {placement: 'right'} do
-      = icon('building fw')
+  = nav_link path: ['runners#index', 'runners#show'] do
+    = link_to admin_runners_path do
+      = icon('cog fw')
       %span
-        Continuous Integration
+        Runners
+        %span.count= number_with_delimiter(Ci::Runner.count(:all))
+  = nav_link path: 'builds#index' do
+    = link_to admin_builds_path do
+      = icon('link fw')
+      %span
+        Builds
+        %span.count= number_with_delimiter(Ci::Build.count(:all))
   = nav_link(controller: :logs) do
-    = link_to admin_logs_path, title: 'Logs', data: {placement: 'right'} do
+    = link_to admin_logs_path, title: 'Logs' do
       = icon('file-text fw')
       %span
         Logs
   = nav_link(controller: :broadcast_messages) do
-    = link_to admin_broadcast_messages_path, title: 'Broadcast Messages', data: {placement: 'right'} do
+    = link_to admin_broadcast_messages_path, title: 'Messages' do
       = icon('bullhorn fw')
       %span
         Messages
   = nav_link(controller: :hooks) do
-    = link_to admin_hooks_path, title: 'Hooks', data: {placement: 'right'} do
+    = link_to admin_hooks_path, title: 'Hooks' do
       = icon('external-link fw')
       %span
         Hooks
   = nav_link(controller: :background_jobs) do
-    = link_to admin_background_jobs_path, title: 'Background Jobs', data: {placement: 'right'} do
+    = link_to admin_background_jobs_path, title: 'Background Jobs' do
       = icon('cog fw')
       %span
         Background Jobs
 
   = nav_link(controller: :applications) do
-    = link_to admin_applications_path, title: 'Applications', data: {placement: 'right'} do
+    = link_to admin_applications_path, title: 'Applications' do
       = icon('cloud fw')
       %span
         Applications
 
   = nav_link(controller: :services) do
-    = link_to admin_application_settings_services_path, title: 'Service Templates', data: {placement: 'right'} do
+    = link_to admin_application_settings_services_path, title: 'Service Templates' do
       = icon('copy fw')
       %span
         Service Templates
 
   = nav_link(controller: :labels) do
-    = link_to admin_labels_path, title: 'Labels', data: {placement: 'right'} do
+    = link_to admin_labels_path, title: 'Labels' do
       = icon('tags fw')
       %span
         Labels
 
   = nav_link(controller: :abuse_reports) do
-    = link_to admin_abuse_reports_path, title: "Abuse reports" do
+    = link_to admin_abuse_reports_path, title: "Abuse Reports" do
       = icon('exclamation-circle fw')
       %span
         Abuse Reports
-        %span.count= AbuseReport.count(:all)
+        %span.count= number_with_delimiter(AbuseReport.count(:all))
 
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
-    = link_to admin_application_settings_path, title: 'Settings', data: {placement: 'right'} do
+    = link_to admin_application_settings_path, title: 'Settings' do
       = icon('cogs fw')
       %span
         Settings

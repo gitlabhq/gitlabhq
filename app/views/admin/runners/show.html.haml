@@ -1,0 +1,125 @@
+= content_for :title do
+  %h3.project-title
+    Runner ##{@runner.id}
+    .pull-right
+      - if @runner.shared?
+        %span.runner-state.runner-state-shared
+          Shared
+      - else
+        %span.runner-state.runner-state-specific
+          Specific
+
+
+
+- if @runner.shared?
+  .bs-callout.bs-callout-success
+    %h4 This runner will process builds from ALL UNASSIGNED projects
+    %p
+      If you want runners to build only specific projects, enable them in the table below.
+      Keep in mind that this is a one way transition.
+- else
+  .bs-callout.bs-callout-info
+    %h4 This runner will process builds only from ASSIGNED projects
+    %p You can't make this a shared runner.
+%hr
+= form_for @runner, url: admin_runner_path(@runner), html: { class: 'form-horizontal' } do |f|
+  .form-group
+    = label_tag :token, class: 'control-label' do
+      Token
+    .col-sm-10
+      = f.text_field :token, class: 'form-control', readonly: true
+  .form-group
+    = label_tag :description, class: 'control-label' do
+      Description
+    .col-sm-10
+      = f.text_field :description, class: 'form-control'
+  .form-group
+    = label_tag :tag_list, class: 'control-label' do
+      Tags
+    .col-sm-10
+      = f.text_field :tag_list, value: @runner.tag_list.to_s, class: 'form-control'
+      .help-block You can setup builds to only use runners with specific tags
+  .form-actions
+    = f.submit 'Save', class: 'btn btn-save'
+
+.row
+  .col-md-6
+    %h4 Restrict projects for this runner
+    - if @runner.projects.any?
+      %table.table
+        %thead
+          %tr
+            %th Assigned projects
+            %th
+        - @runner.runner_projects.each do |runner_project|
+          - project = runner_project.project
+          - if project
+            %tr.alert-info
+              %td
+                %strong
+                  = project.name_with_namespace
+              %td
+                .pull-right
+                  = link_to 'Disable', [:admin, project.namespace.becomes(Namespace), project, runner_project], method: :delete, class: 'btn btn-danger btn-xs'
+
+    %table.table
+      %thead
+        %tr
+          %th Project
+          %th
+
+      %tr
+        %td
+          = form_tag admin_runner_path(@runner), id: 'runner-projects-search', class: 'form-inline', method: :get do
+            .form-group
+              = search_field_tag :search, params[:search], class: 'form-control', spellcheck: false
+            = submit_tag 'Search', class: 'btn'
+
+        %td
+      - @projects.each do |project|
+        %tr
+          %td
+            = project.name_with_namespace
+          %td
+            .pull-right
+              = form_for [:admin, project.namespace.becomes(Namespace), project, project.runner_projects.new] do |f|
+                = f.hidden_field :runner_id, value: @runner.id
+                = f.submit 'Enable', class: 'btn btn-xs'
+    = paginate @projects
+
+  .col-md-6
+    %h4 Recent builds served by this runner
+    %table.table.builds.runner-builds
+      %thead
+        %tr
+          %th Build
+          %th Status
+          %th Project
+          %th Commit
+          %th Finished at
+
+      - @builds.each do |build|
+        - project = build.project
+        %tr.build
+          %td.id
+            - if project
+              = link_to namespace_project_build_path(project.namespace, project, build) do
+                %strong ##{build.id}
+            - else
+              %strong ##{build.id}
+
+          %td.status
+            = ci_status_with_icon(build.status)
+
+          %td.status
+            - if project
+              = project.name_with_namespace
+
+          %td.build-link
+            - if project
+              = link_to ci_status_path(build.commit) do
+                %strong #{build.commit.short_sha}
+
+          %td.timestamp
+            - if build.finished_at
+              %span #{time_ago_in_words build.finished_at} ago

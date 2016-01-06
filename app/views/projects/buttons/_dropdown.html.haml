@@ -5,12 +5,13 @@
     %ul.dropdown-menu.dropdown-menu-right.project-home-dropdown
       - if can?(current_user, :create_issue, @project)
         %li
-          = link_to url_for_new_issue do
+          = link_to url_for_new_issue(@project, only_path: true) do
             = icon('exclamation-circle fw')
             New issue
-      - if can?(current_user, :create_merge_request, @project)
+      - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+      - if merge_project
         %li
-          = link_to new_namespace_project_merge_request_path(@project.namespace, @project) do
+          = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project) do
             = icon('tasks fw')
             New merge request
       - if can?(current_user, :create_snippet, @project)
@@ -18,8 +19,13 @@
           = link_to new_namespace_project_snippet_path(@project.namespace, @project) do
             = icon('file-text-o fw')
             New snippet
+
       - if can?(current_user, :push_code, @project)
         %li.divider
+        %li
+          = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
+            = icon('file fw')
+            New file
         %li
           = link_to new_namespace_project_branch_path(@project.namespace, @project) do
             = icon('code-fork fw')
@@ -28,5 +34,20 @@
           = link_to new_namespace_project_tag_path(@project.namespace, @project) do
             = icon('tags fw')
             New tag
-
-
+      - elsif current_user && current_user.already_forked?(@project)
+        %li.divider
+        %li
+          = link_to namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master') do
+            = icon('file fw')
+            New file
+      - elsif can?(current_user, :fork_project, @project)
+        %li.divider
+        %li
+          - continue_params = { to:         namespace_project_new_blob_path(@project.namespace, @project, @project.default_branch || 'master'),
+                                notice:     edit_in_new_fork_notice,
+                                notice_now: edit_in_new_fork_notice_now }
+          - fork_path = namespace_project_fork_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                                                                                  continue:       continue_params)
+          = link_to fork_path, method: :post do
+            = icon('file fw')
+            New file

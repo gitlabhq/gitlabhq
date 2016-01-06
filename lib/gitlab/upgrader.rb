@@ -50,15 +50,15 @@ module Gitlab
     end
 
     def fetch_git_tags
-      remote_tags, _ = Gitlab::Popen.popen(%W(git ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ce.git))
+      remote_tags, _ = Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ce.git))
       remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
     end
 
     def update_commands
       {
-        "Stash changed files" => %W(git stash),
-        "Get latest code" => %W(git fetch),
-        "Switch to new version" => %W(git checkout v#{latest_version}),
+        "Stash changed files" => %W(#{Gitlab.config.git.bin_path} stash),
+        "Get latest code" => %W(#{Gitlab.config.git.bin_path} fetch),
+        "Switch to new version" => %W(#{Gitlab.config.git.bin_path} checkout v#{latest_version}),
         "Install gems" => %W(bundle),
         "Migrate DB" => %W(bundle exec rake db:migrate),
         "Recompile assets" => %W(bundle exec rake assets:clean assets:precompile),

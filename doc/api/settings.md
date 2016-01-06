@@ -57,7 +57,7 @@ Parameters:
 - `default_project_visibility` - what visibility level new project receives
 - `default_snippet_visibility` - what visibility level new snippet receives
 - `restricted_signup_domains` - force people to use only corporate emails for signup
-- `user_oauth_applications` - allow users to create oauth applicaitons
+- `user_oauth_applications` - allow users to create oauth applications
 - `after_sign_out_path` - where redirect user after logout
 
 All parameters are optional. You can send only one that you want to change.

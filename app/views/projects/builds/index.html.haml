@@ -1,31 +1,34 @@
 - page_title "Builds"
-- header_title project_title(@project, "Builds", project_builds_path(@project))
+= render "header_title"
 
 .project-issuable-filter
   .controls
-    - if @ci_project && current_user && can?(current_user, :manage_builds, @project)
+    - if can?(current_user, :manage_builds, @project)
       .pull-left.hidden-xs
         - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel all', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger'
+          = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
   %ul.center-top-menu
     %li{class: ('active' if @scope.nil?)}
       = link_to project_builds_path(@project) do
+        All
+        %span.badge.js-totalbuilds-count
+          = number_with_delimiter(@all_builds.count(:id))
+
+    %li{class: ('active' if @scope == 'running')}
+      = link_to project_builds_path(@project, scope: :running) do
         Running
-        %span.badge.js-running-count= @all_builds.running_or_pending.count(:id)
+        %span.badge.js-running-count
+          = number_with_delimiter(@all_builds.running_or_pending.count(:id))
 
     %li{class: ('active' if @scope == 'finished')}
       = link_to project_builds_path(@project, scope: :finished) do
         Finished
-        %span.badge.js-running-count= @all_builds.finished.count(:id)
-
-    %li{class: ('active' if @scope == 'all')}
-      = link_to project_builds_path(@project, scope: :all) do
-        All
-        %span.badge.js-totalbuilds-count= @all_builds.count(:id)
+        %span.badge.js-running-count
+          = number_with_delimiter(@all_builds.finished.count(:id))
 
 .gray-content-block
-  List of #{@scope || 'running'} builds from this project
+  #{(@scope || 'running').capitalize} builds from this project
 
 %ul.content-list
   - if @builds.blank?
@@ -37,17 +40,16 @@
         %thead
           %tr
             %th Status
-            %th Build ID
+            %th Runner
             %th Commit
             %th Ref
-            %th Runner
+            %th Stage
             %th Name
             %th Duration
             %th Finished at
             %th
 
         - @builds.each do |build|
-          = render 'projects/builds/build', build: build
+          = render 'projects/commit_statuses/commit_status', commit_status: build, commit_sha: true, stage: true, allow_retry: true
 
-    = paginate @builds
-
+    = paginate @builds, theme: 'gitlab'

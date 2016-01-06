@@ -27,6 +27,13 @@ describe API::API, api: true  do
           user['username'] == username
         end['username']).to eq(username)
       end
+
+      it "should return one user" do
+        get api("/users?username=#{omniauth_user.username}", user)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
     end
 
     context "when admin" do
@@ -153,7 +160,7 @@ describe API::API, api: true  do
       expect(json_response['message']['projects_limit']).
         to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
-        to eq([Gitlab::Regex.send(:namespace_regex_message)])
+        to eq([Gitlab::Regex.namespace_regex_message])
     end
 
     it "shouldn't available for non admin users" do
@@ -296,7 +303,7 @@ describe API::API, api: true  do
       expect(json_response['message']['projects_limit']).
         to eq(['must be greater than or equal to 0'])
       expect(json_response['message']['username']).
-        to eq([Gitlab::Regex.send(:namespace_regex_message)])
+        to eq([Gitlab::Regex.namespace_regex_message])
     end
 
     context "with existing user" do
@@ -343,8 +350,9 @@ describe API::API, api: true  do
       end.to change{ user.keys.count }.by(1)
     end
 
-    it "should raise error for invalid ID" do
-      expect{post api("/users/ASDF/keys", admin) }.to raise_error(ActionController::RoutingError)
+    it "should return 405 for invalid ID" do
+      post api("/users/ASDF/keys", admin)
+      expect(response.status).to eq(405)
     end
   end
 
@@ -374,9 +382,9 @@ describe API::API, api: true  do
         expect(json_response.first['title']).to eq(key.title)
       end
 
-      it "should return 404 for invalid ID" do
+      it "should return 405 for invalid ID" do
         get api("/users/ASDF/keys", admin)
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(405)
       end
     end
   end
@@ -434,7 +442,8 @@ describe API::API, api: true  do
     end
 
     it "should raise error for invalid ID" do
-      expect{post api("/users/ASDF/emails", admin) }.to raise_error(ActionController::RoutingError)
+      post api("/users/ASDF/emails", admin)
+      expect(response.status).to eq(405)
     end
   end
 
@@ -465,7 +474,8 @@ describe API::API, api: true  do
       end
 
       it "should raise error for invalid ID" do
-        expect{put api("/users/ASDF/emails", admin) }.to raise_error(ActionController::RoutingError)
+        put api("/users/ASDF/emails", admin)
+        expect(response.status).to eq(405)
       end
     end
   end

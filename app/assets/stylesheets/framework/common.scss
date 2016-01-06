@@ -7,7 +7,7 @@
 
 /** COMMON CLASSES **/
 .prepend-top-10 { margin-top:10px }
-.prepend-top-default { margin-top: $gl-padding; }
+.prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-20 { margin-top:20px }
 .prepend-left-10 { margin-left:10px }
 .prepend-left-20 { margin-left:20px }
@@ -16,6 +16,7 @@
 .append-bottom-10 { margin-bottom:10px }
 .append-bottom-15 { margin-bottom:15px }
 .append-bottom-20 { margin-bottom:20px }
+.append-bottom-default { margin-bottom: $gl-padding; }
 .inline { display: inline-block }
 .center { text-align: center }
 
@@ -51,6 +52,10 @@ pre {
   }
 }
 
+hr {
+  margin: $gl-padding 0;
+}
+
 .dropdown-menu > li > a {
   text-shadow: none;
 }
@@ -63,7 +68,7 @@ pre {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background: $gl-primary;
-  color: #FFF
+  color: #FFF;
 }
 
 .str-truncated {
@@ -327,13 +332,13 @@ table {
   }
 }
 
+.well {
+  margin-bottom: $gl-padding;
+}
+
 .search_box {
   @extend .well;
   text-align: center;
-}
-
-.task-status {
-  margin-left: 10px;
 }
 
 #nprogress .spinner {
@@ -369,14 +374,13 @@ table {
   }
 }
 
-.center-top-menu {
+.center-top-menu, .left-top-menu {
   @include nav-menu;
   text-align: center;
   margin-top: 5px;
   margin-bottom: $gl-padding;
-  height: 56px;
+  height: auto;
   margin-top: -$gl-padding;
-  padding-top: $gl-padding;
 
   &.no-bottom {
     margin-bottom: 0;
@@ -384,6 +388,58 @@ table {
 
   &.no-top {
     margin-top: 0;
+  }
+
+  li a {
+    display: inline-block;
+    padding-top: $gl-padding;
+    padding-bottom: 11px;
+    margin-bottom: -1px;
+  }
+
+  &.bottom-border {
+    border-bottom: 1px solid $border-color;
+    height: 57px;
+  }
+
+  &.wide {
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+  }
+}
+
+.left-top-menu {
+  text-align: left;
+  border-bottom: 1px solid #EEE;
+}
+
+.center-middle-menu {
+  @include nav-menu;
+  padding: 0;
+  text-align: center;
+  margin: -$gl-padding;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 58px;
+  border-bottom: 1px solid $border-color;
+
+  li {
+    &:after {
+      content: "|";
+      color: $border-gray-light;
+    }
+
+    &:last-child {
+      &:after {
+        content: none;
+      }
+    }
+
+    > a {
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 13px;
+    }
   }
 }
 
@@ -397,4 +453,27 @@ table {
 
 .space-right {
   margin-right: 10px;
+}
+
+.alert, .progress {
+  margin-bottom: $gl-padding;
+}
+
+.new-project-item-select-holder {
+  display: inline-block;
+  position: relative;
+
+  .new-project-item-select {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px !important;
+    visibility: hidden;
+  }
+}
+
+.content-separator {
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+  border-top: 1px solid $border-color;
 }

@@ -1,9 +1,4 @@
 class @Calendar
-  options =
-    month: "short"
-    day: "numeric"
-    year: "numeric"
-
   constructor: (timestamps, starting_year, starting_month, calendar_activities_path) ->
     cal = new CalHeatMap()
     cal.init
@@ -25,7 +20,7 @@ class @Calendar
         30
       ]
       legendCellPadding: 3
-      cellSize: $('.user-calendar').width() / 80
+      cellSize: $('.user-calendar').width() / 73
       onClick: (date, count) ->
         formated_date = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate()
         $.ajax

@@ -9,10 +9,10 @@ class Projects::CommitsController < Projects::ApplicationController
 
   def show
     @repo = @project.repository
-    @limit, @offset = (params[:limit] || 40), (params[:offset] || 0)
+    @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
 
     @commits = @repo.commits(@ref, @path, @limit, @offset)
-    @note_counts = Note.where(commit_id: @commits.map(&:id)).
+    @note_counts = project.notes.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
 
     respond_to do |format|

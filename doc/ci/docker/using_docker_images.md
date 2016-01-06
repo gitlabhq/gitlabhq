@@ -1,19 +1,29 @@
 # Using Docker Images
-GitLab CI can use [Docker Engine](https://www.docker.com/) to build projects. 
 
-Docker is an open-source project that allows to use predefined images to run applications 
-in independent "containers" that are run within a single Linux instance. 
-[Docker Hub](https://registry.hub.docker.com/) have rich database of  built images that can be used to build applications.
+GitLab CI in conjunction with [GitLab Runner](../runners/README.md) can use
+[Docker Engine](https://www.docker.com/) to test and build any application.
 
-Docker when used with GitLab CI runs each build in separate and isolated container using predefined image and always from scratch.
-It makes it easier to have simple and reproducible build environment that can also be run on your workstation.
-This allows you to test all commands from your shell, rather than having to test them on a CI server.
+Docker is an open-source project that allows you to use predefined images to
+run applications in independent "containers" that are run within a single Linux
+instance. [Docker Hub][hub] has a rich database of pre-built images that can be
+used to test and build your applications.
 
-### Register Docker runner
-To use GitLab Runner with Docker you need to register new runner to use `docker` executor:
+Docker, when used with GitLab CI, runs each build in a separate and isolated
+container using the predefined image that is set up in
+[`.gitlab-ci.yml`](../yaml/README.md).
+
+This makes it easier to have a simple and reproducible build environment that
+can also run on your workstation. The added benefit is that you can test all
+the commands that we will explore later from your shell, rather than having to
+test them on a dedicated CI server.
+
+## Register docker runner
+
+To use GitLab Runner with docker you need to register a new runner to use the
+`docker` executor:
 
 ```bash
-gitlab-ci-multi-runner register \
+gitlab-runner register \
   --url "https://gitlab.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "docker-ruby-2.1" \
@@ -23,101 +33,79 @@ gitlab-ci-multi-runner register \
   --docker-mysql latest
 ```
 
-**The registered runner will use `ruby:2.1` image and will run two services (`postgres:latest` and `mysql:latest`) that will be accessible for time of the build.**
+The registered runner will use the `ruby:2.1` docker image and will run two
+services, `postgres:latest` and `mysql:latest`, both of which will be
+accessible during the build process.
 
-### What is image?
-The image is the name of any repository that is present in local Docker Engine or any repository that can be found at [Docker Hub](https://registry.hub.docker.com/). 
-For more information about the image and Docker Hub please read the [Docker Fundamentals](https://docs.docker.com/introduction/understanding-docker/).
+## What is image
 
-### What is service?
-Service is just another image that is run for time of your build and is linked to your build. This allows you to access the service image during build time. 
-The service image can run any application, but most common use case is to run some database container, ie.: `mysql`. 
-It's easier and faster to use existing image, run it as additional container than install `mysql` every time project is built.
+The `image` keyword is the name of the docker image that is present in the
+local Docker Engine (list all images with `docker images`) or any image that
+can be found at [Docker Hub][hub]. For more information about images and Docker
+Hub please read the [Docker Fundamentals][] documentation.
 
-#### How is service linked to the build?
-There's good document that describes how Docker linking works: [Linking containers together](https://docs.docker.com/userguide/dockerlinks/). 
-To summarize: if you add `mysql` as service to your application, the image will be used to create container that is linked to build container. 
-The service container for MySQL will be accessible under hostname `mysql`.
-So, **to access your database service you have to connect to host: `mysql` instead of socket or `localhost`**.
+In short, with `image` we refer to the docker image, which will be used to
+create a container on which your build will run.
 
-### How to use other images as services?
-You are not limited to have only database services. 
-You can hand modify `config.toml` to add any image as service found at [Docker Hub](https://registry.hub.docker.com/). 
-Look for `[runners.docker]` section:
-```
-[runners.docker]
-  image = "ruby:2.1"
-  services = ["mysql:latest", "postgres:latest"]
-```
+## What is service
 
-For example you need `wordpress` instance to test some API integration with `Wordpress`. 
-You can for example use this image: [tutum/wordpress](https://registry.hub.docker.com/u/tutum/wordpress/). 
-This is image that have fully preconfigured `wordpress` and have `MySQL` server built-in:
-```
-[runners.docker]
-  image = "ruby:2.1"
-  services = ["mysql:latest", "postgres:latest", "tutum/wordpress:latest"]
-```
+The `services` keyword defines just another docker image that is run during
+your build and is linked to the docker image that the `image` keyword defines.
+This allows you to access the service image during build time.
 
-Next time when you run your application the `tutum/wordpress` will be started 
-and you will have access to it from your build container under hostname: `tutum_wordpress`.
+The service image can run any application, but the most common use case is to
+run a database container, eg. `mysql`. It's easier and faster to use an
+existing image and run it as an additional container than install `mysql` every
+time the project is built.
 
-Alias hostname for the service is made from the image name:
-1. Everything after `:` is stripped,
-2. '/' is replaced to `_`.
+You can see some widely used services examples in the relevant documentation of
+[CI services examples](../services/README.md).
 
-### Configuring services
-Many services accept environment variables, which allow you to easily change database names or set account names depending on the environment.
+### How is service linked to the build
 
-GitLab Runner 0.5.0 and up passes all YAML-defined variables to created service containers.
+To better understand how the container linking works, read
+[Linking containers together](https://docs.docker.com/userguide/dockerlinks/).
 
-1. To configure database name for [postgres](https://registry.hub.docker.com/u/library/postgres/) service,
-you need to set POSTGRES_DB.
+To summarize, if you add `mysql` as service to your application, the image will
+then be used to create a container that is linked to the build container.
 
-    ```yaml
-    services:
-    - postgres
-    
-    variables:
-      POSTGRES_DB: gitlab
-    ```
+The service container for MySQL will be accessible under the hostname `mysql`.
+So, in order to access your database service you have to connect to the host
+named `mysql` instead of a socket or `localhost`.
 
-1. To use [mysql](https://registry.hub.docker.com/u/library/mysql/) service with empty password for time of build, 
-you need to set MYSQL_ALLOW_EMPTY_PASSWORD.
+## Overwrite image and services
 
-    ```yaml
-    services:
-    - mysql
-    
-    variables:
-      MYSQL_ALLOW_EMPTY_PASSWORD: yes
-    ```
+See [How to use other images as services](#how-to-use-other-images-as-services).
 
-For other possible configuration variables check the 
-https://registry.hub.docker.com/u/library/mysql/ or https://registry.hub.docker.com/u/library/postgres/
-or README page for any other Docker image.
+## How to use other images as services
 
-**Note: All variables will passed to all service containers. It's not designed to distinguish which variable should go where.**
+You are not limited to have only database services. You can add as many
+services you need to `.gitlab-ci.yml` or manually modify `config.toml`.
+Any image found at [Docker Hub][hub] can be used as a service.
 
-### Overwrite image and services
-It's possible to overwrite `docker-image` and specify services from `.gitlab-ci.yml`.
-If you add to your YAML the `image` and the `services` these parameters
-be used instead of the ones that were specified during runner's registration.
-```
+## Define image and services from `.gitlab-ci.yml`
+
+You can simply define an image that will be used for all jobs and a list of
+services that you want to use during build time.
+
+```yaml
 image: ruby:2.2
+
 services:
   - postgres:9.3
-before_install:
+
+before_script:
   - bundle install
-  
+
 test:
   script:
   - bundle exec rake spec
 ```
 
-It's possible to define image and service per-job:
-```
-before_install:
+It is also possible to define different images and services per job:
+
+```yaml
+before_script:
   - bundle install
 
 test:2.1:
@@ -135,34 +123,91 @@ test:2.2:
   - bundle exec rake spec
 ```
 
-#### How to enable overwriting?
-To enable overwriting you have to **enable it first** (it's disabled by default for security reasons). 
-You can do that by hand modifying runner configuration: `config.toml`. 
-Please go to section where is `[runners.docker]` definition for your runner. 
-Add `allowed_images` and `allowed_services` to specify what images are allowed to be picked from `.gitlab-ci.yml`:
+## Define image and services in `config.toml`
+
+Look for the `[runners.docker]` section:
+
 ```
 [runners.docker]
   image = "ruby:2.1"
-  allowed_images = ["ruby:*", "python:*"]
-  allowed_services = ["mysql:*", "redis:*"]
-```
-This enables you to use in your `.gitlab-ci.yml` any image that matches above wildcards. 
-You will be able to pick only `ruby` and `python` images. 
-The same rule can be applied to limit services. 
-
-If you are courageous enough, you can make it fully open and accept everything:
-```
-[runners.docker]
-  image = "ruby:2.1"
-  allowed_images = ["*", "*/*"]
-  allowed_services = ["*", "*/*"]
+  services = ["mysql:latest", "postgres:latest"]
 ```
 
-**It the feature is not enabled, or image isn't allowed the error message will be put into the build log.**
+The image and services defined this way will be added to all builds run by
+that runner.
 
-### How Docker integration works
+## Define an image from a private Docker registry
+
+Starting with GitLab Runner 0.6.0, you are able to define images located to
+private registries that could also require authentication.
+
+All you have to do is be explicit on the image definition in `.gitlab-ci.yml`.
+
+```yaml
+image: my.registry.tld:5000/namepace/image:tag
+```
+
+In the example above, GitLab Runner will look at `my.registry.tld:5000` for the
+image `namespace/image:tag`.
+
+If the repository is private you need to authenticate your GitLab Runner in the
+registry. Learn how to do that on
+[GitLab Runner's documentation][runner-priv-reg].
+
+## Accessing the services
+
+Let's say that you need a Wordpress instance to test some API integration with
+your application.
+
+You can then use for example the [tutum/wordpress][] image in your
+`.gitlab-ci.yml`:
+
+```yaml
+services:
+- tutum/wordpress:latest
+```
+
+When the build is run, `tutum/wordpress` will be started and you will have
+access to it from your build container under the hostname `tutum__wordpress`.
+
+The alias hostname for the service is made from the image name following these
+rules:
+
+1. Everything after `:` is stripped
+2. Backslash (`/`) is replaced with double underscores (`__`)
+
+## Configuring services
+
+Many services accept environment variables which allow you to easily change
+database names or set account names depending on the environment.
+
+GitLab Runner 0.5.0 and up passes all YAML-defined variables to the created
+service containers.
+
+For all possible configuration variables check the documentation of each image
+provided in their corresponding Docker hub page.
+
+*Note: All variables will be passed to all services containers. It's not
+designed to distinguish which variable should go where.*
+
+### PostgreSQL service example
+
+See the specific documentation for
+[using PostgreSQL as a service](../services/postgres.md).
+
+### MySQL service example
+
+See the specific documentation for
+[using MySQL as a service](../services/mysql.md).
+
+## How Docker integration works
+
+Below is a high level overview of the steps performed by docker during build
+time.
+
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
-1. Create cache container to store all volumes as defined in `config.toml` and `Dockerfile` of build image (`ruby:2.1` as in above example).
+1. Create cache container to store all volumes as defined in `config.toml` and
+   `Dockerfile` of build image (`ruby:2.1` as in above example).
 1. Create build container and link any service container to build container.
 1. Start build container and send build script to the container.
 1. Run build script.
@@ -171,33 +216,64 @@ If you are courageous enough, you can make it fully open and accept everything:
 1. Check exit status of build script.
 1. Remove build container and all created service containers.
 
-### How to debug a build locally
-1. Create a file with build script:
+## How to debug a build locally
+
+*Note: The following commands are run without root privileges. You should be
+able to run docker with your regular user account.*
+
+First start with creating a file named `build script`:
+
 ```bash
-$ cat <<EOF > build_script
+cat <<EOF > build_script
 git clone https://gitlab.com/gitlab-org/gitlab-ci-multi-runner.git /builds/gitlab-org/gitlab-ci-multi-runner
 cd /builds/gitlab-org/gitlab-ci-multi-runner
-make <- or any other build step
+make
 EOF
 ```
 
-1. Create service containers:
-```
-$ docker run -d -n service-mysql mysql:latest
-$ docker run -d -n service-postgres postgres:latest
-```
-This will create two service containers (MySQL and PostgreSQL).
+Here we use as an example the GitLab Runner repository which contains a
+Makefile, so running `make` will execute the commands defined in the Makefile.
+Your mileage may vary, so instead of `make` you could run the command which
+is specific to your project.
 
-1. Create a build container and execute script in its context:
-```
-$ cat build_script | docker run -n build -i -l mysql:service-mysql -l postgres:service-postgres ruby:2.1 /bin/bash
-```
-This will create build container that has two service containers linked.
-The build_script is piped using STDIN to bash interpreter which executes the build script in container. 
+Then create some service containers:
 
-1. At the end remove all containers:
+```
+docker run -d -n service-mysql mysql:latest
+docker run -d -n service-postgres postgres:latest
+```
+
+This will create two service containers, named `service-mysql` and
+`service-postgres` which use the latest MySQL and PostgreSQL images
+respectively. They will both run in the background (`-d`).
+
+Finally, create a build container by executing the `build_script` file we
+created earlier:
+
+```
+docker run --name build -i --link=service-mysql:mysql --link=service-postgres:postgres ruby:2.1 /bin/bash < build_script
+```
+
+The above command will create a container named `build` that is spawned from
+the `ruby:2.1` image and has two services linked to it. The `build_script` is
+piped using STDIN to the bash interpreter which in turn executes the
+`build_script` in the `build` container.
+
+When you finish testing and no longer need the containers, you can remove them
+with:
+
 ```
 docker rm -f -v build service-mysql service-postgres
 ```
-This will forcefully (the `-f` switch) remove build container and service containers 
-and all volumes (the `-v` switch) that were created with the container creation.
+
+This will forcefully (`-f`) remove the `build` container, the two service
+containers as well as all volumes (`-v`) that were created with the container
+creation.
+
+[Docker Fundamentals]: https://docs.docker.com/engine/introduction/understanding-docker/
+[hub]: https://hub.docker.com/
+[linking-containers]: https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/
+[tutum/wordpress]: https://registry.hub.docker.com/u/tutum/wordpress/
+[postgres-hub]: https://registry.hub.docker.com/u/library/postgres/
+[mysql-hub]: https://registry.hub.docker.com/u/library/mysql/
+[runner-priv-reg]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/configuration/advanced-configuration.md#using-a-private-docker-registry

@@ -1,6 +1,10 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.1.12'
+gem 'rails', '4.2.4'
+gem 'rails-deprecated_sanitizer', '~> 1.0.3'
+
+# Responders respond_to and respond_with
+gem 'responders', '~> 2.0'
 
 # Specify a sprockets version due to security issue
 # See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
@@ -14,11 +18,13 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.2'
+gem 'devise',                 '~> 3.5.3'
 gem 'devise-async',           '~> 0.9.0'
-gem 'doorkeeper',             '~> 2.1.3'
+gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
+gem 'omniauth-cas3',          '~> 1.1.2'
+gem 'omniauth-facebook',      '~> 3.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.0'
@@ -27,7 +33,10 @@ gem 'omniauth-saml',          '~> 1.4.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
-gem 'rack-oauth2',            '~> 1.0.5'
+gem 'rack-oauth2',            '~> 1.2.1'
+
+# reCAPTCHA protection
+gem 'recaptcha', require: 'recaptcha/rails'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
@@ -39,7 +48,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.19'
+gem "gitlab_git", '~> 7.2.20'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -47,26 +56,19 @@ gem "gitlab_git", '~> 7.2.19'
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 
 # Git Wiki
-gem 'gollum-lib', '~> 4.0.2'
+gem 'gollum-lib', '~> 4.1.0'
 
 # Language detection
-# GitLab fork of linguist does not require pygments/python dependency.
-# New version of original gem also dropped pygments support but it has strict
-# dependency to unstable rugged version. We have internal issue for replacing
-# fork with original gem when we meet on same rugged version - https://dev.gitlab.org/gitlab/gitlabhq/issues/2052.
-gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
+gem "github-linguist", "~> 4.7.0", require: "linguist"
 
 # API
-gem 'grape',        '~> 0.6.1'
+gem 'grape',        '~> 0.13.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Format dates and times
 # based on human-friendly examples
-gem "stamp", '~> 0.5.0'
-
-# Enumeration fields
-gem 'enumerize', '~> 0.7.0'
+gem "stamp", '~> 0.6.0'
 
 # Pagination
 gem "kaminari", "~> 0.16.3"
@@ -98,9 +100,13 @@ gem 'redcarpet',     '~> 3.3.3'
 gem 'RedCloth',      '~> 4.2.9'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '~> 0.9.12'
-gem 'creole',        '~>0.3.6'
+gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
+gem 'rouge',         '~> 1.10.1'
+
+# See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
+gem 'nokogiri', '1.6.7.1'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
@@ -112,7 +118,7 @@ group :unicorn do
 end
 
 # State machine
-gem "state_machine", '~> 1.2.0'
+gem "state_machines-activerecord", '~> 0.3.0'
 # Run events after state machine commits
 gem 'after_commit_queue'
 
@@ -121,15 +127,15 @@ gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
 gem 'sinatra', '~> 1.4.4', require: nil
-gem 'sidekiq', '3.3.0'
-gem 'sidetiq', '~> 0.6.3'
+gem 'sidekiq', '~> 4.0'
+gem 'sidekiq-cron', '~> 0.4.0'
+gem 'redis-namespace'
 
 # HTTP requests
 gem "httparty", '~> 0.13.3'
 
 # Colored output to console
-gem "colored", '~> 1.2'
-gem "colorize", '~> 0.5.8'
+gem "colorize", '~> 0.7.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -157,25 +163,26 @@ gem "gemnasium-gitlab-service", "~> 0.2"
 gem "slack-notifier", "~> 1.2.0"
 
 # Asana integration
-gem 'asana', '~> 0.0.6'
+gem 'asana', '~> 0.4.0'
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # d3
-gem 'd3_rails', '~> 3.5.5'
+gem 'd3_rails', '~> 3.5.0'
 
 #cal-heatmap
-gem "cal-heatmap-rails", "~> 0.0.1"
+gem 'cal-heatmap-rails', '~> 3.5.0'
 
 # underscore-rails
-gem "underscore-rails", "~> 1.4.4"
+gem "underscore-rails", "~> 1.8.0"
 
 # Sanitize user input
 gem "sanitize", '~> 2.0'
+gem 'babosa', '~> 1.0.2'
 
 # Protect against bruteforcing
-gem "rack-attack", '~> 4.3.0'
+gem "rack-attack", '~> 4.3.1'
 
 # Ace editor
 gem 'ace-rails-ap', '~> 2.0.1'
@@ -184,41 +191,49 @@ gem 'ace-rails-ap', '~> 2.0.1'
 gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes', '~> 0.6.9.4'
+gem 'charlock_holmes', '~> 0.7.3'
 
-gem "sass-rails", '~> 4.0.5'
+gem "sass-rails", '~> 5.0.0'
 gem "coffee-rails", '~> 4.1.0'
 gem "uglifier", '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
-gem 'jquery-turbolinks', '~> 2.0.1'
+gem 'jquery-turbolinks', '~> 2.1.0'
 
 gem 'addressable',        '~> 2.3.8'
-gem 'bootstrap-sass',     '~> 3.0'
+gem 'bootstrap-sass',     '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.2'
-gem 'gitlab_emoji',       '~> 0.1'
-gem 'gon',                '~> 5.0.0'
-gem 'jquery-atwho-rails', '~> 1.0.0'
-gem 'jquery-rails',       '~> 3.1.3'
+gem 'gitlab_emoji',       '~> 0.2.0'
+gem 'gon',                '~> 6.0.1'
+gem 'jquery-atwho-rails', '~> 1.3.2'
+gem 'jquery-rails',       '~> 4.0.0'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
-gem 'jquery-ui-rails',    '~> 4.2.1'
-gem 'nprogress-rails',    '~> 0.1.2.3'
+gem 'jquery-ui-rails',    '~> 5.0.0'
+gem 'nprogress-rails',    '~> 0.1.6.7'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
+gem 'net-ssh',            '~> 3.0.1'
+
+# Metrics
+group :metrics do
+  gem 'allocations', '~> 1.0', require: false, platform: :mri
+  gem 'method_source', '~> 0.8', require: false
+  gem 'influxdb', '~> 0.2', require: false
+  gem 'connection_pool', '~> 2.0', require: false
+end
 
 group :development do
   gem "foreman"
-  gem 'brakeman', '3.0.1', require: false
+  gem 'brakeman', '~> 3.1.0', require: false
 
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'
   gem 'quiet_assets', '~> 1.0.2'
-  gem 'rack-mini-profiler', '~> 0.9.0', require: false
-  gem 'rerun', '~> 0.10.0'
+  gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
-  gem 'active_record_query_trace', require: false
-  gem 'rack-lineprof', platform: :mri
+  gem 'rblineprof', platform: :mri, require: false
+  gem 'web-console', '~> 2.0'
 
   # Better errors handler
   gem 'better_errors', '~> 1.0.1'
@@ -251,7 +266,7 @@ group :development, :test do
 
   gem 'capybara',            '~> 2.4.0'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist',         '~> 1.6.0'
+  gem 'poltergeist',         '~> 1.8.1'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
@@ -261,9 +276,12 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop',  '~> 0.28.0',  require: false
+  gem 'rubocop', '~> 0.35.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
+  gem 'flog', require: false
+  gem 'flay', require: false
+  gem 'bundler-audit', require: false
 
   gem 'benchmark-ips', require: false
 end
@@ -272,7 +290,7 @@ group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
-  gem 'test_after_commit', '~> 0.2.2'
+  gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack'
 end
 
