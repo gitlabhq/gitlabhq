@@ -27,11 +27,9 @@ module PageLayoutHelper
   #
   # Returns an HTML-safe String.
   def page_description(description = nil)
-    @page_description ||= brand_title
-
     if description.present?
       @page_description = description.squish
-    else
+    elsif @page_description.present?
       sanitize(@page_description, tags: []).truncate_words(30)
     end
   end
@@ -41,11 +39,8 @@ module PageLayoutHelper
 
     subject = @project || @user || @group
 
-    if subject.present?
-      subject.avatar_url || default
-    else
-      default
-    end
+    image = subject.avatar_url if subject.present?
+    image || default
   end
 
   # Define or get attributes to be used as Twitter card metadata

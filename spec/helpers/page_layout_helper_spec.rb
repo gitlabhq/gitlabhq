@@ -2,10 +2,8 @@ require 'rails_helper'
 
 describe PageLayoutHelper do
   describe 'page_description' do
-    it 'defaults to value returned by brand_title helper' do
-      allow(helper).to receive(:brand_title).and_return('Foo')
-
-      expect(helper.page_description).to eq 'Foo'
+    it 'defaults to nil' do
+      expect(helper.page_description).to eq nil
     end
 
     it 'returns the last-pushed description' do
