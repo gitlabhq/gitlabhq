@@ -19,7 +19,7 @@
 
     .pull-left.prepend-left-10
       = form_tag(namespace_project_commits_path(@project.namespace, @project, @ref), method: :get, class: 'pull-left commits-search-form') do
-        = search_field_tag :search, params[:search], { placeholder: 'Filter by commit message', class: 'form-control search-text-input', spellcheck: false }
+        = search_field_tag :search, params[:search], { placeholder: 'Filter by commit message', id: 'commits-search', class: 'form-control search-text-input', spellcheck: false }
 
     - if current_user && current_user.private_token
       .pull-left.prepend-left-10
@@ -31,11 +31,9 @@
     = commits_breadcrumbs
 
 %div{id: dom_id(@project)}
-  #commits-list= render "commits", project: @project
+  #commits-list.content_list= render "commits", project: @project
 .clear
 = spinner
 
-- if @commits.count == @limit
-  :javascript
-    CommitsList.init("#{@ref}", #{@limit});
-
+:javascript
+  CommitsList.init("#{@ref}", #{@limit});
