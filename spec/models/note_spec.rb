@@ -125,6 +125,19 @@ describe Note, models: true do
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
   end
 
+  describe "#all_references" do
+    let!(:note1) { create(:note) }
+    let!(:note2) { create(:note) }
+
+    it "reads the rendered note body from the cache" do
+      expect(Banzai::Renderer).to receive(:render).with(note1.note, pipeline: :note, cache_key: [note1, "note"], project: note1.project)
+      expect(Banzai::Renderer).to receive(:render).with(note2.note, pipeline: :note, cache_key: [note2, "note"], project: note2.project)
+
+      note1.all_references
+      note2.all_references
+    end
+  end
+
   describe :search do
     let!(:note) { create(:note, note: "WoW") }
 
@@ -164,7 +177,7 @@ describe Note, models: true do
       expect(note.editable?).to be_falsy
     end
   end
-  
+
   describe "set_award!" do
     let(:issue) { create :issue }
 

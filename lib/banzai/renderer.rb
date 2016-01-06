@@ -18,22 +18,13 @@ module Banzai
       cache_key = context.delete(:cache_key)
       cache_key = full_cache_key(cache_key, context[:pipeline])
 
-      cacheless = cacheless_render(text, context)
-
-      if cache_key && ENV["DEBUG_BANZAI_CACHE"]
-        cached = Rails.cache.fetch(cache_key) { cacheless }
-
-        if cached != cacheless
-          Rails.logger.warn "Banzai cache mismatch"
-          Rails.logger.warn "Text: #{text.inspect}"
-          Rails.logger.warn "Context: #{context.inspect}"
-          Rails.logger.warn "Cache key: #{cache_key.inspect}"
-          Rails.logger.warn "Cacheless: #{cacheless.inspect}"
-          Rails.logger.warn "With cache: #{cached.inspect}"
+      if cache_key
+        Rails.cache.fetch(cache_key) do
+          cacheless_render(text, context)
         end
+      else
+        cacheless_render(text, context)
       end
-
-      cacheless
     end
 
     def self.render_result(text, context = {})
