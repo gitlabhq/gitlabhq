@@ -196,6 +196,7 @@ class User < ActiveRecord::Base
   state_machine :state, initial: :active do
     event :block do
       transition active: :blocked
+      transition ldap_blocked: :blocked
     end
 
     event :ldap_block do
