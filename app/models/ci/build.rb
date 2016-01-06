@@ -54,6 +54,8 @@ module Ci
     # To prevent db load megabytes of data from trace
     default_scope -> { select(Ci::Build.columns_without_lazy) }
 
+    before_destroy { project }
+
     class << self
       def columns_without_lazy
         (column_names - LAZY_ATTRIBUTES).map do |column_name|
