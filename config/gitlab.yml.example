@@ -136,6 +136,11 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 
+  ## Elasticsearch (EE only)
+  elasticsearch:
+    host: localhost
+    port: 9200
+
   ## GitLab Pages
   pages:
     enabled: false

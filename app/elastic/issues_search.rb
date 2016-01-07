@@ -41,7 +41,7 @@ module IssuesSearch
       })
     end
 
-    def self.search(query, page: 1, per: 20, options: {})
+    def self.elastic_search(query, page: 1, per: 20, options: {})
 
       page ||= 1
 

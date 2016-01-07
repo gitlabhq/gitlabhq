@@ -1,3 +1,19 @@
+GIT
+  remote: git://github.com/elasticsearch/elasticsearch-rails.git
+  revision: 88b6597e47c9f45024b603faeddb0a85b47e1fce
+  ref: 88b6597e47c9f45024b603faeddb0a85b47e1fce
+  specs:
+    elasticsearch-model (0.1.0.rc1)
+      activesupport (> 3)
+      elasticsearch (> 0.4)
+      hashie
+
+GIT
+  remote: git://github.com/elasticsearch/elasticsearch-rails.git
+  revision: 5f32e484a6d0458f26dc9acfa9dd5fed4e5d6453
+  specs:
+    elasticsearch-rails (0.1.0.rc1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -177,6 +193,14 @@ GEM
       railties (>= 3.2)
     dropzonejs-rails (0.7.2)
       rails (> 3.1)
+    elasticsearch (1.0.15)
+      elasticsearch-api (= 1.0.15)
+      elasticsearch-transport (= 1.0.15)
+    elasticsearch-api (1.0.15)
+      multi_json
+    elasticsearch-transport (1.0.15)
+      faraday
+      multi_json
     email_reply_parser (0.5.8)
     email_spec (1.6.0)
       launchy (~> 2.1)
@@ -858,6 +882,8 @@ DEPENDENCIES
   diffy (~> 3.0.3)
   doorkeeper (~> 2.2.0)
   dropzonejs-rails (~> 0.7.1)
+  elasticsearch-model!
+  elasticsearch-rails!
   email_reply_parser (~> 0.5.8)
   email_spec (~> 1.6.0)
   enumerize (~> 0.7.0)

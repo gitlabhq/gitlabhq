@@ -1,8 +1,6 @@
 require 'securerandom'
 
 class Repository
-  include RepositoriesSearch
-
   class CommitError < StandardError; end
 
   MIRROR_REMOTE = "upstream"

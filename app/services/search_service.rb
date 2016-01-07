@@ -7,20 +7,19 @@ class SearchService < BaseService
         users: search_in_users(query),
         projects: search_in_projects(query),
         merge_requests: search_in_merge_requests(query),
-        issues: search_in_issues(query),
-        repositories: search_in_repository(query),
+        issues: search_in_issues(query)
     }
   end
 
   def project_search(project)
     query = params[:search]
+
     {
         groups: {},
         users: {},
         projects: {},
         merge_requests: search_in_merge_requests(query, project),
-        issues: search_in_issues(query, project),
-        repositories: search_in_repository(query, project),
+        issues: search_in_issues(query, project)
     }
   end
 
@@ -36,12 +35,13 @@ class SearchService < BaseService
     }
 
     group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
+
     opt[:namespace_id] = group.id if group
 
     opt[:category] = params[:category] if params[:category].present?
 
     begin
-      response = Project.search(query, options: opt, page: page)
+      response = Project.elastic_search(query, options: opt, page: page)
 
       categories_list = if query.blank?
                           Project.category_counts.map do |category|
@@ -75,7 +75,7 @@ class SearchService < BaseService
     }
 
     begin
-      response = Group.search(query, options: opt, page: page)
+      response = Group.elastic_search(query, options: opt, page: page)
 
       {
         records: response.records,
@@ -96,7 +96,7 @@ class SearchService < BaseService
     }
 
     begin
-      response = User.search(query, options: opt, page: page)
+      response = User.elastic_search(query, options: opt, page: page)
 
       {
         records: response.records,
@@ -117,7 +117,7 @@ class SearchService < BaseService
     }
 
     begin
-      response = MergeRequest.search(query, options: opt, page: page)
+      response = MergeRequest.elastic_search(query, options: opt, page: page)
 
       {
         records: response.records,
@@ -137,7 +137,7 @@ class SearchService < BaseService
     }
 
     begin
-      response = Issue.search(query, options: opt, page: page)
+      response = Issue.elastic_search(query, options: opt, page: page)
 
       {
         records: response.records,
@@ -150,33 +150,11 @@ class SearchService < BaseService
     end
   end
 
-  def search_in_repository(query, project = nil)
-    opt = {
-      repository_id: project ? [project.id] : projects_ids,
-      highlight: true,
-      order: params[:order]
-    }
-
-    if params[:language].present? && params[:language] != 'All'
-      opt.merge!({ language: params[:language] })
-    end
-
-    begin
-      res = Repository.search(query, options: opt, page: page)
-
-      res[:blobs][:projects] = project_filter(res[:blobs][:repositories]) || []
-      res[:commits][:projects]  = project_filter(res[:commits][:repositories]) || []
-
-      res
-    rescue Exception => e
-      {}
-    end
-  end
-
   def projects_ids
     @allowed_projects_ids ||= begin
       if params[:namespace].present?
         namespace = Namespace.find_by(path: params[:namespace])
+
         if namespace
           return namespace.projects.where(id: known_projects_ids).pluck(:id)
         end
@@ -196,8 +174,8 @@ class SearchService < BaseService
 
   def known_projects_ids
     known_projects_ids = []
-    known_projects_ids += current_user.known_projects.pluck(:id) if current_user
-    known_projects_ids + Project.public_or_internal_only(current_user).pluck(:id)
+    known_projects_ids += current_user.authorized_projects.pluck(:id) if current_user
+    known_projects_ids + Project.public_and_internal_only.pluck(:id)
   end
 
   def project_filter(es_results)
