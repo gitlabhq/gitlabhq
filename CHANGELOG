@@ -21,6 +21,7 @@ v 8.4.0 (unreleased)
   - Update version check images to use SVG
   - Validate README format before displaying
   - Enable Microsoft Azure OAuth2 support (Janis Meybohm)
+  - Properly set task-list class on single item task lists
 
 v 8.3.3 (unreleased)
   - Get "Merge when build succeeds" to work when commits were pushed to MR target branch while builds were running
