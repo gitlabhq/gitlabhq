@@ -8,17 +8,13 @@ module Gitlab
         def sql(event)
           return unless current_transaction
 
-          current_transaction.increment(:sql_duration, duration(event))
+          current_transaction.increment(:sql_duration, event.duration)
         end
 
         private
 
         def current_transaction
           Transaction.current
-        end
-
-        def duration(event)
-          event.duration * 1000.0
         end
       end
     end
