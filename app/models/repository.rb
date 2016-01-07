@@ -108,6 +108,12 @@ class Repository
     commits
   end
 
+  def find_commits_by_message_with_elastic(query)
+    project.repository.search(query, type: :commit)[:commits][:results].map do |result|
+      commit result["_source"]["commit"]["sha"]
+    end
+  end
+
   def find_branch(name)
     raw_repository.branches.find { |branch| branch.name == name }
   end
@@ -660,7 +666,53 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
-  def parse_search_result(result)
+  def parse_search_result(result, elastic = false)
+    if elastic
+      parse_search_result_from_elastic(result)
+    else
+      parse_search_result_from_grep(result)
+    end
+  end
+
+  def parse_search_result_from_elastic(result)
+    ref = result["_source"]["blob"]["oid"]
+    filename = result["_source"]["blob"]["path"]
+    content = result["_source"]["blob"]["content"]
+    total_lines = content.lines.size
+
+    term = result["highlight"]["blob.content"][0].match(/gitlabelasticsearch→(.*)←gitlabelasticsearch/)[1]
+    found_line_number = 0
+
+    content.each_line.each_with_index do |line, index|
+      if line.include?(term)
+        found_line_number = index
+        break
+      end
+    end
+
+    from = if found_line_number >= 2
+             found_line_number - 2
+           else
+             found_line_number
+           end
+
+    to = if (total_lines - found_line_number) > 3
+           found_line_number + 2
+         else
+           found_line_number
+         end
+
+    data = content.lines[from..to]
+
+    OpenStruct.new(
+      filename: filename,
+      ref: ref,
+      startline: from + 1,
+      data: data.join
+    )
+  end
+
+  def parse_search_result_from_grep(result)
     ref = nil
     filename = nil
     startline = 0

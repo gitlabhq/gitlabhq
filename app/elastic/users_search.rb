@@ -6,21 +6,17 @@ module UsersSearch
 
     mappings do
       indexes :id,          type: :integer
-      indexes :email,       type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, index_analyzer: :index_analyzer
-      indexes :name,        type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, index_analyzer: :index_analyzer
-      indexes :username,    type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, index_analyzer: :index_analyzer
+      indexes :email,       type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
+      indexes :name,        type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
+      indexes :username,    type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
       indexes :bio,         type: :string
-      indexes :skype,       type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, index_analyzer: :index_analyzer
+      indexes :skype,       type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
       indexes :linkedin,    type: :string
-      indexes :twitter,     type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, index_analyzer: :index_analyzer
+      indexes :twitter,     type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
       indexes :state,       type: :string
       indexes :website_url, type: :string
       indexes :created_at,  type: :date
       indexes :admin,       type: :boolean
-
-      indexes :name_sort,   type: :string, index: 'not_analyzed'
-      indexes :created_at_sort, type: :string, index: 'not_analyzed'
-      indexes :updated_at_sort, type: :string, index: 'not_analyzed'
     end
 
     def as_indexed_json(options = {})
@@ -31,16 +27,8 @@ module UsersSearch
       })
     end
 
-    def self.search(query, page: 1, per: 20, options: {})
-
-      page ||= 1
-      per ||= 20
-
-      if options[:in].blank?
-        options[:in] = %w(name^3 username^2 email)
-      else
-        options[:in].push(%w(name^3 username^2 email) - options[:in])
-      end
+    def self.elastic_search(query, options: {})
+      options[:in] = %w(name^3 username^2 email)
 
       query_hash = {
         query: {
@@ -53,9 +41,7 @@ module UsersSearch
               }
             },
           },
-        },
-        size: per,
-        from: per * (page.to_i - 1)
+        }
       }
 
       if query.blank?
@@ -81,30 +67,10 @@ module UsersSearch
         }
       end
 
-      options[:order] = :default if options[:order].blank?
-      order = case options[:order].to_sym
-              when :newest
-                { created_at_sort: { order: :asc, mode: :min } }
-              when :oldest
-                { created_at_sort: { order: :desc, mode: :min } }
-              when :recently_updated
-                { updated_at_sort: { order: :asc, mode: :min } }
-              when :last_updated
-                { updated_at_sort: { order: :desc, mode: :min } }
-              else
-                { name_sort: { order: :asc, mode: :min } }
-              end
+      query_hash[:sort] = [:_score]
 
-
-      query_hash[:sort] = [
-        order,
-        :_score
-      ]
-
-      if options[:highlight]
-        query_hash[:highlight] = highlight_options(options[:in])
-      end
-
+      query_hash[:highlight] = highlight_options(options[:in])
+      
       self.__elasticsearch__.search(query_hash)
     end
   end

@@ -1,4 +1,4 @@
-module IssuesSearch
+module SnippetsSearch
   extend ActiveSupport::Concern
 
   included do
@@ -7,9 +7,9 @@ module IssuesSearch
     mappings do
       indexes :id,          type: :integer, index: :not_analyzed
 
-      indexes :iid,         type: :integer, index: :not_analyzed
       indexes :title,       type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
-      indexes :description, type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
+      indexes :file_name,   type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
+      indexes :content,     type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
       indexes :created_at,  type: :date
       indexes :updated_at,  type: :date
       indexes :state,       type: :string
@@ -29,11 +29,11 @@ module IssuesSearch
           project:  { only: :id },
           author:   { only: :id }
         }
-      ).merge({ updated_at_sort: updated_at })
+      )
     end
 
     def self.elastic_search(query, options: {})
-      options[:in] = %w(title^2 description)
+      options[:in] = %w(title file_name)
       
       query_hash = {
         query: {
@@ -54,11 +54,11 @@ module IssuesSearch
         query_hash[:track_scores] = true
       end
 
-      if options[:projects_ids]
+      if options[:ids]
         query_hash[:query][:filtered][:filter] ||= { and: [] }
         query_hash[:query][:filtered][:filter][:and] << {
           terms: {
-            project_id: [options[:projects_ids]].flatten
+            id: [options[:ids]].flatten
           }
         }
       end
@@ -69,7 +69,37 @@ module IssuesSearch
       ]
 
       query_hash[:highlight] = { fields: options[:in].inject({}) { |a, o| a[o.to_sym] = {} } }
-      
+
+      self.__elasticsearch__.search(query_hash)
+    end
+
+    def self.elastic_search_code(query, options: {})
+      options[:in] = %w(title file_name)
+
+      query_hash = {
+        query: {
+          filtered: {
+            query: {match: {content: query}},
+          },
+        }
+      }
+
+      if options[:ids]
+        query_hash[:query][:filtered][:filter] ||= { and: [] }
+        query_hash[:query][:filtered][:filter][:and] << {
+          terms: {
+            id: [options[:ids]].flatten
+          }
+        }
+      end
+
+      query_hash[:sort] = [
+        { updated_at_sort: { order: :desc, mode: :min } },
+        :_score
+      ]
+
+      query_hash[:highlight] = { fields: options[:in].inject({}) { |a, o| a[o.to_sym] = {} } }
+
       self.__elasticsearch__.search(query_hash)
     end
   end

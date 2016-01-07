@@ -943,6 +943,10 @@ class Project < ActiveRecord::Base
     false
   end
 
+  def wiki
+    ProjectWiki.new(self, self.owner)
+  end
+
   def reference_issue_tracker?
     default_issues_tracker? || jira_tracker_active?
   end

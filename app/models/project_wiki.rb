@@ -1,5 +1,6 @@
 class ProjectWiki
   include Gitlab::ShellAdapter
+  include WikiRepositoriesSearch
 
   MARKUPS = {
     'Markdown' => :md,
@@ -12,6 +13,8 @@ class ProjectWiki
   # Returns a string describing what went wrong after
   # an operation fails.
   attr_reader :error_message
+  attr_reader :project
+
 
   def initialize(project, user = nil)
     @project = project

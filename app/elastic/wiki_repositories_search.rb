@@ -1,4 +1,4 @@
-module RepositoriesSearch
+module WikiRepositoriesSearch
   extend ActiveSupport::Concern
 
   included do
@@ -7,11 +7,11 @@ module RepositoriesSearch
     self.__elasticsearch__.client = Elasticsearch::Client.new host: Gitlab.config.elasticsearch.host, port: Gitlab.config.elasticsearch.port
 
     def repository_id
-      project.id
+      "wiki_#{project.id}"
     end
 
     def self.repositories_count
-      Project.count
+      Project.where(wiki_enabled: true).count
     end
 
     def client_for_indexing
@@ -19,12 +19,11 @@ module RepositoriesSearch
     end
 
     def self.import
-      Repository.__elasticsearch__.create_index! force: true
+      ProjectWiki.__elasticsearch__.create_index! force: true
 
-      Project.find_each do |project|
-        if project.repository.exists? && !project.repository.empty?
-          project.repository.index_commits
-          project.repository.index_blobs
+      Project.where(wiki_enabled: true).find_each do |project|
+        unless project.wiki.empty?
+          project.wiki.index_blobs
         end
       end
     end
