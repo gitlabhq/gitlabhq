@@ -94,8 +94,16 @@
   }
 
   .cross-project-reference {
-    font-weight: bold;
     color: $gl-link-color;
+    
+    span {
+      white-space: nowrap;
+      width: 80%;
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      text-overflow: ellipsis;
+    }
 
     button {
       float: right;
