@@ -13,8 +13,8 @@ describe SystemHooksService, services: true do
     it { expect(event_data(user, :destroy)).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username) }
     it { expect(event_data(project, :create)).to include(:event_name, :name, :created_at, :updated_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
     it { expect(event_data(project, :destroy)).to include(:event_name, :name, :created_at, :updated_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
-    it { expect(event_data(project_member, :create)).to include(:event_name, :created_at, :updated_at, :project_name, :project_path, :project_path_with_namespace, :project_id, :user_name, :user_email, :access_level, :project_visibility) }
-    it { expect(event_data(project_member, :destroy)).to include(:event_name, :created_at, :updated_at, :project_name, :project_path, :project_path_with_namespace, :project_id, :user_name, :user_email, :access_level, :project_visibility) }
+    it { expect(event_data(project_member, :create)).to include(:event_name, :created_at, :updated_at, :project_name, :project_path, :project_path_with_namespace, :project_id, :user_name, :user_username, :user_email, :access_level, :project_visibility) }
+    it { expect(event_data(project_member, :destroy)).to include(:event_name, :created_at, :updated_at, :project_name, :project_path, :project_path_with_namespace, :project_id, :user_name, :user_username, :user_email, :access_level, :project_visibility) }
     it { expect(event_data(key, :create)).to include(:username, :key, :id) }
     it { expect(event_data(key, :destroy)).to include(:username, :key, :id) }
 
@@ -50,13 +50,13 @@ describe SystemHooksService, services: true do
     it do
       expect(event_data(group_member, :create)).to include(
         :event_name, :created_at, :updated_at, :group_name, :group_path, 
-        :group_id, :user_id, :user_name, :user_email, :group_access
+        :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
       )
     end
     it do
       expect(event_data(group_member, :destroy)).to include(
         :event_name, :created_at, :updated_at, :group_name, :group_path, 
-        :group_id, :user_id, :user_name, :user_email, :group_access
+        :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
       )
     end
   end
