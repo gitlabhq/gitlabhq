@@ -121,6 +121,7 @@ class JiraService < IssueTrackerService
   end
 
   def test_settings
+    return unless api_url.present?
     result = JiraService.get(
       jira_api_test_url,
       headers: {
@@ -218,6 +219,7 @@ class JiraService < IssueTrackerService
   end
 
   def send_message(url, message)
+    return unless api_url.present?
     result = JiraService.post(
       url,
       body: message,
@@ -243,6 +245,7 @@ class JiraService < IssueTrackerService
   end
 
   def existing_comment?(issue_name, new_comment)
+    return unless api_url.present?
     result = JiraService.get(
       comment_url(issue_name),
       headers: {
