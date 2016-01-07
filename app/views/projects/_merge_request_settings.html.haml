@@ -12,7 +12,7 @@
           %strong Merge commit
           %br
           %span.descr
-            A merge commit will be created for every merge, and merging is allowed as long as there are no conflicts.
+            A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
 
       .radio
         = label_tag :project_merge_method_rebase_merge do
@@ -20,7 +20,7 @@
           %strong Merge commit with semi-linear history
           %br
           %span.descr
-            A merge commit will be created for every merge, but merging is only allowed if the branch has been rebased.
+            A merge commit is created for every merge, but merging is only allowed if the branch has been rebased.
             This way you get a history that reads linearly (as with fast-forward merges), with the addition of merge commits.
           %br
           %span.descr
