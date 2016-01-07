@@ -23,6 +23,7 @@ v 8.4.0 (unreleased)
   - Update version check images to use SVG
   - Validate README format before displaying
   - Enable Microsoft Azure OAuth2 support (Janis Meybohm)
+  - Properly set task-list class on single item task lists
   - Add file finder feature in tree view (koreamic)
   - Ajax filter by message for commits page
 
