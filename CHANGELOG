@@ -8,7 +8,6 @@ v 8.4.0 (unreleased)
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
   - Link to milestone in "Milestone changed" system note
-  - Expose Git's version in the admin area
   - Only allow group/project members to mention `@all`
   - Expose Git's version in the admin area (Trey Davis)
   - Add "Frequently used" category to emoji picker
