@@ -232,9 +232,7 @@ module Gitlab
 
         return nil if res.nil?
 
-        text = "[#{res['alt']}](#{res['url']})"
-        text = "!#{text}" if res['is_image']
-        text
+        text = res['markdown']
       end
 
       def build_attachment_url(rel_url)
