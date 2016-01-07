@@ -21,7 +21,7 @@ describe Gitlab::Metrics::Subscribers::ActionView do
 
   describe '#render_template' do
     it 'tracks rendering of a template' do
-      values = { duration: 2100 }
+      values = { duration: 2.1 }
       tags   = {
         view: 'app/views/x.html.haml',
         file: 'app/views/x.html.haml',
@@ -29,7 +29,7 @@ describe Gitlab::Metrics::Subscribers::ActionView do
       }
 
       expect(transaction).to receive(:increment).
-        with(:view_duration, 2100)
+        with(:view_duration, 2.1)
 
       expect(transaction).to receive(:add_metric).
         with(described_class::SERIES, values, tags)
