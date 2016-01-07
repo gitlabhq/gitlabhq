@@ -28,8 +28,9 @@ class @MergeRequestWidget
 
   getMergeStatus: ->
     $.get @opts.url_to_automerge_check, (data) ->
-      $('.mr-state-widget').replaceWith(data)
-
+      console.log("data",data);
+      # $('div.mr-state-widget.mr-state-widget-opened').replaceWith(data)
+      
   getCiStatus: ->
     if @opts.ci_enable
       $.get @opts.url_to_ci_check, (data) =>

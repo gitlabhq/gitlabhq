@@ -63,12 +63,18 @@ class @MergeRequest
               $('a.btn-reopen').removeClass('hidden')
               $('div.status-box-closed').removeClass('hidden')
               $('div.status-box-open').addClass('hidden')
+
+              $('div.mr-state-widget-closed').removeClass('hidden')
+              $('div.mr-state-widget-opened').addClass('hidden')
             else
               $('a.btn-reopen').addClass('hidden')
               $('a.issuable-edit').removeClass('hidden')
               $('a.btn-close').removeClass('hidden')
               $('div.status-box-closed').addClass('hidden')
               $('div.status-box-open').removeClass('hidden')
+
+              $('div.mr-state-widget-closed').addClass('hidden')
+              $('div.mr-state-widget-opened').removeClass('hidden')
           else
             new Flash(mergeRequestFailMessage, 'alert')
           $this.prop('disabled', false)

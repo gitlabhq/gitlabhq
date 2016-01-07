@@ -48,9 +48,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @note_counts = Note.where(commit_id: @merge_request.commits.map(&:id)).
       group(:commit_id).count
 
+    json_merge_request = @merge_requests.as_json
+
     respond_to do |format|
       format.html
-      format.json { render json: @merge_request }
+      format.json do 
+        render json: {
+          hi: "yes"
+        }
+      end
       format.diff { render text: @merge_request.to_diff(current_user) }
       format.patch { render text: @merge_request.to_patch(current_user) }
     end
@@ -143,7 +149,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         format.json do
           render json: {
             saved: @merge_request.valid?,
-            assignee_avatar_url: @merge_request.assignee.try(:avatar_url)
+            assignee_avatar_url: @merge_request.assignee.try(:avatar_url),
+            closed_event: @merge_request.closed_event
           }
         end
       end
@@ -154,8 +161,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_check
     @merge_request.check_if_can_be_merged if @merge_request.unchecked?
-
-    render partial: "projects/merge_requests/widget/show.html.haml", layout: false
+    puts @merge_request.merge_status
+    respond_to do |format|
+      format.json do
+        render json: {
+          can_be_merged: @merge_request.merge_status == :can_be_merged
+        }
+      end
+      format.html do
+        render partial: "projects/merge_requests/widget/show.html.haml", layout: false
+      end
+    end
   end
 
   def cancel_merge_when_build_succeeds
