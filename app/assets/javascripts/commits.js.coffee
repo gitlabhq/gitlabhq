@@ -8,7 +8,7 @@ class @CommitsList
         e.stopPropagation()
         return false
 
-    Pager.init limit, true
+    Pager.init limit, false
 
     @content = $("#commits-list")
     @searchField = $("#commits-search")
@@ -24,14 +24,14 @@ class @CommitsList
     form = $(".commits-search-form")
     search = @searchField.val()
     commitsUrl = form.attr("action") + '?' + form.serialize()
-    @setOpacitiy("0.5")
+    @setOpacitiy(0.5)
 
     $.ajax
       type: "GET"
       url: form.attr("action")
       data: form.serialize()
       complete: =>
-        @setOpacitiy("1.0")
+        @setOpacitiy(1.0)
       success: (data) =>
         @content.html(data.html)
         # Change url so if user reload a page - search results are saved
