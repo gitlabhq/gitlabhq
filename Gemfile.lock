@@ -443,6 +443,10 @@ GEM
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
       rack (~> 1.0)
+    omniauth-azure-oauth2 (0.0.6)
+      jwt (~> 1.0)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.1)
     omniauth-bitbucket (0.0.2)
       multi_json (~> 1.7)
       omniauth (~> 1.1)
@@ -488,10 +492,6 @@ GEM
       activesupport
       nokogiri (>= 1.4.4)
       omniauth (~> 1.0)
-    omniauth-azure-oauth2 (0.0.6)
-      jwt (~> 1.0)
-      omniauth (~> 1.0)
-      omniauth-oauth2 (~> 1.1)
     opennebula (4.14.2)
       json
       nokogiri
@@ -920,6 +920,7 @@ DEPENDENCIES
   oauth2 (~> 1.0.0)
   octokit (~> 3.7.0)
   omniauth (~> 1.2.2)
+  omniauth-azure-oauth2
   omniauth-bitbucket (~> 0.0.2)
   omniauth-cas3 (~> 1.1.2)
   omniauth-facebook (~> 3.0.0)
@@ -931,7 +932,6 @@ DEPENDENCIES
   omniauth-shibboleth (~> 1.2.0)
   omniauth-twitter (~> 1.2.0)
   omniauth_crowd
-  omniauth-azure-oauth2
   org-ruby (~> 0.9.12)
   paranoia (~> 2.0)
   pg (~> 0.18.2)
@@ -999,4 +999,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2
