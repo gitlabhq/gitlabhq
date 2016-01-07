@@ -4,7 +4,7 @@ module Gitlab
     class Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
 
-      attr_reader :uuid, :tags
+      attr_reader :tags
 
       def self.current
         Thread.current[THREAD_KEY]
@@ -12,7 +12,6 @@ module Gitlab
 
       def initialize
         @metrics = []
-        @uuid    = SecureRandom.uuid
 
         @started_at  = nil
         @finished_at = nil
@@ -38,7 +37,6 @@ module Gitlab
       end
 
       def add_metric(series, values, tags = {})
-        tags   = tags.merge(transaction_id: @uuid)
         prefix = sidekiq? ? 'sidekiq_' : 'rails_'
 
         @metrics << Metric.new("#{prefix}#{series}", values, tags)

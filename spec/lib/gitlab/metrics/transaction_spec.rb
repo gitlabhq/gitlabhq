@@ -30,9 +30,9 @@ describe Gitlab::Metrics::Transaction do
   end
 
   describe '#add_metric' do
-    it 'adds a metric tagged with the transaction UUID' do
+    it 'adds a metric to the transaction' do
       expect(Gitlab::Metrics::Metric).to receive(:new).
-        with('rails_foo', { number: 10 }, { transaction_id: transaction.uuid })
+        with('rails_foo', { number: 10 }, {})
 
       transaction.add_metric('foo', number: 10)
     end
