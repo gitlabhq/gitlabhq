@@ -18,7 +18,9 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
   end
 
   context 'internal reference' do
-    let(:reference) { milestone.to_reference }
+    # Convert the Markdown link to only the URL, since these tests aren't run through the regular Markdown pipeline.
+    # Milestone reference behavior in the full Markdown pipeline is tested elsewhere.
+    let(:reference) { milestone.to_reference.gsub(/\[([^\]]+)\]\(([^)]+)\)/, '\2') }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
