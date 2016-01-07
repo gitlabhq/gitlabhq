@@ -90,4 +90,18 @@
   .vg { color: #cc6666 } /* Name.Variable.Global */
   .vi { color: #cc6666 } /* Name.Variable.Instance */
   .il { color: #de935f } /* Literal.Number.Integer.Long */
+
+  .line_holder {
+    &.new .old_line,
+    &.new .new_line,
+    &.new .line_content {
+      @include diff_background(255, 255, 255, #808080);
+    }
+
+    &.old .old_line,
+    &.old .new_line,
+    &.old .line_content {
+      @include diff_background(255, 51, 51, #808080);
+    }
+  }
 }
