@@ -9,6 +9,13 @@ module MergeRequests
     attr_reader :merge_request
 
     def execute(merge_request)
+      # Delete the ff param so we don't get into an infinite loop if it's present,
+      # since FfMergeService inherits from MergeService.
+      if params.delete(:ff).present?
+        FfMergeService.new(project, current_user, params).execute(merge_request)
+        return
+      end
+
       @merge_request = merge_request
 
       return error('Merge request is not mergeable') unless @merge_request.mergeable?
