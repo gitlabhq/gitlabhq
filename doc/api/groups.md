@@ -5,7 +5,7 @@ Every API call to groups must be authenticated.
 If a user is not a member of a group and the group contains at least one private
 project, all API calls return a 403 status code.
 
-## Group pagination
+## Groups pagination
 
 By default, groups only get 20 namespaces at a time because the API results are
 paginated.
