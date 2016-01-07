@@ -22,19 +22,12 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   variable_id (required) - The ID OR `key` of variable to show; if variable_id contains only digits it's treated
-      #                            as ID other ways it's treated as `key`
+      #   key (required) - The `key` of variable
       # Example Request:
-      #   GET /projects/:id/variables/:variable_id
-      get ':id/variables/:variable_id' do
-        variable_id = params[:variable_id]
-        variables = user_project.variables
-        variables =
-          if variable_id.match(/^\d+$/)
-            variables.where(id: variable_id.to_i)
-          else
-            variables.where(key: variable_id)
-          end
+      #   GET /projects/:id/variables/:key
+      get ':id/variables/:key' do
+        key = params[:key]
+        variables = user_project.variables.where(key: key)
 
         return not_found!('Variable') if variables.empty?
 
@@ -45,8 +38,8 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   key (required) - The key of variable being created
-      #   value (required) - The value of variable being created
+      #   key (required) - The key of variable
+      #   value (required) - The value of variable
       # Example Request:
       #   POST /projects/:id/variables
       post ':id/variables' do
@@ -63,17 +56,15 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   variable_id (required) - The ID of a variable
-      #   key (optional) - new value for `key` field of variable
-      #   value (optional) - new value for `value` field of variable
+      #   key (optional) - The `key` of variable
+      #   value (optional) - New value for `value` field of variable
       # Example Request:
-      #   PUT /projects/:id/variables/:variable_id
-      put ':id/variables/:variable_id' do
-        variable = user_project.variables.where(id: params[:variable_id].to_i).first
+      #   PUT /projects/:id/variables/:key
+      put ':id/variables/:key' do
+        variable = user_project.variables.where(key: params[:key]).first
 
         return not_found!('Variable') unless variable
 
-        variable.key = params[:key]
         variable.value = params[:value]
         variable.save!
 
@@ -84,11 +75,11 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   variable_id (required) - The ID of a variable
+      #   key (required) - The ID of a variable
       # Exanoke Reqyest:
-      #   DELETE /projects/:id/variables/:variable_id
-      delete ':id/variables/:variable_id' do
-        variable = user_project.variables.where(id: params[:variable_id].to_i).first
+      #   DELETE /projects/:id/variables/:key
+      delete ':id/variables/:key' do
+        variable = user_project.variables.where(key: params[:key]).first
 
         return not_found!('Variable') unless variable
 
