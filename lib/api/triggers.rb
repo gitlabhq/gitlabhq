@@ -66,23 +66,14 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   trigger_id (required) - The ID or `token` of a trigger to show; if trigger_id contains only digits it's
-      #                           treated as ID other ways it's reated as `key`
+      #   token (required) - The `token` of a trigger
       # Example Request:
-      #   GET /projects/:id/triggers/:trigger_id
-      get ':id/triggers/:trigger_id' do
+      #   GET /projects/:id/triggers/:token
+      get ':id/triggers/:token' do
         authenticate!
         authorize_admin_project
 
-        trigger_id = params[:trigger_id]
-        triggers = user_project.triggers
-        triggers =
-          if trigger_id.match(/^\d+$/)
-            triggers.where(id: trigger_id.to_i)
-          else
-            triggers.where(token: trigger_id)
-          end
-
+        triggers = user_project.triggers.where(token: params[:token])
         return not_found!('Trigger') if triggers.empty?
 
         present triggers.first, with: Entities::Trigger
@@ -108,14 +99,14 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   trigger_id - The ID of trigger to delete
+      #   token (required) - The `token` of a trigger
       # Example Request:
-      #   DELETE /projects/:id/triggers/:trigger_id
-      delete ':id/triggers/:trigger_id' do
+      #   DELETE /projects/:id/triggers/:token
+      delete ':id/triggers/:token' do
         authenticate!
         authorize_admin_project
 
-        trigger = user_project.triggers.where(id: params[:trigger_id].to_i).first
+        trigger = user_project.triggers.where(token: params[:token]).first
         return not_found!('Trigger') unless trigger
 
         trigger.destroy

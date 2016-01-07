@@ -93,8 +93,7 @@ describe API::API do
 
         expect(response.status).to eq(200)
         expect(json_response).to be_a(Array)
-        expect(json_response[0]['token']).to eq(trigger_token)
-        expect(json_response[1]['token']).to eq(trigger_token_2)
+        expect(json_response[0]).to have_key('token')
       end
     end
 
@@ -115,30 +114,17 @@ describe API::API do
     end
   end
 
-  describe 'GET /projects/:id/triggers/:triggers_id' do
+  describe 'GET /projects/:id/triggers/:token' do
     context 'authenticated user with valid permissions' do
-      context 'ID is used as :trigger_id' do
-        it 'should return trigger details' do
-          get api("/projects/#{project.id}/triggers/#{trigger.id}", user)
+      it 'should return trigger details' do
+        get api("/projects/#{project.id}/triggers/#{trigger.token}", user)
 
-          expect(response.status).to eq(200)
-          expect(json_response).to be_a(Hash)
-          expect(json_response['token']).to eq(trigger_token)
-        end
-      end
-
-      context '`token` is used as :trigger_id' do
-        it 'should return trigger details' do
-          get api("/projects/#{project.id}/triggers/#{trigger.token}", user)
-
-          expect(response.status).to eq(200)
-          expect(json_response).to be_a(Hash)
-          expect(json_response['id']).to eq(trigger.id)
-        end
+        expect(response.status).to eq(200)
+        expect(json_response).to be_a(Hash)
       end
 
       it 'should responde with 404 Not Found if requesting non-existing trigger' do
-        get api("/projects/#{project.id}/triggers/9999", user)
+        get api("/projects/#{project.id}/triggers/abcdef012345", user)
 
         expect(response.status).to eq(404)
       end
@@ -146,7 +132,7 @@ describe API::API do
 
     context 'authenticated user with invalid permissions' do
       it 'should not return triggers list' do
-        get api("/projects/#{project.id}/triggers/#{trigger.id}", user2)
+        get api("/projects/#{project.id}/triggers/#{trigger.token}", user2)
 
         expect(response.status).to eq(403)
       end
@@ -154,7 +140,7 @@ describe API::API do
 
     context 'unauthentikated user' do
       it 'should not return triggers list' do
-        get api("/projects/#{project.id}/triggers/#{trigger.id}")
+        get api("/projects/#{project.id}/triggers/#{trigger.token}")
 
         expect(response.status).to eq(401)
       end
@@ -190,17 +176,17 @@ describe API::API do
     end
   end
 
-  describe 'DELETE /projects/:id/triggers/:trigger_id' do
+  describe 'DELETE /projects/:id/triggers/:token' do
     context 'authenticated user with valid permissions' do
       it 'should delete trigger' do
         expect do
-          delete api("/projects/#{project.id}/triggers/#{trigger.id}", user)
+          delete api("/projects/#{project.id}/triggers/#{trigger.token}", user)
         end.to change{project.triggers.count}.by(-1)
         expect(response.status).to eq(200)
       end
 
       it 'should responde with 404 Not Found if requesting non-existing trigger' do
-        delete api("/projects/#{project.id}/triggers/9999", user)
+        delete api("/projects/#{project.id}/triggers/abcdef012345", user)
 
         expect(response.status).to eq(404)
       end
@@ -208,7 +194,7 @@ describe API::API do
 
     context 'authenticated user with invalid permissions' do
       it 'should not delete trigger' do
-        delete api("/projects/#{project.id}/triggers/#{trigger.id}", user2)
+        delete api("/projects/#{project.id}/triggers/#{trigger.token}", user2)
 
         expect(response.status).to eq(403)
       end
@@ -216,7 +202,7 @@ describe API::API do
 
     context 'unauthentikated user' do
       it 'should not delete trigger' do
-        delete api("/projects/#{project.id}/triggers/#{trigger.id}")
+        delete api("/projects/#{project.id}/triggers/#{trigger.token}")
 
         expect(response.status).to eq(401)
       end
