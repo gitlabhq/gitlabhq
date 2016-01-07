@@ -98,6 +98,9 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - 0 by default
       #   import_url (optional)
+      #   build_allow_git_fetch (optional)
+      #   build_timeout (optional)
+      #   build_coverage_regex (optional)
       # Example Request
       #   POST /projects
       post do
@@ -146,6 +149,9 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
       #   import_url (optional)
+      #   build_allow_git_fetch (optional)
+      #   build_timeout (optional)
+      #   build_coverage_regex (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -207,6 +213,9 @@ module API
       #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
+      #   build_allow_git_fetch (optional)
+      #   build_timeout (optional)
+      #   build_coverage_regex (optional)
       # Example Request
       #   PUT /projects/:id
       put ':id' do

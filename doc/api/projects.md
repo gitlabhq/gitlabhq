@@ -76,7 +76,14 @@ Parameters:
       "updated_at": "2013-09-30T13: 46: 02Z"
     },
     "archived": false,
-    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png"
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "build_allow_git_fetch": true,
+    "build_coverage_regex": null,
+    "build_timeout": 3600,
+    "runners_token": "4f9e77be0eed5ef29548fccda3b371"
   },
   {
     "id": 6,
@@ -129,7 +136,14 @@ Parameters:
       }
     },
     "archived": false,
-    "avatar_url": null
+    "avatar_url": null,
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "build_allow_git_fetch": true,
+    "build_coverage_regex": null,
+    "build_timeout": 3600,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02"
   }
 ]
 ```
@@ -244,7 +258,14 @@ Parameters:
     }
   },
   "archived": false,
-  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png"
+  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "shared_runners_enabled": true,
+  "forks_count": 0,
+  "star_count": 0,
+  "build_allow_git_fetch": true,
+  "build_coverage_regex": null,
+  "build_timeout": 3600,
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
 }
 ```
 
@@ -409,6 +430,9 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
+- `build_allow_git_fetch` (optional)
+- `build_timeout` (optional)
+- `build_coverage_regex` (optional)
 
 ### Create project for user
 
@@ -431,6 +455,9 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
+- `build_allow_git_fetch` (optional)
+- `build_timeout` (optional)
+- `build_coverage_regex` (optional)
 
 ### Edit project
 
@@ -454,6 +481,9 @@ Parameters:
 - `snippets_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
+- `build_allow_git_fetch` (optional)
+- `build_timeout` (optional)
+- `build_coverage_regex` (optional)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
