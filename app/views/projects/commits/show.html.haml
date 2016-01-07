@@ -10,19 +10,19 @@
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'commits'
 
-  .pull-right.hidden-xs.hidden-sm
+  .block-controls.hidden-xs.hidden-sm
     - if create_mr_button?(@repository.root_ref, @ref)
-      .pull-left.prepend-left-10
+      .control
         = link_to create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success' do
           = icon('plus')
           Create Merge Request
 
-    .pull-left.prepend-left-10
+    .control
       = form_tag(namespace_project_commits_path(@project.namespace, @project, @id), method: :get, class: 'pull-left commits-search-form') do
         = search_field_tag :search, params[:search], { placeholder: 'Filter by commit message', id: 'commits-search', class: 'form-control search-text-input', spellcheck: false }
 
     - if current_user && current_user.private_token
-      .pull-left.prepend-left-10
+      .control
         = link_to namespace_project_commits_path(@project.namespace, @project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Commits Feed", class: 'btn' do
           = icon("rss")
 

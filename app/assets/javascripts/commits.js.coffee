@@ -24,19 +24,19 @@ class @CommitsList
     form = $(".commits-search-form")
     search = @searchField.val()
     commitsUrl = form.attr("action") + '?' + form.serialize()
-    @setOpacitiy(0.5)
+    @setOpacity(0.5)
 
     $.ajax
       type: "GET"
       url: form.attr("action")
       data: form.serialize()
       complete: =>
-        @setOpacitiy(1.0)
+        @setOpacity(1.0)
       success: (data) =>
         @content.html(data.html)
         # Change url so if user reload a page - search results are saved
         history.replaceState {page: commitsUrl}, document.title, commitsUrl
       dataType: "json"
 
-  @setOpacitiy: (opacity) ->
+  @setOpacity: (opacity) ->
     @content.css("opacity", opacity)
