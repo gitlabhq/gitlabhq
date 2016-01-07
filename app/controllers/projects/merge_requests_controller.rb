@@ -179,7 +179,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
-    if params[:ff].present? && !@merge_request.ff_merge_possible?
+    if @project.ff_merge_must_be_possible? && !@merge_request.ff_merge_possible?
       @status = :failed
       return
     end
@@ -355,7 +355,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_params
-    params.permit(:should_remove_source_branch, :commit_message, :ff)
+    params.permit(:should_remove_source_branch, :commit_message)
   end
 
   # Make sure merge requests created before 8.0

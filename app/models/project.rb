@@ -1037,4 +1037,32 @@ class Project < ActiveRecord::Base
       PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)
     end
   end
+
+  def merge_method
+    if self.merge_requests_ff_only_enabled
+      :ff
+    elsif self.merge_requests_rebase_enabled
+      :rebase_merge
+    else
+      :merge
+    end
+  end
+
+  def merge_method=(method)
+    case method.to_s
+    when "ff"
+      self.merge_requests_ff_only_enabled = true
+      self.merge_requests_rebase_enabled = true
+    when "rebase_merge"
+      self.merge_requests_ff_only_enabled = false
+      self.merge_requests_rebase_enabled = true
+    when "merge"
+      self.merge_requests_ff_only_enabled = false
+      self.merge_requests_rebase_enabled = false
+    end
+  end
+
+  def ff_merge_must_be_possible?
+    self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
+  end
 end

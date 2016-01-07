@@ -3,22 +3,39 @@
     Merge requests:
 
   .form-group
-    .col-sm-offset-2.col-sm-10
-      .checkbox
-        = f.label :merge_requests_ff_only_enabled do
-          = f.check_box :merge_requests_ff_only_enabled
-          %strong Only fast-forward merging
+    = label_tag :merge_method_merge, class: 'control-label' do
+      Merge method
+    .col-sm-10
+      .radio
+        = label_tag :project_merge_method_merge do
+          = f.radio_button :merge_method, :merge, class: "js-merge-method-radio"
+          %strong Merge commit
           %br
-          %span.descr The accept merge request button will only show when a merge without a merge commit is possible.
+          %span.descr
+            A merge commit will be created for every merge, and merging is allowed as long as there are no conflicts.
 
-  .form-group.rebase-feature
-    .col-sm-offset-2.col-sm-10
-      .checkbox
-        = f.label :merge_requests_rebase_enabled do
-          = f.check_box :merge_requests_rebase_enabled
-          %strong Rebase button
+      .radio
+        = label_tag :project_merge_method_rebase_merge do
+          = f.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio"
+          %strong Merge commit with semi-linear history
           %br
-          %span.descr Allows rebasing of merge requests before fast-forward merge.
+          %span.descr
+            A merge commit will be created for every merge, but merging is only allowed if the branch has been rebased.
+            This way you get a history that reads linearly (as with fast-forward merges), with the addition of merge commits.
+          %br
+          %span.descr
+            When the branch has not been rebased, the user is given the option to do so.
+
+      .radio
+        = label_tag :project_merge_method_ff do
+          = f.radio_button :merge_method, :ff, class: "js-merge-method-radio"
+          %strong Fast-forward merge
+          %br
+          %span.descr
+            No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch has been rebased.
+          %br
+          %span.descr
+            When the branch has not been rebased, the user is given the option to do so.
 
   .form-group
     = f.label :merge_requests_template, class: 'control-label' do
@@ -69,12 +86,3 @@
 
 :coffeescript
   new UsersSelect()
-
-  mergeRequestsRebaseVisibilityCheck = ->
-    is_rebase_enabled = $("input#project_merge_requests_ff_only_enabled").prop("checked")
-    $(".rebase-feature").toggle(is_rebase_enabled)
-
-  mergeRequestsRebaseVisibilityCheck()
-
-  $("input#project_merge_requests_ff_only_enabled").change ->
-    mergeRequestsRebaseVisibilityCheck()

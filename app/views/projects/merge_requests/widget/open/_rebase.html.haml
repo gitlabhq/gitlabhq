@@ -3,13 +3,13 @@
     = icon("spinner spin")
     Rebase in progress&hellip;
   %p
-    This merge request is in the process of being rebased, during which time it is locked and cannot be closed.
+    This merge request is in the process of being rebased.
 
   :javascript
     $(function() {
       merge_request_widget.rebaseInProgress()
     });
-- elsif !@merge_request.target_project.merge_requests_rebase_enabled || !can_push_branch?(@merge_request.source_project, @merge_request.source_branch)
+- elsif !can_push_branch?(@merge_request.source_project, @merge_request.source_branch)
   %h4
     = icon("exclamation-triangle")
     Fast-forward merge is not possible
@@ -25,7 +25,7 @@
         = f.button class: "btn btn-reopen js-rebase-button" do
           Rebase onto #{@merge_request.target_branch}
       .accept-control
-        Fast-forward merge is not possible. Branch must be rebased first
+        Fast-forward merge is not possible. Rebase the source branch onto the target branch to allow this merge request to be merged.
 
   :javascript
     $('.rebase-mr-form').on('ajax:send', function() {
