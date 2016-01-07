@@ -1,4 +1,3 @@
-require 'banzai'
 require 'task_list/filter'
 
 module Banzai
