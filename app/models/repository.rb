@@ -681,6 +681,11 @@ class Repository
     end
   end
 
+  def ls_files(ref)
+    actual_ref = ref || root_ref
+    raw_repository.ls_files(actual_ref)
+  end
+
   private
 
   def cache

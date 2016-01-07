@@ -442,6 +442,24 @@ Rails.application.routes.draw do
         end
 
         scope do
+          get(
+            '/find_file/*id',
+            to: 'find_file#show',
+            constraints: { id: /.+/, format: /html/ },
+            as: :find_file
+          )
+        end
+
+        scope do
+          get(
+            '/files/*id',
+            to: 'find_file#list',
+            constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ },
+            as: :files
+          )
+        end
+
+        scope do
           post(
             '/create_dir/*id',
               to: 'tree#create_dir',

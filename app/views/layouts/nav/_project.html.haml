@@ -25,7 +25,7 @@
       %span
         Activity
   - if project_nav_tab? :files
-    = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
+    = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
       = link_to project_files_path(@project), title: 'Files',  class: 'shortcuts-tree' do
         = icon('files-o fw')
         %span
@@ -117,4 +117,3 @@
     %li.hidden
       = link_to namespace_project_network_path(@project.namespace, @project, current_ref), title: 'Network', class: 'shortcuts-network' do
         Network
-

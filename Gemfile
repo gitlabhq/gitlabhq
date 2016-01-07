@@ -33,6 +33,7 @@ gem 'omniauth-saml',          '~> 1.4.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd'
+gem 'omniauth-azure-oauth2'
 gem 'rack-oauth2',            '~> 1.2.1'
 
 # reCAPTCHA protection
@@ -48,7 +49,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.20'
+gem "gitlab_git", '~> 7.2.22'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes

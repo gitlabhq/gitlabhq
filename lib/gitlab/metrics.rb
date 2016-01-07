@@ -13,8 +13,6 @@ module Gitlab
         timeout:               current_application_settings[:metrics_timeout],
         method_call_threshold: current_application_settings[:metrics_method_call_threshold],
         host:                  current_application_settings[:metrics_host],
-        username:              current_application_settings[:metrics_username],
-        password:              current_application_settings[:metrics_password],
         port:                  current_application_settings[:metrics_port]
       }
     end
@@ -90,12 +88,10 @@ module Gitlab
     if enabled?
       @pool = ConnectionPool.new(size: settings[:pool_size], timeout: settings[:timeout]) do
         host = settings[:host]
-        user = settings[:username]
-        pw   = settings[:password]
         port = settings[:port]
 
         InfluxDB::Client.
-          new(udp: { host: host, port: port }, username: user, password: pw)
+          new(udp: { host: host, port: port })
       end
     end
   end
