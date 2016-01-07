@@ -16,7 +16,9 @@
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
 #  note_events           :boolean          default(TRUE), not null
+#  build_events          :boolean          default(FALSE), not null
 #
+
 require 'asana'
 
 class AsanaService < Service
