@@ -111,9 +111,22 @@ curl --data "name=foo" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.
 Instead of using json or urlencode you can use mutlipart/form-data which
 properly handles data encoding:
 
-```
+```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -F "title=ssh-key" -F "key=ssh-rsa AAAAB3NzaC1yc2EA..." https://gitlab.example.com/api/v3/users/25/keys
 ```
 
 The above example is run by and administrator and will add an SSH public key
 titled ssh-key to user's account which has an id of 25.
+
+**Escape special characters**
+
+Spaces or slashes (`/`) may sometimes result to errors, thus it is recommended
+to escape them when possible. In the example below we create a new issue which
+contains spaces in its title. Watch how spaces are escaped using the `%20`
+ASCII code.
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/42/issues?title=Hello%20Dude"
+```
+
+Use `%2F` for slashes (`/`).
