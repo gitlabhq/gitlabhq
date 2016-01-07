@@ -17,11 +17,11 @@ In fact, the `/builds` page can still be accessed, although it's hidden from
 the left sidebar menu.
 
 GitLab CI is enabled by default on new installations and can be disabled either
-individually under each project's settings, or site wide by modifying the
+individually under each project's settings, or site-wide by modifying the
 settings in `gitlab.yml` and `gitlab.rb` for source and Omnibus installations
 respectively.
 
-### Per project user setting
+### Per-project user setting
 
 The setting to enable or disable GitLab CI can be found with the name **Builds**
 under the **Features** area of a project's settings along with **Issues**,
@@ -32,15 +32,15 @@ and hit **Save** for the settings to take effect.
 
 ---
 
-### Site wide administrator setting
+### Site-wide administrator setting
 
-You can disable GitLab CI site wide, by modifying the settings in `gitlab.yml`
+You can disable GitLab CI site-wide, by modifying the settings in `gitlab.yml`
 and `gitlab.rb` for source and Omnibus installations respectively.
 
-Two things to note.
+Two things to note:
 
-1. Disabling GitLab CI, will affect only newly created projects. Projects that
-   had it enabled prior this modification, will work as before.
+1. Disabling GitLab CI, will affect only newly-created projects. Projects that
+   had it enabled prior to this modification, will work as before.
 1. Even if you disable GitLab CI, users will still be able to enable it in the
    project's settings.
 
