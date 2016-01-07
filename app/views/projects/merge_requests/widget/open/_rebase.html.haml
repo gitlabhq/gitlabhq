@@ -14,9 +14,9 @@
     = icon("exclamation-triangle")
     Fast-forward merge is not possible
   %p
-    Please rebase this branch on
+    Rebase the source branch onto
     %span.label-branch= @merge_request.target_branch
-    and try again.
+    to allow this merge request to be merged.
 - else
   = form_for [:rebase, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post, html: { class: 'rebase-mr-form js-requires-input' } do |f|
     = hidden_field_tag :authenticity_token, form_authenticity_token
