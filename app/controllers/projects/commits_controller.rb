@@ -13,7 +13,7 @@ class Projects::CommitsController < Projects::ApplicationController
 
     @commits =
       if search.present?
-        @repository.find_commits_by_message(search).compact
+        @repository.find_commits_by_message(search, @ref, @path, @limit, @offset).compact
       else
         @repository.commits(@ref, @path, @limit, @offset)
       end

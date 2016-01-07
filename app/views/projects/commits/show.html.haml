@@ -18,7 +18,7 @@
           Create Merge Request
 
     .pull-left.prepend-left-10
-      = form_tag(namespace_project_commits_path(@project.namespace, @project, @ref), method: :get, class: 'pull-left commits-search-form') do
+      = form_tag(namespace_project_commits_path(@project.namespace, @project, @id), method: :get, class: 'pull-left commits-search-form') do
         = search_field_tag :search, params[:search], { placeholder: 'Filter by commit message', id: 'commits-search', class: 'form-control search-text-input', spellcheck: false }
 
     - if current_user && current_user.private_token
