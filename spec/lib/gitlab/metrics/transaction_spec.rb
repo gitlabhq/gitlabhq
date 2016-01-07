@@ -50,6 +50,17 @@ describe Gitlab::Metrics::Transaction do
     end
   end
 
+  describe '#set' do
+    it 'sets a value' do
+      transaction.set(:number, 10)
+
+      expect(transaction).to receive(:add_metric).
+        with('transactions', { duration: 0.0, number: 10 }, {})
+
+      transaction.track_self
+    end
+  end
+
   describe '#add_tag' do
     it 'adds a tag' do
       transaction.add_tag(:foo, 'bar')

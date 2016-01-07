@@ -4,7 +4,7 @@ module Gitlab
     class Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
 
-      attr_reader :tags
+      attr_reader :tags, :values
 
       def self.current
         Thread.current[THREAD_KEY]
@@ -44,6 +44,10 @@ module Gitlab
 
       def increment(name, value)
         @values[name] += value
+      end
+
+      def set(name, value)
+        @values[name] = value
       end
 
       def add_tag(key, value)
