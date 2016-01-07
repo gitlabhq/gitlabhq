@@ -92,9 +92,12 @@ class Repository
     commits
   end
 
-  def find_commits_by_message(query)
+  def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
+    ref ||= root_ref
+
     # Limited to 1000 commits for now, could be parameterized?
-    args = %W(#{Gitlab.config.git.bin_path} log --pretty=%H --max-count 1000 --grep=#{query})
+    args = %W(#{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset} --max-count #{limit} --grep=#{query})
+    args = args.concat(%W(-- #{path})) if path.present?
 
     git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:chomp)
     commits = git_log_results.map { |c| commit(c) }
@@ -175,7 +178,7 @@ class Repository
   def size
     cache.fetch(:size) { raw_repository.size }
   end
-  
+
   def diverging_commit_counts(branch)
     root_ref_hash = raw_repository.rev_parse_target(root_ref).oid
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
@@ -183,7 +186,7 @@ class Repository
       # than SHA-1 hashes
       number_commits_behind = commits_between(branch.target, root_ref_hash).size
       number_commits_ahead = commits_between(root_ref_hash, branch.target).size
-      
+
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
   end
@@ -192,7 +195,7 @@ class Repository
     %i(size branch_names tag_names commit_count
        readme version contribution_guide changelog license)
   end
-  
+
   def branch_cache_keys
     branches.map do |branch|
       :"diverging_commit_counts_#{branch.name}"
@@ -205,7 +208,7 @@ class Repository
         send(key)
       end
     end
-    
+
     branches.each do |branch|
       unless cache.exist?(:"diverging_commit_counts_#{branch.name}")
         send(:diverging_commit_counts, branch)
@@ -227,10 +230,10 @@ class Repository
     cache_keys.each do |key|
       cache.expire(key)
     end
-    
+
     expire_branch_cache
   end
-  
+
   def expire_branch_cache
     branches.each do |branch|
       cache.expire(:"diverging_commit_counts_#{branch.name}")
@@ -242,7 +245,7 @@ class Repository
       cache.expire(key)
       send(key)
     end
-    
+
     branches.each do |branch|
       cache.expire(:"diverging_commit_counts_#{branch.name}")
       diverging_commit_counts(branch)
@@ -679,6 +682,11 @@ class Repository
         end
       end
     end
+  end
+
+  def ls_files(ref)
+    actual_ref = ref || root_ref
+    raw_repository.ls_files(actual_ref)
   end
 
   private
