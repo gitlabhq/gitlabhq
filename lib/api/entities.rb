@@ -367,7 +367,7 @@ module API
     end
 
     class Variable < Grape::Entity
-      expose :id, :key, :value
+      expose :key, :value
     end
   end
 end
