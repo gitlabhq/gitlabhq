@@ -72,6 +72,15 @@
   > p:last-child {
     margin-bottom: 0;
   }
+
+  .block-controls {
+    float: right;
+
+    .control {
+      float: left;
+      margin-left: 10px;
+    }
+  }
 }
 
 .cover-block {
