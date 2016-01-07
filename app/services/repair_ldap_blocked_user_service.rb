@@ -1,15 +1,17 @@
 class RepairLdapBlockedUserService
-  attr_accessor :user, :identity
+  attr_accessor :user
 
-  def initialize(user, identity)
-    @user, @identity = user, identity
+  def initialize(user)
+    @user = user
   end
 
   def execute
-    if identity.destroyed?
-      user.block if identity.is_ldap? && user.ldap_blocked? && !user.ldap_user?
-    else
-      user.block if !identity.is_ldap? && user.ldap_blocked? && !user.ldap_user?
-    end
+    user.block if ldap_hard_blocked?
+  end
+
+  private
+
+  def ldap_hard_blocked?
+    user.ldap_blocked? && !user.ldap_user?
   end
 end

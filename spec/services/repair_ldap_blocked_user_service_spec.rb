@@ -3,7 +3,7 @@ require 'spec_helper'
 describe RepairLdapBlockedUserService, services: true do
   let(:user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:identity) { user.ldap_identity }
-  subject(:service) { RepairLdapBlockedUserService.new(user, identity) }
+  subject(:service) { RepairLdapBlockedUserService.new(user) }
 
   describe '#execute' do
     it 'change to normal block after destroying last ldap identity' do

@@ -26,7 +26,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   def update
     if @identity.update_attributes(identity_params)
-      RepairLdapBlockedUserService.new(@user, @identity).execute
+      RepairLdapBlockedUserService.new(@user).execute
       redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully updated.'
     else
       render :edit
@@ -35,7 +35,7 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   def destroy
     if @identity.destroy
-      RepairLdapBlockedUserService.new(@user, @identity).execute
+      RepairLdapBlockedUserService.new(@user).execute
       redirect_to admin_user_identities_path(@user), notice: 'User identity was successfully removed.'
     else
       redirect_to admin_user_identities_path(@user), alert: 'Failed to remove user identity.'
