@@ -106,6 +106,7 @@ v 8.3.0
   - Fix online editor should not remove newlines at the end of the file
   - Expose Git's version in the admin area
   - Show "New Merge Request" buttons on canonical repos when you have a fork (Josh Frye)
+  - Add file finder feature in tree view
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
