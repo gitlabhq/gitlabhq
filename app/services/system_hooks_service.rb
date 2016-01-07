@@ -47,7 +47,8 @@ class SystemHooksService
       data.merge!({
         name: model.name,
         email: model.email,
-        user_id: model.id
+        user_id: model.id,
+        username: model.username
       })
     when ProjectMember
       data.merge!(project_member_data(model))

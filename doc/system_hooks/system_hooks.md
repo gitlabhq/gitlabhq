@@ -129,6 +129,7 @@ X-Gitlab-Event: System Hook
         "email": "js@gitlabhq.com",
    "event_name": "user_create",
          "name": "John Smith",
+     "username": "js",
       "user_id": 41
 }
 ```
@@ -142,6 +143,7 @@ X-Gitlab-Event: System Hook
         "email": "js@gitlabhq.com",
    "event_name": "user_destroy",
          "name": "John Smith",
+     "username": "js",
       "user_id": 41
 }
 ```
