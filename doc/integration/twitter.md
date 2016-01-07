@@ -37,7 +37,7 @@ To enable the Twitter OmniAuth provider you must register your application with 
       sudo editor /etc/gitlab/gitlab.rb
     ```
 
-    For instalations from source:
+    For installations from source:
 
     ```sh
       cd /home/git/gitlab

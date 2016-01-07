@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Grack::Auth do
+describe Grack::Auth, lib: true do
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
 
@@ -191,15 +191,10 @@ describe Grack::Auth do
 
         context "when a gitlab ci token is provided" do
           let(:token) { "123" }
-          let(:gitlab_ci_project) { FactoryGirl.create :ci_project, token: token }
+          let(:project) { FactoryGirl.create :empty_project }
 
           before do
-            project.gitlab_ci_project = gitlab_ci_project
-            project.save
-
-            gitlab_ci_service = project.build_gitlab_ci_service
-            gitlab_ci_service.active = true
-            gitlab_ci_service.save
+            project.update_attributes(runners_token: token, builds_enabled: true)
 
             env["HTTP_AUTHORIZATION"] = ActionController::HttpAuthentication::Basic.encode_credentials("gitlab-ci-token", token)
           end

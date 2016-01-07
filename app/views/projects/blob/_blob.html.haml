@@ -29,10 +29,12 @@
       %strong
         = blob.name
       %small
-        = number_to_human_size(blob.size)
+        = number_to_human_size(blob_size(blob))
       .file-actions.hidden-xs
         = render "actions"
-    - if blob.text?
+    - if blob.lfs_pointer?
+      = render "download", blob: blob
+    - elsif blob.text?
       = render "text", blob: blob
     - elsif blob.image?
       = render "image", blob: blob

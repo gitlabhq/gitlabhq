@@ -14,6 +14,15 @@ class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
     visit commits_namespace_project_graph_path(project.namespace, project, "master")
   end
 
+  step 'I visit project "Shop" languages graph page' do
+    visit languages_namespace_project_graph_path(project.namespace, project, "master")
+  end
+
+  step 'page should have languages graphs' do
+    expect(page).to have_content "Ruby 66.63 %"
+    expect(page).to have_content "JavaScript 22.96 %"
+  end
+
   step 'page should have commits graphs' do
     expect(page).to have_content "Commit statistics for master"
     expect(page).to have_content "Commits per day of month"

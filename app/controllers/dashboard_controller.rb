@@ -1,24 +1,11 @@
 class DashboardController < Dashboard::ApplicationController
+  include IssuesAction
+  include MergeRequestsAction
+
   before_action :event_filter, only: :activity
+  before_action :projects, only: [:issues, :merge_requests]
 
   respond_to :html
-
-  def merge_requests
-    @merge_requests = get_merge_requests_collection
-    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
-    @merge_requests = @merge_requests.preload(:author, :target_project)
-  end
-
-  def issues
-    @issues = get_issues_collection
-    @issues = @issues.page(params[:page]).per(PER_PAGE)
-    @issues = @issues.preload(:author, :project)
-
-    respond_to do |format|
-      format.html
-      format.atom { render layout: false }
-    end
-  end
 
   def activity
     @last_push = current_user.recent_push
@@ -46,5 +33,9 @@ class DashboardController < Dashboard::ApplicationController
     @events = Event.in_projects(project_ids)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
+  end
+
+  def projects
+    @projects ||= current_user.authorized_projects.sorted_by_activity.non_archived
   end
 end

@@ -1,0 +1,22 @@
+= render 'shared/commit_message_container', placeholder: placeholder
+
+- if @project.empty_repo?
+  = hidden_field_tag 'target_branch', @ref
+- else
+  - if can?(current_user, :push_code, @project)
+    .form-group.branch
+      = label_tag 'target_branch', 'Target branch', class: 'control-label'
+      .col-sm-10
+        = text_field_tag 'target_branch', @target_branch || tree_edit_branch, required: true, class: "form-control js-target-branch"
+
+        .js-create-merge-request-container
+          .checkbox
+            - nonce = SecureRandom.hex
+            = label_tag "create_merge_request-#{nonce}" do
+              = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: "create_merge_request-#{nonce}"
+              Start a <strong>new merge request</strong> with these changes
+  - else
+    = hidden_field_tag 'target_branch', @target_branch || tree_edit_branch
+    = hidden_field_tag 'create_merge_request', 1
+
+  = hidden_field_tag 'original_branch', @ref, class: 'js-original-branch'

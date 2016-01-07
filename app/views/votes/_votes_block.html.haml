@@ -1,10 +1,46 @@
-.votes.votes-block
-  .btn-group
-    - unless votable.upvotes.zero?
-      .btn.btn-sm.disabled.cgreen
-        %i.fa.fa-thumbs-up
-        = votable.upvotes
-    - unless votable.downvotes.zero?
-      .btn.btn-sm.disabled.cred
-        %i.fa.fa-thumbs-down
-        = votable.downvotes
+.awards.votes-block
+  - awards_sort(votable.notes.awards.grouped_awards).each do |emoji, notes|
+    .award{class: (note_active_class(notes, current_user)), title: emoji_author_list(notes, current_user)}
+      = emoji_icon(emoji)
+      .counter
+        = notes.count
+
+  - if current_user
+    .awards-controls
+      %a.add-award{"data-toggle" => "dropdown", "data-target" => "#", "href" => "#"}
+        = icon('smile-o')
+      .emoji-menu
+        .emoji-menu-content
+          = text_field_tag :emoji_search, "", class: "emoji-search search-input form-control"
+          - AwardEmoji.emoji_by_category.each do |category, emojis|
+            %h5= AwardEmoji::CATEGORIES[category]
+            %ul
+              - emojis.each do |emoji|
+                %li
+                  = emoji_icon(emoji["name"], emoji["unicode"], emoji["aliases"])
+
+- if current_user
+  :coffeescript
+    post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
+    noteable_type = "#{votable.class.name.underscore}"
+    noteable_id = "#{votable.id}"
+    aliases = #{AwardEmoji.aliases.to_json}
+
+    window.awards_handler = new AwardsHandler(
+      post_emoji_url,
+      noteable_type,
+      noteable_id,
+      aliases
+    )
+
+    $(".awards").on "click", ".emoji-menu-content li", (e) ->
+      emoji = $(this).find(".emoji-icon").data("emoji")
+      awards_handler.addAward(emoji)
+
+    $(".awards").on "click", ".award", (e) ->
+      emoji = $(this).find(".icon").data("emoji")
+      awards_handler.addAward(emoji)
+
+    $(".award").tooltip()
+
+    $(".emoji-menu-content").niceScroll({cursorwidth: "7px", autohidemode: false})

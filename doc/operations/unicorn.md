@@ -52,7 +52,7 @@ leak memory, probably because it does not handle user requests.)
 
 To make these memory leaks manageable, GitLab comes with the
 [unicorn-worker-killer gem](https://github.com/kzk/unicorn-worker-killer). This
-gem [monkey-patches](http://en.wikipedia.org/wiki/Monkey_patch) the Unicorn
+gem [monkey-patches](https://en.wikipedia.org/wiki/Monkey_patch) the Unicorn
 workers to do a memory self-check after every 16 requests. If the memory of the
 Unicorn worker exceeds a pre-set limit then the worker process exits. The
 Unicorn master then automatically replaces the worker process.
@@ -83,4 +83,4 @@ is a normal value for our current GitLab.com setup and traffic.
 
 The high frequency of Unicorn memory restarts on some GitLab sites can be a
 source of confusion for administrators. Usually they are a [red
-herring](http://en.wikipedia.org/wiki/Red_herring).
+herring](https://en.wikipedia.org/wiki/Red_herring).

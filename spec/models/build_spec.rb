@@ -25,10 +25,9 @@
 
 require 'spec_helper'
 
-describe Ci::Build do
-  let(:project) { FactoryGirl.create :ci_project }
-  let(:gl_project) { FactoryGirl.create :empty_project, gitlab_ci_project: project }
-  let(:commit) { FactoryGirl.create :ci_commit, gl_project: gl_project }
+describe Ci::Build, models: true do
+  let(:project) { FactoryGirl.create :empty_project }
+  let(:commit) { FactoryGirl.create :ci_commit, project: project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
   it { is_expected.to validate_presence_of :ref }
@@ -112,7 +111,7 @@ describe Ci::Build do
       let(:token) { 'my_secret_token' }
 
       before do
-        build.project.update_attributes(token: token)
+        build.project.update_attributes(runners_token: token)
         build.update_attributes(trace: token)
       end
 
@@ -120,11 +119,12 @@ describe Ci::Build do
     end
   end
 
-  describe :timeout do
-    subject { build.timeout }
-
-    it { is_expected.to eq(commit.project.timeout) }
-  end
+  # TODO: build timeout
+  # describe :timeout do
+  #   subject { build.timeout }
+  #
+  #   it { is_expected.to eq(commit.project.timeout) }
+  # end
 
   describe :options do
     let(:options) do
@@ -140,11 +140,12 @@ describe Ci::Build do
     it { is_expected.to eq(options) }
   end
 
-  describe :allow_git_fetch do
-    subject { build.allow_git_fetch }
-
-    it { is_expected.to eq(project.allow_git_fetch) }
-  end
+  # TODO: allow_git_fetch
+  # describe :allow_git_fetch do
+  #   subject { build.allow_git_fetch }
+  #
+  #   it { is_expected.to eq(project.allow_git_fetch) }
+  # end
 
   describe :project do
     subject { build.project }
@@ -162,12 +163,6 @@ describe Ci::Build do
     subject { build.project_name }
 
     it { is_expected.to eq(project.name) }
-  end
-
-  describe :repo_url do
-    subject { build.repo_url }
-
-    it { is_expected.to eq(project.repo_url_with_auth) }
   end
 
   describe :extract_coverage do
@@ -193,6 +188,12 @@ describe Ci::Build do
       subject { build.extract_coverage(' (98.39%) covered. (98.29%) covered', '\(\d+.\d+\%\) covered') }
 
       it { is_expected.to eq(98.29) }
+    end
+
+    context 'using a regex capture' do
+      subject { build.extract_coverage('TOTAL      9926   3489    65%', 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)') }
+
+      it { is_expected.to eq(65) }
     end
   end
 
@@ -263,40 +264,6 @@ describe Ci::Build do
           it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
         end
       end
-    end
-  end
-
-  describe :project_recipients do
-    let(:pusher_email) { 'pusher@gitlab.test' }
-    let(:user) { User.new(notification_email: pusher_email) }
-    subject { build.project_recipients }
-
-    before do
-      build.update_attributes(user: user)
-    end
-
-    it 'should return pusher_email as only recipient when no additional recipients are given' do
-      project.update_attributes(email_add_pusher: true,
-                                email_recipients: '')
-      is_expected.to eq([pusher_email])
-    end
-
-    it 'should return pusher_email and additional recipients' do
-      project.update_attributes(email_add_pusher: true,
-                                email_recipients: 'rec1 rec2')
-      is_expected.to eq(['rec1', 'rec2', pusher_email])
-    end
-
-    it 'should return recipients' do
-      project.update_attributes(email_add_pusher: false,
-                                email_recipients: 'rec1 rec2')
-      is_expected.to eq(['rec1', 'rec2'])
-    end
-
-    it 'should return unique recipients only' do
-      project.update_attributes(email_add_pusher: true,
-                                email_recipients: "rec1 rec1 #{pusher_email}")
-      is_expected.to eq(['rec1', pusher_email])
     end
   end
 
@@ -414,5 +381,83 @@ describe Ci::Build do
       build.update_attributes(artifacts_file: gif)
       is_expected.to_not be_nil
     end
+  end
+
+  describe :repo_url do
+    let(:build) { FactoryGirl.create :ci_build }
+    let(:project) { build.project }
+
+    subject { build.repo_url }
+
+    it { is_expected.to be_a(String) }
+    it { is_expected.to end_with(".git") }
+    it { is_expected.to start_with(project.web_url[0..6]) }
+    it { is_expected.to include(build.token) }
+    it { is_expected.to include('gitlab-ci-token') }
+    it { is_expected.to include(project.web_url[7..-1]) }
+  end
+
+  def create_mr(build, commit, factory: :merge_request, created_at: Time.now)
+    FactoryGirl.create(factory,
+                       source_project_id: commit.gl_project_id,
+                       target_project_id: commit.gl_project_id,
+                       source_branch: build.ref,
+                       created_at: created_at)
+  end
+
+  describe :merge_request do
+    context 'when a MR has a reference to the commit' do
+      before do
+        @merge_request = create_mr(build, commit, factory: :merge_request)
+
+        commits = [double(id: commit.sha)]
+        allow(@merge_request).to receive(:commits).and_return(commits)
+        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
+      end
+
+      it 'returns the single associated MR' do
+        expect(build.merge_request.id).to eq(@merge_request.id)
+      end
+    end
+
+    context 'when there is not a MR referencing the commit' do
+      it 'returns nil' do
+        expect(build.merge_request).to be_nil
+      end
+    end
+
+    context 'when more than one MR have a reference to the commit' do
+      before do
+        @merge_request = create_mr(build, commit, factory: :merge_request)
+        @merge_request.close!
+        @merge_request2 = create_mr(build, commit, factory: :merge_request)
+
+        commits = [double(id: commit.sha)]
+        allow(@merge_request).to receive(:commits).and_return(commits)
+        allow(@merge_request2).to receive(:commits).and_return(commits)
+        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request, @merge_request2])
+      end
+
+      it 'returns the first MR' do
+        expect(build.merge_request.id).to eq(@merge_request.id)
+      end
+    end
+
+    context 'when a Build is created after the MR' do
+      before do
+        @merge_request = create_mr(build, commit, factory: :merge_request_with_diffs)
+        commit2 = FactoryGirl.create :ci_commit, project: project
+        @build2 = FactoryGirl.create :ci_build, commit: commit2
+
+        commits = [double(id: commit.sha), double(id: commit2.sha)]
+        allow(@merge_request).to receive(:commits).and_return(commits)
+        allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
+      end
+
+      it 'returns the current MR' do
+        expect(@build2.merge_request.id).to eq(@merge_request.id)
+      end
+    end
+
   end
 end

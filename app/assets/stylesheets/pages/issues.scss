@@ -56,19 +56,28 @@
   }
 }
 
-.issue-show-labels {
-  a {
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: inline-block;
-    .color-label {
-      padding: 6px 10px;
-    }
-  }
-}
-
 form.edit-issue {
   margin: 0;
+}
+
+.merge-requests-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.merge-request-id {
+  display: inline-block;
+  width: 3em;
+}
+
+.merge-request-info {
+  padding-left: 5px;
+}
+
+.merge-request-status {
+  color: $gl-gray;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .merge-request,
@@ -130,11 +139,6 @@ form.edit-issue {
       display: none;
     }
   }
-}
-
-.issue-closed-by-widget {
-  padding: 16px 0;
-  margin: 0px;
 }
 
 .issue-form .select2-container {

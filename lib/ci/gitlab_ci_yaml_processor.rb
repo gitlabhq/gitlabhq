@@ -4,13 +4,13 @@ module Ci
 
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
-    ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables]
-    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when, :artifacts]
+    ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables, :cache]
+    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when, :artifacts, :cache]
 
-    attr_reader :before_script, :image, :services, :variables, :path
+    attr_reader :before_script, :image, :services, :variables, :path, :cache
 
     def initialize(config, path = nil)
-      @config = YAML.load(config)
+      @config = YAML.safe_load(config, [Symbol])
       @path = path
 
       unless @config.is_a? Hash
@@ -46,6 +46,7 @@ module Ci
       @services = @config[:services]
       @stages = @config[:stages] || @config[:types]
       @variables = @config[:variables] || {}
+      @cache = @config[:cache]
       @config.except!(*ALLOWED_YAML_KEYS)
 
       # anything that doesn't have script is considered as unknown
@@ -78,7 +79,8 @@ module Ci
         options: {
           image: job[:image] || @image,
           services: job[:services] || @services,
-          artifacts: job[:artifacts]
+          artifacts: job[:artifacts],
+          cache: job[:cache] || @cache,
         }.compact
       }
     end
@@ -112,6 +114,16 @@ module Ci
         raise ValidationError, "variables should be a map of key-valued strings"
       end
 
+      if @cache
+        if @cache[:untracked] && !validate_boolean(@cache[:untracked])
+          raise ValidationError, "cache:untracked parameter should be an boolean"
+        end
+
+        if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
+          raise ValidationError, "cache:paths parameter should be an array of strings"
+        end
+      end
+
       @jobs.each do |name, job|
         validate_job!(name, job)
       end
@@ -120,24 +132,34 @@ module Ci
     end
 
     def validate_job!(name, job)
+      validate_job_name!(name)
+      validate_job_keys!(name, job)
+      validate_job_types!(name, job)
+
+      validate_job_stage!(name, job) if job[:stage]
+      validate_job_cache!(name, job) if job[:cache]
+      validate_job_artifacts!(name, job) if job[:artifacts]
+    end
+
+    private
+
+    def validate_job_name!(name)
       if name.blank? || !validate_string(name)
         raise ValidationError, "job name should be non-empty string"
       end
+    end
 
+    def validate_job_keys!(name, job)
       job.keys.each do |key|
         unless ALLOWED_JOB_KEYS.include? key
           raise ValidationError, "#{name} job: unknown parameter #{key}"
         end
       end
+    end
 
+    def validate_job_types!(name, job)
       if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
         raise ValidationError, "#{name} job: script should be a string or an array of a strings"
-      end
-
-      if job[:stage]
-        unless job[:stage].is_a?(String) && job[:stage].in?(stages)
-          raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
-        end
       end
 
       if job[:image] && !validate_string(job[:image])
@@ -160,16 +182,6 @@ module Ci
         raise ValidationError, "#{name} job: except parameter should be an array of strings"
       end
 
-      if job[:artifacts]
-        if job[:artifacts][:untracked] && !validate_boolean(job[:artifacts][:untracked])
-          raise ValidationError, "#{name} job: artifacts:untracked parameter should be an boolean"
-        end
-
-        if job[:artifacts][:paths] && !validate_array_of_strings(job[:artifacts][:paths])
-          raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
-        end
-      end
-
       if job[:allow_failure] && !validate_boolean(job[:allow_failure])
         raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
@@ -179,7 +191,31 @@ module Ci
       end
     end
 
-    private
+    def validate_job_stage!(name, job)
+      unless job[:stage].is_a?(String) && job[:stage].in?(stages)
+        raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
+      end
+    end
+
+    def validate_job_cache!(name, job)
+      if job[:cache][:untracked] && !validate_boolean(job[:cache][:untracked])
+        raise ValidationError, "#{name} job: cache:untracked parameter should be an boolean"
+      end
+
+      if job[:cache][:paths] && !validate_array_of_strings(job[:cache][:paths])
+        raise ValidationError, "#{name} job: cache:paths parameter should be an array of strings"
+      end
+    end
+
+    def validate_job_artifacts!(name, job)
+      if job[:artifacts][:untracked] && !validate_boolean(job[:artifacts][:untracked])
+        raise ValidationError, "#{name} job: artifacts:untracked parameter should be an boolean"
+      end
+
+      if job[:artifacts][:paths] && !validate_array_of_strings(job[:artifacts][:paths])
+        raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
+      end
+    end
 
     def validate_array_of_strings(values)
       values.is_a?(Array) && values.all? { |value| validate_string(value) }

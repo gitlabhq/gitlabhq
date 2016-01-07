@@ -6,8 +6,8 @@
     %span.cred (Admin)
 
   .pull-right
-    - unless @user == current_user
-      = link_to 'Log in as this user', login_as_admin_user_path(@user), method: :post, class: "btn btn-grouped btn-info"
+    - unless @user == current_user || @user.blocked?
+      = link_to 'Impersonate', impersonate_admin_user_path(@user), method: :post, class: "btn btn-grouped btn-info"
     = link_to edit_admin_user_path(@user), class: "btn btn-grouped" do
       %i.fa.fa-pencil-square-o
       Edit

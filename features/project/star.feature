@@ -1,3 +1,4 @@
+@project-stars
 Feature: Project Star
   Scenario: New projects have 0 stars
     Given public project "Community"

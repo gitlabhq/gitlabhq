@@ -1,0 +1,5 @@
+- if milestone.expired? and not milestone.closed?
+  %span.cred (Expired)
+- if milestone.expires_at
+  %span
+    = milestone.expires_at

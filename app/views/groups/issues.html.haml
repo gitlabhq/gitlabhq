@@ -4,21 +4,24 @@
   - if current_user
     = auto_discovery_link_tag(:atom, issues_group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} issues")
 
+.project-issuable-filter
+  .controls
+    .pull-left
+      - if current_user
+        .hidden-xs.pull-left
+          = link_to issues_group_url(@group, format: :atom, private_token: current_user.private_token), class: 'btn' do
+            %i.fa.fa-rss
 
+    = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
 
-= render 'shared/issuable/filter', type: :issues
+  = render 'shared/issuable/filter', type: :issues
+
 .gray-content-block.second-block
-  .pull-right
-    - if current_user
-      .hidden-xs.pull-left
-        = link_to issues_group_url(@group, format: :atom, private_token: current_user.private_token) do
-          %i.fa.fa-rss
-  %div
-    Only issues from
-    %strong #{@group.name}
-    group are listed here.
-    - if current_user
-      To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
+  Only issues from
+  %strong #{@group.name}
+  group are listed here.
+  - if current_user
+    To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
 
 .prepend-top-default
   = render 'shared/issues'

@@ -31,6 +31,7 @@ RSpec.configure do |config|
   config.include StubConfiguration
   config.include RelativeUrl,         type: feature
   config.include TestEnv
+  config.include ActiveJob::TestHelper
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include BenchmarkMatchers, benchmark: true

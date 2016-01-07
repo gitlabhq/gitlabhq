@@ -5,11 +5,11 @@
   - note_count = notes.user.count
 
 - ci_commit = project.ci_commit(commit.sha)
-- cache_key = [project.path_with_namespace, commit.id, note_count]
+- cache_key = [project.path_with_namespace, commit.id, current_application_settings, note_count]
 - cache_key.push(ci_commit.status) if ci_commit
 
 = cache(cache_key) do
-  %li.commit.js-toggle-container
+  %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     .commit-row-title
       %strong.str-truncated
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
@@ -20,8 +20,8 @@
         - if ci_commit
           = render_ci_status(ci_commit)
           &nbsp;
-        = clipboard_button
-        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id", data: {clipboard_text: commit.id}
+        = clipboard_button(clipboard_text: commit.id)
+        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
 
       .notes_count
         - if note_count > 0
@@ -32,7 +32,7 @@
     - if commit.description?
       .commit-row-description.js-toggle-content
         %pre
-          = preserve(gfm(escape_once(commit.description)))
+          = preserve(markdown(escape_once(commit.description), pipeline: :single_line))
 
     .commit-row-info
       = commit_author_link(commit, avatar: true, size: 24)

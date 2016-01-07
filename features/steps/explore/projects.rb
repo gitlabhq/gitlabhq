@@ -2,6 +2,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
+  include SharedUser
 
   step 'I should see project "Empty Public Project"' do
     expect(page).to have_content "Empty Public Project"
@@ -60,11 +61,11 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
     create(:issue,
        title: "Bug",
        project: public_project
-      )
+          )
     create(:issue,
        title: "New feature",
        project: public_project
-      )
+          )
     visit namespace_project_issues_path(public_project.namespace, public_project)
   end
 
@@ -79,11 +80,11 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
     create(:issue,
        title: "Internal Bug",
        project: internal_project
-      )
+          )
     create(:issue,
        title: "New internal feature",
        project: internal_project
-      )
+          )
     visit namespace_project_issues_path(internal_project.namespace, internal_project)
   end
 
@@ -103,7 +104,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
       title: "Bug fix for public project",
       source_project: public_project,
       target_project: public_project,
-    )
+          )
   end
 
   step 'I should see list of merge requests for "Community" project' do
@@ -120,7 +121,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
       title: "Feature implemented",
       source_project: internal_project,
       target_project: internal_project
-    )
+          )
   end
 
   step 'I should see list of merge requests for "Internal" project' do

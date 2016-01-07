@@ -1,5 +1,5 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new_note js-new-note-form common-note-form gfm-form" }, authenticity_token: true do |f|
-  = hidden_field_tag :view, params[:view]
+  = hidden_field_tag :view, diff_view
   = hidden_field_tag :line_type
   = note_target_fields(@note)
   = f.hidden_field :commit_id
@@ -12,8 +12,7 @@
     = render 'projects/notes/hints'
     .error-alert
 
-  .note-form-actions
-    .buttons.clearfix
-      = f.submit 'Add Comment', class: "btn btn-green comment-btn btn-grouped js-comment-button"
-      = yield(:note_actions)
-      %a.btn.grouped.js-close-discussion-note-form Cancel
+  .note-form-actions.clearfix
+    = f.submit 'Add Comment', class: "btn btn-nr btn-create comment-btn btn-grouped js-comment-button"
+    = yield(:note_actions)
+    %a.btn.btn-cancel.js-close-discussion-note-form Cancel

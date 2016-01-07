@@ -1,12 +1,12 @@
 - page_title    "Projects"
-- header_title  "Projects", root_path
+- header_title  "Projects", dashboard_projects_path
 
 - if current_user
   = render 'dashboard/projects_head'
 - else
   = render 'explore/head'
 
-.gray-content-block.clearfix
+.gray-content-block.clearfix.second-block
   = render 'filter'
 = render 'projects', projects: @projects
 = paginate @projects, theme: "gitlab"

@@ -15,12 +15,14 @@ module SelectsHelper
 
     html = {
       class: css_class,
-      'data-placeholder' => placeholder,
-      'data-null-user' => null_user,
-      'data-any-user' => any_user,
-      'data-email-user' => email_user,
-      'data-first-user' => first_user,
-      'data-current-user' => current_user
+      data: {
+        placeholder: placeholder,
+        null_user: null_user,
+        any_user: any_user,
+        email_user: email_user,
+        first_user: first_user,
+        current_user: current_user
+      }
     }
 
     unless opts[:scope] == :all
@@ -35,8 +37,33 @@ module SelectsHelper
   end
 
   def groups_select_tag(id, opts = {})
-    css_class = "ajax-groups-select "
-    css_class << "multiselect " if opts[:multiple]
+    opts[:class] ||= ''
+    opts[:class] << ' ajax-groups-select'
+    select2_tag(id, opts)
+  end
+
+  def namespace_select_tag(id, opts = {})
+    opts[:class] ||= ''
+    opts[:class] << ' ajax-namespace-select'
+    select2_tag(id, opts)
+  end
+
+  def project_select_tag(id, opts = {})
+    opts[:class] ||= ''
+    opts[:class] << ' ajax-project-select'
+
+    unless opts.delete(:scope) == :all
+      if @group
+        opts['data-group-id'] = @group.id
+      end
+    end
+
+    hidden_field_tag(id, opts[:selected], opts)
+  end
+
+  def select2_tag(id, opts = {})
+    css_class = ''
+    css_class << 'multiselect ' if opts[:multiple]
     css_class << (opts[:class] || '')
     value = opts[:selected] || ''
 

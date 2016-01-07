@@ -44,7 +44,6 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     git_import_instructions = first('.js-toggle-content')
     expect(git_import_instructions).to be_visible
     expect(git_import_instructions).to have_content "Git repository URL"
-    expect(git_import_instructions).to have_content "The repository must be accessible over HTTP(S). If it is not publicly accessible, you can add authentication information to the URL:"
   end
 
   step 'I click on "Google Code"' do

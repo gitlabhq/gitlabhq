@@ -32,17 +32,15 @@ class @UsersSelect
               if showNullUser
                 nullUser = {
                   name: 'Unassigned',
-                  avatar: null,
-                  username: 'none',
                   id: 0
                 }
                 data.results.unshift(nullUser)
 
               if showAnyUser
+                name = showAnyUser
+                name = 'Any User' if name == true
                 anyUser = {
-                  name: 'Any',
-                  avatar: null,
-                  username: 'none',
+                  name: name,
                   id: null
                 }
                 data.results.unshift(anyUser)
@@ -50,7 +48,6 @@ class @UsersSelect
             if showEmailUser && data.results.length == 0 && query.term.match(/^[^@]+@[^@]+$/)
               emailUser = {
                 name: "Invite \"#{query.term}\"",
-                avatar: null,
                 username: query.term,
                 id: query.term
               }
@@ -58,11 +55,8 @@ class @UsersSelect
 
             query.callback(data)
 
-        initSelection: (element, callback) =>
-          id = $(element).val()
-          if id != "" && id != "0"
-            @user(id, callback)
-
+        initSelection: (args...) =>
+          @initSelection(args...)
         formatResult: (args...) =>
           @formatResult(args...)
         formatSelection: (args...) =>
@@ -71,16 +65,24 @@ class @UsersSelect
         escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
           m
 
+  initSelection: (element, callback) ->
+    id = $(element).val()
+    if id == "0"
+      nullUser = { name: 'Unassigned' }
+      callback(nullUser)
+    else if id != ""
+      @user(id, callback)
+
   formatResult: (user) ->
     if user.avatar_url
       avatar = user.avatar_url
     else
       avatar = gon.default_avatar_url
 
-    "<div class='user-result'>
+    "<div class='user-result #{'no-username' unless user.username}'>
        <div class='user-image'><img class='avatar s24' src='#{avatar}'></div>
        <div class='user-name'>#{user.name}</div>
-       <div class='user-username'>#{user.username}</div>
+       <div class='user-username'>#{user.username || ""}</div>
      </div>"
 
   formatSelection: (user) ->
@@ -115,5 +117,5 @@ class @UsersSelect
       callback(users)
 
   buildUrl: (url) ->
-    url = gon.relative_url_root + url if gon.relative_url_root?
+    url = gon.relative_url_root.replace(/\/$/, '') + url if gon.relative_url_root?
     return url

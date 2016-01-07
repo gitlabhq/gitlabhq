@@ -20,6 +20,7 @@
 #  position          :integer          default(0)
 #  locked_at         :datetime
 #  updated_by_id     :integer
+#  merge_error       :string(255)
 #
 
 FactoryGirl.define do
@@ -62,6 +63,11 @@ FactoryGirl.define do
     trait :simple do
       source_branch "feature"
       target_branch "master"
+    end
+
+    trait :merge_when_build_succeeds do
+      merge_when_build_succeeds true
+      merge_user author
     end
 
     factory :closed_merge_request, traits: [:closed]

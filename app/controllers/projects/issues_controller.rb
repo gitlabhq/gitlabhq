@@ -58,10 +58,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    @participants = @issue.participants(current_user)
     @note = @project.notes.new(noteable: @issue)
-    @notes = @issue.notes.with_associations.fresh
+    @notes = @issue.notes.nonawards.with_associations.fresh
     @noteable = @issue
+    @merge_requests = @issue.referenced_merge_requests
 
     respond_with(@issue)
   end

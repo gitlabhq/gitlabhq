@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: builds
+# Table name: ci_builds
 #
 #  id                 :integer          not null, primary key
 #  project_id         :integer
@@ -11,16 +11,24 @@
 #  updated_at         :datetime
 #  started_at         :datetime
 #  runner_id          :integer
-#  commit_id          :integer
 #  coverage           :float
+#  commit_id          :integer
 #  commands           :text
 #  job_id             :integer
 #  name               :string(255)
+#  deploy             :boolean          default(FALSE)
 #  options            :text
 #  allow_failure      :boolean          default(FALSE), not null
 #  stage              :string(255)
-#  deploy             :boolean          default(FALSE)
 #  trigger_request_id :integer
+#  stage_idx          :integer
+#  tag                :boolean
+#  ref                :string(255)
+#  user_id            :integer
+#  type               :string(255)
+#  target_url         :string(255)
+#  description        :string(255)
+#  artifacts_file     :text
 #
 
 module Ci
@@ -45,6 +53,8 @@ module Ci
 
     # To prevent db load megabytes of data from trace
     default_scope -> { select(Ci::Build.columns_without_lazy) }
+
+    before_destroy { project }
 
     class << self
       def columns_without_lazy
@@ -76,6 +86,7 @@ module Ci
         new_build.options = build.options
         new_build.commands = build.commands
         new_build.tag_list = build.tag_list
+        new_build.gl_project_id = build.gl_project_id
         new_build.commit_id = build.commit_id
         new_build.name = build.name
         new_build.allow_failure = build.allow_failure
@@ -88,19 +99,16 @@ module Ci
     end
 
     state_machine :status, initial: :pending do
+      after_transition pending: :running do |build, transition|
+        build.execute_hooks
+      end
+
       after_transition any => [:success, :failed, :canceled] do |build, transition|
-        project = build.project
+        return unless build.project
 
-        if project.web_hooks?
-          Ci::WebHookService.new.build_end(build)
-        end
-
+        build.update_coverage
         build.commit.create_next_builds(build)
-        project.execute_services(build)
-
-        if project.coverage_enabled?
-          build.update_coverage
-        end
+        build.execute_hooks
       end
     end
 
@@ -109,7 +117,7 @@ module Ci
     end
 
     def retryable?
-      commands.present?
+      project.builds_enabled? && commands.present?
     end
 
     def retried?
@@ -122,15 +130,21 @@ module Ci
     end
 
     def timeout
-      project.timeout
+      project.build_timeout
     end
 
     def variables
       predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
-    def project
-      commit.project
+    def merge_request
+      merge_requests = MergeRequest.includes(:merge_request_diff)
+                                   .where(source_branch: ref, source_project_id: commit.gl_project_id)
+                                   .reorder(iid: :asc)
+
+      merge_requests.find do |merge_request|
+        merge_request.commits.any? { |ci| ci.id == commit.sha }
+      end
     end
 
     def project_id
@@ -141,26 +155,21 @@ module Ci
       project.name
     end
 
-    def project_recipients
-      recipients = project.email_recipients.split(' ')
-
-      if project.email_add_pusher? && user.present? && user.notification_email.present?
-        recipients << user.notification_email
-      end
-
-      recipients.uniq
-    end
-
     def repo_url
-      project.repo_url_with_auth
+      auth = "gitlab-ci-token:#{token}@"
+      project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
+        prefix + auth
+      end
     end
 
     def allow_git_fetch
-      project.allow_git_fetch
+      project.build_allow_git_fetch
     end
 
     def update_coverage
-      coverage = extract_coverage(trace, project.coverage_regex)
+      coverage_regex = project.build_coverage_regex
+      return unless coverage_regex
+      coverage = extract_coverage(trace, coverage_regex)
 
       if coverage.is_a? Numeric
         update_attributes(coverage: coverage)
@@ -169,7 +178,8 @@ module Ci
 
     def extract_coverage(text, regex)
       begin
-        matches = text.gsub(Regexp.new(regex)).to_a.last
+        matches = text.scan(Regexp.new(regex)).last
+        matches = matches.last if matches.kind_of?(Array)
         coverage = matches.gsub(/\d+(\.\d+)?/).first
 
         if coverage.present?
@@ -182,8 +192,11 @@ module Ci
     end
 
     def raw_trace
-      if File.exist?(path_to_trace)
+      if File.file?(path_to_trace)
         File.read(path_to_trace)
+      elsif project.ci_id && File.file?(old_path_to_trace)
+        # Temporary fix for build trace data integrity
+        File.read(old_path_to_trace)
       else
         # backward compatibility
         read_attribute :trace
@@ -193,15 +206,15 @@ module Ci
     def trace
       trace = raw_trace
       if project && trace.present?
-        trace.gsub(project.token, 'xxxxxx')
+        trace.gsub(project.runners_token, 'xxxxxx')
       else
         trace
       end
     end
 
     def trace=(trace)
-      unless Dir.exists? dir_to_trace
-        FileUtils.mkdir_p dir_to_trace
+      unless Dir.exists?(dir_to_trace)
+        FileUtils.mkdir_p(dir_to_trace)
       end
 
       File.write(path_to_trace, trace)
@@ -219,30 +232,79 @@ module Ci
       "#{dir_to_trace}/#{id}.log"
     end
 
+    ##
+    # Deprecated
+    #
+    # This is a hotfix for CI build data integrity, see #4246
+    # Should be removed in 8.4, after CI files migration has been done.
+    #
+    def old_dir_to_trace
+      File.join(
+        Settings.gitlab_ci.builds_path,
+        created_at.utc.strftime("%Y_%m"),
+        project.ci_id.to_s
+      )
+    end
+
+    ##
+    # Deprecated
+    #
+    # This is a hotfix for CI build data integrity, see #4246
+    # Should be removed in 8.4, after CI files migration has been done.
+    #
+    def old_path_to_trace
+      "#{old_dir_to_trace}/#{id}.log"
+    end
+
+    ##
+    # Deprecated
+    #
+    # This contains a hotfix for CI build data integrity, see #4246
+    #
+    # This method is used by `ArtifactUploader` to create a store_dir.
+    # Warning: Uploader uses it after AND before file has been stored.
+    #
+    # This method returns old path to artifacts only if it already exists.
+    #
+    def artifacts_path
+      old = File.join(created_at.utc.strftime('%Y_%m'),
+                      project.ci_id.to_s,
+                      id.to_s)
+
+      old_store = File.join(ArtifactUploader.artifacts_path, old)
+      return old if project.ci_id && File.directory?(old_store)
+
+      File.join(
+        created_at.utc.strftime('%Y_%m'),
+        project.id.to_s,
+        id.to_s
+      )
+    end
+
     def token
-      project.token
+      project.runners_token
     end
 
     def valid_token? token
-      project.valid_token? token
+      project.valid_runners_token? token
     end
 
     def target_url
       Gitlab::Application.routes.url_helpers.
-        namespace_project_build_url(gl_project.namespace, gl_project, self)
+        namespace_project_build_url(project.namespace, project, self)
     end
 
     def cancel_url
       if active?
         Gitlab::Application.routes.url_helpers.
-          cancel_namespace_project_build_path(gl_project.namespace, gl_project, self)
+          cancel_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
     def retry_url
       if retryable?
         Gitlab::Application.routes.url_helpers.
-          retry_namespace_project_build_path(gl_project.namespace, gl_project, self)
+          retry_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
@@ -261,9 +323,17 @@ module Ci
     def download_url
       if artifacts_file.exists?
         Gitlab::Application.routes.url_helpers.
-          download_namespace_project_build_path(gl_project.namespace, gl_project, self)
+          download_namespace_project_build_path(project.namespace, project, self)
       end
     end
+
+    def execute_hooks
+      build_data = Gitlab::BuildDataBuilder.build(self)
+      project.execute_hooks(build_data.dup, :build_hooks)
+      project.execute_services(build_data.dup, :build_hooks)
+    end
+
+
 
     private
 

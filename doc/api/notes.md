@@ -34,7 +34,9 @@ Parameters:
     "created_at": "2013-10-02T09:22:45Z",
     "system": true,
     "upvote": false,
-    "downvote": false
+    "downvote": false,
+    "noteable_id": 377,
+    "noteable_type": "Issue"
   },
   {
     "id": 305,
@@ -49,9 +51,11 @@ Parameters:
       "created_at": "2013-09-30T13:46:01Z"
     },
     "created_at": "2013-10-02T09:56:03Z",
-    "system": false,
+    "system": true,
     "upvote": false,
-    "downvote": false
+    "downvote": false,
+    "noteable_id": 121,
+    "noteable_type": "Issue"
   }
 ]
 ```
@@ -218,7 +222,12 @@ Parameters:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z"
   },
-  "created_at": "2013-10-02T08:57:14Z"
+  "created_at": "2013-10-02T08:57:14Z",
+  "system": false,
+  "upvote": false,
+  "downvote": false,
+  "noteable_id": 2,
+  "noteable_type": "MergeRequest"
 }
 ```
 

@@ -12,7 +12,7 @@
               %i.fa.fa-angle-right
               &nbsp;
               %small.light
-                = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit)
+                = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
                 &ndash;
                 = truncate(@commit.title, length: 50)
             = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'pull-right'
@@ -29,8 +29,8 @@
   - if tree.readme
     = render "projects/tree/readme", readme: tree.readme
 
-- if allowed_tree_edit?
-  = render 'projects/blob/upload', title: 'Upload', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
+- if can_edit_tree?
+  = render 'projects/blob/upload', title: 'Upload New File', placeholder: 'Upload new file', button_title: 'Upload file', form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
   = render 'projects/blob/new_dir'
 
 :javascript

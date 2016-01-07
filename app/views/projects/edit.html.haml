@@ -14,7 +14,7 @@
               = f.label :name, class: 'control-label' do
                 Project name
               .col-sm-10
-                = f.text_field :name, placeholder: "Example Project", class: "form-control", id: "project_name_edit"
+                = f.text_field :name, class: "form-control", id: "project_name_edit"
 
 
             .form-group
@@ -22,12 +22,12 @@
                 Project description
                 %span.light (optional)
               .col-sm-10
-                = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250
+                = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
-            - if @project.repository.exists? && @project.repository.branch_names.any?
+            - unless @project.empty_repo?
               .form-group
                 = f.label :default_branch, "Default Branch", class: 'control-label'
-                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'select2 select-wide'})
+                .col-sm-10= f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
 
           = render 'shared/visibility_level', f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can_change_visibility_level?(@project, current_user), form_model: @project
@@ -35,7 +35,7 @@
           .form-group
             = f.label :tag_list, "Tags", class: 'control-label'
             .col-sm-10
-              = f.text_field :tag_list, maxlength: 2000, class: "form-control"
+              = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
               %p.help-block Separate tags with commas.
 
           %fieldset.features
@@ -57,7 +57,16 @@
                     = f.check_box :merge_requests_enabled
                     %strong Merge Requests
                     %br
-                    %span.descr Submit changes to be merged upstream.
+                    %span.descr Submit changes to be merged upstream
+
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                .checkbox
+                  = f.label :builds_enabled do
+                    = f.check_box :builds_enabled
+                    %strong Builds
+                    %br
+                    %span.descr Test and deploy your changes before merge
 
             .form-group
               .col-sm-offset-2.col-sm-10
@@ -103,6 +112,62 @@
                   %hr
                   = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
+          %fieldset.features
+            %legend
+              Continuous Integration
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                %p Get recent application code using the following command:
+                .radio
+                  = f.label :build_allow_git_fetch do
+                    = f.radio_button :build_allow_git_fetch, 'false'
+                    %strong git clone
+                    %br
+                    %span.descr Slower but makes sure you have a clean dir before every build
+                .radio
+                  = f.label :build_allow_git_fetch do
+                    = f.radio_button :build_allow_git_fetch, 'true'
+                    %strong git fetch
+                    %br
+                    %span.descr Faster
+            .form-group
+              = f.label :build_timeout_in_minutes, 'Timeout', class: 'control-label'
+              .col-sm-10
+                = f.number_field :build_timeout_in_minutes, class: 'form-control', min: '0'
+                %p.help-block per build in minutes
+            .form-group
+              = f.label :build_coverage_regex, "Test coverage parsing", class: 'control-label'
+              .col-sm-10
+                .input-group
+                  %span.input-group-addon /
+                  = f.text_field :build_coverage_regex, class: 'form-control', placeholder: '\(\d+.\d+\%\) covered'
+                  %span.input-group-addon /
+                %p.help-block
+                  We will use this regular expression to find test coverage output in build trace.
+                  Leave blank if you want to disable this feature
+                .bs-callout.bs-callout-info
+                  %p Below are examples of regex for existing tools:
+                  %ul
+                    %li
+                      Simplecov (Ruby) -
+                      %code \(\d+.\d+\%\) covered
+                    %li
+                      pytest-cov (Python) -
+                      %code \d+\%\s*$
+                    %li
+                      phpunit --coverage-text --colors=never (PHP) -
+                      %code ^\s*Lines:\s*\d+.\d+\%
+
+
+          %fieldset.features
+            %legend
+              Advanced settings
+            .form-group
+              = f.label :runners_token, "CI token", class: 'control-label'
+              .col-sm-10
+                = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
+                %p.help-block The secure token used to checkout project.
+
           .form-actions
             = f.submit 'Save changes', class: "btn btn-save"
 
@@ -121,9 +186,11 @@
                 The project can be committed to.
                 %br
                 %strong Once active this project shows up in the search and on the dashboard.
-              = link_to 'Unarchive', unarchive_namespace_project_path(@project.namespace, @project),
-                  data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
-                  method: :post, class: "btn btn-success"
+
+              .form-actions
+                = link_to 'Unarchive project', unarchive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
+                    method: :post, class: "btn btn-success"
         - else
           .panel.panel-warning
             .panel-heading
@@ -135,9 +202,11 @@
                 It is hidden from the dashboard and doesn't show up in searches.
                 %br
                 %strong Archived projects cannot be committed to!
-              = link_to 'Archive', archive_namespace_project_path(@project.namespace, @project),
-                  data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
-                  method: :post, class: "btn btn-warning"
+
+              .form-actions
+                = link_to 'Archive project', archive_namespace_project_path(@project.namespace, @project),
+                    data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                    method: :post, class: "btn btn-warning"
       - else
         .nothing-here-block Only the project owner can archive a project
 
@@ -151,7 +220,7 @@
                 Project name
               .col-sm-9
                 .form-group
-                  = f.text_field :name, placeholder: "Example Project", class: "form-control"
+                  = f.text_field :name, class: "form-control"
             .form-group
               = f.label :path, class: 'control-label' do
                 %span Path
@@ -161,12 +230,11 @@
                     .input-group-addon
                       #{URI.join(root_url, @project.namespace.path)}/
                     = f.text_field :path, class: 'form-control'
-                    %span.input-group-addon .git
                 %ul
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.
             .form-actions
-              = f.submit 'Rename', class: "btn btn-warning"
+              = f.submit 'Rename project', class: "btn btn-warning"
 
       - if can?(current_user, :change_namespace, @project)
         .panel.panel-default.panel.panel-danger
@@ -185,7 +253,7 @@
                     %li You can only transfer the project to namespaces you manage.
                     %li You will need to update your local repositories to point to the new location.
               .form-actions
-                = f.submit 'Transfer', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+                = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
       - else
         .nothing-here-block Only the project owner can transfer a project
 
@@ -200,7 +268,8 @@
                   #{link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)}.
                   %br
                   %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
-                = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+                .form-actions
+                  = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
         - else
           .nothing-here-block Only the project owner can remove the fork relationship.
 
@@ -213,8 +282,8 @@
                 Removing the project will delete its repository and all related resources including issues, merge requests etc.
                 %br
                 %strong Removed projects cannot be restored!
-
-              = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+              .form-actions
+                = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
       - else
         .nothing-here-block Only the project owner can remove a project.
 

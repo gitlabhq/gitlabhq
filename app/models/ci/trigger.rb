@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: triggers
+# Table name: ci_triggers
 #
 #  id         :integer          not null, primary key
 #  token      :string(255)
@@ -16,7 +16,7 @@ module Ci
 
     acts_as_paranoid
 
-    belongs_to :project, class_name: 'Ci::Project'
+    belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
     validates_presence_of :token

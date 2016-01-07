@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: trigger_requests
+# Table name: ci_trigger_requests
 #
 #  id         :integer          not null, primary key
 #  trigger_id :integer          not null

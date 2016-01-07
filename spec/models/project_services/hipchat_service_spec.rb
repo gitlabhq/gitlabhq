@@ -20,7 +20,7 @@
 
 require 'spec_helper'
 
-describe HipchatService do
+describe HipchatService, models: true do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -57,23 +57,21 @@ describe HipchatService do
 
     it 'should use v1 if version is provided' do
       allow(hipchat).to receive(:api_version).and_return('v1')
-      expect(HipChat::Client).to receive(:new).
-                                     with(token,
-                                          api_version: 'v1',
-                                          server_url: server_url).
-                                     and_return(
-                                         double(:hipchat_service).as_null_object)
+      expect(HipChat::Client).to receive(:new).with(
+        token,
+        api_version: 'v1',
+        server_url: server_url
+      ).and_return(double(:hipchat_service).as_null_object)
       hipchat.execute(push_sample_data)
     end
 
     it 'should use v2 as the version when nothing is provided' do
       allow(hipchat).to receive(:api_version).and_return('')
-      expect(HipChat::Client).to receive(:new).
-                                     with(token,
-                                          api_version: 'v2',
-                                          server_url: server_url).
-                                     and_return(
-                                         double(:hipchat_service).as_null_object)
+      expect(HipChat::Client).to receive(:new).with(
+        token,
+        api_version: 'v2',
+        server_url: server_url
+      ).and_return(double(:hipchat_service).as_null_object)
       hipchat.execute(push_sample_data)
     end
 
@@ -244,6 +242,55 @@ describe HipchatService do
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
             "<b>#{title}</b>" \
             "<pre>snippet note</pre>")
+      end
+    end
+
+    context 'build events' do
+      let(:build) { create(:ci_build) }
+      let(:data) { Gitlab::BuildDataBuilder.build(build) }
+
+      context 'for failed' do
+        before { build.drop }
+
+        it "should call Hipchat API" do
+          hipchat.execute(data)
+
+          expect(WebMock).to have_requested(:post, api_url).once
+        end
+
+        it "should create a build message" do
+          message = hipchat.send(:create_build_message, data)
+
+          project_url = project.web_url
+          project_name = project.name_with_namespace.gsub(/\s/, '')
+          sha = data[:sha]
+          ref = data[:ref]
+          ref_type = data[:tag] ? 'tag' : 'branch'
+          duration = data[:commit][:duration]
+
+          expect(message).to eq("<a href=\"#{project_url}\">#{project_name}</a>: " \
+            "Commit <a href=\"#{project_url}/commit/#{sha}/builds\">#{Commit.truncate_sha(sha)}</a> " \
+            "of <a href=\"#{project_url}/commits/#{ref}\">#{ref}</a> #{ref_type} " \
+            "by #{data[:commit][:author_name]} failed in #{duration} second(s)")
+        end
+      end
+
+      context 'for succeeded' do
+        before do
+          build.success
+        end
+
+        it "should call Hipchat API" do
+          hipchat.notify_only_broken_builds = false
+          hipchat.execute(data)
+          expect(WebMock).to have_requested(:post, api_url).once
+        end
+
+        it "should notify only broken" do
+          hipchat.notify_only_broken_builds = true
+          hipchat.execute(data)
+          expect(WebMock).to_not have_requested(:post, api_url).once
+        end
       end
     end
 

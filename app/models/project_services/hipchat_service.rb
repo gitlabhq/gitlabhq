@@ -22,7 +22,15 @@ class HipchatService < Service
   MAX_COMMITS = 3
 
   prop_accessor :token, :room, :server, :notify, :color, :api_version
+  boolean_accessor :notify_only_broken_builds
   validates :token, presence: true, if: :activated?
+
+  def initialize_properties
+    if properties.nil?
+      self.properties = {}
+      self.notify_only_broken_builds = true
+    end
+  end
 
   def title
     'HipChat'
@@ -45,12 +53,13 @@ class HipchatService < Service
       { type: 'text', name: 'api_version',
         placeholder: 'Leave blank for default (v2)' },
       { type: 'text', name: 'server',
-        placeholder: 'Leave blank for default. https://hipchat.example.com' }
+        placeholder: 'Leave blank for default. https://hipchat.example.com' },
+      { type: 'checkbox', name: 'notify_only_broken_builds' },
     ]
   end
 
   def supported_events
-    %w(push issue merge_request note tag_push)
+    %w(push issue merge_request note tag_push build)
   end
 
   def execute(data)
@@ -94,6 +103,8 @@ class HipchatService < Service
       create_merge_request_message(data) unless is_update?(data)
     when "note"
       create_note_message(data)
+    when "build"
+      create_build_message(data) if should_build_be_notified?(data)
     end
   end
 
@@ -235,6 +246,20 @@ class HipchatService < Service
     message
   end
 
+  def create_build_message(data)
+    ref_type = data[:tag] ? 'tag' : 'branch'
+    ref = data[:ref]
+    sha = data[:sha]
+    user_name = data[:commit][:author_name]
+    status = data[:commit][:status]
+    duration = data[:commit][:duration]
+
+    branch_link = "<a href=\"#{project_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"
+    commit_link = "<a href=\"#{project_url}/commit/#{URI.escape(sha)}/builds\">#{Commit.truncate_sha(sha)}</a>"
+
+    "#{project_link}: Commit #{commit_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
+  end
+
   def project_name
     project.name_with_namespace.gsub(/\s/, '')
   end
@@ -249,5 +274,25 @@ class HipchatService < Service
 
   def is_update?(data)
     data[:object_attributes][:action] == 'update'
+  end
+
+  def humanized_status(status)
+    case status
+    when 'success'
+      'passed'
+    else
+      status
+    end
+  end
+
+  def should_build_be_notified?(data)
+    case data[:commit][:status]
+    when 'success'
+      !notify_only_broken_builds?
+    when 'failed'
+      true
+    else
+      false
+    end
   end
 end

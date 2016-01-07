@@ -5,25 +5,26 @@ Every API call to groups must be authenticated.
 If a user is not a member of a group and the group contains at least one private
 project, all API calls return a 403 status code.
 
-## Namespaces in groups
+## Group pagination
 
 By default, groups only get 20 namespaces at a time because the API results are
 paginated.
 
 To get more (up to 100), pass the following as an argument to the API call:
 
-```
+```bash
 /groups?per_page=100
 ```
 
 And to switch pages add:
-```
+
+```bash
 /groups?per_page=100&page=2
 ```
 
-## List project groups
+## List groups
 
-Get a list of a user's groups. Admins get a list of all groups.
+Get a list of a user's groups. Administrators get a list of all groups.
 
 ```
 GET /groups
@@ -45,6 +46,76 @@ Example response:
       "avatar_url" : null,
       "web_url" : "http://gitlab.example.com/groups/gitlab-org"
    },
+]
+```
+
+## List a group's projects
+
+Get a list of projects in this group.
+
+```
+GET /groups/:id/projects
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID or path of a group |
+| `archived`| boolean | no  | If passed, limit by archived status |
+| `order_by`| string  | no  | Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`  |
+| `sort`    | string  | no  | Return requests sorted in `asc` or `desc` order. Default is `desc`
+| `search`  | string  | no  | Return list of authorized projects according to a search criteria
+| `ci_enabled_first`  |  -  | no  | Return projects ordered by ci_enabled flag. Projects with enabled GitLab CI go first |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4/projects
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 4,
+    "description": null,
+    "default_branch": "master",
+    "public": false,
+    "visibility_level": 0,
+    "ssh_url_to_repo": "git@gitlab.example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "https://gitlab.example.com/diaspora/diaspora-client.git",
+    "web_url": "https://gitlab.example.com/diaspora/diaspora-client",
+    "tag_list": [
+      "example",
+      "disapora client"
+    ],
+    "owner": {
+      "id": 3,
+      "name": "Diaspora",
+      "created_at": "2013-09-30T13: 46: 02Z"
+    },
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "issues_enabled": true,
+    "merge_requests_enabled": true,
+    "builds_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "created_at": "2013-09-30T13: 46: 02Z",
+    "last_activity_at": "2013-09-30T13: 46: 02Z",
+    "creator_id": 3,
+    "namespace": {
+      "created_at": "2013-09-30T13: 46: 02Z",
+      "description": "",
+      "id": 3,
+      "name": "Diaspora",
+      "owner_id": 1,
+      "path": "diaspora",
+      "updated_at": "2013-09-30T13: 46: 02Z"
+    },
+    "archived": false,
+    "avatar_url": "https://gitlab.example.com/uploads/project/avatar/4/uploads/avatar.png"
+  }
 ]
 ```
 
@@ -333,7 +404,7 @@ Example response:
 }
 ```
 
-### Edit group team member
+### Edit group member
 
 Updates a group team member to a specified access level.
 

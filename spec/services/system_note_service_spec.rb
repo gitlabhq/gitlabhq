@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SystemNoteService do
+describe SystemNoteService, services: true do
   let(:project)  { create(:project) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
@@ -207,6 +207,32 @@ describe SystemNoteService do
     end
   end
 
+  describe '.merge_when_build_succeeds' do
+    let(:ci_commit) { build :ci_commit_without_jobs }
+    let(:noteable) { create :merge_request }
+
+    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.last_commit) }
+
+    it_behaves_like 'a system note'
+
+    it "posts the Merge When Build Succeeds system note" do
+      expect(subject.note).to match  /Enabled an automatic merge when the build for (\w+\/\w+@)?[0-9a-f]{40} succeeds/
+    end
+  end
+
+  describe '.cancel_merge_when_build_succeeds' do
+    let(:ci_commit) { build :ci_commit_without_jobs }
+    let(:noteable) { create :merge_request }
+
+    subject { described_class.cancel_merge_when_build_succeeds(noteable, project, author) }
+
+    it_behaves_like 'a system note'
+
+    it "posts the Merge When Build Succeeds system note" do
+      expect(subject.note).to eq  "Canceled the automatic merge"
+    end
+  end
+
   describe '.change_title' do
     subject { described_class.change_title(noteable, project, author, 'Old title') }
 
@@ -396,6 +422,67 @@ describe SystemNoteService do
       it 'is falsey when not already mentioned' do
         expect(described_class.cross_reference_exists?(commit1, commit0)).
           to be_falsey
+      end
+    end
+  end
+
+  include JiraServiceHelper
+
+  describe 'JIRA integration' do
+    let(:project)    { create(:project) }
+    let(:author)     { create(:user) }
+    let(:issue)      { create(:issue, project: project) }
+    let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
+    let(:jira_issue) { JiraIssue.new("JIRA-1", project)}
+    let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
+    let(:commit)     { project.commit }
+
+    context 'in JIRA issue tracker' do
+      before do
+        jira_service_settings
+        WebMock.stub_request(:post, jira_api_comment_url)
+      end
+
+      after do
+        jira_tracker.destroy!
+      end
+
+      describe "new reference" do
+        before do
+          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
+        end
+
+        subject { described_class.cross_reference(jira_issue, commit, author) }
+
+        it { is_expected.to eq(jira_status_message) }
+      end
+
+      describe "existing reference" do
+        before do
+          message = "[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]."
+          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: "{\"comments\":[{\"body\":\"#{message}\"}]}")
+        end
+
+        subject { described_class.cross_reference(jira_issue, commit, author) }
+        it { is_expected.not_to eq(jira_status_message) }
+      end
+    end
+
+    context 'issue from an issue' do
+      context 'in JIRA issue tracker' do
+        before do
+          jira_service_settings
+          WebMock.stub_request(:post, jira_api_comment_url)
+          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: jira_issue_comments)
+        end
+
+        after do
+          jira_tracker.destroy!
+        end
+
+        subject { described_class.cross_reference(jira_issue, issue, author) }
+
+        it { is_expected.to eq(jira_status_message) }
       end
     end
   end

@@ -1,9 +1,8 @@
 require 'spec_helper'
 
-describe Ci::CreateTriggerRequestService do
+describe Ci::CreateTriggerRequestService, services: true do
   let(:service) { Ci::CreateTriggerRequestService.new }
-  let(:gl_project) { create(:project) }
-  let(:project) { create(:ci_project, gl_project: gl_project) }
+  let(:project) { create(:project) }
   let(:trigger) { create(:ci_trigger, project: project) }
 
   before do
@@ -29,7 +28,7 @@ describe Ci::CreateTriggerRequestService do
 
       before do
         stub_ci_commit_yaml_file('{}')
-        FactoryGirl.create :ci_commit, gl_project: gl_project
+        FactoryGirl.create :ci_commit, project: project
       end
 
       it { expect(subject).to be_nil }

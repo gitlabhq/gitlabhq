@@ -3,8 +3,10 @@
     .panel.panel-default.panel-small
       - project = group[0]
       .panel-heading
-        = link_to_project project
-        = link_to 'show all', namespace_project_issues_path(project.namespace, project), class: 'pull-right'
+        = link_to project.name_with_namespace, namespace_project_issues_path(project.namespace, project)
+        - if can?(current_user, :create_issue, project)
+          .pull-right
+            = link_to 'New issue', new_namespace_project_issue_path(project.namespace, project)
 
       %ul.well-list.issues-list
         - group[1].each do |issue|
@@ -12,4 +14,3 @@
   = paginate @issues, theme: "gitlab"
 - else
   .nothing-here-block No issues to show
-

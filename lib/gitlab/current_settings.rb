@@ -25,7 +25,7 @@ module Gitlab
         session_expire_delay: Settings.gitlab['session_expire_delay'],
         import_sources: Settings.gitlab['import_sources'],
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
-        max_artifacts_size: Ci::Settings.gitlab_ci['max_artifacts_size'],
+        max_artifacts_size: Settings.artifacts['max_size'],
       )
     end
 
@@ -38,7 +38,9 @@ module Gitlab
                  true
                end
 
-      use_db && ActiveRecord::Base.connection.active? && ActiveRecord::Base.connection.table_exists?('application_settings')
+      use_db && ActiveRecord::Base.connection.active? &&
+                !ActiveRecord::Migrator.needs_migration? &&
+                ActiveRecord::Base.connection.table_exists?('application_settings')
     end
   end
 end

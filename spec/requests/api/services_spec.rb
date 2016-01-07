@@ -29,7 +29,7 @@ describe API::API, api: true  do
         if required_attributes.empty?
           expected_code = 200
         else
-          attrs.delete(required_attributes.shuffle.first)
+          attrs.delete(required_attributes.sample)
           expected_code = 400
         end
         
@@ -46,6 +46,7 @@ describe API::API, api: true  do
         delete api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response.status).to eq(200)
+        project.send(service_method).reload
         expect(project.send(service_method).activated?).to be_falsey
       end
     end

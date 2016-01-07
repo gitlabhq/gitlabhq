@@ -1,6 +1,16 @@
-%a.btn-close
+:css
+  .hidden { display: none !important; }
 
-.issue-details
+.flash-container
+  .flash-alert
+  .flash-notice
+
+.status-box.status-box-open Open
+.status-box.status-box-closed.hidden Closed
+%a.btn-close{"href" => "http://gitlab.com/issues/6/close"} Close
+%a.btn-reopen.hidden{"href" => "http://gitlab.com/issues/6/reopen"} Reopen
+
+.detail-page-description
   .description.js-task-list-container
     .wiki
       %ul.task-list

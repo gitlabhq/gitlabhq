@@ -1,11 +1,27 @@
-- page_title "GitLab"
-%head
+- page_description brand_title unless page_description
+
+- site_name = "GitLab"
+%head{prefix: "og: http://ogp.me/ns#"}
   %meta{charset: "utf-8"}
   %meta{'http-equiv' => 'X-UA-Compatible', content: 'IE=edge'}
-  %meta{content: "GitLab Community Edition", name: "description"}
-  %meta{name: 'referrer', content: 'origin-when-cross-origin'}
 
-  %title= page_title
+  -# Open Graph - http://ogp.me/
+  %meta{property: 'og:type',        content: "object"}
+  %meta{property: 'og:site_name',   content: site_name}
+  %meta{property: 'og:title',       content: page_title}
+  %meta{property: 'og:description', content: page_description}
+  %meta{property: 'og:image',       content: page_image}
+  %meta{property: 'og:url',         content: request.base_url + request.fullpath}
+
+  -# Twitter Card - https://dev.twitter.com/cards/types/summary
+  %meta{property: 'twitter:card',         content: "summary"}
+  %meta{property: 'twitter:title',        content: page_title}
+  %meta{property: 'twitter:description',  content: page_description}
+  %meta{property: 'twitter:image',        content: page_image}
+  = page_card_meta_tags
+
+  %title= page_title(site_name)
+  %meta{name: "description", content: page_description}
 
   = favicon_link_tag 'favicon.ico'
 
@@ -18,6 +34,8 @@
 
   = include_gon
 
+  - unless browser.safari?
+    %meta{name: 'referrer', content: 'origin-when-cross-origin'}
   %meta{name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1'}
   %meta{name: 'theme-color', content: '#474D57'}
 

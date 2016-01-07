@@ -36,6 +36,11 @@ module Gitlab
         @duration ||= started_at && finished_at ? finished_at - started_at : 0
       end
 
+      # Returns the total query duration in seconds.
+      def query_duration
+        @query_duration ||= @queries.map { |q| q.duration }.inject(:+) / 1000.0
+      end
+
       def to_param
         @id
       end

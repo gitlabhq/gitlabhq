@@ -52,5 +52,7 @@ module API
     mount Labels
     mount Settings
     mount Keys
+    mount Tags
+    mount Triggers
   end
 end

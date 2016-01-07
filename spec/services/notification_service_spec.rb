@@ -1,7 +1,13 @@
 require 'spec_helper'
 
-describe NotificationService do
+describe NotificationService, services: true do
   let(:notification) { NotificationService.new }
+
+  around(:each) do |example|
+    perform_enqueued_jobs do
+      example.run
+    end
+  end
 
   describe 'Keys' do
     describe :new_key do
@@ -10,8 +16,7 @@ describe NotificationService do
       it { expect(notification.new_key(key)).to be_truthy }
 
       it 'should sent email to key owner' do
-        expect(Notify).to receive(:new_ssh_key_email).with(key.id)
-        notification.new_key(key)
+        expect{ notification.new_key(key) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end
@@ -23,8 +28,7 @@ describe NotificationService do
       it { expect(notification.new_email(email)).to be_truthy }
 
       it 'should send email to email owner' do
-        expect(Notify).to receive(:new_email_email).with(email.id)
-        notification.new_email(email)
+        expect{ notification.new_email(email) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end
@@ -41,24 +45,32 @@ describe NotificationService do
         project.team << [issue.author, :master]
         project.team << [issue.assignee, :master]
         project.team << [note.author, :master]
+        create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@subscribed_participant cc this guy')
       end
 
       describe :new_note do
         it do
           add_users_with_subscription(note.project, issue)
 
-          should_email(@u_watcher.id)
-          should_email(note.noteable.author_id)
-          should_email(note.noteable.assignee_id)
-          should_email(@u_mentioned.id)
-          should_email(@subscriber.id)
-          should_not_email(note.author_id)
-          should_not_email(@u_participating.id)
-          should_not_email(@u_disabled.id)
-          should_not_email(@unsubscriber.id)
-          should_not_email(@u_outsider_mentioned)
+          # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(7).times
+
+          ActionMailer::Base.deliveries.clear
 
           notification.new_note(note)
+
+          should_email(@u_watcher)
+          should_email(note.noteable.author)
+          should_email(note.noteable.assignee)
+          should_email(@u_mentioned)
+          should_email(@subscriber)
+          should_email(@watcher_and_subscriber)
+          should_email(@subscribed_participant)
+          should_not_email(note.author)
+          should_not_email(@u_participating)
+          should_not_email(@u_disabled)
+          should_not_email(@unsubscriber)
+          should_not_email(@u_outsider_mentioned)
         end
 
         it 'filters out "mentioned in" notes' do
@@ -82,26 +94,20 @@ describe NotificationService do
           group_member = note.project.group.group_members.find_by_user_id(@u_watcher.id)
           group_member.notification_level = Notification::N_GLOBAL
           group_member.save
+          ActionMailer::Base.deliveries.clear
         end
 
         it do
-          should_email(note.noteable.author_id)
-          should_email(note.noteable.assignee_id)
-          should_email(@u_mentioned.id)
-          should_not_email(@u_watcher.id)
-          should_not_email(note.author_id)
-          should_not_email(@u_participating.id)
-          should_not_email(@u_disabled.id)
           notification.new_note(note)
+
+          should_email(note.noteable.author)
+          should_email(note.noteable.assignee)
+          should_email(@u_mentioned)
+          should_not_email(@u_watcher)
+          should_not_email(note.author)
+          should_not_email(@u_participating)
+          should_not_email(@u_disabled)
         end
-      end
-
-      def should_email(user_id)
-        expect(Notify).to receive(:note_issue_email).with(user_id, note.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:note_issue_email).with(user_id, note.id)
       end
     end
 
@@ -113,24 +119,29 @@ describe NotificationService do
 
       before do
         build_team(note.project)
+        note.project.team << [note.author, :master]
+        ActionMailer::Base.deliveries.clear
       end
 
       describe :new_note do
         it do
+          notification.new_note(note)
+
           # Notify all team members
           note.project.team.members.each do |member|
             # User with disabled notification should not be notified
             next if member.id == @u_disabled.id
-            should_email(member.id)
+            # Author should not be notified
+            next if member.id == note.author.id
+            should_email(member)
           end
-          should_email(note.noteable.author_id)
-          should_email(note.noteable.assignee_id)
 
-          should_not_email(note.author_id)
-          should_not_email(@u_mentioned.id)
-          should_not_email(@u_disabled.id)
-          should_not_email(@u_not_mentioned.id)
-          notification.new_note(note)
+          should_email(note.noteable.author)
+          should_email(note.noteable.assignee)
+          should_not_email(note.author)
+          should_email(@u_mentioned)
+          should_not_email(@u_disabled)
+          should_email(@u_not_mentioned)
         end
 
         it 'filters out "mentioned in" notes' do
@@ -140,14 +151,6 @@ describe NotificationService do
           notification.new_note(mentioned_note)
         end
       end
-
-      def should_email(user_id)
-        expect(Notify).to receive(:note_issue_email).with(user_id, note.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:note_issue_email).with(user_id, note.id)
-      end
     end
 
     context 'commit note' do
@@ -156,43 +159,38 @@ describe NotificationService do
 
       before do
         build_team(note.project)
+        ActionMailer::Base.deliveries.clear
         allow_any_instance_of(Commit).to receive(:author).and_return(@u_committer)
       end
 
-      describe :new_note do
+      describe :new_note, :perform_enqueued_jobs do
         it do
-          should_email(@u_committer.id, note)
-          should_email(@u_watcher.id, note)
-          should_not_email(@u_mentioned.id, note)
-          should_not_email(note.author_id, note)
-          should_not_email(@u_participating.id, note)
-          should_not_email(@u_disabled.id, note)
           notification.new_note(note)
+
+          should_email(@u_committer)
+          should_email(@u_watcher)
+          should_not_email(@u_mentioned)
+          should_not_email(note.author)
+          should_not_email(@u_participating)
+          should_not_email(@u_disabled)
         end
 
         it do
           note.update_attribute(:note, '@mention referenced')
-          should_email(@u_committer.id, note)
-          should_email(@u_watcher.id, note)
-          should_email(@u_mentioned.id, note)
-          should_not_email(note.author_id, note)
-          should_not_email(@u_participating.id, note)
-          should_not_email(@u_disabled.id, note)
           notification.new_note(note)
+
+          should_email(@u_committer)
+          should_email(@u_watcher)
+          should_email(@u_mentioned)
+          should_not_email(note.author)
+          should_not_email(@u_participating)
+          should_not_email(@u_disabled)
         end
 
         it do
           @u_committer.update_attributes(notification_level: Notification::N_MENTION)
-          should_not_email(@u_committer.id, note)
           notification.new_note(note)
-        end
-
-        def should_email(user_id, n)
-          expect(Notify).to receive(:note_commit_email).with(user_id, n.id)
-        end
-
-        def should_not_email(user_id, n)
-          expect(Notify).not_to receive(:note_commit_email).with(user_id, n.id)
+          should_not_email(@u_committer)
         end
       end
     end
@@ -205,99 +203,71 @@ describe NotificationService do
     before do
       build_team(issue.project)
       add_users_with_subscription(issue.project, issue)
+      ActionMailer::Base.deliveries.clear
     end
 
     describe :new_issue do
       it do
-        should_email(issue.assignee_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_not_email(@u_mentioned.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
         notification.new_issue(issue, @u_disabled)
+
+        should_email(issue.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_not_email(@u_mentioned)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
       end
 
       it do
         issue.assignee.update_attributes(notification_level: Notification::N_MENTION)
-        should_not_email(issue.assignee_id)
         notification.new_issue(issue, @u_disabled)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:new_issue_email).with(user_id, issue.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:new_issue_email).with(user_id, issue.id)
+        should_not_email(issue.assignee)
       end
     end
 
     describe :reassigned_issue do
       it 'should email new assignee' do
-        should_email(issue.assignee_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_email(@subscriber.id)
-        should_not_email(@unsubscriber.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
-
         notification.reassigned_issue(issue, @u_disabled)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:reassigned_issue_email).with(user_id, issue.id, nil, @u_disabled.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:reassigned_issue_email).with(user_id, issue.id, issue.assignee_id, @u_disabled.id)
+        should_email(issue.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
       end
     end
 
     describe :close_issue do
       it 'should sent email to issue assignee and issue author' do
-        should_email(issue.assignee_id)
-        should_email(issue.author_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_email(@subscriber.id)
-        should_not_email(@unsubscriber.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
-
         notification.close_issue(issue, @u_disabled)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:closed_issue_email).with(user_id, issue.id, @u_disabled.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:closed_issue_email).with(user_id, issue.id, @u_disabled.id)
+        should_email(issue.assignee)
+        should_email(issue.author)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
       end
     end
 
     describe :reopen_issue do
       it 'should send email to issue assignee and issue author' do
-        should_email(issue.assignee_id)
-        should_email(issue.author_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_email(@subscriber.id)
-        should_not_email(@unsubscriber.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
-
         notification.reopen_issue(issue, @u_disabled)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:issue_status_changed_email).with(user_id, issue.id, 'reopened', @u_disabled.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:issue_status_changed_email).with(user_id, issue.id, 'reopened', @u_disabled.id)
+        should_email(issue.assignee)
+        should_email(issue.author)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
       end
     end
   end
@@ -309,108 +279,79 @@ describe NotificationService do
     before do
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
+      ActionMailer::Base.deliveries.clear
     end
 
     describe :new_merge_request do
       it do
-        should_email(merge_request.assignee_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
         notification.new_merge_request(merge_request, @u_disabled)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:new_merge_request_email).with(user_id, merge_request.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:new_merge_request_email).with(user_id, merge_request.id)
+        should_email(merge_request.assignee)
+        should_email(@u_watcher)
+        should_email(@watcher_and_subscriber)
+        should_email(@u_participant_mentioned)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
       end
     end
 
     describe :reassigned_merge_request do
       it do
-        should_email(merge_request.assignee_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_email(@subscriber.id)
-        should_not_email(@unsubscriber.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
         notification.reassigned_merge_request(merge_request, merge_request.author)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:reassigned_merge_request_email).with(user_id, merge_request.id, nil, merge_request.author_id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:reassigned_merge_request_email).with(user_id, merge_request.id, merge_request.assignee_id, merge_request.author_id)
+        should_email(merge_request.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
       end
     end
 
     describe :closed_merge_request do
       it do
-        should_email(merge_request.assignee_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_email(@subscriber.id)
-        should_not_email(@unsubscriber.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
         notification.close_mr(merge_request, @u_disabled)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:closed_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:closed_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
+        should_email(merge_request.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
       end
     end
 
     describe :merged_merge_request do
       it do
-        should_email(merge_request.assignee_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_email(@subscriber.id)
-        should_not_email(@unsubscriber.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
         notification.merge_mr(merge_request, @u_disabled)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
+        should_email(merge_request.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
       end
     end
 
     describe :reopen_merge_request do
       it do
-        should_email(merge_request.assignee_id)
-        should_email(@u_watcher.id)
-        should_email(@u_participant_mentioned.id)
-        should_email(@subscriber.id)
-        should_not_email(@unsubscriber.id)
-        should_not_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
         notification.reopen_mr(merge_request, @u_disabled)
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:merge_request_status_email).with(user_id, merge_request.id, 'reopened', @u_disabled.id)
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:merge_request_status_email).with(user_id, merge_request.id, 'reopened', @u_disabled.id)
+        should_email(merge_request.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
       end
     end
   end
@@ -420,22 +361,16 @@ describe NotificationService do
 
     before do
       build_team(project)
+      ActionMailer::Base.deliveries.clear
     end
 
     describe :project_was_moved do
       it do
-        should_email(@u_watcher.id)
-        should_email(@u_participating.id)
-        should_not_email(@u_disabled.id)
         notification.project_was_moved(project, "gitlab/gitlab")
-      end
 
-      def should_email(user_id)
-        expect(Notify).to receive(:project_was_moved_email).with(project.id, user_id, "gitlab/gitlab")
-      end
-
-      def should_not_email(user_id)
-        expect(Notify).not_to receive(:project_was_moved_email).with(project.id, user_id, "gitlab/gitlab")
+        should_email(@u_watcher)
+        should_email(@u_participating)
+        should_not_email(@u_disabled)
       end
     end
   end
@@ -462,11 +397,30 @@ describe NotificationService do
   def add_users_with_subscription(project, issuable)
     @subscriber = create :user
     @unsubscriber = create :user
+    @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: Notification::N_PARTICIPATING)
+    @watcher_and_subscriber = create(:user, notification_level: Notification::N_WATCH)
 
+    project.team << [@subscribed_participant, :master]
     project.team << [@subscriber, :master]
     project.team << [@unsubscriber, :master]
+    project.team << [@watcher_and_subscriber, :master]
 
     issuable.subscriptions.create(user: @subscriber, subscribed: true)
+    issuable.subscriptions.create(user: @subscribed_participant, subscribed: true)
     issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
+    # Make the watcher a subscriber to detect dupes
+    issuable.subscriptions.create(user: @watcher_and_subscriber, subscribed: true)
+  end
+
+  def sent_to_user?(user)
+    ActionMailer::Base.deliveries.map(&:to).flatten.count(user.email) == 1
+  end
+
+  def should_email(user)
+    expect(sent_to_user?(user)).to be_truthy
+  end
+
+  def should_not_email(user)
+    expect(sent_to_user?(user)).to be_falsey
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ExternalIssue do
+describe ExternalIssue, models: true do
   let(:project) { double('project', to_reference: 'namespace1/project1') }
   let(:issue)   { described_class.new('EXT-1234', project) }
 

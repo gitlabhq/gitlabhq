@@ -10,17 +10,20 @@ class @MergeRequestWidget
   constructor: (@opts) ->
     modal = $('#modal_merge_info').modal(show: false)
 
-  mergeInProgress: ->
+  mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
       type: 'GET'
       url: $('.merge-request').data('url')
       success: (data) =>
         if data.state == "merged"
-          location.reload()
+          urlSuffix = if deleteSourceBranch then '?delete_source=true' else ''
+
+          window.location.href = window.location.pathname + urlSuffix
         else if data.merge_error
           $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>")
         else
-          setTimeout(merge_request_widget.mergeInProgress, 2000)
+          callback = -> merge_request_widget.mergeInProgress(deleteSourceBranch)
+          setTimeout(callback, 2000)
       dataType: 'json'
 
   getMergeStatus: ->

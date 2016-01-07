@@ -4,7 +4,6 @@
  */
 .mr-state-widget {
   background: #F7F8FA;
-  margin-bottom: 20px;
   color: $gl-gray;
   border: 1px solid #dce0e6;
   @include border-radius(2px);
@@ -19,6 +18,7 @@
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
+      float: left;
 
       .accept_merge_request {
         &.ci-pending,
@@ -37,14 +37,15 @@
 
     .accept-control {
       display: inline-block;
+      float: left;
       margin: 0;
       margin-left: 20px;
       padding: 5px;
+      padding-top: 12px;
       line-height: 20px;
 
       &.right {
         float: right;
-        padding-top: 12px;
         a {
           color: $gl-gray;
         }
@@ -82,12 +83,16 @@
     &.ci-error {
       color: $gl-danger;
     }
+
+    a.monospace {
+      color: inherit;
+    }
   }
 
   .mr-widget-body,
   .ci_widget,
   .mr-widget-footer {
-    padding: 15px;
+    padding: $gl-padding;
   }
 
   .normal {
@@ -116,28 +121,6 @@
   }
 }
 
-.merge-request .merge-request-tabs {
-  @include nav-menu;
-  margin: -$gl-padding;
-  padding: $gl-padding;
-  text-align: center;
-  margin-bottom: 1px;
-}
-
-// Mobile
-@media (max-width: 480px) {
-  .merge-request .merge-request-tabs {
-    margin: 0;
-    padding: 0;
-
-    li {
-      a {
-        padding: 0;
-      }
-    }
-  }
-}
-
 .mr_source_commit,
 .mr_target_commit {
   .commit {
@@ -155,7 +138,7 @@
   font-family: $monospace_font;
   font-weight: bold;
   overflow: hidden;
-  font-size: 14px;
+  font-size: 90%;
   margin: 0 3px;
 }
 
@@ -192,25 +175,10 @@
   line-height: 1.1;
 }
 
-.merge-request-form-info {
-  padding-top: 15px;
-}
-
 // hide mr close link for inline diff comment form
 .diff-file .close-mr-link,
 .diff-file .reopen-mr-link {
   display: none;
-}
-
-.merge-request-show-labels {
-  a {
-    margin-right: 5px;
-    margin-bottom: 5px;
-    display: inline-block;
-    .color-label {
-      padding: 6px 10px;
-    }
-  }
 }
 
 .merge-request-form .select2-container {
@@ -223,7 +191,7 @@
   .btn-clipboard {
     @extend .pull-right;
 
-    margin-right: 18px;
+    margin-right: 20px;
     margin-top: 5px;
     position: absolute;
     right: 0;

@@ -4,7 +4,67 @@ module PageLayoutHelper
 
     @page_title.push(*titles.compact) if titles.any?
 
-    @page_title.join(" | ")
+    # Segments are seperated by middot
+    @page_title.join(" \u00b7 ")
+  end
+
+  # Define or get a description for the current page
+  #
+  # description - String (default: nil)
+  #
+  # If this helper is called multiple times with an argument, only the last
+  # description will be returned when called without an argument. Descriptions
+  # have newlines replaced with spaces and all HTML tags are sanitized.
+  #
+  # Examples:
+  #
+  #   page_description # => "GitLab Community Edition"
+  #   page_description("Foo")
+  #   page_description # => "Foo"
+  #
+  #   page_description("<b>Bar</b>\nBaz")
+  #   page_description # => "Bar Baz"
+  #
+  # Returns an HTML-safe String.
+  def page_description(description = nil)
+    if description.present?
+      @page_description = description.squish
+    elsif @page_description.present?
+      sanitize(@page_description, tags: []).truncate_words(30)
+    end
+  end
+
+  def page_image
+    default = image_url('gitlab_logo.png')
+
+    subject = @project || @user || @group
+
+    image = subject.avatar_url if subject.present?
+    image || default
+  end
+
+  # Define or get attributes to be used as Twitter card metadata
+  #
+  # map - Hash of label => data pairs. Keys become labels, values become data
+  #
+  # Raises ArgumentError if given more than two attributes
+  def page_card_attributes(map = {})
+    raise ArgumentError, 'cannot provide more than two attributes' if map.length > 2
+
+    @page_card_attributes ||= {}
+    @page_card_attributes = map.reject { |_,v| v.blank? } if map.present?
+    @page_card_attributes
+  end
+
+  def page_card_meta_tags
+    tags = ''
+
+    page_card_attributes.each_with_index do |pair, i|
+      tags << tag(:meta, property: "twitter:label#{i + 1}", content: pair[0])
+      tags << tag(:meta, property: "twitter:data#{i + 1}",  content: pair[1])
+    end
+
+    tags.html_safe
   end
 
   def header_title(title = nil, title_url = nil)

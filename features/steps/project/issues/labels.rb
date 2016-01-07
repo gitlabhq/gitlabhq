@@ -9,7 +9,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I remove label \'bug\'' do
     page.within "#label_#{bug_label.id}" do
-      click_link 'Remove'
+      click_link 'Delete'
     end
   end
 
@@ -31,20 +31,20 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I submit new label \'support\'' do
     fill_in 'Title', with: 'support'
-    fill_in 'Background Color', with: '#F95610'
-    click_button 'Save'
+    fill_in 'Background color', with: '#F95610'
+    click_button 'Create Label'
   end
 
   step 'I submit new label \'bug\'' do
     fill_in 'Title', with: 'bug'
-    fill_in 'Background Color', with: '#F95610'
-    click_button 'Save'
+    fill_in 'Background color', with: '#F95610'
+    click_button 'Create Label'
   end
 
   step 'I submit new label with invalid color' do
     fill_in 'Title', with: 'support'
-    fill_in 'Background Color', with: '#12'
-    click_button 'Save'
+    fill_in 'Background color', with: '#12'
+    click_button 'Create Label'
   end
 
   step 'I should see label label exist error message' do
@@ -55,7 +55,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I should see label color error message' do
     page.within '.label-form' do
-      expect(page).to have_content 'Color is invalid'
+      expect(page).to have_content 'Color must be a valid color code'
     end
   end
 
@@ -85,8 +85,8 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I change label \'bug\' to \'fix\'' do
     fill_in 'Title', with: 'fix'
-    fill_in 'Background Color', with: '#F15610'
-    click_button 'Save'
+    fill_in 'Background color', with: '#F15610'
+    click_button 'Save changes'
   end
 
   step 'I should see label \'fix\'' do

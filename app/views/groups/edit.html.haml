@@ -3,8 +3,7 @@
 
 .panel.panel-default
   .panel-heading
-    %strong= @group.name
-    group settings:
+    Group settings
   .panel-body
     = form_for @group, html: { multipart: true, class: "form-horizontal" }, authenticity_token: true do |f|
       - if @group.errors.any?
@@ -25,15 +24,6 @@
             %hr
             = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
-      .form-group
-        %hr
-        = f.label :public, class: 'control-label' do
-          Public
-        .col-sm-10
-          .checkbox
-            = f.check_box :public
-            %span.descr Make this group public (even if there is no any public project inside this group)
-
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"
 
@@ -45,4 +35,5 @@
       %br
       %strong Removed group can not be restored!
 
-    = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
+    .form-actions
+      = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"

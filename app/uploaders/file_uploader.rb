@@ -1,5 +1,7 @@
 # encoding: utf-8
 class FileUploader < CarrierWave::Uploader::Base
+  include UploaderHelper
+
   storage :file
 
   attr_accessor :project, :secret
@@ -27,22 +29,5 @@ class FileUploader < CarrierWave::Uploader::Base
 
   def secure_url
     File.join("/uploads", @secret, file.filename)
-  end
-
-  def file_storage?
-    self.class.storage == CarrierWave::Storage::File
-  end
-
-  def image?
-    img_ext = %w(png jpg jpeg gif bmp tiff)
-    if file.respond_to?(:extension)
-      img_ext.include?(file.extension.downcase)
-    else
-      # Not all CarrierWave storages respond to :extension
-      ext = file.path.split('.').last.downcase
-      img_ext.include?(ext)
-    end
-  rescue
-    false
   end
 end

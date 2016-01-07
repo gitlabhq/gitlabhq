@@ -6,7 +6,7 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let!(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
-  let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.seconds) }
+  let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds) }
   let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   let!(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
@@ -127,6 +127,23 @@ describe API::API, api: true  do
 
     it "should return a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_request/999", user)
+      expect(response.status).to eq(404)
+    end
+  end
+
+  describe 'GET /projects/:id/merge_request/:merge_request_id/commits' do
+    context 'valid merge request' do
+      before { get api("/projects/#{project.id}/merge_request/#{merge_request.id}/commits", user) }
+      let(:commit) { merge_request.commits.first }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(json_response.size).to eq(merge_request.commits.size) }
+      it { expect(json_response.first['id']).to eq(commit.id) }
+      it { expect(json_response.first['title']).to eq(commit.title) }
+    end
+
+    it 'returns a 404 when merge_request_id not found' do
+      get api("/projects/#{project.id}/merge_request/999/commits", user)
       expect(response.status).to eq(404)
     end
   end
@@ -303,19 +320,21 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_request/:merge_request_id/merge" do
+    let(:ci_commit) { create(:ci_commit_without_jobs) }
+
     it "should return merge_request in case of success" do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
 
       expect(response.status).to eq(200)
     end
 
-    it "should return 405 if branch can't be merged" do
+    it "should return 406 if branch can't be merged" do
       allow_any_instance_of(MergeRequest).
         to receive(:can_be_merged?).and_return(false)
 
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
 
-      expect(response.status).to eq(405)
+      expect(response.status).to eq(406)
       expect(json_response['message']).to eq('Branch cannot be merged')
     end
 
@@ -339,6 +358,17 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user2)
       expect(response.status).to eq(401)
       expect(json_response['message']).to eq('401 Unauthorized')
+    end
+
+    it "enables merge when build succeeds if the ci is active" do
+      allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
+      allow(ci_commit).to receive(:active?).and_return(true)
+
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user), merge_when_build_succeeds: true
+
+      expect(response.status).to eq(200)
+      expect(json_response['title']).to eq('Test')
+      expect(json_response['merge_when_build_succeeds']).to eq(true)
     end
   end
 

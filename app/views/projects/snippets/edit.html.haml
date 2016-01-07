@@ -2,6 +2,6 @@
 = render "header_title"
 
 %h3.page-title
-  Edit snippet
+  Edit Snippet
 %hr
 = render "shared/snippets/form", url: namespace_project_snippet_path(@project.namespace, @project, @snippet), visibility_level: @snippet.visibility_level

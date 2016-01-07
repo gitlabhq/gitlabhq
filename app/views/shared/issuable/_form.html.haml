@@ -6,8 +6,7 @@
           %span= msg
           %br
 .form-group
-  = f.label :title, class: 'control-label' do
-    %strong= 'Title *'
+  = f.label :title, class: 'control-label'
   .col-sm-10
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
         class: 'form-control pad js-gfm-input js-quick-submit', required: true
@@ -20,7 +19,7 @@
         - else
           Start the title with <code>[WIP]</code> or <code>WIP:</code> to prevent a
           <strong>Work In Progress</strong> merge request from being merged before it's ready.
-.form-group.issuable-description
+.form-group.detail-page-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
 
@@ -30,29 +29,25 @@
       = render 'projects/notes/hints'
       .clearfix
       .error-alert
-  %hr
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
+  %hr
   .form-group
     .issue-assignee
-      = f.label :assignee_id, class: 'control-label' do
-        %i.fa.fa-user
-        Assign to
+      = f.label :assignee_id, "Assignee", class: 'control-label'
       .col-sm-10
         = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
-            placeholder: 'Select a user', class: 'custom-form-control', null_user: true,
+            placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
             selected: issuable.assignee_id, project: @target_project || @project,
-            first_user: true, current_user: true)
+            first_user: true, current_user: true, include_blank: true)
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
   .form-group
     .issue-milestone
-      = f.label :milestone_id, class: 'control-label' do
-        %i.fa.fa-clock-o
-        Milestone
+      = f.label :milestone_id, "Milestone", class: 'control-label'
       .col-sm-10
         - if milestone_options(issuable).present?
           = f.select(:milestone_id, milestone_options(issuable),
-            { include_blank: 'Select milestone' }, { class: 'select2' })
+            { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
         - else
           .prepend-top-10
           %span.light No open milestones available.
@@ -60,13 +55,11 @@
         - if can? current_user, :admin_milestone, issuable.project
           = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
   .form-group
-    = f.label :label_ids, class: 'control-label' do
-      %i.fa.fa-tag
-      Labels
+    = f.label :label_ids, "Labels", class: 'control-label'
     .col-sm-10
       - if issuable.project.labels.any?
         = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-          { selected: issuable.label_ids }, multiple: true, class: 'select2'
+          { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
       - else
         .prepend-top-10
         %span.light No labels yet.
@@ -78,31 +71,30 @@
   %hr
     - if @merge_request.new_record?
       .form-group
-        = f.label :source_branch, class: 'control-label' do
-          %i.fa.fa-code-fork
-          Source Branch
+        = f.label :source_branch, class: 'control-label'
         .col-sm-10
           = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
   .form-group
-    = f.label :target_branch, class: 'control-label' do
-      %i.fa.fa-code-fork
-      Target Branch
+    = f.label :target_branch, class: 'control-label'
     .col-sm-10
-      = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record? })
+      = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
       - if @merge_request.new_record?
         %p.help-block
         = link_to 'Change branches', mr_change_branches_path(@merge_request)
 
-.form-actions
-  - if !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project)) && !issuable.persisted?
-    %p
-      Please review the
-      %strong #{link_to 'guidelines for contribution', guide_url}
-      to this repository.
+- is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
+.gray-content-block{class: (is_footer ? "footer-block" : "middle-block")}
   - if issuable.new_record?
-    = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+    = f.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
     = f.submit 'Save changes', class: 'btn btn-save'
+
+  - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
+    .inline.prepend-left-10
+      Please review the
+      %strong #{link_to 'contribution guidelines', guide_url}
+      for this project.
+
   - if issuable.new_record?
     - cancel_project = issuable.source_project
   - else

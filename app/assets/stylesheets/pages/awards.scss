@@ -1,0 +1,125 @@
+.awards {
+  @include clearfix;
+  line-height: 34px;
+
+  .emoji-icon {
+    width: 20px;
+    height: 20px;
+    margin: 7px 0 0 5px;
+  }
+
+  .award {
+    @include border-radius(5px);
+
+    border: 1px solid;
+    padding: 0px 10px;
+    float: left;
+    margin-right: 5px;
+    border-color: $border-color;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #dce0e5;
+    }
+
+    &.active {
+      border-color: $border-gray-light;
+      background-color: $gray-light;
+
+      &:hover {
+        background-color: #dce0e5;
+      }
+
+      .counter {
+        font-weight: bold;
+      }
+    }
+
+    .icon {
+      float: left;
+      margin-right: 10px;
+    }
+
+    .counter {
+      float: left;
+    }
+  }
+
+  .awards-controls {
+    position: relative;
+    margin-left: 10px;
+    float: left;
+
+    .add-award {
+      font-size: 24px;
+      color: $gl-gray;
+      position: relative;
+      top: 2px;
+
+      &:hover,
+      &:link {
+        text-decoration: none;
+      }
+    }
+
+    .emoji-menu{
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 1000;
+      display: none;
+      float: left;
+      min-width: 160px;
+      padding: 5px 0;
+      margin: 2px 0 0;
+      font-size: 14px;
+      text-align: left;
+      list-style: none;
+      background-color: #fff;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
+      border: 1px solid #ccc;
+      border: 1px solid rgba(0,0,0,.15);
+      border-radius: 4px;
+      -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+      box-shadow: 0 6px 12px rgba(0,0,0,.175);
+
+      .emoji-menu-content {
+        padding: $gl-padding;
+        width: 300px;
+        height: 300px;
+        overflow-y: scroll;
+
+        h5 {
+          clear: left;
+        }
+
+        ul {
+          list-style-type: none;
+          margin-left: -20px;
+          margin-bottom: 20px;
+          overflow: auto;
+        }
+
+        input.emoji-search{
+          background: image-url("icon-search.png") 240px no-repeat;
+        }
+
+        li {
+          cursor: pointer;
+          width: 30px;
+          height: 30px;
+          text-align: center;
+          float: left;
+          margin: 3px;
+          list-decorate: none;
+          @include border-radius(5px);
+
+          &:hover {
+            background-color: #ccc;
+          }
+        }
+      }
+    }
+  }
+}

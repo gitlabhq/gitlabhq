@@ -14,7 +14,7 @@
 .row
   .col-md-6
     - if @personal_projects.present?
-      = render 'users/projects', projects: @personal_projects
+      = render 'admin/users/projects', projects: @personal_projects
     - else
       .nothing-here-block This user has no personal projects.
 

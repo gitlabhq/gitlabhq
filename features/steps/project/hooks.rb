@@ -70,8 +70,6 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
 
   step 'I should see hook service down error message' do
     expect(page).to have_selector '.flash-alert',
-                              text: 'Hook execution failed. '\
-                                    'Ensure hook URL is correct and '\
-                                    'service is up.'
+                              text: 'Hook execution failed: Exception from'
   end
 end

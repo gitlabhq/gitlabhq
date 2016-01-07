@@ -24,20 +24,6 @@
   }
 }
 
-.issuable-context-title {
-  margin-bottom: 5px;
-
-  .avatar {
-    margin-left: 0;
-  }
-
-  label {
-    color: $gl-gray;
-    font-weight: normal;
-    margin-right: 4px;
-  }
-}
-
 .project-issuable-filter {
   .controls {
     float: right;
@@ -50,33 +36,11 @@
 }
 
 .issuable-details {
-  .page-title {
-    margin-top: -15px;
-    padding: 10px 0;
-    margin-bottom: 0;
-    color: #5c5d5e;
-    font-size: 16px;
+  section {
+    border-right: 1px solid $border-white-light;
 
-    .author {
-      color: #5c5d5e;
-    }
-
-    .issue-id {
-      color: #5c5d5e;
-    }
-  }
-
-  .issue-title {
-    margin: 0;
-    font-size: 23px;
-    color: #313236;
-  }
-
-  .description {
-    margin-top: 6px;
-
-    p:last-child {
-      margin-bottom: 0;
+    .issuable-discussion {
+      margin-right: 1px;
     }
   }
 }
@@ -89,15 +53,65 @@
   }
 }
 
-.cross-project-reference {
-  text-align: center;
-  width: 100%;
+.issuable-show-labels {
+  a {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+    .color-label {
+      padding: 6px 10px;
+    }
+  }
+}
 
-  .slead {
-    padding: 5px;
+.issuable-sidebar {
+  .block {
+    @include clearfix;
+    padding:  $gl-padding 0;
+    border-bottom: 1px solid #F0F0F0;
+
+    &:last-child {
+      border: none;
+    }
   }
 
-  span, button {
-    background-color: $background-color;
+  .title {
+    color: $gl-text-color;
+    margin-bottom: 8px;
+
+    .avatar {
+      margin-left: 0;
+    }
+
+    label {
+      font-weight: normal;
+      margin-right: 4px;
+    }
+
+    .edit-link {
+      color: $gl-gray;
+    }
+  }
+
+  .cross-project-reference {
+    font-weight: bold;
+    color: $gl-link-color;
+
+    button {
+      float: right;
+    }
+  }
+
+  .selectbox {
+    display: none
+  }
+
+  .btn-clipboard {
+    color: $gl-gray;
+  }
+
+  .participants .avatar {
+    margin-top: 6px;
+    margin-right: 2px;
   }
 }

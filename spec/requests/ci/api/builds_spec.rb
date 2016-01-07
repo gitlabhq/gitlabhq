@@ -4,8 +4,7 @@ describe Ci::API::API do
   include ApiHelpers
 
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
-  let(:project) { FactoryGirl.create(:ci_project) }
-  let(:gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: project) }
+  let(:project) { FactoryGirl.create(:empty_project) }
 
   before do
     stub_ci_commit_to_return_yaml_file
@@ -13,16 +12,15 @@ describe Ci::API::API do
 
   describe "Builds API for runners" do
     let(:shared_runner) { FactoryGirl.create(:ci_runner, token: "SharedRunner") }
-    let(:shared_project) { FactoryGirl.create(:ci_project, name: "SharedProject") }
-    let(:shared_gl_project) { FactoryGirl.create(:empty_project, gitlab_ci_project: shared_project) }
+    let(:shared_project) { FactoryGirl.create(:empty_project, name: "SharedProject") }
 
     before do
-      FactoryGirl.create :ci_runner_project, project_id: project.id, runner_id: runner.id
+      FactoryGirl.create :ci_runner_project, project: project, runner: runner
     end
 
     describe "POST /builds/register" do
       it "should start a build" do
-        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
+        commit = FactoryGirl.create(:ci_commit, project: project)
         commit.create_builds('master', false, nil)
         build = commit.builds.first
 
@@ -40,7 +38,7 @@ describe Ci::API::API do
       end
 
       it "should return 404 error if no builds for specific runner" do
-        commit = FactoryGirl.create(:ci_commit, gl_project: shared_gl_project)
+        commit = FactoryGirl.create(:ci_commit, project: shared_project)
         FactoryGirl.create(:ci_build, commit: commit, status: 'pending')
 
         post ci_api("/builds/register"), token: runner.token
@@ -49,7 +47,7 @@ describe Ci::API::API do
       end
 
       it "should return 404 error if no builds for shared runner" do
-        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
+        commit = FactoryGirl.create(:ci_commit, project: project)
         FactoryGirl.create(:ci_build, commit: commit, status: 'pending')
 
         post ci_api("/builds/register"), token: shared_runner.token
@@ -58,7 +56,7 @@ describe Ci::API::API do
       end
 
       it "returns options" do
-        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
+        commit = FactoryGirl.create(:ci_commit, project: project)
         commit.create_builds('master', false, nil)
 
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
@@ -68,7 +66,7 @@ describe Ci::API::API do
       end
 
       it "returns variables" do
-        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
+        commit = FactoryGirl.create(:ci_commit, project: project)
         commit.create_builds('master', false, nil)
         project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
 
@@ -85,7 +83,7 @@ describe Ci::API::API do
 
       it "returns variables for triggers" do
         trigger = FactoryGirl.create(:ci_trigger, project: project)
-        commit = FactoryGirl.create(:ci_commit, gl_project: gl_project)
+        commit = FactoryGirl.create(:ci_commit, project: project)
 
         trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, commit: commit, trigger: trigger)
         commit.create_builds('master', false, nil, trigger_request)
@@ -106,7 +104,7 @@ describe Ci::API::API do
     end
 
     describe "PUT /builds/:id" do
-      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project)}
+      let(:commit) { FactoryGirl.create(:ci_commit, project: project)}
       let(:build) { FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id) }
 
       it "should update a running build" do
@@ -126,14 +124,14 @@ describe Ci::API::API do
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
-      let(:commit) { FactoryGirl.create(:ci_commit, gl_project: gl_project) }
+      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
       let(:build) { FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id) }
       let(:authorize_url) { ci_api("/builds/#{build.id}/artifacts/authorize") }
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:get_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:headers) { { "GitLab-Workhorse" => "1.0" } }
-      let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.project.token) }
+      let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token) }
 
       describe "POST /builds/:id/artifacts/authorize" do
         context "should authorize posting artifact to running build" do
@@ -142,7 +140,7 @@ describe Ci::API::API do
           end
 
           it "using token as parameter" do
-            post authorize_url, { token: build.project.token }, headers
+            post authorize_url, { token: build.token }, headers
             expect(response.status).to eq(200)
             expect(json_response["TempPath"]).to_not be_nil
           end
@@ -160,15 +158,13 @@ describe Ci::API::API do
           end
 
           it "using token as parameter" do
-            settings = Gitlab::CurrentSettings::current_application_settings
-            settings.update_attributes(max_artifacts_size: 0)
-            post authorize_url, { token: build.project.token, filesize: 100 }, headers
+            stub_application_setting(max_artifacts_size: 0)
+            post authorize_url, { token: build.token, filesize: 100 }, headers
             expect(response.status).to eq(413)
           end
 
           it "using token as header" do
-            settings = Gitlab::CurrentSettings::current_application_settings
-            settings.update_attributes(max_artifacts_size: 0)
+            stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { filesize: 100 }, headers_with_token
             expect(response.status).to eq(413)
           end
@@ -220,8 +216,7 @@ describe Ci::API::API do
             end
 
             it do
-              settings = Gitlab::CurrentSettings::current_application_settings
-              settings.update_attributes(max_artifacts_size: 0)
+              stub_application_setting(max_artifacts_size: 0)
               upload_artifacts(file_upload, headers_with_token)
               expect(response.status).to eq(413)
             end
@@ -244,7 +239,7 @@ describe Ci::API::API do
             end
 
             it do
-              post post_url, { token: build.project.token }, {}
+              post post_url, { token: build.token }, {}
               expect(response.status).to eq(403)
             end
           end
@@ -284,12 +279,12 @@ describe Ci::API::API do
       describe "DELETE /builds/:id/artifacts" do
         before do
           build.run!
-          post delete_url, token: build.project.token, file: file_upload
+          post delete_url, token: build.token, file: file_upload
         end
 
         it "should delete artifact build" do
           build.success
-          delete delete_url, token: build.project.token
+          delete delete_url, token: build.token
           expect(response.status).to eq(200)
         end
       end
@@ -301,12 +296,12 @@ describe Ci::API::API do
 
         it "should download artifact" do
           build.update_attributes(artifacts_file: file_upload)
-          get get_url, token: build.project.token
+          get get_url, token: build.token
           expect(response.status).to eq(200)
         end
 
         it "should fail to download if no artifact uploaded" do
-          get get_url, token: build.project.token
+          get get_url, token: build.token
           expect(response.status).to eq(404)
         end
       end

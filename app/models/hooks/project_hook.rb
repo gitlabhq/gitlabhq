@@ -2,18 +2,19 @@
 #
 # Table name: web_hooks
 #
-#  id                    :integer          not null, primary key
-#  url                   :string(255)
-#  project_id            :integer
-#  created_at            :datetime
-#  updated_at            :datetime
-#  type                  :string(255)      default("ProjectHook")
-#  service_id            :integer
-#  push_events           :boolean          default(TRUE), not null
-#  issues_events         :boolean          default(FALSE), not null
-#  merge_requests_events :boolean          default(FALSE), not null
-#  tag_push_events       :boolean          default(FALSE)
-#  note_events           :boolean          default(FALSE), not null
+#  id                      :integer          not null, primary key
+#  url                     :string(255)
+#  project_id              :integer
+#  created_at              :datetime
+#  updated_at              :datetime
+#  type                    :string(255)      default("ProjectHook")
+#  service_id              :integer
+#  push_events             :boolean          default(TRUE), not null
+#  issues_events           :boolean          default(FALSE), not null
+#  merge_requests_events   :boolean          default(FALSE), not null
+#  tag_push_events         :boolean          default(FALSE)
+#  note_events             :boolean          default(FALSE), not null
+#  enable_ssl_verification :boolean          default(TRUE)
 #
 
 class ProjectHook < WebHook
@@ -24,4 +25,5 @@ class ProjectHook < WebHook
   scope :issue_hooks, -> { where(issues_events: true) }
   scope :note_hooks, -> { where(note_events: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true) }
+  scope :build_hooks, -> { where(build_events: true) }
 end

@@ -12,9 +12,9 @@ class NotesFinder
       when "commit"
         project.notes.for_commit_id(target_id).not_inline
       when "issue"
-        project.issues.find(target_id).notes.inc_author
+        project.issues.find(target_id).notes.nonawards.inc_author
       when "merge_request"
-        project.merge_requests.find(target_id).mr_and_commit_notes.inc_author
+        project.merge_requests.find(target_id).mr_and_commit_notes.nonawards.inc_author
       when "snippet", "project_snippet"
         project.snippets.find(target_id).notes
       else

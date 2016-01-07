@@ -8,10 +8,11 @@ before_script:
   - touch log/application.log
   - touch log/test.log
   - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
-  - bundle exec rake db:create RAILS_ENV=test
+  - bundle exec rake db:reset db:create RAILS_ENV=test
 
 spec:feature:
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
   tags:
     - ruby
@@ -20,6 +21,27 @@ spec:feature:
 spec:api:
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
+  tags:
+    - ruby
+    - mysql
+
+spec:models:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
+  tags:
+    - ruby
+    - mysql
+
+spec:lib:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
+  tags:
+    - ruby
+    - mysql
+
+spec:services:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
   tags:
     - ruby
     - mysql
@@ -39,9 +61,16 @@ spec:other:
     - ruby
     - mysql
 
-spinach:project:
+spinach:project:half:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
+  tags:
+    - ruby
+    - mysql
+
+spinach:project:rest:
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   tags:
     - ruby
     - mysql
@@ -80,11 +109,18 @@ flog:
   tags:
     - ruby
     - mysql
-  allow_failure: true
 
 flay:
   script:
     - bundle exec rake flay
+  tags:
+    - ruby
+    - mysql
+
+bundler:audit:
+  script: 
+    - "bundle exec bundle-audit update"
+    - "bundle exec bundle-audit check"
   tags:
     - ruby
     - mysql

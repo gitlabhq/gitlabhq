@@ -1,6 +1,11 @@
-- page_title "#{@commit.title} (#{@commit.short_id})", "Commits"
+- page_title        "#{@commit.title} (#{@commit.short_id})", "Commits"
+- page_description  @commit.description
+
 = render "projects/commits/header_title"
 = render "commit_box"
-= render "ci_menu" if @ci_commit
+- if @ci_commit
+  = render "ci_menu"
+- else
+  %div.block-connector
 = render "projects/diffs/diffs", diffs: @diffs, project: @project
-= render "projects/notes/notes_with_form", view: params[:view]
+= render "projects/notes/notes_with_form"

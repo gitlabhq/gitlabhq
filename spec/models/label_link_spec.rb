@@ -12,7 +12,7 @@
 
 require 'spec_helper'
 
-describe LabelLink do
+describe LabelLink, models: true do
   let(:label) { create(:label_link) }
   it { expect(label).to be_valid }
 

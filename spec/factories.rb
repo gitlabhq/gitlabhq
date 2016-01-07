@@ -43,7 +43,8 @@ FactoryGirl.define do
       end
 
       after(:create) do |user, evaluator|
-        user.identities << create(:identity,
+        user.identities << create(
+          :identity,
           provider: evaluator.provider,
           extern_uid: evaluator.extern_uid
         )
@@ -165,6 +166,18 @@ FactoryGirl.define do
     title
     content
     file_name
+
+    trait :public do
+      visibility_level Gitlab::VisibilityLevel::PUBLIC
+    end
+
+    trait :internal do
+      visibility_level Gitlab::VisibilityLevel::INTERNAL
+    end
+
+    trait :private do
+      visibility_level Gitlab::VisibilityLevel::PRIVATE
+    end
   end
 
   factory :snippet do

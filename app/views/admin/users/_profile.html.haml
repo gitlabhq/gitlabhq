@@ -16,11 +16,11 @@
     - unless user.linkedin.blank?
       %li
         %span.light LinkedIn:
-        %strong= link_to user.linkedin, "http://www.linkedin.com/in/#{user.linkedin}"
+        %strong= link_to user.linkedin, "https://www.linkedin.com/in/#{user.linkedin}"
     - unless user.twitter.blank?
       %li
         %span.light Twitter:
-        %strong= link_to user.twitter, "http://www.twitter.com/#{user.twitter}"
+        %strong= link_to user.twitter, "https://twitter.com/#{user.twitter}"
     - unless user.website_url.blank?
       %li
         %span.light Website:

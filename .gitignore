@@ -26,6 +26,7 @@ config/initializers/smtp_settings.rb
 config/resque.yml
 config/unicorn.rb
 config/secrets.yml
+config/sidekiq.yml
 coverage/*
 db/*.sqlite3
 db/*.sqlite3-journal
@@ -43,3 +44,4 @@ rails_best_practices_output.html
 tmp/
 vendor/bundle/*
 builds/*
+shared/*

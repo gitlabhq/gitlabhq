@@ -14,11 +14,11 @@
     .form-group.project-visibility-level-holder
       = f.label :default_project_visibility, class: 'control-label col-sm-2'
       .col-sm-10
-        = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: 'Project')
+        = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project)
     .form-group.project-visibility-level-holder
       = f.label :default_snippet_visibility, class: 'control-label col-sm-2'
       .col-sm-10
-        = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: 'Snippet')
+        = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: PersonalSnippet)
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10
@@ -105,6 +105,18 @@
             = f.check_box :signin_enabled
             Sign-in enabled
     .form-group
+      = f.label :two_factor_authentication, 'Two-Factor authentication', class: 'control-label col-sm-2'
+      .col-sm-10
+        .checkbox
+          = f.label :require_two_factor_authentication do
+            = f.check_box :require_two_factor_authentication
+            Require all users to setup Two-Factor authentication
+    .form-group
+      = f.label :two_factor_authentication, 'Two-Factor grace period (hours)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
+        .help-block Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
+    .form-group
       = f.label :restricted_signup_domains, 'Restricted domains for sign-ups', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com', class: 'form-control'
@@ -137,12 +149,81 @@
         .checkbox
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
-            Enable shared runners for a new projects
+            Enable shared runners for new projects
 
     .form-group
       = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
+
+  %fieldset
+    %legend Metrics
+    %p
+      These settings require a restart to take effect.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :metrics_enabled do
+            = f.check_box :metrics_enabled
+            Enable InfluxDB Metrics
+    .form-group
+      = f.label :metrics_host, 'InfluxDB host', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :metrics_host, class: 'form-control', placeholder: 'influxdb.example.com'
+    .form-group
+      = f.label :metrics_port, 'InfluxDB port', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :metrics_port, class: 'form-control', placeholder: '8089'
+        .help-block
+          The UDP port to use for connecting to InfluxDB. InfluxDB requires that
+          your server configuration specifies a database to store data in when
+          sending messages to this port, without it metrics data will not be
+          saved.
+    .form-group
+      = f.label :metrics_pool_size, 'Connection pool size', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :metrics_pool_size, class: 'form-control'
+        .help-block
+          The amount of InfluxDB connections to open. Connections are opened
+          lazily. Users using multi-threaded application servers should ensure
+          enough connections are available (at minimum the amount of application
+          server threads).
+    .form-group
+      = f.label :metrics_timeout, 'Connection timeout', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :metrics_timeout, class: 'form-control'
+        .help-block
+          The amount of seconds after which an InfluxDB connection will time
+          out.
+    .form-group
+      = f.label :metrics_method_call_threshold, 'Method Call Threshold (ms)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :metrics_method_call_threshold, class: 'form-control'
+        .help-block
+          A method call is only tracked when it takes longer to complete than
+          the given amount of milliseconds.
+
+  %fieldset
+    %legend Spam and Anti-bot Protection
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :recaptcha_enabled do
+            = f.check_box :recaptcha_enabled
+            Enable reCAPTCHA
+          %span.help-block#recaptcha_help_block Helps preventing bots from creating accounts
+
+    .form-group
+      = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :recaptcha_site_key, class: 'form-control'
+        .help-block
+          Generate site and private keys here:
+          %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
+    .form-group
+      = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :recaptcha_private_key, class: 'form-control'
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-primary'

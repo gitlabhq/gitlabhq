@@ -1,0 +1,4 @@
+- unless @project.empty_repo?
+  - if can? current_user, :download_code, @project
+    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: @ref, format: 'zip'), class: 'btn has_tooltip', rel: 'nofollow', title: "Download ZIP" do
+      = icon('download')
