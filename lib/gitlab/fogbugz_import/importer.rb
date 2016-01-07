@@ -232,7 +232,7 @@ module Gitlab
 
         return nil if res.nil?
 
-        text = res['markdown']
+        res['markdown']
       end
 
       def build_attachment_url(rel_url)
