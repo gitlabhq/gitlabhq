@@ -59,6 +59,10 @@ class MarkdownFeature
     @label ||= create(:label, name: 'awaiting feedback', project: project)
   end
 
+  def milestone
+    @milestone ||= create(:milestone, project: project)
+  end
+
   # Cross-references -----------------------------------------------------------
 
   def xproject
@@ -91,6 +95,10 @@ class MarkdownFeature
       xcommit2 = xproject.commit('HEAD~2')
       CommitRange.new("#{xcommit.id}...#{xcommit2.id}", xproject)
     end
+  end
+
+  def xmilestone
+    @xmilestone ||= create(:milestone, project: xproject)
   end
 
   def urls

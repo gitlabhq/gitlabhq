@@ -22,6 +22,7 @@ class Milestone < ActiveRecord::Base
 
   include InternalId
   include Sortable
+  include Referable
   include StripAttribute
 
   belongs_to :project
@@ -59,6 +60,27 @@ class Milestone < ActiveRecord::Base
       query = "%#{query}%"
       where("title like ? or description like ?", query, query)
     end
+  end
+
+  def self.reference_pattern
+    nil
+  end
+
+  def self.link_reference_pattern
+    super("milestones", /(?<milestone>\d+)/)
+  end
+
+  def to_reference(from_project = nil)
+    escaped_title = self.title.gsub("]", "\\]")
+
+    h = Gitlab::Application.routes.url_helpers
+    url = h.namespace_project_milestone_url(self.project.namespace, self.project, self)
+
+    "[#{escaped_title}](#{url})"
+  end
+
+  def reference_link_text(from_project = nil)
+    self.title
   end
 
   def expired?
