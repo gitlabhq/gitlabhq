@@ -95,8 +95,7 @@ module Gitlab
       end
 
       def lexer
-        parent = Rouge::Lexer.guess(filename: @file_name, source: @code).new rescue Rouge::Lexers::PlainText.new
-        Rouge::Lexers::GitlabDiff.new(parent_lexer: parent)
+        Rouge::Lexer.guess(filename: @file_name, source: @code).new rescue Rouge::Lexers::PlainText.new
       end
 
       def unescape_html(content)
