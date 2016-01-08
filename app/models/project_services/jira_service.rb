@@ -40,15 +40,10 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    line1 = 'Setting `project_url`, `issues_url` and `new_issue_url` will '\
+    'Setting `project_url`, `issues_url` and `new_issue_url` will '\
     'allow a user to easily navigate to the Jira issue tracker. See the '\
     '[integration doc](http://doc.gitlab.com/ce/integration/external-issue-tracker.html) '\
     'for details.'
-
-    line2 = 'Support for referencing commits and automatic closing of Jira issues directly '\
-    'from GitLab is [available in GitLab EE.](http://doc.gitlab.com/ee/integration/jira.html)'
-
-    [line1, line2].join("\n\n")
   end
 
   def title
