@@ -1,7 +1,7 @@
 - if diff_view == 'parallel'
   - fluid_layout true
 
-- diff_files = safe_diff_files(diffs)
+- diff_files = safe_diff_files(diffs, diff_refs, repository)
 
 .gray-content-block.middle-block.oneline-block
   .inline-parallel-buttons

@@ -1,13 +1,15 @@
 module Gitlab
   module Diff
     class File
-      attr_reader :diff
+      attr_reader :diff, :repository, :new_ref, :old_ref
 
       delegate :new_file, :deleted_file, :renamed_file,
         :old_path, :new_path, to: :diff, prefix: false
 
-      def initialize(diff)
+      def initialize(diff, diff_refs, repository)
         @diff = diff
+        @repository = repository
+        @old_ref, @new_ref = diff_refs
       end
 
       # Array of Gitlab::DIff::Line objects
@@ -16,7 +18,7 @@ module Gitlab
       end
 
       def highlighted_diff_lines
-        Gitlab::Diff::Highlight.process_diff_lines(new_path, diff_lines)
+        Gitlab::Diff::Highlight.process_diff_lines(self)
       end
 
       def mode_changed?
