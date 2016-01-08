@@ -72,10 +72,14 @@ class BuildsEmailService < Service
     when 'success'
       !notify_only_broken_builds?
     when 'failed'
-      true
+      !allow_failure?(data)
     else
       false
     end
+  end
+
+  def allow_failure?(data)
+    data[:build_allow_failure] == true
   end
 
   def all_recipients(data)
