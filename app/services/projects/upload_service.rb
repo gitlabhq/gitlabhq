@@ -10,18 +10,7 @@ module Projects
       uploader = FileUploader.new(@project)
       uploader.store!(@file)
 
-      filename = uploader.image? ? uploader.file.basename : uploader.file.filename
-
-      escaped_filename = filename.gsub("]", "\\]")
-      markdown = "[#{escaped_filename}](#{uploader.secure_url})"
-      markdown.prepend("!") if uploader.image?
-
-      {
-        alt:      filename,
-        url:      uploader.secure_url,
-        is_image: uploader.image?,
-        markdown: markdown
-      }
+      uploader.to_h
     end
 
     private
