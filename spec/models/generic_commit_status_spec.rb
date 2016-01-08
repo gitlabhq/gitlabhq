@@ -29,6 +29,7 @@
 #  target_url         :string(255)
 #  description        :string(255)
 #  artifacts_file     :text
+#  gl_project_id      :integer
 #
 
 require 'spec_helper'

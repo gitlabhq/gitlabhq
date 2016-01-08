@@ -83,6 +83,26 @@ it will contain the annotation.
 It returns 200 if the operation succeed. In case of an error,
 405 with an explaining error message is returned.
 
+## Delete a tag
+
+Deletes a tag of a repository with given name. On success, this API method
+returns 200 with the name of the deleted tag. If the tag does not exist, the
+API returns 404.
+
+```
+DELETE /projects/:id/repository/tags/:tag_name
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `tag_name` (required) - The name of a tag
+
+```json
+{
+  "tag_name": "v4.3.0"
+}
+```
 
 ## Create a new release
 

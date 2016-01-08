@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
+  - Accept 2xx status codes for successful Web hook triggers (Stan Hu)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
   - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
@@ -8,6 +9,7 @@ v 8.4.0 (unreleased)
   - Implement search inside emoji picker
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
+  - Link to milestone in "Milestone changed" system note
   - Only allow group/project members to mention `@all`
   - Expose Git's version in the admin area (Trey Davis)
   - Add "Frequently used" category to emoji picker
@@ -22,8 +24,10 @@ v 8.4.0 (unreleased)
   - Update version check images to use SVG
   - Validate README format before displaying
   - Enable Microsoft Azure OAuth2 support (Janis Meybohm)
-  - Add file finder feature in tree view (koreamic)
+  - Properly set task-list class on single item task lists
+  - Add file finder feature in tree view (Kyungchul Shin)
   - Ajax filter by message for commits page
+  - API: Add support for deleting a tag via the API (Robert Schilling)
 
 v 8.3.3 (unreleased)
   - Get "Merge when build succeeds" to work when commits were pushed to MR target branch while builds were running

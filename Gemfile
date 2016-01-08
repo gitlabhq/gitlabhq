@@ -67,10 +67,6 @@ gem 'grape',        '~> 0.13.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
-# Format dates and times
-# based on human-friendly examples
-gem "stamp", '~> 0.6.0'
-
 # Pagination
 gem "kaminari", "~> 0.16.3"
 
