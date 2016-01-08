@@ -50,7 +50,7 @@ describe API::API, api: true  do
     context 'authorized user' do
       it 'should return project builds for specific commit' do
         project.ensure_ci_commit(commit.sha)
-        get api("/projects/#{project.id}/builds/commit/#{project.ci_commits.first.sha}", user)
+        get api("/projects/#{project.id}/builds/commit/#{commit.sha}", user)
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -60,7 +60,7 @@ describe API::API, api: true  do
     context 'unauthorized user' do
       it 'should not return project builds' do
         project.ensure_ci_commit(commit.sha)
-        get api("/projects/#{project.id}/builds/commit/#{project.ci_commits.first.sha}")
+        get api("/projects/#{project.id}/builds/commit/#{commit.sha}")
 
         expect(response.status).to eq(401)
       end
@@ -99,7 +99,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /projects/:id/builds/:build_id/cancel' do
+  describe 'POST /projects/:id/builds/:build_id/cancel' do
     context 'authorized user' do
       context 'user with :manage_builds persmission' do
         it 'should cancel running or pending build' do
@@ -128,7 +128,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /projects/:id/builds/:build_id/retry' do
+  describe 'POST /projects/:id/builds/:build_id/retry' do
     context 'authorized user' do
       context 'user with :manage_builds persmission' do
         it 'should retry non-running build' do

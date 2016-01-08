@@ -103,7 +103,7 @@ module API
         authorize_manage_builds!
 
         build = get_build(params[:build_id])
-        return not_found!(build) unless build && build.retryable?
+        return forbidden!('Build is not retryable') unless build && build.retryable?
 
         build = Ci::Build.retry(build)
 
