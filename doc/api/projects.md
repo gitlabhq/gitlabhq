@@ -482,6 +482,34 @@ Parameters:
 
 - `id` (required) - The ID of a project
 
+## Uploads
+
+### Upload a file
+
+Uploads a file to the specified project to be used in an issue or merge request description, or a comment.
+
+```
+POST /projects/:id/uploads
+```
+
+Parameters:
+
+- `id` (required) - The ID of the project
+- `file` (required) - The file to be uploaded
+
+```json
+{
+  "alt": "dk",
+  "url": "/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
+  "is_image": true,
+  "markdown": "![dk](/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png)"
+}
+```
+
+**Note**: The returned `url` is relative to the project path.
+In Markdown contexts, the link is automatically expanded when the format in `markdown` is used.
+
+
 ## Team members
 
 ### List project team members
