@@ -26,5 +26,12 @@ further configuration instructions and details. Contributions are welcome.
 | JetBrains TeamCity CI | A continuous integration and build server |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |
-| Redmine | Redmine issue tracker |
+| [Redmine](redmine.md) | Redmine issue tracker |
 | Slack | A team communication tool for the 21st century |
+
+## Services Templates
+
+Services templates is a way to set some predefined values in the Service of
+your liking which will then be pre-filled on each project's Service.
+
+Read more about [Services Templates in this document](services_templates.md).
