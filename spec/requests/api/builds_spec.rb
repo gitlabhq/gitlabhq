@@ -18,7 +18,20 @@ describe API::API, api: true  do
       it 'should return project builds' do
         get api("/projects/#{project.id}/builds", user)
 
-        puts json_response
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+      end
+
+      it 'should filter project with one scope element' do
+        get api("/projects/#{project.id}/builds?scope=pending", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+      end
+
+      it 'should filter project with array of scope elements' do
+        get api("/projects/#{project.id}/builds?scope[0]=pending&scope[1]=running", user)
+
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
       end

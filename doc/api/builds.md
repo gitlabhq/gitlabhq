@@ -11,7 +11,7 @@ GET /projects/:id/builds
 Parameters:
 
 - `id` (required) - The ID of a project
-- `scope` (optional) - The scope of builds to show (one of: `all`, `finished`, `running`; default: `all`)
+- `scope` (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled; if none provided showing all builds)
 
 ```json
 [
@@ -64,8 +64,7 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `sha` (required) - The SHA id of a commit
-- `scope` (optional) - The scope of builds to show (one of: `all`, `finished`, `running`; default: `all`)
-
+- `scope` (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled; if none provided showing all builds)
 
 ```json
 [

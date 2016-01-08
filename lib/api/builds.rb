@@ -8,9 +8,8 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   scope (optional) - The scope of builds to show (one of: all, finished, running; default: all)
-      #   page (optional) - The page number for pagination
-      #   per_page (ooptional) - The value of items per page to show
+      #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
+      #                      if none provided showing all builds)
       # Example Request:
       #   GET /projects/:id/builds
       get ':id/builds' do
@@ -24,7 +23,8 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   sha (required) - The SHA id of a commit
-      #   scope (optional) - The scope of builds to show (one of: all, finished, running; default: all)
+      #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
+      #                      if none provided showing all builds)
       # Example Request:
       #   GET /projects/:id/builds/commit/:sha
       get ':id/builds/commit/:sha' do
@@ -112,14 +112,21 @@ module API
       end
 
       def filter_builds(builds, scope)
-        case scope
-        when 'finished'
-          builds.finished
-        when 'running'
-          builds.running
-        else
-          builds
-        end
+        available_scopes = Ci::Build.available_statuses
+        scope =
+          if scope.is_a?(String) || scope.is_a?(Symbol)
+            available_scopes & [scope.to_s]
+          elsif scope.is_a?(Array)
+            available_scopes & scope
+          elsif scope.respond_to?(:to_h)
+            available_scopes & scope.to_h.values
+          else
+            []
+          end
+
+        return builds if scope.empty?
+
+        builds.where(status: scope)
       end
 
       def authorize_manage_builds!
