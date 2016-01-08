@@ -24,7 +24,7 @@ v 8.4.0 (unreleased)
   - Validate README format before displaying
   - Enable Microsoft Azure OAuth2 support (Janis Meybohm)
   - Properly set task-list class on single item task lists
-  - Add file finder feature in tree view (koreamic)
+  - Add file finder feature in tree view (Kyungchul Shin)
   - Ajax filter by message for commits page
 
 v 8.3.3 (unreleased)
