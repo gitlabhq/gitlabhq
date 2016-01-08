@@ -59,6 +59,21 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       subject { metadata('').to_string_path }
       it { is_expected.to be_an_instance_of(Gitlab::StringPath) }
     end
+
+    describe '#full_version' do
+      subject { metadata('').full_version }
+      it { is_expected.to eq 'GitLab Build Artifacts Metadata 0.0.1' }
+    end
+
+    describe '#version' do
+      subject { metadata('').version }
+      it { is_expected.to eq '0.0.1' }
+    end
+
+    describe '#errors' do
+      subject { metadata('').errors }
+      it { is_expected.to eq({}) }
+    end
   end
 
   context 'metadata file does not exist' do

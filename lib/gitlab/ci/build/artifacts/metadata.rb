@@ -17,18 +17,33 @@ module Gitlab
             File.exists?(@file)
           end
 
+          def full_version
+            gzip do|gz|
+              read_string(gz) do |size|
+                raise StandardError, 'Artifacts metadata file empty!' unless size
+              end
+            end
+          end
+
+          def version
+            full_version.match(/\w+ (\d+\.\d+\.\d+)/).captures.first
+          end
+
+          def errors
+            gzip do|gz|
+              read_string(gz) # version
+              JSON.parse(read_string(gz))
+            end
+          end
+
           def match!
             raise StandardError, 'Metadata file not found !' unless exists?
-            paths, metadata = [], []
 
-            each do |line|
-              next unless line =~ %r{^#{Regexp.escape(@path)}[^/\s]*/?\s}
-              path, meta = line.split(' ')
-              paths.push(path)
-              metadata.push(meta)
+            gzip do |gz|
+              read_string(gz) # version field
+              read_string(gz) # errors field
+              iterate_entries(gz)
             end
-
-            [paths, metadata.map { |meta| JSON.parse(meta, symbolize_names: true) }]
           end
 
           def to_string_path
@@ -38,11 +53,44 @@ module Gitlab
 
           private
 
-          def each
+          def iterate_entries(gz)
+            paths, metadata = [], []
+            
+            until gz.eof? do
+              begin
+                path = read_string(gz)
+                meta = read_string(gz)
+               
+                next unless path =~ %r{^#{Regexp.escape(@path)}[^/\s]*/?$}
+                
+                paths.push(path)
+                metadata.push(JSON.parse(meta, symbolize_names: true))
+              rescue JSON::ParserError
+                next
+              end
+            end
+
+            [paths, metadata]
+          end
+
+          def read_string_size(gz)
+            binary = gz.read(4)
+            binary.unpack('L>')[0] if binary
+          end
+
+          def read_string(gz)
+            string_size = read_string_size(gz)
+            yield string_size if block_given?
+            return false unless string_size
+            gz.read(string_size).chomp
+          end
+
+          def gzip
             open do |file|
               gzip = Zlib::GzipReader.new(file)
-              gzip.each_line { |line| yield line }
+              result = yield gzip
               gzip.close
+              result
             end
           end
 

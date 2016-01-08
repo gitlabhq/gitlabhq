@@ -4,7 +4,7 @@
     %span.str-truncated
       = file.name
   %td
-    = number_to_human_size(file.metadata[:uncompressed_size], precision: 2)
+    = number_to_human_size(file.metadata[:size], precision: 2)
   %td
     = link_to '', class: 'btn btn-xs btn-default' do
       = icon('download')
