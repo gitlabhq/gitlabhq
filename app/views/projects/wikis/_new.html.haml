@@ -5,12 +5,9 @@
         %a.close{href: "#", "data-dismiss" => "modal"} ×
         %h3.page-title New Wiki Page
       .modal-body
-        = label_tag :new_wiki_path do
-          %span Page slug
-        = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => namespace_project_wikis_path(@project.namespace, @project)
-        %p.hidden.text-danger{data: { error: "slug" }}
-          The page slug is invalid. Please don't use characters other then: a-z 0-9 _ - and /
-        %p.hint
-          Please don't use spaces.
+        .form-group
+          = label_tag :new_wiki_path do
+            %span Page slug
+          = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => namespace_project_wikis_path(@project.namespace, @project)
         .form-actions
           = link_to 'Create Page', '#', class: 'build-new-wiki btn btn-create'
