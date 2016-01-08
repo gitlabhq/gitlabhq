@@ -366,16 +366,8 @@ module API
       expose :id, :variables
     end
 
-    class CiCommit < Grape::Entity
+    class Runner < Grape::Entity
       expose :id
-      expose :ref
-      expose :sha
-      expose :committed_at
-    end
-
-    class CiRunner < Grape::Entity
-      expose :id
-      expose :token
       expose :description
       expose :active
       expose :is_shared
@@ -383,16 +375,23 @@ module API
     end
 
     class Build < Grape::Entity
-      expose :id
-      expose :status
-      expose :stage
-      expose :name
-      expose :ref
-      expose :commit, with: CiCommit
-      expose :runner, with: CiRunner
-      expose :created_at
-      expose :started_at
-      expose :finished_at
+      expose :id, :status, :stage, :name, :ref, :tag, :coverage, :user
+      expose :created_at, :started_at, :finished_at
+      expose :download_url do |repo_obj, options|
+        if options[:user_can_download_artifacts]
+          repo_obj.download_url
+        else
+          nil
+        end
+      end
+      expose :commit, with: RepoCommit do |repo_obj, _options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit.commit_data
+        else
+          nil
+        end
+      end
+      expose :runner, with: Runner
     end
   end
 end

@@ -15,7 +15,9 @@ module API
       get ':id/builds' do
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
-        present paginate(builds), with: Entities::Build
+
+        present paginate(builds), with: Entities::Build,
+                                  user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
 
       # Get builds for a specific commit of a project
@@ -33,7 +35,8 @@ module API
 
         builds = commit.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
-        present paginate(builds), with: Entities::Build
+        present paginate(builds), with: Entities::Build,
+                                  user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
 
       # Get a specific build of a project
@@ -47,7 +50,8 @@ module API
         build = get_build(params[:build_id])
         return not_found!(build) unless build
 
-        present build, with: Entities::Build
+        present build, with: Entities::Build,
+                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
 
       # Get a trace of a specific build of a project
@@ -84,7 +88,8 @@ module API
 
         build.cancel
 
-        present build, with: Entities::Build
+        present build, with: Entities::Build,
+                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
 
       # Retry a specific build of a project
@@ -102,7 +107,8 @@ module API
 
         build = Ci::Build.retry(build)
 
-        present build, with: Entities::Build
+        present build, with: Entities::Build,
+                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
     end
 

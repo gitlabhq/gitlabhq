@@ -74,7 +74,6 @@ describe API::API, api: true  do
 
         expect(response.status).to eq(200)
         expect(json_response['name']).to eq('test')
-        expect(json_response['commit']['sha']).to eq(commit.sha)
       end
 
       it 'should return specific build trace' do
