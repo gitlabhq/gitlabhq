@@ -11,13 +11,10 @@ module Gitlab
         line_new = 1
         type = nil
 
-        lines_arr = ::Gitlab::InlineDiff.processing lines
-
-        lines_arr.each do |line|
+        @lines.each do |line|
           next if filename?(line)
 
           full_line = html_escape(line.gsub(/\n/, ''))
-          full_line = ::Gitlab::InlineDiff.replace_markers full_line
 
           if line.match(/^@@ -/)
             type = "match"
