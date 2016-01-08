@@ -73,21 +73,24 @@ Rendered example:
 | `-X PUT`    | Use this method when updating existing objects |
 | `-X DELETE` | Use this method when removing existing objects |
 
-#### Examples
+### cURL Examples
 
-**Get the details of a group**
+Below is a set of [cURL][] commands that should be used in the API
+documentation.
+
+#### Get the details of a group
 
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/gitlab-org
 ```
 
-**Create a new project under the authenticated user's namespace**
+#### Create a new project under the authenticated user's namespace
 
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects?name=foo"
 ```
 
-**Post data using json content**
+#### Post data using json content
 
 **Note:** In this example we create a new group. Watch carefully the single and
 double quotes.
@@ -96,7 +99,7 @@ double quotes.
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"path": "my-group", "name": "My group"}' https://gitlab.example.com/api/v3/groups
 ```
 
-**Post data using curl's --data**
+#### Post data using curl's --data
 
 Instead of using `-X POST` and appending the parameters to the URI, you can use
 curl's `--data` option. The example below will create a new project `foo` under
@@ -106,7 +109,7 @@ the authenticated user's namespace.
 curl --data "name=foo" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
 ```
 
-**Post data using form-data**
+#### Post data using form-data
 
 Instead of using json or urlencode you can use mutlipart/form-data which
 properly handles data encoding:
@@ -118,7 +121,7 @@ curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -F "title=ssh-key" -F "key
 The above example is run by and administrator and will add an SSH public key
 titled ssh-key to user's account which has an id of 25.
 
-**Escape special characters**
+#### Escape special characters
 
 Spaces or slashes (`/`) may sometimes result to errors, thus it is recommended
 to escape them when possible. In the example below we create a new issue which
@@ -130,3 +133,13 @@ curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.co
 ```
 
 Use `%2F` for slashes (`/`).
+
+#### Pass arrays to API calls
+
+The GitLab API sometimes accepts arrays of strings or integers. For example, to
+restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
+`example.net`, you would do something like this:
+
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -d "restricted_signup_domains[]=*.example.com" -d "restricted_signup_domains[]=example.net" https://gitlab.example.com/api/v3/application/settings
+```
