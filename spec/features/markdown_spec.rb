@@ -212,6 +212,7 @@ describe 'GitLab Markdown', feature: true do
         expect(doc).to reference_commit_ranges
         expect(doc).to reference_commits
         expect(doc).to reference_labels
+        expect(doc).to reference_milestones
       end
     end
 

@@ -13,7 +13,7 @@
 #  tag           :boolean          default(FALSE)
 #  yaml_errors   :text
 #  committed_at  :datetime
-#  project_id :integer
+#  gl_project_id :integer
 #
 
 require 'spec_helper'

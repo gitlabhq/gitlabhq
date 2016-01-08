@@ -6,7 +6,7 @@
     .col-md-2.hidden-xs.hidden-sm
       %h5.commits-row-date
         %i.fa.fa-calendar
-        %span= day.stamp("28 Aug, 2010")
+        %span= day.strftime('%d %b, %Y')
       .light
         = pluralize(commits.count, 'commit')
     .col-md-10.col-sm-12
