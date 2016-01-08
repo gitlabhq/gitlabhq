@@ -32,6 +32,7 @@ v 8.4.0 (unreleased)
 
 v 8.3.3 (unreleased)
   - Get "Merge when build succeeds" to work when commits were pushed to MR target branch while builds were running
+  - Suppress e-mails on failed builds if allow_failure is set (Stan Hu)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
   - Enable "Add key" button when user fills in a proper key (Stan Hu)
 
