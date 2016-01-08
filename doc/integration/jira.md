@@ -81,6 +81,12 @@ JIRA configuration in GitLab is done via a project's **Services**.
 
 #### GitLab 7.8 and up with JIRA v6.x
 
+See next section.
+
+#### GitLab 7.8 and up
+
+_The currently supported JIRA versions are v6.x and v7.x._
+
 To enable JIRA integration in a project, navigate to the project's
 **Settings > Services > JIRA**.
 
