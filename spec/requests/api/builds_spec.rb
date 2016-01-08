@@ -6,7 +6,7 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
-  let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
+  let!(:developer) { create(:project_member, user: user, project: project, access_level: ProjectMember::DEVELOPER) }
   let!(:reporter) { create(:project_member, user: user2, project: project, access_level: ProjectMember::REPORTER) }
   let(:commit) { create(:ci_commit, project: project)}
   let(:build) { create(:ci_build, commit: commit) }
