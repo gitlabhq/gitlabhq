@@ -85,10 +85,14 @@ module Gitlab
 
           case diff_line.type
           when 'new', nil
-            diff_line.text = new_lines[diff_line.new_pos - 1].try(:gsub!, /\A\s/, line_prefix)
+            line = new_lines[diff_line.new_pos - 1]
           when 'old'
-            diff_line.text = old_lines[diff_line.old_pos - 1].try(:gsub!, /\A\s/, line_prefix)
+            line = old_lines[diff_line.old_pos - 1]
           end
+
+          # Only update text if line is found. This will prevent
+          # issues with submodules given the line only exists in diff content.
+          diff_line.text = line.gsub!(/\A\s/, line_prefix) if line
         end
 
         @lines
@@ -120,6 +124,10 @@ module Gitlab
           lines = self.class.process_file(diff_repository, diff_new_ref, diff_new_path)
           lines.map! { |line| " #{line}" }
         end
+      end
+
+      def submodules
+        @submodules ||= diff_repository.raw_repository.submodules(diff_new_ref).keys
       end
     end
   end
