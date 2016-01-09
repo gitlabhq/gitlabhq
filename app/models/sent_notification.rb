@@ -62,6 +62,10 @@ class SentNotification < ActiveRecord::Base
     end
   end
 
+  def can_unsubscribe?
+    !for_commit?
+  end
+
   def for_commit?
     noteable_type == "Commit"
   end
