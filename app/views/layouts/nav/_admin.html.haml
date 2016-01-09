@@ -82,6 +82,13 @@
         Abuse Reports
         %span.count= number_with_delimiter(AbuseReport.count(:all))
 
+  = nav_link(controller: :spam_logs) do
+    = link_to admin_spam_logs_path, title: "Spam Logs" do
+      = icon('exclamation-triangle fw')
+      %span
+        Spam Logs
+        %span.count= number_with_delimiter(SpamLog.count(:all))
+
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
     = link_to admin_application_settings_path, title: 'Settings' do
       = icon('cogs fw')

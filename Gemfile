@@ -36,8 +36,9 @@ gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'rack-oauth2',            '~> 1.2.1'
 
-# reCAPTCHA protection
+# Spam and anti-bot protection
 gem 'recaptcha', require: 'recaptcha/rails'
+gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
