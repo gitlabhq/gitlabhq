@@ -6,7 +6,7 @@ describe Gitlab::Diff::File, lib: true do
   let(:project) { create(:project) }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff) { commit.diffs.first }
-  let(:diff_file) { Gitlab::Diff::File.new(diff) }
+  let(:diff_file) { Gitlab::Diff::File.new(diff, [commit.parent.id, commit.id], project.repository) }
 
   describe :diff_lines do
     let(:diff_lines) { diff_file.diff_lines }

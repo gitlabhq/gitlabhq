@@ -7,7 +7,8 @@ describe DiffHelper do
   let(:commit) { project.commit(sample_commit.id) }
   let(:diffs) { commit.diffs }
   let(:diff) { diffs.first }
-  let(:diff_file) { Gitlab::Diff::File.new(diff) }
+  let(:diff_refs) { [commit.parent.id, commit.id] }
+  let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs, project.repository) }
 
   describe 'diff_hard_limit_enabled?' do
     it 'should return true if param is provided' do

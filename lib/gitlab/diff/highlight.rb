@@ -27,11 +27,11 @@ module Gitlab
 
       def self.formatter
         @formatter ||= Rouge::Formatters::HTMLGitlab.new(
-                         nowrap: true,
-                         cssclass: 'code highlight',
-                         lineanchors: true,
-                         lineanchorsid: 'LC'
-                       )
+          nowrap: true,
+          cssclass: 'code highlight',
+          lineanchors: true,
+          lineanchorsid: 'LC'
+        )
       end
 
       def initialize(diff_file)
