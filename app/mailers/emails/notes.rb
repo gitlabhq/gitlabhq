@@ -1,7 +1,7 @@
 module Emails
   module Notes
     def note_commit_email(recipient_id, note_id)
-      note_mail_with_notification(note_id, recipient_id)
+      setup_note_mail(note_id, recipient_id)
 
       @commit = @note.noteable
       @target_url = namespace_project_commit_url(*note_target_url_options)
@@ -13,7 +13,7 @@ module Emails
     end
 
     def note_issue_email(recipient_id, note_id)
-      note_mail_with_notification(note_id, recipient_id)
+      setup_note_mail(note_id, recipient_id)
 
       @issue = @note.noteable
       @target_url = namespace_project_issue_url(*note_target_url_options)
@@ -21,7 +21,7 @@ module Emails
     end
 
     def note_merge_request_email(recipient_id, note_id)
-      note_mail_with_notification(note_id, recipient_id)
+      setup_note_mail(note_id, recipient_id)
 
       @merge_request = @note.noteable
       @target_url = namespace_project_merge_request_url(*note_target_url_options)
@@ -42,7 +42,7 @@ module Emails
       }
     end
 
-    def note_mail_with_notification(note_id, recipient_id)
+    def setup_note_mail(note_id, recipient_id)
       @note = Note.find(note_id)
       @project = @note.project
 

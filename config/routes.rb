@@ -88,7 +88,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :sent_notifications, only: [], constraints: { id: /[0-9a-f]{32}/ } do
+  resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
     member do
       get :unsubscribe
     end

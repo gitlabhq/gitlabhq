@@ -3,14 +3,14 @@ class SentNotificationsController < ApplicationController
 
   def unsubscribe
     @sent_notification = SentNotification.for(params[:id])
-    return render_404 unless @sent_notification && !@sent_notification.for_commit?
+    return render_404 unless @sent_notification && @sent_notification.can_unsubscribe?
 
     noteable = @sent_notification.noteable
     noteable.unsubscribe(@sent_notification.recipient)
 
     flash[:notice] = "You have been unsubscribed from this thread."
     if current_user
-      case @sent_notification.noteable
+      case noteable
       when Issue
         redirect_to issue_path(noteable)
       when MergeRequest

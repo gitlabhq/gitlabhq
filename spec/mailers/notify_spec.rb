@@ -108,7 +108,7 @@ describe Notify do
     it { is_expected.to have_body_text /unsubscribe/ }
   end
 
-  shared_examples "a user can not unsubscribe through footer link" do
+  shared_examples "a user cannot unsubscribe through footer link" do
     it { is_expected.not_to have_body_text /unsubscribe/ }
   end
 
@@ -123,7 +123,7 @@ describe Notify do
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'a new user email', new_user_address
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user can not unsubscribe through footer link'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
 
     it 'contains the password text' do
       is_expected.to have_body_text /Click here to set your password/
@@ -152,7 +152,7 @@ describe Notify do
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'a new user email', new_user_address
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user can not unsubscribe through footer link'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
 
     it 'should not contain the new user\'s password' do
       is_expected.not_to have_body_text /password/
@@ -166,7 +166,7 @@ describe Notify do
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user can not unsubscribe through footer link'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
 
     it 'is sent to the new user' do
       is_expected.to deliver_to key.user.email
@@ -191,7 +191,7 @@ describe Notify do
     subject { Notify.new_email_email(email.id) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user can not unsubscribe through footer link'
+    it_behaves_like 'a user cannot unsubscribe through footer link'
 
     it 'is sent to the new user' do
       is_expected.to deliver_to email.user.email
@@ -465,7 +465,7 @@ describe Notify do
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user can not unsubscribe through footer link"
+      it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'has the correct subject' do
         is_expected.to have_subject /Project was moved/
@@ -488,7 +488,7 @@ describe Notify do
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user can not unsubscribe through footer link"
+      it_behaves_like "a user cannot unsubscribe through footer link"
 
       it 'has the correct subject' do
         is_expected.to have_subject /Access to project was granted/
@@ -539,7 +539,7 @@ describe Notify do
         it_behaves_like 'a note email'
         it_behaves_like 'an answer to an existing thread', 'commit'
         it_behaves_like 'it should show Gmail Actions View Commit link'
-        it_behaves_like "a user can not unsubscribe through footer link"
+        it_behaves_like "a user cannot unsubscribe through footer link"
 
         it 'has the correct subject' do
           is_expected.to have_subject /#{commit.title} \(#{commit.short_id}\)/
@@ -603,7 +603,7 @@ describe Notify do
 
     it_behaves_like 'an email sent from GitLab'
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user can not unsubscribe through footer link"
+    it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'has the correct subject' do
       is_expected.to have_subject /Access to group was granted/
@@ -632,7 +632,7 @@ describe Notify do
     subject { ActionMailer::Base.deliveries.last }
 
     it_behaves_like 'an email sent from GitLab'
-    it_behaves_like "a user can not unsubscribe through footer link"
+    it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'is sent to the new user' do
       is_expected.to deliver_to 'new-email@mail.com'
@@ -655,7 +655,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user can not unsubscribe through footer link"
+    it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -684,7 +684,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/tags/v1.0', action: :create) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user can not unsubscribe through footer link"
+    it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -712,7 +712,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user can not unsubscribe through footer link"
+    it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -736,7 +736,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/tags/v1.0', action: :delete) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user can not unsubscribe through footer link"
+    it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -764,7 +764,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, send_from_committer_email: send_from_committer_email) }
 
     it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user can not unsubscribe through footer link"
+    it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -870,7 +870,7 @@ describe Notify do
     subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }
 
     it_behaves_like 'it should show Gmail Actions View Commit link'
-    it_behaves_like "a user can not unsubscribe through footer link"
+    it_behaves_like "a user cannot unsubscribe through footer link"
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
