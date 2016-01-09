@@ -6,65 +6,54 @@ module Gitlab
     module Build
       module Artifacts
         class Metadata
+          VERSION_PATTERN = '[\w\s]+(\d+\.\d+\.\d+)'
+          attr_reader :file, :path, :full_version
+
           def initialize(file, path)
-            @file = file
-
-            @path = path.sub(/^\.\//, '')
-            @path << '/' unless path.end_with?('/')
-          end
-
-          def exists?
-            File.exists?(@file)
-          end
-
-          def full_version
-            gzip do|gz|
-              read_string(gz) do |size|
-                raise StandardError, 'Artifacts metadata file empty!' unless size
-              end
-            end
+            @file, @path = file, path
+            @full_version = read_version
+            @path << '/' unless path.end_with?('/') || path.empty?
           end
 
           def version
-            full_version.match(/\w+ (\d+\.\d+\.\d+)/).captures.first
+            @full_version.match(/#{VERSION_PATTERN}/).captures.first
           end
 
           def errors
             gzip do|gz|
               read_string(gz) # version
-              JSON.parse(read_string(gz))
+              errors = read_string(gz)
+              raise StandardError, 'Errors field not found!' unless errors
+              JSON.parse(errors)
             end
           end
 
           def match!
-            raise StandardError, 'Metadata file not found !' unless exists?
-
             gzip do |gz|
-              read_string(gz) # version field
-              read_string(gz) # errors field
-              iterate_entries(gz)
+              2.times { read_string(gz) } # version and errors fields
+              match_entries(gz)
             end
           end
 
-          def to_string_path
-            universe, metadata = match!
-            ::Gitlab::StringPath.new(@path, universe, metadata)
+          def to_path
+            Path.new(@path, *match!)
           end
 
           private
 
-          def iterate_entries(gz)
+          def match_entries(gz)
             paths, metadata = [], []
-            
+            child_pattern = %r{^#{Regexp.escape(@path)}[^/\s]*/?$}
+
             until gz.eof? do
               begin
                 path = read_string(gz)
                 meta = read_string(gz)
                
-                next unless path =~ %r{^#{Regexp.escape(@path)}[^/\s]*/?$}
-                
+                next unless path =~ child_pattern
+
                 paths.push(path)
-                metadata.push(JSON.parse(meta, symbolize_names: true))
+                metadata.push(JSON.parse(meta.chomp, symbolize_names: true))
               rescue JSON::ParserError
                 next
               end
@@ -73,16 +62,31 @@ module Gitlab
             [paths, metadata]
           end
 
-          def read_string_size(gz)
+          def read_version
+            gzip do|gz|
+              version_string = read_string(gz)
+
+              unless version_string
+                raise StandardError, 'Artifacts metadata file empty!'
+              end
+
+              unless version_string =~ /^#{VERSION_PATTERN}/
+                raise StandardError, 'Invalid version!'
+              end
+
+              version_string.chomp
+            end
+          end
+
+          def read_uint32(gz)
             binary = gz.read(4)
             binary.unpack('L>')[0] if binary
           end
 
           def read_string(gz)
-            string_size = read_string_size(gz)
-            yield string_size if block_given?
+            string_size = read_uint32(gz)
             return false unless string_size
-            gz.read(string_size).chomp
+            gz.read(string_size)
           end
 
           def gzip

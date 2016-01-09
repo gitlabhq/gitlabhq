@@ -16,8 +16,14 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def browse
     return render_404 unless build.artifacts?
-    @path = build.artifacts_metadata_string_path(params[:path] || './')
+    @path = build.artifacts_metadata_path(params[:path].to_s)
     return render_404 unless @path.exists?
+  end
+
+  def file
+    # TODO, check if file exists in metadata
+    render json: { repository: build.artifacts_file.path,
+                   path: Base64.encode64(params[:path].to_s) }
   end
 
   private

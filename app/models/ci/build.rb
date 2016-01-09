@@ -338,21 +338,19 @@ module Ci
     end
 
     def artifacts_browse_url
-      if artifacts?
+      if artifacts_browser_supported?
         browse_namespace_project_build_artifacts_path(project.namespace, project, self)
       end
     end
 
     def artifacts_browser_supported?
-      # TODO, since carrierwave 0.10.0 we will be able to check mime type here
-      #
       artifacts? && artifacts_file.path.end_with?('zip') && artifacts_metadata.exists?
     end
 
 
-    def artifacts_metadata_string_path(path)
-      file = artifacts_metadata.path
-      Gitlab::Ci::Build::Artifacts::Metadata.new(file, path).to_string_path
+    def artifacts_metadata_path(path)
+      metadata_file = artifacts_metadata.path
+      Gitlab::Ci::Build::Artifacts::Metadata.new(metadata_file, path).to_path
     end
 
     private

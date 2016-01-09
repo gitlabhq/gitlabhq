@@ -10,13 +10,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
   end
 
   context 'metadata file exists' do
-    describe '#exists?' do
-      subject { metadata.exists? }
-      it { is_expected.to be true }
-    end
-
-    describe '#match! ./' do
-      subject { metadata('./').match! }
+    describe '#match! empty string' do
+      subject { metadata('').match! }
 
       it 'matches correct paths' do
         expect(subject.first).to contain_exactly 'ci_artifacts.txt',
@@ -55,9 +50,9 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       end
     end
 
-    describe '#to_string_path' do
-      subject { metadata('').to_string_path }
-      it { is_expected.to be_an_instance_of(Gitlab::StringPath) }
+    describe '#to_path' do
+      subject { metadata('').to_path }
+      it { is_expected.to be_an_instance_of(Gitlab::Ci::Build::Artifacts::Metdata::Path) }
     end
 
     describe '#full_version' do
@@ -79,14 +74,9 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
   context 'metadata file does not exist' do
     let(:metadata_file_path) { '' }
 
-    describe '#exists?' do
-      subject { metadata.exists? }
-      it { is_expected.to be false }
-    end
-
     describe '#match!' do
       it 'raises error' do
-        expect { metadata.match! }.to raise_error(StandardError, /Metadata file not found/)
+        expect { metadata.match! }.to raise_error(Errno::ENOENT)
       end
     end
   end

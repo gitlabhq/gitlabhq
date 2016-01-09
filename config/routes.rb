@@ -611,6 +611,7 @@ Rails.application.routes.draw do
           resource :artifacts, only: [] do
             get :download
             get 'browse(/*path)', action: :browse, as: :browse, format: false
+            get 'file/*path', action: :file, as: :file, format: false
           end
         end
 
