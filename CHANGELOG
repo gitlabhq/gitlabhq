@@ -6,6 +6,8 @@ v 8.3.3 (unreleased)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
   - Enable "Add key" button when user fills in a proper key
   - Better support for referencing and closing issues in Asana service (Mike Wyatt)
+  - Enable "Add key" button when user fills in a proper key (Stan Hu)
+  - Fix error in processing reply-by-email messages (Jason Lee)
 
 v 8.3.2
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
