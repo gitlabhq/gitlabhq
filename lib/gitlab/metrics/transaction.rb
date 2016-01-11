@@ -6,11 +6,15 @@ module Gitlab
 
       attr_reader :tags, :values
 
+      attr_accessor :action
+
       def self.current
         Thread.current[THREAD_KEY]
       end
 
-      def initialize
+      # action - A String describing the action performed, usually the class
+      #          plus method name.
+      def initialize(action = nil)
         @metrics = []
 
         @started_at  = nil
@@ -18,6 +22,7 @@ module Gitlab
 
         @values = Hash.new(0)
         @tags   = {}
+        @action = action
       end
 
       def duration
@@ -70,7 +75,15 @@ module Gitlab
       end
 
       def submit
-        Metrics.submit_metrics(@metrics.map(&:to_hash))
+        metrics = @metrics.map do |metric|
+          hash = metric.to_hash
+
+          hash[:tags][:action] ||= @action if @action
+
+          hash
+        end
+
+        Metrics.submit_metrics(metrics)
       end
 
       def sidekiq?
