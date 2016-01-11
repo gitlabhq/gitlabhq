@@ -919,7 +919,7 @@ DEPENDENCIES
   oauth2 (~> 1.0.0)
   octokit (~> 3.7.0)
   omniauth (~> 1.2.2)
-  omniauth-azure-oauth2
+  omniauth-azure-oauth2 (~> 0.0.6)
   omniauth-bitbucket (~> 0.0.2)
   omniauth-cas3 (~> 1.1.2)
   omniauth-facebook (~> 3.0.0)
@@ -930,7 +930,7 @@ DEPENDENCIES
   omniauth-saml (~> 1.4.0)
   omniauth-shibboleth (~> 1.2.0)
   omniauth-twitter (~> 1.2.0)
-  omniauth_crowd
+  omniauth_crowd (~> 2.2.0)
   org-ruby (~> 0.9.12)
   paranoia (~> 2.0)
   pg (~> 0.18.2)
