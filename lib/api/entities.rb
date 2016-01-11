@@ -375,8 +375,9 @@ module API
     end
 
     class Build < Grape::Entity
-      expose :id, :status, :stage, :name, :ref, :tag, :coverage, :user
+      expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
+      expose :user, with: UserFull
       expose :download_url do |repo_obj, options|
         if options[:user_can_download_artifacts]
           repo_obj.download_url
