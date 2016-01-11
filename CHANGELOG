@@ -39,6 +39,7 @@ v 8.3.3 (unreleased)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
   - Enable "Add key" button when user fills in a proper key (Stan Hu)
   - Fix error in processing reply-by-email messages (Jason Lee)
+  - Fix Error 500 when visiting build page of project with nil runners_token (Stan Hu)
 
 v 8.3.2
   - Change single user API endpoint to return more detailed data (Michael Potthoff)
