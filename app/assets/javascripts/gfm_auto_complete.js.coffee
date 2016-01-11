@@ -34,7 +34,7 @@ GitLab.GfmAutoComplete =
       searchKey: 'search'
       callbacks:
         beforeSave: (members) ->
-          $.map members, (m) -> 
+          $.map members, (m) ->
             title = m.name
             title += " (#{m.count})" if m.count
 
@@ -50,7 +50,7 @@ GitLab.GfmAutoComplete =
       insertTpl: '${atwho-at}${id}'
       callbacks:
         beforeSave: (issues) ->
-          $.map issues, (i) -> 
+          $.map issues, (i) ->
             id:     i.iid
             title:  sanitize(i.title)
             search: "#{i.iid} #{i.title}"
@@ -63,18 +63,17 @@ GitLab.GfmAutoComplete =
       insertTpl: '${atwho-at}${id}'
       callbacks:
         beforeSave: (merges) ->
-          $.map merges, (m) -> 
+          $.map merges, (m) ->
             id:     m.iid
             title:  sanitize(m.title)
             search: "#{m.iid} #{m.title}"
 
-    input.one 'focus', =>
-      $.getJSON(@dataSource).done (data) ->
-        # load members
-        input.atwho 'load', '@', data.members
-        # load issues
-        input.atwho 'load', 'issues', data.issues
-        # load merge requests
-        input.atwho 'load', 'mergerequests', data.mergerequests
-        # load emojis
-        input.atwho 'load', ':', data.emojis
+    $.getJSON(@dataSource).done (data) ->
+      # load members
+      input.atwho 'load', '@', data.members
+      # load issues
+      input.atwho 'load', 'issues', data.issues
+      # load merge requests
+      input.atwho 'load', 'mergerequests', data.mergerequests
+      # load emojis
+      input.atwho 'load', ':', data.emojis
