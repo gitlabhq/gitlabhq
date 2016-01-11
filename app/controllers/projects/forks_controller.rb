@@ -4,6 +4,7 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   def index
+    @forked_projects = project.forks.includes(:creator)
   end
 
   def new
@@ -13,7 +14,7 @@ class Projects::ForksController < Projects::ApplicationController
 
   def create
     namespace = Namespace.find(params[:namespace_key])
-    
+
     @forked_project = namespace.projects.find_by(path: project.path)
     @forked_project = nil unless @forked_project && @forked_project.forked_from_project == project
 

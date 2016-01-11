@@ -13,7 +13,10 @@
     = link_to project_path(project), class: dom_class(project) do
       - if avatar
         .dash-project-avatar
-          = project_icon(project, alt: '', class: 'avatar project-avatar s46')
+          - if use_creator_avatar
+            = image_tag avatar_icon(project.creator.email, 46), class: "avatar s46", alt:''
+          - else
+            = project_icon(project, alt: '', class: 'avatar project-avatar s46')
       %span.project-full-name
         %span.namespace-name
           - if project.namespace && !skip_namespace
