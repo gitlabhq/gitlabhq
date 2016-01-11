@@ -24,9 +24,14 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def file
-    # TODO, check if file exists in metadata
-    render json: { repository: build.artifacts_file.path,
-                   path: Base64.encode64(params[:path].to_s) }
+    file = build.artifacts_metadata_path(params[:path])
+
+    if file.exists?
+      render json: { repository: build.artifacts_file.path,
+                     path: Base64.encode64(file.path) }
+    else
+      render json: {}, status: 404
+    end
   end
 
   private
