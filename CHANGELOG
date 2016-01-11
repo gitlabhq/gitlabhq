@@ -109,7 +109,6 @@ v 8.3.0
   - Add languages page to graphs
   - Block LDAP user when they are no longer found in the LDAP server
   - Improve wording on project visibility levels (Zeger-Jan van de Weg)
-  - Automatically select default clone protocol based on user preferences (Eirik Lygre)
   - Fix editing notes on a merge request diff
   - Automatically select default clone protocol based on user preferences (Eirik Lygre)
   - Make Network page as sub tab of Commits
@@ -143,9 +142,6 @@ v 8.2.3
   - Update documentation for "Guest" permissions
   - Properly convert Emoji-only comments into Award Emojis
   - Enable devise paranoid mode to prevent user enumeration attack
-  - Webhook payload has an added, modified and removed properties for each commit
-  - Update documentation for "Guest" permissions
-  - Properly convert Emoji-only comments into Award Emojis
   - Webhook payload has an added, modified and removed properties for each commit
   - Fix 500 error when creating a merge request that removes a submodule
 
