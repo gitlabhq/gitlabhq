@@ -23,21 +23,7 @@ Parameters:
     "author_email": "dzaporozhets@sphereconsultinginc.com",
     "created_at": "2012-09-20T11:50:22+03:00",
     "message": "Replace sanitize with escape once",
-    "allow_failure": false,
-    "last_build": {
-        "allow_failure": false,
-        "coverage": null, 
-        "created_at": "2016-01-05T15:33:25.936Z", 
-        "deploy": false, 
-        "description": null, 
-        "finished_at": "2016-01-05T15:33:47.553Z", 
-        "id": 66, 
-        "name": "rubocop", 
-        "stage": "test", 
-        "started_at": null, 
-        "status": "canceled", 
-        "target_url": "http://gitlab.dev/root/gitlab-ce/builds/66"
-    }
+    "allow_failure": false
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -47,8 +33,7 @@ Parameters:
     "author_email": "dmitriy.zaporozhets@gmail.com",
     "created_at": "2012-09-20T09:06:12+03:00",
     "message": "Sanitize for network graph",
-    "allow_failure": false,
-    "last_build": null
+    "allow_failure": false
   }
 ]
 ```
@@ -81,21 +66,10 @@ Parameters:
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],
   "status": "running",
-  last_build: {
-    "allow_failure": false, 
-    "commands": "./scripts/prepare_build.sh\nruby -v\nwhich ruby\ngem install bundler --no-ri --no-rdoc\ncp config/gitlab.yml.example config/gitlab.yml\ntouch log/application.log\ntouch log/test.log\nbundle install --without postgres production --jobs $(nproc)  \"${FLAGS[@]}\"\nbundle exec rake db:create RAILS_ENV=test\nbundle exec rubocop", 
-    "coverage": null, 
-    "created_at": "2016-01-05T15:33:25.936Z", 
-    "deploy": false, 
-    "description": null, 
-    "finished_at": "2016-01-05T15:33:47.553Z", 
-    "id": 66, 
-    "name": "rubocop", 
-    "stage": "test", 
-    "started_at": null, 
-    "status": "canceled", 
-    "target_url": "http://gitlab.dev/root/gitlab-ce/builds/66"
-  }
+  "coverage": null,
+  "duration": 2,
+  "started_at": "2015-12-24T17:54:09.744Z",
+  "finished_at": "2016-01-11T10:14:09.526Z"
 }
 ```
 

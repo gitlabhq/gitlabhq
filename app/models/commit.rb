@@ -10,6 +10,8 @@ class Commit
   attr_mentionable :safe_message, pipeline: :single_line
   participant :author, :committer, :notes
 
+  delegate :duration, :started_at, :finished_at, :coverage, to: :ci_commit
+
   attr_accessor :project
 
   # Safe amount of changes (files and lines) in one commit to render
@@ -209,12 +211,6 @@ class Commit
 
   def ci_commit
     project.ci_commit(sha) if project
-  end
-
-  def last_build
-    commit = ci_commit
-    return unless commit
-    commit.builds.order('id DESC').first
   end
 
   def status

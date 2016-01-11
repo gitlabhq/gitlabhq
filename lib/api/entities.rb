@@ -126,35 +126,15 @@ module API
       end
     end
 
-    class RepoCommitBuild < Grape::Entity
-      expose :id
-      expose :name
-      expose :description
-      expose :stage
-      expose :coverage
-      expose :status
-      expose :allow_failure
-      expose :deploy
-      expose :created_at
-      expose :started_at
-      expose :finished_at
-      expose :target_url
-    end
-
-    class RepoCommitDetailBuild < RepoCommitBuild
-      expose :commands
-    end
-
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
       expose :safe_message, as: :message
-      expose :last_build, with: Entities::RepoCommitBuild
     end
 
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
       expose :status
-      expose :last_build, with: Entities::RepoCommitDetailBuild
+      expose :started_at, :finished_at, :duration, :coverage
     end
 
     class ProjectSnippet < Grape::Entity
@@ -185,6 +165,12 @@ module API
       expose :assignee, :author, using: Entities::UserBasic
     end
 
+    class CommitStatus < Grape::Entity
+      expose :id, :sha, :ref, :status, :name, :target_url, :description,
+             :created_at, :started_at, :finished_at, :allow_failure
+      expose :author, using: Entities::UserBasic
+    end
+
     class MergeRequest < ProjectEntity
       expose :target_branch, :source_branch
       expose :upvotes,  :downvotes
@@ -195,6 +181,11 @@ module API
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
+      expose :status do |repo_obj, _options|
+        if repo_obj.respond_to?(:ci_commit)
+          repo_obj.ci_commit.status if repo_obj.ci_commit
+        end
+      end
     end
 
     class MergeRequestChanges < MergeRequest
@@ -236,12 +227,6 @@ module API
       expose(:line_type) { |note| note.diff_line_type }
       expose :author, using: Entities::UserBasic
       expose :created_at
-    end
-
-    class CommitStatus < Grape::Entity
-      expose :id, :sha, :ref, :status, :name, :target_url, :description,
-             :created_at, :started_at, :finished_at, :allow_failure
-      expose :author, using: Entities::UserBasic
     end
 
     class Event < Grape::Entity

@@ -50,7 +50,8 @@ Parameters:
       "created_at": "2012-04-29T08:46:00Z"
     },
     "description":"fixed login page css paddings",
-    "work_in_progress": false
+    "work_in_progress": false,
+    "status": "pending"
   }
 ]
 ```
@@ -96,7 +97,8 @@ Parameters:
     "created_at": "2012-04-29T08:46:00Z"
   },
   "description":"fixed login page css paddings",
-  "work_in_progress": false
+  "work_in_progress": false,
+  "status": "pending"
 }
 ```
 
@@ -204,7 +206,8 @@ Parameters:
     "renamed_file": false,
     "deleted_file": false
     }
-  ]
+  ],
+  "status": "pending"
 }
 ```
 
@@ -252,7 +255,8 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "description":"fixed login page css paddings"
+  "description":"fixed login page css paddings",
+  "status": "pending"
 }
 ```
 
@@ -303,7 +307,8 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "status": "pending"
 }
 ```
 
@@ -359,7 +364,8 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "status": "pending"
 }
 ```
 
