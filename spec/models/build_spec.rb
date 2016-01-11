@@ -361,14 +361,13 @@ describe Ci::Build, models: true do
   describe :artifacts_browse_url do
     subject { build.artifacts_browse_url }
 
-    it "should be nil if artifact doesn't exist" do
-      build.update_attributes(artifacts_file: nil)
+    it "should be nil if artifacts browser is unsupported" do
+      allow(build).to receive(:artifacts_browser_supported?).and_return(false)
       is_expected.to be_nil
     end
 
-    it 'should not be nil if artifact exist' do
-      gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-      build.update_attributes(artifacts_file: gif)
+    it 'should not be nil if artifacts browser is supported' do
+      allow(build).to receive(:artifacts_browser_supported?).and_return(true)
       is_expected.to_not be_nil
     end
   end
