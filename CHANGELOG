@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.3.3 (unreleased)
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
   - Fix duplicated branch creation/deletion events when using Web UI (Stan Hu)
+  - Add configurable LDAP server query timeout
   - Get "Merge when build succeeds" to work when commits were pushed to MR target branch while builds were running
   - Suppress e-mails on failed builds if allow_failure is set (Stan Hu)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
