@@ -78,6 +78,7 @@ Now we can choose one or more of the Supported Providers below to continue confi
 - [Shibboleth](shibboleth.md)
 - [SAML](saml.md)
 - [Crowd](crowd.md)
+- [Azure](azure.md)
 
 ## Enable OmniAuth for an Existing User
 

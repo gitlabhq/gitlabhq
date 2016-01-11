@@ -17,16 +17,10 @@ module Gitlab
       # Returns a Hash in a format that can be directly written to InfluxDB.
       def to_hash
         {
-          series: @series,
-          tags:   @tags.merge(
-            hostname:       Metrics.hostname,
-            ruby_engine:    RUBY_ENGINE,
-            ruby_version:   RUBY_VERSION,
-            gitlab_version: Gitlab::VERSION,
-            process_type:   Sidekiq.server? ? 'sidekiq' : 'rails'
-          ),
+          series:    @series,
+          tags:      @tags,
           values:    @values,
-          timestamp: @created_at.to_i
+          timestamp: @created_at.to_i * 1_000_000_000
         }
       end
     end

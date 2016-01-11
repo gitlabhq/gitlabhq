@@ -95,14 +95,12 @@ module Issuable
     opened? || reopened?
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def downvotes
-    0
+    notes.awards.where(note: "thumbsdown").count
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def upvotes
-    0
+    notes.awards.where(note: "thumbsup").count
   end
 
   def subscribed?(user)

@@ -123,6 +123,8 @@ module Gitlab
               duration = (Time.now - start) * 1000.0
 
               if duration >= Gitlab::Metrics.method_call_threshold
+                trans.increment(:method_duration, duration)
+
                 trans.add_metric(Gitlab::Metrics::Instrumentation::SERIES,
                                  { duration: duration },
                                  method: #{label.inspect})

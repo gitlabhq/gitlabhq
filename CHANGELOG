@@ -1,28 +1,66 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
-  - Add support for Google reCAPTCHA in user registration to prevent spammers (Stan Hu)
+  - Add housekeeping function to project settings page
+  - The default GitLab logo now acts as a loading indicator
+  - Fix caching issue where build status was not updating in project dashboard (Stan Hu)
+  - Accept 2xx status codes for successful Web hook triggers (Stan Hu)
+  - Fix missing date of month in network graph when commits span a month (Stan Hu)
+  - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
+  - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
   - Implement new UI for group page
   - Implement search inside emoji picker
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
+  - Link to milestone in "Milestone changed" system note
   - Only allow group/project members to mention `@all`
-  - Expose Git's version in the admin area
+  - Expose Git's version in the admin area (Trey Davis)
   - Add "Frequently used" category to emoji picker
   - Add CAS support (tduehr)
-  - Add link to merge request on build detail page.
+  - Add link to merge request on build detail page
+  - Fix: Problem with projects ending with .keys (Jose Corcuera)
   - Revert back upvote and downvote button to the issue and MR pages
+  - Swap position of Assignee and Author selector on Issuables (Zeger-Jan van de Weg)
+  - Add system hook messages for project rename and transfer (Steve Norman)
+  - Fix version check image in Safari
+  - Show 'All' tab by default in the builds page
+  - Add Open Graph and Twitter Card data to all pages
+  - Fix API project lookups when querying with a namespace with dots (Stan Hu)
+  - Enable forcing Two-Factor authentication sitewide, with optional grace period
+  - Import GitHub Pull Requests into GitLab
+  - Change single user API endpoint to return more detailed data (Michael Potthoff)
+  - Update version check images to use SVG
+  - Validate README format before displaying
+  - Enable Microsoft Azure OAuth2 support (Janis Meybohm)
+  - Properly set task-list class on single item task lists
+  - Add file finder feature in tree view (Kyungchul Shin)
+  - Ajax filter by message for commits page
+  - API: Add support for deleting a tag via the API (Robert Schilling)
+  - Allow subsequent validations in CI Linter
 
-v 8.3.2 (unreleased)
+v 8.3.3
+  - Preserve CE behavior with JIRA integration by only calling API if URL is set
+  - Fix duplicated branch creation/deletion events when using Web UI (Stan Hu)
+  - Add configurable LDAP server query timeout
+  - Get "Merge when build succeeds" to work when commits were pushed to MR target branch while builds were running
+  - Suppress e-mails on failed builds if allow_failure is set (Stan Hu)
+  - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
+  - Better support for referencing and closing issues in Asana service (Mike Wyatt)
+  - Enable "Add key" button when user fills in a proper key (Stan Hu)
+  - Fix error in processing reply-by-email messages (Jason Lee)
+  - Fix Error 500 when visiting build page of project with nil runners_token (Stan Hu)
+  - Use WOFF versions of SourceSansPro fonts
+  - Fix regression when builds were not generated for tags created through web/api interface
+
+v 8.3.2
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
-  - Enable "Add key" button when user fills in a proper key
+  - Add support for Google reCAPTCHA in user registration
 
 v 8.3.1
   - Fix Error 500 when global milestones have slashes (Stan Hu)
   - Fix Error 500 when doing a search in dashboard before visiting any project (Stan Hu)
   - Fix LDAP identity and user retrieval when special characters are used
   - Move Sidekiq-cron configuration to gitlab.yml
-  - Enable forcing Two-Factor authentication sitewide, with optional grace period
 
 v 8.3.0
   - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
@@ -86,6 +124,8 @@ v 8.3.0
   - Do not show build status unless builds are enabled and `.gitlab-ci.yml` is present
   - Persist runners registration token in database
   - Fix online editor should not remove newlines at the end of the file
+  - Expose Git's version in the admin area
+  - Show "New Merge Request" buttons on canonical repos when you have a fork (Josh Frye)
 
 v 8.2.3
   - Fix application settings cache not expiring after changes (Stan Hu)
@@ -144,6 +184,8 @@ v 8.2.0
   - Allow to define cache in `.gitlab-ci.yml`
   - Fix: 500 error returned if destroy request without HTTP referer (Kazuki Shimizu)
   - Remove deprecated CI events from project settings page
+  - Use issue editor as cross reference comment author when issue is edited with a new mention.
+  - Add graphs of commits ahead and behind default branch (Jeff Stubler)
   - Improve personal snippet access workflow (Douglas Alexandre)
   - [API] Add ability to fetch the commit ID of the last commit that actually touched a file
   - Fix omniauth documentation setting for omnibus configuration (Jon Cairns)

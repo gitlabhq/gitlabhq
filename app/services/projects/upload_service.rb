@@ -10,13 +10,7 @@ module Projects
       uploader = FileUploader.new(@project)
       uploader.store!(@file)
 
-      filename = uploader.image? ? uploader.file.basename : uploader.file.filename
-
-      {
-        alt:      filename,
-        url:      uploader.secure_url,
-        is_image: uploader.image?
-      }
+      uploader.to_h
     end
 
     private

@@ -11,7 +11,6 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
-#  public      :boolean          default(FALSE)
 #
 
 require 'spec_helper'
@@ -36,14 +35,6 @@ describe Group, models: true do
     it { is_expected.to validate_presence_of :path }
     it { is_expected.to validate_uniqueness_of(:path) }
     it { is_expected.not_to validate_presence_of :owner }
-  end
-
-  describe '.public_and_given_groups' do
-    let!(:public_group) { create(:group, public: true) }
-
-    subject { described_class.public_and_given_groups([group.id]) }
-
-    it { is_expected.to eq([public_group, group]) }
   end
 
   describe '.visible_to_user' do
@@ -110,25 +101,6 @@ describe Group, models: true do
     it "should be false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
       expect(group.avatar_type).to eq(["only images allowed"])
-    end
-  end
-
-  describe "public_profile?" do
-    it "returns true for public group" do
-      group = create(:group, public: true)
-      expect(group.public_profile?).to be_truthy
-    end
-
-    it "returns true for non-public group with public project" do
-      group = create(:group)
-      create(:project, :public, group: group)
-      expect(group.public_profile?).to be_truthy
-    end
-
-    it "returns false for non-public group with no public projects" do
-      group = create(:group)
-      create(:project, group: group)
-      expect(group.public_profile?).to be_falsy
     end
   end
 end

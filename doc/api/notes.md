@@ -6,8 +6,7 @@ Notes are comments on snippets, issues or merge requests.
 
 ### List project issue notes
 
-Gets a list of all notes for a single issue. With GitLab 8.2 the return fields
-`upvote` and `downvote` are deprecated and always return `false`.
+Gets a list of all notes for a single issue.
 
 ```
 GET /projects/:id/issues/:issue_id/notes

@@ -29,6 +29,13 @@
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
 #  import_error           :text
+#  ci_id                  :integer
+#  builds_enabled         :boolean          default(TRUE), not null
+#  shared_runners_enabled :boolean          default(TRUE), not null
+#  runners_token          :string
+#  build_coverage_regex   :string
+#  build_allow_git_fetch  :boolean          default(TRUE), not null
+#  build_timeout          :integer          default(3600), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -43,6 +50,7 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
+  include TokenAuthenticatable
 
   extend Gitlab::ConfigHelper
 
@@ -81,6 +89,7 @@ class Project < ActiveRecord::Base
   acts_as_taggable_on :tags
 
   attr_accessor :new_default_branch
+  attr_accessor :old_path_with_namespace
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
@@ -185,10 +194,8 @@ class Project < ActiveRecord::Base
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
-  before_validation :set_runners_token_token
-  def set_runners_token_token
-    self.runners_token = SecureRandom.hex(15) if self.runners_token.blank?
-  end
+  add_authentication_token_field :runners_token
+  before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
 
@@ -555,7 +562,9 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions(old_path_with_namespace)
-    NotificationService.new.project_was_moved(self, old_path_with_namespace)
+    # New project path needs to be committed to the DB or notification will
+    # retrieve stale information
+    run_after_commit { NotificationService.new.project_was_moved(self, old_path_with_namespace) }
   end
 
   def owner
@@ -699,6 +708,11 @@ class Project < ActiveRecord::Base
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
         reset_events_cache
+
+        @old_path_with_namespace = old_path_with_namespace
+
+        SystemHooksService.new.execute_hooks_for(self, :rename)
+
         @repository = nil
       rescue
         # Returning false does not rollback after_* transaction but gives
@@ -767,6 +781,8 @@ class Project < ActiveRecord::Base
   end
 
   def change_head(branch)
+    # Cached divergent commit counts are based on repository head
+    repository.expire_branch_cache
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
@@ -882,5 +898,9 @@ class Project < ActiveRecord::Base
   def visibility_level_allowed?(level)
     return true unless forked?
     Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i)
+  end
+
+  def runners_token
+    ensure_runners_token!
   end
 end

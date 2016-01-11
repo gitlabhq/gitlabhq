@@ -26,10 +26,10 @@ describe 'reopen/close issue', ->
     fixture.load('issues_show.html')
     @issue = new Issue()
   it 'closes an issue', ->
-    $.ajax = (obj) ->
-      expect(obj.type).toBe('PUT')
-      expect(obj.url).toBe('http://gitlab.com/issues/6/close')
-      obj.success saved: true
+    spyOn(jQuery, 'ajax').and.callFake (req) ->
+      expect(req.type).toBe('PUT')
+      expect(req.url).toBe('http://gitlab.com/issues/6/close')
+      req.success saved: true
     
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
@@ -46,10 +46,10 @@ describe 'reopen/close issue', ->
 
   it 'fails to close an issue with success:false', ->
 
-    $.ajax = (obj) ->
-      expect(obj.type).toBe('PUT')
-      expect(obj.url).toBe('http://goesnowhere.nothing/whereami')
-      obj.success saved: false
+    spyOn(jQuery, 'ajax').and.callFake (req) ->
+      expect(req.type).toBe('PUT')
+      expect(req.url).toBe('http://goesnowhere.nothing/whereami')
+      req.success saved: false
     
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
@@ -69,10 +69,10 @@ describe 'reopen/close issue', ->
 
   it 'fails to closes an issue with HTTP error', ->
 
-    $.ajax = (obj) ->
-      expect(obj.type).toBe('PUT')
-      expect(obj.url).toBe('http://goesnowhere.nothing/whereami')
-      obj.error()
+    spyOn(jQuery, 'ajax').and.callFake (req) ->
+      expect(req.type).toBe('PUT')
+      expect(req.url).toBe('http://goesnowhere.nothing/whereami')
+      req.error()
     
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
@@ -91,10 +91,10 @@ describe 'reopen/close issue', ->
     expect($('div.flash-alert').text()).toBe('Unable to update this issue at this time.')
 
   it 'reopens an issue', ->
-    $.ajax = (obj) ->
-      expect(obj.type).toBe('PUT')
-      expect(obj.url).toBe('http://gitlab.com/issues/6/reopen')
-      obj.success saved: true
+    spyOn(jQuery, 'ajax').and.callFake (req) ->
+      expect(req.type).toBe('PUT')
+      expect(req.url).toBe('http://gitlab.com/issues/6/reopen')
+      req.success saved: true
 
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')

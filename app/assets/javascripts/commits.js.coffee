@@ -1,15 +1,5 @@
 class @CommitsList
-  @data =
-    ref: null
-    limit: 0
-    offset: 0
-  @disable = false
-
-  @showProgress: ->
-    $('.loading').show()
-
-  @hideProgress: ->
-    $('.loading').hide()
+  @timer = null
 
   @init: (ref, limit) ->
     $("body").on "click", ".day-commits-table li.commit", (event) ->
@@ -18,38 +8,32 @@ class @CommitsList
         e.stopPropagation()
         return false
 
-    @data.ref = ref
-    @data.limit = limit
-    @data.offset = limit
+    Pager.init limit, false
 
-    this.initLoadMore()
-    this.showProgress()
+    @content = $("#commits-list")
+    @searchField = $("#commits-search")
+    @initSearch()
 
-  @getOld: ->
-    this.showProgress()
+  @initSearch: ->
+    @timer = null
+    @searchField.keyup =>
+      clearTimeout(@timer)
+      @timer = setTimeout(@filterResults, 500)
+
+  @filterResults: =>
+    form = $(".commits-search-form")
+    search = @searchField.val()
+    commitsUrl = form.attr("action") + '?' + form.serialize()
+    @content.fadeTo('fast', 0.5)
+
     $.ajax
       type: "GET"
-      url: location.href
-      data: @data
-      complete: this.hideProgress
-      success: (data) ->
-        CommitsList.append(data.count, data.html)
+      url: form.attr("action")
+      data: form.serialize()
+      complete: =>
+        @content.fadeTo('fast', 1.0)
+      success: (data) =>
+        @content.html(data.html)
+        # Change url so if user reload a page - search results are saved
+        history.replaceState {page: commitsUrl}, document.title, commitsUrl
       dataType: "json"
-
-  @append: (count, html) ->
-    $("#commits-list").append(html)
-    if count > 0
-      @data.offset += count
-    else
-      @disable = true
-
-  @initLoadMore: ->
-    $(document).unbind('scroll')
-    $(document).endlessScroll
-      bottomPixels: 400
-      fireDelay: 1000
-      fireOnce: true
-      ceaseFire: =>
-        @disable
-      callback: =>
-        this.getOld()

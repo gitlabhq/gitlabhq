@@ -160,18 +160,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_check
-    @merge_request.check_if_can_be_merged if @merge_request.unchecked?
-    puts @merge_request.merge_status
-    respond_to do |format|
-      format.json do
-        render json: {
-          can_be_merged: @merge_request.merge_status == :can_be_merged
-        }
-      end
-      format.html do
-        render partial: "projects/merge_requests/widget/show.html.haml", layout: false
-      end
-    end
+    @merge_request.check_if_can_be_merged
+
+    render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
 
   def cancel_merge_when_build_succeeds

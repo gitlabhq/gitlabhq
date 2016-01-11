@@ -149,7 +149,7 @@
         .checkbox
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
-            Enable shared runners for a new projects
+            Enable shared runners for new projects
 
     .form-group
       = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
@@ -171,20 +171,14 @@
       .col-sm-10
         = f.text_field :metrics_host, class: 'form-control', placeholder: 'influxdb.example.com'
     .form-group
-      = f.label :metrics_database, 'InfluxDB database', class: 'control-label col-sm-2'
+      = f.label :metrics_port, 'InfluxDB port', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.text_field :metrics_database, class: 'form-control', placeholder: 'gitlab'
+        = f.text_field :metrics_port, class: 'form-control', placeholder: '8089'
         .help-block
-          The name of the InfluxDB database to store data in. Users will have to
-          create this database manually, GitLab does not do so automatically.
-    .form-group
-      = f.label :metrics_username, 'InfluxDB username', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :metrics_username, class: 'form-control'
-    .form-group
-      = f.label :metrics_password, 'InfluxDB password', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :metrics_password, class: 'form-control'
+          The UDP port to use for connecting to InfluxDB. InfluxDB requires that
+          your server configuration specifies a database to store data in when
+          sending messages to this port, without it metrics data will not be
+          saved.
     .form-group
       = f.label :metrics_pool_size, 'Connection pool size', class: 'control-label col-sm-2'
       .col-sm-10
@@ -208,6 +202,28 @@
         .help-block
           A method call is only tracked when it takes longer to complete than
           the given amount of milliseconds.
+
+  %fieldset
+    %legend Spam and Anti-bot Protection
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :recaptcha_enabled do
+            = f.check_box :recaptcha_enabled
+            Enable reCAPTCHA
+          %span.help-block#recaptcha_help_block Helps preventing bots from creating accounts
+
+    .form-group
+      = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :recaptcha_site_key, class: 'form-control'
+        .help-block
+          Generate site and private keys here:
+          %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
+    .form-group
+      = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :recaptcha_private_key, class: 'form-control'
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-primary'
