@@ -58,7 +58,9 @@ FactoryGirl.define do
 
     factory :ci_build_with_trace do
       id 999
-      trace 'BUILD TRACE'
+      after(:build) do  |build, evaluator|
+        build.trace = 'BUILD TRACE'
+      end
     end
 
     factory :ci_build_canceled do
