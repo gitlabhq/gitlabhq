@@ -6,5 +6,6 @@
   %td
     = number_to_human_size(file.metadata[:size], precision: 2)
   %td
-    = link_to '', class: 'btn btn-xs btn-default' do
+    = link_to file_namespace_project_build_artifacts_path(path: file.path),
+      class: 'btn btn-xs btn-default' do
       = icon('download')
