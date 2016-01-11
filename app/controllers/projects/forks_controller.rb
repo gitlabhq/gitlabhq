@@ -3,6 +3,9 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_download_code!
 
+  def index
+  end
+
   def new
     @namespaces = current_user.manageable_namespaces
     @namespaces.delete(@project.namespace)
