@@ -28,8 +28,8 @@ module API
       #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
       #                      if none provided showing all builds)
       # Example Request:
-      #   GET /projects/:id/builds/commit/:sha
-      get ':id/builds/commit/:sha' do
+      #   GET /projects/:id/repository/commits/:sha/builds
+      get ':id/repository/commits/:sha/builds' do
         commit = user_project.ci_commits.find_by_sha(params[:sha])
         return not_found! unless commit
 

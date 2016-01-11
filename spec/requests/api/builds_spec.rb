@@ -46,11 +46,11 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /projects/:id/builds/commit/:sha' do
+  describe 'GET /projects/:id/repository/commits/:sha/builds' do
     context 'authorized user' do
       it 'should return project builds for specific commit' do
         project.ensure_ci_commit(commit.sha)
-        get api("/projects/#{project.id}/builds/commit/#{commit.sha}", user)
+        get api("/projects/#{project.id}/repository/commits/#{commit.sha}/builds", user)
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -60,7 +60,7 @@ describe API::API, api: true  do
     context 'unauthorized user' do
       it 'should not return project builds' do
         project.ensure_ci_commit(commit.sha)
-        get api("/projects/#{project.id}/builds/commit/#{commit.sha}")
+        get api("/projects/#{project.id}/repository/commits/#{commit.sha}/builds")
 
         expect(response.status).to eq(401)
       end
