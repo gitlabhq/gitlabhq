@@ -18,7 +18,7 @@ class @IssuableContext
 
       $('.issuable-affix').affix offset:
         top: ->
-          @top = ($('.issuable-affix').offset().top - 70)
+          @top = $('.issuable-affix').offset().top
         bottom: ->
           @bottom = $('.footer').outerHeight(true)
 
