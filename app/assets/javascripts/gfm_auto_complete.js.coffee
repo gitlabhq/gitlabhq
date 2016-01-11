@@ -68,12 +68,13 @@ GitLab.GfmAutoComplete =
             title:  sanitize(m.title)
             search: "#{m.iid} #{m.title}"
 
-    $.getJSON(@dataSource).done (data) ->
-      # load members
-      input.atwho 'load', '@', data.members
-      # load issues
-      input.atwho 'load', 'issues', data.issues
-      # load merge requests
-      input.atwho 'load', 'mergerequests', data.mergerequests
-      # load emojis
-      input.atwho 'load', ':', data.emojis
+    if @dataSource
+      $.getJSON(@dataSource).done (data) ->
+        # load members
+        input.atwho 'load', '@', data.members
+        # load issues
+        input.atwho 'load', 'issues', data.issues
+        # load merge requests
+        input.atwho 'load', 'mergerequests', data.mergerequests
+        # load emojis
+        input.atwho 'load', ':', data.emojis
