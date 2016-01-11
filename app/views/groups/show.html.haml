@@ -9,7 +9,8 @@
   .cover-controls
     - if @group && can?(current_user, :admin_group, @group)
       = link_to icon('pencil'), edit_group_path(@group), class: 'btn'
-    = link_to icon('rss'), group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn'
+    - if current_user
+      = link_to icon('rss'), group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn'
 
   .avatar-holder
     = link_to group_icon(@group), target: '_blank' do
