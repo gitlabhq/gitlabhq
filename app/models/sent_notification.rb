@@ -62,7 +62,7 @@ class SentNotification < ActiveRecord::Base
     end
   end
 
-  def can_unsubscribe?
+  def unsubscribable?
     !for_commit?
   end
 
