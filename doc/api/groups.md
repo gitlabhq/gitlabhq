@@ -5,22 +5,7 @@ Every API call to groups must be authenticated.
 If a user is not a member of a group and the group contains at least one private
 project, all API calls return a 403 status code.
 
-## Groups pagination
-
-By default, groups only get 20 namespaces at a time because the API results are
-paginated.
-
-To get more (up to 100), pass the following as an argument to the API call:
-
-```bash
-/groups?per_page=100
-```
-
-And to switch pages add:
-
-```bash
-/groups?per_page=100&page=2
-```
+Groups use [pagination](README.md#pagination).
 
 ## List groups
 

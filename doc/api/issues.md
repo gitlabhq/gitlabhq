@@ -10,17 +10,7 @@ request on that project will result to a `404` status code.
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-To get more (up to 100), pass the following as an argument to the API call:
-
-```bash
-/issues?per_page=100
-```
-
-And to switch pages add:
-
-```bash
-/issues?per_page=100&page=2
-```
+Read more on [pagination](README.md#pagination).
 
 ## List issues
 

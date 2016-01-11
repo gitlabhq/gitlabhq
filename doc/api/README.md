@@ -159,10 +159,16 @@ curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: 23" "https:/
 Sometimes the returned result will span across many lines. When listing
 resources you can pass the following parameters:
 
-| Parameter | Explanation |
+| Parameter | Description |
 | --------- | ----------- |
-| `page` |  Page number (default: `1`). |
-| `per_page` | Number of items to list per page (default: `20`, max: `100`). |
+| `page`    | Page number (default: `1`). |
+| `per_page`| Number of items to list per page (default: `20`, max: `100`). |
+
+In the example below, we list 50 [namespaces](namespaces.md) per page.
+
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
+```
 
 [Link headers](http://www.w3.org/wiki/LinkHeader) are sent back with each
 response. These have `rel` prev/next/first/last and contain the relevant URL.
