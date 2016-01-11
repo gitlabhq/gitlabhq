@@ -28,11 +28,11 @@
 
 All API requests require authentication. You need to pass a `private_token`
 parameter by URL or header. If passed as a header, the header name must be
-**PRIVATE-TOKEN** (capital and with dash instead of underscore). You can find or
-reset your private token in your account page (`/profile/account`).
+**PRIVATE-TOKEN** (capital and with dash instead of underscore). You can find
+or reset your private token in your account page (`/profile/account`).
 
-If `private_token` is invalid or omitted, then an error message will be returned
-with status code `401`:
+If `private_token` is invalid or omitted, then an error message will be
+returned with status code `401`:
 
 ```json
 {
@@ -46,13 +46,13 @@ is defined in `lib/api.rb`.
 Example of a valid API request:
 
 ```shell
-GET https://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U
+GET https://gitlab.example.com/api/v3/projects?private_token=9koXpg98eAheJpvBs5tK
 ```
 
 Example of a valid API request using curl and authentication via header:
 
 ```shell
-curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "https://example.com/api/v3/projects"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
 ```
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
@@ -65,7 +65,7 @@ header or as a parameter.
 Example of OAuth2 token as a parameter:
 
 ```shell
-curl https://example.com/api/v3/user?access_token=OAUTH-TOKEN
+curl https://gitlab.example.com/api/v3/user?access_token=OAUTH-TOKEN
 ```
 
 Example of OAuth2 token as a header:
@@ -111,8 +111,8 @@ The following table shows the possible return codes for API requests.
 All API requests support performing an API call as if you were another user,
 provided your private token is from an administration account. You need to pass
 the `sudo` parameter by URL or header with an ID or username of the user you
-want to perform the operation as. If passed as a header, the header name must be
-**SUDO** (capitals).
+want to perform the operation as. If passed as a header, the header name must
+be **SUDO** (capitals).
 
 If a non administrative `private_token` is provided, then an error message will
 be returned with status code `403`:
@@ -132,32 +132,32 @@ returned with status code `404`:
 }
 ```
 
-Example of a valid API with sudo request providing a username and an ID
+Example of a valid API call with sudo request providing a username and an ID
 respectively:
 
 ```shell
-GET https://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=username
+GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
 ```
 
 ```shell
-GET https://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=23
+GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
 ```
 
 Example of a valid API request with sudo using curl and authentication via
 header:
 
 ```shell
-curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: username" "https://example.com/api/v3/projects"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v3/projects"
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: 23" "https://example.com/api/v3/projects"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v3/projects"
 ```
 
 ## Pagination
 
 Sometimes the returned result will span across many lines. When listing
-resources you can pass the following parameters:
+resources you can pass the following parameters.
 
 | Parameter | Description |
 | --------- | ----------- |
@@ -174,22 +174,29 @@ curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com
 response. These have `rel` prev/next/first/last and contain the relevant URL.
 Please use these instead of generating your own URLs.
 
-## id vs issue_id (iid)
+## id vs iid
 
 When you work with the API, you may notice two similar fields in API entities:
 `id` and `iid`. The main difference between them is scope.
 
 For example, an issue might have `id: 46` and `iid: 5`.
 
-| Parameter | Explanation |
+| Parameter | Description |
 | --------- | ----------- |
 | id  | is unique across all issues and is used for any API call. |
 | iid | is unique only in scope of a single project. When you browse issues or merge requests with Web UI, you see the `iid`. |
 
-That means that if you want to get an issue via the API you use
-`http://host/api/v3/.../issues/:id.json`.
+That means that if you want to get an issue via the API you should use:
 
-On the other hand, if you want to create a link to a web page use `http:://host/project/issues/:iid.json`.
+```bash
+https://gitlab.example.com/api/v3/projects/42/issues/:id.json
+```
+
+On the other hand, if you want to create a link to a web page you should use:
+
+```bash
+https://gitlab.example.com/api/v3/projects/42/issues/:iid.json
+```
 
 ## Data validation and error reporting
 
@@ -198,8 +205,9 @@ the API will answer with an HTTP `400` status.
 
 Such errors appear in two cases:
 
-* A required attribute of the API request is missing, e.g. the title of an issue is not given
-* An attribute did not pass the validation, e.g. user bio is too long
+- A required attribute of the API request is missing, e.g. the title of an
+  issue is not given
+- An attribute did not pass the validation, e.g. user bio is too long
 
 When an attribute is missing, you will get something like:
 
@@ -251,5 +259,6 @@ follows:
 ## Clients
 
 There are many unofficial GitLab API Clients for most of the popular
-programming languages. Visit the [GitLab website](https://about.gitlab.com/applications/#api-clients)
-for a complete list.
+programming languages. Visit the [GitLab website][] for a complete list.
+
+[GitLab website]: https://about.gitlab.com/applications/#api-clients
