@@ -431,7 +431,7 @@ namespace :gitlab do
         try_fixing_it(
           "sudo chmod -R ug+rwX,o-rwx #{repo_base_path}",
           "sudo chmod -R ug-s #{repo_base_path}",
-          "find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
+          "sudo find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
         )
         for_more_information(
           see_installation_guide_section "GitLab Shell"

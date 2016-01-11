@@ -32,8 +32,8 @@ module Gitlab
       def transaction_from_env(env)
         trans = Transaction.new
 
-        trans.add_tag(:request_method, env['REQUEST_METHOD'])
-        trans.add_tag(:request_uri, env['REQUEST_URI'])
+        trans.set(:request_uri, env['REQUEST_URI'])
+        trans.set(:request_method, env['REQUEST_METHOD'])
 
         trans
       end

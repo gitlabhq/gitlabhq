@@ -19,7 +19,7 @@ module SortingHelper
   end
 
   def sort_title_recently_updated
-    'Recently updated'
+    'Last updated'
   end
 
   def sort_title_oldest_created
@@ -27,7 +27,7 @@ module SortingHelper
   end
 
   def sort_title_recently_created
-    'Recently created'
+    'Last created'
   end
 
   def sort_title_milestone_soon
