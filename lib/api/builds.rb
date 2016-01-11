@@ -61,6 +61,10 @@ module API
       #   build_id (required) - The ID of a build
       # Example Request:
       #   GET /projects/:id/build/:build_id/trace
+      #
+      # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
+      #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
+      #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
       get ':id/builds/:build_id/trace' do
         build = get_build(params[:build_id])
         return not_found!(build) unless build
