@@ -10,7 +10,7 @@ class Commit
   attr_mentionable :safe_message, pipeline: :single_line
   participant :author, :committer, :notes
 
-  delegate :duration, :started_at, :finished_at, :coverage, to: :ci_commit
+  delegate :duration, :started_at, :finished_at, :coverage, to: :ci_commit, allow_nil: true
 
   attr_accessor :project
 

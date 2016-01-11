@@ -34,7 +34,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe "GET /projects:id/repository/commits/:sha" do
+  describe "GET /projects/:id/repository/commits/:sha" do
     context "authorized user" do
       it "should return a commit by sha" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
