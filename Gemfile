@@ -80,7 +80,7 @@ gem "carrierwave", '~> 0.9.0'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for aws storage
-gem "fog", "~> 1.25.0"
+gem "fog", "~> 1.36.0"
 gem "unf", '~> 0.1.4'
 
 # Authorization

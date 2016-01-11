@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
+  - Bump fog to 1.36.0 (Stan Hu)
   - Add housekeeping function to project settings page
   - The default GitLab logo now acts as a loading indicator
   - Fix caching issue where build status was not updating in project dashboard (Stan Hu)
