@@ -103,9 +103,12 @@ module IssuesHelper
 
     content_tag :div, "",
       class: "icon emoji-icon emoji-#{unicode}",
-      "data-emoji" => name,
-      "data-aliases" => aliases.join(" "),
-      "data-unicode-name" => unicode
+      title: name,
+      data: {
+        aliases: aliases.join(' '),
+        emoji: name,
+        unicode_name: unicode
+      }
   end
 
   def emoji_author_list(notes, current_user)
