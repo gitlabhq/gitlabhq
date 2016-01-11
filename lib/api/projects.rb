@@ -69,7 +69,8 @@ module API
       # Example Request:
       #   GET /projects/:id
       get ":id" do
-        present user_project, with: Entities::ProjectWithAccess, user: current_user
+        present user_project, with: Entities::ProjectWithAccess, user: current_user,
+                              user_can_admin_project: can?(current_user, :admin_project, user_project)
       end
 
       # Get events for a single project
@@ -98,9 +99,6 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - 0 by default
       #   import_url (optional)
-      #   build_allow_git_fetch (optional)
-      #   build_timeout (optional)
-      #   build_coverage_regex (optional)
       # Example Request
       #   POST /projects
       post do
@@ -117,14 +115,12 @@ module API
                                      :namespace_id,
                                      :public,
                                      :visibility_level,
-                                     :import_url,
-                                     :build_allow_git_fetch,
-                                     :build_timeout,
-                                     :build_coverage_regex]
+                                     :import_url]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
-          present @project, with: Entities::Project
+          present @project, with: Entities::Project,
+                            user_can_admin_project: can?(current_user, :admin_project, @project)
         else
           if @project.errors[:limit_reached].present?
             error!(@project.errors[:limit_reached], 403)
@@ -149,9 +145,6 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
       #   import_url (optional)
-      #   build_allow_git_fetch (optional)
-      #   build_timeout (optional)
-      #   build_coverage_regex (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -168,14 +161,12 @@ module API
                                      :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
-                                     :import_url,
-                                     :build_allow_git_fetch,
-                                     :build_timeout,
-                                     :build_coverage_regex]
+                                     :import_url]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
-          present @project, with: Entities::Project
+          present @project, with: Entities::Project,
+                            user_can_admin_project: can?(current_user, :admin_project, @project)
         else
           render_validation_error!(@project)
         end
@@ -194,8 +185,9 @@ module API
         if @forked_project.errors.any?
           conflict!(@forked_project.errors.messages)
         else
-          present @forked_project, with: Entities::Project
-        end
+          present @forked_project, with: Entities::Project,
+                                   user_can_admin_project: can?(current_user, :admin_project, @forked_project)
+         end
       end
 
       # Update an existing project
@@ -213,9 +205,6 @@ module API
       #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
-      #   build_allow_git_fetch (optional)
-      #   build_timeout (optional)
-      #   build_coverage_regex (optional)
       # Example Request
       #   PUT /projects/:id
       put ':id' do
@@ -230,10 +219,7 @@ module API
                                      :snippets_enabled,
                                      :shared_runners_enabled,
                                      :public,
-                                     :visibility_level,
-                                     :build_allow_git_fetch,
-                                     :build_timeout,
-                                     :build_coverage_regex]
+                                     :visibility_level]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?
@@ -247,7 +233,8 @@ module API
         if user_project.errors.any?
           render_validation_error!(user_project)
         else
-          present user_project, with: Entities::Project
+          present user_project, with: Entities::Project,
+                                user_can_admin_project: can?(current_user, :admin_project, user_project)
         end
       end
 
