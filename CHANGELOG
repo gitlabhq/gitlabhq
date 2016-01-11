@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.4.0 (unreleased)
   - Add housekeeping function to project settings page
   - The default GitLab logo now acts as a loading indicator
+  - Fix caching issue where build status was not updating in project dashboard (Stan Hu)
   - Accept 2xx status codes for successful Web hook triggers (Stan Hu)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
   - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
