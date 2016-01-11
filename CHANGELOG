@@ -13,6 +13,7 @@ v 8.3.3
   - Fix error in processing reply-by-email messages (Jason Lee)
   - Fix Error 500 when visiting build page of project with nil runners_token (Stan Hu)
   - Use WOFF versions of SourceSansPro fonts
+  - Fix regression when builds were not generated for tags created through web/api interface
 
 v 8.3.2
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
