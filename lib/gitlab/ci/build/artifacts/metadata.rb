@@ -43,6 +43,7 @@ module Gitlab
           def match_entries(gz)
             paths, metadata = [], []
             match_pattern = %r{^#{Regexp.escape(@path)}[^/\s]*/?$}
+            invalid_pattern = %r{(^\.?\.?/)|(/\.?\.?/)}
 
             until gz.eof? do
               begin
@@ -50,7 +51,7 @@ module Gitlab
                 meta = read_string(gz)
                
                 next unless path =~ match_pattern
-                next unless path_valid?(path)
+                next if path =~ invalid_pattern
 
                 paths.push(path)
                 metadata.push(JSON.parse(meta.chomp, symbolize_names: true))
@@ -60,10 +61,6 @@ module Gitlab
             end
 
             [paths, metadata]
-          end
-
-          def path_valid?(path)
-            !(path.start_with?('/') || path =~ %r{\.?\./})
           end
 
           def read_version
