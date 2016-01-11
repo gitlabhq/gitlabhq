@@ -269,7 +269,7 @@ module API
       # Remove a forked_from relationship
       #
       # Parameters:
-      # id: (required) - The ID of the project being marked as a fork
+      #   id: (required) - The ID of the project being marked as a fork
       # Example Request:
       #  DELETE /projects/:id/fork
       delete ":id/fork" do
@@ -278,6 +278,16 @@ module API
           user_project.forked_project_link.destroy
         end
       end
+
+      # Upload a file
+      #
+      # Parameters:
+      #   id: (required) - The ID of the project
+      #   file: (required) - The file to be uploaded
+      post ":id/uploads" do
+        ::Projects::UploadService.new(user_project, params[:file]).execute
+      end
+
       # search for projects current_user has access to
       #
       # Parameters:

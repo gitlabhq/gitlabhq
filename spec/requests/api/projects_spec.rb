@@ -353,6 +353,20 @@ describe API::API, api: true  do
     end
   end
 
+  describe "POST /projects/:id/uploads" do
+    before { project }
+
+    it "uploads the file and returns its info" do
+      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+
+      expect(response.status).to be(201)
+      expect(json_response['alt']).to eq("dk")
+      expect(json_response['url']).to start_with("/uploads/")
+      expect(json_response['url']).to end_with("/dk.png")
+      expect(json_response['is_image']).to eq(true)
+    end
+  end
+
   describe 'GET /projects/:id' do
     before { project }
     before { project_member }
