@@ -12,7 +12,6 @@ module Gitlab
           def initialize(file, path)
             @file, @path = file, path
             @full_version = read_version
-            @path << '/' unless path.end_with?('/') || path.empty?
           end
 
           def version
@@ -43,14 +42,15 @@ module Gitlab
 
           def match_entries(gz)
             paths, metadata = [], []
-            child_pattern = %r{^#{Regexp.escape(@path)}[^/\s]*/?$}
+            match_pattern = %r{^#{Regexp.escape(@path)}[^/\s]*/?$}
 
             until gz.eof? do
               begin
                 path = read_string(gz)
                 meta = read_string(gz)
                
-                next unless path =~ child_pattern
+                next unless path =~ match_pattern
+                next unless path_valid?(path)
 
                 paths.push(path)
                 metadata.push(JSON.parse(meta.chomp, symbolize_names: true))
@@ -60,6 +60,10 @@ module Gitlab
             end
 
             [paths, metadata]
+          end
+
+          def path_valid?(path)
+            !(path.start_with?('/') || path =~ %r{\.?\./})
           end
 
           def read_version

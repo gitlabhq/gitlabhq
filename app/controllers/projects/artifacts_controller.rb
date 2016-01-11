@@ -16,7 +16,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def browse
     return render_404 unless build.artifacts?
-    @path = build.artifacts_metadata_path(params[:path].to_s)
+
+    directory = params[:path] ? "#{params[:path]}/" : ''
+    @path = build.artifacts_metadata_path(directory)
+
     return render_404 unless @path.exists?
   end
 

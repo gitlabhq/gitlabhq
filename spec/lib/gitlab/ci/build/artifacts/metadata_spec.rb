@@ -28,8 +28,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       end
     end
 
-    describe '#match! other_artifacts_0.1.2' do
-      subject { metadata('other_artifacts_0.1.2').match! }
+    describe '#match! other_artifacts_0.1.2/' do
+      subject { metadata('other_artifacts_0.1.2/').match! }
 
       it 'matches correct paths' do
         expect(subject.first).
@@ -39,7 +39,7 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       end
     end
 
-    describe '#match! other_artifacts_0.1.2/another-subdirectory' do
+    describe '#match! other_artifacts_0.1.2/another-subdirectory/' do
       subject { metadata('other_artifacts_0.1.2/another-subdirectory/').match! }
 
       it 'matches correct paths' do
@@ -52,7 +52,7 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
 
     describe '#to_path' do
       subject { metadata('').to_path }
-      it { is_expected.to be_an_instance_of(Gitlab::Ci::Build::Artifacts::Metdata::Path) }
+      it { is_expected.to be_an_instance_of(Gitlab::Ci::Build::Artifacts::Metadata::Path) }
     end
 
     describe '#full_version' do

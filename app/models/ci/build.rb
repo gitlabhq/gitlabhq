@@ -347,10 +347,8 @@ module Ci
       artifacts? && artifacts_file.path.end_with?('zip') && artifacts_metadata.exists?
     end
 
-
     def artifacts_metadata_path(path)
-      metadata_file = artifacts_metadata.path
-      Gitlab::Ci::Build::Artifacts::Metadata.new(metadata_file, path).to_path
+      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path).to_path
     end
 
     private

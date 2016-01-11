@@ -23,7 +23,7 @@ module Gitlab
         end
 
         def directory?
-          @path.end_with?('/') || @path.blank?
+          blank_node? || @path.end_with?('/')
         end
 
         def file?
@@ -40,11 +40,11 @@ module Gitlab
         end
 
         def basename
-          directory? ? name + ::File::SEPARATOR : name
+          (directory? && !blank_node?) ? name + ::File::SEPARATOR : name
         end
 
         def name
-          @name || @path.split(::File::SEPARATOR).last
+          @name || @path.split(::File::SEPARATOR).last.to_s
         end
 
         def children
@@ -83,7 +83,11 @@ module Gitlab
         end
 
         def exists?
-          @path.blank? || @universe.include?(@path)
+          blank_node? || @universe.include?(@path)
+        end
+
+        def blank_node?
+          @path.empty? # "" is considered to be './'
         end
 
         def to_s

@@ -108,14 +108,14 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Path do
     end
   end
 
-  describe '#nodes', path: './test' do
+  describe '#nodes', path: 'test' do
     subject { |example| path(example).nodes }
-    it { is_expected.to eq 2 }
+    it { is_expected.to eq 1 }
   end
 
-  describe '#nodes', path: './test/' do
+  describe '#nodes', path: 'test/' do
     subject { |example| path(example).nodes }
-    it { is_expected.to eq 2 }
+    it { is_expected.to eq 1 }
   end
 
   describe '#metadata' do
