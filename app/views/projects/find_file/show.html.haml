@@ -18,10 +18,10 @@
         %tbody
       = spinner nil, true
 
-:coffeescript
-  projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
-    url: "#{escape_javascript(namespace_project_files_path(@project.namespace, @project, @ref, @options.merge(format: :json)))}"
-    treeUrl: "#{escape_javascript(namespace_project_tree_path(@project.namespace, @project, @ref))}"
+:javascript
+  var projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
+    url: "#{escape_javascript(namespace_project_files_path(@project.namespace, @project, @ref, @options.merge(format: :json)))}",
+    treeUrl: "#{escape_javascript(namespace_project_tree_path(@project.namespace, @project, @ref))}",
     blobUrlTemplate: "#{escape_javascript(namespace_project_blob_path(@project.namespace, @project, @id || @commit.id))}"
-  })
-  new ShortcutsFindFile(projectFindFile)
+  });
+  new ShortcutsFindFile(projectFindFile);
