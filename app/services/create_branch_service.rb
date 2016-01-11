@@ -18,7 +18,6 @@ class CreateBranchService < BaseService
     if new_branch
       push_data = build_push_data(project, current_user, new_branch)
 
-      EventCreateService.new.push(project, current_user, push_data)
       project.execute_hooks(push_data.dup, :push_hooks)
       project.execute_services(push_data.dup, :push_hooks)
 
