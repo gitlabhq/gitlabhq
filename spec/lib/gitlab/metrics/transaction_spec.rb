@@ -96,5 +96,22 @@ describe Gitlab::Metrics::Transaction do
 
       transaction.submit
     end
+
+    it 'adds the action as a tag for every metric' do
+      transaction.action = 'Foo#bar'
+      transaction.track_self
+
+      hash = {
+        series:    'rails_transactions',
+        tags:      { action: 'Foo#bar' },
+        values:    { duration: 0.0 },
+        timestamp: an_instance_of(Fixnum)
+      }
+
+      expect(Gitlab::Metrics).to receive(:submit_metrics).
+        with([hash])
+
+      transaction.submit
+    end
   end
 end

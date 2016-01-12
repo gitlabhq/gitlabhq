@@ -88,6 +88,10 @@ module Gitlab
         options['attributes']
       end
 
+      def timeout
+        options['timeout'].to_i
+      end
+
       protected
       def base_config
         Gitlab.config.ldap

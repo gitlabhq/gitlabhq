@@ -20,27 +20,29 @@
                   = emoji_icon(emoji["name"], emoji["unicode"], emoji["aliases"])
 
 - if current_user
-  :coffeescript
-    post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}"
-    noteable_type = "#{votable.class.name.underscore}"
-    noteable_id = "#{votable.id}"
-    aliases = #{AwardEmoji.aliases.to_json}
+  :javascript
+    var post_emoji_url = "#{award_toggle_namespace_project_notes_path(@project.namespace, @project)}";
+    var noteable_type = "#{votable.class.name.underscore}";
+    var noteable_id = "#{votable.id}";
+    var aliases = #{AwardEmoji.aliases.to_json};
 
     window.awards_handler = new AwardsHandler(
       post_emoji_url,
       noteable_type,
       noteable_id,
       aliases
-    )
+    );
 
-    $(".awards").on "click", ".emoji-menu-content li", (e) ->
-      emoji = $(this).find(".emoji-icon").data("emoji")
-      awards_handler.addAward(emoji)
+    $(".awards").on("click", ".emoji-menu-content li", function(e) {
+      var emoji = $(this).find(".emoji-icon").data("emoji");
+      awards_handler.addAward(emoji);
+    });
 
-    $(".awards").on "click", ".award", (e) ->
-      emoji = $(this).find(".icon").data("emoji")
-      awards_handler.addAward(emoji)
+    $(".awards").on("click", ".award", function(e) {
+      var emoji = $(this).find(".icon").data("emoji");
+      awards_handler.addAward(emoji);
+    });
 
-    $(".award").tooltip()
+    $(".award").tooltip();
 
-    $(".emoji-menu-content").niceScroll({cursorwidth: "7px", autohidemode: false})
+    $(".emoji-menu-content").niceScroll({cursorwidth: "7px", autohidemode: false});

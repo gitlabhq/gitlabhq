@@ -62,8 +62,9 @@ Now simply register the runner as any runner:
 sudo gitlab-runner register
 ```
 
-Note that you will have to enable `Allows shared runners` for each project
-that you want to make use of a shared runner. This is by default `off`.
+Shared runners are enabled by default as of GitLab 8.2, but can be disabled with the 
+`DISABLE SHARED RUNNERS` button. Previous versions of GitLab defaulted shared runners to
+disabled.
 
 ## Registering a Specific Runner
 

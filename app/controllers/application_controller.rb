@@ -286,7 +286,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_filters_params
-    params[:sort] ||= 'created_desc'
+    params[:sort] ||= 'id_desc'
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
