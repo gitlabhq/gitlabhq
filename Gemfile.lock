@@ -360,6 +360,10 @@ GEM
       activesupport
       grape (>= 0.16.0)
       rake
+    grape-swagger (0.27.3)
+      grape (>= 0.16.2)
+    grape-swagger-rails (0.3.0)
+      railties (>= 3.2.12)
     grape_logging (1.7.0)
       grape
     grpc (1.4.5)
@@ -1055,6 +1059,8 @@ DEPENDENCIES
   grape (~> 1.0)
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.1.0)
+  grape-swagger
+  grape-swagger-rails
   grape_logging (~> 1.7)
   haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)

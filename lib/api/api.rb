@@ -1,3 +1,5 @@
+require 'grape-swagger'
+
 module API
   class API < Grape::API
     include APIGuard
@@ -159,6 +161,24 @@ module API
     mount ::API::GroupVariables
     mount ::API::Version
     mount ::API::Wikis
+
+    add_swagger_documentation(
+      base_path: '/api',
+      api_version: 'v3',
+      hide_documentation_path: true,
+      authorizations: {
+          private_token_header: {
+            type: 'apiKey',
+            passAs: 'header',
+            keyname: 'PRIVATE_HEADER',
+          },
+          private_token_query: {
+            type: 'apiKey',
+            passAs: 'query',
+            keyname: 'private_token',
+          },
+      }
+    )
 
     route :any, '*path' do
       error!('404 Not Found', 404)
