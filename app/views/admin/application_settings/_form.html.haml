@@ -193,14 +193,6 @@
           sending messages to this port, without it metrics data will not be
           saved.
     .form-group
-      = f.label :metrics_username, 'InfluxDB username', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :metrics_username, class: 'form-control'
-    .form-group
-      = f.label :metrics_password, 'InfluxDB password', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :metrics_password, class: 'form-control'
-    .form-group
       = f.label :metrics_pool_size, 'Connection pool size', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_pool_size, class: 'form-control'

@@ -28,9 +28,20 @@
 #  admin_notification_email          :string(255)
 #  shared_runners_enabled            :boolean          default(TRUE), not null
 #  max_artifacts_size                :integer          default(100), not null
-#  runners_registration_token        :string(255)
-#  require_two_factor_authentication :boolean          default(TRUE)
+#  runners_registration_token        :string
+#  require_two_factor_authentication :boolean          default(FALSE)
 #  two_factor_grace_period           :integer          default(48)
+#  metrics_enabled                   :boolean          default(FALSE)
+#  metrics_host                      :string           default("localhost")
+#  metrics_username                  :string
+#  metrics_password                  :string
+#  metrics_pool_size                 :integer          default(16)
+#  metrics_timeout                   :integer          default(10)
+#  metrics_method_call_threshold     :integer          default(10)
+#  recaptcha_enabled                 :boolean          default(FALSE)
+#  recaptcha_site_key                :string
+#  recaptcha_private_key             :string
+#  metrics_port                      :integer          default(8089)
 #
 
 class ApplicationSetting < ActiveRecord::Base

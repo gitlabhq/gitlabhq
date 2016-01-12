@@ -49,8 +49,10 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
 
-  # This setting allows an LDAP group to become GitLab administrators
-  admin_group: ''
+  # Set a timeout, in seconds, for LDAP queries. This helps avoid blocking
+  # a request if the LDAP server becomes unresponsive.
+  # A value of 0 means there is no timeout.
+  timeout: 10
 
   # This setting specifies if LDAP server is Active Directory LDAP server.
   # For non AD servers it skips the AD specific queries.
@@ -69,7 +71,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   allow_username_or_email_login: false
 
   # To maintain tight control over the number of active users on your GitLab installation,
-  # enable this setting to keep new users blocked until they have been cleared by the admin 
+  # enable this setting to keep new users blocked until they have been cleared by the admin
   # (default: false).
   block_auto_created_users: false
 
@@ -96,13 +98,13 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
     # The username will be used in paths for the user's own projects
     # (like `gitlab.example.com/username/project`) and when mentioning
     # them in issues, merge request and comments (like `@username`).
-    # If the attribute specified for `username` contains an email address, 
+    # If the attribute specified for `username` contains an email address,
     # the GitLab username will be the part of the email address before the '@'.
     username: ['uid', 'userid', 'sAMAccountName']
     email:    ['mail', 'email', 'userPrincipalName']
 
     # If no full name could be found at the attribute specified for `name`,
-    # the full name is determined using the attributes specified for 
+    # the full name is determined using the attributes specified for
     # `first_name` and `last_name`.
     name:       'cn'
     first_name: 'givenName'
@@ -413,18 +415,18 @@ administrator.
 
 GitLab's LDAP client is based on [omniauth-ldap](https://gitlab.com/gitlab-org/omniauth-ldap)
 which encapsulates Ruby's `Net::LDAP` class. It provides a pure-Ruby implementation
-of the LDAP client protocol. As a result, GitLab is limited by `omniauth-ldap` and may impact your LDAP 
+of the LDAP client protocol. As a result, GitLab is limited by `omniauth-ldap` and may impact your LDAP
 server settings.
 
-### TLS Client Authentication  
-Not implemented by `Net::LDAP`.  
-So you should disable anonymous LDAP authentication and enable simple or SASL 
+### TLS Client Authentication
+Not implemented by `Net::LDAP`.
+So you should disable anonymous LDAP authentication and enable simple or SASL
 authentication. TLS client authentication setting in your LDAP server cannot be
-mandatory and clients cannot be authenticated with the TLS protocol. 
+mandatory and clients cannot be authenticated with the TLS protocol.
 
-### TLS Server Authentication  
-Not supported by GitLab's configuration options.  
-When setting `method: ssl`, the underlying authentication method used by 
-`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with 
+### TLS Server Authentication
+Not supported by GitLab's configuration options.
+When setting `method: ssl`, the underlying authentication method used by
+`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with
 the LDAP server before any LDAP-protocol data is exchanged but no validation of
 the LDAP server's SSL certificate is performed.

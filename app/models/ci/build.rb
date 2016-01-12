@@ -29,6 +29,7 @@
 #  target_url         :string(255)
 #  description        :string(255)
 #  artifacts_file     :text
+#  gl_project_id      :integer
 #
 
 module Ci
@@ -53,6 +54,8 @@ module Ci
 
     # To prevent db load megabytes of data from trace
     default_scope -> { select(Ci::Build.columns_without_lazy) }
+
+    before_destroy { project }
 
     class << self
       def columns_without_lazy
@@ -145,10 +148,6 @@ module Ci
       end
     end
 
-    def project
-      commit.project
-    end
-
     def project_id
       gl_project_id
     end
@@ -207,7 +206,7 @@ module Ci
 
     def trace
       trace = raw_trace
-      if project && trace.present?
+      if project && trace.present? && project.runners_token.present?
         trace.gsub(project.runners_token, 'xxxxxx')
       else
         trace

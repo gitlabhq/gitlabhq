@@ -29,6 +29,13 @@
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
 #  import_error           :text
+#  ci_id                  :integer
+#  builds_enabled         :boolean          default(TRUE), not null
+#  shared_runners_enabled :boolean          default(TRUE), not null
+#  runners_token          :string
+#  build_coverage_regex   :string
+#  build_allow_git_fetch  :boolean          default(TRUE), not null
+#  build_timeout          :integer          default(3600), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -43,6 +50,7 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
+  include TokenAuthenticatable
 
   extend Gitlab::ConfigHelper
 
@@ -198,10 +206,8 @@ class Project < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validates :approvals_before_merge, numericality: true, allow_blank: true
 
-  before_validation :set_runners_token_token
-  def set_runners_token_token
-    self.runners_token = SecureRandom.hex(15) if self.runners_token.blank?
-  end
+  add_authentication_token_field :runners_token
+  before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
 
@@ -874,6 +880,8 @@ class Project < ActiveRecord::Base
   end
 
   def change_head(branch)
+    # Cached divergent commit counts are based on repository head
+    repository.expire_branch_cache
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
@@ -1011,6 +1019,10 @@ class Project < ActiveRecord::Base
   def visibility_level_allowed?(level)
     return true unless forked?
     Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i)
+  end
+
+  def runners_token
+    ensure_runners_token!
   end
 
   def pages_url

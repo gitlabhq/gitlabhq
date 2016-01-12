@@ -27,35 +27,20 @@ module PageLayoutHelper
   #
   # Returns an HTML-safe String.
   def page_description(description = nil)
-    @page_description ||= page_description_default
-
     if description.present?
       @page_description = description.squish
-    else
+    elsif @page_description.present?
       sanitize(@page_description, tags: []).truncate_words(30)
-    end
-  end
-
-  # Default value for page_description when one hasn't been defined manually by
-  # a view
-  def page_description_default
-    if @project
-      @project.description || brand_title
-    else
-      brand_title
     end
   end
 
   def page_image
     default = image_url('gitlab_logo.png')
 
-    if @project
-      @project.avatar_url || default
-    elsif @user
-      avatar_icon(@user)
-    else
-      default
-    end
+    subject = @project || @user || @group
+
+    image = subject.avatar_url if subject.present?
+    image || default
   end
 
   # Define or get attributes to be used as Twitter card metadata

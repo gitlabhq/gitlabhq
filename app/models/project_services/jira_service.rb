@@ -16,6 +16,7 @@
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
 #  note_events           :boolean          default(TRUE), not null
+#  build_events          :boolean          default(FALSE), not null
 #
 
 class JiraService < IssueTrackerService
@@ -39,15 +40,10 @@ class JiraService < IssueTrackerService
   end
 
   def help
-    line1 = 'Setting `project_url`, `issues_url` and `new_issue_url` will '\
+    'Setting `project_url`, `issues_url` and `new_issue_url` will '\
     'allow a user to easily navigate to the Jira issue tracker. See the '\
     '[integration doc](http://doc.gitlab.com/ce/integration/external-issue-tracker.html) '\
     'for details.'
-
-    line2 = 'Support for referencing commits and automatic closing of Jira issues directly '\
-    'from GitLab is [available in GitLab EE.](http://doc.gitlab.com/ee/integration/jira.html)'
-
-    [line1, line2].join("\n\n")
   end
 
   def title
@@ -120,6 +116,7 @@ class JiraService < IssueTrackerService
   end
 
   def test_settings
+    return unless api_url.present?
     result = JiraService.get(
       jira_api_test_url,
       headers: {
@@ -217,6 +214,7 @@ class JiraService < IssueTrackerService
   end
 
   def send_message(url, message)
+    return unless api_url.present?
     result = JiraService.post(
       url,
       body: message,
@@ -242,6 +240,7 @@ class JiraService < IssueTrackerService
   end
 
   def existing_comment?(issue_name, new_comment)
+    return unless api_url.present?
     result = JiraService.get(
       comment_url(issue_name),
       headers: {

@@ -30,11 +30,34 @@ describe Gitlab::Metrics::Transaction do
   end
 
   describe '#add_metric' do
-    it 'adds a metric tagged with the transaction UUID' do
+    it 'adds a metric to the transaction' do
       expect(Gitlab::Metrics::Metric).to receive(:new).
-        with('foo', { number: 10 }, { transaction_id: transaction.uuid })
+        with('rails_foo', { number: 10 }, {})
 
       transaction.add_metric('foo', number: 10)
+    end
+  end
+
+  describe '#increment' do
+    it 'increments a counter' do
+      transaction.increment(:time, 1)
+      transaction.increment(:time, 2)
+
+      expect(transaction).to receive(:add_metric).
+        with('transactions', { duration: 0.0, time: 3 }, {})
+
+      transaction.track_self
+    end
+  end
+
+  describe '#set' do
+    it 'sets a value' do
+      transaction.set(:number, 10)
+
+      expect(transaction).to receive(:add_metric).
+        with('transactions', { duration: 0.0, number: 10 }, {})
+
+      transaction.track_self
     end
   end
 
@@ -58,7 +81,7 @@ describe Gitlab::Metrics::Transaction do
   describe '#track_self' do
     it 'adds a metric for the transaction itself' do
       expect(transaction).to receive(:add_metric).
-        with(described_class::SERIES, { duration: transaction.duration }, {})
+        with('transactions', { duration: transaction.duration }, {})
 
       transaction.track_self
     end
@@ -70,6 +93,23 @@ describe Gitlab::Metrics::Transaction do
 
       expect(Gitlab::Metrics).to receive(:submit_metrics).
         with([an_instance_of(Hash)])
+
+      transaction.submit
+    end
+
+    it 'adds the action as a tag for every metric' do
+      transaction.action = 'Foo#bar'
+      transaction.track_self
+
+      hash = {
+        series:    'rails_transactions',
+        tags:      { action: 'Foo#bar' },
+        values:    { duration: 0.0 },
+        timestamp: an_instance_of(Fixnum)
+      }
+
+      expect(Gitlab::Metrics).to receive(:submit_metrics).
+        with([hash])
 
       transaction.submit
     end

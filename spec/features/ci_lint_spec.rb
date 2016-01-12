@@ -35,5 +35,13 @@ describe 'CI Lint' do
         expect(page).to have_content('Error: Please provide content of .gitlab-ci.yml')
       end
     end
+
+    describe 'YAML revalidate' do
+      let(:yaml_content) { 'my yaml content' }
+
+      it 'loads previous YAML content after validation' do
+        expect(page).to have_field('content', with: 'my yaml content', type: 'textarea')
+      end
+    end
   end
 end

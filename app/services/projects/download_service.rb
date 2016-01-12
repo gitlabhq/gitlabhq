@@ -16,13 +16,7 @@ module Projects
       uploader.download!(@url)
       uploader.store!
 
-      filename = uploader.image? ? uploader.file.basename : uploader.file.filename
-
-      {
-        'alt'       => filename,
-        'url'       => uploader.secure_url,
-        'is_image'  => uploader.image?
-      }
+      uploader.to_h
     end
 
     private

@@ -174,7 +174,7 @@ The alias hostname for the service is made from the image name following these
 rules:
 
 1. Everything after `:` is stripped
-2. Backslash (`/`) is replaced with double underscores (`__`)
+2. Slash (`/`) is replaced with double underscores (`__`)
 
 ## Configuring services
 

@@ -80,8 +80,10 @@ feature 'Project', feature: true do
       visit namespace_project_path(project.namespace, project)
     end
 
-    it { expect(page).to have_content('You have Master access to this project.') }
-    it { expect(page).to have_link('Leave this project') }
+    it 'click project-settings and find leave project' do
+      find('#project-settings-button').click
+      expect(page).to have_link('Leave Project') 
+    end
   end
 
   def remove_with_confirm(button_text, confirm_with)

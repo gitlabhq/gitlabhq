@@ -6,16 +6,19 @@ module Gitlab
     METRICS_ROOT = Rails.root.join('lib', 'gitlab', 'metrics').to_s
     PATH_REGEX   = /^#{RAILS_ROOT}\/?/
 
-    def self.pool_size
-      current_application_settings[:metrics_pool_size] || 16
-    end
-
-    def self.timeout
-      current_application_settings[:metrics_timeout] || 10
+    def self.settings
+      @settings ||= {
+        enabled:               current_application_settings[:metrics_enabled],
+        pool_size:             current_application_settings[:metrics_pool_size],
+        timeout:               current_application_settings[:metrics_timeout],
+        method_call_threshold: current_application_settings[:metrics_method_call_threshold],
+        host:                  current_application_settings[:metrics_host],
+        port:                  current_application_settings[:metrics_port]
+      }
     end
 
     def self.enabled?
-      current_application_settings[:metrics_enabled] || false
+      settings[:enabled] || false
     end
 
     def self.mri?
@@ -26,16 +29,11 @@ module Gitlab
       # This is memoized since this method is called for every instrumented
       # method. Loading data from an external cache on every method call slows
       # things down too much.
-      @method_call_threshold ||=
-        (current_application_settings[:metrics_method_call_threshold] || 10)
+      @method_call_threshold ||= settings[:method_call_threshold]
     end
 
     def self.pool
       @pool
-    end
-
-    def self.hostname
-      @hostname
     end
 
     # Returns a relative path and line number based on the last application call
@@ -85,19 +83,15 @@ module Gitlab
       value.to_s.gsub('=', '\\=')
     end
 
-    @hostname = Socket.gethostname
-
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
-      @pool = ConnectionPool.new(size: pool_size, timeout: timeout) do
-        host = current_application_settings[:metrics_host]
-        user = current_application_settings[:metrics_username]
-        pw   = current_application_settings[:metrics_password]
-        port = current_application_settings[:metrics_port]
+      @pool = ConnectionPool.new(size: settings[:pool_size], timeout: settings[:timeout]) do
+        host = settings[:host]
+        port = settings[:port]
 
         InfluxDB::Client.
-          new(udp: { host: host, port: port }, username: user, password: pw)
+          new(udp: { host: host, port: port })
       end
     end
   end

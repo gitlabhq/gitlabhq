@@ -17,6 +17,7 @@ class NamespaceValidator < ActiveModel::EachValidator
     hooks
     issues
     merge_requests
+    new
     notes
     profile
     projects

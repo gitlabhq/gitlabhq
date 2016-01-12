@@ -413,6 +413,7 @@ class NotificationService
     recipients = reject_unsubscribed_users(recipients, target)
 
     recipients.delete(current_user)
+    recipients = recipients.uniq
 
     recipients
   end

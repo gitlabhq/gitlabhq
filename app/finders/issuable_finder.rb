@@ -80,9 +80,9 @@ class IssuableFinder
     if project?
       @projects = project
     elsif current_user && params[:authorized_only].presence && !current_user_related?
-      @projects = current_user.authorized_projects
+      @projects = current_user.authorized_projects.reorder(nil)
     else
-      @projects = ProjectsFinder.new.execute(current_user)
+      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
     end
   end
 

@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update]
+  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -173,6 +173,15 @@ class ProjectsController < ApplicationController
     @project.remove_pages
 
     respond_to do |format|
+      format.html { redirect_to project_path(@project) }
+    end
+  end
+
+  def housekeeping
+    ::Projects::HousekeepingService.new(@project).execute
+
+    respond_to do |format|
+      flash[:notice] = "Housekeeping successfully started."
       format.html { redirect_to project_path(@project) }
     end
   end

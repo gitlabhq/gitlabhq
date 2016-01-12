@@ -20,6 +20,7 @@
 ## CI Documentation
 
 - [Quick Start](ci/quick_start/README.md)
+- [Enable or disable GitLab CI](ci/enable_or_disable_ci.md)
 - [Configuring project (.gitlab-ci.yml)](ci/yaml/README.md)
 - [Configuring runner](ci/runners/README.md)
 - [Configuring deployment](ci/deployment/README.md)
@@ -63,7 +64,7 @@
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Log system](logs/logs.md) Log system.
-- [Environmental Variables](administration/environment_variables.md) to configure GitLab.
+- [Environment Variables](administration/environment_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running
 - [Raketasks](raketasks/README.md) Backups, maintenance, automatic web hook setup and the importing of projects.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.

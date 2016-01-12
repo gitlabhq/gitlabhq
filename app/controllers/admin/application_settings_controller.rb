@@ -72,8 +72,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_enabled,
       :metrics_host,
       :metrics_port,
-      :metrics_username,
-      :metrics_password,
       :metrics_pool_size,
       :metrics_timeout,
       :metrics_method_call_threshold,

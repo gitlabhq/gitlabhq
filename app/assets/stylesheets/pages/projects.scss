@@ -26,6 +26,13 @@
 }
 
 .project-home-panel {
+
+  .cover-controls {
+    .project-settings-dropdown {
+      margin-left: 10px;
+    }
+  }
+
   .project-identicon-holder {
     margin-bottom: 16px;
 
@@ -292,10 +299,9 @@
 
   border: 1px solid #c6cacf !important;
   background-color: #e4e7ed !important;
-  text-transform: uppercase;
+  text-transform: none;
   color: #313236 !important;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px;
 }
 
 .dropdown-menu {
@@ -408,10 +414,15 @@ ul.nav.nav-projects-tabs {
   }
 }
 
+.last-push-widget {
+  margin-top: -1px;
+}
+
 .top-area {
   border-bottom: 1px solid #EEE;
   margin: 0 -16px;
   padding: 0 $gl-padding;
+  height: 42px;
 
   ul.left-top-menu {
     display: inline-block;
@@ -518,6 +529,7 @@ pre.light-well {
 .projects-search-form {
   margin: -$gl-padding;
   padding: $gl-padding;
+  padding-bottom: 0;
   margin-bottom: 0px;
 
   input {

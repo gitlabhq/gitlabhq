@@ -351,7 +351,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout 0.5.1
+    sudo -u git -H git checkout 0.5.3
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -559,6 +559,6 @@ Apart from the always supported markdown style there are other rich text files t
 
 If you see this message when attempting to clone a repository hosted by GitLab,
 this is likely due to an outdated Nginx or Apache configuration, or a missing or
-misconfigured `gitlab-git-http-server` instance. Double-check that you've
-[installed Go](#3-go), [installed gitlab-git-http-server](#install-gitlab-git-http-server),
+misconfigured gitlab-workhorse instance. Double-check that you've
+[installed Go](#3-go), [installed gitlab-workhorse](#install-gitlab-workhorse),
 and correctly [configured Nginx](#site-configuration).
