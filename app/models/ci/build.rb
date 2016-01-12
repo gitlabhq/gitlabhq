@@ -344,7 +344,7 @@ module Ci
     end
 
     def artifacts_browser_supported?
-      artifacts? && artifacts_file.path.end_with?('zip') && artifacts_metadata.exists?
+      artifacts? && artifacts_metadata.exists?
     end
 
     def artifacts_metadata_path(path)

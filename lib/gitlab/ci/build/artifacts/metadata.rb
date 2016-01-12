@@ -56,7 +56,7 @@ module Gitlab
                 next if path =~ invalid_pattern
 
                 paths.push(path)
-                metadata.push(JSON.parse(meta.chomp, symbolize_names: true))
+                metadata.push(JSON.parse(meta, symbolize_names: true))
               rescue JSON::ParserError, Encoding::CompatibilityError
                 next
               end
@@ -66,7 +66,7 @@ module Gitlab
           end
 
           def read_version
-            gzip do|gz|
+            gzip do |gz|
               version_string = read_string(gz)
 
               unless version_string
@@ -95,9 +95,11 @@ module Gitlab
           def gzip
             open do |file|
               gzip = Zlib::GzipReader.new(file)
-              result = yield gzip
-              gzip.close
-              result
+              begin
+                yield gzip
+              ensure
+                gzip.close
+              end
             end
           end
 

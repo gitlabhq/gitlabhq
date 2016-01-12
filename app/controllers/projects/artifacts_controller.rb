@@ -1,6 +1,6 @@
 class Projects::ArtifactsController < Projects::ApplicationController
   layout 'project'
-  before_action :authorize_download_build_artifacts!
+  before_action :authorize_read_build_artifacts!
 
   def download
     unless artifacts_file.file_storage?
@@ -24,11 +24,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def file
-    file = build.artifacts_metadata_path(params[:path])
+    file_path = build.artifacts_metadata_path(params[:path])
 
-    if file.exists?
-      render json: { repository: build.artifacts_file.path,
-                     path: Base64.encode64(file.path) }
+    if file_path.exists?
+      render json: { archive: build.artifacts_file.path,
+                     path: Base64.encode64(file_path.path) }
     else
       render json: {}, status: 404
     end
@@ -44,8 +44,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
     @artifacts_file ||= build.artifacts_file
   end
 
-  def authorize_download_build_artifacts!
-    unless can?(current_user, :download_build_artifacts, @project)
+  def authorize_read_build_artifacts!
+    unless can?(current_user, :read_build_artifacts, @project)
       if current_user.nil?
         return authenticate_user!
       else
