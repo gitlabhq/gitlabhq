@@ -37,8 +37,6 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
 
   context 'linking external images' do
     it 'creates img tag for valid URL' do
-      expect(project_wiki).to receive(:find_file).with('http://example.com/image.jpg').and_return(nil)
-
       tag = '[[http://example.com/image.jpg]]'
       doc = filter("See #{tag}", project_wiki: project_wiki)
 
@@ -46,8 +44,6 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
     end
 
     it 'does not creates img tag for invalid URL' do
-      expect(project_wiki).to receive(:find_file).with('http://example.com/image.pdf').and_return(nil)
-
       tag = '[[http://example.com/image.pdf]]'
       doc = filter("See #{tag}", project_wiki: project_wiki)
 

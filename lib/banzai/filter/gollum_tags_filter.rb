@@ -14,7 +14,10 @@ module Banzai
       include ActionView::Helpers::TagHelper
 
       # Pattern to match tag contents.
-      TAGS_PATTERN = %r{(.?)\[\[(.+?)\]\]([^\[]?)}
+      TAGS_PATTERN = %r{\[\[(.+?)\]\]}
+
+      # Pattern to match allowed image extensions
+      ALLOWED_IMAGE_EXTENSIONS = %r{.+(jpg|png|gif|svg|bmp)\z}i
 
       def call
         search_text_nodes(doc).each do |node|
@@ -22,9 +25,11 @@ module Banzai
 
           next unless content.match(TAGS_PATTERN)
 
-          html = process_tag($2)
+          html = process_tag($1)
 
-          node.replace(html) if html != node.content
+          if html && html != node.content
+            node.replace(html)
+          end
         end
 
         doc
@@ -38,11 +43,11 @@ module Banzai
       #
       # Returns the String HTML version of the tag.
       def process_tag(tag)
-        if html = process_image_tag(tag)
-          html
-        else
-          process_page_link_tag(tag)
-        end
+        parts = tag.split('|')
+
+        return if parts.size.zero?
+
+        process_image_tag(parts) || process_page_link_tag(parts)
       end
 
       # Attempt to process the tag as an image tag.
@@ -51,21 +56,28 @@ module Banzai
       #
       # Returns the String HTML if the tag is a valid image tag or nil
       # if it is not.
-      def process_image_tag(tag)
-        parts = tag.split('|')
-        return if parts.size.zero?
+      def process_image_tag(parts)
+        content = parts[0].strip
 
-        name = parts[0].strip
+        return unless image?(content)
 
-        if file = project_wiki.find_file(name)
+        if url?(content)
+          path = content
+        elsif file = project_wiki.find_file(content)
           path = ::File.join project_wiki_base_path, file.path
-        elsif name =~ /^https?:\/\/.+(jpg|png|gif|svg|bmp)$/i
-          path = name
         end
 
         if path
           content_tag(:img, nil, src: path)
         end
+      end
+
+      def image?(path)
+        path =~ ALLOWED_IMAGE_EXTENSIONS
+      end
+
+      def url?(path)
+        path.start_with?(*%w(http https))
       end
 
       # Attempt to process the tag as a page link tag.
@@ -74,10 +86,7 @@ module Banzai
       #
       # Returns the String HTML if the tag is a valid page link tag or nil
       # if it is not.
-      def process_page_link_tag(tag)
-        parts = tag.split('|')
-        return if parts.size.zero?
-
+      def process_page_link_tag(parts)
         if parts.size == 1
           url = parts[0].strip
         else
