@@ -7,6 +7,7 @@ v 8.4.0 (unreleased)
   - Improved performance of finding issues for an entire group (Yorick Peterse)
   - Added custom application performance measuring system powered by InfluxDB (Yorick Peterse)
   - Bump fog to 1.36.0 (Stan Hu)
+  - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
   - The default GitLab logo now acts as a loading indicator
   - Fix caching issue where build status was not updating in project dashboard (Stan Hu)

@@ -36,20 +36,6 @@ module Gitlab
       @pool
     end
 
-    # Returns a relative path and line number based on the last application call
-    # frame.
-    def self.last_relative_application_frame
-      frame = caller_locations.find do |l|
-        l.path.start_with?(RAILS_ROOT) && !l.path.start_with?(METRICS_ROOT)
-      end
-
-      if frame
-        return frame.path.sub(PATH_REGEX, ''), frame.lineno
-      else
-        return nil, nil
-      end
-    end
-
     def self.submit_metrics(metrics)
       prepared = prepare_metrics(metrics)
 
