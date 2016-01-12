@@ -44,72 +44,39 @@ module Gitlab
         return [] if @lines.empty?
 
         extract_line_prefixes
-
-        @code             = unescape_html(raw_content)
-        @highlighted_code = formatter.format(lexer.lex(@code))
-
-        is_diff_line? ? update_diff_lines : @highlighted_code.lines
+        update_diff_lines
       end
 
       private
 
-      def is_diff_line?
-        @lines.first.is_a?(Gitlab::Diff::Line)
-      end
-
       def text_lines
-        @text_lines ||= (is_diff_line? ? @lines.map(&:text) : @lines)
-      end
-
-      def raw_content
-        @raw_content ||= text_lines.join(is_diff_line? ? "\n" : nil)
+        @text_lines ||= @lines.map(&:text)
       end
 
       def extract_line_prefixes
-        @diff_line_prefixes ||= begin
-          if is_diff_line?
-            text_lines.map { |line| line.sub!(/\A((\+|\-))/, '');$1 }
-          else
-            []
-          end
-        end
+        @diff_line_prefixes ||= text_lines.map { |line| line.sub!(/\A((\+|\-))/, '');$1 }
       end
 
       def update_diff_lines
-        @highlighted_code.lines.each_with_index do |line, i|
-          diff_line = @lines[i]
+        @lines.each_with_index do |line, i|
           line_prefix = @diff_line_prefixes[i] || ' '
 
           # ignore highlighting for "match" lines
-          next if diff_line.type == 'match'
+          next if line.type == 'match'
 
-          case diff_line.type
+          case line.type
           when 'new', nil
-            line = new_lines[diff_line.new_pos - 1]
+            highlighted_line = new_lines[line.new_pos - 1]
           when 'old'
-            line = old_lines[diff_line.old_pos - 1]
+            highlighted_line = old_lines[line.old_pos - 1]
           end
 
           # Only update text if line is found. This will prevent
           # issues with submodules given the line only exists in diff content.
-          diff_line.text = line.gsub!(/\A\s/, line_prefix) if line
+          line.text = highlighted_line.gsub!(/\A\s/, line_prefix) if line
         end
 
         @lines
-      end
-
-      def lexer
-        Rouge::Lexer.guess(filename: @file_name, source: @code).new rescue Rouge::Lexers::PlainText.new
-      end
-
-      def unescape_html(content)
-        text = CGI.unescapeHTML(content)
-        text.gsub!('&nbsp;', ' ')
-        text
-      end
-
-      def formatter
-        self.class.formatter
       end
 
       def old_lines
