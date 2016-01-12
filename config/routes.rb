@@ -513,7 +513,7 @@ Rails.application.routes.draw do
           end
         end
 
-        WIKI_SLUG_ID = { id: /[\S]+/ } unless defined? WIKI_SLUG_ID
+        WIKI_SLUG_ID = { id: /\S+/ } unless defined? WIKI_SLUG_ID
 
         scope do
           # Order matters to give priority to these matches
