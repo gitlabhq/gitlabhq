@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.3.4
+  - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
+
 v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
   - Fix duplicated branch creation/deletion events when using Web UI (Stan Hu)
