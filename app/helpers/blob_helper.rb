@@ -47,8 +47,7 @@ module BlobHelper
         notice: edit_in_new_fork_notice,
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key:  current_user.namespace.id,
-                                                                          continue:       continue_params)
+      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
 
       link_to "Edit", fork_path, class: 'btn btn-small', method: :post
     end
@@ -73,8 +72,7 @@ module BlobHelper
         notice: edit_in_new_fork_notice + " Try to #{action} this file again.",
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key:  current_user.namespace.id,
-                                                                          continue:       continue_params)
+      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
 
       link_to label, fork_path, class: "btn btn-#{btn_class}", method: :post
     end
