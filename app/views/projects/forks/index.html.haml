@@ -1,3 +1,24 @@
-.projects-list-holder
+.gray-content-block.top-block.white
+  - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+    = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'pull-right btn btn-new' do
+      = icon('code-fork fw')
+      Fork
+  - else
+    = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'pull-right btn btn-new' do
+      = icon('code-fork fw')
+      Fork
 
-  = render 'shared/projects/list', projects: @forked_projects, use_creator_avatar: true
+  .oneline
+    - public_count = @public_forks.size
+    - protected_count = @protected_forks.size
+    - full_count_title = ["#{public_count} public", "#{protected_count} protected"].join(' and ')
+    == #{pluralize(@all_forks.size, 'fork')}: #{full_count_title}
+
+.projects-list-holder
+  = render 'shared/projects/list', projects: @public_forks, use_creator_avatar: true
+
+  - if protected_count > 0
+    %ul.projects-list
+      %li.project-row
+        %strong= pluralize(protected_count, 'protected fork')
+        %span you have no access to.

@@ -4,7 +4,10 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   def index
-    @forked_projects = project.forks.includes(:creator)
+    @all_forks = project.forks.includes(:creator)
+    @public_forks, @protected_forks = @all_forks.partition do |project|
+      can?(current_user, :read_project, project)
+    end
   end
 
   def new
