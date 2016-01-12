@@ -15,7 +15,8 @@
     == #{pluralize(@all_forks.size, 'fork')}: #{full_count_title}
 
 .projects-list-holder
-  = render 'shared/projects/list', projects: @public_forks, use_creator_avatar: true
+  = render 'shared/projects/list', projects: @public_forks, use_creator_avatar: true,
+    forks: true
 
   - if protected_count > 0
     %ul.projects-list

@@ -2,6 +2,7 @@
 - avatar = true unless local_assigns[:avatar] == false
 - use_creator_avatar = false unless local_assigns[:use_creator_avatar] == true
 - stars = true unless local_assigns[:stars] == false
+- forks = false unless local_assigns[:forks] == true
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 
@@ -9,7 +10,8 @@
   - projects.each_with_index do |project, i|
     - css_class = (i >= projects_limit) ? 'hide' : nil
     = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
-      avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar
+      avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
+      forks: forks
 
   - if projects.size > projects_limit
     %li.bottom.center

@@ -1,5 +1,6 @@
 - avatar = true unless local_assigns[:avatar] == false
 - stars = true unless local_assigns[:stars] == false
+- forks = false unless local_assigns[:forks] == true
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - css_class = '' unless local_assigns[:css_class]
@@ -29,6 +30,10 @@
       - if ci_commit
         = render_ci_status(ci_commit)
         &nbsp;
+      - if forks
+        %span
+          %i.fa.fa-code-fork
+          = project.forks_count
       - if stars
         %span
           %i.fa.fa-star
