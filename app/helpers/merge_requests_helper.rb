@@ -19,19 +19,6 @@ module MergeRequestsHelper
     }
   end
 
-  def merge_request_button_visibility(mr, closed)    
-    return 'hidden' if mr.closed? == closed
-  end
-
-  def merge_request_widget_visibility(mr, *states)
-    states.each do |state|
-      if mr.state == state
-        return
-      end
-    end
-    return 'hidden'
-  end
-
   def mr_css_classes(mr)
     classes = "merge-request"
     classes << " closed" if mr.closed?
