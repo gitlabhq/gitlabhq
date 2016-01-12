@@ -111,9 +111,9 @@ module DiffHelper
 
   def diff_line_content(line)
     if line.blank?
-      " &nbsp;"
+      " &nbsp;".html_safe
     else
-      line
+      line.try(:html_safe)
     end
   end
 
