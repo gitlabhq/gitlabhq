@@ -22,7 +22,6 @@ Feature: Project Ff Merge Requests
     Then I should see rebase button
     When I press rebase button
     Then I should see rebase in progress message
-    And I should see ff-only merge button
 
   @javascript
   Scenario: I do rebase before regular merge
@@ -31,4 +30,3 @@ Feature: Project Ff Merge Requests
     Then I should see rebase button
     When I press rebase button
     Then I should see rebase in progress message
-    And I should see regular merge button

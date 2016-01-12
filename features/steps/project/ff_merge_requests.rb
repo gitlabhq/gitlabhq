@@ -25,11 +25,6 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
     expect(page).to have_button 'Accept Merge Request'
   end
 
-  step 'I should see regular merge button' do
-    expect(page).to have_content "Modify commit message"
-    expect(page).to have_button 'Accept Merge Request'
-  end
-
   step 'merge request "Bug NS-05" is mergeable' do
     merge_request.mark_as_mergeable
   end
@@ -41,7 +36,7 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merged request' do
-    page.within '.issue-box' do
+    page.within '.status-box' do
       expect(page).to have_content "Merged"
     end
   end
@@ -70,7 +65,6 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I press rebase button' do
-    allow(RebaseWorker).to receive(:perform_async){ true }
     click_button "Rebase"
   end
 
