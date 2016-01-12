@@ -14,13 +14,7 @@ module Gitlab
       end
 
       def execute
-        import_issues
-        import_pull_requests
-        import_wiki
-
-        true
-      rescue Gitlab::Shell::Error
-        false
+        import_issues && import_pull_requests && import_wiki
       end
 
       private
@@ -39,6 +33,10 @@ module Gitlab
             end
           end
         end
+
+        true
+      rescue ActiveRecord::RecordInvalid
+        false
       end
 
       def import_pull_requests
@@ -53,6 +51,10 @@ module Gitlab
             import_comments_on_diff(pull_request.number, merge_request)
           end
         end
+
+        true
+      rescue ActiveRecord::RecordInvalid
+        false
       end
 
       def import_comments(issue_number, noteable)
@@ -78,6 +80,10 @@ module Gitlab
           gitlab_shell.import_repository(wiki.path_with_namespace, wiki.import_url)
           project.update_attribute(:wiki_enabled, true)
         end
+
+        true
+      rescue Gitlab::Shell::Error
+        false
       end
     end
   end
