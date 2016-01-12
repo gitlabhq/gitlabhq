@@ -13,15 +13,6 @@ describe Gitlab::Metrics do
     end
   end
 
-  describe '.last_relative_application_frame' do
-    it 'returns an Array containing a file path and line number' do
-      file, line = described_class.last_relative_application_frame
-
-      expect(line).to eq(__LINE__ - 2)
-      expect(file).to eq('spec/lib/gitlab/metrics_spec.rb')
-    end
-  end
-
   describe '#submit_metrics' do
     it 'prepares and writes the metrics to InfluxDB' do
       connection = double(:connection)
