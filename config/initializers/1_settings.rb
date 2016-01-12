@@ -11,7 +11,7 @@ class Settings < Settingslogic
 
     # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
     def get_host_without_www(url)
-      url = URI.encode(url)
+      url = CGI.escape(url)
       uri = URI.parse(url)
       uri = URI.parse("http://#{url}") if uri.scheme.nil?
       host = uri.host.downcase
