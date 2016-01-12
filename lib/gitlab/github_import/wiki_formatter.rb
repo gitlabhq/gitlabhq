@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def import_url
-        project.import_url.sub(".git", ".wiki.git")
+        project.import_url.sub(/\.git\z/, ".wiki.git")
       end
     end
   end
