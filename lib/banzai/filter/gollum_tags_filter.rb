@@ -3,7 +3,28 @@ require 'html/pipeline/filter'
 
 module Banzai
   module Filter
-    # HTML Filter for parsing Gollum's tags in HTML.
+    # HTML Filter for parsing Gollum's tags in HTML. It's only parses the
+    # following tags:
+    #
+    # - Link to internal pages:
+    #
+    #   * [[Bug Reports]]
+    #   * [[How to Contribute|Contributing]]
+    #
+    # - Link to external resources:
+    #
+    #   * [[http://en.wikipedia.org/wiki/Git_(software)]]
+    #   * [[Git|http://en.wikipedia.org/wiki/Git_(software)]]
+    #
+    # - Link internal images, the special attributes will be ignored:
+    #
+    #   * [[images/logo.png]]
+    #   * [[images/logo.png|alt=Logo]]
+    #
+    # - Link external images, the special attributes will be ignored:
+    #
+    #   * [[http://example.com/images/logo.png]]
+    #   * [[http://example.com/images/logo.png|alt=Logo]]
     #
     # Based on Gollum::Filter::Tags
     #
@@ -13,7 +34,22 @@ module Banzai
     class GollumTagsFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
 
-      # Pattern to match tag contents.
+      # Pattern to match tags content that should be parsed in HTML.
+      #
+      # Gollum's tags have been made to resemble the tags of other markups,
+      # especially MediaWiki. The basic syntax is:
+      #
+      # [[tag]]
+      #
+      # Some tags will accept attributes which are separated by pipe
+      # symbols.Some attributes must precede the tag and some must follow it:
+      #
+      # [[prefix-attribute|tag]]
+      # [[tag|suffix-attribute]]
+      #
+      # See https://github.com/gollum/gollum/wiki
+      #
+      # Rubular: http://rubular.com/r/7dQnE5CUCH
       TAGS_PATTERN = %r{\[\[(.+?)\]\]}
 
       # Pattern to match allowed image extensions
