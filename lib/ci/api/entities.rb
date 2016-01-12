@@ -31,6 +31,7 @@ module Ci
 
         expose :variables
         expose :artifacts_file, using: ArtifactFile
+        expose :artifacts_metadata, using: ArtifactFile
       end
 
       class Runner < Grape::Entity

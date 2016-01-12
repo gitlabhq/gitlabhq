@@ -210,6 +210,31 @@ describe Ci::API::API do
             end
           end
 
+          context "should post artifacts metadata" do
+            let!(:artifacts) { file_upload }
+            let!(:metadata) { file_upload2 }
+
+            before do
+              build.run!
+
+              post_data = {
+                'file.path' => artifacts.path,
+                'file.name' => artifacts.original_filename,
+                'metadata.path' => metadata.path,
+                'metadata.name' => metadata.original_filename
+              }
+
+              post post_url, post_data, headers_with_token
+            end
+
+            it 'stores artifacts and artifacts metadata' do
+              expect(response.status).to eq(201)
+              expect(json_response['artifacts_file']['filename']).to eq(artifacts.original_filename)
+              expect(json_response['artifacts_metadata']['filename']).to eq(metadata.original_filename)
+            end
+          end
+
+
           context "should fail to post too large artifact" do
             before do
               build.run!
