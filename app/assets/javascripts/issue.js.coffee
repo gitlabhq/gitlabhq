@@ -33,6 +33,7 @@ class @Issue
         url: url,
         error: (jqXHR, textStatus, errorThrown) ->
           issueStatus = if isClose then 'close' else 'open'
+          console.log('failed here')
           new Flash(issueFailMessage, 'alert')
         success: (data, textStatus, jqXHR) ->
           if data.saved
@@ -47,6 +48,7 @@ class @Issue
               $('div.status-box-closed').addClass('hidden')
               $('div.status-box-open').removeClass('hidden')
           else
+            console.log('failed there')
             new Flash(issueFailMessage, 'alert')
           $this.prop('disabled', false)
 
