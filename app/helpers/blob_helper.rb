@@ -11,14 +11,14 @@ module BlobHelper
   end
 
   def highlight(blob_name, blob_content, nowrap: false, continue: false)
-    @formatter ||= rouge_formatter(nowrap: nowrap)
+    formatter = rouge_formatter(nowrap: nowrap)
 
     begin
       @lexer ||= Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
-      result = @formatter.format(@lexer.lex(blob_content, continue: continue)).html_safe
+      result = formatter.format(@lexer.lex(blob_content, continue: continue)).html_safe
     rescue
       @lexer = Rouge::Lexers::PlainText
-      result = @formatter.format(@lexer.lex(blob_content)).html_safe
+      result = formatter.format(@lexer.lex(blob_content)).html_safe
     end
 
     result

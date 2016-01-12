@@ -125,10 +125,6 @@ module Gitlab
           lines.map! { |line| " #{line}" }
         end
       end
-
-      def submodules
-        @submodules ||= diff_repository.raw_repository.submodules(diff_new_ref).keys
-      end
     end
   end
 end
