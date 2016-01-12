@@ -55,3 +55,8 @@ Feature: Project Commits
   Scenario: I browse a commit with an image
     Given I visit a commit with an image that changed
     Then The diff links to both the previous and current image
+
+  @javascript
+  Scenario: I filter commits by message
+    When I search "submodules" commits
+    Then I should see only "submodules" commits

@@ -124,4 +124,13 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     expect(page).to have_content "build: pending"
     expect(page).to have_content "1 build"
   end
+
+  step 'I search "submodules" commits' do
+    fill_in 'commits-search', with: 'submodules'
+  end
+
+  step 'I should see only "submodules" commits' do
+    expect(page).to have_content "More submodules"
+    expect(page).not_to have_content "Change some files"
+  end
 end

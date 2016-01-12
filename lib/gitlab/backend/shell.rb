@@ -164,6 +164,18 @@ module Gitlab
                                    "#{path}.git", tag_name])
     end
 
+    # Gc repository
+    #
+    # path - project path with namespace
+    #
+    # Ex.
+    #   gc("gitlab/gitlab-ci")
+    #
+    def gc(path)
+      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'gc',
+                                   "#{path}.git"])
+    end
+
     # Add new key to gitlab-shell
     #
     # Ex.

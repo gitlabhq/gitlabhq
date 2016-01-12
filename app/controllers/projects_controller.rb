@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update]
+  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -177,6 +177,15 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def housekeeping
+    ::Projects::HousekeepingService.new(@project).execute
+
+    respond_to do |format|
+      flash[:notice] = "Housekeeping successfully started."
+      format.html { redirect_to project_path(@project) }
+    end
+  end
+
   def toggle_star
     current_user.toggle_star(@project)
     @project.reload
@@ -189,7 +198,7 @@ class ProjectsController < ApplicationController
   def markdown_preview
     text = params[:text]
 
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
+    ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
     ext.analyze(text)
 
     render json: {

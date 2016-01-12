@@ -52,9 +52,6 @@ Rails.application.routes.draw do
   API::API.logger Rails.logger
   mount API::API => '/api'
 
-  # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
-
   constraint = lambda { |request| request.env['warden'].authenticate? and request.env['warden'].user.admin? }
   constraints constraint do
     mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
@@ -420,6 +417,7 @@ Rails.application.routes.draw do
         post :archive
         post :unarchive
         post :remove_pages
+        post :housekeeping
         post :toggle_star
         post :markdown_preview
         get :autocomplete_sources
@@ -479,6 +477,24 @@ Rails.application.routes.draw do
             to: 'tree#show',
             constraints: { id: /.+/, format: /(html|js)/ },
             as: :tree
+          )
+        end
+
+        scope do
+          get(
+            '/find_file/*id',
+            to: 'find_file#show',
+            constraints: { id: /.+/, format: /html/ },
+            as: :find_file
+          )
+        end
+
+        scope do
+          get(
+            '/files/*id',
+            to: 'find_file#list',
+            constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ },
+            as: :files
           )
         end
 
@@ -725,6 +741,9 @@ Rails.application.routes.draw do
 
     end
   end
+
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
 
   get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 end

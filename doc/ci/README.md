@@ -3,6 +3,7 @@
 ### User documentation
 
 * [Quick Start](quick_start/README.md)
+* [Enable or disable GitLab CI](enable_or_disable_ci.md)
 * [Configuring project (.gitlab-ci.yml)](yaml/README.md)
 * [Configuring runner](runners/README.md)
 * [Configuring deployment](deployment/README.md)

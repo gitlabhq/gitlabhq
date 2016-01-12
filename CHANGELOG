@@ -1,6 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
+  - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
+  - Improved performance of finding issues for an entire group (Yorick Peterse)
+  - Added custom application performance measuring system powered by InfluxDB (Yorick Peterse)
+  - Bump fog to 1.36.0 (Stan Hu)
+  - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
   - The default GitLab logo now acts as a loading indicator
   - Fix caching issue where build status was not updating in project dashboard (Stan Hu)
@@ -8,6 +13,7 @@ v 8.4.0 (unreleased)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
   - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
+  - Fix error with file size check with submodules (Stan Hu)
   - Implement new UI for group page
   - Implement search inside emoji picker
   - Add API support for looking up a user by username (Stan Hu)
@@ -37,6 +43,9 @@ v 8.4.0 (unreleased)
   - Ajax filter by message for commits page
   - API: Add support for deleting a tag via the API (Robert Schilling)
   - Allow subsequent validations in CI Linter
+
+v 8.3.4
+  - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
 
 v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set

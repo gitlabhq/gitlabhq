@@ -69,6 +69,15 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :shared_runners_enabled,
       :max_artifacts_size,
       :max_pages_size,
+      :metrics_enabled,
+      :metrics_host,
+      :metrics_port,
+      :metrics_pool_size,
+      :metrics_timeout,
+      :metrics_method_call_threshold,
+      :recaptcha_enabled,
+      :recaptcha_site_key,
+      :recaptcha_private_key,
       restricted_visibility_levels: [],
       import_sources: []
     )

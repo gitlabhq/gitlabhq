@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Mentionable do
   include Mentionable
 
+  def author
+    nil
+  end
+
   describe :references do
     let(:project) { create(:project) }
 

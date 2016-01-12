@@ -44,15 +44,18 @@ module Mentionable
   end
 
   def all_references(current_user = self.author, text = nil)
-    ext = Gitlab::ReferenceExtractor.new(self.project, current_user)
+    ext = Gitlab::ReferenceExtractor.new(self.project, current_user, self.author)
 
     if text
       ext.analyze(text)
     else
       self.class.mentionable_attrs.each do |attr, options|
         text = send(attr)
-        options[:cache_key] = [self, attr] if options.delete(:cache) && self.persisted?
-        ext.analyze(text, options)
+
+        context = options.dup
+        context[:cache_key] = [self, attr] if context.delete(:cache) && self.persisted?
+
+        ext.analyze(text, context)
       end
     end
 

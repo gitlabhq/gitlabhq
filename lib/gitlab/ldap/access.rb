@@ -35,7 +35,7 @@ module Gitlab
       end
 
       def allowed?
-        if Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
+        if ldap_user
           return true unless ldap_config.active_directory
 
           # Block user in GitLab if he/she was blocked in AD
@@ -48,7 +48,7 @@ module Gitlab
           end
         else
           # Block the user if they no longer exist in LDAP/AD
-          user.block 
+          user.block
           false
         end
       rescue

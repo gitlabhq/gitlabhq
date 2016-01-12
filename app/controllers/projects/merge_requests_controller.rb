@@ -159,7 +159,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_check
-    @merge_request.check_if_can_be_merged if @merge_request.unchecked?
+    @merge_request.check_if_can_be_merged
 
     render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end

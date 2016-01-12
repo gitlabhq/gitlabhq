@@ -346,14 +346,12 @@ class Note < ActiveRecord::Base
     read_attribute(:system)
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def downvote?
-    false
+    is_award && note == "thumbsdown"
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def upvote?
-    false
+    is_award && note == "thumbsup"
   end
 
   def editable?

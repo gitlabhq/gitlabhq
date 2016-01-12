@@ -41,7 +41,7 @@ module API
         if current_user.is_admin?
           present @user, with: Entities::UserFull
         else
-          present @user, with: Entities::UserBasic
+          present @user, with: Entities::User
         end
       end
 
