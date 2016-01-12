@@ -48,3 +48,11 @@ Feature: Project Builds
     And I click artifacts browse button
     And I navigate to parent directory of directory with invalid name
     Then I should not see directory with invalid name on the list
+
+  Scenario: I download a single file from build artifacts
+    Given recent build has artifacts available
+    And recent build has artifacts metadata available
+    When I visit recent build summary page
+    And I click artifacts browse button
+    And I click download button for a file within build artifacts
+    Then download of a file extracted from build artifacts should start

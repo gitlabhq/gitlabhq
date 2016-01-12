@@ -75,4 +75,15 @@ class Spinach::Features::ProjectBuilds < Spinach::FeatureSteps
       expect(page).to have_no_content('non-utf8-dir')
     end
   end
+
+  step 'I click download button for a file within build artifacts' do
+    page.within('.tree-table') { first('.artifact-download').click }
+  end
+
+  step 'download of a file extracted from build artifacts should start' do
+    # this will be accelerated by Workhorse
+    response_json = JSON.parse(page.body, symbolize_names: true)
+    expect(response_json[:archive]).to end_with('build_artifacts.zip')
+    expect(response_json[:path]).to eq Base64.encode64('ci_artifacts.txt')
+  end
 end
