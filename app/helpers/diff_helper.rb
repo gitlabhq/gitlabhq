@@ -113,7 +113,8 @@ module DiffHelper
     if line.blank?
       " &nbsp;".html_safe
     else
-      line.try(:html_safe)
+      # Return line if it isn't a String, it helps when it's Numeric
+      line.is_a?(String) ? line.html_safe : line
     end
   end
 
