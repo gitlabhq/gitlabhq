@@ -16,11 +16,12 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       it 'matches correct paths' do
         expect(subject.first).to contain_exactly 'ci_artifacts.txt',
                                                  'other_artifacts_0.1.2/',
-                                                 'rails_sample.jpg'
+                                                 'rails_sample.jpg',
+                                                 'tests_encoding/'
       end
 
       it 'matches metadata for every path' do
-        expect(subject.last.count).to eq 3
+        expect(subject.last.count).to eq 4
       end
 
       it 'return Hashes for each metadata' do
