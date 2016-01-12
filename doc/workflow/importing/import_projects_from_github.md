@@ -1,20 +1,46 @@
 # Import your project from GitHub to GitLab
 
-It takes just a couple of steps to import your existing GitHub projects to GitLab. Keep in mind that it is possible only if
-GitHub support is enabled on your GitLab instance. You can read more about GitHub support [here](http://doc.gitlab.com/ce/integration/github.html)
+_**Note:** In order to enable the GitHub import setting, you should first
+enable the [GitHub integration][gh-import] in your GitLab instance._
 
-If you want to import from a GitHub Enterprise instance, you need to use GitLab Enterprise; please see the [EE docs for the GitHub integration](http://doc.gitlab.com/ee/integration/github.html).
+At its current state, GitHub importer can import:
 
-* Sign in to GitLab.com and go to your dashboard.
-* To get to the importer page, you need to go to the "New project" page.
+- the repository description
+- the git repository data
+- the issues
+- the pull requests
+- the wiki pages
 
-![New project page](github_importer/new_project_page.png)
+The importer page is visible when you [create a new project][new-project].
+Click on the **GitHub** link and you will be redirected to GitHub for
+permission to access your projects. After accepting, you'll be automatically
+redirected to the importer.
 
-* Click on the "Import project from GitHub" link and you will be redirected to GitHub for permission to access your projects. After accepting, you'll be automatically redirected to the importer.
+![New project page on GitLab](img/import_projects_from_github_new_project_page.png)
 
-![Importer page](github_importer/importer.png)
+---
 
-* To import a project, you can simple click "Add". The importer will import your repository, issues, and pull requests. Once the importer is done, a new GitLab project will be created with your imported data.
+While at the GitHub importer page, you can see the import statuses of your
+GitHub projects. Those that are being imported will show a _started_ status,
+those already imported will be green, whereas those that are not yet imported
+have an **Import** button on the right side of the table. If you want, you can
+import all your GitHub projects in one go by hitting **Import all projects**
+in the upper left corner.
+
+![GitHub importer page](img/import_projects_from_github_importer.png)
+
+---
+
+The importer will create any new namespaces if they don't exist or in the
+case the namespace is taken, the project will be imported on the user's
+namespace.
 
 ### Note
-When you import your projects from GitHub, it is not possible to keep your labels, milestones, and cross-repository pull requests. We are working on improving this in the near future.
+
+When you import your projects from GitHub, it is not possible to keep your
+labels, milestones, and cross-repository pull requests. We are working on
+improving this in the near future.
+
+[gh-import]: ../../integration/github.md "GitHub integration"
+[ee-gh]: http://doc.gitlab.com/ee/integration/github.html "GitHub integration for GitLab EE"
+[new-project]: ../../gitlab-basics/create-project.md "How to create a new project in GitLab"
