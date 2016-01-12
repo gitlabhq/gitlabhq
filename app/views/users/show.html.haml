@@ -93,7 +93,30 @@
             %h4.center.light
               %i.fa.fa-spinner.fa-spin
         .user-calendar-activities
+  .cover-controls
+    - if @user == current_user
+      = link_to profile_path, class: 'btn btn-gray' do
+        = icon('pencil')
+    - elsif current_user
+      %span.report-abuse
+        - if @user.abuse_report
+          %button.btn.btn-danger{ title: 'Already reported for abuse',
+            data: { toggle: 'tooltip', placement: 'left', container: 'body' }}
+            = icon('exclamation-circle')
+        - else
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
+            title: 'Report abuse', data: {toggle: 'tooltip', placement: 'left', container: 'body'} do
+            = icon('exclamation-circle')
+    - if current_user
+      &nbsp;
+      = link_to user_path(@user, :atom, { private_token: current_user.private_token }), class: 'btn btn-gray' do
+        = icon('rss')
 
+.gray-content-block.second-block
+  .user-calendar
+    %h4.center.light
+      %i.fa.fa-spinner.fa-spin
+  .user-calendar-activities
 
       .content_list
       = spinner
