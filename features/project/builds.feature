@@ -30,3 +30,21 @@ Feature: Project Builds
     And I click artifacts browse button
     And I click link to subdirectory within build artifacts
     Then I should see content of subdirectory within artifacts archive
+
+  Scenario: I browse directory with UTF-8 characters in name
+    Given recent build has artifacts available
+    And recent build has artifacts metadata available
+    And recent build artifacts contain directory with UTF-8 characters
+    When I visit recent build summary page
+    And I click artifacts browse button
+    And I navigate to directory with UTF-8 characters in name
+    Then I should see content of directory with UTF-8 characters in name
+
+  Scenario: I try to browse directory with invalid UTF-8 characters in name
+    Given recent build has artifacts available
+    And recent build has artifacts metadata available
+    And recent build artifacts contain directory with invalid UTF-8 characters
+    When I visit recent build summary page
+    And I click artifacts browse button
+    And I navigate to parent directory of directory with invalid name
+    Then I should not see directory with invalid name on the list

@@ -45,4 +45,34 @@ class Spinach::Features::ProjectBuilds < Spinach::FeatureSteps
       expect(page).to have_content 'doc_sample.txt'
     end
   end
+
+  step 'recent build artifacts contain directory with UTF-8 characters' do
+    # metadata fixture contains relevant directory
+  end
+
+  step 'I navigate to directory with UTF-8 characters in name' do
+    page.within('.tree-table') { click_link 'tests_encoding' }
+    page.within('.tree-table') { click_link 'utf8 test dir ✓' }
+  end
+
+  step 'I should see content of directory with UTF-8 characters in name' do
+    page.within('.tree-table') do
+      expect(page).to have_content '..'
+      expect(page).to have_content 'regular_file_2'
+    end
+  end
+
+  step 'recent build artifacts contain directory with invalid UTF-8 characters' do
+    # metadata fixture contains relevant directory
+  end
+
+  step 'I navigate to parent directory of directory with invalid name' do
+    page.within('.tree-table') { click_link 'tests_encoding' }
+  end
+
+  step 'I should not see directory with invalid name on the list' do
+    page.within('.tree-table') do
+      expect(page).to have_no_content('non-utf8-dir')
+    end
+  end
 end
