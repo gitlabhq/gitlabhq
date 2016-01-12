@@ -303,10 +303,10 @@ module API
 
         if !user
           not_found!('User')
-        elsif !user.ldap_blocked?
-          user.activate
-        else
+        elsif user.ldap_blocked?
           forbidden!('LDAP blocked users cannot be unblocked by the API')
+        else
+          user.activate
         end
       end
     end

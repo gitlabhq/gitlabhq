@@ -28,11 +28,11 @@ RSpec.describe Identity, models: true do
     let(:other_identity) { create(:identity, provider: 'twitter') }
 
     it 'returns true if it is a ldap identity' do
-      expect(ldap_identity.is_ldap?).to be_truthy
+      expect(ldap_identity.ldap?).to be_truthy
     end
 
     it 'returns false if it is not a ldap identity' do
-      expect(other_identity.is_ldap?).to be_falsey
+      expect(other_identity.ldap?).to be_falsey
     end
   end
 end

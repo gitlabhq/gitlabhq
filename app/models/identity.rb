@@ -19,7 +19,7 @@ class Identity < ActiveRecord::Base
   validates :extern_uid, allow_blank: true, uniqueness: { scope: :provider }
   validates :user_id, uniqueness: { scope: :provider }
 
-  def is_ldap?
+  def ldap?
     provider.starts_with?('ldap')
   end
 end
