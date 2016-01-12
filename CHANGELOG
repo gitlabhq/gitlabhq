@@ -38,6 +38,7 @@ v 8.4.0 (unreleased)
   - Ajax filter by message for commits page
   - API: Add support for deleting a tag via the API (Robert Schilling)
   - Allow subsequent validations in CI Linter
+  - Show referenced MR in issues only when the current viewer can access it
 
 v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
