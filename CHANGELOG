@@ -1,6 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
+  - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
+  - Improved performance of finding issues for an entire group (Yorick Peterse)
+  - Added custom application performance measuring system powered by InfluxDB (Yorick Peterse)
   - Bump fog to 1.36.0 (Stan Hu)
   - Add housekeeping function to project settings page
   - The default GitLab logo now acts as a loading indicator
