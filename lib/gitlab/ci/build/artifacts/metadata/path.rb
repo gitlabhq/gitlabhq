@@ -8,17 +8,23 @@ module Gitlab
       # This is IO-operations safe class, that does similar job to
       # Ruby's Pathname but without the risk of accessing filesystem.
       #
+      # This class is working only with UTF-8 encoded paths.
+      #
       class Path
         attr_reader :path, :universe
         attr_accessor :name
 
         def initialize(path, universe, metadata = [])
-          @path = path
+          @path = path.force_encoding('UTF-8')
           @universe = universe
           @metadata = metadata
 
           if path.include?("\0")
             raise ArgumentError, 'Path contains zero byte character!'
+          end
+
+          unless path.valid_encoding?
+            raise ArgumentError, 'Path contains non-UTF-8 byte sequence!'
           end
         end
 
@@ -51,7 +57,7 @@ module Gitlab
           return [] unless directory?
           return @children if @children
 
-          child_pattern = %r{^#{Regexp.escape(@path)}[^/\s]+/?$}
+          child_pattern = %r{^#{Regexp.escape(@path)}[^/]+/?$}
           @children = select { |entry| entry =~ child_pattern }
         end
 

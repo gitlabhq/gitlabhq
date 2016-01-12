@@ -10,7 +10,8 @@ module Gitlab
           attr_reader :file, :path, :full_version
 
           def initialize(file, path)
-            @file, @path = file, path
+            @file = file
+            @path = path.force_encoding('ASCII-8BIT')
             @full_version = read_version
           end
 
@@ -42,7 +43,7 @@ module Gitlab
 
           def match_entries(gz)
             paths, metadata = [], []
-            match_pattern = %r{^#{Regexp.escape(@path)}[^/\s]*/?$}
+            match_pattern = %r{^#{Regexp.escape(@path)}[^/]*/?$}
             invalid_pattern = %r{(^\.?\.?/)|(/\.?\.?/)}
 
             until gz.eof? do
@@ -51,11 +52,12 @@ module Gitlab
                 meta = read_string(gz)
                
                 next unless path =~ match_pattern
+                next unless path.force_encoding('UTF-8').valid_encoding?
                 next if path =~ invalid_pattern
 
                 paths.push(path)
                 metadata.push(JSON.parse(meta.chomp, symbolize_names: true))
-              rescue JSON::ParserError
+              rescue JSON::ParserError, Encoding::CompatibilityError
                 next
               end
             end
