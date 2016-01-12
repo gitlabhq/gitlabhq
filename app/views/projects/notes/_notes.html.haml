@@ -8,4 +8,5 @@
 - else
   - @notes.each do |note|
     - next unless note.author
+    - next if note.cross_reference? && note.referenced_mentionables(current_user).empty?
     = render note
