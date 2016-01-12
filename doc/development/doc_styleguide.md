@@ -5,7 +5,10 @@ it organized and easy to find.
 
 ## Naming
 
-- Use underscores for all names, including new documentation and images
+- When creating a new document and it has more than one word in its name,
+  make sure to use underscores instead of spaces or dashes (`-`). For example,
+  a proper naming would be `import_projects_from_github.md`. The same rule
+  applies to images.
 
 ## Text
 
