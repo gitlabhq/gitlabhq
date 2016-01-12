@@ -433,8 +433,8 @@ POST /projects
 
 Parameters:
 
-- `name` (required) - new project name
-- `path` (optional) - custom repository name for new project. By default generated based on name
+- `name` (optional) - new project name. By default generated based on path
+- `path` (required) - custom repository path for new project
 - `namespace_id` (optional) - namespace for the new project (defaults to user)
 - `description` (optional) - short project description
 - `issues_enabled` (optional)

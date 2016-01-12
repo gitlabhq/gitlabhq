@@ -183,25 +183,25 @@ describe API::API, api: true  do
     context 'maximum number of projects reached' do
       it 'should not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect { post api('/projects', user2), name: 'foo' }.
+        expect { post api('/projects', user2), path: 'foo' }.
           to change {Project.count}.by(0)
         expect(response).to have_http_status(403)
       end
     end
 
-    it 'should create new project without path and return 201' do
-      expect { post api('/projects', user), name: 'foo' }.
+    it 'should create new project without name and return 201' do
+      expect { post api('/projects', user), path: 'foo' }.
         to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
     end
 
     it 'should create last project before reaching project limit' do
       allow_any_instance_of(User).to receive(:projects_limit_left).and_return(1)
-      post api('/projects', user2), name: 'foo'
+      post api('/projects', user2), path: 'foo'
       expect(response).to have_http_status(201)
     end
 
-    it 'should not create new project without name and return 400' do
+    it 'should not create new project without path and return 400' do
       expect { post api('/projects', user) }.not_to change { Project.count }
       expect(response).to have_http_status(400)
     end
@@ -293,9 +293,9 @@ describe API::API, api: true  do
     before { project }
     before { admin }
 
-    it 'should create new project without path and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
-      expect(response).to have_http_status(201)
+    it 'should create new project without name and return 201' do
+      expect { post api("/projects/user/#{user.id}", admin), path: 'foo' }.to change {Project.count}.by(1)
+      expect(response.status).to eq(201)
     end
 
     it 'should respond with 400 on failure and not project' do
@@ -320,7 +320,8 @@ describe API::API, api: true  do
         description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
-        wiki_enabled: false
+        wiki_enabled: false,
+        path: 'foo'
       })
 
       post api("/projects/user/#{user.id}", admin), project
@@ -332,42 +333,42 @@ describe API::API, api: true  do
     end
 
     it 'should set a project as public' do
-      project = attributes_for(:project, :public)
+      project = attributes_for(:project, :public, path: 'foo')
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_truthy
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it 'should set a project as public using :public' do
-      project = attributes_for(:project, { public: true })
+      project = attributes_for(:project, { public: true, path: 'foo' })
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_truthy
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it 'should set a project as internal' do
-      project = attributes_for(:project, :internal)
+      project = attributes_for(:project, :internal, path: 'foo')
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it 'should set a project as internal overriding :public' do
-      project = attributes_for(:project, :internal, { public: true })
+      project = attributes_for(:project, :internal, { public: true, path: 'foo' })
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it 'should set a project as private' do
-      project = attributes_for(:project, :private)
+      project = attributes_for(:project, :private, path: 'foo')
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it 'should set a project as private using :public' do
-      project = attributes_for(:project, { public: false })
+      project = attributes_for(:project, { public: false, path: 'foo' })
       post api("/projects/user/#{user.id}", admin), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)

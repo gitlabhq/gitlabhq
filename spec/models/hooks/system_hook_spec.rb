@@ -30,7 +30,7 @@ describe SystemHook, models: true do
     end
 
     it "project_create hook" do
-      Projects::CreateService.new(user, name: 'empty').execute
+      Projects::CreateService.new(user, path: 'empty').execute
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /project_create/,
         headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
@@ -48,7 +48,7 @@ describe SystemHook, models: true do
 
     it "user_create hook" do
       create(:user)
-      
+
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_create/,
         headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }

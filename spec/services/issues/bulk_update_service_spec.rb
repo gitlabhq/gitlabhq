@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Issues::BulkUpdateService, services: true do
   let(:user) { create(:user) }
-  let(:project) { Projects::CreateService.new(user, namespace: user.namespace, name: 'test').execute }
+  let(:project) { Projects::CreateService.new(user, namespace: user.namespace, path: 'test').execute }
 
   let!(:result) { Issues::BulkUpdateService.new(project, user, params).execute }
 

@@ -6,7 +6,8 @@ describe Projects::CreateService, services: true do
       @user = create :user
       @opts = {
         name: "GitLab",
-        namespace: @user.namespace
+        namespace: @user.namespace,
+        path: 'foo'
       }
     end
 
