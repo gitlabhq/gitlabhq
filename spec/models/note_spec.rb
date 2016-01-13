@@ -178,6 +178,30 @@ describe Note, models: true do
     end
   end
 
+  describe "cross_reference_not_visible_for?" do
+    let(:private_user)    { create(:user) }
+    let(:private_project) { create(:project, namespace: private_user.namespace).tap { |p| p.team << [private_user, :master] } }
+    let(:private_issue)   { create(:issue, project: private_project) }
+
+    let(:ext_proj)  { create(:project, :public) }
+    let(:ext_issue) { create(:issue, project: ext_proj) }
+
+    let(:note) {
+      create :note,
+        noteable: ext_issue, project: ext_proj,
+        note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
+        system: true
+    }
+
+    it "returns true" do
+      expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+    end
+
+    it "returns false" do
+      expect(note.cross_reference_not_visible_for?(private_user)).to be_falsy
+    end
+  end
+
   describe "set_award!" do
     let(:issue) { create :issue }
 
