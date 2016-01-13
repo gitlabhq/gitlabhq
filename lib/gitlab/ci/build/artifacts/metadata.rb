@@ -20,7 +20,7 @@ module Gitlab
           end
 
           def errors
-            gzip do|gz|
+            gzip do |gz|
               read_string(gz) # version
               errors = read_string(gz)
               raise StandardError, 'Errors field not found!' unless errors
@@ -36,7 +36,7 @@ module Gitlab
           end
 
           def to_path
-            Path.new(@path, *match!)
+            Path.new(@path.dup.force_encoding('UTF-8'), *match!)
           end
 
           private
@@ -88,7 +88,7 @@ module Gitlab
 
           def read_string(gz)
             string_size = read_uint32(gz)
-            return false unless string_size
+            return nil unless string_size
             gz.read(string_size)
           end
 
