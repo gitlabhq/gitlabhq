@@ -6,7 +6,7 @@
     == #{pluralize(@all_forks.size, 'fork')}: #{full_count_title}
 
   .pull-right
-    .projects-search-form
+    .projects-search-form.fork-search-form
       = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter form-control',
         spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
@@ -29,15 +29,15 @@
             = link_to page_filter_path(sort: sort_value_oldest_updated) do
               = sort_title_oldest_updated
 
-    .fork_link.inline
-      - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'pull-right btn btn-new' do
-          = icon('code-fork fw')
-          Fork
-      - else
-        = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'pull-right btn btn-new' do
-          = icon('code-fork fw')
-          Fork
+      .fork_link.inline
+        - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+          = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'pull-right btn btn-new' do
+            = icon('code-fork fw')
+            Fork
+        - else
+          = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'pull-right btn btn-new' do
+            = icon('code-fork fw')
+            Fork
 
 
 .projects-list-holder

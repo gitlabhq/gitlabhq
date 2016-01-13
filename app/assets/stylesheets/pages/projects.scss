@@ -391,6 +391,22 @@ pre.light-well {
   padding-bottom: 0;
   margin-bottom: 0px;
 
+  &.fork-search-form {
+    margin: 0;
+    margin-top: -$gl-padding;
+    padding-bottom: 0;
+    width: 540px;
+    
+    input {
+      width: calc(100% - 277px);
+    }
+
+    .fork_link {
+      float: right;
+      margin-left: $gl-padding;
+    }
+  }
+
   input {
     display: inline-block;
     width: calc(100% - 151px);
