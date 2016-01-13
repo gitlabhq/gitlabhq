@@ -92,6 +92,14 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
         to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
+    it 'rebuilds relative URL for a file in the repository root' do
+      relative_link = link('../README.md')
+      doc = filter(relative_link, requested_path: 'doc/some-file.md')
+
+      expect(doc.at_css('a')['href']).
+        to eq "/#{project_path}/blob/#{ref}/README.md"
+    end
+
     it 'rebuilds relative URL for a file in the repo with an anchor' do
       doc = filter(link('README.md#section'))
       expect(doc.at_css('a')['href']).

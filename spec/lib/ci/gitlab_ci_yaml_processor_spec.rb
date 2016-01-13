@@ -3,7 +3,7 @@ require 'spec_helper'
 module Ci
   describe GitlabCiYamlProcessor, lib: true do
     let(:path) { 'path' }
-    
+
     describe "#builds_for_ref" do
       let(:type) { 'test' }
 
@@ -29,7 +29,7 @@ module Ci
           when: "on_success"
         })
       end
-      
+
       describe :only do
         it "does not return builds if only has another branch" do
           config = YAML.dump({
@@ -517,7 +517,7 @@ module Ci
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Unknown parameter: extra")
       end
 
-      it "returns errors if there is no any jobs defined" do
+      it "returns errors if there are no jobs defined" do
         config = YAML.dump({ before_script: ["bundle update"] })
         expect do
           GitlabCiYamlProcessor.new(config, path)

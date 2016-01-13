@@ -167,6 +167,49 @@ with the name of your bucket:
 }
 ```
 
+### Uploading to locally mounted shares
+
+You may also send backups to a mounted share (`NFS` / `CIFS` / `SMB` / etc.) by
+using the [`Local`](https://github.com/fog/fog-local#usage) storage provider.
+The directory pointed to by the `local_root` key **must** be owned by the `git`
+user **when mounted** (mounting with the `uid=` of the `git` user for `CIFS` and
+`SMB`) or the user that you are executing the backup tasks under (for omnibus
+packages, this is the `git` user).
+
+The `backup_upload_remote_directory` **must** be set in addition to the
+`local_root` key. This is the sub directory inside the mounted directory that
+backups will be copied to, and will be created if it does not exist. If the
+directory that you want to copy the tarballs to is the root of your mounted
+directory, just use `.` instead.
+
+For omnibus packages:
+
+```ruby
+gitlab_rails['backup_upload_connection'] = {
+  :provider => 'Local',
+  :local_root => '/mnt/backups'
+}
+
+# The directory inside the mounted folder to copy backups to
+# Use '.' to store them in the root directory
+gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
+```
+
+For installations from source:
+
+```yaml
+  backup:
+    # snip
+    upload:
+      # Fog storage connection settings, see http://fog.io/storage/ .
+      connection:
+        provider: Local
+        local_root: '/mnt/backups'
+      # The directory inside the mounted folder to copy backups to
+      # Use '.' to store them in the root directory
+      remote_directory: 'gitlab_backups'
+```
+
 ## Backup archive permissions
 
 The backup archives created by GitLab (123456_gitlab_backup.tar) will have owner/group git:git and 0600 permissions by default.

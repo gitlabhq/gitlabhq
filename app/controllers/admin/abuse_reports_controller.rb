@@ -6,11 +6,9 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   def destroy
     abuse_report = AbuseReport.find(params[:id])
 
-    if params[:remove_user]
-      abuse_report.user.destroy
-    end
-
+    abuse_report.remove_user if params[:remove_user]
     abuse_report.destroy
+
     render nothing: true
   end
 end

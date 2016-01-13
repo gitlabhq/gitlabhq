@@ -211,7 +211,7 @@ module API
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
         not_allowed! if !merge_request.open? || merge_request.work_in_progress?
 
-        merge_request.check_if_can_be_merged if merge_request.unchecked?
+        merge_request.check_if_can_be_merged
 
         render_api_error!('Branch cannot be merged', 406) unless merge_request.can_be_merged?
 

@@ -22,6 +22,7 @@ gem 'devise',                 '~> 3.5.3'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
+gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 3.0.0'
@@ -32,9 +33,12 @@ gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
 gem 'omniauth-saml',          '~> 1.4.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
-gem 'omniauth_crowd'
+gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'gssapi', group: :kerberos
 gem 'rack-oauth2',            '~> 1.2.1'
+
+# reCAPTCHA protection
+gem 'recaptcha', require: 'recaptcha/rails'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
@@ -46,7 +50,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.20'
+gem "gitlab_git", '~> 7.2.22'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -65,13 +69,6 @@ gem 'grape',        '~> 0.13.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
-# Format dates and times
-# based on human-friendly examples
-gem "stamp", '~> 0.6.0'
-
-# Enumeration fields
-gem 'enumerize', '~> 0.7.0'
-
 # Pagination
 gem "kaminari", "~> 0.16.3"
 
@@ -85,7 +82,7 @@ gem "carrierwave", '~> 0.9.0'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for aws storage
-gem "fog", "~> 1.25.0"
+gem "fog", "~> 1.36.0"
 gem "unf", '~> 0.1.4'
 
 # Authorization
@@ -171,10 +168,10 @@ gem 'asana', '~> 0.4.0'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # d3
-gem 'd3_rails', '~> 3.5.5'
+gem 'd3_rails', '~> 3.5.0'
 
 #cal-heatmap
-gem "cal-heatmap-rails", "~> 0.0.1"
+gem 'cal-heatmap-rails', '~> 3.5.0'
 
 # underscore-rails
 gem "underscore-rails", "~> 1.8.0"
@@ -202,7 +199,7 @@ gem 'turbolinks', '~> 2.5.0'
 gem 'jquery-turbolinks', '~> 2.1.0'
 
 gem 'addressable',        '~> 2.3.8'
-gem 'bootstrap-sass',     '~> 3.0'
+gem 'bootstrap-sass',     '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.2'
 gem 'gitlab_emoji',       '~> 0.2.0'
 gem 'gon',                '~> 6.0.1'
@@ -219,9 +216,17 @@ gem 'net-ssh',            '~> 3.0.1'
 
 gem "gitlab-license", "~> 0.0.4"
 
+# Metrics
+group :metrics do
+  gem 'allocations', '~> 1.0', require: false, platform: :mri
+  gem 'method_source', '~> 0.8', require: false
+  gem 'influxdb', '~> 0.2', require: false
+  gem 'connection_pool', '~> 2.0', require: false
+end
+
 group :development do
   gem "foreman"
-  gem 'brakeman', '3.0.1', require: false
+  gem 'brakeman', '~> 3.1.0', require: false
 
   gem "annotate", "~> 2.6.0"
   gem "letter_opener", '~> 1.1.2'
@@ -246,7 +251,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'pry-rails'
 
-  gem 'awesome_print', '~> 1.2.0'
+  gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
   gem 'database_cleaner', '~> 1.4.0'

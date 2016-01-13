@@ -47,14 +47,14 @@
           = f.label :issues_events, class: 'list-label' do
             %strong Issues events
           %p.light
-            This url will be triggered when an issue is created
+            This url will be triggered when an issue is created/updated/merged
       %div
         = f.check_box :merge_requests_events, class: 'pull-left'
         .prepend-left-20
           = f.label :merge_requests_events, class: 'list-label' do
             %strong Merge Request events
           %p.light
-            This url will be triggered when a merge request is created
+            This url will be triggered when a merge request is created/updated/merged
       %div
         = f.check_box :build_events, class: 'pull-left'
         .prepend-left-20

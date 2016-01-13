@@ -85,7 +85,7 @@ class Ability
                 subject.group
               end
 
-      if group && group.public_profile?
+      if group && group.projects.public_only.any?
         [:read_group]
       else
         []

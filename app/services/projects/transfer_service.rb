@@ -58,6 +58,9 @@ module Projects
         # Move pages
         Gitlab::PagesTransfer.new.move_project(project.path, old_namespace.path, new_namespace.path)
 
+        project.old_path_with_namespace = old_path
+        
+        SystemHooksService.new.execute_hooks_for(project, :transfer)
         true
       end
     end

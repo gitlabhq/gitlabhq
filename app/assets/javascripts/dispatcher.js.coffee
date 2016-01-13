@@ -49,7 +49,7 @@ class Dispatcher
         new DropzoneInput($('.release-form'))
       when 'projects:merge_requests:show'
         new Diff()
-        shortcut_handler = new ShortcutsIssuable()
+        shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
       when "projects:merge_requests:diffs"
         new Diff()
@@ -87,7 +87,9 @@ class Dispatcher
         new GroupAvatar()
       when 'projects:tree:show'
         new TreeView()
-        shortcut_handler = new ShortcutsNavigation()
+        shortcut_handler = new ShortcutsTree()
+      when 'projects:find_file:show'
+        shortcut_handler = true
       when 'projects:blob:show'
         new LineHighlighter()
         shortcut_handler = new ShortcutsNavigation()

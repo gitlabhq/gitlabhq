@@ -11,13 +11,18 @@ module Banzai
     #
     # See https://github.com/github/task_list/pull/60
     class TaskListFilter < TaskList::Filter
-      def add_css_class(node, *new_class_names)
+      def add_css_class_with_fix(node, *new_class_names)
         if new_class_names.include?('task-list')
-          super if node.children.any? { |c| c['class'] == 'task-list-item' }
-        else
-          super
+          # Don't add class to all lists
+          return
+        elsif new_class_names.include?('task-list-item')
+          add_css_class_without_fix(node.parent, 'task-list')
         end
+
+        add_css_class_without_fix(node, *new_class_names)
       end
+
+      alias_method_chain :add_css_class, :fix
     end
   end
 end

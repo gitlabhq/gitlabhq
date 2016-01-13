@@ -7,7 +7,7 @@ class UsersController < ApplicationController
 
     @projects = PersonalProjectsFinder.new(@user).execute(current_user)
 
-    @groups = JoinedGroupsFinder.new(@user).execute(current_user)
+    @groups = @user.groups.order_id_desc
 
     respond_to do |format|
       format.html

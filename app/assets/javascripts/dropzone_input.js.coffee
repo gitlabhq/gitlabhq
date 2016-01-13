@@ -66,7 +66,7 @@ class @DropzoneInput
 
       success: (header, response) ->
         child = $(dropzone[0]).children("textarea")
-        $(child).val $(child).val() + formatLink(response.link) + "\n"
+        $(child).val $(child).val() + response.link.markdown + "\n"
         return
 
       error: (temp, errorMessage) ->
@@ -98,11 +98,6 @@ class @DropzoneInput
     )
 
     child = $(dropzone[0]).children("textarea")
-
-    formatLink = (link) ->
-      text = "[#{link.alt}](#{link.url})"
-      text = "!#{text}" if link.is_image
-      text
 
     handlePaste = (event) ->
       pasteEvent = event.originalEvent
@@ -162,7 +157,7 @@ class @DropzoneInput
           closeAlertMessage()
 
         success: (e, textStatus, response) ->
-          insertToTextArea(filename, formatLink(response.responseJSON.link))
+          insertToTextArea(filename, response.responseJSON.link.markdown)
 
         error: (response) ->
           showError(response.responseJSON.message)
@@ -202,8 +197,3 @@ class @DropzoneInput
       e.preventDefault()
       $(@).closest('.gfm-form').find('.div-dropzone').click()
       return
-
-  formatLink: (link) ->
-    text = "[#{link.alt}](#{link.url})"
-    text = "!#{text}" if link.is_image
-    text

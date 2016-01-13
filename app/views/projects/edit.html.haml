@@ -217,6 +217,19 @@
                     method: :post, class: "btn btn-warning"
 
     .danger-settings
+      .panel.panel-default
+        .panel-heading Housekeeping
+        .errors-holder
+        .panel-body
+          %p
+            Runs a number of housekeeping tasks within the current repository,
+            such as compressing file revisions and removing unreachable objects.
+            %br
+
+          .form-actions
+            = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
+                method: :post, class: "btn btn-default"
+
       - if can? current_user, :archive_project, @project
         - if @project.archived?
           .panel.panel-success
