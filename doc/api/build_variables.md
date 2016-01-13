@@ -2,25 +2,19 @@
 
 ## List project variables
 
-Get list of variables of a project.
+Get list of a project's build variables.
 
 ```
 GET /projects/:id/variables
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| id        | integer | yes      | The ID of a project |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project |
 
 ```
 curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables"
 ```
-
-### Example of response
 
 ```json
 [
@@ -37,26 +31,20 @@ curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3
 
 ## Show variable details
 
-Get details of specifica variable of a project.
+Get the details of a project's specific build variable.
 
 ```
 GET /projects/:id/variables/:key
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description           |
 |-----------|---------|----------|-----------------------|
-| id        | integer | yes      | The ID of a project   |
-| key       | string  | yes      | The `key` of variable |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project   |
+| `key`     | string  | yes      | The `key` of a variable |
 
 ```
 curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/TEST_VARIABLE_1"
 ```
-
-### Example of response
 
 ```json
 {
@@ -67,27 +55,21 @@ curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3
 
 ## Create variable
 
-Create new variable in project.
+Create a new build variable.
 
 ```
 POST /projects/:id/variables
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description           |
 |-----------|---------|----------|-----------------------|
-| id        | integer | yes      | The ID of a project   |
-| key       | string  | yes      | The `key` of variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
-| value     | string  | yes      | The `value` of variable |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project   |
+| `key`     | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
+| `value`   | string  | yes      | The `value` of a variable |
 
 ```
 curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables" -F "key=NEW_VARIABLE" -F "value=new value"
 ```
-
-### Example of response
 
 ```json
 {
@@ -98,27 +80,21 @@ curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.co
 
 ## Update variable
 
-Update variable.
+Update a project's build variable.
 
 ```
 PUT /projects/:id/variables/:key
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description             |
 |-----------|---------|----------|-------------------------|
-| id        | integer | yes      | The ID of a project     |
-| key       | string  | yes      | The `key` of variable   |
-| value     | string  | yes      | The `value` of variable |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project     |
+| `key`     | string  | yes      | The `key` of a variable   |
+| `value`   | string  | yes      | The `value` of a variable |
 
 ```
 curl -X PUT -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/NEW_VARIABLE" -F "value=updated value"
 ```
-
-### Example of response
 
 ```json
 {
@@ -129,22 +105,24 @@ curl -X PUT -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com
 
 ## Remove variable
 
-Remove variable.
+Remove a project's build variable.
 
 ```
 DELETE /projects/:id/variables/:key
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description             |
 |-----------|---------|----------|-------------------------|
-| id        | integer | yes      | The ID of a project     |
-| key       | string  | yes      | The `key` of variable   |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project     |
+| `key`     | string  | yes      | The `key` of a variable |
 
 ```
 curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/VARIABLE_1"
 ```
 
+```json
+{
+    "key": "VARIABLE_1",
+    "value": "VALUE_1"
+}
+```
