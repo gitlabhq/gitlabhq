@@ -205,7 +205,7 @@ module ApplicationHelper
   def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
     element = content_tag :time, time.to_s,
       class: "#{html_class} js-timeago js-timeago-pending",
-      datetime: time.getutc.iso8601,
+      datetime: time.to_time.getutc.iso8601,
       title: time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
