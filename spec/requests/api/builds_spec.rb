@@ -11,7 +11,7 @@ describe API::API, api: true  do
   let(:commit) { create(:ci_commit, project: project)}
   let(:build) { create(:ci_build, commit: commit) }
   let(:build_with_trace) { create(:ci_build_with_trace, commit: commit) }
-  let(:build_canceled) { create(:ci_build_canceled, commit: commit) }
+  let(:build_canceled) { create(:ci_build, :canceled, commit: commit) }
 
   describe 'GET /projects/:id/builds ' do
     context 'authorized user' do

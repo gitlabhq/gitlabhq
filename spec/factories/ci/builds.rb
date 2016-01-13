@@ -43,6 +43,10 @@ FactoryGirl.define do
 
     commit factory: :ci_commit
 
+    trait :canceled do
+      status 'canceled'
+    end
+
     after(:build) do |build, evaluator|
       build.project = build.commit.project
     end
@@ -61,10 +65,6 @@ FactoryGirl.define do
       after(:build) do  |build, evaluator|
         build.trace = 'BUILD TRACE'
       end
-    end
-
-    factory :ci_build_canceled do
-      status 'canceled'
     end
   end
 end
