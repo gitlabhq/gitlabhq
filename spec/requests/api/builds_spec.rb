@@ -35,6 +35,12 @@ describe API::API, api: true  do
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
       end
+
+      it 'should respond 400 when scope contains invalid state' do
+        get api("/projects/#{project.id}/builds?scope[0]=pending&scope[1]=unknown_status", user)
+
+        expect(response.status).to eq(400)
+      end
     end
 
     context 'unauthorized user' do

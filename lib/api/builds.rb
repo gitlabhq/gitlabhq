@@ -35,6 +35,7 @@ module API
 
         builds = commit.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
+
         present paginate(builds), with: Entities::Build,
                                   user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
@@ -118,25 +119,26 @@ module API
 
     helpers do
       def get_build(id)
-        user_project.builds.where(id: id).first
+        user_project.builds.find_by(id: id.to_i)
       end
 
       def filter_builds(builds, scope)
-        available_scopes = Ci::Build.available_statuses
+        return builds if scope.nil? || scope.empty?
+
+        available_statuses = Ci::Build.available_statuses
         scope =
-          if scope.is_a?(String) || scope.is_a?(Symbol)
-            available_scopes & [scope.to_s]
-          elsif scope.is_a?(Array)
-            available_scopes & scope
-          elsif scope.respond_to?(:to_h)
-            available_scopes & scope.to_h.values
+          if scope.is_a?(String)
+            [scope]
+          elsif scope.is_a?(Hashie::Mash)
+            scope.values
           else
-            []
+            ['unknown']
           end
 
-        return builds if scope.empty?
+        unknown = scope - available_statuses
+        render_api_error!('Scope contains invalid value(s)', 400) unless unknown.empty?
 
-        builds.where(status: scope)
+        builds.where(status: available_statuses && scope)
       end
 
       def authorize_manage_builds!
