@@ -1,12 +1,12 @@
+- @no_container = true
+- @blank_container = true
+
 - unless can?(current_user, :read_group, @group)
   - @disable_search_panel = true
 
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
-
-- @no_container = true
-- @blank_container = true
 
 .cover-block
   .cover-controls
@@ -39,7 +39,6 @@
           Projects
 
 - if can?(current_user, :read_group, @group)
-
   %div{ class: container_class }
     .tab-content
       .tab-pane.active#activity
