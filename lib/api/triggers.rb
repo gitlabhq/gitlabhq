@@ -73,10 +73,10 @@ module API
         authenticate!
         authorize_admin_project
 
-        triggers = user_project.triggers.where(token: params[:token])
-        return not_found!('Trigger') if triggers.empty?
+        trigger = user_project.triggers.find_by(token: params[:token].to_s)
+        return not_found!('Trigger') unless trigger
 
-        present triggers.first, with: Entities::Trigger
+        present trigger, with: Entities::Trigger
       end
 
       # Create trigger
@@ -89,8 +89,7 @@ module API
         authenticate!
         authorize_admin_project
 
-        trigger = user_project.triggers.new
-        trigger.save
+        trigger = user_project.triggers.create
 
         present trigger, with: Entities::Trigger
       end
@@ -106,7 +105,7 @@ module API
         authenticate!
         authorize_admin_project
 
-        trigger = user_project.triggers.where(token: params[:token]).first
+        trigger = user_project.triggers.find_by(token: params[:token].to_s)
         return not_found!('Trigger') unless trigger
 
         trigger.destroy

@@ -105,7 +105,7 @@ describe API::API do
       end
     end
 
-    context 'unauthentikated user' do
+    context 'unauthenticated user' do
       it 'should not return triggers list' do
         get api("/projects/#{project.id}/triggers")
 
@@ -123,7 +123,7 @@ describe API::API do
         expect(json_response).to be_a(Hash)
       end
 
-      it 'should responde with 404 Not Found if requesting non-existing trigger' do
+      it 'should respond with 404 Not Found if requesting non-existing trigger' do
         get api("/projects/#{project.id}/triggers/abcdef012345", user)
 
         expect(response.status).to eq(404)
@@ -138,7 +138,7 @@ describe API::API do
       end
     end
 
-    context 'unauthentikated user' do
+    context 'unauthenticated user' do
       it 'should not return triggers list' do
         get api("/projects/#{project.id}/triggers/#{trigger.token}")
 
@@ -167,7 +167,7 @@ describe API::API do
       end
     end
 
-    context 'unauthentikated user' do
+    context 'unauthenticated user' do
       it 'should not create trigger' do
         post api("/projects/#{project.id}/triggers")
 
@@ -185,7 +185,7 @@ describe API::API do
         expect(response.status).to eq(200)
       end
 
-      it 'should responde with 404 Not Found if requesting non-existing trigger' do
+      it 'should respond with 404 Not Found if requesting non-existing trigger' do
         delete api("/projects/#{project.id}/triggers/abcdef012345", user)
 
         expect(response.status).to eq(404)
@@ -200,7 +200,7 @@ describe API::API do
       end
     end
 
-    context 'unauthentikated user' do
+    context 'unauthenticated user' do
       it 'should not delete trigger' do
         delete api("/projects/#{project.id}/triggers/#{trigger.token}")
 
