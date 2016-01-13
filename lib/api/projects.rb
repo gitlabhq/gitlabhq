@@ -3,7 +3,7 @@ module API
   class Projects < Grape::API
     before { authenticate! }
 
-    resource :projects do
+    resource :projects, requirements: { id: /[^\/]+/ } do
       helpers do
         def map_public_to_visibility_level(attrs)
           publik = attrs.delete(:public)
@@ -69,7 +69,8 @@ module API
       # Example Request:
       #   GET /projects/:id
       get ":id" do
-        present user_project, with: Entities::ProjectWithAccess, user: current_user
+        present user_project, with: Entities::ProjectWithAccess, user: current_user,
+                              user_can_admin_project: can?(current_user, :admin_project, user_project)
       end
 
       # Get events for a single project
@@ -118,7 +119,8 @@ module API
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
-          present @project, with: Entities::Project
+          present @project, with: Entities::Project,
+                            user_can_admin_project: can?(current_user, :admin_project, @project)
         else
           if @project.errors[:limit_reached].present?
             error!(@project.errors[:limit_reached], 403)
@@ -163,7 +165,8 @@ module API
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
-          present @project, with: Entities::Project
+          present @project, with: Entities::Project,
+                            user_can_admin_project: can?(current_user, :admin_project, @project)
         else
           render_validation_error!(@project)
         end
@@ -182,8 +185,9 @@ module API
         if @forked_project.errors.any?
           conflict!(@forked_project.errors.messages)
         else
-          present @forked_project, with: Entities::Project
-        end
+          present @forked_project, with: Entities::Project,
+                                   user_can_admin_project: can?(current_user, :admin_project, @forked_project)
+         end
       end
 
       # Update an existing project
@@ -229,7 +233,8 @@ module API
         if user_project.errors.any?
           render_validation_error!(user_project)
         else
-          present user_project, with: Entities::Project
+          present user_project, with: Entities::Project,
+                                user_can_admin_project: can?(current_user, :admin_project, user_project)
         end
       end
 
@@ -269,7 +274,7 @@ module API
       # Remove a forked_from relationship
       #
       # Parameters:
-      # id: (required) - The ID of the project being marked as a fork
+      #   id: (required) - The ID of the project being marked as a fork
       # Example Request:
       #  DELETE /projects/:id/fork
       delete ":id/fork" do
@@ -278,6 +283,16 @@ module API
           user_project.forked_project_link.destroy
         end
       end
+
+      # Upload a file
+      #
+      # Parameters:
+      #   id: (required) - The ID of the project
+      #   file: (required) - The file to be uploaded
+      post ":id/uploads" do
+        ::Projects::UploadService.new(user_project, params[:file]).execute
+      end
+
       # search for projects current_user has access to
       #
       # Parameters:

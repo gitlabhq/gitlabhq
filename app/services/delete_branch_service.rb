@@ -27,7 +27,6 @@ class DeleteBranchService < BaseService
     if repository.rm_branch(current_user, branch_name)
       push_data = build_push_data(branch)
 
-      EventCreateService.new.push(project, current_user, push_data)
       project.execute_hooks(push_data.dup, :push_hooks)
       project.execute_services(push_data.dup, :push_hooks)
 

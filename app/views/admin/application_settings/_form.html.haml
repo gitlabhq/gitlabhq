@@ -149,7 +149,7 @@
         .checkbox
           = f.label :shared_runners_enabled do
             = f.check_box :shared_runners_enabled
-            Enable shared runners for a new projects
+            Enable shared runners for new projects
 
     .form-group
       = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
@@ -180,14 +180,6 @@
           sending messages to this port, without it metrics data will not be
           saved.
     .form-group
-      = f.label :metrics_username, 'InfluxDB username', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :metrics_username, class: 'form-control'
-    .form-group
-      = f.label :metrics_password, 'InfluxDB password', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_field :metrics_password, class: 'form-control'
-    .form-group
       = f.label :metrics_pool_size, 'Connection pool size', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :metrics_pool_size, class: 'form-control'
@@ -210,6 +202,13 @@
         .help-block
           A method call is only tracked when it takes longer to complete than
           the given amount of milliseconds.
+    .form-group
+      = f.label :metrics_sample_interval, 'Sampler Interval (sec)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :metrics_sample_interval, class: 'form-control'
+        .help-block
+          The sampling interval in seconds. Sampled data includes memory usage,
+          retained Ruby objects, file descriptors and so on.
 
   %fieldset
     %legend Spam and Anti-bot Protection

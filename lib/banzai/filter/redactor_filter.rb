@@ -10,7 +10,7 @@ module Banzai
     #
     class RedactorFilter < HTML::Pipeline::Filter
       def call
-        doc.css('a.gfm').each do |node|
+        Querying.css(doc, 'a.gfm').each do |node|
           unless user_can_see_reference?(node)
             # The reference should be replaced by the original text,
             # which is not always the same as the rendered text.

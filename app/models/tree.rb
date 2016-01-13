@@ -17,17 +17,15 @@ class Tree
   def readme
     return @readme if defined?(@readme)
 
-    available_readmes = blobs.select(&:readme?)
-
-    if available_readmes.count == 0
-      return @readme = nil
+    # Take the first previewable readme, or return nil if none is available or
+    # we can't preview any of them
+    readme_tree = blobs.find do |blob|
+      blob.readme? && (previewable?(blob.name) || plain?(blob.name))
     end
 
-    # Take the first previewable readme, or the first available readme, if we
-    # can't preview any of them
-    readme_tree = available_readmes.find do |readme|
-      previewable?(readme.name)
-    end || available_readmes.first
+    if readme_tree.nil?
+      return @readme = nil
+    end
 
     readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
 

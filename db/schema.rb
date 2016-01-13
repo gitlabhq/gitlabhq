@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151229112614) do
+ActiveRecord::Schema.define(version: 20160113111034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,8 +54,6 @@ ActiveRecord::Schema.define(version: 20151229112614) do
     t.integer  "two_factor_grace_period",           default: 48
     t.boolean  "metrics_enabled",                   default: false
     t.string   "metrics_host",                      default: "localhost"
-    t.string   "metrics_username"
-    t.string   "metrics_password"
     t.integer  "metrics_pool_size",                 default: 16
     t.integer  "metrics_timeout",                   default: 10
     t.integer  "metrics_method_call_threshold",     default: 10
@@ -63,6 +61,7 @@ ActiveRecord::Schema.define(version: 20151229112614) do
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
+    t.integer  "metrics_sample_interval",           default: 15
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -545,24 +544,23 @@ ActiveRecord::Schema.define(version: 20151229112614) do
   add_index "milestones", ["due_date"], name: "index_milestones_on_due_date", using: :btree
   add_index "milestones", ["project_id", "iid"], name: "index_milestones_on_project_id_and_iid", unique: true, using: :btree
   add_index "milestones", ["project_id"], name: "index_milestones_on_project_id", using: :btree
+  add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
 
   create_table "namespaces", force: :cascade do |t|
-    t.string   "name",                        null: false
-    t.string   "path",                        null: false
+    t.string   "name",                     null: false
+    t.string   "path",                     null: false
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.string   "description", default: "",    null: false
+    t.string   "description", default: "", null: false
     t.string   "avatar"
-    t.boolean  "public",      default: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
-  add_index "namespaces", ["public"], name: "index_namespaces_on_public", using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
   create_table "notes", force: :cascade do |t|

@@ -22,6 +22,7 @@ module Banzai
           Filter::CommitRangeReferenceFilter,
           Filter::CommitReferenceFilter,
           Filter::LabelReferenceFilter,
+          Filter::MilestoneReferenceFilter,
 
           Filter::TaskListFilter
         ]

@@ -15,6 +15,7 @@
 #  tag_push_events         :boolean          default(FALSE)
 #  note_events             :boolean          default(FALSE), not null
 #  enable_ssl_verification :boolean          default(TRUE)
+#  build_events            :boolean          default(FALSE), not null
 #
 
 class WebHook < ActiveRecord::Base
@@ -47,8 +48,8 @@ class WebHook < ActiveRecord::Base
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
       auth = {
-        username: URI.decode(parsed_url.user),
-        password: URI.decode(parsed_url.password),
+        username: CGI.unescape(parsed_url.user),
+        password: CGI.unescape(parsed_url.password),
       }
       response = WebHook.post(post_url,
                               body: data.to_json,
@@ -60,7 +61,7 @@ class WebHook < ActiveRecord::Base
                               basic_auth: auth)
     end
 
-    [response.code == 200, ActionView::Base.full_sanitizer.sanitize(response.to_s)]
+    [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
   rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
     [false, e.to_s]

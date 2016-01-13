@@ -130,6 +130,15 @@ module MarkdownMatchers
     end
   end
 
+  # MilestoneReferenceFilter
+  matcher :reference_milestones do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('a.gfm.gfm-milestone', count: 3)
+    end
+  end
+
   # TaskListFilter
   matcher :parse_task_lists do
     set_default_markdown_messages

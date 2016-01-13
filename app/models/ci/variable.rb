@@ -3,7 +3,7 @@
 # Table name: ci_variables
 #
 #  id                   :integer          not null, primary key
-#  project_id           :integer          not null
+#  project_id           :integer
 #  key                  :string(255)
 #  value                :text
 #  encrypted_value      :text
