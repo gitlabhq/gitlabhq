@@ -93,3 +93,10 @@
   merge_request = new MergeRequest({
     action: "#{controller.action_name}"
   });
+
+:javascript
+  $(function(){
+    MR().init({
+      status: "#{@merge_request.state_human_name}"
+    });
+  });

@@ -1,6 +1,6 @@
-.detail-page-header#merge-request-header
-  .status-box{ class: status_box_class(@merge_request), data:{status: @merge_request.state_human_name} }
-  {{ status }}
+.detail-page-header#merge-request-header{'v-cloak'=> true, transition: "fade"}
+  .status-box{ class: status_box_class(@merge_request)}
+    {{ status }}
   %span.identifier
     Merge Request ##{@merge_request.iid}
   %span.creator
