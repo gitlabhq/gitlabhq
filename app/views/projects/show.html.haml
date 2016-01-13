@@ -14,7 +14,7 @@
 = render "home_panel"
 
 .project-stats.gray-content-block.second-block
-  %ul.nav.nav-pills
+  %ul.nav
     %li
       = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
         = pluralize(number_with_delimiter(@project.commit_count), 'commit')
