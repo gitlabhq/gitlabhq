@@ -11,6 +11,14 @@ describe Gitlab::Metrics::Transaction do
     end
   end
 
+  describe '#allocated_memory' do
+    it 'returns the allocated memory in bytes' do
+      transaction.run { 'a' * 32 }
+
+      expect(transaction.allocated_memory).to be_a_kind_of(Numeric)
+    end
+  end
+
   describe '#run' do
     it 'yields the supplied block' do
       expect { |b| transaction.run(&b) }.to yield_control
@@ -43,8 +51,10 @@ describe Gitlab::Metrics::Transaction do
       transaction.increment(:time, 1)
       transaction.increment(:time, 2)
 
+      values = { duration: 0.0, time: 3, allocated_memory: a_kind_of(Numeric) }
+
       expect(transaction).to receive(:add_metric).
-        with('transactions', { duration: 0.0, time: 3 }, {})
+        with('transactions', values, {})
 
       transaction.track_self
     end
@@ -54,8 +64,14 @@ describe Gitlab::Metrics::Transaction do
     it 'sets a value' do
       transaction.set(:number, 10)
 
+      values = {
+        duration:         0.0,
+        number:           10,
+        allocated_memory: a_kind_of(Numeric)
+      }
+
       expect(transaction).to receive(:add_metric).
-        with('transactions', { duration: 0.0, number: 10 }, {})
+        with('transactions', values, {})
 
       transaction.track_self
     end
@@ -80,8 +96,13 @@ describe Gitlab::Metrics::Transaction do
 
   describe '#track_self' do
     it 'adds a metric for the transaction itself' do
+      values = {
+        duration:         transaction.duration,
+        allocated_memory: a_kind_of(Numeric)
+      }
+
       expect(transaction).to receive(:add_metric).
-        with('transactions', { duration: transaction.duration }, {})
+        with('transactions', values, {})
 
       transaction.track_self
     end
@@ -104,7 +125,7 @@ describe Gitlab::Metrics::Transaction do
       hash = {
         series:    'rails_transactions',
         tags:      { action: 'Foo#bar' },
-        values:    { duration: 0.0 },
+        values:    { duration: 0.0, allocated_memory: a_kind_of(Numeric) },
         timestamp: an_instance_of(Fixnum)
       }
 

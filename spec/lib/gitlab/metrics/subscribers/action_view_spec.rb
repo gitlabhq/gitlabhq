@@ -14,19 +14,12 @@ describe Gitlab::Metrics::Subscribers::ActionView do
 
   before do
     allow(subscriber).to receive(:current_transaction).and_return(transaction)
-
-    allow(Gitlab::Metrics).to receive(:last_relative_application_frame).
-      and_return(['app/views/x.html.haml', 4])
   end
 
   describe '#render_template' do
     it 'tracks rendering of a template' do
       values = { duration: 2.1 }
-      tags   = {
-        view: 'app/views/x.html.haml',
-        file: 'app/views/x.html.haml',
-        line: 4
-      }
+      tags   = { view: 'app/views/x.html.haml' }
 
       expect(transaction).to receive(:increment).
         with(:view_duration, 2.1)

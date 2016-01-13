@@ -19,6 +19,7 @@ class @MergeRequest
 
     # Prevent duplicate event bindings
     @disableTaskList()
+    @initMRBtnListeners()
 
     if $("a.btn-close").length
       @initTaskList()
@@ -42,6 +43,27 @@ class @MergeRequest
   initTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('enable')
     $(document).on 'tasklist:changed', '.detail-page-description .js-task-list-container', @updateTaskList
+
+  initMRBtnListeners: ->
+    _this = @
+    $('a.btn-close, a.btn-reopen').on 'click', (e) ->
+      $this = $(this)
+      if $this.data('submitted')
+        return
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      shouldSubmit = $this.hasClass('btn-comment')
+      console.log("shouldSubmit")
+      if shouldSubmit
+        _this.submitNoteForm($this.closest('form'),$this)
+
+  submitNoteForm: (form, $button) =>
+    noteText = form.find("textarea.js-note-text").val()
+    if noteText.trim().length > 0
+      form.submit()
+      $button.data('submitted',true)
+      $button.trigger('click')
+
 
   disableTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('disable')

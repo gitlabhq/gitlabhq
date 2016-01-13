@@ -13,7 +13,8 @@ module Gitlab
         timeout:               current_application_settings[:metrics_timeout],
         method_call_threshold: current_application_settings[:metrics_method_call_threshold],
         host:                  current_application_settings[:metrics_host],
-        port:                  current_application_settings[:metrics_port]
+        port:                  current_application_settings[:metrics_port],
+        sample_interval:       current_application_settings[:metrics_sample_interval] || 15
       }
     end
 
@@ -34,20 +35,6 @@ module Gitlab
 
     def self.pool
       @pool
-    end
-
-    # Returns a relative path and line number based on the last application call
-    # frame.
-    def self.last_relative_application_frame
-      frame = caller_locations.find do |l|
-        l.path.start_with?(RAILS_ROOT) && !l.path.start_with?(METRICS_ROOT)
-      end
-
-      if frame
-        return frame.path.sub(PATH_REGEX, ''), frame.lineno
-      else
-        return nil, nil
-      end
     end
 
     def self.submit_metrics(metrics)

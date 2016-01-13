@@ -19,6 +19,11 @@ class AbuseReport < ActiveRecord::Base
   validates :message, presence: true
   validates :user_id, uniqueness: true
 
+  def remove_user
+    user.block
+    user.destroy
+  end
+
   def notify
     return unless self.persisted?
 
