@@ -13,13 +13,13 @@ it organized and easy to find.
 ## Text
 
 - Split up long lines, this makes it much easier to review and edit. Only
-  double line breaks are shown as a full line break in GitLab markdown.
+  double line breaks are shown as a full line break in [GitLab markdown][gfm].
   80-100 characters is a good line length
 - Make sure that the documentation is added in the correct directory and that
   there's a link to it somewhere useful
 - Do not duplicate information
 - Be brief and clear
-- Whenever it applies, add documents in alphabetical order
+- Unless there's a logical reason not to, add documents in alphabetical order
 - Write in US English
 - Use [single spaces][] instead of double spaces
 
@@ -37,27 +37,27 @@ it organized and easy to find.
 
 - Add only one H1 title in each document, by adding `#` at the beginning of
   it (when using markdown). For subheadings, use `##`, `###` and so on
-- For subtitles, make sure to start with the largest and go down, meaning:
-  `#` for the title, `##` for subtitles and `###` for subtitles of the subtitles, etc.
-- Avoid putting numbers in Markdown headings. Numbers shift hence documentation
-  anchor links shift too which eventually leads to dead links.
-- When introducing a new doc, be careful for the headings to be grammatically
-  and syntactically correct. It is advised to mention one or all of the
-  following GitLab members for a review: `@axil`, `@rspeicher`, `@dblessing`,
-  `@ashleys`, `@nearlythere`. This is to ensure that no document with
-  wrong heading is going live without an audit, thus preventing dead links and
-  redirection issues when corrected.
+- Avoid putting numbers in headings. Numbers shift, hence documentation anchor
+  links shift too, which eventually leads to dead links. If you think it is
+  compelling to add numbers in headings, make sure to at least discuss it with
+  someone in the Merge Request
+- When introducing a new document, be careful for the headings to be
+  grammatically and syntactically correct. It is advised to mention one or all
+  of the following GitLab members for a review: `@axil`, `@rspeicher`,
+  `@dblessing`, `@ashleys`, `@nearlythere`. This is to ensure that no document
+  with wrong heading is going live without an audit, thus preventing dead links
+  and redirection issues when corrected
 - Leave exactly one newline after a heading
 
 ## Links
 
-- If the link sets the paragraph spanning across multiple lines, do not use
+- If a link makes the paragraph to span across multiple lines, do not use
   the regular Markdown approach: `[Text](https://example.com)`. Instead use
   `[Text][identifier]` and at the very bottom of the document add:
-  `[identifier]: https://example.com`. This is another way to make Markdown
-  links which keeps the document clear and concise. Extra points if you also
+  `[identifier]: https://example.com`. This is another way to create Markdown
+  links which keeps the document clear and concise. Bonus points if you also
   add an alternative text: `[identifier]: https://example.com "Alternative text"`
-  that appears when hovering your mouse on a link.
+  that appears when hovering your mouse on a link
 
 ## Images
 
@@ -74,7 +74,7 @@ Inside the document:
 
 - The Markdown way of using an image inside a document is:
   `![Proper description what the image is about](img/document_image_title.png)`
-- Always use a proper description what the image is about. That way, when a
+- Always use a proper description for what the image is about. That way, when a
   browser fails to show the image, this text will be used as an alternative
   description
 - If there are consecutive images with little text between them, always add
@@ -93,16 +93,19 @@ Inside the document:
 
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
-  note: `_**Note:** This feature was introduced in GitLab CE 8.3_`
+  note: `_**Note:** This feature was introduced in GitLab 8.3_`
 - If possible every feature should have a link to the MR that introduced it.
-  The above note would be transformed to:
-  `_**Note:** This feature was [introduced][ce-1242] in GitLab CE 8.3_`, where
-  the link is named after the repository (CE) and the MR number, and the
-  [link identifier](#links) is used.
+  The above note would be then transformed to:
+  `_**Note:** This feature was [introduced][ce-1242] in GitLab 8.3_`, where
+  the [link identifier](#links) is named after the repository (CE) and the MR
+  number
+- If the feature is only in GitLab EE, don't forget to mention it, like:
+  `_**Note:** This feature was introduced in GitLab EE 8.3_`. Otherwise, leave
+  this mention out
 
 ## API
 
-Here is a list of must have items. Use them in this exact order that appears
+Here is a list of must-have items. Use them in the exact order that appears
 on this document. Further explanation is given below.
 
 - Every method must have the REST API request. For example:
@@ -204,7 +207,7 @@ titled ssh-key to user's account which has an id of 25.
 
 Spaces or slashes (`/`) may sometimes result to errors, thus it is recommended
 to escape them when possible. In the example below we create a new issue which
-contains spaces in its title. Watch how spaces are escaped using the `%20`
+contains spaces in its title. Observe how spaces are escaped using the `%20`
 ASCII code.
 
 ```bash
@@ -225,3 +228,4 @@ curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -d "restricted_signup_domai
 
 [cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
+[gfm]: http://doc.gitlab.com/ce/markdown/markdown.html#newlines "GitLab flavored markdown documentation"
