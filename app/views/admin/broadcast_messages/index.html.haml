@@ -27,9 +27,9 @@
           %td
             = broadcast_message(message)
           %td
-            = message.starts_at.to_s(:iso861)
+            = message.starts_at
           %td
-            = message.ends_at.to_s(:iso861)
+            = message.ends_at
           %td
             = link_to icon('pencil-square-o'), edit_admin_broadcast_message_path(message), title: 'Edit', class: 'btn btn-xs'
             = link_to icon('times'), admin_broadcast_message_path(message), method: :delete, remote: true, title: 'Remove', class: 'js-remove-tr btn btn-xs btn-danger'
