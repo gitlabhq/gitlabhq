@@ -13,7 +13,8 @@ module Gitlab
         timeout:               current_application_settings[:metrics_timeout],
         method_call_threshold: current_application_settings[:metrics_method_call_threshold],
         host:                  current_application_settings[:metrics_host],
-        port:                  current_application_settings[:metrics_port]
+        port:                  current_application_settings[:metrics_port],
+        sample_interval:       current_application_settings[:metrics_sample_interval] || 15
       }
     end
 
