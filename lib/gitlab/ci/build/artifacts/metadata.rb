@@ -6,7 +6,9 @@ module Gitlab
     module Build
       module Artifacts
         class Metadata
-          VERSION_PATTERN = '[\w\s]+(\d+\.\d+\.\d+)'
+          VERSION_PATTERN = /^[\w\s]+(\d+\.\d+\.\d+)/
+          INVALID_PATH_PATTERN = %r{(^\.?\.?/)|(/\.?\.?/)}
+
           attr_reader :file, :path, :full_version
 
           def initialize(file, path)
@@ -15,7 +17,7 @@ module Gitlab
           end
 
           def version
-            @full_version.match(/#{VERSION_PATTERN}/).captures.first
+            @full_version.match(VERSION_PATTERN)[1]
           end
 
           def errors
@@ -27,7 +29,7 @@ module Gitlab
             end
           end
 
-          def match!
+          def find_entries!
             gzip do |gz|
               2.times { read_string(gz) } # version and errors fields
               match_entries(gz)
@@ -35,8 +37,8 @@ module Gitlab
           end
 
           def to_entry
-            entires, metadata = match!
-            Entry.new(@path, entires, metadata)
+            entries, metadata = find_entries!
+            Entry.new(@path, entries, metadata)
           end
 
           private
@@ -44,7 +46,6 @@ module Gitlab
           def match_entries(gz)
             paths, metadata = [], []
             match_pattern = %r{^#{Regexp.escape(@path)}[^/]*/?$}
-            invalid_pattern = %r{(^\.?\.?/)|(/\.?\.?/)}
 
             until gz.eof? do
               begin
@@ -53,7 +54,7 @@ module Gitlab
                
                 next unless path.valid_encoding? && meta.valid_encoding?
                 next unless path =~ match_pattern
-                next if path =~ invalid_pattern
+                next if path =~ INVALID_PATH_PATTERN
 
                 paths.push(path)
                 metadata.push(JSON.parse(meta, symbolize_names: true))
@@ -73,7 +74,7 @@ module Gitlab
                 raise StandardError, 'Artifacts metadata file empty!'
               end
 
-              unless version_string =~ /^#{VERSION_PATTERN}/
+              unless version_string =~ VERSION_PATTERN
                 raise StandardError, 'Invalid version!'
               end
 
@@ -92,19 +93,8 @@ module Gitlab
             gz.read(string_size)
           end
 
-          def gzip
-            open do |file|
-              gzip = Zlib::GzipReader.new(file)
-              begin
-                yield gzip
-              ensure
-                gzip.close
-              end
-            end
-          end
-
-          def open
-            File.open(@file) { |file| yield file }
+          def gzip(&block)
+            Zlib::GzipReader.open(@file, &block)
           end
         end
       end

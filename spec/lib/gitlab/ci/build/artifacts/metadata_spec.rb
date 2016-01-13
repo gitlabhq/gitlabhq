@@ -10,8 +10,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
   end
 
   context 'metadata file exists' do
-    describe '#match! empty string' do
-      subject { metadata('').match! }
+    describe '#find_entries! empty string' do
+      subject { metadata('').find_entries! }
 
       it 'matches correct paths' do
         expect(subject.first).to contain_exactly 'ci_artifacts.txt',
@@ -29,8 +29,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       end
     end
 
-    describe '#match! other_artifacts_0.1.2/' do
-      subject { metadata('other_artifacts_0.1.2/').match! }
+    describe '#find_entries! other_artifacts_0.1.2/' do
+      subject { metadata('other_artifacts_0.1.2/').find_entries! }
 
       it 'matches correct paths' do
         expect(subject.first).
@@ -40,8 +40,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       end
     end
 
-    describe '#match! other_artifacts_0.1.2/another-subdirectory/' do
-      subject { metadata('other_artifacts_0.1.2/another-subdirectory/').match! }
+    describe '#find_entries! other_artifacts_0.1.2/another-subdirectory/' do
+      subject { metadata('other_artifacts_0.1.2/another-subdirectory/').find_entries! }
 
       it 'matches correct paths' do
         expect(subject.first).
@@ -75,9 +75,9 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
   context 'metadata file does not exist' do
     let(:metadata_file_path) { '' }
 
-    describe '#match!' do
+    describe '#find_entries!' do
       it 'raises error' do
-        expect { metadata.match! }.to raise_error(Errno::ENOENT)
+        expect { metadata.find_entries! }.to raise_error(Errno::ENOENT)
       end
     end
   end

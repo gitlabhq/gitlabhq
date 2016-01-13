@@ -11,12 +11,12 @@ module Gitlab
       # This class is working only with UTF-8 encoded paths.
       #
       class Entry
-        attr_reader :path, :entires
+        attr_reader :path, :entries
         attr_accessor :name
 
-        def initialize(path, entires, metadata = [])
+        def initialize(path, entries, metadata = [])
           @path = path.force_encoding('UTF-8')
-          @entires = entires
+          @entries = entries
           @metadata = metadata
 
           if path.include?("\0")
@@ -42,7 +42,7 @@ module Gitlab
 
         def parent
           return nil unless has_parent?
-          new(@path.chomp(basename))
+          new_entry(@path.chomp(basename))
         end
 
         def basename
@@ -58,7 +58,7 @@ module Gitlab
           return @children if @children
 
           child_pattern = %r{^#{Regexp.escape(@path)}[^/]+/?$}
-          @children = select_entires { |entry| entry =~ child_pattern }
+          @children = select_entries { |entry| entry =~ child_pattern }
         end
 
         def directories(opts = {})
@@ -77,7 +77,7 @@ module Gitlab
         end
 
         def metadata
-          @index ||= @entires.index(@path)
+          @index ||= @entries.index(@path)
           @metadata[@index] || {}
         end
 
@@ -90,7 +90,7 @@ module Gitlab
         end
 
         def exists?
-          blank_node? || @entires.include?(@path)
+          blank_node? || @entries.include?(@path)
         end
 
         def empty?
@@ -102,7 +102,7 @@ module Gitlab
         end
 
         def ==(other)
-          @path == other.path && @entires == other.entires
+          @path == other.path && @entries == other.entries
         end
 
         def inspect
@@ -111,13 +111,13 @@ module Gitlab
 
         private
 
-        def new(path)
-          self.class.new(path, @entires, @metadata)
+        def new_entry(path)
+          self.class.new(path, @entries, @metadata)
         end
 
-        def select_entires
-          selected = @entires.select { |entry| yield entry }
-          selected.map { |path| new(path) }
+        def select_entries
+          selected = @entries.select { |entry| yield entry }
+          selected.map { |path| new_entry(path) }
         end
       end
     end

@@ -603,15 +603,14 @@ Rails.application.routes.draw do
 
           member do
             get :status
-            get :download
             post :cancel
             post :retry
           end
 
           resource :artifacts, only: [] do
             get :download
-            get 'browse(/*path)', action: :browse, as: :browse, format: false
-            get 'file/*path', action: :file, as: :file, format: false
+            get :browse, path: 'browse(/*path)', action: :browse, format: false
+            get :file, path: 'file/*path', action: :file, format: false
           end
         end
 
