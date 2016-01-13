@@ -251,7 +251,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'pry-rails'
 
-  gem 'awesome_print', '~> 1.2.0'
+  gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
   gem 'database_cleaner', '~> 1.4.0'

@@ -96,6 +96,7 @@ X-Gitlab-Event: System Hook
  "project_path_with_namespace": "jsmith/storecloud",
                   "user_email": "johnsmith@gmail.com",
                    "user_name": "John Smith",
+               "user_username": "johnsmith",
                      "user_id": 41,
           "project_visibility": "private",
 }
@@ -115,6 +116,7 @@ X-Gitlab-Event: System Hook
  "project_path_with_namespace": "jsmith/storecloud",
                   "user_email": "johnsmith@gmail.com",
                    "user_name": "John Smith",
+               "user_username": "johnsmith",
                      "user_id": 41,
           "project_visibility": "private",
 }
@@ -129,6 +131,7 @@ X-Gitlab-Event: System Hook
         "email": "js@gitlabhq.com",
    "event_name": "user_create",
          "name": "John Smith",
+     "username": "js",
       "user_id": 41
 }
 ```
@@ -142,6 +145,7 @@ X-Gitlab-Event: System Hook
         "email": "js@gitlabhq.com",
    "event_name": "user_destroy",
          "name": "John Smith",
+     "username": "js",
       "user_id": 41
 }
 ```
@@ -215,6 +219,7 @@ X-Gitlab-Event: System Hook
     "group_path": "storecloud",
     "user_email": "johnsmith@gmail.com",
      "user_name": "John Smith",
+ "user_username": "johnsmith",
        "user_id": 41
 }
 ```
@@ -231,6 +236,7 @@ X-Gitlab-Event: System Hook
     "group_path": "storecloud",
     "user_email": "johnsmith@gmail.com",
      "user_name": "John Smith",
+ "user_username": "johnsmith",
        "user_id": 41
 }
 ```
