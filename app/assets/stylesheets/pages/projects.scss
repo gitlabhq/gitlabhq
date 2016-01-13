@@ -26,6 +26,8 @@
 }
 
 .project-home-panel {
+  padding-bottom: 40px;
+  border-bottom: 1px solid $border-color;
 
   .cover-controls {
     .project-settings-dropdown {
@@ -416,8 +418,6 @@ ul.nav.nav-projects-tabs {
 
 .top-area {
   border-bottom: 1px solid #EEE;
-  margin: 0 -16px;
-  padding: 0 $gl-padding;
   height: 42px;
 
   ul.left-top-menu {
@@ -574,10 +574,8 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
-    padding: $gl-padding;
+    padding: $gl-padding 0;
     border-color: $table-border-color;
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
 
     &.no-description {
       .project {

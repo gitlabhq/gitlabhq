@@ -20,7 +20,8 @@
 
 .content-block,
 .gray-content-block {
-  margin: -$gl-padding;
+  margin-top: -$gl-padding;
+  margin-bottom: -$gl-padding;
   background-color: $background-color;
   padding: $gl-padding;
   margin-bottom: 0px;
@@ -86,10 +87,7 @@
 .cover-block {
   text-align: center;
   background: $background-color;
-  margin: -$gl-padding;
-  margin-bottom: 0;
-  padding: 44px $gl-padding;
-  border-bottom: 1px solid $border-color;
+  padding-top: 44px;
   position: relative;
 
   .avatar-holder {
@@ -130,6 +128,10 @@
       left: 10px;
       right: auto;
     }
+  }
+
+  .cover-menu {
+    margin: 0;
   }
 }
 

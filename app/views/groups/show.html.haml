@@ -5,6 +5,9 @@
   - if current_user
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
 
+- @no_container = true
+- @blank_container = true
+
 .cover-block
   .cover-controls
     - if @group && can?(current_user, :admin_group, @group)
@@ -25,8 +28,8 @@
     .cover-desc.description
       = markdown(@group.description, pipeline: :description)
 
-- if can?(current_user, :read_group, @group)
-  %ul.center-top-menu.no-top
+
+  %ul.center-top-menu.cover-menu
     %li.active
       = link_to "#activity", 'data-toggle' => 'tab' do
         Activity
@@ -35,19 +38,22 @@
         = link_to "#projects", 'data-toggle' => 'tab' do
           Projects
 
-  .tab-content
-    .tab-pane.active#activity
-      .gray-content-block.activity-filter-block
-        - if current_user
-          = render "events/event_last_push", event: @last_push
+- if can?(current_user, :read_group, @group)
 
-          = render 'shared/event_filter'
+  %div{ class: container_class }
+    .tab-content
+      .tab-pane.active#activity
+        .activity-filter-block
+          - if current_user
+            = render "events/event_last_push", event: @last_push
 
-      .content_list
-      = spinner
+            = render 'shared/event_filter'
 
-    .tab-pane#projects
-      = render "projects", projects: @projects
+        .content_list
+        = spinner
+
+      .tab-pane#projects
+        = render "projects", projects: @projects
 
 - else
   %p.center-top-menu.no-top

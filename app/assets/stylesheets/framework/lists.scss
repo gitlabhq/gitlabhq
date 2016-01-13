@@ -109,10 +109,8 @@ ul.content-list {
   padding: 0;
 
   > li {
-    padding: $gl-padding;
+    padding: $gl-padding 0;
     border-color: $table-border-color;
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
     color: $gl-gray;
 
     .avatar {
@@ -148,7 +146,7 @@ ul.controls {
   > li {
     float: left;
     margin-right: 10px;
-    
+
     &:last-child {
       margin-right: 0;
     }
