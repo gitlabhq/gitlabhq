@@ -73,7 +73,7 @@ module API
 
         authorize! :read_merge_request, merge_request
 
-        present merge_request, with: Entities::MergeRequest
+        present merge_request, with: Entities::MergeRequestDetail
       end
 
       # Show MR commits

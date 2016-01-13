@@ -2,7 +2,7 @@
 
 ## List merge requests
 
-Get all merge requests for this project. 
+Get all merge requests for this project.
 The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
 The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
@@ -50,8 +50,7 @@ Parameters:
       "created_at": "2012-04-29T08:46:00Z"
     },
     "description":"fixed login page css paddings",
-    "work_in_progress": false,
-    "status": "pending"
+    "work_in_progress": false
   }
 ]
 ```
@@ -98,7 +97,25 @@ Parameters:
   },
   "description":"fixed login page css paddings",
   "work_in_progress": false,
-  "status": "pending"
+  "last_commit": {
+    "author_email": "admin@example.com",
+    "author_name": "Administrator",
+    "authored_date": "2012-04-25T13:12:15.000+01:00",
+    "committed_date": "2012-04-25T13:12:15.000+01:00",
+    "coverage": null,
+    "created_at": "2012-04-25T13:12:15.000+01:00",
+    "duration": 0,
+    "finished_at": null,
+    "id": "6c14056df0be27374e849ad67295a22cd0f7e0d0",
+    "message": "Add some fixes",
+    "parent_ids": [
+      "6b053ad388c531c21907f022933e5e81598db388"
+    ],
+    "short_id": "6c14056d",
+    "started_at": null,
+    "status": "pending",
+    "title": "Add some fixes"
+  }
 }
 ```
 
@@ -206,8 +223,7 @@ Parameters:
     "renamed_file": false,
     "deleted_file": false
     }
-  ],
-  "status": "pending"
+  ]
 }
 ```
 
@@ -255,8 +271,7 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "description":"fixed login page css paddings",
-  "status": "pending"
+  "description":"fixed login page css paddings"
 }
 ```
 
@@ -307,8 +322,7 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  },
-  "status": "pending"
+  }
 }
 ```
 
@@ -364,8 +378,7 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  },
-  "status": "pending"
+  }
 }
 ```
 

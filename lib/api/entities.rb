@@ -165,12 +165,6 @@ module API
       expose :assignee, :author, using: Entities::UserBasic
     end
 
-    class CommitStatus < Grape::Entity
-      expose :id, :sha, :ref, :status, :name, :target_url, :description,
-             :created_at, :started_at, :finished_at, :allow_failure
-      expose :author, using: Entities::UserBasic
-    end
-
     class MergeRequest < ProjectEntity
       expose :target_branch, :source_branch
       expose :upvotes,  :downvotes
@@ -181,11 +175,10 @@ module API
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
-      expose :status do |repo_obj, _options|
-        if repo_obj.respond_to?(:ci_commit)
-          repo_obj.ci_commit.status if repo_obj.ci_commit
-        end
-      end
+    end
+
+    class MergeRequestDetail < MergeRequest
+      expose :last_commit, with: RepoCommitDetail
     end
 
     class MergeRequestChanges < MergeRequest
@@ -227,6 +220,12 @@ module API
       expose(:line_type) { |note| note.diff_line_type }
       expose :author, using: Entities::UserBasic
       expose :created_at
+    end
+
+    class CommitStatus < Grape::Entity
+      expose :id, :sha, :ref, :status, :name, :target_url, :description,
+             :created_at, :started_at, :finished_at, :allow_failure
+      expose :author, using: Entities::UserBasic
     end
 
     class Event < Grape::Entity
