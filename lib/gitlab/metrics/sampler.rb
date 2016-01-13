@@ -7,7 +7,7 @@ module Gitlab
     # statistics, etc.
     class Sampler
       # interval - The sampling interval in seconds.
-      def initialize(interval = 15)
+      def initialize(interval = Metrics.settings[:sample_interval])
         @interval = interval
         @metrics  = []
 
