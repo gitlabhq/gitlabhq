@@ -347,8 +347,8 @@ module Ci
       artifacts? && artifacts_metadata.exists?
     end
 
-    def artifacts_metadata_path(path)
-      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path).to_path
+    def artifacts_metadata_entry(path)
+      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path).to_entry
     end
 
     private

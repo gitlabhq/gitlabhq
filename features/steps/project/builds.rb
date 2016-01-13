@@ -84,6 +84,6 @@ class Spinach::Features::ProjectBuilds < Spinach::FeatureSteps
     # this will be accelerated by Workhorse
     response_json = JSON.parse(page.body, symbolize_names: true)
     expect(response_json[:archive]).to end_with('build_artifacts.zip')
-    expect(response_json[:path]).to eq Base64.encode64('ci_artifacts.txt')
+    expect(response_json[:entry]).to eq Base64.encode64('ci_artifacts.txt')
   end
 end

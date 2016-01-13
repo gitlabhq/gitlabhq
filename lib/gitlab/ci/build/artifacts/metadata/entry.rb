@@ -2,7 +2,7 @@ module Gitlab
   module Ci::Build::Artifacts
     class Metadata
       ##
-      # Class that represents a simplified path to a file or
+      # Class that represents an entry (path and metadata) to a file or
       # directory in GitLab CI Build Artifacts binary file / archive
       #
       # This is IO-operations safe class, that does similar job to
@@ -10,13 +10,13 @@ module Gitlab
       #
       # This class is working only with UTF-8 encoded paths.
       #
-      class Path
-        attr_reader :path, :universe
+      class Entry
+        attr_reader :path, :entires
         attr_accessor :name
 
-        def initialize(path, universe, metadata = [])
+        def initialize(path, entires, metadata = [])
           @path = path.force_encoding('UTF-8')
-          @universe = universe
+          @entires = entires
           @metadata = metadata
 
           if path.include?("\0")
@@ -46,11 +46,11 @@ module Gitlab
         end
 
         def basename
-          (directory? && !blank_node?) ? name + ::File::SEPARATOR : name
+          (directory? && !blank_node?) ? name + '/' : name
         end
 
         def name
-          @name || @path.split(::File::SEPARATOR).last.to_s
+          @name || @path.split('/').last.to_s
         end
 
         def children
@@ -58,20 +58,17 @@ module Gitlab
           return @children if @children
 
           child_pattern = %r{^#{Regexp.escape(@path)}[^/]+/?$}
-          @children = select { |entry| entry =~ child_pattern }
+          @children = select_entires { |entry| entry =~ child_pattern }
         end
 
-        def directories
+        def directories(opts = {})
           return [] unless directory?
-          children.select(&:directory?)
-        end
-
-        def directories!
-          return directories unless has_parent?
+          dirs = children.select(&:directory?)
+          return dirs unless has_parent? && opts[:parent]
 
           dotted_parent = parent
           dotted_parent.name = '..'
-          directories.prepend(dotted_parent)
+          dirs.prepend(dotted_parent)
         end
 
         def files
@@ -80,7 +77,7 @@ module Gitlab
         end
 
         def metadata
-          @index ||= @universe.index(@path)
+          @index ||= @entires.index(@path)
           @metadata[@index] || {}
         end
 
@@ -88,12 +85,16 @@ module Gitlab
           @path.count('/') + (file? ? 1 : 0)
         end
 
-        def exists?
-          blank_node? || @universe.include?(@path)
-        end
-
         def blank_node?
           @path.empty? # "" is considered to be './'
+        end
+
+        def exists?
+          blank_node? || @entires.include?(@path)
+        end
+
+        def empty?
+          children.empty?
         end
 
         def to_s
@@ -101,7 +102,7 @@ module Gitlab
         end
 
         def ==(other)
-          @path == other.path && @universe == other.universe
+          @path == other.path && @entires == other.entires
         end
 
         def inspect
@@ -111,11 +112,11 @@ module Gitlab
         private
 
         def new(path)
-          self.class.new(path, @universe, @metadata)
+          self.class.new(path, @entires, @metadata)
         end
 
-        def select
-          selected = @universe.select { |entry| yield entry }
+        def select_entires
+          selected = @entires.select { |entry| yield entry }
           selected.map { |path| new(path) }
         end
       end

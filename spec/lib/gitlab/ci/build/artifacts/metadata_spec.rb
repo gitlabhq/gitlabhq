@@ -51,9 +51,9 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       end
     end
 
-    describe '#to_path' do
-      subject { metadata('').to_path }
-      it { is_expected.to be_an_instance_of(Gitlab::Ci::Build::Artifacts::Metadata::Path) }
+    describe '#to_entry' do
+      subject { metadata('').to_entry }
+      it { is_expected.to be_an_instance_of(Gitlab::Ci::Build::Artifacts::Metadata::Entry) }
     end
 
     describe '#full_version' do

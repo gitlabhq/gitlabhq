@@ -18,17 +18,17 @@ class Projects::ArtifactsController < Projects::ApplicationController
     return render_404 unless build.artifacts?
 
     directory = params[:path] ? "#{params[:path]}/" : ''
-    @path = build.artifacts_metadata_path(directory)
+    @entry = build.artifacts_metadata_entry(directory)
 
-    return render_404 unless @path.exists?
+    return render_404 unless @entry.exists?
   end
 
   def file
-    file_path = build.artifacts_metadata_path(params[:path])
+    entry = build.artifacts_metadata_entry(params[:path])
 
-    if file_path.exists?
+    if entry.exists?
       render json: { archive: build.artifacts_file.path,
-                     path: Base64.encode64(file_path.path) }
+                     entry: Base64.encode64(entry.path) }
     else
       render json: {}, status: 404
     end

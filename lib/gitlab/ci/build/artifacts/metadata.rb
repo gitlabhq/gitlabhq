@@ -34,8 +34,9 @@ module Gitlab
             end
           end
 
-          def to_path
-            Path.new(@path, *match!)
+          def to_entry
+            entires, metadata = match!
+            Entry.new(@path, entires, metadata)
           end
 
           private

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Build::Artifacts::Metadata::Path do
-  let(:universe) do
+describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
+  let(:entries) do
     ['path/',
      'path/dir_1/',
      'path/dir_1/file_1',
@@ -21,7 +21,7 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Path do
   end
 
   def string_path(string_path)
-    described_class.new(string_path, universe)
+    described_class.new(string_path, entries)
   end
 
   describe '/file/with/absolute_path', path: '/file/with/absolute_path' do
@@ -79,21 +79,38 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Path do
     end
 
     describe '#directories' do
-      subject { |example| path(example).directories }
+      context 'without options' do
+        subject { |example| path(example).directories }
 
-      it { is_expected.to all(be_directory) }
-      it { is_expected.to all(be_an_instance_of described_class) }
-      it { is_expected.to contain_exactly string_path('path/dir_1/subdir/') }
-    end
+        it { is_expected.to all(be_directory) }
+        it { is_expected.to all(be_an_instance_of described_class) }
+        it { is_expected.to contain_exactly string_path('path/dir_1/subdir/') }
+      end
 
-    describe '#directories!' do
-      subject { |example| path(example).directories! }
+      context 'with option parent: true' do
+        subject { |example| path(example).directories(parent: true) }
 
-      it { is_expected.to all(be_directory) }
-      it { is_expected.to all(be_an_instance_of described_class) }
-      it do
-        is_expected.to contain_exactly string_path('path/dir_1/subdir/'),
-                                       string_path('path/')
+        it { is_expected.to all(be_directory) }
+        it { is_expected.to all(be_an_instance_of described_class) }
+        it do
+          is_expected.to contain_exactly string_path('path/dir_1/subdir/'),
+                                         string_path('path/')
+        end
+      end
+
+      describe '#nodes' do
+        subject { |example| path(example).nodes }
+        it { is_expected.to eq 2 }
+      end
+
+      describe '#exists?' do
+        subject { |example| path(example).exists? }
+        it { is_expected.to be true }
+      end
+
+      describe '#empty?' do
+        subject { |example| path(example).empty? }
+        it { is_expected.to be false }
       end
     end
   end
@@ -106,20 +123,37 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Path do
       subject { |example| path(example).children }
       it { expect(subject.count).to eq 3 }
     end
+
   end
 
-  describe '#nodes', path: 'test' do
-    subject { |example| path(example).nodes }
-    it { is_expected.to eq 1 }
+  describe 'path/dir_1/subdir/subfile', path: 'path/dir_1/subdir/subfile' do
+    describe '#nodes' do
+      subject { |example| path(example).nodes }
+      it { is_expected.to eq 4 }
+    end
   end
 
-  describe '#nodes', path: 'test/' do
-    subject { |example| path(example).nodes }
-    it { is_expected.to eq 1 }
+  describe 'non-existent/', path: 'non-existent/' do
+    describe '#empty?' do
+      subject { |example| path(example).empty? }
+      it { is_expected.to be true }
+    end
+
+    describe '#exists?' do
+      subject { |example| path(example).exists? }
+      it { is_expected.to be false }
+    end
+  end
+
+  describe 'another_directory/', path: 'another_directory/' do
+    describe '#empty?' do
+      subject { |example| path(example).empty? }
+      it { is_expected.to be true }
+    end
   end
 
   describe '#metadata' do
-    let(:universe) do
+    let(:entries) do
       ['path/', 'path/file1', 'path/file2']
     end
 
@@ -128,21 +162,9 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Path do
     end
 
     subject do
-      described_class.new('path/file1', universe, metadata).metadata[:name]
+      described_class.new('path/file1', entries, metadata).metadata[:name]
     end
 
     it { is_expected.to eq '/path/file1' }
-  end
-
-  describe '#exists?', path: 'another_file' do
-    subject { |example| path(example).exists? }
-    it { is_expected.to be true }
-  end
-
-  describe '#exists?', path: './non_existent/' do
-    let(:universe) { ['./something'] }
-    subject { |example| path(example).exists? }
-
-    it { is_expected.to be false }
   end
 end
