@@ -10,8 +10,7 @@ module Gitlab
           attr_reader :file, :path, :full_version
 
           def initialize(file, path)
-            @file = file
-            @path = path.force_encoding('ASCII-8BIT')
+            @file, @path = file, path
             @full_version = read_version
           end
 
@@ -36,7 +35,7 @@ module Gitlab
           end
 
           def to_path
-            Path.new(@path.dup.force_encoding('UTF-8'), *match!)
+            Path.new(@path, *match!)
           end
 
           private
@@ -48,11 +47,11 @@ module Gitlab
 
             until gz.eof? do
               begin
-                path = read_string(gz)
-                meta = read_string(gz)
+                path = read_string(gz).force_encoding('UTF-8')
+                meta = read_string(gz).force_encoding('UTF-8')
                
+                next unless path.valid_encoding? && meta.valid_encoding?
                 next unless path =~ match_pattern
-                next unless path.force_encoding('UTF-8').valid_encoding?
                 next if path =~ invalid_pattern
 
                 paths.push(path)
