@@ -73,20 +73,13 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /projects/:id/builds/:build_id(/trace)?' do
+  describe 'GET /projects/:id/builds/:build_id' do
     context 'authorized user' do
       it 'should return specific build data' do
         get api("/projects/#{project.id}/builds/#{build.id}", user)
 
         expect(response.status).to eq(200)
         expect(json_response['name']).to eq('test')
-      end
-
-      it 'should return specific build trace' do
-        get api("/projects/#{project.id}/builds/#{build_with_trace.id}/trace", user)
-
-        expect(response.status).to eq(200)
-        expect(response.body).to eq(build_with_trace.trace)
       end
     end
 
@@ -96,7 +89,20 @@ describe API::API, api: true  do
 
         expect(response.status).to eq(401)
       end
+    end
+  end
 
+  describe 'GET /projects/:id/builds/:build_id/trace' do
+    context 'authorized user' do
+      it 'should return specific build trace' do
+        get api("/projects/#{project.id}/builds/#{build_with_trace.id}/trace", user)
+
+        expect(response.status).to eq(200)
+        expect(response.body).to eq(build_with_trace.trace)
+      end
+    end
+
+    context 'unauthorized user' do
       it 'should not return specific build trace' do
         get api("/projects/#{project.id}/builds/#{build_with_trace.id}/trace")
 
