@@ -2,7 +2,7 @@
   .pull-left
     - public_count = @public_forks.size
     - protected_count = @protected_forks.size
-    - full_count_title = ["#{public_count} public", "#{protected_count} protected"].join(' and ')
+    - full_count_title = "#{public_count} public and #{protected_count} private"
     == #{pluralize(@all_forks.size, 'fork')}: #{full_count_title}
 
   .pull-right
@@ -21,11 +21,16 @@
 
 
 .projects-list-holder
-  = render 'shared/projects/list', projects: @public_forks, use_creator_avatar: true,
-    forks: true, show_last_commit_as_description: true
+  - if @public_forks.blank?
+    %ul.content-list
+      %li
+        .nothing-here-block No forks to show
+  - else
+    = render 'shared/projects/list', projects: @public_forks, use_creator_avatar: true,
+      forks: true, show_last_commit_as_description: true
 
-  - if protected_count > 0
-    %ul.projects-list
-      %li.project-row
-        %strong= pluralize(protected_count, 'protected fork')
-        %span you have no access to.
+    - if protected_count > 0
+      %ul.projects-list
+        %li.project-row
+          %strong= pluralize(protected_count, 'private fork')
+          %span you have no access to.
