@@ -14,10 +14,9 @@ module Gitlab
         attr_reader :path, :entries
         attr_accessor :name
 
-        def initialize(path, entries, metadata = [])
-          @path = path.force_encoding('UTF-8')
+        def initialize(path, entries)
+          @path = path.dup.force_encoding('UTF-8')
           @entries = entries
-          @metadata = metadata
 
           if path.include?("\0")
             raise ArgumentError, 'Path contains zero byte character!'
@@ -42,7 +41,7 @@ module Gitlab
 
         def parent
           return nil unless has_parent?
-          new_entry(@path.chomp(basename))
+          self.class.new(@path.chomp(basename), @entries)
         end
 
         def basename
@@ -77,8 +76,7 @@ module Gitlab
         end
 
         def metadata
-          @index ||= @entries.index(@path)
-          @metadata[@index] || {}
+          @entries[@path] || {}
         end
 
         def nodes
@@ -111,13 +109,9 @@ module Gitlab
 
         private
 
-        def new_entry(path)
-          self.class.new(path, @entries, @metadata)
-        end
-
         def select_entries
-          selected = @entries.select { |entry| yield entry }
-          selected.map { |path| new_entry(path) }
+          selected = @entries.select { |entry, _metadata| yield entry }
+          selected.map { |path, _metadata| self.class.new(path, @entries) }
         end
       end
     end

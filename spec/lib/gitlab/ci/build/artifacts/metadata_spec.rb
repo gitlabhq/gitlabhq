@@ -14,18 +14,18 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       subject { metadata('').find_entries! }
 
       it 'matches correct paths' do
-        expect(subject.first).to contain_exactly 'ci_artifacts.txt',
-                                                 'other_artifacts_0.1.2/',
-                                                 'rails_sample.jpg',
-                                                 'tests_encoding/'
+        expect(subject.keys).to contain_exactly 'ci_artifacts.txt',
+                                                'other_artifacts_0.1.2/',
+                                                'rails_sample.jpg',
+                                                'tests_encoding/'
       end
 
       it 'matches metadata for every path' do
-        expect(subject.last.count).to eq 4
+        expect(subject.keys.count).to eq 4
       end
 
       it 'return Hashes for each metadata' do
-        expect(subject.last).to all(be_kind_of(Hash))
+        expect(subject.values).to all(be_kind_of(Hash))
       end
     end
 
@@ -33,7 +33,7 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       subject { metadata('other_artifacts_0.1.2/').find_entries! }
 
       it 'matches correct paths' do
-        expect(subject.first).
+        expect(subject.keys).
           to contain_exactly 'other_artifacts_0.1.2/',
                              'other_artifacts_0.1.2/doc_sample.txt',
                              'other_artifacts_0.1.2/another-subdirectory/'
@@ -44,7 +44,7 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       subject { metadata('other_artifacts_0.1.2/another-subdirectory/').find_entries! }
 
       it 'matches correct paths' do
-        expect(subject.first).
+        expect(subject.keys).
           to contain_exactly 'other_artifacts_0.1.2/another-subdirectory/',
                              'other_artifacts_0.1.2/another-subdirectory/empty_directory/',
                              'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'

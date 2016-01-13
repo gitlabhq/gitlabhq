@@ -2,26 +2,26 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
   let(:entries) do
-    ['path/',
-     'path/dir_1/',
-     'path/dir_1/file_1',
-     'path/dir_1/file_b',
-     'path/dir_1/subdir/',
-     'path/dir_1/subdir/subfile',
-     'path/second_dir',
-     'path/second_dir/dir_3/file_2',
-     'path/second_dir/dir_3/file_3',
-     'another_directory/',
-     'another_file',
-     '/file/with/absolute_path']
+    { 'path/' => {},
+      'path/dir_1/' => {},
+      'path/dir_1/file_1' => {},
+      'path/dir_1/file_b' => {},
+      'path/dir_1/subdir/' => {},
+      'path/dir_1/subdir/subfile' => {},
+      'path/second_dir' => {},
+      'path/second_dir/dir_3/file_2' => {},
+      'path/second_dir/dir_3/file_3'=> {},
+      'another_directory/'=> {},
+      'another_file' => {},
+      '/file/with/absolute_path' => {} }
   end
 
   def path(example)
-    string_path(example.metadata[:path])
+    entry(example.metadata[:path])
   end
 
-  def string_path(string_path)
-    described_class.new(string_path, entries)
+  def entry(path)
+    described_class.new(path, entries)
   end
 
   describe '/file/with/absolute_path', path: '/file/with/absolute_path' do
@@ -53,7 +53,7 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
 
     describe '#parent' do
       subject { |example| path(example).parent }
-      it { is_expected.to eq string_path('path/') }
+      it { is_expected.to eq entry('path/') }
     end
 
     describe '#children' do
@@ -61,9 +61,9 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
 
       it { is_expected.to all(be_an_instance_of described_class) }
       it do
-        is_expected.to contain_exactly string_path('path/dir_1/file_1'),
-                                       string_path('path/dir_1/file_b'),
-                                       string_path('path/dir_1/subdir/')
+        is_expected.to contain_exactly entry('path/dir_1/file_1'),
+                                       entry('path/dir_1/file_b'),
+                                       entry('path/dir_1/subdir/')
       end
     end
 
@@ -73,8 +73,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
       it { is_expected.to all(be_file) }
       it { is_expected.to all(be_an_instance_of described_class) }
       it do
-        is_expected.to contain_exactly string_path('path/dir_1/file_1'),
-                                       string_path('path/dir_1/file_b')
+        is_expected.to contain_exactly entry('path/dir_1/file_1'),
+                                       entry('path/dir_1/file_b')
       end
     end
 
@@ -84,7 +84,7 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
 
         it { is_expected.to all(be_directory) }
         it { is_expected.to all(be_an_instance_of described_class) }
-        it { is_expected.to contain_exactly string_path('path/dir_1/subdir/') }
+        it { is_expected.to contain_exactly entry('path/dir_1/subdir/') }
       end
 
       context 'with option parent: true' do
@@ -93,8 +93,8 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
         it { is_expected.to all(be_directory) }
         it { is_expected.to all(be_an_instance_of described_class) }
         it do
-          is_expected.to contain_exactly string_path('path/dir_1/subdir/'),
-                                         string_path('path/')
+          is_expected.to contain_exactly entry('path/dir_1/subdir/'),
+                                         entry('path/')
         end
       end
 
@@ -154,15 +154,13 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
 
   describe '#metadata' do
     let(:entries) do
-      ['path/', 'path/file1', 'path/file2']
-    end
-
-    let(:metadata) do
-      [{ name: '/path/' }, { name: '/path/file1' }, { name: '/path/file2' }]
+      { 'path/' => { name: '/path/' },
+        'path/file1' => { name: '/path/file1' },
+        'path/file2' => { name: '/path/file2' } }
     end
 
     subject do
-      described_class.new('path/file1', entries, metadata).metadata[:name]
+      described_class.new('path/file1', entries).metadata[:name]
     end
 
     it { is_expected.to eq '/path/file1' }

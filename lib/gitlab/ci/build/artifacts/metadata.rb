@@ -37,14 +37,14 @@ module Gitlab
           end
 
           def to_entry
-            entries, metadata = find_entries!
-            Entry.new(@path, entries, metadata)
+            entries = find_entries!
+            Entry.new(@path, entries)
           end
 
           private
 
           def match_entries(gz)
-            paths, metadata = [], []
+            entries = {}
             match_pattern = %r{^#{Regexp.escape(@path)}[^/]*/?$}
 
             until gz.eof? do
@@ -56,14 +56,13 @@ module Gitlab
                 next unless path =~ match_pattern
                 next if path =~ INVALID_PATH_PATTERN
 
-                paths.push(path)
-                metadata.push(JSON.parse(meta, symbolize_names: true))
+                entries.store(path, JSON.parse(meta, symbolize_names: true))
               rescue JSON::ParserError, Encoding::CompatibilityError
                 next
               end
             end
 
-            [paths, metadata]
+            entries
           end
 
           def read_version
