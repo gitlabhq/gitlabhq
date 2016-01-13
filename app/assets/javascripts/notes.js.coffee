@@ -1,4 +1,5 @@
 #= require autosave
+#= require autosize
 #= require dropzone
 #= require dropzone_input
 #= require gfm_auto_complete
