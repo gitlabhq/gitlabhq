@@ -18,7 +18,7 @@ module API
         present paginate(variables), with: Entities::Variable
       end
 
-      # Get specifica variable of a project
+      # Get specific variable of a project
       #
       # Parameters:
       #   id (required) - The ID of a project
@@ -80,7 +80,7 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   key (required) - The ID of a variable
-      # Exanoke Reqyest:
+      # Example Request:
       #   DELETE /projects/:id/variables/:key
       delete ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key].to_s)
