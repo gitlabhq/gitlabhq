@@ -42,6 +42,7 @@ v 8.4.0 (unreleased)
   - Ajax filter by message for commits page
   - API: Add support for deleting a tag via the API (Robert Schilling)
   - Allow subsequent validations in CI Linter
+  - Fix Encoding::CompatibilityError bug when markdown content has some complex URL (Jason Lee)
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
@@ -59,6 +60,8 @@ v 8.3.3
   - Fix Error 500 when visiting build page of project with nil runners_token (Stan Hu)
   - Use WOFF versions of SourceSansPro fonts
   - Fix regression when builds were not generated for tags created through web/api interface
+  - Fix: maintain milestone filter between Open and Closed tabs (Greg Smethells)
+  - Fix missing artifacts and build traces for build created before 8.3
 
 v 8.3.2
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
