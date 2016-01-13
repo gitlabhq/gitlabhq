@@ -71,6 +71,7 @@ module API
       expose :avatar_url
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
+      expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
     end
 
     class ProjectMember < UserBasic
