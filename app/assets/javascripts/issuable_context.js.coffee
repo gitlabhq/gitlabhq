@@ -15,16 +15,7 @@ class @IssuableContext
         $(@).width($(@).outerWidth())
       .on 'affixed-top.bs.affix affixed-bottom.bs.affix', ->
         $(@).width('')
-      $discussion = $('.issuable-discussion')
-      $sidebar = $('.issuable-sidebar')
-      discussionHeight = $discussion.height()
-      sidebarHeight = $sidebar.height()
-      console.log(sidebarHeight,discussionHeight)
-      if sidebarHeight > discussionHeight
-        $discussion.height(sidebarHeight + 50)
-        console.log('fixing issues')
-        return
-      # No affix if discussion is smaller than sidebar
+
       $('.issuable-affix').affix offset:
         top: ->
           @top = ($('.issuable-affix').offset().top - 70)
