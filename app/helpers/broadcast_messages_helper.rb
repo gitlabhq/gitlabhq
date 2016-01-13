@@ -21,4 +21,14 @@ module BroadcastMessagesHelper
 
     style
   end
+
+  def broadcast_message_status(broadcast_message)
+    if broadcast_message.active?
+      'Active'
+    elsif broadcast_message.ended?
+      'Expired'
+    else
+      'Pending'
+    end
+  end
 end

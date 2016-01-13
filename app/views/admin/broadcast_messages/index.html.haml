@@ -23,7 +23,7 @@
       - @broadcast_messages.each do |message|
         %tr
           %td
-            = message.status
+            = broadcast_message_status(message)
           %td
             = broadcast_message(message)
           %td

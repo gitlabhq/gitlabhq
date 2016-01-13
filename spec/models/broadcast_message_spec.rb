@@ -111,24 +111,4 @@ describe BroadcastMessage, models: true do
       end
     end
   end
-
-  describe '#status' do
-    it 'returns Active' do
-      message = build(:broadcast_message)
-
-      expect(message.status).to eq 'Active'
-    end
-
-    it 'returns Expired' do
-      message = build(:broadcast_message, :expired)
-
-      expect(message.status).to eq 'Expired'
-    end
-
-    it 'returns Pending' do
-      message = build(:broadcast_message, :future)
-
-      expect(message.status).to eq 'Pending'
-    end
-  end
 end

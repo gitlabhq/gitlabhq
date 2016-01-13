@@ -37,4 +37,24 @@ describe BroadcastMessagesHelper do
         to match('background-color: #f2dede; color: #b94a48')
     end
   end
+
+  describe 'broadcast_message_status' do
+    it 'returns Active' do
+      message = build(:broadcast_message)
+
+      expect(helper.broadcast_message_status(message)).to eq 'Active'
+    end
+
+    it 'returns Expired' do
+      message = build(:broadcast_message, :expired)
+
+      expect(helper.broadcast_message_status(message)).to eq 'Expired'
+    end
+
+    it 'returns Pending' do
+      message = build(:broadcast_message, :future)
+
+      expect(helper.broadcast_message_status(message)).to eq 'Pending'
+    end
+  end
 end

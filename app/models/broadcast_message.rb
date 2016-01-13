@@ -40,14 +40,4 @@ class BroadcastMessage < ActiveRecord::Base
   def ended?
     ends_at < Time.zone.now
   end
-
-  def status
-    if active?
-      'Active'
-    elsif ended?
-      'Expired'
-    else
-      'Pending'
-    end
-  end
 end
