@@ -27,11 +27,11 @@ module API
       #   GET /projects/:id/variables/:key
       get ':id/variables/:key' do
         key = params[:key]
-        variables = user_project.variables.where(key: key)
+        variable = user_project.variables.find_by(key: key.to_s)
 
-        return not_found!('Variable') if variables.empty?
+        return not_found!('Variable') unless variable
 
-        present variables.first, with: Entities::Variable
+        present variable, with: Entities::Variable
       end
 
       # Create a new variable in project
@@ -46,10 +46,12 @@ module API
         required_attributes! [:key, :value]
 
         variable = user_project.variables.create(key: params[:key], value: params[:value])
-        return render_validation_error!(variable) unless variable.valid?
-        variable.save!
 
-        present variable, with: Entities::Variable
+        if variable.valid?
+          present variable, with: Entities::Variable
+        else
+          render_validation_error!(variable)
+        end
       end
 
       # Update existing variable of a project
@@ -61,14 +63,16 @@ module API
       # Example Request:
       #   PUT /projects/:id/variables/:key
       put ':id/variables/:key' do
-        variable = user_project.variables.where(key: params[:key]).first
+        variable = user_project.variables.find_by(key: params[:key].to_s)
 
         return not_found!('Variable') unless variable
 
-        variable.value = params[:value]
-        variable.save!
-
-        present variable, with: Entities::Variable
+        attrs = attributes_for_keys [:value]
+        if variable.update(attrs)
+          present variable, with: Entities::Variable
+        else
+          render_validation_error!(variable)
+        end
       end
 
       # Delete existing variable of a project
@@ -79,10 +83,9 @@ module API
       # Exanoke Reqyest:
       #   DELETE /projects/:id/variables/:key
       delete ':id/variables/:key' do
-        variable = user_project.variables.where(key: params[:key]).first
+        variable = user_project.variables.find_by(key: params[:key].to_s)
 
         return not_found!('Variable') unless variable
-
         variable.destroy
 
         present variable, with: Entities::Variable
