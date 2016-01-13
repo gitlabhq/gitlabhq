@@ -181,6 +181,13 @@ module SharedProject
     project.team << [user, :master]
   end
 
+  step '"Mary Jane" owns private project "Private Library"' do
+    user = user_exists('Mary Jane', username: 'mary_jane')
+    project = Project.find_by(name: 'Private Library')
+    project ||= create(:project, name: 'Private Library', namespace: user.namespace)
+    project.team << [user, :master]
+  end
+
   step 'public empty project "Empty Public Project"' do
     create :project_empty_repo, :public, name: "Empty Public Project"
   end
