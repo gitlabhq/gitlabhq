@@ -240,17 +240,16 @@ describe Ci::API::API do
               end
             end
 
-            context 'runner sends metadata file' do
+            context 'no artifacts file in post data' do
               let(:post_data) do
-                { 'file' => artifacts, 'metadata' => metadata }
+                { 'metadata' => metadata }
               end
 
-              it 'is expected to respond with forbbiden' do
-                expect(response.status).to eq(403)
+              it 'is expected to respond with bad request' do
+                expect(response.status).to eq(400)
               end
 
-              it 'does not store artifacts or metadata' do
-                expect(stored_artifacts_file).to be_nil
+              it 'does not store metadata' do
                 expect(stored_metadata_file).to be_nil
               end
             end
