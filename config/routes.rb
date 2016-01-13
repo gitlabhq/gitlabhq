@@ -622,7 +622,6 @@ Rails.application.routes.draw do
             post :toggle_subscription
             post :approve
             post :rebase
-            post :ff_merge
           end
 
           collection do

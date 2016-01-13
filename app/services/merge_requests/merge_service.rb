@@ -9,6 +9,11 @@ module MergeRequests
     attr_reader :merge_request
 
     def execute(merge_request)
+      if @project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
+        FfMergeService.new(project, current_user, params).execute(merge_request)
+        return
+      end
+
       @merge_request = merge_request
 
       return error('Merge request is not mergeable') unless @merge_request.mergeable?
@@ -44,7 +49,7 @@ module MergeRequests
     def after_merge
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
 
-      if params[:should_remove_source_branch]
+      if params[:should_remove_source_branch].present?
         DeleteBranchService.new(@merge_request.source_project, current_user).
           execute(merge_request.source_branch)
       end

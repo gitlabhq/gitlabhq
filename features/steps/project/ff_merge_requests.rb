@@ -21,7 +21,7 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see ff-only merge button' do
-    expect(page).to have_content "Fast-forward merge without creating merge commit"
+    expect(page).to have_content "Fast-forward merge without a merge commit"
     expect(page).to have_button 'Accept Merge Request'
   end
 
@@ -36,7 +36,7 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merged request' do
-    page.within '.issue-box' do
+    page.within '.status-box' do
       expect(page).to have_content "Merged"
     end
   end
@@ -47,16 +47,8 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
     project.save!
   end
 
-  step 'I should not see rebase button' do
-    expect(page).to_not have_button "Rebase"
-  end
-
   step 'I should see rebase button' do
     expect(page).to have_button "Rebase"
-  end
-
-  step 'I should see rebase message' do
-    expect(page).to have_content "Fast-forward merge is not possible. Branch must be rebased first"
   end
 
   step 'merge request "Bug NS-05" is rebased' do
@@ -73,7 +65,6 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I press rebase button' do
-    allow(RebaseWorker).to receive(:perform_async){ true }
     click_button "Rebase"
   end
 

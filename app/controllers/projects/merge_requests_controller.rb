@@ -2,7 +2,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :approve, :ff_merge, :rebase, :cancel_merge_when_build_succeeds
+    :ci_status, :toggle_subscription, :approve, :rebase, :cancel_merge_when_build_succeeds
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -191,6 +191,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def rebase
+    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    return render_404 unless @merge_request.approved?
+
+    RebaseWorker.perform_async(@merge_request.id, current_user.id)
+  end
+
   def branch_from
     #This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
@@ -246,26 +253,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     redirect_to merge_request_path(@merge_request)
-  end
-
-  def ff_merge
-    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
-    return render_404 unless @merge_request.approved?
-
-    if @merge_request.ff_merge_possible?
-      MergeRequests::FfMergeService.new(merge_request.target_project, current_user).
-        execute(merge_request)
-      @status = true
-    else
-      @status = false
-    end
-  end
-
-  def rebase
-    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
-    return render_404 unless @merge_request.approved?
-
-    RebaseWorker.perform_async(@merge_request.id, current_user.id)
   end
 
   protected

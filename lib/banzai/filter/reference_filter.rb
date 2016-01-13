@@ -1,5 +1,4 @@
 require 'active_support/core_ext/string/output_safety'
-require 'banzai'
 require 'html/pipeline/filter'
 
 module Banzai
