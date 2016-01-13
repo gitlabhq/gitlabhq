@@ -29,6 +29,22 @@ RSpec.describe AbuseReport, type: :model do
     it { is_expected.to validate_uniqueness_of(:user_id) }
   end
 
+  describe '#remove_user' do
+    it 'blocks the user' do
+      report = build(:abuse_report)
+
+      allow(report.user).to receive(:destroy)
+
+      expect { report.remove_user }.to change { report.user.blocked? }.to(true)
+    end
+
+    it 'removes the user' do
+      report = build(:abuse_report)
+
+      expect { report.remove_user }.to change { User.count }.by(-1)
+    end
+  end
+
   describe '#notify' do
     it 'delivers' do
       expect(AbuseReportMailer).to receive(:notify).with(subject.id).
