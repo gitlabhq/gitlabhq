@@ -22,7 +22,7 @@
 
 .projects-list-holder
   = render 'shared/projects/list', projects: @public_forks, use_creator_avatar: true,
-    forks: true
+    forks: true, show_last_commit_as_description: true
 
   - if protected_count > 0
     %ul.projects-list

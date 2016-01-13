@@ -5,13 +5,14 @@
 - forks = false unless local_assigns[:forks] == true
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
+- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
 
 %ul.projects-list
   - projects.each_with_index do |project, i|
     - css_class = (i >= projects_limit) ? 'hide' : nil
     = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
       avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
-      forks: forks
+      forks: forks, show_last_commit_as_description: show_last_commit_as_description
 
   - if projects.size > projects_limit
     %li.bottom.center
