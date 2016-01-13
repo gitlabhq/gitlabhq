@@ -23,7 +23,7 @@
 - [Namespaces](namespaces.md)
 - [Settings](settings.md)
 - [Keys](keys.md)
-- [Variables](variables.md)
+- [Build Variables](build_variables.md)
 
 ## Clients
 
