@@ -228,7 +228,6 @@
 }
 
 .projects-search-form {
-
   .input-group .form-control {
     height: 42px;
   }
@@ -418,9 +417,8 @@ ul.nav.nav-projects-tabs {
 
 .top-area {
   border-bottom: 1px solid #EEE;
-  height: 42px;
 
-  ul.left-top-menu {
+  ul.nav-links {
     display: inline-block;
     width: 50%;
     margin-bottom: 0px;
@@ -523,8 +521,7 @@ pre.light-well {
 }
 
 .projects-search-form {
-  margin: -$gl-padding;
-  padding: $gl-padding;
+  padding: $gl-padding 0;
   padding-bottom: 0;
   margin-bottom: 0px;
 
@@ -660,8 +657,6 @@ pre.light-well {
 }
 
 .project-show-readme .readme-holder {
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
   padding: ($gl-padding + 7px);
   border-top: 0;
 

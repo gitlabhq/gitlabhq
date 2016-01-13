@@ -1,5 +1,5 @@
 .milestones-filters
-  %ul.center-top-menu
+  %ul.nav-links
     %li{class: ("active" if params[:state].blank? || params[:state] == 'opened')}
       = link_to milestones_filter_path(state: 'opened') do
         Open

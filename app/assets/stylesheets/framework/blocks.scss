@@ -20,7 +20,7 @@
 
 .content-block,
 .gray-content-block {
-  margin-top: -$gl-padding;
+  margin-top: 0;
   margin-bottom: -$gl-padding;
   background-color: $background-color;
   padding: $gl-padding;
@@ -133,4 +133,14 @@
 
 .block-connector {
   margin-top: -1px;
+}
+
+.nav-block {
+  .controls {
+    float: right;
+
+    .btn {
+      margin-top: 7px;
+    }
+  }
 }

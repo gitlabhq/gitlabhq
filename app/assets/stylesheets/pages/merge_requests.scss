@@ -3,9 +3,9 @@
  *
  */
 .mr-state-widget {
-  background: #F7F8FA;
+  background: $background-color;
   color: $gl-gray;
-  border: 1px solid #dce0e6;
+  border: 1px solid $border-color;
   @include border-radius(2px);
 
   form {

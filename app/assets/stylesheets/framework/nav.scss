@@ -2,7 +2,7 @@
   padding: 0;
   margin: 0;
   list-style: none;
-  height: 56px;
+  height: auto;
   border-bottom: 1px solid $border-color;
 
   li {
@@ -10,6 +10,7 @@
 
     a {
       display: inline-block;
+      padding: 14px;
       padding-top: $gl-padding;
       padding-bottom: 11px;
       margin-bottom: -1px;
@@ -25,7 +26,7 @@
     }
 
     &.active a {
-      color: #616060;
+      color: #000000;
       border-bottom: 2px solid #4688f1;
     }
 
