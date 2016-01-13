@@ -1,10 +1,10 @@
-@project_issues
-Feature: Project Issues References
+@project_merge_requests
+Feature: Project Merge Requests References
   Background:
     Given I sign in as "John Doe"
     And public project "Community"
     And "John Doe" owns public project "Community"
-    And project "Community" has "Community issue" open issue
+    And project "Community" has "Community fix" open merge request
     And I logout
     And I sign in as "Mary Jane"
     And private project "Enterprise"
@@ -12,22 +12,20 @@ Feature: Project Issues References
     And project "Enterprise" has "Enterprise issue" open issue
     And project "Enterprise" has "Enterprise fix" open merge request
     And I visit issue page "Enterprise issue"
-    And I leave a comment referencing issue "Community issue"
+    And I leave a comment referencing issue "Community fix"
     And I visit merge request page "Enterprise fix"
-    And I leave a comment referencing issue "Community issue"
+    And I leave a comment referencing issue "Community fix"
     And I logout
 
   @javascript
   Scenario: Viewing the public issue as a "John Doe"
     Given I sign in as "John Doe"
-    When I visit issue page "Community issue"
-    Then I should not see any related merge requests
-    And I should see no notes at all
+    When I visit issue page "Community fix"
+    Then I should see no notes at all
 
   @javascript
   Scenario: Viewing the public issue as "Mary Jane"
     Given I sign in as "Mary Jane"
-    When I visit issue page "Community issue"
-    Then I should see the "Enterprise fix" related merge request
+    When I visit issue page "Community fix"
     And I should see a note linking to "Enterprise fix" merge request
     And I should see a note linking to "Enterprise issue" issue

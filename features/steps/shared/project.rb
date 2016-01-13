@@ -161,31 +161,33 @@ module SharedProject
   end
 
   step '"John Doe" owns private project "Enterprise"' do
-    user = user_exists("John Doe", username: "john_doe")
-    project = Project.find_by(name: "Enterprise")
-    project ||= create(:empty_project, name: "Enterprise", namespace: user.namespace)
-    project.team << [user, :master]
+    user_owns_project(
+      user_name: 'John Doe',
+      project_name: 'Enterprise'
+    )
+  end
+
+  step '"Mary Jane" owns private project "Enterprise"' do
+    user_owns_project(
+      user_name: 'Mary Jane',
+      project_name: 'Enterprise'
+    )
   end
 
   step '"John Doe" owns internal project "Internal"' do
-    user = user_exists("John Doe", username: "john_doe")
-    project = Project.find_by(name: "Internal")
-    project ||= create :empty_project, :internal, name: 'Internal', namespace: user.namespace
-    project.team << [user, :master]
+    user_owns_project(
+      user_name: 'John Doe',
+      project_name: 'Internal',
+      visibility: :internal
+    )
   end
 
   step '"John Doe" owns public project "Community"' do
-    user = user_exists("John Doe", username: "john_doe")
-    project = Project.find_by(name: "Community")
-    project ||= create :empty_project, :public, name: 'Community', namespace: user.namespace
-    project.team << [user, :master]
-  end
-
-  step '"Mary Jane" owns private project "Private Library"' do
-    user = user_exists('Mary Jane', username: 'mary_jane')
-    project = Project.find_by(name: 'Private Library')
-    project ||= create(:project, name: 'Private Library', namespace: user.namespace)
-    project.team << [user, :master]
+    user_owns_project(
+      user_name: 'John Doe',
+      project_name: 'Community',
+      visibility: :public
+    )
   end
 
   step 'public empty project "Empty Public Project"' do
@@ -220,4 +222,12 @@ module SharedProject
       expect(page).to have_content("skipped")
     end
   end
+
+  def user_owns_project(user_name:, project_name:, visibility: :private)
+    user = user_exists(user_name, username: user_name.underscore)
+    project = Project.find_by(name: project_name)
+    project ||= create(:empty_project, visibility, name: project_name, namespace: user.namespace)
+    project.team << [user, :master]
+  end
+
 end

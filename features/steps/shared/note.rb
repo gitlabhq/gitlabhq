@@ -107,9 +107,7 @@ module SharedNote
   end
 
   step 'I should see no notes at all' do
-    page.within('.notes') do
-      expect(page).to_not have_css('.note')
-    end
+    expect(page).to_not have_css('.note')
   end
 
   # Markdown

@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectIssuesReferences < Spinach::FeatureSteps
+class Spinach::Features::ProjectMergeRequestsReferences < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedIssuable
   include SharedNote
