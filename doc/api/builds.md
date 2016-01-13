@@ -8,10 +8,20 @@ Get a list of builds in a project.
 GET /projects/:id/builds
 ```
 
-Parameters:
+### Parameters
 
-- `id` (required) - The ID of a project
-- `scope` (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled; if none provided showing all builds)
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| id        | integer | yes      | The ID of a project |
+| scope     | string|array of strings | no | The scope of builds to show, one or array of: `pending`, `running`, `failed`, `success`, `canceled`; showing all builds if none provided |
+
+### Example of request
+
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds"
+```
+
+### Example of response
 
 ```json
 [
@@ -102,11 +112,21 @@ Get a list of builds for specific commit in a project.
 GET /projects/:id/repository/commits/:sha/builds
 ```
 
-Parameters:
+### Parameters
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The SHA id of a commit
-- `scope` (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled; if none provided showing all builds)
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| id        | integer | yes      | The ID of a project |
+| sha       | string  | yes      | The SHA id of a commit |
+| scope     | string|array of strings | no | The scope of builds to show, one or array of: `pending`, `running`, `failed`, `success`, `canceled`; showing all builds if none provided |
+
+### Example of request
+
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/0ff3ae198f8601a285adcf5c0fff204ee6fba5fd/builds"
+```
+
+### Example of response
 
 ```json
 [
@@ -183,10 +203,20 @@ Get a single build of a project
 GET /projects/:id/builds/:build_id
 ```
 
-Parameters:
+### Parameters
 
-- `id` (required) - The ID of a project
-- `build_id` (required) - The ID of a build
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| id        | integer | yes      | The ID of a project |
+| build\_id  | integer | yes      | The ID of a build   |
+
+### Example of request
+
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8"
+```
+
+### Example of response
 
 ```json
 {
@@ -237,10 +267,20 @@ Cancel a single build of a project
 POST /projects/:id/builds/:build_id/cancel
 ```
 
-Parameters:
+### Parameters
 
-- `id` (required) - The ID of a project
-- `build_id` (required) - The ID of a build
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| id        | integer | yes      | The ID of a project |
+| build\_id | integer | yes      | The ID of a build   |
+
+### Example of request
+
+```
+curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/cancel"
+```
+
+### Example of response
 
 ```json
 {
@@ -277,10 +317,20 @@ Retry a single build of a project
 POST /projects/:id/builds/:build_id/retry
 ```
 
-Parameters:
+### Parameters
 
-- `id` (required) - The ID of a project
-- `build_id` (required) - The ID of a build
+| Attribute | Type    | required | Description         |
+|-----------|---------|----------|---------------------|
+| id        | integer | yes      | The ID of a project |
+| build\_id | integer | yes      | The ID of a build   |
+
+### Example of request
+
+```
+curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/retry"
+```
+
+### Example of response
 
 ```json
 {
