@@ -255,7 +255,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    open? && !work_in_progress? && can_be_merged?
+    open? && !work_in_progress? && can_be_merged? && !must_be_rebased?
   end
 
   def gitlab_merge_status
@@ -565,6 +565,10 @@ class MergeRequest < ActiveRecord::Base
 
   def ff_merge_possible?
     target_sha == source_sha_parent
+  end
+
+  def must_be_rebased?
+    self.project.ff_merge_must_be_possible? && !ff_merge_possible?
   end
 
   def rebase_dir_path

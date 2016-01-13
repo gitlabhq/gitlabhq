@@ -9,8 +9,6 @@ module MergeRequests
     private
 
     def commit
-      return false unless @merge_request.ff_merge_possible?
-
       repository.ff_merge(current_user, merge_request.source_sha, merge_request.target_branch)
     end
   end

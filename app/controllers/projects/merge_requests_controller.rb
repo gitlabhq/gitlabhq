@@ -179,11 +179,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
-    if @project.ff_merge_must_be_possible? && !@merge_request.ff_merge_possible?
-      @status = :failed
-      return
-    end
-
     @merge_request.update(merge_error: nil)
 
     if params[:merge_when_build_succeeds].present? && @merge_request.ci_commit && @merge_request.ci_commit.active?
