@@ -78,23 +78,6 @@
   box-shadow: none;
 }
 
-.new_note,
-.edit_note,
-.detail-page-description,
-.milestone-description,
-.wiki-content,
-.merge-request-form {
-  .nav-tabs {
-    margin-bottom: 0;
-    border: none;
-
-    li a,
-    li.active a {
-      border: 1px solid #DDD;
-    }
-  }
-}
-
 .markdown-area {
   @include border-radius(0);
   background: #FFF;
