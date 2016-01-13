@@ -8,10 +8,14 @@ Get a list of repository commits in a project.
 GET /projects/:id/repository/commits
 ```
 
-Parameters:
+| Attribute   | Type    | required | Description             |
+|-------------|---------|----------|-------------------------|
+| `id`        | integer | yes      | The ID of a project     |
+| `ref_name`  | string  | no       | The name of a repository branch or tag or if not given the default branch |
 
-- `id` (required) - The ID of a project
-- `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits"
+```
 
 ```json
 [
@@ -46,10 +50,14 @@ Get a specific commit identified by the commit hash or name of a branch or tag.
 GET /projects/:id/repository/commits/:sha
 ```
 
-Parameters:
+| Attribute | Type    | required | Description             |
+|-----------|---------|----------|-------------------------|
+| `id`      | integer | yes      | The ID of a project     |
+| `sha`     | string  | yes      | The commit SHA          |
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The commit hash or name of a repository branch or tag
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/6104942438c14ec7bd21c6cd5bd995272b3faff6"
+```
 
 ```json
 {
@@ -81,10 +89,14 @@ Get the diff of a commit in a project.
 GET /projects/:id/repository/commits/:sha/diff
 ```
 
-Parameters:
+| Attribute | Type    | required | Description             |
+|-----------|---------|----------|-------------------------|
+| `id`      | integer | yes      | The ID of a project     |
+| `sha`     | string  | yes      | The commit SHA          |
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The name of a repository branch or tag or if not given the default branch
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/6104942438c14ec7bd21c6cd5bd995272b3faff6/diff"
+```
 
 ```json
 [
@@ -109,10 +121,14 @@ Get the comments of a commit in a project.
 GET /projects/:id/repository/commits/:sha/comments
 ```
 
-Parameters:
+| Attribute | Type    | required | Description             |
+|-----------|---------|----------|-------------------------|
+| `id`      | integer | yes      | The ID of a project     |
+| `sha`     | string  | yes      | The commit SHA          |
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The name of a repository branch or tag or if not given the default branch
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/6104942438c14ec7bd21c6cd5bd995272b3faff6/comments"
+```
 
 ```json
 [
@@ -138,14 +154,18 @@ Adds a comment to a commit. Optionally you can post comments on a specific line 
 POST /projects/:id/repository/commits/:sha/comments
 ```
 
-Parameters:
+| Attribute    | Type    | required | Description             |
+|--------------|---------|----------|-------------------------|
+| `id`         | integer | yes      | The ID of a project     |
+| `sha`        | string  | yes      | The commit SHA          |
+| `note`       | string  | yes      | Text of comment         |
+| `path`       | string  | no       | The file path           |
+| `line`       | integer | no       | The line number         |
+| `line_type`  | string  | no       | The line type; one of: `new`, `old` |
 
-- `id` (required)               - The ID of a project
-- `sha` (required)              - The name of a repository branch or tag or if not given the default branch
-- `note` (required)             - Text of comment
-- `path` (optional)             - The file path
-- `line` (optional)             - The line number
-- `line_type` (optional)        - The line type (new or old)
+```
+curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/6104942438c14ec7bd21c6cd5bd995272b3faff6/comments" -F "note=text1" -F "path=example.rb" -F "line=5" -F line_type=new"
+```
 
 ```json
 {
@@ -172,14 +192,18 @@ Get the statuses of a commit in a project.
 GET /projects/:id/repository/commits/:sha/statuses
 ```
 
-Parameters:
+| Attribute  | Type    | required | Description             |
+|------------|---------|----------|-------------------------|
+| `id`       | integer | yes      | The ID of a project     |
+| `sha`      | string  | yes      | The commit SHA          |
+| `ref`      | string  | no       | Filter by ref name, it can be branch or tag |
+| `stage`    | string  | no       | Filter by stage         |
+| `name`     | string  | no       | Filter by status name, eg. jenkins |
+| `all`      | boolean | no       | The flag to return all statuses, not only latest ones |
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The commit SHA
-- `ref` (optional) - Filter by ref name, it can be branch or tag
-- `stage` (optional) - Filter by stage
-- `name` (optional) - Filer by status name, eg. jenkins
-- `all` (optional) - The flag to return all statuses, not only latest ones
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/6104942438c14ec7bd21c6cd5bd995272b3faff6/statuses?ref=test&name=ci%2Fjenkins"
+```
 
 ```json
 [
@@ -214,13 +238,20 @@ Adds or updates a status of a commit.
 POST /projects/:id/statuses/:sha
 ```
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The commit SHA
-- `state` (required) - The state of the status. Can be: pending, running, success, failed, canceled
-- `ref` (optional) - The ref (branch or tag) to which the status refers
-- `name` or `context` (optional) - The label to differentiate this status from the status of other systems. Default: "default"
-- `target_url` (optional) - The target URL to associate with this status
-- `description` (optional) - The short description of the status
+| Attribute     | Type    | required | Description             |
+|---------------|---------|----------|-------------------------|
+| `id`          | integer | yes      | The ID of a project     |
+| `sha`         | string  | yes      | The commit SHA          |
+| `state`       | string  | yes      | The state of the status. Can be: `pending`, `running`, `success`, `failed`, `canceled` |
+| `ref`         | string  | no       | The ref (branch or tag) to which the status refers |
+| `name`        | string  | no       | The label to differentiate this status from the status of other systems. Default: "default". Duplicate of `context` |
+| `context`     | string  | no       | The label to differentiate this status from the status of other systems. Default: "default". Duplicate of `name` |
+| `target_url`  | string  | no       | The target URL to associate with this status |
+| `description` | string  | no       | The short description of the status |
+
+```
+curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/statuses/b0b3a907f41409829b307a28b82fdbd552ee5a27" -F "state=success" -F "ref=test" -F "name=ci/jenkins" -F "target_url=http://jenkins/project/url" -F "description=Jenkins success"
+```
 
 ```json
 {
