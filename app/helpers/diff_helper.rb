@@ -1,4 +1,6 @@
 module DiffHelper
+  BLANK_SPACE = "&nbsp;".html_safe
+
   def diff_view
     params[:view] == 'parallel' ? 'parallel' : 'inline'
   end
@@ -83,7 +85,7 @@ module DiffHelper
         elsif next_type == 'old' || next_type.nil?
           # Left side has text removed, right side doesn't have any change
           # No next line code, no new line number, no new line text
-          line = [type, line_old, full_line, line_code, next_type, nil, "&nbsp;", nil]
+          line = [type, line_old, full_line, line_code, next_type, nil, BLANK_SPACE, nil]
           lines.push(line)
         end
       elsif type == 'new'
@@ -93,7 +95,7 @@ module DiffHelper
           next
         else
           # Change is only on the right side, left side has no change
-          line = [nil, nil, "&nbsp;", line_code, type, line_new, full_line, line_code]
+          line = [nil, nil, BLANK_SPACE, line_code, type, line_new, full_line, line_code]
           lines.push(line)
         end
       end
@@ -113,8 +115,7 @@ module DiffHelper
     if line.blank?
       " &nbsp;".html_safe
     else
-      # Return line if it isn't a String, it helps when it's Numeric
-      line.is_a?(String) ? line.html_safe : line
+      line.html_safe
     end
   end
 

@@ -22,7 +22,7 @@ module Gitlab
 
         content = blob.data
         lexer = Rouge::Lexer.guess(filename: file_name, source: content).new rescue Rouge::Lexers::PlainText.new
-        formatter.format(lexer.lex(content)).lines
+        formatter.format(lexer.lex(content)).lines.map!(&:html_safe)
       end
 
       def self.formatter
@@ -73,7 +73,7 @@ module Gitlab
 
           # Only update text if line is found. This will prevent
           # issues with submodules given the line only exists in diff content.
-          line.text = highlighted_line.gsub!(/\A\s/, line_prefix) if highlighted_line
+          line.text = highlighted_line.gsub!(/\A\s/, line_prefix).html_safe if highlighted_line
         end
 
         @lines
