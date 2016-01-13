@@ -23,7 +23,7 @@
 - [Namespaces](namespaces.md)
 - [Settings](settings.md)
 - [Keys](keys.md)
-- [Triggers](triggers.md)
+- [Build triggers](build_triggers.md)
 
 ## Clients
 
