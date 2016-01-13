@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.5.0 (unreleased)
+  - Remove gray background from layout in UI
+
 v 8.4.0 (unreleased)
   - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
   - Improved performance of finding issues for an entire group (Yorick Peterse)
