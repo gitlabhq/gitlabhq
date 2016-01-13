@@ -23,20 +23,29 @@ module Gitlab
         @values = Hash.new(0)
         @tags   = {}
         @action = action
+
+        @memory_before = 0
+        @memory_after  = 0
       end
 
       def duration
         @finished_at ? (@finished_at - @started_at) * 1000.0 : 0.0
       end
 
+      def allocated_memory
+        @memory_after - @memory_before
+      end
+
       def run
         Thread.current[THREAD_KEY] = self
 
-        @started_at = Time.now
+        @memory_before = System.memory_usage
+        @started_at    = Time.now
 
         yield
       ensure
-        @finished_at = Time.now
+        @memory_after = System.memory_usage
+        @finished_at  = Time.now
 
         Thread.current[THREAD_KEY] = nil
       end
@@ -65,7 +74,7 @@ module Gitlab
       end
 
       def track_self
-        values = { duration: duration }
+        values = { duration: duration, allocated_memory: allocated_memory }
 
         @values.each do |name, value|
           values[name] = value
