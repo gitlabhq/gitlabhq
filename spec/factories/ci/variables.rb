@@ -16,10 +16,7 @@
 
 FactoryGirl.define do
   factory :ci_variable, class: Ci::Variable do
-    id 10
-    key 'TEST_VARIABLE_1'
-    value 'VALUE_1'
-
-    project factory: :empty_project
+    sequence(:key) { |n| "VARIABLE_#{n}" }
+    value 'VARIABLE_VALUE'
   end
 end

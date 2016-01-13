@@ -46,7 +46,7 @@ describe API::API, api: true do
         expect(json_response['value']).to eq(variable.value)
       end
 
-      it 'should responde with 404 Not Found if requesting non-existing variable' do
+      it 'should respond with 404 Not Found if requesting non-existing variable' do
         get api("/projects/#{project.id}/variables/non_existing_variable", user)
 
         expect(response.status).to eq(404)
@@ -84,7 +84,7 @@ describe API::API, api: true do
 
       it 'should not allow to duplicate variable key' do
         expect do
-          post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_1', value: 'VALUE_2'
+          post api("/projects/#{project.id}/variables", user), key: variable.key, value: 'VALUE_2'
         end.to change{project.variables.count}.by(0)
 
         expect(response.status).to eq(400)
