@@ -57,7 +57,7 @@ describe Gitlab::Metrics::RackMiddleware do
 
       middleware.tag_controller(transaction, env)
 
-      expect(transaction.tags[:action]).to eq('TestController#show')
+      expect(transaction.action).to eq('TestController#show')
     end
   end
 end

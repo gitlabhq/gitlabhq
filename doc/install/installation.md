@@ -231,9 +231,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-4-stable gitlab
 
-**Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -348,7 +348,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout 0.5.1
+    sudo -u git -H git checkout 0.5.4
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features

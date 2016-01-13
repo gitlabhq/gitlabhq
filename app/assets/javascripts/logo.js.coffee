@@ -21,6 +21,7 @@ start = ->
   clearHighlights()
   pieceIndex = 0
   pieces.reverse() unless pieces[0] == firstPiece
+  clearInterval(currentTimer) if currentTimer
   currentTimer = setInterval(work, delay)
 
 stop = ->

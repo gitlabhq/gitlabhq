@@ -22,6 +22,7 @@ gem 'devise',                 '~> 3.5.3'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
+gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 3.0.0'
@@ -32,8 +33,7 @@ gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
 gem 'omniauth-saml',          '~> 1.4.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
-gem 'omniauth_crowd'
-gem 'omniauth-azure-oauth2'
+gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'rack-oauth2',            '~> 1.2.1'
 
 # reCAPTCHA protection
@@ -80,7 +80,7 @@ gem "carrierwave", '~> 0.9.0'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for aws storage
-gem "fog", "~> 1.25.0"
+gem "fog", "~> 1.36.0"
 gem "unf", '~> 0.1.4'
 
 # Authorization
@@ -247,7 +247,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'pry-rails'
 
-  gem 'awesome_print', '~> 1.2.0'
+  gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
   gem 'database_cleaner', '~> 1.4.0'

@@ -11,7 +11,7 @@ class Settings < Settingslogic
 
     # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
     def get_host_without_www(url)
-      url = URI.encode(url)
+      url = CGI.escape(url)
       uri = URI.parse(url)
       uri = URI.parse("http://#{url}") if uri.scheme.nil?
       host = uri.host.downcase
@@ -108,6 +108,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
 
   Settings.ldap['servers'].each do |key, server|
     server['label'] ||= 'LDAP'
+    server['timeout'] ||= 10.seconds
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?

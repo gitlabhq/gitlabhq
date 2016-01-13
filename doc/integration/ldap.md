@@ -48,6 +48,11 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
 
+  # Set a timeout, in seconds, for LDAP queries. This helps avoid blocking
+  # a request if the LDAP server becomes unresponsive.
+  # A value of 0 means there is no timeout.
+  timeout: 10
+
   # This setting specifies if LDAP server is Active Directory LDAP server.
   # For non AD servers it skips the AD specific queries.
   # If your LDAP server is not AD, set this to false.
