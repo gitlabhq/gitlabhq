@@ -50,11 +50,10 @@ class @MergeRequest
       $this = $(this)
       if $this.data('submitted')
         return
-      e.preventDefault()
-      e.stopImmediatePropagation()
       shouldSubmit = $this.hasClass('btn-comment')
-      console.log("shouldSubmit")
       if shouldSubmit
+        e.preventDefault()
+        e.stopImmediatePropagation()
         _this.submitNoteForm($this.closest('form'),$this)
 
   submitNoteForm: (form, $button) =>

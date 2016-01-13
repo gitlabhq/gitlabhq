@@ -6,7 +6,6 @@ class @Issue
   constructor: ->
     # Prevent duplicate event bindings
     @disableTaskList()
-
     if $('a.btn-close').length
       @initTaskList()
       @initIssueBtnEventListeners()
