@@ -1,6 +1,6 @@
-.detail-page-header
-  .status-box{ class: status_box_class(@merge_request) }
-    = @merge_request.state_human_name
+.detail-page-header#merge-request-header
+  .status-box{ class: status_box_class(@merge_request), data:{status: @merge_request.state_human_name} }
+  {{ status }}
   %span.identifier
     Merge Request ##{@merge_request.iid}
   %span.creator

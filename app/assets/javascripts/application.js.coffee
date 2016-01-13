@@ -15,6 +15,7 @@
 #= require jquery.scrollTo
 #= require jquery.turbolinks
 #= require d3
+#= require vue.min
 #= require cal-heatmap
 #= require turbolinks
 #= require autosave
