@@ -61,6 +61,7 @@ v 8.3.3
   - Use WOFF versions of SourceSansPro fonts
   - Fix regression when builds were not generated for tags created through web/api interface
   - Fix: maintain milestone filter between Open and Closed tabs (Greg Smethells)
+  - Fix missing artifacts and build traces for build created before 8.3
 
 v 8.3.2
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
