@@ -101,6 +101,7 @@ class SystemHooksService
       project_id: model.project.id,
       user_name: model.user.name,
       user_email: model.user.email,
+      user_id: model.user.id,
       access_level: model.human_access,
       project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
     }
