@@ -400,6 +400,12 @@ ActiveRecord::Schema.define(version: 20160119170055) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
+  create_table "geo_nodes", force: :cascade do |t|
+    t.string  "host"
+    t.string  "relative_url_root"
+    t.boolean "primary"
+  end
+
   create_table "git_hooks", force: :cascade do |t|
     t.string   "force_push_regex"
     t.string   "delete_branch_regex"
