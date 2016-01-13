@@ -73,7 +73,7 @@ module Gitlab
 
           # Only update text if line is found. This will prevent
           # issues with submodules given the line only exists in diff content.
-          line.text = highlighted_line.gsub!(/\A\s/, line_prefix) if line
+          line.text = highlighted_line.gsub!(/\A\s/, line_prefix) if highlighted_line
         end
 
         @lines

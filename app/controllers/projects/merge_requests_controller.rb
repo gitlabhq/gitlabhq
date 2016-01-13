@@ -104,7 +104,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.last_commit
     @first_commit = @merge_request.first_commit
     @diffs = @merge_request.compare_diffs
-    @diff_refs = [@merge_request.target_sha, @merge_request.source_sha]
+    # We need to use #source_branch because #source_sha requires an existent MergeRequestDiff object.
+    @diff_refs = [@merge_request.target_sha, @merge_request.source_branch]
 
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit
