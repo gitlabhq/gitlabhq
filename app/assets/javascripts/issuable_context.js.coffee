@@ -12,9 +12,9 @@ class @IssuableContext
 
     $('.issuable-details').waitForImages ->
       $('.issuable-affix').on 'affix.bs.affix', ->
-        $(@).width($(@).outerWidth())
+        $(@).width()
       .on 'affixed-top.bs.affix affixed-bottom.bs.affix', ->
-        $(@).width('')
+        $(@).width()
 
       $('.issuable-affix').affix offset:
         top: ->

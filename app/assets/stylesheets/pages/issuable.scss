@@ -41,6 +41,7 @@
 
     .issuable-discussion {
       margin-right: 1px;
+      padding: 0 $gl-padding;
     }
   }
 }
@@ -65,6 +66,8 @@
 }
 
 .issuable-sidebar {
+  padding: 0 $gl-padding;
+
   .block {
     @include clearfix;
     padding:  $gl-padding 0;
