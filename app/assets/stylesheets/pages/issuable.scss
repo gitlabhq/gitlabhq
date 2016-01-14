@@ -105,8 +105,13 @@
       text-overflow: ellipsis;
     }
 
+    cite {
+      font-style: normal;
+    }
+
     button {
       float: right;
+      padding: 3px 5px;
     }
   }
 
