@@ -57,7 +57,7 @@ module Gitlab
           return @children if @children
 
           child_pattern = %r{^#{Regexp.escape(@path)}[^/]+/?$}
-          @children = select_entries { |entry| entry =~ child_pattern }
+          @children = select_entries { |path| path =~ child_pattern }
         end
 
         def directories(opts = {})
@@ -110,7 +110,7 @@ module Gitlab
         private
 
         def select_entries
-          selected = @entries.select { |entry, _metadata| yield entry }
+          selected = @entries.select { |path, _metadata| yield path }
           selected.map { |path, _metadata| self.class.new(path, @entries) }
         end
       end

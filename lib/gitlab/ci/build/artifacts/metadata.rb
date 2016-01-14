@@ -6,6 +6,8 @@ module Gitlab
     module Build
       module Artifacts
         class Metadata
+          class ParserError < StandardError; end
+
           VERSION_PATTERN = /^[\w\s]+(\d+\.\d+\.\d+)/
           INVALID_PATH_PATTERN = %r{(^\.?\.?/)|(/\.?\.?/)}
 
@@ -24,8 +26,13 @@ module Gitlab
             gzip do |gz|
               read_string(gz) # version
               errors = read_string(gz)
-              raise StandardError, 'Errors field not found!' unless errors
-              JSON.parse(errors)
+              raise ParserError, 'Errors field not found!' unless errors
+
+              begin
+                JSON.parse(errors)
+              rescue JSON::ParserError
+                raise ParserError, 'Invalid errors field!'
+              end
             end
           end
 
@@ -56,7 +63,7 @@ module Gitlab
                 next unless path =~ match_pattern
                 next if path =~ INVALID_PATH_PATTERN
 
-                entries.store(path, JSON.parse(meta, symbolize_names: true))
+                entries[path] = JSON.parse(meta, symbolize_names: true)
               rescue JSON::ParserError, Encoding::CompatibilityError
                 next
               end
@@ -70,11 +77,11 @@ module Gitlab
               version_string = read_string(gz)
 
               unless version_string
-                raise StandardError, 'Artifacts metadata file empty!'
+                raise ParserError, 'Artifacts metadata file empty!'
               end
 
               unless version_string =~ VERSION_PATTERN
-                raise StandardError, 'Invalid version!'
+                raise ParserError, 'Invalid version!'
               end
 
               version_string.chomp
