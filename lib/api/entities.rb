@@ -370,5 +370,9 @@ module API
     class Trigger < Grape::Entity
       expose :token, :created_at, :updated_at, :deleted_at, :last_used
     end
+
+    class Variable < Grape::Entity
+      expose :key, :value
+    end
   end
 end

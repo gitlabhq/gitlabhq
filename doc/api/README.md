@@ -24,6 +24,7 @@
 - [Settings](settings.md)
 - [Keys](keys.md)
 - [Build triggers](build_triggers.md)
+- [Build Variables](build_variables.md)
 
 ## Clients
 
