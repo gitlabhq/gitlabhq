@@ -4,9 +4,7 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding $gl-padding $gl-padding ($gl-padding + $gl-avatar-size + 15px);
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
+  padding: $gl-padding 0 $gl-padding ($gl-avatar-size + 15px);
   border-bottom: 1px solid $table-border-color;
   color: #7f8fa4;
 

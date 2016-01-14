@@ -69,15 +69,16 @@
             You're not receiving notifications from this thread.
           .subscribed{class: ( 'hidden' unless subscribed )}
             You're receiving notifications because you're subscribed to this thread.
+
     - project_ref = cross_project_reference(@project, issuable)
     .block
       .title
       .cross-project-reference
-        %span#cross-project-reference
+        %span
           Reference:
-          %a{href: '#', title:project_ref}
+          %cite{title: project_ref}
             = project_ref
-        = clipboard_button(clipboard_target: 'span#cross-project-reference')
+        = clipboard_button(clipboard_text: project_ref)
 
   :javascript
     new Subscription("#{toggle_subscription_path(issuable)}");

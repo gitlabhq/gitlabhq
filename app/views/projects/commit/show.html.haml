@@ -2,7 +2,9 @@
 - page_description  @commit.description
 
 = render "projects/commits/header_title"
-= render "commit_box"
+
+.prepend-top-default
+  = render "commit_box"
 - if @ci_commit
   = render "ci_menu"
 - else

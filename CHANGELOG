@@ -1,6 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.5.0 (unreleased)
+  - Remove gray background from layout in UI
+
 v 8.4.0 (unreleased)
+  - Add pagination headers to already paginated API resources
+  - Properly generate diff of orphan commits, like the first commit in a repository
   - Improve the consistency of commit titles, branch names, tag names, issue/MR titles, on their respective project pages
   - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
   - Improved performance of finding issues for an entire group (Yorick Peterse)
@@ -47,10 +52,15 @@ v 8.4.0 (unreleased)
   - Fix Encoding::CompatibilityError bug when markdown content has some complex URL (Jason Lee)
   - Add API support for managing project's build triggers
   - Add API support for managing project's build variables
+  - Add API support for managing builds of a project
+  - Add API support for managing build variables of project
   - Allow broadcast messages to be edited
+  - Autosize Markdown textareas
+  - Import GitHub wiki into GitLab
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
+  - Add build artifacts browser
 
 v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
@@ -84,6 +94,7 @@ v 8.3.0
   - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
+  - Add unsubscribe link in the email footer (Zeger-Jan van de Weg)
   - Provide better diagnostic message upon project creation errors (Stan Hu)
   - Bump devise to 3.5.3 to fix reset token expiring after account creation (Stan Hu)
   - Remove api credentials from link to build_page

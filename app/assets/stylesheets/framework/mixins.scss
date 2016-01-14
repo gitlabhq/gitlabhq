@@ -118,38 +118,3 @@
   font-size: 16px;
   line-height: 24px;
 }
-
-@mixin nav-menu {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  height: 56px;
-
-  li {
-    display: inline-block;
-
-    a {
-      padding: 14px;
-      font-size: 15px;
-      line-height: 28px;
-      color: #959494;
-      border-bottom: 2px solid transparent;
-
-      &:hover, &:active, &:focus {
-        text-decoration: none;
-        outline: none;
-      }
-    }
-
-    &.active a {
-      color: #616060;
-      border-bottom: 2px solid #4688f1;
-    }
-
-    .badge {
-      font-weight: normal;
-      background-color: #eee;
-      color: #78a;
-    }
-  }
-}

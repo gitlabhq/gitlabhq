@@ -1,3 +1,5 @@
+- @no_container = true
+
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "#{@project.name} activity")
@@ -8,11 +10,10 @@
     = render 'shared/no_password'
 
 = render 'projects/last_push'
-
 = render "home_panel"
 
 .project-stats.gray-content-block.second-block
-  %ul.nav.nav-pills
+  %ul.nav
     %li
       = link_to namespace_project_commits_path(@project.namespace, @project, current_ref) do
         = pluralize(number_with_delimiter(@project.commit_count), 'commit')
@@ -57,15 +58,17 @@
           = link_to add_contribution_guide_path(@project) do
             Add Contribution guide
 
-- if @project.archived?
-  .text-warning.center.prepend-top-20
-    %p
-      = icon("exclamation-triangle fw")
-      Archived project! Repository is read-only
-
 - if @repository.commit
   .content-block.second-block.white
-    = render 'projects/last_commit', commit: @repository.commit, project: @project
+    %div{ class: container_class }
+      = render 'projects/last_commit', commit: @repository.commit, project: @project
 
-%div{class: "project-show-#{default_project_view}"}
-  = render default_project_view
+%div{ class: container_class }
+  - if @project.archived?
+    .text-warning.center.prepend-top-20
+      %p
+        = icon("exclamation-triangle fw")
+        Archived project! Repository is read-only
+
+  %div{class: "project-show-#{default_project_view}"}
+    = render default_project_view

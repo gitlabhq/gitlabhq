@@ -3,14 +3,12 @@
 
 = render 'nav'
 .gray-content-block
-  .row
-    .col-sm-6
-      %h3.page-title.oneline
-        Git access for
-        %strong= @project_wiki.path_with_namespace
+  %span.oneline
+    Git access for
+    %strong= @project_wiki.path_with_namespace
 
-    .col-sm-6
-      = render "shared/clone_panel", project: @project_wiki
+  .pull-right
+    = render "shared/clone_panel", project: @project_wiki
 
 .git-empty.prepend-top-default
   %fieldset

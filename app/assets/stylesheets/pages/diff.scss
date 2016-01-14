@@ -1,9 +1,7 @@
 // Common
 .diff-file {
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-  border: none;
-  border-bottom: 1px solid #E7E9EE;
+  border: 1px solid $border-color;
+  border-top: none;
 
   .diff-header {
     position: relative;
@@ -20,14 +18,6 @@
 
       .file-mode {
         color: #777;
-      }
-    }
-
-    .diff-controls {
-      .btn {
-        padding: 0px 10px;
-        font-size: 13px;
-        line-height: 28px;
       }
     }
 

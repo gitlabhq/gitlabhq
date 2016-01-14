@@ -212,4 +212,11 @@ FactoryGirl.define do
     provider 'ldapmain'
     extern_uid 'my-ldap-id'
   end
+
+  factory :sent_notification do
+    project
+    recipient factory: :user
+    noteable factory: :issue
+    reply_key "0123456789abcdef" * 2
+  end
 end

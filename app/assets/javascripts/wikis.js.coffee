@@ -1,17 +1,18 @@
+#= require latinise
+
 class @Wikis
   constructor: ->
-    $('.build-new-wiki').bind "click", (e) ->
-      $('[data-error~=slug]').addClass("hidden")
-      $('p.hint').show()
+    $('.build-new-wiki').bind 'click', (e) =>
+      $('[data-error~=slug]').addClass('hidden')
       field = $('#new_wiki_path')
-      valid_slug_pattern = /^[\w\/-]+$/
+      slug = @slugify(field.val())
 
-      slug = field.val()
-      if slug.match valid_slug_pattern
+      if (slug.length > 0)
         path = field.attr('data-wikis-path')
-        if(slug.length > 0)
-          location.href = path + "/" + slug
-      else
-        e.preventDefault()
-        $('p.hint').hide()
-        $('[data-error~=slug]').removeClass("hidden")
+        location.href = path + '/' + slug
+
+  dasherize: (value) ->
+    value.replace(/[_\s]+/g, '-')
+
+  slugify: (value) =>
+    @dasherize(value.trim().toLowerCase().latinise())

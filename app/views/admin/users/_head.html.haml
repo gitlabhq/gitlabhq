@@ -12,7 +12,7 @@
       %i.fa.fa-pencil-square-o
       Edit
 %hr
-%ul.nav.nav-tabs
+%ul.nav-links
   = nav_link(path: 'users#show') do
     = link_to "Account", admin_user_path(@user)
   = nav_link(path: 'users#groups') do
@@ -23,3 +23,4 @@
     = link_to "SSH keys", keys_admin_user_path(@user)
   = nav_link(controller: :identities) do
     = link_to "Identities", admin_user_identities_path(@user)
+.append-bottom-default

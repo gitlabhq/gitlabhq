@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true do
+describe API::CommitStatus, api: true do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -12,6 +12,10 @@ describe API::API, api: true do
   let(:commit_status) { create(:commit_status, commit: ci_commit) }
 
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
+    it_behaves_like 'a paginated resources' do
+      let(:request) { get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses", user) }
+    end
+
     context "reporter user" do
       let(:statuses_id) { json_response.map { |status| status['id'] } }
 

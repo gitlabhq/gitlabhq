@@ -1,4 +1,4 @@
-%ul.nav.nav-tabs.search-filter
+%ul.nav-links.search-filter
   - if @project
     %li{class: ("active" if @scope == 'blobs')}
       = link_to search_filter_path(scope: 'blobs') do

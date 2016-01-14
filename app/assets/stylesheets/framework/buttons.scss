@@ -1,12 +1,8 @@
 @mixin btn-default {
   @include border-radius(3px);
-  border-width: 1px;
-  border-style: solid;
-  font-size: 15px;
+  font-size: $gl-font-size;
   font-weight: 500;
-  line-height: 18px;
-  padding: 11px $gl-padding;
-  letter-spacing: .4px;
+  padding: $gl-vert-padding $gl-padding;
 
   &:focus,
   &:active {
@@ -17,8 +13,6 @@
 
 @mixin btn-middle {
   @include btn-default;
-  @include border-radius(3px);
-  padding: 11px 24px;
 }
 
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
@@ -74,16 +68,15 @@
   @include btn-default;
   @include btn-white;
 
+  &.btn-small,
   &.btn-sm {
-    padding: 5px 10px;
-  }
-
-  &.btn-nr {
-    padding: 7px 10px;
+    padding: 4px 10px;
+    font-size: 13px;
+    line-height: 18px;
   }
 
   &.btn-xs {
-    padding: 1px 5px;
+    padding: 2px 5px;
   }
 
   &.btn-success,
@@ -159,33 +152,42 @@
   }
 }
 
-.btn-group-next {
-  .btn {
-    padding: 9px 0px;
-    font-size: 15px;
-    color: #7f8fa4;
-    border-color: #e7e9ed;
-    width: 140px;
-
-    .badge {
-      font-weight: normal;
-      background-color: #eee;
-      color: #78a;
-    }
-
-    &.active {
-      border-color: $gl-info;
-      background: $gl-info;
-      color: #fff;
-
-      .badge {
-        color: $gl-info;
-        background-color: white;
-      }
-    }
-  }
-}
-
 .btn-clipboard {
   border: none;
+  padding: 0 5px;
+}
+
+.input-group-btn {
+  .btn {
+    @include btn-gray;
+    @include btn-middle;
+
+    &:hover {
+      outline: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:active {
+      outline: none;
+    }
+
+    &.btn-clipboard {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+
+  .active {
+    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
+
+    border: 1px solid #c6cacf !important;
+    background-color: #e4e7ed !important;
+  }
+
+  .btn-green {
+    @include btn-green
+  }
 }
