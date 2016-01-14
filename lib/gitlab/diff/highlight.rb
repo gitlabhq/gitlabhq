@@ -20,18 +20,7 @@ module Gitlab
         blob = repository.blob_at(ref, file_name)
         return [] unless blob
 
-        content = blob.data
-        lexer = Rouge::Lexer.guess(filename: file_name, source: content).new rescue Rouge::Lexers::PlainText.new
-        formatter.format(lexer.lex(content)).lines.map!(&:html_safe)
-      end
-
-      def self.formatter
-        @formatter ||= Rouge::Formatters::HTMLGitlab.new(
-          nowrap: true,
-          cssclass: 'code highlight',
-          lineanchors: true,
-          lineanchorsid: 'LC'
-        )
+        Gitlab::Highlight.highlight(file_name, blob.data).lines.map!(&:html_safe)
       end
 
       def initialize(diff_file)
