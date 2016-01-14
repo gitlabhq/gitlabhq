@@ -43,6 +43,7 @@ v 8.4.0 (unreleased)
   - API: Add support for deleting a tag via the API (Robert Schilling)
   - Allow subsequent validations in CI Linter
   - Fix Encoding::CompatibilityError bug when markdown content has some complex URL (Jason Lee)
+  - Add API support for managing project's build triggers
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
