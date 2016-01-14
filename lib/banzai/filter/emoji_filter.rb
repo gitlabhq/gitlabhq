@@ -1,5 +1,4 @@
 require 'action_controller'
-require 'banzai'
 require 'gitlab_emoji'
 require 'html/pipeline/filter'
 
