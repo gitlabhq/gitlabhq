@@ -24,12 +24,13 @@ var MR = function(){
 
   var init = function(data){
     store.state = data;
+    
+
     var mrHeader = new Vue({
       el: '#merge-request-header',
       data: {
         state: store.state
       },
-      created: function() {},
 
       methods: {
         closeClicked: function() {
@@ -39,6 +40,17 @@ var MR = function(){
         reopenClicked: function() {
           mrService.changeState('reopen');
         }
+      }
+    }),
+
+    mrStateBox = new Vue({
+      el: '#mr-state-box',
+      data: {
+        state: store.state
+      },
+
+      methods: {
+
       }
     });
   } 

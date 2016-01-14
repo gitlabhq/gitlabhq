@@ -144,7 +144,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           render json:     {
             label: @merge_request.state_human_name,
             open: @merge_request.open?,
-            closed: @merge_request.closed?
+            closed: @merge_request.closed?,
+            locked: @merge_request.locked?,
+            merged: @merge_request.merged?,
           }
         end
       end

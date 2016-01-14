@@ -36,7 +36,8 @@
           = @merge_request.target_branch
 
     = render "projects/merge_requests/show/how_to_merge"
-    = render "projects/merge_requests/widget/show.html.haml"
+    %div#mr-state-box{'v-cloak'=> true}
+      = render "projects/merge_requests/widget/show.html.haml"
 
     - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
       .light.prepend-top-default
@@ -100,6 +101,8 @@
       label: "#{@merge_request.state_human_name}",
       closed: #{@merge_request.closed?},
       open: #{@merge_request.open?},
+      locked: #{@merge_request.locked?},
+      merged: #{@merge_request.merged?},
       closeURL: "#{merge_request_path(@merge_request, merge_request: { state_event: :close }, format: :json)}",
       reopenURL: "#{merge_request_path(@merge_request, merge_request: {state_event: :reopen }, format: :json)}"
     });
