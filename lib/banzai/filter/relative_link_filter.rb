@@ -1,4 +1,3 @@
-require 'banzai'
 require 'html/pipeline/filter'
 require 'uri'
 
@@ -91,7 +90,7 @@ module Banzai
         parts = request_path.split('/')
         parts.pop if path_type(request_path) != 'tree'
 
-        while parts.length > 1 && path.start_with?('../')
+        while path.start_with?('../')
           parts.pop
           path.sub!('../', '')
         end

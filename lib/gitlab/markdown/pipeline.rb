@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Gitlab
   module Markdown
     class Pipeline

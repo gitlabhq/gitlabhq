@@ -1,3 +1,5 @@
+- @no_container = true
+
 - unless can?(current_user, :read_group, @group)
   - @disable_search_panel = true
 
@@ -6,6 +8,12 @@
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
 
 .cover-block
+  .cover-controls
+    - if @group && can?(current_user, :admin_group, @group)
+      = link_to icon('pencil'), edit_group_path(@group), class: 'btn'
+    - if current_user
+      = link_to icon('rss'), group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn'
+
   .avatar-holder
     = link_to group_icon(@group), target: '_blank' do
       = image_tag group_icon(@group), class: "avatar group-avatar s90"
@@ -19,8 +27,8 @@
     .cover-desc.description
       = markdown(@group.description, pipeline: :description)
 
-- if can?(current_user, :read_group, @group)
-  %ul.center-top-menu.no-top
+
+  %ul.nav-links
     %li.active
       = link_to "#activity", 'data-toggle' => 'tab' do
         Activity
@@ -29,23 +37,22 @@
         = link_to "#projects", 'data-toggle' => 'tab' do
           Projects
 
-  .tab-content
-    .tab-pane.active#activity
-      .gray-content-block.activity-filter-block
-        - if current_user
-          = render "events/event_last_push", event: @last_push
-          .pull-right
-            = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn' do
-              %i.fa.fa-rss
+- if can?(current_user, :read_group, @group)
+  %div{ class: container_class }
+    .tab-content
+      .tab-pane.active#activity
+        .activity-filter-block
+          - if current_user
+            = render "events/event_last_push", event: @last_push
 
-          = render 'shared/event_filter'
+            = render 'shared/event_filter'
 
-      .content_list
-      = spinner
+        .content_list
+        = spinner
 
-    .tab-pane#projects
-      = render "projects", projects: @projects
+      .tab-pane#projects
+        = render "projects", projects: @projects
 
 - else
-  %p
-    This group does not have public projects
+  %p.nav-links.no-top
+    No projects to show

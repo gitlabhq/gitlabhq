@@ -30,7 +30,7 @@
         %li
           %span.light Created on:
           %strong
-            = @group.created_at.stamp("March 1, 1999")
+            = @group.created_at.to_s(:medium)
 
     .panel.panel-default
       .panel-heading

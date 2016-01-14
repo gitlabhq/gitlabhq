@@ -33,7 +33,9 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   validates :project, presence: true
 
-  scope :of_group, ->(group) { where(project_id: group.project_ids) }
+  scope :of_group,
+    ->(group) { where(project_id: group.projects.select(:id).reorder(nil)) }
+
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
 
@@ -83,10 +85,10 @@ class Issue < ActiveRecord::Base
     reference
   end
 
-  def referenced_merge_requests
+  def referenced_merge_requests(current_user = nil)
     Gitlab::ReferenceExtractor.lazily do
       [self, *notes].flat_map do |note|
-        note.all_references.merge_requests
+        note.all_references(current_user).merge_requests
       end
     end.sort_by(&:iid)
   end

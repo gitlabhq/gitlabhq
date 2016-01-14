@@ -69,7 +69,7 @@ class Ability
                 subject.group
               end
 
-      if group && group.public_profile?
+      if group && group.projects.public_only.any?
         [:read_group]
       else
         []
@@ -175,7 +175,7 @@ class Ability
         :create_merge_request,
         :create_wiki,
         :manage_builds,
-        :download_build_artifacts,
+        :read_build_artifacts,
         :push_code
       ]
     end

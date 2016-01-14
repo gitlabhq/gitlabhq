@@ -27,10 +27,10 @@
 .project-issuable-filter {
   .controls {
     float: right;
-    margin-top: 7px;
+    margin-top: 11px;
   }
 
-  .center-top-menu {
+  .nav-links {
     text-align: left;
   }
 }
@@ -94,11 +94,24 @@
   }
 
   .cross-project-reference {
-    font-weight: bold;
     color: $gl-link-color;
+
+    span {
+      white-space: nowrap;
+      width: 85%;
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      text-overflow: ellipsis;
+    }
+
+    cite {
+      font-style: normal;
+    }
 
     button {
       float: right;
+      padding: 3px 5px;
     }
   }
 

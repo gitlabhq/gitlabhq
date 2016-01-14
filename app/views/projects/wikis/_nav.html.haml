@@ -7,7 +7,7 @@
 
       = render 'projects/wikis/new'
 
-  %ul.center-top-menu
+  %ul.nav-links
     = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
       = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
 

@@ -27,7 +27,7 @@
       = icon('envelope-o fw')
       %span
         Emails
-        %span.count= current_user.emails.count + 1
+        %span.count= number_with_delimiter(current_user.emails.count + 1)
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
       = link_to edit_profile_password_path, title: 'Password' do
@@ -45,7 +45,7 @@
       = icon('key fw')
       %span
         SSH Keys
-        %span.count= current_user.keys.count
+        %span.count= number_with_delimiter(current_user.keys.count)
   = nav_link(controller: :preferences) do
     = link_to profile_preferences_path, title: 'Preferences' do
       -# TODO (rspeicher): Better icon?

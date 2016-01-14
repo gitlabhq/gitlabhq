@@ -21,11 +21,10 @@
 
 .content-wrapper {
   width: 100%;
-  padding: 20px;
 
   .container-fluid {
     background: #FFF;
-    padding: $gl-padding;
+    padding: 0 $gl-padding;
 
     &.container-blank {
       background: none;
@@ -105,7 +104,7 @@
 .tanuki-shape {
   transition: all 0.8s;
 
-  &:hover {
+  &:hover, &.highlight {
     fill: rgb(255, 255, 255);
     transition: all 0.1s;
   }

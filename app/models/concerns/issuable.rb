@@ -95,14 +95,12 @@ module Issuable
     opened? || reopened?
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def downvotes
-    0
+    notes.awards.where(note: "thumbsdown").count
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def upvotes
-    0
+    notes.awards.where(note: "thumbsup").count
   end
 
   def subscribed?(user)
@@ -119,6 +117,12 @@ module Issuable
     subscriptions.
       find_or_initialize_by(user_id: user.id).
       update(subscribed: !subscribed?(user))
+  end
+
+  def unsubscribe(user)
+    subscriptions.
+      find_or_initialize_by(user_id: user.id).
+      update(subscribed: false)
   end
 
   def to_hook_data(user)

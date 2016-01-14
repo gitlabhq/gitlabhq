@@ -29,10 +29,13 @@
 #  target_url         :string(255)
 #  description        :string(255)
 #  artifacts_file     :text
+#  gl_project_id      :integer
+#  artifacts_metadata :text
 #
 
 module Ci
   class Build < CommitStatus
+    include Gitlab::Application.routes.url_helpers
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :runner, class_name: 'Ci::Runner'
@@ -48,11 +51,14 @@ module Ci
     scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     mount_uploader :artifacts_file, ArtifactUploader
+    mount_uploader :artifacts_metadata, ArtifactUploader
 
     acts_as_taggable
 
     # To prevent db load megabytes of data from trace
     default_scope -> { select(Ci::Build.columns_without_lazy) }
+
+    before_destroy { project }
 
     class << self
       def columns_without_lazy
@@ -145,10 +151,6 @@ module Ci
       end
     end
 
-    def project
-      commit.project
-    end
-
     def project_id
       commit.project.id
     end
@@ -194,8 +196,11 @@ module Ci
     end
 
     def raw_trace
-      if File.exist?(path_to_trace)
+      if File.file?(path_to_trace)
         File.read(path_to_trace)
+      elsif project.ci_id && File.file?(old_path_to_trace)
+        # Temporary fix for build trace data integrity
+        File.read(old_path_to_trace)
       else
         # backward compatibility
         read_attribute :trace
@@ -204,7 +209,7 @@ module Ci
 
     def trace
       trace = raw_trace
-      if project && trace.present?
+      if project && trace.present? && project.runners_token.present?
         trace.gsub(project.runners_token, 'xxxxxx')
       else
         trace
@@ -212,8 +217,8 @@ module Ci
     end
 
     def trace=(trace)
-      unless Dir.exists? dir_to_trace
-        FileUtils.mkdir_p dir_to_trace
+      unless Dir.exists?(dir_to_trace)
+        FileUtils.mkdir_p(dir_to_trace)
       end
 
       File.write(path_to_trace, trace)
@@ -231,6 +236,55 @@ module Ci
       "#{dir_to_trace}/#{id}.log"
     end
 
+    ##
+    # Deprecated
+    #
+    # This is a hotfix for CI build data integrity, see #4246
+    # Should be removed in 8.4, after CI files migration has been done.
+    #
+    def old_dir_to_trace
+      File.join(
+        Settings.gitlab_ci.builds_path,
+        created_at.utc.strftime("%Y_%m"),
+        project.ci_id.to_s
+      )
+    end
+
+    ##
+    # Deprecated
+    #
+    # This is a hotfix for CI build data integrity, see #4246
+    # Should be removed in 8.4, after CI files migration has been done.
+    #
+    def old_path_to_trace
+      "#{old_dir_to_trace}/#{id}.log"
+    end
+
+    ##
+    # Deprecated
+    #
+    # This contains a hotfix for CI build data integrity, see #4246
+    #
+    # This method is used by `ArtifactUploader` to create a store_dir.
+    # Warning: Uploader uses it after AND before file has been stored.
+    #
+    # This method returns old path to artifacts only if it already exists.
+    #
+    def artifacts_path
+      old = File.join(created_at.utc.strftime('%Y_%m'),
+                      project.ci_id.to_s,
+                      id.to_s)
+
+      old_store = File.join(ArtifactUploader.artifacts_path, old)
+      return old if project.ci_id && File.directory?(old_store)
+
+      File.join(
+        created_at.utc.strftime('%Y_%m'),
+        project.id.to_s,
+        id.to_s
+      )
+    end
+
     def token
       project.runners_token
     end
@@ -240,21 +294,18 @@ module Ci
     end
 
     def target_url
-      Gitlab::Application.routes.url_helpers.
-        namespace_project_build_url(project.namespace, project, self)
+      namespace_project_build_url(project.namespace, project, self)
     end
 
     def cancel_url
       if active?
-        Gitlab::Application.routes.url_helpers.
-          cancel_namespace_project_build_path(project.namespace, project, self)
+        cancel_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
     def retry_url
       if retryable?
-        Gitlab::Application.routes.url_helpers.
-          retry_namespace_project_build_path(project.namespace, project, self)
+        retry_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
@@ -270,20 +321,35 @@ module Ci
       pending? && !any_runners_online?
     end
 
-    def download_url
-      if artifacts_file.exists?
-        Gitlab::Application.routes.url_helpers.
-          download_namespace_project_build_path(project.namespace, project, self)
-      end
-    end
-
     def execute_hooks
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
     end
 
+    def artifacts?
+      artifacts_file.exists?
+    end
 
+    def artifacts_download_url
+      if artifacts?
+        download_namespace_project_build_artifacts_path(project.namespace, project, self)
+      end
+    end
+
+    def artifacts_browse_url
+      if artifacts_browser_supported?
+        browse_namespace_project_build_artifacts_path(project.namespace, project, self)
+      end
+    end
+
+    def artifacts_browser_supported?
+      artifacts? && artifacts_metadata.exists?
+    end
+
+    def artifacts_metadata_entry(path)
+      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path).to_entry
+    end
 
     private
 

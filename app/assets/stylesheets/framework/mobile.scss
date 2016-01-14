@@ -9,7 +9,7 @@
     padding-right: 5px;
   }
 
-  .nav.nav-tabs > li > a {
+  .nav-links > li > a {
     padding: 10px;
     font-size: 12px;
     margin-right: 3px;
@@ -81,7 +81,7 @@
     display: none;
   }
 
-  .center-top-menu, .left-top-menu {
+  .nav-links, .nav-links {
     li a {
       font-size: 14px;
       padding: 19px 10px;
@@ -100,11 +100,6 @@
 }
 
 @media (max-width: $screen-sm-max) {
-  .page-with-sidebar .content-wrapper {
-    padding: 0;
-    padding-top: 1px;
-  }
-
   .issues-filters {
     .milestone-filter, .labels-filter {
       display: none;

@@ -135,11 +135,11 @@ gitlab-workhorse we need a Go compiler. The instructions below assume you
 use 64-bit Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
-    curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
-    echo '46eecd290d8803887dec718c691cc243f2175fe0  go1.5.1.linux-amd64.tar.gz' | shasum -c - && \
-      sudo tar -C /usr/local -xzf go1.5.1.linux-amd64.tar.gz
+    curl -O --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
+    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -c - && \
+      sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.1.linux-amd64.tar.gz
+    rm go1.5.3.linux-amd64.tar.gz
 
 ## 4. System Users
 
@@ -231,9 +231,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-4-stable gitlab
 
-**Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -348,7 +348,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout 0.5.1
+    sudo -u git -H git checkout 0.5.4
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -552,6 +552,6 @@ Apart from the always supported markdown style there are other rich text files t
 
 If you see this message when attempting to clone a repository hosted by GitLab,
 this is likely due to an outdated Nginx or Apache configuration, or a missing or
-misconfigured `gitlab-git-http-server` instance. Double-check that you've
-[installed Go](#3-go), [installed gitlab-git-http-server](#install-gitlab-git-http-server),
+misconfigured gitlab-workhorse instance. Double-check that you've
+[installed Go](#3-go), [installed gitlab-workhorse](#install-gitlab-workhorse),
 and correctly [configured Nginx](#site-configuration).

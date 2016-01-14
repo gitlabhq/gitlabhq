@@ -11,7 +11,7 @@ class Settings < Settingslogic
 
     # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
     def get_host_without_www(url)
-      url = URI.encode(url)
+      url = CGI.escape(url)
       uri = URI.parse(url)
       uri = URI.parse("http://#{url}") if uri.scheme.nil?
       host = uri.host.downcase
@@ -108,6 +108,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
 
   Settings.ldap['servers'].each do |key, server|
     server['label'] ||= 'LDAP'
+    server['timeout'] ||= 10.seconds
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
@@ -131,12 +132,6 @@ Settings.omniauth.cas3['session_duration'] ||= 8.hours
 Settings.omniauth['session_tickets'] ||= Settingslogic.new({})
 Settings.omniauth.session_tickets['cas3'] = 'ticket'
 
-# ReCAPTCHA settings
-Settings['recaptcha'] ||= Settingslogic.new({})
-Settings.recaptcha['enabled'] = false if Settings.recaptcha['enabled'].nil?
-Settings.recaptcha['public_key'] ||= Settings.recaptcha['public_key']
-Settings.recaptcha['private_key'] ||= Settings.recaptcha['private_key']
-
 
 Settings['shared'] ||= Settingslogic.new({})
 Settings.shared['path'] = File.expand_path(Settings.shared['path'] || "shared", Rails.root)
@@ -158,9 +153,9 @@ Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
-Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
-Settings.gitlab['email_display_name'] ||= "GitLab"
-Settings.gitlab['email_reply_to'] ||= "noreply@#{Settings.gitlab.host}"
+Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
+Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
+Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'

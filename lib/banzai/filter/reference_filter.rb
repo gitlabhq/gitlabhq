@@ -1,5 +1,4 @@
 require 'active_support/core_ext/string/output_safety'
-require 'banzai'
 require 'html/pipeline/filter'
 
 module Banzai
@@ -124,7 +123,7 @@ module Banzai
       def replace_link_nodes_with_text(pattern)
         return doc if project.nil?
 
-        doc.search('a').each do |node|
+        doc.xpath('descendant-or-self::a').each do |node|
           klass = node.attr('class')
           next if klass && klass.include?('gfm')
 
@@ -133,7 +132,7 @@ module Banzai
 
           next unless link && text
 
-          link = URI.decode(link)
+          link = CGI.unescape(link)
           # Ignore ending punctionation like periods or commas
           next unless link == text && text =~ /\A#{pattern}/
 
@@ -162,7 +161,7 @@ module Banzai
       def replace_link_nodes_with_href(pattern)
         return doc if project.nil?
 
-        doc.search('a').each do |node|
+        doc.xpath('descendant-or-self::a').each do |node|
           klass = node.attr('class')
           next if klass && klass.include?('gfm')
 
@@ -170,7 +169,7 @@ module Banzai
           text = node.text
 
           next unless link && text
-          link = URI.decode(link)
+          link = CGI.unescape(link)
           next unless link && link =~ /\A#{pattern}\z/
 
           html = yield link, text

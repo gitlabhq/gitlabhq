@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Banzai
   module Pipeline
     class GfmPipeline < BasePipeline
@@ -22,6 +20,7 @@ module Banzai
           Filter::CommitRangeReferenceFilter,
           Filter::CommitReferenceFilter,
           Filter::LabelReferenceFilter,
+          Filter::MilestoneReferenceFilter,
 
           Filter::TaskListFilter
         ]

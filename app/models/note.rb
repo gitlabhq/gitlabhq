@@ -346,18 +346,20 @@ class Note < ActiveRecord::Base
     read_attribute(:system)
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def downvote?
-    false
+    is_award && note == "thumbsdown"
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def upvote?
-    false
+    is_award && note == "thumbsup"
   end
 
   def editable?
     !system? && !is_award
+  end
+
+  def cross_reference_not_visible_for?(user)
+    cross_reference? && referenced_mentionables(user).empty?
   end
 
   # Checks if note is an award added as a comment

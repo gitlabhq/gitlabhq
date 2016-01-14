@@ -125,6 +125,19 @@ describe Note, models: true do
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
   end
 
+  describe "#all_references" do
+    let!(:note1) { create(:note) }
+    let!(:note2) { create(:note) }
+
+    it "reads the rendered note body from the cache" do
+      expect(Banzai::Renderer).to receive(:render).with(note1.note, pipeline: :note, cache_key: [note1, "note"], project: note1.project)
+      expect(Banzai::Renderer).to receive(:render).with(note2.note, pipeline: :note, cache_key: [note2, "note"], project: note2.project)
+
+      note1.all_references
+      note2.all_references
+    end
+  end
+
   describe :search do
     let!(:note) { create(:note, note: "WoW") }
 
@@ -164,7 +177,31 @@ describe Note, models: true do
       expect(note.editable?).to be_falsy
     end
   end
-  
+
+  describe "cross_reference_not_visible_for?" do
+    let(:private_user)    { create(:user) }
+    let(:private_project) { create(:project, namespace: private_user.namespace).tap { |p| p.team << [private_user, :master] } }
+    let(:private_issue)   { create(:issue, project: private_project) }
+
+    let(:ext_proj)  { create(:project, :public) }
+    let(:ext_issue) { create(:issue, project: ext_proj) }
+
+    let(:note) do
+      create :note,
+        noteable: ext_issue, project: ext_proj,
+        note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
+        system: true
+    end
+
+    it "returns true" do
+      expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+    end
+
+    it "returns false" do
+      expect(note.cross_reference_not_visible_for?(private_user)).to be_falsy
+    end
+  end
+
   describe "set_award!" do
     let(:issue) { create :issue }
 

@@ -5,13 +5,13 @@
   - note_count = notes.user.count
 
 - ci_commit = project.ci_commit(commit.sha)
-- cache_key = [project.path_with_namespace, commit.id, note_count]
+- cache_key = [project.path_with_namespace, commit.id, current_application_settings, note_count]
 - cache_key.push(ci_commit.status) if ci_commit
 
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     .commit-row-title
-      %strong.str-truncated
+      .commit-title.str-truncated
         = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
         - if commit.description?
           %a.text-expander.js-toggle-button ...

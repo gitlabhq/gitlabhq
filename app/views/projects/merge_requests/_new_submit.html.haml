@@ -18,7 +18,7 @@
   = f.hidden_field :target_branch
 
 .mr-compare.merge-request
-  %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
+  %ul.merge-request-tabs.nav-links.no-top.no-bottom
     %li.commits-tab
       = link_to url_for(params), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
         Commits

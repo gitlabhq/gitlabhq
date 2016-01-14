@@ -4,45 +4,64 @@ module Gitlab
     class Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
 
-      SERIES = 'transactions'
+      attr_reader :tags, :values
 
-      attr_reader :uuid, :tags
+      attr_accessor :action
 
       def self.current
         Thread.current[THREAD_KEY]
       end
 
-      # name - The name of this transaction as a String.
-      def initialize
+      # action - A String describing the action performed, usually the class
+      #          plus method name.
+      def initialize(action = nil)
         @metrics = []
-        @uuid    = SecureRandom.uuid
 
         @started_at  = nil
         @finished_at = nil
 
-        @tags = {}
+        @values = Hash.new(0)
+        @tags   = {}
+        @action = action
+
+        @memory_before = 0
+        @memory_after  = 0
       end
 
       def duration
         @finished_at ? (@finished_at - @started_at) * 1000.0 : 0.0
       end
 
+      def allocated_memory
+        @memory_after - @memory_before
+      end
+
       def run
         Thread.current[THREAD_KEY] = self
 
-        @started_at = Time.now
+        @memory_before = System.memory_usage
+        @started_at    = Time.now
 
         yield
       ensure
-        @finished_at = Time.now
+        @memory_after = System.memory_usage
+        @finished_at  = Time.now
 
         Thread.current[THREAD_KEY] = nil
       end
 
       def add_metric(series, values, tags = {})
-        tags = tags.merge(transaction_id: @uuid)
+        prefix = sidekiq? ? 'sidekiq_' : 'rails_'
 
-        @metrics << Metric.new(series, values, tags)
+        @metrics << Metric.new("#{prefix}#{series}", values, tags)
+      end
+
+      def increment(name, value)
+        @values[name] += value
+      end
+
+      def set(name, value)
+        @values[name] = value
       end
 
       def add_tag(key, value)
@@ -55,11 +74,29 @@ module Gitlab
       end
 
       def track_self
-        add_metric(SERIES, { duration: duration }, @tags)
+        values = { duration: duration, allocated_memory: allocated_memory }
+
+        @values.each do |name, value|
+          values[name] = value
+        end
+
+        add_metric('transactions', values, @tags)
       end
 
       def submit
-        MetricsWorker.perform_async(@metrics.map(&:to_hash))
+        metrics = @metrics.map do |metric|
+          hash = metric.to_hash
+
+          hash[:tags][:action] ||= @action if @action
+
+          hash
+        end
+
+        Metrics.submit_metrics(metrics)
+      end
+
+      def sidekiq?
+        Sidekiq.server?
       end
     end
   end

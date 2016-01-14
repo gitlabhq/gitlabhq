@@ -2,62 +2,63 @@
 #
 # Table name: users
 #
-#  id                         :integer          not null, primary key
-#  email                      :string(255)      default(""), not null
-#  encrypted_password         :string(255)      default(""), not null
-#  reset_password_token       :string(255)
-#  reset_password_sent_at     :datetime
-#  remember_created_at        :datetime
-#  sign_in_count              :integer          default(0)
-#  current_sign_in_at         :datetime
-#  last_sign_in_at            :datetime
-#  current_sign_in_ip         :string(255)
-#  last_sign_in_ip            :string(255)
-#  created_at                 :datetime
-#  updated_at                 :datetime
-#  name                       :string(255)
-#  admin                      :boolean          default(FALSE), not null
-#  projects_limit             :integer          default(10)
-#  skype                      :string(255)      default(""), not null
-#  linkedin                   :string(255)      default(""), not null
-#  twitter                    :string(255)      default(""), not null
-#  authentication_token       :string(255)
-#  theme_id                   :integer          default(1), not null
-#  bio                        :string(255)
-#  failed_attempts            :integer          default(0)
-#  locked_at                  :datetime
-#  unlock_token               :string(255)
-#  username                   :string(255)
-#  can_create_group           :boolean          default(TRUE), not null
-#  can_create_team            :boolean          default(TRUE), not null
-#  state                      :string(255)
-#  color_scheme_id            :integer          default(1), not null
-#  notification_level         :integer          default(1), not null
-#  password_expires_at        :datetime
-#  created_by_id              :integer
-#  last_credential_check_at   :datetime
-#  avatar                     :string(255)
-#  confirmation_token         :string(255)
-#  confirmed_at               :datetime
-#  confirmation_sent_at       :datetime
-#  unconfirmed_email          :string(255)
-#  hide_no_ssh_key            :boolean          default(FALSE)
-#  website_url                :string(255)      default(""), not null
-#  notification_email         :string(255)
-#  hide_no_password           :boolean          default(FALSE)
-#  password_automatically_set :boolean          default(FALSE)
-#  location                   :string(255)
-#  encrypted_otp_secret       :string(255)
-#  encrypted_otp_secret_iv    :string(255)
-#  encrypted_otp_secret_salt  :string(255)
-#  otp_required_for_login     :boolean          default(FALSE), not null
-#  otp_backup_codes           :text
-#  public_email               :string(255)      default(""), not null
-#  dashboard                  :integer          default(0)
-#  project_view               :integer          default(0)
-#  consumed_timestep          :integer
-#  layout                     :integer          default(0)
-#  hide_project_limit         :boolean          default(FALSE)
+#  id                          :integer          not null, primary key
+#  email                       :string(255)      default(""), not null
+#  encrypted_password          :string(255)      default(""), not null
+#  reset_password_token        :string(255)
+#  reset_password_sent_at      :datetime
+#  remember_created_at         :datetime
+#  sign_in_count               :integer          default(0)
+#  current_sign_in_at          :datetime
+#  last_sign_in_at             :datetime
+#  current_sign_in_ip          :string(255)
+#  last_sign_in_ip             :string(255)
+#  created_at                  :datetime
+#  updated_at                  :datetime
+#  name                        :string(255)
+#  admin                       :boolean          default(FALSE), not null
+#  projects_limit              :integer          default(10)
+#  skype                       :string(255)      default(""), not null
+#  linkedin                    :string(255)      default(""), not null
+#  twitter                     :string(255)      default(""), not null
+#  authentication_token        :string(255)
+#  theme_id                    :integer          default(1), not null
+#  bio                         :string(255)
+#  failed_attempts             :integer          default(0)
+#  locked_at                   :datetime
+#  username                    :string(255)
+#  can_create_group            :boolean          default(TRUE), not null
+#  can_create_team             :boolean          default(TRUE), not null
+#  state                       :string(255)
+#  color_scheme_id             :integer          default(1), not null
+#  notification_level          :integer          default(1), not null
+#  password_expires_at         :datetime
+#  created_by_id               :integer
+#  last_credential_check_at    :datetime
+#  avatar                      :string(255)
+#  confirmation_token          :string(255)
+#  confirmed_at                :datetime
+#  confirmation_sent_at        :datetime
+#  unconfirmed_email           :string(255)
+#  hide_no_ssh_key             :boolean          default(FALSE)
+#  website_url                 :string(255)      default(""), not null
+#  notification_email          :string(255)
+#  hide_no_password            :boolean          default(FALSE)
+#  password_automatically_set  :boolean          default(FALSE)
+#  location                    :string(255)
+#  encrypted_otp_secret        :string(255)
+#  encrypted_otp_secret_iv     :string(255)
+#  encrypted_otp_secret_salt   :string(255)
+#  otp_required_for_login      :boolean          default(FALSE), not null
+#  otp_backup_codes            :text
+#  public_email                :string(255)      default(""), not null
+#  dashboard                   :integer          default(0)
+#  project_view                :integer          default(0)
+#  consumed_timestep           :integer
+#  layout                      :integer          default(0)
+#  hide_project_limit          :boolean          default(FALSE)
+#  unlock_token                :string
+#  otp_grace_period_started_at :datetime
 #
 
 require 'spec_helper'
@@ -106,7 +107,7 @@ describe User, models: true do
       end
 
       it 'validates uniqueness' do
-        expect(subject).to validate_uniqueness_of(:username)
+        expect(subject).to validate_uniqueness_of(:username).case_insensitive
       end
     end
 
@@ -568,27 +569,39 @@ describe User, models: true do
     end
   end
 
-  describe :ldap_user? do
-    it "is true if provider name starts with ldap" do
-      user = create(:omniauth_user, provider: 'ldapmain')
-      expect( user.ldap_user? ).to be_truthy
+  context 'ldap synchronized user' do
+    describe :ldap_user? do
+      it 'is true if provider name starts with ldap' do
+        user = create(:omniauth_user, provider: 'ldapmain')
+        expect(user.ldap_user?).to be_truthy
+      end
+
+      it 'is false for other providers' do
+        user = create(:omniauth_user, provider: 'other-provider')
+        expect(user.ldap_user?).to be_falsey
+      end
+
+      it 'is false if no extern_uid is provided' do
+        user = create(:omniauth_user, extern_uid: nil)
+        expect(user.ldap_user?).to be_falsey
+      end
     end
 
-    it "is false for other providers" do
-      user = create(:omniauth_user, provider: 'other-provider')
-      expect( user.ldap_user? ).to be_falsey
+    describe :ldap_identity do
+      it 'returns ldap identity' do
+        user = create :omniauth_user
+        expect(user.ldap_identity.provider).not_to be_empty
+      end
     end
 
-    it "is false if no extern_uid is provided" do
-      user = create(:omniauth_user, extern_uid: nil)
-      expect( user.ldap_user? ).to be_falsey
-    end
-  end
+    describe '#ldap_block' do
+      let(:user) { create(:omniauth_user, provider: 'ldapmain', name: 'John Smith') }
 
-  describe :ldap_identity do
-    it "returns ldap identity" do
-      user = create :omniauth_user
-      expect(user.ldap_identity.provider).not_to be_empty
+      it 'blocks user flaging the action caming from ldap' do
+        user.ldap_block
+        expect(user.blocked?).to be_truthy
+        expect(user.ldap_blocked?).to be_truthy
+      end
     end
   end
 

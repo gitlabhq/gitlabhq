@@ -80,7 +80,7 @@ module IssuesHelper
       xml.link    href: namespace_project_issue_url(issue.project.namespace,
                                                     issue.project, issue)
       xml.title   truncate(issue.title, length: 80)
-      xml.updated issue.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+      xml.updated issue.created_at.xmlschema
       xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
       xml.author do |author|
         xml.name issue.author_name
@@ -99,13 +99,16 @@ module IssuesHelper
   end
 
   def emoji_icon(name, unicode = nil, aliases = [])
-    unicode ||= Emoji.emoji_filename(name)
+    unicode ||= Emoji.emoji_filename(name) rescue ""
 
     content_tag :div, "",
       class: "icon emoji-icon emoji-#{unicode}",
-      "data-emoji" => name,
-      "data-aliases" => aliases.join(" "),
-      "data-unicode-name" => unicode
+      title: name,
+      data: {
+        aliases: aliases.join(' '),
+        emoji: name,
+        unicode_name: unicode
+      }
   end
 
   def emoji_author_list(notes, current_user)

@@ -1,5 +1,7 @@
 - page_title @search_term
-= render 'search/form'
+
+.prepend-top-default
+  = render 'search/form'
 - if @search_term
   = render 'search/category'
   = render 'search/results'

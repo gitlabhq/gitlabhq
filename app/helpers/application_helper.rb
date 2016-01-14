@@ -72,7 +72,7 @@ module ApplicationHelper
     if user_or_email.is_a?(User)
       user = user_or_email
     else
-      user = User.find_by(email: user_or_email)
+      user = User.find_by(email: user_or_email.downcase)
     end
 
     if user
@@ -181,10 +181,6 @@ module ApplicationHelper
     end
   end
 
-  def broadcast_message
-    BroadcastMessage.current
-  end
-
   # Render a `time` element with Javascript-based relative date and tooltip
   #
   # time       - Time object
@@ -205,8 +201,8 @@ module ApplicationHelper
   def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
     element = content_tag :time, time.to_s,
       class: "#{html_class} js-timeago js-timeago-pending",
-      datetime: time.getutc.iso8601,
-      title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
+      datetime: time.to_time.getutc.iso8601,
+      title: time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
     unless skip_js
@@ -266,7 +262,7 @@ module ApplicationHelper
       state: params[:state],
       scope: params[:scope],
       label_name: params[:label_name],
-      milestone_id: params[:milestone_id],
+      milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
       sort: params[:sort],

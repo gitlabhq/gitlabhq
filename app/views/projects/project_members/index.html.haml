@@ -2,7 +2,7 @@
 = render "header_title"
 - @blank_container = true
 
-.project-members-page
+.project-members-page.prepend-top-default
   - if can?(current_user, :admin_project_member, @project)
     .panel.panel-default
       .panel-heading

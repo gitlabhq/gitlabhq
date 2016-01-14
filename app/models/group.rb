@@ -11,7 +11,6 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
-#  public      :boolean          default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -48,10 +47,6 @@ class Group < Namespace
 
     def reference_pattern
       User.reference_pattern
-    end
-
-    def public_and_given_groups(ids)
-      where('public IS TRUE OR namespaces.id IN (?)', ids)
     end
 
     def visible_to_user(user)
@@ -123,10 +118,6 @@ class Group < Namespace
     unless self.avatar.image?
       self.errors.add :avatar, "only images allowed"
     end
-  end
-
-  def public_profile?
-    self.public || projects.public_only.any?
   end
 
   def post_create_hook

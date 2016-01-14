@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor < Banzai::ReferenceExtractor
@@ -19,7 +17,7 @@ module Gitlab
       super(text, context.merge(project: project))
     end
 
-    %i(user label merge_request snippet commit commit_range).each do |type|
+    %i(user label milestone merge_request snippet commit commit_range).each do |type|
       define_method("#{type}s") do
         @references[type] ||= references(type, reference_context)
       end

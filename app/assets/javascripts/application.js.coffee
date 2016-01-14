@@ -10,12 +10,12 @@
 #= require jquery.cookie
 #= require jquery.endless-scroll
 #= require jquery.highlight
-#= require jquery.history
 #= require jquery.waitforimages
 #= require jquery.atwho
 #= require jquery.scrollTo
-#= require jquery.blockUI
 #= require jquery.turbolinks
+#= require d3
+#= require cal-heatmap
 #= require turbolinks
 #= require autosave
 #= require bootstrap
@@ -27,7 +27,6 @@
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
-#= require d3
 #= require underscore
 #= require nprogress
 #= require nprogress-turbolinks
@@ -39,9 +38,9 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issuable
 #= require shortcuts_network
-#= require cal-heatmap
 #= require jquery.nicescroll.min
 #= require_tree .
+#= require fuzzaldrin-plus.min
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
