@@ -186,12 +186,12 @@ describe Note, models: true do
     let(:ext_proj)  { create(:project, :public) }
     let(:ext_issue) { create(:issue, project: ext_proj) }
 
-    let(:note) {
+    let(:note) do
       create :note,
         noteable: ext_issue, project: ext_proj,
         note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
         system: true
-    }
+    end
 
     it "returns true" do
       expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy

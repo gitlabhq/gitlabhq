@@ -13,20 +13,21 @@ describe API::API, api: true  do
 
   # For testing the cross-reference of a private issue in a public issue
   let(:private_user)    { create(:user) }
-  let(:private_project) {
+  let(:private_project) do
     create(:project, namespace: private_user.namespace).
     tap { |p| p.team << [private_user, :master] }
-  }
-  let(:private_issue)   { create(:issue, project: private_project) }
+  end
+  let(:private_issue)    { create(:issue, project: private_project) }
+
   let(:ext_proj)  { create(:project, :public) }
   let(:ext_issue) { create(:issue, project: ext_proj) }
 
-  let!(:cross_reference_note) {
+  let!(:cross_reference_note) do
     create :note,
     noteable: ext_issue, project: ext_proj,
     note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
     system: true
-  }
+  end
 
   before { project.team << [user, :reporter] }
 

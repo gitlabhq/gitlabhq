@@ -224,7 +224,7 @@ module SharedProject
   end
 
   def user_owns_project(user_name:, project_name:, visibility: :private)
-    user = user_exists(user_name, username: user_name.underscore)
+    user = user_exists(user_name, username: user_name.gsub(/\s/, '').underscore)
     project = Project.find_by(name: project_name)
     project ||= create(:empty_project, visibility, name: project_name, namespace: user.namespace)
     project.team << [user, :master]
