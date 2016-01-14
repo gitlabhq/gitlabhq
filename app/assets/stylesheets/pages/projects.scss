@@ -53,6 +53,8 @@
   }
 
   .notifications-btn {
+    float: left;
+
     .fa-bell {
       margin-right: 6px;
     }
@@ -77,21 +79,6 @@
     }
   }
 
-  .git-clone-holder {
-    max-width: 498px;
-
-    .form-control {
-      background: #FFF;
-      font-size: 14px;
-      margin-left: -1px;
-    }
-
-    .btn-clipboard {
-      border: 1px solid $border-color;
-      padding: 6px $gl-padding;
-    }
-  }
-
   .visibility-level-label {
     @extend .btn;
     @extend .btn-gray;
@@ -104,11 +91,6 @@
     }
   }
 
-  .git-clone-holder {
-    display: inline-table;
-    position: relative;
-  }
-
   .project-repo-buttons {
     margin-top: 12px;
     margin-bottom: 0px;
@@ -118,10 +100,22 @@
       margin-bottom: 12px;
     }
 
+    .clone-row {
+      .split-repo-buttons,
+      .project-clone-holder {
+        display: inline-block;
+      }
+
+      .split-repo-buttons {
+        margin: 0 12px;
+      }
+    }
+
     .btn {
       @include btn-gray;
       text-transform: none;
     }
+
     .count-with-arrow {
       display: inline-block;
       position: relative;
@@ -193,74 +187,6 @@
   a {
     margin: -1px !important;
   }
-}
-
-.git-clone-holder {
-  .project-home-dropdown + & {
-    margin-right: 45px;
-  }
-
-  .clone-options {
-    display: table-cell;
-    a.btn {
-      width: 100%;
-    }
-  }
-
-  .form-control {
-    cursor: auto;
-    @extend .monospace;
-    background: #FAFAFA;
-    width: 101%;
-  }
-
-  .input-group-addon {
-    background: #f7f8fa;
-
-    &.git-protocols {
-      padding: 0;
-      border: none;
-
-      .input-group-btn:last-child > .btn {
-        @include border-radius-right(0);
-
-        border-left: 1px solid #c6cacf;
-        margin-left: -2px !important;
-      }
-    }
-  }
-}
-
-.split-repo-buttons {
-  display: inline-table;
-  margin: 0 12px 0 12px;
-
-  .btn{
-    @include btn-gray;
-    @include btn-default;
-  }
-
-  .dropdown-toggle  {
-    margin: -5px;
-  }
-}
-
-#notification-form {
-  margin-left: 5px;
-}
-
-.dropdown-new {
-  margin-left: -5px;
-}
-
-.open > .dropdown-new.btn {
-  @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-
-  border: 1px solid #c6cacf !important;
-  background-color: #e4e7ed !important;
-  text-transform: none;
-  color: #313236 !important;
-  font-size: 15px;
 }
 
 .dropdown-menu {
@@ -601,5 +527,34 @@ pre.light-well {
   .edit-project-readme {
     z-index: 100;
     position: relative;
+  }
+}
+
+.git-clone-holder {
+  width: 498px;
+
+  .btn-clipboard {
+    border: 1px solid $border-color;
+    padding: 6px $gl-padding;
+  }
+
+  .project-home-dropdown + & {
+    margin-right: 45px;
+  }
+
+  .clone-options {
+    display: table-cell;
+    a.btn {
+      width: 100%;
+    }
+  }
+
+  .form-control {
+    @extend .monospace;
+    background: #FFF;
+    font-size: 14px;
+    margin-left: -1px;
+    cursor: auto;
+    width: 101%;
   }
 }
