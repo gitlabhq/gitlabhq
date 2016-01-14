@@ -4,6 +4,7 @@ v 8.5.0 (unreleased)
   - Remove gray background from layout in UI
 
 v 8.4.0 (unreleased)
+  - Add pagination headers to already paginated API resources
   - Improve the consistency of commit titles, branch names, tag names, issue/MR titles, on their respective project pages
   - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
   - Improved performance of finding issues for an entire group (Yorick Peterse)
