@@ -1,7 +1,7 @@
 // Common
 .diff-file {
-  border: none;
-  border-bottom: 1px solid #E7E9EE;
+  border: 1px solid $border-color;
+  border-top: none;
 
   .diff-header {
     position: relative;

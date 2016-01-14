@@ -89,12 +89,14 @@
 
 .blob-commit-info {
   list-style: none;
+  padding: $gl-padding;
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-bottom: none;
   margin: 0;
-  padding: 0;
-  margin-bottom: 5px;
 
   .commit {
-    padding: $gl-padding 0;
+    padding: 0;
 
     .commit-row-title {
       .commit-row-message {

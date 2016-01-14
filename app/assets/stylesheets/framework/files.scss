@@ -4,8 +4,7 @@
  */
 .file-holder {
   border: none;
-  border-top: 1px solid #E7E9EE;
-  border-bottom: 1px solid #E7E9EE;
+  border: 1px solid $border-color;
 
   &.readme-holder {
     border-bottom: 0;

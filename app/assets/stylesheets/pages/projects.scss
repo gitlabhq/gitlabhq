@@ -604,8 +604,6 @@ pre.light-well {
 }
 
 .project-last-commit {
-  margin: 0 7px;
-
   .ci-status {
     margin-right: 16px;
   }
@@ -635,7 +633,7 @@ pre.light-well {
 }
 
 .project-show-readme .readme-holder {
-  padding: ($gl-padding + 7px);
+  padding: $gl-padding 0;
   border-top: 0;
 
   .edit-project-readme {
