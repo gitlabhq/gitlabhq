@@ -5,14 +5,17 @@
     Merge Request ##{@merge_request.iid}
   %span.creator
     &middot;
-    opened by #{link_to_member(@project, @merge_request.author, size: 24)}
+    opened by 
+    %a.author_link{"v-bind:href"=>"state.original_author_url"}
+      %img.avatar.avatar-inline.s24{width:24, alt:"", "v-bind:src"=>"state.original_author_avatar_url"}
+      %span.author
+        {{state.original_author}}
     &middot;
-    = time_ago_with_tooltip(@merge_request.created_at)
-    - if @merge_request.updated_at != @merge_request.created_at
-      %span
-        &middot;
-        = icon('edit', title: 'edited')
-        = time_ago_with_tooltip(@merge_request.updated_at, placement: 'bottom')
+    {{state.created_at}}
+    %span{"v-if"=>"state.created_at != state.updated_at"}
+      &middot;
+      = icon('edit', title: 'edited')
+      {{state.created_at}}
 
   .issue-btn-group.pull-right
     - if can?(current_user, :update_merge_request, @merge_request)

@@ -50,7 +50,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @merge_request }
       format.diff { render text: @merge_request.to_diff(current_user) }
       format.patch { render text: @merge_request.to_patch(current_user) }
     end
@@ -137,8 +136,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       author = nil
       avatar = nil
       if @merge_request.closed? && @merge_request.closed_event
-        author = @merge_request.closed_event.author
-        # avatar = avatar_icon(author,16)
+        closing_author = @merge_request.closed_event.author
+      else
+        original_author = @merge_request.author
       end
       respond_to do |format|
         format.js
@@ -153,8 +153,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
             closed: @merge_request.closed?,
             locked: @merge_request.locked?,
             merged: @merge_request.merged?,
-            author: author,
-            avatar: avatar
+            original_author: original_author,
+            closing_author: closing_author
           }
         end
       end
@@ -169,12 +169,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     avatar = nil
     if @merge_request.closed? && @merge_request.closed_event
       author = @merge_request.closed_event.author
-      # avatar = avatar_icon(author,16)
     end
     respond_to do |format|
       format.js
       format.html do
-        render partial: "projects/merge_requests/widget/show.html.haml", layout: false
+        render partial: "projects/merge_requests/widget/_show.html.haml", layout: false
       end
       format.json do
         render json: {
@@ -183,8 +182,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           closed: @merge_request.closed?,
           locked: @merge_request.locked?,
           merged: @merge_request.merged?,
-          author: author,
-          avatar: avatar
+          author: @merge_request.author,
+          avatar: @merge_request.author.avatar.url
         }
       end
     end
