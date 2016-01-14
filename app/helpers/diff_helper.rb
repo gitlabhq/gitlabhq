@@ -19,13 +19,13 @@ module DiffHelper
     end
   end
 
-  def safe_diff_files(diffs, diff_refs, repository)
+  def safe_diff_files(diffs, diff_refs)
     lines = 0
     safe_files = []
     diffs.first(allowed_diff_size).each do |diff|
       lines += diff.diff.lines.count
       break if lines > allowed_diff_lines
-      safe_files << Gitlab::Diff::File.new(diff, diff_refs, repository)
+      safe_files << Gitlab::Diff::File.new(diff, diff_refs)
     end
     safe_files
   end

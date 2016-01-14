@@ -511,4 +511,8 @@ class MergeRequest < ActiveRecord::Base
   def broken?
     self.commits.blank? || branch_missing? || cannot_be_merged?
   end
+
+  def diff_range
+    [last_commit.parent, first_commit]
+  end
 end

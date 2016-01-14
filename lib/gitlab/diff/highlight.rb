@@ -3,8 +3,7 @@ module Gitlab
     class Highlight
       attr_reader :diff_file
 
-      delegate :repository, :old_path, :new_path, :old_ref, :new_ref,
-        to: :diff_file, prefix: :diff
+      delegate :old_path, :new_path, :old_ref, :new_ref, to: :diff_file, prefix: :diff
 
       def initialize(diff_file)
         @diff_file = diff_file
@@ -141,11 +140,11 @@ module Gitlab
       end
 
       def old_lines
-        @old_lines ||= Gitlab::Highlight.highlight_lines(diff_repository, diff_old_ref, diff_old_path)
+        @old_lines ||= self.class.process_file(*processing_args(:old))
       end
 
       def new_lines
-        @new_lines ||= Gitlab::Highlight.highlight_lines(diff_repository, diff_new_ref, diff_new_path)
+        @new_lines ||= self.class.process_file(*processing_args(:new))
       end
 
       def longest_common_suffix(a, b)
@@ -200,6 +199,16 @@ module Gitlab
 
         offset
       end
+
+      private
+
+      def processing_args(version)
+        ref  = send("diff_#{version}_ref")
+        path = send("diff_#{version}_path")
+
+        [ref.project.repository, ref.id, path]
+      end
+
     end
   end
 end

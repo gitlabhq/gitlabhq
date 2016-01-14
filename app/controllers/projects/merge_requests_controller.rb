@@ -59,7 +59,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def diffs
     @commit = @merge_request.last_commit
     @first_commit = @merge_request.first_commit
-    @diff_refs = [@merge_request.last_commit.parent_id, @merge_request.source_sha]
 
     @comments_allowed = @reply_allowed = true
     @comments_target = {
@@ -104,8 +103,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.last_commit
     @first_commit = @merge_request.first_commit
     @diffs = @merge_request.compare_diffs
-    # We need to use #source_branch because #source_sha requires an existent MergeRequestDiff object.
-    @diff_refs = [@merge_request.target_sha, @merge_request.source_branch]
 
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit

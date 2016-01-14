@@ -20,9 +20,9 @@ class Projects::CompareController < Projects::ApplicationController
     if compare_result
       @commits = Commit.decorate(compare_result.commits, @project)
       @diffs = compare_result.diffs
-      @diff_refs = [base_ref, head_ref]
       @commit = @project.commit(head_ref)
       @first_commit = @project.commit(base_ref)
+      @diff_refs = [@first_commit, @commit]
       @line_notes = []
     end
   end

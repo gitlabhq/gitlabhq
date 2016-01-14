@@ -6,7 +6,7 @@ describe Gitlab::Diff::Highlight, lib: true do
   let(:project) { create(:project) }
   let(:commit) { project.commit(sample_commit.id) }
   let(:diff) { commit.diffs.first }
-  let(:diff_file) { Gitlab::Diff::File.new(diff, [commit.parent.id, commit.id], project.repository) }
+  let(:diff_file) { Gitlab::Diff::File.new(diff, [commit.parent, commit]) }
 
   describe '.process_diff_lines' do
     context 'when processing Gitlab::Diff::Line objects' do

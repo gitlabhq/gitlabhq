@@ -38,7 +38,7 @@
       = render "projects/merge_requests/show/commits"
     #diffs.diffs.tab-pane.active
       - if @diffs.present?
-        = render "projects/diffs/diffs", diffs: @diffs, project: @project, diff_refs: @diff_refs
+        = render "projects/diffs/diffs", diffs: @diffs, project: @project, diff_refs: @merge_request.diff_range
       - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
         .alert.alert-danger
           %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.
