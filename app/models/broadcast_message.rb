@@ -6,7 +6,6 @@
 #  message    :text             not null
 #  starts_at  :datetime
 #  ends_at    :datetime
-#  alert_type :integer
 #  created_at :datetime
 #  updated_at :datetime
 #  color      :string(255)
@@ -23,7 +22,22 @@ class BroadcastMessage < ActiveRecord::Base
   validates :color, allow_blank: true, color: true
   validates :font,  allow_blank: true, color: true
 
+  default_value_for :color, '#E75E40'
+  default_value_for :font,  '#FFFFFF'
+
   def self.current
-    where("ends_at > :now AND starts_at < :now", now: Time.zone.now).last
+    where("ends_at > :now AND starts_at <= :now", now: Time.zone.now).last
+  end
+
+  def active?
+    started? && !ended?
+  end
+
+  def started?
+    Time.zone.now >= starts_at
+  end
+
+  def ended?
+    ends_at < Time.zone.now
   end
 end

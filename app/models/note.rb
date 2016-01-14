@@ -358,6 +358,10 @@ class Note < ActiveRecord::Base
     !system? && !is_award
   end
 
+  def cross_reference_not_visible_for?(user)
+    cross_reference? && referenced_mentionables(user).empty?
+  end
+
   # Checks if note is an award added as a comment
   #
   # If note is an award, this method sets is_award to true

@@ -82,7 +82,6 @@ ActiveRecord::Schema.define(version: 20160113111034) do
     t.text     "message",    null: false
     t.datetime "starts_at"
     t.datetime "ends_at"
-    t.integer  "alert_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "color"
