@@ -136,9 +136,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if @merge_request.valid?
       author = nil
       avatar = nil
-      if @merge_request.merged? && @merge_request.closed_event
+      if @merge_request.closed? && @merge_request.closed_event
         author = @merge_request.closed_event.author
-        avatar = avatar_icon(author)
+        # avatar = avatar_icon(author,16)
       end
       respond_to do |format|
         format.js
@@ -165,8 +165,29 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge_check
     @merge_request.check_if_can_be_merged
-
-    render partial: "projects/merge_requests/widget/show.html.haml", layout: false
+    author = nil
+    avatar = nil
+    if @merge_request.closed? && @merge_request.closed_event
+      author = @merge_request.closed_event.author
+      # avatar = avatar_icon(author,16)
+    end
+    respond_to do |format|
+      format.js
+      format.html do
+        render partial: "projects/merge_requests/widget/show.html.haml", layout: false
+      end
+      format.json do
+        render json: {
+          label: @merge_request.state_human_name,
+          open: @merge_request.open?,
+          closed: @merge_request.closed?,
+          locked: @merge_request.locked?,
+          merged: @merge_request.merged?,
+          author: author,
+          avatar: avatar
+        }
+      end
+    end
   end
 
   def cancel_merge_when_build_succeeds

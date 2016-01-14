@@ -1,4 +1,4 @@
-.mr-state-widget
+.mr-state-widget.mr-state-open{"v-if"=>"state.open"}
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     - if @project.archived?
