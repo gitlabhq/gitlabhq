@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
+  - Improve the consistency of commit titles, branch names, tag names, issue/MR titles, on their respective project pages
   - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
   - Improved performance of finding issues for an entire group (Yorick Peterse)
   - Added custom application performance measuring system powered by InfluxDB (Yorick Peterse)
@@ -42,8 +43,11 @@ v 8.4.0 (unreleased)
   - Ajax filter by message for commits page
   - API: Add support for deleting a tag via the API (Robert Schilling)
   - Allow subsequent validations in CI Linter
+  - Show referenced MRs & Issues only when the current viewer can access them
   - Fix Encoding::CompatibilityError bug when markdown content has some complex URL (Jason Lee)
   - Add API support for managing builds of a project
+  - Add API support for managing build variables of project
+  - Allow broadcast messages to be edited
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)

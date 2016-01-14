@@ -393,5 +393,9 @@ module API
       end
       expose :runner, with: Runner
     end
+
+    class Variable < Grape::Entity
+      expose :key, :value
+    end
   end
 end
