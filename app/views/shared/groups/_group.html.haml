@@ -10,8 +10,7 @@
         %i.fa.fa-sign-out
 
   = image_tag group_icon(group), class: "avatar s46 hidden-xs"
-  = link_to group, class: 'group-name' do
-    %strong= group.name
+  = link_to group.name, group, class: 'group-name'
 
   - if group_member
     as

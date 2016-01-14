@@ -131,6 +131,12 @@
     &:last-child {
       margin-right: 0px;
     }
+    &.btn-xs {
+      margin-right: 3px;
+    }
+  }
+  &.disabled {
+    pointer-events: auto !important;
   }
 }
 
@@ -149,33 +155,6 @@
     float: left;
     &:last-child {
       margin-right: 0px;
-    }
-  }
-}
-
-.btn-group-next {
-  .btn {
-    padding: 9px 0px;
-    font-size: 15px;
-    color: #7f8fa4;
-    border-color: #e7e9ed;
-    width: 140px;
-
-    .badge {
-      font-weight: normal;
-      background-color: #eee;
-      color: #78a;
-    }
-
-    &.active {
-      border-color: $gl-info;
-      background: $gl-info;
-      color: #fff;
-
-      .badge {
-        color: $gl-info;
-        background-color: white;
-      }
     }
   }
 }

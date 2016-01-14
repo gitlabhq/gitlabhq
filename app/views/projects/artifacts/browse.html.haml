@@ -1,0 +1,24 @@
+- page_title 'Artifacts', "#{@build.name} (##{@build.id})", 'Builds'
+= render 'projects/builds/header_title'
+
+#tree-holder.tree-holder
+  .gray-content-block.top-block.clearfix
+    .pull-right
+      = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build),
+        class: 'btn btn-default' do
+        = icon('download')
+        Download artifacts archive
+
+%div.tree-content-holder
+  .table-holder
+    %table.table.tree-table.table-striped
+      %thead
+        %tr
+          %th Name
+          %th Size
+          %th Download
+      = render partial: 'tree_directory', collection: @entry.directories(parent: true), as: :directory
+      = render partial: 'tree_file', collection: @entry.files, as: :file
+
+- if @entry.empty?
+  .center Empty

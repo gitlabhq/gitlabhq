@@ -287,11 +287,13 @@ module API
 
     # file helpers
 
-    def uploaded_file!(field, uploads_path)
+    def uploaded_file(field, uploads_path)
       if params[field]
         bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
         return params[field]
       end
+
+      return nil unless params["#{field}.path"] && params["#{field}.name"]
 
       # sanitize file paths
       # this requires all paths to exist
