@@ -88,6 +88,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
+    member do
+      get :unsubscribe
+    end
+  end
+
   # Spam reports
   resources :abuse_reports, only: [:new, :create]
 
@@ -604,8 +610,13 @@ Rails.application.routes.draw do
           member do
             get :status
             post :cancel
-            get :download
             post :retry
+          end
+
+          resource :artifacts, only: [] do
+            get :download
+            get :browse, path: 'browse(/*path)', format: false
+            get :file, path: 'file/*path', format: false
           end
         end
 

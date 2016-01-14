@@ -521,9 +521,13 @@ class @Notes
     if textarea.val().trim().length > 0
       form.find('.js-note-target-reopen').text('Comment & reopen')
       form.find('.js-note-target-close').text('Comment & close')
+      form.find('.js-note-target-reopen').addClass('btn-comment-and-reopen')
+      form.find('.js-note-target-close').addClass('btn-comment-and-close')
     else
       form.find('.js-note-target-reopen').text('Reopen')
       form.find('.js-note-target-close').text('Close')
+      form.find('.js-note-target-reopen').removeClass('btn-comment-and-reopen')
+      form.find('.js-note-target-close').removeClass('btn-comment-and-close')
 
   initTaskList: ->
     @enableTaskList()

@@ -397,7 +397,7 @@ class Project < ActiveRecord::Base
     result.password = '*****' unless result.password.nil?
     result.to_s
   rescue
-    original_url
+    self.import_url
   end
 
   def check_limit

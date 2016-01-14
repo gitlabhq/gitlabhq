@@ -2,6 +2,10 @@
   display: block;
 }
 
+.commit-row-title .commit-title {
+  font-weight: 600;
+}
+
 .commit-author, .commit-committer{
   display: block;
   color: #999;
@@ -35,6 +39,8 @@
 }
 
 .commit-box {
+  border-top: 1px solid $border-color;
+
   .commit-title {
     margin: 0;
     font-size: 23px;

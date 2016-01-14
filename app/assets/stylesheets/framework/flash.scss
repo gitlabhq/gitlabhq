@@ -8,10 +8,12 @@
   .flash-notice {
     @extend .alert;
     @extend .alert-info;
+    margin: 0;
   }
 
   .flash-alert {
     @extend .alert;
     @extend .alert-danger;
+    margin: 0;
   }
 }
