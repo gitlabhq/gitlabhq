@@ -45,6 +45,7 @@ module ProjectsHelper
   end
 
   def project_title(project, name = nil, url = nil)
+    project_id = project.id
     namespace_link =
       if project.group
         link_to(simple_sanitize(project.group.name), group_path(project.group))
@@ -53,14 +54,34 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to(simple_sanitize(project.name), project_path(project))
+    all_projects =
+      if project.group
+        project.group.projects
+      else
+        PersonalProjectsFinder.new(project.namespace.owner).execute(current_user)
+      end
+
+    project_link = content_tag :div, {class: "dropdown"} do
+      output = content_tag :a, {class: "dropdown-toggle", href: "#", data: {toggle: "dropdown"}} do
+        btnOutput = simple_sanitize(project.name)
+        btnOutput += content_tag :span, nil, {class: "caret dropdown-toggle-caret"}
+      end
+
+      list = all_projects.map do |project|
+        content_tag :li, {class: "dropdown-item #{"active" if project_id == project.id}"} do
+          link_to(simple_sanitize(project.name), project_path(project), {class: "dropdown-link"})
+        end
+      end
+
+      output += content_tag :ul, {class: "dropdown-menu"} do
+        list.join.html_safe
+      end
+    end
 
     full_title = namespace_link + ' / ' + project_link
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
 
-    content_tag :span do
-      full_title
-    end
+    full_title
   end
 
   def remove_project_message(project)

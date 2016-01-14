@@ -73,7 +73,6 @@ header {
 
     .title {
       margin: 0;
-      overflow: hidden;
       font-size: 19px;
       line-height: $header-height;
       font-weight: normal;
@@ -86,6 +85,27 @@ header {
         color: #4c4e54;
         &:hover {
           text-decoration: underline;
+        }
+      }
+
+      .dropdown {
+        display: inline-block;
+      }
+
+      .dropdown-toggle-caret {
+        margin-left: 5px;
+      }
+
+      .dropdown-item {
+        &.active {
+          .dropdown-link {
+            color: #fff;
+          }
+        }
+
+        .dropdown-link:hover {
+          color: #fff;
+          text-decoration: none;
         }
       }
     }
