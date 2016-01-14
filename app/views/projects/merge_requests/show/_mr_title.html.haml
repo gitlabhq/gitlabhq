@@ -1,5 +1,5 @@
 .detail-page-header#merge-request-header{'v-cloak'=> true, transition: "fade"}
-  .status-box{"v-bind:class" => "{'status-box-open':state.open,'status-box-closed':state.closed}",transition: 'fade'}
+  .status-box{"v-bind:class" => "{'status-box-open':state.open,'status-box-closed':state.closed,'status-box-merged':state.merged}"}
     {{ state.label }}
   %span.identifier
     Merge Request ##{@merge_request.iid}

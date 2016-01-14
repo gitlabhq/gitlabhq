@@ -46,6 +46,9 @@ class Projects::BranchesController < Projects::ApplicationController
         redirect_to namespace_project_branches_path(@project.namespace,
                                                     @project)
       end
+      format.json do
+        render json: {}
+      end
       format.js { render status: status[:return_code] }
     end
   end

@@ -1,35 +1,39 @@
-.mr-state-widget
+.mr-state-widget.mr-state-merged{"v-if"=>"state.merged"}
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     %h4
-      Merged
-      - if @merge_request.merge_event
-        by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
+      Merged by 
+      %a.author_link{"v-bind:href"=>"state.author_link"}
+        %img.avatar.avatar-inline.s16{width: 16, "v-bind:src"=>"state.avatar",alt:""}
+        %span.author
+          {{state.author}}
+
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
     %div
-      - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
+      %template{"v-if"=>"state.source_branch_unavailable"}
         The changes were merged into
-        #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
+        %a.label-branch{"v-bind:href"=>"state.target_branch_url"}
+          {{state.target_branch}}
         The source branch has been removed.
 
-      - elsif @merge_request.can_remove_source_branch?(current_user)
-        .remove_source_branch_widget
-          %p
-            The changes were merged into
-            #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-            You can remove the source branch now.
-          = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), remote: true, method: :delete, class: "btn btn-primary btn-sm remove_source_branch" do
-            %i.fa.fa-times
-            Remove Source Branch
+      .remove_source_branch_widget{"v-if"=>"state.removeable_branch"}
+        %p
+          The changes were merged into
+          %a.label-branch{"v-bind:href"=>"state.target_branch_url"}
+            {{state.target_branch}}
+          You can remove the source branch now.
+        %a.btn.btn-primary.btn-sm.remove_source_branch{"v-on:click.prevent"=>"deleteBranchClicked"}
+          %i.fa.fa-times
+          Remove Source Branch
 
-        .remove_source_branch_widget.failed.hide
-          %p
-            Failed to remove source branch '#{@merge_request.source_branch}'.
+      .remove_source_branch_widget.failed.hide
+        %p
+          Failed to remove source branch '#{@merge_request.source_branch}'.
 
-        .remove_source_branch_in_progress.hide
-          %p
-            = icon('spinner spin')
-            Removing source branch '#{@merge_request.source_branch}'. Please wait, this page will be automatically reloaded.
+      .remove_source_branch_in_progress.hide
+        %p
+          = icon('spinner spin')
+          Removing source branch '#{@merge_request.source_branch}'. Please wait, this page will be automatically reloaded.
 
         :javascript
           $('.remove_source_branch').on('click', function() {

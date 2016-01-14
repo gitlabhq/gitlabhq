@@ -1,7 +1,7 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
+    :edit, :update, :show, :diffs, :commits, :builds, :author, :merge, :merge_check,
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
@@ -134,6 +134,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request = MergeRequests::UpdateService.new(project, current_user, merge_request_params).execute(@merge_request)
 
     if @merge_request.valid?
+      author = nil
+      avatar = nil
+      if @merge_request.merged? && @merge_request.merge_event
+        author = @merge_request.merge_event.author
+        avatar = avatar_icon(author)
+      end
       respond_to do |format|
         format.js
         format.html do
@@ -141,12 +147,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json:     {
+          render json: {
             label: @merge_request.state_human_name,
             open: @merge_request.open?,
             closed: @merge_request.closed?,
             locked: @merge_request.locked?,
             merged: @merge_request.merged?,
+            author: author,
+            avatar: avatar
           }
         end
       end

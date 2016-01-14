@@ -4,12 +4,12 @@ var MR = function(){
 
   var mrService = {
     changeState: function(newState) {
-      mergeFailMessage = 'Unable to update this merge request at this time.'
+      var mergeFailMessage = 'Unable to update this merge request at this time.'
       $.ajax({
         type: 'PUT',
         url: store.state[newState+'URL'],
         error: function(jqXHR, textStatus, errorThrown) {
-          console.log('error',errorThrown)
+          console.log('error',errorThrown);
           return new Flash(mergeFailMessage, 'alert');
         },
         success: function(data, textStatus, jqXHR) {
@@ -19,6 +19,25 @@ var MR = function(){
           }
         }
       });
+    },
+
+    deleteBranch: function() {
+      var branchDeleteFailMessage = 'Unable to update this merge request at this time.'
+      $.ajax({
+        type: 'DELETE',
+        url: store.state.remove_source_branch_url,
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log('error', errorThrown);
+          return new Flash(branchDeleteFailMessage);
+        },
+        success: function(data, textStatus, jqXHR) {
+          var s = '';
+          console.log('data',data);
+          for(s in data) {
+            store.state[s] = data[s];
+          }
+        }
+      })
     }
   };
 
@@ -50,7 +69,9 @@ var MR = function(){
       },
 
       methods: {
-
+        deleteBranchClicked: function() {
+          mrService.deleteBranch();
+        }
       }
     });
   } 

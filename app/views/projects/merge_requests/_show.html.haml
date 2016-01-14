@@ -89,21 +89,34 @@
         = spinner
 
 :javascript
+  var mergeObj = {};
   var merge_request;
 
   merge_request = new MergeRequest({
     action: "#{controller.action_name}"
   });
 
+- if @merge_request.merged? && @merge_request.merge_event
+  :javascript
+    mergeObj.author = "#{sanitize(@merge_request.merge_event.author.name)}";
+    mergeObj.author_link = "#{user_path(@merge_request.merge_event.author)}";
+    mergeObj.avatar = "#{@merge_request.merge_event.author.avatar_url(16)}";
+    mergeObj.source_branch_unavailable = #{!@merge_request.source_branch_exists? || (params[:delete_source] == 'true')};
+    mergeObj.target_branch_url = "#{namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)}";
+    mergeObj.target_branch = "#{@merge_request.target_branch}";
+    mergeObj.removeable_branch = #{@merge_request.can_remove_source_branch?(current_user)};
+    mergeObj.remove_source_branch_url = "#{namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch, format: :json)}";
+  :javascript
+
+
 :javascript
   $(function(){
-    MR().init({
-      label: "#{@merge_request.state_human_name}",
-      closed: #{@merge_request.closed?},
-      open: #{@merge_request.open?},
-      locked: #{@merge_request.locked?},
-      merged: #{@merge_request.merged?},
-      closeURL: "#{merge_request_path(@merge_request, merge_request: { state_event: :close }, format: :json)}",
-      reopenURL: "#{merge_request_path(@merge_request, merge_request: {state_event: :reopen }, format: :json)}"
-    });
+    mergeObj.label = "#{@merge_request.state_human_name}";
+    mergeObj.closed = #{@merge_request.closed?};
+    mergeObj.open = #{@merge_request.open?};
+    mergeObj.locked = #{@merge_request.locked?};
+    mergeObj.merged = #{@merge_request.merged?};
+    mergeObj.closeURL = "#{merge_request_path(@merge_request, merge_request: { state_event: :close }, format: :json)}";
+    mergeObj.reopenURL = "#{merge_request_path(@merge_request, merge_request: {state_event: :reopen }, format: :json)}";
+    MR().init(mergeObj);
   });
