@@ -59,7 +59,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def diffs
     @commit = @merge_request.last_commit
     @first_commit = @merge_request.first_commit
-    @diff_refs = [@merge_request.target_sha, @merge_request.source_sha]
+    @diff_refs = [@merge_request.last_commit.parent_id, @merge_request.source_sha]
 
     @comments_allowed = @reply_allowed = true
     @comments_target = {
