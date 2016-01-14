@@ -131,6 +131,9 @@
     &:last-child {
       margin-right: 0px;
     }
+    &.btn-xs {
+      margin-right: 3px;
+    }
   }
   &.disabled {
     pointer-events: auto !important;
