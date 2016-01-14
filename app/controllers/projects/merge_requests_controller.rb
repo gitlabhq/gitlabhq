@@ -136,8 +136,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if @merge_request.valid?
       author = nil
       avatar = nil
-      if @merge_request.merged? && @merge_request.merge_event
-        author = @merge_request.merge_event.author
+      if @merge_request.merged? && @merge_request.closed_event
+        author = @merge_request.closed_event.author
         avatar = avatar_icon(author)
       end
       respond_to do |format|

@@ -108,6 +108,13 @@
     mergeObj.remove_source_branch_url = "#{namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch, format: :json)}";
   :javascript
 
+- if @merge_request.closed? && @merge_request.closed_event
+  :javascript
+    mergeObj.author = "#{sanitize(@merge_request.closed_event.author.name)}";
+    mergeObj.author_link = "#{user_path(@merge_request.closed_event.author)}";
+    mergeObj.avatar = "#{@merge_request.closed_event.author.avatar_url(16)}";
+    mergeObj.target_branch_url = "#{namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch)}";
+    mergeObj.target_branch = "#{@merge_request.target_branch}";
 
 :javascript
   $(function(){

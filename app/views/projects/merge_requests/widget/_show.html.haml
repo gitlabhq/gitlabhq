@@ -1,10 +1,7 @@
-- if @merge_request.open?
-  = render 'projects/merge_requests/widget/open'
-- elsif @merge_request.merged?
-  = render 'projects/merge_requests/widget/merged'
-- elsif @merge_request.closed?
-  = render 'projects/merge_requests/widget/closed'
-- elsif @merge_request.locked?
+= render 'projects/merge_requests/widget/open'
+= render 'projects/merge_requests/widget/merged'
+= render 'projects/merge_requests/widget/closed'
+- if @merge_request.locked?
   = render 'projects/merge_requests/widget/locked'
 
 :javascript

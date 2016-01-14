@@ -573,7 +573,6 @@ Rails.application.routes.draw do
             get :commits
             get :diffs
             get :builds
-            get :author
             get :merge_check
             post :merge
             post :cancel_merge_when_build_succeeds

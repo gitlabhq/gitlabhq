@@ -1,12 +1,13 @@
-.mr-state-widget
+.mr-state-widget.mr-state-closed{"v-if"=>"state.closed"}
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
     %h4
       Closed
-      - if @merge_request.closed_event
-        by #{link_to_member(@project, @merge_request.closed_event.author, avatar: true)}
-        #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
+      %a.author_link{"v-bind:href"=>"state.author_link"}
+      %img.avatar.avatar-inline.s16{width: 16, "v-bind:src"=>"state.avatar",alt:""}
+      %span.author
+        {{state.author}}
     %p 
-      = succeed '.' do
-        The changes were not merged into
-        %span.label-branch= @merge_request.target_branch
+      The changes were not merged into
+      %span.label-branch
+        {{state.target_branch}}.
