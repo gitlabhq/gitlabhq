@@ -81,7 +81,7 @@
     .form-control {
       background: #FFF;
       font-size: 14px;
-      height: 42px;
+      height: 34px;
       margin-left: -1px;
     }
   }
@@ -232,10 +232,14 @@
   }
 }
 
+.dropdown-nr {
+  padding: 7px 0px;
+}
+
 .input-group-btn {
   .btn {
     @include btn-gray;
-    @include btn-middle;
+    @include btn-default;
 
     &:hover {
       outline: none;
@@ -252,6 +256,9 @@
     &.btn-clipboard {
       padding-left: 15px;
       padding-right: 15px;
+    }
+    &.btn-nr {
+      padding: 7px 10px;
     }
   }
 
