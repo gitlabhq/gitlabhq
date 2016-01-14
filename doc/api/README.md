@@ -149,7 +149,30 @@ When listing resources you can pass the following parameters:
 - `page` (default: `1`) - page number
 - `per_page` (default: `20`, max: `100`) - number of items to list per page
 
-[Link headers](http://www.w3.org/wiki/LinkHeader) are send back with each response. These have `rel` prev/next/first/last and contain the relevant URL. Please use these instead of generating your own URLs.
+### `Link` header
+
+[Link headers](http://www.w3.org/wiki/LinkHeader) are sent back with each response. These have `rel` prev/next/first/last and contain the relevant URL. Please use these instead of generating your own URLs.
+
+Example of `Link` header (line breaks added for clarity):
+```
+$ curl -I -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
+https://gitlab.example.com/api/v3/projects/gitlab-org/gitlab-ce/issues/1/notes?per_page=1&page=2
+
+Link: <http://gitlab.example.com/api/v3/projects/gitlab-org/gitlab-ce/issues/1/notes?page=1&per_page=1>; rel="prev",
+<http://gitlab.example.com/api/v3/projects/gitlab-org/gitlab-ce/issues/1/notes?page=3&per_page=1>; rel="next",
+<http://gitlab.example.com/api/v3/projects/gitlab-org/gitlab-ce/issues/1/notes?page=1&per_page=1>; rel="first",
+<http://gitlab.example.com/api/v3/projects/gitlab-org/gitlab-ce/issues/1/notes?page=3&per_page=1>; rel="last"
+```
+
+### Other pagination headers
+
+Additional pagination headers are also sent back:
+- `X-Total`: number of items returned in this page
+- `X-Total-Pages`: total number of pages of items
+- `X-Per-Page`: number of items per page
+- `X-Page`: index of the current page (starting at 1)
+- `X-Next-Page`: index of the next page
+- `X-Prev-Page`: index of the previous page
 
 ## id vs iid
 
