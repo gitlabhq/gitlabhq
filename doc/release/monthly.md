@@ -78,6 +78,9 @@ template are explained below:
 
 - [ ] Merge `x-y-stable` into `x-y-stable-ee`
 - [ ] Check that everyone is mentioned on the [blog post] using `@all`
+- In case the RC1 is missing things release RC2, RC3, etc.
+- In case there are many fixes on master instead of cherry-picking just merge master in stable.
+- Never freeze master.
 
 ### Xth: (2 working days before the 22nd)
 
