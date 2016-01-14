@@ -169,7 +169,7 @@ class WikiPage
   private
 
   def set_attributes
-    attributes[:slug] = @page.escaped_url_path
+    attributes[:slug] = @page.url_path
     attributes[:title] = @page.title
     attributes[:format] = @page.format
   end
