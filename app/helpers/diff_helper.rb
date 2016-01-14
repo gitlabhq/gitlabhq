@@ -1,6 +1,4 @@
 module DiffHelper
-  BLANK_SPACE = "&nbsp;".html_safe
-
   def diff_view
     params[:view] == 'parallel' ? 'parallel' : 'inline'
   end
@@ -49,15 +47,7 @@ module DiffHelper
     lines = []
     skip_next = false
 
-    # Building array of lines
-    #
-    # [
-    # left_type, left_line_number, left_line_content, left_line_code,
-    # right_line_type, right_line_number, right_line_content, right_line_code
-    # ]
-    #
     diff_file.highlighted_diff_lines.each do |line|
-
       full_line = line.text
       type = line.type
       line_code = generate_line_code(diff_file.file_path, line)
@@ -72,31 +62,81 @@ module DiffHelper
         next_line = next_line.text
       end
 
-      if type == 'match' || type.nil?
+      case type
+      when 'match', nil
         # line in the right panel is the same as in the left one
-        line = [type, line_old, full_line, line_code, type, line_new, full_line, line_code]
-        lines.push(line)
-      elsif type == 'old'
-        if next_type == 'new'
+        lines << {
+          left: {
+            type:       type,
+            number:     line_old,
+            text:       full_line,
+            line_code:  line_code,
+          },
+          right: {
+            type:       type,
+            number:     line_new,
+            text:       full_line,
+            line_code:  line_code
+          }
+        }
+      when 'old'
+        case next_type
+        when 'new'
           # Left side has text removed, right side has text added
-          line = [type, line_old, full_line, line_code, next_type, line_new, next_line, next_line_code]
-          lines.push(line)
+          lines << {
+            left: {
+              type:       type,
+              number:     line_old,
+              text:       full_line,
+              line_code:  line_code,
+            },
+            right: {
+              type:       next_type,
+              number:     line_new,
+              text:       next_line,
+              line_code:  next_line_code
+            }
+          }
           skip_next = true
-        elsif next_type == 'old' || next_type.nil?
+        when 'old', nil
           # Left side has text removed, right side doesn't have any change
           # No next line code, no new line number, no new line text
-          line = [type, line_old, full_line, line_code, next_type, nil, BLANK_SPACE, nil]
-          lines.push(line)
+          lines << {
+            left: {
+              type:       type,
+              number:     line_old,
+              text:       full_line,
+              line_code:  line_code,
+            },
+            right: {
+              type:       next_type,
+              number:     nil,
+              text:       "",
+              line_code:  nil
+            }
+          }
         end
-      elsif type == 'new'
+      when 'new'
         if skip_next
           # Change has been already included in previous line so no need to do it again
           skip_next = false
           next
         else
           # Change is only on the right side, left side has no change
-          line = [nil, nil, BLANK_SPACE, line_code, type, line_new, full_line, line_code]
-          lines.push(line)
+          lines << {
+            left: {
+              type:       nil,
+              number:     nil,
+              text:       "",
+              line_code:  line_code,
+            },
+            right: {
+              type:       type,
+              number:     line_new,
+              text:       full_line,
+              line_code:  line_code
+            }
+          }
         end
       end
     end
