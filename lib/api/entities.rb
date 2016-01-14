@@ -132,7 +132,6 @@ module API
     end
 
     class RepoCommitLastBuild < Grape::Entity
-      expose :status
       expose :started_at
       expose :finished_at
       expose :duration
@@ -141,6 +140,7 @@ module API
 
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
+      expose :status
       expose :ci_commit, as: :last_build, with: Entities::RepoCommitLastBuild
     end
 

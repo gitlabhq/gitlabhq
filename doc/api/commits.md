@@ -73,8 +73,8 @@ curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3
   "parent_ids": [
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],
+  "status": "failed",
   "last_build": {
-    "status": "failed",
     "coverage": null,
     "duration": 2,
     "started_at": "2015-12-24T17:54:09.744Z",

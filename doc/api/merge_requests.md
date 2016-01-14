@@ -110,12 +110,12 @@ Parameters:
     ],
     "short_id": "6c14056d",
     "title": "Add some fixes",
+    "status": "running",
     "last_build": {
       "coverage": null,
       "duration": 0,
       "finished_at": null,
-      "started_at": "2012-04-25T13:15:15.000+01:00",
-      "status": "running"
+      "started_at": "2012-04-25T13:15:15.000+01:00"
     }
   }
 }
