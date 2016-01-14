@@ -22,17 +22,11 @@ module API
           @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
 
           # We exclude notes that are cross-references and that cannot be viewed
-          # by the current user. By doing this exclusion at this level and not
-          # at the DB query level (which we cannot in that case), the current
-          # page can have less elements than :per_page even if
-          # there's more than one page.
+          # by the current user.
           notes =
-            # paginate() only works with a relation. This could lead to a
-            # mismatch between the pagination headers info and the actual notes
-            # array returned, but this is really a edge-case.
-            paginate(@noteable.notes).
+            @noteable.notes.
             reject { |n| n.cross_reference_not_visible_for?(current_user) }
-          present notes, with: Entities::Note
+          present paginate(Kaminari.paginate_array(notes)), with: Entities::Note
         end
 
         # Get a single +noteable+ note
