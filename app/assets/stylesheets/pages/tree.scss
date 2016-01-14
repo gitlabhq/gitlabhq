@@ -1,4 +1,7 @@
 .tree-holder {
+  > .nav-block {
+    margin: 11px 0;
+  }
 
   .file-finder {
     width: 50%;
@@ -13,7 +16,7 @@
 
     tr {
       > td, > th {
-        line-height: 28px;
+        line-height: 26px;
       }
 
       &:hover {
@@ -114,4 +117,9 @@
 .upload-link {
   font-weight: normal;
   color: $md-link-color;
+}
+
+.tree-controls {
+  float: right;
+  margin-top: 11px;
 }
