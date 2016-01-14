@@ -13,19 +13,19 @@
         = link_to project_path(forked_from_project) do
           = forked_from_project.namespace.try(:name)
   .cover-controls.left
-    .visibility-level-label.has_tooltip{title: project_visibility_level_description(@project.visibility_level), data: { container: 'body' } }
+    .visibility-level-label.btn-nr.has_tooltip{title: project_visibility_level_description(@project.visibility_level), data: { container: 'body' } }
       = visibility_level_icon(@project.visibility_level, fw: false)
       = visibility_level_label(@project.visibility_level)
 
   .cover-controls
     - if current_user
-      = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), class: 'btn btn-gray' do
+      = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), class: 'btn btn-nr btn-gray' do
         = icon('rss')
       - access = user_max_access_in_project(current_user.id, @project)
       - can_edit = can?(current_user, :admin_project, @project)
       - if access || can_edit
         %span.dropdown.project-settings-dropdown
-          %a.dropdown-new.btn.btn-gray#project-settings-button{href: '#', 'data-toggle' => 'dropdown'}
+          %a.dropdown-new.btn.btn-nr.btn-gray#project-settings-button{href: '#', 'data-toggle' => 'dropdown'}
             = icon('cog')
             = icon('angle-down')
           %ul.dropdown-menu.dropdown-menu-right
