@@ -34,17 +34,34 @@ describe Admin::UsersController do
   end
 
   describe 'PUT unblock/:id' do
-    let(:user) { create(:user) }
+    context 'ldap blocked users' do
+      let(:user) { create(:omniauth_user, provider: 'ldapmain') }
 
-    before do
-      user.block
+      before do
+        user.ldap_block
+      end
+
+      it 'will not unblock user' do
+        put :unblock, id: user.username
+        user.reload
+        expect(user.blocked?).to be_truthy
+        expect(flash[:alert]).to eq 'This user cannot be unlocked manually from GitLab'
+      end
     end
 
-    it 'unblocks user' do
-      put :unblock, id: user.username
-      user.reload
-      expect(user.blocked?).to be_falsey
-      expect(flash[:notice]).to eq 'Successfully unblocked'
+    context 'manually blocked users' do
+      let(:user) { create(:user) }
+
+      before do
+        user.block
+      end
+
+      it 'unblocks user' do
+        put :unblock, id: user.username
+        user.reload
+        expect(user.blocked?).to be_falsey
+        expect(flash[:notice]).to eq 'Successfully unblocked'
+      end
     end
   end
 
