@@ -66,7 +66,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def diff
     @form  = UnfoldForm.new(params)
-    @lines = Gitlab::Diff::Highlight.process_file(repository, @ref, @path)
+    @lines = Gitlab::Highlight.highlight_lines(repository, @ref, @path)
     @lines = @lines[@form.since - 1..@form.to - 1]
 
     if @form.bottom?

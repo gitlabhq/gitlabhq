@@ -18,7 +18,7 @@ module Gitlab
       end
 
       def highlighted_diff_lines
-        Gitlab::Diff::Highlight.process_diff_lines(self)
+        Gitlab::Diff::Highlight.new(self).highlight
       end
 
       def mode_changed?

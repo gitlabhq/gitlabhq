@@ -7,6 +7,13 @@ module Gitlab
       formatter.format(lexer.lex(blob_content, continue: continue)).html_safe
     end
 
+    def self.highlight_lines(repository, ref, file_name)
+      blob = repository.blob_at(ref, file_name)
+      return [] unless blob
+
+      highlight(file_name, blob.data).lines.map!(&:html_safe)
+    end
+
     private
 
     def self.rouge_formatter(options = {})

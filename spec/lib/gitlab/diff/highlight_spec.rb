@@ -51,9 +51,9 @@ describe Gitlab::Diff::Highlight, lib: true do
     end
   end
 
-  describe '.process_file' do
+  describe '.highlight_lines' do
     let(:lines) do
-      Gitlab::Diff::Highlight.process_file(project.repository, commit.id, 'files/ruby/popen.rb')
+      Gitlab::Diff::Highlight.highlight_lines(project.repository, commit.id, 'files/ruby/popen.rb')
     end
 
     it 'should properly highlight all the lines' do
