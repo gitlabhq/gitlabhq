@@ -13,7 +13,10 @@ var MR = function(){
           return new Flash(mergeFailMessage, 'alert');
         },
         success: function(data, textStatus, jqXHR) {
-          console.log("data",data);
+          var s = '';
+          for(s in data) {
+            store.state[s] = data[s]; 
+          }
         }
       });
     }

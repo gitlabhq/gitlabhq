@@ -141,9 +141,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: {
-            saved: @merge_request.valid?,
-            assignee_avatar_url: @merge_request.assignee.try(:avatar_url)
+          render json:     {
+            label: @merge_request.state_human_name,
+            open: @merge_request.open?,
+            closed: @merge_request.closed?
           }
         end
       end

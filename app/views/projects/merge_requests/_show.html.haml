@@ -100,7 +100,7 @@
       label: "#{@merge_request.state_human_name}",
       closed: #{@merge_request.closed?},
       open: #{@merge_request.open?},
-      closeURL: "#{merge_request_path(@merge_request, merge_request: { state_event: :close })}",
-      reopenURL: "#{merge_request_path(@merge_request, merge_request: {state_event: :reopen })}"
+      closeURL: "#{merge_request_path(@merge_request, merge_request: { state_event: :close }, format: :json)}",
+      reopenURL: "#{merge_request_path(@merge_request, merge_request: {state_event: :reopen }, format: :json)}"
     });
   });
