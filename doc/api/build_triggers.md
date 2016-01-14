@@ -1,26 +1,22 @@
 # Build triggers
 
+You can read more about [triggering builds through the API](../ci/triggers/README.md).
+
 ## List project triggers
 
-Get a list of project triggers
+Get a list of project's build triggers.
 
 ```
 GET /projects/:id/triggers
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| id        | integer | yes      | The ID of a project |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project |
 
 ```
 curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers"
 ```
-
-### Example of response
 
 ```json
 [
@@ -43,26 +39,20 @@ curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3
 
 ## Get trigger details
 
-Get details of trigger of a project
+Get details of project's build trigger.
 
 ```
 GET /projects/:id/triggers/:token
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description              |
 |-----------|---------|----------|--------------------------|
-| id        | integer | yes      | The ID of a project      |
-| token     | string  | yes      | The `token` of a project |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project      |
+| `token`   | string  | yes      | The `token` of a trigger |
 
 ```
 curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers/7b9148c158980bbd9bcea92c17522d"
 ```
-
-### Example of response
 
 ```json
 {
@@ -76,25 +66,19 @@ curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3
 
 ## Create a project trigger
 
-Create a trigger for a project
+Create a build trigger for a project.
 
 ```
 POST /projects/:id/triggers
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description              |
 |-----------|---------|----------|--------------------------|
-| id        | integer | yes      | The ID of a project      |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project      |
 
 ```
 curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers"
 ```
-
-### Example of response
 
 ```json
 {
@@ -108,20 +92,16 @@ curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.co
 
 ## Remove a project trigger
 
-Remove a trigger of a project
+Remove a project's build trigger.
 
 ```
 DELETE /projects/:id/triggers/:token
 ```
 
-### Parameters
-
 | Attribute | Type    | required | Description              |
 |-----------|---------|----------|--------------------------|
-| id        | integer | yes      | The ID of a project      |
-| token     | string  | yes      | The `token` of a project |
-
-### Example of request
+| `id`      | integer | yes      | The ID of a project      |
+| `token`   | string  | yes      | The `token` of a project |
 
 ```
 curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers/7b9148c158980bbd9bcea92c17522d"
