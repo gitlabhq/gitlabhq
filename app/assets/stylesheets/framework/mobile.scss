@@ -100,11 +100,6 @@
 }
 
 @media (max-width: $screen-sm-max) {
-  .page-with-sidebar .content-wrapper {
-    padding: 0;
-    padding-top: 1px;
-  }
-
   .issues-filters {
     .milestone-filter, .labels-filter {
       display: none;
