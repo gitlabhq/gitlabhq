@@ -4,7 +4,7 @@
       - if @all_builds.running_or_pending.any?
         = link_to 'Cancel all', cancel_all_admin_builds_path, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
-  %ul.center-top-menu
+  %ul.nav-links
     %li{class: ('active' if @scope.nil?)}
       = link_to admin_builds_path do
         All

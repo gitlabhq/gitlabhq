@@ -21,11 +21,10 @@
 
 .content-wrapper {
   width: 100%;
-  padding: 20px;
 
   .container-fluid {
     background: #FFF;
-    padding: $gl-padding;
+    padding: 0 $gl-padding;
 
     &.container-blank {
       background: none;

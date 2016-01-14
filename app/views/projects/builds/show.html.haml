@@ -14,7 +14,7 @@
 
   #up-build-trace
   - if @commit.matrix_for_ref?(@build.ref)
-    %ul.center-top-menu.no-top.no-bottom
+    %ul.nav-links.no-top.no-bottom
       - @commit.latest_builds_for_ref(@build.ref).each do |build|
         %li{class: ('active' if build == @build) }
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
