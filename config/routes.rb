@@ -88,6 +88,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
+    member do
+      get :unsubscribe
+    end
+  end
+
   # Spam reports
   resources :abuse_reports, only: [:new, :create]
 
@@ -513,7 +519,7 @@ Rails.application.routes.draw do
           end
         end
 
-        WIKI_SLUG_ID = { id: /[a-zA-Z.0-9_\-\/]+/ } unless defined? WIKI_SLUG_ID
+        WIKI_SLUG_ID = { id: /\S+/ } unless defined? WIKI_SLUG_ID
 
         scope do
           # Order matters to give priority to these matches
