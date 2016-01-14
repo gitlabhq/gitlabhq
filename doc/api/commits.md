@@ -83,7 +83,7 @@ curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3
 }
 ```
 
-`duration` in `last_build` - value exposed in **seconds**
+**Note:** The `duration` value as exposed in `last_build`, is in seconds.
 
 ## Get the diff of a commit
 

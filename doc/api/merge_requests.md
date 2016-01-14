@@ -121,7 +121,7 @@ Parameters:
 }
 ```
 
-`duration` in `last_commit` > `last_build` - value exposed in **seconds**
+**Note:** The `duration` value as exposed in `last_commit > last_build`, is in seconds.
 
 ## Get single MR commits
 
