@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
+  - Properly generate diff of orphan commits, like the first commit in a repository
   - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
   - Improved performance of finding issues for an entire group (Yorick Peterse)
   - Added custom application performance measuring system powered by InfluxDB (Yorick Peterse)
