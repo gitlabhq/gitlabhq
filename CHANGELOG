@@ -50,6 +50,7 @@ v 8.4.0 (unreleased)
   - Fix Encoding::CompatibilityError bug when markdown content has some complex URL (Jason Lee)
   - Add API support for managing build variables of project
   - Allow broadcast messages to be edited
+  - Autosize Markdown textareas
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)

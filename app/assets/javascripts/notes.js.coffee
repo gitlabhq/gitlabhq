@@ -1,4 +1,5 @@
 #= require autosave
+#= require autosize
 #= require dropzone
 #= require dropzone_input
 #= require gfm_auto_complete
@@ -246,6 +247,7 @@ class @Notes
       else
         previewButton.removeClass("turn-on").addClass "turn-off"
 
+    autosize(textarea)
     new Autosave textarea, [
       "Note"
       form.find("#note_commit_id").val()
