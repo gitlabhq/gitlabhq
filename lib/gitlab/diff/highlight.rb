@@ -32,23 +32,8 @@ module Gitlab
       def highlight
         return [] if @lines.empty?
 
-        extract_line_prefixes
-        update_diff_lines
-      end
-
-      private
-
-      def text_lines
-        @text_lines ||= @lines.map(&:text)
-      end
-
-      def extract_line_prefixes
-        @diff_line_prefixes ||= text_lines.map { |line| line.sub!(/\A((\+|\-))/, '');$1 }
-      end
-
-      def update_diff_lines
         @lines.each_with_index do |line, i|
-          line_prefix = @diff_line_prefixes[i] || ' '
+          line_prefix = line.text.match(/\A([+-])/) ? $1 : ' '
 
           # ignore highlighting for "match" lines
           next if line.type == 'match'
@@ -62,24 +47,18 @@ module Gitlab
 
           # Only update text if line is found. This will prevent
           # issues with submodules given the line only exists in diff content.
-          line.text = highlighted_line.sub(/\A\s/, line_prefix).html_safe if highlighted_line
+          line.text = highlighted_line.insert(0, line_prefix).html_safe if highlighted_line
         end
 
         @lines
       end
 
       def old_lines
-        @old_lines ||= begin
-          lines = self.class.process_file(diff_repository, diff_old_ref, diff_old_path)
-          lines.map! { |line| " #{line}" }
-        end
+        @old_lines ||= self.class.process_file(diff_repository, diff_old_ref, diff_old_path)
       end
 
       def new_lines
-        @new_lines ||= begin
-          lines = self.class.process_file(diff_repository, diff_new_ref, diff_new_path)
-          lines.map! { |line| " #{line}" }
-        end
+        @new_lines ||= self.class.process_file(diff_repository, diff_new_ref, diff_new_path)
       end
     end
   end
