@@ -97,10 +97,6 @@ module Ci
         new_build.save
         new_build
       end
-
-      def available_statuses
-        state_machines[:status].states.map &:value
-      end
     end
 
     state_machine :status, initial: :pending do

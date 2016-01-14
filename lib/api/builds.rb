@@ -125,7 +125,7 @@ module API
       def filter_builds(builds, scope)
         return builds if scope.nil? || scope.empty?
 
-        available_statuses = Ci::Build.available_statuses
+        available_statuses = ::CommitStatus::AVAILABLE_STATUSES
         scope =
           if scope.is_a?(String)
             [scope]
