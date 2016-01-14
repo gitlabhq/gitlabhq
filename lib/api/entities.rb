@@ -131,10 +131,17 @@ module API
       expose :safe_message, as: :message
     end
 
+    class RepoCommitLastBuild < Grape::Entity
+      expose :status
+      expose :started_at
+      expose :finished_at
+      expose :duration
+      expose :coverage
+    end
+
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
-      expose :status
-      expose :started_at, :finished_at, :duration, :coverage
+      expose :ci_commit, as: :last_build, with: Entities::RepoCommitLastBuild
     end
 
     class ProjectSnippet < Grape::Entity

@@ -102,22 +102,26 @@ Parameters:
     "author_name": "Administrator",
     "authored_date": "2012-04-25T13:12:15.000+01:00",
     "committed_date": "2012-04-25T13:12:15.000+01:00",
-    "coverage": null,
     "created_at": "2012-04-25T13:12:15.000+01:00",
-    "duration": 0,
-    "finished_at": null,
     "id": "6c14056df0be27374e849ad67295a22cd0f7e0d0",
     "message": "Add some fixes",
     "parent_ids": [
       "6b053ad388c531c21907f022933e5e81598db388"
     ],
     "short_id": "6c14056d",
-    "started_at": null,
-    "status": "pending",
-    "title": "Add some fixes"
+    "title": "Add some fixes",
+    "last_build": {
+      "coverage": null,
+      "duration": 0,
+      "finished_at": null,
+      "started_at": "2012-04-25T13:15:15.000+01:00",
+      "status": "running"
+    }
   }
 }
 ```
+
+`duration` in `last_commit` > `last_build` - value exposed in **seconds**
 
 ## Get single MR commits
 

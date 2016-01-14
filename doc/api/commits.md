@@ -73,13 +73,17 @@ curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3
   "parent_ids": [
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],
-  "status": "running",
-  "coverage": null,
-  "duration": 2,
-  "started_at": "2015-12-24T17:54:09.744Z",
-  "finished_at": "2016-01-11T10:14:09.526Z"
+  "last_build": {
+    "status": "failed",
+    "coverage": null,
+    "duration": 2,
+    "started_at": "2015-12-24T17:54:09.744Z",
+    "finished_at": "2016-01-11T10:14:09.526Z"
+  }
 }
 ```
+
+`duration` in `last_build` - value exposed in **seconds**
 
 ## Get the diff of a commit
 
