@@ -47,8 +47,9 @@ v 8.4.0 (unreleased)
   - Allow subsequent validations in CI Linter
   - Show referenced MRs & Issues only when the current viewer can access them
   - Fix Encoding::CompatibilityError bug when markdown content has some complex URL (Jason Lee)
-  - Add API support for managing builds of a project
-  - Add API support for managing build variables of project
+  - Add API support for managing project's builds
+  - Add API support for managing project's build triggers
+  - Add API support for managing project's build variables
   - Allow broadcast messages to be edited
 
 v 8.3.4

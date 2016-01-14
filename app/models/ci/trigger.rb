@@ -33,6 +33,10 @@ module Ci
       trigger_requests.last
     end
 
+    def last_used
+      last_trigger_request.try(:created_at)
+    end
+
     def short_token
       token[0...10]
     end
