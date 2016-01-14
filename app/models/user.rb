@@ -205,6 +205,7 @@ class User < ActiveRecord::Base
 
     event :activate do
       transition blocked: :active
+      transition ldap_blocked: :active
     end
 
     state :blocked, :ldap_blocked do

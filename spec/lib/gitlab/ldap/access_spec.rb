@@ -42,7 +42,6 @@ describe Gitlab::LDAP::Access, lib: true do
 
       context 'and has no disabled flag in active diretory' do
         before do
-          user.block
           allow(Gitlab::LDAP::Person).to receive(:disabled_via_active_directory?).and_return(false)
         end
 
@@ -50,7 +49,7 @@ describe Gitlab::LDAP::Access, lib: true do
 
         context 'when auto-created users are blocked' do
           before do
-            allow_any_instance_of(Gitlab::LDAP::Config).to receive(:block_auto_created_users).and_return(true)
+            user.block
           end
 
           it 'does not unblock user in GitLab' do
@@ -62,7 +61,7 @@ describe Gitlab::LDAP::Access, lib: true do
 
         context 'when auto-created users are not blocked' do
           before do
-            allow_any_instance_of(Gitlab::LDAP::Config).to receive(:block_auto_created_users).and_return(false)
+            user.ldap_block
           end
 
           it 'should unblock user in GitLab' do

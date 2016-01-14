@@ -40,9 +40,7 @@ module Gitlab
             user.ldap_block
             false
           else
-            if (user.blocked? && !ldap_config.block_auto_created_users) || user.ldap_blocked?
-              user.activate
-            end
+            user.activate if user.ldap_blocked?
             true
           end
         else
