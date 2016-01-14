@@ -140,14 +140,14 @@ describe User, models: true do
         expect(user).to be_invalid
       end
 
-      it 'rejects mailto:test@example.com' do
+      it 'accepts mailto:test@example.com' do
         user = build(:user, email: 'mailto:test@example.com')
-        expect(user).to be_invalid
+        expect(user).to be_valid
       end
 
-      it "rejects lol!'+=?><#$%^&*()@gmail.com" do
+      it "accepts lol!'+=?><#$%^&*()@gmail.com" do
         user = build(:user, email: "lol!'+=?><#$%^&*()@gmail.com")
-        expect(user).to be_invalid
+        expect(user).to be_valid
       end
 
       context 'when no signup domains listed' do
