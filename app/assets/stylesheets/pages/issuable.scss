@@ -95,7 +95,7 @@
 
   .cross-project-reference {
     color: $gl-link-color;
-    
+
     span {
       white-space: nowrap;
       width: 85%;
@@ -103,6 +103,10 @@
       position: relative;
       display: inline-block;
       text-overflow: ellipsis;
+    }
+
+    cite {
+      font-style: normal;
     }
 
     button {
