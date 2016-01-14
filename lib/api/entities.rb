@@ -367,6 +367,33 @@ module API
       expose :id, :variables
     end
 
+    class Runner < Grape::Entity
+      expose :id
+      expose :description
+      expose :active
+      expose :is_shared
+      expose :name
+    end
+
+    class Build < Grape::Entity
+      expose :id, :status, :stage, :name, :ref, :tag, :coverage
+      expose :created_at, :started_at, :finished_at
+      expose :user, with: User
+      # TODO: download_url in Ci:Build model is an GitLab Web Interface URL, not API URL. We should think on some API
+      #       for downloading of artifacts (see: https://gitlab.com/gitlab-org/gitlab-ce/issues/4255)
+      expose :download_url do |repo_obj, options|
+        if options[:user_can_download_artifacts]
+          repo_obj.download_url
+        end
+      end
+      expose :commit, with: RepoCommit do |repo_obj, _options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit.commit_data
+        end
+      end
+      expose :runner, with: Runner
+    end
+
     class Variable < Grape::Entity
       expose :key, :value
     end
