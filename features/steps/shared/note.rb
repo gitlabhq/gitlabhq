@@ -106,6 +106,10 @@ module SharedNote
     end
   end
 
+  step 'I should see no notes at all' do
+    expect(page).to_not have_css('.note')
+  end
+
   # Markdown
 
   step 'I leave a comment with a header containing "Comment with a header"' do
