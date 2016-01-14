@@ -83,8 +83,12 @@
     .form-control {
       background: #FFF;
       font-size: 14px;
-      height: 42px;
       margin-left: -1px;
+    }
+
+    .btn-clipboard {
+      border: 1px solid $border-color;
+      padding: 6px $gl-padding;
     }
   }
 
@@ -162,8 +166,8 @@
         border-style: solid;
         font-size: 13px;
         font-weight: 600;
-        line-height: 20px;
-        padding: 11px 16px;
+        line-height: 13px;
+        padding: $gl-vert-padding $gl-padding;
         letter-spacing: .4px;
         padding: 10px;
         text-align: center;
@@ -225,48 +229,6 @@
       }
     }
   }
-}
-
-.projects-search-form {
-  .input-group .form-control {
-    height: 42px;
-  }
-}
-
-.input-group-btn {
-  .btn {
-    @include btn-gray;
-    @include btn-middle;
-
-    &:hover {
-      outline: none;
-    }
-
-    &:focus {
-      outline: none;
-    }
-
-    &:active {
-      outline: none;
-    }
-
-    &.btn-clipboard {
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-  }
-
-  .active {
-    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-
-    border: 1px solid #c6cacf !important;
-    background-color: #e4e7ed !important;
-  }
-
-  .btn-green {
-    @include btn-green
-  }
-
 }
 
 .split-repo-buttons {
@@ -378,9 +340,9 @@
 
 .breadcrumb.repo-breadcrumb {
   padding: 0;
-  line-height: 42px;
   background: transparent;
   border: none;
+  line-height: 42px;
   margin: 0;
 
   > li + li:before {
@@ -407,12 +369,12 @@
     width: 50%;
     display: inline-block;
     float: right;
-    padding-top: 7px;
+    padding-top: 11px;
     text-align: right;
 
     .btn-green {
-      margin-top: -2px;
       margin-left: 10px;
+      float: right;
     }
   }
 
