@@ -1,6 +1,6 @@
 .detail-page-header#merge-request-header{'v-cloak'=> true, transition: "fade"}
   .status-box{ class: status_box_class(@merge_request)}
-    {{ status }}
+    {{ state.label }}
   %span.identifier
     Merge Request ##{@merge_request.iid}
   %span.creator
@@ -16,10 +16,10 @@
 
   .issue-btn-group.pull-right
     - if can?(current_user, :update_merge_request, @merge_request)
-      - if @merge_request.open?
-        = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: 'btn btn-nr btn-grouped btn-close', title: 'Close merge request'
-        = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-nr btn-grouped issuable-edit', id: 'edit_merge_request' do
-          %i.fa.fa-pencil-square-o
-          Edit
-      - if @merge_request.closed?
-        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: 'Reopen merge request'
+      = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), data: {no_turbolink: true}, class: 'btn btn-nr btn-grouped btn-close', data: {no_turbolink: true}, title: 'Close merge request', "v-show"=>"state.open", "v-on:click.prevent" => "closeClicked"
+      
+      = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), data: {no_turbolink: true}, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: 'Reopen merge request', "v-show"=>"state.closed", "v-on:click.prevent" => "reopenClicked"
+
+      = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-nr btn-grouped issuable-edit', id: 'edit_merge_request', "v-show"=>"state.open" do
+        %i.fa.fa-pencil-square-o
+        Edit

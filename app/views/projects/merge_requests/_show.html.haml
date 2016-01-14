@@ -97,6 +97,10 @@
 :javascript
   $(function(){
     MR().init({
-      status: "#{@merge_request.state_human_name}"
+      label: "#{@merge_request.state_human_name}",
+      closed: #{@merge_request.closed?},
+      open: #{@merge_request.open?},
+      closeURL: "#{merge_request_path(@merge_request, merge_request: { state_event: :close })}",
+      reopenURL: "#{merge_request_path(@merge_request, merge_request: {state_event: :reopen })}"
     });
   });

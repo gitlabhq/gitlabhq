@@ -46,16 +46,6 @@ class @MergeRequest
 
   initMRBtnListeners: ->
     _this = @
-    $('a.btn-close, a.btn-reopen').on 'click', (e) ->
-      $this = $(this)
-      if $this.data('submitted')
-        return
-      e.preventDefault()
-      e.stopImmediatePropagation()
-      shouldSubmit = $this.hasClass('btn-comment')
-      console.log("shouldSubmit")
-      if shouldSubmit
-        _this.submitNoteForm($this.closest('form'),$this)
 
   submitNoteForm: (form, $button) =>
     noteText = form.find("textarea.js-note-text").val()
