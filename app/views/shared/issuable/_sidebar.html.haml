@@ -71,14 +71,6 @@
           = f.select :weight, projects_weight_options(issuable.weight), { include_blank: true },
             { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
 
-    .block
-      .title
-        Cross-project reference
-      .cross-project-reference
-        %span#cross-project-reference
-          = cross_project_reference(@project, issuable)
-        = clipboard_button(clipboard_target: 'span#cross-project-reference')
-
     = render "shared/issuable/participants", participants: issuable.participants(current_user)
 
     - if current_user
