@@ -16,7 +16,7 @@ module Banzai
       end
 
       def call
-        doc.css('a.gfm').each do |node|
+        Querying.css(doc, 'a.gfm').each do |node|
           gather_references(node)
         end
 

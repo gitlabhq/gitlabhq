@@ -2,12 +2,13 @@
 #
 # Table name: ci_triggers
 #
-#  id         :integer          not null, primary key
-#  token      :string(255)
-#  project_id :integer          not null
-#  deleted_at :datetime
-#  created_at :datetime
-#  updated_at :datetime
+#  id            :integer          not null, primary key
+#  token         :string(255)
+#  project_id    :integer
+#  deleted_at    :datetime
+#  created_at    :datetime
+#  updated_at    :datetime
+#  gl_project_id :integer
 #
 
 module Ci

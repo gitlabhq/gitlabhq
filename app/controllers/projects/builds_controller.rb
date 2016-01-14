@@ -12,12 +12,12 @@ class Projects::BuildsController < Projects::ApplicationController
     @builds = @all_builds.order('created_at DESC')
     @builds =
       case @scope
-      when 'all'
-        @builds
+      when 'running'
+        @builds.running_or_pending.reverse_order
       when 'finished'
         @builds.finished
       else
-        @builds.running_or_pending.reverse_order
+        @builds
       end
     @builds = @builds.page(params[:page]).per(30)
   end

@@ -5,7 +5,7 @@
 module Gitlab
   module LDAP
     class Access
-      attr_reader :adapter, :provider, :user
+      attr_reader :provider, :user
 
       def self.open(user, &block)
         Gitlab::LDAP::Adapter.open(user.ldap_identity.provider) do |adapter|
@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def allowed?
-        if Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
+        if ldap_user
           return true unless ldap_config.active_directory
 
           # Block user in GitLab if he/she was blocked in AD
@@ -58,6 +58,10 @@ module Gitlab
 
       def ldap_config
         Gitlab::LDAP::Config.new(provider)
+      end
+
+      def ldap_user
+        @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
       end
     end
   end

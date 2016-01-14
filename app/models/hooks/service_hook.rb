@@ -15,6 +15,7 @@
 #  tag_push_events         :boolean          default(FALSE)
 #  note_events             :boolean          default(FALSE), not null
 #  enable_ssl_verification :boolean          default(TRUE)
+#  build_events            :boolean          default(FALSE), not null
 #
 
 class ServiceHook < WebHook

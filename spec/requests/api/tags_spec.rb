@@ -65,6 +65,27 @@ describe API::API, api: true  do
       end
     end
 
+    describe 'DELETE /projects/:id/repository/tags/:tag_name' do
+      let(:tag_name) { project.repository.tag_names.sort.reverse.first }
+
+      before do
+        allow_any_instance_of(Repository).to receive(:rm_tag).and_return(true)
+      end
+
+      context 'delete tag' do
+        it 'should delete an existing tag' do
+          delete api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
+          expect(response.status).to eq(200)
+          expect(json_response['tag_name']).to eq(tag_name)
+        end
+
+        it 'should raise 404 if the tag does not exist' do
+          delete api("/projects/#{project.id}/repository/tags/foobar", user)
+          expect(response.status).to eq(404)
+        end
+      end
+    end
+
     context 'annotated tag' do
       it 'should create a new annotated tag' do
         # Identity must be set in .gitconfig to create annotated tag.

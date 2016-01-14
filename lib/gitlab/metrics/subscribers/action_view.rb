@@ -19,6 +19,7 @@ module Gitlab
           values = values_for(event)
           tags   = tags_for(event)
 
+          current_transaction.increment(:view_duration, event.duration)
           current_transaction.add_metric(SERIES, values, tags)
         end
 
@@ -32,16 +33,8 @@ module Gitlab
 
         def tags_for(event)
           path = relative_path(event.payload[:identifier])
-          tags = { view: path }
 
-          file, line = Metrics.last_relative_application_frame
-
-          if file and line
-            tags[:file] = file
-            tags[:line] = line
-          end
-
-          tags
+          { view: path }
         end
 
         def current_transaction

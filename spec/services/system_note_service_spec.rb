@@ -171,7 +171,7 @@ describe SystemNoteService, services: true do
 
     context 'when milestone added' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Milestone changed to #{milestone.title}"
+        expect(subject.note).to eq "Milestone changed to #{milestone.to_reference}"
       end
     end
 

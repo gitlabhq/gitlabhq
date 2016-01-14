@@ -1,56 +1,80 @@
+# Zen Mode (full screen) textarea
+#
+#= provides zen_mode:enter
+#= provides zen_mode:leave
+#
+#= require jquery.scrollTo
 #= require dropzone
 #= require mousetrap
 #= require mousetrap/pause
-
+#
+# ### Events
+#
+# `zen_mode:enter`
+#
+# Fired when the "Edit in fullscreen" link is clicked.
+#
+# **Synchronicity** Sync
+# **Bubbles** Yes
+# **Cancelable** No
+# **Target** a.js-zen-enter
+#
+# `zen_mode:leave`
+#
+# Fired when the "Leave Fullscreen" link is clicked.
+#
+# **Synchronicity** Sync
+# **Bubbles** Yes
+# **Cancelable** No
+# **Target** a.js-zen-leave
+#
 class @ZenMode
   constructor: ->
-    @active_zen_area = null
-    @active_checkbox = null
-    @scroll_position = 0
+    @active_backdrop = null
+    @active_textarea = null
 
-    $(window).scroll =>
-      if not @active_checkbox
-        @scroll_position = window.pageYOffset
-
-    $('body').on 'click', '.zen-enter-link', (e) =>
+    $(document).on 'click', '.js-zen-enter', (e) ->
       e.preventDefault()
-      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', true).change()
+      $(e.currentTarget).trigger('zen_mode:enter')
 
-    $('body').on 'click', '.zen-leave-link', (e) =>
+    $(document).on 'click', '.js-zen-leave', (e) ->
       e.preventDefault()
-      $(e.currentTarget).closest('.zennable').find('.zen-toggle-comment').prop('checked', false).change()
+      $(e.currentTarget).trigger('zen_mode:leave')
 
-    $('body').on 'change', '.zen-toggle-comment', (e) =>
-      checkbox = e.currentTarget
-      if checkbox.checked
-        # Disable other keyboard shortcuts in ZEN mode
-        Mousetrap.pause()
-        @updateActiveZenArea(checkbox)
-      else
-        @exitZenMode()
+    $(document).on 'zen_mode:enter', (e) =>
+      @enter(e.target.parentNode)
+    $(document).on 'zen_mode:leave', (e) =>
+      @exit()
 
-    $(document).on 'keydown', (e) =>
-      if e.keyCode is 27 # Esc
-        @exitZenMode()
+    $(document).on 'keydown', (e) ->
+      if e.keyCode == 27 # Esc
         e.preventDefault()
+        $(document).trigger('zen_mode:leave')
 
-  updateActiveZenArea: (checkbox) =>
-    @active_checkbox = $(checkbox)
-    @active_checkbox.prop('checked', true)
-    @active_zen_area = @active_checkbox.parent().find('textarea')
+  enter: (backdrop) ->
+    Mousetrap.pause()
+
+    @active_backdrop = $(backdrop)
+    @active_backdrop.addClass('fullscreen')
+
+    @active_textarea = @active_backdrop.find('textarea')
+
     # Prevent a user-resized textarea from persisting to fullscreen
-    @active_zen_area.removeAttr('style')
-    @active_zen_area.focus()
+    @active_textarea.removeAttr('style')
+    @active_textarea.focus()
 
-  exitZenMode: =>
-    if @active_zen_area isnt null
+  exit: ->
+    if @active_textarea
       Mousetrap.unpause()
-      @active_checkbox.prop('checked', false)
-      @active_zen_area = null
-      @active_checkbox = null
-      @restoreScroll(@scroll_position)
-      # Enable dropzone when leaving ZEN mode
+
+      @active_textarea.closest('.zen-backdrop').removeClass('fullscreen')
+
+      @scrollTo(@active_textarea)
+
+      @active_textarea = null
+      @active_backdrop = null
+
       Dropzone.forElement('.div-dropzone').enable()
 
-  restoreScroll: (y) ->
-    window.scrollTo(window.pageXOffset, y)
+  scrollTo: (zen_area) ->
+    $.scrollTo(zen_area, 0, offset: -150)

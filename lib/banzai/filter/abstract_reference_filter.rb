@@ -47,7 +47,17 @@ module Banzai
         { object_sym => LazyReference.new(object_class, node.attr(data_reference)) }
       end
 
-      delegate :object_class, :object_sym, :references_in, to: :class
+      def object_class
+        self.class.object_class
+      end
+
+      def object_sym
+        self.class.object_sym
+      end
+
+      def references_in(*args, &block)
+        self.class.references_in(*args, &block)
+      end
 
       def find_object(project, id)
         # Implement in child class
@@ -60,27 +70,31 @@ module Banzai
       end
 
       def call
-        # `#123`
-        replace_text_nodes_matching(object_class.reference_pattern) do |content|
-          object_link_filter(content, object_class.reference_pattern)
+        if object_class.reference_pattern
+          # `#123`
+          replace_text_nodes_matching(object_class.reference_pattern) do |content|
+            object_link_filter(content, object_class.reference_pattern)
+          end
+
+          # `[Issue](#123)`, which is turned into
+          # `<a href="#123">Issue</a>`
+          replace_link_nodes_with_href(object_class.reference_pattern) do |link, text|
+            object_link_filter(link, object_class.reference_pattern, link_text: text)
+          end
         end
 
-        # `[Issue](#123)`, which is turned into
-        # `<a href="#123">Issue</a>`
-        replace_link_nodes_with_href(object_class.reference_pattern) do |link, text|
-          object_link_filter(link, object_class.reference_pattern, link_text: text)
-        end
+        if object_class.link_reference_pattern
+          # `http://gitlab.example.com/namespace/project/issues/123`, which is turned into
+          # `<a href="http://gitlab.example.com/namespace/project/issues/123">http://gitlab.example.com/namespace/project/issues/123</a>`
+          replace_link_nodes_with_text(object_class.link_reference_pattern) do |text|
+            object_link_filter(text, object_class.link_reference_pattern)
+          end
 
-        # `http://gitlab.example.com/namespace/project/issues/123`, which is turned into
-        # `<a href="http://gitlab.example.com/namespace/project/issues/123">http://gitlab.example.com/namespace/project/issues/123</a>`
-        replace_link_nodes_with_text(object_class.link_reference_pattern) do |text|
-          object_link_filter(text, object_class.link_reference_pattern)
-        end
-
-        # `[Issue](http://gitlab.example.com/namespace/project/issues/123)`, which is turned into
-        # `<a href="http://gitlab.example.com/namespace/project/issues/123">Issue</a>`
-        replace_link_nodes_with_href(object_class.link_reference_pattern) do |link, text|
-          object_link_filter(link, object_class.link_reference_pattern, link_text: text)
+          # `[Issue](http://gitlab.example.com/namespace/project/issues/123)`, which is turned into
+          # `<a href="http://gitlab.example.com/namespace/project/issues/123">Issue</a>`
+          replace_link_nodes_with_href(object_class.link_reference_pattern) do |link, text|
+            object_link_filter(link, object_class.link_reference_pattern, link_text: text)
+          end
         end
       end
 

@@ -1,10 +1,13 @@
+- page_description brand_title unless page_description
+
+- site_name = "GitLab"
 %head{prefix: "og: http://ogp.me/ns#"}
   %meta{charset: "utf-8"}
   %meta{'http-equiv' => 'X-UA-Compatible', content: 'IE=edge'}
 
   -# Open Graph - http://ogp.me/
   %meta{property: 'og:type',        content: "object"}
-  %meta{property: 'og:site_name',   content: "GitLab"}
+  %meta{property: 'og:site_name',   content: site_name}
   %meta{property: 'og:title',       content: page_title}
   %meta{property: 'og:description', content: page_description}
   %meta{property: 'og:image',       content: page_image}
@@ -17,7 +20,7 @@
   %meta{property: 'twitter:image',        content: page_image}
   = page_card_meta_tags
 
-  %title= page_title('GitLab')
+  %title= page_title(site_name)
   %meta{name: "description", content: page_description}
 
   = favicon_link_tag 'favicon.ico'

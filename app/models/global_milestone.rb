@@ -121,9 +121,9 @@ class GlobalMilestone
   def expires_at
     if due_date
       if due_date.past?
-        "expired at #{due_date.stamp("Aug 21, 2011")}"
+        "expired on #{due_date.to_s(:medium)}"
       else
-        "expires at #{due_date.stamp("Aug 21, 2011")}"
+        "expires on #{due_date.to_s(:medium)}"
       end
     end
   end

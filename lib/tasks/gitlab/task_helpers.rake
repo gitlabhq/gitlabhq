@@ -2,6 +2,8 @@ module Gitlab
   class TaskAbortedByUserError < StandardError; end
 end
 
+String.disable_colorization = true unless STDOUT.isatty
+
 namespace :gitlab do
 
   # Ask if the user wants to continue

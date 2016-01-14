@@ -74,7 +74,7 @@ module Gitlab
 
       def sent_notification
         return nil unless reply_key
-        
+
         SentNotification.for(reply_key)
       end
 
@@ -82,10 +82,7 @@ module Gitlab
         attachments = Email::AttachmentUploader.new(message).execute(sent_notification.project)
 
         attachments.each do |link|
-          text = "[#{link[:alt]}](#{link[:url]})"
-          text.prepend("!") if link[:is_image]
-
-          reply << "\n\n#{text}"
+          reply << "\n\n#{link[:markdown]}"
         end
 
         reply
