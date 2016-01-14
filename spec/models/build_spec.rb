@@ -426,6 +426,30 @@ describe Ci::Build, models: true do
     it { is_expected.to include(project.web_url[7..-1]) }
   end
 
+  describe :depends_on_builds do
+    let!(:build) { FactoryGirl.create :ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build' }
+    let!(:rspec_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test' }
+    let!(:rubocop_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test' }
+    let!(:staging) { FactoryGirl.create :ci_build, commit: commit, name: 'staging', stage_idx: 2, stage: 'deploy' }
+
+    it 'to have no dependents if this is first build' do
+      expect(build.depends_on_builds).to be_empty
+    end
+
+    it 'to have one dependent if this is test' do
+      expect(rspec_test.depends_on_builds.map(&:id)).to contain_exactly(build.id)
+    end
+
+    it 'to have all builds from build and test stage if this is last' do
+      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, rspec_test.id, rubocop_test.id)
+    end
+
+    it 'to have retried builds instead the original ones' do
+      retried_rspec = Ci::Build.retry(rspec_test)
+      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
+    end
+  end
+
   def create_mr(build, commit, factory: :merge_request, created_at: Time.now)
     FactoryGirl.create(factory,
                        source_project_id: commit.gl_project_id,

@@ -20,6 +20,7 @@ v 8.4.0 (unreleased)
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
   - Implement new UI for group page
   - Implement search inside emoji picker
+  - Let the CI runner know about builds that this build depends on
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
   - Link to milestone in "Milestone changed" system note

@@ -20,7 +20,7 @@ module Ci
 
           if build
             update_runner_info
-            present build, with: Entities::Build
+            present build, with: Entities::BuildDetails
           else
             not_found!
           end
@@ -111,7 +111,7 @@ module Ci
           build.artifacts_metadata = metadata
 
           if build.save
-            present(build, with: Entities::Build)
+            present(build, with: Entities::BuildDetails)
           else
             render_validation_error!(build)
           end
