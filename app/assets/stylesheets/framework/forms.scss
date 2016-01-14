@@ -74,8 +74,6 @@ label {
 
 .form-control {
   @include box-shadow(none);
-  height: 42px;
-  padding: 8px $gl-padding;
 }
 
 .form-control-inline {
