@@ -88,14 +88,19 @@
                 %i.fa.fa-envelope
                 = mail_to user.email, user.email, class: 'light'
               &nbsp;
-              = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn btn-xs"
-              - unless user == current_user
-                - if user.blocked?
-                  = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-xs btn-success"
-                - else
-                  = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-xs btn-warning"
-                - if user.access_locked?
-                  = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: "btn btn-xs btn-success", data: { confirm: 'Are you sure?' }
-                - if user.can_be_removed?
-                  = link_to 'Destroy', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and groups linked to this user will also be removed! Maybe block the user instead? Are you sure?" }, method: :delete, class: "btn btn-xs btn-remove"
+              .pull-right
+                = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn-grouped btn btn-xs'
+                - unless user == current_user
+                  - if user.ldap_blocked?
+                    = link_to '#', title: 'Cannot unblock LDAP blocked users', data: {toggle: 'tooltip'}, class: 'btn-grouped btn btn-xs btn-success disabled' do
+                      %i.fa.fa-lock
+                      Unblock
+                  - elsif user.blocked?
+                    = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success'
+                  - else
+                    = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: 'btn-grouped btn btn-xs btn-warning'
+                  - if user.access_locked?
+                    = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success', data: { confirm: 'Are you sure?' }
+                  - if user.can_be_removed?
+                    = link_to 'Destroy', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and groups linked to this user will also be removed! Maybe block the user instead? Are you sure?" }, method: :delete, class: 'btn-grouped btn btn-xs btn-remove'
     = paginate @users, theme: "gitlab"
