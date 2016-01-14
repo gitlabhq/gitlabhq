@@ -69,7 +69,7 @@ module MarkdownMatchers
   # GollumTagsFilter
   matcher :parse_gollum_tags do
     def have_image(src)
-      have_css("img[src*='#{src}']")
+      have_css("img[src$='#{src}']")
     end
 
     set_default_markdown_messages
@@ -79,7 +79,7 @@ module MarkdownMatchers
       expect(actual).to have_link('link-text', href: 'linked-resource')
       expect(actual).to have_link('http://example.com', href: 'http://example.com')
       expect(actual).to have_link('link-text', href: 'http://example.com/pdfs/gollum.pdf')
-      expect(actual).to have_image('/namespace1/gitlabhq/wikis/images/example.jpg')
+      expect(actual).to have_image('/gitlabhq/wikis/images/example.jpg')
       expect(actual).to have_image('http://example.com/images/example.jpg')
     end
   end
