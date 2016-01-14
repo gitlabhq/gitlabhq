@@ -87,6 +87,7 @@ v 8.3.0
   - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
+  - Add unsubscribe link in the email footer (Zeger-Jan van de Weg)
   - Provide better diagnostic message upon project creation errors (Stan Hu)
   - Bump devise to 3.5.3 to fix reset token expiring after account creation (Stan Hu)
   - Remove api credentials from link to build_page

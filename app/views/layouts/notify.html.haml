@@ -44,6 +44,10 @@
           %br
           -# Don't link the host is the line below, one link in the email is easier to quickly click than two.
           You're receiving this email because of your account on #{Gitlab.config.gitlab.host}.
-          If you'd like to receive fewer emails, you can adjust your notification settings.
+          If you'd like to receive fewer emails, you can
+          - if @sent_notification && @sent_notification.unsubscribable?
+            = link_to "unsubscribe", unsubscribe_sent_notification_url(@sent_notification)
+            from this thread or
+          adjust your notification settings.
 
           = email_action @target_url
