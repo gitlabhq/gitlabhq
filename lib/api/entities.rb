@@ -366,5 +366,9 @@ module API
     class TriggerRequest < Grape::Entity
       expose :id, :variables
     end
+
+    class Variable < Grape::Entity
+      expose :key, :value
+    end
   end
 end
