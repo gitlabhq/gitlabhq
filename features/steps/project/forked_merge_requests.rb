@@ -43,7 +43,9 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
 
     expect(page).to have_css("h3.page-title", text: "New Merge Request")
 
-    fill_in "merge_request_title", with: "Merge Request On Forked Project"
+    page.within 'form#new_merge_request' do
+      fill_in "merge_request_title", with: "Merge Request On Forked Project"
+    end
   end
 
   step 'I submit the merge request' do
