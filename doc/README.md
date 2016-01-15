@@ -16,6 +16,7 @@
 - [Web hooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [GitLab Pages](pages/README.md) Using GitLab Pages.
+- [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
 
 ## CI Documentation
 
