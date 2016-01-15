@@ -2,8 +2,8 @@ Feature: Project Builds
   Background:
     Given I sign in as a user
     And I own a project
-    And CI is enabled
-    And I have recent build for my project
+    And project has CI enabled
+    And project has a recent build
 
   Scenario: I browse build summary page
     When I visit recent build summary page
