@@ -141,9 +141,12 @@ module Gitlab
           username = auth_hash.username
           email = auth_hash.email
         end
+
+        name = auth_hash.name
+        name = ::Namespace.clean_path(username) if name.strip.empty?
         
         {
-          name:                       auth_hash.name,
+          name:                       name,
           username:                   ::Namespace.clean_path(username),
           email:                      email,
           password:                   auth_hash.password,
