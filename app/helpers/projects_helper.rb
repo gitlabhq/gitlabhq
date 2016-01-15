@@ -54,22 +54,19 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    all_projects =
-      if project.group
-        project.group.projects
-      else
-        PersonalProjectsFinder.new(project.namespace.owner).execute(current_user)
-      end
+    all_projects = current_user.authorized_projects.sorted_by_activity.non_archived
 
     project_link = content_tag :div, {class: "dropdown"} do
       output = content_tag :a, {class: "dropdown-toggle", href: "#", data: {toggle: "dropdown"}} do
         btnOutput = simple_sanitize(project.name)
-        btnOutput += content_tag :span, nil, {class: "caret dropdown-toggle-caret"}
+        btnOutput += content_tag :span, nil, {class: "fa fa-chevron-down dropdown-toggle-caret"}
       end
 
       list = all_projects.map do |project|
         content_tag :li, {class: "dropdown-item #{"active" if project_id == project.id}"} do
-          link_to(simple_sanitize(project.name), project_path(project), {class: "dropdown-link"})
+          link_to project_path(project), {class: "dropdown-link"} do
+            project.owner.name + ' / ' + simple_sanitize(project.name)
+          end
         end
       end
 
