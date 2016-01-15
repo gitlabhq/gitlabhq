@@ -8,11 +8,6 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
     page.within('.artifacts') { click_link 'Download' }
   end
 
-  step 'download of build artifacts archive starts' do
-    expect(page.response_headers['Content-Type']).to eq 'application/zip'
-    expect(page.response_headers['Content-Transfer-Encoding']).to eq 'binary'
-  end
-
   step 'I click artifacts browse button' do
     page.within('.artifacts') { click_link 'Browse' }
   end
