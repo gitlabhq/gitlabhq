@@ -52,7 +52,7 @@ module Gitlab
     end
 
     def file_path_regex
-      @file_path_regex ||= /\A[a-zA-Z0-9_\-\.\/]*\z/.freeze
+      @file_path_regex ||= /\A[\p{L}\p{N}_\-\.\/]*\z/.freeze
     end
 
     def file_path_regex_message
