@@ -80,7 +80,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def autocomplete
-    groups = GroupsFinder.new.execute(current_user).search(params[:search]).limit(params[:per_page])
+    groups = Group.search(params[:search]).limit(params[:per_page])
 
     render json: groups.to_json
   end
