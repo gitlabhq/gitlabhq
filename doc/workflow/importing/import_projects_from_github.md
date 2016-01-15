@@ -5,11 +5,14 @@ enable the [GitHub integration][gh-import] in your GitLab instance._
 
 At its current state, GitHub importer can import:
 
-- the repository description
-- the git repository data
-- the issues
-- the pull requests
-- the wiki pages
+- the repository description (introduced in GitLab 7.7)
+- the git repository data (introduced in GitLab 7.7)
+- the issues (introduced in GitLab 7.7)
+- the pull requests (introduced in GitLab 8.4)
+- the wiki pages (introduced in GitLab 8.4)
+
+It is not yet possible to import your labels and milestones. We are working on
+improving this in the near future.
 
 The importer page is visible when you [create a new project][new-project].
 Click on the **GitHub** link and you will be redirected to GitHub for
@@ -34,12 +37,6 @@ in the upper left corner.
 The importer will create any new namespaces if they don't exist or in the
 case the namespace is taken, the project will be imported on the user's
 namespace.
-
-### Note
-
-When you import your projects from GitHub, it is not possible to keep your
-labels, milestones, and cross-repository pull requests. We are working on
-improving this in the near future.
 
 [gh-import]: ../../integration/github.md "GitHub integration"
 [ee-gh]: http://doc.gitlab.com/ee/integration/github.html "GitHub integration for GitLab EE"
