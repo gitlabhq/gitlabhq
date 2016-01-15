@@ -20,13 +20,14 @@
           %b.caret
         %ul.dropdown-menu.dropdown-menu-align-right
           %li
-            = link_to page_filter_path(sort: sort_value_recently_created) do
+            - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]
+            = link_to page_filter_path(sort: sort_value_recently_created, without: excluded_filters) do
               = sort_title_recently_created
-            = link_to page_filter_path(sort: sort_value_oldest_created) do
+            = link_to page_filter_path(sort: sort_value_oldest_created, without: excluded_filters) do
               = sort_title_oldest_created
-            = link_to page_filter_path(sort: sort_value_recently_updated) do
+            = link_to page_filter_path(sort: sort_value_recently_updated, without: excluded_filters) do
               = sort_title_recently_updated
-            = link_to page_filter_path(sort: sort_value_oldest_updated) do
+            = link_to page_filter_path(sort: sort_value_oldest_updated, without: excluded_filters) do
               = sort_title_oldest_updated
 
       .fork_link.inline

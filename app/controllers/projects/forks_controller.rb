@@ -5,6 +5,8 @@ class Projects::ForksController < Projects::ApplicationController
 
   def index
     @all_forks = project.forks.includes(:creator)
+    @all_forks = @all_forks.sort(params[:sort]) if params[:sort]
+
     @public_forks, @protected_forks = @all_forks.partition do |project|
       can?(current_user, :read_project, project)
     end
