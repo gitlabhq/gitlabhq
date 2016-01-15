@@ -8,7 +8,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     end
 
     unless artifacts_file.exists?
-      return not_found!
+      return render_404
     end
 
     send_file artifacts_file.path, disposition: 'attachment'
