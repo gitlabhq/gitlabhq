@@ -8,6 +8,13 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
+      dnsbl_check = DNSBLCheck.create_from_config(Gitlab.config.try(:dnsbl_check))
+
+      if dnsbl_check.test(request.remote_ip)
+        flash[:alert] = 'Could not create an account. This IP is listed for spam.'
+        return render action: 'new'
+      end
+
       super
     else
       flash[:alert] = "There was an error with the reCAPTCHA code below. Please re-enter the code."
