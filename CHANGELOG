@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.4.0 (unreleased)
+  - Consider re-assign as a mention from a notification point of view
   - Add pagination headers to already paginated API resources
   - Properly generate diff of orphan commits, like the first commit in a repository
   - Improve the consistency of commit titles, branch names, tag names, issue/MR titles, on their respective project pages
