@@ -2,9 +2,10 @@
 - release = @releases.find { |release| release.tag == tag.name }
 %li
   %div
-    = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'tag-name' do
-      = icon('tag')
-      = tag.name
+    = link_to namespace_project_tag_path(@project.namespace, @project, tag.name) do
+      %strong.item-title
+        = icon('tag')
+        = tag.name
     - if tag.message.present?
       &nbsp;
       = strip_gpg_signature(tag.message)

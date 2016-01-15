@@ -75,6 +75,8 @@ hr {
   @include str-truncated;
 }
 
+.item-title { font-weight: 600; }
+
 /** FLASH message **/
 .author_link {
   color: $gl-link-color;
