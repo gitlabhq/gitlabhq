@@ -38,6 +38,7 @@ module Gitlab
 
       private
 
+      # Find runs of single line edits
       def local_edit_indexes
         line_prefixes = @lines.map { |line| line.match(/\A([+-])/) ? $1 : ' ' }
         joined_line_prefixes = " #{line_prefixes.join} "
