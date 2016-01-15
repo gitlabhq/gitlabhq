@@ -56,6 +56,9 @@ class @Project
   _projectSelectDropdown: ->
     new ProjectSelect()
 
+    $('.project-item-select').on 'click', ->
+      window.location = $(this).val()
+
     $('.js-projects-dropdown-toggle').on 'click', (e) ->
       e.preventDefault()
 
