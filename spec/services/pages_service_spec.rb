@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe UpdatePagesService, services: true do
+describe PagesService, services: true do
   let(:build) { create(:ci_build) }
   let(:data) { Gitlab::BuildDataBuilder.build(build) }
-  let(:service) { UpdatePagesService.new(data) }
+  let(:service) { PagesService.new(data) }
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)

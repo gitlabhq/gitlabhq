@@ -1,4 +1,4 @@
-class UpdatePagesService
+class PagesService
   attr_reader :data
 
   def initialize(data)
