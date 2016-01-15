@@ -51,7 +51,8 @@
       forks: true, show_last_commit_as_description: true
 
     - if protected_count > 0
-      %ul.projects-list
+      %ul.projects-list.private-forks-notice
         %li.project-row
+          = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
           %strong= pluralize(protected_count, 'private fork')
           %span you have no access to.

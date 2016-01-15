@@ -579,3 +579,16 @@ pre.light-well {
   color: #E62958;
   margin-top: 2px;
 }
+
+/*
+ * Forks list rendered on Project's forks page
+ */
+
+.private-forks-notice .private-fork-icon {
+  i.fa-circle {
+    color: #2AA056;
+  }
+  i.fa-lock {
+    color: #FFFFFF;
+  }
+}
