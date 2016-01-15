@@ -54,8 +54,6 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    all_projects = current_user.authorized_projects.sorted_by_activity.non_archived if current_user
-
     project_link = link_to project_path(project), {class: "project-item-select-holder #{"js-projects-dropdown-toggle" if current_user}"} do
       link_output = simple_sanitize(project.name)
       link_output += content_tag :span, nil, {class: "fa fa-chevron-down dropdown-toggle-caret"} if current_user
