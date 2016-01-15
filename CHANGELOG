@@ -55,6 +55,7 @@ v 8.4.0 (unreleased)
   - Allow broadcast messages to be edited
   - Autosize Markdown textareas
   - Import GitHub wiki into GitLab
+  - Add reporters ability to download and browse build artifacts (Andrew Johnson)
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
