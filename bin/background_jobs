@@ -27,7 +27,7 @@ restart()
     stop
   fi
   killall
-  start_sidekiq -d -L $sidekiq_logfile
+  start_sidekiq -d -L $sidekiq_logfile >> $sidekiq_logfile 2>&1
 }
 
 start_no_deamonize()
