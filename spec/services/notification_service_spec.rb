@@ -228,6 +228,46 @@ describe NotificationService, services: true do
 
     describe :reassigned_issue do
       it 'emails new assignee' do
+        notification.reassigned_issue(issue, @u_disabled)
+
+        should_email(issue.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'emails previous assignee even if he has the "on mention" notif level' do
+        issue.update_attribute(:assignee, @u_mentioned)
+        issue.update_attributes(assignee: @u_watcher)
+        notification.reassigned_issue(issue, @u_disabled)
+
+        should_email(@u_mentioned)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'emails new assignee even if he has the "on mention" notif level' do
+        issue.update_attributes(assignee: @u_mentioned)
+        notification.reassigned_issue(issue, @u_disabled)
+
+        expect(issue.assignee).to be @u_mentioned
+        should_email(issue.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'emails new assignee' do
         issue.update_attribute(:assignee, @u_mentioned)
         notification.reassigned_issue(issue, @u_disabled)
 

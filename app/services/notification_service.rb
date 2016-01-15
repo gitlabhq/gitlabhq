@@ -376,10 +376,10 @@ class NotificationService
   end
 
   def reassign_resource_email(target, project, current_user, method)
-    previous_assignee_id = previous_record(target, "assignee_id")
+    previous_assignee_id = previous_record(target, 'assignee_id')
     previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
 
-    recipients = build_recipients(target, project, current_user, action: :reassign, extra_recipients: [previous_assignee])
+    recipients = build_recipients(target, project, current_user, action: :reassign, previous_assignee: previous_assignee)
 
     recipients.each do |recipient|
       mailer.send(
@@ -400,10 +400,8 @@ class NotificationService
     end
   end
 
-  def build_recipients(target, project, current_user, action: nil, extra_recipients: nil)
+  def build_recipients(target, project, current_user, action: nil, previous_assignee: nil)
     recipients = target.participants(current_user)
-
-    recipients = recipients.concat(extra_recipients).compact.uniq if extra_recipients
 
     recipients = add_project_watchers(recipients, project)
     recipients = reject_mention_users(recipients, project)
@@ -412,6 +410,7 @@ class NotificationService
     # new assignee to the list of recipients after we rejected users with
     # the "on mention" notification level
     if action == :reassign
+      recipients << previous_assignee if previous_assignee
       recipients << target.assignee
     end
 
