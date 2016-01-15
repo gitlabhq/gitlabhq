@@ -6,7 +6,19 @@
     - if can?(current_user, :manage_builds, @project)
       .pull-left.hidden-xs
         - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+          = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project),
+            data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+
+    .pull-left.hidden-xs.hidden-sm{ style: 'margin-left: 7px;' }
+      .dropdown
+        %button.btn.btn-default.dropdown-toggle{ type: 'button', id: 'tools-dropdown', 'data-toggle' => 'dropdown' }
+          Tools
+          %span.caret
+        %ul.dropdown-menu.dropdown-menu-right
+          %li
+            = link_to ci_lint_path do
+              = icon('wrench')
+              %span CI Lint Tool
 
   %ul.nav-links
     %li{class: ('active' if @scope.nil?)}
