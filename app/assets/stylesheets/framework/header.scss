@@ -88,33 +88,11 @@ header {
         }
       }
 
-      .dropdown {
-        display: inline-block;
-      }
-
-      .dropdown-menu {
-        max-height: 300px;
-        overflow: auto;
-      }
-
       .dropdown-toggle-caret {
         position: relative;
         top: -2px;
         margin-left: 5px;
         font-size: 10px;
-      }
-
-      .dropdown-item {
-        &.active {
-          .dropdown-link {
-            color: #fff;
-          }
-        }
-
-        .dropdown-link:hover {
-          color: #fff;
-          text-decoration: none;
-        }
       }
     }
 

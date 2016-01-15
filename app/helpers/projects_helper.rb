@@ -56,23 +56,11 @@ module ProjectsHelper
 
     all_projects = current_user.authorized_projects.sorted_by_activity.non_archived
 
-    project_link = content_tag :div, {class: "dropdown"} do
-      output = content_tag :a, {class: "dropdown-toggle", href: "#", data: {toggle: "dropdown"}} do
-        btnOutput = simple_sanitize(project.name)
-        btnOutput += content_tag :span, nil, {class: "fa fa-chevron-down dropdown-toggle-caret"}
-      end
+    project_link = link_to project_path(project), {class: "project-item-select-holder js-projects-dropdown-toggle"} do
+      link_output = simple_sanitize(project.name)
+      link_output += content_tag :span, nil, {class: "fa fa-chevron-down dropdown-toggle-caret"}
 
-      list = all_projects.map do |project|
-        content_tag :li, {class: "dropdown-item #{"active" if project_id == project.id}"} do
-          link_to project_path(project), {class: "dropdown-link"} do
-            project.owner.name + ' / ' + simple_sanitize(project.name)
-          end
-        end
-      end
-
-      output += content_tag :ul, {class: "dropdown-menu"} do
-        list.join.html_safe
-      end
+      link_output += project_select_tag :project_path, class: "project-item-select js-projects-dropdown", data: { include_groups: false }
     end
 
     full_title = namespace_link + ' / ' + project_link
