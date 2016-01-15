@@ -355,7 +355,7 @@ class @Notes
     $('.note[id="' + note_id + '"]').each ->
       note = $(this)
       notes = note.closest(".notes")
-      count = notes.closest(".notes_holder").find(".discussion-notes-count")
+      count = notes.closest(".issuable-details").find(".notes-tab .badge")
 
       # check if this is the last note for this line
       if notes.find(".note").length is 1
@@ -365,9 +365,10 @@ class @Notes
 
         # for diff lines
         notes.closest("tr").remove()
-      else
-        # update notes count
-        count.get(0).lastChild.nodeValue = " #{notes.children().length - 1}"
+
+      # update notes count
+      oldNum = parseInt(count.text())
+      count.text(oldNum - 1)
 
       note.remove()
 

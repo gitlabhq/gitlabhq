@@ -128,6 +128,14 @@ module Ci
       !self.commit.latest_builds_for_ref(self.ref).include?(self)
     end
 
+    def depends_on_builds
+      # Get builds of the same type
+      latest_builds = self.commit.builds.similar(self).latest
+
+      # Return builds from previous stages
+      latest_builds.where('stage_idx < ?', stage_idx)
+    end
+
     def trace_html
       html = Ci::Ansi2html::convert(trace) if trace.present?
       html || ''
