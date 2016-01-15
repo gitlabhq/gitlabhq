@@ -24,26 +24,7 @@ module Gitlab
       private
 
       def find_inline_diffs
-        @inline_diffs = []
-
-        local_edit_indexes.each do |index|
-          old_index = index
-          new_index = index + 1
-          old_line = @raw_lines[old_index][1..-1]
-          new_line = @raw_lines[new_index][1..-1]
-
-          # Skip inline diff if empty line was replaced with content
-          next if old_line == ""
-
-          lcp = longest_common_prefix(old_line, new_line)
-          lcs = longest_common_suffix(old_line, new_line)
-
-          old_diff_range = lcp..(old_line.length - lcs - 1)
-          new_diff_range = lcp..(new_line.length - lcs - 1)
-
-          @inline_diffs[old_index] = old_diff_range if old_diff_range.begin <= old_diff_range.end
-          @inline_diffs[new_index] = new_diff_range if new_diff_range.begin <= new_diff_range.end
-        end
+        @inline_diffs = InlineDiff.new(@raw_lines).inline_diffs
       end
 
       def process_lines
@@ -58,7 +39,7 @@ module Gitlab
       end
 
       def highlight_line(diff_line, index)
-        line_prefix = line_prefixes[index]
+        line_prefix = diff_line.text.match(/\A([+-])/) ? $1 : ' '
 
         case diff_line.type
         when 'new', nil
@@ -73,44 +54,23 @@ module Gitlab
       end
 
       def mark_inline_diffs(rich_line, diff_line, index)
-        inline_diff = @inline_diffs[index]
-        return rich_line unless inline_diff
+        line_inline_diffs = @inline_diffs[index]
+        return rich_line unless line_inline_diffs
 
         raw_line = diff_line.text
-
-        # Based on the prefixless versions
-        from = inline_diff.begin + 1
-        to = inline_diff.end + 1
-
         position_mapping = map_character_positions(raw_line, rich_line)
-        inline_diff_positions = position_mapping[from..to]
-        marker_ranges = collapse_ranges(inline_diff_positions)
 
         offset = 0
-        marker_ranges.each do |range|
-          offset = insert_around_range(rich_line, range, "<span class='idiff'>", "</span>", offset)
+        line_inline_diffs.each do |inline_diff_range|
+          inline_diff_positions = position_mapping[inline_diff_range]
+          marker_ranges = collapse_ranges(inline_diff_positions)
+
+          marker_ranges.each do |range|
+            offset = insert_around_range(rich_line, range, "<span class='idiff'>", "</span>", offset)
+          end
         end
 
         rich_line
-      end
-
-      def line_prefixes
-        @line_prefixes ||= @raw_lines.map { |line| line.match(/\A([+-])/) ? $1 : ' ' }
-      end
-
-      def local_edit_indexes
-        @local_edit_indexes ||= begin
-          joined_line_prefixes = " #{line_prefixes.join} "
-
-          offset = 0
-          local_edit_indexes = []
-          while index = joined_line_prefixes.index(" -+ ", offset)
-            local_edit_indexes << index
-            offset = index + 1
-          end
-
-          local_edit_indexes
-        end
       end
 
       def map_character_positions(raw_line, rich_line)
@@ -147,25 +107,6 @@ module Gitlab
         @new_lines ||= Gitlab::Highlight.highlight_lines(*processing_args(:new))
       end
 
-      def longest_common_suffix(a, b)
-        longest_common_prefix(a.reverse, b.reverse)
-      end
-
-      def longest_common_prefix(a, b)
-        max_length = [a.length, b.length].max
-
-        length = 0
-        (0..max_length - 1).each do |pos|
-          old_char = a[pos]
-          new_char = b[pos]
-
-          break if old_char != new_char
-          length += 1
-        end
-
-        length
-      end
-
       def collapse_ranges(positions)
         return [] if positions.empty?
         ranges = []
@@ -200,15 +141,12 @@ module Gitlab
         offset
       end
 
-      private
-
       def processing_args(version)
         ref  = send("diff_#{version}_ref")
         path = send("diff_#{version}_path")
 
         [ref.project.repository, ref.id, path]
       end
-
     end
   end
 end
