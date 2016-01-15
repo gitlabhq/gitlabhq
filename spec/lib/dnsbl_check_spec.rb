@@ -1,9 +1,11 @@
 require 'spec_helper'
+require 'ostruct'
 
-describe 'DNSBLChecker', lib: true, no_db: true do
+describe 'DNSBLCheck', lib: true, no_db: true do
   let(:spam_ip)    { '127.0.0.2' }
   let(:no_spam_ip) { '127.0.0.3' }
   let(:invalid_ip) { 'a.b.c.d' }
+  let(:dnsbl_check) { DNSBLCheck.create_from_config(OpenStruct.new({ enabled: true, lists: [OpenStruct.new({ domain: 'test', weight: 1 })] })) }
 
   before(:context) do
     class DNSBLCheck::Resolver
@@ -15,33 +17,31 @@ describe 'DNSBLChecker', lib: true, no_db: true do
         end
       end
     end
-
-    DNSBLCheck.add_dnsbl('test', 1)
   end
 
   describe '#treshold=' do
-    it { expect{ DNSBLCheck.treshold = 0   }.to     raise_error(ArgumentError) }
-    it { expect{ DNSBLCheck.treshold = 1.1 }.to     raise_error(ArgumentError) }
-    it { expect{ DNSBLCheck.treshold = 0.5 }.not_to raise_error }
+    it { expect{ dnsbl_check.treshold = 0   }.to     raise_error(ArgumentError) }
+    it { expect{ dnsbl_check.treshold = 1.1 }.to     raise_error(ArgumentError) }
+    it { expect{ dnsbl_check.treshold = 0.5 }.not_to raise_error }
   end
 
   describe '#test' do
-    it { expect{ DNSBLCheck.test(invalid_ip) }.to raise_error(ArgumentError) }
+    it { expect{ dnsbl_check.test(invalid_ip) }.to raise_error(ArgumentError) }
 
-    it { expect(DNSBLCheck.test(spam_ip)).to    be_truthy }
-    it { expect(DNSBLCheck.test(no_spam_ip)).to be_falsey }
+    it { expect(dnsbl_check.test(spam_ip)).to    be_truthy }
+    it { expect(dnsbl_check.test(no_spam_ip)).to be_falsey }
   end
 
   describe '#test_strict' do
-    before(:context) do
-      DNSBLCheck.treshold = 1
+    before do
+      dnsbl_check.treshold = 1
     end
 
-    it { expect{ DNSBLCheck.test_strict(invalid_ip) }.to raise_error(ArgumentError) }
+    it { expect{ dnsbl_check.test_strict(invalid_ip) }.to raise_error(ArgumentError) }
 
-    it { expect(DNSBLCheck.test(spam_ip)).to    be_falsey }
-    it { expect(DNSBLCheck.test(no_spam_ip)).to be_falsey }
-    it { expect(DNSBLCheck.test_strict(spam_ip)).to    be_truthy }
-    it { expect(DNSBLCheck.test_strict(no_spam_ip)).to be_falsey }
+    it { expect(dnsbl_check.test(spam_ip)).to    be_falsey }
+    it { expect(dnsbl_check.test(no_spam_ip)).to be_falsey }
+    it { expect(dnsbl_check.test_strict(spam_ip)).to    be_truthy }
+    it { expect(dnsbl_check.test_strict(no_spam_ip)).to be_falsey }
   end
 end
