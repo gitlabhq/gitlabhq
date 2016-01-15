@@ -6,13 +6,13 @@
 %li(class="js-branch-#{branch.name}")
   %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
-      %strong.str-truncated= branch.name
-      &nbsp;
-      - if branch.name == @repository.root_ref
-        %span.label.label-primary default
-      - elsif @repository.merged_to_root_ref? branch.name
-        %span.label.label-info.has_tooltip(title="Merged into #{@repository.root_ref}")
-          merged
+      .branch-name.str-truncated= branch.name
+    &nbsp;
+    - if branch.name == @repository.root_ref
+      %span.label.label-primary default
+    - elsif @repository.merged_to_root_ref? branch.name
+      %span.label.label-info.has_tooltip(title="Merged into #{@repository.root_ref}")
+        merged
 
     - if @project.protected_branch? branch.name
       %span.label.label-success

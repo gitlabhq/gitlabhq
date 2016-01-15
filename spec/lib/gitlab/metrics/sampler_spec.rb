@@ -9,7 +9,7 @@ describe Gitlab::Metrics::Sampler do
 
   describe '#start' do
     it 'gathers a sample at a given interval' do
-      expect(sampler).to receive(:sleep).with(5)
+      expect(sampler).to receive(:sleep).with(a_kind_of(Numeric))
       expect(sampler).to receive(:sample)
       expect(sampler).to receive(:loop).and_yield
 
@@ -114,6 +114,26 @@ describe Gitlab::Metrics::Sampler do
         and_call_original
 
       sampler.add_metric('cats', value: 10)
+    end
+  end
+
+  describe '#sleep_interval' do
+    it 'returns a Numeric' do
+      expect(sampler.sleep_interval).to be_a_kind_of(Numeric)
+    end
+
+    # Testing random behaviour is very hard, so treat this test as a basic smoke
+    # test instead of a very accurate behaviour/unit test.
+    it 'does not return the same interval twice in a row' do
+      last = nil
+
+      100.times do
+        interval = sampler.sleep_interval
+
+        expect(interval).to_not eq(last)
+
+        last = interval
+      end
     end
   end
 end

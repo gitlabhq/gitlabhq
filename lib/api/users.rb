@@ -286,10 +286,12 @@ module API
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
 
-        if user
+        if !user
+          not_found!('User')
+        elsif !user.ldap_blocked?
           user.block
         else
-          not_found!('User')
+          forbidden!('LDAP blocked users cannot be modified by the API')
         end
       end
 
@@ -301,10 +303,12 @@ module API
         authenticated_as_admin!
         user = User.find_by(id: params[:id])
 
-        if user
-          user.activate
-        else
+        if !user
           not_found!('User')
+        elsif user.ldap_blocked?
+          forbidden!('LDAP blocked users cannot be unblocked by the API')
+        else
+          user.activate
         end
       end
     end

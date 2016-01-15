@@ -135,11 +135,11 @@ gitlab-workhorse we need a Go compiler. The instructions below assume you
 use 64-bit Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
-    curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
-    echo '46eecd290d8803887dec718c691cc243f2175fe0  go1.5.1.linux-amd64.tar.gz' | shasum -c - && \
-      sudo tar -C /usr/local -xzf go1.5.1.linux-amd64.tar.gz
+    curl -O --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
+    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -c - && \
+      sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.1.linux-amd64.tar.gz
+    rm go1.5.3.linux-amd64.tar.gz
 
 ## 4. System Users
 

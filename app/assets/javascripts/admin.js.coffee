@@ -10,19 +10,19 @@ class @Admin
 
     $('body').on 'click', '.js-toggle-colors-link', (e) ->
       e.preventDefault()
-      $('.js-toggle-colors-link').hide()
-      $('.js-toggle-colors-container').show()
+      $('.js-toggle-colors-container').toggle()
 
     $('input#broadcast_message_color').on 'input', ->
-      previewColor = $('input#broadcast_message_color').val()
+      previewColor = $(@).val()
       $('div.broadcast-message-preview').css('background-color', previewColor)
 
     $('input#broadcast_message_font').on 'input', ->
-      previewColor = $('input#broadcast_message_font').val()
+      previewColor = $(@).val()
       $('div.broadcast-message-preview').css('color', previewColor)
 
     $('textarea#broadcast_message_message').on 'input', ->
-      previewMessage = $('textarea#broadcast_message_message').val()
+      previewMessage = $(@).val()
+      previewMessage = "Your message here" if previewMessage.trim() == ''
       $('div.broadcast-message-preview span').text(previewMessage)
 
     $('.log-tabs a').click (e) ->

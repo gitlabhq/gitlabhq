@@ -334,9 +334,9 @@ merge request:
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
-1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 1.  [Database Migrations](doc/development/migration_style_guide.md)
-1.  [Documentation styleguide](doc_styleguide.md)
+1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
+1.  [Documentation styleguide](doc/development/doc_styleguide.md)
 1.  Interface text should be written subjectively instead of objectively. It
     should be the GitLab core team addressing a person. It should be written in
     present time and never use past tense (has been/was). For example instead

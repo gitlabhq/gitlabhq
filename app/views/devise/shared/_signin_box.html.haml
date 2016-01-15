@@ -7,7 +7,7 @@
       %h3 Sign in
   .login-body
     - if form_based_providers.any?
-      %ul.nav.nav-tabs
+      %ul.nav-links
         - if kerberos_enabled?
           %li{class: (:active unless crowd_enabled? || ldap_enabled?)}
             = link_to "Kerberos", "#tab-kerberos", 'data-toggle' => 'tab'

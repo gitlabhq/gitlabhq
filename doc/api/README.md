@@ -23,6 +23,9 @@
 - [Namespaces](namespaces.md)
 - [Settings](settings.md)
 - [Keys](keys.md)
+- [Builds](builds.md)
+- [Build triggers](build_triggers.md)
+- [Build Variables](build_variables.md)
 - [License](license.md)
 
 ## Clients

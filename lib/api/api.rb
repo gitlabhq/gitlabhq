@@ -58,5 +58,7 @@ module API
     mount Tags
     mount LicenseInfo
     mount Triggers
+    mount Builds
+    mount Variables
   end
 end
