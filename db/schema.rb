@@ -82,7 +82,6 @@ ActiveRecord::Schema.define(version: 20160113111034) do
     t.text     "message",    null: false
     t.datetime "starts_at"
     t.datetime "ends_at"
-    t.integer  "alert_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "color"
@@ -124,6 +123,7 @@ ActiveRecord::Schema.define(version: 20160113111034) do
     t.string   "description"
     t.text     "artifacts_file"
     t.integer  "gl_project_id"
+    t.text     "artifacts_metadata"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree

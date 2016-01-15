@@ -1,0 +1,11 @@
+%tr{ class: 'tree-item' }
+  %td.tree-item-file-name
+    = tree_icon('file', '664', file.name)
+    %span.str-truncated
+      = file.name
+  %td
+    = number_to_human_size(file.metadata[:size], precision: 2)
+  %td
+    = link_to file_namespace_project_build_artifacts_path(@project.namespace, @project, @build, path: file.path),
+      class: 'btn btn-xs btn-default artifact-download' do
+      = icon('download')

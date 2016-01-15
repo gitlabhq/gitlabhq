@@ -1,4 +1,7 @@
 .tree-holder {
+  > .nav-block {
+    margin: 11px 0;
+  }
 
   .file-finder {
     width: 50%;
@@ -13,7 +16,7 @@
 
     tr {
       > td, > th {
-        line-height: 28px;
+        line-height: 26px;
       }
 
       &:hover {
@@ -86,12 +89,14 @@
 
 .blob-commit-info {
   list-style: none;
+  padding: $gl-padding;
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-bottom: none;
   margin: 0;
-  padding: 0;
-  margin-bottom: 5px;
 
   .commit {
-    padding: $gl-padding 0;
+    padding: 0;
 
     .commit-row-title {
       .commit-row-message {
@@ -114,4 +119,9 @@
 .upload-link {
   font-weight: normal;
   color: $md-link-color;
+}
+
+.tree-controls {
+  float: right;
+  margin-top: 11px;
 }

@@ -1,7 +1,7 @@
 class @Activities
   constructor: ->
     Pager.init 20, true
-    $(".event-filter .btn").bind "click", (event) =>
+    $(".event-filter a").bind "click", (event) =>
       event.preventDefault()
       @toggleFilter($(event.currentTarget))
       @reloadActivities()
@@ -12,7 +12,7 @@ class @Activities
 
 
   toggleFilter: (sender) ->
-    sender.toggleClass "active"
+    sender.closest('li').toggleClass "active"
     event_filters = $.cookie("event_filter")
     filter = sender.attr("id").split("_")[0]
     if event_filters

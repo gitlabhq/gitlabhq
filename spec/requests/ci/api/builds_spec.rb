@@ -210,6 +210,52 @@ describe Ci::API::API do
             end
           end
 
+          context 'should post artifacts file and metadata file' do
+            let!(:artifacts) { file_upload }
+            let!(:metadata) { file_upload2 }
+
+            let(:stored_artifacts_file) { build.reload.artifacts_file.file }
+            let(:stored_metadata_file) { build.reload.artifacts_metadata.file }
+
+            before do
+              build.run!
+              post(post_url, post_data, headers_with_token)
+            end
+
+            context 'post data accelerated by workhorse is correct' do
+              let(:post_data) do
+                { 'file.path' => artifacts.path,
+                  'file.name' => artifacts.original_filename,
+                  'metadata.path' => metadata.path,
+                  'metadata.name' => metadata.original_filename }
+              end
+
+              it 'responds with valid status' do
+                expect(response.status).to eq(201)
+              end
+
+              it 'stores artifacts and artifacts metadata' do
+                expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
+                expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
+              end
+            end
+
+            context 'no artifacts file in post data' do
+              let(:post_data) do
+                { 'metadata' => metadata }
+              end
+
+              it 'is expected to respond with bad request' do
+                expect(response.status).to eq(400)
+              end
+
+              it 'does not store metadata' do
+                expect(stored_metadata_file).to be_nil
+              end
+            end
+          end
+
+
           context "should fail to post too large artifact" do
             before do
               build.run!

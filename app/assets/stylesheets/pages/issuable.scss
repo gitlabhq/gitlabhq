@@ -27,10 +27,10 @@
 .project-issuable-filter {
   .controls {
     float: right;
-    margin-top: 7px;
+    margin-top: 11px;
   }
 
-  .center-top-menu {
+  .nav-links {
     text-align: left;
   }
 }
@@ -95,7 +95,7 @@
 
   .cross-project-reference {
     color: $gl-link-color;
-    
+
     span {
       white-space: nowrap;
       width: 85%;

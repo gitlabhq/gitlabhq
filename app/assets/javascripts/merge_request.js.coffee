@@ -48,14 +48,15 @@ class @MergeRequest
     _this = @
     $('a.btn-close, a.btn-reopen').on 'click', (e) ->
       $this = $(this)
-      if $this.data('submitted')
-        return
-      e.preventDefault()
-      e.stopImmediatePropagation()
       shouldSubmit = $this.hasClass('btn-comment')
-      console.log("shouldSubmit")
+      if shouldSubmit && $this.data('submitted')
+        return
       if shouldSubmit
-        _this.submitNoteForm($this.closest('form'),$this)
+        if $this.hasClass('btn-comment-and-close') || $this.hasClass('btn-comment-and-reopen')
+          e.preventDefault()
+          e.stopImmediatePropagation()
+          _this.submitNoteForm($this.closest('form'),$this)
+
 
   submitNoteForm: (form, $button) =>
     noteText = form.find("textarea.js-note-text").val()

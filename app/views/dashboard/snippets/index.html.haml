@@ -3,32 +3,36 @@
 
 = render 'dashboard/snippets_head'
 
-.gray-content-block
-  .pull-right
+.nav-block
+  .controls
     = link_to new_snippet_path, class: "btn btn-new", title: "New Snippet" do
       = icon('plus')
       New Snippet
 
-  .btn-group.btn-group-next.snippet-scope-menu
-    = link_to dashboard_snippets_path, class: "btn btn-default #{"active" unless params[:scope]}" do
-      All
-      %span.badge
-        = current_user.snippets.count
+  .nav-links.snippet-scope-menu
+    %li{ class: ("active" unless params[:scope]) }
+      = link_to dashboard_snippets_path do
+        All
+        %span.badge
+          = current_user.snippets.count
 
-    = link_to dashboard_snippets_path(scope: 'are_private'), class: "btn btn-default #{"active" if params[:scope] == "are_private"}" do
-      Private
-      %span.badge
-        = current_user.snippets.are_private.count
+    %li{ class: ("active" if params[:scope] == "are_private") }
+      = link_to dashboard_snippets_path(scope: 'are_private') do
+        Private
+        %span.badge
+          = current_user.snippets.are_private.count
 
-    = link_to dashboard_snippets_path(scope: 'are_internal'), class: "btn btn-default #{"active" if params[:scope] == "are_internal"}" do
-      Internal
-      %span.badge
-        = current_user.snippets.are_internal.count
+    %li{ class: ("active" if params[:scope] == "are_internal") }
+      = link_to dashboard_snippets_path(scope: 'are_internal') do
+        Internal
+        %span.badge
+          = current_user.snippets.are_internal.count
 
-    = link_to dashboard_snippets_path(scope: 'are_public'), class: "btn btn-default #{"active" if params[:scope] == "are_public"}" do
-      Public
-      %span.badge
-        = current_user.snippets.are_public.count
+    %li{ class: ("active" if params[:scope] == "are_public") }
+      = link_to dashboard_snippets_path(scope: 'are_public') do
+        Public
+        %span.badge
+          = current_user.snippets.are_public.count
 
 = render 'snippets/snippets'
 

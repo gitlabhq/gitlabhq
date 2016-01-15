@@ -121,12 +121,13 @@ describe GitlabMarkdownHelper do
     before do
       @wiki = double('WikiPage')
       allow(@wiki).to receive(:content).and_return('wiki content')
+      helper.instance_variable_set(:@project_wiki, @wiki)
     end
 
-    it "should use GitLab Flavored Markdown for markdown files" do
+    it "should use Wiki pipeline for markdown files" do
       allow(@wiki).to receive(:format).and_return(:markdown)
 
-      expect(helper).to receive(:markdown).with('wiki content')
+      expect(helper).to receive(:markdown).with('wiki content', pipeline: :wiki, project_wiki: @wiki)
 
       helper.render_wiki_content(@wiki)
     end

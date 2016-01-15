@@ -181,10 +181,6 @@ module ApplicationHelper
     end
   end
 
-  def broadcast_message
-    BroadcastMessage.current
-  end
-
   # Render a `time` element with Javascript-based relative date and tooltip
   #
   # time       - Time object

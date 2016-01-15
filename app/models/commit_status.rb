@@ -133,7 +133,11 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
-  def download_url
+  def artifacts_download_url
+    nil
+  end
+
+  def artifacts_browse_url
     nil
   end
 end

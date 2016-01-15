@@ -16,6 +16,7 @@ v 8.4.0 (unreleased)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
   - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
+  - Remove gray background from layout in UI
   - Implement new UI for group page
   - Implement search inside emoji picker
   - Add API support for looking up a user by username (Stan Hu)
@@ -51,9 +52,12 @@ v 8.4.0 (unreleased)
   - Add API support for managing project's build triggers
   - Add API support for managing project's build variables
   - Allow broadcast messages to be edited
+  - Autosize Markdown textareas
+  - Import GitHub wiki into GitLab
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
+  - Add build artifacts browser
 
 v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
@@ -87,6 +91,7 @@ v 8.3.0
   - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
+  - Add unsubscribe link in the email footer (Zeger-Jan van de Weg)
   - Provide better diagnostic message upon project creation errors (Stan Hu)
   - Bump devise to 3.5.3 to fix reset token expiring after account creation (Stan Hu)
   - Remove api credentials from link to build_page

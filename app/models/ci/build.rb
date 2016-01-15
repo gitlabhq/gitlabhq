@@ -30,10 +30,12 @@
 #  description        :string(255)
 #  artifacts_file     :text
 #  gl_project_id      :integer
+#  artifacts_metadata :text
 #
 
 module Ci
   class Build < CommitStatus
+    include Gitlab::Application.routes.url_helpers
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :runner, class_name: 'Ci::Runner'
@@ -49,6 +51,7 @@ module Ci
     scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     mount_uploader :artifacts_file, ArtifactUploader
+    mount_uploader :artifacts_metadata, ArtifactUploader
 
     acts_as_taggable
 
@@ -291,21 +294,18 @@ module Ci
     end
 
     def target_url
-      Gitlab::Application.routes.url_helpers.
-        namespace_project_build_url(project.namespace, project, self)
+      namespace_project_build_url(project.namespace, project, self)
     end
 
     def cancel_url
       if active?
-        Gitlab::Application.routes.url_helpers.
-          cancel_namespace_project_build_path(project.namespace, project, self)
+        cancel_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
     def retry_url
       if retryable?
-        Gitlab::Application.routes.url_helpers.
-          retry_namespace_project_build_path(project.namespace, project, self)
+        retry_namespace_project_build_path(project.namespace, project, self)
       end
     end
 
@@ -321,20 +321,35 @@ module Ci
       pending? && !any_runners_online?
     end
 
-    def download_url
-      if artifacts_file.exists?
-        Gitlab::Application.routes.url_helpers.
-          download_namespace_project_build_path(project.namespace, project, self)
-      end
-    end
-
     def execute_hooks
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
     end
 
+    def artifacts?
+      artifacts_file.exists?
+    end
 
+    def artifacts_download_url
+      if artifacts?
+        download_namespace_project_build_artifacts_path(project.namespace, project, self)
+      end
+    end
+
+    def artifacts_browse_url
+      if artifacts_browser_supported?
+        browse_namespace_project_build_artifacts_path(project.namespace, project, self)
+      end
+    end
+
+    def artifacts_browser_supported?
+      artifacts? && artifacts_metadata.exists?
+    end
+
+    def artifacts_metadata_entry(path)
+      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path).to_entry
+    end
 
     private
 
