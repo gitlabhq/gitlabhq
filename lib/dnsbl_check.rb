@@ -19,13 +19,25 @@ class DNSBLCheck
   class << self
 
     def test(ip)
+      return false unless enabled
+
       search(ip)
       final_score > treshold
     end
 
     def test_strict(ip)
+      return false unless enabled
+
       search(ip)
       @score > 0
+    end
+
+    def enabled=(enabled)
+      @enabled = enabled && true
+    end
+
+    def enabled
+      @enabled ||= false
     end
 
     def treshold=(treshold)
@@ -43,10 +55,7 @@ class DNSBLCheck
     end
 
     def dnsbls
-      @dnsbls ||= [
-        { domain: 'all.s5h.net', weight: 4 },
-        { domain: 'list.blogspambl.com', weight: 6 }
-      ]
+      @dnsbls ||= []
     end
 
     private
@@ -72,7 +81,9 @@ class DNSBLCheck
     end
 
     def final_score
-      weights = dnsbls.map{ |rbl| rbl[:weight] }.reduce(:+)
+      weights = dnsbls.map{ |rbl| rbl[:weight] }.reduce(:+).to_i
+      return 0 if weights == 0
+
       @score /= weights
       @score.round(2)
     end
