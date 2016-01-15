@@ -42,7 +42,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def retry
     unless @build.retryable?
-      return page_404
+      return render_404
     end
 
     build = Ci::Build.retry(@build)
@@ -72,7 +72,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def authorize_manage_builds!
     unless can?(current_user, :manage_builds, project)
-      return page_404
+      return render_404
     end
   end
 end
