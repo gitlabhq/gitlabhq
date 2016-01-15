@@ -49,7 +49,7 @@ class Projects::IssuesController < Projects::ApplicationController
       assignee_id: ""
     )
 
-    @issue = @project.issues.new(issue_params)
+    @issue = @noteable = @project.issues.new(issue_params)
     respond_with(@issue)
   end
 
