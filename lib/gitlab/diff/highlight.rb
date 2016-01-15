@@ -140,11 +140,11 @@ module Gitlab
       end
 
       def old_lines
-        @old_lines ||= self.class.process_file(*processing_args(:old))
+        @old_lines ||= Gitlab::Highlight.highlight_lines(*processing_args(:old))
       end
 
       def new_lines
-        @new_lines ||= self.class.process_file(*processing_args(:new))
+        @new_lines ||= Gitlab::Highlight.highlight_lines(*processing_args(:new))
       end
 
       def longest_common_suffix(a, b)
