@@ -53,26 +53,24 @@ Returns:
       "public": true
     }
   ],
-  "dependencies": {
-    "builds": [
-      {
-        "id": 48584,
-        "ref": "0.1.1",
-        "tag": true,
-        "sha": "d63117656af6ff57d99e50cc270f854691f335ad",
-        "status": "success",
-        "name": "build",
-        "token": "9dd60b4f1a439d1765357446c1084c",
-        "stage": "build",
-        "project_id": 479,
-        "project_name": "test",
-        "artifacts_file": {
-          "filename": "artifacts.zip",
-          "size": 0
-        }
+  "depends_on_builds": [
+    {
+      "id": 48584,
+      "ref": "0.1.1",
+      "tag": true,
+      "sha": "d63117656af6ff57d99e50cc270f854691f335ad",
+      "status": "success",
+      "name": "build",
+      "token": "9dd60b4f1a439d1765357446c1084c",
+      "stage": "build",
+      "project_id": 479,
+      "project_name": "test",
+      "artifacts_file": {
+        "filename": "artifacts.zip",
+        "size": 0
       }
-    ]
-  }
+    }
+  ]
 }
 ```
 

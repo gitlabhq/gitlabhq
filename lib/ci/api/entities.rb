@@ -20,7 +20,7 @@ module Ci
         expose :name, :token, :stage
         expose :project_id
         expose :project_name
-        expose :artifacts_file, using: ArtifactFile, if: lambda { |build, opts| build.artifacts_file.exists? }
+        expose :artifacts_file, using: ArtifactFile, if: lambda { |build, opts| build.artifacts? }
       end
 
       class BuildDetails < Build
@@ -39,9 +39,7 @@ module Ci
         end
 
         expose :variables
-        expose :dependencies do
-          expose :depends_on_builds, as: :builds, using: Build
-        end
+        expose :depends_on_builds, using: Build
       end
 
       class Runner < Grape::Entity

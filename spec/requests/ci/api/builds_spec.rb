@@ -110,8 +110,8 @@ describe Ci::API::API do
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response.status).to eq(201)
-        expect(json_response["dependencies"]["builds"].count).to eq(2)
-        expect(json_response["dependencies"]["builds"][0]["name"]).to eq("rspec")
+        expect(json_response["depends_on_builds"].count).to eq(2)
+        expect(json_response["depends_on_builds"][0]["name"]).to eq("rspec")
       end
     end
 
