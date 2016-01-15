@@ -51,7 +51,7 @@ class @Project
       $(@).parents('ul').find('li.active').removeClass 'active'
       $(@).parent().addClass 'active'
 
-    @._projectSelectDropdown()
+    @_projectSelectDropdown()
 
   _projectSelectDropdown: ->
     new ProjectSelect()
