@@ -18,6 +18,7 @@ GitHub will generate an application ID and secret key for you to use.
     - Homepage URL: The URL to your GitLab installation. 'https://gitlab.company.com'
     - Application description: Fill this in if you wish.
     - Authorization callback URL: 'https://gitlab.company.com/'
+    - If install from source, default callback URL is '${YOUR_DOMAIN}/import/github/callback'
 1.  Select "Register application".
 
 1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot). 
