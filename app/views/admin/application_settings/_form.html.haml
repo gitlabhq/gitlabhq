@@ -215,6 +215,13 @@
         .help-block
           A method call is only tracked when it takes longer to complete than
           the given amount of milliseconds.
+    .form-group
+      = f.label :metrics_sample_interval, 'Sampler Interval (sec)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :metrics_sample_interval, class: 'form-control'
+        .help-block
+          The sampling interval in seconds. Sampled data includes memory usage,
+          retained Ruby objects, file descriptors and so on.
 
   %fieldset
     %legend Spam and Anti-bot Protection

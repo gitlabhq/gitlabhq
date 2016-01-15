@@ -60,8 +60,8 @@
 
   %td
     .pull-right
-      - if current_user && can?(current_user, :download_build_artifacts, project) && build.download_url
-        = link_to build.download_url, title: 'Download artifacts' do
+      - if current_user && can?(current_user, :read_build_artifacts, project) && build.artifacts?
+        = link_to build.artifacts_download_url, title: 'Download artifacts' do
           %i.fa.fa-download
       - if current_user && can?(current_user, :manage_builds, build.project)
         - if build.active?

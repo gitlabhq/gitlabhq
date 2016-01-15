@@ -56,6 +56,8 @@ class CommitStatus < ActiveRecord::Base
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
   scope :for_ref, ->(ref) { where(ref: ref) }
 
+  AVAILABLE_STATUSES = ['pending', 'running', 'success', 'failed', 'canceled']
+
   state_machine :status, initial: :pending do
     event :run do
       transition pending: :running
@@ -131,7 +133,11 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
-  def download_url
+  def artifacts_download_url
+    nil
+  end
+
+  def artifacts_browse_url
     nil
   end
 end

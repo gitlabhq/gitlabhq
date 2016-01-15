@@ -560,7 +560,8 @@ Parameters:
 
 - `uid` (required) - id of specified user
 
-Will return `200 OK` on success, or `404 User Not Found` is user cannot be found.
+Will return `200 OK` on success, `404 User Not Found` is user cannot be found or 
+`403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
 
 ## Unblock user
 
@@ -574,4 +575,5 @@ Parameters:
 
 - `uid` (required) - id of specified user
 
-Will return `200 OK` on success, or `404 User Not Found` is user cannot be found.
+Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
+`403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.

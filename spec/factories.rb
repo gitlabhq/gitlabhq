@@ -224,6 +224,13 @@ FactoryGirl.define do
     extern_uid 'my-ldap-id'
   end
 
+  factory :sent_notification do
+    project
+    recipient factory: :user
+    noteable factory: :issue
+    reply_key "0123456789abcdef" * 2
+  end
+
   factory :gitlab_license, class: "Gitlab::License" do
     starts_at { Date.today - 1.month }
     expires_at { Date.today + 11.months }

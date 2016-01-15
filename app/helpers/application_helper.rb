@@ -181,10 +181,6 @@ module ApplicationHelper
     end
   end
 
-  def broadcast_message
-    BroadcastMessage.current
-  end
-
   # Render a `time` element with Javascript-based relative date and tooltip
   #
   # time       - Time object
@@ -266,7 +262,7 @@ module ApplicationHelper
       state: params[:state],
       scope: params[:scope],
       label_name: params[:label_name],
-      milestone_id: params[:milestone_id],
+      milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
       sort: params[:sort],

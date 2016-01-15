@@ -51,14 +51,17 @@
       = render 'projects/buttons/star'
       = render 'projects/buttons/fork'
 
-    = render "shared/clone_panel"
+    .clone-row
+      .project-clone-holder
+        = render "shared/clone_panel"
 
-    .split-repo-buttons
-      = render "projects/buttons/update_mirror"
-      = render "projects/buttons/download"
-      = render 'projects/buttons/dropdown'
+      .split-repo-buttons
+        .btn-group.pull-left
+          = render "projects/buttons/update_mirror"
+          = render "projects/buttons/download"
+          = render 'projects/buttons/dropdown'
 
-    = render 'projects/buttons/notifications'
+      = render 'projects/buttons/notifications'
 
 :javascript
   new Star();

@@ -1,9 +1,9 @@
 .hidden-xs
   = render "events/event_last_push", event: @last_push
 
-.gray-content-block
+.nav-block
   - if current_user
-    .pull-right
+    .controls
       = link_to dashboard_projects_path(:atom, { private_token: current_user.private_token }), class: 'btn rss-btn' do
         %i.fa.fa-rss
   = render 'shared/event_filter'

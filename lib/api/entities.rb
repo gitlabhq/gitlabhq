@@ -76,6 +76,7 @@ module API
       expose :avatar_url
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
+      expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
     end
 
     class ProjectMember < UserBasic
@@ -394,6 +395,41 @@ module API
 
     class TriggerRequest < Grape::Entity
       expose :id, :variables
+    end
+
+    class Runner < Grape::Entity
+      expose :id
+      expose :description
+      expose :active
+      expose :is_shared
+      expose :name
+    end
+
+    class Build < Grape::Entity
+      expose :id, :status, :stage, :name, :ref, :tag, :coverage
+      expose :created_at, :started_at, :finished_at
+      expose :user, with: User
+      # TODO: download_url in Ci:Build model is an GitLab Web Interface URL, not API URL. We should think on some API
+      #       for downloading of artifacts (see: https://gitlab.com/gitlab-org/gitlab-ce/issues/4255)
+      expose :download_url do |repo_obj, options|
+        if options[:user_can_download_artifacts]
+          repo_obj.download_url
+        end
+      end
+      expose :commit, with: RepoCommit do |repo_obj, _options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit.commit_data
+        end
+      end
+      expose :runner, with: Runner
+    end
+
+    class Trigger < Grape::Entity
+      expose :token, :created_at, :updated_at, :deleted_at, :last_used
+    end
+
+    class Variable < Grape::Entity
+      expose :key, :value
     end
   end
 end

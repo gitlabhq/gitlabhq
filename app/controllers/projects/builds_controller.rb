@@ -2,7 +2,6 @@ class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
 
   before_action :authorize_manage_builds!, except: [:index, :show, :status]
-  before_action :authorize_download_build_artifacts!, only: [:download]
 
   layout "project"
 
@@ -51,18 +50,6 @@ class Projects::BuildsController < Projects::ApplicationController
     redirect_to build_path(build)
   end
 
-  def download
-    unless artifacts_file.file_storage?
-      return redirect_to artifacts_file.url
-    end
-
-    unless artifacts_file.exists?
-      return not_found!
-    end
-
-    send_file artifacts_file.path, disposition: 'attachment'
-  end
-
   def status
     render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
   end
@@ -79,10 +66,6 @@ class Projects::BuildsController < Projects::ApplicationController
     @build ||= project.builds.unscoped.find_by!(id: params[:id])
   end
 
-  def artifacts_file
-    build.artifacts_file
-  end
-
   def build_path(build)
     namespace_project_build_path(build.project.namespace, build.project, build)
   end
@@ -90,16 +73,6 @@ class Projects::BuildsController < Projects::ApplicationController
   def authorize_manage_builds!
     unless can?(current_user, :manage_builds, project)
       return page_404
-    end
-  end
-
-  def authorize_download_build_artifacts!
-    unless can?(current_user, :download_build_artifacts, @project)
-      if current_user.nil?
-        return authenticate_user!
-      else
-        return render_404
-      end
     end
   end
 end

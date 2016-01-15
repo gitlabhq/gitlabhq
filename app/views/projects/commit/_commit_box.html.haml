@@ -50,7 +50,7 @@
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin
 
-.commit-box.gray-content-block.middle-block
+.commit-box.content-block
   %h3.commit-title
     = markdown escape_once(@commit.title), pipeline: :single_line
   - if @commit.description.present?

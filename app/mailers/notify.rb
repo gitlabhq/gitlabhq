@@ -108,10 +108,9 @@ class Notify < BaseMailer
     end
 
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
+    headers['X-GitLab-Reply-Key'] = reply_key
 
-    if reply_key
-      headers['X-GitLab-Reply-Key'] = reply_key
-
+    if Gitlab::IncomingEmail.enabled?
       address = Mail::Address.new(Gitlab::IncomingEmail.reply_address(reply_key))
       address.display_name = @project.name_with_namespace
 
