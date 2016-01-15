@@ -1,3 +1,5 @@
+require 'base64'
+
 # Controller for viewing a file's raw
 class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
@@ -15,7 +17,10 @@ class Projects::RawController < Projects::ApplicationController
       if @blob.lfs_pointer?
         send_lfs_object
       else
-        stream_data
+        headers['Gitlab-Workhorse-Repo-Path'] = @repository.path_to_repo
+        headers['Gitlab-Workhorse-Send-Blob'] = Base64.urlsafe_encode64(@commit.id + ':' + @path)
+        headers['Content-Disposition'] = 'inline'
+        render nothing: true, content_type: get_blob_type
       end
     else
       render_404
@@ -32,16 +37,6 @@ class Projects::RawController < Projects::ApplicationController
     else
       'application/octet-stream'
     end
-  end
-
-  def stream_data
-    type = get_blob_type
-
-    send_data(
-      @blob.data,
-      type: type,
-      disposition: 'inline'
-    )
   end
 
   def send_lfs_object
