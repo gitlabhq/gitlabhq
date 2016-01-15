@@ -45,7 +45,6 @@ module ProjectsHelper
   end
 
   def project_title(project, name = nil, url = nil)
-    project_id = project.id
     namespace_link =
       if project.group
         link_to(simple_sanitize(project.group.name), group_path(project.group))
@@ -54,9 +53,9 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), {class: "project-item-select-holder #{"js-projects-dropdown-toggle" if current_user}"} do
+    project_link = link_to project_path(project), { class: "project-item-select-holder #{"js-projects-dropdown-toggle" if current_user}" } do
       link_output = simple_sanitize(project.name)
-      link_output += content_tag :span, nil, {class: "fa fa-chevron-down dropdown-toggle-caret"} if current_user
+      link_output += content_tag :span, nil, { class: "fa fa-chevron-down dropdown-toggle-caret" } if current_user
 
       link_output += project_select_tag :project_path, class: "project-item-select js-projects-dropdown", data: { include_groups: false } if current_user
 
