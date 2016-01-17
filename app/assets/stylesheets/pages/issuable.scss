@@ -20,6 +20,11 @@
       position: fixed;
       top: 70px;
       margin-right: 35px;
+
+      &.no-affix {
+        position: relative;
+        top: 0;
+      }
     }
   }
 }
