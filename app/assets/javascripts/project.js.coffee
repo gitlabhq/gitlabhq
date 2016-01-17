@@ -56,10 +56,13 @@ class @Project
   projectSelectDropdown: ->
     new ProjectSelect()
 
-    $('.project-item-select').on 'click', ->
-      window.location = $(this).val()
+    $('.project-item-select').on 'click', (e) =>
+      @changeProject $(e.currentTarget).val()
 
     $('.js-projects-dropdown-toggle').on 'click', (e) ->
       e.preventDefault()
 
-      $('.js-projects-dropdown').select2 'open'
+      $('.js-projects-dropdown').select2('open')
+
+  changeProject: (url) ->
+    window.location = url
