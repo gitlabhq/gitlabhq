@@ -67,3 +67,16 @@ Run `sudo gitlab-ctl reconfigure` for changes to take effect.
 
 In order to use a different set other than `identicon`, replace `&d=identicon` portion of the URL with another supported set.
 For example, you can use `retro` set in which case the URL would look like: `plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=retro"`
+
+
+## Usage examples
+
+#### For Microsoft Office 365
+
+If your users are Office 365-users, the "GetPersonaPhoto" service can be used. Note that this service requires login, so this use case is
+most useful in a corporate installation, where all users have access to Office 365.
+
+```ruby
+gitlab_rails['gravatar_plain_url'] = 'http://outlook.office365.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
+gitlab_rails['gravatar_ssl_url'] = 'https://outlook.office365.com/owa/service.svc/s/GetPersonaPhoto?email=%{email}&size=HR120x120'
+```
