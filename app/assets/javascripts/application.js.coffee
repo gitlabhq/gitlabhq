@@ -23,7 +23,7 @@
 #= require raphael
 #= require g.raphael-min
 #= require g.bar-min
-#= require chart-lib.min
+#= require Chart
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
