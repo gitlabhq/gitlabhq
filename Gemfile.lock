@@ -181,6 +181,19 @@ GEM
       railties (>= 3.2)
     dropzonejs-rails (0.7.2)
       rails (> 3.1)
+    elasticsearch (1.0.15)
+      elasticsearch-api (= 1.0.15)
+      elasticsearch-transport (= 1.0.15)
+    elasticsearch-api (1.0.15)
+      multi_json
+    elasticsearch-model (0.1.8)
+      activesupport (> 3)
+      elasticsearch (> 0.4)
+      hashie
+    elasticsearch-rails (0.1.8)
+    elasticsearch-transport (1.0.15)
+      faraday
+      multi_json
     email_reply_parser (0.5.8)
     email_spec (1.6.0)
       launchy (~> 2.1)
@@ -345,6 +358,14 @@ GEM
       mime-types (>= 1.19)
       rugged (>= 0.23.0b)
     github-markup (1.3.3)
+    gitlab-elasticsearch-git (0.0.7)
+      activemodel (~> 4.2.0)
+      activesupport (~> 4.2.0)
+      charlock_holmes (~> 0.7.3)
+      elasticsearch-api (~> 1.0.15)
+      elasticsearch-model
+      github-linguist (~> 4.7.0)
+      rugged (~> 0.23.3)
     gitlab-flowdock-git-hook (1.0.1)
       flowdock (~> 0.7)
       gitlab-grit (>= 2.4.1)
@@ -920,6 +941,8 @@ DEPENDENCIES
   diffy (~> 3.0.3)
   doorkeeper (~> 2.2.0)
   dropzonejs-rails (~> 0.7.1)
+  elasticsearch-model
+  elasticsearch-rails
   email_reply_parser (~> 0.5.8)
   email_spec (~> 1.6.0)
   factory_girl_rails (~> 4.3.0)
@@ -933,6 +956,7 @@ DEPENDENCIES
   gemnasium-gitlab-service (~> 0.2)
   github-linguist (~> 4.7.0)
   github-markup (~> 1.3.1)
+  gitlab-elasticsearch-git
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-license (~> 0.0.4)
   gitlab_emoji (~> 0.2.0)
