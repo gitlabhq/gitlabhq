@@ -82,6 +82,13 @@
         Abuse Reports
         %span.count= number_with_delimiter(AbuseReport.count(:all))
 
+  - if ApplicationSetting.current.ip_blocking_enabled
+    = nav_link(controller: [:blacklist, :whitelist, :dns_blacklists, :dns_whitelists]) do
+      = link_to admin_ip_blocking_blacklist_index_path, title: 'IP blocking' do
+        = icon('shield fw')
+        %span
+          IP blocking
+
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
     = link_to admin_application_settings_path, title: 'Settings' do
       = icon('cogs fw')

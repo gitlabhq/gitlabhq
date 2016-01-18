@@ -450,7 +450,6 @@ production: &base
       # bantime: 3600
 
   dnsbl_check:
-    enabled: true
     treshold: 0.3
     lists:
       - domain: list.blogspambl.com
@@ -502,8 +501,6 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
-  dnsbl_check:
-    enabled: false
 
 staging:
   <<: *base

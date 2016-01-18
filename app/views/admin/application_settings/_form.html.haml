@@ -215,6 +215,32 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
+          = f.label :ip_blocking_enabled do
+            = f.check_box :ip_blocking_enabled
+            Enable IP check against blacklist/whitelist at sign-up
+          .help-block Helps preventing accounts creation from 'known spam sources'
+
+    .form-group
+      = f.label :dns_whitelist_threshold, class: 'control-label col-sm-2' do
+        DNS whitelist threshold
+      .col-sm-10
+        = f.number_field :dns_whitelist_threshold, class: 'form-control', step: 0.01, min: 0.01, max: 1.0
+        .help-block
+          IPs, for which search score over whitelists (counted as an weighted average of hits) will be greater than this
+          value, will be marked as 'NOT SPAM'. Whitelists have priority over blacklists.
+
+    .form-group
+      = f.label :dns_blacklist_threshold, class: 'control-label col-sm-2' do
+        DNS blacklist threshold
+      .col-sm-10
+        = f.number_field :dns_blacklist_threshold, class: 'form-control', step: 0.01, min: 0.01, max: 1.0
+        .help-block
+          IPs, for which search score over blacklists (counted as an weighted average of hits) will be greater than this
+          value, will be marked as 'SPAM'.
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
           = f.label :recaptcha_enabled do
             = f.check_box :recaptcha_enabled
             Enable reCAPTCHA

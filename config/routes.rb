@@ -266,6 +266,13 @@ Rails.application.routes.draw do
       end
     end
 
+    namespace :ip_blocking do
+      resources :blacklist, only: [:index, :create, :edit, :update, :destroy]
+      resources :whitelist, only: [:index, :create, :edit, :update, :destroy]
+      resources :dns_blacklists, only: [:index, :create, :edit, :update, :destroy]
+      resources :dns_whitelists, only: [:index, :create, :edit, :update, :destroy]
+    end
+
     root to: 'dashboard#index'
   end
 

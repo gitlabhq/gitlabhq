@@ -41,6 +41,9 @@
 #  recaptcha_site_key                :string
 #  recaptcha_private_key             :string
 #  metrics_port                      :integer          default(8089)
+#  ip_blocking_enabled               :boolean          default(FALSE)
+#  dns_blacklist_threshold           :float            default(0.33)
+#  dns_whitelist_threshold           :float            default(0.33)
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -81,6 +84,12 @@ class ApplicationSetting < ActiveRecord::Base
   validates :recaptcha_private_key,
             presence: true,
             if: :recaptcha_enabled
+
+  validates :dns_blacklist_threshold,
+            numericality: { greater_than:0, less_than_or_equal_to: 1 }
+
+  validates :dns_whitelist_threshold,
+            numericality: { greater_than:0, less_than_or_equal_to: 1 }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
