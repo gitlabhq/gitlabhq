@@ -8,10 +8,16 @@ Get a list of repository commits in a project.
 GET /projects/:id/repository/commits
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
 
-- `id` (required) - The ID of a project
-- `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits"
+```
+
+Example response:
 
 ```json
 [
@@ -48,8 +54,16 @@ GET /projects/:id/repository/commits/:sha
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The commit hash or name of a repository branch or tag
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `sha` | string | yes | The commit hash or name of a repository branch or tag |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master
+```
+
+Example response:
 
 ```json
 {
@@ -79,8 +93,16 @@ GET /projects/:id/repository/commits/:sha/diff
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The name of a repository branch or tag or if not given the default branch
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `sha` | string | yes | The commit hash or name of a repository branch or tag |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/diff"
+```
+
+Example response:
 
 ```json
 [
@@ -107,8 +129,16 @@ GET /projects/:id/repository/commits/:sha/comments
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `sha` (required) - The name of a repository branch or tag or if not given the default branch
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `sha` | string | yes | The commit hash or name of a repository branch or tag |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/comments"
+```
+
+Example response:
 
 ```json
 [
@@ -128,20 +158,30 @@ Parameters:
 
 ## Post comment to commit
 
-Adds a comment to a commit. Optionally you can post comments on a specific line of a commit. Therefor both `path`, `line_new` and `line_old` are required.
+Adds a comment to a commit. Optionally you can post comments on a specific line
+of a commit. In that case `path`, `line` and `line_type` are required.
 
 ```
 POST /projects/:id/repository/commits/:sha/comments
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`        | integer | yes | The ID of a project |
+| `sha`       | string  | yes | The commit hash or name of a repository branch or tag |
+| `note`      | string  | yes | Text of comment |
+| `path`      | string  | no  | The file path relative to the repository |
+| `line`      | integer | no  | The line number |
+| `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
 
-- `id` (required)               - The ID of a project
-- `sha` (required)              - The name of a repository branch or tag or if not given the default branch
-- `note` (required)             - Text of comment
-- `path` (optional)             - The file path
-- `line` (optional)             - The line number
-- `line_type` (optional)        - The line type (new or old)
+In order to post a comment in a particular line of a particular file, you must
+specify `path`, `line` and `line_type` should be `new`.
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/comments?note=New%20comment&path=CHANGELOG&line=664&line_type=new"
+```
+
+Example response:
 
 ```json
 {
