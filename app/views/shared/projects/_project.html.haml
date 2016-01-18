@@ -33,11 +33,11 @@
         &nbsp;
       - if forks
         %span
-          %i.fa.fa-code-fork
+          = icon('code-fork')
           = project.forks_count
       - if stars
         %span
-          %i.fa.fa-star
+          = icon('star')
           = project.star_count
     - if show_last_commit_as_description
       .project-description
