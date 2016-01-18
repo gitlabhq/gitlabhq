@@ -19,12 +19,6 @@ describe 'DNSBLCheck', lib: true, no_db: true do
     end
   end
 
-  describe '#threshold=' do
-    it { expect{ dnsbl_check.threshold = 0   }.to     raise_error(ArgumentError) }
-    it { expect{ dnsbl_check.threshold = 1.1 }.to     raise_error(ArgumentError) }
-    it { expect{ dnsbl_check.threshold = 0.5 }.not_to raise_error }
-  end
-
   describe '#test' do
     it { expect{ dnsbl_check.test(invalid_ip) }.to raise_error(ArgumentError) }
 
@@ -43,5 +37,11 @@ describe 'DNSBLCheck', lib: true, no_db: true do
     it { expect(dnsbl_check.test(no_spam_ip)).to be_falsey }
     it { expect(dnsbl_check.test_strict(spam_ip)).to    be_truthy }
     it { expect(dnsbl_check.test_strict(no_spam_ip)).to be_falsey }
+  end
+
+  describe '#threshold=' do
+    it { expect{ dnsbl_check.threshold = 0   }.to     raise_error(ArgumentError) }
+    it { expect{ dnsbl_check.threshold = 1.1 }.to     raise_error(ArgumentError) }
+    it { expect{ dnsbl_check.threshold = 0.5 }.not_to raise_error }
   end
 end
