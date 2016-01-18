@@ -63,8 +63,8 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
     end
   end
 
-  step 'I click download button for a file within build artifacts' do
-    page.within('.tree-table') { first('.artifact-download').click }
+  step 'I click a link to file within build artifacts' do
+    page.within('.tree-table') { find_link('ci_artifacts.txt').click }
   end
 
   step 'download of a file extracted from build artifacts should start' do
