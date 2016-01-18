@@ -52,3 +52,22 @@ We do not recommend using MySQL due to various issues. For example, case [(in)se
     mysql> \q
 
     # You are done installing the database and can go back to the rest of the installation.
+
+## MySQL strings limits
+
+After installation or upgrade is done, remember to run `add_limits_mysql` rake task:
+
+```
+bundle exec rake add_limits_mysql
+```
+
+The `text` type in MySQL have different size limit than `text` type in PostgreSQL. In MySQL `text` columns are limited
+to ~65kB, where in PostgreSQL `text` columns are limited up to ~1GB!
+
+`add_limits_mysql` rake task converts some important `text` columns in GitLab database to `longtext` which can persist
+up to 4GB characters (may be less if the value contains multibyte characters).
+
+Details can be found in [PostgreSQL manual][postgres-text-type] and in [MySQL manual][mysql-text-types].
+
+[postgres-text-type]: http://www.postgresql.org/docs/9.1/static/datatype-character.html
+[mysql-text-types]: http://dev.mysql.com/doc/refman/5.7/en/string-type-overview.html
