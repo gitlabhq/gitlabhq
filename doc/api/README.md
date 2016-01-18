@@ -1,6 +1,12 @@
 # GitLab API
 
+Automate GitLab via a simple and powerful API. All definitions can be found
+under [/lib/api](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
+
 ## Resources
+
+Documentation for various API resources can be found separately in the
+following locations:
 
 - [Users](users.md)
 - [Session](session.md)
@@ -44,7 +50,7 @@ returned with status code `401`:
 ```
 
 API requests should be prefixed with `api` and the API version. The API version
-is defined in `lib/api.rb`.
+is defined in [`lib/api.rb`][lib-api-url].
 
 Example of a valid API request:
 
@@ -52,13 +58,14 @@ Example of a valid API request:
 GET https://gitlab.example.com/api/v3/projects?private_token=9koXpg98eAheJpvBs5tK
 ```
 
-Example of a valid API request using curl and authentication via header:
+Example of a valid API request using cURL and authentication via header:
 
 ```shell
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
 ```
 
-The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
+The API uses JSON to serialize data. You don't need to specify `.json` at the
+end of an API URL.
 
 ## Authentication with OAuth2 token
 
@@ -82,21 +89,21 @@ Read more about [GitLab as an OAuth2 client](oauth2.md).
 ## Status codes
 
 The API is designed to return different status codes according to context and
-action. This way if a request results in an error, the caller is able to get
+action. This way, if a request results in an error, the caller is able to get
 insight into what went wrong.
 
 The following table gives an overview of how the API functions generally behave.
 
-| Request type | Explanation |
+| Request type | Description |
 | ------------ | ----------- |
 | `GET`   | Access one or more resources and return the result as JSON. |
 | `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
 | `GET` / `PUT` / `DELETE` | Return `200 OK` if the resource is accessed, modified or deleted successfully. The (modified) result is returned as JSON. |
-| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind it is the user is not really interested if the resource existed before or not. |
+| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind this, is that the user is not really interested if the resource existed before or not. |
 
 The following table shows the possible return codes for API requests.
 
-| Return values | Explanation |
+| Return values | Description |
 | ------------- | ----------- |
 | `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
 | `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
@@ -107,15 +114,15 @@ The following table shows the possible return codes for API requests.
 | `405 Method Not Allowed` | The request is not supported. |
 | `409 Conflict` | A conflicting resource already exists, e.g. creating a project with a name that already exists. |
 | `422 Unprocessable` | The entity could not be processed. |
-| `500 Server Error` | While handling the request something went wrong on the server side. |
+| `500 Server Error` | While handling the request something went wrong server-side. |
 
 ## Sudo
 
 All API requests support performing an API call as if you were another user,
-provided your private token is from an administration account. You need to pass
-the `sudo` parameter by URL or header with an ID or username of the user you
-want to perform the operation as. If passed as a header, the header name must
-be **SUDO** (capitals).
+provided your private token is from an administrator account. You need to pass
+the `sudo` parameter either by URL or a header with an ID/username of the user
+you want to perform the operation as. If passed as a header, the header name
+must be **SUDO** (capitals).
 
 If a non administrative `private_token` is provided, then an error message will
 be returned with status code `403`:
@@ -135,22 +142,24 @@ returned with status code `404`:
 }
 ```
 
-Example of a valid API call with sudo request providing a username and an ID
-respectively:
+---
+
+Example of a valid API call and a request using cURL with sudo request,
+providing a username:
 
 ```shell
 GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
 ```
 
 ```shell
-GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v3/projects"
 ```
 
-Example of a valid API request with sudo using curl and authentication via
-header:
+Example of a valid API call and a request using cURL with sudo request,
+providing an ID:
 
 ```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v3/projects"
+GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
 ```
 
 ```shell
@@ -164,8 +173,8 @@ resources you can pass the following parameters.
 
 | Parameter | Description |
 | --------- | ----------- |
-| `page`    | Page number (default: `1`). |
-| `per_page`| Number of items to list per page (default: `20`, max: `100`). |
+| `page`    | Page number (default: `1`) |
+| `per_page`| Number of items to list per page (default: `20`, max: `100`) |
 
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
@@ -230,19 +239,20 @@ For example, an issue might have `id: 46` and `iid: 5`.
 
 | Parameter | Description |
 | --------- | ----------- |
-| id  | is unique across all issues and is used for any API call. |
-| iid | is unique only in scope of a single project. When you browse issues or merge requests with Web UI, you see the `iid`. |
+| `id`  | Is unique across all issues and is used for any API call |
+| `iid` | Is unique only in scope of a single project. When you browse issues or merge requests with the Web UI, you see the `iid` |
 
-That means that if you want to get an issue via the API you should use:
+That means that if you want to get an issue via the API you should use the `id`:
 
 ```bash
-https://gitlab.example.com/api/v3/projects/42/issues/:id.json
+GET /projects/42/issues/:id
 ```
 
-On the other hand, if you want to create a link to a web page you should use:
+On the other hand, if you want to create a link to a web page you should use
+the `iid`:
 
 ```bash
-https://gitlab.example.com/api/v3/projects/42/issues/:iid.json
+GET /projects/42/issues/:iid
 ```
 
 ## Data validation and error reporting
@@ -258,7 +268,7 @@ Such errors appear in two cases:
 
 When an attribute is missing, you will get something like:
 
-```
+```json
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
@@ -269,7 +279,7 @@ Content-Type: application/json
 When a validation error occurs, error messages will be different. They will
 hold all details of validation errors:
 
-```
+```json
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
@@ -308,4 +318,5 @@ follows:
 There are many unofficial GitLab API Clients for most of the popular
 programming languages. Visit the [GitLab website][] for a complete list.
 
-[GitLab website]: https://about.gitlab.com/applications/#api-clients
+[GitLab website]: https://about.gitlab.com/applications/#api-clients "Clients using the GitLab API"
+[lib-api-url]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api/api.rb
