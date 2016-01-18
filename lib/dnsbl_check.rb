@@ -14,14 +14,14 @@ class DNSBLCheck
   end
 
   IP_REGEXP = /\A([0-9]{1,3}\.){3}[0-9]{1,3}\z/
-  DEFAULT_TRESHOLD = 0.33
+  DEFAULT_THRESHOLD = 0.33
 
   def self.create_from_config(config)
     dnsbl_check = DNSBLCheck.new
 
     if config
       dnsbl_check.enabled = config.enabled if config.respond_to?(:enabled)
-      dnsbl_check.treshold = config.treshold if config.respond_to?(:treshold)
+      dnsbl_check.threshold = config.threshold if config.respond_to?(:threshold)
 
       if config.respond_to?(:lists)
         config.try(:lists).each do |list|
@@ -37,7 +37,7 @@ class DNSBLCheck
     return false unless enabled
 
     search(ip)
-    final_score > treshold
+    final_score > threshold
   end
 
   def test_strict(ip)
@@ -55,13 +55,13 @@ class DNSBLCheck
     @enabled ||= false
   end
 
-  def treshold=(treshold)
-    raise ArgumentError, "'treshold' value must be grather than 0 and less/equal 1" unless treshold.between?(0, 1) && treshold > 0
-    @treshold = treshold
+  def threshold=(threshold)
+    raise ArgumentError, "'threshold' value must be grather than 0 and less/equal 1" unless threshold.between?(0, 1) && threshold > 0
+    @threshold = threshold
   end
 
-  def treshold
-    @treshold ||= DEFAULT_TRESHOLD
+  def threshold
+    @threshold ||= DEFAULT_THRESHOLD
   end
 
   def add_list(domain, weight)

@@ -19,10 +19,10 @@ describe 'DNSBLCheck', lib: true, no_db: true do
     end
   end
 
-  describe '#treshold=' do
-    it { expect{ dnsbl_check.treshold = 0   }.to     raise_error(ArgumentError) }
-    it { expect{ dnsbl_check.treshold = 1.1 }.to     raise_error(ArgumentError) }
-    it { expect{ dnsbl_check.treshold = 0.5 }.not_to raise_error }
+  describe '#threshold=' do
+    it { expect{ dnsbl_check.threshold = 0   }.to     raise_error(ArgumentError) }
+    it { expect{ dnsbl_check.threshold = 1.1 }.to     raise_error(ArgumentError) }
+    it { expect{ dnsbl_check.threshold = 0.5 }.not_to raise_error }
   end
 
   describe '#test' do
@@ -34,7 +34,7 @@ describe 'DNSBLCheck', lib: true, no_db: true do
 
   describe '#test_strict' do
     before do
-      dnsbl_check.treshold = 1
+      dnsbl_check.threshold = 1
     end
 
     it { expect{ dnsbl_check.test_strict(invalid_ip) }.to raise_error(ArgumentError) }
