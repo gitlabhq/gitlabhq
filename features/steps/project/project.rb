@@ -177,4 +177,21 @@ class Spinach::Features::Project < Spinach::FeatureSteps
       expect(page).to have_content 'Notification settings saved'
     end
   end
+
+  step 'I enable project issues' do
+    check 'project_issues_enabled'
+  end
+
+  step 'I disable project issues' do
+    uncheck 'project_issues_enabled'
+  end
+
+  step 'I should not see the issues settings' do
+    expect(find('.issues-feature')).not_to be_visible
+  end
+
+  step 'I should see the issues settings' do
+    expect(find('.issues-feature')).to be_visible
+  end
+
 end

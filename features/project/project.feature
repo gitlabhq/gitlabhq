@@ -18,6 +18,18 @@ Feature: Project
     Then I should see the default project avatar
     And I should not see the "Remove avatar" button
 
+  @javascript
+  Scenario: I disable issues
+    Given I visit edit project "Shop" page
+    When I disable project issues
+    Then I should not see the issues settings
+
+  @javascript
+  Scenario: I enable issues
+    Given I visit edit project "Shop" page
+    When I enable project issues
+    Then I should see the issues settings
+
   Scenario: I should have back to group button
     And project "Shop" belongs to group
     And I visit project "Shop" page

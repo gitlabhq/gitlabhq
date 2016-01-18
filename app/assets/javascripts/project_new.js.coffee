@@ -4,6 +4,7 @@ class @ProjectNew
       $('.project-edit-container').hide()
       $('.save-project-loader').show()
     @toggleSettings()
+    @toggleSettingsOnclick()
 
 
   toggleSettings: ->
@@ -12,3 +13,14 @@ class @ProjectNew
       $('.merge-request-feature').show()
     else
       $('.merge-request-feature').hide()
+    checked = $("#project_issues_enabled").prop("checked")
+    if checked
+      $('.issues-feature').show()
+    else
+      $('.issues-feature').hide()
+
+  toggleSettingsOnclick: ->
+    $("#project_merge_requests_enabled").on 'click', =>
+      @toggleSettings()   
+    $("#project_issues_enabled").on 'click', =>
+      @toggleSettings()
