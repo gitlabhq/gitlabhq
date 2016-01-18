@@ -12,4 +12,4 @@ Feature: Project Builds Summary
 
   Scenario: I browse project builds page
     When I visit project builds page
-    Then I see button to CI Lint Tool
+    Then I see button to CI Lint

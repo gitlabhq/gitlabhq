@@ -12,9 +12,9 @@ class Spinach::Features::ProjectBuildsSummary < Spinach::FeatureSteps
     expect(page).to have_css '#build-trace'
   end
 
-  step 'I see button to CI Lint Tool' do
+  step 'I see button to CI Lint' do
     page.within('.controls') do
-      ci_lint_tool_link = page.find_link('CI Lint Tool')
+      ci_lint_tool_link = page.find_link('CI Lint')
       expect(ci_lint_tool_link[:href]).to eq ci_lint_path
     end
   end
