@@ -66,9 +66,10 @@ class @AwardsHandler
 
   addMeToAuthorList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
-    authors = award_block.attr("data-original-title").split(", ")
+    authors = award_block.attr("data-original-title").trim().split(", ")
     if authors.indexOf("me") == -1
       authors.push("me")
+    console.log('authors');
     award_block.attr("title", authors.join(", "))
     @resetTooltip(award_block)
 
