@@ -49,5 +49,5 @@ Feature: Project Builds Artifacts
     And recent build has artifacts metadata available
     When I visit recent build summary page
     And I click artifacts browse button
-    And I click download button for a file within build artifacts
+    And I click a link to file within build artifacts
     Then download of a file extracted from build artifacts should start
