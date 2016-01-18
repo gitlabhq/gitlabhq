@@ -115,6 +115,7 @@ v 8.3.0
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
+  - Fix: As an admin, cannot add oneself as a member to a group/project
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
   - Backport JIRA features from EE to CE
@@ -176,7 +177,6 @@ v 8.2.2
   - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
   - Fix: Raw private snippets access workflow
   - Prevent "413 Request entity too large" errors when pushing large files with LFS
-  - Fix: As an admin, cannot add oneself as a member to a group/project
   - Fix invalid links within projects dashboard header
   - Make current user the first user in assignee dropdown in issues detail page (Stan Hu)
   - Fix: duplicate email notifications on issue comments
