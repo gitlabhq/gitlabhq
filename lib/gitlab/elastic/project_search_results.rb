@@ -19,9 +19,9 @@ module Gitlab
         when 'notes'
           notes.records.page(page).per(per_page)
         when 'blobs'
-          blobs.response.page(page).per(per_page)
+          blobs.page(page).per(per_page)
         when 'wiki_blobs'
-          wiki_blobs.response.page(page).per(per_page)
+          wiki_blobs.page(page).per(per_page)
         when 'commits'
           Kaminari.paginate_array(commits).page(page).per(per_page)
         else
@@ -56,13 +56,27 @@ module Gitlab
         if project.empty_repo? || query.blank?
           Kaminari.paginate_array([])
         else
-          project.repository.search(query, type: :blob, options: {highlight: true})[:blobs][:results]
+          if root_ref?
+            project.repository.search(
+              query,
+              type: :blob,
+              options: {highlight: true}
+            )[:blobs][:results].response
+          else
+            Kaminari.paginate_array(
+              project.repository.search_files(query, repository_ref)
+            )
+          end
         end
       end
 
       def wiki_blobs
         if project.wiki_enabled? && !project.wiki.empty? && query.present?
-          project.wiki.search(query, type: :blob, options: {highlight: true})[:blobs][:results]
+          project.wiki.search(
+            query,
+            type: :blob,
+            options: {highlight: true}
+          )[:blobs][:results].response
         else
           Kaminari.paginate_array([])
         end
@@ -80,12 +94,22 @@ module Gitlab
         if project.empty_repo? || query.blank?
           Kaminari.paginate_array([])
         else
-          project.repository.find_commits_by_message_with_elastic(query)
+          if root_ref?
+            project.repository.find_commits_by_message_with_elastic(query)
+          else
+            Kaminari.paginate_array(
+              project.repository.find_commits_by_message(query).compact
+            )
+          end
         end
       end
 
       def limit_project_ids
         [project.id]
+      end
+
+      def root_ref?
+        !repository_ref || project.root_ref?(repository_ref)
       end
     end
   end

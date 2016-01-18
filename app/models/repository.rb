@@ -666,11 +666,11 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
-  def parse_search_result(result, elastic = false)
-    if elastic
-      parse_search_result_from_elastic(result)
-    else
+  def parse_search_result(result)
+    if result.is_a?(String)
       parse_search_result_from_grep(result)
+    else
+      parse_search_result_from_elastic(result)
     end
   end
 
