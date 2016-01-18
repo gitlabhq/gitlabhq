@@ -37,22 +37,8 @@ module IssuesSearch
       
       query_hash = basic_query_hash(options[:in], query)
 
-      if options[:projects_ids]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
-          terms: {
-            project_id: [options[:projects_ids]].flatten
-          }
-        }
-      end
+      query_hash = project_ids_filter(query_hash, options[:projects_ids])
 
-      query_hash[:sort] = [
-        { updated_at_sort: { order: :desc, mode: :min } },
-        :_score
-      ]
-
-      query_hash[:highlight] = { fields: options[:in].inject({}) { |a, o| a[o.to_sym] = {} } }
-      
       self.__elasticsearch__.search(query_hash)
     end
   end

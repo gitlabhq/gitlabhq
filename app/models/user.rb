@@ -73,7 +73,6 @@ class User < ActiveRecord::Base
   include Sortable
   include CaseSensitivity
   include TokenAuthenticatable
-  include UsersSearch
 
   add_authentication_token_field :authentication_token
 

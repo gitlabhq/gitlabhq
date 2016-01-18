@@ -70,30 +70,49 @@ module ApplicationSearch
     end
 
     def basic_query_hash(fields, query)
-      if query.present?
-        {
-          query: {
-            filtered: {
-              query: {
-                multi_match: {
-                  fields: fields,
-                  query: query,
-                  operator: :and
-                }
-              },
-            },
-          }
-        }
-      else
-        {
-          query: {
-            filtered: {
-              query: { match_all: {} }
-            }
-          },
-          track_scores: true
+      query_hash = if query.present?
+                     {
+                       query: {
+                         filtered: {
+                           query: {
+                             multi_match: {
+                               fields: fields,
+                               query: query,
+                               operator: :and
+                             }
+                           },
+                         },
+                       }
+                     }
+                   else
+                     {
+                       query: {
+                         filtered: {
+                           query: { match_all: {} }
+                         }
+                       },
+                       track_scores: true
+                     }
+                   end
+
+      query_hash[:sort] = [
+        { updated_at_sort: { order: :desc, mode: :min } },
+        :_score
+      ]
+
+      query_hash[:highlight] = highlight_options(fields)
+
+      query_hash
+    end
+
+    def project_ids_filter(query_hash, project_ids)
+      if project_ids
+        query_hash[:query][:filtered][:filter] = {
+          and: [ { terms: { project_id: project_ids } } ]
         }
       end
+
+      query_hash
     end
   end
 end

@@ -23,22 +23,7 @@ module MilestonesSearch
 
       query_hash = basic_query_hash(options[:in], query)
 
-      if options[:project_ids]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
-          terms: {
-            project_id: [options[:project_ids]].flatten
-          }
-        }
-      end
-
-      query_hash[:sort] = [
-        { updated_at_sort: { order: :desc, mode: :min } },
-        :_score
-      ]
-
-      query_hash[:highlight] = highlight_options(options[:in])
-      
+      query_hash = project_ids_filter(query_hash, options[:projects_ids])
 
       self.__elasticsearch__.search(query_hash)
     end

@@ -33,14 +33,7 @@ module NotesSearch
         query_hash[:track_scores] = true
       end
 
-      if options[:project_ids]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
-          terms: {
-            project_id: [options[:project_ids]].flatten
-          }
-        }
-      end
+      query_hash = project_ids_filter(query_hash, options[:projects_ids])
 
       query_hash[:sort] = [
         { updated_at_sort: { order: :desc, mode: :min } },

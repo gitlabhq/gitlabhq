@@ -38,27 +38,15 @@ module SnippetsSearch
       query_hash = basic_query_hash(options[:in], query)
 
       if options[:ids]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
-          terms: {
-            id: [options[:ids]].flatten
-          }
+        query_hash[:query][:filtered][:filter] = {
+          and: [ { terms: { id: [options[:ids]].flatten } } ]
         }
       end
-
-      query_hash[:sort] = [
-        { updated_at_sort: { order: :desc, mode: :min } },
-        :_score
-      ]
-
-      query_hash[:highlight] = { fields: options[:in].inject({}) { |a, o| a[o.to_sym] = {} } }
 
       self.__elasticsearch__.search(query_hash)
     end
 
     def self.elastic_search_code(query, options: {})
-      options[:in] = %w(title file_name)
-
       query_hash = {
         query: {
           filtered: {
@@ -68,11 +56,8 @@ module SnippetsSearch
       }
 
       if options[:ids]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
-          terms: {
-            id: [options[:ids]].flatten
-          }
+        query_hash[:query][:filtered][:filter] = {
+          and: [ { terms: { id: [options[:ids]].flatten } } ]
         }
       end
 
@@ -81,7 +66,7 @@ module SnippetsSearch
         :_score
       ]
 
-      query_hash[:highlight] = { fields: options[:in].inject({}) { |a, o| a[o.to_sym] = {} } }
+      query_hash[:highlight] = { fields: {content: {}} }
 
       self.__elasticsearch__.search(query_hash)
     end

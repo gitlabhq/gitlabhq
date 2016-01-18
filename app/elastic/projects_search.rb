@@ -105,9 +105,6 @@ module ProjectsSearch
 
       query_hash[:sort] = [:_score]
 
-      query_hash[:highlight] = highlight_options(options[:in])
-      
-
       self.__elasticsearch__.search(query_hash)
     end
   end
