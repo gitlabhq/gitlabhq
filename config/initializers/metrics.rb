@@ -55,6 +55,12 @@ if Gitlab::Metrics.enabled?
 
       config.instrument_methods(const) if const.is_a?(Module)
     end
+
+    Dir[Rails.root.join('app', 'finders', '*.rb')].each do |path|
+      const = File.basename(path, '.rb').camelize.constantize
+
+      config.instrument_instance_methods(const)
+    end
   end
 
   GC::Profiler.enable
