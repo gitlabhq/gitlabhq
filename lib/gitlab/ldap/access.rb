@@ -164,7 +164,7 @@ module Gitlab
         end
       end
 
-      # Loop throug all ldap conneted groups, and update the users link with it
+      # Loop through all ldap connected groups, and update the users link with it
       #
       # We documented what sort of queries an LDAP server can expect from
       # GitLab EE in doc/integration/ldap.md. Please remember to update that
@@ -174,7 +174,7 @@ module Gitlab
           active_group_links = group.ldap_group_links.where(cn: cns_with_access)
 
           if active_group_links.any?
-            group.add_users([user.id], fetch_group_access(group, user, active_group_links), skip_notification: true)
+            group.add_users([user.id], active_group_links.maximum(:group_access), skip_notification: true)
           elsif group.last_owner?(user)
             logger.warn "#{self.class.name}: LDAP group sync cannot remove #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
           else
@@ -219,16 +219,6 @@ module Gitlab
         ::Group.includes(:ldap_group_links).references(:ldap_group_links).
           where.not(ldap_group_links: { id: nil }).
           where(ldap_group_links: { provider: provider })
-      end
-
-      # Get the group_access for a give user.
-      # Always respect the current level, never downgrade it.
-      def fetch_group_access(group, user, active_group_links)
-        current_access_level = group.group_members.where(user_id: user).maximum(:access_level)
-        max_group_access_level = active_group_links.maximum(:group_access)
-
-        # TODO: Test if nil value of current_access_level in handled properly
-        [current_access_level, max_group_access_level].compact.max
       end
 
       def logger
