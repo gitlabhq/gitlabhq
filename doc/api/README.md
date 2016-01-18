@@ -1,7 +1,7 @@
 # GitLab API
 
 Automate GitLab via a simple and powerful API. All definitions can be found
-under [/lib/api](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
+under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 
 ## Resources
 
@@ -36,9 +36,9 @@ following locations:
 ## Authentication
 
 All API requests require authentication. You need to pass a `private_token`
-parameter by URL or header. If passed as a header, the header name must be
-**PRIVATE-TOKEN** (capital and with dash instead of underscore). You can find
-or reset your private token in your account page (`/profile/account`).
+parameter via query string or header. If passed as a header, the header name
+must be `PRIVATE-TOKEN` (uppercase and with a dash instead of an underscore).
+You can find or reset your private token in your account page (`/profile/account`).
 
 If `private_token` is invalid or omitted, then an error message will be
 returned with status code `401`:
@@ -107,12 +107,12 @@ The following table shows the possible return codes for API requests.
 | ------------- | ----------- |
 | `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
 | `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
-| `400 Bad Request` | A required attribute of the API request is missing, e.g. the title of an issue is not given. |
+| `400 Bad Request` | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
 | `401 Unauthorized` | The user is not authenticated, a valid [user token](#authentication) is necessary. |
-| `403 Forbidden` | The request is not allowed, e.g. the user is not allowed to delete a project. |
-| `404 Not Found` | A resource could not be accessed, e.g. an ID for a resource could not be found. |
+| `403 Forbidden` | The request is not allowed, e.g., the user is not allowed to delete a project. |
+| `404 Not Found` | A resource could not be accessed, e.g., an ID for a resource could not be found. |
 | `405 Method Not Allowed` | The request is not supported. |
-| `409 Conflict` | A conflicting resource already exists, e.g. creating a project with a name that already exists. |
+| `409 Conflict` | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
 | `422 Unprocessable` | The entity could not be processed. |
 | `500 Server Error` | While handling the request something went wrong server-side. |
 
@@ -120,9 +120,9 @@ The following table shows the possible return codes for API requests.
 
 All API requests support performing an API call as if you were another user,
 provided your private token is from an administrator account. You need to pass
-the `sudo` parameter either by URL or a header with an ID/username of the user
-you want to perform the operation as. If passed as a header, the header name
-must be **SUDO** (capitals).
+the `sudo` parameter either via query string or a header with an ID/username of
+the user you want to perform the operation as. If passed as a header, the
+header name must be `SUDO` (uppercase).
 
 If a non administrative `private_token` is provided, then an error message will
 be returned with status code `403`:
@@ -133,7 +133,7 @@ be returned with status code `403`:
 }
 ```
 
-If the sudo user id or username cannot be found, an error message will be
+If the sudo user ID or username cannot be found, an error message will be
 returned with status code `404`:
 
 ```json
@@ -168,8 +168,8 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https:/
 
 ## Pagination
 
-Sometimes the returned result will span across many lines. When listing
-resources you can pass the following parameters.
+Sometimes the returned result will span across many pages. When listing
+resources you can pass the following parameters:
 
 | Parameter | Description |
 | --------- | ----------- |
@@ -230,7 +230,7 @@ Additional pagination headers are also sent back.
 | `X-Next-Page`   | The index of the next page |
 | `X-Prev-Page`   | The index of the previous page |
 
-## id vs iid
+## `id` vs `iid`
 
 When you work with the API, you may notice two similar fields in API entities:
 `id` and `iid`. The main difference between them is scope.
@@ -257,14 +257,14 @@ GET /projects/42/issues/:iid
 
 ## Data validation and error reporting
 
-When working with the API you may encounter validation errors. In such case,
+When working with the API you may encounter validation errors, in which case
 the API will answer with an HTTP `400` status.
 
 Such errors appear in two cases:
 
-- A required attribute of the API request is missing, e.g. the title of an
+- A required attribute of the API request is missing, e.g., the title of an
   issue is not given
-- An attribute did not pass the validation, e.g. user bio is too long
+- An attribute did not pass the validation, e.g., user bio is too long
 
 When an attribute is missing, you will get something like:
 
@@ -316,7 +316,7 @@ follows:
 ## Clients
 
 There are many unofficial GitLab API Clients for most of the popular
-programming languages. Visit the [GitLab website][] for a complete list.
+programming languages. Visit the [GitLab website] for a complete list.
 
 [GitLab website]: https://about.gitlab.com/applications/#api-clients "Clients using the GitLab API"
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api/api.rb
