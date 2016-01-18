@@ -43,10 +43,20 @@ module ApplicationSearch
           }
         }
       }
+    
+    if Gitlab.config.elasticsearch.enabled
+      after_commit on: :create do
+        ElasticIndexerWorker.perform_async(:index, self.class.to_s, self.id)
+      end
 
-    after_commit ->{ ElasticIndexerWorker.perform_async(:index, self.class.to_s, self.id) }, on: :create
-    after_commit ->{ ElasticIndexerWorker.perform_async(:update, self.class.to_s, self.id) }, on: :update
-    after_commit ->{ ElasticIndexerWorker.perform_async(:delete, self.class.to_s, self.id) }, on: :destroy
+      after_commit on: :update do
+        ElasticIndexerWorker.perform_async(:update, self.class.to_s, self.id)
+      end
+
+      after_commit on: :destroy do
+        ElasticIndexerWorker.perform_async(:delete, self.class.to_s, self.id)
+      end
+    end
   end
 
    module ClassMethods
