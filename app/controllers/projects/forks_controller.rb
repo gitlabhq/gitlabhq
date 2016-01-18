@@ -4,8 +4,8 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   def index
-    @all_forks = project.forks.includes(:creator)
-    @all_forks = @all_forks.sort(params[:sort]) if params[:sort]
+    @sort = params[:sort] || 'id_desc'
+    @all_forks = project.forks.includes(:creator).order_by(@sort)
 
     @public_forks, @protected_forks = @all_forks.partition do |project|
       can?(current_user, :read_project, project)
