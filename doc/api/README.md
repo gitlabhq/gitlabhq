@@ -173,9 +173,53 @@ In the example below, we list 50 [namespaces](namespaces.md) per page.
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
 ```
 
+### Pagination Link header
+
 [Link headers](http://www.w3.org/wiki/LinkHeader) are sent back with each
-response. These have `rel` prev/next/first/last and contain the relevant URL.
-Please use these instead of generating your own URLs.
+response. They have `rel` set to prev/next/first/last and contain the relevant
+URL. Please use these links instead of generating your own URLs.
+
+In the cURL example below, we limit the output to 3 items per page (`per_page=3`)
+and we request the second page (`page=2`) of [comments](notes.md) of the issue
+with ID `8` which belongs to the project with ID `8`:
+
+```bash
+curl -I -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/issues/8/notes?per_page=3&page=2
+```
+
+The response will then be:
+
+```
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Content-Length: 1103
+Content-Type: application/json
+Date: Mon, 18 Jan 2016 09:43:18 GMT
+Link: <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=1&per_page=3>; rel="prev", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=3&per_page=3>; rel="next", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=1&per_page=3>; rel="first", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=3&per_page=3>; rel="last"
+Status: 200 OK
+Vary: Origin
+X-Next-Page: 3
+X-Page: 2
+X-Per-Page: 3
+X-Prev-Page: 1
+X-Request-Id: 732ad4ee-9870-4866-a199-a9db0cde3c86
+X-Runtime: 0.108688
+X-Total: 8
+X-Total-Pages: 3
+```
+
+### Other pagination headers
+
+Additional pagination headers are also sent back.
+
+| Header | Description |
+| ------ | ----------- |
+| `X-Total`       | The total number of items |
+| `X-Total-Pages` | The total number of pages |
+| `X-Per-Page`    | The number of items per page |
+| `X-Page`        | The index of the current page (starting at 1) |
+| `X-Next-Page`   | The index of the next page |
+| `X-Prev-Page`   | The index of the previous page |
 
 ## id vs iid
 
