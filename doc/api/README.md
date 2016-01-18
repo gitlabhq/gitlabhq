@@ -268,7 +268,7 @@ Such errors appear in two cases:
 
 When an attribute is missing, you will get something like:
 
-```json
+```
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
@@ -279,7 +279,7 @@ Content-Type: application/json
 When a validation error occurs, error messages will be different. They will
 hold all details of validation errors:
 
-```json
+```
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 {
