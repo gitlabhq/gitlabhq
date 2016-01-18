@@ -3,7 +3,7 @@
 All methods require admin authorization.
 
 The URL endpoint of the system hooks can also be configured using the UI in
-[the admin area under hooks](/admin/hooks).
+the admin area under hooks(`/admin/hooks`).
 
 ## List system hooks
 
