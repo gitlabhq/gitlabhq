@@ -66,7 +66,6 @@ v 8.4.0 (unreleased)
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
-  - Add build artifacts browser
 
 v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
