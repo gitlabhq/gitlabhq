@@ -85,7 +85,7 @@ module ApplicationSearch
           }
         }
       else
-        query_hash = {
+        {
           query: {
             filtered: {
               query: { match_all: {} }
