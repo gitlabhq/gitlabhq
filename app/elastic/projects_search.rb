@@ -32,28 +32,12 @@ module ProjectsSearch
     def self.elastic_search(query, options: {})
       options[:in] = %w(name^10 name_with_namespace^2 path_with_namespace path^9)
 
-      query_hash = {
-        query: {
-          filtered: {
-            query: {
-              multi_match: {
-                fields: options[:in],
-                query: "#{query}",
-                operator: :and
-              }
-            },
-          },
-        },
-      }
+      query_hash = basic_query_hash(options[:in], query)
 
-      if query.blank?
-        query_hash[:query][:filtered][:query] = { match_all: {} }
-        query_hash[:track_scores] = true
-      end
+      filters = []
 
       if options[:abandoned]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
+        filters << {
           range: {
             last_pushed_at: {
               lte: "now-6M/m"
@@ -63,8 +47,7 @@ module ProjectsSearch
       end
 
       if options[:with_push]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
+        filters << {
           not: {
             missing: {
               field: :last_pushed_at,
@@ -76,8 +59,7 @@ module ProjectsSearch
       end
 
       if options[:namespace_id]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
+        filters << {
           terms: {
             namespace_id: [options[:namespace_id]].flatten
           }
@@ -85,8 +67,7 @@ module ProjectsSearch
       end
 
       if options[:non_archived]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
+        filters << {
           terms: {
             archived: [!options[:non_archived]].flatten
           }
@@ -94,8 +75,7 @@ module ProjectsSearch
       end
 
       if options[:visibility_levels]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
+        filters << {
           terms: {
             visibility_level: [options[:visibility_levels]].flatten
           }
@@ -103,8 +83,7 @@ module ProjectsSearch
       end
 
       if !options[:owner_id].blank?
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
+        filters << {
           nested: {
             path: :owner,
             filter: {
@@ -115,13 +94,14 @@ module ProjectsSearch
       end
 
       if options[:pids]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
-        query_hash[:query][:filtered][:filter][:and] << {
+        filters << {
           ids: {
             values: options[:pids]
           }
         }
       end
+
+      query_hash[:query][:filtered][:filter] = { and: filters }
 
       query_hash[:sort] = [:_score]
 

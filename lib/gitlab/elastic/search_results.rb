@@ -67,9 +67,9 @@ module Gitlab
         }
 
         if query =~ /#(\d+)\z/
-          issues = Issue.where(project_id: limit_project_ids).where(iid: $1)
+          Issue.where(project_id: limit_project_ids).where(iid: $1)
         else
-          issues = Issue.elastic_search(query, options: opt)
+          Issue.elastic_search(query, options: opt)
         end
       end
 
@@ -78,7 +78,7 @@ module Gitlab
           projects_ids: limit_project_ids
         }
 
-        milestones = Milestone.elastic_search(query, options: opt)
+        Milestone.elastic_search(query, options: opt)
       end
 
       def merge_requests
@@ -87,9 +87,9 @@ module Gitlab
         }
 
         if query =~ /[#!](\d+)\z/
-          merge_requests = MergeRequest.in_projects(limit_project_ids).where(iid: $1)
+          MergeRequest.in_projects(limit_project_ids).where(iid: $1)
         else
-          merge_requests = MergeRequest.elastic_search(query, options: opt)
+          MergeRequest.elastic_search(query, options: opt)
         end
       end
 

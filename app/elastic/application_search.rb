@@ -14,13 +14,13 @@ module ApplicationSearch
           default_field: :name
         },
         analysis: {
-          :analyzer => {
-            :my_analyzer => {
+          analyzer: {
+            my_analyzer:{
               type: "custom",
               tokenizer: "ngram_tokenizer",
               filter: %w(lowercase asciifolding name_ngrams)
             },
-            :search_analyzer => {
+            search_analyzer: {
               type: "custom",
               tokenizer: "standard",
               filter: %w(lowercase asciifolding)
@@ -59,14 +59,41 @@ module ApplicationSearch
     end
   end
 
-   module ClassMethods
-     def highlight_options(fields)
-       es_fields = fields.map { |field| field.split('^').first }.inject({}) do |memo, field|
-         memo[field.to_sym] = {}
-         memo
-       end
+  module ClassMethods
+    def highlight_options(fields)
+      es_fields = fields.map { |field| field.split('^').first }.inject({}) do |memo, field|
+        memo[field.to_sym] = {}
+        memo
+      end
 
-       { fields: es_fields }
-     end
-   end
+      { fields: es_fields }
+    end
+
+    def basic_query_hash(fields, query)
+      if query.present?
+        {
+          query: {
+            filtered: {
+              query: {
+                multi_match: {
+                  fields: fields,
+                  query: query,
+                  operator: :and
+                }
+              },
+            },
+          }
+        }
+      else
+        query_hash = {
+          query: {
+            filtered: {
+              query: { match_all: {} }
+            }
+          },
+          track_scores: true
+        }
+      end
+    end
+  end
 end

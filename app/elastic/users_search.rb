@@ -30,27 +30,11 @@ module UsersSearch
     def self.elastic_search(query, options: {})
       options[:in] = %w(name^3 username^2 email)
 
-      query_hash = {
-        query: {
-          filtered: {
-            query: {
-              multi_match: {
-                fields: options[:in],
-                query: "#{query}",
-                operator: :and
-              }
-            },
-          },
-        }
-      }
+      query_hash = basic_query_hash(options[:in], query)
 
-      if query.blank?
-        query_hash[:query][:filtered][:query] = { match_all: {}}
-        query_hash[:track_scores] = true
-      end
+      query_hash[:query][:filtered][:filter] ||= { and: [] }
 
       if options[:uids]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
         query_hash[:query][:filtered][:filter][:and] << {
           ids: {
             values: options[:uids]
@@ -59,7 +43,6 @@ module UsersSearch
       end
 
       if options[:active]
-        query_hash[:query][:filtered][:filter] ||= { and: [] }
         query_hash[:query][:filtered][:filter][:and] << {
           terms: {
             state: ["active"]

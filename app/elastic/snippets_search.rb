@@ -35,24 +35,7 @@ module SnippetsSearch
     def self.elastic_search(query, options: {})
       options[:in] = %w(title file_name)
       
-      query_hash = {
-        query: {
-          filtered: {
-            query: {
-              multi_match: {
-                fields: options[:in],
-                query: "#{query}",
-                operator: :and
-              }
-            },
-          },
-        }
-      }
-
-      if query.blank?
-        query_hash[:query][:filtered][:query] = { match_all: {}}
-        query_hash[:track_scores] = true
-      end
+      query_hash = basic_query_hash(options[:in], query)
 
       if options[:ids]
         query_hash[:query][:filtered][:filter] ||= { and: [] }
@@ -79,7 +62,7 @@ module SnippetsSearch
       query_hash = {
         query: {
           filtered: {
-            query: {match: {content: query}},
+            query: { match: { content: query } },
           },
         }
       }

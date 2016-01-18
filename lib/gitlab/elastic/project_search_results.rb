@@ -60,7 +60,7 @@ module Gitlab
             project.repository.search(
               query,
               type: :blob,
-              options: {highlight: true}
+              options: { highlight: true }
             )[:blobs][:results].response
           else
             Kaminari.paginate_array(
@@ -75,7 +75,7 @@ module Gitlab
           project.wiki.search(
             query,
             type: :blob,
-            options: {highlight: true}
+            options: { highlight: true }
           )[:blobs][:results].response
         else
           Kaminari.paginate_array([])

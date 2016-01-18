@@ -23,13 +23,13 @@ module NotesSearch
       query_hash = {
         query: {
           filtered: {
-            query: {match: {note: query}},
+            query: { match: { note: query } },
           },
         }
       }
 
       if query.blank?
-        query_hash[:query][:filtered][:query] = { match_all: {}}
+        query_hash[:query][:filtered][:query] = { match_all: {} }
         query_hash[:track_scores] = true
       end
 

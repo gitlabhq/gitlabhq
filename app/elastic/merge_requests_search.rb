@@ -41,34 +41,21 @@ module MergeRequestsSearch
     def self.elastic_search(query, options: {})
       options[:in] = %w(title^2 description)
 
-      query_hash = {
-        query: {
-          filtered: {
-            query: {
-              multi_match: {
-                fields: options[:in],
-                query: "#{query}",
-                operator: :and
-              }
-            },
-          },
-        }
-      }
-
-      if query.blank?
-        query_hash[:query][:filtered][:query] = { match_all: {}}
-        query_hash[:track_scores] = true
-      end
+      query_hash = basic_query_hash(options[:in], query)
 
       if options[:projects_ids]
         query_hash[:query][:filtered][:filter] ||= { and: [] }
         query_hash[:query][:filtered][:filter][:and] << {
           or: [
-            terms: {
-              source_project_id: [options[:projects_ids]].flatten
+            {
+              terms: {
+                source_project_id: [options[:projects_ids]].flatten
+              }
             },
-            terms: {
-              target_project_id: [options[:projects_ids]].flatten
+            {
+              terms: {
+                target_project_id: [options[:projects_ids]].flatten
+              }
             }
           ]
         }
