@@ -60,6 +60,9 @@ v 8.4.0 (unreleased)
   - Add reporters ability to download and browse build artifacts (Andrew Johnson)
   - Autofill referring url in message box when reporting user abuse. (Josh Frye)
   - Remove leading comma on award emoji when the user is the first to award the emoji (Zeger-Jan van de Weg)
+  - Add build artifacts browser
+  - Improve UX in builds artifacts browser
+  - Increase default size of `data` column in `events` table when using MySQL
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
