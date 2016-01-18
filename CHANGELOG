@@ -64,6 +64,7 @@ v 8.4.0 (unreleased)
   - Remove leading comma on award emoji when the user is the first to award the emoji (Zeger-Jan van de Weg)
   - Add build artifacts browser
   - Improve UX in builds artifacts browser
+  - Add MySQL limit migration for `data` column in `events` table
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
