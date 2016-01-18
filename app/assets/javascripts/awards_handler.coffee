@@ -5,7 +5,7 @@ class @AwardsHandler
       event.preventDefault()
       $(".emoji-menu").show()
 
-    $("html").click ->
+    $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
         if $(".emoji-menu").is(":visible")
           $(".emoji-menu").hide()

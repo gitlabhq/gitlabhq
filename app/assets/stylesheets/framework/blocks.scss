@@ -18,9 +18,9 @@
   line-height: 36px;
 }
 
-.content-block,
 .gray-content-block {
-  margin: -$gl-padding;
+  margin-top: 0;
+  margin-bottom: -$gl-padding;
   background-color: $background-color;
   padding: $gl-padding;
   margin-bottom: 0px;
@@ -86,10 +86,7 @@
 .cover-block {
   text-align: center;
   background: $background-color;
-  margin: -$gl-padding;
-  margin-bottom: 0;
-  padding: 44px $gl-padding;
-  border-bottom: 1px solid $border-color;
+  padding-top: 44px;
   position: relative;
 
   .avatar-holder {
@@ -135,4 +132,20 @@
 
 .block-connector {
   margin-top: -1px;
+}
+
+.nav-block {
+  .controls {
+    float: right;
+    margin-top: 11px;
+  }
+}
+
+.content-block {
+  padding: $gl-padding 0;
+  border-bottom: 1px solid $border-color;
+
+  &.oneline-block {
+    line-height: 42px;
+  }
 }

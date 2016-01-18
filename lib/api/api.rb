@@ -54,5 +54,7 @@ module API
     mount Keys
     mount Tags
     mount Triggers
+    mount Builds
+    mount Variables
   end
 end

@@ -7,6 +7,11 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  step "project exists in some group namespace" do
+    @group = create(:group, name: 'some group')
+    @project = create(:project, namespace: @group)
+  end
+
   # Create a specific project called "Shop"
   step 'I own project "Shop"' do
     @project = Project.find_by(name: "Shop")
@@ -98,6 +103,18 @@ module SharedProject
   end
 
   # ----------------------------------------
+  # Project permissions
+  # ----------------------------------------
+
+  step 'I am member of a project with a guest role' do
+    @project.team << [@user, Gitlab::Access::GUEST]
+  end
+
+  step 'I am member of a project with a reporter role' do
+    @project.team << [@user, Gitlab::Access::REPORTER]
+  end
+
+  # ----------------------------------------
   # Visibility of archived project
   # ----------------------------------------
 
@@ -161,24 +178,33 @@ module SharedProject
   end
 
   step '"John Doe" owns private project "Enterprise"' do
-    user = user_exists("John Doe", username: "john_doe")
-    project = Project.find_by(name: "Enterprise")
-    project ||= create(:empty_project, name: "Enterprise", namespace: user.namespace)
-    project.team << [user, :master]
+    user_owns_project(
+      user_name: 'John Doe',
+      project_name: 'Enterprise'
+    )
+  end
+
+  step '"Mary Jane" owns private project "Enterprise"' do
+    user_owns_project(
+      user_name: 'Mary Jane',
+      project_name: 'Enterprise'
+    )
   end
 
   step '"John Doe" owns internal project "Internal"' do
-    user = user_exists("John Doe", username: "john_doe")
-    project = Project.find_by(name: "Internal")
-    project ||= create :empty_project, :internal, name: 'Internal', namespace: user.namespace
-    project.team << [user, :master]
+    user_owns_project(
+      user_name: 'John Doe',
+      project_name: 'Internal',
+      visibility: :internal
+    )
   end
 
   step '"John Doe" owns public project "Community"' do
-    user = user_exists("John Doe", username: "john_doe")
-    project = Project.find_by(name: "Community")
-    project ||= create :empty_project, :public, name: 'Community', namespace: user.namespace
-    project.team << [user, :master]
+    user_owns_project(
+      user_name: 'John Doe',
+      project_name: 'Community',
+      visibility: :public
+    )
   end
 
   step 'public empty project "Empty Public Project"' do
@@ -212,5 +238,12 @@ module SharedProject
       expect(page).to have_content(project.commit.sha[0..6])
       expect(page).to have_content("skipped")
     end
+  end
+
+  def user_owns_project(user_name:, project_name:, visibility: :private)
+    user = user_exists(user_name, username: user_name.gsub(/\s/, '').underscore)
+    project = Project.find_by(name: project_name)
+    project ||= create(:empty_project, visibility, name: project_name, namespace: user.namespace)
+    project.team << [user, :master]
   end
 end

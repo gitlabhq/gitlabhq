@@ -49,7 +49,7 @@ class Projects::IssuesController < Projects::ApplicationController
       assignee_id: ""
     )
 
-    @issue = @project.issues.new(issue_params)
+    @issue = @noteable = @project.issues.new(issue_params)
     respond_with(@issue)
   end
 
@@ -61,7 +61,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @note = @project.notes.new(noteable: @issue)
     @notes = @issue.notes.nonawards.with_associations.fresh
     @noteable = @issue
-    @merge_requests = @issue.referenced_merge_requests
+    @merge_requests = @issue.referenced_merge_requests(current_user)
 
     respond_with(@issue)
   end

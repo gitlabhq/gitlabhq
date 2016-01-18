@@ -44,7 +44,7 @@ describe 'reopen/close issue', ->
     expect($('div.status-box-closed')).toBeVisible()
     expect($('div.status-box-open')).toBeHidden()
 
-  it 'fails to closes an issue with success:false', ->
+  it 'fails to close an issue with success:false', ->
 
     spyOn(jQuery, 'ajax').and.callFake (req) ->
       expect(req.type).toBe('PUT')

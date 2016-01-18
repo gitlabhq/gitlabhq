@@ -1,12 +1,12 @@
 - commit = @repository.commit(branch.target)
 - bar_graph_width_factor = @max_commits > 0 ? 100.0/@max_commits : 0
-- diverging_commit_counts = @repository.diverging_commit_counts(branch) 
+- diverging_commit_counts = @repository.diverging_commit_counts(branch)
 - number_commits_behind = diverging_commit_counts[:behind]
 - number_commits_ahead = diverging_commit_counts[:ahead]
 %li(class="js-branch-#{branch.name}")
   %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
-      %strong.str-truncated= branch.name
+      %span.item-title.str-truncated= branch.name
     &nbsp;
     - if branch.name == @repository.root_ref
       %span.label.label-primary default

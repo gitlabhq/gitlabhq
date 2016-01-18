@@ -1,28 +1,3 @@
-# == Schema Information
-#
-# Table name: builds
-#
-#  id                 :integer          not null, primary key
-#  project_id         :integer
-#  status             :string(255)
-#  finished_at        :datetime
-#  trace              :text
-#  created_at         :datetime
-#  updated_at         :datetime
-#  started_at         :datetime
-#  runner_id          :integer
-#  commit_id          :integer
-#  coverage           :float
-#  commands           :text
-#  job_id             :integer
-#  name               :string(255)
-#  deploy             :boolean          default(FALSE)
-#  options            :text
-#  allow_failure      :boolean          default(FALSE), not null
-#  stage              :string(255)
-#  trigger_request_id :integer
-#
-
 require 'spec_helper'
 
 describe Ci::Build, models: true do
@@ -368,18 +343,72 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :download_url do
-    subject { build.download_url }
+  describe :artifacts_download_url do
+    subject { build.artifacts_download_url }
 
     it "should be nil if artifact doesn't exist" do
       build.update_attributes(artifacts_file: nil)
       is_expected.to be_nil
     end
 
-    it 'should be nil if artifact exist' do
+    it 'should not be nil if artifact exist' do
       gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
       build.update_attributes(artifacts_file: gif)
       is_expected.to_not be_nil
+    end
+  end
+
+  describe :artifacts_browse_url do
+    subject { build.artifacts_browse_url }
+
+    it "should be nil if artifacts browser is unsupported" do
+      allow(build).to receive(:artifacts_browser_supported?).and_return(false)
+      is_expected.to be_nil
+    end
+
+    it 'should not be nil if artifacts browser is supported' do
+      allow(build).to receive(:artifacts_browser_supported?).and_return(true)
+      is_expected.to_not be_nil
+    end
+  end
+
+  describe :artifacts? do
+    subject { build.artifacts? }
+
+    context 'artifacts archive does not exist' do
+      before { build.update_attributes(artifacts_file: nil) }
+      it { is_expected.to be_falsy }
+    end
+
+    context 'artifacts archive exists' do
+      before do
+        gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+        build.update_attributes(artifacts_file: gif)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+
+  describe :artifacts_browser_supported? do
+    subject { build.artifacts_browser_supported? }
+    context 'artifacts metadata does not exist' do
+      it { is_expected.to be_falsy }
+    end
+
+    context 'artifacts archive is a zip file and metadata exists' do
+      before do
+        fixture_dir = Rails.root + 'spec/fixtures/'
+        archive = fixture_file_upload(fixture_dir + 'ci_build_artifacts.zip',
+                                      'application/zip')
+        metadata = fixture_file_upload(fixture_dir + 'ci_build_artifacts_metadata.gz',
+                                       'application/x-gzip')
+        build.update_attributes(artifacts_file: archive)
+        build.update_attributes(artifacts_metadata: metadata)
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 
@@ -395,6 +424,30 @@ describe Ci::Build, models: true do
     it { is_expected.to include(build.token) }
     it { is_expected.to include('gitlab-ci-token') }
     it { is_expected.to include(project.web_url[7..-1]) }
+  end
+
+  describe :depends_on_builds do
+    let!(:build) { FactoryGirl.create :ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build' }
+    let!(:rspec_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test' }
+    let!(:rubocop_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test' }
+    let!(:staging) { FactoryGirl.create :ci_build, commit: commit, name: 'staging', stage_idx: 2, stage: 'deploy' }
+
+    it 'to have no dependents if this is first build' do
+      expect(build.depends_on_builds).to be_empty
+    end
+
+    it 'to have one dependent if this is test' do
+      expect(rspec_test.depends_on_builds.map(&:id)).to contain_exactly(build.id)
+    end
+
+    it 'to have all builds from build and test stage if this is last' do
+      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, rspec_test.id, rubocop_test.id)
+    end
+
+    it 'to have retried builds instead the original ones' do
+      retried_rspec = Ci::Build.retry(rspec_test)
+      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
+    end
   end
 
   def create_mr(build, commit, factory: :merge_request, created_at: Time.now)

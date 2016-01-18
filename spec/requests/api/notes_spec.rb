@@ -10,9 +10,32 @@ describe API::API, api: true  do
   let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
   let!(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }
   let!(:snippet_note) { create(:note, noteable: snippet, project: project, author: user) }
+
+  # For testing the cross-reference of a private issue in a public issue
+  let(:private_user)    { create(:user) }
+  let(:private_project) do
+    create(:project, namespace: private_user.namespace).
+    tap { |p| p.team << [private_user, :master] }
+  end
+  let(:private_issue)    { create(:issue, project: private_project) }
+
+  let(:ext_proj)  { create(:project, :public) }
+  let(:ext_issue) { create(:issue, project: ext_proj) }
+
+  let!(:cross_reference_note) do
+    create :note,
+    noteable: ext_issue, project: ext_proj,
+    note: "mentioned in issue #{private_issue.to_reference(ext_proj)}",
+    system: true
+  end
+
   before { project.team << [user, :reporter] }
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do
+    it_behaves_like 'a paginated resources' do
+      let(:request) { get api("/projects/#{project.id}/issues/#{issue.id}/notes", user) }
+    end
+
     context "when noteable is an Issue" do
       it "should return an array of issue notes" do
         get api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
@@ -24,6 +47,24 @@ describe API::API, api: true  do
       it "should return a 404 error when issue id not found" do
         get api("/projects/#{project.id}/issues/123/notes", user)
         expect(response.status).to eq(404)
+      end
+
+      context "that references a private issue" do
+        it "should return an empty array" do
+          get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response).to be_empty
+        end
+
+        context "and current user can view the note" do
+          it "should return an empty array" do
+            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", private_user)
+            expect(response.status).to eq(200)
+            expect(json_response).to be_an Array
+            expect(json_response.first['body']).to eq(cross_reference_note.note)
+          end
+        end
       end
     end
 
@@ -67,6 +108,21 @@ describe API::API, api: true  do
       it "should return a 404 error if issue note not found" do
         get api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user)
         expect(response.status).to eq(404)
+      end
+
+      context "that references a private issue" do
+        it "should return a 404 error" do
+          get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes/#{cross_reference_note.id}", user)
+          expect(response.status).to eq(404)
+        end
+
+        context "and current user can view the note" do
+          it "should return an issue note by id" do
+            get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes/#{cross_reference_note.id}", private_user)
+            expect(response.status).to eq(200)
+            expect(json_response['body']).to eq(cross_reference_note.note)
+          end
+        end
       end
     end
 

@@ -26,7 +26,23 @@ RSpec.describe AbuseReport, type: :model do
     it { is_expected.to validate_presence_of(:reporter) }
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:message) }
-    it { is_expected.to validate_uniqueness_of(:user_id) }
+    it { is_expected.to validate_uniqueness_of(:user_id).with_message('has already been reported') }
+  end
+
+  describe '#remove_user' do
+    it 'blocks the user' do
+      report = build(:abuse_report)
+
+      allow(report.user).to receive(:destroy)
+
+      expect { report.remove_user }.to change { report.user.blocked? }.to(true)
+    end
+
+    it 'removes the user' do
+      report = build(:abuse_report)
+
+      expect { report.remove_user }.to change { User.count }.by(-1)
+    end
   end
 
   describe '#notify' do

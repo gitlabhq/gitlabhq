@@ -27,13 +27,15 @@ module EventsHelper
     key = key.to_s
     active = 'active' if @event_filter.active?(key)
     link_opts = {
-      class: "event-filter-link btn btn-default #{active}",
+      class: "event-filter-link",
       id:    "#{key}_event_filter",
       title: "Filter by #{tooltip.downcase}",
     }
 
-    link_to request.path, link_opts do
-      content_tag(:span, ' ' + tooltip)
+    content_tag :li, class: active do
+      link_to request.path, link_opts do
+        content_tag(:span, ' ' + tooltip)
+      end
     end
   end
 

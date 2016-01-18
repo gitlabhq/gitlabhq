@@ -2,10 +2,14 @@
   - @discussions.each do |discussion_notes|
     - note = discussion_notes.first
     - if note_for_main_target?(note)
+      - next if note.cross_reference_not_visible_for?(current_user)
+
       = render discussion_notes
     - else
       = render 'projects/notes/discussion', discussion_notes: discussion_notes
 - else
   - @notes.each do |note|
     - next unless note.author
+    - next if note.cross_reference_not_visible_for?(current_user)
+
     = render note

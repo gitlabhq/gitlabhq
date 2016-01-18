@@ -53,9 +53,6 @@
     .gray-content-block.second-block.oneline-block
       = render 'votes/votes_block', votable: @issue
 
-    - if @closed_by_merge_requests.present?
-      = render 'projects/issues/closed_by_box'
-
     .row
       %section.col-md-9
         .issuable-discussion

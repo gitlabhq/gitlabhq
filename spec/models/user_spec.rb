@@ -569,27 +569,39 @@ describe User, models: true do
     end
   end
 
-  describe :ldap_user? do
-    it "is true if provider name starts with ldap" do
-      user = create(:omniauth_user, provider: 'ldapmain')
-      expect( user.ldap_user? ).to be_truthy
+  context 'ldap synchronized user' do
+    describe :ldap_user? do
+      it 'is true if provider name starts with ldap' do
+        user = create(:omniauth_user, provider: 'ldapmain')
+        expect(user.ldap_user?).to be_truthy
+      end
+
+      it 'is false for other providers' do
+        user = create(:omniauth_user, provider: 'other-provider')
+        expect(user.ldap_user?).to be_falsey
+      end
+
+      it 'is false if no extern_uid is provided' do
+        user = create(:omniauth_user, extern_uid: nil)
+        expect(user.ldap_user?).to be_falsey
+      end
     end
 
-    it "is false for other providers" do
-      user = create(:omniauth_user, provider: 'other-provider')
-      expect( user.ldap_user? ).to be_falsey
+    describe :ldap_identity do
+      it 'returns ldap identity' do
+        user = create :omniauth_user
+        expect(user.ldap_identity.provider).not_to be_empty
+      end
     end
 
-    it "is false if no extern_uid is provided" do
-      user = create(:omniauth_user, extern_uid: nil)
-      expect( user.ldap_user? ).to be_falsey
-    end
-  end
+    describe '#ldap_block' do
+      let(:user) { create(:omniauth_user, provider: 'ldapmain', name: 'John Smith') }
 
-  describe :ldap_identity do
-    it "returns ldap identity" do
-      user = create :omniauth_user
-      expect(user.ldap_identity.provider).not_to be_empty
+      it 'blocks user flaging the action caming from ldap' do
+        user.ldap_block
+        expect(user.blocked?).to be_truthy
+        expect(user.ldap_blocked?).to be_truthy
+      end
     end
   end
 

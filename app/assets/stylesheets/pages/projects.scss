@@ -26,6 +26,8 @@
 }
 
 .project-home-panel {
+  padding-bottom: 40px;
+  border-bottom: 1px solid $border-color;
 
   .cover-controls {
     .project-settings-dropdown {
@@ -51,6 +53,8 @@
   }
 
   .notifications-btn {
+    margin-top: -28px;
+
     .fa-bell {
       margin-right: 6px;
     }
@@ -75,17 +79,6 @@
     }
   }
 
-  .git-clone-holder {
-    max-width: 498px;
-
-    .form-control {
-      background: #FFF;
-      font-size: 14px;
-      height: 42px;
-      margin-left: -1px;
-    }
-  }
-
   .visibility-level-label {
     @extend .btn;
     @extend .btn-gray;
@@ -98,24 +91,31 @@
     }
   }
 
-  .git-clone-holder {
-    display: inline-table;
-    position: relative;
-  }
-
   .project-repo-buttons {
-    margin-top: 12px;
+    margin-top: 20px;
     margin-bottom: 0px;
 
     .count-buttons {
       display: block;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .clone-row {
+      .split-repo-buttons,
+      .project-clone-holder {
+        display: inline-block;
+      }
+
+      .split-repo-buttons {
+        margin: 0 12px;
+      }
     }
 
     .btn {
       @include btn-gray;
       text-transform: none;
     }
+
     .count-with-arrow {
       display: inline-block;
       position: relative;
@@ -160,10 +160,10 @@
         border-style: solid;
         font-size: 13px;
         font-weight: 600;
-        line-height: 20px;
-        padding: 11px 16px;
+        line-height: 13px;
+        padding: $gl-vert-padding $gl-padding;
         letter-spacing: .4px;
-        padding: 10px;
+        padding: 10px 14px;
         text-align: center;
         vertical-align: middle;
         touch-action: manipulation;
@@ -187,117 +187,6 @@
   a {
     margin: -1px !important;
   }
-}
-
-.git-clone-holder {
-  .project-home-dropdown + & {
-    margin-right: 45px;
-  }
-
-  .clone-options {
-    display: table-cell;
-    a.btn {
-      width: 100%;
-    }
-  }
-
-  .form-control {
-    cursor: auto;
-    @extend .monospace;
-    background: #FAFAFA;
-    width: 101%;
-  }
-
-  .input-group-addon {
-    background: #f7f8fa;
-
-    &.git-protocols {
-      padding: 0;
-      border: none;
-
-      .input-group-btn:last-child > .btn {
-        @include border-radius-right(0);
-
-        border-left: 1px solid #c6cacf;
-        margin-left: -2px !important;
-      }
-    }
-  }
-}
-
-.projects-search-form {
-
-  .input-group .form-control {
-    height: 42px;
-  }
-}
-
-.input-group-btn {
-  .btn {
-    @include btn-gray;
-    @include btn-middle;
-
-    &:hover {
-      outline: none;
-    }
-
-    &:focus {
-      outline: none;
-    }
-
-    &:active {
-      outline: none;
-    }
-
-    &.btn-clipboard {
-      padding-left: 15px;
-      padding-right: 15px;
-    }
-  }
-
-  .active {
-    @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-
-    border: 1px solid #c6cacf !important;
-    background-color: #e4e7ed !important;
-  }
-
-  .btn-green {
-    @include btn-green
-  }
-
-}
-
-.split-repo-buttons {
-  display: inline-table;
-  margin: 0 12px 0 12px;
-
-  .btn{
-    @include btn-gray;
-    @include btn-default;
-  }
-
-  .dropdown-toggle  {
-    margin: -5px;
-  }
-}
-
-#notification-form {
-  margin-left: 5px;
-}
-
-.dropdown-new {
-  margin-left: -5px;
-}
-
-.open > .dropdown-new.btn {
-  @include box-shadow(inset 0 0 4px rgba(0, 0, 0, 0.12));
-
-  border: 1px solid #c6cacf !important;
-  background-color: #e4e7ed !important;
-  text-transform: none;
-  color: #313236 !important;
-  font-size: 15px;
 }
 
 .dropdown-menu {
@@ -351,28 +240,6 @@
   color: #555;
 }
 
-ul.nav.nav-projects-tabs {
-  @extend .nav-tabs;
-
-  padding-left: 8px;
-
-  li {
-    a {
-      padding: 6px 25px;
-      margin-top: 2px;
-      border-color: #DDD;
-      background-color: #EEE;
-      text-shadow: 0 1px 1px white;
-      color: #555;
-    }
-    &.active {
-      a {
-        font-weight: bold;
-      }
-    }
-  }
-}
-
 .project_member_row form {
   margin: 0px;
 }
@@ -399,9 +266,9 @@ ul.nav.nav-projects-tabs {
 
 .breadcrumb.repo-breadcrumb {
   padding: 0;
-  line-height: 42px;
   background: transparent;
   border: none;
+  line-height: 42px;
   margin: 0;
 
   > li + li:before {
@@ -416,11 +283,8 @@ ul.nav.nav-projects-tabs {
 
 .top-area {
   border-bottom: 1px solid #EEE;
-  margin: 0 -16px;
-  padding: 0 $gl-padding;
-  height: 42px;
 
-  ul.left-top-menu {
+  ul.nav-links {
     display: inline-block;
     width: 50%;
     margin-bottom: 0px;
@@ -431,12 +295,12 @@ ul.nav.nav-projects-tabs {
     width: 50%;
     display: inline-block;
     float: right;
-    padding-top: 7px;
+    padding-top: 11px;
     text-align: right;
 
     .btn-green {
-      margin-top: -2px;
       margin-left: 10px;
+      float: right;
     }
   }
 
@@ -482,11 +346,11 @@ table.table.protected-branches-list tr.no-border {
   padding-top: 10px;
   padding-bottom: 4px;
 
-  ul.nav-pills {
+  ul.nav {
     display:inline-block;
   }
 
-  .nav-pills li {
+  .nav li {
     display:inline;
   }
 
@@ -523,8 +387,7 @@ pre.light-well {
 }
 
 .projects-search-form {
-  margin: -$gl-padding;
-  padding: $gl-padding;
+  padding: $gl-padding 0;
   padding-bottom: 0;
   margin-bottom: 0px;
 
@@ -574,10 +437,8 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
-    padding: $gl-padding;
+    padding: $gl-padding 0;
     border-color: $table-border-color;
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
 
     &.no-description {
       .project {
@@ -631,8 +492,6 @@ pre.light-well {
 }
 
 .project-last-commit {
-  margin: 0 7px;
-
   .ci-status {
     margin-right: 16px;
   }
@@ -662,13 +521,40 @@ pre.light-well {
 }
 
 .project-show-readme .readme-holder {
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-  padding: ($gl-padding + 7px);
+  padding: $gl-padding 0;
   border-top: 0;
 
   .edit-project-readme {
     z-index: 100;
     position: relative;
+  }
+}
+
+.git-clone-holder {
+  width: 498px;
+
+  .btn-clipboard {
+    border: 1px solid $border-color;
+    padding: 6px $gl-padding;
+  }
+
+  .project-home-dropdown + & {
+    margin-right: 45px;
+  }
+
+  .clone-options {
+    display: table-cell;
+    a.btn {
+      width: 100%;
+    }
+  }
+
+  .form-control {
+    @extend .monospace;
+    background: #FFF;
+    font-size: 14px;
+    margin-left: -1px;
+    cursor: auto;
+    width: 101%;
   }
 }

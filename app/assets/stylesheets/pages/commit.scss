@@ -35,6 +35,8 @@
 }
 
 .commit-box {
+  border-top: 1px solid $border-color;
+
   .commit-title {
     margin: 0;
     font-size: 23px;

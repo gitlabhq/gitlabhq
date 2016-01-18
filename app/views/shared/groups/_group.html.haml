@@ -11,7 +11,7 @@
 
   = image_tag group_icon(group), class: "avatar s46 hidden-xs"
   = link_to group, class: 'group-name' do
-    %strong= group.name
+    %span.item-title= group.name
 
   - if group_member
     as
@@ -19,4 +19,3 @@
 
   %div.light
     #{pluralize(group.projects.count, "project")}, #{pluralize(group.users.count, "user")}
-
