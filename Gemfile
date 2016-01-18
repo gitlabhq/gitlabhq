@@ -314,3 +314,6 @@ gem 'oauth2', '~> 1.0.0'
 
 # Soft deletion
 gem "paranoia", "~> 2.0"
+
+# Sentry integration
+gem 'sentry-raven'
