@@ -1,0 +1,15 @@
+- edit_link = ip.is_a?(BlacklistedIp) ? edit_admin_ip_blocking_blacklist_path(ip.id) : edit_admin_ip_blocking_whitelist_path(ip.id)
+- remove_link = ip.is_a?(BlacklistedIp) ? admin_ip_blocking_blacklist_path(ip.id) : admin_ip_blocking_whitelist_path(ip.id)
+
+%tr
+  %td= ip.ip
+  %td= ip.description
+  %td= ip.user.name if ip.user
+  %td= ip.created_at.strftime('%Y-%m-%d %H:%M')
+  %td= ip.updated_at.strftime('%Y-%m-%d %H:%M')
+  %td
+    .pull-right.controls
+      = link_to edit_link, title: 'Edit', class: 'btn btn-grouped btn-xs has_tooltip'  do
+        %i.fa.fa-edit
+      = link_to remove_link, method: :delete, title: 'Remove', class: 'btn btn-grouped btn-xs btn-remove remove-row has_tooltip', data: { confirm: 'Are You sure?' } do
+        %i.fa.fa-trash-o

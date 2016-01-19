@@ -1,0 +1,13 @@
+.pull-left
+  = form_for @ip, url: url, html: { class: 'form-inline fieldset-form' } do |f|
+    - if @ip.errors.any?
+      #error_explanation
+        .alert.alert-danger
+          - @ip.errors.full_messages.each do |msg|
+            %p= msg
+
+    .fieldset
+      .form-group
+        = f.text_field :ip, class: 'form-control', placeholder: 'IP address, eg. 127.0.0.1'
+        = f.text_field :description, class: 'form-control', placeholder: 'description...'
+        = f.submit 'Save address', class: 'btn btn-primary'
