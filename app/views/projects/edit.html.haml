@@ -162,6 +162,8 @@
                       phpunit --coverage-text --colors=never (PHP) -
                       %code ^\s*Lines:\s*\d+.\d+\%
 
+            - if @project.mirror?
+              = render 'shared/mirror_trigger_builds_setting', f: f
 
           %fieldset.features
             %legend

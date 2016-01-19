@@ -4,6 +4,7 @@ v 8.4.0 (unreleased)
   - Fix "Approvals are not reset after a new push is made if the request is coming from a fork"
   - Fix "User is not automatically removed from suggested approvers list if user is deleted"
   - Add option to enforce a semi-linear history by only allowing merge requests to be merged that have been rebased.
+  - Add option to trigger builds when branches or tags are updated from a mirrored upstream repository.
 
 v 8.3.2
   - No EE-specific changes
