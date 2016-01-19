@@ -15,6 +15,8 @@ class @Notes
     @last_fetched_at = last_fetched_at
     @view = view
     @noteable_url = document.URL
+    @notesCountBadge ||= $(".issuable-details").find(".notes-tab .badge")
+
     @initRefresh()
     @setupMainTargetNoteForm()
     @cleanBinding()
@@ -89,7 +91,7 @@ class @Notes
     , 15000
 
   refresh: ->
-    unless document.hidden or (@noteable_url != document.URL)
+    if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
   getContent: ->
@@ -101,7 +103,10 @@ class @Notes
         notes = data.notes
         @last_fetched_at = data.last_fetched_at
         $.each notes, (i, note) =>
-          @renderNote(note)
+          if note.discussion_with_diff_html?
+            @renderDiscussionNote(note)
+          else
+            @renderNote(note)
 
 
   ###
@@ -116,18 +121,21 @@ class @Notes
         flash.pinTo('.header-content')
       return
 
+    if note.award
+      awards_handler.addAwardToEmojiBar(note.note)
+      awards_handler.scrollToAwards()
+
     # render note if it not present in loaded list
     # or skip if rendered
-    if @isNewNote(note) && !note.award
+    else if @isNewNote(note)
       @note_ids.push(note.id)
+
       $('ul.main-notes-list').
         append(note.html).
         syntaxHighlight()
       @initTaskList()
+      @incrementNotesCount()
 
-    if note.award
-      awards_handler.addAwardToEmojiBar(note.note)
-      awards_handler.scrollToAwards()
 
   ###
   Check if note does not exists on page
@@ -144,6 +152,8 @@ class @Notes
   Note: for rendering inline notes use renderDiscussionNote
   ###
   renderDiscussionNote: (note) ->
+    return unless @isNewNote(note)
+
     @note_ids.push(note.id)
     form = $("form[rel='" + note.discussion_id + "']")
     row = form.closest("tr")
@@ -151,27 +161,30 @@ class @Notes
     note_html.syntaxHighlight()
 
     # is this the first note of discussion?
-    if row.is(".js-temp-notes-holder")
+    discussionContainer = $(".notes[rel='" + note.discussion_id + "']")
+    if discussionContainer.length is 0
       # insert the note and the reply button after the temp row
       row.after note.discussion_html
 
       # remove the note (will be added again below)
       row.next().find(".note").remove()
 
+      # Before that, the container didn't exist
+      discussionContainer = $(".notes[rel='" + note.discussion_id + "']")
+
       # Add note to 'Changes' page discussions
-      $(".notes[rel='" + note.discussion_id + "']").append note_html
+      discussionContainer.append note_html
 
       # Init discussion on 'Discussion' page if it is merge request page
-      if $('body').attr('data-page').indexOf('projects:merge_request') == 0
-        discussion_html = $(note.discussion_with_diff_html)
-        discussion_html.syntaxHighlight()
-        $('ul.main-notes-list').append(discussion_html)
+      if $('body').attr('data-page').indexOf('projects:merge_request') is 0
+        $('ul.main-notes-list').
+          append(note.discussion_with_diff_html).
+          syntaxHighlight()
     else
       # append new note to all matching discussions
-      $(".notes[rel='" + note.discussion_id + "']").append note_html
+      discussionContainer.append note_html
 
-    # cleanup after successfully creating a diff/discussion note
-    @removeDiscussionNoteForm(form)
+    @incrementNotesCount()
 
   ###
   Called in response the main target form has been successfully submitted.
@@ -278,6 +291,9 @@ class @Notes
   addDiscussionNote: (xhr, note, status) =>
     @renderDiscussionNote(note)
 
+    # cleanup after successfully creating a diff/discussion note
+    @removeDiscussionNoteForm($("form[rel='" + note.discussion_id + "']"))
+
   ###
   Called in response to the edit note form being submitted
 
@@ -349,14 +365,12 @@ class @Notes
   Removes the actual note from view.
   Removes the whole discussion if the last note is being removed.
   ###
-  removeNote: ->
-    note = $(this).closest(".note")
-    note_id = note.attr('id')
+  removeNote: (e) =>
+    noteId = $(e.currentTarget).closest(".note").attr("id")
 
-    $('.note[id="' + note_id + '"]').each ->
-      note = $(this)
+    $('.note[id="' + noteId + '"]').each (i, el) =>
+      note = $(el)
       notes = note.closest(".notes")
-      count = notes.closest(".issuable-details").find(".notes-tab .badge")
 
       # check if this is the last note for this line
       if notes.find(".note").length is 1
@@ -367,11 +381,9 @@ class @Notes
         # for diff lines
         notes.closest("tr").remove()
 
-      # update notes count
-      oldNum = parseInt(count.text())
-      count.text(oldNum - 1)
-
       note.remove()
+
+    @decrementNotesCount()
 
   ###
   Called in response to clicking the delete attachment link
@@ -542,3 +554,9 @@ class @Notes
 
   updateTaskList: ->
     $('form', this).submit()
+
+  incrementNotesCount: (incrementStep = 1) ->
+    @notesCountBadge.text parseInt(@notesCountBadge.text()) + incrementStep
+
+  decrementNotesCount: ->
+    @incrementNotesCount(-1)
