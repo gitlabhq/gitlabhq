@@ -20,7 +20,5 @@ class @ProjectNew
       $('.issues-feature').hide()
 
   toggleSettingsOnclick: ->
-    $("#project_merge_requests_enabled").on 'click', =>
-      @toggleSettings()   
-    $("#project_issues_enabled").on 'click', =>
-      @toggleSettings()
+    $("#project_merge_requests_enabled").on 'click', @toggleSettings
+    $("#project_issues_enabled").on 'click', @toggleSettings
