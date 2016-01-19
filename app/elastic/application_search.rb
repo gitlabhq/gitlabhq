@@ -16,10 +16,11 @@ module ApplicationSearch
               tokenizer: "standard",
               filter: ["standard", "lowercase", "my_stemmer"]
             }
+          },
           filter: {
             my_stemmer: {
               type: "stemmer",
-              name: "light_german"
+              name: "light_english"
             }
           }
         }

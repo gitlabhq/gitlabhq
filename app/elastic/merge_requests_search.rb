@@ -10,7 +10,6 @@ module MergeRequestsSearch
       indexes :iid,           type: :integer
       indexes :target_branch, type: :string,
                               index_options: 'offsets'
-                              analyzer: :my_analyzer
       indexes :source_branch, type: :string,
                               index_options: 'offsets'
       indexes :title,         type: :string,
