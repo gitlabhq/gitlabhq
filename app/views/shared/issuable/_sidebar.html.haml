@@ -10,8 +10,8 @@
       .value
         - if issuable.assignee
           %strong= link_to_member(@project, issuable.assignee, size: 24)
-          - if issuable.instance_of?(MergeRequest) && !@merge_request.can_be_merged_by?(issuable.assignee)
-            %a.pull-right.cannot-be-merged{href:'#', data:{toggle:'tooltip'}, title:'Not allowed to merge'}
+          - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+            %a.pull-right.cannot-be-merged{href: '#', data: {toggle: 'tooltip'}, title: 'Not allowed to merge'}
               = icon('exclamation-triangle')
         - else
           .light None
