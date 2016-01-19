@@ -7,24 +7,4 @@
   = render 'admin/ip_blocking/dns_list_form', url: admin_ip_blocking_dns_whitelists_path
   = render 'admin/ip_blocking/search_dns_form'
 
-%ul.content-list
-  - if @dns_lists.blank?
-    %li
-      .nothing-here-block No DNS lists to show
-  - else
-    .table-holder
-      %table.table.builds
-        %thead
-          %tr
-            %th Domain
-            %th Weight
-            %th Created by
-            %th Created at
-            %th Updated at
-            %th
-
-        %tbody
-          - @dns_lists.each do |dns_list|
-            = render 'admin/ip_blocking/dns_list', dns_list: dns_list
-
-    = paginate @dns_lists, theme: 'gitlab'
+= render 'admin/ip_blocking/dns_lists'

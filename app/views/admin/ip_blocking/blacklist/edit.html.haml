@@ -4,4 +4,4 @@
 = render 'admin/ip_blocking/nav'
 
 .gray-content-block.clearfix
-  = render 'admin/ip_blocking/blocking_ip_form', url: admin_ip_blocking_blacklist_path
+  = render 'admin/ip_blocking/blocking_ip_form', url: admin_ip_blocking_blacklist_path(@ip.id)
