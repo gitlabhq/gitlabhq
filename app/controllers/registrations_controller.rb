@@ -8,7 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     if !Gitlab::Recaptcha.load_configurations! || verify_recaptcha
-      if ip_is_spam_source(request.remote_ip)
+      if Gitlab::IpCheck.new(request.remote_ip).spam?
         flash[:alert] = 'Could not create an account. This IP is listed for spam.'
         return render action: 'new'
       end
@@ -49,20 +49,6 @@ class RegistrationsController < Devise::RegistrationsController
     unless current_application_settings.signup_enabled?
       redirect_to(new_user_session_path)
     end
-  end
-
-  def ip_is_spam_source(ip)
-    return false unless ApplicationSetting.current.ip_blocking_enabled
-
-    return false if BlockingIp.whitelisted.find_by(ip: ip)
-
-    dnswl_check = DNSXLCheck.create_from_list(DnsIpList.whitelist.all)
-    return false if dnswl_check.test(ip)
-
-    return true if BlockingIp.blacklisted.find_by(ip: ip)
-
-    dnsbl_check = DNSXLCheck.create_from_list(DnsIpList.blacklist.all)
-    dnsbl_check.test(ip)
   end
 
   def sign_up_params

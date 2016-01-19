@@ -27,13 +27,33 @@ class DNSXLCheck
   end
 
   def test(ip)
+    if use_threshold?
+      test_with_threshold(ip)
+    else
+      test_strict(ip)
+    end
+  end
+
+  def test_with_threshold(ip)
+    return false if lists.empty?
+
     search(ip)
-    final_score > threshold
+    final_score >= threshold
   end
 
   def test_strict(ip)
+    return false if lists.empty?
+
     search(ip)
     @score > 0
+  end
+
+  def use_threshold=(value)
+    @use_threshold = value == true
+  end
+
+  def use_threshold?
+    @use_threshold &&= true
   end
 
   def threshold=(threshold)
@@ -80,7 +100,6 @@ class DNSXLCheck
     weights = lists.map{ |rbl| rbl[:weight] }.reduce(:+).to_i
     return 0 if weights == 0
 
-    @score /= weights
-    @score.round(2)
+    (@score.to_f / weights.to_f).round(2)
   end
 end
