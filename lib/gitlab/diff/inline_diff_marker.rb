@@ -31,10 +31,8 @@ module Gitlab
       def position_mapping
         @position_mapping ||= begin
           mapping = []
-          raw_pos = 0
           rich_pos = 0
           (0..raw_line.length).each do |raw_pos|
-            raw_char = raw_line[raw_pos]
             rich_char = rich_line[rich_pos]
 
             # The raw and rich lines are the same except for HTML tags,
