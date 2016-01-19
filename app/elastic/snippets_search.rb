@@ -75,7 +75,7 @@ module SnippetsSearch
         :_score
       ]
 
-      query_hash[:highlight] = { fields: {content: {}} }
+      query_hash[:highlight] = { fields: { content: {} } }
 
       self.__elasticsearch__.search(query_hash)
     end
