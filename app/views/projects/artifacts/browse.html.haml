@@ -23,6 +23,10 @@
   .center Empty
 
 :javascript
-  $(document).on('click', 'tr[data-link]', function(e) {
+  $('.tree-holder').on('click', 'tr[data-link] a', function(e) {
+    e.stopImmediatePropagation();
+  });
+
+  $('.tree-holder').on('click', 'tr[data-link]', function(e) {
     window.location = this.dataset.link;
   });
