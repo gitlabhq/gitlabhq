@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160113111034) do
+ActiveRecord::Schema.define(version: 20160119145451) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -850,6 +850,7 @@ ActiveRecord::Schema.define(version: 20160113111034) do
     t.boolean  "hide_project_limit",          default: false
     t.string   "unlock_token"
     t.datetime "otp_grace_period_started_at"
+    t.boolean  "ldap_email",                              default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
