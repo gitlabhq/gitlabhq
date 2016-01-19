@@ -21,7 +21,7 @@
 #= require bootstrap
 #= require select2
 #= require raphael
-#= require g.raphael-min
+#= require g.raphael
 #= require g.bar-min
 #= require Chart
 #= require branch-graph
