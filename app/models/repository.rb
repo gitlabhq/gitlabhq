@@ -680,7 +680,7 @@ class Repository
     content = result["_source"]["blob"]["content"]
     total_lines = content.lines.size
 
-    term = result["highlight"]["blob.content"][0].match(/gitlabelasticsearch→(.*)←gitlabelasticsearch/)[1]
+    term = result["highlight"]["blob.content"][0].match(/gitlabelasticsearch→(.*?)←gitlabelasticsearch/)[1]
     found_line_number = 0
 
     content.each_line.each_with_index do |line, index|

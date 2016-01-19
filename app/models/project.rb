@@ -260,6 +260,11 @@ class Project < ActiveRecord::Base
         project.mirror_last_successful_update_at = timestamp
         project.save
       end
+
+      if Gitlab.config.elasticsearch.enabled
+        project.repository.index_blobs
+        project.repository.index_commits
+      end
     end
 
     after_transition started: :failed do |project, transaction|
