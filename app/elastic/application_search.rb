@@ -10,35 +10,16 @@ module ApplicationSearch
 
     settings \
       index: {
-        query: {
-          default_field: :name
-        },
         analysis: {
           analyzer: {
-            my_analyzer:{
-              type: "custom",
-              tokenizer: "ngram_tokenizer",
-              filter: %w(lowercase asciifolding name_ngrams)
-            },
-            search_analyzer: {
-              type: "custom",
+            default:{
               tokenizer: "standard",
-              filter: %w(lowercase asciifolding)
+              filter: ["standard", "lowercase", "my_stemmer"]
             }
-          },
-          tokenizer: {
-            ngram_tokenizer: {
-              type: "nGram",
-              min_gram: 1,
-              max_gram: 20,
-              token_chars: %w(letter digit connector_punctuation punctuation)
-            }
-          },
           filter: {
-            name_ngrams: {
-              type:     "nGram",
-              max_gram: 20,
-              min_gram: 1
+            my_stemmer: {
+              type: "stemmer",
+              name: "light_german"
             }
           }
         }

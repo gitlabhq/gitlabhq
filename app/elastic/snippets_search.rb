@@ -8,17 +8,11 @@ module SnippetsSearch
       indexes :id,          type: :integer
 
       indexes :title,       type: :string,
-                            index_options: 'offsets',
-                            search_analyzer: :search_analyzer,
-                            analyzer: :my_analyzer
+                            index_options: 'offsets'
       indexes :file_name,   type: :string,
-                            index_options: 'offsets',
-                            search_analyzer: :search_analyzer,
-                            analyzer: :my_analyzer
+                            index_options: 'offsets'
       indexes :content,     type: :string,
-                            index_options: 'offsets',
-                            search_analyzer: :search_analyzer,
-                            analyzer: :my_analyzer
+                            index_options: 'offsets'
       indexes :created_at,  type: :date
       indexes :updated_at,  type: :date
       indexes :state,       type: :string

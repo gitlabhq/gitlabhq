@@ -9,21 +9,14 @@ module MergeRequestsSearch
 
       indexes :iid,           type: :integer
       indexes :target_branch, type: :string,
-                              index_options: 'offsets',
-                              search_analyzer: :search_analyzer,
+                              index_options: 'offsets'
                               analyzer: :my_analyzer
       indexes :source_branch, type: :string,
-                              index_options: 'offsets',
-                              search_analyzer: :search_analyzer,
-                              analyzer: :my_analyzer
+                              index_options: 'offsets'
       indexes :title,         type: :string,
-                              index_options: 'offsets',
-                              search_analyzer: :search_analyzer,
-                              analyzer: :my_analyzer
+                              index_options: 'offsets'
       indexes :description,   type: :string,
-                              index_options: 'offsets',
-                              search_analyzer: :search_analyzer,
-                              analyzer: :my_analyzer
+                              index_options: 'offsets'
       indexes :created_at,    type: :date
       indexes :updated_at,    type: :date
       indexes :state,         type: :string

@@ -7,13 +7,9 @@ module MilestonesSearch
     mappings do
       indexes :id,          type: :integer
       indexes :title,       type: :string,
-                            index_options: 'offsets',
-                            search_analyzer: :search_analyzer,
-                            analyzer: :my_analyzer
+                            index_options: 'offsets'
       indexes :description, type: :string,
-                            index_options: 'offsets',
-                            search_analyzer: :search_analyzer,
-                            analyzer: :my_analyzer
+                            index_options: 'offsets'
       indexes :project_id,  type: :integer
       indexes :created_at,  type: :date
 
