@@ -49,13 +49,6 @@
 - [Test Clojure applications](ci/examples/test-clojure-application.md)
 - Help your favorite programming language and GitLab by sending a merge request with a guide for that language.
 
-## GitLab Metrics
-
-- [Introduction](metrics/introduction.md)
-- [GitLab Configuration](metrics/gitlab_configuration.md)
-- [InfluxDB Configuration](metrics/influxdb_configuration.md)
-- [InfluxDB Schema](metrics/influxdb_schema.md)
-
 ## Administrator documentation
 
 - [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.
@@ -74,6 +67,7 @@
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
+- [GitLab Metrics](integration/metrics/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
 
 ## Contributor documentation
 

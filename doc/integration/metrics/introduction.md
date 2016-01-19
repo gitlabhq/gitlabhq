@@ -1,20 +1,29 @@
-# Introduction to GitLab Metrics
+# GitLab Metrics
 
 GitLab comes with its own application performance measuring system as of GitLab
 8.4, simply called "GitLab Metrics". GitLab Metrics is available in both the
 Community and Enterprise editions.
 
+Apart from this introduction, you are advised to read through the following
+documents in order to understand and properly configure GitLab Metrics:
+
+- [GitLab Configuration](gitlab_configuration.md)
+- [InfluxDB Configuration](influxdb_configuration.md)
+- [InfluxDB Schema](influxdb_schema.md)
+
+## Introduction to GitLab Metrics
+
 GitLab Metrics makes it possible to measure a wide variety of statistics
 including (but not limited to):
 
-* The time it took to complete a transaction (a web request or Sidekiq job).
-* The time spent in running SQL queries and rendering HAML views.
-* The time spent executing (instrumented) Ruby methods.
-* Ruby object allocations, and retained objects in particular.
-* System statistics such as the process' memory usage and open file descriptors.
-* Ruby garbage collection statistics.
+- The time it took to complete a transaction (a web request or Sidekiq job).
+- The time spent in running SQL queries and rendering HAML views.
+- The time spent executing (instrumented) Ruby methods.
+- Ruby object allocations, and retained objects in particular.
+- System statistics such as the process' memory usage and open file descriptors.
+- Ruby garbage collection statistics.
 
-Metrics data is written to [InfluxDB][influxdb] over [UDP](influxdb-udp). Stored
+Metrics data is written to [InfluxDB][influxdb] over [UDP][influxdb-udp]. Stored
 data can be visualized using [Grafana][grafana] or any other application that
 supports reading data from InfluxDB. Alternatively data can be queried using the
 InfluxDB CLI.
@@ -24,7 +33,7 @@ InfluxDB CLI.
 Two types of metrics are collected:
 
 1. Transaction specific metrics.
-2. Sampled metrics, collected at a certain interval in a separate thread.
+1. Sampled metrics, collected at a certain interval in a separate thread.
 
 ### Transaction Metrics
 
@@ -41,7 +50,7 @@ metrics are collected at a regular interval. This interval is made up out of two
 parts:
 
 1. A user defined interval.
-2. A randomly generated offset added on top of the interval, the same offset
+1. A randomly generated offset added on top of the interval, the same offset
    can't be used twice in a row.
 
 The actual interval can be anywhere between a half of the defined interval and a
