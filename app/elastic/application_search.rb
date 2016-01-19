@@ -4,7 +4,10 @@ module ApplicationSearch
   included do
     include Elasticsearch::Model
 
-    self.__elasticsearch__.client = Elasticsearch::Client.new host: Gitlab.config.elasticsearch.host, port: Gitlab.config.elasticsearch.port
+    self.__elasticsearch__.client = Elasticsearch::Client.new(
+      host: Gitlab.config.elasticsearch.host,
+      port: Gitlab.config.elasticsearch.port
+    )
 
     index_name [Rails.application.class.parent_name.downcase, self.name.downcase, Rails.env].join('-')
 

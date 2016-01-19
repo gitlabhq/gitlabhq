@@ -38,8 +38,6 @@ Elasticsearch is a flexible, scalable and powerful search service. It will keep 
 
     For installation from source:
 
-    For GitHub.com:
-
     ```
       elasticsearch:
         enabled: true

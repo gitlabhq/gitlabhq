@@ -56,6 +56,7 @@ module Gitlab
         if project.empty_repo? || query.blank?
           Kaminari.paginate_array([])
         else
+          # We use elastic for default branch only
           if root_ref?
             project.repository.search(
               query,
@@ -94,6 +95,7 @@ module Gitlab
         if project.empty_repo? || query.blank?
           Kaminari.paginate_array([])
         else
+          # We use elastic for default branch only
           if root_ref?
             project.repository.find_commits_by_message_with_elastic(query)
           else

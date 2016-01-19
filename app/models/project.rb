@@ -944,7 +944,7 @@ class Project < ActiveRecord::Base
   end
 
   def wiki
-    ProjectWiki.new(self, self.owner)
+    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
   def reference_issue_tracker?

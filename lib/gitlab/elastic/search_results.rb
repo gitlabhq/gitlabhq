@@ -67,7 +67,7 @@ module Gitlab
         }
 
         if query =~ /#(\d+)\z/
-          Issue.where(project_id: limit_project_ids).where(iid: $1)
+          Issue.in_projects(limit_project_ids).where(iid: $1)
         else
           Issue.elastic_search(query, options: opt)
         end
