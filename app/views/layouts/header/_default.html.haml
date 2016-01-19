@@ -37,6 +37,6 @@
       %h1.title= title
 
 = render 'shared/outdated_browser'
--if defined?(@project)
+-if @project
   :javascript
     var findFileURL = '#{namespace_project_find_file_path(@project.namespace, @project, @ref || @project.repository.root_ref)}';
