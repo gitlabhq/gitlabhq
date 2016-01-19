@@ -40,14 +40,38 @@ describe Notify do
     end
   end
 
+  shared_examples 'an email with X-GitLab headers containing project details' do
+    it 'has X-GitLab-Project* headers' do
+      is_expected.to have_header 'X-GitLab-Project', /#{project.name}/
+      is_expected.to have_header 'X-GitLab-Project-Id', /#{project.id}/
+      is_expected.to have_header 'X-GitLab-Project-Path', /#{project.path_with_namespace}/
+    end
+  end
+
+  shared_examples 'an email with X-GitLab headers containing build details' do
+    it 'has X-GitLab-Build* headers' do
+      is_expected.to have_header 'X-GitLab-Build-Id', /#{build.id}/
+      is_expected.to have_header 'X-GitLab-Build-Ref', /#{build.ref}/
+    end
+  end
+
+  shared_examples 'an email that contains a header with author username' do
+    it 'has X-GitLab-Author header containing author\'s username' do
+      is_expected.to have_header 'X-GitLab-Author', user.username
+    end
+  end
+
   shared_examples 'an email starting a new thread' do |message_id_prefix|
+    include_examples 'an email with X-GitLab headers containing project details'
+
     it 'has a discussion identifier' do
       is_expected.to have_header 'Message-ID',  /<#{message_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
-      is_expected.to have_header 'X-GitLab-Project', /#{project.name}/
     end
   end
 
   shared_examples 'an answer to an existing thread' do |thread_id_prefix|
+    include_examples 'an email with X-GitLab headers containing project details'
+
     it 'has a subject that begins with Re: ' do
       is_expected.to have_subject /^Re: /
     end
@@ -56,7 +80,6 @@ describe Notify do
       is_expected.to have_header 'Message-ID',  /<(.*)@#{Gitlab.config.gitlab.host}>/
       is_expected.to have_header 'References',  /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
       is_expected.to have_header 'In-Reply-To', /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
-      is_expected.to have_header 'X-GitLab-Project', /#{project.name}/
     end
   end
 
@@ -656,6 +679,8 @@ describe Notify do
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'an email with X-GitLab headers containing project details'
+    it_behaves_like 'an email that contains a header with author username'
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -685,6 +710,8 @@ describe Notify do
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'an email with X-GitLab headers containing project details'
+    it_behaves_like 'an email that contains a header with author username'
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -713,6 +740,8 @@ describe Notify do
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'an email with X-GitLab headers containing project details'
+    it_behaves_like 'an email that contains a header with author username'
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -737,6 +766,8 @@ describe Notify do
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'an email with X-GitLab headers containing project details'
+    it_behaves_like 'an email that contains a header with author username'
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -765,6 +796,8 @@ describe Notify do
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'an email with X-GitLab headers containing project details'
+    it_behaves_like 'an email that contains a header with author username'
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -871,6 +904,8 @@ describe Notify do
 
     it_behaves_like 'it should show Gmail Actions View Commit link'
     it_behaves_like "a user cannot unsubscribe through footer link"
+    it_behaves_like 'an email with X-GitLab headers containing project details'
+    it_behaves_like 'an email that contains a header with author username'
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
@@ -904,6 +939,15 @@ describe Notify do
 
     subject { Notify.build_success_email(build.id, 'wow@example.com') }
 
+    it_behaves_like 'an email with X-GitLab headers containing build details'
+    it_behaves_like 'an email with X-GitLab headers containing project details' do
+      let(:project) { build.project }
+    end
+
+    it 'has header indicating build status' do
+      is_expected.to have_header 'X-GitLab-Build-Status', 'success'
+    end
+
     it 'has the correct subject' do
       should have_subject /Build success for/
     end
@@ -917,6 +961,15 @@ describe Notify do
     before { build.drop }
 
     subject { Notify.build_fail_email(build.id, 'wow@example.com') }
+
+    it_behaves_like 'an email with X-GitLab headers containing build details'
+    it_behaves_like 'an email with X-GitLab headers containing project details' do
+      let(:project) { build.project }
+    end
+
+    it 'has header indicating build status' do
+      is_expected.to have_header 'X-GitLab-Build-Status', 'failed'
+    end
 
     it 'has the correct subject' do
       should have_subject /Build failed for/
