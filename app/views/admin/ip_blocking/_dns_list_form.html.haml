@@ -1,0 +1,13 @@
+.pull-left
+  = form_for @dns_list, url: url, html: { class: 'form-inline fieldset-form' } do |f|
+    - if @dns_list.errors.any?
+      #error_explanation
+        .alert.alert-danger
+          - @dns_list.errors.full_messages.each do |msg|
+            %p= msg
+
+    .fieldset
+      .form-group
+        = f.text_field :domain, class: 'form-control', placeholder: 'Domain, eg. blacklist.rbl.tld'
+        = f.number_field :weight, class: 'form-control', placeholder: '1', step: 1, min: 1, max: 100
+        = f.submit 'Save DNS list', class: 'btn btn-primary'
