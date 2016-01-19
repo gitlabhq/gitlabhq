@@ -272,6 +272,10 @@ class Project < ActiveRecord::Base
               query: "%#{query.try(:downcase)}%")
     end
 
+    def search_by_visibility(level)
+      where(visibility_level: Gitlab::VisibilityLevel.const_get(level.upcase))
+    end
+
     def search_by_title(query)
       where('projects.archived = ?', false).where('LOWER(projects.name) LIKE :query', query: "%#{query.downcase}%")
     end
