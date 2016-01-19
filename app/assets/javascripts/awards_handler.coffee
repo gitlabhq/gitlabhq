@@ -44,7 +44,7 @@ class @AwardsHandler
   decrementCounter: (emoji) ->
     counter = @findEmojiIcon(emoji).siblings(".counter")
     emojiIcon = counter.parent()
-    if parseInt(counter.text()) > 0
+    if parseInt(counter.text()) > 1
       counter.text(parseInt(counter.text()) - 1)
       emojiIcon.removeClass("active")
       @removeMeFromAuthorList(emoji)
