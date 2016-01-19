@@ -7,9 +7,9 @@ v 8.4.0 (unreleased)
   - Add pagination headers to already paginated API resources
   - Properly generate diff of orphan commits, like the first commit in a repository
   - Improve the consistency of commit titles, branch names, tag names, issue/MR titles, on their respective project pages
-  - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
-  - Improved performance of finding issues for an entire group (Yorick Peterse)
-  - Added custom application performance measuring system powered by InfluxDB (Yorick Peterse)
+  - Autocomplete data is now always loaded, instead of when focusing a comment text area
+  - Improved performance of finding issues for an entire group
+  - Added custom application performance measuring system powered by InfluxDB
   - Bump fog to 1.36.0 (Stan Hu)
   - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
@@ -60,14 +60,14 @@ v 8.4.0 (unreleased)
   - Autosize Markdown textareas
   - Import GitHub wiki into GitLab
   - Add reporters ability to download and browse build artifacts (Andrew Johnson)
-  - Autofill referring url in message box when reporting user abuse. (Josh Frye)
+  - Autofill referring url in message box when reporting user abuse.
   - Remove leading comma on award emoji when the user is the first to award the emoji (Zeger-Jan van de Weg)
   - Add build artifacts browser
   - Improve UX in builds artifacts browser
   - Increase default size of `data` column in `events` table when using MySQL
   - Expose button to CI Lint tool on project builds page
   - Fix: Creator should be added as a master of the project on creation
-  - Added X-GitLab-... headers to emails from CI and Email On Push services
+  - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
