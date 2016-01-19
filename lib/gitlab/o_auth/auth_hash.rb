@@ -32,6 +32,10 @@ module Gitlab
         @password ||= Gitlab::Utils.force_utf8(Devise.friendly_token[0, 8].downcase)
       end
 
+      def has_email?
+        get_info(:email).present?
+      end
+
       private
 
       def info
@@ -46,8 +50,8 @@ module Gitlab
 
       def username_and_email
         @username_and_email ||= begin
-          username  = get_info(:username) || get_info(:nickname)
-          email     = get_info(:email)
+          username  = get_info(:username).presence || get_info(:nickname).presence
+          email     = get_info(:email).presence
 
           username ||= generate_username(email)             if email
           email    ||= generate_temporarily_email(username) if username

@@ -21,10 +21,10 @@
       .form-group
         = f.label :email, class: "control-label"
         .col-sm-10
-          - if @user.ldap_user?
+          - if @user.ldap_user? && @user.ldap_email?
             = f.text_field :email, class: "form-control", required: true, readonly: true
             %span.help-block.light
-              Email is read-only for LDAP user
+              Your email address was automatically set based on the LDAP server.
           - else
             - if @user.temp_oauth_email?
               = f.text_field :email, class: "form-control", required: true, value: nil
