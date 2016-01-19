@@ -93,11 +93,10 @@ As a last step, move on to
 
 ## Add GitLab's data to the Elasticsearch index
 
-After [enabling Elasticsearch](#enable-elasticsearch), you must run some
-special rake tasks to add GitLab's data to the Elasticsearch index.
+After [enabling Elasticsearch](#enable-elasticsearch), you must run the
+following rake tasks to add GitLab's data to the Elasticsearch index.
 
-The following actions might take a while depending on how big your Git
-repositories are.
+It might take a while depending on how big your Git repositories are.
 
 ---
 
