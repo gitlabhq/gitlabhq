@@ -1,6 +1,10 @@
 module BlobHelper
-  def highlight(blob_name, blob_content, nowrap: false, continue: false)
-    Gitlab::Highlight.highlight(blob_name, blob_content, nowrap: nowrap, continue: continue)
+  def highlighter(blob_name, blob_content, nowrap: false)
+    Gitlab::Highlight.new(blob_name, blob_content, nowrap: nowrap)
+  end
+
+  def highlight(blob_name, blob_content, nowrap: false)
+    Gitlab::Highlight.highlight(blob_name, blob_content, nowrap: nowrap)
   end
 
   def no_highlight_files
