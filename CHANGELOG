@@ -63,6 +63,8 @@ v 8.4.0 (unreleased)
   - Add build artifacts browser
   - Improve UX in builds artifacts browser
   - Increase default size of `data` column in `events` table when using MySQL
+  - Expose button to CI Lint tool on project builds page
+  - Fix: Creator should be added as a master of the project on creation
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
