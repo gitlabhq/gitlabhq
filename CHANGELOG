@@ -4,6 +4,7 @@ v 8.5.0 (unreleased)
   - Ensure rake tasks that don't need a DB connection can be run without one
   - Update New Relic gem to 3.14.1.311 (Stan Hu)
   - Add "visibility" flag to GET /projects api endpoint
+  - Add an option to supply root email through an environmental variable (Koichiro Mikami)
   - Ignore binary files in code search to prevent Error 500 (Stan Hu)
   - Render sanitized SVG images (Stan Hu)
   - Support download access by PRIVATE-TOKEN header (Stan Hu)
