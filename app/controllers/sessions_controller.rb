@@ -4,7 +4,7 @@ class SessionsController < Devise::SessionsController
 
   prepend_before_action :authenticate_with_two_factor, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
-  prepend_before_action :gitlab_geo_auth, only: [:new]
+  before_action :gitlab_geo_auth, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
@@ -45,25 +45,23 @@ class SessionsController < Devise::SessionsController
   end
 
   def store_redirect_path
-    redirect_path =
+    redirect_uri =
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
-        referer_uri = URI(request.referer)
-        if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.path
-        else
-          request.fullpath
-        end
-      elsif session[:geo_redirect].present? && (params['redirect_to_referer'] == 'yes')
-        stored_location_for(:geo_redirect)
+        URI(request.referer)
       else
-        request.fullpath
+        URI(request.url)
       end
 
     # Prevent a 'you are already signed in' message directly after signing:
     # we should never redirect to '/users/sign_in' after signing in successfully.
-    unless redirect_path == new_user_session_path
-      store_location_for(:redirect, redirect_path)
+    if redirect_uri.path == new_user_session_path
+      redirect_to = root_url
+    elsif Gitlab::Geo.geo_node?(host: redirect_uri.host, port: redirect_uri.port)
+      redirect_to = redirect_url.to_s
     end
+
+    @redirect_to = redirect_to
+    store_location_for(:redirect, redirect_to)
   end
 
   def authenticate_with_two_factor
@@ -90,11 +88,11 @@ class SessionsController < Devise::SessionsController
 
   def gitlab_geo_auth
     if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
-      # reuse location from :store_redirect_path to share with primary node by shared session
-      store_location_for(:geo_redirect, stored_location_for(:redirect))
+      # share full url with primary node by shared session
+      session[:geo_node_return_to] = @redirect_to
 
-      login_uri =  URI.join(Gitlab::Geo.primary_node.uri, new_session_path(:user, redirect_to_referer: 'yes'))
-      redirect_to login_uri.to_s
+      login_uri =  URI.join(Gitlab::Geo.primary_node.uri, new_session_path(:user)).to_s
+      redirect_to login_uri
     end
   end
 
