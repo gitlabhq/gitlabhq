@@ -17,18 +17,12 @@ module Gitlab
     end
 
     def highlight(text, continue: true)
-      @formatter.format(lex(text, continue: continue)).html_safe
+      @formatter.format(@lexer.lex(text, continue: continue)).html_safe
+    rescue
+      @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
     end
 
     private
-
-    def lex(text, continue: true)
-      if @lexer == Rouge::Lexers::PlainText
-        @lexer.lex(text)
-      else
-        @lexer.lex(text, continue: continue)
-      end
-    end
 
     def rouge_formatter(options = {})
       options = options.reverse_merge(
