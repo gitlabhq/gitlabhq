@@ -22,7 +22,7 @@
 #= require select2
 #= require raphael
 #= require g.raphael
-#= require g.bar-min
+#= require g.bar
 #= require Chart
 #= require branch-graph
 #= require ace/ace
