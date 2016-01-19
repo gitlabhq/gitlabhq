@@ -10,7 +10,7 @@ describe 'DNSBLCheck', lib: true, no_db: true do
   before(:context) do
     class DNSBLCheck::Resolver
       class << self
-        alias :old_search :search
+        alias_method :old_search, :search
         def search(query)
           return true  if query.match(/\A2\.0\.0\.127\./)
           return false if query.match(/\A3\.0\.0\.127\./)
