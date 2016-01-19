@@ -1,6 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.5.0 (unreleased)
+
 v 8.4.0 (unreleased)
+  - Ensure Gravatar host looks like an actual host
   - Add pagination headers to already paginated API resources
   - Properly generate diff of orphan commits, like the first commit in a repository
   - Improve the consistency of commit titles, branch names, tag names, issue/MR titles, on their respective project pages
@@ -58,10 +61,13 @@ v 8.4.0 (unreleased)
   - Import GitHub wiki into GitLab
   - Add reporters ability to download and browse build artifacts (Andrew Johnson)
   - Autofill referring url in message box when reporting user abuse. (Josh Frye)
+  - Remove leading comma on award emoji when the user is the first to award the emoji (Zeger-Jan van de Weg)
+  - Add build artifacts browser
+  - Improve UX in builds artifacts browser
+  - Increase default size of `data` column in `events` table when using MySQL
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
-  - Add build artifacts browser
 
 v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
@@ -109,6 +115,7 @@ v 8.3.0
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
+  - Fix: As an admin, cannot add oneself as a member to a group/project
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
   - Backport JIRA features from EE to CE
@@ -170,7 +177,6 @@ v 8.2.2
   - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
   - Fix: Raw private snippets access workflow
   - Prevent "413 Request entity too large" errors when pushing large files with LFS
-  - Fix: As an admin, cannot add oneself as a member to a group/project
   - Fix invalid links within projects dashboard header
   - Make current user the first user in assignee dropdown in issues detail page (Stan Hu)
   - Fix: duplicate email notifications on issue comments
