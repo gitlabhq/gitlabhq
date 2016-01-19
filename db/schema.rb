@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160113111034) do
+ActiveRecord::Schema.define(version: 20160119112418) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -725,20 +725,24 @@ ActiveRecord::Schema.define(version: 20160113111034) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",                default: false, null: false
+    t.datetime "created_at",                                           null: false
+    t.datetime "updated_at",                                           null: false
+    t.boolean  "active",                                               null: false
     t.text     "properties"
-    t.boolean  "template",              default: false
-    t.boolean  "push_events",           default: true
-    t.boolean  "issues_events",         default: true
-    t.boolean  "merge_requests_events", default: true
-    t.boolean  "tag_push_events",       default: true
-    t.boolean  "note_events",           default: true,  null: false
-    t.boolean  "build_events",          default: false, null: false
+    t.boolean  "template",                          default: false
+    t.boolean  "push_events",                       default: true
+    t.boolean  "issues_events",                     default: true
+    t.boolean  "merge_requests_events",             default: true
+    t.boolean  "tag_push_events",                   default: true
+    t.boolean  "note_events",                       default: true,     null: false
+    t.boolean  "build_events",                      default: false,    null: false
+    t.string   "category",                          default: "common", null: false
+    t.boolean  "default",                           default: false
   end
 
+  add_index "services", ["category"], name: "index_services_on_category", using: :btree
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree
+  add_index "services", ["default"], name: "index_services_on_default", using: :btree
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
 

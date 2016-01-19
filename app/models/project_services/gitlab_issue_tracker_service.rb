@@ -24,9 +24,7 @@ class GitlabIssueTrackerService < IssueTrackerService
 
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
 
-  def default?
-    true
-  end
+  default_value_for :default, true
 
   def to_param
     'gitlab'
