@@ -1,6 +1,6 @@
 require 'resolv'
 
-class DNSBLCheck
+class DNSXLCheck
 
   class Resolver
     def self.search(query)
@@ -16,43 +16,24 @@ class DNSBLCheck
   IP_REGEXP = /\A([0-9]{1,3}\.){3}[0-9]{1,3}\z/
   DEFAULT_THRESHOLD = 0.33
 
-  def self.create_from_config(config)
-    dnsbl_check = DNSBLCheck.new
+  def self.create_from_list(list)
+    dnsxl_check = DNSXLCheck.new
 
-    if config
-      dnsbl_check.enabled = config.enabled if config.respond_to?(:enabled)
-      dnsbl_check.threshold = config.threshold if config.respond_to?(:threshold)
-
-      if config.respond_to?(:lists)
-        config.try(:lists).each do |list|
-          dnsbl_check.add_list(list.domain, list.weight)
-        end
-      end
+    list.each do |entry|
+      dnsxl_check.add_list(entry.domain, entry.weight)
     end
 
-    dnsbl_check
+    dnsxl_check
   end
 
   def test(ip)
-    return false unless enabled
-
     search(ip)
     final_score > threshold
   end
 
   def test_strict(ip)
-    return false unless enabled
-
     search(ip)
     @score > 0
-  end
-
-  def enabled=(value)
-    @enabled = value && true
-  end
-
-  def enabled
-    @enabled ||= false
   end
 
   def threshold=(threshold)

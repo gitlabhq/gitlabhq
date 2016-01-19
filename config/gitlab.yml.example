@@ -449,14 +449,6 @@ production: &base
       # Ban an IP for one hour (3600s) after too many auth attempts
       # bantime: 3600
 
-  dnsbl_check:
-    treshold: 0.3
-    lists:
-      - domain: list.blogspambl.com
-        weight: 6
-      - domain: all.s5h.net
-        weight: 4
-
 development:
   <<: *base
 

@@ -54,7 +54,14 @@ class RegistrationsController < Devise::RegistrationsController
   def ip_is_spam_source(ip)
     return false unless ApplicationSetting.current.ip_blocking_enabled
 
-    dnsbl_check = DNSBLCheck.create_from_config(Gitlab.config.try(:dnsbl_check))
+    return false if BlockingIp.whitelisted.find_by(ip: ip)
+
+    dnswl_check = DNSXLCheck.create_from_list(DnsIpList.whitelist.all)
+    return false if dnswl_check.test(ip)
+
+    return true if BlockingIp.blacklisted.find_by(ip: ip)
+
+    dnsbl_check = DNSXLCheck.create_from_list(DnsIpList.blacklist.all)
     dnsbl_check.test(ip)
   end
 
