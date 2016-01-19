@@ -415,6 +415,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see "Bug NS-05" at the top' do
+    expect(page.find('ul.content-list.mr-list li.merge-request:first-child')).to have_content("Bug NS-05")
+  end
+
+  step 'I should see "Bug NS-04" at the top' do
+    expect(page.find('ul.content-list.mr-list li.merge-request:first-child')).to have_content("Bug NS-04")
+  end
+
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end
