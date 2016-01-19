@@ -4,6 +4,7 @@ class SessionsController < Devise::SessionsController
 
   prepend_before_action :authenticate_with_two_factor, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
+  prepend_before_action :gitlab_geo_auth, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
@@ -52,6 +53,8 @@ class SessionsController < Devise::SessionsController
         else
           request.fullpath
         end
+      elsif session[:geo_redirect].present? && (params['redirect_to_referer'] == 'yes')
+        stored_location_for(:geo_redirect)
       else
         request.fullpath
       end
@@ -82,6 +85,16 @@ class SessionsController < Devise::SessionsController
       if user && user.valid_password?(user_params[:password])
         prompt_for_two_factor(user)
       end
+    end
+  end
+
+  def gitlab_geo_auth
+    if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
+      # reuse location from :store_redirect_path to share with primary node by shared session
+      store_location_for(:geo_redirect, stored_location_for(:redirect))
+
+      login_uri =  URI.join(Gitlab::Geo.primary_node.uri, new_session_path(:user, redirect_to_referer: 'yes'))
+      redirect_to login_uri.to_s
     end
   end
 
