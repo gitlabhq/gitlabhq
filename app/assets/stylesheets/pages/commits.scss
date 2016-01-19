@@ -36,6 +36,10 @@ li.commit {
     line-height: 20px;
     margin-bottom: 2px;
 
+    .btn-clipboard {
+      margin-top: -1px;
+    }
+
     .notes_count {
       float: right;
       margin-right: 10px;
