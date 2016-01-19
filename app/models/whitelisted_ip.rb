@@ -1,0 +1,2 @@
+class WhitelistedIp < BlockingIp
+end

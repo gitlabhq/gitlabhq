@@ -1,0 +1,2 @@
+class DnsIpWhitelist < DnsIpList
+end
