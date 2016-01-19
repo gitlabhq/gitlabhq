@@ -1,6 +1,6 @@
 # Protected branches
 
-Permission in GitLab are fundamentally defined around the idea of having read or write permission to the repository and branches.
+Permissions in GitLab are fundamentally defined around the idea of having read or write permission to the repository and branches.
 
 To prevent people from messing with history or pushing code without review, we've created protected branches.
 
