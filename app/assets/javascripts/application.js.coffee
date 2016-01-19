@@ -38,7 +38,7 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issuable
 #= require shortcuts_network
-#= require jquery.nicescroll.min
+#= require jquery.nicescroll
 #= require_tree .
 #= require fuzzaldrin-plus.min
 
