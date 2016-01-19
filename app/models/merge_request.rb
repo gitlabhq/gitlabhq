@@ -254,7 +254,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    return false unless open? && !work_in_progress?
+    return false unless open? && !work_in_progress? && !broken?
 
     check_if_can_be_merged
 
