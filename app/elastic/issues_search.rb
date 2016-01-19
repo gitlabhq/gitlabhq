@@ -5,17 +5,23 @@ module IssuesSearch
     include ApplicationSearch
 
     mappings do
-      indexes :id,          type: :integer, index: :not_analyzed
+      indexes :id,          type: :integer
 
       indexes :iid,         type: :integer, index: :not_analyzed
-      indexes :title,       type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
-      indexes :description, type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
+      indexes :title,       type: :string,
+                            index_options: 'offsets',
+                            search_analyzer: :search_analyzer,
+                            analyzer: :my_analyzer
+      indexes :description, type: :string,
+                            index_options: 'offsets',
+                            search_analyzer: :search_analyzer,
+                            analyzer: :my_analyzer
       indexes :created_at,  type: :date
       indexes :updated_at,  type: :date
       indexes :state,       type: :string
 
-      indexes :project_id,  type: :integer, index: :not_analyzed
-      indexes :author_id,   type: :integer, index: :not_analyzed
+      indexes :project_id,  type: :integer
+      indexes :author_id,   type: :integer
 
       indexes :project,     type: :nested
       indexes :author,      type: :nested

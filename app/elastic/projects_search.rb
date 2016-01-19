@@ -5,19 +5,34 @@ module ProjectsSearch
     include ApplicationSearch
 
     mappings do
-      indexes :id,                  type: :integer, index: 'not_analyzed'
+      indexes :id,                  type: :integer
 
-      indexes :name,                type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
-      indexes :path,                type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
-      indexes :name_with_namespace, type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
-      indexes :path_with_namespace, type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
-      indexes :description,         type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
+      indexes :name,                type: :string,
+                                    index_options: 'offsets',
+                                    search_analyzer: :search_analyzer,
+                                    analyzer: :my_analyzer
+      indexes :path,                type: :string,
+                                    index_options: 'offsets',
+                                    search_analyzer: :search_analyzer,
+                                    analyzer: :my_analyzer
+      indexes :name_with_namespace, type: :string,
+                                    index_options: 'offsets',
+                                    search_analyzer: :search_analyzer,
+                                    analyzer: :my_analyzer
+      indexes :path_with_namespace, type: :string,
+                                    index_options: 'offsets',
+                                    search_analyzer: :search_analyzer,
+                                    analyzer: :my_analyzer
+      indexes :description,         type: :string,
+                                    index_options: 'offsets',
+                                    search_analyzer: :search_analyzer,
+                                    analyzer: :my_analyzer
 
-      indexes :namespace_id,        type: :integer, index: 'not_analyzed'
+      indexes :namespace_id,        type: :integer
 
       indexes :created_at,          type: :date
       indexes :archived,            type: :boolean
-      indexes :visibility_level,    type: :integer, index: 'not_analyzed'
+      indexes :visibility_level,    type: :integer
       indexes :last_activity_at,    type: :date
       indexes :last_pushed_at,      type: :date
     end

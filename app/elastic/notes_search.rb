@@ -6,8 +6,11 @@ module NotesSearch
 
     mappings do
       indexes :id,          type: :integer
-      indexes :note,        type: :string, index_options: 'offsets', search_analyzer: :search_analyzer, analyzer: :my_analyzer
-      indexes :project_id,  type: :integer, index: :not_analyzed
+      indexes :note,        type: :string,
+                            index_options: 'offsets',
+                            search_analyzer: :search_analyzer,
+                            analyzer: :my_analyzer
+      indexes :project_id,  type: :integer
       indexes :created_at,  type: :date
 
       indexes :updated_at_sort, type: :string, index: 'not_analyzed'
