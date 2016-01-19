@@ -43,9 +43,7 @@ module MergeRequestsSearch
     end
 
     def self.elastic_search(query, options: {})
-      options[:in] = %w(title^2 description)
-
-      query_hash = basic_query_hash(options[:in], query)
+      query_hash = basic_query_hash(%w(title^2 description), query)
 
       if options[:projects_ids]
         query_hash[:query][:filtered][:filter] = {

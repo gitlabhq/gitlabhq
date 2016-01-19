@@ -36,15 +36,9 @@ module SnippetsSearch
     end
 
     def self.elastic_search(query, options: {})
-      options[:in] = %w(title file_name)
-      
-      query_hash = basic_query_hash(options[:in], query)
+      query_hash = basic_query_hash(%w(title file_name), query)
 
-      if options[:ids]
-        query_hash[:query][:filtered][:filter] = {
-          and: [ { terms: { id: [options[:ids]].flatten } } ]
-        }
-      end
+      query_hash = limit_ids(query_hash, options[:ids])
 
       self.__elasticsearch__.search(query_hash)
     end
@@ -58,11 +52,7 @@ module SnippetsSearch
         }
       }
 
-      if options[:ids]
-        query_hash[:query][:filtered][:filter] = {
-          and: [ { terms: { id: [options[:ids]].flatten } } ]
-        }
-      end
+      query_hash = limit_ids(query_hash, options[:ids])
 
       query_hash[:sort] = [
         { updated_at_sort: { order: :desc, mode: :min } },
@@ -72,6 +62,16 @@ module SnippetsSearch
       query_hash[:highlight] = { fields: { content: {} } }
 
       self.__elasticsearch__.search(query_hash)
+    end
+
+    def self.limit_ids(query_hash, ids)
+      if ids
+        query_hash[:query][:filtered][:filter] = {
+          and: [ { terms: { id: ids } } ]
+        }
+      end
+
+      query_hash
     end
   end
 end
