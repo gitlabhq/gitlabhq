@@ -11,8 +11,9 @@ module Notes
         # Skip system notes, like status changes and cross-references and awards
         unless note.system || note.is_award
           event = event_service.leave_note(note, note.author)
+          noteable = note.noteable
 
-          note.noteable.touch if event.commented?
+          noteable.touch if event.commented? && noteable.respond_to?(:touch)
           note.create_cross_references!
           execute_hooks(note)
         end
