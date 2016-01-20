@@ -135,7 +135,7 @@ If you want to [enable authentication](#http), you might want to [create an
 admin user][influx-admin]:
 
 ```
-influx -execute "CREATE USER thedude WITH PASSWORD '1234' WITH ALL PRIVILEGES"
+influx -execute "CREATE USER jeff WITH PASSWORD '1234' WITH ALL PRIVILEGES"
 ```
 
 ## Create the `gitlab` database
@@ -145,8 +145,8 @@ Make sure you have changed the [storage engine](#storage-engine) to `tsm1`
 before creating a database.
 
 _**Note:** If you [created an admin user](#create-a-new-admin-user) and enabled
-[HTTP authentication](#http), remember to append the username (`-username thedude`)
-and password (`-password 1234`) to the commands below._
+[HTTP authentication](#http), remember to append the username (`-username <username>`)
+and password (`-password <password>`)  you set earlier to the commands below._
 
 Run the following command to create a database named `gitlab`:
 
