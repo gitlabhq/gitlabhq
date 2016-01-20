@@ -94,6 +94,8 @@ class ProjectWiki
 
     wiki.write_page(title, format, content, commit)
 
+    update_elastic_index
+
     update_project_activity
   rescue Gollum::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
@@ -105,11 +107,15 @@ class ProjectWiki
 
     wiki.update_page(page, page.name, format, content, commit)
 
+    update_elastic_index
+
     update_project_activity
   end
 
   def delete_page(page, message = nil)
     wiki.delete_page(page, commit_details(:deleted, message, page.title))
+
+    update_elastic_index
 
     update_project_activity
   end
@@ -162,5 +168,9 @@ class ProjectWiki
 
   def update_project_activity
     @project.touch(:last_activity_at)
+  end
+
+  def update_elastic_index
+    index_blobs if Gitlab.config.elasticsearch.enabled
   end
 end
