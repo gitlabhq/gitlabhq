@@ -39,6 +39,10 @@ module DiffHelper
     end
   end
 
+  def generate_line_code(file_path, line)
+    Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+  end
+
   def unfold_bottom_class(bottom)
     (bottom) ? 'js-unfold-bottom' : ''
   end
