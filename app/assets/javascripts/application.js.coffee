@@ -40,7 +40,7 @@
 #= require shortcuts_network
 #= require jquery.nicescroll
 #= require_tree .
-#= require fuzzaldrin-plus.min
+#= require fuzzaldrin-plus
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
