@@ -14,7 +14,12 @@ namespace :gitlab do
     task index_database: :environment do
       [Project, Issue, MergeRequest, Snippet, Note, Milestone].each do |klass|
         klass.__elasticsearch__.create_index!
-        klass.import
+
+        if klass == Note
+          Note.searchable.import
+        else
+          klass.import
+        end
       end
     end
   end

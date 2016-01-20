@@ -59,6 +59,7 @@ class Note < ActiveRecord::Base
   # Scopes
   scope :awards, ->{ where(is_award: true) }
   scope :nonawards, ->{ where(is_award: false) }
+  scope :searchable, ->{ where("is_award IS FALSE AND system IS FALSE") }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
   scope :not_inline, ->{ where(line_code: [nil, '']) }

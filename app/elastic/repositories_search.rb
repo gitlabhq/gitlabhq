@@ -22,7 +22,7 @@ module RepositoriesSearch
     end
 
     def self.import
-      Repository.__elasticsearch__.create_index! force: true
+      Repository.__elasticsearch__.create_index!
 
       Project.find_each do |project|
         if project.repository.exists? && !project.repository.empty?

@@ -22,7 +22,7 @@ module WikiRepositoriesSearch
     end
 
     def self.import
-      ProjectWiki.__elasticsearch__.create_index! force: true
+      ProjectWiki.__elasticsearch__.create_index!
 
       Project.where(wiki_enabled: true).find_each do |project|
         unless project.wiki.empty?
