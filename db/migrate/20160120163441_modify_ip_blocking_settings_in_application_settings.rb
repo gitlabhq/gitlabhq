@@ -1,4 +1,4 @@
-class AddIpBlockingSettingsToApplicationSettings < ActiveRecord::Migration
+class ModifyIpBlockingSettingsInApplicationSettings < ActiveRecord::Migration
   def change
     remove_column :application_settings, :dnsbl_servers_list
 
