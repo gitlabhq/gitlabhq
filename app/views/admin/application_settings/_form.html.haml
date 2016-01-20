@@ -226,7 +226,7 @@
         = f.text_field :recaptcha_site_key, class: 'form-control'
         .help-block
           Generate site and private keys here:
-          %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
+          %a{ href: 'http://www.google.com/recaptcha', target: '_blank'} http://www.google.com/recaptcha
     .form-group
       = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
       .col-sm-10
@@ -244,7 +244,7 @@
             Enable Sentry
           .help-block
             Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
-            %a{ href: 'https://getsentry.com', target: 'blank' } https://getsentry.com
+            %a{ href: 'https://getsentry.com', target: '_blank' } https://getsentry.com
 
     .form-group
       = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
