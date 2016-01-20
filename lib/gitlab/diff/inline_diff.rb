@@ -16,15 +16,12 @@ module Gitlab
           old_line = @lines[old_index]
           new_line = @lines[new_index]
 
-          suffixless_old_line = old_line[1..-1]
-          suffixless_new_line = new_line[1..-1]
-
           # Skip inline diff if empty line was replaced with content
-          next if suffixless_old_line == ""
+          next if old_line[1..-1] == ""
 
-          # Add one, because this is based on the suffixless version
-          lcp = longest_common_prefix(suffixless_old_line, suffixless_new_line) + 1
-          lcs = longest_common_suffix(suffixless_old_line, suffixless_new_line)
+          # Add one, because this is based on the prefixless version
+          lcp = longest_common_prefix(old_line[1..-1], new_line[1..-1]) + 1
+          lcs = longest_common_suffix(old_line[lcp..-1], new_line[lcp..-1])
 
           old_diff_range = lcp..(old_line.length - lcs - 1)
           new_diff_range = lcp..(new_line.length - lcs - 1)

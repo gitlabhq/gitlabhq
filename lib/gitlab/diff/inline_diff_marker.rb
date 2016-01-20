@@ -12,7 +12,7 @@ module Gitlab
         offset = 0
         line_inline_diffs.each do |inline_diff_range|
           # Map the inline-diff range based on the raw line to character positions in the rich line
-          inline_diff_positions = position_mapping[inline_diff_range]
+          inline_diff_positions = position_mapping[inline_diff_range].flatten
           # Turn the array of character positions into ranges
           marker_ranges = collapse_ranges(inline_diff_positions)
 
@@ -47,7 +47,19 @@ module Gitlab
               rich_char = rich_line[rich_pos]
             end
 
-            mapping[raw_pos] = rich_pos
+            # multi-char HTML entities in the rich line correspond to a single character in the raw line
+            if rich_char == '&'
+              multichar_mapping = [rich_pos]
+              until rich_char == ';'
+                rich_pos += 1
+                multichar_mapping << rich_pos
+                rich_char = rich_line[rich_pos]
+              end
+
+              mapping[raw_pos] = multichar_mapping
+            else
+              mapping[raw_pos] = rich_pos
+            end
 
             rich_pos += 1
           end

@@ -14,7 +14,7 @@ module Gitlab
         @lines.each do |line|
           next if filename?(line)
 
-          full_line = html_escape(line.gsub(/\n/, ''))
+          full_line = line.gsub(/\n/, '')
 
           if line.match(/^@@ -/)
             type = "match"
@@ -66,11 +66,6 @@ module Gitlab
         else
           nil
         end
-      end
-
-      def html_escape(str)
-        replacements = { '&' => '&amp;', '>' => '&gt;', '<' => '&lt;', '"' => '&quot;', "'" => '&#39;' }
-        str.gsub(/[&"'><]/, replacements)
       end
     end
   end
