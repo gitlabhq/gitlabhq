@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.0 (unreleased)
   - Add "visibility" flag to GET /projects api endpoint
+  - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
 
 v 8.4.0 (unreleased)
   - Allow LDAP users to change their email if it was not set by the LDAP server
