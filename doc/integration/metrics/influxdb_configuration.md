@@ -178,7 +178,7 @@ That's it! Now your GitLab instance should send data to InfluxDB.
 
 Read more on:
 
-- [Introduction to GitLab Metrics](introduction.md)
+- [Introduction to GitLab Performance Monitoring](introduction.md)
 - [GitLab Configuration](gitlab_configuration.md)
 - [InfluxDB Schema](influxdb_schema.md)
 

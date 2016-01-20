@@ -15,7 +15,7 @@ See the documentation below for details on how to configure these services.
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
 - [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
-- [GitLab Metrics](metrics/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
+- [GitLab Performance Monitoring](metrics/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
 
 GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 

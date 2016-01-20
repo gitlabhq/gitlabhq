@@ -1,6 +1,6 @@
 # GitLab Configuration
 
-GitLab Metrics is disabled by default. To enable it and change any of its
+GitLab Performance Monitoring is disabled by default. To enable it and change any of its
 settings, navigate to the Admin area in **Settings > Metrics**
 (`/admin/application_settings`).
 
@@ -10,7 +10,7 @@ changes.
 
 ---
 
-![GitLab Metrics Admin Settings](img/metrics_gitlab_configuration_settings.png)
+![GitLab Performance Monitoring Admin Settings](img/metrics_gitlab_configuration_settings.png)
 
 ---
 
@@ -34,6 +34,6 @@ have been performed.
 
 Read more on:
 
-- [Introduction to GitLab Metrics](introduction.md)
+- [Introduction to GitLab Performance Monitoring](introduction.md)
 - [InfluxDB Configuration](influxdb_configuration.md)
 - [InfluxDB Schema](influxdb_schema.md)

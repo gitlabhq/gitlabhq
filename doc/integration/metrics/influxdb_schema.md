@@ -82,6 +82,6 @@ view.
 
 Read more on:
 
-- [Introduction to GitLab Metrics](introduction.md)
+- [Introduction to GitLab Performance Monitoring](introduction.md)
 - [GitLab Configuration](gitlab_configuration.md)
 - [InfluxDB Configuration](influxdb_configuration.md)

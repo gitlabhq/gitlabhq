@@ -1,19 +1,19 @@
-# GitLab Metrics
+# GitLab Performance Monitoring
 
 GitLab comes with its own application performance measuring system as of GitLab
-8.4, simply called "GitLab Metrics". GitLab Metrics is available in both the
+8.4, simply called "GitLab Performance Monitoring". GitLab Performance Monitoring is available in both the
 Community and Enterprise editions.
 
 Apart from this introduction, you are advised to read through the following
-documents in order to understand and properly configure GitLab Metrics:
+documents in order to understand and properly configure GitLab Performance Monitoring:
 
 - [GitLab Configuration](gitlab_configuration.md)
 - [InfluxDB Configuration](influxdb_configuration.md)
 - [InfluxDB Schema](influxdb_schema.md)
 
-## Introduction to GitLab Metrics
+## Introduction to GitLab Performance Monitoring
 
-GitLab Metrics makes it possible to measure a wide variety of statistics
+GitLab Performance Monitoring makes it possible to measure a wide variety of statistics
 including (but not limited to):
 
 - The time it took to complete a transaction (a web request or Sidekiq job).
