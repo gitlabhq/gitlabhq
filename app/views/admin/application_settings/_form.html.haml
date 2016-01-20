@@ -215,6 +215,22 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
+          = f.label :ip_blocking_enabled do
+            = f.check_box :ip_blocking_enabled
+            Enable IP check against blacklist at sign-up
+          .help-block Helps preventing accounts creation from 'known spam sources'
+
+    .form-group
+      = f.label :dnsbl_servers_list, class: 'control-label col-sm-2' do
+        DNSBL servers list
+      .col-sm-10
+        = f.text_field :dnsbl_servers_list, class: 'form-control'
+        .help-block
+          Please enter DNSBL servers separated with comma
+
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
           = f.label :recaptcha_enabled do
             = f.check_box :recaptcha_enabled
             Enable reCAPTCHA
