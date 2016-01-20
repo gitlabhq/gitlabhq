@@ -5,6 +5,10 @@ describe Gitlab::GitAccess, lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:actor) { user }
+  let(:git_annex_changes) do
+    ["6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/synced/git-annex",
+     "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/synced/named-branch"]
+  end
 
   describe 'can_push_to_branch?' do
     describe 'push to none protected branch' do
@@ -240,6 +244,65 @@ describe Gitlab::GitAccess, lib: true do
 
               it { expect(subject.allowed?).to be_falsey }
             end
+          end
+        end
+      end
+    end
+
+    context "when using git annex" do
+      before { project.team << [user, :master] }
+
+      describe 'and git hooks unset' do
+        describe 'git annex enabled' do
+          before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true) }
+
+          it { expect(access.push_access_check(git_annex_changes)).to be_allowed }
+        end
+
+        describe 'git annex disabled' do
+          before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false) }
+
+          it { expect(access.push_access_check(git_annex_changes)).to be_allowed }
+        end
+      end
+
+      describe 'and git hooks set' do
+        before { project.create_git_hook }
+
+        describe 'check commit author email' do
+          before do
+            project.git_hook.update(author_email_regex: "@only.com")
+          end
+
+          describe 'git annex enabled' do
+            before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true) }
+
+            it { expect(access.push_access_check(git_annex_changes)).to be_allowed }
+          end
+
+          describe 'git annex disabled' do
+            before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false) }
+
+            it { expect(access.push_access_check(git_annex_changes)).to_not be_allowed }
+          end
+        end
+
+        describe 'check commit author email' do
+          before do
+            allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(5.megabytes.to_i)
+            project.git_hook.update(max_file_size: 2)
+          end
+
+          describe 'git annex enabled' do
+            before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true) }
+
+            it { expect(access.push_access_check(git_annex_changes)).to be_allowed }
+          end
+
+          describe 'git annex disabled' do
+            before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false) }
+
+            it { expect(access.push_access_check(git_annex_changes)).to_not be_allowed }
           end
         end
       end

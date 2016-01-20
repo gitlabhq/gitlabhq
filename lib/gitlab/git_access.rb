@@ -85,6 +85,8 @@ module Gitlab
     end
 
     def push_access_check(changes)
+      return build_status_object(true) if git_annex_branch_sync?(changes)
+
       if user
         user_push_access_check(changes)
       elsif deploy_key
@@ -324,6 +326,24 @@ module Gitlab
       else
         build_status_object(false, "You don't have permission")
       end
+    end
+
+    def git_annex_branch_sync?(changes)
+      return false unless Gitlab.config.gitlab_shell.git_annex_enabled
+      return false if changes.blank?
+
+      changes = changes.lines if changes.kind_of?(String)
+
+      # Iterate over all changes to find if user allowed all of them to be applied
+      # 0000000000000000000000000000000000000000 3073696294ddd52e9e6b6fc3f429109cac24626f refs/heads/synced/git-annex
+      # 0000000000000000000000000000000000000000 65be9df0e995d36977e6d76fc5801b7145ce19c9 refs/heads/synced/master
+      changes.map(&:strip).reject(&:blank?).each do |change|
+        unless change.end_with?("refs/heads/synced/git-annex") || change.include?("refs/heads/synced/")
+          return false
+        end
+      end
+
+      true
     end
   end
 end
