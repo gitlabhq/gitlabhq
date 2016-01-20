@@ -1,10 +1,10 @@
-- page_title 'IP Blocking: DNS Blacklists'
+- page_title 'DNS Blacklists', 'IP Blocking'
 %h3 DNS Blacklists
 
 = render 'admin/ip_blocking/nav'
 
 .gray-content-block.clearfix
   = render 'admin/ip_blocking/dns_list_form', url: admin_ip_blocking_dns_blacklists_path
-  = render 'admin/ip_blocking/search_dns_form'
+  = render 'admin/ip_blocking/search_form', placeholder: 'Filter by domain name'
 
 = render 'admin/ip_blocking/dns_lists'

@@ -1,0 +1,4 @@
+.pull-right
+  .control
+    = form_tag('', method: :get, class: 'form-inline fieldset-form') do
+      = search_field_tag :search, params[:search], { placeholder: placeholder, class: 'form-control search-text-input', spellcheck: false }
