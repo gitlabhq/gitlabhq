@@ -33,7 +33,7 @@ describe Gitlab::Diff::Highlight, lib: true do
     end
 
     it 'should highlight added lines' do
-      code = %Q{+<span id="LC9" class="line">      <span class="k">raise</span> <span class="no"><span class='idiff'>RuntimeError</span></span><span class="p"><span class='idiff'>,</span></span> <span class="s2">&quot;System commands must be given as an array of strings&quot;</span></span>\n}
+      code = %Q{+<span id="LC9" class="line">      <span class="k">raise</span> <span class="no"><span class='idiff'>RuntimeError</span></span><span class="p"><span class='idiff'>,</span></span><span class='idiff'> </span><span class="s2">&quot;System commands must be given as an array of strings&quot;</span></span>\n}
 
       expect(diff_lines[5].text).to eq(code)
     end

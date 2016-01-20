@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Diff::ParallelDiff, lib: true do
   include RepoHelpers
-  
+
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
