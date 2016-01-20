@@ -293,6 +293,9 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
+
+  # Sentry integration
+  gem 'sentry-raven'
 end
 
 gem "newrelic_rpm", '~> 3.9.4.245'

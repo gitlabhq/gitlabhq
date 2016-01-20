@@ -62,6 +62,8 @@ ActiveRecord::Schema.define(version: 20160119145451) do
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
     t.integer  "metrics_sample_interval",           default: 15
+    t.boolean  "sentry_enabled",                    default: false
+    t.string   "sentry_dsn"
   end
 
   create_table "audit_events", force: :cascade do |t|
