@@ -569,18 +569,28 @@ pre.light-well {
  * Forks list rendered on Project's forks page
  */
 
+.forks-top-block {
+  padding: 16px 0;
+}
+
 .projects-search-form {
   &.fork-search-form {
     margin: 0;
     margin-top: -$gl-padding;
     padding-bottom: 0;
-    width: 540px;
 
     input {
-      width: calc(100% - 300px);
+      /* Small devices (tablets, 768px and up) */
+      @media (min-width: $screen-sm-min) { width: 180px; }
+
+      /* Medium devices (desktops, 992px and up) */
+      @media (min-width: $screen-md-min) { width: 350px; }
+
+      /* Large devices (large desktops, 1200px and up) */
+      @media (min-width: $screen-lg-min) { width: 400px; }
     }
 
-    button.sort-forks {
+    .sort-forks {
       width: 160px;
     }
 
@@ -596,10 +606,11 @@ pre.light-well {
 }
 
 .private-forks-notice .private-fork-icon {
-  i.fa-circle {
+  i:nth-child(1) {
     color: #2AA056;
   }
-  i.fa-lock {
+
+  i:nth-child(2) {
     color: #FFFFFF;
   }
 }
