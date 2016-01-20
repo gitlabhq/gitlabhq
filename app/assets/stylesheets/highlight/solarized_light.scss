@@ -111,4 +111,23 @@
   .vg { color: #268bd2 } /* Name.Variable.Global */
   .vi { color: #268bd2 } /* Name.Variable.Instance */
   .il { color: #2aa198 } /* Literal.Number.Integer.Long */
+
+
+  .line_holder {
+    &.parallel .new.new_line,
+    &.parallel .new.line_content,
+    &.new .old_line,
+    &.new .new_line,
+    &.new .line_content {
+      @include diff_background(92, 164, 169, #FAF3DD);
+    }
+
+    &.parallel .old.old_line,
+    &.parallel .old.line_content,
+    &.old .old_line,
+    &.old .new_line,
+    &.old .line_content {
+      @include diff_background(237, 106, 90, #FAF3DD);
+    }
+  }
 }

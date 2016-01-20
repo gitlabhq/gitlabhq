@@ -73,6 +73,12 @@ class MergeRequestDiff < ActiveRecord::Base
     commits.last
   end
 
+  def base_commit
+    return nil unless self.base_commit_sha
+
+    merge_request.target_project.commit(self.base_commit_sha)
+  end
+
   def last_commit_short_sha
     @last_commit_short_sha ||= last_commit.short_id
   end
@@ -156,6 +162,9 @@ class MergeRequestDiff < ActiveRecord::Base
     end
 
     self.st_diffs = new_diffs
+
+    self.base_commit_sha = merge_request.target_project.commit(target_branch).try(:sha)
+
     self.save
   end
 

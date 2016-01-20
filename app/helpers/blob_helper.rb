@@ -1,21 +1,10 @@
 module BlobHelper
-  def highlight(blob_name, blob_content, nowrap: false, continue: false)
-    @formatter ||= Rouge::Formatters::HTMLGitlab.new(
-      nowrap: nowrap,
-      cssclass: 'code highlight',
-      lineanchors: true,
-      lineanchorsid: 'LC'
-    )
+  def highlighter(blob_name, blob_content, nowrap: false)
+    Gitlab::Highlight.new(blob_name, blob_content, nowrap: nowrap)
+  end
 
-    begin
-      @lexer ||= Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
-      result = @formatter.format(@lexer.lex(blob_content, continue: continue)).html_safe
-    rescue
-      @lexer = Rouge::Lexers::PlainText
-      result = @formatter.format(@lexer.lex(blob_content)).html_safe
-    end
-
-    result
+  def highlight(blob_name, blob_content, nowrap: false)
+    Gitlab::Highlight.highlight(blob_name, blob_content, nowrap: nowrap)
   end
 
   def no_highlight_files
