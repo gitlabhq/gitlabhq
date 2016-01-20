@@ -14,6 +14,7 @@ v 8.4.0 (unreleased)
   - Autocomplete data is now always loaded, instead of when focusing a comment text area
   - Improved performance of finding issues for an entire group
   - Added custom application performance measuring system powered by InfluxDB
+  - Gracefully handle invalid UTF-8 sequences in Markdown links (Stan Hu)
   - Bump fog to 1.36.0 (Stan Hu)
   - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
