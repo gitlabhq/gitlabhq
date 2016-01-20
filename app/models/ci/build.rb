@@ -346,17 +346,17 @@ module Ci
     end
 
     def artifacts_browse_url
-      if artifacts_browser_supported?
+      if artifacts_metadata?
         browse_namespace_project_build_artifacts_path(project.namespace, project, self)
       end
     end
 
-    def artifacts_browser_supported?
+    def artifacts_metadata?
       artifacts? && artifacts_metadata.exists?
     end
 
-    def artifacts_metadata_entry(path)
-      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path).to_entry
+    def artifacts_metadata_entry(path, **options)
+      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
     end
 
     private
