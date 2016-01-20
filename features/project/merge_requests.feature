@@ -76,6 +76,25 @@ Feature: Project Merge Requests
     Then I should see comment "XML attached"
 
   @javascript
+  Scenario: Visiting Merge Requests after leaving a comment
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-04"
+    And I leave a comment like "XML attached"
+    And I visit project "Shop" merge requests page
+    And I sort the list by "Last updated"
+    Then I should see "Bug NS-04" at the top
+
+  @javascript
+  Scenario: Visiting Merge Requests after commenting on diffs
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I click on the Changes tab
+    And I leave a comment like "Line is wrong" on diff
+    And I visit project "Shop" merge requests page
+    And I sort the list by "Last updated"
+    Then I should see "Bug NS-05" at the top
+
+  @javascript
   Scenario: I comment on a merge request diff
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
