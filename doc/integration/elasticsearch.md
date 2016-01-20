@@ -26,6 +26,13 @@ Once the data is added to the database, search indexes will be updated
 automatically. Elasticsearch can be installed on the same machine that GitLab
 is installed or on a separate server.
 
+## Requirements
+
+These are the minimum requirements needed for Elasticsearch to work:
+
+- GitLab 8.4+
+- Elasticsearch 2.0+
+
 ## Install Elasticsearch
 
 Providing detailed information on installing Elasticsearch is out of the scope
