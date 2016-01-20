@@ -13,7 +13,7 @@ class DNSXLCheck
     end
   end
 
-  IP_REGEXP = /\A([0-9]{1,3}\.){3}[0-9]{1,3}\z/
+  IP_REGEXP = /\A(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\z/
   DEFAULT_THRESHOLD = 0.33
 
   def self.create_from_list(list)

@@ -86,10 +86,10 @@ class ApplicationSetting < ActiveRecord::Base
             if: :recaptcha_enabled
 
   validates :dns_blacklist_threshold,
-            numericality: { greater_than:0, less_than_or_equal_to: 1 }
+            numericality: { greater_than: 0, less_than_or_equal_to: 1 }
 
   validates :dns_whitelist_threshold,
-            numericality: { greater_than:0, less_than_or_equal_to: 1 }
+            numericality: { greater_than: 0, less_than_or_equal_to: 1 }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?

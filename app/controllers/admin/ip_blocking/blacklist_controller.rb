@@ -4,8 +4,8 @@ class Admin::IpBlocking::BlacklistController < Admin::ApplicationController
 
   def index
     @ips = BlacklistedIp.all.order('id DESC')
-    if params[:search] && params[:search].empty? == false
-      @ips = @ips.where(ip: params[:search].to_s)
+    if params[:search].present?
+      @ips = @ips.where(ip: params[:search])
     end
 
     @ips = @ips.page(params[:page]).per(30)
@@ -15,9 +15,8 @@ class Admin::IpBlocking::BlacklistController < Admin::ApplicationController
     attrs = ip_attributes
     attrs[:user] = current_user
 
-    @ip = BlacklistedIp.create(attrs)
-
-    if @ip.valid?
+    @ip = BlacklistedIp.new(attrs)
+    if @ip.save
       redirect_to admin_ip_blocking_blacklist_index_path,
                   notice: 'Added new IP address to the blacklist'
     else
@@ -29,8 +28,7 @@ class Admin::IpBlocking::BlacklistController < Admin::ApplicationController
   end
 
   def update
-    @ip.update_attributes(ip_attributes)
-    if @ip.valid?
+    if @ip.update_attributes(ip_attributes)
       redirect_to admin_ip_blocking_blacklist_index_path,
                   notice: 'Updated IP address'
     else
@@ -58,6 +56,6 @@ class Admin::IpBlocking::BlacklistController < Admin::ApplicationController
   end
 
   def get_ip
-    @ip = BlacklistedIp.find(params[:id].to_i)
+    @ip = BlacklistedIp.find(params[:id])
   end
 end

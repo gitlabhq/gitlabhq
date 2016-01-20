@@ -4,8 +4,8 @@ class Admin::IpBlocking::DnsBlacklistsController < Admin::ApplicationController
 
   def index
     @dns_lists = DnsIpBlacklist.all.order('id DESC')
-    if params[:search] && params[:search].empty? == false
-      @dns_lists = @dns_lists.where(domain: params[:search].to_s)
+    if params[:search].present?
+      @dns_lists = @dns_lists.where(domain: params[:search])
     end
 
     @dns_lists = @dns_lists.page(params[:page]).per(30)
@@ -15,9 +15,8 @@ class Admin::IpBlocking::DnsBlacklistsController < Admin::ApplicationController
     attrs = dns_list_attributes
     attrs[:user] = current_user
 
-    @dns_list = DnsIpBlacklist.create(attrs)
-
-    if @dns_list.valid?
+    @dns_list = DnsIpBlacklist.new(attrs)
+    if @dns_list.save
       redirect_to admin_ip_blocking_dns_blacklists_path,
                   notice: 'Added new DNS blacklist'
     else
@@ -29,8 +28,7 @@ class Admin::IpBlocking::DnsBlacklistsController < Admin::ApplicationController
   end
 
   def update
-    @dns_list.update_attributes(dns_list_attributes)
-    if @dns_list.valid?
+    if @dns_list.update_attributes(dns_list_attributes)
       redirect_to admin_ip_blocking_dns_blacklists_path,
                   notice: 'Updated DNS blacklist'
     else
@@ -58,6 +56,6 @@ class Admin::IpBlocking::DnsBlacklistsController < Admin::ApplicationController
   end
 
   def get_dns_list
-    @dns_list = DnsIpBlacklist.find(params[:id].to_i)
+    @dns_list = DnsIpBlacklist.find(params[:id])
   end
 end

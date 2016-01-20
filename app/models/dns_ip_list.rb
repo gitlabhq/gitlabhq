@@ -7,7 +7,7 @@ class DnsIpList < ActiveRecord::Base
 
   validates :weight,
             presence: true,
-            numericality: { greater_than:0, less_than_or_equal: 100 }
+            numericality: { greater_than: 0, less_than_or_equal: 100 }
 
   scope :whitelist, -> { where(type: 'DnsIpWhitelist') }
   scope :blacklist, -> { where(type: 'DnsIpBlacklist') }
