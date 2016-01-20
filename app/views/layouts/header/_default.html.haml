@@ -37,10 +37,6 @@
       %h1.title= title
 
 = render 'shared/outdated_browser'
--if @project && !@project.empty_repo? && @ref
+- if @project && !@project.empty_repo?
   :javascript
-    var findFileURL = "#{namespace_project_find_file_path(@project.namespace, @project, @ref)}";
-
--elsif @project && !@project.empty_repo?
-  :javascript
-    var findFileURL = "#{namespace_project_find_file_path(@project.namespace, @project, @project.repository.root_ref)}";
+    var findFileURL = "#{namespace_project_find_file_path(@project.namespace, @project, @ref || @project.repository.root_ref)}";
