@@ -35,6 +35,7 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include MergeRequestsSearch
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"

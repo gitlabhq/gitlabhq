@@ -21,6 +21,7 @@ class Snippet < ActiveRecord::Base
   include Participable
   include Referable
   include Sortable
+  include SnippetsSearch
 
   default_value_for :visibility_level, Snippet::PRIVATE
 

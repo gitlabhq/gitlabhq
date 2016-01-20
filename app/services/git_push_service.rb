@@ -61,6 +61,12 @@ class GitPushService
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :push_hooks)
     project.execute_services(@push_data.dup, :push_hooks)
+
+    if Gitlab.config.elasticsearch.enabled 
+      project.repository.index_commits
+      project.repository.index_blobs
+    end
+
     CreateCommitBuildsService.new.execute(project, @user, @push_data)
     ProjectCacheWorker.perform_async(project.id)
   end

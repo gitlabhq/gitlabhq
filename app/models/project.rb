@@ -51,6 +51,7 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
+  include ProjectsSearch
 
   extend Gitlab::ConfigHelper
 
@@ -258,6 +259,11 @@ class Project < ActiveRecord::Base
         project.mirror_last_update_at = timestamp
         project.mirror_last_successful_update_at = timestamp
         project.save
+      end
+
+      if Gitlab.config.elasticsearch.enabled
+        project.repository.index_blobs
+        project.repository.index_commits
       end
     end
 
@@ -940,6 +946,10 @@ class Project < ActiveRecord::Base
   rescue ProjectWiki::CouldNotCreateWikiError
     errors.add(:base, 'Failed create wiki')
     false
+  end
+
+  def wiki
+    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
   def reference_issue_tracker?

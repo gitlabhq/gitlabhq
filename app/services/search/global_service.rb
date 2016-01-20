@@ -12,7 +12,11 @@ module Search
       projects = projects.in_namespace(group.id) if group
       project_ids = projects.pluck(:id)
 
-      Gitlab::SearchResults.new(project_ids, params[:search])
+      if Gitlab.config.elasticsearch.enabled
+        Gitlab::Elastic::SearchResults.new(project_ids, params[:search])
+      else
+        Gitlab::SearchResults.new(project_ids, params[:search])
+      end
     end
   end
 end

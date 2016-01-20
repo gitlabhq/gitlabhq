@@ -91,6 +91,11 @@ gem "six", '~> 0.2.0'
 # Seed data
 gem "seed-fu", '~> 2.3.5'
 
+# Search
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
+gem 'gitlab-elasticsearch-git', require: "elasticsearch/git"
+
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
