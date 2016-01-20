@@ -41,7 +41,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should not see "master" branch' do
-    expect(page).not_to have_content "master"
+    expect(find('.merge-request-info')).not_to have_content "master"
   end
 
   step 'I should see "other_branch" branch' do
