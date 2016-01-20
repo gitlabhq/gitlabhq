@@ -18,7 +18,7 @@ module Gitlab
       end
 
       def cross_project?
-        source_repo.fork == true
+        source_repo.id != target_repo.id
       end
 
       def number
@@ -71,6 +71,10 @@ module Gitlab
 
       def target_project
         project
+      end
+
+      def target_repo
+        raw_data.base.repo
       end
 
       def target_branch
