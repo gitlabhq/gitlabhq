@@ -26,6 +26,10 @@ module Gitlab
             lines_obj << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
             line_obj_index += 1
             next
+          elsif line[0] == '\\'
+            type = 'nonewline'
+            lines_obj << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
+            line_obj_index += 1
           else
             type = identification_type(line)
             lines_obj << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
@@ -33,10 +37,13 @@ module Gitlab
           end
 
 
-          if line[0] == "+"
+          case line[0]
+          when "+"
             line_new += 1
-          elsif line[0] == "-"
+          when "-"
             line_old += 1
+          when "\\"
+            # No increment
           else
             line_new += 1
             line_old += 1
@@ -59,9 +66,10 @@ module Gitlab
       end
 
       def identification_type(line)
-        if line[0] == "+"
+        case line[0]
+        when "+"
           "new"
-        elsif line[0] == "-"
+        when "-"
           "old"
         else
           nil

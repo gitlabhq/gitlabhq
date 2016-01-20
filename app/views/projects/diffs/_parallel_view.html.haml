@@ -8,6 +8,11 @@
         - if left[:type] == 'match'
           = render "projects/diffs/match_line_parallel", { line: left[:text],
           line_old: left[:number], line_new: right[:number] }
+        - elsif left[:type] == 'nonewline'
+          %td.old_line
+            %td.line_content.parallel.matched= left[:text]
+          %td.new_line
+            %td.line_content.parallel.matched= left[:text]
         - else
           %td.old_line{id: left[:line_code], class: "#{left[:type]}"}
             = link_to raw(left[:number]), "##{left[:line_code]}", id: left[:line_code]

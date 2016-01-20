@@ -14,7 +14,7 @@ module Gitlab
       def highlight
         @diff_lines.each_with_index do |diff_line, i|
           # ignore highlighting for "match" lines
-          next if diff_line.type == 'match'
+          next if diff_line.type == 'match' || diff_line.type == 'nonewline'
 
           rich_line = highlight_line(diff_line, i)
 
@@ -33,7 +33,7 @@ module Gitlab
       def highlight_line(diff_line, index)
         return html_escape(diff_line.text) unless diff_file.diff_refs
 
-        line_prefix = diff_line.text.match(/\A([+-])/) ? $1 : ' '
+        line_prefix = diff_line.text.match(/\A(.)/) ? $1 : ' '
 
         case diff_line.type
         when 'new', nil

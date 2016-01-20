@@ -62,7 +62,7 @@ module Gitlab
                 }
               }
               skip_next = true
-            when 'old', nil
+            when 'old', 'nonewline', nil
               # Left side has text removed, right side doesn't have any change
               # No next line code, no new line number, no new line text
               lines << {

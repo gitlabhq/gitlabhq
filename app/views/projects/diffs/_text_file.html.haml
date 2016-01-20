@@ -15,6 +15,10 @@
       - if type == "match"
         = render "projects/diffs/match_line", {line: line.text,
           line_old: line_old, line_new: line.new_pos, bottom: false, new_file: diff_file.new_file}
+      - elsif type == 'nonewline'
+        %td.old_line.diff-line-num
+        %td.new_line.diff-line-num
+        %td.line_content.matched= line.text
       - else
         %td.old_line
           = link_to raw(type == "new" ? "&nbsp;" : line_old), "##{line_code}", id: line_code
