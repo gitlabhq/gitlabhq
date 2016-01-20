@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   before_action :check_password_expiration
   before_action :check_2fa_requirement
   before_action :ldap_security_check
+  before_action :sentry_user_context
   before_action :default_headers
   before_action :add_gon_variables
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -41,6 +42,16 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  def sentry_user_context
+    if Rails.env.production? && current_application_settings.sentry_enabled && current_user
+      Raven.user_context(
+        id: current_user.id,
+        email: current_user.email,
+        username: current_user.username,
+      )
+    end
+  end
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
   # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6

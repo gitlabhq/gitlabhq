@@ -87,7 +87,6 @@ class Dispatcher
         new GroupAvatar()
       when 'projects:tree:show'
         new TreeView()
-        shortcut_handler = new ShortcutsTree()
       when 'projects:find_file:show'
         shortcut_handler = true
       when 'projects:blob:show'

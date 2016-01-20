@@ -4,6 +4,7 @@ class @Shortcuts
     Mousetrap.reset()
     Mousetrap.bind('?', @selectiveHelp)
     Mousetrap.bind('s', Shortcuts.focusSearch)
+    Mousetrap.bind('t', -> Turbolinks.visit(findFileURL)) if findFileURL?
 
   selectiveHelp: (e) =>
     Shortcuts.showHelp(e, @enabledHelp)
