@@ -130,11 +130,11 @@ class @Notes
     else if @isNewNote(note)
       @note_ids.push(note.id)
 
-      $('ul.main-notes-list').
-        append(note.html).
-        syntaxHighlight()
+      $('ul.main-notes-list')
+      .append(note.html)
+      .syntaxHighlight()
       @initTaskList()
-      @incrementNotesCount()
+      @updateNotesCount(1)
 
 
   ###
@@ -155,13 +155,13 @@ class @Notes
     return unless @isNewNote(note)
 
     @note_ids.push(note.id)
-    form = $("form[rel='" + note.discussion_id + "']")
+    form = $("#new-discussion-note-form-#{note.discussion_id}")
     row = form.closest("tr")
     note_html = $(note.html)
     note_html.syntaxHighlight()
 
     # is this the first note of discussion?
-    discussionContainer = $(".notes[rel='" + note.discussion_id + "']")
+    discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']")
     if discussionContainer.length is 0
       # insert the note and the reply button after the temp row
       row.after note.discussion_html
@@ -170,21 +170,21 @@ class @Notes
       row.next().find(".note").remove()
 
       # Before that, the container didn't exist
-      discussionContainer = $(".notes[rel='" + note.discussion_id + "']")
+      discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']")
 
       # Add note to 'Changes' page discussions
       discussionContainer.append note_html
 
       # Init discussion on 'Discussion' page if it is merge request page
       if $('body').attr('data-page').indexOf('projects:merge_request') is 0
-        $('ul.main-notes-list').
-          append(note.discussion_with_diff_html).
-          syntaxHighlight()
+        $('ul.main-notes-list')
+        .append(note.discussion_with_diff_html)
+        .syntaxHighlight()
     else
       # append new note to all matching discussions
       discussionContainer.append note_html
 
-    @incrementNotesCount()
+    @updateNotesCount(1)
 
   ###
   Called in response the main target form has been successfully submitted.
@@ -292,7 +292,7 @@ class @Notes
     @renderDiscussionNote(note)
 
     # cleanup after successfully creating a diff/discussion note
-    @removeDiscussionNoteForm($("form[rel='" + note.discussion_id + "']"))
+    @removeDiscussionNoteForm($("#new-discussion-note-form-#{note.discussion_id}"))
 
   ###
   Called in response to the edit note form being submitted
@@ -366,24 +366,30 @@ class @Notes
   Removes the whole discussion if the last note is being removed.
   ###
   removeNote: (e) =>
-    noteId = $(e.currentTarget).closest(".note").attr("id")
+    noteId = $(e.currentTarget)
+             .closest(".note")
+             .attr("id")
 
-    $('.note[id="' + noteId + '"]').each (i, el) =>
-      note = $(el)
+    # A same note appears in the "Discussion" and in the "Changes" tab, we have
+    # to remove all. Using $(".note[id='noteId']") ensure we get all the notes,
+    # where $("#noteId") would return only one.
+    $(".note[id='#{noteId}']").each (i, el) =>
+      note  = $(el)
       notes = note.closest(".notes")
 
       # check if this is the last note for this line
       if notes.find(".note").length is 1
 
-        # for discussions
-        notes.closest(".discussion").remove()
+        # "Discussions" tab
+        notes.closest(".timeline-entry").remove()
 
-        # for diff lines
+        # "Changes" tab / commit view
         notes.closest("tr").remove()
 
       note.remove()
 
-    @decrementNotesCount()
+    # Decrement the "Discussions" counter only once
+    @updateNotesCount(-1)
 
   ###
   Called in response to clicking the delete attachment link
@@ -424,7 +430,7 @@ class @Notes
   ###
   setupDiscussionNoteForm: (dataHolder, form) =>
     # setup note target
-    form.attr "rel", dataHolder.data("discussionId")
+    form.attr 'id', "new-discussion-note-form-#{dataHolder.data("discussionId")}"
     form.find("#line_type").val dataHolder.data("lineType")
     form.find("#note_commit_id").val dataHolder.data("commitId")
     form.find("#note_line_code").val dataHolder.data("lineCode")
@@ -555,8 +561,5 @@ class @Notes
   updateTaskList: ->
     $('form', this).submit()
 
-  incrementNotesCount: (incrementStep = 1) ->
+  updateNotesCount: (incrementStep) ->
     @notesCountBadge.text parseInt(@notesCountBadge.text()) + incrementStep
-
-  decrementNotesCount: ->
-    @incrementNotesCount(-1)
