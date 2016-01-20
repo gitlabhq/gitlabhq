@@ -242,7 +242,9 @@
           = f.label :sentry_enabled do
             = f.check_box :sentry_enabled
             Enable Sentry
-          %span.help-block#sentry_help_block Sentry is an error reporting and logging tool
+          .help-block
+            Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
+            %a{ href: 'https://getsentry.com', target: 'blank' } https://getsentry.com
 
     .form-group
       = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
