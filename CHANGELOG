@@ -6,6 +6,7 @@ v 8.5.0 (unreleased)
   - Add "visibility" flag to GET /projects api endpoint
   - Ignore binary files in code search to prevent Error 500 (Stan Hu)
   - Render sanitized SVG images (Stan Hu)
+  - Support download access by PRIVATE-TOKEN header (Stan Hu)
   - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
   - New UI for pagination
   - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
