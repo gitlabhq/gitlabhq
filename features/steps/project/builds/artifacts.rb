@@ -1,24 +1,11 @@
-class Spinach::Features::ProjectBuilds < Spinach::FeatureSteps
+class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedBuilds
   include RepoHelpers
 
-  step 'I see summary for build' do
-    expect(page).to have_content "Build ##{@build.id}"
-  end
-
-  step 'I see build trace' do
-    expect(page).to have_css '#build-trace'
-  end
-
   step 'I click artifacts download button' do
     page.within('.artifacts') { click_link 'Download' }
-  end
-
-  step 'download of build artifacts archive starts' do
-    expect(page.response_headers['Content-Type']).to eq 'application/zip'
-    expect(page.response_headers['Content-Transfer-Encoding']).to eq 'binary'
   end
 
   step 'I click artifacts browse button' do
@@ -76,8 +63,8 @@ class Spinach::Features::ProjectBuilds < Spinach::FeatureSteps
     end
   end
 
-  step 'I click download button for a file within build artifacts' do
-    page.within('.tree-table') { first('.artifact-download').click }
+  step 'I click a link to file within build artifacts' do
+    page.within('.tree-table') { find_link('ci_artifacts.txt').click }
   end
 
   step 'download of a file extracted from build artifacts should start' do

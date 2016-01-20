@@ -5,7 +5,7 @@ class @AwardsHandler
       event.preventDefault()
       $(".emoji-menu").show()
 
-    $("html").click ->
+    $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
         if $(".emoji-menu").is(":visible")
           $(".emoji-menu").hide()
@@ -19,7 +19,7 @@ class @AwardsHandler
       @addAwardToEmojiBar(emoji)
 
     $(".emoji-menu").hide()
-    
+
   addAwardToEmojiBar: (emoji) ->
     @addEmojiToFrequentlyUsedList(emoji)
 
@@ -66,9 +66,14 @@ class @AwardsHandler
 
   addMeToAuthorList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
-    authors = award_block.attr("data-original-title").split(", ")
+    authors = _.compact(award_block.attr("data-original-title").split(", "))
     authors.push("me")
-    award_block.attr("title", authors.join(", "))
+
+    if authors.length == 1
+      award_block.attr("title", "me")
+    else
+      award_block.attr("title", authors.join(", "))
+
     @resetTooltip(award_block)
 
   resetTooltip: (award) ->
@@ -78,7 +83,7 @@ class @AwardsHandler
     setTimeout (->
       award.tooltip()
     ), 200
-    
+
 
   createEmoji: (emoji) ->
     emojiCssClass = @resolveNameToCssClass(emoji)

@@ -1,15 +1,18 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.0 (unreleased)
-  - Remove gray background from layout in UI
+  - Add "visibility" flag to GET /projects api endpoint
 
 v 8.4.0 (unreleased)
+  - Allow LDAP users to change their email if it was not set by the LDAP server
+  - Ensure Gravatar host looks like an actual host
+  - Consider re-assign as a mention from a notification point of view
   - Add pagination headers to already paginated API resources
   - Properly generate diff of orphan commits, like the first commit in a repository
   - Improve the consistency of commit titles, branch names, tag names, issue/MR titles, on their respective project pages
-  - Autocomplete data is now always loaded, instead of when focusing a comment text area (Yorick Peterse)
-  - Improved performance of finding issues for an entire group (Yorick Peterse)
-  - Added custom application performance measuring system powered by InfluxDB (Yorick Peterse)
+  - Autocomplete data is now always loaded, instead of when focusing a comment text area
+  - Improved performance of finding issues for an entire group
+  - Added custom application performance measuring system powered by InfluxDB
   - Bump fog to 1.36.0 (Stan Hu)
   - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
@@ -19,8 +22,11 @@ v 8.4.0 (unreleased)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
   - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
+  - Remove gray background from layout in UI
+  - Fix signup for OAuth providers that don't provide a name
   - Implement new UI for group page
   - Implement search inside emoji picker
+  - Let the CI runner know about builds that this build depends on
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
   - Link to milestone in "Milestone changed" system note
@@ -56,10 +62,18 @@ v 8.4.0 (unreleased)
   - Allow broadcast messages to be edited
   - Autosize Markdown textareas
   - Import GitHub wiki into GitLab
+  - Add reporters ability to download and browse build artifacts (Andrew Johnson)
+  - Autofill referring url in message box when reporting user abuse.
+  - Remove leading comma on award emoji when the user is the first to award the emoji (Zeger-Jan van de Weg)
+  - Add build artifacts browser
+  - Improve UX in builds artifacts browser
+  - Increase default size of `data` column in `events` table when using MySQL
+  - Expose button to CI Lint tool on project builds page
+  - Fix: Creator should be added as a master of the project on creation
+  - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
-  - Add build artifacts browser
 
 v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
@@ -107,6 +121,7 @@ v 8.3.0
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
+  - Fix: As an admin, cannot add oneself as a member to a group/project
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
   - Backport JIRA features from EE to CE
@@ -168,7 +183,6 @@ v 8.2.2
   - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
   - Fix: Raw private snippets access workflow
   - Prevent "413 Request entity too large" errors when pushing large files with LFS
-  - Fix: As an admin, cannot add oneself as a member to a group/project
   - Fix invalid links within projects dashboard header
   - Make current user the first user in assignee dropdown in issues detail page (Stan Hu)
   - Fix: duplicate email notifications on issue comments

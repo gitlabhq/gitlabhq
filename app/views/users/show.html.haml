@@ -20,7 +20,7 @@
             data: { toggle: 'tooltip', placement: 'left', container: 'body' }}
             = icon('exclamation-circle')
         - else
-          = link_to new_abuse_report_path(user_id: @user.id), class: 'btn btn-gray',
+          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn btn-gray',
             title: 'Report abuse', data: {toggle: 'tooltip', placement: 'left', container: 'body'} do
             = icon('exclamation-circle')
     - if current_user

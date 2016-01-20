@@ -10,7 +10,8 @@
         %i.fa.fa-sign-out
 
   = image_tag group_icon(group), class: "avatar s46 hidden-xs"
-  = link_to group.name, group, class: 'group-name'
+  = link_to group, class: 'group-name' do
+    %span.item-title= group.name
 
   - if group_member
     as
@@ -18,4 +19,3 @@
 
   %div.light
     #{pluralize(group.projects.count, "project")}, #{pluralize(group.users.count, "user")}
-

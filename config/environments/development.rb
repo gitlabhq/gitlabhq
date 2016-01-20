@@ -16,6 +16,9 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 
+  # Raise an error on page load if there are pending migrations
+  config.active_record.migration_error = :page_load
+
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 
@@ -34,6 +37,8 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   # Open sent mails in browser
   config.action_mailer.delivery_method = :letter_opener
+  # Don't make a mess when bootstrapping a development environment
+  config.action_mailer.perform_deliveries = (ENV['BOOTSTRAP'] != '1')
 
   config.eager_load = false
 end

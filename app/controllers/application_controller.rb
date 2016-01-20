@@ -116,7 +116,7 @@ class ApplicationController < ActionController::Base
       #   localhost/group/project
       #
       if id =~ /\.git\Z/
-        redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+        redirect_to request.original_url.gsub(/\.git\/?\Z/, '') and return
       end
 
       project_path = "#{namespace}/#{id}"
