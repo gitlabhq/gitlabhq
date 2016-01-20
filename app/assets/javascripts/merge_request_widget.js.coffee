@@ -9,6 +9,7 @@ class @MergeRequestWidget
   #
   constructor: (@opts) ->
     modal = $('#modal_merge_info').modal(show: false)
+    @getBuildStatus()
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
@@ -30,13 +31,24 @@ class @MergeRequestWidget
     $.get @opts.url_to_automerge_check, (data) ->
       $('.mr-state-widget').replaceWith(data)
 
+  getBuildStatus: ->
+    urlToCiCheck = @opts.url_to_ci_check
+    ciEnabled = @opts.ci_enable
+    console.log(ciEnabled)
+    setInterval (->
+      if ciEnabled
+        $.getJSON urlToCiCheck, (data) ->
+          console.log("data",data);
+          return
+        return
+      ), 5000
+
   getCiStatus: ->
-    if @opts.ci_enable
-      $.get @opts.url_to_ci_check, (data) =>
-        this.showCiState data.status
-        if data.coverage
-          this.showCiCoverage data.coverage
-      , 'json'
+    $.get @opts.url_to_ci_check, (data) =>
+      this.showCiState data.status
+      if data.coverage
+        this.showCiCoverage data.coverage
+    , 'json'
 
   showCiState: (state) ->
     $('.ci_widget').hide()

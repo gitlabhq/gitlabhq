@@ -15,6 +15,7 @@
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
     url_to_ci_check: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     ci_enable: #{@project.ci_service ? "true" : "false"},
-    current_status: "#{@merge_request.gitlab_merge_status}",
+    current_status: "#{@merge_request.gitlab_merge_status}"
   });
+  var cici = "#{@project}"
 

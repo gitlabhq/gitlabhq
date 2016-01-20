@@ -228,7 +228,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     response = {
       status: status,
-      coverage: coverage
+      coverage: coverage,
+      ci_status: @merge_request.ci_commit.status
     }
 
     render json: response
