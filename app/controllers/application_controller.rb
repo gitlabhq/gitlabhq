@@ -297,7 +297,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_filters_params
-    params[:sort] ||= 'id_desc'
+    set_default_sort
+
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
@@ -403,5 +404,24 @@ class ApplicationController < ActionController::Base
     return false if root_urls.include?(home_page_url)
 
     current_user.nil? && root_path == request.path
+  end
+
+  private
+
+  def set_default_sort
+    controller_name = params[:controller].sub(/Controller\Z/, '').underscore
+    cookie_suffix = "_sort_#{controller_name}"
+
+    key = if @project
+            "#{@project.cookie_key}#{cookie_suffix}"
+          elsif @group
+            "#{@group.cookie_key}#{cookie_suffix}"
+          else
+            "#{current_user.cookie_key}#{cookie_suffix}"
+          end
+
+    cookies[key] ||= 'id_desc'
+    cookies[key] = params[:sort] if params[:sort].present?
+    params[:sort] = cookies[key]
   end
 end
