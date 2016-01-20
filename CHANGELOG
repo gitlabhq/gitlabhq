@@ -73,6 +73,7 @@ v 8.4.0 (unreleased)
   - Expose button to CI Lint tool on project builds page
   - Fix: Creator should be added as a master of the project on creation
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
+  - Add IP check against DNSBLs at account sign-up
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
