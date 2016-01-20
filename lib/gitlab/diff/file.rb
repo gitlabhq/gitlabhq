@@ -20,6 +20,10 @@ module Gitlab
         Gitlab::Diff::Highlight.new(self).highlight
       end
 
+      def parallel_diff_lines
+        Gitlab::Diff::ParallelDiff.new(self).parallelize
+      end
+
       def mode_changed?
         !!(diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode)
       end

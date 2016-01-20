@@ -84,20 +84,6 @@ describe DiffHelper do
     end
   end
 
-  describe 'parallel_diff' do
-    it 'should return an array of arrays containing the parsed diff' do
-      expect(parallel_diff(diff_file, 0)).
-        to match_array(parallel_diff_result_array)
-    end
-  end
-
-  describe 'generate_line_code' do
-    it 'should generate correct line code' do
-      expect(generate_line_code(diff_file.file_path, diff_file.diff_lines.first)).
-        to eq('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6')
-    end
-  end
-
   describe 'unfold_bottom_class' do
     it 'should return empty string when bottom line shouldnt be unfolded' do
       expect(unfold_bottom_class(false)).to eq('')
@@ -134,9 +120,5 @@ describe DiffHelper do
     it 'should return safe HTML' do
       expect(diff_line_content(diff_file.diff_lines.first.text)).to be_html_safe
     end
-  end
-
-  def parallel_diff_result_array
-    YAML.load_file("#{Rails.root}/spec/fixtures/parallel_diff_result.yml")
   end
 end
