@@ -93,7 +93,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path || new_user_session_path
+    if Gitlab::Geo.readonly?
+      Gitlab::Geo.primary_node.url
+    else
+      current_application_settings.after_sign_out_path || new_user_session_path
+    end
   end
 
   def abilities

@@ -4,7 +4,7 @@ class SessionsController < Devise::SessionsController
 
   prepend_before_action :authenticate_with_two_factor, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
-  before_action :gitlab_geo_auth, only: [:new]
+  before_action :gitlab_geo_login, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
@@ -57,7 +57,7 @@ class SessionsController < Devise::SessionsController
     if redirect_uri.path == new_user_session_path
       redirect_to = root_url
     elsif Gitlab::Geo.geo_node?(host: redirect_uri.host, port: redirect_uri.port)
-      redirect_to = redirect_url.to_s
+      redirect_to = redirect_uri.to_s
     end
 
     @redirect_to = redirect_to
@@ -86,12 +86,12 @@ class SessionsController < Devise::SessionsController
     end
   end
 
-  def gitlab_geo_auth
+  def gitlab_geo_login
     if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
       # share full url with primary node by shared session
       session[:geo_node_return_to] = @redirect_to
 
-      login_uri =  URI.join(Gitlab::Geo.primary_node.uri, new_session_path(:user)).to_s
+      login_uri =  URI.join(Gitlab::Geo.primary_node.url, new_session_path(:user)).to_s
       redirect_to login_uri
     end
   end

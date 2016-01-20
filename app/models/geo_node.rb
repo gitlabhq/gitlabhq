@@ -23,4 +23,8 @@ class GeoNode < ActiveRecord::Base
   def uri
     URI.parse("#{schema}://#{host}:#{port}/#{relative_url_root}")
   end
+
+  def url
+    uri.to_s
+  end
 end
