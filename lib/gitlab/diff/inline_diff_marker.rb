@@ -9,17 +9,18 @@ module Gitlab
       end
 
       def mark(line_inline_diffs)
-        offset = 0
+        marker_ranges = []
         line_inline_diffs.each do |inline_diff_range|
           # Map the inline-diff range based on the raw line to character positions in the rich line
           inline_diff_positions = position_mapping[inline_diff_range].flatten
           # Turn the array of character positions into ranges
-          marker_ranges = collapse_ranges(inline_diff_positions)
+          marker_ranges.concat(collapse_ranges(inline_diff_positions))
+        end
 
-          # Mark each range
-          marker_ranges.each do |range|
-            offset = insert_around_range(rich_line, range, "<span class='idiff'>", "</span>", offset)
-          end
+        offset = 0
+        # Mark each range
+        marker_ranges.each do |range|
+          offset = insert_around_range(rich_line, range, "<span class='idiff'>", "</span>", offset)
         end
 
         rich_line

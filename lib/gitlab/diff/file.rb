@@ -1,14 +1,22 @@
 module Gitlab
   module Diff
     class File
-      attr_reader :diff, :new_ref, :old_ref
+      attr_reader :diff, :diff_refs
 
       delegate :new_file, :deleted_file, :renamed_file,
         :old_path, :new_path, to: :diff, prefix: false
 
       def initialize(diff, diff_refs)
         @diff = diff
-        @old_ref, @new_ref = diff_refs
+        @diff_refs = diff_refs
+      end
+
+      def old_ref
+        diff_refs[0] if diff_refs
+      end
+
+      def new_ref
+        diff_refs[1] if diff_refs
       end
 
       # Array of Gitlab::DIff::Line objects

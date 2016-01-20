@@ -102,8 +102,7 @@ module DiffHelper
 
   def commit_for_diff(diff)
     if diff.deleted_file
-      first_commit = @first_commit || @commit
-      first_commit.parent || @first_commit
+      @base_commit || @commit.parent || @commit
     else
       @commit
     end

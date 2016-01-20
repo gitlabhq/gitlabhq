@@ -180,6 +180,14 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
+  def diff_base_commit
+    if merge_request_diff
+      merge_request_diff.base_commit
+    else
+      self.target_project.commit(self.target_branch)
+    end
+  end
+
   def last_commit_short_sha
     last_commit.short_id
   end
@@ -477,8 +485,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_sha
-    @target_sha ||= target_project.
-      repository.commit(target_branch).sha
+    @target_sha ||= target_project.repository.commit(target_branch).sha
   end
 
   def source_sha
@@ -519,6 +526,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    [first_commit.parent || first_commit, last_commit]
+    return nil unless diff_base_commit
+
+    [diff_base_commit, last_commit]
   end
 end

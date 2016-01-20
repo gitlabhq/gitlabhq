@@ -31,6 +31,8 @@ module Gitlab
       private
 
       def highlight_line(diff_line, index)
+        return html_escape(diff_line.text) unless diff_file.diff_refs
+
         line_prefix = diff_line.text.match(/\A([+-])/) ? $1 : ' '
 
         case diff_line.type
@@ -42,7 +44,7 @@ module Gitlab
 
         # Only update text if line is found. This will prevent
         # issues with submodules given the line only exists in diff content.
-        rich_line ? line_prefix + rich_line : diff_line.text
+        rich_line ? line_prefix + rich_line : html_escape(diff_line.text)
       end
 
       def inline_diffs
@@ -62,6 +64,11 @@ module Gitlab
         path = send("diff_#{version}_path")
 
         [ref.project.repository, ref.id, path]
+      end
+
+      def html_escape(str)
+        replacements = { '&' => '&amp;', '>' => '&gt;', '<' => '&lt;', '"' => '&quot;', "'" => '&#39;' }
+        str.gsub(/[&"'><]/, replacements)
       end
     end
   end

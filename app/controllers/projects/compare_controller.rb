@@ -21,8 +21,8 @@ class Projects::CompareController < Projects::ApplicationController
       @commits = Commit.decorate(compare_result.commits, @project)
       @diffs = compare_result.diffs
       @commit = @project.commit(head_ref)
-      @first_commit = @project.commit(base_ref)
-      @diff_refs = [@first_commit, @commit]
+      @base_commit = @project.commit(base_ref)
+      @diff_refs = [@base_commit, @commit]
       @line_notes = []
     end
   end
