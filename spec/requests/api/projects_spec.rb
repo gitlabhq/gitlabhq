@@ -90,6 +90,29 @@ describe API::API, api: true  do
         end
       end
 
+      context 'and using the visibility filter' do
+        it 'should filter based on private visibility param' do
+          get api('/projects', user), { visibility: 'private' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).count)
+        end
+
+        it 'should filter based on internal visibility param' do
+          get api('/projects', user), { visibility: 'internal' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::INTERNAL).count)
+        end
+
+        it 'should filter based on public visibility param' do
+          get api('/projects', user), { visibility: 'public' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PUBLIC).count)
+        end
+      end
+
       context 'and using sorting' do
         before do
           project2
