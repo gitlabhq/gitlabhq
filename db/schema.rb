@@ -64,6 +64,8 @@ ActiveRecord::Schema.define(version: 20160120172143) do
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
+    t.boolean  "ip_blocking_enabled",               default: false
+    t.text     "dnsbl_servers_list"
   end
 
   create_table "audit_events", force: :cascade do |t|
