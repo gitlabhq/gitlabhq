@@ -95,7 +95,7 @@ module Projects
       system_hook_service.execute_hooks_for(@project, :create)
 
       unless @project.group
-        @project.team << [current_user, :master, current_user]
+        @project.team << [current_user, :master]
       end
 
       @project.import_start if @project.import?

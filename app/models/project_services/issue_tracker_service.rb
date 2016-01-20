@@ -23,12 +23,10 @@ class IssueTrackerService < Service
 
   validates :project_url, :issues_url, :new_issue_url, presence: true, if: :activated?
 
-  def category
-    :issue_tracker
-  end
+  default_value_for :category, 'issue_tracker'
 
   def default?
-    false
+    default
   end
 
   def issue_url(iid)
