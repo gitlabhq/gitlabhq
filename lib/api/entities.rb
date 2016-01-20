@@ -173,6 +173,7 @@ module API
       expose :label_names, as: :labels
       expose :description
       expose :work_in_progress?, as: :work_in_progress
+      expose :mergeable?, as: :mergeable
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
     end

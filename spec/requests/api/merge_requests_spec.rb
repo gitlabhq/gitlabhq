@@ -125,6 +125,22 @@ describe API::API, api: true  do
       expect(json_response.first['id']).to eq merge_request.id
     end
 
+    it "should return mergeable merge request" do
+      allow_any_instance_of(MergeRequest).to receive(:mergeable?).and_return(true)
+      get api("/projects/#{project.id}/merge_request/#{merge_request.id}", user)
+      expect(response.status).to eq(200)
+      expect(json_response['iid']).to eq(merge_request.iid)
+      expect(json_response['mergeable']).to eq(true)
+    end
+
+    it "should return unmergeable merge request" do
+      allow_any_instance_of(MergeRequest).to receive(:mergeable?).and_return(false)
+      get api("/projects/#{project.id}/merge_request/#{merge_request.id}", user)
+      expect(response.status).to eq(200)
+      expect(json_response['iid']).to eq(merge_request.iid)
+      expect(json_response['mergeable']).to eq(false)
+    end
+
     it "should return a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_request/999", user)
       expect(response.status).to eq(404)

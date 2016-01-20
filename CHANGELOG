@@ -40,6 +40,7 @@ v 8.4.0 (unreleased)
   - Swap position of Assignee and Author selector on Issuables (Zeger-Jan van de Weg)
   - Add system hook messages for project rename and transfer (Steve Norman)
   - Fix version check image in Safari
+  - Add "mergeable?" param to merge request entity in API responses
   - Show 'All' tab by default in the builds page
   - Add Open Graph and Twitter Card data to all pages
   - Fix API project lookups when querying with a namespace with dots (Stan Hu)
