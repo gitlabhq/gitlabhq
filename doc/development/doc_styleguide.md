@@ -103,6 +103,17 @@ Inside the document:
   `_**Note:** This feature was introduced in GitLab EE 8.3_`. Otherwise, leave
   this mention out
 
+## References
+
+- There are many cases that a restart/reconfigure of GitLab is required. To
+  avoid duplication, link to the special document that can be found in
+  `doc/administration/restart_gitlab.md`. Usually the text will read like:
+
+    ```
+    Save the file and [reconfigure GitLab](../administration/restart_gitlab.md) for the changes to take effect.
+    ```
+  Replace `reconfigure` with `restart` where appropriate.
+
 ## API
 
 Here is a list of must-have items. Use them in the exact order that appears
