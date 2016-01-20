@@ -651,6 +651,17 @@ class Repository
     end
   end
 
+  def up_to_date_with_upstream?(branch_name)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
+
+    if upstream_commit
+      is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
+    end
+  end
+
   def merge_base(first_commit_id, second_commit_id)
     rugged.merge_base(first_commit_id, second_commit_id)
   end

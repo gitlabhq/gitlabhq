@@ -260,6 +260,7 @@ class ProjectsController < ApplicationController
       :merge_requests_template,
       :mirror,
       :mirror_user_id,
+      :mirror_trigger_builds,
       :reset_approvals_on_push
     )
   end

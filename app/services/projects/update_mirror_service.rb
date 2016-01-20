@@ -43,7 +43,7 @@ module Projects
         else
           begin
             repository.ff_merge(current_user, upstream_branch.target, name)
-          rescue Repository::PreReceiveError, Repository::CommitError => e
+          rescue GitHooksService::PreReceiveError, Repository::CommitError => e
             raise UpdateError, e.message
           end
         end
@@ -66,7 +66,7 @@ module Projects
 
         next if old_tag_target == tag.target
 
-        GitTagPushService.new.execute(project, current_user, old_tag_target, tag.target, "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}")
+        GitTagPushService.new.execute(project, current_user, old_tag_target, tag.target, "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}", mirror_update: true)
       end
 
       fetch_result

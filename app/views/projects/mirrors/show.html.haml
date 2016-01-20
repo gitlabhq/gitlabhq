@@ -66,5 +66,8 @@
         like new branches being created or new commits being pushed to existing branches.
         They need to have at least master access to this project.
 
+  - if @project.builds_enabled?
+    = render 'shared/mirror_trigger_builds_setting', f: f
+
   .form-actions
     = f.submit "Save Changes", class: "btn btn-create"

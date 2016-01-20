@@ -38,6 +38,6 @@ class Projects::MirrorsController < Projects::ApplicationController
   private
 
   def mirror_params
-    params.require(:project).permit(:mirror, :import_url, :mirror_user_id)
+    params.require(:project).permit(:mirror, :import_url, :mirror_user_id, :mirror_trigger_builds)
   end
 end
