@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119145451) do
+ActiveRecord::Schema.define(version: 20160120130905) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,8 @@ ActiveRecord::Schema.define(version: 20160119145451) do
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
     t.integer  "metrics_sample_interval",           default: 15
+    t.boolean  "ip_blocking_enabled",               default: false
+    t.text     "dnsbl_servers_list"
   end
 
   create_table "audit_events", force: :cascade do |t|
