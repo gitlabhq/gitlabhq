@@ -131,8 +131,8 @@ class @Notes
       @note_ids.push(note.id)
 
       $('ul.main-notes-list')
-      .append(note.html)
-      .syntaxHighlight()
+        .append(note.html)
+        .syntaxHighlight()
       @initTaskList()
       @updateNotesCount(1)
 
@@ -178,8 +178,8 @@ class @Notes
       # Init discussion on 'Discussion' page if it is merge request page
       if $('body').attr('data-page').indexOf('projects:merge_request') is 0
         $('ul.main-notes-list')
-        .append(note.discussion_with_diff_html)
-        .syntaxHighlight()
+          .append(note.discussion_with_diff_html)
+          .syntaxHighlight()
     else
       # append new note to all matching discussions
       discussionContainer.append note_html
@@ -367,8 +367,8 @@ class @Notes
   ###
   removeNote: (e) =>
     noteId = $(e.currentTarget)
-             .closest(".note")
-             .attr("id")
+               .closest(".note")
+               .attr("id")
 
     # A same note appears in the "Discussion" and in the "Changes" tab, we have
     # to remove all. Using $(".note[id='noteId']") ensure we get all the notes,
@@ -561,5 +561,5 @@ class @Notes
   updateTaskList: ->
     $('form', this).submit()
 
-  updateNotesCount: (incrementStep) ->
-    @notesCountBadge.text parseInt(@notesCountBadge.text()) + incrementStep
+  updateNotesCount: (updateCount) ->
+    @notesCountBadge.text(parseInt(@notesCountBadge.text()) + updateCount)
