@@ -93,6 +93,9 @@ module Gitlab
 
       # Inserts tags around the characters identified by the given range
       def insert_around_range(text, range, before, after, offset = 0)
+        # Just to be sure
+        return offset if offset + range.end + 1 > text.length
+
         text.insert(offset + range.begin, before)
         offset += before.length
 
