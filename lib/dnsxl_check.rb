@@ -57,7 +57,7 @@ class DNSXLCheck
   end
 
   def threshold=(threshold)
-    raise ArgumentError, "'threshold' value must be grather than 0 and less/equal 1" unless threshold.between?(0, 1) && threshold > 0
+    raise ArgumentError, "'threshold' value must be grather than 0 and less than or equal to 1" unless threshold > 0 && threshold <= 1
     @threshold = threshold
   end
 

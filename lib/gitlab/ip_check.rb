@@ -12,9 +12,7 @@ module Gitlab
     end
 
     def spam?
-      return false unless @ip_blocking_enabled
-      return false if whitelisted?
-      blacklisted?
+      @ip_blocking_enabled && !whitelisted? && blacklisted?
     end
 
     private
@@ -24,7 +22,7 @@ module Gitlab
     end
 
     def on_local_whitelist?
-      !local_ip.nil? && local_ip.is_a?(WhitelistedIp)
+      local_ip && local_ip.is_a?(WhitelistedIp)
     end
 
     def on_dns_whitelist?
@@ -38,7 +36,7 @@ module Gitlab
     end
 
     def on_local_blacklist?
-      !local_ip.nil? && local_ip.is_a?(BlacklistedIp)
+      local_ip && local_ip.is_a?(BlacklistedIp)
     end
 
     def on_dns_blacklist?
