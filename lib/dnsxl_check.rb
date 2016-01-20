@@ -26,8 +26,12 @@ class DNSXLCheck
     dnsxl_check
   end
 
+  def initialize
+    @use_threshold = true
+  end
+
   def test(ip)
-    if use_threshold?
+    if @use_threshold
       test_with_threshold(ip)
     else
       test_strict(ip)
@@ -50,10 +54,6 @@ class DNSXLCheck
 
   def use_threshold=(value)
     @use_threshold = value == true
-  end
-
-  def use_threshold?
-    @use_threshold &&= true
   end
 
   def threshold=(threshold)
