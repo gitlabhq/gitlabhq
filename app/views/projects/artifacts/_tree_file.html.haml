@@ -7,5 +7,3 @@
       = link_to file.name, path_to_file
   %td
     = number_to_human_size(file.metadata[:size], precision: 2)
-  %td
-    = number_to_human_size(file.metadata[:zipped], precision: 2)
