@@ -201,3 +201,39 @@
 .mr-source-target {
   line-height: 31px;
 }
+
+.disabled-comment-area {
+  padding: 16px 0;
+
+  .disabled-profile {
+    width: 40px;
+    height: 40px;
+    background: #CCC;
+    border-radius: 20px;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .disabled-comment {
+    background: #F3F3F3;
+    display: inline-block;
+    vertical-align: top;
+    height: 200px;
+    border-radius: 4px;
+    border: 1px solid #CCC;
+    padding-top: 90px;
+    text-align: center;
+    right: 20px;
+    position: absolute;
+    left: 70px;
+    margin-bottom: 20px;
+
+    span {
+      color: #B2B2B2;
+
+      a {
+        color: $md-link-color;
+      }
+    }
+  }
+}
