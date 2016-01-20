@@ -2,6 +2,7 @@ module Projects
   class UpdatePagesService < BaseService
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
+    SITE_PATH = 'public/'
 
     attr_reader :build
 
@@ -60,11 +61,40 @@ module Projects
     end
 
     def extract_archive!(temp_path)
+      if artifacts.ends_with?('.tar.gz') || artifacts.ends_with?('.tgz')
+        extract_tar_archive!(temp_path)
+      elsif artifacts.ends_with?('.zip')
+        extract_zip_archive!(temp_path)
+      else
+        raise 'unsupported artifacts format'
+      end
+    end
+
+    def extract_tar_archive!(temp_path)
       results = Open3.pipeline(%W(gunzip -c #{artifacts}),
                                %W(dd bs=#{BLOCK_SIZE} count=#{blocks}),
-                               %W(tar -x -C #{temp_path} public/),
+                               %W(tar -x -C #{temp_path} #{SITE_PATH}),
                                err: '/dev/null')
       raise 'pages failed to extract' unless results.compact.all?(&:success?)
+    end
+
+    def extract_zip_archive!(temp_path)
+      raise 'missing artifacts metadata' unless build.artifacts_metadata?
+
+      # Calculate page size after extract
+      public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
+
+      if public_entry.total_size > max_size
+        raise "artifacts for pages are too large: #{total_size}"
+      end
+
+      # Requires UnZip at least 6.00 Info-ZIP.
+      # -n  never overwrite existing files
+      # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
+      site_path = File.join(SITE_PATH, '*')
+      unless system(*%W(unzip -n #{artifacts} #{site_path} -d #{temp_path}))
+        raise 'pages failed to extract'
+      end
     end
 
     def deploy_page!(archive_public_path)
@@ -91,10 +121,11 @@ module Projects
 
     def blocks
       # Calculate dd parameters: we limit the size of pages
-      max_size = current_application_settings.max_pages_size.megabytes
-      max_size ||= MAX_SIZE
-      blocks = 1 + max_size / BLOCK_SIZE
-      blocks
+      1 + max_size / BLOCK_SIZE
+    end
+
+    def max_size
+      current_application_settings.max_pages_size.megabytes || MAX_SIZE
     end
 
     def tmp_path
