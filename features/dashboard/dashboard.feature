@@ -41,3 +41,19 @@ Feature: Dashboard
     And user with name "John Doe" left project "Shop"
     When I visit dashboard activity page
     Then I should see "John Doe left project Shop" event
+
+  @javascript
+  Scenario: Sorting Issues
+    Given I visit dashboard issues page
+    And I sort the list by "Oldest updated"
+    And I visit dashboard activity page
+    And I visit dashboard issues page
+    Then The list should be sorted by "Oldest updated"
+
+  @javascript
+  Scenario: Sorting Merge Requests
+    Given I visit dashboard merge requests page
+    And I sort the list by "Oldest updated"
+    And I visit dashboard activity page
+    And I visit dashboard merge requests page
+    Then The list should be sorted by "Oldest updated"
