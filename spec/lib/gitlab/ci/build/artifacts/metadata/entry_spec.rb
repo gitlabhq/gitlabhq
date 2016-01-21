@@ -4,13 +4,13 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
   let(:entries) do
     { 'path/' => {},
       'path/dir_1/' => {},
-      'path/dir_1/file_1' => {},
-      'path/dir_1/file_b' => {},
+      'path/dir_1/file_1' => { size: 10 },
+      'path/dir_1/file_b' => { size: 10 },
       'path/dir_1/subdir/' => {},
-      'path/dir_1/subdir/subfile' => {},
+      'path/dir_1/subdir/subfile' => { size: 10 },
       'path/second_dir' => {},
-      'path/second_dir/dir_3/file_2' => {},
-      'path/second_dir/dir_3/file_3'=> {},
+      'path/second_dir/dir_3/file_2' => { size: 10 },
+      'path/second_dir/dir_3/file_3'=> { size: 10 },
       'another_directory/'=> {},
       'another_file' => {},
       '/file/with/absolute_path' => {} }
@@ -111,6 +111,11 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
       describe '#empty?' do
         subject { |example| path(example).empty? }
         it { is_expected.to be false }
+      end
+
+      describe '#total_size' do
+        subject { |example| path(example).total_size }
+        it { is_expected.to eq(30) }
       end
     end
   end
