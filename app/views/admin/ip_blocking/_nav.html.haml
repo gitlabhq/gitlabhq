@@ -1,17 +1,17 @@
 %ul.nav-links
-  %li{ class: ('active' if current_page?(admin_ip_blocking_blacklist_index_path)) }
+  %li{ class: ('active' if controller_name == 'blacklist') }
     = link_to admin_ip_blocking_blacklist_index_path do
       IP Blacklist
 
-  %li{ class: ('active' if current_page?(admin_ip_blocking_whitelist_index_path)) }
+  %li{ class: ('active' if controller_name == 'whitelist') }
     = link_to admin_ip_blocking_whitelist_index_path do
       IP Whitelist
 
-  %li{ class: ('active' if current_page?(admin_ip_blocking_dns_blacklists_path)) }
+  %li{ class: ('active' if controller_name == 'dns_blacklists') }
     = link_to admin_ip_blocking_dns_blacklists_path do
       DNS Blacklists
 
-  %li{ class: ('active' if current_page?(admin_ip_blocking_dns_whitelists_path)) }
+  %li{ class: ('active' if controller_name == 'dns_whitelists') }
     = link_to admin_ip_blocking_dns_whitelists_path do
       DNS Whitelists
 
