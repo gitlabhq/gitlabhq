@@ -328,19 +328,19 @@ objectclass: posixGroup
       end
     end
 
-    context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
+    context 'existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER' do
       before do
         gitlab_group_1.group_members.masters.create(user_id: user.id)
         gitlab_group_1.ldap_group_links.create({
           cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER, provider: 'ldapmain' })
       end
 
-      it "keeps the users master access for group 1" do
-        expect { access.update_ldap_group_links }.not_to \
-          change{ gitlab_group_1.has_master?(user) }
+      it 'downgrades the users access' do
+        expect { access.update_ldap_group_links }.to \
+          change{ gitlab_group_1.has_master?(user) }.from(true).to(false)
       end
 
-      it "doesn't send a notification email" do
+      it 'does not send a notification email' do
         expect { access.update_ldap_group_links }.not_to \
           change { ActionMailer::Base.deliveries }
       end
