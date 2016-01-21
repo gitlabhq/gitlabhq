@@ -33,15 +33,13 @@ class @MergeRequestWidget
 
   getBuildStatus: ->
     urlToCiCheck = @opts.url_to_ci_check
-    ciEnabled = @opts.ci_enable
-    console.log(ciEnabled)
+    console.log('checking')
     setInterval (->
-      if ciEnabled
-        $.getJSON urlToCiCheck, (data) ->
-          console.log("data",data);
-          return
+      $.getJSON urlToCiCheck, (data) ->
+        console.log("data",data);
         return
-      ), 5000
+      return
+    ), 5000
 
   getCiStatus: ->
     $.get @opts.url_to_ci_check, (data) =>

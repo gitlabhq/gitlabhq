@@ -218,6 +218,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def st
+    @ci_commit = @merge_request.ci_commit
+    @statuses = @ci_commit.statuses if @ci_commit
+    render json: {
+      statuses: @statuses
+    }
+  end
+
   def ci_status
     ci_service = @merge_request.source_project.ci_service
     status = ci_service.commit_status(merge_request.last_commit.sha, merge_request.source_branch)
@@ -228,8 +236,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     response = {
       status: status,
-      coverage: coverage,
-      ci_status: @merge_request.ci_commit.status
+      coverage: coverage
     }
 
     render json: response
