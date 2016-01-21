@@ -15,7 +15,6 @@
         %tr
           %th Name
           %th Size
-          %th Compressed to
       = render partial: 'tree_directory', collection: @entry.directories(parent: true), as: :directory
       = render partial: 'tree_file', collection: @entry.files, as: :file
 

@@ -90,4 +90,22 @@
   .vg { color: #cc6666 } /* Name.Variable.Global */
   .vi { color: #cc6666 } /* Name.Variable.Instance */
   .il { color: #de935f } /* Literal.Number.Integer.Long */
+
+  .line_holder {
+    &.parallel .new.new_line,
+    &.parallel .new.line_content,
+    &.new .old_line,
+    &.new .new_line,
+    &.new .line_content {
+      @include diff_background(255, 255, 255, #808080);
+    }
+
+    &.parallel .old.old_line,
+    &.parallel .old.line_content,
+    &.old .old_line,
+    &.old .new_line,
+    &.old .line_content {
+      @include diff_background(255, 51, 51, #808080);
+    }
+  }
 }

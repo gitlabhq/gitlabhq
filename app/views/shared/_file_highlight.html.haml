@@ -9,5 +9,4 @@
           %i.fa.fa-link
           = i
   .blob-content{data: {blob_id: blob.id}}
-    :preserve
-      #{highlight(blob.name, blob.data)}
+    = highlight(blob.name, blob.data)

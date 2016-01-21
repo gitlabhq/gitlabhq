@@ -56,7 +56,7 @@ export CI_SERVER_VERSION=""
 ```
 
 ### YAML-defined variables
-**This feature requires GitLab Runner 0.5.0 or higher**
+**This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher **
 
 GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in build environment.
 The variables are stored in repository and are meant to store non-sensitive project configuration, ie. RAILS_ENV or DATABASE_URL.

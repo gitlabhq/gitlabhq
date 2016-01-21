@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160120163610) do
+ActiveRecord::Schema.define(version: 20160120172143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,8 @@ ActiveRecord::Schema.define(version: 20160120163610) do
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
     t.integer  "metrics_sample_interval",           default: 15
+    t.boolean  "sentry_enabled",                    default: false
+    t.string   "sentry_dsn"
     t.boolean  "ip_blocking_enabled",               default: false
     t.float    "dns_blacklist_threshold",           default: 0.33
     t.float    "dns_whitelist_threshold",           default: 0.33
@@ -511,6 +513,7 @@ ActiveRecord::Schema.define(version: 20160120163610) do
     t.integer  "merge_request_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "base_commit_sha"
   end
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
@@ -746,9 +749,9 @@ ActiveRecord::Schema.define(version: 20160120163610) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",                default: false,    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",                                   null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
