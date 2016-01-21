@@ -49,6 +49,7 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(Gitlab::Shell)
 
     config.instrument_methods(Gitlab::Git)
+    config.instrument_instance_methods(Gitlab::Git::Repository)
 
     Gitlab::Git.constants.each do |name|
       const = Gitlab::Git.const_get(name)
