@@ -55,7 +55,7 @@ class SessionsController < Devise::SessionsController
     # Prevent a 'you are already signed in' message directly after signing:
     # we should never redirect to '/users/sign_in' after signing in successfully.
     if redirect_uri.path == new_user_session_path
-      redirect_to = root_url
+      return true
     elsif Gitlab::Geo.geo_node?(host: redirect_uri.host, port: redirect_uri.port)
       redirect_to = redirect_uri.to_s
     end
@@ -89,7 +89,8 @@ class SessionsController < Devise::SessionsController
   def gitlab_geo_login
     if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
       # share full url with primary node by shared session
-      session[:geo_node_return_to] = @redirect_to
+      user_return_to = URI.join(root_url, session[:user_return_to]).to_s
+      session[:geo_node_return_to] = @redirect_to || user_return_to
 
       login_uri =  URI.join(Gitlab::Geo.primary_node.url, new_session_path(:user)).to_s
       redirect_to login_uri
