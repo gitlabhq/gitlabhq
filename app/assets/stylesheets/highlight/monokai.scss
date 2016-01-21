@@ -6,7 +6,7 @@
   }
 
   .diff-line-num, .diff-line-num a {
-    color: #f8f8f2;
+    color: rgba(255, 255, 255, 0.3);
   }
 
   // Code itself
@@ -22,11 +22,16 @@
   // Diff line
   .line_holder {
     .diff-line-num.new, .line_content.new {
-      @include diff_background(156, 175, 183, #808080);
+      @include diff_background(rgba(166, 226, 46, 0.2), rgba(166, 226, 46, 0.3), #808080);
     }
 
     .diff-line-num.old, .line_content.old {
-      @include diff_background(254, 147, 140, #808080);
+      @include diff_background(rgba(254, 147, 140, 0.2), rgba(254, 147, 140, 0.3), #808080);
+    }
+
+    .line_content.match {
+      color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
     }
   }
 

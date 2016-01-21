@@ -353,17 +353,14 @@
   }
 }
 
-@mixin diff_background($r, $g, $b, $custom-border) {
-  /* Fallback for web browsers that doesn't support RGBa */
-  background: rgb($r, $g, $b);
-  /* RGBa with 0.3 opacity */
-  background: rgba($r, $g, $b, 0.3);
-
-  &.diff-line-num {
-    border-right-color: $custom-border !important;
-  }
+@mixin diff_background($background, $idiff, $border) {
+  background: $background;
 
   &.line_content span.idiff {
-    background: rgb($r, $g, $b);
+    background: $idiff;
+  }
+
+  &.diff-line-num {
+    border-color: $border;
   }
 }
