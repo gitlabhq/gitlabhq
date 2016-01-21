@@ -1,13 +1,22 @@
 # Housekeeping
 
-## Introduction
+_**Note:** This feature was [introduced][ce-2371] in GitLab 8.4_
 
-The housekeeping function runs `git gc` on the current project git repository.
+---
 
-`git gc` runs a number of housekeeping tasks, such as compressing file revisions (to reduce disk space and increase performance) and removing unreachable objects which may have been created from prior invocations of git add.
+The housekeeping function runs [`git gc`][man] on the current project Git
+repository.
 
-See https://www.kernel.org/pub/software/scm/git/docs/git-gc.html for details.
+`git gc` runs a number of housekeeping tasks, such as compressing file
+revisions (to reduce disk space and increase performance) and removing
+unreachable objects which may have been created from prior invocations of
+`git add`.
 
-## Where can I find it?
+You can find this option under your **[Project] > Settings**.
 
-Just go to your project settings page and you will find the housekeeping function below the project settings form.
+---
+
+![Housekeeping settings](img/housekeeping_settings.png)
+
+[ce-2371]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2371 "Housekeeping merge request"
+[man]: https://www.kernel.org/pub/software/scm/git/docs/git-gc.html "git gc man page"
