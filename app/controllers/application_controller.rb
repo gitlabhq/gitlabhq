@@ -409,8 +409,8 @@ class ApplicationController < ActionController::Base
   private
 
   def set_default_sort
-    controller_name = params[:controller].sub(/Controller\Z/, '').underscore
-    cookie_suffix   = "_sort_#{controller_name}"
+    # Use the controller name so we have a distinct cookie for Issues, MRs and Dashboard
+    cookie_suffix   = "_sort_#{params[:controller].underscore}"
 
     key = "#{(@project || @group || current_user).cookie_key}#{cookie_suffix}"
 
