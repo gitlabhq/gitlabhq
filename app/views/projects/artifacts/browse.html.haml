@@ -20,16 +20,3 @@
 
 - if @entry.empty?
   .center Empty
-
-:javascript
-  $('.top-block').on('click', '.download', function(e) {
-    e.stopPropagation();
-  });
-
-  $('.tree-holder').on('click', 'tr[data-link] a', function(e) {
-    e.stopImmediatePropagation();
-  });
-
-  $('.tree-holder').on('click', 'tr[data-link]', function(e) {
-    window.location = this.dataset.link;
-  });
