@@ -69,6 +69,7 @@
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
+- [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
 - [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
 
 ## Contributor documentation
