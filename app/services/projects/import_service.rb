@@ -49,10 +49,6 @@ module Projects
       unless importer.execute
         raise Error, 'The remote data could not be imported.'
       end
-
-      if project.import_type == 'bitbucket'
-        Gitlab::BitbucketImport::KeyDeleter.new(project).execute
-      end
     end
 
     def has_importer?
