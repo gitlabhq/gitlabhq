@@ -1,9 +1,9 @@
 .pull-left
-  = form_for @ip, url: url, html: { class: 'form-inline fieldset-form' } do |f|
-    - if @ip.errors.any?
+  = form_for @row, url: url, html: { class: 'form-inline fieldset-form' } do |f|
+    - if @row.errors.any?
       #error_explanation
         .alert.alert-danger
-          - @ip.errors.full_messages.each do |msg|
+          - @row.errors.full_messages.each do |msg|
             %p= msg
 
     .fieldset

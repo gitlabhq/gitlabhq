@@ -1,5 +1,5 @@
 %ul.content-list
-  - if @ips.blank?
+  - if @collection.blank?
     %li
       .nothing-here-block No IP addresses to show
   - else
@@ -15,7 +15,7 @@
             %th
 
         %tbody
-          - @ips.each do |ip|
-            = render 'admin/ip_blocking/blocking_ip', ip: ip
+          - @collection.each do |row|
+            = render 'admin/ip_blocking/blocking_ip', ip: row
 
-    = paginate @ips, theme: 'gitlab'
+    = paginate @collection, theme: 'gitlab'

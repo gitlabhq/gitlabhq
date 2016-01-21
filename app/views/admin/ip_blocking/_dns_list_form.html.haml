@@ -1,9 +1,9 @@
 .pull-left
-  = form_for @dns_list, url: url, html: { class: 'form-inline fieldset-form' } do |f|
-    - if @dns_list.errors.any?
+  = form_for @row, url: url, html: { class: 'form-inline fieldset-form' } do |f|
+    - if @row.errors.any?
       #error_explanation
         .alert.alert-danger
-          - @dns_list.errors.full_messages.each do |msg|
+          - @row.errors.full_messages.each do |msg|
             %p= msg
 
     .fieldset

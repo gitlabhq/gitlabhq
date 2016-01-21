@@ -1,5 +1,5 @@
 %ul.content-list
-  - if @dns_lists.blank?
+  - if @collection.blank?
     %li
       .nothing-here-block No DNS lists to show
   - else
@@ -15,7 +15,7 @@
             %th
 
         %tbody
-          - @dns_lists.each do |dns_list|
-            = render 'admin/ip_blocking/dns_list', dns_list: dns_list
+          - @collection.each do |row|
+            = render 'admin/ip_blocking/dns_list', dns_list: row
 
-    = paginate @dns_lists, theme: 'gitlab'
+    = paginate @collection, theme: 'gitlab'
