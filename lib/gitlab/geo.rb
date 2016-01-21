@@ -18,7 +18,7 @@ module Gitlab
       self.enabled? && !self.current_node.primary?
     end
 
-    def self.geo_node?(host: host, port: port)
+    def self.geo_node?(host:, port:)
       GeoNode.where(host: host, port: port).exists?
     end
   end

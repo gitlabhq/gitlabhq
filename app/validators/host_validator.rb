@@ -16,7 +16,7 @@ class HostValidator < ActiveModel::EachValidator
 
   def valid_host?(value)
     URI.parse("http://#{value}").host == value
-  rescue URI::InvalidURIError => e
+  rescue URI::InvalidURIError
     false
   end
 end
