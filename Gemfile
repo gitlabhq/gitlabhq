@@ -18,7 +18,7 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.3'
+gem 'devise',                 '~> 3.5.4'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
@@ -49,7 +49,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.22'
+gem "gitlab_git", '~> 7.2.23'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -80,7 +80,7 @@ gem "carrierwave", '~> 0.9.0'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for aws storage
-gem "fog", "~> 1.25.0"
+gem "fog", "~> 1.36.0"
 gem "unf", '~> 0.1.4'
 
 # Authorization
@@ -247,7 +247,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'pry-rails'
 
-  gem 'awesome_print', '~> 1.2.0'
+  gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
   gem 'database_cleaner', '~> 1.4.0'
@@ -293,6 +293,9 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
+
+  # Sentry integration
+  gem 'sentry-raven'
 end
 
 gem "newrelic_rpm", '~> 3.9.4.245'

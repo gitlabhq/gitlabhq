@@ -74,7 +74,7 @@
 
 
 /** light list with border-bottom between li **/
-ul.bordered-list {
+ul.bordered-list, ul.unstyled-list {
   @include basic-list;
 
   &.top-list {
@@ -86,6 +86,10 @@ ul.bordered-list {
       }
     }
   }
+}
+
+ul.unstyled-list > li {
+  border-bottom: none;
 }
 
 ul.task-list {
@@ -105,10 +109,8 @@ ul.content-list {
   padding: 0;
 
   > li {
-    padding: $gl-padding;
+    padding: $gl-padding 0;
     border-color: $table-border-color;
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
     color: $gl-gray;
 
     .avatar {
@@ -129,6 +131,7 @@ ul.content-list {
 .panel > .content-list {
   li {
     margin: 0;
+    padding: $gl-padding;
   }
 }
 
@@ -144,7 +147,7 @@ ul.controls {
   > li {
     float: left;
     margin-right: 10px;
-    
+
     &:last-child {
       margin-right: 0;
     }

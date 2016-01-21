@@ -3,11 +3,11 @@
 # Table name: web_hooks
 #
 #  id                      :integer          not null, primary key
-#  url                     :string(255)
+#  url                     :string(2000)
 #  project_id              :integer
 #  created_at              :datetime
 #  updated_at              :datetime
-#  type                    :string(255)      default("ProjectHook")
+#  type                    :string           default("ProjectHook")
 #  service_id              :integer
 #  push_events             :boolean          default(TRUE), not null
 #  issues_events           :boolean          default(FALSE), not null
@@ -48,8 +48,8 @@ class WebHook < ActiveRecord::Base
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
       auth = {
-        username: URI.decode(parsed_url.user),
-        password: URI.decode(parsed_url.password),
+        username: CGI.unescape(parsed_url.user),
+        password: CGI.unescape(parsed_url.password),
       }
       response = WebHook.post(post_url,
                               body: data.to_json,

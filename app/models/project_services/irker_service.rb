@@ -73,9 +73,10 @@ class IrkerService < Service
         'irc[s]://irc.network.net[:port]/#channel. Special cases: if '\
         'you want the channel to be a nickname instead, append ",isnick" to ' \
         'the channel name; if the channel is protected by a secret password, ' \
-        ' append "?key=secretpassword" to the URI. Note that if you specify a ' \
-        ' default IRC URI to prepend before each recipient, you can just give ' \
-        ' a channel name.'  },
+        ' append "?key=secretpassword" to the URI (Note that due to a bug, if you ' \
+        ' want to use a password, you have to omit the "#" on the channel). If you ' \
+        ' specify a default IRC URI to prepend before each recipient, you can just ' \
+        ' give a channel name.'  },
       { type: 'checkbox', name: 'colorize_messages' },
     ]
   end

@@ -33,7 +33,7 @@ class Note < ActiveRecord::Base
   participant :author
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true
+  belongs_to :noteable, polymorphic: true, touch: true
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
 
@@ -356,6 +356,10 @@ class Note < ActiveRecord::Base
 
   def editable?
     !system? && !is_award
+  end
+
+  def cross_reference_not_visible_for?(user)
+    cross_reference? && referenced_mentionables(user).empty?
   end
 
   # Checks if note is an award added as a comment

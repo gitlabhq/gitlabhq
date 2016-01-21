@@ -106,6 +106,10 @@ module SharedNote
     end
   end
 
+  step 'I should see no notes at all' do
+    expect(page).to_not have_css('.note')
+  end
+
   # Markdown
 
   step 'I leave a comment with a header containing "Comment with a header"' do
@@ -138,6 +142,13 @@ module SharedNote
   step 'I should see +1 in the description' do
     page.within(".note") do
       expect(page).to have_content("+1 Awesome!")
+    end
+  end
+
+  step 'I sort the list by "Last updated"' do
+    find('button.dropdown-toggle.btn').click
+    page.within('ul.dropdown-menu.dropdown-menu-align-right li') do
+      click_link "Last updated"
     end
   end
 end

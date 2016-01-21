@@ -5,7 +5,7 @@
 #
 # ### Example Markup
 #
-#   <ul class="nav nav-tabs merge-request-tabs">
+#   <ul class="nav-links merge-request-tabs">
 #     <li class="notes-tab active">
 #       <a data-action="notes" data-target="#notes" data-toggle="tab" href="/foo/bar/merge_requests/1">
 #         Discussion

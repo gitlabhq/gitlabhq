@@ -3,9 +3,9 @@
  *
  */
 .mr-state-widget {
-  background: #F7F8FA;
+  background: $background-color;
   color: $gl-gray;
-  border: 1px solid #dce0e6;
+  border: 1px solid $border-color;
   @include border-radius(2px);
 
   form {
@@ -150,7 +150,7 @@
     .merge-request-title {
       margin-bottom: 5px;
       font-size: $list-font-size;
-      font-weight: bold;
+      font-weight: 600;
     }
 
     .merge-request-info {
@@ -200,4 +200,40 @@
 
 .mr-source-target {
   line-height: 31px;
+}
+
+.disabled-comment-area {
+  padding: 16px 0;
+
+  .disabled-profile {
+    width: 40px;
+    height: 40px;
+    background: $border-gray-dark;
+    border-radius: 20px;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .disabled-comment {
+    background: $gray-light;
+    display: inline-block;
+    vertical-align: top;
+    height: 200px;
+    border-radius: 4px;
+    border: 1px solid $border-gray-normal;
+    padding-top: 90px;
+    text-align: center;
+    right: 20px;
+    position: absolute;
+    left: 70px;
+    margin-bottom: 20px;
+
+    span {
+      color: #B2B2B2;
+
+      a {
+        color: $md-link-color;
+      }
+    }
+  }
 }

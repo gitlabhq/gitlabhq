@@ -18,7 +18,7 @@
         = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped has_tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{@tag.name}' tag cannot be undone. Are you sure?" } do
           %i.fa.fa-trash-o
   .title
-    %strong= @tag.name
+    %span.item-title= @tag.name
     - if @tag.message.present?
       %span.light
         &nbsp;

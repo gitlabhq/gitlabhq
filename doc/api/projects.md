@@ -29,6 +29,7 @@ GET /projects
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
@@ -76,7 +77,10 @@ Parameters:
       "updated_at": "2013-09-30T13: 46: 02Z"
     },
     "archived": false,
-    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png"
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0
   },
   {
     "id": 6,
@@ -129,7 +133,11 @@ Parameters:
       }
     },
     "archived": false,
-    "avatar_url": null
+    "avatar_url": null,
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02"
   }
 ]
 ```
@@ -145,6 +153,7 @@ GET /projects/owned
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
@@ -160,6 +169,7 @@ GET /projects/starred
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
@@ -175,6 +185,7 @@ GET /projects/all
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
@@ -244,7 +255,11 @@ Parameters:
     }
   },
   "archived": false,
-  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png"
+  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "shared_runners_enabled": true,
+  "forks_count": 0,
+  "star_count": 0,
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
 }
 ```
 

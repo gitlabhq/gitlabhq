@@ -97,11 +97,9 @@ module API
     end
 
     def paginate(relation)
-      per_page  = params[:per_page].to_i
-      paginated = relation.page(params[:page]).per(per_page)
-      add_pagination_headers(paginated, per_page)
-
-      paginated
+      relation.page(params[:page]).per(params[:per_page].to_i).tap do |data|
+        add_pagination_headers(data)
+      end
     end
 
     def authenticate!
@@ -266,6 +264,10 @@ module API
         projects = projects.search(params[:search])
       end
 
+      if params[:visibility].present?
+        projects = projects.search_by_visibility(params[:visibility])
+      end
+
       projects.reorder(project_order_by => project_sort)
     end
 
@@ -289,11 +291,13 @@ module API
 
     # file helpers
 
-    def uploaded_file!(field, uploads_path)
+    def uploaded_file(field, uploads_path)
       if params[field]
         bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
         return params[field]
       end
+
+      return nil unless params["#{field}.path"] && params["#{field}.name"]
 
       # sanitize file paths
       # this requires all paths to exist
@@ -327,16 +331,26 @@ module API
 
     private
 
-    def add_pagination_headers(paginated, per_page)
+    def add_pagination_headers(paginated_data)
+      header 'X-Total',       paginated_data.total_count.to_s
+      header 'X-Total-Pages', paginated_data.total_pages.to_s
+      header 'X-Per-Page',    paginated_data.limit_value.to_s
+      header 'X-Page',        paginated_data.current_page.to_s
+      header 'X-Next-Page',   paginated_data.next_page.to_s
+      header 'X-Prev-Page',   paginated_data.prev_page.to_s
+      header 'Link',          pagination_links(paginated_data)
+    end
+
+    def pagination_links(paginated_data)
       request_url = request.url.split('?').first
 
       links = []
-      links << %(<#{request_url}?page=#{paginated.current_page - 1}&per_page=#{per_page}>; rel="prev") unless paginated.first_page?
-      links << %(<#{request_url}?page=#{paginated.current_page + 1}&per_page=#{per_page}>; rel="next") unless paginated.last_page?
-      links << %(<#{request_url}?page=1&per_page=#{per_page}>; rel="first")
-      links << %(<#{request_url}?page=#{paginated.total_pages}&per_page=#{per_page}>; rel="last")
+      links << %(<#{request_url}?page=#{paginated_data.current_page - 1}&per_page=#{paginated_data.limit_value}>; rel="prev") unless paginated_data.first_page?
+      links << %(<#{request_url}?page=#{paginated_data.current_page + 1}&per_page=#{paginated_data.limit_value}>; rel="next") unless paginated_data.last_page?
+      links << %(<#{request_url}?page=1&per_page=#{paginated_data.limit_value}>; rel="first")
+      links << %(<#{request_url}?page=#{paginated_data.total_pages}&per_page=#{paginated_data.limit_value}>; rel="last")
 
-      header 'Link', links.join(', ')
+      links.join(', ')
     end
 
     def abilities

@@ -293,6 +293,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
       expect(page).to have_content('Yay!')
     end
   end
+
+  step 'I should see "Release 0.4" at the top' do
+    expect(page.find('ul.content-list.issues-list li.issue:first-child')).to have_content("Release 0.4")
+  end
+
   def filter_issue(text)
     fill_in 'issue_search', with: text
   end

@@ -18,7 +18,7 @@
   = f.hidden_field :target_branch
 
 .mr-compare.merge-request
-  %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
+  %ul.merge-request-tabs.nav-links.no-top.no-bottom
     %li.commits-tab
       = link_to url_for(params), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
         Commits
@@ -38,7 +38,7 @@
       = render "projects/merge_requests/show/commits"
     #diffs.diffs.tab-pane.active
       - if @diffs.present?
-        = render "projects/diffs/diffs", diffs: @diffs, project: @project
+        = render "projects/diffs/diffs", diffs: @diffs, project: @project, diff_refs: @merge_request.diff_refs
       - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
         .alert.alert-danger
           %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.

@@ -25,7 +25,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def new
-    @snippet = @project.snippets.build
+    @snippet = @noteable = @project.snippets.build
   end
 
   def create

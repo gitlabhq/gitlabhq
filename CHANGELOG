@@ -1,6 +1,24 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.5.0 (unreleased)
+  - Add "visibility" flag to GET /projects api endpoint
+  - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
+  - New UI for pagination
+
 v 8.4.0 (unreleased)
+  - Allow LDAP users to change their email if it was not set by the LDAP server
+  - Ensure Gravatar host looks like an actual host
+  - Consider re-assign as a mention from a notification point of view
+  - Add pagination headers to already paginated API resources
+  - Properly generate diff of orphan commits, like the first commit in a repository
+  - Improve the consistency of commit titles, branch names, tag names, issue/MR titles, on their respective project pages
+  - Autocomplete data is now always loaded, instead of when focusing a comment text area
+  - Improved performance of finding issues for an entire group
+  - Added custom application performance measuring system powered by InfluxDB
+  - Add syntax highlighting to diffs
+  - Gracefully handle invalid UTF-8 sequences in Markdown links (Stan Hu)
+  - Bump fog to 1.36.0 (Stan Hu)
+  - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
   - The default GitLab logo now acts as a loading indicator
   - Fix caching issue where build status was not updating in project dashboard (Stan Hu)
@@ -8,8 +26,11 @@ v 8.4.0 (unreleased)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
   - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
+  - Remove gray background from layout in UI
+  - Fix signup for OAuth providers that don't provide a name
   - Implement new UI for group page
   - Implement search inside emoji picker
+  - Let the CI runner know about builds that this build depends on
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
   - Link to milestone in "Milestone changed" system note
@@ -26,6 +47,9 @@ v 8.4.0 (unreleased)
   - Show 'All' tab by default in the builds page
   - Add Open Graph and Twitter Card data to all pages
   - Fix API project lookups when querying with a namespace with dots (Stan Hu)
+  - Enable forcing Two-Factor authentication sitewide, with optional grace period
+  - Import GitHub Pull Requests into GitLab
+  - Change single user API endpoint to return more detailed data (Michael Potthoff)
   - Update version check images to use SVG
   - Validate README format before displaying
   - Enable Microsoft Azure OAuth2 support (Janis Meybohm)
@@ -33,21 +57,47 @@ v 8.4.0 (unreleased)
   - Add file finder feature in tree view (Kyungchul Shin)
   - Ajax filter by message for commits page
   - API: Add support for deleting a tag via the API (Robert Schilling)
+  - Allow subsequent validations in CI Linter
+  - Show referenced MRs & Issues only when the current viewer can access them
+  - Fix Encoding::CompatibilityError bug when markdown content has some complex URL (Jason Lee)
+  - Add API support for managing project's builds
+  - Add API support for managing project's build triggers
+  - Add API support for managing project's build variables
+  - Allow broadcast messages to be edited
+  - Autosize Markdown textareas
+  - Import GitHub wiki into GitLab
+  - Add reporters ability to download and browse build artifacts (Andrew Johnson)
+  - Autofill referring url in message box when reporting user abuse.
+  - Remove leading comma on award emoji when the user is the first to award the emoji (Zeger-Jan van de Weg)
+  - Add build artifacts browser
+  - Improve UX in builds artifacts browser
+  - Increase default size of `data` column in `events` table when using MySQL
+  - Expose button to CI Lint tool on project builds page
+  - Fix: Creator should be added as a master of the project on creation
+  - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
+  - Add IP check against DNSBLs at account sign-up
+  - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
 
-v 8.3.3 (unreleased)
+v 8.3.4
+  - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
+
+v 8.3.3
   - Preserve CE behavior with JIRA integration by only calling API if URL is set
   - Fix duplicated branch creation/deletion events when using Web UI (Stan Hu)
+  - Add configurable LDAP server query timeout
   - Get "Merge when build succeeds" to work when commits were pushed to MR target branch while builds were running
   - Suppress e-mails on failed builds if allow_failure is set (Stan Hu)
   - Fix project transfer e-mail sending incorrect paths in e-mail notification (Stan Hu)
+  - Better support for referencing and closing issues in Asana service (Mike Wyatt)
   - Enable "Add key" button when user fills in a proper key (Stan Hu)
   - Fix error in processing reply-by-email messages (Jason Lee)
   - Fix Error 500 when visiting build page of project with nil runners_token (Stan Hu)
+  - Use WOFF versions of SourceSansPro fonts
+  - Fix regression when builds were not generated for tags created through web/api interface
+  - Fix: maintain milestone filter between Open and Closed tabs (Greg Smethells)
+  - Fix missing artifacts and build traces for build created before 8.3
 
 v 8.3.2
-  - Change single user API endpoint to return more detailed data (Michael Potthoff)
-
-v 8.3.2 (unreleased)
   - Disable --follow in `git log` to avoid loading duplicate commit data in infinite scroll (Stan Hu)
   - Add support for Google reCAPTCHA in user registration
 
@@ -56,8 +106,6 @@ v 8.3.1
   - Fix Error 500 when doing a search in dashboard before visiting any project (Stan Hu)
   - Fix LDAP identity and user retrieval when special characters are used
   - Move Sidekiq-cron configuration to gitlab.yml
-  - Enable forcing Two-Factor authentication sitewide, with optional grace period
-  - Import GitHub Pull Requests into GitLab
 
 v 8.3.0
   - Bump rack-attack to 4.3.1 for security fix (Stan Hu)
@@ -65,6 +113,7 @@ v 8.3.0
   - Add open_issues_count to project API (Stan Hu)
   - Expand character set of usernames created by Omniauth (Corey Hinshaw)
   - Add button to automatically merge a merge request when the build succeeds (Zeger-Jan van de Weg)
+  - Add unsubscribe link in the email footer (Zeger-Jan van de Weg)
   - Provide better diagnostic message upon project creation errors (Stan Hu)
   - Bump devise to 3.5.3 to fix reset token expiring after account creation (Stan Hu)
   - Remove api credentials from link to build_page
@@ -78,6 +127,7 @@ v 8.3.0
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
+  - Fix: As an admin, cannot add oneself as a member to a group/project
   - Trim leading and trailing whitespace of milestone and issueable titles (Jose Corcuera)
   - Recognize issue/MR/snippet/commit links as references
   - Backport JIRA features from EE to CE
@@ -139,7 +189,6 @@ v 8.2.2
   - Fix Error 500 when viewing user's personal projects from admin page (Stan Hu)
   - Fix: Raw private snippets access workflow
   - Prevent "413 Request entity too large" errors when pushing large files with LFS
-  - Fix: As an admin, cannot add oneself as a member to a group/project
   - Fix invalid links within projects dashboard header
   - Make current user the first user in assignee dropdown in issues detail page (Stan Hu)
   - Fix: duplicate email notifications on issue comments

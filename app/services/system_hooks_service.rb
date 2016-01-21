@@ -47,7 +47,8 @@ class SystemHooksService
       data.merge!({
         name: model.name,
         email: model.email,
-        user_id: model.id
+        user_id: model.id,
+        username: model.username
       })
     when ProjectMember
       data.merge!(project_member_data(model))
@@ -99,8 +100,10 @@ class SystemHooksService
       project_path: model.project.path,
       project_path_with_namespace: model.project.path_with_namespace,
       project_id: model.project.id,
+      user_username: model.user.username,
       user_name: model.user.name,
       user_email: model.user.email,
+      user_id: model.user.id,
       access_level: model.human_access,
       project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
     }
@@ -111,6 +114,7 @@ class SystemHooksService
       group_name: model.group.name,
       group_path: model.group.path,
       group_id: model.group.id,
+      user_username: model.user.username,
       user_name: model.user.name,
       user_email: model.user.email,
       user_id: model.user.id,

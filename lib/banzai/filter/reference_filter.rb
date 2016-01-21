@@ -1,5 +1,4 @@
 require 'active_support/core_ext/string/output_safety'
-require 'banzai'
 require 'html/pipeline/filter'
 
 module Banzai
@@ -133,7 +132,8 @@ module Banzai
 
           next unless link && text
 
-          link = URI.decode(link)
+          link = CGI.unescape(link)
+          next unless link.force_encoding('UTF-8').valid_encoding?
           # Ignore ending punctionation like periods or commas
           next unless link == text && text =~ /\A#{pattern}/
 
@@ -170,7 +170,8 @@ module Banzai
           text = node.text
 
           next unless link && text
-          link = URI.decode(link)
+          link = CGI.unescape(link)
+          next unless link.force_encoding('UTF-8').valid_encoding?
           next unless link && link =~ /\A#{pattern}\z/
 
           html = yield link, text

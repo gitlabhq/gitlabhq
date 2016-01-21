@@ -17,6 +17,8 @@ DATABASE_URL | url | For example: postgresql://localhost/blog_development?pool=5
 GITLAB_EMAIL_FROM | email | Email address used in the "From" field in mails sent by GitLab
 GITLAB_EMAIL_DISPLAY_NAME | string | Name used in the "From" field in mails sent by GitLab
 GITLAB_EMAIL_REPLY_TO | email | Email address used in the "Reply-To" field in mails sent by GitLab
+GITLAB_UNICORN_MEMORY_MIN | integer | The minimum memory threshold (in bytes) for the Unicorn worker killer
+GITLAB_UNICORN_MEMORY_MAX | integer | The maximum memory threshold (in bytes) for the Unicorn worker killer
 
 ## Complete database variables
 

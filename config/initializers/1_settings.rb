@@ -9,13 +9,8 @@ class Settings < Settingslogic
       gitlab.port.to_i == (gitlab.https ? 443 : 80)
     end
 
-    # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
-    def get_host_without_www(url)
-      url = URI.encode(url)
-      uri = URI.parse(url)
-      uri = URI.parse("http://#{url}") if uri.scheme.nil?
-      host = uri.host.downcase
-      host.start_with?('www.') ? host[4..-1] : host
+    def host_without_www(url)
+      host(url).sub('www.', '')
     end
 
     def build_gitlab_ci_url
@@ -87,6 +82,17 @@ class Settings < Settingslogic
         custom_port
       ]
     end
+
+    # Extract the host part of the given +url+.
+    def host(url)
+      url = url.downcase
+      url = "http://#{url}" unless url.start_with?('http')
+
+      # Get rid of the path so that we don't even have to encode it
+      url_without_path = url.sub(%r{(https?://[^\/]+)/?.*}, '\1')
+
+      URI.parse(url_without_path).host
+    end
   end
 end
 
@@ -108,6 +114,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
 
   Settings.ldap['servers'].each do |key, server|
     server['label'] ||= 'LDAP'
+    server['timeout'] ||= 10.seconds
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
@@ -227,7 +234,7 @@ Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
-Settings.gravatar['host']         = Settings.get_host_without_www(Settings.gravatar['plain_url'])
+Settings.gravatar['host']         = Settings.host_without_www(Settings.gravatar['plain_url'])
 
 #
 # Cron Jobs

@@ -10,6 +10,9 @@
       .value
         - if issuable.assignee
           %strong= link_to_member(@project, issuable.assignee, size: 24)
+          - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+            %a.pull-right.cannot-be-merged{href: '#', data: {toggle: 'tooltip'}, title: 'Not allowed to merge'}
+              = icon('exclamation-triangle')
         - else
           .light None
 
@@ -69,15 +72,16 @@
             You're not receiving notifications from this thread.
           .subscribed{class: ( 'hidden' unless subscribed )}
             You're receiving notifications because you're subscribed to this thread.
+
     - project_ref = cross_project_reference(@project, issuable)
     .block
       .title
       .cross-project-reference
-        %span#cross-project-reference
+        %span
           Reference:
-          %a{href: '#', title:project_ref}
+          %cite{title: project_ref}
             = project_ref
-        = clipboard_button(clipboard_target: 'span#cross-project-reference')
+        = clipboard_button(clipboard_text: project_ref)
 
   :javascript
     new Subscription("#{toggle_subscription_path(issuable)}");

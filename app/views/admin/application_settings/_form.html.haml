@@ -202,9 +202,32 @@
         .help-block
           A method call is only tracked when it takes longer to complete than
           the given amount of milliseconds.
+    .form-group
+      = f.label :metrics_sample_interval, 'Sampler Interval (sec)', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :metrics_sample_interval, class: 'form-control'
+        .help-block
+          The sampling interval in seconds. Sampled data includes memory usage,
+          retained Ruby objects, file descriptors and so on.
 
   %fieldset
     %legend Spam and Anti-bot Protection
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :ip_blocking_enabled do
+            = f.check_box :ip_blocking_enabled
+            Enable IP check against blacklist at sign-up
+          .help-block Helps preventing accounts creation from 'known spam sources'
+
+    .form-group
+      = f.label :dnsbl_servers_list, class: 'control-label col-sm-2' do
+        DNSBL servers list
+      .col-sm-10
+        = f.text_field :dnsbl_servers_list, class: 'form-control'
+        .help-block
+          Please enter DNSBL servers separated with comma
+
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -219,11 +242,30 @@
         = f.text_field :recaptcha_site_key, class: 'form-control'
         .help-block
           Generate site and private keys here:
-          %a{ href: 'http://www.google.com/recaptcha', target: 'blank'} http://www.google.com/recaptcha
+          %a{ href: 'http://www.google.com/recaptcha', target: '_blank'} http://www.google.com/recaptcha
     .form-group
       = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :recaptcha_private_key, class: 'form-control'
+
+  %fieldset
+    %legend Error Reporting and Logging
+    %p
+      These settings require a restart to take effect.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :sentry_enabled do
+            = f.check_box :sentry_enabled
+            Enable Sentry
+          .help-block
+            Sentry is an error reporting and logging tool which is currently not shipped with GitLab, get it here:
+            %a{ href: 'https://getsentry.com', target: '_blank' } https://getsentry.com
+
+    .form-group
+      = f.label :sentry_dsn, 'Sentry DSN', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :sentry_dsn, class: 'form-control'
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-primary'

@@ -285,6 +285,10 @@ describe ApplicationHelper do
     it 'allows the script tag to be excluded' do
       expect(element(skip_js: true)).not_to include 'script'
     end
+
+    it 'converts to Time' do
+      expect { helper.time_ago_with_tooltip(Date.today) }.not_to raise_error
+    end
   end
 
   describe 'render_markup' do

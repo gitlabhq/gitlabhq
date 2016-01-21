@@ -75,6 +75,8 @@ hr {
   @include str-truncated;
 }
 
+.item-title { font-weight: 600; }
+
 /** FLASH message **/
 .author_link {
   color: $gl-link-color;
@@ -371,75 +373,6 @@ table {
   .profiler-button,
   .profiler-controls {
     border-color: #EEE !important;
-  }
-}
-
-.center-top-menu, .left-top-menu {
-  @include nav-menu;
-  text-align: center;
-  margin-top: 5px;
-  margin-bottom: $gl-padding;
-  height: auto;
-  margin-top: -$gl-padding;
-
-  &.no-bottom {
-    margin-bottom: 0;
-  }
-
-  &.no-top {
-    margin-top: 0;
-  }
-
-  li a {
-    display: inline-block;
-    padding-top: $gl-padding;
-    padding-bottom: 11px;
-    margin-bottom: -1px;
-  }
-
-  &.bottom-border {
-    border-bottom: 1px solid $border-color;
-    height: 57px;
-  }
-
-  &.wide {
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
-  }
-}
-
-.left-top-menu {
-  text-align: left;
-  border-bottom: 1px solid #EEE;
-}
-
-.center-middle-menu {
-  @include nav-menu;
-  padding: 0;
-  text-align: center;
-  margin: -$gl-padding;
-  margin-top: 0;
-  margin-bottom: 0;
-  height: 58px;
-  border-bottom: 1px solid $border-color;
-
-  li {
-    &:after {
-      content: "|";
-      color: $border-gray-light;
-    }
-
-    &:last-child {
-      &:after {
-        content: none;
-      }
-    }
-
-    > a {
-      display: inline-block;
-      text-transform: uppercase;
-      font-size: 13px;
-    }
   }
 }
 

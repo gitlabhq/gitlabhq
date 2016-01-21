@@ -1,9 +1,7 @@
 // Common
 .diff-file {
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-  border: none;
-  border-bottom: 1px solid #E7E9EE;
+  border: 1px solid $border-color;
+  border-top: none;
 
   .diff-header {
     position: relative;
@@ -20,14 +18,6 @@
 
       .file-mode {
         color: #777;
-      }
-    }
-
-    .diff-controls {
-      .btn {
-        padding: 0px 10px;
-        font-size: 13px;
-        line-height: 28px;
       }
     }
 
@@ -76,6 +66,7 @@
       width: 100%;
       font-family: $monospace_font;
       border: none;
+      border-collapse: separate;
       margin: 0px;
       padding: 0px;
       .line_holder td {
@@ -400,5 +391,20 @@
     position: absolute;
     top: 5px;
     right: 15px;
+  }
+}
+
+@mixin diff_background($r, $g, $b, $custom-border) {
+  /* Fallback for web browsers that doesn't support RGBa */
+  background: rgb($r, $g, $b);
+  /* RGBa with 0.3 opacity */
+  background: rgba($r, $g, $b, 0.3);
+
+  &.new_line, &.old_line {
+    border-right-color: $custom-border !important;
+  }
+
+  &.line_content span.idiff {
+    background: rgb($r, $g, $b);
   }
 }

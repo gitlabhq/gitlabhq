@@ -196,10 +196,22 @@ class User < ActiveRecord::Base
   state_machine :state, initial: :active do
     event :block do
       transition active: :blocked
+      transition ldap_blocked: :blocked
+    end
+
+    event :ldap_block do
+      transition active: :ldap_blocked
     end
 
     event :activate do
       transition blocked: :active
+      transition ldap_blocked: :active
+    end
+
+    state :blocked, :ldap_blocked do
+      def blocked?
+        true
+      end
     end
   end
 
@@ -207,7 +219,7 @@ class User < ActiveRecord::Base
 
   # Scopes
   scope :admins, -> { where(admin: true) }
-  scope :blocked, -> { with_state(:blocked) }
+  scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
@@ -652,7 +664,10 @@ class User < ActiveRecord::Base
   end
 
   def all_emails
-    [self.email, *self.emails.map(&:email)]
+    all_emails = []
+    all_emails << self.email unless self.temp_oauth_email?
+    all_emails.concat(self.emails.map(&:email))
+    all_emails
   end
 
   def hook_attrs
