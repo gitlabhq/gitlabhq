@@ -12,13 +12,7 @@ If you want the TL;DR versions, jump to:
 ## Omnibus installations
 
 If you have used the [Omnibus packages][omnibus-dl] to install GitLab, then
-you should already have `gitlab-ctl` in your `PATH`. To find out, run:
-
-```bash
-which gitlab-ctl
-```
-
-The output should be: `/usr/bin/gitlab-ctl`.
+you should already have `gitlab-ctl` in your `PATH`.
 
 `gitlab-ctl` interacts with the Omnibus packages and can be used to restart the
 GitLab Rails application (Unicorn) as well as the other components, like:
@@ -29,11 +23,12 @@ GitLab Rails application (Unicorn) as well as the other components, like:
 - NGINX (if you are using the bundled one)
 - Redis (if you are using the bundled one)
 - [Mailroom][]
-- Logrotate.
+- Logrotate
 
 ### Omnibus GitLab restart
 
-When you are asked to _restart GitLab_, you need to run the following command:
+There may be times in the documentation where you will be asked to _restart_
+GitLab. In that case, you need to run the following command:
 
 ```bash
 sudo gitlab-ctl restart
@@ -65,14 +60,20 @@ To check the status of GitLab services, run:
 sudo gitlab-ctl status
 ```
 
-Notice that all services say `ok: run`. If you get any weird results, like the
-unicorn service not starting, you may need to
+Notice that all services say `ok: run`.
+
+Sometimes, components time out during the restart and sometimes they get stuck.
+In that case, you can use `gitlab-ctl kill <service>` to send the `SIGKILL`
+signal to the service, for example `sidekiq`. After that, a restart should
+perform fine.
+
+As a last resort, you can try to
 [reconfigure GitLab](#omnibus-gitlab-reconfigure) instead.
 
 ### Omnibus GitLab reconfigure
 
-There may be times where you will be asked to _reconfigure_ GitLab. Remember
-that this method applies only for the Omnibus packages.
+There may be times in the documentation where you will be asked to _reconfigure_
+GitLab. Remember that this method applies only for the Omnibus packages.
 
 Reconfigure Omnibus GitLab with:
 
@@ -86,8 +87,14 @@ configuration (`/etc/gitlab/gitlab.rb`) has changed.
 When you run this command, [Chef], the underlying configuration management
 application that powers Omnibus GitLab, will make sure that all directories,
 permissions, services, etc., are in place and in the same shape that they were
-initially shipped. This is where the _idempotency_ buzz-word you've been reading
-here and there fits.
+initially shipped.
+
+It will also restart GitLab components where needed, if any of their
+configuration files have changed.
+
+If you manually edit any files in `/var/opt/gitlab` that are managed by Chef,
+running reconfigure will revert the changes AND restart the services that
+depend on those files.
 
 ## Installations from source
 
@@ -120,14 +127,14 @@ GitLab and all its components are up and running.
 ```
 
 This should restart Unicorn, Sidekiq, GitLab Workhorse and [Mailroom][]
-(if enabled). The init service file that does all the magic can be found in
-[`lib/support/init.d/gitlab`][src-service].
+(if enabled). The init service file that does all the magic can be found on
+your server in `/etc/init.d/gitlab`.
 
 ---
 
 If you are using other init systems, like systemd, you can check the
 [GitLab Recipes][gl-recipes] repository for some unofficial services. These are
-**not** officially supported so use at your own risk.
+**not** officially supported so use them at your own risk.
 
 
 [omnibus-dl]: https://about.gitlab.com/downloads/ "Download the Omnibus packages"
