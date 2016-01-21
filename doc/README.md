@@ -30,6 +30,7 @@
 - [User permissions](ci/permissions/README.md)
 - [API](ci/api/README.md)
 - [Triggering builds through the API](ci/triggers/README.md)
+- [Build artifacts](ci/build_artifacts/README.md)
 
 ### CI Languages
 
