@@ -306,6 +306,10 @@ class Project < ActiveRecord::Base
               query: "%#{query.try(:downcase)}%")
     end
 
+    def search_by_visibility(level)
+      where(visibility_level: Gitlab::VisibilityLevel.const_get(level.upcase))
+    end
+
     def search_by_title(query)
       where('projects.archived = ?', false).where('LOWER(projects.name) LIKE :query', query: "%#{query.downcase}%")
     end
@@ -558,12 +562,9 @@ class Project < ActiveRecord::Base
     !external_issue_tracker
   end
 
-  def external_issues_trackers
-    services.select(&:issue_tracker?).reject(&:default?)
-  end
-
   def external_issue_tracker
-    @external_issues_tracker ||= external_issues_trackers.find(&:activated?)
+    @external_issue_tracker ||=
+      services.issue_trackers.active.without_defaults.first
   end
 
   def can_have_issues_tracker_id?

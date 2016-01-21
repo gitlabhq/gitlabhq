@@ -184,6 +184,14 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
+  def diff_base_commit
+    if merge_request_diff
+      merge_request_diff.base_commit
+    else
+      self.target_project.commit(self.target_branch)
+    end
+  end
+
   def last_commit_short_sha
     last_commit.short_id
   end
@@ -258,7 +266,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mergeable?
-    return false unless open? && !work_in_progress?
+    return false unless open? && !work_in_progress? && !broken?
 
     check_if_can_be_merged
 
@@ -533,8 +541,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_sha
-    @target_sha ||= target_project.
-      repository.commit(target_branch).sha
+    @target_sha ||= target_project.repository.commit(target_branch).sha
   end
 
   def source_sha
@@ -592,5 +599,11 @@ class MergeRequest < ActiveRecord::Base
 
   def ci_commit
     @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
+  end
+
+  def diff_refs
+    return nil unless diff_base_commit
+
+    [diff_base_commit, last_commit]
   end
 end

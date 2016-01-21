@@ -18,7 +18,7 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.3'
+gem 'devise',                 '~> 3.5.4'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
@@ -50,7 +50,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.22'
+gem "gitlab_git", '~> 7.2.23'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -302,6 +302,9 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
+
+  # Sentry integration
+  gem 'sentry-raven'
 end
 
 gem "newrelic_rpm", '~> 3.9.4.245'

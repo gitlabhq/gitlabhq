@@ -60,7 +60,7 @@ X-Gitlab-Event: Push Hook
       "author": {
         "name": "Jordi Mallach",
         "email": "jordi@softcatala.org"
-      }
+      },
       "added": ["CHANGELOG"],
       "modified": ["app/controller/application.rb"],
       "removed": []
