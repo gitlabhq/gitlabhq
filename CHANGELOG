@@ -76,6 +76,7 @@ v 8.4.0 (unreleased)
   - Fix: Creator should be added as a master of the project on creation
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
   - Add IP check against DNSBLs at account sign-up
+  - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
