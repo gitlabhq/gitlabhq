@@ -4,7 +4,7 @@
 .top-block.gray-content-block.clearfix
   .pull-right
     = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build),
-      class: 'btn btn-default' do
+      class: 'btn btn-default download' do
       = icon('download')
       Download artifacts archive
 
@@ -20,12 +20,3 @@
 
 - if @entry.empty?
   .center Empty
-
-:javascript
-  $('.tree-holder').on('click', 'tr[data-link] a', function(e) {
-    e.stopImmediatePropagation();
-  });
-
-  $('.tree-holder').on('click', 'tr[data-link]', function(e) {
-    window.location = this.dataset.link;
-  });
