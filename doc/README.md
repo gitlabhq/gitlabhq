@@ -53,6 +53,7 @@
 
 - [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
+- [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
