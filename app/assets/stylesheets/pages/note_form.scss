@@ -10,18 +10,6 @@
   margin: 10px $gl-padding;
 }
 .diff-file .diff-content {
-  tr.line_holder:hover {
-    &> td.line_content {
-      background: $hover !important;
-      border-color: darken($hover, 10%) !important;
-    }
-    &> td.new_line,
-    &> td.old_line {
-      background: darken($hover, 4%) !important;
-      border-color: darken($hover, 10%) !important;
-    }
-  }
-
   tr.line_holder:hover > td .line_note_link {
     opacity: 1.0;
     filter: alpha(opacity=100);
