@@ -6,7 +6,7 @@
   - if merge_request.description.present?
     .description.term
       = preserve do
-        = search_md_sanitize(markdown(merge_request.description))
+        = search_md_sanitize(markdown(merge_request.description, { project: merge_request.project }))
   %span.light
     #{merge_request.project.name_with_namespace}
   .pull-right
