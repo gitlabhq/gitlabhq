@@ -33,7 +33,7 @@ The YAML syntax allows for using more complex job specifications than in the
 above example:
 
 ```yaml
-image: ruby:2.1
+image: ruby:2.2
 services:
   - postgres
 
