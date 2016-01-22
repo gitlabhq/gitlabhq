@@ -7,8 +7,8 @@ module Gitlab
 
       def initialize(diff_lines)
         if diff_lines.is_a?(Gitlab::Diff::File)
-          @diff_file = diff_file
-          @diff_lines = diff_file.diff_lines
+          @diff_file = diff_lines
+          @diff_lines = @diff_file.diff_lines
         else
           @diff_lines = diff_lines
         end
