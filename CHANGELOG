@@ -12,6 +12,7 @@ v 8.4.0 (unreleased)
   - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
   - The default GitLab logo now acts as a loading indicator
+  - LDAP group sync: Remove user from group when they are removed from LDAP
   - Fix caching issue where build status was not updating in project dashboard (Stan Hu)
   - Accept 2xx status codes for successful Web hook triggers (Stan Hu)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
@@ -27,6 +28,7 @@ v 8.4.0 (unreleased)
   - Add API support for looking up a user by username (Stan Hu)
   - Add project permissions to all project API endpoints (Stan Hu)
   - Link to milestone in "Milestone changed" system note
+  - LDAP Group Sync: Allow group role downgradegit
   - Only allow group/project members to mention `@all`
   - Expose Git's version in the admin area (Trey Davis)
   - Add "Frequently used" category to emoji picker

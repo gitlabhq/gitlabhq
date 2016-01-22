@@ -70,28 +70,28 @@ gitlab_rails['gitlab_default_can_create_group'] = false
 # line in /home/git/gitlab/config/gitlab.yml
 ```
 
-## Lock project membership to members of the group
+## Lock project membership to members of this group
 
-In GitLab Enterprise Edition it is possible to lock membership in project to the level of members in group.
+In GitLab Enterprise Edition it is possible to lock membership in project to the
+level of members in group.
 
-This allows group owner to lock down any new project membership to any of the projects within the group allowing tighter control over project membership.
+This allows group owner to lock down any new project membership to any of the
+projects within the group allowing tighter control over project membership.
 
-To enable this feature, navigate to group settings page, select `Member lock` and `Save group`.
+To enable this feature, navigate to group settings page, select `Member lock`
+and `Save group`.
 
 ![Checkbox for membership lock](groups/membership_lock.png)
 
-This will disable the option for all users who previously had permissions to operate project memberships so no new users can be added. Furthermore, any request to add new user to project through API will not be possible.
+This will disable the option for all users who previously had permissions to
+operate project memberships so no new users can be added. Furthermore, any
+request to add new user to project through API will not be possible.
 
-## Namespaces in groups
+## Prevent projects in this group from sharing a project with another group
 
-By default, groups only get 20 namespaces at a time because the API results are paginated.
+In GitLab Enterprise it is possible to prevent projects in a group from sharing
+a project with another group. This allows for tighter control over project
+access.
 
-To get more (up to 100), pass the following as an argument to the API call:
-```
-/groups?per_page=100
-```
-
-And to switch pages add: 
-```
-/groups?per_page=100&page=2
-```
+To enable this feature, navigate to the group settings page. Select `Share with
+group lock` and save the group.
