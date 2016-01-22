@@ -10,6 +10,9 @@ before_script:
   - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
   - bundle exec rake db:reset db:create RAILS_ENV=test
 
+variables:
+  MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+
 spec:feature:
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
