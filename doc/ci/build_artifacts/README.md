@@ -152,7 +152,7 @@ inside GitLab that make that possible.
 1. While inside a specific build, you are presented with a download button
    along with the one that browses the archive
 
-1. And finally, when browsing and archive you can see the download button at
+1. And finally, when browsing an archive you can see the download button at
    the top right corner
 
 ---
