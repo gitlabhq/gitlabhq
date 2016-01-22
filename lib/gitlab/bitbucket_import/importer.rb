@@ -16,6 +16,8 @@ module Gitlab
         import_issues if has_issues?
 
         true
+      rescue ActiveRecord::RecordInvalid => e
+        raise Projects::ImportService::Error.new, e.message
       ensure
         Gitlab::BitbucketImport::KeyDeleter.new(project).execute
       end
