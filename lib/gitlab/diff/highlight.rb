@@ -12,9 +12,10 @@ module Gitlab
       end
 
       def highlight
-        @diff_lines.each_with_index do |diff_line, i|
+        @diff_lines.map.with_index do |diff_line, i|
+          diff_line = diff_line.dup
           # ignore highlighting for "match" lines
-          next if diff_line.type == 'match' || diff_line.type == 'nonewline'
+          next diff_line if diff_line.type == 'match' || diff_line.type == 'nonewline'
 
           rich_line = highlight_line(diff_line, i)
 
@@ -23,9 +24,9 @@ module Gitlab
           end
 
           diff_line.text = rich_line.html_safe
-        end
 
-        @diff_lines
+          diff_line
+        end
       end
 
       private
