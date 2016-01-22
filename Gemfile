@@ -212,6 +212,9 @@ gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 
+# Sentry integration
+gem 'sentry-raven'
+
 # Metrics
 group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
@@ -293,9 +296,6 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
-
-  # Sentry integration
-  gem 'sentry-raven'
 end
 
 gem "newrelic_rpm", '~> 3.9.4.245'
