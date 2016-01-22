@@ -14,15 +14,16 @@ project.
 
 ---
 
-For the more lazy, there is a [shortcut button](shortcuts.md) as well, which
-you can invoke from _anywhere_ in a project.
+For those who prefer to keep their fingers on the keyboard, there is a
+[shortcut button](shortcuts.md) as well, which you can invoke from _anywhere_
+in a project.
 
-Press `t` on your keyboard to launch the File search function when in **Issues**,
+Press `t` to launch the File search function when in **Issues**,
 **Merge requests**, **Milestones**, even the project's settings.
 
-Start typing what you are searching for and watch the magic being unfold. With
-the up/down arrows, you go up and down the results, with `Esc` you close the
-search and go back to **Files**.
+Start typing what you are searching for and watch the magic happen. With the
+up/down arrows, you go up and down the results, with `Esc` you close the search
+and go back to **Files**.
 
 ## How it works
 
