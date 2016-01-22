@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.6.0 (unreleased)
+  - Delete project and associations in a background worker
+
 v 8.5.0 (unreleased)
   - Ensure rake tasks that don't need a DB connection can be run without one
   - Add "visibility" flag to GET /projects api endpoint
