@@ -16,9 +16,11 @@ module Gitlab
 
       def self.allowed?(user)
         self.open(user) do |access|
+          # Whether user is allowed, or not, we should update
+          # permissions to keep things clean
+          access.update_permissions
           if access.allowed?
-            access.update_permissions
-            access.update_email
+            access.update_user
             user.last_credential_check_at = Time.now
             user.save
             true
@@ -67,22 +69,15 @@ module Gitlab
         @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
       end
 
-      def update_permissions
-        if sync_ssh_keys?
-          update_ssh_keys
-        end
-
+      def update_user
+        update_email
+        update_ssh_keys if sync_ssh_keys?
         update_kerberos_identity if import_kerberos_identities?
+      end
 
-        # Skip updating group permissions
-        # if instance does not use group_base setting
-        return true unless group_base.present?
-
-        update_ldap_group_links
-
-        if admin_group.present?
-          update_admin_status
-        end
+      def update_permissions
+        update_ldap_group_links if group_base.present?
+        update_admin_status if admin_group.present?
       end
 
       # Update user ssh keys if they changed in LDAP
@@ -191,6 +186,7 @@ module Gitlab
 
       # returns a collection of cn strings to which the user has access
       def cns_with_access
+        return [] unless ldap_user.present?
         @ldap_groups_with_access ||= ldap_groups.select do |ldap_group|
           ldap_group.has_member?(ldap_user)
         end.map(&:cn)
