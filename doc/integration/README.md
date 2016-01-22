@@ -8,7 +8,7 @@ See the documentation below for details on how to configure these services.
 - [Jira](jira.md) Integrate with the JIRA issue tracker
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
-- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab, and Google via OAuth.
+- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd and Azure
 - [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [CAS](cas.md) Configure GitLab to sign in using CAS
 - [Slack](slack.md) Integrate with the Slack chat service
