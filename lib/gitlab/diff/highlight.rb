@@ -1,13 +1,17 @@
 module Gitlab
   module Diff
     class Highlight
-      attr_reader :diff_file
+      attr_reader :diff_file, :diff_lines, :raw_lines
 
       delegate :old_path, :new_path, :old_ref, :new_ref, to: :diff_file, prefix: :diff
 
-      def initialize(diff_file)
-        @diff_file = diff_file
-        @diff_lines = diff_file.diff_lines
+      def initialize(diff_lines)
+        if diff_lines.is_a?(Gitlab::Diff::File)
+          @diff_file = diff_file
+          @diff_lines = diff_file.diff_lines
+        else
+          @diff_lines = diff_lines
+        end
         @raw_lines = @diff_lines.map(&:text)
       end
 
@@ -31,7 +35,7 @@ module Gitlab
       private
 
       def highlight_line(diff_line, index)
-        return html_escape(diff_line.text) unless diff_file.diff_refs
+        return html_escape(diff_line.text) unless diff_file && diff_file.diff_refs
 
         line_prefix = diff_line.text.match(/\A(.)/) ? $1 : ' '
 
@@ -52,10 +56,12 @@ module Gitlab
       end
 
       def old_lines
+        return unless diff_file
         @old_lines ||= Gitlab::Highlight.highlight_lines(*processing_args(:old))
       end
 
       def new_lines
+        return unless diff_file
         @new_lines ||= Gitlab::Highlight.highlight_lines(*processing_args(:new))
       end
 
