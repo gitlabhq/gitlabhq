@@ -4,8 +4,8 @@ _**Note:** This feature was [introduced][ce-2371] in GitLab 8.4_
 
 ---
 
-The housekeeping function runs [`git gc`][man] on the current project Git
-repository.
+The housekeeping function runs `git gc` ([man page][man]) on the current
+project Git repository.
 
 `git gc` runs a number of housekeeping tasks, such as compressing file
 revisions (to reduce disk space and increase performance) and removing
