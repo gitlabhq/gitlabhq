@@ -97,7 +97,7 @@ module CreatesCommit
       # Merge request from fork to this project
       @mr_source_project = @tree_edit_project
       @mr_target_project = @project
-      @mr_target_branch = @mr_target_project.repository.root_ref
+      @mr_target_branch = @ref
     end
   end
 end
