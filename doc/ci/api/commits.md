@@ -1,5 +1,12 @@
 # Commits API
 
+**DEPRECATED**
+
+Since GitLab 8.1, there is a new commit status API. Please see the [revised
+documentation](../../api/commits.md#commit-status).
+
+---
+
 __Authentication is done by GitLab CI project token__
 
 ## Commits
