@@ -410,10 +410,8 @@ class ApplicationController < ActionController::Base
   private
 
   def set_default_sort
-    key = if is_a_listing_page_for?('issues')
-            'issues_sort'
-          elsif is_a_listing_page_for?('merge_requests')
-            'merge_requests_sort'
+    key = if is_a_listing_page_for?('issues') || is_a_listing_page_for?('merge_requests')
+            'issuable_sort'
           end
 
     cookies[key]  = params[:sort] if key && params[:sort].present?
