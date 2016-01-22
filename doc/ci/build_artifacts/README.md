@@ -13,13 +13,11 @@ ability of downloading the files separately.
 
 ## Enabling build artifacts
 
-If you are searching for ways to use the artifacts feature, jump to
-[Defining artifacts in `.gitlab-ci.yml`](#defining-artifacts-in-gitlab-ciyml).
+_If you are searching for ways to use artifacts, jump to
+[Defining artifacts in `.gitlab-ci.yml`](#defining-artifacts-in-gitlab-ciyml)._
 
 The artifacts feature is enabled by default in all GitLab installations.
-
-If by any chance you want to disable the artifacts feature on your GitLab
-instance, follow the steps below.
+To disable it site-wide, follow the steps below.
 
 ---
 
