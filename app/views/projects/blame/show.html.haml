@@ -12,9 +12,10 @@
       %small= number_to_human_size @blob.size
       .file-actions
         = render "projects/blob/actions"
-    .file-content.blame.highlight
+    .file-content.blame.code.js-syntax-highlight
       %table
         - current_line = 1
+        - blame_highlighter = highlighter(@blob.name, @blob.data, nowrap: true)
         - @blame.each do |blame_group|
           %tr
             %td.blame-commit
@@ -30,16 +31,15 @@
                   = commit_author_link(commit, avatar: false)
                   authored
                   #{time_ago_with_tooltip(commit.committed_date, skip_js: true)}
-            %td.lines.blame-numbers
-              %pre
-                - line_count = blame_group[:lines].count
-                - (current_line...(current_line + line_count)).each do |i|
-                  = i
-                  \
-                - current_line += line_count
+            %td.line-numbers
+              - line_count = blame_group[:lines].count
+              - (current_line...(current_line + line_count)).each do |i|
+                %a.diff-line-num= i
+                \
+              - current_line += line_count
             %td.lines
-              %pre{class: 'code highlight white'}
+              %pre{class: 'code highlight'}
                 %code
                   - blame_group[:lines].each do |line|
-                    :erb
-                      <%= highlight(@blob.name, line, nowrap: true, continue: true).html_safe %>
+                    :preserve
+                      #{blame_highlighter.highlight(line)}

@@ -41,7 +41,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should not see "master" branch' do
-    expect(page).not_to have_content "master"
+    expect(find('.merge-request-info')).not_to have_content "master"
   end
 
   step 'I should see "other_branch" branch' do
@@ -413,6 +413,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within ".mr-list" do
       expect(page).to have_link "Build pending"
     end
+  end
+
+  step 'I should see "Bug NS-05" at the top' do
+    expect(page.find('ul.content-list.mr-list li.merge-request:first-child')).to have_content("Bug NS-05")
+  end
+
+  step 'I should see "Bug NS-04" at the top' do
+    expect(page.find('ul.content-list.mr-list li.merge-request:first-child')).to have_content("Bug NS-04")
   end
 
   def merge_request

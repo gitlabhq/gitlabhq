@@ -41,6 +41,10 @@
 #  recaptcha_site_key                :string
 #  recaptcha_private_key             :string
 #  metrics_port                      :integer          default(8089)
+#  sentry_enabled                    :boolean          default(FALSE)
+#  sentry_dsn                        :string
+#  ip_blocking_enabled               :boolean          default(FALSE)
+#  dns_blacklist_threshold           :float            default(0.33)
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -81,6 +85,10 @@ class ApplicationSetting < ActiveRecord::Base
   validates :recaptcha_private_key,
             presence: true,
             if: :recaptcha_enabled
+
+  validates :sentry_dsn,
+            presence: true,
+            if: :sentry_enabled
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?

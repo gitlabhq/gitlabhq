@@ -37,7 +37,7 @@ describe Gitlab::LDAP::User, lib: true do
     end
 
     it "dont marks existing ldap user as changed" do
-      create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
+      create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain', ldap_email: true)
       expect(ldap_user.changed?).to be_falsey
     end
   end
@@ -107,6 +107,32 @@ describe Gitlab::LDAP::User, lib: true do
 
     it "creates a new user if not found" do
       expect{ ldap_user.save }.to change{ User.count }.by(1)
+    end
+  end
+
+  describe 'updating email' do
+    context "when LDAP sets an email" do
+      it "has a real email" do
+        expect(ldap_user.gl_user.email).to eq(info[:email])
+      end
+
+      it "has ldap_email set to true" do
+        expect(ldap_user.gl_user.ldap_email?).to be(true)
+      end
+    end
+
+    context "when LDAP doesn't set an email" do
+      before do
+        info.delete(:email)
+      end
+
+      it "has a temp email" do
+        expect(ldap_user.gl_user.temp_oauth_email?).to be(true)
+      end
+
+      it "has ldap_email set to false" do
+        expect(ldap_user.gl_user.ldap_email?).to be(false)
+      end
     end
   end
 

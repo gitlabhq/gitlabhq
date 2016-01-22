@@ -5,10 +5,5 @@
       .nothing-here-block No merge requests to show
 
 - if @merge_requests.present?
-  .issuable-filter-count
-    %span.pull-right
-      = number_with_delimiter(@merge_requests.total_count)
-      merge requests for this filter
-
   = paginate @merge_requests, theme: "gitlab"
 

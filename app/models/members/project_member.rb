@@ -84,7 +84,7 @@ class ProjectMember < Member
     def truncate_teams(project_ids)
       ProjectMember.transaction do
         members = ProjectMember.where(source_id: project_ids)
-        
+
         members.each do |member|
           member.destroy
         end
@@ -133,13 +133,13 @@ class ProjectMember < Member
       event_service.join_project(self.project, self.user)
       notification_service.new_project_member(self)
     end
-    
+
     super
   end
 
   def post_update_hook
     if access_level_changed?
-      notification_service.update_project_member(self) 
+      notification_service.update_project_member(self)
     end
 
     super

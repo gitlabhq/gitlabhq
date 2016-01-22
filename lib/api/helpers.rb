@@ -264,6 +264,10 @@ module API
         projects = projects.search(params[:search])
       end
 
+      if params[:visibility].present?
+        projects = projects.search_by_visibility(params[:visibility])
+      end
+
       projects.reorder(project_order_by => project_sort)
     end
 

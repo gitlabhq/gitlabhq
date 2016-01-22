@@ -33,6 +33,7 @@ GET /groups/:id/projects
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
