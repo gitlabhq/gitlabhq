@@ -86,6 +86,17 @@ describe ProjectsController do
         end
       end
     end
+
+    context "when the url contains .atom" do
+      let(:public_project_with_dot) { create(:project, :public, name: 'my.atom', path: 'my.atom') }
+
+      it 'loads a project' do
+        get :show, namespace_id: public_project_with_dot.namespace.path, id: public_project_with_dot.path
+
+        expect(assigns(:project)).to eq(public_project_with_dot)
+        expect(response.status).to eq(200)
+      end
+    end
   end
 
   describe "#destroy" do
