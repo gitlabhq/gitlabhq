@@ -1,0 +1,31 @@
+- page_title "Projects"
+- header_title group_title(@group, "Projects", edit_group_projects_path(@group))
+
+.panel.panel-default.prepend-top-default
+  .panel-heading
+    %strong= @group.name
+    projects:
+    - if can? current_user, :admin_group, @group
+      .panel-head-actions
+        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-sm btn-success" do
+          %i.fa.fa-plus
+          New Project
+  %ul.well-list
+    - @projects.each do |project|
+      %li
+        .list-item-name
+          %span{ class: visibility_level_color(project.visibility_level) }
+            = visibility_level_icon(project.visibility_level)
+          %strong= link_to project.name_with_namespace, project
+        .pull-right
+          - if project.archived
+            %span.label.label-warning archived
+          %span.label.label-gray
+            = repository_size(project)
+          = link_to 'Members', namespace_project_project_members_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
+          = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
+          = link_to 'Remove', project, data: { confirm: remove_project_message(project)}, method: :delete, class: "btn btn-sm btn-remove"
+    - if @projects.blank?
+      .nothing-here-block This group has no projects yet
+
+= paginate @projects, theme: "gitlab"

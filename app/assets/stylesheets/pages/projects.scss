@@ -191,9 +191,10 @@
 
 .dropdown-menu {
   @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
-  @include border-radius (0px);
+  @include border-radius (1px);
 
   border: none;
+  margin-top: 5px;
   padding: 16px 0;
   font-size: 14px;
   font-weight: 100;
@@ -205,6 +206,10 @@
     &:hover {
       background-color: #3084bb !important;
     }
+  }
+
+  hr {
+    margin: 10px;
   }
 
   i {
@@ -281,7 +286,7 @@
   margin-top: -1px;
 }
 
-.top-area {
+.nav-block {
   border-bottom: 1px solid #EEE;
 
   ul.nav-links {
@@ -291,22 +296,29 @@
     border-bottom: none;
   }
 
-  .projects-search-form {
+  .projects-controls {
     width: 50%;
-    display: inline-block;
-    float: right;
-    padding-top: 11px;
-    text-align: right;
 
-    .btn-green {
-      margin-left: 10px;
-      float: right;
-    }
-  }
+    .dropdown-menu {
+      font-size: $gl-font-size;
 
-  @media (max-width: $screen-xs-max) {
-    .projects-search-form {
-      padding-top: 15px;
+      li {
+
+        &.dropdown-label {
+          padding-left: $gl-padding;
+          padding-bottom: $gl-vert-padding;
+          font-size: 14px;
+        }
+
+        a {
+          line-height: 18px;
+          padding-left: 39px;
+
+          &.active {
+            padding-left: $gl-padding;
+          }
+        }
+      }
     }
   }
 }
@@ -559,7 +571,7 @@ pre.light-well {
   }
 }
 
-.cannot-be-merged, 
+.cannot-be-merged,
 .cannot-be-merged:hover {
   color: #E62958;
   margin-top: 2px;

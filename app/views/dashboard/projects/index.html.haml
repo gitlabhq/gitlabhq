@@ -11,6 +11,6 @@
   = render "events/event_last_push", event: @last_push
 
 - if @projects.any?
-  = render 'projects'
+  = render 'projects', projects: @projects
 - else
   = render "zero_authorized_projects"

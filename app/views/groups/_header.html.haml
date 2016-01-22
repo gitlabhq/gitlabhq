@@ -1,0 +1,34 @@
+- @no_container = true
+
+- unless can?(current_user, :read_group, @group)
+  - @disable_search_panel = true
+
+= content_for :meta_tags do
+  - if current_user
+    = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
+
+.cover-block
+  .cover-controls
+    - if @group && can?(current_user, :admin_group, @group)
+      = link_to icon('pencil'), edit_group_path(@group), class: 'btn'
+    - if current_user
+      = link_to icon('rss'), group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn'
+
+  .avatar-holder
+    = link_to group_icon(@group), target: '_blank' do
+      = image_tag group_icon(@group), class: "avatar group-avatar s90"
+  .cover-title
+    = @group.name
+
+  .cover-desc.username
+    @#{@group.path}
+
+  - if @group.description.present?
+    .cover-desc.description
+      = markdown(@group.description, pipeline: :description)
+
+  %ul.nav-links
+    = nav_link(page: group_path(@group)) do
+      = link_to 'Activity', group_path(@group)
+    = nav_link(page: projects_group_path(@group)) do
+      = link_to 'Projects', projects_group_path(@group, scope: params[:scope], filter: @filter, sort: @sort)

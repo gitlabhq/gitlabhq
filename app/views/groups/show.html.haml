@@ -1,58 +1,15 @@
-- @no_container = true
+= render 'header'
 
-- unless can?(current_user, :read_group, @group)
-  - @disable_search_panel = true
-
-= content_for :meta_tags do
-  - if current_user
-    = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
-
-.cover-block
-  .cover-controls
-    - if @group && can?(current_user, :admin_group, @group)
-      = link_to icon('pencil'), edit_group_path(@group), class: 'btn'
-    - if current_user
-      = link_to icon('rss'), group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed", class: 'btn rss-btn'
-
-  .avatar-holder
-    = link_to group_icon(@group), target: '_blank' do
-      = image_tag group_icon(@group), class: "avatar group-avatar s90"
-  .cover-title
-    = @group.name
-
-  .cover-desc.username
-    @#{@group.path}
-
-  - if @group.description.present?
-    .cover-desc.description
-      = markdown(@group.description, pipeline: :description)
-
-
-  %ul.nav-links
-    %li.active
-      = link_to "#activity", 'data-toggle' => 'tab' do
-        Activity
-    - if @projects.present?
-      %li
-        = link_to "#projects", 'data-toggle' => 'tab' do
-          Projects
-
-- if can?(current_user, :read_group, @group)
-  %div{ class: container_class }
-    .tab-content
-      .tab-pane.active#activity
+%div{class: container_class}
+  .tab-content
+    .tab-pane.active
+      - if can?(current_user, :read_group, @group)
         .activity-filter-block
           - if current_user
             = render "events/event_last_push", event: @last_push
-
             = render 'shared/event_filter'
 
         .content_list
         = spinner
-
-      .tab-pane#projects
-        = render "projects", projects: @projects
-
-- else
-  %p.nav-links.no-top
-    No projects to show
+      - else
+        %p.nav-links.no-top No activity to show

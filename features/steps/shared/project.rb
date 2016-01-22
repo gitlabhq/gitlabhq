@@ -1,10 +1,17 @@
+require_relative 'user'
+
 module SharedProject
   include Spinach::DSL
+  include SharedUser
 
   # Create a project without caring about what it's called
   step "I own a project" do
-    @project = create(:project, namespace: @user.namespace)
-    @project.team << [@user, :master]
+    @project = user_owns_project(
+      user: @user,
+      project_name: 'Internal',
+      project_type: :project,
+      visibility: :internal
+    )
   end
 
   step "project exists in some group namespace" do
@@ -14,9 +21,13 @@ module SharedProject
 
   # Create a specific project called "Shop"
   step 'I own project "Shop"' do
-    @project = Project.find_by(name: "Shop")
-    @project ||= create(:project, name: "Shop", namespace: @user.namespace, snippets_enabled: true)
-    @project.team << [@user, :master]
+    @project = user_owns_project(
+      user: @user,
+      project_name: 'Shop',
+      project_type: :project,
+      visibility: :internal,
+      snippets_enabled: true
+    )
   end
 
   step 'I disable snippets in project' do
@@ -39,16 +50,28 @@ module SharedProject
 
   # Create another specific project called "Forum"
   step 'I own project "Forum"' do
-    @project = Project.find_by(name: "Forum")
-    @project ||= create(:project, name: "Forum", namespace: @user.namespace, path: 'forum_project')
-    @project.team << [@user, :master]
+    @project = user_owns_project(
+      user: @user,
+      project_name: 'Forum',
+      project_type: :project,
+      path: 'forum_project'
+    )
+  end
+
+  # Create another specific project called "Forum"
+  step 'I own project "Grocery"' do
+    @project = user_owns_project(
+      user: @user,
+      project_name: 'Grocery'
+    )
   end
 
   # Create an empty project without caring about the name
   step 'I own an empty project' do
-    @project = create(:empty_project,
-                      name: 'Empty Project', namespace: @user.namespace)
-    @project.team << [@user, :master]
+    @project = user_owns_project(
+      user: @user,
+      project_name: 'Empty Project'
+    )
   end
 
   step 'I visit my empty project page' do
@@ -63,28 +86,17 @@ module SharedProject
 
   step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
+    event_for_project(@project)
+  end
 
-    data = {
-      before: Gitlab::Git::BLANK_SHA,
-      after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
-      ref: "refs/heads/fix",
-      user_id: @user.id,
-      user_name: @user.name,
-      repository: {
-        name: @project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
+  step 'project "Grocery" has push event' do
+    @project = Project.find_by(name: "Grocery")
+    event_for_project(@project)
+  end
 
-    @event = Event.create(
-      project: @project,
-      action: Event::PUSHED,
-      data: data,
-      author_id: @user.id
-    )
+  step 'project "Community" has push event' do
+    @project = Project.find_by(name: "Community")
+    event_for_project(@project)
   end
 
   step 'I should see project "Shop" activity feed' do
@@ -108,6 +120,10 @@ module SharedProject
 
   step 'I am member of a project with a guest role' do
     @project.team << [@user, Gitlab::Access::GUEST]
+  end
+
+  step 'I am member of a project "Community" with a guest role' do
+    Project.find_by(name: "Community").team << [@user, Gitlab::Access::GUEST]
   end
 
   step 'I am member of a project with a reporter role' do
@@ -240,10 +256,162 @@ module SharedProject
     end
   end
 
-  def user_owns_project(user_name:, project_name:, visibility: :private)
-    user = user_exists(user_name, username: user_name.gsub(/\s/, '').underscore)
+  # ----------------------------------------
+  # Starring
+  # ----------------------------------------
+
+  step 'I starred project "Community"' do
+    current_user.toggle_star(Project.find_by(name: 'Community'))
+  end
+
+  step 'I starred project "Forum"' do
+    current_user.toggle_star(Project.find_by(name: 'Forum'))
+  end
+
+  step 'I starred project "Grocery"' do
+    current_user.toggle_star(Project.find_by(name: 'Grocery'))
+  end
+
+  step '"John Doe" someone starred project "Community"' do
+    user_exists("John Doe").toggle_star(Project.find_by(name: 'Community'))
+  end
+
+  step '"John Doe" someone starred project "Forum"' do
+    user_exists("John Doe").toggle_star(Project.find_by(name: 'Community'))
+  end
+
+  # ----------------------------------------
+  # Sorting
+  # ----------------------------------------
+
+  step 'I sort projects list by "Recently active"' do
+    sort_by('Recently active')
+  end
+
+  step 'I sort projects list by "Most stars"' do
+    sort_by('Most stars')
+  end
+
+  step 'I sort projects list by "Name from A to Z"' do
+    sort_by('Name from A to Z')
+  end
+
+  step 'I sort projects list by "Name from Z to A"' do
+    sort_by('Name from Z to A')
+  end
+
+  step 'I should see "Community" at the top' do
+    expect_top_project_in_list("Community")
+  end
+
+  step 'I should see "Shop" at the top' do
+    expect_top_project_in_list("Shop")
+  end
+
+  step 'I should see "Forum" at the top' do
+    expect_top_project_in_list("Forum")
+  end
+
+  step 'I should see "Grocery" at the top' do
+    expect_top_project_in_list("Grocery")
+  end
+
+  # ----------------------------------------
+  # Filtering
+  # ----------------------------------------
+
+  step 'I filter to see only my own projects' do
+    filter_by('Owned by me')
+  end
+
+  # ----------------------------------------
+  # Links
+  # ----------------------------------------
+
+  step 'I should see "New Project" link' do
+    expect(page).to have_link "New project"
+  end
+
+  step 'I should see "Community" project link' do
+    expect_link_in_list "Community"
+  end
+
+  step 'I should not see "Community" project link' do
+    expect_link_in_list "Community", false
+  end
+
+  step 'I should see "Shop" project link' do
+    expect_link_in_list "Shop"
+  end
+
+  step 'I should not see "Shop" project link' do
+    expect_link_in_list "Shop", false
+  end
+
+  step 'I should see "Forum" project link' do
+    expect_link_in_list "Forum"
+  end
+
+  step 'I should see "Grocery" project link' do
+    expect_link_in_list "Grocery"
+  end
+
+  step 'I should see "Shop" project CI status' do
+    expect_link_in_list "Build skipped"
+  end
+
+  private
+
+  def event_for_project(project, user)
+    data = {
+      before: Gitlab::Git::BLANK_SHA,
+      after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
+      ref: "refs/heads/fix",
+      user_id: (user || @user).id,
+      user_name: (user || @user).name,
+      repository: {
+        name: project.name,
+        url: "localhost/rubinius",
+        description: "",
+        homepage: "localhost/rubinius",
+        private: true
+      }
+    }
+
+    @event = Event.create(
+      project: project,
+      action: Event::PUSHED,
+      data: data,
+      author_id: (user || @user).id
+    )
+  end
+
+  def sort_by(sort)
+    find('button.dropdown-toggle.btn').click
+    page.within('ul.dropdown-menu') do
+      click_link sort
+    end
+  end
+
+  def filter_by(filter)
+    find('button.dropdown-toggle.btn').click
+    page.within('ul.dropdown-menu') do
+      click_link filter
+    end
+  end
+
+  def expect_top_project_in_list(project_name)
+    expect(page.find('ul.projects-list li.project-row:first-child')).to have_content(project_name)
+  end
+
+  def expect_link_in_list(project_name, truthy = true)
+    expect(page.find('ul.projects-list')).send (truthy ? 'to' : 'not_to'), have_content(project_name)
+  end
+
+  def user_owns_project(user:, project_name: nil, project_type: :empty_project, visibility: :private, **args)
+    user = user.is_a?(User) ? user : user_exists(user, username: user.gsub(/\s/, '').underscore)
     project = Project.find_by(name: project_name)
-    project ||= create(:empty_project, visibility, name: project_name, namespace: user.namespace)
+    project ||= create(project_type, visibility, name: project_name, namespace: user.namespace, **args)
     project.team << [user, :master]
   end
 end

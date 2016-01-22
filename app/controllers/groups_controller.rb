@@ -1,18 +1,20 @@
 class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
+  include ProjectsListing
 
-  skip_before_action :authenticate_user!, only: [:show, :issues, :merge_requests]
+  skip_before_action :authenticate_user!, only: [:show, :projects, :issues, :merge_requests]
   respond_to :html
   before_action :group, except: [:new, :create]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:show, :new, :create, :autocomplete]
-  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
+  before_action :authorize_read_group!, except: [:show, :projects, :new, :create, :autocomplete]
+  before_action :authorize_admin_group!, only: [:edit, :update, :destroy]
   before_action :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
-  before_action :load_projects, except: [:new, :create, :projects, :edit, :update, :autocomplete]
+  before_action :load_projects, only: [:show, :projects, :issues, :merge_requests]
+  before_action :load_contributed_projects, :load_starred_projects, only: :projects
   before_action :event_filter, only: :show
 
   layout :determine_layout
@@ -39,7 +41,6 @@ class GroupsController < Groups::ApplicationController
 
   def show
     @last_push = current_user.recent_push if current_user
-    @projects = @projects.includes(:namespace)
 
     respond_to do |format|
       format.html
@@ -60,7 +61,23 @@ class GroupsController < Groups::ApplicationController
   end
 
   def projects
-    @projects = @group.projects.page(params[:page])
+    no_projects = ProjectsFinder.new.execute(current_user, group: group).empty?
+    redirect_to(group_path(@group)) if no_projects
+
+    @all_projects = @projects
+
+    if current_user
+      # @projects are the scoped project, it can reference @all_projects is the
+      # current scope is 'all' or no scope matches.
+      @projects = case params[:scope]
+                  when 'contributed'
+                    @contributed_projects
+                  when 'starred'
+                    @starred_projects
+                  else
+                    @all_projects
+                  end
+    end
   end
 
   def update
@@ -84,7 +101,26 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_projects
-    @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity.non_archived
+    @projects ||= refine_projects(
+      ProjectsFinder.new.execute(current_user, group: group)
+    )
+  end
+
+  def load_contributed_projects
+    return unless current_user
+
+    @contributed_projects ||= refine_projects(
+      ContributedProjectsFinder.new(current_user).execute(current_user).
+        in_group_namespace.in_namespace(@group.id)
+    ).reject(&:forked?)
+  end
+
+  def load_starred_projects
+    return unless current_user
+
+    @starred_projects ||= refine_projects(
+      current_user.starred_projects.in_group_namespace.in_namespace(@group.id)
+    )
   end
 
   def project_ids
@@ -111,7 +147,7 @@ class GroupsController < Groups::ApplicationController
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
       'application'
-    elsif [:edit, :update, :projects].include?(action_name.to_sym)
+    elsif [:edit, :update].include?(action_name.to_sym)
       'group_settings'
     else
       'group'

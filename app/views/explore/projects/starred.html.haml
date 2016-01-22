@@ -9,9 +9,9 @@
 .explore-trending-block
   .gray-content-block.second-block
     .pull-right
-      = render 'explore/projects/dropdown'
+      = render 'dropdown'
     .oneline
       %i.fa.fa-star
       See most starred projects
-  = render 'projects', projects: @starred_projects
-  = paginate @starred_projects, theme: 'gitlab'
+  = render 'projects', projects: @projects
+  = paginate @projects, theme: 'gitlab'

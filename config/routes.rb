@@ -350,6 +350,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :groups do
+      resource :projects, only: [:edit]
       resources :group_members, only: [:index, :create, :update, :destroy] do
         post :resend_invite, on: :member
         delete :leave, on: :collection

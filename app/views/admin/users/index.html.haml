@@ -40,7 +40,7 @@
           %b.caret
         %ul.dropdown-menu
           %li
-            = link_to admin_users_path(sort: sort_value_name, filter: params[:filter]) do
+            = link_to admin_users_path(sort: sort_value_name_asc, filter: params[:filter]) do
               = sort_title_name
             = link_to admin_users_path(sort: sort_value_recently_signin, filter: params[:filter]) do
               = sort_title_recently_signin

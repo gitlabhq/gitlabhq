@@ -1,15 +1,14 @@
 class Dashboard::ProjectsController < Dashboard::ApplicationController
-  before_action :event_filter
+  include ProjectsListing
+
+  before_action :load_user_projects, :load_starred_projects, :load_last_push, :event_filter
 
   def index
-    @projects = current_user.authorized_projects.sorted_by_activity.non_archived
-    @projects = @projects.includes(:namespace)
-    @last_push = current_user.recent_push
+    @projects = @user_projects
 
     respond_to do |format|
       format.html
       format.atom do
-        event_filter
         load_events
         render layout: false
       end
@@ -17,10 +16,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def starred
-    @projects = current_user.starred_projects
-    @projects = @projects.includes(:namespace, :forked_from_project, :tags)
-    @projects = @projects.sort(@sort = params[:sort])
-    @last_push = current_user.recent_push
+    @projects = @starred_projects
     @groups = []
 
     respond_to do |format|
@@ -34,6 +30,10 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   private
+
+  def load_last_push
+    @last_push = current_user.recent_push
+  end
 
   def load_events
     @events = Event.in_projects(@projects.pluck(:id))

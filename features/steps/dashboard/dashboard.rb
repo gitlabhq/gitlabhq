@@ -3,18 +3,6 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
 
-  step 'I should see "New Project" link' do
-    expect(page).to have_link "New project"
-  end
-
-  step 'I should see "Shop" project link' do
-    expect(page).to have_link "Shop"
-  end
-
-  step 'I should see "Shop" project CI status' do
-    expect(page).to have_link "Build skipped"
-  end
-
   step 'I should see last push widget' do
     expect(page).to have_content "You pushed to fix"
     expect(page).to have_link "Create Merge Request"

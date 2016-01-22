@@ -16,13 +16,27 @@ module Sortable
     scope :order_created_asc, -> { reorder(created_at: :asc) }
     scope :order_updated_desc, -> { reorder(updated_at: :desc) }
     scope :order_updated_asc, -> { reorder(updated_at: :asc) }
-    scope :order_name_asc, -> { reorder(name: :asc) }
-    scope :order_name_desc, -> { reorder(name: :desc) }
+    scope :order_name_asc, -> { reorder("LOWER(#{quoted_table_name}.#{connection.quote_column_name('name')}) ASC") }
+    scope :order_name_desc, -> { reorder("LOWER(#{quoted_table_name}.#{connection.quote_column_name('name')}) DESC") }
   end
 
   module ClassMethods
+    # Adds a new sort method.
+    def sortable_by(sort_name, scope_name)
+      sortables[sort_name.to_s] = scope_name
+    end
+
+    # Accessor for sort methods marked mentionable.
+    def sortables
+      @sortables ||= {}
+    end
+
     def order_by(method)
-      case method.to_s
+      return all if method.blank?
+
+      method = method.to_s
+
+      case method
       when 'name_asc' then order_name_asc
       when 'name_desc' then order_name_desc
       when 'updated_asc' then order_updated_asc
@@ -32,7 +46,11 @@ module Sortable
       when 'id_desc' then order_id_desc
       when 'id_asc' then order_id_asc
       else
-        all
+        if sortables[method].present? && respond_to?(sortables[method])
+          send(sortables[method])
+        else
+          all
+        end
       end
     end
   end

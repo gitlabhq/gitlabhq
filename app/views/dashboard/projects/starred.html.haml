@@ -7,7 +7,7 @@
   = render "events/event_last_push", event: @last_push
 
 - if @projects.any?
-  = render 'projects'
+  = render 'projects', projects: @projects
 - else
   %h3 You don't have starred projects yet
   %p.slead Visit project page and press on star icon and it will appear on this page.

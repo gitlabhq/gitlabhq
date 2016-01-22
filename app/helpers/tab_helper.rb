@@ -59,7 +59,7 @@ module TabHelper
   end
 
   def active_nav_link?(options)
-    if path = options.delete(:path)
+    active = if path = options.delete(:path)
       unless path.respond_to?(:each)
         path = [path]
       end
@@ -87,6 +87,12 @@ module TabHelper
         current_controller?(*c) || current_action?(*a)
       end
     end
+
+    if query = options.delete(:query)
+      active &&= query.all? { |k,v| params[k] == v }
+    end
+
+    active
   end
 
   def current_path?(path)

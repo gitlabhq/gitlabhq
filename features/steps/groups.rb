@@ -2,6 +2,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedGroup
+  include SharedProject
   include SharedUser
 
   step 'I should see back to dashboard button' do
@@ -19,9 +20,34 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'Group "Owned" has a public project "Public-project"' do
     group = owned_group
 
-    @project = create :empty_project, :public,
+    @project = Project.find_by(name: "Public-project") || create(:empty_project, :public,
                  group: group,
-                 name: "Public-project"
+                 name: "Public-project")
+  end
+
+  step 'Group "Owned" has a public project "Star-project" with 2 stars including 1 from "John Doe"' do
+    group = owned_group
+
+    @project = Project.find_by(name: 'Star-project') || create(:project, :public,
+                 group: group,
+                 name: 'Star-project',
+                 path: 'star_project')
+    user_exists('John Doe').toggle_star(@project)
+    user_exists('Mary Jane').toggle_star(@project)
+  end
+
+  step 'Group "Owned" has an internal project "Moon-project" with 1 star from "John Doe"' do
+    group = owned_group
+
+    @project = Project.find_by(name: 'Moon-project') || create(:project, :internal,
+                 group: group,
+                 name: 'Moon-project',
+                 path: 'moon_project')
+    user_exists('John Doe').toggle_star(@project)
+  end
+
+  step 'project "Moon-project" has push event' do
+    event_for_project(Project.find_by(name: "Moon-project"), user_exists('John Doe'))
   end
 
   step 'I should see project "Public-project"' do
@@ -118,6 +144,18 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see "archived" label' do
     expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
+  end
+
+  # ----------------------------------------
+  # Sorting
+  # ----------------------------------------
+
+  step 'I should see "Star-project" at the top' do
+    expect_top_project_in_list("Star-project")
+  end
+
+  step 'I should see "Moon-project" at the top' do
+    expect_top_project_in_list("Moon-project")
   end
 
   private

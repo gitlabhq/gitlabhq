@@ -1,7 +1,7 @@
 .dropdown.inline
   %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
     %span.light sort:
-    - if @sort.present?
+    - if sort_options_hash[@sort].present?
       = sort_options_hash[@sort]
     - elsif current_page?(trending_explore_projects_path) || current_page?(explore_root_path)
       Trending projects
@@ -24,4 +24,3 @@
         = sort_title_recently_updated
       = link_to explore_projects_filter_path(sort: sort_value_oldest_updated) do
         = sort_title_oldest_updated
-
