@@ -4,6 +4,7 @@ v 8.5.0 (unreleased)
   - Add "visibility" flag to GET /projects api endpoint
   - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
   - New UI for pagination
+  - Pass username to Piwik analytics when Piwik is enabled (Senorsen)
 
 v 8.4.0
   - Allow LDAP users to change their email if it was not set by the LDAP server
