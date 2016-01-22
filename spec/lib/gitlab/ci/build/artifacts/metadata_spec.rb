@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Build::Artifacts::Metadata do
-  def metadata(path = '')
-    described_class.new(metadata_file_path, path)
+  def metadata(path = '', **opts)
+    described_class.new(metadata_file_path, path, **opts)
   end
 
   let(:metadata_file_path) do
@@ -46,6 +46,19 @@ describe Gitlab::Ci::Build::Artifacts::Metadata do
       it 'matches correct paths' do
         expect(subject.keys).
           to contain_exactly 'other_artifacts_0.1.2/another-subdirectory/',
+                             'other_artifacts_0.1.2/another-subdirectory/empty_directory/',
+                             'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
+      end
+    end
+
+    describe '#find_entries! recursively for other_artifacts_0.1.2/' do
+      subject { metadata('other_artifacts_0.1.2/', recursive: true).find_entries! }
+
+      it 'matches correct paths' do
+        expect(subject.keys).
+          to contain_exactly 'other_artifacts_0.1.2/',
+                             'other_artifacts_0.1.2/doc_sample.txt',
+                             'other_artifacts_0.1.2/another-subdirectory/',
                              'other_artifacts_0.1.2/another-subdirectory/empty_directory/',
                              'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif'
       end

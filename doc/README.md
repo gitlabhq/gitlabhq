@@ -30,6 +30,7 @@
 - [User permissions](ci/permissions/README.md)
 - [API](ci/api/README.md)
 - [Triggering builds through the API](ci/triggers/README.md)
+- [Build artifacts](ci/build_artifacts/README.md)
 
 ### CI Languages
 
@@ -53,6 +54,7 @@
 
 - [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
+- [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
@@ -67,6 +69,8 @@
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
+- [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
+- [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
 
 ## Contributor documentation
 

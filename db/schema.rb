@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119145451) do
+ActiveRecord::Schema.define(version: 20160120172143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,10 @@ ActiveRecord::Schema.define(version: 20160119145451) do
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
     t.integer  "metrics_sample_interval",           default: 15
+    t.boolean  "sentry_enabled",                    default: false
+    t.string   "sentry_dsn"
+    t.boolean  "ip_blocking_enabled",               default: false
+    t.text     "dnsbl_servers_list"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -490,6 +494,7 @@ ActiveRecord::Schema.define(version: 20160119145451) do
     t.integer  "merge_request_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "base_commit_sha"
   end
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
@@ -725,19 +730,19 @@ ActiveRecord::Schema.define(version: 20160119145451) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                                           null: false
-    t.datetime "updated_at",                                           null: false
-    t.boolean  "active",                                               null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",                                   null: false
     t.text     "properties"
-    t.boolean  "template",                          default: false
-    t.boolean  "push_events",                       default: true
-    t.boolean  "issues_events",                     default: true
-    t.boolean  "merge_requests_events",             default: true
-    t.boolean  "tag_push_events",                   default: true
-    t.boolean  "note_events",                       default: true,     null: false
-    t.boolean  "build_events",                      default: false,    null: false
-    t.string   "category",                          default: "common", null: false
-    t.boolean  "default",                           default: false
+    t.boolean  "template",              default: false
+    t.boolean  "push_events",           default: true
+    t.boolean  "issues_events",         default: true
+    t.boolean  "merge_requests_events", default: true
+    t.boolean  "tag_push_events",       default: true
+    t.boolean  "note_events",           default: true,     null: false
+    t.boolean  "build_events",          default: false,    null: false
+    t.string   "category",              default: "common", null: false
+    t.boolean  "default",               default: false
   end
 
   add_index "services", ["category"], name: "index_services_on_category", using: :btree
@@ -854,7 +859,7 @@ ActiveRecord::Schema.define(version: 20160119145451) do
     t.boolean  "hide_project_limit",          default: false
     t.string   "unlock_token"
     t.datetime "otp_grace_period_started_at"
-    t.boolean  "ldap_email",                              default: false, null: false
+    t.boolean  "ldap_email",                  default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -2,8 +2,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.0 (unreleased)
   - Add "visibility" flag to GET /projects api endpoint
+  - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
+  - New UI for pagination
 
-v 8.4.0 (unreleased)
+v 8.4.0
   - Allow LDAP users to change their email if it was not set by the LDAP server
   - Ensure Gravatar host looks like an actual host
   - Consider re-assign as a mention from a notification point of view
@@ -13,6 +15,8 @@ v 8.4.0 (unreleased)
   - Autocomplete data is now always loaded, instead of when focusing a comment text area
   - Improved performance of finding issues for an entire group
   - Added custom application performance measuring system powered by InfluxDB
+  - Add syntax highlighting to diffs
+  - Gracefully handle invalid UTF-8 sequences in Markdown links (Stan Hu)
   - Bump fog to 1.36.0 (Stan Hu)
   - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
@@ -71,6 +75,8 @@ v 8.4.0 (unreleased)
   - Expose button to CI Lint tool on project builds page
   - Fix: Creator should be added as a master of the project on creation
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
+  - Add IP check against DNSBLs at account sign-up
+  - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)

@@ -41,6 +41,8 @@
 #  recaptcha_site_key                :string
 #  recaptcha_private_key             :string
 #  metrics_port                      :integer          default(8089)
+#  sentry_enabled                    :boolean          default(FALSE)
+#  sentry_dsn                        :string
 #
 
 require 'spec_helper'
