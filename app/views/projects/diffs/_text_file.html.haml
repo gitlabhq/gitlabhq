@@ -6,6 +6,7 @@
 %table.text-file.code.js-syntax-highlight{ class: too_big ? 'hide' : '' }
 
   - last_line = 0
+  - raw_diff_lines = diff_file.diff_lines
   - diff_file.highlighted_diff_lines.each_with_index do |line, index|
     - type = line.type
     - last_line = line.new_pos
@@ -31,7 +32,7 @@
     - if @reply_allowed
       - comments = @line_notes.select { |n| n.line_code == line_code && n.active? }.sort_by(&:created_at)
       - unless comments.empty?
-        = render "projects/notes/diff_notes_with_reply", notes: comments, line: line.text
+        = render "projects/notes/diff_notes_with_reply", notes: comments, line: raw_diff_lines[index].text
 
   - if last_line > 0
     = render "projects/diffs/match_line", {line: "",

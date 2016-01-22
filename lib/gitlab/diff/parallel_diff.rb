@@ -11,7 +11,8 @@ module Gitlab
         lines = []
         skip_next = false
 
-        diff_file.highlighted_diff_lines.each do |line|
+        highlighted_diff_lines = diff_file.highlighted_diff_lines
+        highlighted_diff_lines.each do |line|
           full_line = line.text
           type = line.type
           line_code = generate_line_code(diff_file.file_path, line)
@@ -21,6 +22,7 @@ module Gitlab
           next_line = diff_file.next_line(line.index)
 
           if next_line
+            next_line = highlighted_diff_lines[next_line.index]
             next_line_code = generate_line_code(diff_file.file_path, next_line)
             next_type = next_line.type
             next_line = next_line.text
