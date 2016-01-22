@@ -244,4 +244,14 @@ FactoryGirl.define do
   factory :license do
     data { build(:gitlab_license).export }
   end
+
+  factory :geo_node do
+    host { Gitlab.config.gitlab.host }
+    sequence(:port) {|n| n}
+
+    trait :primary do
+      primary true
+      port { Gitlab.config.gitlab.port }
+    end
+  end
 end
