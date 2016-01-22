@@ -211,7 +211,12 @@ Example response:
 }
 ```
 
-## Get the status of a commit
+## Commit status
+
+Since GitLab 8.1, this is the new commit status API. The documentation in
+[ci/api/commits](../ci/api/commits.md) is deprecated.
+
+### Get the status of a commit
 
 Get the statuses of a commit in a project.
 
@@ -285,7 +290,7 @@ Example response:
 ]
 ```
 
-## Post the build status to a commit
+### Post the build status to a commit
 
 Adds or updates a build status of a commit.
 
