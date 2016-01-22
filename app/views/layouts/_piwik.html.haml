@@ -1,6 +1,10 @@
 <!-- Piwik -->
 :javascript
   var _paq = _paq || [];
+  // Pass username to piwik analytics
+  if (gon.current_user_username) {
+    _paq.push(['setUserId', gon.current_user_username]);
+  }
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {

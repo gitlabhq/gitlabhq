@@ -212,6 +212,7 @@ class ApplicationController < ActionController::Base
 
     if current_user
       gon.current_user_id = current_user.id
+      gon.current_user_username = current_user.username
       gon.api_token = current_user.private_token
     end
   end
