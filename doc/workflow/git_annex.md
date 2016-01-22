@@ -16,7 +16,7 @@ If you need the large binary you can sync it from the GitLab server over rsync, 
 
 <!-- more -->
 
-## Using GitLab Annex
+## Using GitLab git-annex
 
 For example, if you want to upload a very large file and check it into your Git repository:
 
@@ -47,6 +47,58 @@ git annex sync --content              # sync git branches and download all the l
 You don't have to setup git-annex on a separate server or add annex remotes to the repository.
 Git-annex without GitLab gives everyone that can access the server access to the files of all projects.
 GitLab annex ensures you can only acces files of projects you work on (developer, master or owner role).
+
+## GitLab git-annex Configuration
+
+### Requirements
+
+Git-annex needs to be installed both on the server and the client side.
+
+For Debian-like systems (eg., Debian, Ubuntu) this can be achieved by running: `sudo apt-get update && sudo apt-get install git-annex`.
+
+For RedHat-like systems (eg., CentOS, RHEL) this can be achieved by running `sudo yum install epel-release && sudo yum install git-annex`
+
+### Configuration
+
+By default, git-annex is disabled in GitLab.
+
+There are two configuration options required to enable git-annex.
+
+### Omnibus packages
+
+For omnibus-gitlab packages only one configuration setting is needed.
+Package will internally set the correct options in all locations.
+
+In `/etc/gitlab/gitlab.rb`:
+
+```ruby
+gitlab_shell['git_annex_enabled'] = true
+```
+
+save the file and [reconfigure GitLab](administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+for the changes to take effect.
+
+### Installations from source
+
+There are 2 settings to enable git-annex on your GitLab server.
+One is located in `config/gitlab.yml` of GitLab repository and the other one
+is located in `config.yml` of gitlab-shell.
+
+In `config/gitlab.yml`:
+
+```yaml
+gitlab_shell:
+  git_annex_enabled: true
+```
+
+and in `config.yml` in gitlab-shell:
+
+```yaml
+git_annex_enabled: true
+```
+
+save the files and [restart GitLab](administration/restart_gitlab.md#installations-from-source)
+for the changes to take effect.
 
 ## How it works
 

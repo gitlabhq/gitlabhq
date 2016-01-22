@@ -75,6 +75,7 @@
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
 - [Downgrade back to CE](downgrade_ee_to_ce/README.md) Follow this guide if you need to downgrade from EE to CE.
+- [git-annex configuration](workflow/git_annex.md#configuration)
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [GitLab Pages configuration](pages/administration.md)
 - [Elasticsearch (EE-only)](integration/elasticsearch.md) Enable Elasticsearch
