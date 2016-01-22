@@ -2,8 +2,11 @@ require 'spec_helper'
 
 describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:project) { create(:project) }
-  let(:source_branch) { OpenStruct.new(ref: 'feature') }
-  let(:target_branch) { OpenStruct.new(ref: 'master') }
+  let(:repository) { OpenStruct.new(id: 1, fork: false) }
+  let(:source_repo) { repository }
+  let(:source_branch) { OpenStruct.new(ref: 'feature', repo: source_repo) }
+  let(:target_repo) { repository }
+  let(:target_branch) { OpenStruct.new(ref: 'master', repo: target_repo) }
   let(:octocat) { OpenStruct.new(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -125,10 +128,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   end
 
   describe '#cross_project?' do
-    context 'when source repo is not a fork' do
-      let(:local_repo) { OpenStruct.new(fork: false) }
-      let(:source_branch) { OpenStruct.new(ref: 'feature', repo: local_repo) }
-      let(:raw_data) { OpenStruct.new(base_data.merge(head: source_branch)) }
+    context 'when source, and target repositories are the same' do
+      let(:raw_data) { OpenStruct.new(base_data) }
 
       it 'returns false' do
         expect(pull_request.cross_project?).to eq false
@@ -136,9 +137,17 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
 
     context 'when source repo is a fork' do
-      let(:forked_repo) { OpenStruct.new(fork: true) }
-      let(:source_branch) { OpenStruct.new(ref: 'feature', repo: forked_repo) }
-      let(:raw_data) { OpenStruct.new(base_data.merge(head: source_branch)) }
+      let(:source_repo) { OpenStruct.new(id: 2, fork: true) }
+      let(:raw_data) { OpenStruct.new(base_data) }
+
+      it 'returns true' do
+        expect(pull_request.cross_project?).to eq true
+      end
+    end
+
+    context 'when target repo is a fork' do
+      let(:target_repo) { OpenStruct.new(id: 2, fork: true) }
+      let(:raw_data) { OpenStruct.new(base_data) }
 
       it 'returns true' do
         expect(pull_request.cross_project?).to eq true

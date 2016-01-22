@@ -9,7 +9,7 @@
 - if @commits.present?
   .prepend-top-default
     = render "projects/commits/commit_list"
-    = render "projects/diffs/diffs", diffs: @diffs, project: @project
+    = render "projects/diffs/diffs", diffs: @diffs, project: @project, diff_refs: @diff_refs
 - else
   .light-well.prepend-top-default
     .center

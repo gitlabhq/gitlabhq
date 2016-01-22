@@ -53,3 +53,14 @@
     color: #333;
   }
 }
+
+.ui-sortable-handle {
+  cursor: move;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+
+  &:active {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+  }
+}

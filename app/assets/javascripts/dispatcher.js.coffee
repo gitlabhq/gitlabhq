@@ -100,6 +100,8 @@ class Dispatcher
         shortcut_handler = true
       when 'projects:forks:new'
         new ProjectFork()
+      when 'projects:artifacts:browse'
+        new BuildArtifacts()
       when 'users:show'
         new User()
         new Activities()
