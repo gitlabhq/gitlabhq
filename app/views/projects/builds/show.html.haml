@@ -94,9 +94,14 @@
           %h4.title Build artifacts
           .center
             .btn-group{ role: :group }
-              = link_to "Download", @build.artifacts_download_url, class: 'btn btn-sm btn-primary'
+              = link_to @build.artifacts_download_url, class: 'btn btn-sm btn-primary' do
+                = icon('download')
+                Download
+
               - if @build.artifacts_metadata?
-                = link_to "Browse", @build.artifacts_browse_url, class: 'btn btn-sm btn-primary'
+                = link_to @build.artifacts_browse_url, class: 'btn btn-sm btn-primary' do
+                  = icon('folder-open')
+                  Browse
 
       .build-widget
         %h4.title
@@ -108,23 +113,29 @@
               - elsif @build.retry_url
                 = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
 
-        - if @build.duration
+              = link_to '', class: 'btn btn-sm btn-danger', method: :delete,
+                            data: { confirm: 'Are you sure you want to remove this?' } do
+                = icon('remove')
+                Remove
+
+        .clearfix
+          - if @build.duration
+            %p
+              %span.attr-name Duration:
+              #{duration_in_words(@build.finished_at, @build.started_at)}
           %p
-            %span.attr-name Duration:
-            #{duration_in_words(@build.finished_at, @build.started_at)}
-        %p
-          %span.attr-name Created:
-          #{time_ago_with_tooltip(@build.created_at)}
-        - if @build.finished_at
+            %span.attr-name Created:
+            #{time_ago_with_tooltip(@build.created_at)}
+          - if @build.finished_at
+            %p
+              %span.attr-name Finished:
+              #{time_ago_with_tooltip(@build.finished_at)}
           %p
-            %span.attr-name Finished:
-            #{time_ago_with_tooltip(@build.finished_at)}
-        %p
-          %span.attr-name Runner:
-          - if @build.runner && current_user && current_user.admin
-            = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
-          - elsif @build.runner
-            \##{@build.runner.id}
+            %span.attr-name Runner:
+            - if @build.runner && current_user && current_user.admin
+              = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
+            - elsif @build.runner
+              \##{@build.runner.id}
 
       - if @build.trigger_request
         .build-widget
