@@ -409,13 +409,22 @@ class ApplicationController < ActionController::Base
   private
 
   def set_default_sort
-    # Use the controller name so we have a distinct cookie for Issues, MRs and Dashboard
-    cookie_suffix   = "_sort_#{params[:controller].underscore}"
+    key = if is_a_listing_page_for?('issues')
+            'issues_sort'
+          elsif is_a_listing_page_for?('merge_requests')
+            'merge_requests_sort'
+          end
 
-    key = "#{(@project || @group || current_user).cookie_key}#{cookie_suffix}"
+    cookies[key]  = params[:sort] if key && params[:sort].present?
+    params[:sort] = cookies[key] if key
+    params[:sort] ||= 'id_desc'
+  end
 
-    cookies[key]  ||= 'id_desc'
-    cookies[key]  = params[:sort] if params[:sort].present?
-    params[:sort] = cookies[key]
+  def is_a_listing_page_for?(page_type)
+    controller_name, action_name = params.values_at(:controller, :action)
+
+    (controller_name == "projects/#{page_type}" && action_name == 'index') ||
+    (controller_name == 'groups' && action_name == page_type) ||
+    (controller_name == 'dashboard' && action_name == page_type)
   end
 end

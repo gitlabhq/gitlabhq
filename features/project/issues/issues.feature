@@ -68,6 +68,13 @@ Feature: Project Issues
     Then The list should be sorted by "Oldest updated"
 
   @javascript
+  Scenario: Visiting Merge Requests from a differente Project after sorting
+    Given I visit project "Shop" merge requests page
+    And I sort the list by "Oldest updated"
+    And I visit dashboard merge requests page
+    Then The list should be sorted by "Oldest updated"
+
+  @javascript
   Scenario: I search issue
     Given I fill in issue search with "Re"
     Then I should see "Release 0.4" in issues
