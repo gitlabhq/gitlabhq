@@ -3,11 +3,15 @@ textarea {
 }
 
 input {
-  border-radius: 3px;
+  border-radius: $border-radius-base;
 }
 
-input[type='search'],
-input[type='search'].search-text-input {
+input[type='search'] {
+  background-color: white;
+  padding-left: 10px;
+}
+
+input[type='search'].search-input {
   background-repeat: no-repeat;
   background-position: 10px;
   background-size: 16px;
