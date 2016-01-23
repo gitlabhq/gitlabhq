@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.0 (unreleased)
   - Add "visibility" flag to GET /projects api endpoint
+  - Ignore binary files in code search to prevent Error 500 (Stan Hu)
   - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
   - New UI for pagination
   - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
