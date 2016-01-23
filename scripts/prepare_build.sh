@@ -9,7 +9,7 @@ if [ -f /.dockerinit ]; then
     dpkg -i /cache/phantomjs_1.9.8-0jessie_amd64.deb
 
     apt-get update -qq
-    apt-get -o dir::cache::archives="/cache/apt" install -y -qq \
+    apt-get -o dir::cache::archives="/cache/apt" install -y -qq --force-yes \
         libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client
 
     cp config/database.yml.mysql config/database.yml
