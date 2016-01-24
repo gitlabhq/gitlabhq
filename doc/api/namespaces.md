@@ -1,21 +1,28 @@
 # Namespaces
 
-Namespaces account for usernames and groupnames.
+Usernames and groupnames fall under a special category called namespaces.
+
+For users and groups supported API calls see the [users](users.md) and
+[groups](groups.md) documentation respectively.
 
 [Pagination](README.md#pagination) is used.
 
 ## List namespaces
 
-Get a list of namespaces. As a user, your namespaces are listed whereas if you
-are an administrator you get a list of all namespaces in the GitLab instance.
+Get a list of the namespaces of the authenticated user. If the user is an
+administrator, a list of all namespaces in the GitLab instance is shown.
 
 ```
 GET /namespaces
 ```
 
+Example request:
+
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/namespaces
 ```
+
+Example response:
 
 ```json
 [
@@ -44,9 +51,13 @@ GET /namespaces?search=foobar
 | --------- | ---- | -------- | ----------- |
 | `search`  | string | no | Returns a list of namespaces the user is authorized to see based on the search criteria |
 
+Example request:
+
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/namespaces?search=twitter
 ```
+
+Example response:
 
 ```json
 [
