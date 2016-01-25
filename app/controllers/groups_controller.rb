@@ -87,10 +87,6 @@ class GroupsController < Groups::ApplicationController
     @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity.non_archived
   end
 
-  def project_ids
-    @projects.pluck(:id)
-  end
-
   # Dont allow unauthorized access to group
   def authorize_read_group!
     unless @group and (@projects.present? or can?(current_user, :read_group, @group))
@@ -123,7 +119,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_events
-    @events = Event.in_projects(project_ids)
+    @events = Event.in_projects(@projects)
     @events = event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

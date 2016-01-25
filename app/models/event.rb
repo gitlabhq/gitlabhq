@@ -47,7 +47,11 @@ class Event < ActiveRecord::Base
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
-  scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
+
+  scope :in_projects, ->(projects) do
+    where(project_id: projects.reorder(nil).id_only).recent
+  end
+
   scope :with_associations, -> { includes(project: :namespace) }
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
 
