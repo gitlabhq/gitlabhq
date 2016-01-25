@@ -10,7 +10,7 @@ if [ -f /.dockerinit ]; then
 
     apt-get update -qq
     apt-get -o dir::cache::archives="/cache/apt" install -y -qq --force-yes \
-        libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client
+        libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip
 
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
