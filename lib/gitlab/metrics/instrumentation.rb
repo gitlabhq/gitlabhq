@@ -106,20 +106,36 @@ module Gitlab
         if type == :instance
           target = mod
           label  = "#{mod.name}##{name}"
+          method = mod.instance_method(name)
         else
           target = mod.singleton_class
           label  = "#{mod.name}.#{name}"
+          method = mod.method(name)
         end
+
+        # Some code out there (e.g. the "state_machine" Gem) checks the arity of
+        # a method to make sure it only passes arguments when the method expects
+        # any. If we were to always overwrite a method to take an `*args`
+        # signature this would break things. As a result we'll make sure the
+        # generated method _only_ accepts regular arguments if the underlying
+        # method also accepts them.
+        if method.arity == 0
+          args_signature = '&block'
+        else
+          args_signature = '*args, &block'
+        end
+
+        send_signature = "__send__(#{alias_name.inspect}, #{args_signature})"
 
         target.class_eval <<-EOF, __FILE__, __LINE__ + 1
           alias_method #{alias_name.inspect}, #{name.inspect}
 
-          def #{name}(*args, &block)
+          def #{name}(#{args_signature})
             trans = Gitlab::Metrics::Instrumentation.transaction
 
             if trans
               start    = Time.now
-              retval   = __send__(#{alias_name.inspect}, *args, &block)
+              retval   = #{send_signature}
               duration = (Time.now - start) * 1000.0
 
               if duration >= Gitlab::Metrics.method_call_threshold
@@ -132,7 +148,7 @@ module Gitlab
 
               retval
             else
-              __send__(#{alias_name.inspect}, *args, &block)
+              #{send_signature}
             end
           end
         EOF
