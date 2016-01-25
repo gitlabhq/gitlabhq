@@ -11,7 +11,7 @@ settings page in GitLab with a default template. To configure the JIRA template,
 see the [Services Templates documentation][services-templates].
 
 Once the GitLab project is connected to JIRA, you can reference and close the
-issues in JIRA directly from GitLab's Merge requests.
+issues in JIRA directly from GitLab's merge requests.
 
 ## Configuration
 
@@ -25,7 +25,7 @@ The configuration consists of two parts:
 First things first, we need to create a user in JIRA which will have access to
 all projects that need to integrate with GitLab.
 
-We have split this stage in steps so it could be easier to follow.
+We have split this stage in steps so it is easier to follow.
 
 ---
 
@@ -36,7 +36,7 @@ We have split this stage in steps so it could be easier to follow.
 
      ---
 
-1. The next step is to create a new user (e.g., `gitlab`) who has write-access
+1. The next step is to create a new user (e.g., `gitlab`) who has write access
    to projects in JIRA. Enter the user's name and a _valid_ e-mail address
    since JIRA sends a verification e-mail to set-up the password.
    _**Note:** JIRA creates the username automatically by using the e-mail
@@ -46,7 +46,7 @@ We have split this stage in steps so it could be easier to follow.
 
      ---
 
-1. Now, let's create a `gitlab-developers` group which will have write-access
+1. Now, let's create a `gitlab-developers` group which will have write access
    to projects in JIRA. Go to the **Groups** tab and select **Create group**.
 
      ![JIRA create new user](img/jira_create_new_group.png)
@@ -67,7 +67,7 @@ We have split this stage in steps so it could be easier to follow.
 
      ---
 
-1. Add the `gitlab` user to `gitlab-developers` group by going to
+1. Add the `gitlab` user to the `gitlab-developers` group by going to
    **Users > GitLab user > Add group** and selecting the `gitlab-developers`
    group from the dropdown menu. Notice that the group says _Access_ which is
    what we aim for.
@@ -99,9 +99,9 @@ Fill in the required details on the page, as described in the table below.
 | Setting | Description |
 | ------- | ----------- |
 | `Description` | A name for the issue tracker (to differentiate between instances, for example). |
-| `Project url` | The URL to the JIRA project which is being linked to this GitLab project. It's of the form: `https://<jira_host_url>/issues/?jql=project=<jira_project>`. |
+| `Project url` | The URL to the JIRA project which is being linked to this GitLab project. It is of the form: `https://<jira_host_url>/issues/?jql=project=<jira_project>`. |
 | `Issues url`  | The URL to the JIRA project issues overview for the project that is linked to this GitLab project. It is of the form: `https://<jira_host_url>/browse/:id`. Leave `:id` as-is, it gets replaced by GitLab at runtime. |
-| `New issue url` | This is the URL to create a new issue in JIRA for the project linked to this GitLab project, and is of the form: `https://<jira_host_url>/secure/CreateIssue.jspa` |
+| `New issue url` | This is the URL to create a new issue in JIRA for the project linked to this GitLab project, and it is of the form: `https://<jira_host_url>/secure/CreateIssue.jspa` |
 | `Api url`     | The base URL of the JIRA API. It may be omitted, in which case GitLab will automatically use API version `2` based on the `project url`. It is of the form: `https://<jira_host_url>/rest/api/2`. |
 | `Username` | The username of the user created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
@@ -126,12 +126,8 @@ In the unfortunate event that you are still using GitLab < 7.8, consult the
 
 By now you should have [configured JIRA](#configuring-jira) and enabled the
 [JIRA service in GitLab](#configuring-gitlab). If everything is set up correctly
-you should be able to:
-
-- reference JIRA issues and
-- close JIRA issues
-
-by just mentioning their ID in GitLab commits and merge requests.
+you should be able to reference JIRA issues and close JIRA issues by just
+mentioning their ID in GitLab commits and merge requests.
 
 ### Referencing JIRA Issues
 
@@ -198,7 +194,7 @@ in GitLab. The workflow would be something like this:
 
 ---
 
-In the following screenshot you can see how the link references to the JIRA
+In the following screenshot you can see what the link references to the JIRA
 issue look like.
 
 ![JIRA - submit a GitLab merge request](img/jira_submit_gitlab_merge_request.png)
@@ -215,10 +211,9 @@ with a link to the commit that resolved the issue.
 You can see from the above image that there are four references to GitLab:
 
 - The first is from a comment in a specific commit
-- The second one is from the JIRA issue reference in the merge request
-  description
+- The second is from the JIRA issue reference in the merge request description
 - The third is from the actual commit that solved the issue
-- And the fourth one is from the commit that the merge request created
+- And the fourth is from the commit that the merge request created
 
 [services-templates]: ../project_services/services_templates.md "Services templates documentation"
 [JIRA Core]: https://www.atlassian.com/software/jira/core "The JIRA Core website"
