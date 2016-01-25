@@ -81,15 +81,13 @@ password as they will be needed when configuring GitLab in the next section.
 
 ### Configuring GitLab
 
+_**Note:** The currently supported JIRA versions are v6.x and v7.x._
+
 Assuming you [have already configured JIRA](#configuring-jira), now it's time
 to configure GitLab.
 
 JIRA configuration in GitLab is done via a project's
 [**Services**](../project_services/project_services.md).
-
-#### GitLab 7.8 and up
-
-_**Note:** The currently supported JIRA versions are v6.x and v7.x._
 
 To enable JIRA integration in a project, navigate to the project's
 **Settings > Services > JIRA**.
@@ -113,14 +111,6 @@ with the linked JIRA project.
 ![JIRA service page](img/jira_service_page.png)
 
 ---
-
-#### GitLab 6.x-7.7 with JIRA v6.x
-
-_**Note:** GitLab versions 7.8 and up contain various integration improvements.
-We strongly recommend upgrading._
-
-In the unfortunate event that you are still using GitLab < 7.8, consult the
-[jira_old document](jira_old.md) on how to configure JIRA.
 
 ## JIRA issues
 
