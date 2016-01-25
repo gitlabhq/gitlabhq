@@ -167,9 +167,10 @@ Where:
 ### Closing JIRA issues
 
 JIRA issues can be closed directly from GitLab by using trigger words in
-commits and merge requests. When a commit, which contains the trigger word
-followed by the JIRA issue ID in the commit message, is pushed, GitLab will
-add a comment in the mentioned JIRA issue and immediately close it.
+commits and merge requests. When a commit which contains the trigger word
+followed by the JIRA issue ID in the commit message is pushed, GitLab will
+add a comment in the mentioned JIRA issue and immediately close it (provided
+the transition ID was set up correctly).
 
 There are currently three trigger words, and you can use either one to achieve
 the same goal:
@@ -187,7 +188,7 @@ in GitLab. The workflow would be something like this:
 
 1. Create a new branch
 1. Fix the bug
-1. Commit the changes and push back to GitLab
+1. Commit the changes and push branch to GitLab
 1. Open a new merge request and reference the JIRA issue including one of the
    trigger words, e.g.: `Fixes GITLAB-1`, in the description
 1. Submit the merge request
@@ -207,9 +208,17 @@ issue look like.
 Once this merge request is merged, the JIRA issue will be automatically closed
 with a link to the commit that resolved the issue.
 
-![The GitLab integration user leaves a comment on JIRA](img/jira_service_close_issue.png)
+![The GitLab integration user leaves a comment on JIRA](img/jira_issue_closed.png)
 
 ---
+
+You can see from the above image that there are four references to GitLab:
+
+- The first is from a comment in a specific commit
+- The second one is from the JIRA issue reference in the merge request
+  description
+- The third is from the actual commit that solved the issue
+- And the fourth one is from the commit that the merge request created
 
 [services-templates]: ../project_services/services_templates.md "Services templates documentation"
 [JIRA Core]: https://www.atlassian.com/software/jira/core "The JIRA Core website"
