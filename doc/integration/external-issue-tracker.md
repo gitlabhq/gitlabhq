@@ -19,7 +19,7 @@ To enable an external issue tracker you must configure the appropriate **Service
 Visit the links below for details:
 
 - [Redmine](../project_services/redmine.md)
-- [Jira](jira.md)
+- [Jira](../project_services/jira.md)
 
 ### Service Template
 
