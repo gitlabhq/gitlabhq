@@ -26,7 +26,7 @@ Every application you authorized will be shown in your "Authorized application" 
 
 ![authorized_application](img/oauth_provider_authorized_application.png)
 
-At any time you can revoke access just clicking button "Revoke"
+As you can see we use default scope "api" here which is only scope we have so far. At any time you can revoke access just clicking button "Revoke".
 
 ### OAuth applications in admin area
 
