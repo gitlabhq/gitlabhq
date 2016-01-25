@@ -1,15 +1,15 @@
 .nav-block
   %ul.nav-links
     = nav_link(page: projects_group_path, query: { scope: nil }) do
-      = link_to projects_group_path(@group, filter: @filter, sort: @sort), title: "All projects from the '#{@group.name}' group", data: {placement: 'right'} do
+      = link_to projects_group_path(@group, sort: @sort), title: "All projects from the '#{@group.name}' group", data: {placement: 'right'} do
         = "All (#{@all_projects.size})"
 
     - if current_user
       = nav_link(page: projects_group_path, query: { scope: 'contributed' }) do
-        = link_to projects_group_path(@group, scope: 'contributed', filter: @filter, sort: @sort), title: "Projects from the '#{@group.name}' group you contributed to", data: {placement: 'right'} do
+        = link_to projects_group_path(@group, scope: 'contributed', sort: @sort), title: "Projects from the '#{@group.name}' group you contributed to", data: {placement: 'right'} do
           = "Contributed (#{@contributed_projects.size})"
       = nav_link(page: projects_group_path, query: { scope: 'starred' }) do
-        = link_to projects_group_path(@group, scope: 'starred', filter: @filter, sort: @sort), title: "Starred projects from the '#{@group.name}' group", data: {placement: 'right'} do
+        = link_to projects_group_path(@group, scope: 'starred', sort: @sort), title: "Starred projects from the '#{@group.name}' group", data: {placement: 'right'} do
           = "Starred (#{@starred_projects.size})"
 
   = render 'shared/projects/controls'

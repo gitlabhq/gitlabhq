@@ -195,21 +195,21 @@ module SharedProject
 
   step '"John Doe" owns private project "Enterprise"' do
     user_owns_project(
-      user_name: 'John Doe',
+      user: 'John Doe',
       project_name: 'Enterprise'
     )
   end
 
   step '"Mary Jane" owns private project "Enterprise"' do
     user_owns_project(
-      user_name: 'Mary Jane',
+      user: 'Mary Jane',
       project_name: 'Enterprise'
     )
   end
 
   step '"John Doe" owns internal project "Internal"' do
     user_owns_project(
-      user_name: 'John Doe',
+      user: 'John Doe',
       project_name: 'Internal',
       visibility: :internal
     )
@@ -217,7 +217,7 @@ module SharedProject
 
   step '"John Doe" owns public project "Community"' do
     user_owns_project(
-      user_name: 'John Doe',
+      user: 'John Doe',
       project_name: 'Community',
       visibility: :public
     )
@@ -357,7 +357,7 @@ module SharedProject
   end
 
   step 'I should see "Shop" project CI status' do
-    expect_link_in_list "Build skipped"
+    expect(page).to have_link "Build skipped"
   end
 
   private

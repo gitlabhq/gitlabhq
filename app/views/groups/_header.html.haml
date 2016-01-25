@@ -31,4 +31,4 @@
     = nav_link(page: group_path(@group)) do
       = link_to 'Activity', group_path(@group)
     = nav_link(page: projects_group_path(@group)) do
-      = link_to 'Projects', projects_group_path(@group, scope: params[:scope], filter: @filter, sort: @sort)
+      = link_to 'Projects', projects_group_path(@group)
