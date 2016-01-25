@@ -81,7 +81,10 @@ password as they will be needed when configuring GitLab in the next section.
 
 ### Configuring GitLab
 
-_**Note:** The currently supported JIRA versions are v6.x and v7.x._
+_**Note:** The currently supported JIRA versions are v6.x and v7.x. and GitLab
+7.8 or higher is required._
+
+---
 
 Assuming you [have already configured JIRA](#configuring-jira), now it's time
 to configure GitLab.
@@ -116,8 +119,8 @@ with the linked JIRA project.
 
 By now you should have [configured JIRA](#configuring-jira) and enabled the
 [JIRA service in GitLab](#configuring-gitlab). If everything is set up correctly
-you should be able to reference JIRA issues and close JIRA issues by just
-mentioning their ID in GitLab commits and merge requests.
+you should be able to reference and close JIRA issues by just mentioning their
+ID in GitLab commits and merge requests.
 
 ### Referencing JIRA Issues
 
