@@ -48,12 +48,15 @@
 
 .context.prepend-top-default
   %p.lead
-    Progress:
-    #{@milestone.closed_items_count} closed
-    &ndash;
-    #{@milestone.open_items_count} open
-    &nbsp;
-    %span.light #{@milestone.percent_complete}% complete
+    %h4 Progress
+    %strong= @milestone.issues.count
+    issues:
+    %strong= @milestone.open_items_count
+    open and
+    %strong= @milestone.closed_items_count
+    closed
+    %strong== #{@milestone.percent_complete}%
+    complete
     %span.pull-right= @milestone.expires_at
   = milestone_progress_bar(@milestone)
 
