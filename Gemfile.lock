@@ -356,7 +356,7 @@ GEM
       posix-spawn (~> 0.3)
     gitlab_emoji (0.2.0)
       gemojione (~> 2.1)
-    gitlab_git (7.2.23)
+    gitlab_git (7.2.24)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.7.3)
       github-linguist (~> 4.7.0)
