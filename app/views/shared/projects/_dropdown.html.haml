@@ -1,7 +1,10 @@
 .dropdown.inline
   %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
     %span.light
-      = sort_options_hash[@sort]
+      - if sort_options_hash[@sort].present?
+        = sort_options_hash[@sort]
+      - else
+        = sort_title_recently_active
       %b.caret
   %ul.dropdown-menu.dropdown-menu-align-right
     %li.dropdown-label Sort by

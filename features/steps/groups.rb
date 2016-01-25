@@ -13,6 +13,22 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     expect(page).to have_content '@owned'
   end
 
+  step 'I should see "All (4)"' do
+    expect(page).to have_link "All (4)"
+  end
+
+  step 'I should see "All (2)"' do
+    expect(page).to have_link "All (2)"
+  end
+
+  step 'I should see "Contributed (1)"' do
+    expect(page).to have_link "Contributed (1)"
+  end
+
+  step 'I should see "Starred (2)"' do
+    expect(page).to have_link "Starred (2)"
+  end
+
   step 'I am a signed out user' do
     logout
   end
@@ -156,6 +172,14 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see "Moon-project" at the top' do
     expect_top_project_in_list("Moon-project")
+  end
+
+  step 'I should see a nav block' do
+    expect(page).to have_selector(:css, '.nav-block')
+  end
+
+  step 'I should not see a nav block' do
+    expect(page).not_to have_selector(:css, '.nav-block')
   end
 
   private

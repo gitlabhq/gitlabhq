@@ -272,12 +272,12 @@ module SharedProject
     current_user.toggle_star(Project.find_by(name: 'Grocery'))
   end
 
-  step '"John Doe" someone starred project "Community"' do
+  step '"John Doe" starred project "Community"' do
     user_exists("John Doe").toggle_star(Project.find_by(name: 'Community'))
   end
 
-  step '"John Doe" someone starred project "Forum"' do
-    user_exists("John Doe").toggle_star(Project.find_by(name: 'Community'))
+  step '"John Doe" starred project "Forum"' do
+    user_exists("John Doe").toggle_star(Project.find_by(name: 'Forum'))
   end
 
   # ----------------------------------------
@@ -362,7 +362,7 @@ module SharedProject
 
   private
 
-  def event_for_project(project, user)
+  def event_for_project(project, user = nil)
     data = {
       before: Gitlab::Git::BLANK_SHA,
       after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
@@ -405,7 +405,7 @@ module SharedProject
   end
 
   def expect_link_in_list(project_name, truthy = true)
-    expect(page.find('ul.projects-list')).send (truthy ? 'to' : 'not_to'), have_content(project_name)
+    expect(page.find('ul.projects-list')).send((truthy ? 'to' : 'not_to'), have_content(project_name))
   end
 
   def user_owns_project(user:, project_name: nil, project_type: :empty_project, visibility: :private, **args)
@@ -413,5 +413,7 @@ module SharedProject
     project = Project.find_by(name: project_name)
     project ||= create(project_type, visibility, name: project_name, namespace: user.namespace, **args)
     project.team << [user, :master]
+
+    project
   end
 end

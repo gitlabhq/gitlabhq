@@ -1,8 +1,8 @@
-# == AuthenticatesWithTwoFactor
+# == ProjectsListing
 #
 # Controller concern to handle projects list filtering & sorting
 #
-# Upon inclusion, skips `require_no_authentication` on `:create`.
+# Upon inclusion, calls `load_filter_and_sort` on all actions.
 module ProjectsListing
   extend ActiveSupport::Concern
 
@@ -18,16 +18,18 @@ module ProjectsListing
   end
 
   def load_user_projects
-    @user_projects = refine_projects(ProjectsFinder.new.execute(current_user))
+    return unless current_user
+
+    @user_projects = prepare_for_listing(current_user.authorized_projects)
   end
 
   def load_starred_projects
-    @starred_projects = refine_projects(
-      current_user.starred_projects.includes(:forked_from_project)
-    )
+    return unless current_user
+
+    @starred_projects = prepare_for_listing(current_user.starred_projects)
   end
 
-  def refine_projects(relation)
+  def prepare_for_listing(relation)
     apply_filter(apply_base_scopes(relation)).sort(@sort)
   end
 

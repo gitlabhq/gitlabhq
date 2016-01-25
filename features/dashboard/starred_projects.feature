@@ -12,11 +12,13 @@ Feature: Dashboard Starred Projects
     And I starred project "Grocery"
     And project "Grocery" has push event
     And project "Community" has push event
-    And "John Doe" someone starred project "Community"
-    And "John Doe" someone starred project "Forum"
+    And "John Doe" starred project "Community"
+    And "John Doe" starred project "Forum"
     And I visit dashboard starred projects page
 
   Scenario: I should see projects list
+    Then I should see "Your projects (4)"
+    Then I should see "Starred projects (3)"
     Then I should see "Community" project link
     Then I should see "Forum" project link
     Then I should see "Grocery" project link

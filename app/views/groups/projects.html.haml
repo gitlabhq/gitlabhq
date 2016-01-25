@@ -3,9 +3,8 @@
 %div{class: container_class}
   .tab-content
     .tab-pane.active
-      - if can?(current_user, :read_group, @group)
+      - if can?(current_user, :read_group, @group) && @projects.any?
         = render 'projects_head'
         = render 'projects', projects: @projects
       - else
-        %p.nav-links.no-top
-          No projects to show
+        .nothing-here-block No projects to see

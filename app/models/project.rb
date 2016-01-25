@@ -200,13 +200,9 @@ class Project < ActiveRecord::Base
   mount_uploader :avatar, AvatarUploader
 
   # Scopes
-  scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
-  scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
-  scope :sorted_by_names, -> { joins(:namespace).reorder('namespaces.name ASC, projects.name ASC') }
-
-  # Custom sorting methods
-  sortable_by 'recently_active', :sorted_by_activity
-  sortable_by 'stars', :sorted_by_stars
+  ## Sortable
+  scope :order_stars, -> { reorder('projects.star_count DESC') }
+  scope :order_recently_active, -> { reorder(last_activity_at: :desc) }
 
   scope :without_user, ->(user)  { where('projects.id NOT IN (:ids)', ids: user.authorized_projects.map(&:id) ) }
   scope :without_team, ->(team) { team.projects.present? ? where('projects.id NOT IN (:ids)', ids: team.projects.map(&:id)) : scoped  }

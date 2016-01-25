@@ -36,12 +36,12 @@
           - if @sort.present?
             = sort_options_hash[@sort]
           - else
-            = sort_title_name
+            = sort_title_name_asc
           %b.caret
         %ul.dropdown-menu
           %li
             = link_to admin_users_path(sort: sort_value_name_asc, filter: params[:filter]) do
-              = sort_title_name
+              = sort_title_name_asc
             = link_to admin_users_path(sort: sort_value_recently_signin, filter: params[:filter]) do
               = sort_title_recently_signin
             = link_to admin_users_path(sort: sort_value_oldest_signin, filter: params[:filter]) do

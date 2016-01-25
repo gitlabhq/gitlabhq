@@ -41,10 +41,6 @@ module SortingHelper
     'Milestone due later'
   end
 
-  def sort_title_name
-    'Name'
-  end
-
   def sort_title_name_asc
     'Name from A to Z'
   end

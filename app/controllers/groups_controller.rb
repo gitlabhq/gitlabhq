@@ -5,7 +5,7 @@ class GroupsController < Groups::ApplicationController
 
   skip_before_action :authenticate_user!, only: [:show, :projects, :issues, :merge_requests]
   respond_to :html
-  before_action :group, except: [:new, :create]
+  before_action :load_group, except: [:new, :create]
 
   # Authorize
   before_action :authorize_read_group!, except: [:show, :projects, :new, :create, :autocomplete]
@@ -61,14 +61,16 @@ class GroupsController < Groups::ApplicationController
   end
 
   def projects
-    no_projects = ProjectsFinder.new.execute(current_user, group: group).empty?
-    redirect_to(group_path(@group)) if no_projects
-
+    # No matter if the user is logged-in or not, @all_projects is always needed.
     @all_projects = @projects
 
+    # When the user is logged-in, we need @all_projects, @contributed_projects
+    # and, @starred_projects to display their respective projects count in the
+    # UI. Depending on the current scope (none or 'all', 'contributed' or
+    # 'starred'), the @projects variable will reference one of these 3 variables
+    # and is used for the projects list in the page.
     if current_user
-      # @projects are the scoped project, it can reference @all_projects is the
-      # current scope is 'all' or no scope matches.
+      @starred_projects = @starred_projects.in_namespace(@group.id)
       @projects = case params[:scope]
                   when 'contributed'
                     @contributed_projects
@@ -96,35 +98,23 @@ class GroupsController < Groups::ApplicationController
 
   protected
 
-  def group
+  def load_group
     @group ||= Group.find_by(path: params[:id])
   end
 
   def load_projects
-    @projects ||= refine_projects(
-      ProjectsFinder.new.execute(current_user, group: group)
+    @projects ||= prepare_for_listing(
+      ProjectsFinder.new.execute(current_user, group: @group)
     )
   end
 
   def load_contributed_projects
     return unless current_user
 
-    @contributed_projects ||= refine_projects(
+    @contributed_projects ||= prepare_for_listing(
       ContributedProjectsFinder.new(current_user).execute(current_user).
-        in_group_namespace.in_namespace(@group.id)
-    ).reject(&:forked?)
-  end
-
-  def load_starred_projects
-    return unless current_user
-
-    @starred_projects ||= refine_projects(
-      current_user.starred_projects.in_group_namespace.in_namespace(@group.id)
+        in_namespace(@group.id)
     )
-  end
-
-  def project_ids
-    @projects.pluck(:id)
   end
 
   # Dont allow unauthorized access to group
@@ -159,7 +149,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_events
-    @events = Event.in_projects(project_ids)
+    @events = Event.in_projects(@projects).includes(:target)
     @events = event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

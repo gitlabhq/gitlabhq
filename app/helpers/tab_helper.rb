@@ -59,40 +59,28 @@ module TabHelper
   end
 
   def active_nav_link?(options)
-    active = if path = options.delete(:path)
-      unless path.respond_to?(:each)
-        path = [path]
-      end
+    active_link = if path = options.delete(:path)
+                    Array(path).any? { |single_path| current_path?(single_path) }
+                  elsif page = options.delete(:page)
+                    Array(page).any? { |single_page| current_page?(single_page) }
+                  else
+                    c = options.delete(:controller)
+                    a = options.delete(:action)
 
-      path.any? do |single_path|
-        current_path?(single_path)
-      end
-    elsif page = options.delete(:page)
-      unless page.respond_to?(:each)
-        page = [page]
-      end
-
-      page.any? do |single_page|
-        current_page?(single_page)
-      end
-    else
-      c = options.delete(:controller)
-      a = options.delete(:action)
-
-      if c && a
-        # When given both options, make sure BOTH are true
-        current_controller?(*c) && current_action?(*a)
-      else
-        # Otherwise check EITHER option
-        current_controller?(*c) || current_action?(*a)
-      end
-    end
+                    if c && a
+                      # When given both options, make sure BOTH are true
+                      current_controller?(*c) && current_action?(*a)
+                    else
+                      # Otherwise check EITHER option
+                      current_controller?(*c) || current_action?(*a)
+                    end
+                  end
 
     if query = options.delete(:query)
-      active &&= query.all? { |k,v| params[k] == v }
+      active_link &&= query.all? { |k,v| params[k] == v }
     end
 
-    active
+    active_link
   end
 
   def current_path?(path)

@@ -11,14 +11,18 @@ Feature: Groups
     When I visit group "Owned" page
     Then I should see back to dashboard button
 
-  @javascript @wip
+  @javascript
   Scenario: I should see group "Owned" dashboard list
     When I visit group "Owned" page
     And I should see projects activity feed
 
   # Projects
-  Scenario: I sort projects by recent activity
+  Scenario: I should see group "Owned" projects list
     When I visit group "Owned" projects page
+    Then I should see a nav block
+    Then I should see "All (4)"
+    Then I should see "Contributed (1)"
+    Then I should see "Starred (2)"
     Then I should see group "Owned" projects list
 
   Scenario: I sort projects by recent activity
@@ -71,6 +75,12 @@ Feature: Groups
     Then I should not see group "Owned" avatar
     And I should not see the "Remove avatar" button
 
+  @javascript
+  Scenario: I should not see a nav block if group is empty
+    And "John Doe" is owner of group "Empty"
+    When I visit group "Empty" page
+    Then I should not see a nav block
+
   # Group projects in settings
   Scenario: I should see all projects in the project list in settings
     Given Group "Owned" has archived project
@@ -85,4 +95,5 @@ Feature: Groups
     And I am a signed out user
     When I visit group "Owned" projects page
     Then I should see group "Owned"
+    Then I should see "All (2)"
     Then I should see project "Public-project"

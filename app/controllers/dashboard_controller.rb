@@ -36,6 +36,6 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def projects
-    @projects ||= current_user.authorized_projects.sorted_by_activity.non_archived
+    @projects ||= current_user.authorized_projects.sort('recently_active').non_archived
   end
 end

@@ -4,7 +4,7 @@
 .nav-block
   %ul.nav-links
     = nav_link(page: [dashboard_projects_path, root_path]) do
-      = link_to dashboard_projects_path(filter: @filter, sort: @sort), title: 'Home', class: 'shortcuts-activity', data: {placement: 'right'} do
+      = link_to dashboard_projects_path(filter: @filter, sort: @sort), title: 'Your Projects', data: {placement: 'right'} do
         = "Your Projects (#{@user_projects.size})"
     = nav_link(page: starred_dashboard_projects_path) do
       = link_to starred_dashboard_projects_path(filter: @filter, sort: @sort), title: 'Starred Projects', data: {placement: 'right'} do

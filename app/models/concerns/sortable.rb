@@ -21,36 +21,15 @@ module Sortable
   end
 
   module ClassMethods
-    # Adds a new sort method.
-    def sortable_by(sort_name, scope_name)
-      sortables[sort_name.to_s] = scope_name
-    end
-
-    # Accessor for sort methods marked mentionable.
-    def sortables
-      @sortables ||= {}
-    end
-
     def order_by(method)
       return all if method.blank?
 
       method = method.to_s
 
-      case method
-      when 'name_asc' then order_name_asc
-      when 'name_desc' then order_name_desc
-      when 'updated_asc' then order_updated_asc
-      when 'updated_desc' then order_updated_desc
-      when 'created_asc' then order_created_asc
-      when 'created_desc' then order_created_desc
-      when 'id_desc' then order_id_desc
-      when 'id_asc' then order_id_asc
+      if respond_to?("order_#{method}")
+        send "order_#{method}"
       else
-        if sortables[method].present? && respond_to?(sortables[method])
-          send(sortables[method])
-        else
-          all
-        end
+        all
       end
     end
   end
