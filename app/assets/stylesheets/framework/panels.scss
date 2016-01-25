@@ -2,7 +2,13 @@
   margin-bottom: $gl-padding;
 
   .panel-heading {
-    padding: 7px $gl-padding;
+    padding: $gl-vert-padding $gl-padding;
+    line-height: 36px;
+
+    .controls {
+      margin-top: -2px;
+      float: right;
+    }
   }
 
   .panel-body {
@@ -13,8 +19,4 @@
       margin-top: $gl-padding;
     }
   }
-}
-
-.container-blank .panel .panel-heading {
-  line-height: 42px !important;  
 }

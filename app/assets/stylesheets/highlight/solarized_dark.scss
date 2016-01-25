@@ -26,7 +26,7 @@
     }
 
     .diff-line-num.old, .line_content.old {
-      @include diff_background(rgba(220, 50, 47, 0.2), rgba(220, 50, 47, 0.3), #808080);
+      @include diff_background(rgba(220, 50, 47, 0.3), rgba(220, 50, 47, 0.3), #808080);
     }
 
     .line_content.match {

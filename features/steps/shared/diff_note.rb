@@ -23,7 +23,7 @@ module SharedDiffNote
     page.within(diff_file_selector) do
       click_diff_line(sample_commit.line_code)
 
-      page.within("form[rel$='#{sample_commit.line_code}']") do
+      page.within("form[id$='#{sample_commit.line_code}']") do
         fill_in "note[note]", with: "Typo, please fix"
         find(".js-comment-button").trigger("click")
         sleep 0.05
@@ -33,7 +33,7 @@ module SharedDiffNote
 
   step 'I leave a diff comment in a parallel view on the left side like "Old comment"' do
     click_parallel_diff_line(sample_commit.line_code, 'old')
-    page.within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
+    page.within("#{diff_file_selector} form[id$='#{sample_commit.line_code}']") do
       fill_in "note[note]", with: "Old comment"
       find(".js-comment-button").trigger("click")
     end
@@ -41,7 +41,7 @@ module SharedDiffNote
 
   step 'I leave a diff comment in a parallel view on the right side like "New comment"' do
     click_parallel_diff_line(sample_commit.line_code, 'new')
-    page.within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
+    page.within("#{diff_file_selector} form[id$='#{sample_commit.line_code}']") do
       fill_in "note[note]", with: "New comment"
       find(".js-comment-button").trigger("click")
     end
@@ -51,7 +51,7 @@ module SharedDiffNote
     page.within(diff_file_selector) do
       click_diff_line(sample_commit.line_code)
 
-      page.within("form[rel$='#{sample_commit.line_code}']") do
+      page.within("form[id$='#{sample_commit.line_code}']") do
         fill_in "note[note]", with: "Should fix it :smile:"
         find('.js-md-preview-button').click
       end
@@ -62,7 +62,7 @@ module SharedDiffNote
     page.within(diff_file_selector) do
       click_diff_line(sample_commit.del_line_code)
 
-      page.within("form[rel$='#{sample_commit.del_line_code}']") do
+      page.within("form[id$='#{sample_commit.del_line_code}']") do
         fill_in "note[note]", with: "DRY this up"
         find('.js-md-preview-button').click
       end
@@ -91,7 +91,7 @@ module SharedDiffNote
     page.within(diff_file_selector) do
       click_diff_line(sample_commit.line_code)
 
-      page.within("form[rel$='#{sample_commit.line_code}']") do
+      page.within("form[id$='#{sample_commit.line_code}']") do
         fill_in 'note[note]', with: ':smile:'
         click_button('Add Comment')
       end

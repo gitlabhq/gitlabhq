@@ -7,7 +7,7 @@
         %i.fa.fa-comment
         = notes.count
     %td.notes_content
-      %ul.notes{ rel: note.discussion_id }
+      %ul.notes{ data: { discussion_id: note.discussion_id } }
         = render notes
       .discussion-reply-holder
         = link_to_reply_diff(note)

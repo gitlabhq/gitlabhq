@@ -1,6 +1,12 @@
 # GitLab API
 
+Automate GitLab via a simple and powerful API. All definitions can be found
+under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
+
 ## Resources
+
+Documentation for various API resources can be found separately in the
+following locations:
 
 - [Users](users.md)
 - [Session](session.md)
@@ -28,16 +34,15 @@
 - [Build Variables](build_variables.md)
 - [License](license.md)
 
-## Clients
+## Authentication
 
-Find API Clients for GitLab [on our website](https://about.gitlab.com/applications/#api-clients).
-You can use [GitLab as an OAuth2 client](oauth2.md) to make API calls.
+All API requests require authentication. You need to pass a `private_token`
+parameter via query string or header. If passed as a header, the header name
+must be `PRIVATE-TOKEN` (uppercase and with a dash instead of an underscore).
+You can find or reset your private token in your account page (`/profile/account`).
 
-## Introduction
-
-All API requests require authentication. You need to pass a `private_token` parameter by URL or header. If passed as header, the header name must be "PRIVATE-TOKEN" (capital and with dash instead of underscore). You can find or reset your private token in your profile.
-
-If no, or an invalid, `private_token` is provided then an error message will be returned with status code 401:
+If `private_token` is invalid or omitted, then an error message will be
+returned with status code `401`:
 
 ```json
 {
@@ -45,71 +50,83 @@ If no, or an invalid, `private_token` is provided then an error message will be 
 }
 ```
 
-API requests should be prefixed with `api` and the API version. The API version is defined in `lib/api.rb`.
+API requests should be prefixed with `api` and the API version. The API version
+is defined in [`lib/api.rb`][lib-api-url].
 
 Example of a valid API request:
 
-```
-GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U
-```
-
-Example for a valid API request using curl and authentication via header:
-
-```
-curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "http://example.com/api/v3/projects"
+```shell
+GET https://gitlab.example.com/api/v3/projects?private_token=9koXpg98eAheJpvBs5tK
 ```
 
-The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
+Example of a valid API request using cURL and authentication via header:
+
+```shell
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
+```
+
+The API uses JSON to serialize data. You don't need to specify `.json` at the
+end of an API URL.
 
 ## Authentication with OAuth2 token
 
-Instead of the private_token you can transmit the OAuth2 access token as a header or as a parameter.
+Instead of the `private_token` you can transmit the OAuth2 access token as a
+header or as a parameter.
 
-### OAuth2 token (as a parameter)
+Example of OAuth2 token as a parameter:
 
+```shell
+curl https://gitlab.example.com/api/v3/user?access_token=OAUTH-TOKEN
 ```
-curl https://localhost:3000/api/v3/user?access_token=OAUTH-TOKEN
-```
 
-###  OAuth2 token (as a header)
+Example of OAuth2 token as a header:
 
-```
-curl -H "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
+```shell
+curl -H "Authorization: Bearer OAUTH-TOKEN" https://example.com/api/v3/user
 ```
 
 Read more about [GitLab as an OAuth2 client](oauth2.md).
 
 ## Status codes
 
-The API is designed to return different status codes according to context and action. In this way if a request results in an error the caller is able to get insight into what went wrong, e.g. status code `400 Bad Request` is returned if a required attribute is missing from the request. The following list gives an overview of how the API functions generally behave.
+The API is designed to return different status codes according to context and
+action. This way, if a request results in an error, the caller is able to get
+insight into what went wrong.
 
-API request types:
+The following table gives an overview of how the API functions generally behave.
 
-- `GET` requests access one or more resources and return the result as JSON
-- `POST` requests return `201 Created` if the resource is successfully created and return the newly created resource as JSON
-- `GET`, `PUT` and `DELETE` return `200 OK` if the resource is accessed, modified or deleted successfully, the (modified) result is returned as JSON
-- `DELETE` requests are designed to be idempotent, meaning a request a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind it is the user is not really interested if the resource existed before or not.
+| Request type | Description |
+| ------------ | ----------- |
+| `GET`   | Access one or more resources and return the result as JSON. |
+| `POST`  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON. |
+| `GET` / `PUT` / `DELETE` | Return `200 OK` if the resource is accessed, modified or deleted successfully. The (modified) result is returned as JSON. |
+| `DELETE` | Designed to be idempotent, meaning a request to a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind this, is that the user is not really interested if the resource existed before or not. |
 
-The following list shows the possible return codes for API requests.
+The following table shows the possible return codes for API requests.
 
-Return values:
-
-- `200 OK` - The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON
-- `201 Created` - The `POST` request was successful and the resource is returned as JSON
-- `400 Bad Request` - A required attribute of the API request is missing, e.g. the title of an issue is not given
-- `401 Unauthorized` - The user is not authenticated, a valid user token is necessary, see above
-- `403 Forbidden` - The request is not allowed, e.g. the user is not allowed to delete a project
-- `404 Not Found` - A resource could not be accessed, e.g. an ID for a resource could not be found
-- `405 Method Not Allowed` - The request is not supported
-- `409 Conflict` - A conflicting resource already exists, e.g. creating a project with a name that already exists
-- `422 Unprocessable` - The entity could not be processed
-- `500 Server Error` - While handling the request something went wrong on the server side
+| Return values | Description |
+| ------------- | ----------- |
+| `200 OK` | The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON. |
+| `201 Created` | The `POST` request was successful and the resource is returned as JSON. |
+| `400 Bad Request` | A required attribute of the API request is missing, e.g., the title of an issue is not given. |
+| `401 Unauthorized` | The user is not authenticated, a valid [user token](#authentication) is necessary. |
+| `403 Forbidden` | The request is not allowed, e.g., the user is not allowed to delete a project. |
+| `404 Not Found` | A resource could not be accessed, e.g., an ID for a resource could not be found. |
+| `405 Method Not Allowed` | The request is not supported. |
+| `409 Conflict` | A conflicting resource already exists, e.g., creating a project with a name that already exists. |
+| `422 Unprocessable` | The entity could not be processed. |
+| `500 Server Error` | While handling the request something went wrong server-side. |
 
 ## Sudo
 
-All API requests support performing an api call as if you were another user, if your private token is for an administration account. You need to pass  `sudo` parameter by URL or header with an id or username of the user you want to perform the operation as. If passed as header, the header name must be "SUDO" (capitals).
+All API requests support performing an API call as if you were another user,
+provided your private token is from an administrator account. You need to pass
+the `sudo` parameter either via query string or a header with an ID/username of
+the user you want to perform the operation as. If passed as a header, the
+header name must be `SUDO` (uppercase).
 
-If a non administrative `private_token` is provided then an error message will be returned with status code 403:
+If a non administrative `private_token` is provided, then an error message will
+be returned with status code `403`:
 
 ```json
 {
@@ -117,7 +134,8 @@ If a non administrative `private_token` is provided then an error message will b
 }
 ```
 
-If the sudo user id or username cannot be found then an error message will be returned with status code 404:
+If the sudo user ID or username cannot be found, an error message will be
+returned with status code `404`:
 
 ```json
 {
@@ -125,32 +143,45 @@ If the sudo user id or username cannot be found then an error message will be re
 }
 ```
 
-Example of a valid API with sudo request:
+---
 
-```
-GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=username
-```
+Example of a valid API call and a request using cURL with sudo request,
+providing a username:
 
-```
-GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=23
-```
-
-Example for a valid API request with sudo using curl and authentication via header:
-
-```
-curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: username" "http://example.com/api/v3/projects"
+```shell
+GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
 ```
 
+```shell
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v3/projects"
 ```
-curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: 23" "http://example.com/api/v3/projects"
+
+Example of a valid API call and a request using cURL with sudo request,
+providing an ID:
+
+```shell
+GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v3/projects"
 ```
 
 ## Pagination
 
-When listing resources you can pass the following parameters:
+Sometimes the returned result will span across many pages. When listing
+resources you can pass the following parameters:
 
-- `page` (default: `1`) - page number
-- `per_page` (default: `20`, max: `100`) - number of items to list per page
+| Parameter | Description |
+| --------- | ----------- |
+| `page`    | Page number (default: `1`) |
+| `per_page`| Number of items to list per page (default: `20`, max: `100`) |
+
+In the example below, we list 50 [namespaces](namespaces.md) per page.
+
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
+```
 
 ### Pagination Link header
 
@@ -200,65 +231,93 @@ Additional pagination headers are also sent back.
 | `X-Next-Page`   | The index of the next page |
 | `X-Prev-Page`   | The index of the previous page |
 
-## id vs iid
+## `id` vs `iid`
 
-When you work with API you may notice two similar fields in api entities: id and iid. The main difference between them is scope. Example:
+When you work with the API, you may notice two similar fields in API entities:
+`id` and `iid`. The main difference between them is scope.
 
-Issue:
+For example, an issue might have `id: 46` and `iid: 5`.
 
-    id: 46
-    iid: 5
+| Parameter | Description |
+| --------- | ----------- |
+| `id`  | Is unique across all issues and is used for any API call |
+| `iid` | Is unique only in scope of a single project. When you browse issues or merge requests with the Web UI, you see the `iid` |
 
-- id - is unique across all issues. It's used for any api call.
-- iid - is unique only in scope of a single project. When you browse issues or merge requests with Web UI, you see iid.
+That means that if you want to get an issue via the API you should use the `id`:
 
-So if you want to get issue with api you use `http://host/api/v3/.../issues/:id.json`. But when you want to create a link to web page - use  `http:://host/project/issues/:iid.json`
+```bash
+GET /projects/42/issues/:id
+```
+
+On the other hand, if you want to create a link to a web page you should use
+the `iid`:
+
+```bash
+GET /projects/42/issues/:iid
+```
 
 ## Data validation and error reporting
 
-When working with the API you may encounter validation errors. In such case, the API will answer with an HTTP `400` status.
+When working with the API you may encounter validation errors, in which case
+the API will answer with an HTTP `400` status.
+
 Such errors appear in two cases:
 
-* A required attribute of the API request is missing, e.g. the title of an issue is not given
-* An attribute did not pass the validation, e.g. user bio is too long
+- A required attribute of the API request is missing, e.g., the title of an
+  issue is not given
+- An attribute did not pass the validation, e.g., user bio is too long
 
 When an attribute is missing, you will get something like:
 
-    HTTP/1.1 400 Bad Request
-    Content-Type: application/json
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+{
+    "message":"400 (Bad request) \"title\" not given"
+}
+```
 
-    {
-        "message":"400 (Bad request) \"title\" not given"
+When a validation error occurs, error messages will be different. They will
+hold all details of validation errors:
+
+```
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+{
+    "message": {
+        "bio": [
+            "is too long (maximum is 255 characters)"
+        ]
     }
+}
+```
 
-When a validation error occurs, error messages will be different. They will hold all details of validation errors:
+This makes error messages more machine-readable. The format can be described as
+follows:
 
-    HTTP/1.1 400 Bad Request
-    Content-Type: application/json
-
-    {
-        "message": {
-            "bio": [
-                "is too long (maximum is 255 characters)"
-            ]
-        }
-    }
-
-This makes error messages more machine-readable. The format can be described as follow:
-
-    {
-        "message": {
+```json
+{
+    "message": {
+        "<property-name>": [
+            "<error-message>",
+            "<error-message>",
+            ...
+        ],
+        "<embed-entity>": {
             "<property-name>": [
                 "<error-message>",
                 "<error-message>",
                 ...
             ],
-            "<embed-entity>": {
-                "<property-name>": [
-                    "<error-message>",
-                    "<error-message>",
-                    ...
-                ],
-            }
         }
     }
+}
+```
+
+## Clients
+
+There are many unofficial GitLab API Clients for most of the popular
+programming languages. Visit the [GitLab website] for a complete list.
+
+[GitLab website]: https://about.gitlab.com/applications/#api-clients "Clients using the GitLab API"
+[lib-api-url]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api/api.rb

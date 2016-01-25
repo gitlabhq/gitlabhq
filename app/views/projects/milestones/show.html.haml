@@ -32,7 +32,7 @@
         = icon('pencil-square-o')
         Edit
 
-.detail-page-description.gray-content-block.second-block
+.detail-page-description.content-block
   %h2.title
     = markdown escape_once(@milestone.title), pipeline: :single_line
   %div
@@ -73,8 +73,8 @@
 
 .tab-content
   .tab-pane.active#tab-issues
-    .gray-content-block.middle-block
-      .pull-right
+    .content-block.oneline-block
+      .controls
         - if can?(current_user, :create_issue, @project)
           = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
             %i.fa.fa-plus
@@ -97,8 +97,8 @@
         = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed, id: 'closed')
 
   .tab-pane#tab-merge-requests
-    .gray-content-block.middle-block
-      .pull-right
+    .content-block.oneline-block
+      .controls
         - if can?(current_user, :read_merge_request, @project)
           = link_to 'Browse Merge Requests', namespace_project_merge_requests_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
 
@@ -120,9 +120,8 @@
               = render 'merge_request', merge_request: merge_request
 
   .tab-pane#tab-participants
-    .gray-content-block.middle-block
-      .oneline
-        All participants to this milestone
+    .content-block.oneline-block
+      All participants to this milestone
 
     %ul.bordered-list
       - @users.each do |user|

@@ -35,7 +35,7 @@
           Edit
 
   .issue-details.issuable-details
-    .detail-page-description.gray-content-block.second-block
+    .detail-page-description.content-block
       %h2.title
         = markdown escape_once(@issue.title), pipeline: :single_line
       %div
@@ -50,7 +50,7 @@
         .merge-requests
           = render 'merge_requests'
 
-    .gray-content-block.second-block.oneline-block
+    .content-block
       = render 'votes/votes_block', votable: @issue
 
     .row

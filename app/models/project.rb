@@ -1036,6 +1036,10 @@ class Project < ActiveRecord::Base
     ensure_runners_token!
   end
 
+  def wiki
+    @wiki ||= ProjectWiki.new(self, self.owner)
+  end
+
   def pages_url
     if Dir.exist?(public_pages_path)
       host = "#{namespace.path}.#{Settings.pages.host}"

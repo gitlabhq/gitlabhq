@@ -218,8 +218,9 @@ gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
-
 gem "gitlab-license", "~> 0.0.4"
+# Sentry integration
+gem 'sentry-raven'
 
 # Metrics
 group :metrics do
@@ -302,9 +303,6 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
-
-  # Sentry integration
-  gem 'sentry-raven'
 end
 
 gem "newrelic_rpm", '~> 3.9.4.245'
