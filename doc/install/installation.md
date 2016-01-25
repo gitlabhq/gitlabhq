@@ -107,7 +107,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-_**Note:** The current supported Ruby versions are 2.1.x. Ruby 2.2 and 2.3 are
+_**Note:** The current supported Ruby version is 2.2.x. Ruby 2.3 is
 currently not supported._
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
