@@ -61,7 +61,7 @@ class Repository
   # This method return true if repository contains some content visible in project page.
   #
   def has_visible_content?
-    !raw_repository.branches.empty?
+    raw_repository.branch_count > 0
   end
 
   def commit(id = 'HEAD')
