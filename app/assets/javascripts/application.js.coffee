@@ -203,4 +203,13 @@ $ ->
     form = btn.closest("form")
     new ConfirmDangerModal(form, text)
 
+  $('input[type="search"]').each ->
+    $this = $(this)
+    $this.attr 'value', $this.val()
+    return
+    
+  $(document).on 'keyup', 'input[type="search"]' , (e) ->
+    $this = $(this)
+    $this.attr 'value', $this.val()
+
   new Aside()
