@@ -79,7 +79,7 @@ We have split this stage in steps so it could be easier to follow.
 The JIRA configuration is over. Write down the new JIRA username and its
 password as they will be needed when configuring GitLab in the next section.
 
-## Configuring GitLab
+### Configuring GitLab
 
 Assuming you [have already configured JIRA](#configuring-jira), now it's time
 to configure GitLab.
