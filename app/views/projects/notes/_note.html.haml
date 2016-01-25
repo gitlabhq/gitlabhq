@@ -1,4 +1,4 @@
-%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
+%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)] }
   .timeline-entry-inner
     .timeline-icon
       %a{href: user_path(note.author)}

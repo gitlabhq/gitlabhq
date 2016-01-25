@@ -38,6 +38,7 @@ class Issue < ActiveRecord::Base
 
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
+  scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
   state_machine :state, initial: :opened do
     event :close do

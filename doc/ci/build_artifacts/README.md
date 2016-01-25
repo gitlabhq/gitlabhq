@@ -11,6 +11,11 @@ Starting from GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format
 changed to `ZIP`, and it is now possible to browse its contents, with the added
 ability of downloading the files separately.
 
+**Note:**
+The artifacts browser will be available only for new artifacts that are sent
+to GitLab using GitLab Runner version 1.0 and up. You will not be available to
+see the browser for old artifacts already uploaded to GitLab.
+
 ## Enabling build artifacts
 
 _If you are searching for ways to use artifacts, jump to
@@ -152,7 +157,7 @@ inside GitLab that make that possible.
 1. While inside a specific build, you are presented with a download button
    along with the one that browses the archive
 
-1. And finally, when browsing and archive you can see the download button at
+1. And finally, when browsing an archive you can see the download button at
    the top right corner
 
 ---

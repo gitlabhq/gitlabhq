@@ -904,4 +904,8 @@ class Project < ActiveRecord::Base
   def runners_token
     ensure_runners_token!
   end
+
+  def wiki
+    @wiki ||= ProjectWiki.new(self, self.owner)
+  end
 end

@@ -5,7 +5,7 @@
     %small
       (#{members.count})
     - if can?(current_user, :admin_group_member, @group)
-      .pull-right
+      .controls
         = link_to group_group_members_path(@group), class: 'btn' do
           = icon('pencil-square-o')
           Manage group members

@@ -181,6 +181,15 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     leave_comment "Line is wrong"
   end
 
+  step 'user "John Doe" leaves a comment like "Line is wrong" on diff' do
+    mr = MergeRequest.find_by(title: "Bug NS-05")
+    create(:note_on_merge_request_diff, project: project,
+                                        noteable_id: mr.id,
+                                        author: user_exists("John Doe"),
+                                        line_code: sample_commit.line_code,
+                                        note: 'Line is wrong')
+  end
+
   step 'I leave a comment like "Line is wrong" on diff in commit' do
     click_diff_line(sample_commit.line_code)
     leave_comment "Line is wrong"
@@ -236,6 +245,22 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
     end
+  end
+
+  step 'I should see a discussion by user "John Doe" has started on diff' do
+    page.within(".notes .discussion") do
+      page.should have_content "#{user_exists("John Doe").name} started a discussion"
+      page.should have_content sample_commit.line_code_path
+      page.should have_content "Line is wrong"
+    end
+  end
+
+  step 'I should see a badge of "1" next to the discussion link' do
+    expect_discussion_badge_to_have_counter("1")
+  end
+
+  step 'I should see a badge of "0" next to the discussion link' do
+    expect_discussion_badge_to_have_counter("0")
   end
 
   step 'I should see a discussion has started on commit diff' do
@@ -451,5 +476,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   def have_visible_content (text)
     have_css("*", text: text, visible: true)
+  end
+
+  def expect_discussion_badge_to_have_counter(value)
+    page.within(".notes-tab .badge") do
+      page.should have_content value
+    end
   end
 end
