@@ -156,18 +156,22 @@ If multiple LDAP email attributes are present, e.g. `mail: foo@bar.com` and `ema
 
 ## LDAP group synchronization (GitLab Enterprise Edition)
 
-LDAP group synchronization in GitLab Enterprise Edition allows you to synchronize the members of a GitLab group with one or more LDAP groups.
+LDAP group synchronization in GitLab Enterprise Edition allows you to
+synchronize the members of a GitLab group with one or more LDAP groups.
 
 ### Setting up LDAP group synchronization
 
-Before enabling group synchronization, you need to make sure that the `group_base` field is set in your LDAP settings on
-your `gitlab.rb` or `gitlab.yml` file. This setting will tell GitLab where to look for groups within your LDAP server.
+Before enabling group synchronization, you need to make sure that the
+`group_base` field is set in your LDAP settings on your `gitlab.rb` or
+`gitlab.yml` file. This setting will tell GitLab where to look for groups
+within your LDAP server.
 
 ```
 group_base: 'OU=groups,DC=example,DC=com'
 ```
 
-Suppose we want to synchronize the GitLab group 'example group' with the LDAP group 'Engineering'.
+Suppose we want to synchronize the GitLab group 'example group' with the LDAP
+group 'Engineering'.
 
 1. As an owner, go to the group settings page for 'example group'.
 
@@ -179,18 +183,25 @@ As an admin you can also go to the group edit page in the admin area.
 
 2. Enter 'Engineering' as the LDAP Common Name (CN) in the 'LDAP Group cn' field.
 
-3. Enter a default group access level in the 'LDAP Access' field; let's say Developer.
+3. Enter a default group access level in the 'LDAP Access' field; let's say
+Developer.
 
 ![LDAP group settings filled in](ldap/select_group_cn_engineering.png)
 
 4. Click 'Add synchronization' to add the new LDAP group link.
 
-Now every time a member of the 'Engineering' LDAP group signs in, they automatically become a Developer-level member of the 'example group' GitLab group. Users who are already signed in will see the change in membership after up to one hour.
+Now every time a member of the 'Engineering' LDAP group signs in, they
+automatically become a Developer-level member of the 'example group' GitLab
+group. Users who are already signed in will see the change in membership after
+up to one hour.
 
 ### Synchronizing with more than one LDAP group (GitLab EE 7.3 and newer)
 
-If you want to add the members of LDAP group to your GitLab group you can add an additional LDAP group link.
-If you have two LDAP group links, e.g. 'cn=Engineering' at level 'Developer' and 'cn=QA' at level 'Reporter', and user Jane belongs to both the 'Engineering' and 'QA' LDAP groups, she will get the _highest_ access level of the two, namely 'Developer'.
+If you have two LDAP group links, and a user belongs to both LDAP groups, they
+will receive the _highest_ access level of the two. For example, suppose you
+have configured group sync for the 'Engineering' group at level 'Developer' and
+'QA' group at level 'Reporter'. User 'Jane' belongs to both the 'Engineering' and
+'QA' LDAP groups so she will receive the 'Developer' role.
 
 ![Two linked LDAP groups](ldap/two_linked_ldap_groups.png)
 

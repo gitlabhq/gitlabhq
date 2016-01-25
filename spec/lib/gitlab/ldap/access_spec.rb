@@ -4,7 +4,7 @@ describe Gitlab::LDAP::Access, lib: true do
   let(:access) { Gitlab::LDAP::Access.new user }
   let(:user) { create(:omniauth_user) }
 
-  describe :allowed? do
+  describe '#allowed?' do
     subject { access.allowed? }
 
     context 'when the user cannot be found' do
@@ -40,7 +40,7 @@ describe Gitlab::LDAP::Access, lib: true do
         end
       end
 
-      context 'and has no disabled flag in active diretory' do
+      context 'and has no disabled flag in active directory' do
         before do
           allow(Gitlab::LDAP::Person).to receive(:disabled_via_active_directory?).and_return(false)
         end
@@ -71,7 +71,7 @@ describe Gitlab::LDAP::Access, lib: true do
         end
       end
 
-      context 'withoud ActiveDirectory enabled' do
+      context 'without ActiveDirectory enabled' do
         before do
           allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
           allow_any_instance_of(Gitlab::LDAP::Config).to receive(:active_directory).and_return(false)
@@ -82,41 +82,67 @@ describe Gitlab::LDAP::Access, lib: true do
     end
   end
 
-  describe :update_permissions do
-    subject { access.update_permissions }
+  describe '#update_user' do
+    subject { access.update_user }
+    let(:entry) do
+      Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com")
+    end
+    before do
+      allow(access).to(
+        receive_messages(
+          ldap_user: Gitlab::LDAP::Person.new(entry, user.ldap_identity.provider)
+        )
+      )
+    end
 
-    it "syncs ssh keys if enabled by configuration" do
-      allow(access).to receive_messages(group_base: '', sync_ssh_keys?: 'sshpublickey', import_kerberos_identities?: false)
+    it 'updates email address' do
+      expect(access).to receive(:update_email).once
+
+      subject
+    end
+
+    it 'syncs ssh keys if enabled by configuration' do
+      allow(access).to receive_messages(group_base: '', sync_ssh_keys?: true)
       expect(access).to receive(:update_ssh_keys).once
 
       subject
     end
 
-    it "does update group permissions with a group base configured" do
-      allow(access).to receive_messages(group_base: 'my-group-base', sync_ssh_keys?: false, import_kerberos_identities?: false)
+    it 'update_kerberos_identity' do
+      allow(access).to receive_messages(import_kerberos_identities?: true)
+      expect(access).to receive(:update_kerberos_identity).once
+
+      subject
+    end
+  end
+
+  describe '#update_permissions' do
+    subject { access.update_permissions }
+
+    it 'does update group permissions with a group base configured' do
+      allow(access).to receive_messages(group_base: 'my-group-base')
       expect(access).to receive(:update_ldap_group_links)
 
       subject
     end
 
-    it "does not update group permissions without a group base configured" do
-      allow(access).to receive_messages(group_base: '', sync_ssh_keys?: false, import_kerberos_identities?: false)
+    it 'does not update group permissions without a group base configured' do
+      allow(access).to receive_messages(group_base: '')
       expect(access).not_to receive(:update_ldap_group_links)
 
       subject
     end
 
-    it "does update admin group permissions if admin group is configured" do
-      allow(access).to receive_messages(admin_group: 'my-admin-group', update_ldap_group_links: nil, sync_ssh_keys?: false, import_kerberos_identities?: false)
+    it 'does update admin group permissions if admin group is configured' do
+      allow(access).to receive_messages(admin_group: 'my-admin-group')
       expect(access).to receive(:update_admin_status)
 
       subject
     end
 
-    it "does update Kerberos identities if Kerberos is enabled and the LDAP server is Active Directory" do
-      allow(access).to receive_messages(group_base: '', sync_ssh_keys?: false, import_kerberos_identities?: true)
-
-      expect(access).to receive(:update_kerberos_identity)
+    it 'does not update admin status when admin group is not configured' do
+      allow(access).to receive_messages(admin_group: '')
+      expect(access).not_to receive(:update_admin_status)
 
       subject
     end
@@ -328,19 +354,19 @@ objectclass: posixGroup
       end
     end
 
-    context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
+    context 'existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER' do
       before do
         gitlab_group_1.group_members.masters.create(user_id: user.id)
         gitlab_group_1.ldap_group_links.create({
           cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER, provider: 'ldapmain' })
       end
 
-      it "keeps the users master access for group 1" do
-        expect { access.update_ldap_group_links }.not_to \
-          change{ gitlab_group_1.has_master?(user) }
+      it 'downgrades the users access' do
+        expect { access.update_ldap_group_links }.to \
+          change{ gitlab_group_1.has_master?(user) }.from(true).to(false)
       end
 
-      it "doesn't send a notification email" do
+      it 'does not send a notification email' do
         expect { access.update_ldap_group_links }.not_to \
           change { ActionMailer::Base.deliveries }
       end
@@ -451,17 +477,33 @@ objectclass: posixGroup
       ]
     end
 
-    let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, user.ldap_identity.provider) }
-
     before do
-      allow(access).to receive_messages(ldap_user: ldap_user)
-      allow(ldap_user).to receive(:uid) { 'user1' }
       allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
+      allow(access).to receive_messages(ldap_groups: ldap_groups)
     end
 
-    it "only returns ldap cns to which the user has access" do
-      allow(access).to receive_messages(ldap_groups: ldap_groups)
-      expect(access.cns_with_access).to eql ['group1']
+    context 'when the LDAP user exists' do
+      let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, user.ldap_identity.provider) }
+
+      before do
+        allow(access).to receive_messages(ldap_user: ldap_user)
+        allow(ldap_user).to receive(:uid) { 'user1' }
+      end
+
+      it 'only returns ldap cns to which the user has access' do
+        expect(access.cns_with_access).to eq(['group1'])
+      end
+    end
+
+    context 'when the LADP user does not exist' do
+      let(:ldap_user) { nil }
+      before do
+        allow(access).to receive_messages(ldap_user: ldap_user)
+      end
+
+      it 'returns an empty array' do
+        expect(access.cns_with_access).to eq([])
+      end
     end
   end
 end
