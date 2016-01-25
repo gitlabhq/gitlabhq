@@ -85,6 +85,10 @@ class Label < ActiveRecord::Base
     issues.opened.count
   end
 
+  def closed_issues_count
+    issues.closed.count
+  end
+
   def template?
     template
   end

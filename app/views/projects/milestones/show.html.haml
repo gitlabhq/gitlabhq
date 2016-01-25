@@ -70,6 +70,10 @@
     = link_to '#tab-participants', 'data-toggle' => 'tab' do
       Participants
       %span.badge= @users.count
+  %li
+    = link_to '#tab-labels', 'data-toggle' => 'tab' do
+      Labels
+      %span.badge= @labels.count
 
 .tab-content
   .tab-pane.active#tab-issues
@@ -128,3 +132,12 @@
             %strong= truncate(user.name, lenght: 40)
             %br
             %small.cgray= user.username
+
+  .tab-pane#tab-labels
+    %ul.bordered-list.manage-labels-list
+      - @labels.each do |label|
+        %li
+          = render_colored_label(label)
+          .pull-right
+            %span.issues-count= pluralize label.open_issues_count, 'open issue'
+            %span.issues-count= pluralize label.closed_issues_count, 'closed issue'
