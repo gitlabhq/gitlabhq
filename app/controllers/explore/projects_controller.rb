@@ -21,7 +21,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def starred
-    @projects = ProjectsFinder.new.execute(current_user).non_archived.
-      sort('stars').page(params[:page]).per(PER_PAGE)
+    @projects = ProjectsFinder.new.execute(current_user).sort('stars').
+      page(params[:page]).per(PER_PAGE)
   end
 end
