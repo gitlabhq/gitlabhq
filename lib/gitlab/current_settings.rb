@@ -39,6 +39,13 @@ module Gitlab
                end
 
       use_db && ActiveRecord::Base.connection.active? &&
+                # The following condition is important: if a migrations adds a
+                # column to the application_settings table and a validation in
+                # the ApplicationSetting uses this new column we might end-up in
+                # a vicious circle where migration crash before being done.
+                # See https://gitlab.com/gitlab-org/gitlab-ce/issues/12606 for
+                # a thorough explanation.
+                !ActiveRecord::Migrator.needs_migration? &&
                 ActiveRecord::Base.connection.table_exists?('application_settings')
 
     rescue ActiveRecord::NoDatabaseError
