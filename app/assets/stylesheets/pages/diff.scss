@@ -79,10 +79,8 @@
       margin: 0px;
       padding: 0px;
       border: none;
-      background: $background-color;
-      color: rgba(0, 0, 0, 0.3);
       padding: 0px 5px;
-      border-right: 1px solid $border-color;
+      border-right: 1px solid;
       text-align: right;
       min-width: 35px;
       max-width: 50px;
@@ -92,7 +90,6 @@
         float: left;
         width: 35px;
         font-weight: normal;
-        color: rgba(0, 0, 0, 0.3);
         &:hover {
           text-decoration: underline;
         }

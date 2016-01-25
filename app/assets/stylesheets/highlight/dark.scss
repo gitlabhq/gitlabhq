@@ -10,8 +10,8 @@
   }
 
   // Code itself
-  pre.code {
-    border-left: 1px solid #666;
+  pre.code, .diff-line-num {
+    border-color: #666;
   }
 
   &, pre.code, .line_holder .line_content {

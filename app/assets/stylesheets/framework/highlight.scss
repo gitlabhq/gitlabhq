@@ -17,6 +17,7 @@
     overflow-y: hidden;
     white-space: pre;
     word-wrap: normal;
+    border-left: 1px solid;
 
     code {
       font-family: $monospace_font;
@@ -25,7 +26,7 @@
       padding: 0;
 
       .line {
-        display: inline;
+        display: inline-block;
       }
     }
   }
@@ -51,20 +52,5 @@
         visibility: visible;
       }
     }
-  }
-}
-
-.note-text .code {
-  border: none;
-  box-shadow: none;
-  background: $background-color;
-  padding: 1em;
-  overflow-x: auto;
-
-  code {
-    font-family: $monospace_font;
-    white-space: pre;
-    word-wrap: normal;
-    padding: 0;
   }
 }
