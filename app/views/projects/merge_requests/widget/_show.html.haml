@@ -9,13 +9,21 @@
 
 :javascript
   var merge_request_widget;
-
-  merge_request_widget = new MergeRequestWidget({
+  var opts = {
     url_to_automerge_check: "#{merge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
-    url_to_ci_check: "#{st_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
-    ci_enable: #{@project.ci_service ? "true" : "false"},
-    current_status: "#{@merge_request.gitlab_merge_status}"
-  });
-  var cici = "#{@project}"
+    url_to_ci_check: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
+    ci_enable: #{@project.ci_service ? "true" : "false"}
+  };
 
+- if @merge_request.ci_commit
+  :javascript
+    opts.current_status = "#{@merge_request.ci_commit.try(:status)}";
+    opts.ci_message = "Build {{status}} for #{@merge_request.ci_commit.sha}";
+- else
+  :javascript
+    opts.current_status = "#{@merge_request.source_project.ci_service.commit_status(@merge_request.last_commit.sha, merge_request.source_branch) if @merge_request.source_project.ci_service}";
+    opts.ci_message = "Build {{status}} for #{@merge_request.last_commit.sha}";
+
+:javascript
+  merge_request_widget = new MergeRequestWidget(opts);

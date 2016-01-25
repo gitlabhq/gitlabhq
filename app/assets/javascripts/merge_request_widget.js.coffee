@@ -10,6 +10,8 @@ class @MergeRequestWidget
   constructor: (@opts) ->
     modal = $('#modal_merge_info').modal(show: false)
     @getBuildStatus()
+    # clear the build poller
+    $(document).on 'page:fetch', (e) => clearInterval(@fetchBuildStatusInterval)
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
@@ -31,12 +33,43 @@ class @MergeRequestWidget
     $.get @opts.url_to_automerge_check, (data) ->
       $('.mr-state-widget').replaceWith(data)
 
+  ciIconForStatus: (status) ->
+    icon = undefined
+    switch status
+      when 'success'
+        icon = 'check'
+      when 'failed'
+        icon = 'close'
+      when 'running' or 'pending'
+        icon = 'clock-o'
+      else
+        icon = 'circle'
+    'fa fa-' + icon + ' fa-fw'
+
+  ciLabelForStatus: (status) ->
+    if status == 'success'
+      'passed'
+    else
+      status
+
   getBuildStatus: ->
     urlToCiCheck = @opts.url_to_ci_check
-    console.log('checking')
-    setInterval (->
+    _this = @
+    @fetchBuildStatusInterval = setInterval (->
       $.getJSON urlToCiCheck, (data) ->
-        console.log("data",data);
+        if data.status isnt _this.opts.current_status
+          notify("Build #{_this.ciLabelForStatus(data.status)}",
+            _this.opts.ci_message.replace('{{status}}',
+              _this.ciLabelForStatus(data.status)));
+          _this.opts.current_status = data.status
+          $('.mr-widget-heading i')
+            .removeClass()
+            .addClass(_this.ciIconForStatus(data.status));
+          $('.mr-widget-heading .ci_widget')
+            .removeClass()
+            .addClass("ci_widget ci-#{data.status}");
+          $('.mr-widget-heading span.ci-status-label')
+            .text(_this.ciLabelForStatus(data.status))
         return
       return
     ), 5000

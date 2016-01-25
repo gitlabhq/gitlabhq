@@ -4,7 +4,8 @@
       = ci_status_icon(@ci_commit)
       %span
         Build
-        = ci_status_label(@ci_commit)
+        %span.ci-status-label
+          = ci_status_label(@ci_commit)
       for
       = succeed "." do
         = link_to @ci_commit.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @ci_commit.sha), class: "monospace"
