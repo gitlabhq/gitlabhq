@@ -1,15 +1,15 @@
 # GitLab JIRA integration
 
-GitLab can be configured to interact with JIRA. Configuration happens via
+GitLab can be configured to interact with [JIRA]. Configuration happens via
 username and password. Connecting to a JIRA server via CAS is not possible.
 
-Each project can be configured to connect to a different JIRA instance, see the
-[configuration](#configuration) section. If you have one JIRA instance you can
-pre-fill the settings page with a default template. To configure the template
-see the [Services Templates][services-templates] document.
+Each project can be configured to connect to a different JIRA instance or, in
+case you have one JIRA instance, you can pre-fill the JIRA service settings page
+with a default template. To configure the template, see the
+[Services Templates documentation][services-templates].
 
 Once the project is connected to JIRA, you can reference and close the issues
-in JIRA directly from GitLab.
+in JIRA directly from GitLab's Merge requests.
 
 ## Configuration
 
@@ -20,14 +20,62 @@ The configuration consists of two parts:
 
 ### Configuring JIRA
 
-We need to create a user in JIRA which will have access to all projects that
-need to integrate with GitLab. Login to your JIRA instance as admin and under
-Administration go to User Management and create a new user.
+First things first, we need to create a user in JIRA which will have access to
+all projects that need to integrate with GitLab.
 
-As an example, we'll create a user named `gitlab` and add it to `jira-developers`
-group.
+We have split this stage in steps so it could be easier to follow.
 
-**It is important that the user `gitlab` has write-access to projects in JIRA**
+---
+
+1. Login to your JIRA instance as an administrator and under **Administration**
+   go to **User Management** and create a new user.
+
+     ![JIRA user management link](img/jira_user_management_link.png)
+
+     ---
+
+1. The next step is to create a new user (e.g., `gitlab`) who has write-access
+   to projects in JIRA. Enter the user's name and a valid e-mail address in
+   order to set-up their password.
+   _**Note:** JIRA creates the username automatically by using the e-mail
+   prefix. You can change the username later if you want._
+
+     ![JIRA create new user](img/jira_create_new_user.png)
+
+     ---
+
+1. Now, let's create a `gitlab-developers` group which will have write-access
+   to projects in JIRA. Go to the **Groups** tab and select **Create group**.
+
+     ![JIRA create new user](img/jira_create_new_group.png)
+
+     ---
+
+     Give it an optional description and hit **Create group**.
+
+     ![JIRA create new group](img/jira_create_new_group_name.png)
+
+     ---
+
+1. Give the newly-created group write access by going to
+   **Application access > View configuration** and adding the `gitlab-developers`
+   group to JIRA Core.
+
+     ![JIRA group access](img/jira_group_access.png)
+
+     ---
+
+1. Add the `gitlab` user to `gitlab-developers` group by going to
+   **Users > GitLab user > Add group** and selecting the `gitlab-developers`
+   group from the dropdown menu. Notice that the group says _Access_ which is
+   what we aim for.
+
+     ![JIRA add user to group](img/jira_add_user_to_group.png)
+
+---
+
+The JIRA configuration is over. Note the new user `gitlab` and its password as
+they will be needed when configuring GitLab in the next section.
 
 ### Configuring GitLab
 
@@ -119,4 +167,5 @@ with a link to the commit that resolved the issue.
 
 ---
 
-[services-templates]: ../project_services/services_templates.md
+[services-templates]: ../project_services/services_templates.md "Services templates documentation"
+[JIRA]: https://www.atlassian.com/software/jira/core "The JIRA Core website"
