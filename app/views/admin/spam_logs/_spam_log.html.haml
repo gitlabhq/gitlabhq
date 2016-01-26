@@ -1,7 +1,7 @@
 - user = spam_log.user
 %tr
   %td
-    = spam_log.created_at.to_s(:short)
+    = time_ago_with_tooltip(spam_log.created_at)
   %td
     - if user
       = link_to user.name, user
