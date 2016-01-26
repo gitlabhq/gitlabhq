@@ -57,6 +57,9 @@
     closed
     %strong== #{@milestone.percent_complete}%
     complete
+    %span.time-elapsed
+      %strong== #{@milestone.percent_time_used}%
+      time elapsed
     %span.pull-right= @milestone.expires_at
   = milestone_progress_bar(@milestone)
 

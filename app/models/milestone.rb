@@ -110,6 +110,15 @@ class Milestone < ActiveRecord::Base
     0
   end
 
+  def percent_time_used
+    return 100 if expired?
+
+    duration = ((created_at - due_date.to_datetime) / 1.day)
+    days_elapsed = ((created_at - Time.now) / 1.day)
+
+    ((days_elapsed.to_f / duration) * 100).floor
+  end
+
   def expires_at
     if due_date
       if due_date.past?
