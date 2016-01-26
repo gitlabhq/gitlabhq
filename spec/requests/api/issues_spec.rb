@@ -249,12 +249,16 @@ describe API::API, api: true  do
       end
     end
 
-    it "should not create a new project issue" do
-      expect {
-        post api("/projects/#{project.id}/issues", user),
-             title: 'new issue', description: 'content here', labels: 'label, label2'
-      }.not_to change(Issue, :count)
+    let(:params) do
+      {
+        title: 'new issue',
+        description: 'content here',
+        labels: 'label, label2'
+      }
+    end
 
+    it "should not create a new project issue" do
+      expect { post api("/projects/#{project.id}/issues", user), params }.not_to change(Issue, :count)
       expect(response.status).to eq(400)
       expect(json_response['message']).to eq({ "error" => "Spam detected" })
 

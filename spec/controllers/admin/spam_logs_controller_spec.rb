@@ -20,10 +20,7 @@ describe Admin::SpamLogsController do
 
   describe '#destroy' do
     it 'removes only the spam log when removing log' do
-      expect {
-        delete :destroy, id: first_spam.id
-      }.to change { SpamLog.count }.by(-1)
-
+      expect { delete :destroy, id: first_spam.id }.to change { SpamLog.count }.by(-1)
       expect(User.find(user.id)).to be_truthy
       expect(response.status).to eq(200)
     end
