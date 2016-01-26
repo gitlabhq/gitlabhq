@@ -26,6 +26,10 @@ class Spinach::Features::ExploreGroups < Spinach::FeatureSteps
     visit group_path(Group.find_by(name: "TestGroup"))
   end
 
+  step 'I visit group "NonExistentGroup" page' do
+    visit group_path(-1)
+  end
+
   step 'I visit group "TestGroup" issues page' do
     visit issues_group_path(Group.find_by(name: "TestGroup"))
   end
