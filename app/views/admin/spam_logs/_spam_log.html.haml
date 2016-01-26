@@ -16,7 +16,7 @@
   %td
     = spam_log.title
   %td
-    = spam_log.truncated_description
+    = truncate(spam_log.description, length: 100)
   %td
     - if user
       = link_to 'Remove user', admin_spam_log_path(spam_log, remove_user: true),
