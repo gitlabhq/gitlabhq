@@ -1,5 +1,15 @@
 .member-search-form {
   float: left;
+
+  input[type='search'] {
+    width: 225px;
+    vertical-align: bottom;
+    
+    @media (max-width: $screen-xs-max) {
+      width: 100px;
+      vertical-align: bottom;
+    }
+  }
 }
 
 .milestone-row {
