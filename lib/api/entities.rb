@@ -377,6 +377,12 @@ module API
       expose :name
     end
 
+    class RunnerDetails < Runner
+      expose :tag_list
+      expose :version, :revision, :platform, :architecture
+      expose :contacted_at, as: :last_contact
+    end
+
     class Build < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
