@@ -17,14 +17,11 @@
     tr {
       > td, > th {
         line-height: 26px;
-        border-bottom: 1px solid $border-color;
       }
 
       &:hover {
         td {
           background: $hover;
-          border-top: 1px solid #ADF;
-          border-bottom: 1px solid #ADF;
         }
         cursor: pointer;
       }
