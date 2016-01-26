@@ -127,9 +127,6 @@
     &.btn-xs {
       margin-right: 3px;
     }
-    i {
-      font-size: 11px;
-    }
   }
   &.disabled {
     pointer-events: auto !important;
@@ -193,4 +190,8 @@
   .btn-green {
     @include btn-green
   }
+}
+
+.btn-icon {
+  
 }

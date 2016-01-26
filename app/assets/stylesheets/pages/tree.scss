@@ -1,12 +1,6 @@
 .tree-holder {
   > .nav-block {
-    margin: 22px 0 0 0;
-    background: #F8FAFC;
-    padding: 9px 9px 4px 14px;
-    border: 1px solid #EBECF0;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-width: 0;
+    margin: 11px 0;
   }
 
   .file-finder {
@@ -19,18 +13,7 @@
 
   .tree-table {
     margin-bottom: 0;
-    border: 1px solid #EEF0F2;
-    thead {
-      th {
-        background-color: white;
 
-        &:last-child {
-          .light {
-            color: #8C9AAC;
-          }
-        }
-      }
-    }
     tr:nth-child(odd) {
       background-color: #F7F9FB;
     }
@@ -45,6 +28,8 @@
       &:hover {
         td {
           background: $hover;
+          border-top: 1px solid #ADF;
+          border-bottom: 1px solid #ADF;
         }
         cursor: pointer;
       }
@@ -63,12 +48,8 @@
       max-width: 320px;
       vertical-align: middle;
 
-      a {
+      i, a {
         color: $gl-link-color;
-      }
-
-      i {
-        color: #797B7D;
       }
 
       img {
@@ -79,16 +60,10 @@
 
     .tree_commit {
       max-width: 320px;
-      a {
-        color: #8C9AAC;
-      }
     }
 
     .tree_time_ago {
       min-width: 135px;
-      time {
-        color: #8C9AAC;
-      }
     }
   }
 
@@ -154,5 +129,5 @@
 
 .tree-controls {
   float: right;
-  margin: 32px 7px 0 0;
+  margin-top: 11px;
 }
