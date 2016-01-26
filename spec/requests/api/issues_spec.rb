@@ -249,14 +249,19 @@ describe API::API, api: true  do
       end
     end
 
-    it "should create a new project issue" do
-      post api("/projects/#{project.id}/issues", user),
-           title: 'new issue', labels: 'label, label2'
+    it "should not create a new project issue" do
+      expect {
+        post api("/projects/#{project.id}/issues", user),
+             title: 'new issue', description: 'content here', labels: 'label, label2'
+      }.not_to change(Issue, :count)
+
       expect(response.status).to eq(400)
       expect(json_response['message']).to eq({ "error" => "Spam detected" })
+
       spam_logs = SpamLog.all
       expect(spam_logs.count).to eq(1)
       expect(spam_logs[0].title).to eq('new issue')
+      expect(spam_logs[0].description).to eq('content here')
       expect(spam_logs[0].user).to eq(user)
       expect(spam_logs[0].noteable_type).to eq('Issue')
       expect(spam_logs[0].project_id).to eq(project.id)

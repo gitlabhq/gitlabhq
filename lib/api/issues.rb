@@ -23,11 +23,13 @@ module API
       end
 
       def create_spam_log(project, current_user, attrs)
-        params = attrs.dup
-        params[:source_ip] = env['REMOTE_ADDR']
-        params[:user_agent] = env['HTTP_USER_AGENT']
-        params[:noteable_type] = 'Issue'
-        params[:via_api] = true
+        params = attrs.merge({
+          source_ip: env['REMOTE_ADDR'],
+          user_agent: env['HTTP_USER_AGENT'],
+          noteable_type: 'Issue',
+          via_api: true
+        })
+
         ::CreateSpamLogService.new(project, current_user, params).execute
       end
     end
@@ -126,8 +128,7 @@ module API
         end
 
         project = user_project
-        text = attrs[:title]
-        text += "\n#{attrs[:description]}" if attrs[:description].present?
+        text = [attrs[:title], attrs[:description]].reject(&:blank?).join("\n")
 
         if check_for_spam?(project, current_user) && is_spam?(env, current_user, text)
           create_spam_log(project, current_user, attrs)
