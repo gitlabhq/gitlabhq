@@ -4,13 +4,15 @@
     = time_ago_with_tooltip(spam_log.created_at)
   %td
     - if user
-      = link_to user.name, user
+      = link_to user.name, [:admin, user]
+      .light.small
+        Joined #{time_ago_with_tooltip(user.created_at)}
     - else
       (removed)
   %td
     = spam_log.source_ip
   %td
-    = spam_log.via_api ? 'Y' : 'N'
+    = spam_log.via_api? ? 'Y' : 'N'
   %td
     = spam_log.noteable_type
   %td
@@ -27,4 +29,4 @@
     - else
       .btn.btn-xs.disabled
         Already Blocked
-    = link_to 'Remove log', [:admin, spam_log, format: :json], remote: true, method: :delete, class: "btn btn-xs btn-close js-remove-tr"
+    = link_to 'Remove log', [:admin, spam_log], remote: true, method: :delete, class: "btn btn-xs btn-close js-remove-tr"
