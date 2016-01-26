@@ -25,7 +25,7 @@ module Ci
 
       format :json
 
-      helpers Helpers
+      helpers ::Ci::API::Helpers
       helpers ::API::Helpers
       helpers Gitlab::CurrentSettings
 
