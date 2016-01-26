@@ -11,6 +11,9 @@ v 8.5.0 (unreleased)
   - Track project import failure
   - Fix visibility level text in admin area (Zeger-Jan van de Weg)
 
+v 8.4.2 (unreleased)
+  - Fix missing artifacts in build artifacts browser (fixed in Workhorse)
+
 v 8.4.1
   - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
     and Nokogiri (1.6.7.2)
