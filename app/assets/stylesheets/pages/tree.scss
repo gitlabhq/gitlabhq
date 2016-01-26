@@ -14,9 +14,15 @@
   .tree-table {
     margin-bottom: 0;
 
+    tr:nth-child(odd) {
+      background-color: #F7F9FB;
+    }
+
     tr {
       > td, > th {
         line-height: 26px;
+        border-top: 1px solid #EEF0F2;
+        border-bottom: 1px solid #EEF0F2;
       }
 
       &:hover {
