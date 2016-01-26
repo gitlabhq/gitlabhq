@@ -9,6 +9,12 @@ v 8.5.0 (unreleased)
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Don't vendor minified JS
 
+v 8.4.1
+  - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
+    and Nokogiri (1.6.7.2)
+  - Fix redirect loop during import
+  - Fix diff highlighting for all syntax themes
+
 v 8.4.0
   - Allow LDAP users to change their email if it was not set by the LDAP server
   - Ensure Gravatar host looks like an actual host
