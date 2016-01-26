@@ -81,7 +81,8 @@ class GroupsController < Groups::ApplicationController
 
   def group
     @group ||= Group.find_by(path: params[:id])
-    render_404 unless @group
+    return @group if @group
+    render_404
   end
 
   def load_projects
