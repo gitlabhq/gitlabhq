@@ -142,7 +142,7 @@ module ApplicationHelper
     return false unless project.repository.branch_names.include?(event.branch_name)
 
     # Skip if this was a mirror update
-    return false if project.mirror? && project.up_to_date_with_upstream?(event.branch_name)
+    return false if project.mirror? && project.repository.up_to_date_with_upstream?(event.branch_name)
 
     true
   end

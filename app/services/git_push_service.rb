@@ -59,7 +59,7 @@ class GitPushService
     @push_data = build_push_data(oldrev, newrev, ref)
 
     branch_name = Gitlab::Git.ref_name(ref)
-    mirror_update = project.mirror? && project.up_to_date_with_upstream?(branch_name)
+    mirror_update = project.mirror? && project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :push_hooks)

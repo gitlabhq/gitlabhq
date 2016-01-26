@@ -1,4 +1,5 @@
 v 8.5.0 (unreleased)
+  - Fix updating of branches in mirrored repository
 
 v 8.4.1
   - No EE-specific changes
