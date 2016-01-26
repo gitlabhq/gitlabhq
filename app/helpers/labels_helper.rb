@@ -83,7 +83,11 @@ module LabelsHelper
   end
 
   def text_color_for_bg(bg_color)
-    r, g, b = bg_color.slice(1,7).scan(/.{2}/).map(&:hex)
+    if bg_color.length == 4
+      r, g, b = bg_color[1, 4].scan(/./).map { |v| (v * 2).hex }
+    else
+      r, g, b = bg_color[1, 7].scan(/.{2}/).map(&:hex)
+    end
 
     if (r + g + b) > 500
       '#333333'

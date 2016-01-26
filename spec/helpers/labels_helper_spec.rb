@@ -66,5 +66,10 @@ describe LabelsHelper do
     it 'uses dark text on light backgrounds' do
       expect(text_color_for_bg('#EEEEEE')).to eq('#333333')
     end
+
+    it 'supports RGB triplets' do
+      expect(text_color_for_bg('#FFF')).to eq '#333333'
+      expect(text_color_for_bg('#000')).to eq '#FFFFFF'
+    end
   end
 end
