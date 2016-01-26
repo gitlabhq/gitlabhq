@@ -1,4 +1,9 @@
-v 8.4.0 (unreleased)
+v 8.5.0 (unreleased)
+
+v 8.4.1
+  - No EE-specific changes
+
+v 8.4.0
   - Add ability to create a note for user by admin
   - Fix "Commit was rejected by git hook", when max_file_size was set null in project's Git hooks
   - Fix "Approvals are not reset after a new push is made if the request is coming from a fork"
