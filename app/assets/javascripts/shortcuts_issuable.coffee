@@ -5,11 +5,11 @@ class @ShortcutsIssuable extends ShortcutsNavigation
   constructor: (isMergeRequest) ->
     super()
     Mousetrap.bind('a', ->
-      $('.js-assignee').select2('open')
+      $('.block.assignee .edit-link').trigger('click')
       return false
     )
     Mousetrap.bind('m', ->
-      $('.js-milestone').select2('open')
+      $('.block.milestone .edit-link').trigger('click')
       return false
     )
     Mousetrap.bind('r', =>
