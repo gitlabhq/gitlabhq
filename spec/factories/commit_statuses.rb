@@ -1,11 +1,10 @@
 FactoryGirl.define do
   factory :commit_status, class: CommitStatus do
     name 'default'
-    ref 'master'
     status 'success'
     description 'commit status'
     commit factory: :ci_commit_with_one_job
-    started_at 'Tue, 26 Jan 2016 08:23:42 +0100'
+    started_at 'Tue, 26 Jan 2016 08:21:42 +0100'
     finished_at 'Tue, 26 Jan 2016 08:23:42 +0100'
 
     after(:build) do |build, evaluator|
