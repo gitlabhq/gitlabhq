@@ -17,6 +17,7 @@
     tr {
       > td, > th {
         line-height: 26px;
+        border-bottom: 1px solid $border-color;
       }
 
       &:hover {
