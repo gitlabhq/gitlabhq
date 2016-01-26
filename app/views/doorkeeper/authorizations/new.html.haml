@@ -9,7 +9,9 @@
     .text-warning.prepend-top-20
       %p
         = icon("exclamation-triangle fw")
-        Caution! You are admin, and thus will grant admin permission to #{@pre_auth.client.name}.
+        You are an admin, which means granting access to
+        %strong #{@pre_auth.client.name}
+        will allow them to interact with GitLab as an admin as well. Proceed with caution.
 
   - if @pre_auth.scopes
     #oauth-permissions
