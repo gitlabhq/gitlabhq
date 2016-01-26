@@ -2,11 +2,11 @@
 Feature: Dashboard Projects
   Background:
     Given I sign in as a user
+    And I own project "Forum"
+    And I starred project "Forum"
     And public project "Community"
     And I am member of a project "Community" with a guest role
     And I starred project "Community"
-    And I own project "Forum"
-    And I starred project "Forum"
     And I own project "Shop"
     And project "Shop" has push event
     And project "Community" has push event

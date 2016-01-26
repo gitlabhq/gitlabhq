@@ -24,8 +24,6 @@ module Sortable
     def order_by(method)
       return all if method.blank?
 
-      method = method.to_s
-
       if respond_to?("order_#{method}")
         send "order_#{method}"
       else
