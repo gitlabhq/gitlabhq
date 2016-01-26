@@ -270,6 +270,17 @@ describe Notify do
           it 'contains a link to the new issue' do
             is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
+
+          context 'when enabled email_author_in_body' do
+            before do
+              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+            end
+
+            it 'contains a link to note author' do
+              is_expected.to have_body_text issue.author_name
+              is_expected.to have_body_text /wrote\:/
+            end
+          end
         end
 
         describe 'that are new with a description' do
@@ -376,6 +387,17 @@ describe Notify do
 
           it 'has the correct message-id set' do
             is_expected.to have_header 'Message-ID', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
+          end
+
+          context 'when enabled email_author_in_body' do
+            before do
+              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+            end
+
+            it 'contains a link to note author' do
+              is_expected.to have_body_text merge_request.author_name
+              is_expected.to have_body_text /wrote\:/
+            end
           end
         end
 
@@ -549,6 +571,21 @@ describe Notify do
 
         it 'contains the message from the note' do
           is_expected.to have_body_text /#{note.note}/
+        end
+
+        it 'not contains note author' do
+          is_expected.not_to have_body_text /wrote\:/
+        end
+
+        context 'when enabled email_author_in_body' do
+          before do
+            allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+          end
+
+          it 'contains a link to note author' do
+            is_expected.to have_body_text note.author_name
+            is_expected.to have_body_text /wrote\:/
+          end
         end
       end
 

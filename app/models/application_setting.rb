@@ -43,6 +43,7 @@
 #  metrics_port                      :integer          default(8089)
 #  sentry_enabled                    :boolean          default(FALSE)
 #  sentry_dsn                        :string
+#  email_author_in_body              :boolean          default(FALSE)
 #
 
 class ApplicationSetting < ActiveRecord::Base

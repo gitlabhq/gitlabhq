@@ -9,6 +9,7 @@ v 8.5.0 (unreleased)
   - Render sanitized SVG images (Stan Hu)
   - Support download access by PRIVATE-TOKEN header (Stan Hu)
   - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
+  - Add option to include the sender name in body of Notify email (Jason Lee)
   - New UI for pagination
   - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
     set it up

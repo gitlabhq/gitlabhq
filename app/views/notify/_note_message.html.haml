@@ -1,2 +1,5 @@
+- if current_application_settings.email_author_in_body
+  %div
+    #{link_to @note.author_name, user_url(@note.author)} wrote:
 %div
   = markdown(@note.note, pipeline: :email)
