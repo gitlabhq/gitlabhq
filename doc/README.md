@@ -77,7 +77,7 @@
 - [Downgrade back to CE](downgrade_ee_to_ce/README.md) Follow this guide if you need to downgrade from EE to CE.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [GitLab Pages configuration](pages/administration.md)
-- [Elasticsearch (EE-only)](integration/elasticsearch.md) Enable Elasticsearch
+- [Elasticsearch](integration/elasticsearch.md) Enable Elasticsearch
 
 ## Contributor documentation
 
