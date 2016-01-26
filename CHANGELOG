@@ -9,6 +9,7 @@ v 8.5.0 (unreleased)
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Don't vendor minified JS
   - Track project import failure
+  - Fix visibility level text in admin area (Zeger-Jan van de Weg)
 
 v 8.4.1
   - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
