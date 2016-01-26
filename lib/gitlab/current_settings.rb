@@ -38,7 +38,7 @@ module Gitlab
                  true
                end
 
-      use_db && ActiveRecord::Base.connection.active? &&
+      use_db && ActiveRecord::Base.connected? &&
                 # The following condition is important: if a migrations adds a
                 # column to the application_settings table and a validation in
                 # the ApplicationSetting uses this new column we might end-up in
