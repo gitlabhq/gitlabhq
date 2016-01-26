@@ -34,10 +34,14 @@ module Ci
         @runner ||= Runner.find_by_token(params[:token].to_s)
       end
 
-      def update_runner_info
+      def get_runner_version_from_params
         return unless params["info"].present?
-        info = attributes_for_keys(["name", "version", "revision", "platform", "architecture"], params["info"])
-        current_runner.update(info)
+        attributes_for_keys(["name", "version", "revision", "platform", "architecture"], params["info"])
+      end
+
+      def update_runner_info
+        current_runner.assign_attributes(get_runner_version_from_params)
+        current_runner.save if current_runner.changed?
       end
 
       def max_artifacts_size

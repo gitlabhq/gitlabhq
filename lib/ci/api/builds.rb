@@ -13,13 +13,13 @@ module Ci
         post "register" do
           authenticate_runner!
           update_runner_last_contact
+          update_runner_info
           required_attributes! [:token]
           not_found! unless current_runner.active?
 
           build = Ci::RegisterBuildService.new.execute(current_runner)
 
           if build
-            update_runner_info
             present build, with: Entities::BuildDetails
           else
             not_found!
