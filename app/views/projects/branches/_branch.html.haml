@@ -20,9 +20,7 @@
         protected
 
     - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
-      - tooltip_message = "The branch could not be updated automatically because it has diverged from its upstream counterpart."
-      - tooltip_message << "<br>To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above." if can?(current_user, :push_code, @project)
-      %span.label.label-danger.has_tooltip{data: { html: "true", title: tooltip_message }}
+      %span.label.label-danger.has_tooltip{data: { html: "true", title: branch_diverged_tooltip_message }}
         = icon('exclamation-triangle')
         diverged from upstream
 
