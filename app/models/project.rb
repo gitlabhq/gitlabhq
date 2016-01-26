@@ -215,8 +215,6 @@ class Project < ActiveRecord::Base
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
 
-  scope :id_only, -> { select(:id) }
-
   state_machine :import_status, initial: :none do
     event :import_start do
       transition [:none, :finished] => :started
