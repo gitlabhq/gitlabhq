@@ -22,6 +22,7 @@ v 8.4.2 (unreleased)
     improvement when checking if a repository was empty
   - Add instrumentation for Gitlab::Git::Repository instance methods so we can
     track them in Performance Monitoring.
+  - Increase contrast between highlighted code comments and inline diff marker.
 
 v 8.4.2 (unreleased)
   - Fix method undefined when using external commit status in builds
