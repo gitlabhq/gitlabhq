@@ -144,6 +144,50 @@ Disabling the Elasticsearch integration is as easy as setting `enabled` to
 to find where those settings are and don't forget to reconfigure/restart GitLab
 for the changes to take effect.
 
+## Special recommendations
+
+### Indexing huge repositories
+Indexing huge git repositories can take a while, to speed up a process you can disable an auto refreshing. In our experience you can expect 20% time drop.
+
+```
+# Disable refreshing
+curl -XPUT localhost:9200/_settings -d '{
+    "index" : {
+        "refresh_interval" : "-1"
+    } }'
+
+# Enable refreshing again(after indexing)
+curl -XPUT localhost:9200/_settings -d '{
+    "index" : {
+        "refresh_interval" : "1s"
+    } }'
+
+
+# A force merge should be called after enabling the refreshing above
+curl -XPOST 'http://localhost:9200/_forcemerge?max_num_segments=5'
+```
+
+Also you may want to disable replication and eneble it after indexing
+
+```
+# Desable replication
+curl -XPUT 'localhost:9200/_settings' -d '
+{
+    "index" : {
+        "number_of_replicas" : 0
+    }
+}'
+
+# Enable replication and set to default value, which is 1
+curl -XPUT 'localhost:9200/_settings' -d '
+{
+    "index" : {
+        "number_of_replicas" : 1
+    }
+}'
+```
+
+
 
 [ee-109]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/109 "Elasticsearch Merge Request"
 [elasticsearch]: https://www.elastic.co/products/elasticsearch "Elasticsearch website"
