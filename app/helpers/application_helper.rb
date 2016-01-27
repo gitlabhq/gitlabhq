@@ -293,6 +293,36 @@ module ApplicationHelper
     end
   end
 
+  def issuable_count(entity, project)
+    if project.nil?
+      0
+    elsif current_controller?(:issues)
+      project.issues.send(entity).count
+    elsif current_controller?(:merge_requests)
+      project.merge_requests.send(entity).count
+    end
+  end
+
+  def next_issuable_for(project)
+    if project.nil?
+      nil
+    elsif current_controller?(:issues)
+      project.issues.where("id > ?", id).first
+    elsif current_controller?(:merge_requests)
+      project.merge_requests.where("id > ?", id).first
+    end
+  end
+
+  def prev_issuable_for(project)
+    if project.nil?
+      nil
+    elsif current_controller?(:issues)
+      project.issues.where("id < ?", id).last
+    elsif current_controller?(:merge_requests)
+      project.merge_requests.where("id > ?", id).last
+    end
+  end
+
   def state_filters_text_for(entity, project)
     titles = {
       opened: "Open"

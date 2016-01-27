@@ -200,6 +200,10 @@
   }
 }
 
+@mixin expanded-gutter {
+  padding-right: $gutter_width;
+}
+
 @mixin collapsed-sidebar {
   padding-left: $sidebar_collapsed_width;
 
@@ -266,6 +270,7 @@
   background: #f2f6f7;
 }
 
+// page is small enough
 @media (max-width: $screen-md-max) {
   .page-sidebar-collapsed {
     @include collapsed-sidebar;
@@ -280,7 +285,13 @@
   }
 }
 
+// page is large enough
 @media(min-width: $screen-md-max) {
+
+  .page-gutter {
+    @include expanded-gutter;
+  }
+
   .page-sidebar-collapsed {
     @include collapsed-sidebar;
   }

@@ -54,11 +54,9 @@
       = render 'votes/votes_block', votable: @issue
 
     .row
-      %section.col-md-9
+      %section.col-md-12
         .issuable-discussion
           = render 'projects/issues/discussion'
-
-      %aside.col-md-3
-        = render 'shared/issuable/sidebar', issuable: @issue
-
       = render 'shared/show_aside'
+
+= render 'shared/issuable/sidebar', issuable: @issue

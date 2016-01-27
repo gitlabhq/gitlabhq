@@ -133,3 +133,16 @@
     margin-right: 2px;
   }
 }
+
+
+.right-sidebar {
+  position: fixed;
+  top: 58px;
+  right: 0;
+  height: 100%;
+  transition-duration: .3s;
+  background: $gray-light;
+  overflow: scroll;
+  width: $gutter_width;
+  padding: 10px 20px;
+}

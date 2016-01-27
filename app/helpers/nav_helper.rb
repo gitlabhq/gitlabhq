@@ -19,6 +19,12 @@ module NavHelper
     end
   end
 
+  def page_gutter_class
+    if current_path?('merge_requests#show') || current_path?('issues#show')
+      "page-gutter"
+    end
+  end
+
   def nav_header_class
     if nav_menu_collapsed?
       "header-collapsed"
