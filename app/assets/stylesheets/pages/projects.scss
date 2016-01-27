@@ -574,6 +574,10 @@ pre.light-well {
 }
 
 .projects-search-form {
+  .dropdown-toggle.btn {
+    margin-top: -3px;
+  }
+
   &.fork-search-form {
     margin: 0;
     margin-top: -$gl-padding;
