@@ -2,17 +2,18 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
 
-  skip_before_action :authenticate_user!, only: [:show, :issues, :merge_requests]
   respond_to :html
-  before_action :group, except: [:new, :create]
+
+  skip_before_action :authenticate_user!, only: [:index, :show, :issues, :merge_requests]
+  before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:show, :new, :create, :autocomplete]
+  before_action :authorize_read_group!, except: [:index, :show, :new, :create, :autocomplete]
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_action :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
-  before_action :load_projects, except: [:new, :create, :projects, :edit, :update, :autocomplete]
+  before_action :load_projects, except: [:index, :new, :create, :projects, :edit, :update, :autocomplete]
   before_action :event_filter, only: :show
 
   layout :determine_layout

@@ -38,7 +38,7 @@ table {
 
       td {
         border-color: $table-border-color;
-        border-bottom: 1px solid;
+        border-bottom: 1px solid $border-color;
       }
     }
   }

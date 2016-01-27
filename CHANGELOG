@@ -9,6 +9,21 @@ v 8.5.0 (unreleased)
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Don't vendor minified JS
   - Display 404 error on group not found
+  - Track project import failure
+  - Fix visibility level text in admin area (Zeger-Jan van de Weg)
+  - Update the ExternalIssue regex pattern (Blake Hitchcock)
+
+v 8.4.2 (unreleased)
+  - Bump required gitlab-workhorse version to bring in a fix for missing
+    artifacts in the build artifacts browser
+  - Get rid of those ugly borders on the file tree view
+  - Bump gitlab_git version to 7.2.24 in order to bring in a performance
+    improvement when checking if a repository was empty
+  - Add instrumentation for Gitlab::Git::Repository instance methods so we can
+    track them in Performance Monitoring.
+
+v 8.4.2 (unreleased)
+  - Fix method undefined when using external commit status in builds
 
 v 8.4.1
   - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
