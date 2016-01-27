@@ -1,5 +1,8 @@
 v 8.5.0 (unreleased)
 
+v 8.4.2
+  - Rake task gitlab:elastic:index_repositories handles errors and shows progress
+
 v 8.4.1
   - No EE-specific changes
 

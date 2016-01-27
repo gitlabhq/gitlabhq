@@ -2,7 +2,21 @@ namespace :gitlab do
   namespace :elastic do
     desc "Indexing repositories"
     task index_repositories: :environment  do
-      Repository.import
+      Repository.__elasticsearch__.create_index!
+
+      Project.find_each do |project|
+        if project.repository.exists? && !project.repository.empty?
+          puts "Indexing #{project.name_with_namespace}..."
+
+          begin
+            project.repository.index_commits
+            project.repository.index_blobs
+            puts "Done!".green
+          rescue StandardError => e
+            puts "#{e.message}, trace - #{e.backtrace}"
+          end
+        end
+      end
     end
 
     desc "Indexing all wikis"
