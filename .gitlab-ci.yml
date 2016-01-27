@@ -134,3 +134,119 @@ bundler:audit:
     - ruby
     - mysql
   allow_failure: true
+
+# Ruby 2.1 jobs
+
+spec:feature:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spec:api:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spec:models:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spec:lib:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spec:services:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spec:benchmark:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test bundle exec rake spec:benchmark
+  tags:
+    - ruby
+    - mysql
+  allow_failure: true
+  only:
+  - master
+
+spec:other:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spinach:project:half:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spinach:project:rest:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spinach:other:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+bundler:audit:ruby21:
+  image: ruby:2.1
+  script:
+    - "bundle exec bundle-audit update"
+    - "bundle exec bundle-audit check"
+  tags:
+    - ruby
+    - mysql
+  allow_failure: true
+  only:
+  - master
