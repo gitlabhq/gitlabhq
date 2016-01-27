@@ -693,7 +693,10 @@ class User < ActiveRecord::Base
   end
 
   def all_emails
-    [self.email, *self.emails.map(&:email)]
+    all_emails = []
+    all_emails << self.email unless self.temp_oauth_email?
+    all_emails.concat(self.emails.map(&:email))
+    all_emails
   end
 
   def hook_attrs

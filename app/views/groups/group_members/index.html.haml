@@ -1,6 +1,5 @@
 - page_title "Members"
 - header_title group_title(@group, "Members", group_group_members_path(@group))
-- @blank_container = true
 
 .group-members-page.prepend-top-default
   - if current_user && current_user.can?(:admin_group_member, @group)
@@ -39,7 +38,7 @@
       group members
       %small
         (#{@members.total_count})
-      .pull-right
+      .controls
         = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
           .form-group
             = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }

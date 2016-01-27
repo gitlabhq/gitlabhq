@@ -219,4 +219,24 @@ describe Repository, models: true do
       end
     end
   end
+
+  describe '#has_visible_content?' do
+    subject { repository.has_visible_content? }
+
+    describe 'when there are no branches' do
+      before do
+        allow(repository.raw_repository).to receive(:branch_count).and_return(0)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    describe 'when there are branches' do
+      before do
+        allow(repository.raw_repository).to receive(:branch_count).and_return(3)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+  end
 end

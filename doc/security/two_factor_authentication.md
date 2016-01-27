@@ -20,7 +20,13 @@ In the Admin area under **Settings** (`/admin/application_settings`), look for
 the "Sign-in Restrictions" area, where you can configure both.
 
 If you want 2FA enforcement to take effect on next login, change the grace
-period to `0`
+period to `0`.
+
+---
+
+![Two factor authentication admin settings](img/two_factor_authentication_settings.png)
+
+---
 
 ## Disabling 2FA for everyone
 
@@ -28,11 +34,12 @@ There may be some special situations where you want to disable 2FA for everyone
 even when forced 2FA is disabled. There is a rake task for that:
 
 ```
-# use this command if you've installed GitLab with the Omnibus package
+# Omnibus installations
 sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 
-# if you've installed GitLab from source
+# Installations from source
 sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
 ```
 
-**IMPORTANT: this is a permanent and irreversible action. Users will have to reactivate 2FA from scratch if they want to use it again.**
+**IMPORTANT: this is a permanent and irreversible action. Users will have to
+    reactivate 2FA from scratch if they want to use it again.**

@@ -86,7 +86,7 @@ eos
         it { expect(line.type).to eq(nil) }
         it { expect(line.old_pos).to eq(24) }
         it { expect(line.new_pos).to eq(31) }
-        it { expect(line.text).to eq('       @cmd_output &lt;&lt; stderr.read') }
+        it { expect(line.text).to eq('       @cmd_output << stderr.read') }
       end
     end
   end

@@ -9,7 +9,7 @@ variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
 
 before_script:
-  - ./scripts/prepare_build.sh
+  - source ./scripts/prepare_build.sh
   - ruby -v
   - which ruby
   - gem install bundler --no-ri --no-rdoc
@@ -17,7 +17,7 @@ before_script:
   - touch log/application.log
   - touch log/test.log
   - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
-  - bundle exec rake db:reset db:create RAILS_ENV=test
+  - RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load db:migrate
 
 spec:feature:
   script:
@@ -127,7 +127,7 @@ flay:
     - mysql
 
 bundler:audit:
-  script: 
+  script:
     - "bundle exec bundle-audit update"
     - "bundle exec bundle-audit check"
   tags:
