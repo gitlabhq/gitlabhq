@@ -188,9 +188,13 @@ $ ->
     $container.remove()
 
   $('.navbar-toggle').on 'click', ->
+    $this = $(this);
     $('.header-content .title').toggle()
     $('.header-content .navbar-collapse').toggle()
-    $('.navbar-toggle').toggleClass('active')
+    if $this.toggleClass('active').hasClass('active')
+      $this.closest('header').css('z-index',100)
+    else
+      $this.closest('header').css('z-index',99)
 
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->

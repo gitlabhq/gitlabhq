@@ -45,19 +45,6 @@
     overflow: hidden;
     transition-duration: .3s;
 
-    .home {
-      z-index: 1;
-      position: absolute;
-      left: 0px;
-    }
-
-    #logo {
-      z-index: 2;
-      position: absolute;
-      width: 58px;
-      cursor: pointer;
-    }
-
     a {
       float: left;
       height: $header-height;
@@ -83,7 +70,7 @@
           width: 158px;
           float: left;
           margin: 0;
-          margin-left: 50px;
+          margin-left: 14px;
           font-size: 19px;
           line-height: 41px;
           font-weight: normal;
@@ -192,7 +179,16 @@
 }
 
 @mixin expanded-sidebar {
-  padding-left: $sidebar_width;
+
+  // when the screen is small enough
+  @media (max-width: $screen-md-max) {
+    padding-left: $sidebar_collapsed_width;
+  }
+
+  // when the screen is big enough
+  @media(min-width: $screen-md-max) {
+    padding-left: $sidebar_width;
+  }
 
   .sidebar-wrapper {
     width: $sidebar_width;
@@ -211,14 +207,6 @@
       }
     }
   }
-}
-
-@mixin expanded-gutter {
-  padding-right: $gutter_width;
-}
-
-@mixin collapsed-gutter {
-  padding-right: $sidebar_collapsed_width;
 }
 
 @mixin collapsed-sidebar {
@@ -287,47 +275,10 @@
   background: #f2f6f7;
 }
 
-// page is small enough
-@media (max-width: $screen-md-max) {
-  .page-sidebar-collapsed {
-    @include collapsed-sidebar;
-  }
-
-  .page-sidebar-expanded {
-    @include collapsed-sidebar;
-  }
-
-  .page-gutter {
-    &.right-sidebar-collapsed {
-      @include collapsed-gutter;
-    }
-    &.right-sidebar-expanded {
-      @include expanded-gutter;
-    }
-  }
-
-  .collapse-nav {
-    display: none;
-  }
+.page-sidebar-collapsed {
+  @include collapsed-sidebar;
 }
 
-// page is large enough
-@media(min-width: $screen-md-max) {
-
-  .page-gutter {
-    &.right-sidebar-collapsed {
-      @include collapsed-gutter;
-    }
-    &.right-sidebar-expanded {
-      @include expanded-gutter;
-    }
-  }
-
-  .page-sidebar-collapsed {
-    @include collapsed-sidebar;
-  }
-
-  .page-sidebar-expanded {
-    @include expanded-sidebar;
-  }
+.page-sidebar-expanded {
+  @include expanded-sidebar;
 }
