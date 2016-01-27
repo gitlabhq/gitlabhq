@@ -348,6 +348,10 @@ class Project < ActiveRecord::Base
     repository.commit(id)
   end
 
+  def merge_base_commit(first_commit_id, second_commit_id)
+    repository.commit(repository.merge_base(first_commit_id, second_commit_id))
+  end
+
   def saved?
     id && persisted?
   end
