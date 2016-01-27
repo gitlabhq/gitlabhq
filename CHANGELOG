@@ -26,6 +26,7 @@ v 8.4.2
     track them in Performance Monitoring.
   - Increase contrast between highlighted code comments and inline diff marker
   - Fix method undefined when using external commit status in builds
+  - Optimized performance of finding issues to be closed by a merge request (Yorick Peterse)
 
 v 8.4.1
   - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
