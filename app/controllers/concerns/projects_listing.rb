@@ -19,10 +19,10 @@ module ProjectsListing
   end
 
   def whitelist_sort(sort, default)
-    sort_options_hash.keys.include?(sort) ? sort : default
+    sort_options_hash.has_key?(sort) ? sort : default
   end
 
-  def prepare_for_listing(relation)
+  def filter_listing(relation)
     apply_filter(apply_base_scopes(relation)).sort(@sort)
   end
 

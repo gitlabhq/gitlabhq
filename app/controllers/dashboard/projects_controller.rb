@@ -4,7 +4,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   before_action :init_filter_and_sort, :load_last_push, :event_filter
 
   def index
-    @projects = prepare_for_listing(current_user.authorized_projects)
+    @projects = filter_listing(current_user.authorized_projects)
 
     respond_to do |format|
       format.html
@@ -16,7 +16,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def starred
-    @projects = prepare_for_listing(current_user.starred_projects)
+    @projects = filter_listing(current_user.starred_projects)
     @groups = []
 
     respond_to do |format|

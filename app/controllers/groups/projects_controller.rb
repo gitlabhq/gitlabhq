@@ -13,7 +13,7 @@ class Groups::ProjectsController < Groups::ApplicationController
   def index
     @projects =
       if current_user
-        prepare_for_listing(find_scoped_project(params[:scope]))
+        filter_listing(find_scoped_project(params[:scope]))
       else
         find_projects
       end

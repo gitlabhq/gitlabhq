@@ -58,8 +58,8 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     user_exists('John Doe').toggle_star(@project)
   end
 
-  step 'project "Moon-project" has push event' do
-    event_for_project(Project.find_by(name: "Moon-project"), user_exists('John Doe'))
+  step 'project "Moon-project" is the latest active' do
+    Project.find_by(name: "Moon-project").update_column(:last_activity_at, Time.now + 10.seconds)
   end
 
   step 'I should see project "Public-project"' do

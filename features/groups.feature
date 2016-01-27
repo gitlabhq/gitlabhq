@@ -5,7 +5,7 @@ Feature: Groups
     And Group "Owned" has a public project "Public-project"
     And Group "Owned" has a public project "Star-project" with 2 stars including 1 from "John Doe"
     And Group "Owned" has an internal project "Moon-project" with 1 star from "John Doe"
-    And project "Moon-project" has push event
+    And project "Moon-project" is the latest active
 
   Scenario: I should have back to group button
     When I visit group "Owned" page

@@ -38,7 +38,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   private
 
   def authorize_group_milestone!
-    return render_404 unless can?(current_user, :admin_milestones, group)
+    return render_404 unless can?(current_user, :admin_milestones, @group)
   end
 
   def milestone_params
