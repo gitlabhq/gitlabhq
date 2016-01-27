@@ -13,8 +13,8 @@ ability of downloading the files separately.
 
 **Note:**
 The artifacts browser will be available only for new artifacts that are sent
-to GitLab using GitLab Runner version 1.0 and up. You will not be available to
-see the browser for old artifacts already uploaded to GitLab.
+to GitLab using GitLab Runner version 1.0 and up. It will not be possible to
+browse old artifacts already uploaded to GitLab.
 
 ## Enabling build artifacts
 
