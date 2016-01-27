@@ -18,7 +18,10 @@ class Projects::BlameController < Projects::ApplicationController
     groups = []
     current_group = nil
 
+    highlighted_lines = Gitlab::Highlight.highlight(@blob.name, @blob.data).lines
+    i = 0
     blame.each do |commit, line|
+      line = highlighted_lines[i].html_safe
       if prev_sha && prev_sha == commit.sha
         current_group[:lines] << line
       else
@@ -27,6 +30,7 @@ class Projects::BlameController < Projects::ApplicationController
       end
 
       prev_sha = commit.sha
+      i += 1
     end
 
     groups << current_group if current_group.present?

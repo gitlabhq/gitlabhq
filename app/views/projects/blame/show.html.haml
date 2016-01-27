@@ -15,7 +15,6 @@
     .file-content.blame.code.js-syntax-highlight
       %table
         - current_line = 1
-        - blame_highlighter = highlighter(@blob.name, @blob.data, nowrap: true)
         - @blame.each do |blame_group|
           %tr
             %td.blame-commit
@@ -38,8 +37,7 @@
                 \
               - current_line += line_count
             %td.lines
-              %pre{class: 'code highlight'}
+              %pre.code.highlight
                 %code
                   - blame_group[:lines].each do |line|
-                    :preserve
-                      #{blame_highlighter.highlight(line)}
+                    #{line}
