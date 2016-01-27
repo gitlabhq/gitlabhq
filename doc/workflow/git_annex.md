@@ -5,7 +5,7 @@ control systems, has been the maximum size of the repositories.
 
 The general recommendation is to not have Git repositories larger than 1GB to
 preserve performance. Although GitLab has no limit (some repositories in GitLab
-are over 50GB!), we subscribe to the advise to keep repositories as small as
+are over 50GB!), we subscribe to the advice to keep repositories as small as
 you can.
 
 Not being able to version control large binaries is a big problem for many
@@ -13,7 +13,7 @@ larger organizations.
 Videos, photos, audio, compiled binaries and many other types of files are too
 large. As a workaround, people keep artwork-in-progress in a Dropbox folder and
 only check in the final result. This results in using outdated files, not
-having a complete history and the risk of losing work.
+having a complete history and increases the risk of losing work.
 
 This problem is solved in GitLab Enterprise Edition by integrating the
 [git-annex] application.
@@ -33,13 +33,13 @@ configuration options required to enable it.
 
 `git-annex` needs to be installed both on the server and the client side.
 
-For Debian-like systems (eg., Debian, Ubuntu) this can be achieved by running:
+For Debian-like systems (e.g., Debian, Ubuntu) this can be achieved by running:
 
 ```
 sudo apt-get update && sudo apt-get install git-annex
 ```
 
-For RedHat-like systems (eg., CentOS, RHEL) this can be achieved by running:
+For RedHat-like systems (e.g., CentOS, RHEL) this can be achieved by running:
 
 ```
 sudo yum install epel-release && sudo yum install git-annex
@@ -86,7 +86,7 @@ one is located in `config.yml` of gitlab-shell.
 
 ## Using GitLab git-annex
 
-_**Important note:** Your Git remotes must be use the SSH protocol, not HTTP._
+_**Important note:** Your Git remotes must be using the SSH protocol, not HTTP(S)._
 
 Here is an example workflow of uploading a very large file and then checking it
 into your Git repository:
@@ -96,7 +96,7 @@ git clone git@gitlab.example.com:group/project.git
 git annex init 'My Laptop'       # initialize the annex project
 cp ~/tmp/debian.iso ./           # copy a large file into the current directory
 git annex add .                  # add the large file to git annex
-git commit -am "Add Debian iso"  # commit the file meta data
+git commit -am "Add Debian iso"  # commit the file metadata
 git annex sync --content         # sync the git repo and large file to the GitLab server
 ```
 
@@ -122,7 +122,7 @@ By using `git-annex` without GitLab, anyone that can access the server can also
 access the files of all projects.
 
 GitLab annex ensures that you can only access files of projects you have access
-of (developer, master or owner role).
+to (developer, master, or owner role).
 
 ## How it works
 
@@ -131,7 +131,7 @@ integration point for `git-annex`.
 There is a setting in gitlab-shell so you can disable GitLab Annex support
 if you want to.
 
-_**Important note:** Your Git remotes must be use the SSH protocol, not HTTP._
+_**Important note:** Your Git remotes must be using the SSH protocol, not HTTP(S)._
 
 ## Troubleshooting tips
 
@@ -147,7 +147,7 @@ This warning can appear on the initial `git annex sync --content` and is caused
 by differences in `git-annex-shell`. You can read more about it
 [in this git-annex issue][issue].
 
-One important thing to note, is that despite the warning, the `sync` succeeds
+One important thing to note is that despite the warning, the `sync` succeeds
 and the files are pushed to the GitLab repository.
 
 If you get hit by this, you can run the following command inside the repository
