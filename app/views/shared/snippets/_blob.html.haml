@@ -3,8 +3,7 @@
     .file-content.wiki
       = render_markup(@snippet.file_name, @snippet.data)
   - else
-    .file-content.code
-      = render 'shared/file_highlight', blob: @snippet
+    = render 'shared/file_highlight', blob: @snippet
 - else
   .file-content.code
     .nothing-here-block Empty file

@@ -48,4 +48,10 @@ FactoryGirl::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
 end
 
+# Work around a Rails 4.2.5.1 issue
+# See https://github.com/rspec/rspec-rails/issues/1532
+RSpec::Rails::ViewRendering::EmptyTemplatePathSetDecorator.class_eval do
+  alias_method :find_all_anywhere, :find_all
+end
+
 ActiveRecord::Migration.maintain_test_schema!

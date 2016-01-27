@@ -73,4 +73,14 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
     expect(response_json[:archive]).to end_with('build_artifacts.zip')
     expect(response_json[:entry]).to eq Base64.encode64('ci_artifacts.txt')
   end
+
+  step 'I click a first row within build artifacts table' do
+    row = first('tr[data-link]')
+    @row_path = row['data-link']
+    row.click
+  end
+
+  step 'page with a coresponding path is loading' do
+    expect(current_path).to eq @row_path
+  end
 end
