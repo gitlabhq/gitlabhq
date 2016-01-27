@@ -61,7 +61,7 @@ class Repository
   # This method return true if repository contains some content visible in project page.
   #
   def has_visible_content?
-    !raw_repository.branches.empty?
+    raw_repository.branch_count > 0
   end
 
   def commit(id = 'HEAD')
@@ -673,7 +673,7 @@ class Repository
 
   def search_files(query, ref)
     offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -n --before-context #{offset} --after-context #{offset} -e #{query} #{ref || root_ref})
+    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -e #{query} #{ref || root_ref})
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 

@@ -43,7 +43,7 @@ module Emails
       @current_user = @created_by = User.find(created_by_id)
       @access_level = access_level
       @invite_email = invite_email
-      
+
       @target_url = namespace_project_url(@project.namespace, @project)
 
       mail(to: @created_by.notification_email,
@@ -65,6 +65,10 @@ module Emails
 
       # used in notify layout
       @target_url = @message.target_url
+      @project = Project.find project_id
+
+      add_project_headers
+      headers['X-GitLab-Author'] = @message.author_username
 
       mail(from:      sender(@message.author_id, @message.send_from_committer_email?),
            reply_to:  @message.reply_to,

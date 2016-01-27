@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.5'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -18,7 +18,7 @@ gem "mysql2", '~> 0.3.16', group: :mysql
 gem "pg", '~> 0.18.2', group: :postgres
 
 # Authentication libraries
-gem 'devise',                 '~> 3.5.3'
+gem 'devise',                 '~> 3.5.4'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.2.2'
@@ -50,7 +50,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.22'
+gem "gitlab_git", '~> 7.2.23'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -218,8 +218,9 @@ gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
-
 gem "gitlab-license", "~> 0.0.4"
+# Sentry integration
+gem 'sentry-raven'
 
 # Metrics
 group :metrics do

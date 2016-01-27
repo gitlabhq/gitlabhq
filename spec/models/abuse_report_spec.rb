@@ -26,7 +26,7 @@ RSpec.describe AbuseReport, type: :model do
     it { is_expected.to validate_presence_of(:reporter) }
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:message) }
-    it { is_expected.to validate_uniqueness_of(:user_id) }
+    it { is_expected.to validate_uniqueness_of(:user_id).with_message('has already been reported') }
   end
 
   describe '#remove_user' do

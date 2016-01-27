@@ -101,12 +101,7 @@ class Notify < BaseMailer
   end
 
   def mail_thread(model, headers = {})
-    if @project
-      headers['X-GitLab-Project'] = @project.name
-      headers['X-GitLab-Project-Id'] = @project.id
-      headers['X-GitLab-Project-Path'] = @project.path_with_namespace
-    end
-
+    add_project_headers
     headers["X-GitLab-#{model.class.name}-ID"] = model.id
     headers['X-GitLab-Reply-Key'] = reply_key
 
@@ -152,5 +147,13 @@ class Notify < BaseMailer
 
   def reply_key
     @reply_key ||= SentNotification.reply_key
+  end
+
+  def add_project_headers
+    return unless @project
+
+    headers['X-GitLab-Project'] = @project.name
+    headers['X-GitLab-Project-Id'] = @project.id
+    headers['X-GitLab-Project-Path'] = @project.path_with_namespace
   end
 end

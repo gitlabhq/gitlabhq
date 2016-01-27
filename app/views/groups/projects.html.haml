@@ -6,9 +6,9 @@
     %strong= @group.name
     projects:
     - if can? current_user, :admin_group, @group
-      .panel-head-actions
+      .controls
         = link_to new_project_path(namespace_id: @group.id), class: "btn btn-sm btn-success" do
-          %i.fa.fa-plus
+          = icon('plus')
           New Project
   %ul.well-list
     - @projects.each do |project|
