@@ -147,7 +147,7 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true)
 sudo gitlab-rake gitlab:env:info)
 
 (For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:env:info)
+sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production)
 
 ## Possible fixes
 
