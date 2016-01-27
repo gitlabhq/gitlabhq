@@ -22,18 +22,19 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # We only find ourselves here
   # if the authentication to LDAP was successful.
   def ldap
-    @user = Gitlab::LDAP::User.new(oauth)
-    @user.save if @user.changed? # will also save new users
-    gl_user = @user.gl_user
-    gl_user.remember_me = params[:remember_me] if @user.persisted?
+    ldap_user = Gitlab::LDAP::User.new(oauth)
+    ldap_user.save if ldap_user.changed? # will also save new users
+
+    @user = ldap_user.gl_user
+    @user.remember_me = params[:remember_me] if ldap_user.persisted?
 
     # Do additional LDAP checks for the user filter and EE features
-    if @user.allowed?
+    if ldap_user.allowed?
       if @user.otp_required_for_login?
-        prompt_for_two_factor(gl_user)
+        prompt_for_two_factor(@user)
       else
-        log_audit_event(gl_user, with: :ldap)
-        sign_in_and_redirect(gl_user)
+        log_audit_event(@user, with: :ldap)
+        sign_in_and_redirect(@user)
       end
     else
       flash[:alert] = "Access denied for your LDAP account."
