@@ -106,7 +106,7 @@ class Projects::NotesController < Projects::ApplicationController
           { notes_left: [note], notes_right: [] }
         else
           { notes_left: [], notes_right: [note] }
-       end
+        end
     else
       template = "projects/notes/_diff_notes_with_reply"
       locals = { notes: [note] }
