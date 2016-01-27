@@ -102,7 +102,7 @@ class License < ActiveRecord::Base
 
     return unless active_user_count
 
-    return if active_user_count < restricted_user_count
+    return if active_user_count <= restricted_user_count
 
     overage = active_user_count - restricted_user_count
 
