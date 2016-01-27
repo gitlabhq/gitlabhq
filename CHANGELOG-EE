@@ -1,4 +1,5 @@
 v 8.5.0 (unreleased)
+  - Show warning when mirror repository default branch could not be updated because it has diverged from upstream.
 
 v 8.4.2
   - Elasticsearch indexer performance improvements
