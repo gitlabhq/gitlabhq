@@ -24,9 +24,6 @@ module Gitlab
         update_user_attributes
       end
 
-      delegate :otp_required_for_login?, :otp_backup_codes, :otp_attempt,
-        to: :gl_user
-
       def gl_user
         @gl_user ||= find_by_uid_and_provider || find_by_email || build_new_user
       end
