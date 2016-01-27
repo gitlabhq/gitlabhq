@@ -66,8 +66,8 @@ class GitPushService
     project.execute_services(@push_data.dup, :push_hooks)
 
     if Gitlab.config.elasticsearch.enabled
-      project.repository.index_commits
-      project.repository.index_blobs
+      project.repository.index_commits(from_rev: oldrev,to_rev: newrev)
+      project.repository.index_blobs(from_rev: oldrev,to_rev: oldrev)
     end
 
     CreateCommitBuildsService.new.execute(project, @user, @push_data, mirror_update: mirror_update)
