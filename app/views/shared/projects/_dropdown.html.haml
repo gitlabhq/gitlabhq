@@ -1,21 +1,15 @@
 .dropdown.inline
   %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
     %span.light
-      - if sort_options_hash[@sort].present?
-        = sort_options_hash[@sort]
-      - else
-        = sort_title_recently_active
+      = sort_options_hash[@sort] || sort_title_recently_active
       %b.caret
-  %ul.dropdown-menu.dropdown-menu-align-right
-    %li.dropdown-label Sort by
-    %li
-      = link_to_sort sort_title_recently_active, sort_value_recently_active, @sort
-      = link_to_sort sort_title_stars, sort_value_stars, @sort
-      = link_to_sort sort_title_name_asc, sort_value_name_asc, @sort
-      = link_to_sort sort_title_name_desc, sort_value_name_desc, @sort
+  %ul.dropdown-menu.align-right.with-label
+    %li Sort by
+    %li= link_to_sort sort_title_recently_active, sort_value_recently_active, @sort
+    %li= link_to_sort sort_title_stars, sort_value_stars, @sort
+    %li= link_to_sort sort_title_name, sort_value_name, @sort
 
-    - if current_user && !current_controller?(:groups)
+    - if current_user && !@disable_dropdown_filters
       %hr
-      %li
-        = link_to_filter 'Owned by anyone', 'all', @filter
-        = link_to_filter 'Owned by me', 'personal', @filter
+      %li= link_to_filter 'Owned by anyone', 'all', @filter
+      %li= link_to_filter 'Owned by me', 'personal', @filter

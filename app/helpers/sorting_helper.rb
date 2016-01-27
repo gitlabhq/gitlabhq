@@ -1,8 +1,7 @@
 module SortingHelper
   def sort_options_hash
     {
-      sort_value_name_asc => sort_title_name_asc,
-      sort_value_name_desc => sort_title_name_desc,
+      sort_value_name => sort_title_name,
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_oldest_updated => sort_title_oldest_updated,
       sort_value_recently_created => sort_title_recently_created,
@@ -41,12 +40,8 @@ module SortingHelper
     'Milestone due later'
   end
 
-  def sort_title_name_asc
-    'Name from A to Z'
-  end
-
-  def sort_title_name_desc
-    'Name from Z to A'
+  def sort_title_name
+    'Name'
   end
 
   def sort_title_largest_repo
@@ -93,12 +88,8 @@ module SortingHelper
     'milestone_due_desc'
   end
 
-  def sort_value_name_asc
+  def sort_value_name
     'name_asc'
-  end
-
-  def sort_value_name_desc
-    'name_desc'
   end
 
   def sort_value_largest_repo
@@ -135,14 +126,10 @@ module SortingHelper
     label ||= value.to_s.humanize
     active = currently_active_sort_or_filter?(value, current_value)
 
-    active_class = active ? 'active' : nil
-
-    url_params = params.reject { |k, v| k == keyword && v == value }
-
-    link_to(url_for(url_params.merge(keyword => value)), class: active_class) do
+    link_to(url_for(params.merge(keyword => value)), class: (active ? 'active' : nil)) do
       if active
         content_tag(:span) do
-          content_tag(:i, nil, class: %w[fa fa-check]).concat(content_tag(:strong, label, class: 'item-title'))
+          content_tag(:i, nil, class: 'fa fa-check').concat(content_tag(:strong, label, class: 'item-title'))
         end
       else
         label

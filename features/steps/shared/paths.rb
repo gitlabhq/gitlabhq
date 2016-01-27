@@ -48,7 +48,7 @@ module SharedPaths
   end
 
   step 'I visit group "Owned" projects page' do
-    visit projects_group_path(Group.find_by(name: "Owned"))
+    visit group_projects_path(Group.find_by(name: "Owned"))
   end
 
   step 'I visit group "Owned" projects edit page' do

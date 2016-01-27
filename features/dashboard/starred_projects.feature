@@ -17,8 +17,8 @@ Feature: Dashboard Starred Projects
     And I visit dashboard starred projects page
 
   Scenario: I should see projects list
-    Then I should see "Your projects (4)"
-    Then I should see "Starred projects (3)"
+    Then I should see "Your projects"
+    Then I should see "Starred projects"
     Then I should see "Community" project link
     Then I should see "Forum" project link
     Then I should see "Grocery" project link
@@ -32,13 +32,9 @@ Feature: Dashboard Starred Projects
     And I sort projects list by "Most stars"
     Then I should see "Community" at the top
 
-  Scenario: I sort projects by name from A to Z
-    And I sort projects list by "Name from A to Z"
+  Scenario: I sort projects by Name
+    And I sort projects list by "Name"
     Then I should see "Community" at the top
-
-  Scenario: I sort projects by name from Z to A
-    And I sort projects list by "Name from Z to A"
-    Then I should see "Grocery" at the top
 
   Scenario: I filter to see only my own projects, I should see projects list
     And I filter to see only my own projects
@@ -56,12 +52,7 @@ Feature: Dashboard Starred Projects
     And I sort projects list by "Most stars"
     Then I should see "Forum" at the top
 
-  Scenario: I filter to see only my own projects, I sort projects by name from A to Z
+  Scenario: I filter to see only my own projects, I sort projects by Name
     And I filter to see only my own projects
-    And I sort projects list by "Name from A to Z"
+    And I sort projects list by "Name"
     Then I should see "Forum" at the top
-
-  Scenario: I filter to see only my own projects, I sort projects by name from Z to A
-    And I filter to see only my own projects
-    And I sort projects list by "Name from Z to A"
-    Then I should see "Grocery" at the top

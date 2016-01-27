@@ -3,11 +3,11 @@ class Spinach::Features::DashboardProjects < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
 
-  step 'I should see "Your Projects (3)"' do
-    expect(page).to have_link 'Your Projects (3)'
+  step 'I should see "Your Projects"' do
+    expect(page).to have_link 'Your Projects'
   end
 
-  step 'I should see "Starred Projects (2)"' do
-    expect(page).to have_link 'Starred Projects (2)'
+  step 'I should see "Starred Projects"' do
+    expect(page).to have_link 'Starred Projects'
   end
 end

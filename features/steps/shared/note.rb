@@ -147,7 +147,7 @@ module SharedNote
 
   step 'I sort the list by "Last updated"' do
     find('button.dropdown-toggle.btn').click
-    page.within('ul.dropdown-menu.dropdown-menu-align-right li') do
+    page.within('ul.dropdown-menu.align-right li') do
       click_link "Last updated"
     end
   end

@@ -1,9 +1,9 @@
 .controls.projects-controls
   .form-inline.pull-right
-    .form-group= search_field_tag :filter_projects, nil, placeholder: 'Filter by name...', class: 'projects-list-filter form-control hidden-xs', spellcheck: false
+    .form-group.hidden-xs.hidden-sm= search_field_tag :filter_projects, nil, placeholder: 'Filter by name...', class: 'projects-list-filter form-control', spellcheck: false
 
-    - unless current_controller?('explore/projects')
-      .form-group.prepend-left-10= render 'shared/projects/dropdown'
+    - unless @disable_projects_dropdown
+      .form-group.prepend-left-10.hidden-xs= render 'shared/projects/dropdown'
 
     - if current_user && current_user.can_create_project?
       .form-group.prepend-left-10

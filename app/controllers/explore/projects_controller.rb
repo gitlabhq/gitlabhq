@@ -1,10 +1,4 @@
 class Explore::ProjectsController < Explore::ApplicationController
-  include ProjectsListing
-
-  # The explore page doesn't use the new filters & sorts.
-  skip_before_action :load_filter_and_sort
-  # But it needs to show the user's own projects & her starred projects
-  before_action :load_user_projects, :load_starred_projects, if: :current_user
 
   def index
     @projects = ProjectsFinder.new.execute(current_user).non_archived.includes(:namespace)

@@ -1,20 +1,17 @@
 class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
-  include ProjectsListing
 
   skip_before_action :authenticate_user!, only: [:show, :projects, :issues, :merge_requests]
   respond_to :html
-  before_action :load_group, except: [:new, :create]
+  before_action :find_group, except: [:new, :create]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:show, :projects, :new, :create, :autocomplete]
+  before_action :authorize_read_group!, except: [:show, :new, :create, :autocomplete]
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy]
   before_action :authorize_create_group!, only: [:new, :create]
 
-  # Load group projects
-  before_action :load_projects, only: [:show, :projects, :issues, :merge_requests]
-  before_action :load_contributed_projects, :load_starred_projects, only: :projects
+  before_action :find_projects, only: [:show, :issues, :merge_requests]
   before_action :event_filter, only: :show
 
   layout :determine_layout
@@ -60,28 +57,6 @@ class GroupsController < Groups::ApplicationController
   def edit
   end
 
-  def projects
-    # No matter if the user is logged-in or not, @all_projects is always needed.
-    @all_projects = @projects
-
-    # When the user is logged-in, we need @all_projects, @contributed_projects
-    # and, @starred_projects to display their respective projects count in the
-    # UI. Depending on the current scope (none or 'all', 'contributed' or
-    # 'starred'), the @projects variable will reference one of these 3 variables
-    # and is used for the projects list in the page.
-    if current_user
-      @starred_projects = @starred_projects.in_namespace(@group.id)
-      @projects = case params[:scope]
-                  when 'contributed'
-                    @contributed_projects
-                  when 'starred'
-                    @starred_projects
-                  else
-                    @all_projects
-                  end
-    end
-  end
-
   def update
     if @group.update_attributes(group_params)
       redirect_to edit_group_path(@group), notice: "Group '#{@group.name}' was successfully updated."
@@ -98,23 +73,8 @@ class GroupsController < Groups::ApplicationController
 
   protected
 
-  def load_group
+  def find_group
     @group ||= Group.find_by(path: params[:id])
-  end
-
-  def load_projects
-    @projects ||= prepare_for_listing(
-      ProjectsFinder.new.execute(current_user, group: @group)
-    )
-  end
-
-  def load_contributed_projects
-    return unless current_user
-
-    @contributed_projects ||= prepare_for_listing(
-      ContributedProjectsFinder.new(current_user).execute(current_user).
-        in_namespace(@group.id)
-    )
   end
 
   # Dont allow unauthorized access to group

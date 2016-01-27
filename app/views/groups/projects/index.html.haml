@@ -1,10 +1,11 @@
-= render 'header'
+- @disable_dropdown_filters = true
+= render 'groups/header'
 
 %div{class: container_class}
   .tab-content
     .tab-pane.active
       - if can?(current_user, :read_group, @group) && @projects.any?
-        = render 'projects_head'
-        = render 'projects', projects: @projects
+        = render 'groups/projects_head'
+        = render 'groups/projects', projects: @projects
       - else
         .nothing-here-block No projects to see

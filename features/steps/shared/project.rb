@@ -292,12 +292,8 @@ module SharedProject
     sort_by('Most stars')
   end
 
-  step 'I sort projects list by "Name from A to Z"' do
-    sort_by('Name from A to Z')
-  end
-
-  step 'I sort projects list by "Name from Z to A"' do
-    sort_by('Name from Z to A')
+  step 'I sort projects list by "Name"' do
+    sort_by('Name')
   end
 
   step 'I should see "Community" at the top' do

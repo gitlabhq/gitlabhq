@@ -189,34 +189,6 @@
   }
 }
 
-.dropdown-menu {
-  @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
-  @include border-radius (1px);
-
-  border: none;
-  margin-top: 5px;
-  padding: 16px 0;
-  font-size: 14px;
-  font-weight: 100;
-
-  li a {
-    color: #5f697a;
-    line-height: 30px;
-
-    &:hover {
-      background-color: #3084bb !important;
-    }
-  }
-
-  hr {
-    margin: 10px;
-  }
-
-  i {
-    margin-right: 8px;
-  }
-}
-
 .project-visibility-level-holder {
   .radio {
     margin-bottom: 10px;
@@ -298,28 +270,6 @@
 
   .projects-controls {
     width: 50%;
-
-    .dropdown-menu {
-      font-size: $gl-font-size;
-
-      li {
-
-        &.dropdown-label {
-          padding-left: $gl-padding;
-          padding-bottom: $gl-vert-padding;
-          font-size: 14px;
-        }
-
-        a {
-          line-height: 18px;
-          padding-left: 39px;
-
-          &.active {
-            padding-left: $gl-padding;
-          }
-        }
-      }
-    }
   }
 }
 

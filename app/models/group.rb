@@ -19,7 +19,7 @@ require 'file_size_validator'
 class Group < Namespace
   include Gitlab::ConfigHelper
   include Referable
-  
+
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
   has_many :users, through: :group_members
@@ -55,7 +55,7 @@ class Group < Namespace
   end
 
   def to_reference(_from_project = nil)
-    "#{self.class.reference_prefix}#{name}"
+    "#{self.class.reference_prefix}#{path}"
   end
 
   def human_name

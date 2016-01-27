@@ -58,7 +58,7 @@ describe Group, models: true do
 
   describe '#to_reference' do
     it 'returns a String reference to the object' do
-      expect(group.to_reference).to eq "@#{group.name}"
+      expect(group.to_reference).to eq "@#{group.path}"
     end
   end
 

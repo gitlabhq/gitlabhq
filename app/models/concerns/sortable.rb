@@ -16,8 +16,8 @@ module Sortable
     scope :order_created_asc, -> { reorder(created_at: :asc) }
     scope :order_updated_desc, -> { reorder(updated_at: :desc) }
     scope :order_updated_asc, -> { reorder(updated_at: :asc) }
-    scope :order_name_asc, -> { reorder("LOWER(#{quoted_table_name}.#{connection.quote_column_name('name')}) ASC") }
-    scope :order_name_desc, -> { reorder("LOWER(#{quoted_table_name}.#{connection.quote_column_name('name')}) DESC") }
+    scope :order_name_asc, -> { reorder(name: :asc) }
+    scope :order_name_desc, -> { reorder(name: :desc) }
   end
 
   module ClassMethods

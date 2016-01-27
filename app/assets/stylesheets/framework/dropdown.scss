@@ -1,0 +1,60 @@
+.dropdown-menu {
+  @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
+  @include border-radius (1px);
+
+  border: none;
+  margin-top: 5px;
+  padding: $gl-padding-top 0;
+  font-size: $gl-font-size;
+  font-weight: 100;
+
+  li {
+    a {
+      line-height: $gl-dropdown-line-height;
+      color: #5f697a;
+      text-shadow: none;
+
+      &:hover,
+      &:focus {
+        background: $gl-primary;
+        color: #FFF;
+      }
+    }
+  }
+
+  // Specific class to ensure we don't break all current dropdowns, allowing for
+  // a smooth transition to new dropdowns design
+  &.with-label {
+    li {
+      // First li must be the label
+      &:first-child {
+        padding-left: $gl-padding;
+        padding-bottom: $gl-vert-padding;
+        font-size: $gl-dropdown-label-font-size;
+      }
+
+      a {
+        line-height: $gl-dropdown-line-height;
+        padding-left: $gl-padding + $gl-font-size + $gl-dropdown-fa-icon-margin-right;
+
+        // The active li has an icon to its left so it needs an extra padding
+        &.active {
+          padding-left: $gl-padding;
+        }
+      }
+    }
+
+    hr {
+      margin: 5px 10px;
+    }
+
+    i {
+      margin-right: $gl-dropdown-fa-icon-margin-right;
+    }
+  }
+
+  &.align-right {
+    left: auto;
+    right: 0px;
+  }
+}

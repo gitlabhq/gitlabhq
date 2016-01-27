@@ -20,9 +20,9 @@ Feature: Groups
   Scenario: I should see group "Owned" projects list
     When I visit group "Owned" projects page
     Then I should see a nav block
-    Then I should see "All (4)"
-    Then I should see "Contributed (1)"
-    Then I should see "Starred (2)"
+    Then I should see "All"
+    Then I should see "Contributed"
+    Then I should see "Starred"
     Then I should see group "Owned" projects list
 
   Scenario: I sort projects by recent activity
@@ -35,15 +35,10 @@ Feature: Groups
     And I sort projects list by "Most stars"
     Then I should see "Star-project" at the top
 
-  Scenario: I sort projects by name from A to Z
+  Scenario: I sort projects by Name
     When I visit group "Owned" projects page
-    And I sort projects list by "Name from A to Z"
+    And I sort projects list by "Name"
     Then I should see "Moon-project" at the top
-
-  Scenario: I sort projects by name from Z to A
-    When I visit group "Owned" projects page
-    And I sort projects list by "Name from Z to A"
-    Then I should see "Star-project" at the top
 
   Scenario: I should see group "Owned" issues list
     Given project from group "Owned" has issues assigned to me
@@ -95,5 +90,5 @@ Feature: Groups
     And I am a signed out user
     When I visit group "Owned" projects page
     Then I should see group "Owned"
-    Then I should see "All (2)"
+    Then I should see "All"
     Then I should see project "Public-project"

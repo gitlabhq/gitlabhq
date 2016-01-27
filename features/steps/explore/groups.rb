@@ -23,7 +23,7 @@ class Spinach::Features::ExploreGroups < Spinach::FeatureSteps
   end
 
   step 'I visit group "TestGroup" page' do
-    visit projects_group_path(Group.find_by(name: "TestGroup"))
+    visit group_projects_path(Group.find_by(name: "TestGroup"))
   end
 
   step 'I visit group "TestGroup" issues page' do

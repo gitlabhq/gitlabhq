@@ -13,20 +13,16 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     expect(page).to have_content '@owned'
   end
 
-  step 'I should see "All (4)"' do
-    expect(page).to have_link "All (4)"
+  step 'I should see "All"' do
+    expect(page).to have_link "All"
   end
 
-  step 'I should see "All (2)"' do
-    expect(page).to have_link "All (2)"
+  step 'I should see "Contributed"' do
+    expect(page).to have_link "Contributed"
   end
 
-  step 'I should see "Contributed (1)"' do
-    expect(page).to have_link "Contributed (1)"
-  end
-
-  step 'I should see "Starred (2)"' do
-    expect(page).to have_link "Starred (2)"
+  step 'I should see "Starred"' do
+    expect(page).to have_link "Starred"
   end
 
   step 'I am a signed out user' do

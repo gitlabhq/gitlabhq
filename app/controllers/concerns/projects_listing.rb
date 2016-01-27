@@ -1,32 +1,25 @@
 # == ProjectsListing
 #
 # Controller concern to handle projects list filtering & sorting
-#
-# Upon inclusion, calls `load_filter_and_sort` on all actions.
 module ProjectsListing
   extend ActiveSupport::Concern
+  include SortingHelper
 
-  included do
-    before_action :load_filter_and_sort
-  end
+  FILTERS_WHITELIST = %w[all personal]
 
   private
 
-  def load_filter_and_sort
-    @filter = params.fetch(:filter) { 'all' }
-    @sort   = params.fetch(:sort)   { 'recently_active' }
+  def init_filter_and_sort
+    @filter = whitelist_filter(params[:filter], 'all')
+    @sort   = whitelist_sort(params[:sort], 'recently_active')
   end
 
-  def load_user_projects
-    return unless current_user
-
-    @user_projects = prepare_for_listing(current_user.authorized_projects)
+  def whitelist_filter(filter, default)
+    FILTERS_WHITELIST.include?(filter) ? filter : default
   end
 
-  def load_starred_projects
-    return unless current_user
-
-    @starred_projects = prepare_for_listing(current_user.starred_projects)
+  def whitelist_sort(sort, default)
+    sort_options_hash.keys.include?(sort) ? sort : default
   end
 
   def prepare_for_listing(relation)
