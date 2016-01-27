@@ -31,7 +31,7 @@ class ExternalIssue
 
   # Pattern used to extract `JIRA-123` issue references from text
   def self.reference_pattern
-    %r{(?<issue>([A-Z\-]+-)\d+)}
+    %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
   end
 
   def to_reference(_from_project = nil)
