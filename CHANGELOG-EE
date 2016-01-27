@@ -1,4 +1,6 @@
 v 8.5.0 (unreleased)
+
+v 8.4.2 (unreleased)
   - Don't redirect away from Mirror Repository settings when repo is empty.
 
 v 8.4.1
