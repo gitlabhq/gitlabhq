@@ -63,16 +63,26 @@
       %span.time-elapsed
         %strong== #{@milestone.percent_time_used}%
         time elapsed
-    %span.pull-right= @milestone.expires_at
+    %span.pull-right.tab-issues-buttons.tab-labels-buttons
+      - if can?(current_user, :create_issue, @project)
+        = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
+          %i.fa.fa-plus
+          New Issue
+      - if can?(current_user, :read_issue, @project)
+        = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
+    %span.pull-right.tab-merge-requests-buttons.hidden
+      - if can?(current_user, :read_merge_request, @project)
+        = link_to 'Browse Merge Requests', namespace_project_merge_requests_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
+
   = milestone_progress_bar(@milestone)
 
 %ul.nav-links.no-top.no-bottom
   %li.active
-    = link_to '#tab-issues', 'data-toggle' => 'tab' do
+    = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
       Issues
       %span.badge= @issues.count
   %li
-    = link_to '#tab-merge-requests', 'data-toggle' => 'tab' do
+    = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
       Merge Requests
       %span.badge= @merge_requests.count
   %li
@@ -80,24 +90,12 @@
       Participants
       %span.badge= @users.count
   %li
-    = link_to '#tab-labels', 'data-toggle' => 'tab' do
+    = link_to '#tab-labels', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
       Labels
       %span.badge= @labels.count
 
 .tab-content
   .tab-pane.active#tab-issues
-    .content-block.oneline-block
-      .controls
-        - if can?(current_user, :create_issue, @project)
-          = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
-            %i.fa.fa-plus
-            New Issue
-        - if can?(current_user, :read_issue, @project)
-          = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
-
-      .oneline
-        All issues in this milestone
-
     .row.prepend-top-default
       .col-md-4
         = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned, id: 'unassigned')
@@ -107,14 +105,6 @@
         = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed, id: 'closed')
 
   .tab-pane#tab-merge-requests
-    .content-block.oneline-block
-      .controls
-        - if can?(current_user, :read_merge_request, @project)
-          = link_to 'Browse Merge Requests', namespace_project_merge_requests_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
-
-      .oneline
-        All merge requests in this milestone
-
     .row.prepend-top-default
       .col-md-3
         = render('merge_requests', title: 'Work in progress (open and unassigned)', merge_requests: @merge_requests.opened.unassigned, id: 'unassigned')
