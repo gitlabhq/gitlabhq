@@ -7,6 +7,7 @@
 - [Groups](groups.md)
 - [Importing to GitLab](doc/importing/README.md)
 - [Keyboard shortcuts](shortcuts.md)
+- [File finder](file_finder.md)
 - [Labels](labels.md)
 - [Issue weight](issue_weight.md)
 - [Manage large binaries with git annex](git_annex.md)

@@ -58,7 +58,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def diffs
     @commit = @merge_request.last_commit
-    @first_commit = @merge_request.first_commit
+    @base_commit = @merge_request.diff_base_commit
+
+    # MRs created before 8.4 don't have a diff_base_commit,
+    # but we need it for the "View file @ ..." link by deleted files
+    @base_commit ||= @merge_request.first_commit.parent || @merge_request.first_commit
 
     @comments_allowed = @reply_allowed = true
     @comments_target = {
@@ -90,6 +94,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def new
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
     @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+    @noteable = @merge_request
 
     @target_branches = if @merge_request.target_project
                          @merge_request.target_project.repository.branch_names
@@ -101,7 +106,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @source_project = merge_request.source_project
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.last_commit
-    @first_commit = @merge_request.first_commit
+    @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.compare_diffs
 
     @ci_commit = @merge_request.ci_commit

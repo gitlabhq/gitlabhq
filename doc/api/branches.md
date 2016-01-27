@@ -8,13 +8,21 @@ Get a list of repository branches from a project, sorted by name alphabetically.
 GET /projects/:id/repository/branches
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
 
-- `id` (required) - The ID of a project
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches
+```
+
+Example response:
 
 ```json
 [
   {
+    "name": "master",
+    "protected": true,
     "commit": {
       "author_email": "john@example.com",
       "author_name": "John Smith",
@@ -27,10 +35,9 @@ Parameters:
       "parent_ids": [
         "4ad91d3c1144c406e50c7b33bae684bd6837faf8"
       ]
-    },
-    "name": "master",
-    "protected": true
-  }
+    }
+  },
+  ...
 ]
 ```
 
@@ -42,13 +49,21 @@ Get a single project repository branch.
 GET /projects/:id/repository/branches/:branch
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `branch` | string | yes | The name of the branch |
 
-- `id` (required) - The ID of a project
-- `branch` (required) - The name of the branch
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master
+```
+
+Example response:
 
 ```json
 {
+  "name": "master",
+  "protected": true,
   "commit": {
     "author_email": "john@example.com",
     "author_name": "John Smith",
@@ -61,25 +76,30 @@ Parameters:
     "parent_ids": [
       "4ad91d3c1144c406e50c7b33bae684bd6837faf8"
     ]
-  },
-  "name": "master",
-  "protected": true
+  }
 }
 ```
 
 ## Protect repository branch
 
-Protects a single project repository branch. This is an idempotent function, protecting an already
-protected repository branch still returns a `200 OK` status code.
+Protects a single project repository branch. This is an idempotent function,
+protecting an already protected repository branch still returns a `200 OK`
+status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/protect
 ```
 
-Parameters:
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/protect
+```
 
-- `id` (required) - The ID of a project
-- `branch` (required) - The name of the branch
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `branch` | string | yes | The name of the branch |
+
+Example response:
 
 ```json
 {
@@ -103,17 +123,24 @@ Parameters:
 
 ## Unprotect repository branch
 
-Unprotects a single project repository branch. This is an idempotent function, unprotecting an already
-unprotected repository branch still returns a `200 OK` status code.
+Unprotects a single project repository branch. This is an idempotent function,
+unprotecting an already unprotected repository branch still returns a `200 OK`
+status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/unprotect
 ```
 
-Parameters:
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/unprotect
+```
 
-- `id` (required) - The ID of a project
-- `branch` (required) - The name of the branch
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `branch` | string | yes | The name of the branch |
+
+Example response:
 
 ```json
 {
@@ -141,11 +168,17 @@ Parameters:
 POST /projects/:id/repository/branches
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`          | integer | yes | The ID of a project |
+| `branch_name` | string  | yes | The name of the branch |
+| `ref`         | string  | yes | The branch name or commit SHA to create branch from |
 
-- `id` (required) - The ID of a project
-- `branch_name` (required) - The name of the branch
-- `ref` (required) - Create branch from commit SHA or existing branch
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches?branch_name=newbranch&ref=master"
+```
+
+Example response:
 
 ```json
 {
@@ -162,12 +195,13 @@ Parameters:
       "4ad91d3c1144c406e50c7b33bae684bd6837faf8"
     ]
   },
-  "name": "master",
+  "name": "newbranch",
   "protected": false
 }
 ```
 
-It return 200 if succeed or 400 if failed with error message explaining reason.
+It returns `200` if it succeeds or `400` if failed with an error message
+explaining the reason.
 
 ## Delete repository branch
 
@@ -175,18 +209,22 @@ It return 200 if succeed or 400 if failed with error message explaining reason.
 DELETE /projects/:id/repository/branches/:branch
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of a project |
+| `branch`  | string  | yes | The name of the branch |
 
-- `id` (required) - The ID of a project
-- `branch` (required) - The name of the branch
+It returns `200` if it succeeds, `404` if the branch to be deleted does not exist
+or `400` for other reasons. In case of an error, an explaining message is provided.
 
-It return 200 if succeed, 404 if the branch to be deleted does not exist
-or 400 for other reasons. In case of an error, an explaining message is provided.
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches/newbranch"
+```
 
-Success response: 
+Example response:
 
 ```json
 {
-  "branch_name": "my-removed-branch"
+  "branch_name": "newbranch"
 }
 ```

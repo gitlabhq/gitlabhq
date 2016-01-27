@@ -15,16 +15,16 @@ GitLab has two ways to add new OAuth2 application to an instance, you can add ap
 ### Adding application through profile
 Go to your profile section 'Application' and press button 'New Application'
 
-![applications](oauth_provider/user_wide_applications.png)
+![applications](img/oauth_provider_user_wide_applications.png)
 
 After this you will see application form, where "Name" is arbitrary name, "Redirect URI" is URL in your app where users will be sent after authorization on GitLab.com.
 
-![application_form](oauth_provider/application_form.png)
+![application_form](img/oauth_provider_application_form.png)
 
 ### Authorized application
 Every application you authorized will be shown in your "Authorized application" sections.
 
-![authorized_application](oauth_provider/authorized_application.png)
+![authorized_application](img/oauth_provider_authorized_application.png)
 
 At any time you can revoke access just clicking button "Revoke"
 
@@ -32,4 +32,4 @@ At any time you can revoke access just clicking button "Revoke"
 
 If you want to create application that does not belong to certain user you can create it from admin area 
 
-![admin_application](oauth_provider/admin_application.png)
+![admin_application](img/oauth_provider_admin_application.png)

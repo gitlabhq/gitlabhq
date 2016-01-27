@@ -28,7 +28,7 @@ GitLab.com will generate an application ID and secret key for you to use.
 
 1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot). 
     Keep this page open as you continue configuration. 
-    ![GitLab app](gitlab_app.png)
+    ![GitLab app](img/gitlab_app.png)
 
 1.  On your GitLab server, open the configuration file.
 

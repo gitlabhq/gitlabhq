@@ -242,11 +242,8 @@ ul.notes {
 
   // "show" the icon also if we just hover somewhere over the line
   &:hover > td {
-    background: $hover !important;
-
     .add-diff-note {
       @include show-add-diff-note;
     }
   }
 }
-

@@ -22,29 +22,27 @@
               .file-content.code
                 .nothing-here-block Empty file
       - else
-        .file-content.code
-          %div.highlighted-data{ class: user_color_scheme }
-            .line-numbers
+        .file-content.code.js-syntax-highlight
+          .line-numbers
+            - snippet_blob[:snippet_chunks].each do |snippet|
+              - unless snippet[:data].empty?
+                - snippet[:data].lines.to_a.size.times do |index|
+                  - offset = defined?(snippet[:start_line]) ? snippet[:start_line] : 1
+                  - i = index + offset
+                  = link_to snippet_path+"#L#{i}", id: "L#{i}", rel: "#L#{i}", class: "diff-line-num" do
+                    %i.fa.fa-link
+                    = i
+                - unless snippet == snippet_blob[:snippet_chunks].last
+                  %a.diff-line-num
+                    = "."
+          %pre.code
+            %code
               - snippet_blob[:snippet_chunks].each do |snippet|
                 - unless snippet[:data].empty?
-                  - snippet[:data].lines.to_a.size.times do |index|
-                    - offset = defined?(snippet[:start_line]) ? snippet[:start_line] : 1
-                    - i = index + offset
-                    = link_to snippet_path+"#L#{i}", id: "L#{i}", rel: "#L#{i}" do
-                      %i.fa.fa-link
-                      = i
+                  = snippet[:data]
                   - unless snippet == snippet_blob[:snippet_chunks].last
                     %a
-                      = "."
-            .highlight.term
-              %pre
-                %code
-                  - snippet_blob[:snippet_chunks].each do |snippet|
-                    - unless snippet[:data].empty?
-                      = snippet[:data]
-                      - unless snippet == snippet_blob[:snippet_chunks].last
-                        %a
-                          = "..."
-                    - else
-                      .file-content.code
-                        .nothing-here-block Empty file
+                      = "..."
+                - else
+                  .file-content.code
+                    .nothing-here-block Empty file

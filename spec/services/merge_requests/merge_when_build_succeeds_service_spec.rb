@@ -6,7 +6,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
   let(:mr_merge_if_green_enabled) do
     create(:merge_request, merge_when_build_succeeds: true, merge_user: user,
-                           source_branch: "source_branch", target_branch: project.default_branch,
+                           source_branch: "master", target_branch: 'feature',
                            source_project: project, target_project: project, state: "opened")
   end
 
