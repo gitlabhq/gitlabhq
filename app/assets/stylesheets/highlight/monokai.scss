@@ -22,11 +22,11 @@
   // Diff line
   .line_holder {
     .diff-line-num.new, .line_content.new {
-      @include diff_background(rgba(166, 226, 46, 0.2), rgba(166, 226, 46, 0.3), #808080);
+      @include diff_background(rgba(166, 226, 46, 0.1), rgba(166, 226, 46, 0.15), #808080);
     }
 
     .diff-line-num.old, .line_content.old {
-      @include diff_background(rgba(254, 147, 140, 0.2), rgba(254, 147, 140, 0.3), #808080);
+      @include diff_background(rgba(254, 147, 140, 0.15), rgba(254, 147, 140, 0.2), #808080);
     }
 
     .line_content.match {
