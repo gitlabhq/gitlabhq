@@ -47,19 +47,22 @@
     %span All issues for this milestone are closed. You may close milestone now.
 
 .context.prepend-top-default
-  %p.lead
+  .milestone-summary
     %h4 Progress
     %strong= @milestone.issues.count
     issues:
-    %strong= @milestone.open_items_count
-    open and
-    %strong= @milestone.closed_items_count
-    closed
-    %strong== #{@milestone.percent_complete}%
-    complete
-    %span.time-elapsed
-      %strong== #{@milestone.percent_time_used}%
-      time elapsed
+    %span.milestone-stat
+      %strong= @milestone.open_items_count
+      open and
+      %strong= @milestone.closed_items_count
+      closed
+    %span.milestone-stat
+      %strong== #{@milestone.percent_complete}%
+      complete
+    %span.milestone-stat
+      %span.time-elapsed
+        %strong== #{@milestone.percent_time_used}%
+        time elapsed
     %span.pull-right= @milestone.expires_at
   = milestone_progress_bar(@milestone)
 
