@@ -4,6 +4,7 @@ v 8.4.2 (unreleased)
   - Bump required gitlab-workhorse version to bring in a fix for missing
     artifacts in the build artifacts browser
   - Get rid of those ugly borders on the file tree view
+  - Fix updating the runner information when asking for builds
   - Bump gitlab_git version to 7.2.24 in order to bring in a performance
     improvement when checking if a repository was empty
   - Add instrumentation for Gitlab::Git::Repository instance methods so we can
