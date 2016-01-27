@@ -92,7 +92,7 @@ class Member < ActiveRecord::Base
         member.invite_email = user
       end
 
-      if can_update_member?(current_user, member)
+      if can_update_member?(current_user, member) || project_creator?(member, access_level)
         member.created_by ||= current_user
         member.access_level = access_level
 
@@ -109,6 +109,11 @@ class Member < ActiveRecord::Base
       !current_user ||
         current_user.can?(:update_group_member, member) ||
         current_user.can?(:update_project_member, member)
+    end
+
+    def project_creator?(member, access_level)
+      member.new_record? && member.owner? &&
+        access_level.to_i == ProjectMember::MASTER
     end
   end
 

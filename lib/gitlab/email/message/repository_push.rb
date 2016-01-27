@@ -9,6 +9,7 @@ module Gitlab
 
         delegate :namespace, :name_with_namespace, to: :project, prefix: :project
         delegate :name, to: :author, prefix: :author
+        delegate :username, to: :author, prefix: :author
 
         def initialize(notify, project_id, recipient, opts = {})
           raise ArgumentError, 'Missing options: author_id, ref, action' unless

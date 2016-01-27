@@ -22,9 +22,9 @@
 #= require bootstrap
 #= require select2
 #= require raphael
-#= require g.raphael-min
-#= require g.bar-min
-#= require chart-lib.min
+#= require g.raphael
+#= require g.bar
+#= require Chart
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
@@ -39,9 +39,9 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issuable
 #= require shortcuts_network
-#= require jquery.nicescroll.min
+#= require jquery.nicescroll
 #= require_tree .
-#= require fuzzaldrin-plus.min
+#= require fuzzaldrin-plus
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()

@@ -75,6 +75,11 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       expect(filter(act).to_html).to eq exp
     end
 
+    it 'allows `abbr` elements' do
+      exp = act = %q{<abbr title="HyperText Markup Language">HTML</abbr>}
+      expect(filter(act).to_html).to eq exp
+    end
+
     it 'removes `rel` attribute from `a` elements' do
       act = %q{<a href="#" rel="nofollow">Link</a>}
       exp = %q{<a href="#">Link</a>}

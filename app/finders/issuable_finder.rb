@@ -82,7 +82,8 @@ class IssuableFinder
     elsif current_user && params[:authorized_only].presence && !current_user_related?
       @projects = current_user.authorized_projects.reorder(nil)
     else
-      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
+      @projects = ProjectsFinder.new.execute(current_user, group: group).
+        reorder(nil)
     end
   end
 

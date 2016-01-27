@@ -43,6 +43,9 @@ class Service < ActiveRecord::Base
   validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
 
   scope :visible, -> { where.not(type: ['GitlabIssueTrackerService', 'GitlabCiService']) }
+  scope :issue_trackers, -> { where(category: 'issue_tracker') }
+  scope :active, -> { where(active: true) }
+  scope :without_defaults, -> { where(default: false) }
 
   scope :push_hooks, -> { where(push_events: true, active: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
@@ -50,6 +53,8 @@ class Service < ActiveRecord::Base
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }
+
+  default_value_for :category, 'common'
 
   def activated?
     active
@@ -60,7 +65,7 @@ class Service < ActiveRecord::Base
   end
 
   def category
-    :common
+    read_attribute(:category).to_sym
   end
 
   def initialize_properties
@@ -153,7 +158,7 @@ class Service < ActiveRecord::Base
 
   # Returns a hash of the properties that have been assigned a new value since last save,
   # indicating their original values (attr => original value).
-  # ActiveRecord does not provide a mechanism to track changes in serialized keys, 
+  # ActiveRecord does not provide a mechanism to track changes in serialized keys,
   # so we need a specific implementation for service properties.
   # This allows to track changes to properties set with the accessor methods,
   # but not direct manipulation of properties hash.
@@ -164,7 +169,7 @@ class Service < ActiveRecord::Base
   def reset_updated_properties
     @updated_properties = nil
   end
-  
+
   def async_execute(data)
     return unless supported_events.include?(data[:object_kind])
 

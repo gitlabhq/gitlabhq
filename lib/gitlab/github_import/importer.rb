@@ -82,8 +82,12 @@ module Gitlab
         end
 
         true
-      rescue Gitlab::Shell::Error
-        false
+      rescue Gitlab::Shell::Error => e
+        if e.message =~ /repository not exported/
+          true
+        else
+          false
+        end
       end
     end
   end

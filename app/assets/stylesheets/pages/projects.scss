@@ -92,12 +92,12 @@
   }
 
   .project-repo-buttons {
-    margin-top: 12px;
+    margin-top: 20px;
     margin-bottom: 0px;
 
     .count-buttons {
       display: block;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
     }
 
     .clone-row {
@@ -163,7 +163,7 @@
         line-height: 13px;
         padding: $gl-vert-padding $gl-padding;
         letter-spacing: .4px;
-        padding: 10px;
+        padding: 10px 14px;
         text-align: center;
         vertical-align: middle;
         touch-action: manipulation;
@@ -557,4 +557,10 @@ pre.light-well {
     cursor: auto;
     width: 101%;
   }
+}
+
+.cannot-be-merged, 
+.cannot-be-merged:hover {
+  color: #E62958;
+  margin-top: 2px;
 }

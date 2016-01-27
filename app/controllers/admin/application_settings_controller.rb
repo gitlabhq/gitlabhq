@@ -76,9 +76,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_timeout,
       :metrics_method_call_threshold,
       :metrics_sample_interval,
+      :ip_blocking_enabled,
+      :dnsbl_servers_list,
       :recaptcha_enabled,
       :recaptcha_site_key,
       :recaptcha_private_key,
+      :sentry_enabled,
+      :sentry_dsn,
       restricted_visibility_levels: [],
       import_sources: []
     )

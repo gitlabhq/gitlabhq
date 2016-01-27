@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119170055) do
+ActiveRecord::Schema.define(version: 20160120172143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,10 @@ ActiveRecord::Schema.define(version: 20160119170055) do
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
     t.integer  "metrics_sample_interval",           default: 15
+    t.boolean  "sentry_enabled",                    default: false
+    t.string   "sentry_dsn"
+    t.boolean  "ip_blocking_enabled",               default: false
+    t.text     "dnsbl_servers_list"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -559,6 +563,7 @@ ActiveRecord::Schema.define(version: 20160119170055) do
     t.integer  "merge_request_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "base_commit_sha"
   end
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
@@ -763,7 +768,7 @@ ActiveRecord::Schema.define(version: 20160119170055) do
     t.string   "build_coverage_regex"
     t.boolean  "build_allow_git_fetch",            default: true,     null: false
     t.integer  "build_timeout",                    default: 3600,     null: false
-    t.boolean  "mirror_trigger_builds",                        default: false,    null: false
+    t.boolean  "mirror_trigger_builds",            default: false,    null: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -817,18 +822,22 @@ ActiveRecord::Schema.define(version: 20160119170055) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",                default: false, null: false
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
     t.boolean  "issues_events",         default: true
     t.boolean  "merge_requests_events", default: true
     t.boolean  "tag_push_events",       default: true
-    t.boolean  "note_events",           default: true,  null: false
-    t.boolean  "build_events",          default: false, null: false
+    t.boolean  "note_events",           default: true,     null: false
+    t.boolean  "build_events",          default: false,    null: false
+    t.string   "category",              default: "common", null: false
+    t.boolean  "default",               default: false
   end
 
+  add_index "services", ["category"], name: "index_services_on_category", using: :btree
   add_index "services", ["created_at", "id"], name: "index_services_on_created_at_and_id", using: :btree
+  add_index "services", ["default"], name: "index_services_on_default", using: :btree
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
@@ -942,6 +951,7 @@ ActiveRecord::Schema.define(version: 20160119170055) do
     t.text     "note"
     t.string   "unlock_token"
     t.datetime "otp_grace_period_started_at"
+    t.boolean  "ldap_email",                  default: false, null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -966,20 +976,20 @@ ActiveRecord::Schema.define(version: 20160119170055) do
   add_index "users_star_projects", ["user_id"], name: "index_users_star_projects_on_user_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|
-    t.string   "url"
+    t.string   "url",                     limit: 2000
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",                    default: "ProjectHook"
+    t.string   "type",                                 default: "ProjectHook"
     t.integer  "service_id"
-    t.boolean  "push_events",             default: true,          null: false
-    t.boolean  "issues_events",           default: false,         null: false
-    t.boolean  "merge_requests_events",   default: false,         null: false
-    t.boolean  "tag_push_events",         default: false
+    t.boolean  "push_events",                          default: true,          null: false
+    t.boolean  "issues_events",                        default: false,         null: false
+    t.boolean  "merge_requests_events",                default: false,         null: false
+    t.boolean  "tag_push_events",                      default: false
     t.integer  "group_id"
-    t.boolean  "note_events",             default: false,         null: false
-    t.boolean  "enable_ssl_verification", default: true
-    t.boolean  "build_events",            default: false,         null: false
+    t.boolean  "note_events",                          default: false,         null: false
+    t.boolean  "enable_ssl_verification",              default: true
+    t.boolean  "build_events",                         default: false,         null: false
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

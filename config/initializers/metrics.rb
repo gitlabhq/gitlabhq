@@ -49,11 +49,18 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(Gitlab::Shell)
 
     config.instrument_methods(Gitlab::Git)
+    config.instrument_instance_methods(Gitlab::Git::Repository)
 
     Gitlab::Git.constants.each do |name|
       const = Gitlab::Git.const_get(name)
 
       config.instrument_methods(const) if const.is_a?(Module)
+    end
+
+    Dir[Rails.root.join('app', 'finders', '*.rb')].each do |path|
+      const = File.basename(path, '.rb').camelize.constantize
+
+      config.instrument_instance_methods(const)
     end
   end
 

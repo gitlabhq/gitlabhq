@@ -6,7 +6,7 @@ class @Star
       $starIcon = $this.find('i')
 
       toggleStar = (isStarred) ->
-        $this.parent().find('span.count').text data.star_count
+        $this.parent().find('.star-count').text data.star_count
         if isStarred
           $starSpan.removeClass('starred').text 'Star'
           $starIcon.removeClass('fa-star').addClass 'fa-star-o'
