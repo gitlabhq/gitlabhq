@@ -143,10 +143,20 @@
             %small.cgray= user.username
 
   .tab-pane#tab-labels
+    .gray-content-block.middle-block
+      .pull-right
+        - if can?(current_user, :create_issue, @project)
+          = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
+            %i.fa.fa-plus
+            New Issue
+        - if can?(current_user, :read_issue, @project)
+          = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
+
+      .oneline
+        All labels in this milestone
     %ul.bordered-list.manage-labels-list
       - @labels.each do |label|
         %li
           = render_colored_label(label)
-          .pull-right
-            %span.issues-count= pluralize label.open_issues_count, 'open issue'
-            %span.issues-count= pluralize label.closed_issues_count, 'closed issue'
+          %span.issues-count= pluralize label.open_issues_count, 'open issue'
+          %span.issues-count= pluralize label.closed_issues_count, 'closed issue'
