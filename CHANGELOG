@@ -1,18 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.5.0 (unreleased)
-  - Add "visibility" flag to GET /projects api endpoint
-  - Ignore binary files in code search to prevent Error 500 (Stan Hu)
-  - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
-  - New UI for pagination
-  - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
-  - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
-  - Don't vendor minified JS
-  - Track project import failure
-  - Fix visibility level text in admin area (Zeger-Jan van de Weg)
-
 v 8.4.2 (unreleased)
-  - Fix missing artifacts in build artifacts browser (fixed in Workhorse)
+  - Bump required gitlab-workhorse version to bring in a fix for missing
+    artifacts in the build artifacts browser
+  - Get rid of those ugly borders on the file tree view
+  - Bump gitlab_git version to 7.2.24 in order to bring in a performance
+    improvement when checking if a repository was empty
+  - Add instrumentation for Gitlab::Git::Repository instance methods so we can
+    track them in Performance Monitoring.
 
 v 8.4.1
   - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
