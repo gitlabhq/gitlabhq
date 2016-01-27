@@ -8,6 +8,7 @@ v 8.5.0 (unreleased)
   - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Don't vendor minified JS
+  - Display 404 error on group not found
 
 v 8.4.1
   - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),

@@ -3,11 +3,6 @@ Feature: Explore Groups
   Background:
     Given group "TestGroup" has private project "Enterprise"
 
-  Scenario: I should not see a group if it does not exist
-    When I sign in as a user
-    And I visit group "NonExistentGroup" page
-    Then page status code should be 404
-
   Scenario: I should see group with private and internal projects as user
     Given group "TestGroup" has internal project "Internal"
     When I sign in as a user
