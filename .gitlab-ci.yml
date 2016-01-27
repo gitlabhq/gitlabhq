@@ -1,4 +1,4 @@
-image: "ruby:2.1"
+image: "ruby:2.2"
 
 services:
   - mysql:latest
@@ -134,3 +134,26 @@ bundler:audit:
     - ruby
     - mysql
   allow_failure: true
+
+# Ruby 2.1 jobs
+
+spec:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
+
+spinach:ruby21:
+  image: ruby:2.1
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach
+  tags:
+    - ruby
+    - mysql
+  only:
+  - master
