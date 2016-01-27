@@ -15,3 +15,15 @@ li.milestone {
 .time-elapsed {
   color: #F14539;
 }
+
+.issue-row .assignee-icon {
+  .color-label {
+    float: left;
+    padding: 8px;
+    margin-left: 10px;
+  }
+
+  img {
+    margin-left: 8px;
+  }
+}
