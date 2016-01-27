@@ -13,4 +13,4 @@
       = link_to explore_root_path, title: 'Explore Projects', data: {placement: 'right'} do
         Explore Projects
 
-  = render 'shared/projects/controls'
+  = render 'shared/projects/controls', disable_projects: defined?(disable_projects_dropdown) && disable_projects_dropdown

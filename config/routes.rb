@@ -352,6 +352,7 @@ Rails.application.routes.draw do
       resources :projects, only: [:index] do
         get :edit, on: :collection
       end
+
       resources :group_members, only: [:index, :create, :update, :destroy] do
         post :resend_invite, on: :member
         delete :leave, on: :collection

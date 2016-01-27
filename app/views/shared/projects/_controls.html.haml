@@ -2,7 +2,7 @@
   .form-inline.pull-right
     .form-group.hidden-xs.hidden-sm= search_field_tag :filter_projects, nil, placeholder: 'Filter by name...', class: 'projects-list-filter form-control', spellcheck: false
 
-    - unless @disable_projects_dropdown
+    - unless defined?(disable_projects) && disable_projects
       .form-group.prepend-left-10.hidden-xs= render 'shared/projects/dropdown'
 
     - if current_user && current_user.can_create_project?
