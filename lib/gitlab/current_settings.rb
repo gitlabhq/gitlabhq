@@ -41,8 +41,11 @@ module Gitlab
     private
 
     def connect_to_db?
+      # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised
+      active_db_connection = ActiveRecord::Base.connection.active? rescue false
+
       ENV['USE_DB'] != 'false' &&
-      ActiveRecord::Base.connection_pool.active_connection? &&
+      active_db_connection &&
       ActiveRecord::Base.connection.table_exists?('application_settings')
 
     rescue ActiveRecord::NoDatabaseError
