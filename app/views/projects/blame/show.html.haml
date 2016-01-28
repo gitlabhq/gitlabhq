@@ -15,11 +15,11 @@
     .file-content.blame.code.js-syntax-highlight
       %table
         - current_line = 1
-        - @blame.each do |blame_group|
+        - @blame_groups.each do |blame_group|
           %tr
             %td.blame-commit
               .commit
-                - commit = Commit.new(blame_group[:commit], @project)
+                - commit = blame_group[:commit]
                 .commit-row-title
                   %strong
                     = link_to_gfm truncate(commit.title, length: 35), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "cdark"
