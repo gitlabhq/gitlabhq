@@ -349,7 +349,8 @@ class Project < ActiveRecord::Base
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
-    repository.commit(repository.merge_base(first_commit_id, second_commit_id))
+    sha = repository.merge_base(first_commit_id, second_commit_id)
+    repository.commit(sha) if sha
   end
 
   def saved?
