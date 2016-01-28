@@ -75,8 +75,27 @@
     padding:  $gl-padding 0;
     border-bottom: 1px solid #F0F0F0;
 
+    &:first-child {
+      padding-top: 5px;
+    }
+
     &:last-child {
       border: none;
+    }
+
+    span {
+      margin-top: 7px;
+      display: inline-block;
+    }
+
+    .issuable-count {
+
+    }
+
+    .gutter-collapse {
+      margin-left: 10px;
+      border-left: 1px solid #F0F0F0;
+      padding-left: 10px;
     }
   }
 
@@ -145,4 +164,9 @@
   overflow: scroll;
   width: $gutter_width;
   padding: 10px 20px;
+
+  .btn {
+    background: $gray-normal;
+    border: 1px solid $gray-darkest;
+  }
 }

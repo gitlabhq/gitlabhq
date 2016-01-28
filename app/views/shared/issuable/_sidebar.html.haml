@@ -1,14 +1,18 @@
 %aside.right-sidebar
   .issuable-sidebar
     .block
-      = issuable.iid
-      of
-      = issuable_count(:all, @project)
+      %span.issuable-count.pull-left
+        = issuable.iid
+        of
+        = issuable_count(:all, @project)
+      %span.gutter-collapse.pull-right
+        = icon('angle-double-right')
       .issuable-nav.pull-right.btn-group{role: 'group', "aria-label" => '...'}
         %a.btn.btn-default{href: '#'}
           Prev
         %a.btn.btn-default{href: '#'}
           Next
+
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
         .title
