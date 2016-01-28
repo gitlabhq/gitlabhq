@@ -230,6 +230,8 @@ gem "gitlab-license", "~> 0.0.4"
 # Sentry integration
 gem 'sentry-raven', '~> 0.15'
 
+gem 'premailer-rails', '~> 1.9.0'
+
 # Metrics
 group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
