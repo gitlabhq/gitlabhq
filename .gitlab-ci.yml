@@ -145,8 +145,9 @@ spec:ruby21:
   tags:
     - ruby
     - mysql
-  only:
-  - master
+# TODO: put this back after testing
+#  only:
+#  - master
 
 spinach:ruby21:
   image: ruby:2.1
@@ -155,5 +156,6 @@ spinach:ruby21:
   tags:
     - ruby
     - mysql
-  only:
-  - master
+# TODO: put this back after testing
+#  only:
+#  - master
