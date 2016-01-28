@@ -725,7 +725,7 @@ GEM
       activesupport (>= 3.1, < 4.3)
     select2-rails (3.5.9.3)
       thor (~> 0.14)
-    sentry-raven (0.15.3)
+    sentry-raven (0.15.4)
       faraday (>= 0.7.6)
     settingslogic (2.0.9)
     sexp_processor (4.6.0)

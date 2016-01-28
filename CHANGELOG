@@ -3,6 +3,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.4.3
   - Correctly highlight MR diff when MR has merge conflicts
   - Fix highlighting in blame view
+  - Update sentry-raven gem to prevent "Not a git repository" console output
+    when running certain commands
 
 v 8.4.2
   - Bump required gitlab-workhorse version to bring in a fix for missing
