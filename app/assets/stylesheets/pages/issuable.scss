@@ -72,6 +72,11 @@
     @include clearfix;
     padding:  $gl-padding 0;
     border-bottom: 1px solid #F0F0F0;
+    // This prevents the mess when resizing the sidebar 
+    // of elements repositioning themselves..
+    width: 210px;
+    overflow-x: hidden;
+    // --
 
     &:first-child {
       padding-top: 5px;
@@ -181,12 +186,24 @@
     .assignee .title,
     .assignee .selectbox,
     .assignee .value .author,
-    .milestone,
-    .labels,
-    .participants,
-    .light,
-    .project-reference {
+    .milestone > *,
+    .labels > *,
+    .participants > *,
+    .light > *,
+    .project-reference > * {
       display: none;
+    }
+
+    .assignee {
+      margin-left: -7px;
+    }
+
+    .gutter-toggle {
+      margin-left: -207px;
+    }
+
+    .sidebar-collapsed-icon {
+      display: block;
     }
 
   }

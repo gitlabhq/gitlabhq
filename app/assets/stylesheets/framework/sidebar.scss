@@ -204,6 +204,10 @@
   padding-right: $gutter_width;
 }
 
+@mixin collapsed-gutter {
+  padding-right: $sidebar_collapsed_width;
+}
+
 @mixin collapsed-sidebar {
   padding-left: $sidebar_collapsed_width;
 
@@ -289,7 +293,12 @@
 @media(min-width: $screen-md-max) {
 
   .page-gutter {
-    @include expanded-gutter;
+    &.right-sidebar-collapsed {
+      @include collapsed-gutter;
+    }
+    &.right-sidebar-expanded {
+      @include expanded-gutter;
+    }
   }
 
   .page-sidebar-collapsed {

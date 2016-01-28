@@ -307,9 +307,19 @@ module ApplicationHelper
     if project.nil?
       nil
     elsif current_controller?(:issues)
-      project.issues.where("id > ?", id).first
+      project.issues.where("id > ?", id).last
     elsif current_controller?(:merge_requests)
-      project.merge_requests.where("id > ?", id).first
+      project.merge_requests.where("id > ?", id).last
+    end
+  end
+
+  def has_next_issuable?(project, id)
+    if project.nil?
+      nil
+    elsif current_controller?(:issues)
+      project.issues.where("id > ?", id).last
+    elsif current_controller?(:merge_requests)
+      project.merge_requests.where("id > ?", id).last
     end
   end
 
@@ -317,9 +327,19 @@ module ApplicationHelper
     if project.nil?
       nil
     elsif current_controller?(:issues)
-      project.issues.where("id < ?", id).last
+      project.issues.where("id < ?", id).first
     elsif current_controller?(:merge_requests)
-      project.merge_requests.where("id < ?", id).last
+      project.merge_requests.where("id < ?", id).first
+    end
+  end
+
+  def has_prev_issuable?(project, id)
+    if project.nil?
+      nil
+    elsif current_controller?(:issues)
+      project.issues.where("id < ?", id).first
+    elsif current_controller?(:merge_requests)
+      project.merge_requests.where("id < ?", id).first
     end
   end
 

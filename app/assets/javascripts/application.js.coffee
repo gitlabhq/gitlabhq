@@ -223,6 +223,9 @@ $ ->
         .closest('aside')
         .removeClass('right-sidebar-expanded')
         .addClass('right-sidebar-collapsed')
+      $('.page-with-sidebar')
+        .removeClass('right-sidebar-expanded')
+        .addClass('right-sidebar-collapsed')
     else
       $thisIcon.removeClass('fa-angle-double-left')
         .addClass('fa-angle-double-right')
@@ -230,7 +233,11 @@ $ ->
         .closest('aside')
         .removeClass('right-sidebar-collapsed')
         .addClass('right-sidebar-expanded')
-
-    console.log('collapse')
+      $('.page-with-sidebar')
+        .removeClass('right-sidebar-collapsed')
+        .addClass('right-sidebar-expanded')
+    $.cookie("collapsed_gutter", 
+      $('.right-sidebar')
+        .hasClass('right-sidebar-collapsed'), { path: '/' })
 
   new Aside()
