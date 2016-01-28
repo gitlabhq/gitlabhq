@@ -2,15 +2,14 @@ class Projects::AvatarsController < Projects::ApplicationController
   before_action :project
 
   def show
-    @blob = @project.repository.blob_at_branch('master', @project.avatar_in_git)
+    repository = @project.repository
+    @blob = repository.blob_at_branch('master', @project.avatar_in_git)
     if @blob
       headers['X-Content-Type-Options'] = 'nosniff'
-      send_data(
-        @blob.data,
-        type: @blob.mime_type,
-        disposition: 'inline',
-        filename: @blob.name
-      )
+      headers['Gitlab-Workhorse-Repo-Path'] = repository.path_to_repo
+      headers['Gitlab-Workhorse-Send-Blob'] = @blob.id
+      headers['Content-Disposition'] = 'inline'
+      render nothing: true, content_type: @blob.content_type
     else
       render_404
     end

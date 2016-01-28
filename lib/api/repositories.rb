@@ -57,7 +57,8 @@ module API
         not_found! "File" unless blob
 
         content_type 'text/plain'
-        present blob.data
+        header 'Gitlab-Workhorse-Repo-Path', repo.path_to_repo
+        header 'Gitlab-Workhorse-Send-Blob', blob.id
       end
 
       # Get a raw blob contents by blob sha
@@ -83,7 +84,8 @@ module API
         env['api.format'] = :txt
 
         content_type blob.mime_type
-        present blob.data
+        header 'Gitlab-Workhorse-Repo-Path', repo.path_to_repo
+        header 'Gitlab-Workhorse-Send-Blob', blob.id
       end
 
       # Get a an archive of the repository

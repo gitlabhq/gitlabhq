@@ -18,7 +18,7 @@ class Projects::RawController < Projects::ApplicationController
         send_lfs_object
       else
         headers['Gitlab-Workhorse-Repo-Path'] = @repository.path_to_repo
-        headers['Gitlab-Workhorse-Send-Blob'] = Base64.urlsafe_encode64(@commit.id + ':' + @path)
+        headers['Gitlab-Workhorse-Send-Blob'] = @blob.id
         headers['Content-Disposition'] = 'inline'
         render nothing: true, content_type: get_blob_type
       end
