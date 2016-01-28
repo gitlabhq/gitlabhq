@@ -8,9 +8,7 @@ module SharedProject
   step "I own a project" do
     @project = user_owns_project(
       user: @user,
-      project_name: 'Internal',
-      project_type: :project,
-      visibility: :internal
+      project_type: :project
     )
   end
 
@@ -23,9 +21,8 @@ module SharedProject
   step 'I own project "Shop"' do
     @project = user_owns_project(
       user: @user,
-      project_name: 'Shop',
+      name: 'Shop',
       project_type: :project,
-      visibility: :internal,
       snippets_enabled: true
     )
   end
@@ -52,7 +49,7 @@ module SharedProject
   step 'I own project "Forum"' do
     @project = user_owns_project(
       user: @user,
-      project_name: 'Forum',
+      name: 'Forum',
       project_type: :project,
       path: 'forum_project'
     )
@@ -62,7 +59,7 @@ module SharedProject
   step 'I own project "Grocery"' do
     @project = user_owns_project(
       user: @user,
-      project_name: 'Grocery'
+      name: 'Grocery'
     )
   end
 
@@ -70,7 +67,7 @@ module SharedProject
   step 'I own an empty project' do
     @project = user_owns_project(
       user: @user,
-      project_name: 'Empty Project'
+      name: 'Empty Project'
     )
   end
 
@@ -89,14 +86,17 @@ module SharedProject
     event_for_project(@project)
   end
 
-  step 'project "Grocery" has push event' do
-    @project = Project.find_by(name: "Grocery")
-    event_for_project(@project)
+  step 'project "Shop" is the latest active' do
+    set_project_as_latest_active("Shop")
+
   end
 
-  step 'project "Community" has push event' do
-    @project = Project.find_by(name: "Community")
-    event_for_project(@project)
+  step 'project "Grocery" is the latest active' do
+    set_project_as_latest_active("Grocery")
+  end
+
+  step 'project "Community" is the latest active' do
+    set_project_as_latest_active("Community")
   end
 
   step 'I should see project "Shop" activity feed' do
@@ -196,21 +196,21 @@ module SharedProject
   step '"John Doe" owns private project "Enterprise"' do
     user_owns_project(
       user: 'John Doe',
-      project_name: 'Enterprise'
+      name: 'Enterprise'
     )
   end
 
   step '"Mary Jane" owns private project "Enterprise"' do
     user_owns_project(
       user: 'Mary Jane',
-      project_name: 'Enterprise'
+      name: 'Enterprise'
     )
   end
 
   step '"John Doe" owns internal project "Internal"' do
     user_owns_project(
       user: 'John Doe',
-      project_name: 'Internal',
+      name: 'Internal',
       visibility: :internal
     )
   end
@@ -218,7 +218,7 @@ module SharedProject
   step '"John Doe" owns public project "Community"' do
     user_owns_project(
       user: 'John Doe',
-      project_name: 'Community',
+      name: 'Community',
       visibility: :public
     )
   end
@@ -382,6 +382,10 @@ module SharedProject
     )
   end
 
+  def set_project_as_latest_active(project_name)
+    Project.find_by(name: project_name).update_column(:last_activity_at, Time.now + 10.seconds)
+  end
+
   def sort_by(sort)
     find('button.dropdown-toggle.btn').click
     page.within('ul.dropdown-menu') do
@@ -404,10 +408,12 @@ module SharedProject
     expect(page.find('ul.projects-list')).send((truthy ? 'to' : 'not_to'), have_content(project_name))
   end
 
-  def user_owns_project(user:, project_name: nil, project_type: :empty_project, visibility: :private, **args)
+  def user_owns_project(user:, project_type: :empty_project, visibility: nil, **args)
     user = user.is_a?(User) ? user : user_exists(user, username: user.gsub(/\s/, '').underscore)
-    project = Project.find_by(name: project_name)
-    project ||= create(project_type, visibility, name: project_name, namespace: user.namespace, **args)
+    project = Project.find_by(name: args[:name])
+
+    attributes = { namespace: user.namespace, **args }
+    project ||= visibility ? create(project_type, visibility, **attributes) : create(project_type, **attributes)
     project.team << [user, :master]
 
     project

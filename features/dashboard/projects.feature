@@ -8,8 +8,8 @@ Feature: Dashboard Projects
     And I am member of a project "Community" with a guest role
     And I starred project "Community"
     And I own project "Shop"
-    And project "Shop" has push event
-    And project "Community" has push event
+    And project "Shop" is the latest active
+    And project "Community" is the latest active
     And "John Doe" starred project "Community"
     And I visit dashboard projects page
 

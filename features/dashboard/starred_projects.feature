@@ -10,8 +10,8 @@ Feature: Dashboard Starred Projects
     And I own project "Shop"
     And I own project "Grocery"
     And I starred project "Grocery"
-    And project "Grocery" has push event
-    And project "Community" has push event
+    And project "Grocery" is the latest active
+    And project "Community" is the latest active
     And "John Doe" starred project "Community"
     And "John Doe" starred project "Forum"
     And I visit dashboard starred projects page
