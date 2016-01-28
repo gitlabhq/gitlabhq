@@ -32,12 +32,6 @@ module EmailsHelper
     nil
   end
 
-  def color_email_diff(diffcontent)
-    formatter = Rouge::Formatters::HTML.new(css_class: 'highlight', inline_theme: 'github')
-    lexer = Rouge::Lexers::Diff
-    raw formatter.format(lexer.lex(diffcontent))
-  end
-
   def password_reset_token_valid_time
     valid_hours = Devise.reset_password_within / 60 / 60
     if valid_hours >= 24
@@ -55,5 +49,11 @@ module EmailsHelper
     link_tag = link_to('request a new one', new_user_password_url(user_email: @user.email))
     msg = "This link is valid for #{password_reset_token_valid_time}.  "
     msg << "After it expires, you can #{link_tag}."
+  end
+
+  # Overrides
+
+  def diff_hard_limit_enabled?
+    false
   end
 end

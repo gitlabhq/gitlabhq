@@ -49,6 +49,10 @@ module Gitlab
           @opts[:compare]
         end
 
+        def diff_refs
+          @opts[:diff_refs]
+        end
+
         def compare_timeout
           compare.timeout if compare
         end
