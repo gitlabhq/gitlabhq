@@ -25,3 +25,18 @@ Feature: Project Fork
     Then I should see "New merge request"
     And I click link "New merge request"
     Then I should see the new merge request page for my namespace
+
+  Scenario: Viewing forks of a Project
+    Given I click link "Fork"
+    When I fork to my namespace
+    And I visit the forks page of the "Shop" project
+    Then I should see my fork on the list
+
+  Scenario: Viewing private forks of a Project
+    Given There is an existent fork of the "Shop" project
+    And I click link "Fork"
+    When I fork to my namespace
+    And I visit the forks page of the "Shop" project
+    Then I should see my fork on the list
+    And I should not see the other fork listed
+    And I should see a private fork notice

@@ -1,0 +1,58 @@
+.gray-content-block.top-block.clearfix.white.forks-top-block
+  .pull-left
+    - public_count = @public_forks.size
+    - protected_count = @protected_forks.size
+    - full_count_title = "#{public_count} public and #{protected_count} private"
+    == #{pluralize(@all_forks.size, 'fork')}: #{full_count_title}
+
+  .pull-right
+    .projects-search-form.fork-search-form
+      = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter form-control',
+        spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
+
+      .dropdown.inline.prepend-left-10
+        %button.dropdown-toggle.btn.sort-forks{type: 'button', 'data-toggle' => 'dropdown'}
+          %span.light sort:
+          - if @sort.present?
+            = sort_options_hash[@sort]
+          - else
+            = sort_title_recently_created
+          %b.caret
+        %ul.dropdown-menu.dropdown-menu-align-right
+          %li
+            - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]
+            = link_to page_filter_path(sort: sort_value_recently_created, without: excluded_filters) do
+              = sort_title_recently_created
+            = link_to page_filter_path(sort: sort_value_oldest_created, without: excluded_filters) do
+              = sort_title_oldest_created
+            = link_to page_filter_path(sort: sort_value_recently_updated, without: excluded_filters) do
+              = sort_title_recently_updated
+            = link_to page_filter_path(sort: sort_value_oldest_updated, without: excluded_filters) do
+              = sort_title_oldest_updated
+
+      .fork-link.inline
+        - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+          = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'pull-right btn btn-new' do
+            = icon('code-fork fw')
+            Fork
+        - else
+          = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'pull-right btn btn-new' do
+            = icon('code-fork fw')
+            Fork
+
+
+.projects-list-holder
+  - if @public_forks.blank?
+    %ul.content-list
+      %li
+        .nothing-here-block No forks to show
+  - else
+    = render 'shared/projects/list', projects: @public_forks, use_creator_avatar: true,
+      forks: true, show_last_commit_as_description: true
+
+    - if protected_count > 0
+      %ul.projects-list.private-forks-notice
+        %li.project-row
+          = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
+          %strong= pluralize(protected_count, 'private fork')
+          %span you have no access to.

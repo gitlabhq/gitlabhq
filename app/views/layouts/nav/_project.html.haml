@@ -98,6 +98,13 @@
         %span
           Wiki
 
+  - if project_nav_tab? :forks
+    = nav_link(controller: :forks, action: :index) do
+      = link_to namespace_project_forks_path(@project.namespace, @project), title: 'Forks' do
+        = icon('code-fork fw')
+        %span
+          Forks
+
   - if project_nav_tab? :snippets
     = nav_link(controller: :snippets) do
       = link_to namespace_project_snippets_path(@project.namespace, @project), title: 'Snippets', class: 'shortcuts-snippets' do
