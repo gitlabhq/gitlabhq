@@ -42,8 +42,6 @@
 
 .issuable-details {
   section {
-    border-right: 1px solid $border-white-light;
-
     .issuable-discussion {
       margin-right: 1px;
     }
@@ -92,7 +90,7 @@
 
     }
 
-    .gutter-collapse {
+    .gutter-toggle {
       margin-left: 10px;
       border-left: 1px solid #F0F0F0;
       padding-left: 10px;
@@ -162,8 +160,15 @@
   transition-duration: .3s;
   background: $gray-light;
   overflow: scroll;
-  width: $gutter_width;
   padding: 10px 20px;
+
+  &.right-sidebar-expanded {
+    width: $gutter_width;
+  }
+
+  &.right-sidebar-collapsed {
+    width: $sidebar_collapsed_width;
+  }
 
   .btn {
     background: $gray-normal;

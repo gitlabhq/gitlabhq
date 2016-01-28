@@ -212,4 +212,25 @@ $ ->
     $this = $(this)
     $this.attr 'value', $this.val()
 
+  $('.right-sidebar').on 'click', '.gutter-toggle', (e) ->
+    e.preventDefault()
+    $this = $(this)
+    $thisIcon = $this.find 'i'
+    if $thisIcon.hasClass('fa-angle-double-right')
+      $thisIcon.removeClass('fa-angle-double-right')
+        .addClass('fa-angle-double-left')
+      $this
+        .closest('aside')
+        .removeClass('right-sidebar-expanded')
+        .addClass('right-sidebar-collapsed')
+    else
+      $thisIcon.removeClass('fa-angle-double-left')
+        .addClass('fa-angle-double-right')
+      $this
+        .closest('aside')
+        .removeClass('right-sidebar-collapsed')
+        .addClass('right-sidebar-expanded')
+
+    console.log('collapse')
+
   new Aside()

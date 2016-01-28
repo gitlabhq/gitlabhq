@@ -303,7 +303,7 @@ module ApplicationHelper
     end
   end
 
-  def next_issuable_for(project)
+  def next_issuable_for(project, id)
     if project.nil?
       nil
     elsif current_controller?(:issues)
@@ -313,13 +313,13 @@ module ApplicationHelper
     end
   end
 
-  def prev_issuable_for(project)
+  def prev_issuable_for(project, id)
     if project.nil?
       nil
     elsif current_controller?(:issues)
       project.issues.where("id < ?", id).last
     elsif current_controller?(:merge_requests)
-      project.merge_requests.where("id > ?", id).last
+      project.merge_requests.where("id < ?", id).last
     end
   end
 

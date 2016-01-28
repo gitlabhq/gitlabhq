@@ -1,17 +1,16 @@
-%aside.right-sidebar
+%aside.right-sidebar.right-sidebar-expanded
   .issuable-sidebar
     .block
       %span.issuable-count.pull-left
         = issuable.iid
         of
         = issuable_count(:all, @project)
-      %span.gutter-collapse.pull-right
-        = icon('angle-double-right')
+      %span.pull-right
+        %a.gutter-toggle{href: '#'}
+          = icon('angle-double-right')
       .issuable-nav.pull-right.btn-group{role: 'group', "aria-label" => '...'}
-        %a.btn.btn-default{href: '#'}
-          Prev
-        %a.btn.btn-default{href: '#'}
-          Next
+        = link_to 'Prev', namespace_project_issue_path(namespace_id: @project, id: prev_issuable_for(@project, issuable.id)), class: 'btn btn-default'
+        = link_to 'Next', namespace_project_issue_path(namespace_id: @project, id: next_issuable_for(@project, issuable.id)), class: 'btn btn-default'
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
