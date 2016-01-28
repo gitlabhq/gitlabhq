@@ -1,5 +1,3 @@
-require 'base64'
-
 # Controller for viewing a file's raw
 class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
