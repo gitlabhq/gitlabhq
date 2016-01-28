@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.4.3
+  - Correctly highlight MR diff when MR has merge conflicts
+  - Fix highlighting in blame view
+
 v 8.4.2
   - Bump required gitlab-workhorse version to bring in a fix for missing
     artifacts in the build artifacts browser
@@ -11,7 +15,6 @@ v 8.4.2
     track them in Performance Monitoring.
   - Increase contrast between highlighted code comments and inline diff marker
   - Fix method undefined when using external commit status in builds
-  - Fix highlighting in blame view.
 
 v 8.4.1
   - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
