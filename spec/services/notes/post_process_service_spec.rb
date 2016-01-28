@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Notes::CreateService, services: true do
+describe Notes::PostProcessService, services: true do
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
@@ -17,10 +17,10 @@ describe Notes::CreateService, services: true do
       @note = Notes::CreateService.new(project, user, note_opts).execute
     end
 
-    it {
+    it do
       expect(project).to receive(:execute_hooks)
       expect(project).to receive(:execute_services)
       Notes::PostProcessService.new(@note).execute
-    }
+    end
   end
 end
