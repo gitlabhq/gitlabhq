@@ -174,4 +174,26 @@
     background: $gray-normal;
     border: 1px solid $gray-darkest;
   }
+
+  &.right-sidebar-collapsed {
+    .issuable-count, 
+    .issuable-nav,
+    .assignee .title,
+    .assignee .selectbox,
+    .assignee .value .author,
+    .milestone,
+    .labels,
+    .participants,
+    .light,
+    .project-reference {
+      display: none;
+    }
+
+  }
+
+  &.right-sidebar-expanded {
+    .sidebar-collapsed-icon {
+      display: none;
+    }
+  }
 }

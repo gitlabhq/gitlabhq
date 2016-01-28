@@ -33,6 +33,8 @@
           = users_select_tag("#{issuable.class.table_name.singularize}[assignee_id]", placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: issuable.assignee_id, project: @target_project, null_user: true, current_user: true, first_user: true)
 
       .block.milestone
+        .sidebar-collapsed-icon
+          = icon('balance-scale')
         .title
           %label
             Milestone
@@ -54,7 +56,7 @@
           = f.submit class: 'btn hide'
 
       - if issuable.project.labels.any?
-        .block
+        .block.labels
           .title
             %label Labels
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
@@ -87,7 +89,7 @@
               You're receiving notifications because you're subscribed to this thread.
 
       - project_ref = cross_project_reference(@project, issuable)
-      .block
+      .block.project-reference
         .title
         .cross-project-reference
           %span
