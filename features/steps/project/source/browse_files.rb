@@ -52,7 +52,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see raw file content' do
-    expect(source).to eq sample_blob.data
+    expect(source).to eq '' # Body is filled in by gitlab-workhorse
   end
 
   step 'I click button "Edit"' do
