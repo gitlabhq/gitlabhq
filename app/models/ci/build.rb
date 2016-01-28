@@ -35,6 +35,9 @@
 
 module Ci
   class Build < CommitStatus
+    include Compoundable
+    component :eraseable, Gitlab::Ci::Build::Eraseable
+
     include Gitlab::Application.routes.url_helpers
     LAZY_ATTRIBUTES = ['trace']
 
