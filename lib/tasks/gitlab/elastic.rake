@@ -21,7 +21,19 @@ namespace :gitlab do
 
     desc "Indexing all wikis"
     task index_wikis: :environment  do
-      ProjectWiki.import
+      ProjectWiki.__elasticsearch__.create_index!
+
+      Project.where(wiki_enabled: true).find_each do |project|
+        unless project.wiki.empty?
+          puts "Indexing wiki of #{project.name_with_namespace}..."
+          begin
+            project.wiki.index_blobs
+            puts "Done!".green
+          rescue StandardError => e
+            puts "#{e.message}, trace - #{e.backtrace}"
+          end
+        end
+      end
     end
 
     desc "Create indexes in the Elasticsearch from database records"
