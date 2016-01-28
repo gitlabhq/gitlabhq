@@ -50,6 +50,7 @@ class @Issue
           new Flash(issueFailMessage, 'alert')
         success: (data, textStatus, jqXHR) ->
           if data.saved
+            $(document).trigger('issuable:change');
             if isClose
               $('a.btn-close').addClass('hidden')
               $('a.btn-reopen').removeClass('hidden')
