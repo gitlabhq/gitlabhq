@@ -1,6 +1,5 @@
 class Projects::MirrorsController < Projects::ApplicationController
   # Authorize
-  before_action :require_non_empty_project
   before_action :authorize_admin_project!, except: [:update_now]
   before_action :authorize_push_code!, only: [:update_now]
 

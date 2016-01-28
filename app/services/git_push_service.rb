@@ -59,15 +59,15 @@ class GitPushService
     @push_data = build_push_data(oldrev, newrev, ref)
 
     branch_name = Gitlab::Git.ref_name(ref)
-    mirror_update = project.mirror? && project.up_to_date_with_upstream?(branch_name)
+    mirror_update = project.mirror? && project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :push_hooks)
     project.execute_services(@push_data.dup, :push_hooks)
 
     if Gitlab.config.elasticsearch.enabled
-      project.repository.index_commits
-      project.repository.index_blobs
+      project.repository.index_commits(from_rev: oldrev, to_rev: newrev)
+      project.repository.index_blobs(from_rev: oldrev, to_rev: oldrev)
     end
 
     CreateCommitBuildsService.new.execute(project, @user, @push_data, mirror_update: mirror_update)

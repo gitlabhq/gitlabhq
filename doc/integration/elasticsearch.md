@@ -60,13 +60,9 @@ If you have used one of the [Omnibus packages][pkg] to install GitLab, all
 you have to do is edit `/etc/gitlab/gitlab.rb` and add the following lines:
 
 ```ruby
-gitlab_rails['elasticsearch'] = [
-  {
-    "enabled" => "true",
-    "host" => "localhost",
-    "port" => 9200
-  }
-]
+gitlab_rails['elasticsearch_enabled'] = true
+gitlab_rails['elasticsearch_host'] = "localhost"
+gitlab_rails['elasticsearch_port'] = 9200
 ```
 
 Replace the values as you see fit according to the

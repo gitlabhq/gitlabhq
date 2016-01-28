@@ -26,6 +26,8 @@ module Projects
     def update_branches
       local_branches = repository.branches.each_with_object({}) { |branch, branches| branches[branch.name] = branch }
 
+      errors = []
+
       repository.upstream_branches.each do |upstream_branch|
         name = upstream_branch.name
 
@@ -34,19 +36,26 @@ module Projects
         if local_branch.nil?
           result = CreateBranchService.new(project, current_user).execute(name, upstream_branch.target)
           if result[:status] == :error
-            raise UpdateError, result[:message]
+            errors << result[:message]
           end
         elsif local_branch.target == upstream_branch.target
           # Already up to date
         elsif repository.diverged_from_upstream?(name)
           # Cannot be updated
+          if name == project.default_branch
+            errors << "The default branch (#{project.default_branch}) has diverged from its upstream counterpart and could not be updated automatically."
+          end
         else
           begin
             repository.ff_merge(current_user, upstream_branch.target, name)
           rescue GitHooksService::PreReceiveError, Repository::CommitError => e
-            raise UpdateError, e.message
+            errors << e.message
           end
         end
+      end
+
+      unless errors.empty?
+        raise UpdateError, errors.join("\n\n")
       end
     end
 
