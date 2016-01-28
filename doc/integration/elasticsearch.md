@@ -103,37 +103,38 @@ As a last step, move on to
 After [enabling Elasticsearch](#enable-elasticsearch), you must run the
 following rake tasks to add GitLab's data to the Elasticsearch index.
 
-It might take a while depending on how big your Git repositories are.
+It might take a while depending on how big your Git repositories are (see
+[Indexing large repositories](#indexing-large-repositories)).
 
 ---
 
 To index all your repositories:
 
 ```
-# omnibus installations
+# Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_repositories
 
-# installations from source
+# Installations from source
 bundle exec rake gitlab:elastic:index_repositories RAILS_ENV=production
 ```
 
 To index all wikis:
 
 ```
-# omnibus installations
+# Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_wikis
 
-# installations from source
+# Installations from source
 bundle exec rake gitlab:elastic:index_wikis RAILS_ENV=production
 ```
 
 To index all database entities:
 
 ```
-# omnibus installations
+# Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_database
 
-# installations from source
+# Installations from source
 bundle exec rake gitlab:elastic:index_database RAILS_ENV=production
 ```
 
@@ -146,48 +147,58 @@ for the changes to take effect.
 
 ## Special recommendations
 
-### Indexing huge repositories
-Indexing huge git repositories can take a while, to speed up a process you can disable an auto refreshing. In our experience you can expect 20% time drop.
+Here are some tips to use Elasticsearch with GitLab more efficiently.
 
-```
-# Disable refreshing
-curl -XPUT localhost:9200/_settings -d '{
-    "index" : {
-        "refresh_interval" : "-1"
-    } }'
+### Indexing large repositories
 
-# Enable refreshing again(after indexing)
-curl -XPUT localhost:9200/_settings -d '{
-    "index" : {
-        "refresh_interval" : "1s"
-    } }'
+Indexing large Git repositories can take a while. To speed up the process, you
+can temporarily disable auto-refreshing. In our experience you can expect a 20%
+time drop.
 
+1.  Disable refreshing:
 
-# A force merge should be called after enabling the refreshing above
-curl -XPOST 'http://localhost:9200/_forcemerge?max_num_segments=5'
-```
+    ```bash
+    curl -XPUT localhost:9200/_settings -d '{
+        "index" : {
+            "refresh_interval" : "-1"
+        } }'
+    ```
 
-Also you may want to disable replication and eneble it after indexing
+1.  (optional) You may want to disable replication and enable it after indexing:
 
-```
-# Desable replication
-curl -XPUT 'localhost:9200/_settings' -d '
-{
-    "index" : {
-        "number_of_replicas" : 0
-    }
-}'
+    ```bash
+    curl -XPUT localhost:9200/_settings -d '{
+        "index" : {
+            "number_of_replicas" : 0
+        } }'
+    ```
 
-# Enable replication and set to default value, which is 1
-curl -XPUT 'localhost:9200/_settings' -d '
-{
-    "index" : {
-        "number_of_replicas" : 1
-    }
-}'
-```
+1. [Create the indexes](#add-gitlabs-data-to-the-elasticsearch-index)
 
+1.  (optional) If you disabled replication in step 2, enable it after
+    the indexing is done and set it to its default value, which is 1:
 
+    ```bash
+    curl -XPUT localhost:9200/_settings -d '{
+        "index" : {
+            "number_of_replicas" : 1
+        } }'
+    ```
+
+1.  Enable refreshing again (after indexing):
+
+    ```bash
+    curl -XPUT localhost:9200/_settings -d '{
+        "index" : {
+            "refresh_interval" : "1s"
+        } }'
+    ```
+
+1.  A force merge should be called after enabling the refreshing above:
+
+    ```bash
+    curl -XPOST 'http://localhost:9200/_forcemerge?max_num_segments=5'
+    ```
 
 [ee-109]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/109 "Elasticsearch Merge Request"
 [elasticsearch]: https://www.elastic.co/products/elasticsearch "Elasticsearch website"
