@@ -53,7 +53,7 @@ class Spinach::Features::DashboardGroup < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to group "Samurai" page' do
-    expect(current_path).to eq group_path(Group.find_by(name: 'Samurai'))
+    expect(current_path).to eq activity_group_path(Group.find_by(name: 'Samurai'))
   end
 
   step 'I should see newly created group "Samurai"' do

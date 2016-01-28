@@ -240,11 +240,19 @@ describe "Authentication", "routing" do
 end
 
 describe "Groups", "routing" do
-  it "to #show" do
-    expect(get("/groups/1")).to route_to('groups#show', id: '1')
+  it "/groups/1" do
+    expect(get("/groups/1")).to route_to('groups#activity', id: '1')
+  end
+
+  it "/groups/1/activity" do
+    expect(get("/groups/1/activity")).to route_to('groups#activity', id: '1')
   end
 
   it "also display group#show on the short path" do
     expect(get('/1')).to route_to('namespaces#show', id: '1')
+  end
+
+  it "/groups/1/projects" do
+    expect(get("/groups/1/projects")).to route_to('groups/projects#index', group_id: '1')
   end
 end
