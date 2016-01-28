@@ -15,6 +15,7 @@ v 8.5.0 (unreleased)
   - Track project import failure
   - Fix visibility level text in admin area (Zeger-Jan van de Weg)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
+  - Revert "Add IP check against DNSBLs at account sign-up"
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
 

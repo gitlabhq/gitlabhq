@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160120172143) do
+ActiveRecord::Schema.define(version: 20160128212447) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,8 +64,6 @@ ActiveRecord::Schema.define(version: 20160120172143) do
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
-    t.boolean  "ip_blocking_enabled",               default: false
-    t.text     "dnsbl_servers_list"
   end
 
   create_table "audit_events", force: :cascade do |t|
