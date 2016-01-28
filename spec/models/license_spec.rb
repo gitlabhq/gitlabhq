@@ -79,6 +79,15 @@ describe License do
           expect(license).to be_valid
         end
       end
+
+      context "when the active user count is met exactly" do
+        it "is valid" do
+          active_user_count = 100
+          gl_license.restrictions = { active_user_count: active_user_count }
+
+          expect(license).to be_valid
+        end
+      end
     end
 
     describe "Not expired" do
