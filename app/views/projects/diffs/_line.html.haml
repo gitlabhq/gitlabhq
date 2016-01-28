@@ -1,0 +1,26 @@
+- type = line.type
+%tr.line_holder{id: line_code, class: type}
+  - case type
+  - when 'match'
+    = render "projects/diffs/match_line", {line: line.text,
+      line_old: line.old_pos, line_new: line.new_pos, bottom: false, new_file: diff_file.new_file}
+  - when 'nonewline'
+    %td.old_line.diff-line-num
+    %td.new_line.diff-line-num
+    %td.line_content.match= line.text
+  - else
+    %td.old_line.diff-line-num{class: type}
+      - link_text = raw(type == "new" ? "&nbsp;" : line.old_pos)
+      - if defined?(plain) && plain
+        = link_text
+      - else
+        = link_to link_text, "##{line_code}", id: line_code
+      - if @comments_allowed && can?(current_user, :create_note, @project)
+        = link_to_new_diff_note(line_code)
+    %td.new_line.diff-line-num{class: type, data: {linenumber: line.new_pos}}
+      - link_text = raw(type == "old" ? "&nbsp;" : line.new_pos)
+      - if defined?(plain) && plain
+        = link_text
+      - else
+        = link_to link_text, "##{line_code}", id: line_code
+    %td.line_content{class: "noteable_line #{type} #{line_code}", data: { line_code: line_code }}= diff_line_content(line.text)
