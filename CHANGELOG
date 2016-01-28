@@ -24,11 +24,9 @@ v 8.4.2
     improvement when checking if a repository was empty
   - Add instrumentation for Gitlab::Git::Repository instance methods so we can
     track them in Performance Monitoring.
-  - Fix highlighting in blame view.
-
-v 8.4.2 (unreleased)
   - Increase contrast between highlighted code comments and inline diff marker
   - Fix method undefined when using external commit status in builds
+  - Fix highlighting in blame view.
 
 v 8.4.1
   - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
