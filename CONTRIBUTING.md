@@ -257,6 +257,18 @@ Please ensure that your merge request meets the contribution acceptance criteria
 
 When having your code reviewed and when reviewing merge requests please take the [thoughtbot code review guidelines](https://github.com/thoughtbot/guides/tree/master/code-review) into account.
 
+## Changes for Stable Releases
+
+Sometimes certain changes have to be added to an existing stable release.
+Two examples are bug fixes and performance improvements. In these cases the
+corresponding merge request should be updated to have the following:
+
+1. A milestone indicating what release the merge request should be merged into.
+1. The label "Pick into Stable"
+
+This makes it easier for release managers to keep track of what still has to be
+merged and where changes have to be merged into.
+
 ## Definition of done
 
 If you contribute to GitLab please know that changes involve more than just
