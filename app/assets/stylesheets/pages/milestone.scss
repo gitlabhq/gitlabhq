@@ -42,3 +42,23 @@ li.milestone {
   float: right;
   width: 105px;
 }
+
+.issues-sortable-list {
+  .issue-detail {
+    display: block;
+
+    .issue-number{
+      color: #D1D1D1;
+      margin-right: 5px;
+    }
+    .color-label {
+      padding: 8px;
+      margin-right: 7px;
+      margin-top: 10px;
+    }
+
+    .avatar {
+      float: none;
+    }
+  }
+}
