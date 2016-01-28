@@ -67,7 +67,7 @@ class GitPushService
 
     if Gitlab.config.elasticsearch.enabled
       project.repository.index_commits(from_rev: oldrev, to_rev: newrev)
-      project.repository.index_blobs(from_rev: oldrev, to_rev: oldrev)
+      project.repository.index_blobs(from_rev: oldrev, to_rev: newrev)
     end
 
     CreateCommitBuildsService.new.execute(project, @user, @push_data, mirror_update: mirror_update)
