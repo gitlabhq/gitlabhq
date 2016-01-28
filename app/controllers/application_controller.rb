@@ -100,12 +100,16 @@ class ApplicationController < ActionController::Base
       flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
       new_user_session_path
     else
-      stored_location_for(:redirect) || stored_location_for(resource) || root_path
+      stored_location_for(:geo_node) || stored_location_for(:redirect) || stored_location_for(resource) || root_path
     end
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path || new_user_session_path
+    if Gitlab::Geo.readonly?
+      Gitlab::Geo.primary_node.url
+    else
+      current_application_settings.after_sign_out_path || new_user_session_path
+    end
   end
 
   def abilities
