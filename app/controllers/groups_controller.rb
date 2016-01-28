@@ -2,17 +2,17 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
 
-  skip_before_action :authenticate_user!, only: [:show, :projects, :issues, :merge_requests]
+  skip_before_action :authenticate_user!, only: [:activity, :issues, :merge_requests]
   respond_to :html
   before_action :find_group, except: [:new, :create]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:show, :new, :create, :autocomplete]
+  before_action :authorize_read_group!, except: [:activity, :new, :create, :autocomplete]
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy]
   before_action :authorize_create_group!, only: [:new, :create]
 
-  before_action :find_projects, only: [:show, :issues, :merge_requests]
-  before_action :event_filter, only: :show
+  before_action :find_projects, only: [:activity, :issues, :merge_requests]
+  before_action :event_filter, only: :activity
 
   layout :determine_layout
 
@@ -36,7 +36,7 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
-  def show
+  def activity
     @last_push = current_user.recent_push if current_user
 
     respond_to do |format|

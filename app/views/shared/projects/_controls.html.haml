@@ -3,10 +3,9 @@
     .form-group.hidden-xs.hidden-sm= search_field_tag :filter_projects, nil, placeholder: 'Filter by name...', class: 'projects-list-filter form-control', spellcheck: false
 
     - unless defined?(disable_projects) && disable_projects
-      .form-group.prepend-left-10.hidden-xs= render 'shared/projects/dropdown'
+      .form-group.prepend-left-10.hidden-xs= render 'shared/projects/dropdown', disable_filters: defined?(disable_dropdown_filters) && disable_dropdown_filters
 
     - if current_user && current_user.can_create_project?
       .form-group.prepend-left-10
         = link_to new_project_path, class: 'btn btn-green' do
-          %i.fa.fa-plus
-          New Project
+          = icon('plus', text: 'New Project')

@@ -74,7 +74,7 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:show'
         shortcut_handler = new ShortcutsNavigation()
-      when 'groups:show'
+      when 'groups:activity'
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
       when 'groups:group_members:index'

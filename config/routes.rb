@@ -344,6 +344,8 @@ Rails.application.routes.draw do
   #
   resources :groups, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }  do
     member do
+      get :show, to: :activity
+      get :activity
       get :issues
       get :merge_requests
     end

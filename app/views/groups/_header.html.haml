@@ -22,7 +22,7 @@
       = markdown(@group.description, pipeline: :description)
 
   %ul.nav-links
-    = nav_link(page: group_path(@group)) do
-      = link_to 'Activity', group_path(@group)
-    = nav_link(page: group_projects_path(@group)) do
+    = nav_link(path: 'groups#activity') do
+      = link_to 'Activity', activity_group_path(@group)
+    = nav_link(path: 'groups/projects#index') do
       = link_to 'Projects', group_projects_path(@group)

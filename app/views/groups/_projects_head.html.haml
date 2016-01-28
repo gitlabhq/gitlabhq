@@ -12,4 +12,4 @@
         = link_to group_projects_path(@group, scope: 'starred', sort: @sort), title: "Starred projects from the '#{@group.name}' group", data: {placement: 'right'} do
           Starred
 
-  = render 'shared/projects/controls'
+  = render 'shared/projects/controls', disable_dropdown_filters: true

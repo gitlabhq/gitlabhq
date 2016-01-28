@@ -9,7 +9,7 @@
     %li= link_to_sort sort_title_stars, sort_value_stars, @sort
     %li= link_to_sort sort_title_name, sort_value_name, @sort
 
-    - if current_user && !@disable_dropdown_filters
+    - unless !current_user || (defined?(disable_filters) && disable_filters)
       %hr
       %li= link_to_filter 'Owned by anyone', 'all', @filter
       %li= link_to_filter 'Owned by me', 'personal', @filter
