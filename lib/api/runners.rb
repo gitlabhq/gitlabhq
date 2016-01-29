@@ -20,6 +20,12 @@ module API
         present paginate(runners), with: Entities::Runner
       end
 
+      # Get runner's details
+      #
+      # Parameters:
+      #   id (required) - The ID of ther runner
+      # Example Request:
+      #   GET /runners/:id
       get ':id' do
         runner = get_runner(params[:id])
         can_show_runner?(runner) unless current_user.is_admin?
@@ -27,6 +33,15 @@ module API
         present runner, with: Entities::RunnerDetails
       end
 
+      # Update runner's details
+      #
+      # Parameters:
+      #   id (required) - The ID of ther runner
+      #   description (optional) - Runner's description
+      #   active (optional) - Runner's status
+      #   tag_list (optional) - Array of tags for runner
+      # Example Request:
+      #   PUT /runners/:id
       put ':id' do
         runner = get_runner(params[:id])
         can_update_runner?(runner) unless current_user.is_admin?
@@ -39,6 +54,12 @@ module API
         end
       end
 
+      # Remove runner
+      #
+      # Parameters:
+      #   id (required) - The ID of ther runner
+      # Example Request:
+      #   DELETE /runners/:id
       delete ':id' do
         runner = get_runner(params[:id])
         can_delete_runner?(runner)
@@ -60,6 +81,13 @@ module API
         present paginate(runners), with: Entities::Runner
       end
 
+      # Enable runner for project
+      #
+      # Parameters:
+      #   id (required) - The ID of the project
+      #   runner_id (required) - The ID of the runner
+      # Example Request:
+      #   PUT /projects/:id/runners/:runner_id
       put ':id/runners/:runner_id' do
         runner = get_runner(params[:runner_id])
         can_enable_runner?(runner)
@@ -68,6 +96,13 @@ module API
         present runner, with: Entities::Runner
       end
 
+      # Disable project's runner
+      #
+      # Parameters:
+      #   id (required) - The ID of the project
+      #   runner_id (required) - The ID of the runner
+      # Example Request:
+      #   DELETE /projects/:id/runners/:runner_id
       delete ':id/runners/:runner_id' do
         runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
         not_found!('Runner') unless runner_project
@@ -125,7 +160,7 @@ module API
 
       def user_can_access_runner?(runner)
         runner.projects.inject(false) do |final, project|
-          final ||= abilities.allowed?(current_user, :admin_project, project)
+          final || abilities.allowed?(current_user, :admin_project, project)
         end
       end
     end
