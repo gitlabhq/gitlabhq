@@ -51,7 +51,7 @@ class Spinach::Features::Invites < Spinach::FeatureSteps
 
   step 'I should be redirected to the group page' do
     group = Group.find_by(name: "Owned")
-    expect(current_path).to eq(group_path(group))
+    expect(current_path).to eq(activity_group_path(group))
   end
 
   step 'I should see a notice telling me I have access' do

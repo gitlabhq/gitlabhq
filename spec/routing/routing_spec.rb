@@ -241,7 +241,7 @@ end
 
 describe "Groups", "routing" do
   it "/groups/1" do
-    expect(get("/groups/1")).to route_to('groups#activity', id: '1')
+    expect(get("/groups/1")).to route_to('groups#show', id: '1')
   end
 
   it "/groups/1/activity" do
