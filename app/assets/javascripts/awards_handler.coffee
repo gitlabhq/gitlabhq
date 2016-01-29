@@ -4,6 +4,7 @@ class @AwardsHandler
       event.stopPropagation()
       event.preventDefault()
       $(".emoji-menu").show()
+      $("#emoji_search").focus()
 
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
