@@ -50,7 +50,7 @@
         .controls
           .dropdown.inline
             %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
-              %span.light sort:
+              %span.light
               - if @sort.present?
                 = sort_options_hash[@sort]
               - else

@@ -33,7 +33,7 @@ table {
         background-color: $background-color;
         font-weight: normal;
         font-size: 15px;
-        border-bottom: 1px solid $border-color !important;
+        border-bottom: 1px solid $border-color;
 
         &.sortable {
           cursor: pointer;
@@ -41,8 +41,8 @@ table {
       }
 
       td {
-        border-color: $table-border-color !important;
-        border-bottom: 1px solid;
+        border-color: $table-border-color;
+        border-bottom: 1px solid $border-color;
       }
     }
   }

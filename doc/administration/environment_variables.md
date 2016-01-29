@@ -47,6 +47,7 @@ GITLAB_DATABASE_PORT | 5432
 ## Adding more variables
 
 We welcome merge requests to make more settings configurable via variables.
+Please make changes in the file config/initializers/1_settings.rb
 Please stick to the naming scheme "GITLAB_#{name 1_settings.rb in upper case}".
 
 ## Omnibus configuration

@@ -163,7 +163,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I search for Wiki content' do
-    fill_in "Search in this project", with: "wiki_content"
+    fill_in "Search", with: "wiki_content"
     click_button "Search"
   end
 

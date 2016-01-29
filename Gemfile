@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.2.5'
+gem 'rails', '4.2.5.1'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -110,7 +110,8 @@ gem 'asciidoctor',   '~> 1.5.2'
 gem 'rouge',         '~> 1.10.1'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
-gem 'nokogiri', '1.6.7.1'
+# and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
+gem 'nokogiri', '1.6.7.2'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
@@ -308,7 +309,7 @@ end
 gem "newrelic_rpm", '~> 3.9.4.245'
 gem 'newrelic-grape'
 
-gem 'octokit', '~> 3.7.0'
+gem 'octokit', '~> 3.8.0'
 
 gem "mail_room", "~> 0.6.1"
 

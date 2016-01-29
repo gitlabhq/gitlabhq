@@ -496,11 +496,11 @@ end
 
 describe Projects::ForksController, 'routing' do
   it 'to #new' do
-    expect(get('/gitlab/gitlabhq/fork/new')).to route_to('projects/forks#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    expect(get('/gitlab/gitlabhq/forks/new')).to route_to('projects/forks#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
   end
 
   it 'to #create' do
-    expect(post('/gitlab/gitlabhq/fork')).to route_to('projects/forks#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    expect(post('/gitlab/gitlabhq/forks')).to route_to('projects/forks#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
   end
 end
 

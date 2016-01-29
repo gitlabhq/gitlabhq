@@ -5,7 +5,10 @@
 # the compiled file.
 #
 #= require jquery
-#= require jquery-ui
+#= require jquery-ui/autocomplete
+#= require jquery-ui/datepicker
+#= require jquery-ui/effect-highlight
+#= require jquery-ui/sortable
 #= require jquery_ujs
 #= require jquery.cookie
 #= require jquery.endless-scroll
@@ -206,5 +209,14 @@ $ ->
     warningMessage = btn.data("warning-message")
     form = btn.closest("form")
     new ConfirmDangerModal(form, text, warningMessage: warningMessage)
+
+  $('input[type="search"]').each ->
+    $this = $(this)
+    $this.attr 'value', $this.val()
+    return
+    
+  $(document).on 'keyup', 'input[type="search"]' , (e) ->
+    $this = $(this)
+    $this.attr 'value', $this.val()
 
   new Aside()
