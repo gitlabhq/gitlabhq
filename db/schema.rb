@@ -77,8 +77,6 @@ ActiveRecord::Schema.define(version: 20160129075828) do
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
-    t.boolean  "ip_blocking_enabled",               default: false
-    t.text     "dnsbl_servers_list"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -532,8 +530,8 @@ ActiveRecord::Schema.define(version: 20160129075828) do
   end
 
   create_table "lfs_objects", force: :cascade do |t|
-    t.string   "oid",        null: false
-    t.integer  "size",       null: false
+    t.string   "oid",                  null: false
+    t.integer  "size",       limit: 8, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file"
