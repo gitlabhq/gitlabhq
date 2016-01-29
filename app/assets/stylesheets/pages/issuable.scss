@@ -183,9 +183,7 @@
   &.right-sidebar-collapsed {
     .issuable-count, 
     .issuable-nav,
-    .assignee .title,
-    .assignee .selectbox,
-    .assignee .value .author,
+    .assignee > *,
     .milestone > *,
     .labels > *,
     .participants > *,
@@ -194,16 +192,17 @@
       display: none;
     }
 
-    .assignee {
-      margin-left: -7px;
-    }
-
     .gutter-toggle {
       margin-left: -207px;
     }
 
     .sidebar-collapsed-icon {
       display: block;
+      float: left;
+      width: 62px;
+      text-align: center;
+      margin-left: -19px;
+}
     }
 
   }
