@@ -36,6 +36,20 @@
       }
     }
 
+    .filename {
+      &.old {
+        span.idiff {
+          background-color: #f8cbcb;
+        }
+      }
+
+      &.new {
+        span.idiff {
+          background-color: #a6f3a6;
+        }
+      }
+    }
+
     .left-options {
       margin-top: -3px;
     }
@@ -156,5 +170,17 @@
     &.code {
       padding: 0;
     }
+  }
+}
+
+span.idiff {
+  &.left {
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+  }
+
+  &.right {
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
   }
 }

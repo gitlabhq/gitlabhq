@@ -18,6 +18,7 @@ v 8.5.0 (unreleased)
   - Revert "Add IP check against DNSBLs at account sign-up"
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
+  - Mark inline difference between old and new paths when a file is renamed
 
 v 8.4.2
   - Bump required gitlab-workhorse version to bring in a fix for missing
