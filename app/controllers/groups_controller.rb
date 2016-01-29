@@ -2,12 +2,12 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
 
-  skip_before_action :authenticate_user!, only: [:show, :activity, :issues, :merge_requests]
+  skip_before_action :authenticate_user!, only: [:index, :show, :activity, :issues, :merge_requests]
   respond_to :html
-  before_action :find_group, except: [:new, :create]
+  before_action :find_group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:show, :activity, :new, :create, :autocomplete]
+  before_action :authorize_read_group!, except: [:index, :show, :activity, :new, :create, :autocomplete]
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy]
   before_action :authorize_create_group!, only: [:new, :create]
 
