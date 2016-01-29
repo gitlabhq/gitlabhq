@@ -169,10 +169,28 @@
 
   &.right-sidebar-expanded {
     width: $gutter_width;
+
+    hr {
+      display: none;
+    }
   }
 
   &.right-sidebar-collapsed {
     width: $sidebar_collapsed_width;
+    padding-top: 0;
+
+    hr {
+      margin: 0;
+      color: $gray-normal;
+      border-color: $gray-normal;
+      width: 62px;
+      margin-left: -20px
+    }
+
+    .block {
+      border-bottom: none;
+      padding: 15px 0 0 0;
+    }
   }
 
   .btn {
@@ -202,7 +220,12 @@
       width: 62px;
       text-align: center;
       margin-left: -19px;
-}
+      padding-bottom: 10px;
+
+      span {
+        display: block;
+        margin-top: 0;
+      }
     }
 
   }

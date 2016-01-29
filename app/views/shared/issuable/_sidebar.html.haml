@@ -26,7 +26,10 @@
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
         .sidebar-collapsed-icon
-          = icon('user')
+          - if issuable.assignee
+            = link_to_member_avatar(issuable.assignee, size: 24)
+          - else
+            = icon('user')
         .title
           %label
             Assignee
@@ -48,6 +51,11 @@
       .block.milestone
         .sidebar-collapsed-icon
           = icon('balance-scale')
+          %span
+            - if issuable.milestone
+              = issuable.milestone.title
+            - else
+              No
         .title
           %label
             Milestone
@@ -72,6 +80,8 @@
         .block.labels
           .sidebar-collapsed-icon
             = icon('tags')
+            %span
+              = issuable.labels.count
           .title
             %label Labels
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
@@ -88,7 +98,7 @@
               { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
-
+      %hr
       - if current_user
         - subscribed = issuable.subscribed?(current_user)
         .block.light
