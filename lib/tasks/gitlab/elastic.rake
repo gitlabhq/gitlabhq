@@ -19,8 +19,15 @@ namespace :gitlab do
           puts "Indexing #{project.name_with_namespace}..."
 
           begin
+            # During indexing the new commits can be pushed,
+            # this parameter only indicates that at least this commit is in index
+            heeads_sha = project.repository.commit.sha
+            IndexStatus.find_or_create_by(last_commit: heeads_sha, project: project)
+
             project.repository.index_commits
             project.repository.index_blobs
+
+            project.index_status.update(indexed_at: DateTime.now)
             puts "Done!".green
           rescue StandardError => e
             puts "#{e.message}, trace - #{e.backtrace}"

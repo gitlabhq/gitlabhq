@@ -128,6 +128,7 @@ class Project < ActiveRecord::Base
   has_one :custom_issue_tracker_service, dependent: :destroy
   has_one :gitlab_issue_tracker_service, dependent: :destroy
   has_one :external_wiki_service, dependent: :destroy
+  has_one :index_status, dependent: :destroy
 
   has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
