@@ -65,8 +65,13 @@ class @DropzoneInput
         return
 
       success: (header, response) ->
+        link_markdown = response.link.markdown
         child = $(dropzone[0]).children("textarea")
-        $(child).val $(child).val() + response.link.markdown + "\n"
+        cursor_pos = child.prop "selectionStart"
+        value = $(child).val()
+        new_text = "#{value.substring(0,  cursor_pos)}#{link_markdown}#{value.substring(cursor_pos, value.length)}"
+
+        $(child).val new_text + "\n"
         return
 
       error: (temp, errorMessage) ->
