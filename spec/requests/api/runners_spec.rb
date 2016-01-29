@@ -9,6 +9,7 @@ describe API::API, api: true  do
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:project2) { create(:project, creator_id: user.id) }
   let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
+  let!(:master2) { create(:project_member, user: user, project: project2, access_level: ProjectMember::MASTER) }
   let!(:developer) { create(:project_member, user: user2, project: project, access_level: ProjectMember::REPORTER) }
   let!(:shared_runner) { create(:ci_shared_runner, tag_list: ['mysql', 'ruby'], active: true) }
   let!(:specific_runner) { create(:ci_specific_runner, tag_list: ['mysql', 'ruby']) }
@@ -270,6 +271,107 @@ describe API::API, api: true  do
     context 'unauthorized user' do
       it "should not return project's runners" do
         get api("/projects/#{project.id}/runners")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/runners/:runner_id' do
+    context 'authorized user' do
+      it 'should enable specific runner' do
+        expect do
+          put api("/projects/#{project.id}/runners/#{specific_runner2.id}", user)
+        end.to change{ project.runners.count }.by(+1)
+        expect(response.status).to eq(200)
+      end
+
+      it 'should avoid changes when enabling already enabled runner' do
+        expect do
+          put api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
+        end.to change{ project.runners.count }.by(0)
+        expect(response.status).to eq(200)
+      end
+
+      it 'should not enable shared runner' do
+        put api("/projects/#{project.id}/runners/#{shared_runner.id}", user)
+
+        expect(response.status).to eq(403)
+      end
+
+      context 'user is admin' do
+        it 'should enable any specific runner' do
+          expect do
+            put api("/projects/#{project.id}/runners/#{unused_specific_runner.id}", admin)
+          end.to change{ project.runners.count }.by(+1)
+          expect(response.status).to eq(200)
+        end
+      end
+
+      context 'user is not admin' do
+        it 'should not enable runner without access to' do
+          put api("/projects/#{project.id}/runners/#{unused_specific_runner.id}", user)
+
+          expect(response.status).to eq(403)
+        end
+      end
+    end
+
+    context 'authorized user without permissions' do
+      it 'should not enable runner' do
+        put api("/projects/#{project.id}/runners/#{specific_runner2.id}", user2)
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'should not enable runner' do
+        put api("/projects/#{project.id}/runners/#{specific_runner2.id}")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/runners/:runner_id' do
+    context 'authorized user' do
+      context 'when runner have more than one associated projects' do
+        it "should disable project's runner" do
+          expect do
+            delete api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
+          end.to change{ project.runners.count }.by(-1)
+          expect(response.status).to eq(200)
+        end
+      end
+
+      context 'when runner have one associated projects' do
+        it "should not disable project's runner" do
+          expect do
+            delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
+          end.to change{ project.runners.count }.by(0)
+          expect(response.status).to eq(403)
+        end
+      end
+
+      it 'should return 404 is runner is not found' do
+        delete api("/projects/#{project.id}/runners/9999", user)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'authorized user without permissions' do
+      it "should not disable project's runner" do
+        delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user2)
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'unauthorized user' do
+      it "should not disable project's runner" do
+        delete api("/projects/#{project.id}/runners/#{specific_runner.id}")
 
         expect(response.status).to eq(401)
       end

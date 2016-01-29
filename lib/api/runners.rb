@@ -59,6 +59,26 @@ module API
         runners = filter_runners(Ci::Runner.owned_or_shared(user_project.id), params[:scope])
         present paginate(runners), with: Entities::Runner
       end
+
+      put ':id/runners/:runner_id' do
+        runner = get_runner(params[:runner_id])
+        can_enable_runner?(runner)
+        Ci::RunnerProject.create(runner: runner, project: user_project)
+
+        present runner, with: Entities::Runner
+      end
+
+      delete ':id/runners/:runner_id' do
+        runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
+        not_found!('Runner') unless runner_project
+
+        runner = runner_project.runner
+        forbidden!("Can't disable runner - only one project associated with it. Please remove runner instead") if runner.projects.count == 1
+
+        runner_project.destroy
+
+        present runner, with: Entities::Runner
+      end
     end
 
     helpers do
@@ -95,6 +115,12 @@ module API
         forbidden!("Can't delete shared runner") if runner.is_shared?
         forbidden!("Can't delete runner - associated with more than one project") if runner.projects.count > 1
         forbidden!("Can't delete runner - no access granted") unless user_can_access_runner?(runner)
+      end
+
+      def can_enable_runner?(runner)
+        forbidden!("Can't enable shared runner directly") if runner.is_shared?
+        return true if current_user.is_admin?
+        forbidden!("Can't update runner - no access granted") unless user_can_access_runner?(runner)
       end
 
       def user_can_access_runner?(runner)
