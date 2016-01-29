@@ -121,11 +121,11 @@ module API
         return runners unless scope.present?
 
         available_scopes = ::Ci::Runner::AVAILABLE_SCOPES
-        unless (available_scopes && scope).empty?
-          runners.send(scope)
-        else
+        if (available_scopes & [scope]).empty?
           render_api_error!('Scope contains invalid value', 400)
         end
+
+        runners.send(scope)
       end
 
       def get_runner(id)

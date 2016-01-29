@@ -22,34 +22,41 @@ describe API::API, api: true  do
   let!(:two_projects_runner_project2) { create(:ci_runner_project, runner: two_projects_runner, project: project2) }
 
   describe 'GET /runners' do
-    context 'authorized user with admin privileges' do
-      it 'should return all runners' do
-        get api('/runners', admin)
-        shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+    context 'authorized user' do
+      context 'authorized user with admin privileges' do
+        it 'should return all runners' do
+          get api('/runners', admin)
+          shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
-        expect(response.status).to eq(200)
-        expect(json_response).to be_an Array
-        expect(shared).to be_truthy
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(shared).to be_truthy
+        end
+      end
+
+      context 'authorized user without admin privileges' do
+        it 'should return user available runners' do
+          get api('/runners', user)
+          shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(shared).to be_falsey
+        end
       end
 
       it 'should filter runners by scope' do
-        get api('/runners?scope=specific', admin)
+        get api('/runners?scope=specific', user)
         shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
-    end
 
-    context 'authorized user without admin privileges' do
-      it 'should return user available runners' do
-        get api('/runners', user)
-        shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
-
-        expect(response.status).to eq(200)
-        expect(json_response).to be_an Array
-        expect(shared).to be_falsey
+      it 'should avoid filtering if scope is invalid' do
+        get api('/runners?scope=unknown', user)
+        expect(response.status).to eq(400)
       end
     end
 
