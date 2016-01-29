@@ -24,6 +24,7 @@
 #  merge_params              :text
 #  merge_when_build_succeeds :boolean          default(FALSE), not null
 #  merge_user_id             :integer
+#  merge_commit_sha          :string
 #
 
 require Rails.root.join("app/models/commit")
