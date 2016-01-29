@@ -137,8 +137,8 @@ class Repository
     find_branch(branch_name)
   end
 
-  def find_or_create_branch(name, ref)
-    find_branch(name) or add_branch(name, ref)
+  def find_or_create_branch(user, name, ref)
+    find_branch(name) or add_branch(user, name, ref)
   end
 
   def add_tag(tag_name, ref, message = nil)
@@ -605,6 +605,7 @@ class Repository
   def merge(user, source_sha, target_branch, options = {})
     our_commit = rugged.branches[target_branch].target
     their_commit = rugged.lookup(source_sha)
+    merge_commit_sha = nil
 
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
@@ -619,8 +620,31 @@ class Repository
         update_ref: ref
       )
 
-      Rugged::Commit.create(rugged, actual_options)
+      merge_commit_sha = Rugged::Commit.create(rugged, actual_options)
     end
+
+    merge_commit_sha
+  end
+
+  def revert_merge(user, merge_commit_id, revert_branch_name)
+    find_or_create_branch(user, revert_branch_name, merge_commit_id)
+
+    new_index = rugged.revert_commit(merge_commit_id, merge_commit_id, mainline: 1)
+    committer = user_to_committer(user)
+
+    commit_with_hooks(user, revert_branch_name) do |ref|
+      options = {
+        message: 'Revert MR',
+        author: committer,
+        committer: committer,
+        tree: new_index.write_tree(rugged),
+        parents: [rugged.lookup(merge_commit_id)],
+        update_ref: ref
+      }
+
+      Rugged::Commit.create(rugged, options)
+    end
+
   end
 
   def merged_to_root_ref?(branch_name)
