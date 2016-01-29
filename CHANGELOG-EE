@@ -5,7 +5,7 @@ v 8.5.0 (unreleased)
   - More reliable wiki indexer
 
 v 8.4.3
-  - Elasticsearch: fix partial blob indexing on push 
+  - Elasticsearch: fix partial blob indexing on push
 
 v 8.4.2
   - Elasticsearch indexer performance improvements
