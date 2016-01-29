@@ -26,7 +26,7 @@ class BroadcastMessage < ActiveRecord::Base
   default_value_for :font,  '#FFFFFF'
 
   def self.current
-    Rails.cache.fetch("broadcast_message_current", expires_in: 5.minutes) do
+    Rails.cache.fetch("broadcast_message_current", expires_in: 1.minute) do
       where("ends_at > :now AND starts_at <= :now", now: Time.zone.now).last
     end
   end
