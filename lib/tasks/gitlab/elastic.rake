@@ -11,9 +11,9 @@ namespace :gitlab do
           puts "Indexing #{project.name_with_namespace} (ID=#{project.id})..."
 
           index_status = IndexStatus.find_or_create_by(project: project)
-          heads_sha = project.repository.commit.sha
+          head_sha = project.repository.commit.sha
 
-          if index_status.last_commit == heads_sha
+          if index_status.last_commit == head_sha
             puts "Skipped".yellow
             next
           end
@@ -24,7 +24,7 @@ namespace :gitlab do
 
             # During indexing the new commits can be pushed,
             # the last_commit parameter only indicates that at least this commit is in index
-            index_status.update(last_commit: heads_sha, indexed_at: DateTime.now)
+            index_status.update(last_commit: head_sha, indexed_at: DateTime.now)
             puts "Done!".green
           rescue StandardError => e
             puts "#{e.message}, trace - #{e.backtrace}"

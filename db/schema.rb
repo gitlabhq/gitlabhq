@@ -449,7 +449,7 @@ ActiveRecord::Schema.define(version: 20160129075828) do
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
   create_table "index_statuses", force: :cascade do |t|
-    t.integer  "project_id"
+    t.integer  "project_id",  null: false
     t.datetime "indexed_at"
     t.text     "note"
     t.string   "last_commit"
@@ -457,7 +457,7 @@ ActiveRecord::Schema.define(version: 20160129075828) do
     t.datetime "updated_at",  null: false
   end
 
-  add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", using: :btree
+  add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
   create_table "issues", force: :cascade do |t|
     t.string   "title"
