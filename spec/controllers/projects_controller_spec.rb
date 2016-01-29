@@ -88,13 +88,10 @@ describe ProjectsController do
     end
 
     context "when the url contains .atom" do
-      let(:public_project_with_dot) { create(:project, :public, name: 'my.atom', path: 'my.atom') }
+      let(:public_project_with_dot_atom) { create(:project, :public, name: 'my.atom', path: 'my.atom') }
 
-      it 'loads a project' do
-        get :show, namespace_id: public_project_with_dot.namespace.path, id: public_project_with_dot.path
-
-        expect(assigns(:project)).to eq(public_project_with_dot)
-        expect(response.status).to eq(200)
+      it 'expect an error creating the project' do
+        expect { public_project_with_dot_atom }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end
