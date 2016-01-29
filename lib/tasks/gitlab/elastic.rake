@@ -4,7 +4,17 @@ namespace :gitlab do
     task index_repositories: :environment  do
       Repository.__elasticsearch__.create_index!
 
-      Project.find_each do |project|
+      projects = Project
+
+      if ENV['ID_FROM']
+        projects = projects.where("id >= ?", ENV['ID_FROM'])
+      end
+
+      if ENV['ID_TO']
+        projects = projects.where("id <= ?", ENV['ID_TO'])
+      end
+
+      projects.find_each do |project|
         if project.repository.exists? && !project.repository.empty?
           puts "Indexing #{project.name_with_namespace}..."
 
@@ -46,6 +56,22 @@ namespace :gitlab do
         else
           klass.import
         end
+      end
+    end
+
+    desc "Create empty indexes"
+    task create_empty_indexes: :environment do
+      [
+        Project,
+        Issue,
+        MergeRequest,
+        Snippet,
+        Note,
+        Milestone,
+        ProjectWiki,
+        Repository
+      ].each do |klass|
+        klass.__elasticsearch__.create_index!
       end
     end
   end
