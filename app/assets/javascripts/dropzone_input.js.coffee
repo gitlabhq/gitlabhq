@@ -65,13 +65,7 @@ class @DropzoneInput
         return
 
       success: (header, response) ->
-        link_markdown = response.link.markdown
-        child = $(dropzone[0]).children("textarea")
-        cursor_pos = child.prop "selectionStart"
-        value = $(child).val()
-        new_text = "#{value.substring(0,  cursor_pos)}#{link_markdown}#{value.substring(cursor_pos, value.length)}"
-
-        $(child).val new_text + "\n"
+        pasteText response.link.markdown
         return
 
       error: (temp, errorMessage) ->
@@ -133,6 +127,7 @@ class @DropzoneInput
       beforeSelection = $(child).val().substring 0, caretStart
       afterSelection = $(child).val().substring caretEnd, textEnd
       $(child).val beforeSelection + text + afterSelection
+      child.get(0).setSelectionRange caretStart + text.length, caretEnd + text.length
       form_textarea.trigger "input"
 
     getFilename = (e) ->
