@@ -13,10 +13,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     current_user.save! if current_user.changed?
 
     if two_factor_grace_period_expired?
-      flash.now[:alert] = 'You must configure Two-Factor Authentication in your account.'
+      flash.now[:alert] = 'You must enable Two-factor Authentication for your account.'
     else
       grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-      flash.now[:alert] = "You must configure Two-Factor Authentication in your account until #{l(grace_period_deadline)}."
+      flash.now[:alert] = "You must enable Two-factor Authentication for your account before #{l(grace_period_deadline)}."
     end
 
     @qr_code = build_qr_code

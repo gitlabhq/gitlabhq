@@ -2,8 +2,9 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
 
-  skip_before_action :authenticate_user!, only: [:index, :show, :activity, :issues, :merge_requests]
   respond_to :html
+
+  skip_before_action :authenticate_user!, only: [:index, :show, :activity, :issues, :merge_requests]
   before_action :find_group, except: [:index, :new, :create]
 
   # Authorize
@@ -11,6 +12,7 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy]
   before_action :authorize_create_group!, only: [:new, :create]
 
+  # Load group projects
   before_action :find_projects, only: [:activity, :issues, :merge_requests]
   before_action :event_filter, only: :activity
 
@@ -79,6 +81,7 @@ class GroupsController < Groups::ApplicationController
 
   def find_group
     @group ||= Group.find_by(path: params[:id])
+    @group || render_404
   end
 
   # Dont allow unauthorized access to group

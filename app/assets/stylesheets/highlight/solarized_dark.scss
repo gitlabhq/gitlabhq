@@ -10,8 +10,8 @@
   }
 
   // Code itself
-  pre.code {
-    border-left: 1px solid #113b46;
+  pre.code, .diff-line-num {
+    border-color: #113b46;
   }
 
   &, pre.code, .line_holder .line_content {
@@ -22,11 +22,11 @@
   // Diff line
   .line_holder {
     .diff-line-num.new, .line_content.new {
-      @include diff_background(rgba(133, 153, 0, 0.2), rgba(133, 153, 0, 0.3), #808080);
+      @include diff_background(rgba(133, 153, 0, 0.15), rgba(133, 153, 0, 0.25), #113b46);
     }
 
     .diff-line-num.old, .line_content.old {
-      @include diff_background(rgba(220, 50, 47, 0.2), rgba(220, 50, 47, 0.3), #808080);
+      @include diff_background(rgba(220, 50, 47, 0.3), rgba(220, 50, 47, 0.25), #113b46);
     }
 
     .line_content.match {

@@ -23,14 +23,14 @@ class DashboardController < Dashboard::ApplicationController
   protected
 
   def load_events
-    project_ids =
+    projects =
       if params[:filter] == "starred"
         current_user.starred_projects
       else
         current_user.authorized_projects
-      end.pluck(:id)
+      end
 
-    @events = Event.in_projects(project_ids)
+    @events = Event.in_projects(projects)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

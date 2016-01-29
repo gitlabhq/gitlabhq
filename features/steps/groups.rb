@@ -178,6 +178,10 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     expect(page).not_to have_selector(:css, '.nav-block')
   end
 
+  step 'I visit group "NonExistentGroup" page' do
+    visit group_path(-1)
+  end
+
   private
 
   def assigned_to_me(key)

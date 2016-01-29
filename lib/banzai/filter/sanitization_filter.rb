@@ -43,6 +43,10 @@ module Banzai
         # Allow span elements
         whitelist[:elements].push('span')
 
+        # Allow abbr elements with title attribute
+        whitelist[:elements].push('abbr')
+        whitelist[:attributes]['abbr'] = %w(title)
+
         # Allow any protocol in `a` elements...
         whitelist[:protocols].delete('a')
 

@@ -51,3 +51,12 @@ Feature: Project Builds Artifacts
     And I click artifacts browse button
     And I click a link to file within build artifacts
     Then download of a file extracted from build artifacts should start
+
+  @javascript
+  Scenario: I click on a row in an artifacts table
+    Given recent build has artifacts available
+    And recent build has artifacts metadata available
+    When I visit recent build details page
+    And I click artifacts browse button
+    And I click a first row within build artifacts table
+    Then page with a coresponding path is loading

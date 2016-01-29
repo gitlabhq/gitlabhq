@@ -66,6 +66,16 @@ describe Gitlab::Metrics::Instrumentation do
 
         @dummy.foo
       end
+
+      it 'generates a method with the correct arity when using methods without arguments' do
+        dummy = Class.new do
+          def self.test; end
+        end
+
+        described_class.instrument_method(dummy, :test)
+
+        expect(dummy.method(:test).arity).to eq(0)
+      end
     end
 
     describe 'with metrics disabled' do

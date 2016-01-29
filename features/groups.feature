@@ -7,6 +7,10 @@ Feature: Groups
     And Group "Owned" has an internal project "Moon-project" with 1 star from "John Doe"
     And project "Moon-project" is the latest active
 
+  Scenario: I should not see a group if it does not exist
+    When I visit group "NonExistentGroup" page
+    Then page status code should be 404
+
   Scenario: I should have back to group button
     When I visit group "Owned" page
     Then I should see back to dashboard button

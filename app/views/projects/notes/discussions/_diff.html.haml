@@ -9,7 +9,7 @@
           = diff.new_path
           - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
             %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
-    .diff-content
+    .diff-content.code.js-syntax-highlight
       %table
         - note.truncated_diff_lines.each do |line|
           - type = line.type

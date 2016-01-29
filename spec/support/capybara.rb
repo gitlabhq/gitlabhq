@@ -19,3 +19,9 @@ unless ENV['CI'] || ENV['CI_SERVER']
   # Keep only the screenshots generated from the last failing test suite
   Capybara::Screenshot.prune_strategy = :keep_last_run
 end
+
+RSpec.configure do |config|
+  config.before(:suite) do
+    TestEnv.warm_asset_cache
+  end
+end

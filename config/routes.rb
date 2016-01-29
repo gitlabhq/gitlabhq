@@ -558,7 +558,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resource :fork, only: [:new, :create]
+        resources :forks, only: [:index, :new, :create]
         resource :import, only: [:new, :create, :show]
 
         resources :refs, only: [] do

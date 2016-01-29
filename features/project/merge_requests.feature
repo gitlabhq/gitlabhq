@@ -85,6 +85,28 @@ Feature: Project Merge Requests
     Then I should see "Bug NS-04" at the top
 
   @javascript
+  Scenario: Visiting Merge Requests after being sorted the list
+    Given I visit project "Shop" merge requests page
+    And I sort the list by "Oldest updated"
+    And I visit my project's home page
+    And I visit project "Shop" merge requests page
+    Then The list should be sorted by "Oldest updated"
+
+  @javascript
+  Scenario: Visiting Issues after being sorted the list
+    Given I visit project "Shop" merge requests page
+    And I sort the list by "Oldest updated"
+    And I visit project "Shop" issues page
+    Then The list should be sorted by "Oldest updated"
+
+  @javascript
+  Scenario: Visiting Merge Requests from a differente Project after sorting
+    Given I visit project "Shop" merge requests page
+    And I sort the list by "Oldest updated"
+    And I visit dashboard merge requests page
+    Then The list should be sorted by "Oldest updated"
+
+  @javascript
   Scenario: Visiting Merge Requests after commenting on diffs
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"

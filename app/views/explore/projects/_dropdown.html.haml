@@ -1,6 +1,6 @@
 .dropdown.inline
   %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
-    %span.light sort:
+    %span.light
     - if sort_options_hash[@sort].present?
       = sort_options_hash[@sort]
     - elsif current_page?(trending_explore_projects_path) || current_page?(explore_root_path)
