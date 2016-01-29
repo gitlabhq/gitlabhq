@@ -40,7 +40,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: "author_link").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => title, container: 'body' } ).html_safe
+      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { 'original-title'.to_sym => title, container: 'body' } ).html_safe
     end
   end
 
@@ -116,7 +116,7 @@ module ProjectsHelper
   private
 
   def get_project_nav_tabs(project, current_user)
-    nav_tabs = [:home]
+    nav_tabs = [:home, :forks]
 
     if !project.empty_repo? && can?(current_user, :download_code, project)
       nav_tabs << [:files, :commits, :network, :graphs]

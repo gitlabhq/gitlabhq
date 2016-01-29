@@ -10,8 +10,8 @@
   }
 
   // Code itself
-  pre.code {
-    border-left: 1px solid $border-color;
+  pre.code, .diff-line-num {
+    border-color: $border-color;
   }
 
   &, pre.code, .line_holder .line_content {

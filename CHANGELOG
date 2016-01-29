@@ -1,9 +1,42 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.0 (unreleased)
+  - Ensure rake tasks that don't need a DB connection can be run without one
   - Add "visibility" flag to GET /projects api endpoint
+  - Ignore binary files in code search to prevent Error 500 (Stan Hu)
   - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
   - New UI for pagination
+  - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
+    set it up
+  - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
+  - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
+  - Don't vendor minified JS
+  - Display 404 error on group not found
+  - Track project import failure
+  - Fix visibility level text in admin area (Zeger-Jan van de Weg)
+  - Update the ExternalIssue regex pattern (Blake Hitchcock)
+  - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
+  - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
+
+v 8.4.2
+  - Bump required gitlab-workhorse version to bring in a fix for missing
+    artifacts in the build artifacts browser
+  - Get rid of those ugly borders on the file tree view
+  - Fix updating the runner information when asking for builds
+  - Bump gitlab_git version to 7.2.24 in order to bring in a performance
+    improvement when checking if a repository was empty
+  - Add instrumentation for Gitlab::Git::Repository instance methods so we can
+    track them in Performance Monitoring.
+  - Correctly highlight MR diff when MR has merge conflicts
+  - Increase contrast between highlighted code comments and inline diff marker
+  - Fix method undefined when using external commit status in builds
+  - Fix highlighting in blame view.
+
+v 8.4.1
+  - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
+    and Nokogiri (1.6.7.2)
+  - Fix redirect loop during import
+  - Fix diff highlighting for all syntax themes
 
 v 8.4.0
   - Allow LDAP users to change their email if it was not set by the LDAP server

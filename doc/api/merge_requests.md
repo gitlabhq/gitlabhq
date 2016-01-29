@@ -60,7 +60,7 @@ Parameters:
 Shows information about a single merge request.
 
 ```
-GET /projects/:id/merge_request/:merge_request_id
+GET /projects/:id/merge_requests/:merge_request_id
 ```
 
 Parameters:
@@ -105,7 +105,7 @@ Parameters:
 Get a list of merge request commits.
 
 ```
-GET /projects/:id/merge_request/:merge_request_id/commits
+GET /projects/:id/merge_requests/:merge_request_id/commits
 ```
 
 Parameters:
@@ -142,7 +142,7 @@ Parameters:
 Shows information about the merge request including its files and changes.
 
 ```
-GET /projects/:id/merge_request/:merge_request_id/changes
+GET /projects/:id/merge_requests/:merge_request_id/changes
 ```
 
 Parameters:
@@ -264,7 +264,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
 ```
-PUT /projects/:id/merge_request/:merge_request_id
+PUT /projects/:id/merge_requests/:merge_request_id
 ```
 
 Parameters:
@@ -323,7 +323,7 @@ If merge request is already merged or closed - you get 405 and error message 'Me
 If you don't have permissions to accept this merge request - you'll get a 401
 
 ```
-PUT /projects/:id/merge_request/:merge_request_id/merge
+PUT /projects/:id/merge_requests/:merge_request_id/merge
 ```
 
 Parameters:
@@ -373,7 +373,7 @@ If the merge request is already merged or closed - you get 405 and error message
 
 In case the merge request is not set to be merged when the build succeeds, you'll also get a 406 error.
 ```
-PUT /projects/:id/merge_request/:merge_request_id/cancel_merge_when_build_succeeds
+PUT /projects/:id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds
 ```
 Parameters:
 
@@ -409,66 +409,6 @@ Parameters:
 }
 ```
 
-## Post comment to MR
-
-Adds a comment to a merge request.
-
-```
-POST /projects/:id/merge_request/:merge_request_id/comments
-```
-
-Parameters:
-
-- `id` (required)               - The ID of a project
-- `merge_request_id` (required) - ID of merge request
-- `note` (required)             - Text of comment
-
-```json
-{
-  "note": "text1"
-}
-```
-
-## Get the comments on a MR
-
-Gets all the comments associated with a merge request.
-
-```
-GET /projects/:id/merge_request/:merge_request_id/comments
-```
-
-Parameters:
-
-- `id` (required)               - The ID of a project
-- `merge_request_id` (required) - ID of merge request
-
-```json
-[
-  {
-    "note": "this is the 1st comment on the 2merge merge request",
-    "author": {
-      "id": 11,
-      "username": "admin",
-      "email": "admin@example.com",
-      "name": "Administrator",
-      "state": "active",
-      "created_at": "2014-03-06T08:17:35.000Z"
-    }
-  },
-  {
-    "note": "Status changed to closed",
-    "author": {
-      "id": 11,
-      "username": "admin",
-      "email": "admin@example.com",
-      "name": "Administrator",
-      "state": "active",
-      "created_at": "2014-03-06T08:17:35.000Z"
-    }
-  }
-]
-```
-
 ## Comments on merge requets
 
-Comments are done via the notes resource.
+Comments are done via the [notes](notes.md) resource.

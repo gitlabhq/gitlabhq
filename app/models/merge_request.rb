@@ -183,8 +183,8 @@ class MergeRequest < ActiveRecord::Base
   def diff_base_commit
     if merge_request_diff
       merge_request_diff.base_commit
-    else
-      self.target_project.commit(self.target_branch)
+    elsif source_sha
+      self.target_project.merge_base_commit(self.source_sha, self.target_branch)
     end
   end
 
@@ -489,7 +489,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def source_sha
-    commits.first.sha
+    last_commit.try(:sha)
   end
 
   def fetch_ref

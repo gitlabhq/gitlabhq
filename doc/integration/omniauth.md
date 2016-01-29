@@ -9,6 +9,23 @@ Configuring OmniAuth does not prevent standard GitLab authentication or LDAP (if
 - [Enable OmniAuth for an Existing User](#enable-omniauth-for-an-existing-user)
 - [OmniAuth configuration sample when using Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master#omniauth-google-twitter-github-login)
 
+## Supported Providers
+
+This is a list of the current supported OmniAuth providers. Before proceeding
+on each provider's documentation, make sure to first read this document as it
+contains some settings that are common for all providers.
+
+- [GitHub](github.md)
+- [Bitbucket](bitbucket.md)
+- [GitLab.com](gitlab.md)
+- [Google](google.md)
+- [Facebook](facebook.md)
+- [Twitter](twitter.md)
+- [Shibboleth](shibboleth.md)
+- [SAML](saml.md)
+- [Crowd](crowd.md)
+- [Azure](azure.md)
+
 ## Initial OmniAuth Configuration
 
 Before configuring individual OmniAuth providers there are a few global settings that are in common for all providers that we need to consider.
@@ -66,19 +83,6 @@ If you want to change these settings:
     ```
 
 Now we can choose one or more of the Supported Providers below to continue configuration.
-
-## Supported Providers
-
-- [GitHub](github.md)
-- [Bitbucket](bitbucket.md)
-- [GitLab.com](gitlab.md)
-- [Google](google.md)
-- [Facebook](facebook.md)
-- [Twitter](twitter.md)
-- [Shibboleth](shibboleth.md)
-- [SAML](saml.md)
-- [Crowd](crowd.md)
-- [Azure](azure.md)
 
 ## Enable OmniAuth for an Existing User
 

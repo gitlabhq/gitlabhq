@@ -564,3 +564,53 @@ pre.light-well {
   color: #E62958;
   margin-top: 2px;
 }
+
+/*
+ * Forks list rendered on Project's forks page
+ */
+
+.forks-top-block {
+  padding: 16px 0;
+}
+
+.projects-search-form {
+  .dropdown-toggle.btn {
+    margin-top: -3px;
+  }
+
+  &.fork-search-form {
+    margin: 0;
+    margin-top: -$gl-padding;
+    padding-bottom: 0;
+
+    input {
+      /* Small devices (tablets, 768px and up) */
+      @media (min-width: $screen-sm-min) { width: 180px; }
+
+      /* Medium devices (desktops, 992px and up) */
+      @media (min-width: $screen-md-min) { width: 350px; }
+
+      /* Large devices (large desktops, 1200px and up) */
+      @media (min-width: $screen-lg-min) { width: 400px; }
+    }
+
+    .sort-forks {
+      width: 160px;
+    }
+
+    .fork-link {
+      float: right;
+      margin-left: $gl-padding;
+    }
+  }
+}
+
+.private-forks-notice .private-fork-icon {
+  i:nth-child(1) {
+    color: #2AA056;
+  }
+
+  i:nth-child(2) {
+    color: #FFFFFF;
+  }
+}

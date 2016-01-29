@@ -3,6 +3,15 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_download_code!
 
+  def index
+    @sort = params[:sort] || 'id_desc'
+    @all_forks = project.forks.includes(:creator).order_by(@sort)
+
+    @public_forks, @protected_forks = @all_forks.partition do |project|
+      can?(current_user, :read_project, project)
+    end
+  end
+
   def new
     @namespaces = current_user.manageable_namespaces
     @namespaces.delete(@project.namespace)
@@ -10,7 +19,7 @@ class Projects::ForksController < Projects::ApplicationController
 
   def create
     namespace = Namespace.find(params[:namespace_key])
-    
+
     @forked_project = namespace.projects.find_by(path: project.path)
     @forked_project = nil unless @forked_project && @forked_project.forked_from_project == project
 

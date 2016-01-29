@@ -8,7 +8,7 @@
       .file-content.wiki
         = raw render_markup(@blob.name, @content)
     - else
-      .file-content.code
+      .file-content.code.js-syntax-highlight
         - unless @diff_lines.empty?
           %table.text-file
             - @diff_lines.each do |line|

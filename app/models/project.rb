@@ -348,6 +348,11 @@ class Project < ActiveRecord::Base
     repository.commit(id)
   end
 
+  def merge_base_commit(first_commit_id, second_commit_id)
+    sha = repository.merge_base(first_commit_id, second_commit_id)
+    repository.commit(sha) if sha
+  end
+
   def saved?
     id && persisted?
   end
@@ -903,5 +908,9 @@ class Project < ActiveRecord::Base
 
   def runners_token
     ensure_runners_token!
+  end
+
+  def wiki
+    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 end

@@ -5,7 +5,10 @@
 # the compiled file.
 #
 #= require jquery
-#= require jquery-ui
+#= require jquery-ui/autocomplete
+#= require jquery-ui/datepicker
+#= require jquery-ui/effect-highlight
+#= require jquery-ui/sortable
 #= require jquery_ujs
 #= require jquery.cookie
 #= require jquery.endless-scroll
@@ -21,9 +24,9 @@
 #= require bootstrap
 #= require select2
 #= require raphael
-#= require g.raphael-min
-#= require g.bar-min
-#= require chart-lib.min
+#= require g.raphael
+#= require g.bar
+#= require Chart
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
@@ -38,9 +41,9 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issuable
 #= require shortcuts_network
-#= require jquery.nicescroll.min
+#= require jquery.nicescroll
 #= require_tree .
-#= require fuzzaldrin-plus.min
+#= require fuzzaldrin-plus
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
@@ -202,5 +205,14 @@ $ ->
     text = btn.data("confirm-danger-message")
     form = btn.closest("form")
     new ConfirmDangerModal(form, text)
+
+  $('input[type="search"]').each ->
+    $this = $(this)
+    $this.attr 'value', $this.val()
+    return
+    
+  $(document).on 'keyup', 'input[type="search"]' , (e) ->
+    $this = $(this)
+    $this.attr 'value', $this.val()
 
   new Aside()

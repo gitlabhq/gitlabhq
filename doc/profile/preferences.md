@@ -12,6 +12,9 @@ The default is **Charcoal**.
 
 ## Syntax highlighting theme
 
+_GitLab uses the [rouge ruby library][rouge] for syntax highlighting. For a
+list of supported languages visit the rouge website._
+
 Changing this setting allows the user to customize the theme used when viewing
 syntax highlighted code on the site.
 
@@ -36,3 +39,5 @@ The default is **Your Projects**.
 It allows user to choose what content he or she want to see on project page.
 
 The default is **Readme**.
+
+[rouge]: http://rouge.jneen.net/ "Rouge website"

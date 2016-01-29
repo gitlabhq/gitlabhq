@@ -1,9 +1,20 @@
 # Issues
 
+Every API call to issues must be authenticated.
+
+If a user is not a member of a project and the project is private, a `GET`
+request on that project will result to a `404` status code.
+
+## Issues pagination
+
+By default, `GET` requests return 20 results at a time because the API results
+are paginated.
+
+Read more on [pagination](README.md#pagination).
+
 ## List issues
 
-Get all issues created by authenticated user. This function takes pagination parameters
-`page` and `per_page` to restrict the list of issues.
+Get all issues created by the authenticated user.
 
 ```
 GET /issues
@@ -14,81 +25,65 @@ GET /issues?labels=foo,bar
 GET /issues?labels=foo,bar&state=opened
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
+| `labels`  | string  | no    | Comma-separated list of label names |
+| `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+| `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 
-- `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
-- `labels` (optional) - Comma-separated list of label names
-- `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/issues
+```
+
+Example response:
 
 ```json
 [
-  {
-    "id": 43,
-    "iid": 3,
-    "project_id": 8,
-    "title": "4xx/5xx pages",
-    "description": "",
-    "labels": [],
-    "milestone": null,
-    "assignee": null,
-    "author": {
-      "id": 1,
-      "username": "john_smith",
-      "email": "john@example.com",
-      "name": "John Smith",
-      "state": "active",
-      "created_at": "2012-05-23T08:00:58Z"
-    },
-    "state": "closed",
-    "updated_at": "2012-07-02T17:53:12Z",
-    "created_at": "2012-07-02T17:53:12Z"
-  },
-  {
-    "id": 42,
-    "iid": 4,
-    "project_id": 8,
-    "title": "Add user settings",
-    "description": "",
-    "labels": [
-      "feature"
-    ],
-    "milestone": {
-      "id": 1,
-      "title": "v1.0",
-      "description": "",
-      "due_date": "2012-07-20",
-      "state": "reopened",
-      "updated_at": "2012-07-04T13:42:48Z",
-      "created_at": "2012-07-04T13:42:48Z"
-    },
-    "assignee": {
-      "id": 2,
-      "username": "jack_smith",
-      "email": "jack@example.com",
-      "name": "Jack Smith",
-      "state": "active",
-      "created_at": "2012-05-23T08:01:01Z"
-    },
-    "author": {
-      "id": 1,
-      "username": "john_smith",
-      "email": "john@example.com",
-      "name": "John Smith",
-      "state": "active",
-      "created_at": "2012-05-23T08:00:58Z"
-    },
-    "state": "opened",
-    "updated_at": "2012-07-12T13:43:19Z",
-    "created_at": "2012-06-28T12:58:06Z"
-  }
+   {
+      "state" : "opened",
+      "description" : "Ratione dolores corrupti mollitia soluta quia.",
+      "author" : {
+         "state" : "active",
+         "id" : 18,
+         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "name" : "Alexandra Bashirian",
+         "avatar_url" : null,
+         "username" : "eileen.lowe"
+      },
+      "milestone" : {
+         "project_id" : 1,
+         "description" : "Ducimus nam enim ex consequatur cumque ratione.",
+         "state" : "closed",
+         "due_date" : null,
+         "iid" : 2,
+         "created_at" : "2016-01-04T15:31:39.996Z",
+         "title" : "v4.0",
+         "id" : 17,
+         "updated_at" : "2016-01-04T15:31:39.996Z"
+      },
+      "project_id" : 1,
+      "assignee" : {
+         "state" : "active",
+         "id" : 1,
+         "name" : "Administrator",
+         "web_url" : "https://gitlab.example.com/u/root",
+         "avatar_url" : null,
+         "username" : "root"
+      },
+      "updated_at" : "2016-01-04T15:31:51.081Z",
+      "id" : 76,
+      "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
+      "created_at" : "2016-01-04T15:31:51.081Z",
+      "iid" : 6,
+      "labels" : []
+   },
 ]
 ```
 
 ## List project issues
 
-Get a list of project issues. This function accepts pagination parameters `page` and `per_page`
-to return the list of project issues.
+Get a list of a project's issues.
 
 ```
 GET /projects/:id/issues
@@ -102,67 +97,123 @@ GET /projects/:id/issues?milestone=1.0.0&state=opened
 GET /projects/:id/issues?iid=42
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `iid`     | integer | no    | Return the issue having the given `iid` |
+| `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
+| `labels`  | string  | no    | Comma-separated list of label names |
+| `milestone` | string| no    | The milestone title |
+| `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+| `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 
-- `id` (required) - The ID of a project
-- `iid` (optional) - Return the issue having the given `iid`
-- `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
-- `labels` (optional) - Comma-separated list of label names
-- `milestone` (optional) - Milestone title
-- `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues
+```
+
+Example response:
+
+```json
+[
+   {
+      "project_id" : 4,
+      "milestone" : {
+         "due_date" : null,
+         "project_id" : 4,
+         "state" : "closed",
+         "description" : "Rerum est voluptatem provident consequuntur molestias similique ipsum dolor.",
+         "iid" : 3,
+         "id" : 11,
+         "title" : "v3.0",
+         "created_at" : "2016-01-04T15:31:39.788Z",
+         "updated_at" : "2016-01-04T15:31:39.788Z"
+      },
+      "author" : {
+         "state" : "active",
+         "web_url" : "https://gitlab.example.com/u/root",
+         "avatar_url" : null,
+         "username" : "root",
+         "id" : 1,
+         "name" : "Administrator"
+      },
+      "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+      "state" : "closed",
+      "iid" : 1,
+      "assignee" : {
+         "avatar_url" : null,
+         "web_url" : "https://gitlab.example.com/u/lennie",
+         "state" : "active",
+         "username" : "lennie",
+         "id" : 9,
+         "name" : "Dr. Luella Kovacek"
+      },
+      "labels" : [],
+      "id" : 41,
+      "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
+      "updated_at" : "2016-01-04T15:31:46.176Z",
+      "created_at" : "2016-01-04T15:31:46.176Z"
+   }
+]
+```
 
 ## Single issue
 
-Gets a single project issue.
+Get a single project issue.
 
 ```
 GET /projects/:id/issues/:issue_id
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `issue_id`| integer | yes   | The ID of a project's issue |
 
-- `id` (required) - The ID of a project
-- `issue_id` (required) - The ID of a project issue
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/41
+```
+
+Example response:
 
 ```json
 {
-  "id": 42,
-  "iid": 3,
-  "project_id": 8,
-  "title": "Add user settings",
-  "description": "",
-  "labels": [
-    "feature"
-  ],
-  "milestone": {
-    "id": 1,
-    "title": "v1.0",
-    "description": "",
-    "due_date": "2012-07-20",
-    "state": "closed",
-    "updated_at": "2012-07-04T13:42:48Z",
-    "created_at": "2012-07-04T13:42:48Z"
-  },
-  "assignee": {
-    "id": 2,
-    "username": "jack_smith",
-    "email": "jack@example.com",
-    "name": "Jack Smith",
-    "state": "active",
-    "created_at": "2012-05-23T08:01:01Z"
-  },
-  "author": {
-    "id": 1,
-    "username": "john_smith",
-    "email": "john@example.com",
-    "name": "John Smith",
-    "state": "active",
-    "created_at": "2012-05-23T08:00:58Z"
-  },
-  "state": "opened",
-  "updated_at": "2012-07-12T13:43:19Z",
-  "created_at": "2012-06-28T12:58:06Z"
+   "project_id" : 4,
+   "milestone" : {
+      "due_date" : null,
+      "project_id" : 4,
+      "state" : "closed",
+      "description" : "Rerum est voluptatem provident consequuntur molestias similique ipsum dolor.",
+      "iid" : 3,
+      "id" : 11,
+      "title" : "v3.0",
+      "created_at" : "2016-01-04T15:31:39.788Z",
+      "updated_at" : "2016-01-04T15:31:39.788Z"
+   },
+   "author" : {
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/u/root",
+      "avatar_url" : null,
+      "username" : "root",
+      "id" : 1,
+      "name" : "Administrator"
+   },
+   "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+   "state" : "closed",
+   "iid" : 1,
+   "assignee" : {
+      "avatar_url" : null,
+      "web_url" : "https://gitlab.example.com/u/lennie",
+      "state" : "active",
+      "username" : "lennie",
+      "id" : 9,
+      "name" : "Dr. Luella Kovacek"
+   },
+   "labels" : [],
+   "id" : 41,
+   "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
+   "updated_at" : "2016-01-04T15:31:46.176Z",
+   "created_at" : "2016-01-04T15:31:46.176Z"
 }
 ```
 
@@ -170,57 +221,122 @@ Parameters:
 
 Creates a new project issue.
 
+If the operation is successful, a status code of `200` and the newly-created
+issue is returned. If an error occurs, an error number and a message explaining
+the reason is returned.
+
 ```
 POST /projects/:id/issues
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`            | integer | yes | The ID of a project |
+| `title`         | string  | yes | The title of an issue |
+| `description`   | string  | no  | The description of an issue  |
+| `assignee_id`   | integer | no  | The ID of a user to assign issue |
+| `milestone_id`  | integer | no  | The ID of a milestone to assign issue |
+| `labels`        | string  | no  | Comma-separated label names for an issue  |
 
-- `id` (required) - The ID of a project
-- `title` (required) - The title of an issue
-- `description` (optional) - The description of an issue
-- `assignee_id` (optional) - The ID of a user to assign issue
-- `milestone_id` (optional) - The ID of a milestone to assign issue
-- `labels` (optional) - Comma-separated label names for an issue
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
+```
 
-If the operation is successful, 200 and the newly created issue is returned.
-If an error occurs, an error number and a message explaining the reason is returned.
+Example response:
+
+```json
+{
+   "project_id" : 4,
+   "id" : 84,
+   "created_at" : "2016-01-07T12:44:33.959Z",
+   "iid" : 14,
+   "title" : "Issues with auth",
+   "state" : "opened",
+   "assignee" : null,
+   "labels" : [
+      "bug"
+   ],
+   "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+      "id" : 18,
+      "username" : "eileen.lowe"
+   },
+   "description" : null,
+   "updated_at" : "2016-01-07T12:44:33.959Z",
+   "milestone" : null
+}
+```
 
 ## Edit issue
 
-Updates an existing project issue. This function is also used to mark an issue as closed.
+Updates an existing project issue. This call is also used to mark an issue as
+closed.
+
+If the operation is successful, a code of `200` and the updated issue is
+returned. If an error occurs, an error number and a message explaining the
+reason is returned.
 
 ```
 PUT /projects/:id/issues/:issue_id
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`            | integer | yes | The ID of a project |
+| `issue_id`      | integer | yes | The ID of a project's issue |
+| `title`         | string  | no  | The title of an issue |
+| `description`   | string  | no  | The description of an issue  |
+| `assignee_id`   | integer | no  | The ID of a user to assign the issue to |
+| `milestone_id`  | integer | no  | The ID of a milestone to assign the issue to |
+| `labels`        | string  | no  | Comma-separated label names for an issue  |
+| `state_event`   | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it |
 
-- `id` (required) - The ID of a project
-- `issue_id` (required) - The ID of a project's issue
-- `title` (optional) - The title of an issue
-- `description` (optional) - The description of an issue
-- `assignee_id` (optional) - The ID of a user to assign issue
-- `milestone_id` (optional) - The ID of a milestone to assign issue
-- `labels` (optional) - Comma-separated label names for an issue
-- `state_event` (optional) - The state event of an issue ('close' to close issue and 'reopen' to reopen it)
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
+```
 
-If the operation is successful, 200 and the updated issue is returned.
-If an error occurs, an error number and a message explaining the reason is returned.
+Example response:
+
+```json
+{
+   "created_at" : "2016-01-07T12:46:01.410Z",
+   "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "username" : "eileen.lowe",
+      "id" : 18,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/u/eileen.lowe"
+   },
+   "state" : "closed",
+   "title" : "Issues with auth",
+   "project_id" : 4,
+   "description" : null,
+   "updated_at" : "2016-01-07T12:55:16.213Z",
+   "iid" : 15,
+   "labels" : [
+      "bug"
+   ],
+   "id" : 85,
+   "assignee" : null,
+   "milestone" : null
+}
+```
 
 ## Delete existing issue (**Deprecated**)
 
-The function is deprecated and returns a `405 Method Not Allowed` error if called. An issue gets now closed and is done by calling `PUT /projects/:id/issues/:issue_id` with parameter `state_event` set to `close`.
+This call is deprecated and returns a `405 Method Not Allowed` error if called.
+An issue gets now closed and is done by calling
+`PUT /projects/:id/issues/:issue_id` with the parameter `state_event` set to
+`close`. See [edit issue](#edit-issue) for more details.
 
 ```
 DELETE /projects/:id/issues/:issue_id
 ```
 
-Parameters:
-
-- `id` (required) - The project ID
-- `issue_id` (required) - The ID of the issue
-
 ## Comments on issues
 
-Comments are done via the notes resource.
+Comments are done via the [notes](notes.md) resource.
