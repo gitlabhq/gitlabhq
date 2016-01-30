@@ -104,8 +104,7 @@ describe DiffHelper do
     end
   end
 
-  describe 'diff_line_content' do
-
+  describe '#diff_line_content' do
     it 'should return non breaking space when line is empty' do
       expect(diff_line_content(nil)).to eq(' &nbsp;')
     end
@@ -116,9 +115,19 @@ describe DiffHelper do
       expect(diff_line_content(diff_file.diff_lines.first.type)).to eq('match')
       expect(diff_file.diff_lines.first.new_pos).to eq(6)
     end
+  end
 
-    it 'should return safe HTML' do
-      expect(diff_line_content(diff_file.diff_lines.first.text)).to be_html_safe
+  describe "#mark_inline_diffs" do
+    let(:old_line) { %{abc 'def'} }
+    let(:new_line) { %{abc "def"} }
+
+    it "returns strings with marked inline diffs" do
+      marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
+
+      expect(marked_old_line).to eq("abc <span class='idiff left right'>&#39;def&#39;</span>")
+      expect(marked_old_line).to be_html_safe
+      expect(marked_new_line).to eq("abc <span class='idiff left right'>&quot;def&quot;</span>")
+      expect(marked_new_line).to be_html_safe
     end
   end
 end
