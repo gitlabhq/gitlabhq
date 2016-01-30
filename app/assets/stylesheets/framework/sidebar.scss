@@ -284,6 +284,15 @@
     @include collapsed-sidebar;
   }
 
+  .page-gutter {
+    &.right-sidebar-collapsed {
+      @include collapsed-gutter;
+    }
+    &.right-sidebar-expanded {
+      @include expanded-gutter;
+    }
+  }
+
   .collapse-nav {
     display: none;
   }

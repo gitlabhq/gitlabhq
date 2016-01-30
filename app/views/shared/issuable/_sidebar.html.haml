@@ -23,7 +23,7 @@
           %a.btn.btn-default.disabled{href: '#'}
             Next
 
-    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
+    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update', 'data-type' => 'json'} do |f|
       .block.assignee
         .sidebar-collapsed-icon
           - if issuable.assignee
