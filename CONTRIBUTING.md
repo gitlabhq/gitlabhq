@@ -255,6 +255,8 @@ For examples of feedback on merge requests please look at already
 request feel free to mention one of the Merge Marshalls of the [core team][].
 Please ensure that your merge request meets the contribution acceptance criteria.
 
+When having your code reviewed and when reviewing merge requests please take the [thoughtbot code review guidelines](https://github.com/thoughtbot/guides/tree/master/code-review) into account.
+
 ## Definition of done
 
 If you contribute to GitLab please know that changes involve more than just
