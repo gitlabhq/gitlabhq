@@ -108,7 +108,7 @@ module SharedIssuable
 
   step 'I sort the list by "Oldest updated"' do
     find('button.dropdown-toggle.btn').click
-    page.within('ul.dropdown-menu.dropdown-menu-align-right li') do
+    page.within('ul.dropdown-menu.align-right li') do
       click_link "Oldest updated"
     end
   end

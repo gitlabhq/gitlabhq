@@ -7,16 +7,11 @@
 
   %li.separate-item
 
-  = nav_link(path: 'groups#activity', html_options: {class: 'home'}) do
+  = nav_link(path: ['groups#activity', 'groups/projects#index'], html_options: {class: 'home'}) do
     = link_to activity_group_path(@group), title: 'Home' do
       = icon('dashboard fw')
       %span
-        Activity
-  = nav_link(path: 'groups/projects#index') do
-    = link_to group_projects_path(@group), title: 'Projects' do
-      = icon('cube fw')
-      %span
-        Projects
+        Group
   - if can?(current_user, :read_group, @group)
     - if current_user
       = nav_link(controller: [:group, :milestones]) do
