@@ -188,6 +188,10 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     expect(page).to have_content('As Developer on ldap server')
   end
 
+  step 'I visit group "NonExistentGroup" page' do
+    visit group_path(-1)
+  end
+
   private
 
   def assigned_to_me(key)

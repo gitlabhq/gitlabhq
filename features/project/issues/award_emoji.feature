@@ -9,6 +9,7 @@ Feature: Award Emoji
   @javascript
   Scenario: I add and remove award in the issue
     Given I click to emoji-picker
+    Then The search field is focused
     And I click to emoji in the picker
     Then I have award added
     And I can remove it by clicking to icon
@@ -16,11 +17,13 @@ Feature: Award Emoji
   @javascript
   Scenario: I can see the list of emoji categories
     Given I click to emoji-picker
+    Then The search field is focused
     Then I can see the activity and food categories
 
   @javascript
   Scenario: I can search emoji
     Given I click to emoji-picker
+    Then The search field is focused
     And I search "hand"
     Then I see search result for "hand"
 

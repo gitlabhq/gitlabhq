@@ -49,4 +49,29 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   step 'I should see the new merge request page for my namespace' do
     current_path.should have_content(/#{current_user.namespace.name}/i)
   end
+
+  step 'I visit the forks page of the "Shop" project' do
+    @project = Project.where(name: 'Shop').last
+    visit namespace_project_forks_path(@project.namespace, @project)
+  end
+
+  step 'I should see my fork on the list' do
+    page.within('.projects-list-holder') do
+      project = @user.fork_of(@project)
+      expect(page).to have_content("#{project.namespace.human_name} / #{project.name}")
+    end
+  end
+
+  step 'There is an existent fork of the "Shop" project' do
+    user = create(:user, name: 'Mike')
+    @forked_project = Projects::ForkService.new(@project, user).execute
+  end
+
+  step 'I should not see the other fork listed' do
+    expect(page).not_to have_content("#{@forked_project.namespace.human_name} / #{@forked_project.name}")
+  end
+
+  step 'I should see a private fork notice' do
+    expect(page).to have_content("1 private fork")
+  end
 end

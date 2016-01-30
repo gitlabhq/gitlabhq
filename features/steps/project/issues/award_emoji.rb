@@ -66,4 +66,8 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
       expect(page).to have_selector '[data-emoji="raised_hand"]'
     end
   end
+
+  step 'The search field is focused' do
+    page.evaluate_script("document.activeElement.id").should eq "emoji_search"
+  end
 end

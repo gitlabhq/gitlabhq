@@ -112,10 +112,10 @@ feature 'Login', feature: true do
       context 'within the grace period' do
         it 'redirects to two-factor configuration page' do
           expect(current_path).to eq new_profile_two_factor_auth_path
-          expect(page).to have_content('You must configure Two-Factor Authentication in your account until')
+          expect(page).to have_content('You must enable Two-factor Authentication for your account before')
         end
 
-        it 'two-factor configuration is skippable' do
+        it 'disallows skipping two-factor configuration' do
           expect(current_path).to eq new_profile_two_factor_auth_path
 
           click_link 'Configure it later'
@@ -128,10 +128,10 @@ feature 'Login', feature: true do
 
         it 'redirects to two-factor configuration page' do
           expect(current_path).to eq new_profile_two_factor_auth_path
-          expect(page).to have_content('You must configure Two-Factor Authentication in your account.')
+          expect(page).to have_content('You must enable Two-factor Authentication for your account.')
         end
 
-        it 'two-factor configuration is not skippable' do
+        it 'disallows skipping two-factor configuration' do
           expect(current_path).to eq new_profile_two_factor_auth_path
           expect(page).not_to have_link('Configure it later')
         end
@@ -146,7 +146,7 @@ feature 'Login', feature: true do
 
       it 'redirects to two-factor configuration page' do
         expect(current_path).to eq new_profile_two_factor_auth_path
-        expect(page).to have_content('You must configure Two-Factor Authentication in your account.')
+        expect(page).to have_content('You must enable Two-factor Authentication for your account.')
       end
     end
   end

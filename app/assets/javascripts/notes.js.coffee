@@ -64,6 +64,9 @@ class @Notes
     # fetch notes when tab becomes visible
     $(document).on "visibilitychange", @visibilityChange
 
+    # when issue status changes, we need to refresh data
+    $(document).on "issuable:change", @refresh
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"

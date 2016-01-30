@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160120172143) do
+ActiveRecord::Schema.define(version: 20160129075828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,8 +77,6 @@ ActiveRecord::Schema.define(version: 20160120172143) do
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
-    t.boolean  "ip_blocking_enabled",               default: false
-    t.text     "dnsbl_servers_list"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -414,6 +412,7 @@ ActiveRecord::Schema.define(version: 20160120172143) do
 
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
+
   create_table "git_hooks", force: :cascade do |t|
     t.string   "force_push_regex"
     t.string   "delete_branch_regex"
@@ -446,6 +445,17 @@ ActiveRecord::Schema.define(version: 20160120172143) do
 
   add_index "identities", ["created_at", "id"], name: "index_identities_on_created_at_and_id", using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+
+  create_table "index_statuses", force: :cascade do |t|
+    t.integer  "project_id"
+    t.datetime "indexed_at"
+    t.text     "note"
+    t.string   "last_commit"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", using: :btree
 
   create_table "issues", force: :cascade do |t|
     t.string   "title"
@@ -520,8 +530,8 @@ ActiveRecord::Schema.define(version: 20160120172143) do
   end
 
   create_table "lfs_objects", force: :cascade do |t|
-    t.string   "oid",        null: false
-    t.integer  "size",       null: false
+    t.string   "oid",                  null: false
+    t.integer  "size",       limit: 8, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file"

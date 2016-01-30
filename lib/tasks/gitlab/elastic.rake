@@ -4,13 +4,27 @@ namespace :gitlab do
     task index_repositories: :environment  do
       Repository.__elasticsearch__.create_index!
 
-      Project.find_each do |project|
+      projects = apply_project_filters(Project)
+
+      projects.find_each do |project|
         if project.repository.exists? && !project.repository.empty?
-          puts "Indexing #{project.name_with_namespace}..."
+          puts "Indexing #{project.name_with_namespace} (ID=#{project.id})..."
+
+          index_status = IndexStatus.find_or_create_by(project: project)
+          heads_sha = project.repository.commit.sha
+
+          if index_status.last_commit == heads_sha
+            puts "Skipped".yellow
+            next
+          end
 
           begin
-            project.repository.index_commits
-            project.repository.index_blobs
+            project.repository.index_commits(from_rev: project.index_status.last_commit)
+            project.repository.index_blobs(from_rev: project.index_status.last_commit)
+
+            # During indexing the new commits can be pushed,
+            # the last_commit parameter only indicates that at least this commit is in index
+            index_status.update(last_commit: heads_sha, indexed_at: DateTime.now)
             puts "Done!".green
           rescue StandardError => e
             puts "#{e.message}, trace - #{e.backtrace}"
@@ -23,7 +37,9 @@ namespace :gitlab do
     task index_wikis: :environment  do
       ProjectWiki.__elasticsearch__.create_index!
 
-      Project.where(wiki_enabled: true).find_each do |project|
+      projects = apply_project_filters(Project.where(wiki_enabled: true))
+
+      projects.find_each do |project|
         unless project.wiki.empty?
           puts "Indexing wiki of #{project.name_with_namespace}..."
           begin
@@ -47,6 +63,34 @@ namespace :gitlab do
           klass.import
         end
       end
+    end
+
+    desc "Create empty indexes"
+    task create_empty_indexes: :environment do
+      [
+        Project,
+        Issue,
+        MergeRequest,
+        Snippet,
+        Note,
+        Milestone,
+        ProjectWiki,
+        Repository
+      ].each do |klass|
+        klass.__elasticsearch__.create_index!
+      end
+    end
+
+    def apply_project_filters(projects)
+      if ENV['ID_FROM']
+        projects = projects.where("id >= ?", ENV['ID_FROM'])
+      end
+
+      if ENV['ID_TO']
+        projects = projects.where("id <= ?", ENV['ID_TO'])
+      end
+
+      projects
     end
   end
 end

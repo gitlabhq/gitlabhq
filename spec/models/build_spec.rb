@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::Build, models: true do
-  let(:project) { FactoryGirl.create :empty_project }
+  let(:project) { FactoryGirl.create :project }
   let(:commit) { FactoryGirl.create :ci_commit, project: project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
 

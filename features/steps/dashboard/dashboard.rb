@@ -2,6 +2,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
+  include SharedIssuable
 
   step 'I should see "New Project" link' do
     expect(page).to have_link "New project"

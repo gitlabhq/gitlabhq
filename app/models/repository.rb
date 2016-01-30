@@ -664,6 +664,8 @@ class Repository
 
   def merge_base(first_commit_id, second_commit_id)
     rugged.merge_base(first_commit_id, second_commit_id)
+  rescue Rugged::ReferenceError
+    nil
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
