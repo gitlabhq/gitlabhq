@@ -41,6 +41,7 @@ v 8.4.1
     and Nokogiri (1.6.7.2)
   - Fix redirect loop during import
   - Fix diff highlighting for all syntax themes
+  - Warn admin during OAuth of granting admin rights (Zeger-Jan van de Weg)
 
 v 8.4.0
   - Allow LDAP users to change their email if it was not set by the LDAP server
