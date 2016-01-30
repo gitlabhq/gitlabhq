@@ -32,8 +32,8 @@ class CommitRange
   PATTERN = /#{REF_PATTERN}\.{2,3}#{REF_PATTERN}/
 
   # In text references, the beginning and ending refs can only be SHAs
-  # between 6 and 40 hex characters.
-  STRICT_PATTERN = /\h{6,40}\.{2,3}\h{6,40}/
+  # between 7 and 40 hex characters.
+  STRICT_PATTERN = /\h{7,40}\.{2,3}\h{7,40}/
 
   def self.reference_prefix
     '@'

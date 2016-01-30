@@ -68,18 +68,18 @@ class Commit
 
   # Pattern used to extract commit references from text
   #
-  # The SHA can be between 6 and 40 hex characters.
+  # The SHA can be between 7 and 40 hex characters.
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
     %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>\h{6,40})
+      (?<commit>\h{7,40})
     }x
   end
 
   def self.link_reference_pattern
-    super("commit", /(?<commit>\h{6,40})/)
+    super("commit", /(?<commit>\h{7,40})/)
   end
 
   def to_reference(from_project = nil)
