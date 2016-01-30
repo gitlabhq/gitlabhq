@@ -2,8 +2,8 @@ module DiffHelper
   def mark_inline_diffs(old_line, new_line)
     old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_line, new_line).inline_diffs
 
-    marked_old_line = Gitlab::Diff::InlineDiffMarker.new(old_line).mark(old_diffs).html_safe
-    marked_new_line = Gitlab::Diff::InlineDiffMarker.new(new_line).mark(new_diffs).html_safe
+    marked_old_line = Gitlab::Diff::InlineDiffMarker.new(old_line).mark(old_diffs)
+    marked_new_line = Gitlab::Diff::InlineDiffMarker.new(new_line).mark(new_diffs)
 
     [marked_old_line, marked_new_line]
   end
