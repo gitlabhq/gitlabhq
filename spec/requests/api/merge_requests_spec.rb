@@ -448,6 +448,32 @@ describe API::API, api: true  do
     end
   end
 
+  describe "GET :id/merge_requests/:merge_request_id/closes_issues" do
+    let(:merge_request_with_closes_issues) { create(:merge_request, :with_closes_issues, author: user, assignee: user, source_project: project, target_project: project, title: "Closed ##{issue.id}", created_at: base_time + 3.seconds, description: "This should close ##{issue.iid}") }
+    let(:issue) do
+      create :issue,
+        author: user,
+        assignee: user,
+        project: project,
+        milestone: nil
+    end
+
+    it "should return the issues that will be closed on merge" do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request_with_closes_issues.id}/closes_issues", user)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(issue.id)
+    end
+
+    it "should return an empty array when there are no issues to be closed" do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+  end
+
   def mr_with_later_created_and_updated_at_time
     merge_request
     merge_request.created_at += 1.hour

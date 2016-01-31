@@ -300,6 +300,19 @@ module API
             render_api_error!("Failed to save note #{note.errors.messages}", 400)
           end
         end
+
+        # List issues that will close on merge
+        #
+        # Parameters:
+        #   id (required)               - The ID of a project
+        #   merge_request_id (required) - ID of MR
+        # Examples:
+        #   GET /projects/:id/merge_requests/:merge_request_id/closes_issues
+        get "#{path}/closes_issues" do
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
+          issues = ::Kaminari.paginate_array(merge_request.closes_issues)
+          present paginate(issues), with: Entities::Issue
+        end
       end
     end
   end

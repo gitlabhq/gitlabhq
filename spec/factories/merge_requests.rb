@@ -73,6 +73,12 @@ FactoryGirl.define do
       merge_user author
     end
 
+    trait :with_closes_issues do
+      source_branch "markdown"
+      target_branch "master"
+      state :opened
+    end
+
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
