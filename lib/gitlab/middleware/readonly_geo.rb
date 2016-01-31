@@ -1,7 +1,7 @@
 module Gitlab
   module Middleware
     class ReadonlyGeo
-      DISALLOWED_METHODS = %w(PATCH PUT DELETE)
+      DISALLOWED_METHODS = %w(POST PATCH PUT DELETE)
 
       def initialize(app)
         @app = app
@@ -16,7 +16,7 @@ module Gitlab
           rack_flash.alert = 'You cannot do writing operations on a readonly Gitlab Geo instance'
           rack_session['flash'] = rack_flash.to_session_value
 
-          return [301, { 'Location' => last_visited_url}, [] ]
+          return [301, { 'Location' => last_visited_url }, []]
         end
 
         @app.call(env)
@@ -25,7 +25,7 @@ module Gitlab
       private
 
       def disallowed_request?
-        DISALLOWED_METHODS.include?(@env['REQUEST_METHOD'])
+        DISALLOWED_METHODS.include?(@env['REQUEST_METHOD']) && !logout_route
       end
 
       def rack_flash
@@ -41,8 +41,15 @@ module Gitlab
       end
 
       def last_visited_url
-        Rails.logger.debug("SESSION: #{rack_session.inspect}")
-        @env['HTTP_REFERER'] || rack_session['user_return_to'] || Rails.application.routes.url_helpers.root_url
+        @env['HTTP_REFERER'] || rack_session['user_return_to'] || @app.url_helpers.root_url
+      end
+
+      def route_hash
+        @route_hash ||= Rails.application.routes.recognize_path(request.url, { method: request.request_method }) rescue {}
+      end
+
+      def logout_route
+        route_hash[:controller] == 'sessions' && route_hash[:action] == 'destroy'
       end
     end
   end
