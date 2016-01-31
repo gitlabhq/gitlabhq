@@ -177,6 +177,26 @@ is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
 issues or chunks. You can simply not set the weight of a parent issue and set
 weights to children issues.
 
+### Regression issues
+
+Every monthly release has a corresponding issue on the CE issue tracker to keep
+track of functionality broken by that release and any fixes that need to be
+included in a patch release (see [8.3 Regressions] as an example).
+
+As outlined in the issue description, the intended workflow is to post one note
+with a reference to an issue describing the regression, and then to update that
+note with a reference to the merge request that fixes it as it becomes available.
+
+If you're a contributor who doesn't have the required permissions to update
+other users' notes, please post a new note with a reference to both the issue
+and the merge request.
+
+The release manager will [update the notes] in the regression issue as fixes are
+addressed.
+
+[8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
+[update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
