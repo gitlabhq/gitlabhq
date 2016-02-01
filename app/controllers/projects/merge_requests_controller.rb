@@ -10,6 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
+  before_action :check_target_branch_exists, only: [:revert]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -275,6 +276,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def module_enabled
     return render_404 unless @project.merge_requests_enabled
+  end
+
+  def check_target_branch_exists
+    return render_404 unless @merge_request.target_branch_exists?
   end
 
   def validates_merge_request
