@@ -21,7 +21,12 @@ v 8.5.0 (unreleased)
   - Mark inline difference between old and new paths when a file is renamed
 
 v 8.4.3
-  - Increase lfs_objects size column to 8-byte integer to allow files larger than 2.1GB
+  - Increase lfs_objects size column to 8-byte integer to allow files larger
+    than 2.1GB
+  - Correctly highlight MR diff when MR has merge conflicts
+  - Fix highlighting in blame view
+  - Update sentry-raven gem to prevent "Not a git repository" console output
+    when running certain commands
 
 v 8.4.2
   - Bump required gitlab-workhorse version to bring in a fix for missing
@@ -32,7 +37,6 @@ v 8.4.2
     improvement when checking if a repository was empty
   - Add instrumentation for Gitlab::Git::Repository instance methods so we can
     track them in Performance Monitoring.
-  - Correctly highlight MR diff when MR has merge conflicts
   - Increase contrast between highlighted code comments and inline diff marker
   - Fix method undefined when using external commit status in builds
   - Fix highlighting in blame view.
