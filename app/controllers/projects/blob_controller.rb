@@ -54,7 +54,9 @@ class Projects::BlobController < Projects::ApplicationController
     @content = params[:content]
     @blob.load_all_data!(@repository)
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
-    @diff_lines = Gitlab::Diff::Parser.new.parse(diffy.diff.scan(/.*\n/))
+    diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
+    diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines)
+    @diff_lines = Gitlab::Diff::Highlight.new(diff_lines).highlight
 
     render layout: false
   end
@@ -67,9 +69,9 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def diff
-    @blob.load_all_data!(@repository)
-    @form = UnfoldForm.new(params)
-    @lines = @blob.data.lines[@form.since - 1..@form.to - 1]
+    @form  = UnfoldForm.new(params)
+    @lines = Gitlab::Highlight.highlight_lines(repository, @ref, @path)
+    @lines = @lines[@form.since - 1..@form.to - 1]
 
     if @form.bottom?
       @match_line = ''

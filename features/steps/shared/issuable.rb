@@ -106,6 +106,19 @@ module SharedIssuable
     edit_issuable
   end
 
+  step 'I sort the list by "Oldest updated"' do
+    find('button.dropdown-toggle.btn').click
+    page.within('ul.dropdown-menu.dropdown-menu-align-right li') do
+      click_link "Oldest updated"
+    end
+  end
+
+  step 'The list should be sorted by "Oldest updated"' do
+    page.within('div.dropdown.inline.prepend-left-10') do
+      expect(page.find('button.dropdown-toggle.btn')).to have_content('Oldest updated')
+    end
+  end
+
   def create_issuable_for_project(project_name:, title:, type: :issue)
     project = Project.find_by(name: project_name)
 

@@ -47,7 +47,11 @@ class Event < ActiveRecord::Base
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
-  scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
+
+  scope :in_projects, ->(projects) do
+    where(project_id: projects.select(:id).reorder(nil)).recent
+  end
+
   scope :with_associations, -> { includes(project: :namespace) }
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
 
@@ -62,12 +66,6 @@ class Event < ActiveRecord::Base
       where("action = ? OR (target_type in (?) AND action in (?))",
             Event::PUSHED, ["MergeRequest", "Issue"],
             [Event::CREATED, Event::CLOSED, Event::MERGED])
-    end
-
-    def latest_update_time
-      row = select(:updated_at, :project_id).reorder(id: :desc).take
-
-      row ? row.updated_at : nil
     end
 
     def limit_recent(limit = 20, offset = nil)

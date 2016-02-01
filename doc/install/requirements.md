@@ -32,15 +32,17 @@ Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
 
-GitLab requires Ruby (MRI) 2.1
+GitLab requires Ruby (MRI) 2.1.x or 2.2.x and currently does not work with version 2.3.
+
 You will have to use the standard MRI implementation of Ruby.
-We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab needs several Gems that have native extensions.
+We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab
+needs several Gems that have native extensions.
 
 ## Hardware requirements
 
 ### Storage
 
-The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repos combined take up. 
+The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repos combined take up.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
 

@@ -11,11 +11,9 @@ class Projects::NotesController < Projects::ApplicationController
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
     @notes.each do |note|
-      notes_json[:notes] << {
-        id: note.id,
-        html: note_to_html(note),
-        valid: note.valid?
-      }
+      next if note.cross_reference_not_visible_for?(current_user)
+
+      notes_json[:notes] << note_json(note)
     end
 
     render json: notes_json
@@ -25,7 +23,7 @@ class Projects::NotesController < Projects::ApplicationController
     @note = Notes::CreateService.new(project, current_user, note_params).execute
 
     respond_to do |format|
-      format.json { render_note_json(@note) }
+      format.json { render json: note_json(@note) }
       format.html { redirect_back_or_default }
     end
   end
@@ -34,7 +32,7 @@ class Projects::NotesController < Projects::ApplicationController
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
     respond_to do |format|
-      format.json { render_note_json(@note) }
+      format.json { render json: note_json(@note) }
       format.html { redirect_back_or_default }
     end
   end
@@ -99,6 +97,8 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_html(note)
+    return unless note.for_diff_line?
+
     if params[:view] == 'parallel'
       template = "projects/notes/_diff_notes_with_reply_parallel"
       locals =
@@ -106,7 +106,7 @@ class Projects::NotesController < Projects::ApplicationController
           { notes_left: [note], notes_right: [] }
         else
           { notes_left: [], notes_right: [note] }
-       end
+        end
     else
       template = "projects/notes/_diff_notes_with_reply"
       locals = { notes: [note] }
@@ -131,9 +131,9 @@ class Projects::NotesController < Projects::ApplicationController
     )
   end
 
-  def render_note_json(note)
+  def note_json(note)
     if note.valid?
-      render json: {
+      {
         valid: true,
         id: note.id,
         discussion_id: note.discussion_id,
@@ -144,7 +144,7 @@ class Projects::NotesController < Projects::ApplicationController
         discussion_with_diff_html: note_to_discussion_with_diff_html(note)
       }
     else
-      render json: {
+      {
         valid: false,
         award: note.is_award,
         errors: note.errors
@@ -162,8 +162,6 @@ class Projects::NotesController < Projects::ApplicationController
       :attachment, :line_code, :commit_id
     )
   end
-
-  private
 
   def find_current_user_notes
     @notes = NotesFinder.new.execute(project, current_user, params)

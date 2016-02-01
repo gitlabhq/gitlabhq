@@ -4,6 +4,7 @@ class @AwardsHandler
       event.stopPropagation()
       event.preventDefault()
       $(".emoji-menu").show()
+      $("#emoji_search").focus()
 
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
@@ -44,7 +45,6 @@ class @AwardsHandler
   decrementCounter: (emoji) ->
     counter = @findEmojiIcon(emoji).siblings(".counter")
     emojiIcon = counter.parent()
-
     if parseInt(counter.text()) > 1
       counter.text(parseInt(counter.text()) - 1)
       emojiIcon.removeClass("active")
@@ -60,20 +60,18 @@ class @AwardsHandler
   removeMeFromAuthorList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
     authors = award_block.attr("data-original-title").split(", ")
-    authors = _.without(authors, "me").join(", ")
-    award_block.attr("title", authors)
+    authors.splice(authors.indexOf("me"),1)
+    award_block.closest(".award").attr("data-original-title", authors.join(", "))
     @resetTooltip(award_block)
 
   addMeToAuthorList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
-    authors = _.compact(award_block.attr("data-original-title").split(", "))
+    origTitle = award_block.attr("data-original-title").trim()
+    authors = []
+    if origTitle
+      authors = origTitle.split(', ')
     authors.push("me")
-
-    if authors.length == 1
-      award_block.attr("title", "me")
-    else
-      award_block.attr("title", authors.join(", "))
-
+    award_block.attr("title", authors.join(", "))
     @resetTooltip(award_block)
 
   resetTooltip: (award) ->

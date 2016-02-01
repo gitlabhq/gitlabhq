@@ -4,7 +4,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
   xml.link    href: group_url(@group, format: :atom, private_token: current_user.try(:private_token)), rel: "self", type: "application/atom+xml"
   xml.link    href: group_url(@group), rel: "alternate", type: "text/html"
   xml.id      group_url(@group)
-  xml.updated @events.latest_update_time.xmlschema if @events.any?
+  xml.updated @events[0].updated_at.xmlschema if @events[0]
 
   @events.each do |event|
     event_to_atom(xml, event)

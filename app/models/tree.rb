@@ -17,12 +17,20 @@ class Tree
   def readme
     return @readme if defined?(@readme)
 
-    # Take the first previewable readme, or return nil if none is available or
-    # we can't preview any of them
-    readme_tree = blobs.find do |blob|
-      blob.readme? && (previewable?(blob.name) || plain?(blob.name))
+    available_readmes = blobs.select(&:readme?)
+
+    previewable_readmes = available_readmes.select do |blob|
+      previewable?(blob.name)
     end
 
+    plain_readmes = available_readmes.select do |blob|
+      plain?(blob.name)
+    end
+
+    # Prioritize previewable over plain readmes
+    readme_tree = previewable_readmes.first || plain_readmes.first
+
+    # Return if we can't preview any of them
     if readme_tree.nil?
       return @readme = nil
     end

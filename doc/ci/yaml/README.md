@@ -33,7 +33,7 @@ The YAML syntax allows for using more complex job specifications than in the
 above example:
 
 ```yaml
-image: ruby:2.1
+image: ruby:2.2
 services:
   - postgres
 
@@ -135,10 +135,9 @@ thus allowing to fine tune them.
 ### cache
 
 `cache` is used to specify a list of files and directories which should be
-cached between builds. Caches are stored according to the branch/ref and the
-job name. They are not currently shared between different job names or between
-branches/refs, which means that caching will benefit you if you push subsequent
-commits to an existing feature branch.
+cached between builds.
+
+**By default the caching is enabled per-job and per-branch.**
 
 If `cache` is defined outside the scope of the jobs, it means it is set
 globally and all jobs will use its definition.
@@ -150,6 +149,64 @@ cache:
   untracked: true
   paths:
   - binaries/
+```
+
+#### cache:key
+
+_**Note:** Introduced in GitLab Runner v1.0.0._
+
+The `key` directive allows you to define the affinity of caching
+between jobs, allowing to have a single cache for all jobs,
+cache per-job, cache per-branch or any other way you deem proper.
+
+This allows you to fine tune caching, allowing you to cache data between
+different jobs or even different branches.
+
+The `cache:key` variable can use any of the [predefined variables](../variables/README.md).
+
+---
+
+**Example configurations**
+
+To enable per-job caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_NAME"
+  untracked: true
+```
+
+To enable per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+To enable per-job and per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_NAME/$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+To enable per-branch and per-stage caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_STAGE/$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+If you use **Windows Batch** to run your shell scripts you need to replace
+`$` with `%`:
+
+```yaml
+cache:
+  key: "%CI_BUILD_STAGE%/%CI_BUILD_REF_NAME%"
+  untracked: true
 ```
 
 ## Jobs

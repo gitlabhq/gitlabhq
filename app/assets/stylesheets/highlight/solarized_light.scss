@@ -1,18 +1,38 @@
 /* https://gist.github.com/qguv/7936275 */
 .code.solarized-light {
-
-  background-color: #fdf6e3 !important;
-  color: #586e75 !important;
-
-  pre.highlight,
-  .line-numbers,
-  .line-numbers a {
-    background-color: #fdf6e3 !important;
-    color: #586e75 !important;
+  // Line numbers
+  .line-numbers, .diff-line-num {
+    background-color: #fdf6e3;
   }
 
-  pre.code {
-    border-left: 1px solid #c5d0d4;
+  .diff-line-num, .diff-line-num a {
+    color: rgba(0, 0, 0, 0.3);
+  }
+
+  // Code itself
+  pre.code, .diff-line-num {
+    border-color: #c5d0d4;
+  }
+
+  &, pre.code, .line_holder .line_content {
+    background-color: #fdf6e3;
+    color: #586e75;
+  }
+
+  // Diff line
+  .line_holder {
+    .diff-line-num.new, .line_content.new {
+      @include diff_background(rgba(133, 153, 0, 0.2), rgba(133, 153, 0, 0.25), #c5d0d4);
+    }
+
+    .diff-line-num.old, .line_content.old {
+      @include diff_background(rgba(220, 50, 47, 0.2), rgba(220, 50, 47, 0.25), #c5d0d4);
+    }
+
+    .line_content.match {
+      color: rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.4);
+    }
   }
 
   // highlight line via anchor

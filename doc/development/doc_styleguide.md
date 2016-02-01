@@ -103,6 +103,23 @@ Inside the document:
   `_**Note:** This feature was introduced in GitLab EE 8.3_`. Otherwise, leave
   this mention out
 
+## References
+
+- **GitLab Restart:**
+  There are many cases that a restart/reconfigure of GitLab is required. To
+  avoid duplication, link to the special document that can be found in
+  [`doc/administration/restart_gitlab.md`][doc-restart]. Usually the text will
+  read like:
+
+    ```
+    Save the file and [reconfigure GitLab](../administration/restart_gitlab.md)
+    for the changes to take effect.
+    ```
+  If the document you are editing resides in a place other than the GitLab CE/EE
+  `doc/` directory, instead of the relative link, use the full path:
+  `http://doc.gitlab.com/ce/administration/restart_gitlab.html`.
+  Replace `reconfigure` with `restart` where appropriate.
+
 ## API
 
 Here is a list of must-have items. Use them in the exact order that appears
@@ -229,3 +246,4 @@ curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -d "restricted_signup_domai
 [cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
 [gfm]: http://doc.gitlab.com/ce/markdown/markdown.html#newlines "GitLab flavored markdown documentation"
+[doc-restart]: ../administration/restart_gitlab.md "GitLab restart documentation"

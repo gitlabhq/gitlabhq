@@ -17,6 +17,8 @@ DATABASE_URL | url | For example: postgresql://localhost/blog_development?pool=5
 GITLAB_EMAIL_FROM | email | Email address used in the "From" field in mails sent by GitLab
 GITLAB_EMAIL_DISPLAY_NAME | string | Name used in the "From" field in mails sent by GitLab
 GITLAB_EMAIL_REPLY_TO | email | Email address used in the "Reply-To" field in mails sent by GitLab
+GITLAB_UNICORN_MEMORY_MIN | integer | The minimum memory threshold (in bytes) for the Unicorn worker killer
+GITLAB_UNICORN_MEMORY_MAX | integer | The maximum memory threshold (in bytes) for the Unicorn worker killer
 
 ## Complete database variables
 
@@ -45,6 +47,7 @@ GITLAB_DATABASE_PORT | 5432
 ## Adding more variables
 
 We welcome merge requests to make more settings configurable via variables.
+Please make changes in the file config/initializers/1_settings.rb
 Please stick to the naming scheme "GITLAB_#{name 1_settings.rb in upper case}".
 
 ## Omnibus configuration

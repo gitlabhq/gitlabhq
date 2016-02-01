@@ -2,6 +2,8 @@ class SessionsController < Devise::SessionsController
   include AuthenticatesWithTwoFactor
   include Recaptcha::ClientHelper
 
+  skip_before_action :check_2fa_requirement, only: [:destroy]
+
   prepend_before_action :authenticate_with_two_factor, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]

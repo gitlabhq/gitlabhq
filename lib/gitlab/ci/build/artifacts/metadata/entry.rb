@@ -95,6 +95,13 @@ module Gitlab
           children.empty?
         end
 
+        def total_size
+          descendant_pattern = %r{^#{Regexp.escape(@path)}}
+          entries.sum do |path, entry|
+            (entry[:size] if path =~ descendant_pattern).to_i
+          end
+        end
+
         def to_s
           @path
         end

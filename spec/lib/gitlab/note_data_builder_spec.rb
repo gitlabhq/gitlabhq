@@ -37,7 +37,8 @@ describe 'Gitlab::NoteDataBuilder', lib: true do
 
     it 'returns the note and issue-specific data' do
       expect(data).to have_key(:issue)
-      expect(data[:issue]).to eq(issue.hook_attrs)
+      expect(data[:issue].except('updated_at')).to eq(issue.hook_attrs.except('updated_at'))
+      expect(data[:issue]['updated_at']).to be > issue.hook_attrs['updated_at']
     end
   end
 
@@ -47,7 +48,8 @@ describe 'Gitlab::NoteDataBuilder', lib: true do
 
     it 'returns the note and merge request data' do
       expect(data).to have_key(:merge_request)
-      expect(data[:merge_request]).to eq(merge_request.hook_attrs)
+      expect(data[:merge_request].except('updated_at')).to eq(merge_request.hook_attrs.except('updated_at'))
+      expect(data[:merge_request]['updated_at']).to be > merge_request.hook_attrs['updated_at']
     end
   end
 
@@ -57,7 +59,8 @@ describe 'Gitlab::NoteDataBuilder', lib: true do
 
     it 'returns the note and merge request diff data' do
       expect(data).to have_key(:merge_request)
-      expect(data[:merge_request]).to eq(merge_request.hook_attrs)
+      expect(data[:merge_request].except('updated_at')).to eq(merge_request.hook_attrs.except('updated_at'))
+      expect(data[:merge_request]['updated_at']).to be > merge_request.hook_attrs['updated_at']
     end
   end
 
@@ -67,7 +70,8 @@ describe 'Gitlab::NoteDataBuilder', lib: true do
 
     it 'returns the note and project snippet data' do
       expect(data).to have_key(:snippet)
-      expect(data[:snippet]).to eq(snippet.hook_attrs)
+      expect(data[:snippet].except('updated_at')).to eq(snippet.hook_attrs.except('updated_at'))
+      expect(data[:snippet]['updated_at']).to be > snippet.hook_attrs['updated_at']
     end
   end
 end

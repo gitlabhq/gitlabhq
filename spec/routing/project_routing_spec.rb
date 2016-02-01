@@ -321,12 +321,12 @@ describe Projects::HooksController, 'routing' do
   end
 end
 
-# project_commit GET    /:project_id/commit/:id(.:format) commit#show {id: /[[:alnum:]]{6,40}/, project_id: /[^\/]+/}
+# project_commit GET    /:project_id/commit/:id(.:format) commit#show {id: /\h{7,40}/, project_id: /[^\/]+/}
 describe Projects::CommitController, 'routing' do
   it 'to #show' do
-    expect(get('/gitlab/gitlabhq/commit/4246fb')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fb')
-    expect(get('/gitlab/gitlabhq/commit/4246fb.diff')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fb', format: 'diff')
-    expect(get('/gitlab/gitlabhq/commit/4246fb.patch')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fb', format: 'patch')
+    expect(get('/gitlab/gitlabhq/commit/4246fbd')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd')
+    expect(get('/gitlab/gitlabhq/commit/4246fbd.diff')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd', format: 'diff')
+    expect(get('/gitlab/gitlabhq/commit/4246fbd.patch')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd', format: 'patch')
     expect(get('/gitlab/gitlabhq/commit/4246fbd13872934f72a8fd0d6fb1317b47b59cb5')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd13872934f72a8fd0d6fb1317b47b59cb5')
   end
 end
@@ -496,11 +496,11 @@ end
 
 describe Projects::ForksController, 'routing' do
   it 'to #new' do
-    expect(get('/gitlab/gitlabhq/fork/new')).to route_to('projects/forks#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    expect(get('/gitlab/gitlabhq/forks/new')).to route_to('projects/forks#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
   end
 
   it 'to #create' do
-    expect(post('/gitlab/gitlabhq/fork')).to route_to('projects/forks#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
+    expect(post('/gitlab/gitlabhq/forks')).to route_to('projects/forks#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
   end
 end
 

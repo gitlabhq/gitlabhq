@@ -9,11 +9,13 @@ class @ProjectsList
     $(".projects-list-filter").keyup ->
       terms = $(this).val()
       uiBox = $('div.projects-list-holder')
+      filterSelector = $(this).data('filter-selector') || 'span.filter-title'
+
       if terms == "" || terms == undefined
         uiBox.find("ul.projects-list li").show()
       else
         uiBox.find("ul.projects-list li").each (index) ->
-          name = $(this).find("span.filter-title").text()
+          name = $(this).find(filterSelector).text()
 
           if name.toLowerCase().search(terms.toLowerCase()) == -1
             $(this).hide()

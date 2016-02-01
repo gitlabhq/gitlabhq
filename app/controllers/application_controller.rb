@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   before_action :check_password_expiration
   before_action :check_2fa_requirement
   before_action :ldap_security_check
+  before_action :sentry_user_context
   before_action :default_headers
   before_action :add_gon_variables
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -24,6 +25,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :abilities, :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?
+  helper_method :repository
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -40,6 +42,16 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  def sentry_user_context
+    if Rails.env.production? && current_application_settings.sentry_enabled && current_user
+      Raven.user_context(
+        id: current_user.id,
+        email: current_user.email,
+        username: current_user.username,
+      )
+    end
+  end
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
   # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
@@ -286,7 +298,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_filters_params
-    params[:sort] ||= 'id_desc'
+    set_default_sort
+
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
@@ -392,5 +405,25 @@ class ApplicationController < ActionController::Base
     return false if root_urls.include?(home_page_url)
 
     current_user.nil? && root_path == request.path
+  end
+
+  private
+
+  def set_default_sort
+    key = if is_a_listing_page_for?('issues') || is_a_listing_page_for?('merge_requests')
+            'issuable_sort'
+          end
+
+    cookies[key]  = params[:sort] if key && params[:sort].present?
+    params[:sort] = cookies[key] if key
+    params[:sort] ||= 'id_desc'
+  end
+
+  def is_a_listing_page_for?(page_type)
+    controller_name, action_name = params.values_at(:controller, :action)
+
+    (controller_name == "projects/#{page_type}" && action_name == 'index') ||
+    (controller_name == 'groups' && action_name == page_type) ||
+    (controller_name == 'dashboard' && action_name == page_type)
   end
 end

@@ -52,6 +52,36 @@ Feature: Project Issues
     And I should see an error alert section within the comment form
 
   @javascript
+  Scenario: Visiting Issues after leaving a comment
+    Given I visit issue page "Release 0.4"
+    And I leave a comment like "XML attached"
+    And I visit project "Shop" issues page
+    And I sort the list by "Last updated"
+    Then I should see "Release 0.4" at the top
+
+  @javascript
+  Scenario: Visiting Issues after being sorted the list
+    Given I visit project "Shop" issues page
+    And I sort the list by "Oldest updated"
+    And I visit my project's home page
+    And I visit project "Shop" issues page
+    Then The list should be sorted by "Oldest updated"
+
+  @javascript
+  Scenario: Visiting Merge Requests after being sorted the list
+    Given I visit project "Shop" issues page
+    And I sort the list by "Oldest updated"
+    And I visit project "Shop" merge requests page
+    Then The list should be sorted by "Oldest updated"
+
+  @javascript
+  Scenario: Visiting Merge Requests from a differente Project after sorting
+    Given I visit project "Shop" merge requests page
+    And I sort the list by "Oldest updated"
+    And I visit dashboard merge requests page
+    Then The list should be sorted by "Oldest updated"
+
+  @javascript
   Scenario: I search issue
     Given I fill in issue search with "Re"
     Then I should see "Release 0.4" in issues

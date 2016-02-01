@@ -1,39 +1,41 @@
-.diff-file{id: "diff-#{i}", data: diff_file_html_data(project, diff_commit, diff_file)}
-  .diff-header{id: "file-path-#{hexdigest(diff_file.file_path)}"}
+.diff-file.file-holder{id: "diff-#{i}", data: diff_file_html_data(project, diff_commit, diff_file)}
+  .file-title{id: "file-path-#{hexdigest(diff_file.file_path)}"}
     - if diff_file.diff.submodule?
       %span
         = icon('archive fw')
         %strong
           = submodule_link(blob, @commit.id, project.repository)
     - else
-      %span
-        = blob_icon blob.mode, blob.name
-        = link_to "#diff-#{i}" do
+      = blob_icon blob.mode, blob.name
+
+      = link_to "#diff-#{i}" do
+        - if diff_file.renamed_file
+          - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
+          %strong.filename.old
+            = old_path
+          &rarr;
+          %strong.filename.new
+            = new_path
+        - else
           %strong
             = diff_file.new_path
+          - if diff_file.deleted_file
+            deleted
 
-        - if diff_file.deleted_file
-          deleted
-        - elsif diff_file.renamed_file
-          renamed from
-          %strong
-            = diff_file.old_path
+      - if diff_file.mode_changed?
+        %small
+          = "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
-        - if diff_file.mode_changed?
-          %small
-            = "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
-
-      .diff-controls
+      .file-actions.hidden-xs
         - if blob_text_viewable?(blob)
-          = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active has_tooltip', title: "Toggle comments for this file" do
-            %i.fa.fa-comments
-          &nbsp;
+          = link_to '#', class: 'js-toggle-diff-comments btn active has_tooltip', title: "Toggle comments for this file" do
+            = icon('comments')
+          \
 
         - if editable_diff?(diff_file)
           = edit_blob_link(@merge_request.source_project,
               @merge_request.source_branch, diff_file.new_path,
               from_merge_request_id: @merge_request.id)
-          &nbsp;
 
         = view_file_btn(diff_commit.id, diff_file, project)
 

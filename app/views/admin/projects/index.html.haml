@@ -1,7 +1,7 @@
 - page_title "Projects"
 = render 'shared/show_aside'
 
-.row
+.row.prepend-top-default
   %aside.col-md-3
     .admin-filter
       = form_tag admin_namespaces_projects_path, method: :get, class: '' do
@@ -47,10 +47,10 @@
     .panel.panel-default
       .panel-heading
         Projects (#{@projects.total_count})
-        .panel-head-actions
+        .controls
           .dropdown.inline
             %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
-              %span.light sort:
+              %span.light
               - if @sort.present?
                 = sort_options_hash[@sort]
               - else

@@ -36,6 +36,7 @@
 #  build_coverage_regex   :string
 #  build_allow_git_fetch  :boolean          default(TRUE), not null
 #  build_timeout          :integer          default(3600), not null
+#  pending_delete         :boolean
 #
 
 require 'carrierwave/orm/activerecord'
@@ -346,6 +347,11 @@ class Project < ActiveRecord::Base
 
   def commit(id = 'HEAD')
     repository.commit(id)
+  end
+
+  def merge_base_commit(first_commit_id, second_commit_id)
+    sha = repository.merge_base(first_commit_id, second_commit_id)
+    repository.commit(sha) if sha
   end
 
   def saved?
@@ -903,5 +909,9 @@ class Project < ActiveRecord::Base
 
   def runners_token
     ensure_runners_token!
+  end
+
+  def wiki
+    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 end

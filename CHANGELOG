@@ -1,9 +1,55 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.0 (unreleased)
+  - Ensure rake tasks that don't need a DB connection can be run without one
   - Add "visibility" flag to GET /projects api endpoint
+  - Ignore binary files in code search to prevent Error 500 (Stan Hu)
+  - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
+  - New UI for pagination
+  - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
+    set it up
+  - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
+  - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
+  - Don't vendor minified JS
+  - Display 404 error on group not found
+  - Track project import failure
+  - Fix visibility level text in admin area (Zeger-Jan van de Weg)
+  - Update the ExternalIssue regex pattern (Blake Hitchcock)
+  - Revert "Add IP check against DNSBLs at account sign-up"
+  - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
+  - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
+  - Mark inline difference between old and new paths when a file is renamed
 
-v 8.4.0 (unreleased)
+v 8.4.3
+  - Increase lfs_objects size column to 8-byte integer to allow files larger
+    than 2.1GB
+  - Correctly highlight MR diff when MR has merge conflicts
+  - Fix highlighting in blame view
+  - Update sentry-raven gem to prevent "Not a git repository" console output
+    when running certain commands
+
+v 8.4.2
+  - Bump required gitlab-workhorse version to bring in a fix for missing
+    artifacts in the build artifacts browser
+  - Get rid of those ugly borders on the file tree view
+  - Fix updating the runner information when asking for builds
+  - Bump gitlab_git version to 7.2.24 in order to bring in a performance
+    improvement when checking if a repository was empty
+  - Add instrumentation for Gitlab::Git::Repository instance methods so we can
+    track them in Performance Monitoring.
+  - Increase contrast between highlighted code comments and inline diff marker
+  - Fix method undefined when using external commit status in builds
+  - Fix highlighting in blame view.
+
+v 8.4.1
+  - Apply security updates for Rails (4.2.5.1), rails-html-sanitizer (1.0.3),
+    and Nokogiri (1.6.7.2)
+  - Fix redirect loop during import
+  - Fix diff highlighting for all syntax themes
+  - Warn admin during OAuth of granting admin rights (Zeger-Jan van de Weg)
+  - Delete project and associations in a background worker
+
+v 8.4.0
   - Allow LDAP users to change their email if it was not set by the LDAP server
   - Ensure Gravatar host looks like an actual host
   - Consider re-assign as a mention from a notification point of view
@@ -13,6 +59,8 @@ v 8.4.0 (unreleased)
   - Autocomplete data is now always loaded, instead of when focusing a comment text area
   - Improved performance of finding issues for an entire group
   - Added custom application performance measuring system powered by InfluxDB
+  - Add syntax highlighting to diffs
+  - Gracefully handle invalid UTF-8 sequences in Markdown links (Stan Hu)
   - Bump fog to 1.36.0 (Stan Hu)
   - Add user's last used IP addresses to admin page (Stan Hu)
   - Add housekeeping function to project settings page
@@ -43,7 +91,7 @@ v 8.4.0 (unreleased)
   - Show 'All' tab by default in the builds page
   - Add Open Graph and Twitter Card data to all pages
   - Fix API project lookups when querying with a namespace with dots (Stan Hu)
-  - Enable forcing Two-Factor authentication sitewide, with optional grace period
+  - Enable forcing Two-factor authentication sitewide, with optional grace period
   - Import GitHub Pull Requests into GitLab
   - Change single user API endpoint to return more detailed data (Michael Potthoff)
   - Update version check images to use SVG
@@ -71,6 +119,8 @@ v 8.4.0 (unreleased)
   - Expose button to CI Lint tool on project builds page
   - Fix: Creator should be added as a master of the project on creation
   - Added X-GitLab-... headers to emails from CI and Email On Push services (Anton Baklanov)
+  - Add IP check against DNSBLs at account sign-up
+  - Added cache:key to .gitlab-ci.yml allowing to fine tune the caching
 
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)

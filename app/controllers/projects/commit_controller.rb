@@ -72,6 +72,7 @@ class Projects::CommitController < Projects::ApplicationController
       @diffs = commit.diffs
     end
 
+    @diff_refs = [commit.parent || commit, commit]
     @notes_count = commit.notes.count
 
     @statuses = ci_commit.statuses if ci_commit

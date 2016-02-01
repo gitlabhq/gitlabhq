@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::Build, models: true do
-  let(:project) { FactoryGirl.create :empty_project }
+  let(:project) { FactoryGirl.create :project }
   let(:commit) { FactoryGirl.create :ci_commit, project: project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
@@ -362,12 +362,12 @@ describe Ci::Build, models: true do
     subject { build.artifacts_browse_url }
 
     it "should be nil if artifacts browser is unsupported" do
-      allow(build).to receive(:artifacts_browser_supported?).and_return(false)
+      allow(build).to receive(:artifacts_metadata?).and_return(false)
       is_expected.to be_nil
     end
 
     it 'should not be nil if artifacts browser is supported' do
-      allow(build).to receive(:artifacts_browser_supported?).and_return(true)
+      allow(build).to receive(:artifacts_metadata?).and_return(true)
       is_expected.to_not be_nil
     end
   end
@@ -391,8 +391,8 @@ describe Ci::Build, models: true do
   end
 
 
-  describe :artifacts_browser_supported? do
-    subject { build.artifacts_browser_supported? }
+  describe :artifacts_metadata? do
+    subject { build.artifacts_metadata? }
     context 'artifacts metadata does not exist' do
       it { is_expected.to be_falsy }
     end
