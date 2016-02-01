@@ -105,14 +105,14 @@
             = f.check_box :signin_enabled
             Sign-in enabled
     .form-group
-      = f.label :two_factor_authentication, 'Two-Factor authentication', class: 'control-label col-sm-2'
+      = f.label :two_factor_authentication, 'Two-factor authentication', class: 'control-label col-sm-2'
       .col-sm-10
         .checkbox
           = f.label :require_two_factor_authentication do
             = f.check_box :require_two_factor_authentication
-            Require all users to setup Two-Factor authentication
+            Require all users to setup Two-factor authentication
     .form-group
-      = f.label :two_factor_authentication, 'Two-Factor grace period (hours)', class: 'control-label col-sm-2'
+      = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
         .help-block Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
@@ -212,22 +212,6 @@
 
   %fieldset
     %legend Spam and Anti-bot Protection
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          = f.label :ip_blocking_enabled do
-            = f.check_box :ip_blocking_enabled
-            Enable IP check against blacklist at sign-up
-          .help-block Helps preventing accounts creation from 'known spam sources'
-
-    .form-group
-      = f.label :dnsbl_servers_list, class: 'control-label col-sm-2' do
-        DNSBL servers list
-      .col-sm-10
-        = f.text_field :dnsbl_servers_list, class: 'form-control'
-        .help-block
-          Please enter DNSBL servers separated with comma
-
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox

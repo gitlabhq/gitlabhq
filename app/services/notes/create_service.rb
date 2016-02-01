@@ -6,27 +6,12 @@ module Notes
       note.system = false
 
       if note.save
-        notification_service.new_note(note)
-
-        # Skip system notes, like status changes and cross-references and awards
-        unless note.system || note.is_award
-          event_service.leave_note(note, note.author)
-          note.create_cross_references!
-          execute_hooks(note)
-        end
+        # Finish the harder work in the background
+        NewNoteWorker.perform_in(2.seconds, note.id, params)
       end
 
       note
     end
 
-    def hook_data(note)
-      Gitlab::NoteDataBuilder.build(note, current_user)
-    end
-
-    def execute_hooks(note)
-      note_data = hook_data(note)
-      note.project.execute_hooks(note_data, :note_hooks)
-      note.project.execute_services(note_data, :note_hooks)
-    end
   end
 end

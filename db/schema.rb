@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160120172143) do
+ActiveRecord::Schema.define(version: 20160128233227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,8 +64,6 @@ ActiveRecord::Schema.define(version: 20160120172143) do
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
-    t.boolean  "ip_blocking_enabled",               default: false
-    t.text     "dnsbl_servers_list"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -447,8 +445,8 @@ ActiveRecord::Schema.define(version: 20160120172143) do
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
-    t.string   "oid",        null: false
-    t.integer  "size",       null: false
+    t.string   "oid",                  null: false
+    t.integer  "size",       limit: 8, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file"
@@ -679,6 +677,7 @@ ActiveRecord::Schema.define(version: 20160120172143) do
     t.string   "build_coverage_regex"
     t.boolean  "build_allow_git_fetch",  default: true,     null: false
     t.integer  "build_timeout",          default: 3600,     null: false
+    t.boolean  "pending_delete",         default: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

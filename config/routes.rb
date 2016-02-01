@@ -490,7 +490,7 @@ Rails.application.routes.draw do
         end
 
         resource  :avatar, only: [:show, :destroy]
-        resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
+        resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
           member do
             get :branches
             get :builds

@@ -18,7 +18,7 @@
         %div
           %span by #{commit.author_name}
           %i at #{commit.committed_date.to_s(:iso8601)}
-        %pre.commit-message 
+        %pre.commit-message
           = commit.safe_message
 
   %h4 #{pluralize @message.diffs_count, "changed file"}:
