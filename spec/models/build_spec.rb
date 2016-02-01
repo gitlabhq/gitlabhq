@@ -346,15 +346,14 @@ describe Ci::Build, models: true do
   describe :artifacts_download_url do
     subject { build.artifacts_download_url }
 
-    it "should be nil if artifact doesn't exist" do
-      build.update_attributes(artifacts_file: nil)
-      is_expected.to be_nil
+    context 'artifacts file does not exist' do
+      before { build.update_attributes(artifacts_file: nil) }
+      it { is_expected.to be_nil }
     end
 
-    it 'should not be nil if artifact exist' do
-      gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-      build.update_attributes(artifacts_file: gif)
-      is_expected.to_not be_nil
+    context 'artifacts file exists' do
+      let(:build) { create(:ci_build, :artifacts) }
+      it { is_expected.to_not be_nil }
     end
   end
 
@@ -381,11 +380,7 @@ describe Ci::Build, models: true do
     end
 
     context 'artifacts archive exists' do
-      before do
-        gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-        build.update_attributes(artifacts_file: gif)
-      end
-
+      let(:build) { create(:ci_build, :artifacts) }
       it { is_expected.to be_truthy }
     end
   end
@@ -398,16 +393,7 @@ describe Ci::Build, models: true do
     end
 
     context 'artifacts archive is a zip file and metadata exists' do
-      before do
-        fixture_dir = Rails.root + 'spec/fixtures/'
-        archive = fixture_file_upload(fixture_dir + 'ci_build_artifacts.zip',
-                                      'application/zip')
-        metadata = fixture_file_upload(fixture_dir + 'ci_build_artifacts_metadata.gz',
-                                       'application/x-gzip')
-        build.update_attributes(artifacts_file: archive)
-        build.update_attributes(artifacts_metadata: metadata)
-      end
-
+      let(:build) { create(:ci_build, :artifacts) }
       it { is_expected.to be_truthy }
     end
   end
