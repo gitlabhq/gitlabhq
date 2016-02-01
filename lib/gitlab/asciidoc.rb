@@ -31,9 +31,7 @@ module Gitlab
 
       html = ::Asciidoctor.convert(input, asciidoc_opts)
 
-      if context[:project]
-        html = Banzai.render(html, context.merge(pipeline: :asciidoc))
-      end
+      html = Banzai.post_process(html, context)
 
       html.html_safe
     end
