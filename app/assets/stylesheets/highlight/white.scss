@@ -1,20 +1,60 @@
 /* https://github.com/aahan/pygments-github-style */
 .code.white {
-
-  background-color: #f8fafc !important;
-  color: #5b6169 !important;
-
-  pre.highlight,
-  .line-numbers,
-  .line-numbers a {
-    background-color: $background-color !important;
-    color: $gl-gray !important;
+  // Line numbers
+  .line-numbers, .diff-line-num {
+    background-color: $background-color;
   }
 
-  pre.code {
-    border-left: 1px solid $border-color;
-    background-color: #fff !important;
-    color: #333 !important;
+  .diff-line-num, .diff-line-num a {
+    color: rgba(0, 0, 0, 0.3);
+  }
+
+  // Code itself
+  pre.code, .diff-line-num {
+    border-color: $border-color;
+  }
+
+  &, pre.code, .line_holder .line_content {
+    background-color: #fff;
+    color: #333;
+  }
+
+  // Diff line
+  .line_holder {
+    .diff-line-num {
+      &.old {
+        background: #ffdddd;
+        border-color: #f1c0c0;
+      }
+
+      &.new {
+        background: #dbffdb;
+        border-color: #c1e9c1;
+      }
+    }
+
+    .line_content {
+      &.old {
+        background: #ffecec;
+
+        span.idiff {
+          background-color: #f8cbcb;
+        }
+      }
+
+      &.new {
+        background: #eaffea;
+
+        span.idiff {
+          background-color: #a6f3a6;
+        }
+      }
+
+      &.match {
+        color: rgba(0, 0, 0, 0.3);
+        background: #fafafa;
+      }
+    }
   }
 
   // highlight line via anchor

@@ -108,16 +108,10 @@ header {
 
     .search-input {
       width: 220px;
-      background-image: image-url("icon-search.png");
-      background-repeat: no-repeat;
-      background-position: 195px;
-      @include input-big;
 
       &:focus {
         @include box-shadow(none);
         outline: none;
-        border-color: #DDD;
-        background-color: #FFF;
       }
     }
   }

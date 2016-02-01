@@ -12,7 +12,7 @@ configuration from the developer. To overcome this we will be using the
 official [PHP docker image][php-hub] that can be found in Docker Hub.
 
 This will allow us to test PHP projects against different versions of PHP.
-However, not everything is plug 'n' play, you still need to onfigure some
+However, not everything is plug 'n' play, you still need to configure some
 things manually.
 
 As with every build, you need to create a valid `.gitlab-ci.yml` describing the

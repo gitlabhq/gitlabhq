@@ -115,6 +115,10 @@ module Ci
       end
 
       if @cache
+        if @cache[:key] && !validate_string(@cache[:key])
+          raise ValidationError, "cache:key parameter should be a string"
+        end
+
         if @cache[:untracked] && !validate_boolean(@cache[:untracked])
           raise ValidationError, "cache:untracked parameter should be an boolean"
         end
@@ -198,6 +202,10 @@ module Ci
     end
 
     def validate_job_cache!(name, job)
+      if job[:cache][:key] && !validate_string(job[:cache][:key])
+        raise ValidationError, "#{name} job: cache:key parameter should be a string"
+      end
+
       if job[:cache][:untracked] && !validate_boolean(job[:cache][:untracked])
         raise ValidationError, "#{name} job: cache:untracked parameter should be an boolean"
       end

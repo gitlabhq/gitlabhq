@@ -128,6 +128,14 @@ module Ci
       !self.commit.latest_builds_for_ref(self.ref).include?(self)
     end
 
+    def depends_on_builds
+      # Get builds of the same type
+      latest_builds = self.commit.builds.similar(self).latest
+
+      # Return builds from previous stages
+      latest_builds.where('stage_idx < ?', stage_idx)
+    end
+
     def trace_html
       html = Ci::Ansi2html::convert(trace) if trace.present?
       html || ''
@@ -338,17 +346,17 @@ module Ci
     end
 
     def artifacts_browse_url
-      if artifacts_browser_supported?
+      if artifacts_metadata?
         browse_namespace_project_build_artifacts_path(project.namespace, project, self)
       end
     end
 
-    def artifacts_browser_supported?
+    def artifacts_metadata?
       artifacts? && artifacts_metadata.exists?
     end
 
-    def artifacts_metadata_entry(path)
-      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path).to_entry
+    def artifacts_metadata_entry(path, **options)
+      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
     end
 
     private

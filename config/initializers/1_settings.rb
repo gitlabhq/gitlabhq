@@ -9,13 +9,8 @@ class Settings < Settingslogic
       gitlab.port.to_i == (gitlab.https ? 443 : 80)
     end
 
-    # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
-    def get_host_without_www(url)
-      url = CGI.escape(url)
-      uri = URI.parse(url)
-      uri = URI.parse("http://#{url}") if uri.scheme.nil?
-      host = uri.host.downcase
-      host.start_with?('www.') ? host[4..-1] : host
+    def host_without_www(url)
+      host(url).sub('www.', '')
     end
 
     def build_gitlab_ci_url
@@ -86,6 +81,17 @@ class Settings < Settingslogic
         gitlab.host,
         custom_port
       ]
+    end
+
+    # Extract the host part of the given +url+.
+    def host(url)
+      url = url.downcase
+      url = "http://#{url}" unless url.start_with?('http')
+
+      # Get rid of the path so that we don't even have to encode it
+      url_without_path = url.sub(%r{(https?://[^\/]+)/?.*}, '\1')
+
+      URI.parse(url_without_path).host
     end
   end
 end
@@ -170,7 +176,7 @@ Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].
 Settings.gitlab['twitter_sharing_enabled'] ||= true if Settings.gitlab['twitter_sharing_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z]*-\d*))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -228,7 +234,7 @@ Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
-Settings.gravatar['host']         = Settings.get_host_without_www(Settings.gravatar['plain_url'])
+Settings.gravatar['host']         = Settings.host_without_www(Settings.gravatar['plain_url'])
 
 #
 # Cron Jobs

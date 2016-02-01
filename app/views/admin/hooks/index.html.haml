@@ -37,8 +37,7 @@
       - @hooks.each do |hook|
         %li
           .list-item-name
-            = link_to admin_hook_path(hook) do
-              %strong= hook.url
+            %strong= hook.url
             %p SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
 
           .pull-right

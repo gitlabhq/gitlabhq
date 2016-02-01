@@ -15,6 +15,8 @@ class @Notes
     @last_fetched_at = last_fetched_at
     @view = view
     @noteable_url = document.URL
+    @notesCountBadge ||= $(".issuable-details").find(".notes-tab .badge")
+
     @initRefresh()
     @setupMainTargetNoteForm()
     @cleanBinding()
@@ -62,6 +64,9 @@ class @Notes
     # fetch notes when tab becomes visible
     $(document).on "visibilitychange", @visibilityChange
 
+    # when issue status changes, we need to refresh data
+    $(document).on "issuable:change", @refresh
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -89,7 +94,7 @@ class @Notes
     , 15000
 
   refresh: ->
-    unless document.hidden or (@noteable_url != document.URL)
+    if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
   getContent: ->
@@ -101,7 +106,10 @@ class @Notes
         notes = data.notes
         @last_fetched_at = data.last_fetched_at
         $.each notes, (i, note) =>
-          @renderNote(note)
+          if note.discussion_with_diff_html?
+            @renderDiscussionNote(note)
+          else
+            @renderNote(note)
 
 
   ###
@@ -116,18 +124,21 @@ class @Notes
         flash.pinTo('.header-content')
       return
 
-    # render note if it not present in loaded list
-    # or skip if rendered
-    if @isNewNote(note) && !note.award
-      @note_ids.push(note.id)
-      $('ul.main-notes-list').
-        append(note.html).
-        syntaxHighlight()
-      @initTaskList()
-
     if note.award
       awards_handler.addAwardToEmojiBar(note.note)
       awards_handler.scrollToAwards()
+
+    # render note if it not present in loaded list
+    # or skip if rendered
+    else if @isNewNote(note)
+      @note_ids.push(note.id)
+
+      $('ul.main-notes-list')
+        .append(note.html)
+        .syntaxHighlight()
+      @initTaskList()
+      @updateNotesCount(1)
+
 
   ###
   Check if note does not exists on page
@@ -144,34 +155,39 @@ class @Notes
   Note: for rendering inline notes use renderDiscussionNote
   ###
   renderDiscussionNote: (note) ->
+    return unless @isNewNote(note)
+
     @note_ids.push(note.id)
-    form = $("form[rel='" + note.discussion_id + "']")
+    form = $("#new-discussion-note-form-#{note.discussion_id}")
     row = form.closest("tr")
     note_html = $(note.html)
     note_html.syntaxHighlight()
 
     # is this the first note of discussion?
-    if row.is(".js-temp-notes-holder")
+    discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']")
+    if discussionContainer.length is 0
       # insert the note and the reply button after the temp row
       row.after note.discussion_html
 
       # remove the note (will be added again below)
       row.next().find(".note").remove()
 
+      # Before that, the container didn't exist
+      discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']")
+
       # Add note to 'Changes' page discussions
-      $(".notes[rel='" + note.discussion_id + "']").append note_html
+      discussionContainer.append note_html
 
       # Init discussion on 'Discussion' page if it is merge request page
-      if $('body').attr('data-page').indexOf('projects:merge_request') == 0
-        discussion_html = $(note.discussion_with_diff_html)
-        discussion_html.syntaxHighlight()
-        $('ul.main-notes-list').append(discussion_html)
+      if $('body').attr('data-page').indexOf('projects:merge_request') is 0
+        $('ul.main-notes-list')
+          .append(note.discussion_with_diff_html)
+          .syntaxHighlight()
     else
       # append new note to all matching discussions
-      $(".notes[rel='" + note.discussion_id + "']").append note_html
+      discussionContainer.append note_html
 
-    # cleanup after successfully creating a diff/discussion note
-    @removeDiscussionNoteForm(form)
+    @updateNotesCount(1)
 
   ###
   Called in response the main target form has been successfully submitted.
@@ -278,6 +294,9 @@ class @Notes
   addDiscussionNote: (xhr, note, status) =>
     @renderDiscussionNote(note)
 
+    # cleanup after successfully creating a diff/discussion note
+    @removeDiscussionNoteForm($("#new-discussion-note-form-#{note.discussion_id}"))
+
   ###
   Called in response to the edit note form being submitted
 
@@ -320,6 +339,7 @@ class @Notes
     form.show()
     textarea = form.find("textarea")
     textarea.focus()
+    autosize(textarea)
 
     # HACK (rspeicher/DouweM): Work around a Chrome 43 bug(?).
     # The textarea has the correct value, Chrome just won't show it unless we
@@ -348,29 +368,31 @@ class @Notes
   Removes the actual note from view.
   Removes the whole discussion if the last note is being removed.
   ###
-  removeNote: ->
-    note = $(this).closest(".note")
-    note_id = note.attr('id')
+  removeNote: (e) =>
+    noteId = $(e.currentTarget)
+               .closest(".note")
+               .attr("id")
 
-    $('.note[id="' + note_id + '"]').each ->
-      note = $(this)
+    # A same note appears in the "Discussion" and in the "Changes" tab, we have
+    # to remove all. Using $(".note[id='noteId']") ensure we get all the notes,
+    # where $("#noteId") would return only one.
+    $(".note[id='#{noteId}']").each (i, el) =>
+      note  = $(el)
       notes = note.closest(".notes")
-      count = notes.closest(".issuable-details").find(".notes-tab .badge")
 
       # check if this is the last note for this line
       if notes.find(".note").length is 1
 
-        # for discussions
-        notes.closest(".discussion").remove()
+        # "Discussions" tab
+        notes.closest(".timeline-entry").remove()
 
-        # for diff lines
+        # "Changes" tab / commit view
         notes.closest("tr").remove()
 
-      # update notes count
-      oldNum = parseInt(count.text())
-      count.text(oldNum - 1)
-
       note.remove()
+
+    # Decrement the "Discussions" counter only once
+    @updateNotesCount(-1)
 
   ###
   Called in response to clicking the delete attachment link
@@ -411,7 +433,7 @@ class @Notes
   ###
   setupDiscussionNoteForm: (dataHolder, form) =>
     # setup note target
-    form.attr "rel", dataHolder.data("discussionId")
+    form.attr 'id', "new-discussion-note-form-#{dataHolder.data("discussionId")}"
     form.find("#line_type").val dataHolder.data("lineType")
     form.find("#note_commit_id").val dataHolder.data("commitId")
     form.find("#note_line_code").val dataHolder.data("lineCode")
@@ -541,3 +563,6 @@ class @Notes
 
   updateTaskList: ->
     $('form', this).submit()
+
+  updateNotesCount: (updateCount) ->
+    @notesCountBadge.text(parseInt(@notesCountBadge.text()) + updateCount)

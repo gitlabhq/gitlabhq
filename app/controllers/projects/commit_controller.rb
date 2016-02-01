@@ -72,6 +72,7 @@ class Projects::CommitController < Projects::ApplicationController
       @diffs = commit.diffs
     end
 
+    @diff_refs = [commit.parent || commit, commit]
     @notes_count = commit.notes.count
 
     @statuses = ci_commit.statuses if ci_commit
@@ -79,7 +80,7 @@ class Projects::CommitController < Projects::ApplicationController
 
   def authorize_manage_builds!
     unless can?(current_user, :manage_builds, project)
-      return page_404
+      return render_404
     end
   end
 end

@@ -87,8 +87,8 @@
   }
 
   p {
-    color:#5c5d5e;
-    margin:6px 0 0 0;
+    color: #5c5d5e;
+    margin: 6px 0 0 0;
   }
 
   table {
@@ -102,11 +102,10 @@
   }
 
   pre {
-    margin: 12px 0 12px 0 !important;
-    background-color: #f8fafc;
-    font-size: 13px !important;
-    color: #5b6169;
-    line-height: 1.6em !important;
+    margin: 12px 0 12px 0;
+    font-size: 13px;
+    line-height: 1.6em;
+    overflow-x: auto;
     @include border-radius(2px);
   }
 
@@ -116,7 +115,7 @@
 
   ul, ol {
     padding: 0;
-    margin: 6px 0 6px 18px !important;
+    margin: 6px 0 6px 28px !important;
   }
 
   li {
@@ -203,11 +202,6 @@ h1, h2, h3, h4, h5, h6 {
 /** CODE **/
 pre {
   font-family: $monospace_font;
-
-  &.dark {
-    background: #333;
-    color: $background-color;
-  }
 
   &.plain-readme {
     background: none;

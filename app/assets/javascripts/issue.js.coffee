@@ -6,10 +6,24 @@ class @Issue
   constructor: ->
     # Prevent duplicate event bindings
     @disableTaskList()
-
+    @fixAffixScroll()
     if $('a.btn-close').length
       @initTaskList()
       @initIssueBtnEventListeners()
+
+  fixAffixScroll: ->
+    fixAffix = ->
+      $discussion = $('.issuable-discussion')
+      $sidebar = $('.issuable-sidebar')
+      if $sidebar.hasClass('no-affix')
+        $sidebar.removeClass(['affix-top','affix'])
+      discussionHeight = $discussion.height()
+      sidebarHeight = $sidebar.height()
+      if sidebarHeight > discussionHeight
+        $discussion.height(sidebarHeight + 50)
+        $sidebar.addClass('no-affix')
+    $(window).on('resize', fixAffix)
+    fixAffix()
 
   initTaskList: ->
     $('.detail-page-description .js-task-list-container').taskList('enable')
@@ -36,6 +50,7 @@ class @Issue
           new Flash(issueFailMessage, 'alert')
         success: (data, textStatus, jqXHR) ->
           if data.saved
+            $(document).trigger('issuable:change');
             if isClose
               $('a.btn-close').addClass('hidden')
               $('a.btn-reopen').removeClass('hidden')

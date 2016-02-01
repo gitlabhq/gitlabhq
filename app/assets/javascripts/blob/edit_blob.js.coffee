@@ -32,6 +32,7 @@ class @EditBlob
           content: editor.getValue()
         , (response) ->
           currentPane.empty().append response
+          currentPane.syntaxHighlight()
           return
 
       else

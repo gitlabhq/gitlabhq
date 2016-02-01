@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::Build, models: true do
-  let(:project) { FactoryGirl.create :empty_project }
+  let(:project) { FactoryGirl.create :project }
   let(:commit) { FactoryGirl.create :ci_commit, project: project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
@@ -362,12 +362,12 @@ describe Ci::Build, models: true do
     subject { build.artifacts_browse_url }
 
     it "should be nil if artifacts browser is unsupported" do
-      allow(build).to receive(:artifacts_browser_supported?).and_return(false)
+      allow(build).to receive(:artifacts_metadata?).and_return(false)
       is_expected.to be_nil
     end
 
     it 'should not be nil if artifacts browser is supported' do
-      allow(build).to receive(:artifacts_browser_supported?).and_return(true)
+      allow(build).to receive(:artifacts_metadata?).and_return(true)
       is_expected.to_not be_nil
     end
   end
@@ -391,8 +391,8 @@ describe Ci::Build, models: true do
   end
 
 
-  describe :artifacts_browser_supported? do
-    subject { build.artifacts_browser_supported? }
+  describe :artifacts_metadata? do
+    subject { build.artifacts_metadata? }
     context 'artifacts metadata does not exist' do
       it { is_expected.to be_falsy }
     end
@@ -424,6 +424,30 @@ describe Ci::Build, models: true do
     it { is_expected.to include(build.token) }
     it { is_expected.to include('gitlab-ci-token') }
     it { is_expected.to include(project.web_url[7..-1]) }
+  end
+
+  describe :depends_on_builds do
+    let!(:build) { FactoryGirl.create :ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build' }
+    let!(:rspec_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test' }
+    let!(:rubocop_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test' }
+    let!(:staging) { FactoryGirl.create :ci_build, commit: commit, name: 'staging', stage_idx: 2, stage: 'deploy' }
+
+    it 'to have no dependents if this is first build' do
+      expect(build.depends_on_builds).to be_empty
+    end
+
+    it 'to have one dependent if this is test' do
+      expect(rspec_test.depends_on_builds.map(&:id)).to contain_exactly(build.id)
+    end
+
+    it 'to have all builds from build and test stage if this is last' do
+      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, rspec_test.id, rubocop_test.id)
+    end
+
+    it 'to have retried builds instead the original ones' do
+      retried_rspec = Ci::Build.retry(rspec_test)
+      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
+    end
   end
 
   def create_mr(build, commit, factory: :merge_request, created_at: Time.now)

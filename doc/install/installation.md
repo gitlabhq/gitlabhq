@@ -107,18 +107,25 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-The use of Ruby version managers such as [RVM](https://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system Ruby.
+_**Note:** The current supported Ruby versions are 2.1.x and 2.2.x. Ruby 2.3 is
+currently not supported._
 
-Remove the old Ruby 1.8 if present
+The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
+in production, frequently leads to hard to diagnose problems. For example,
+GitLab Shell is called from OpenSSH, and having a version manager can prevent
+pushing and pulling over SSH. Version managers are not supported and we strongly
+advise everyone to follow the instructions below to use a system Ruby.
+
+Remove the old Ruby 1.8 if present:
 
     sudo apt-get remove ruby1.8
 
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.7.tar.gz
-    echo 'e2e195a4a58133e3ad33b955c829bb536fa3c075  ruby-2.1.7.tar.gz' | shasum -c - && tar xzf ruby-2.1.7.tar.gz
-    cd ruby-2.1.7
+    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.4.tar.gz
+    echo 'e2e195a4a58133e3ad33b955c829bb536fa3c075  ruby-2.2.4.tar.gz' | shasum -c - && tar xzf ruby-2.2.4.tar.gz
+    cd ruby-2.2.4
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -348,7 +355,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout 0.5.4
+    sudo -u git -H git checkout 0.6.2
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -555,3 +562,7 @@ this is likely due to an outdated Nginx or Apache configuration, or a missing or
 misconfigured gitlab-workhorse instance. Double-check that you've
 [installed Go](#3-go), [installed gitlab-workhorse](#install-gitlab-workhorse),
 and correctly [configured Nginx](#site-configuration).
+
+[RVM]: https://rvm.io/ "RVM Homepage"
+[rbenv]: https://github.com/sstephenson/rbenv "rbenv on GitHub"
+[chruby]: https://github.com/postmodern/chruby "chruby on GitHub"

@@ -152,9 +152,10 @@ The name of this branch should start with the issue number, for example '15-requ
 
 When you are done or want to discuss the code you open a merge request.
 This is an online place to discuss the change and review the code.
-Creating a branch is a manual action since you do not always want to merge a new branch you push, it could be a long-running environment or release branch.
-If you create the merge request but do not assign it to anyone it is a 'work-in-process' merge request.
+Opening a merge request is a manual action since you do not always want to merge a new branch you push, it could be a long-running environment or release branch.
+If you open the merge request but do not assign it to anyone it is a 'Work In Progress' merge request.
 These are used to discuss the proposed implementation but are not ready for inclusion in the master branch yet.
+_Pro tip:_ Start the title of the merge request with `[WIP]` or `WIP:` to prevent it from being merged before it's ready.
 
 When the author thinks the code is ready the merge request is assigned to reviewer.
 The reviewer presses the merge button when they think the code is ready for inclusion in the master branch.
@@ -185,7 +186,7 @@ If you have an issue that spans across multiple repositories, the best thing is 
 
 ![Vim screen showing the rebase view](rebase.png)
 
-With git you can use an interactive rebase (rebase -i) to squash multiple commits into one and reorder them.
+With git you can use an interactive rebase (`rebase -i`) to squash multiple commits into one and reorder them.
 This functionality is useful if you made a couple of commits for small changes during development and want to replace them with a single commit or if you want to make the order more logical.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.

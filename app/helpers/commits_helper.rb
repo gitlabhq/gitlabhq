@@ -152,7 +152,7 @@ module CommitsHelper
 
     options = {
       class: "commit-#{options[:source]}-link has_tooltip",
-      data: { :'original-title' => sanitize(source_email) }
+      data: { 'original-title'.to_sym => sanitize(source_email) }
     }
 
     if user.nil?
@@ -166,7 +166,7 @@ module CommitsHelper
     link_to(
       namespace_project_blob_path(project.namespace, project,
                                   tree_join(commit_sha, diff.new_path)),
-      class: 'btn btn-small view-file js-view-file'
+      class: 'btn view-file js-view-file'
     ) do
       raw('View file @') + content_tag(:span, commit_sha[0..6],
                                        class: 'commit-short-id')

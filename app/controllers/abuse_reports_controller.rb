@@ -2,6 +2,7 @@ class AbuseReportsController < ApplicationController
   def new
     @abuse_report = AbuseReport.new
     @abuse_report.user_id = params[:user_id]
+    @ref_url = params.fetch(:ref_url, '')
   end
 
   def create

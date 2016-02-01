@@ -36,7 +36,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   private
 
   def load_events
-    @events = Event.in_projects(@projects.pluck(:id))
+    @events = Event.in_projects(@projects)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

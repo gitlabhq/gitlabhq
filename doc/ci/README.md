@@ -12,6 +12,7 @@
 * [Using Variables](variables/README.md)
 * [Using SSH keys](ssh_keys/README.md)
 * [Triggering builds through the API](triggers/README.md)
+* [Build artifacts](build_artifacts/README.md)
 
 ### Languages
 

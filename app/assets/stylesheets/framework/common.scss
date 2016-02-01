@@ -75,6 +75,8 @@ hr {
   @include str-truncated;
 }
 
+.item-title { font-weight: 600; }
+
 /** FLASH message **/
 .author_link {
   color: $gl-link-color;
@@ -116,14 +118,6 @@ span.update-author {
 
 .field_with_errors {
   display: inline;
-}
-
-.line_holder {
-  &:hover {
-    td {
-      background: #FFFFCF !important;
-    }
-  }
 }
 
 p.time {
@@ -315,14 +309,6 @@ table {
   fieldset {
     margin-bottom: 15px;
   }
-}
-
-.wiki .highlight, .note-body .highlight {
-  margin: 12px 0 12px 0;
-}
-
-.wiki .code {
-  overflow-x: auto;
 }
 
 .footer-links {

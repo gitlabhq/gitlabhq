@@ -13,8 +13,8 @@ module Gitlab
 
           attr_reader :file, :path, :full_version
 
-          def initialize(file, path)
-            @file, @path = file, path
+          def initialize(file, path, **opts)
+            @file, @path, @opts = file, path, opts
             @full_version = read_version
           end
 
@@ -52,7 +52,9 @@ module Gitlab
 
           def match_entries(gz)
             entries = {}
-            match_pattern = %r{^#{Regexp.escape(@path)}[^/]*/?$}
+
+            child_pattern = '[^/]*/?$' unless @opts[:recursive]
+            match_pattern = /^#{Regexp.escape(@path)}#{child_pattern}/
 
             until gz.eof? do
               begin
