@@ -91,7 +91,7 @@ v 8.4.0
   - Show 'All' tab by default in the builds page
   - Add Open Graph and Twitter Card data to all pages
   - Fix API project lookups when querying with a namespace with dots (Stan Hu)
-  - Enable forcing Two-Factor authentication sitewide, with optional grace period
+  - Enable forcing Two-factor authentication sitewide, with optional grace period
   - Import GitHub Pull Requests into GitLab
   - Change single user API endpoint to return more detailed data (Michael Potthoff)
   - Update version check images to use SVG
