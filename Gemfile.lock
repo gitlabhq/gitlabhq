@@ -1,6 +1,6 @@
 GIT
   remote: https://gitlab.com/gitlab-org/gitlab_git.git
-  revision: dbf224a5d0404ab094e53144b5e01a88b5e9dbaa
+  revision: 170a36889aebfd43e3e1e20b6b7661c896816b41
   branch: lazy-blob
   specs:
     gitlab_git (7.2.24)
@@ -350,7 +350,7 @@ GEM
       json
     get_process_mem (0.2.0)
     gherkin-ruby (0.3.2)
-    github-linguist (4.7.3)
+    github-linguist (4.7.4)
       charlock_holmes (~> 0.7.3)
       escape_utils (~> 1.1.0)
       mime-types (>= 1.19)
