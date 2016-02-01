@@ -15,8 +15,7 @@ class Projects::RawController < Projects::ApplicationController
       if @blob.lfs_pointer?
         send_lfs_object
       else
-        headers['Gitlab-Workhorse-Repo-Path'] = @repository.path_to_repo
-        headers['Gitlab-Workhorse-Send-Blob'] = @blob.id
+        headers.store(*Gitlab::Workhorse.send_git_blob(@repository, @blob))
         headers['Content-Disposition'] = 'inline'
         render nothing: true, content_type: get_blob_type
       end
