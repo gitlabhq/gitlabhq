@@ -535,6 +535,6 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def revert_branch_name
-    "revert-#{id}-#{target_branch}"
+    "revert-#{iid}-#{target_branch}"
   end
 end
