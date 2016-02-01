@@ -4,6 +4,7 @@ v 8.5.0 (unreleased)
   - Ensure rake tasks that don't need a DB connection can be run without one
   - Add "visibility" flag to GET /projects api endpoint
   - Ignore binary files in code search to prevent Error 500 (Stan Hu)
+  - Render sanitized SVG images (Stan Hu)
   - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
   - New UI for pagination
   - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
