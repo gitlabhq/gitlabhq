@@ -60,6 +60,7 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
     execute "UPDATE projects SET path = '#{project_path.clean_path}' WHERE id = #{project.id}"
   end
 
+  #TODO: Fix this
   def move_path(project_path)
     # Based on RemovePeriodsAtEndsOfUsernames
     # Don't attempt to move if original path only contains periods.
