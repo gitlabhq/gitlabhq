@@ -64,6 +64,16 @@ if Gitlab::Metrics.enabled?
 
       config.instrument_instance_methods(const)
     end
+
+    [
+      :Blame, :Branch, :BranchCollection, :Blob, :Commit, :Diff, :Repository,
+      :Tag, :TagCollection, :Tree
+    ].each do |name|
+      const = Rugged.const_get(name)
+
+      config.instrument_methods(const)
+      config.instrument_instance_methods(const)
+    end
   end
 
   GC::Profiler.enable
