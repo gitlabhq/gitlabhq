@@ -31,6 +31,8 @@ class Tree
 
     git_repo = repository.raw_repository
     @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
+    @readme.load_all_data!(git_repo)
+    @readme
   end
 
   def trees

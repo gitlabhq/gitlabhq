@@ -35,6 +35,7 @@
     - if blob.lfs_pointer?
       = render "download", blob: blob
     - elsif blob.text?
+      - blob.load_all_data!(@repository)
       = render "text", blob: blob
     - elsif blob.image?
       = render "image", blob: blob
