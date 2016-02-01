@@ -113,10 +113,11 @@
               - elsif @build.retry_url
                 = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
 
-              = link_to '', class: 'btn btn-sm btn-danger', method: :delete,
-                            data: { confirm: 'Are you sure you want to remove this?' } do
-                = icon('remove')
-                Remove
+              - if @build.eraseable?
+                = link_to @build.erase_url, class: 'btn btn-sm btn-warning', method: :put,
+                                            data: { confirm: 'Are you sure you want to erase this build?' } do
+                  = icon('eraser')
+                  Erase
 
         .clearfix
           - if @build.duration
