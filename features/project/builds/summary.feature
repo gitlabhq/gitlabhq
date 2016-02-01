@@ -13,3 +13,10 @@ Feature: Project Builds Summary
   Scenario: I browse project builds page
     When I visit project builds page
     Then I see button to CI Lint
+
+  Scenario: I erase a build
+    Given recent build has a build trace
+    When I visit recent build details page
+    And I click erase build button
+    Then recent build has been erased
+    And recent build summary does not have artifacts widget

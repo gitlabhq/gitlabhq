@@ -10,4 +10,18 @@ class Spinach::Features::ProjectBuildsSummary < Spinach::FeatureSteps
       expect(ci_lint_tool_link[:href]).to eq ci_lint_path
     end
   end
+
+  step 'I click erase build button' do
+    click_link 'Erase'
+  end
+
+  step 'recent build has been erased' do
+    expect(@build.artifacts_file.exists?).to be_falsy
+    expect(@build.artifacts_metadata.exists?).to be_falsy
+    expect(File.zero?(@build.path_to_trace)).to be true
+  end
+
+  step 'recent build summary does not have artifacts widget' do
+    expect(page).to have_no_css('.artifacts')
+  end
 end
