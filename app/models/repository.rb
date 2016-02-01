@@ -626,25 +626,28 @@ class Repository
     merge_commit_sha
   end
 
-  def revert_merge(user, merge_commit_id, revert_branch_name)
-    find_or_create_branch(user, revert_branch_name, merge_commit_id)
+  def revert_merge(user, merge_request)
+    revert_branch_name = merge_request.revert_branch_name
+    merge_commit_id = merge_request.merge_commit_sha
+
+    # branch exists and it's highly probable that it has the revert commit
+    return if find_branch(revert_branch_name)
+
+    add_branch(user, revert_branch_name, merge_commit_id)
 
     new_index = rugged.revert_commit(merge_commit_id, merge_commit_id, mainline: 1)
     committer = user_to_committer(user)
 
-    commit_with_hooks(user, revert_branch_name) do |ref|
-      options = {
-        message: 'Revert MR',
-        author: committer,
-        committer: committer,
-        tree: new_index.write_tree(rugged),
-        parents: [rugged.lookup(merge_commit_id)],
-        update_ref: ref
-      }
+    options = {
+      message: "Revert \"#{merge_request.title}\"",
+      author: committer,
+      committer: committer,
+      tree: new_index.write_tree(rugged),
+      parents: [rugged.lookup(merge_commit_id)],
+      update_ref: "refs/heads/#{revert_branch_name}"
+    }
 
-      Rugged::Commit.create(rugged, options)
-    end
-
+    Rugged::Commit.create(rugged, options)
   end
 
   def merged_to_root_ref?(branch_name)

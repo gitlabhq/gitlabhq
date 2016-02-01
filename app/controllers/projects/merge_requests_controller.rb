@@ -193,10 +193,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def revert
-    @repository.revert_merge(current_user, @merge_request.merge_commit_sha, @merge_request.reverse_branch_name)
+    @repository.revert_merge(current_user, @merge_request)
 
     url_params = { merge_request: {
-      source_branch: @merge_request.reverse_branch_name,
+      source_branch: @merge_request.revert_branch_name,
       target_branch: @merge_request.target_branch,
       source_project_id: @merge_request.target_project_id,
       target_project_id: @merge_request.target_project_id
