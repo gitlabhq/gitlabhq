@@ -8,7 +8,8 @@ class Projects::AvatarsController < Projects::ApplicationController
       headers['X-Content-Type-Options'] = 'nosniff'
       headers.store(*Gitlab::Workhorse.send_git_blob(repository, @blob))
       headers['Content-Disposition'] = 'inline'
-      render nothing: true, content_type: @blob.content_type
+      headers['Content-Type'] = @blob.content_type
+      head :ok # 'render nothing: true' messes up the Content-Type
     else
       render_404
     end

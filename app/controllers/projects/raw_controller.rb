@@ -17,7 +17,8 @@ class Projects::RawController < Projects::ApplicationController
       else
         headers.store(*Gitlab::Workhorse.send_git_blob(@repository, @blob))
         headers['Content-Disposition'] = 'inline'
-        render nothing: true, content_type: get_blob_type
+        headers['Content-Type'] = get_blob_type
+        head :ok # 'render nothing: true' messes up the Content-Type
       end
     else
       render_404
