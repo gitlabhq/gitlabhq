@@ -21,4 +21,12 @@ describe Gitlab::Regex, lib: true do
     it { expect('Dash – is this').to match(Gitlab::Regex.project_name_regex) }
     it { expect('?gitlab').not_to match(Gitlab::Regex.project_name_regex) }
   end
+
+  describe 'file name regex' do
+    it { expect('foo@bar').to match(Gitlab::Regex.file_name_regex) }
+  end
+
+  describe 'file path regex' do
+    it { expect('foo@/bar').to match(Gitlab::Regex.file_path_regex) }
+  end
 end
