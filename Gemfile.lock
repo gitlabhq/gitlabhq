@@ -1,6 +1,6 @@
 GIT
   remote: https://gitlab.com/gitlab-org/gitlab_git.git
-  revision: 69f2185b8bfc8c54b70a1ce4c8c81d9b9a977ce6
+  revision: 57160e1cbcf4c03e68aa881dfa8e2f55c37a3ee6
   branch: lazy-blob
   specs:
     gitlab_git (7.2.24)
