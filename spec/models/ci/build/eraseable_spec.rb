@@ -20,7 +20,7 @@ describe Ci::Build::Eraseable, models: true do
   end
 
   context 'build is eraseable' do
-    let!(:build) { create(:ci_build_with_trace, :artifacts) }
+    let!(:build) { create(:ci_build_with_trace, :success, :artifacts) }
 
     describe '#erase!' do
       before { build.erase! }
@@ -49,7 +49,7 @@ describe Ci::Build::Eraseable, models: true do
     end
 
     context 'metadata and build trace are not available' do
-      let!(:build) { create(:ci_build, :artifacts) }
+      let!(:build) { create(:ci_build, :success, :artifacts) }
       before { build.remove_artifacts_metadata! }
 
       describe '#erase!' do

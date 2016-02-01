@@ -11,7 +11,7 @@ module Ci
       end
 
       def eraseable?
-        artifacts_file.exists? || File.file?(path_to_trace)
+        complete? && (artifacts_file.exists? || !trace_empty?)
       end
 
       def erase_url

@@ -205,6 +205,10 @@ module Ci
       end
     end
 
+    def trace_empty?
+      raw_trace.blank?
+    end
+
     def raw_trace
       if File.file?(path_to_trace)
         File.read(path_to_trace)
