@@ -137,10 +137,6 @@ class Repository
     find_branch(branch_name)
   end
 
-  def find_or_create_branch(user, name, ref)
-    find_branch(name) or add_branch(user, name, ref)
-  end
-
   def add_tag(tag_name, ref, message = nil)
     expire_tags_cache
 
