@@ -13,7 +13,7 @@ module Ci
     end
 
     def authorize_manage_builds!
-      unless can?(current_user, :manage_builds, project)
+      unless can?(current_user, :update_build, project)
         return page_404
       end
     end

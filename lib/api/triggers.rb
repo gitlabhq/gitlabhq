@@ -54,7 +54,7 @@ module API
       #   GET /projects/:id/triggers
       get ':id/triggers' do
         authenticate!
-        authorize_admin_project
+        authorize! :admin_build, user_project
 
         triggers = user_project.triggers.includes(:trigger_requests)
         triggers = paginate(triggers)
@@ -71,7 +71,7 @@ module API
       #   GET /projects/:id/triggers/:token
       get ':id/triggers/:token' do
         authenticate!
-        authorize_admin_project
+        authorize! :admin_build, user_project
 
         trigger = user_project.triggers.find_by(token: params[:token].to_s)
         return not_found!('Trigger') unless trigger
@@ -87,7 +87,7 @@ module API
       #   POST /projects/:id/triggers
       post ':id/triggers' do
         authenticate!
-        authorize_admin_project
+        authorize! :admin_build, user_project
 
         trigger = user_project.triggers.create
 
@@ -103,7 +103,7 @@ module API
       #   DELETE /projects/:id/triggers/:token
       delete ':id/triggers/:token' do
         authenticate!
-        authorize_admin_project
+        authorize! :admin_build, user_project
 
         trigger = user_project.triggers.find_by(token: params[:token].to_s)
         return not_found!('Trigger') unless trigger

@@ -52,9 +52,14 @@ class Ability
           :read_project_member,
           :read_merge_request,
           :read_note,
+          :read_commit_status,
           :read_build,
           :download_code
         ]
+
+        if project.restrict_builds?
+          rules -= :read_build
+        end
 
         rules - project_disabled_features_rules(project)
       else
@@ -113,6 +118,10 @@ class Ability
 
         if project.public? || project.internal?
           rules.push(*public_project_rules)
+
+          if team.guest?(user) && project.restrict_builds?
+            rules -= named_abilities('build')
+          end
         end
 
         if project.owner == user || user.admin?
@@ -134,7 +143,9 @@ class Ability
     def public_project_rules
       @public_project_rules ||= project_guest_rules + [
         :download_code,
-        :fork_project
+        :fork_project,
+        :read_commit_status,
+        :read_build,
       ]
     end
 
@@ -149,7 +160,7 @@ class Ability
         :read_project_member,
         :read_merge_request,
         :read_note,
-        :read_build,
+        :read_commit_status,
         :create_project,
         :create_issue,
         :create_note
@@ -158,24 +169,25 @@ class Ability
 
     def project_report_rules
       @project_report_rules ||= project_guest_rules + [
-        :create_commit_status,
-        :read_commit_statuses,
-        :read_build_artifacts,
         :download_code,
         :fork_project,
         :create_project_snippet,
         :update_issue,
         :admin_issue,
-        :admin_label
+        :admin_label,
+        :read_build,
       ]
     end
 
     def project_dev_rules
       @project_dev_rules ||= project_report_rules + [
         :admin_merge_request,
+        :create_commit_status,
+        :update_commit_status,
+        :create_build,
+        :update_build,
         :create_merge_request,
         :create_wiki,
-        :manage_builds,
         :push_code
       ]
     end
@@ -201,7 +213,9 @@ class Ability
         :admin_merge_request,
         :admin_note,
         :admin_wiki,
-        :admin_project
+        :admin_project,
+        :admin_commit_status,
+        :admin_build
       ]
     end
 
@@ -238,6 +252,10 @@ class Ability
 
       unless project.wiki_enabled
         rules += named_abilities('wiki')
+      end
+
+      unless project.builds_enabled
+        rules += named_abilities('build')
       end
 
       rules

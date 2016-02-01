@@ -89,8 +89,7 @@
             Test coverage
           %h1 #{@build.coverage}%
 
-      - if current_user && can?(current_user, :read_build_artifacts, @project) && @build.artifacts?
-
+      - if can?(current_user, :read_build, @project) && @build.artifacts?
         .build-widget.artifacts
           %h4.title Build artifacts
           .center
@@ -102,7 +101,7 @@
       .build-widget
         %h4.title
           Build ##{@build.id}
-          - if current_user && can?(current_user, :manage_builds, @project)
+          - if current_user && can?(current_user, :update_build, @project)
             .pull-right
               - if @build.cancel_url
                 = link_to "Cancel", @build.cancel_url, class: 'btn btn-sm btn-danger', method: :post
