@@ -10,7 +10,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
-  before_action :check_target_branch_exists, only: [:revert]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -194,8 +193,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def revert
-    @repository.revert_merge(current_user, @merge_request)
-
+    target_branch_exists = @merge_request.target_branch_exists?
     url_params = { merge_request: {
       source_branch: @merge_request.revert_branch_name,
       target_branch: @merge_request.target_branch,
@@ -204,7 +202,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       description: "Reverts #{@merge_request.to_reference}"
     }}
 
-    redirect_to new_namespace_project_merge_request_url(@project.namespace, @project, url_params)
+    if target_branch_exists
+      @repository.revert_merge(current_user, @merge_request)
+      redirect_to new_namespace_project_merge_request_url(@project.namespace, @project, url_params)
+    else
+      redirect_to namespace_project_merge_request_url(@project.namespace, @project, @merge_request),
+                  alert: 'Merge Request cannot be reverted because target branch was deleted.'
+    end
   end
 
   def branch_from
@@ -277,10 +281,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def module_enabled
     return render_404 unless @project.merge_requests_enabled
-  end
-
-  def check_target_branch_exists
-    return render_404 unless @merge_request.target_branch_exists?
   end
 
   def validates_merge_request
