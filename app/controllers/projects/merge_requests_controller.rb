@@ -200,7 +200,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       source_branch: @merge_request.revert_branch_name,
       target_branch: @merge_request.target_branch,
       source_project_id: @merge_request.target_project_id,
-      target_project_id: @merge_request.target_project_id
+      target_project_id: @merge_request.target_project_id,
+      description: "Reverts #{@merge_request.to_reference}"
     }}
 
     redirect_to new_namespace_project_merge_request_url(@project.namespace, @project, url_params)
