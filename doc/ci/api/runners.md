@@ -1,5 +1,8 @@
 # Runners API
 
+_**Note:** In GitLab 8.0, GitLab CI was merged in GitLab itself. This document
+is deprecated in favor of the [new Runners API](../../api/runners.md)._
+
 ## Runners
 
 ### Retrieve all runners
