@@ -1,8 +1,8 @@
 # Runners API
 
-## List runners
+## List owned runners
 
-Get a list of runners.
+Get a list of specific runners available for user.
 
 ```
 GET /runners
@@ -20,6 +20,57 @@ Example response:
 
 ```json
 [
+    {
+        "active": true,
+        "description": "test-1-20150125",
+        "id": 6,
+        "is_shared": false,
+        "name": null
+    },
+    {
+        "active": true,
+        "description": "test-2-20150125",
+        "id": 8,
+        "is_shared": false,
+        "name": null
+    }
+]
+```
+
+## List all runners
+
+Get a list of all runners (specific and shared). Access restricted to users with `admin` privileges.
+
+```
+GET /runners/all
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`; showing all runners if none provided |
+
+```
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/all"
+```
+
+Example response:
+
+```json
+[
+    {
+        "active": true,
+        "description": "shared-runner-1",
+        "id": 1,
+        "is_shared": true,
+        "name": null
+    },
+    {
+        "active": true,
+        "description": "shared-runner-2",
+        "id": 3,
+        "is_shared": true,
+        "name": null
+    },
     {
         "active": true,
         "description": "test-1-20150125",

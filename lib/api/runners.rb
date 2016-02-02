@@ -4,19 +4,22 @@ module API
     before { authenticate! }
 
     resource :runners do
-      # Get available shared runners
+      # Get runners available for user
       #
       # Example Request:
       #   GET /runners
       get do
-        runners =
-          if current_user.is_admin?
-            Ci::Runner.all
-          else
-            current_user.ci_authorized_runners
-          end
+        runners = filter_runners(current_user.ci_authorized_runners, params[:scope])
+        present paginate(runners), with: Entities::Runner
+      end
 
-        runners = filter_runners(runners, params[:scope])
+      # Get all runners - shared and specific
+      #
+      # Example Request:
+      #   GET /runners/all
+      get 'all' do
+        authenticated_as_admin!
+        runners = filter_runners(Ci::Runner.all, params[:scope])
         present paginate(runners), with: Entities::Runner
       end
 
