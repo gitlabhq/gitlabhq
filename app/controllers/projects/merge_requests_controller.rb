@@ -199,11 +199,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       target_branch: @merge_request.target_branch,
       source_project_id: @merge_request.target_project_id,
       target_project_id: @merge_request.target_project_id,
-      description: "Reverts #{@merge_request.to_reference}"
+      description: @merge_request.revert_description
     }}
 
     if target_branch_exists
-      @repository.revert_merge(current_user, @merge_request)
+      @repository.revert_merge(current_user, @merge_request.merge_commit_sha,
+                               @merge_request.revert_branch_name, @merge_request.revert_title)
+
       redirect_to new_namespace_project_merge_request_url(@project.namespace, @project, url_params)
     else
       redirect_to namespace_project_merge_request_url(@project.namespace, @project, @merge_request),

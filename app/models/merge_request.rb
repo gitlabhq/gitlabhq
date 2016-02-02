@@ -537,4 +537,12 @@ class MergeRequest < ActiveRecord::Base
   def revert_branch_name
     "revert-#{iid}-#{target_branch}"
   end
+
+  def revert_title
+   "Revert \"#{title}\""
+  end
+
+  def revert_description
+    "Reverts #{to_reference}"
+  end
 end
