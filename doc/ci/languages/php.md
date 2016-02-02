@@ -97,7 +97,7 @@ image: php:5.6
 
 before_script:
 # Install dependencies
-- ci/docker_install.sh > /dev/null
+- bash ci/docker_install.sh > /dev/null
 
 test:app:
   script:
@@ -112,7 +112,7 @@ with a different docker image version and the runner will do the rest:
 ```yaml
 before_script:
 # Install dependencies
-- ci/docker_install.sh > /dev/null
+- bash ci/docker_install.sh > /dev/null
 
 # We test PHP5.6
 test:5.6:
