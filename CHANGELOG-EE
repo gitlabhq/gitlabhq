@@ -7,6 +7,7 @@ v 8.5.0 (unreleased)
 v 8.4.3
   - Elasticsearch: fix partial blob indexing on push
   - Elasticsearch: added advanced indexer for repositories
+  - Fix Mirror User dropdown
 
 v 8.4.2
   - Elasticsearch indexer performance improvements
