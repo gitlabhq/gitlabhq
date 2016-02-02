@@ -71,7 +71,7 @@
   .block {
     @include clearfix;
     padding:  $gl-padding 0;
-    border-bottom: 1px solid #F0F0F0;
+    border-bottom: 1px solid $border-gray-light;
     // This prevents the mess when resizing the sidebar 
     // of elements repositioning themselves..
     width: 210px;
@@ -195,7 +195,7 @@
 
   .btn {
     background: $gray-normal;
-    border: 1px solid $gray-darkest;
+    border: 1px solid $border-gray-normal;
   }
 
   &.right-sidebar-collapsed {
