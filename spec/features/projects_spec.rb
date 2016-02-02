@@ -82,7 +82,26 @@ feature 'Project', feature: true do
 
     it 'click project-settings and find leave project' do
       find('#project-settings-button').click
-      expect(page).to have_link('Leave Project') 
+      expect(page).to have_link('Leave Project')
+    end
+  end
+
+  describe 'project title' do
+    include WaitForAjax
+
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, namespace: user.namespace) }
+
+    before do
+      login_with(user)
+      project.team.add_user(user, Gitlab::Access::MASTER)
+      visit namespace_project_path(project.namespace, project)
+    end
+
+    it 'click toggle and show dropdown', js: true do
+      find('.js-projects-dropdown-toggle').click
+      wait_for_ajax
+      expect(page).to have_css('.select2-results li', count: 1)
     end
   end
 
