@@ -49,7 +49,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", git: 'https://gitlab.com/gitlab-org/gitlab_git.git', branch: 'lazy-blob'
+gem "gitlab_git", '~> 8.0.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
