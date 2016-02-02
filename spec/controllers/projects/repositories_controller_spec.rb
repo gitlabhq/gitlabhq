@@ -8,15 +8,10 @@ describe Projects::RepositoriesController do
     before do
       sign_in(user)
       project.team << [user, :developer]
-
-      allow(ArchiveRepositoryService).to receive(:new).and_return(service)
     end
 
-    let(:service) { ArchiveRepositoryService.new(project, "master", "zip") }
-
-    it "executes ArchiveRepositoryService" do
-      expect(ArchiveRepositoryService).to receive(:new).with(project, "master", "zip")
-      expect(service).to receive(:execute)
+    it "uses Gitlab::Workhorse" do
+      expect(Gitlab::Workhorse).to receive(:send_git_archive).with(project, "master", "zip")
 
       get :archive, namespace_id: project.namespace.path, project_id: project.path, ref: "master", format: "zip"
     end
@@ -24,7 +19,7 @@ describe Projects::RepositoriesController do
     context "when the service raises an error" do
 
       before do
-        allow(service).to receive(:execute).and_raise("Archive failed")
+        allow(Gitlab::Workhorse).to receive(:send_git_archive).and_raise("Archive failed")
       end
 
       it "renders Not Found" do

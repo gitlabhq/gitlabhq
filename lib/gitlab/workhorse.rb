@@ -4,17 +4,36 @@ require 'json'
 module Gitlab
   class Workhorse
     class << self
+      SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
+
       def send_git_blob(repository, blob)
-        params_hash = {
+        params = {
           'RepoPath' => repository.path_to_repo,
           'BlobId' => blob.id,
         }
-        params = Base64.urlsafe_encode64(JSON.dump(params_hash))
 
         [
-          'Gitlab-Workhorse-Send-Data',
-          "git-blob:#{params}",
+          SEND_DATA_HEADER,
+          "git-blob:#{encode(params)}",
         ]
+      end
+
+      def send_git_archive(project, ref, format)
+        format ||= 'tar.gz'
+        format.downcase!
+        params = project.repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
+        raise "Repository or ref not found" if params.empty?
+
+        [
+          SEND_DATA_HEADER,
+          "git-archive:#{encode(params)}",
+        ]
+      end
+      
+      protected
+      
+      def encode(hash)
+        Base64.urlsafe_encode64(JSON.dump(hash))
       end
     end
   end
