@@ -57,7 +57,7 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def erase
-    @build.erase!
+    @build.erase!(erased_by: current_user)
     redirect_to namespace_project_build_path(project.namespace, project, @build),
                 notice: "Build ##{@build.id} has been sucessfully erased!"
   end

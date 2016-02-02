@@ -1,6 +1,28 @@
 require 'spec_helper'
 
 describe Ci::Build::Eraseable, models: true do
+  shared_examples 'eraseable' do
+    it 'should remove artifact file' do
+      expect(build.artifacts_file.exists?).to be_falsy
+    end
+
+    it 'should remove artifact metadata file' do
+      expect(build.artifacts_metadata.exists?).to be_falsy
+    end
+
+    it 'should erase build trace in trace file' do
+      expect(File.zero?(build.path_to_trace)).to eq true
+    end
+
+    it 'should set erased to true' do
+      expect(build.erased?).to be true
+    end
+
+    it 'should set erase date' do
+      expect(build.erased_at).to_not be_falsy
+    end
+  end
+
   context 'build is not eraseable' do
     let!(:build) { create(:ci_build) }
 
@@ -23,18 +45,26 @@ describe Ci::Build::Eraseable, models: true do
     let!(:build) { create(:ci_build_with_trace, :success, :artifacts) }
 
     describe '#erase!' do
-      before { build.erase! }
+      before { build.erase!(erased_by: user) }
 
-      it 'should remove artifact file' do
-        expect(build.artifacts_file.exists?).to be_falsy
+      context 'erased by user' do
+        let!(:user) { create(:user, username: 'eraser') }
+
+        include_examples 'eraseable'
+
+        it 'should record user who erased a build' do
+          expect(build.erased_by).to eq user
+        end
       end
 
-      it 'should remove artifact metadata file' do
-        expect(build.artifacts_metadata.exists?).to be_falsy
-      end
+      context 'erased by system' do
+        let(:user) { nil }
 
-      it 'should erase build trace in trace file' do
-        expect(File.zero?(build.path_to_trace)).to eq true
+        include_examples 'eraseable'
+
+        it 'should not set user who erased a build' do
+          expect(build.erased_by).to be_nil
+        end
       end
     end
 

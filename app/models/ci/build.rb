@@ -39,7 +39,7 @@
 module Ci
   class Build < CommitStatus
     include Gitlab::Application.routes.url_helpers
-    include Eraseable
+    include Build::Eraseable
 
     LAZY_ATTRIBUTES = ['trace']
 
@@ -208,8 +208,8 @@ module Ci
       end
     end
 
-    def trace_empty?
-      raw_trace.blank?
+    def has_trace?
+      raw_trace.present?
     end
 
     def raw_trace
