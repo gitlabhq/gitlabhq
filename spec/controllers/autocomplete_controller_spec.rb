@@ -10,6 +10,7 @@ describe AutocompleteController do
     before do
       sign_in(user)
       project.team << [user, :master]
+      project.team << [user2, :developer]
     end
 
     let(:body) { JSON.parse(response.body) }
@@ -20,7 +21,7 @@ describe AutocompleteController do
       end
 
       it { expect(body).to be_kind_of(Array) }
-      it { expect(body.size).to eq 1 }
+      it { expect(body.size).to eq 2 }
       it { expect(body.first["username"]).to eq user.username }
     end
 
@@ -30,6 +31,16 @@ describe AutocompleteController do
       end
 
       it { expect(response.status).to eq(404) }
+    end
+
+    describe "GET #users that can push to protected branches" do
+      before do
+        get(:users, project_id: project.id, push_code_to_protected_branches: 'true')
+      end
+
+      it { expect(body).to be_kind_of(Array) }
+      it { expect(body.size).to eq 1 }
+      it { expect(body.first["username"]).to eq user.username }
     end
   end
 
