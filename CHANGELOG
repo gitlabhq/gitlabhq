@@ -32,6 +32,9 @@ v 8.4.3
   - Fix highlighting in blame view
   - Update sentry-raven gem to prevent "Not a git repository" console output
     when running certain commands
+  - Add instrumentation to additional Gitlab::Git and Rugged methods for
+    performance monitoring
+  - Allow autosize textareas to also be manually resized
 
 v 8.4.2
   - Bump required gitlab-workhorse version to bring in a fix for missing
