@@ -184,10 +184,12 @@ module Gitlab
           return build_status_object(false, "You can not delete tag")
         end
       else
+        # if newrev is blank, the branch was deleted
         if Gitlab::Git.blank_ref?(newrev) || !git_hook.commit_validation?
           return build_status_object(true)
         end
 
+        # if oldrev is blank, the branch was just created
         oldrev = project.default_branch if Gitlab::Git.blank_ref?(oldrev)
 
         commits =
