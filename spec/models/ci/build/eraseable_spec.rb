@@ -11,7 +11,7 @@ describe Ci::Build::Eraseable, models: true do
     end
 
     it 'should erase build trace in trace file' do
-      expect(File.zero?(build.path_to_trace)).to eq true
+      expect(build.trace).to be_empty
     end
 
     it 'should set erased to true' do
@@ -76,6 +76,21 @@ describe Ci::Build::Eraseable, models: true do
     describe '#erase_url' do
       subject { build.erase_url }
       it { is_expected.to be_truthy }
+    end
+
+    describe '#erased?' do
+      let!(:build) { create(:ci_build_with_trace, :success, :artifacts) }
+      subject { build.erased? }
+
+      context 'build has not been erased' do
+        it { is_expected.to be false }
+      end
+
+      context 'build has been erased' do
+        before { build.erase! }
+
+        it { is_expected.to be true }
+      end
     end
 
     context 'metadata and build trace are not available' do

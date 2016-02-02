@@ -26,16 +26,18 @@ module Ci
         end
       end
 
+      def erased?
+        !self.erased_at.nil?
+      end
+
       private
 
       def erase_trace!
-        File.truncate(path_to_trace, 0) if File.file?(path_to_trace)
+        self.trace = nil
       end
 
       def update_erased!(user = nil)
-        self.erased_by = user if user
-        self.erased_at = Time.now
-        self.save!
+        self.update(erased_by: user, erased_at: Time.now)
       end
     end
   end
