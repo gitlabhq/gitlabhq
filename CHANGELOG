@@ -4,6 +4,7 @@ v 8.5.0 (unreleased)
   - Ensure rake tasks that don't need a DB connection can be run without one
   - Add "visibility" flag to GET /projects api endpoint
   - Ignore binary files in code search to prevent Error 500 (Stan Hu)
+  - Render sanitized SVG images (Stan Hu)
   - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
   - New UI for pagination
   - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
@@ -14,7 +15,9 @@ v 8.5.0 (unreleased)
   - Display 404 error on group not found
   - Track project import failure
   - Fix visibility level text in admin area (Zeger-Jan van de Weg)
+  - Warn admin during OAuth of granting admin rights (Zeger-Jan van de Weg)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
+  - Optimized performance of finding issues to be closed by a merge request
   - Revert "Add IP check against DNSBLs at account sign-up"
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
@@ -47,7 +50,6 @@ v 8.4.1
     and Nokogiri (1.6.7.2)
   - Fix redirect loop during import
   - Fix diff highlighting for all syntax themes
-  - Warn admin during OAuth of granting admin rights (Zeger-Jan van de Weg)
   - Delete project and associations in a background worker
 
 v 8.4.0

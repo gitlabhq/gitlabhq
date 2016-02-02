@@ -179,6 +179,9 @@ gem "underscore-rails", "~> 1.8.0"
 gem "sanitize", '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
+# Sanitizes SVG input
+gem "loofah", "~> 2.0.3"
+
 # Protect against bruteforcing
 gem "rack-attack", '~> 4.3.1'
 
