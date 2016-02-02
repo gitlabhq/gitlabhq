@@ -6,6 +6,10 @@ module AuthHelper
     Gitlab.config.ldap.enabled
   end
 
+  def omniauth_enabled?
+    Gitlab.config.omniauth.enabled
+  end
+
   def provider_has_icon?(name)
     PROVIDERS_WITH_ICONS.include?(name.to_s)
   end
