@@ -2,11 +2,12 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
   include Gitlab::ShellAdapter
 
   class ProjectPath
-    attr_reader :old_path, :id
+    attr_reader :old_path, :id, :namespace_path
 
-    def initialize(old_path, id)
+    def initialize(old_path, id, namespace_path)
       @old_path = old_path
       @id = id
+      @namespace_path = namespace_path
     end
 
     def clean_path
@@ -43,48 +44,27 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
   end
 
   def projects_with_dot_atom
-    select_all("SELECT id, path FROM projects WHERE lower(path) LIKE '%.atom'")
+    select_all("SELECT p.id, p.path, n.path as namespace_path FROM projects p inner join namespaces n on n.id = p.namespace_id WHERE lower(p.path) LIKE '%.atom'")
   end
 
   def up
     projects_with_dot_atom.each do |project|
-      binding.pry
-      project_path = ProjectPath.new(project['path'], project['id'])
-      clean_path(project_path) if move_path(project_path)
+      project_path = ProjectPath.new(project['path'], project['id'], project['namespace_path'])
+      clean_path(project_path) if rename_project_repo(project_path)
     end
   end
 
   private
 
   def clean_path(project_path)
-    execute "UPDATE projects SET path = '#{project_path.clean_path}' WHERE id = #{project.id}"
+    execute "UPDATE projects SET path = '#{project_path.clean_path}' WHERE id = #{project_path.id}"
   end
 
-  #TODO: Fix this
-  def move_path(project_path)
-    # Based on RemovePeriodsAtEndsOfUsernames
-    # Don't attempt to move if original path only contains periods.
-    return if project_path.clean_path =~ /\A\.+\z/
-    if gitlab_shell.mv_namespace(project_path.old_path, project_path.clean_path)
-      # If repositories moved successfully we need to remove old satellites
-      # and send update instructions to users.
-      # However we cannot allow rollback since we moved namespace dir
-      # So we basically we mute exceptions in next actions
-      begin
-        gitlab_shell.rm_satellites(project_path.old_path)
-          # We cannot send update instructions since models and mailers
-          # can't safely be used from migrations as they may be written for
-          # later versions of the database.
-          # send_update_instructions
-      rescue
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
-        false
-      end
-    else
-      # if we cannot move namespace directory we should avoid
-      # db changes in order to prevent out of sync between db and fs
-      false
-    end
+  def rename_project_repo(project_path)
+    old_path_with_namespace = File.join(project_path.namespace_path, project_path.old_path)
+    new_path_with_namespace = File.join(project_path.namespace_path, project_path.clean_path)
+
+    gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
+    gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
   end
 end
