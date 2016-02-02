@@ -157,8 +157,12 @@
                     %li
                       phpunit --coverage-text --colors=never (PHP) -
                       %code ^\s*Lines:\s*\d+.\d+\%
-
-
+              .form-group
+                .col-sm-offset-2.col-sm-10
+                  .checkbox
+                    = f.label :allow_guest_to_access_builds do
+                      = f.check_box :allow_guest_to_access_builds
+                      Allow guest to access builds (including build logs and artifacts)
           %fieldset.features
             %legend
               Advanced settings

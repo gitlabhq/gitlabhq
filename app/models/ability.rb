@@ -53,12 +53,11 @@ class Ability
           :read_merge_request,
           :read_note,
           :read_commit_status,
-          :read_build,
           :download_code
         ]
 
-        if project.restrict_builds?
-          rules -= :read_build
+        if project.allow_guest_to_access_builds?
+          rules += :read_build
         end
 
         rules - project_disabled_features_rules(project)
@@ -114,13 +113,17 @@ class Ability
 
         elsif team.guest?(user)
           rules.push(*project_guest_rules)
+
+          if project.allow_guest_to_access_builds?
+            rules += :read_build
+          end
         end
 
         if project.public? || project.internal?
           rules.push(*public_project_rules)
 
-          if team.guest?(user) && project.restrict_builds?
-            rules -= named_abilities('build')
+          if project.allow_guest_to_access_builds?
+            rules += :read_build
           end
         end
 
@@ -145,7 +148,6 @@ class Ability
         :download_code,
         :fork_project,
         :read_commit_status,
-        :read_build,
       ]
     end
 
