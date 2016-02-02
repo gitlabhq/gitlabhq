@@ -302,8 +302,7 @@ group :production do
   gem "gitlab_meta", '7.0'
 end
 
-gem "newrelic_rpm", '~> 3.9.4.245'
-gem 'newrelic-grape'
+gem "newrelic_rpm", '~> 3.14'
 
 gem 'octokit', '~> 3.8.0'
 
