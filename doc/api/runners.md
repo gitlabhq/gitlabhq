@@ -8,13 +8,15 @@ Get a list of runners.
 GET /runners
 ```
 
-| Attribute | Type    | required | Description         |
+| Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`; showing all runners if none provided |
 
 ```
 curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners"
 ```
+
+Example response:
 
 ```json
 [
@@ -43,13 +45,15 @@ Get details of a runner.
 GET /runners/:id
 ```
 
-| Attribute | Type    | required | Description         |
+| Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a runner  |
 
 ```
 curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6"
 ```
+
+Example response:
 
 ```json
 {
@@ -78,7 +82,7 @@ Update details of a runner.
 PUT /runners/:id
 ```
 
-| Attribute     | Type    | required | Description         |
+| Attribute     | Type    | Required | Description         |
 |---------------|---------|----------|---------------------|
 | `id`          | integer | yes      | The ID of a runner  |
 | `description` | string  | no       | The description of a runner |
@@ -88,6 +92,8 @@ PUT /runners/:id
 ```
 curl -X PUT -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6" -F "description=test-1-20150125-test" -F "tag_list=ruby,mysql,tag1,tag2"
 ```
+
+Example response:
 
 ```json
 {
@@ -118,13 +124,15 @@ Remove a runner.
 DELETE /runners/:id
 ```
 
-| Attribute | Type    | required | Description         |
+| Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a runner  |
 
 ```
 curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6"
 ```
+
+Example response:
 
 ```json
 {
@@ -151,13 +159,15 @@ is defined **and** shared runners usage is enabled in project's settings.
 GET /projects/:id/runners
 ```
 
-| Attribute | Type    | required | Description         |
+| Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a project |
 
 ```
 curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners"
 ```
+
+Example response:
 
 ```json
 [
@@ -186,7 +196,7 @@ Enable available specific runner in project.
 PUT /projects/:id/runners/:runner_id
 ```
 
-| Attribute   | Type    | required | Description         |
+| Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
 | `runner_id` | integer | yes      | The ID of a runner  |
@@ -194,6 +204,8 @@ PUT /projects/:id/runners/:runner_id
 ```
 curl -X PUT -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
 ```
+
+Example response:
 
 ```json
 {
@@ -214,7 +226,7 @@ specified runner. If so, then an error is returned and user should use the [remo
 PUT /projects/:id/runners/:runner_id
 ```
 
-| Attribute   | Type    | required | Description         |
+| Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
 | `runner_id` | integer | yes      | The ID of a runner  |
@@ -222,6 +234,8 @@ PUT /projects/:id/runners/:runner_id
 ```
 curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
 ```
+
+Example response:
 
 ```json
 {
