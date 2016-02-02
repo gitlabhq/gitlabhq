@@ -105,5 +105,8 @@ module Gitlab
 
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
+
+    # Gitlab Geo Middleware support
+    config.middleware.use 'Gitlab::Middleware::ReadonlyGeo'
   end
 end
