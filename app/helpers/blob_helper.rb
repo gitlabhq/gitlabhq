@@ -126,4 +126,16 @@ module BlobHelper
       blob.size
     end
   end
+
+  def blob_svg?(blob)
+    blob.language && blob.language.name == 'SVG'
+  end
+
+  # SVGs can contain malicious JavaScript; only include whitelisted
+  # elements and attributes. Note that this whitelist is by no means complete
+  # and may omit some elements.
+  def sanitize_svg(blob)
+    blob.data = Loofah.scrub_fragment(blob.data, :strip).to_xml
+    blob
+  end
 end

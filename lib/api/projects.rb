@@ -187,7 +187,7 @@ module API
         else
           present @forked_project, with: Entities::Project,
                                    user_can_admin_project: can?(current_user, :admin_project, @forked_project)
-         end
+        end
       end
 
       # Update an existing project
@@ -246,7 +246,7 @@ module API
       #   DELETE /projects/:id
       delete ":id" do
         authorize! :remove_project, user_project
-        ::Projects::DestroyService.new(user_project, current_user, {}).execute
+        ::Projects::DestroyService.new(user_project, current_user, {}).pending_delete!
       end
 
       # Mark this project as forked from another

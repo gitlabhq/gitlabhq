@@ -4,6 +4,15 @@
     Authorize
     %strong.text-info= @pre_auth.client.name
     to use your account?
+
+  - if current_user.admin?
+    .text-warning.prepend-top-20
+      %p
+        = icon("exclamation-triangle fw")
+        You are an admin, which means granting access to
+        %strong #{@pre_auth.client.name}
+        will allow them to interact with GitLab as an admin as well. Proceed with caution.
+
   - if @pre_auth.scopes
     #oauth-permissions
       %p This application will be able to:

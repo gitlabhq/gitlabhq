@@ -147,7 +147,7 @@ sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true)
 sudo gitlab-rake gitlab:env:info)
 
 (For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:env:info)
+sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production)
 
 ## Possible fixes
 
@@ -254,6 +254,8 @@ For examples of feedback on merge requests please look at already
 [closed merge requests][]. If you would like quick feedback on your merge
 request feel free to mention one of the Merge Marshalls of the [core team][].
 Please ensure that your merge request meets the contribution acceptance criteria.
+
+When having your code reviewed and when reviewing merge requests please take the [thoughtbot code review guidelines](https://github.com/thoughtbot/guides/tree/master/code-review) into account.
 
 ## Definition of done
 

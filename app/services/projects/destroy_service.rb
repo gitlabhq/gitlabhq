@@ -6,6 +6,12 @@ module Projects
 
     DELETED_FLAG = '+deleted'
 
+    def pending_delete!
+      project.update_attribute(:pending_delete, true)
+
+      ProjectDestroyWorker.perform_in(1.minute, project.id, current_user.id, params)
+    end
+
     def execute
       return false unless can?(current_user, :remove_project, project)
 
