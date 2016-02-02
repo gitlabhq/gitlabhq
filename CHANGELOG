@@ -35,6 +35,7 @@ v 8.5.0 (unreleased)
   - Fixed logo animation on Safari (Roman Rott)
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
   - In seach autocomplete show only groups and projects you are member of
+  - Title for milestones should be unique (Zeger-Jan van de Weg)
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
