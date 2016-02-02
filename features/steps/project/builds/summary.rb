@@ -26,6 +26,8 @@ class Spinach::Features::ProjectBuildsSummary < Spinach::FeatureSteps
   end
 
   step 'recent build summary contains information saying that build has been erased' do
-    expect(page).to have_css('.erased')
+    page.within('.erased') do
+      expect(page).to have_content 'Build has been erased'
+    end
   end
 end

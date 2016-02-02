@@ -159,6 +159,22 @@ module Ci
           build.remove_artifacts_file!
           build.remove_artifacts_metadata!
         end
+
+        # Erase build (remove artifacts and build trace)
+        #
+        # Parameters:
+        #   id (required) - The ID of a build
+        #   token (required) - The build authorization token
+        # Headers:
+        #   BUILD-TOKEN (required) - The build authorization token, the same as token
+        # Example Request:
+        #   PUT /builds/:id/erase
+        put ':id/erase' do
+          build = Ci::Build.find_by_id(params[:id])
+          not_found! unless build
+          authenticate_build_token!(build)
+          build.erase!
+        end
       end
     end
   end
