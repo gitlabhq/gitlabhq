@@ -1,10 +1,10 @@
 .top-area
   %ul.nav-links
     = nav_link(page: dashboard_groups_path) do
-      = link_to dashboard_groups_path, title: 'Your groups', data: {placement: 'right'} do
+      = link_to dashboard_groups_path, title: 'Your groups' do
         Your Groups
     = nav_link(page: explore_groups_path) do
-      = link_to explore_groups_path, title: 'Explore groups', data: {placement: 'bottom'} do
+      = link_to explore_groups_path, title: 'Explore groups' do
         Explore Groups
   - if current_user.can_create_group?
     .projects-search-form

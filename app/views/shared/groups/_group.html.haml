@@ -15,11 +15,11 @@
   .stats
     %span
       = icon('home')
-      = group.projects.count
+      = number_with_delimiter(group.projects.count)
 
     %span
       = icon('users')
-      = group.users.count
+      = number_with_delimiter(group.users.count)
 
   = image_tag group_icon(group), class: "avatar s46 hidden-xs"
   = link_to group, class: 'group-name' do
