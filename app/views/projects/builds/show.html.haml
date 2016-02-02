@@ -76,10 +76,15 @@
         = link_to '#down-build-trace', class: 'btn' do
           %i.fa.fa-angle-down
 
-      %pre.trace#build-trace
-        %code.bash
-          = preserve do
-            = raw @build.trace_html
+      - unless @build.erased?
+        %pre.trace#build-trace
+          %code.bash
+            = preserve do
+              = raw @build.trace_html
+      - else
+        .erased.alert.alert-warning
+          Build has been erased by #{@build.erased_by.username} #{time_ago_with_tooltip(@build.created_at)}
+
       %div#down-build-trace
 
     .col-md-3

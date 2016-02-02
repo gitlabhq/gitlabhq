@@ -24,4 +24,8 @@ class Spinach::Features::ProjectBuildsSummary < Spinach::FeatureSteps
   step 'recent build summary does not have artifacts widget' do
     expect(page).to have_no_css('.artifacts')
   end
+
+  step 'recent build summary contains information saying that build has been erased' do
+    expect(page).to have_css('.erased')
+  end
 end

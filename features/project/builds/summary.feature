@@ -20,3 +20,4 @@ Feature: Project Builds Summary
     And I click erase build button
     Then recent build has been erased
     And recent build summary does not have artifacts widget
+    And recent build summary contains information saying that build has been erased
