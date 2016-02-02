@@ -46,10 +46,10 @@ describe API::API, api: true  do
         expect(json_response.first['title']).to eq(issue.title)
       end
 
-      it "should add pagination headers" do
-        get api("/issues?per_page=3", user)
+      it "should add pagination headers and keep query params" do
+        get api("/issues?state=closed&per_page=3", user)
         expect(response.headers['Link']).to eq(
-          '<http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="last"'
+          '<http://www.example.com/api/v3/issues?page=1&per_page=3&private_token=%s&state=closed>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3&private_token=%s&state=closed>; rel="last"' % [user.private_token, user.private_token]
         )
       end
 
