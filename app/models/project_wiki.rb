@@ -1,6 +1,6 @@
 class ProjectWiki
   include Gitlab::ShellAdapter
-  include WikiRepositoriesSearch
+  include Elastic::WikiRepositoriesSearch
 
   MARKUPS = {
     'Markdown' => :md,

@@ -52,7 +52,7 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
-  include ProjectsSearch
+  include Elastic::ProjectsSearch
 
   extend Gitlab::ConfigHelper
 

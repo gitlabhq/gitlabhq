@@ -1,7 +1,7 @@
 require 'securerandom'
 
 class Repository
-  include RepositoriesSearch
+  include Elastic::RepositoriesSearch
 
   class CommitError < StandardError; end
 
