@@ -31,6 +31,9 @@
 #  artifacts_file     :text
 #  gl_project_id      :integer
 #  artifacts_metadata :text
+#  erased             :boolean          default(FALSE)
+#  erased_by_id       :integer
+#  erased_at          :datetime
 #
 
 module Ci
