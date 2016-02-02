@@ -26,7 +26,7 @@ class Note < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Participable
   include Mentionable
-  include NotesSearch
+  include Elastic::NotesSearch
 
   default_value_for :system, false
 

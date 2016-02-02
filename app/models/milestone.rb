@@ -24,7 +24,7 @@ class Milestone < ActiveRecord::Base
   include Sortable
   include Referable
   include StripAttribute
-  include MilestonesSearch
+  include Elastic::MilestonesSearch
 
   belongs_to :project
   has_many :issues
