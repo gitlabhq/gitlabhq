@@ -151,8 +151,8 @@ describe Ci::API::API do
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
-      let(:build) { FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id) }
+      let(:commit) { create(:ci_commit, project: project) }
+      let(:build) { create(:ci_build, commit: commit, runner_id: runner.id) }
       let(:authorize_url) { ci_api("/builds/#{build.id}/artifacts/authorize") }
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
@@ -349,33 +349,46 @@ describe Ci::API::API do
         end
       end
 
-      describe "DELETE /builds/:id/artifacts" do
-        before do
-          build.run!
-          post delete_url, token: build.token, file: file_upload
+      describe 'DELETE /builds/:id/artifacts' do
+        let(:build) { create(:ci_build, :artifacts) }
+        before { delete delete_url, token: build.token }
+
+        it 'should respond valid status' do
+          expect(response.status).to eq(200)
         end
 
-        it "should delete artifact build" do
-          build.success
-          delete delete_url, token: build.token
-          expect(response.status).to eq(200)
+        it 'should remove artifacts file' do
+          expect(build.artifacts_file.exists?).to be_falsy
+        end
+
+        it 'should remove artifacts metadata' do
+          expect(build.artifacts_metadata.exists?).to be_falsy
         end
       end
 
-      describe "GET /builds/:id/artifacts" do
-        before do
-          build.run!
+      describe 'GET /builds/:id/artifacts' do
+        before { get get_url, token: build.token }
+
+        context 'build has artifacts' do
+          let(:build) { create(:ci_build, :artifacts) }
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding'=>'binary',
+              'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
+          end
+
+          it 'should respond with valid status' do
+            expect(response.status).to eq(200)
+          end
+
+          it 'should download artifact' do
+            expect(response.headers).to include download_headers
+          end
         end
 
-        it "should download artifact" do
-          build.update_attributes(artifacts_file: file_upload)
-          get get_url, token: build.token
-          expect(response.status).to eq(200)
-        end
-
-        it "should fail to download if no artifact uploaded" do
-          get get_url, token: build.token
-          expect(response.status).to eq(404)
+        context 'build does not has artifacts' do
+          it 'should respond with not found' do
+            expect(response.status).to eq(404)
+          end
         end
       end
     end

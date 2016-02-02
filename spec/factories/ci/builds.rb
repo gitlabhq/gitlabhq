@@ -65,5 +65,20 @@ FactoryGirl.define do
         build.trace = 'BUILD TRACE'
       end
     end
+
+    trait :artifacts do
+      after(:create) do |build, _|
+        build.artifacts_file =
+          fixture_file_upload(Rails.root +
+                              'spec/fixtures/ci_build_artifacts.zip',
+                              'application/zip')
+
+        build.artifacts_metadata =
+          fixture_file_upload(Rails.root +
+                              'spec/fixtures/ci_build_artifacts_metadata.gz',
+                              'application/x-gzip')
+        build.save!
+      end
+    end
   end
 end
