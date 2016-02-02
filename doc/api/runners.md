@@ -164,7 +164,7 @@ GET /projects/:id/runners
 | `id`      | integer | yes      | The ID of a project |
 
 ```
-curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners"
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners"
 ```
 
 Example response:
@@ -193,7 +193,7 @@ Example response:
 Enable available specific runner in project.
 
 ```
-PUT /projects/:id/runners/:runner_id
+POST /projects/:id/runners/:runner_id
 ```
 
 | Attribute   | Type    | Required | Description         |
@@ -202,7 +202,7 @@ PUT /projects/:id/runners/:runner_id
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
-curl -X PUT -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
+curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
 ```
 
 Example response:
@@ -223,7 +223,7 @@ Disable a specific runner from project. It works only, if the project isn't an o
 specified runner. If so, then an error is returned and user should use the [remove a runner](#remove-a-runner) feature.
 
 ```
-PUT /projects/:id/runners/:runner_id
+DELETE /projects/:id/runners/:runner_id
 ```
 
 | Attribute   | Type    | Required | Description         |

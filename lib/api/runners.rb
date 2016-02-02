@@ -87,8 +87,8 @@ module API
       #   id (required) - The ID of the project
       #   runner_id (required) - The ID of the runner
       # Example Request:
-      #   PUT /projects/:id/runners/:runner_id
-      put ':id/runners/:runner_id' do
+      #   POST /projects/:id/runners/:runner_id
+      post ':id/runners/:runner_id' do
         runner = get_runner(params[:runner_id])
         can_enable_runner?(runner)
         Ci::RunnerProject.create(runner: runner, project: user_project)
