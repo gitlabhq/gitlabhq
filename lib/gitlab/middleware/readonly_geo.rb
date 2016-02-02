@@ -41,7 +41,7 @@ module Gitlab
       end
 
       def last_visited_url
-        @env['HTTP_REFERER'] || rack_session['user_return_to'] || @app.url_helpers.root_url
+        @env['HTTP_REFERER'] || rack_session['user_return_to'] || Rails.application.routes.url_helpers.root_url
       end
 
       def route_hash
