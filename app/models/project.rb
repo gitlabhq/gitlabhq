@@ -36,6 +36,7 @@
 #  build_coverage_regex   :string
 #  build_allow_git_fetch  :boolean          default(TRUE), not null
 #  build_timeout          :integer          default(3600), not null
+#  pending_delete         :boolean
 #
 
 require 'carrierwave/orm/activerecord'

@@ -351,6 +351,19 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content "You're not allowed to make changes to this project directly. A fork of this project has been created that you can make changes in, so you can submit a merge request."
   end
 
+  # SVG files
+  step 'I upload a new SVG file' do
+    drop_in_dropzone test_svg_file
+  end
+
+  step 'I visit the SVG file' do
+    visit namespace_project_blob_path(@project.namespace, @project, 'new_branch_name/logo_sample.svg')
+  end
+
+  step 'I can see the new rendered SVG image' do
+    expect(find('.file-content')).to have_css('img')
+  end
+
   private
 
   def set_new_content
@@ -409,5 +422,9 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   def test_image_file
     File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
+  end
+
+  def test_svg_file
+    File.join(Rails.root, 'spec', 'fixtures', 'logo_sample.svg')
   end
 end

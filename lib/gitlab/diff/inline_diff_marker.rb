@@ -5,10 +5,12 @@ module Gitlab
 
       def initialize(raw_line, rich_line = raw_line)
         @raw_line = raw_line
-        @rich_line = rich_line
+        @rich_line = ERB::Util.html_escape(rich_line)
       end
 
       def mark(line_inline_diffs)
+        return rich_line unless line_inline_diffs
+
         marker_ranges = []
         line_inline_diffs.each do |inline_diff_range|
           # Map the inline-diff range based on the raw line to character positions in the rich line
@@ -19,11 +21,15 @@ module Gitlab
 
         offset = 0
         # Mark each range
-        marker_ranges.each do |range|
-          offset = insert_around_range(rich_line, range, "<span class='idiff'>", "</span>", offset)
+        marker_ranges.each_with_index do |range, i|
+          class_names = ["idiff"]
+          class_names << "left"   if i == 0
+          class_names << "right"  if i == marker_ranges.length - 1
+
+          offset = insert_around_range(rich_line, range, "<span class='#{class_names.join(" ")}'>", "</span>", offset)
         end
 
-        rich_line
+        rich_line.html_safe
       end
 
       private

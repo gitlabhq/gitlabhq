@@ -137,9 +137,10 @@ describe MergeRequest, models: true do
   describe 'detection of issues to be closed' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
-    let(:commit0) { double('commit0', closes_issues: [issue0]) }
-    let(:commit1) { double('commit1', closes_issues: [issue0]) }
-    let(:commit2) { double('commit2', closes_issues: [issue1]) }
+
+    let(:commit0) { double('commit0', safe_message: "Fixes #{issue0.to_reference}") }
+    let(:commit1) { double('commit1', safe_message: "Fixes #{issue0.to_reference}") }
+    let(:commit2) { double('commit2', safe_message: "Fixes #{issue1.to_reference}") }
 
     before do
       allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
@@ -149,7 +150,9 @@ describe MergeRequest, models: true do
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.closes_issues).to eq([issue0, issue1].sort_by(&:id))
+      closed = subject.closes_issues
+
+      expect(closed).to include(issue0, issue1)
     end
 
     it 'only lists issues as to be closed if it targets the default branch' do
@@ -166,17 +169,6 @@ describe MergeRequest, models: true do
         and_return(subject.target_branch)
 
       expect(subject.closes_issues).to include(issue2)
-    end
-
-    context 'for a project with JIRA integration' do
-      let(:issue0) { JiraIssue.new('JIRA-123', subject.project) }
-      let(:issue1) { JiraIssue.new('FOOBAR-4567', subject.project) }
-
-      it 'returns sorted JiraIssues' do
-        allow(subject.project).to receive_messages(default_branch: subject.target_branch)
-
-        expect(subject.closes_issues).to eq([issue0, issue1])
-      end
     end
   end
 
