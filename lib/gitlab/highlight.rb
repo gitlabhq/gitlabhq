@@ -8,6 +8,7 @@ module Gitlab
       blob = repository.blob_at(ref, file_name)
       return [] unless blob
 
+      blob.load_all_data!(repository)
       highlight(file_name, blob.data).lines.map!(&:html_safe)
     end
 
