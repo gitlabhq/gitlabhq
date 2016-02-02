@@ -5,8 +5,8 @@ module Gitlab
     end
 
     def akismet_client
-      ::Akismet::Client.new(current_application_settings.akismet_api_key,
-                            Gitlab.config.gitlab.url)
+      @akismet_client ||= ::Akismet::Client.new(current_application_settings.akismet_api_key,
+        Gitlab.config.gitlab.url)
     end
 
     def check_for_spam?(project, user)
