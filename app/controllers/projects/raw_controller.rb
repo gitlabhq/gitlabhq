@@ -15,7 +15,10 @@ class Projects::RawController < Projects::ApplicationController
       if @blob.lfs_pointer?
         send_lfs_object
       else
-        stream_data
+        headers.store(*Gitlab::Workhorse.send_git_blob(@repository, @blob))
+        headers['Content-Disposition'] = 'inline'
+        headers['Content-Type'] = get_blob_type
+        head :ok # 'render nothing: true' messes up the Content-Type
       end
     else
       render_404
@@ -32,16 +35,6 @@ class Projects::RawController < Projects::ApplicationController
     else
       'application/octet-stream'
     end
-  end
-
-  def stream_data
-    type = get_blob_type
-
-    send_data(
-      @blob.data,
-      type: type,
-      disposition: 'inline'
-    )
   end
 
   def send_lfs_object
