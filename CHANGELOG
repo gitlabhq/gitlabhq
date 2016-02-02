@@ -22,6 +22,7 @@ v 8.5.0 (unreleased)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
   - Mark inline difference between old and new paths when a file is renamed
+  - Support Akismet spam checking for creation of issues via API (Stan Hu)
 
 v 8.4.3
   - Increase lfs_objects size column to 8-byte integer to allow files larger
@@ -74,7 +75,6 @@ v 8.4.0
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
   - Remove gray background from layout in UI
   - Fix signup for OAuth providers that don't provide a name
-  - Support Akismet spam checking for creation of issues via API (Stan Hu)
   - Implement new UI for group page
   - Implement search inside emoji picker
   - Let the CI runner know about builds that this build depends on
