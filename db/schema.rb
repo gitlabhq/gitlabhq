@@ -129,7 +129,6 @@ ActiveRecord::Schema.define(version: 20160209130428) do
     t.text     "artifacts_file"
     t.integer  "gl_project_id"
     t.text     "artifacts_metadata"
-    t.boolean  "erased",             default: false
     t.integer  "erased_by_id"
     t.datetime "erased_at"
   end
@@ -923,5 +922,4 @@ ActiveRecord::Schema.define(version: 20160209130428) do
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
-  add_foreign_key "ci_builds", "users", column: "erased_by_id"
 end

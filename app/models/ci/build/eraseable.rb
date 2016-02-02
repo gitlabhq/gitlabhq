@@ -35,7 +35,6 @@ module Ci
       def update_erased!(user = nil)
         self.erased_by = user if user
         self.erased_at = Time.now
-        self.erased = true
         self.save!
       end
     end
