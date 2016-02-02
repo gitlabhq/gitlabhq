@@ -369,6 +369,12 @@ module API
       expose :id, :variables
     end
 
+    class RunnerProjectDetails < Grape::Entity
+      expose :id
+      expose :name_with_namespace, as: :name
+      expose :path_with_namespace, as: :path
+    end
+
     class Runner < Grape::Entity
       expose :id
       expose :description
@@ -381,6 +387,7 @@ module API
       expose :tag_list
       expose :version, :revision, :platform, :architecture
       expose :contacted_at, as: :last_contact
+      expose :projects, with: Entities::RunnerProjectDetails
     end
 
     class Build < Grape::Entity

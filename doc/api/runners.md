@@ -116,6 +116,13 @@ Example response:
     "last_contact": "2016-01-25T16:39:48.066Z",
     "name": null,
     "platform": null,
+    "projects": [
+        {
+            "id": 1,
+            "name": "GitLab.org / GitLab Community Edition",
+            "path": "gitlab-org/gitlab-ce"
+        }
+    ],
     "revision": null,
     "tag_list": [
         "ruby",
