@@ -10,8 +10,19 @@ module ExploreHelper
 
     options = exist_opts.merge(options)
 
-    path = explore_projects_path
+    path = if explore_controller?
+             explore_projects_path
+           elsif current_action?(:starred)
+             starred_dashboard_projects_path
+           else
+             dashboard_projects_path
+           end
+
     path << "?#{options.to_param}"
     path
+  end
+
+  def explore_controller?
+    controller.class.name.split("::").first == "Explore"
   end
 end

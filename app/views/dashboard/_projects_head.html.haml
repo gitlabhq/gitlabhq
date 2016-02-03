@@ -13,7 +13,8 @@
         Explore Projects
 
   .nav-controls
-    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name...', class: 'projects-list-filter form-control hidden-xs', spellcheck: false
+    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name...', class: 'projects-list-filter form-control hidden-xs input-short', spellcheck: false
+    = render 'explore/projects/dropdown'
     - if current_user.can_create_project?
       = link_to new_project_path, class: 'btn btn-new' do
         = icon('plus')
