@@ -16,6 +16,8 @@
     = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-grouped" do
       = icon('files-o')
       Browse Files
+    = link_to '#modal-revert-commit', { 'data-target' => '#modal-revert-commit', 'data-toggle' => 'modal', class: 'btn btn-grouped'} do
+      Revert
   %div
 
 %p
