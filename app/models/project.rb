@@ -42,7 +42,7 @@
 require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
-class Project < ActiveRecord::Base
+glass Project < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
