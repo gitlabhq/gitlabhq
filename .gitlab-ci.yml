@@ -183,7 +183,7 @@ spinach:ruby21:
 notify:slack:
   stage: notifications
   script:
-    - bundle exec rake ci:slack
+    - bundle exec rake ci:slack:error
   when: on_failure
 #  only:
 #    - master
