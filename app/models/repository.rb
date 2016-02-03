@@ -724,10 +724,11 @@ class Repository
 
     oldrev = Gitlab::Git::BLANK_SHA
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
+    target_branch = find_branch(branch)
     was_empty = empty?
 
-    unless was_empty
-      oldrev = find_branch(branch).target
+    if !was_empty && target_branch
+      oldrev = target_branch.target
     end
 
     with_tmp_ref(oldrev) do |tmp_ref|
@@ -739,7 +740,7 @@ class Repository
       end
 
       GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
-        if was_empty
+        if was_empty || !target_branch
           # Create branch
           rugged.references.create(ref, newrev)
         else
