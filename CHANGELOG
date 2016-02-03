@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.4.4
+  - Update omniauth-saml gem to 1.4.2
+
 v 8.4.3
   - Increase lfs_objects size column to 8-byte integer to allow files larger
     than 2.1GB
