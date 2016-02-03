@@ -97,7 +97,7 @@
 
     .gutter-toggle {
       margin-left: 10px;
-      border-left: 1px solid #F0F0F0;
+      border-left: 1px solid $border-gray-light;
       padding-left: 10px;
     }
   }
@@ -221,6 +221,7 @@
       text-align: center;
       margin-left: -19px;
       padding-bottom: 10px;
+      color: #999999;
 
       span {
         display: block;

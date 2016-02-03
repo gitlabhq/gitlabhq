@@ -10,7 +10,7 @@ class @IssuableContext
     $(".issuable-sidebar .inline-update").on "change", ".js-assignee", ->
       $(this).submit()
 
-    $(".edit-link").click (e) ->
+    $(document).on "click",".edit-link", (e) ->
       block = $(@).parents('.block')
       block.find('.selectbox').show()
       block.find('.value').hide()

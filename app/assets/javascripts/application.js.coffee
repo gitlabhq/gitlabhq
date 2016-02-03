@@ -212,7 +212,7 @@ $ ->
     $this = $(this)
     $this.attr 'value', $this.val()
 
-  $('.right-sidebar').on 'click', '.gutter-toggle', (e) ->
+  $(document).on 'click', 'aside .gutter-toggle', (e) ->
     e.preventDefault()
     $this = $(this)
     $thisIcon = $this.find 'i'
