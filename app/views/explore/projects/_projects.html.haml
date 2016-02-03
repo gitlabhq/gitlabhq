@@ -1,6 +1,6 @@
-- if projects.any?
+- if @projects.any?
   .public-projects
-    = render 'shared/projects/list', projects: projects
+    = render 'shared/projects/list'
 - else
   .nothing-here-block
     No such projects

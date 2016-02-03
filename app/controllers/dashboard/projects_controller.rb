@@ -5,6 +5,13 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = current_user.authorized_projects.sorted_by_activity.non_archived
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.includes(:namespace)
+
+    terms = params['filter_projects']
+
+    if terms.present?
+      @projects = @projects.search(terms)
+    end
+
     @projects = @projects.page(params[:page]).per(PER_PAGE)
     @last_push = current_user.recent_push
 
@@ -14,6 +21,11 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
         event_filter
         load_events
         render layout: false
+      end
+      format.json do
+        render json: {
+          html: view_to_html_string("dashboard/projects/projects", locals: { projects: @projects })
+        }
       end
     end
   end

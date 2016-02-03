@@ -13,9 +13,10 @@
         Explore Projects
 
   .nav-controls
-    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name...', class: 'projects-list-filter form-control hidden-xs input-short', spellcheck: false
-    = render 'explore/projects/dropdown'
-    - if current_user.can_create_project?
-      = link_to new_project_path, class: 'btn btn-new' do
-        = icon('plus')
-        New Project
+    = form_tag '', method: :get, class: 'project-list-form', id: 'project-list-form' do |f|
+      .append-right-10.hidden-xs.hidden-sm
+        = search_field_tag :filter_projects, params[:filter_projects], placeholder: 'Filter by name...', class: 'projects-list-filter form-control issue_search search-text-input', spellcheck: false, id: 'projects-list-filter'
+        - if current_user.can_create_project?
+          = link_to new_project_path, class: 'btn btn-new' do
+            = icon('plus')
+            New Project
