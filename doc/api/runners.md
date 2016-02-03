@@ -13,7 +13,7 @@ GET /runners
 | `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`; showing all runners if none provided |
 
 ```
-curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners"
 ```
 
 Example response:
@@ -50,7 +50,7 @@ GET /runners/all
 | `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`; showing all runners if none provided |
 
 ```
-curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/all"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/all"
 ```
 
 Example response:
@@ -101,7 +101,7 @@ GET /runners/:id
 | `id`      | integer | yes      | The ID of a runner  |
 
 ```
-curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6"
 ```
 
 Example response:
@@ -148,7 +148,7 @@ PUT /runners/:id
 | `tag_list`    | array   | no       | The list of tags for a runner; put array of tags, that should be finally assigned to a runner |
 
 ```
-curl -X PUT -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6" -F "description=test-1-20150125-test" -F "tag_list=ruby,mysql,tag1,tag2"
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6" -F "description=test-1-20150125-test" -F "tag_list=ruby,mysql,tag1,tag2"
 ```
 
 Example response:
@@ -187,7 +187,7 @@ DELETE /runners/:id
 | `id`      | integer | yes      | The ID of a runner  |
 
 ```
-curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6"
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners/6"
 ```
 
 Example response:
@@ -222,7 +222,7 @@ GET /projects/:id/runners
 | `id`      | integer | yes      | The ID of a project |
 
 ```
-curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners"
 ```
 
 Example response:
@@ -260,7 +260,7 @@ POST /projects/:id/runners/:runner_id
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
-curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
 ```
 
 Example response:
@@ -290,7 +290,7 @@ DELETE /projects/:id/runners/:runner_id
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
-curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
 ```
 
 Example response:
