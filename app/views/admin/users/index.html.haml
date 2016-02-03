@@ -30,6 +30,7 @@
 
   .gray-content-block.second-block
     .pull-right
+      = link_to 'Send email to users', admin_email_path, class: 'btn'
       .dropdown.inline
         %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
           %span.light
