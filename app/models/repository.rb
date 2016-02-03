@@ -622,27 +622,46 @@ class Repository
     merge_commit_sha
   end
 
-  def revert_merge(user, merge_commit_id, new_branch_name, target_branch, commit_message)
-    # branch exists and it's highly probable that it has the revert commit
-    return if find_branch(new_branch_name)
+  def revert(user, commit_id, target_branch, base_branch, commit_message)
+    source_sha = find_branch(base_branch).target
+    target_sha = find_branch(target_branch).try(:target)
 
-    target_sha = find_branch(target_branch).target
+    # First make revert in temp branch
+    unless target_sha
+      revert_commit(user, commit_id, target_branch, base_branch, commit_message)
+    end
 
-    commit_with_hooks(user, new_branch_name) do |ref|
-      new_index = rugged.revert_commit(merge_commit_id, target_sha, mainline: 1)
+    # Make the revert happen in the target branch
+    source_sha = find_branch(target_branch).target
+    target_sha = find_branch(base_branch).target
+
+    if is_there_something_to_merge?(source_sha, target_sha)
+      revert_commit(user, commit_id, base_branch, base_branch, commit_message)
+    end
+  end
+
+  def revert_commit(user, commit_id, target_branch, base_branch, commit_message)
+    base_sha = find_branch(base_branch).target
+
+    commit_with_hooks(user, target_branch) do |ref|
+      new_index = rugged.revert_commit(commit_id, base_sha)#, mainline: 1)
+
+      return false if new_index.conflicts?
+
       committer = user_to_committer(user)
-
-      options = {
+      source_sha = Rugged::Commit.create(rugged, {
         message: commit_message,
         author: committer,
         committer: committer,
         tree: new_index.write_tree(rugged),
-        parents: [rugged.lookup(target_sha)],
+        parents: [rugged.lookup(base_sha)],
         update_ref: ref
-      }
-
-      Rugged::Commit.create(rugged, options)
+      })
     end
+  end
+
+  def is_there_something_to_merge?(source_branch_sha, target_branch_sha)
+    CompareService.new.execute(project, source_branch_sha, project, target_branch_sha).diffs.present?
   end
 
   def merged_to_root_ref?(branch_name)

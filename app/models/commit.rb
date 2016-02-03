@@ -215,6 +215,14 @@ class Commit
     ci_commit.try(:status) || :not_found
   end
 
+  def revert_branch_name
+    "revert-#{project.id}-#{short_id}"
+  end
+
+  def revert_message
+    "Revert \"#{safe_message.lines.first}\"".truncate(80) + "\n\nReverts #{to_reference}"
+  end
+
   private
 
   def repo_changes

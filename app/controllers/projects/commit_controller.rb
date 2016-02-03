@@ -11,6 +11,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_commit_status!, only: [:builds]
   before_action :commit
   before_action :define_show_vars, only: [:show, :builds]
+  before_action :assign_revert_commit_vars, only: [:revert]
   before_action :authorize_edit_tree!, only: [:revert]
 
   def show
@@ -59,7 +60,11 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def revert
+    # return render_404 unless @commit_params.values.all?
 
+    create_commit(Commits::RevertService, success_notice: "The commit has been successfully reverted.",
+                                          success_path: namespace_project_commits_path(@project.namespace, @project, @target_branch),
+                                          failure_path: namespace_project_commit_path(@project.namespace, @project, params[:id]))
   end
 
   private
@@ -85,5 +90,13 @@ class Projects::CommitController < Projects::ApplicationController
     @notes_count = commit.notes.count
 
     @statuses = ci_commit.statuses if ci_commit
+  end
+
+  def assign_revert_commit_vars
+    @target_branch = params[:target_branch]
+
+    @commit_params = {
+      revert_commit_id: params[:id],
+    }
   end
 end
