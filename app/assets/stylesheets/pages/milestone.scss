@@ -12,35 +12,40 @@ li.milestone {
   }
 }
 
-.time-elapsed {
-  color: #F14539;
-}
-
-.issue-row .assignee-icon {
-  .color-label {
-    float: left;
-    padding: 8px;
-    margin-left: 10px;
+.milestone-content {
+  .issues-count {
+    margin-right: 17px;
+    float: right;
+    width: 105px;
   }
 
-  img {
-    margin-left: 8px;
+  .panel-heading {
+    font-weight: bold;
+  }
+
+  .issue-row .assignee-icon {
+    .color-label {
+      float: left;
+      padding: 8px;
+      margin-left: 10px;
+    }
+
+    img {
+      margin-left: 8px;
+    }
   }
 }
 
 .milestone-summary {
   margin-bottom: 25px;
-}
 
-.milestone-stat {
-  margin-right: 10px;
-}
+  .milestone-stat {
+    margin-right: 10px;
+  }
 
-
-#tab-labels .issues-count {
-  margin-right: 17px;
-  float: right;
-  width: 105px;
+  .time-elapsed {
+    color: $orange-light;
+  }
 }
 
 .issues-sortable-list {

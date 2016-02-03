@@ -110,6 +110,9 @@ class Milestone < ActiveRecord::Base
     0
   end
 
+  # Returns the elapsed time (in percent) since the Milestone creation date until today.
+  # If the Milestone doesn't have a due_date then returns 0 since we can't calculate the elapsed time.
+  # If the Milestone is overdue then it returns 100%.
   def percent_time_used
     return 0 unless due_date
     return 100 if expired?
