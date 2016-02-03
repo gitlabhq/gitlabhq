@@ -5,6 +5,12 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
+      if subject.is_a?(CommitStatus)
+        rules = project_abilities(user, subject)
+        rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
+        return rules
+      end
+
       case subject.class.name
       when "Project" then project_abilities(user, subject)
       when "Issue" then issue_abilities(user, subject)
@@ -25,6 +31,10 @@ class Ability
       case true
       when subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
+      when subject.is_a?(CommitStatus)
+        rules = anonymous_project_abilities(subject)
+        rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
+        rules
       when subject.is_a?(Project) || subject.respond_to?(:project)
         anonymous_project_abilities(subject)
       when subject.is_a?(Group) || subject.respond_to?(:group)
@@ -393,6 +403,18 @@ class Ability
         end
       end
 
+      rules
+    end
+
+    def filter_build_abilities(rules)
+      # If we can't read build we should also not have that
+      # ability when looking at this in context of commit_status
+      unless rules.include?(:read_build)
+        rules -= [:read_commit_status]
+      end
+      unless rules.include?(:update_build)
+        rules -= [:update_commit_status]
+      end
       rules
     end
 
