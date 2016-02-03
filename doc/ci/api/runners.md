@@ -1,7 +1,8 @@
 # Runners API
 
-_**Note:** In GitLab 8.0, GitLab CI was merged in GitLab itself. This document
-is deprecated in favor of the [new Runners API](../../api/runners.md)._
+_**Note:** This API is intended to be used only by Runners as their own
+communication channel. For the consumer API see the
+[new Runners API](../../api/runners.md)._
 
 ## Runners
 
