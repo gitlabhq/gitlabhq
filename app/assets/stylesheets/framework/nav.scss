@@ -84,11 +84,13 @@
     > .btn {
       display: inline-block;
       margin-left: 10px;
-      margin-top: -3px;
     }
 
     input {
+      height: 34px;
       display: inline-block;
+      position: relative;
+      top: 1px;
 
       /* Medium devices (desktops, 992px and up) */
       @media (min-width: $screen-md-min) { width: 200px; }
@@ -103,10 +105,6 @@
         /* Large devices (large desktops, 1200px and up) */
         @media (min-width: $screen-lg-min) { width: 210px; }
       }
-    }
-
-    .dropdown-toggle.btn {
-      margin-top: -3px;
     }
 
     /* Hide on extra small devices (phones) */
