@@ -36,17 +36,21 @@ spec:api:
 
 spec:models:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
+    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:models
   tags:
     - ruby
     - mysql
+  services:
+    - elasticsearch:latest
 
 spec:lib:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
+    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:lib
   tags:
     - ruby
     - mysql
+  services:
+    - elasticsearch:latest
 
 spec:services:
   script:
@@ -65,10 +69,12 @@ spec:benchmark:
 
 spec:other:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
+    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:other
   tags:
     - ruby
     - mysql
+  services:
+    - elasticsearch:latest
 
 spinach:project:half:
   script:
@@ -79,10 +85,12 @@ spinach:project:half:
 
 spinach:project:rest:
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
+    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spinach:project:rest
   tags:
     - ruby
     - mysql
+  services:
+    - elasticsearch:latest
 
 spinach:other:
   script:

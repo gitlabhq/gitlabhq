@@ -239,4 +239,49 @@ describe Repository, models: true do
       it { is_expected.to eq(true) }
     end
   end
+
+  describe "Elastic search", elastic: true do
+    before do
+      Repository.__elasticsearch__.create_index!
+    end
+
+    after do
+      Repository.__elasticsearch__.delete_index!
+    end
+
+    describe :find_commits_by_message_with_elastic do
+      it "returns commits" do
+        project = create :project
+
+        project.repository.index_commits
+        
+        Repository.__elasticsearch__.refresh_index!
+
+        expect(project.repository.find_commits_by_message_with_elastic('initial').first).to be_a(Commit)
+        expect(project.repository.find_commits_by_message_with_elastic('initial').count).to eq(1)
+      end
+    end
+
+    describe :parse_search_result_from_elastic do
+      it "returns parsed result" do
+        project = create :project
+
+        project.repository.index_blobs
+
+        Repository.__elasticsearch__.refresh_index!
+
+        result = project.repository.search(
+          'def popen',
+          type: :blob,
+          options: { highlight: true }
+        )[:blobs][:results][0]
+
+        parsed_result = project.repository.parse_search_result_from_elastic(result)
+
+        expect(parsed_result.filename).to eq('files/ruby/popen.rb')
+        expect(parsed_result.startline).to eq(2)
+        expect(parsed_result.data).to include("Popen")
+      end
+    end
+  end
 end
