@@ -123,6 +123,13 @@ module CommitsHelper
     )
   end
 
+  def can_collaborate_with_project?(project = nil)
+    project ||= @project
+
+    can?(current_user, :push_code, project) ||
+      (current_user && current_user.already_forked?(project))
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and

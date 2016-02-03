@@ -2,6 +2,8 @@
 #
 # Not to be confused with CommitsController, plural.
 class Projects::CommitController < Projects::ApplicationController
+  include CreatesCommit
+
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!, except: [:cancel_builds, :retry_builds]
@@ -9,6 +11,7 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_commit_status!, only: [:builds]
   before_action :commit
   before_action :define_show_vars, only: [:show, :builds]
+  before_action :authorize_edit_tree!, only: [:revert]
 
   def show
     apply_diff_view_cookie!
@@ -53,6 +56,10 @@ class Projects::CommitController < Projects::ApplicationController
     @branches = @project.repository.branch_names_contains(commit.id)
     @tags = @project.repository.tag_names_contains(commit.id)
     render layout: false
+  end
+
+  def revert
+
   end
 
   private

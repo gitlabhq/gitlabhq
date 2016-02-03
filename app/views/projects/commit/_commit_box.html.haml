@@ -16,8 +16,17 @@
     = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-grouped" do
       = icon('files-o')
       Browse Files
-    = link_to '#modal-revert-commit', { 'data-target' => '#modal-revert-commit', 'data-toggle' => 'modal', class: 'btn btn-grouped'} do
-      Revert
+    - if can_collaborate_with_project?
+      = link_to '#modal-revert-commit', { 'data-target' => '#modal-revert-commit', 'data-toggle' => 'modal', class: 'btn btn-grouped'} do
+        Revert
+    - else
+      - continue_params = { to:         namespace_project_commit_path(@project.namespace, @project, @commit.id),
+                            notice:     edit_in_new_fork_notice,
+                            notice_now: edit_in_new_fork_notice_now }
+      - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                                                                              continue:       continue_params)
+      = link_to fork_path, { class: 'btn btn-grouped', method: :post } do
+        Revert
   %div
 
 %p
