@@ -16,6 +16,7 @@ v 8.5.0 (unreleased)
   - Don't vendor minified JS
   - Display 404 error on group not found
   - Track project import failure
+  - Support Two-factor Authentication for LDAP users
   - Fix visibility level text in admin area (Zeger-Jan van de Weg)
   - Warn admin during OAuth of granting admin rights (Zeger-Jan van de Weg)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
