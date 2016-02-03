@@ -15,7 +15,7 @@
       %strong ##{commit_status.id}
 
     - if commit_status.show_warning?
-      %i.fa.fa-warning.text-warning
+      %i.fa.fa-warning.text-warning{data: { toggle: "tooltip" }, title: "This build is stuck, open it to know more"}
 
   - if defined?(commit_sha) && commit_sha
     %td
