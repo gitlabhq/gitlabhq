@@ -12,9 +12,9 @@
       = link_to explore_root_path, title: 'Explore', data: {placement: 'right'} do
         Explore Projects
 
-  .projects-search-form  
+  .nav-controls
     = search_field_tag :filter_projects, nil, placeholder: 'Filter by name...', class: 'projects-list-filter form-control hidden-xs', spellcheck: false
     - if current_user.can_create_project?
-      = link_to new_project_path, class: 'btn btn-green' do
-        %i.fa.fa-plus
+      = link_to new_project_path, class: 'btn btn-new' do
+        = icon('plus')
         New Project

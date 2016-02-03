@@ -7,7 +7,7 @@
       = link_to explore_groups_path, title: 'Explore groups' do
         Explore Groups
   - if current_user.can_create_group?
-    .projects-search-form
+    .nav-controls
       = link_to new_group_path, class: "btn btn-new" do
         = icon('plus')
         New Group
