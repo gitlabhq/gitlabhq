@@ -38,6 +38,8 @@ module Ci
           authenticate_runner!
           update_runner_last_contact
           build = Ci::Build.where(runner_id: current_runner.id).running.find(params[:id])
+          forbidden!('Build has been erased!') if build.erased?
+
           build.update_attributes(trace: params[:trace]) if params[:trace]
 
           case params[:state].to_s
@@ -99,6 +101,7 @@ module Ci
           not_found! unless build
           authenticate_build_token!(build)
           forbidden!('Build is not running!') unless build.running?
+          forbidden!('Build has been erased!') if build.erased?
 
           artifacts_upload_path = ArtifactUploader.artifacts_upload_path
           artifacts = uploaded_file(:file, artifacts_upload_path)
