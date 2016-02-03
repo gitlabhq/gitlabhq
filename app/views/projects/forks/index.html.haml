@@ -6,10 +6,10 @@
     == #{pluralize(@all_forks.size, 'fork')}: #{full_count_title}
 
   .nav-controls
-    = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter form-control',
+    = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter form-control input-short',
       spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
-    .dropdown.prepend-left-10
+    .dropdown
       %button.dropdown-toggle.btn.sort-forks{type: 'button', 'data-toggle' => 'dropdown'}
         %span.light sort:
         - if @sort.present?
