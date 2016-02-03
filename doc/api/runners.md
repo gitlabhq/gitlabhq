@@ -2,10 +2,11 @@
 
 ## List owned runners
 
-Get a list of specific runners available for user.
+Get a list of runners available to the user.
 
 ```
 GET /runners
+GET /runners?scope=active
 ```
 
 | Attribute | Type    | Required | Description         |
@@ -39,10 +40,12 @@ Example response:
 
 ## List all runners
 
-Get a list of all runners (specific and shared). Access restricted to users with `admin` privileges.
+Get a list of all runners in the GitLab instance (specific and shared). Access
+is restricted to users with `admin` privileges.
 
 ```
 GET /runners/all
+GET /runners?scope=online
 ```
 
 | Attribute | Type    | Required | Description         |
@@ -210,8 +213,9 @@ Example response:
 
 ## List project's runners
 
-List all runners (*shared* and *specific*) available in project. Shared runners are listed if at least one shared runner
-is defined **and** shared runners usage is enabled in project's settings.
+List all runners (specific and shared) available in the project. Shared runners
+are listed if at least one shared runner is defined **and** shared runners
+usage is enabled in the project's settings.
 
 ```
 GET /projects/:id/runners
@@ -222,7 +226,7 @@ GET /projects/:id/runners
 | `id`      | integer | yes      | The ID of a project |
 
 ```
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/9/runners"
 ```
 
 Example response:
@@ -248,7 +252,7 @@ Example response:
 
 ## Enable a runner in project
 
-Enable available specific runner in project.
+Enable an available specific runner in the project.
 
 ```
 POST /projects/:id/runners/:runner_id
@@ -277,8 +281,9 @@ Example response:
 
 ## Disable a runner from project
 
-Disable a specific runner from project. It works only, if the project isn't an only project associated with the
-specified runner. If so, then an error is returned and user should use the [remove a runner](#remove-a-runner) feature.
+Disable a specific runner from the project. It works only if the project isn't
+the only project associated with the specified runner. If so, an error is
+returned. Use the [Remove a runner](#remove-a-runner) call instead.
 
 ```
 DELETE /projects/:id/runners/:runner_id
