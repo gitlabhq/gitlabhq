@@ -446,8 +446,8 @@ release-job:
     - tags
 ```
 
-The artifacts will be send after a successful build success to GitLab, and will
-be accessible in the GitLab UI to download.
+The artifacts will be sent to GitLab after a successful build and will
+be available for download in the GitLab UI.
 
 ### cache
 
