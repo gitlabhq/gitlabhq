@@ -1,35 +1,24 @@
-@ProjectsList =
-  init: ->
+class @ProjectsList
+  constructor: ->
     $(".projects-list .js-expand").on 'click', (e) ->
       e.preventDefault()
       list = $(this).closest('.projects-list')
       list.find("li").show()
       list.find("li.bottom").hide()
-    this.initSearch()
 
-  initSearch: ->
-    @timer = null
-    $("#projects-list-filter").keyup ->
-      clearTimeout(@timer)
-      @timer = setTimeout(ProjectsList.filterResults, 500)
+    $(".projects-list-filter").keyup ->
+      terms = $(this).val()
+      uiBox = $('div.projects-list-holder')
+      filterSelector = $(this).data('filter-selector') || 'span.filter-title'
 
-  filterResults: =>
-    form = $("#project-list-form")
-    search = $("#issue_search").val()
-    uiBox = $('div.projects-list-holder')
+      if terms == "" || terms == undefined
+        uiBox.find("ul.projects-list li").show()
+      else
+        uiBox.find("ul.projects-list li").each (index) ->
+          name = $(this).find(filterSelector).text()
 
-    $('.projects-list-holder').css("opacity", '0.5')
-
-    project_filter_url = form.attr('action') + '?' + form.serialize()
-    $.ajax
-      type: "GET"
-      url: form.attr('action')
-      data: form.serialize()
-      complete: ->
-        $('.projects-list-holder').css("opacity", '1.0')
-      success: (data) ->
-        $('.projects-list-holder').html(data.html)
-        # Change url so if user reload a page - search results are saved
-        history.replaceState {page: project_filter_url}, document.title, project_filter_url
-      dataType: "json"
-    uiBox.find("ul.projects-list li.bottom").hide()
+          if name.toLowerCase().search(terms.toLowerCase()) == -1
+            $(this).hide()
+          else
+            $(this).show()
+      uiBox.find("ul.projects-list li.bottom").hide()

@@ -24,7 +24,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       end
       format.json do
         render json: {
-          html: view_to_html_string("dashboard/projects/projects", locals: { projects: @projects })
+          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
         }
       end
     end
@@ -34,6 +34,13 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = current_user.starred_projects
     @projects = @projects.includes(:namespace, :forked_from_project, :tags)
     @projects = @projects.sort(@sort = params[:sort])
+
+    terms = params['filter_projects']
+
+    if terms.present?
+      @projects = @projects.search(terms)
+    end
+
     @projects = @projects.page(params[:page]).per(PER_PAGE)
     @last_push = current_user.recent_push
     @groups = []
@@ -42,8 +49,9 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       format.html
 
       format.json do
-        load_events
-        pager_json("events/_events", @events.count)
+        render json: {
+          html: view_to_html_string("dashboard/projects/projects", locals: { projects: @projects })
+        }
       end
     end
   end

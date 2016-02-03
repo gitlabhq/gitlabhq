@@ -1,6 +1,6 @@
 .projects-list-holder
 
-  = render 'shared/projects/list', ci: true
+  = render 'shared/projects/list', projects: @projects, ci: true
 
   :javascript
-    ProjectsList.init()
+    Dashboard.init()

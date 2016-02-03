@@ -58,7 +58,7 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
         MergeRequests.init()
       when 'dashboard:show', 'root:show'
-        new Dashboard()
+        Dashboard.init()
       when 'dashboard:activity'
         new Activities()
       when 'dashboard:projects:starred'

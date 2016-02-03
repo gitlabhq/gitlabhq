@@ -1,7 +1,7 @@
 class @User
   constructor: ->
     $('.profile-groups-avatars').tooltip("placement": "top")
-    ProjectsList.init()
+    new ProjectsList()
 
     $('.hide-project-limit-message').on 'click', (e) ->
       path = '/'

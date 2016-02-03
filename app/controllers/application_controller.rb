@@ -277,9 +277,9 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def view_to_html_string(partial, locals = nil)
+  def view_to_html_string(partial, locals = {})
     render_to_string(
-      partial: partial,
+      partial,
       locals: locals,
       layout: false,
       formats: [:html]

@@ -7,5 +7,5 @@
   = render 'explore/head'
 
 = render 'explore/projects/nav'
-= render 'projects', projects: @projects
-= paginate @projects, theme: 'gitlab'
+= render 'projects', projects: @starred_projects
+= paginate @projects, theme: 'gitlab' if @projects

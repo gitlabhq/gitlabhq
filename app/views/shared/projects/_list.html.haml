@@ -8,20 +8,22 @@
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
 
 %ul.projects-list
-  - if @projects.any?
-    - @projects.each_with_index do |project, i|
+  - if projects.any?
+    - projects.each_with_index do |project, i|
       - css_class = (i >= projects_limit) ? 'hide' : nil
       = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
         avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
         forks: forks, show_last_commit_as_description: show_last_commit_as_description
 
-    - if @projects.size > projects_limit
+    - if projects.size > projects_limit
       %li.bottom.center
         .light
-          #{projects_limit} of #{pluralize(@projects.count, 'project')} displayed.
+          #{projects_limit} of #{pluralize(projects.count, 'project')} displayed.
           = link_to '#', class: 'js-expand' do
             Show all
-    = paginate @projects, theme: "gitlab"
+    = paginate projects, theme: "gitlab" if !projects.kind_of?(Array)
   - else
     %h3 No projects found
-    %p.slead Try searching for a different project.
+
+:javascript
+  new ProjectsList();
