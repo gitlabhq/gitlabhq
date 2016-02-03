@@ -8,7 +8,7 @@
     = nav_link(page: starred_dashboard_projects_path) do
       = link_to starred_dashboard_projects_path, title: 'Starred Projects', data: {placement: 'right'} do
         Starred Projects
-    = nav_link(page: [explore_root_path, trending_explore_projects_path, starred_explore_projects_path, explore_projects_path], html_options: { class: 'hidden-xs' }) do
+    = nav_link(page: [explore_root_path, trending_explore_projects_path, starred_explore_projects_path, explore_projects_path]) do
       = link_to explore_root_path, title: 'Explore', data: {placement: 'right'} do
         Explore Projects
 
