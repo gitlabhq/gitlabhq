@@ -5,6 +5,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = current_user.authorized_projects.sorted_by_activity.non_archived
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.includes(:namespace)
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
     @last_push = current_user.recent_push
 
     respond_to do |format|
@@ -21,6 +22,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = current_user.starred_projects
     @projects = @projects.includes(:namespace, :forked_from_project, :tags)
     @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
     @last_push = current_user.recent_push
     @groups = []
 
