@@ -77,13 +77,12 @@
     margin-bottom: 0px;
 
     > .dropdown {
-      margin-left: 10px;
+      margin-right: 10px;
       display: inline-block;
     }
 
     > .btn {
       display: inline-block;
-      margin-left: 10px;
     }
 
     input {
@@ -91,6 +90,7 @@
       display: inline-block;
       position: relative;
       top: 1px;
+      margin-right: 10px;
 
       /* Medium devices (desktops, 992px and up) */
       @media (min-width: $screen-md-min) { width: 200px; }
