@@ -241,6 +241,37 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'POST /projects/:id/issues with spam filtering' do
+    before do
+      Grape::Endpoint.before_each do |endpoint|
+        allow(endpoint).to receive(:check_for_spam?).and_return(true)
+        allow(endpoint).to receive(:is_spam?).and_return(true)
+      end
+    end
+
+    let(:params) do
+      {
+        title: 'new issue',
+        description: 'content here',
+        labels: 'label, label2'
+      }
+    end
+
+    it "should not create a new project issue" do
+      expect { post api("/projects/#{project.id}/issues", user), params }.not_to change(Issue, :count)
+      expect(response.status).to eq(400)
+      expect(json_response['message']).to eq({ "error" => "Spam detected" })
+
+      spam_logs = SpamLog.all
+      expect(spam_logs.count).to eq(1)
+      expect(spam_logs[0].title).to eq('new issue')
+      expect(spam_logs[0].description).to eq('content here')
+      expect(spam_logs[0].user).to eq(user)
+      expect(spam_logs[0].noteable_type).to eq('Issue')
+      expect(spam_logs[0].project_id).to eq(project.id)
+    end
+  end
+
   describe "PUT /projects/:id/issues/:issue_id to update only title" do
     it "should update a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),

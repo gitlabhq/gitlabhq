@@ -211,6 +211,8 @@ Rails.application.routes.draw do
     end
 
     resources :abuse_reports, only: [:index, :destroy]
+    resources :spam_logs, only: [:index, :destroy]
+
     resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do

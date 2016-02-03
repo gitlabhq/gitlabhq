@@ -79,6 +79,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :recaptcha_private_key,
       :sentry_enabled,
       :sentry_dsn,
+      :akismet_enabled,
+      :akismet_api_key,
       restricted_visibility_levels: [],
       import_sources: []
     )
