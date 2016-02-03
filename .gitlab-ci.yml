@@ -185,6 +185,6 @@ notify:slack:
   script:
     - bundle exec rake ci:slack:error["#ci-test","Build failed for master/tags"]
   when: on_failure
-#  only:
-#    - master
-#    - tags
+  only:
+    - master
+    - tags
