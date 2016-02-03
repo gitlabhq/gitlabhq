@@ -7,9 +7,6 @@
   .nav-controls
     = render 'shared/new_project_item_select', path: 'milestones/new', label: "New Milestone", include_groups: true
 
-.gray-content-block
-  List all milestones from all projects you have access to.
-
 .milestones
   %ul.content-list
     - if @milestones.blank?

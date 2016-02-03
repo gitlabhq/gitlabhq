@@ -27,6 +27,7 @@ v 8.5.0 (unreleased)
   - Mark inline difference between old and new paths when a file is renamed
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
   - Improve UI consistency between projects and groups lists
+  - Add sort dropdown to dashboard projects page
 
 v 8.4.3
   - Increase lfs_objects size column to 8-byte integer to allow files larger

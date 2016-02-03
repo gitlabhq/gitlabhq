@@ -29,8 +29,8 @@
 
     .project-controls
       - if ci_commit
-        = render_ci_status(ci_commit)
-        &nbsp;
+        %span
+          = render_ci_status(ci_commit)
       - if forks
         %span
           = icon('code-fork')
