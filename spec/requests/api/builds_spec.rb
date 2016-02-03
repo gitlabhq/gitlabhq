@@ -169,4 +169,29 @@ describe API::API, api: true  do
       end
     end
   end
+
+  describe 'DELETE /projects/:id/builds/:build_id/content' do
+    before do
+      delete api("/projects/#{project.id}/builds/#{build.id}/content", user)
+    end
+
+    context 'build is eraseable' do
+      let(:build) { create(:ci_build_with_trace, :artifacts, :success, project: project, commit: commit) }
+
+      it 'should erase build content' do
+        expect(response.status).to eq 200
+        expect(build.trace).to be_empty
+        expect(build.artifacts_file.exists?).to be_falsy
+        expect(build.artifacts_metadata.exists?).to be_falsy
+      end
+    end
+
+    context 'build is not eraseable' do
+      let(:build) { create(:ci_build_with_trace, project: project, commit: commit) }
+
+      it 'should respond with forbidden' do
+        expect(response.status).to eq 403
+      end
+    end
+  end
 end
