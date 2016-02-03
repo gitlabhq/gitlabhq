@@ -57,7 +57,7 @@ class Ability
         ]
 
         if project.allow_guest_to_access_builds?
-          rules += :read_build
+          rules << :read_build
         end
 
         rules - project_disabled_features_rules(project)
@@ -115,7 +115,7 @@ class Ability
           rules.push(*project_guest_rules)
 
           if project.allow_guest_to_access_builds?
-            rules += :read_build
+            rules << :read_build
           end
         end
 
@@ -123,7 +123,7 @@ class Ability
           rules.push(*public_project_rules)
 
           if project.allow_guest_to_access_builds?
-            rules += :read_build
+            rules << :read_build
           end
         end
 

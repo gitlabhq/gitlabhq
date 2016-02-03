@@ -130,6 +130,7 @@
                     %strong git fetch
                     %br
                     %span.descr Faster
+
             .form-group
               = f.label :build_timeout_in_minutes, 'Timeout', class: 'control-label'
               .col-sm-10
@@ -157,12 +158,15 @@
                     %li
                       phpunit --coverage-text --colors=never (PHP) -
                       %code ^\s*Lines:\s*\d+.\d+\%
+
               .form-group
                 .col-sm-offset-2.col-sm-10
                   .checkbox
                     = f.label :allow_guest_to_access_builds do
                       = f.check_box :allow_guest_to_access_builds
-                      Allow guest to access builds (including build logs and artifacts)
+                      %strong Guests can see builds
+                    .help-block Allow guests and anonymous users to access builds including build trace and artifacts
+
           %fieldset.features
             %legend
               Advanced settings
