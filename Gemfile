@@ -303,8 +303,6 @@ group :production do
   gem "gitlab_meta", '7.0'
 end
 
-gem "newrelic_rpm", '~> 3.14'
-
 gem 'octokit', '~> 3.8.0'
 
 gem "mail_room", "~> 0.6.1"
