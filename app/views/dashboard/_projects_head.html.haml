@@ -15,7 +15,7 @@
   .nav-controls
     = form_tag '', method: :get, class: 'project-list-form', id: 'project-list-form' do |f|
       .append-right-10.hidden-xs.hidden-sm
-        = search_field_tag :filter_projects, params[:filter_projects], placeholder: 'Filter by name...', class: 'projects-list-filter form-control issue_search search-text-input', spellcheck: false, id: 'projects-list-filter'
+        = search_field_tag :filter_projects, params[:filter_projects], placeholder: 'Filter by name...', class: 'projects-list-filter form-control search-text-input', spellcheck: false, id: 'projects-list-filter'
         - if current_user.can_create_project?
           = link_to new_project_path, class: 'btn btn-new' do
             = icon('plus')

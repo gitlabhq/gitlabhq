@@ -1,3 +1,3 @@
 class @Dashboard
   constructor: ->
-    new ProjectsList()
+    ProjectsList.init()

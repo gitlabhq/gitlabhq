@@ -45,7 +45,7 @@
 
   filterResults: =>
     form = $("#issue_search_form")
-    search = $("#issue_search").val()
+    search = $("#projects-list-filter").val()
     $('.issues-holder').css("opacity", '0.5')
     issues_url = form.attr('action') + '?' + form.serialize()
 
