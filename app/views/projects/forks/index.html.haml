@@ -1,44 +1,42 @@
-.gray-content-block.top-block.clearfix.white.forks-top-block
-  .pull-left
+.top-area
+  .nav-text
     - public_count = @public_forks.size
     - protected_count = @protected_forks.size
     - full_count_title = "#{public_count} public and #{protected_count} private"
     == #{pluralize(@all_forks.size, 'fork')}: #{full_count_title}
 
-  .pull-right
-    .projects-search-form.fork-search-form
-      = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter form-control',
-        spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
+  .nav-controls
+    = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter form-control',
+      spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
-      .dropdown.inline.prepend-left-10
-        %button.dropdown-toggle.btn.sort-forks{type: 'button', 'data-toggle' => 'dropdown'}
-          %span.light sort:
-          - if @sort.present?
-            = sort_options_hash[@sort]
-          - else
-            = sort_title_recently_created
-          %b.caret
-        %ul.dropdown-menu.dropdown-menu-align-right
-          %li
-            - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]
-            = link_to page_filter_path(sort: sort_value_recently_created, without: excluded_filters) do
-              = sort_title_recently_created
-            = link_to page_filter_path(sort: sort_value_oldest_created, without: excluded_filters) do
-              = sort_title_oldest_created
-            = link_to page_filter_path(sort: sort_value_recently_updated, without: excluded_filters) do
-              = sort_title_recently_updated
-            = link_to page_filter_path(sort: sort_value_oldest_updated, without: excluded_filters) do
-              = sort_title_oldest_updated
-
-      .fork-link.inline
-        - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
-          = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'pull-right btn btn-new' do
-            = icon('code-fork fw')
-            Fork
+    .dropdown.prepend-left-10
+      %button.dropdown-toggle.btn.sort-forks{type: 'button', 'data-toggle' => 'dropdown'}
+        %span.light sort:
+        - if @sort.present?
+          = sort_options_hash[@sort]
         - else
-          = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'pull-right btn btn-new' do
-            = icon('code-fork fw')
-            Fork
+          = sort_title_recently_created
+        %b.caret
+      %ul.dropdown-menu.dropdown-menu-align-right
+        %li
+          - excluded_filters = [:state, :scope, :label_name, :milestone_id, :assignee_id, :author_id]
+          = link_to page_filter_path(sort: sort_value_recently_created, without: excluded_filters) do
+            = sort_title_recently_created
+          = link_to page_filter_path(sort: sort_value_oldest_created, without: excluded_filters) do
+            = sort_title_oldest_created
+          = link_to page_filter_path(sort: sort_value_recently_updated, without: excluded_filters) do
+            = sort_title_recently_updated
+          = link_to page_filter_path(sort: sort_value_oldest_updated, without: excluded_filters) do
+            = sort_title_oldest_updated
+
+    - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
+      = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn btn-new' do
+        = icon('code-fork fw')
+        Fork
+    - else
+      = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-new' do
+        = icon('code-fork fw')
+        Fork
 
 
 .projects-list-holder
