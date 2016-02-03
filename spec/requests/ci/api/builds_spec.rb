@@ -148,6 +148,24 @@ describe Ci::API::API do
       end
     end
 
+    describe 'DELETE /builds/:id/content' do
+      before { delete ci_api("/builds/#{build.id}/content"), token: build.token }
+      let!(:build) { create(:ci_build_with_trace, :artifacts, :success) }
+
+      it 'should respond with valid status' do
+        expect(response.status).to eq 200
+      end
+
+      it 'should remove build artifacts' do
+        expect(build.artifacts_file.exists?).to be_falsy
+        expect(build.artifacts_metadata.exists?).to be_falsy
+      end
+
+      it 'should remove build trace' do
+        expect(build.trace).to be_empty
+      end
+    end
+
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }

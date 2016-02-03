@@ -497,6 +497,5 @@ describe Ci::Build, models: true do
         expect(@build2.merge_request.id).to eq(@merge_request.id)
       end
     end
-
   end
 end

@@ -62,14 +62,13 @@ FactoryGirl.define do
     trait :artifacts do
       after(:create) do |build, _|
         build.artifacts_file =
-          fixture_file_upload(Rails.root +
-                              'spec/fixtures/ci_build_artifacts.zip',
-                              'application/zip')
+          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
+                             'application/zip')
 
         build.artifacts_metadata =
-          fixture_file_upload(Rails.root +
-                              'spec/fixtures/ci_build_artifacts_metadata.gz',
-                              'application/x-gzip')
+          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
+                            ' application/x-gzip')
+        
         build.save!
       end
     end

@@ -156,6 +156,7 @@ module Ci
           build = Ci::Build.find_by_id(params[:id])
           not_found! unless build
           authenticate_build_token!(build)
+
           build.remove_artifacts_file!
           build.remove_artifacts_metadata!
         end
@@ -168,11 +169,12 @@ module Ci
         # Headers:
         #   BUILD-TOKEN (required) - The build authorization token, the same as token
         # Example Request:
-        #   PUT /builds/:id/erase
-        put ':id/erase' do
+        #   DELETE /builds/:id/content
+        delete ':id/content' do
           build = Ci::Build.find_by_id(params[:id])
           not_found! unless build
           authenticate_build_token!(build)
+
           build.erase!
         end
       end
