@@ -39,6 +39,8 @@
 }
 
 .top-area {
+  @include clearfix;
+
   border-bottom: 1px solid #EEE;
 
   .nav-text {
@@ -47,6 +49,11 @@
     display: inline-block;
     width: 50%;
     line-height: 28px;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (max-width: $screen-sm-min) {
+      width: 100%;
+    }
   }
 
   .nav-links {
@@ -54,6 +61,11 @@
     width: 50%;
     margin-bottom: 0px;
     border-bottom: none;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (max-width: $screen-sm-min) {
+      width: 100%;
+    }
   }
 
   .nav-controls {
@@ -65,37 +77,51 @@
     margin-bottom: 0px;
 
     > .dropdown {
+      margin-left: 10px;
       display: inline-block;
+    }
+
+    > .btn {
+      display: inline-block;
+      margin-left: 10px;
+      margin-top: -3px;
     }
 
     input {
       display: inline-block;
-      width: calc(100% - 151px);
-
-      /* Small devices (tablets, 768px and up) */
-      @media (min-width: $screen-sm-min) { width: 150px; }
 
       /* Medium devices (desktops, 992px and up) */
       @media (min-width: $screen-md-min) { width: 200px; }
 
       /* Large devices (large desktops, 1200px and up) */
-      @media (min-width: $screen-lg-min) { width: 300px; }
-    }
+      @media (min-width: $screen-lg-min) { width: 250px; }
 
-    .btn-new {
-      width: 135px;
-      margin-left: 10px;
-      float: right;
+      &.input-short {
+        /* Medium devices (desktops, 992px and up) */
+        @media (min-width: $screen-md-min) { width: 170px; }
+
+        /* Large devices (large desktops, 1200px and up) */
+        @media (min-width: $screen-lg-min) { width: 210px; }
+      }
     }
 
     .dropdown-toggle.btn {
       margin-top: -3px;
     }
-  }
 
-  @media (max-width: $screen-xs-max) {
-    .nav-controls {
-      padding-top: 15px;
+    /* Hide on extra small devices (phones) */
+    @media (max-width: $screen-xs-max) {
+      display: none;
+    }
+
+    /* Small devices (tablets, 768px and lower) */
+    @media (max-width: $screen-sm-max) {
+      width: 100%;
+      text-align: left;
+
+      input {
+        width: 300px;
+      }
     }
   }
 }
