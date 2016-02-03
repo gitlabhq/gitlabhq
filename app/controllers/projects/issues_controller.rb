@@ -98,9 +98,7 @@ class Projects::IssuesController < Projects::ApplicationController
       format.json do
         render json: {
           saved: @issue.valid?,
-          assignee_avatar_url: @issue.assignee.try(:avatar_url),
-          milestone: @issue.milestone.title,
-          labels: @issue.labels.pluck(:id,:title,:color)
+          assignee_avatar_url: @issue.assignee.try(:avatar_url)
         }
       end
     end
