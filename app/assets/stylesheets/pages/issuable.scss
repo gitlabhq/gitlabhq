@@ -74,7 +74,7 @@
     border-bottom: 1px solid $border-gray-light;
     // This prevents the mess when resizing the sidebar 
     // of elements repositioning themselves..
-    width: 210px;
+    width: $gutter_inner_width;
     overflow-x: hidden;
     // --
 
@@ -96,7 +96,7 @@
     }
 
     .gutter-toggle {
-      margin-left: 10px;
+      margin-left: 20px;
       border-left: 1px solid $border-gray-light;
       padding-left: 10px;
     }
@@ -175,6 +175,12 @@
     }
   }
 
+  .subscribe-button {
+    span {
+      margin-top: 0;
+    }
+  }
+
   &.right-sidebar-collapsed {
     width: $sidebar_collapsed_width;
     padding-top: 0;
@@ -211,7 +217,7 @@
     }
 
     .gutter-toggle {
-      margin-left: -207px;
+      margin-left: -$gutter_inner_width + 4;
     }
 
     .sidebar-collapsed-icon {
