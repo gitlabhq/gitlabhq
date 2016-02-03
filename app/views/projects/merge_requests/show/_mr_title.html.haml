@@ -18,5 +18,5 @@
           Edit
       - if @merge_request.closed?
         = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: "Reopen merge request"
-      - if @merge_request.merged?
+      - if @merge_request.merged? && @merge_request.merge_commit_sha.present?
         = link_to 'Revert', revert_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), method: :post, class: "btn btn-grouped btn-close", title: "Revert merge request"

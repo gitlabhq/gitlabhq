@@ -10,7 +10,6 @@ describe Repository, models: true do
     { message: 'Test message', committer: author, author: author }
   end
   let(:merge_commit_id) do
-    master_commit = repository.commit('master')
     source_sha = repository.find_branch('feature').target
     repository.merge(user, source_sha, 'master', commit_options)
   end
