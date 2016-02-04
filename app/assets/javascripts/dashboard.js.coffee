@@ -27,4 +27,3 @@
         # Change url so if user reload a page - search results are saved
         history.replaceState {page: project_filter_url}, document.title, project_filter_url
       dataType: "json"
-    #uiBox.find("ul.projects-list li.bottom").hide()
