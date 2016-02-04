@@ -5,22 +5,18 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
-      # We check with `is_a?`, because CommitStatus uses inheritance
-      if subject.is_a?(CommitStatus)
-        return commit_status_abilities(user, subject)
-      end
-
-      case subject.class.name
-      when "Project" then project_abilities(user, subject)
-      when "Issue" then issue_abilities(user, subject)
-      when "Note" then note_abilities(user, subject)
-      when "ProjectSnippet" then project_snippet_abilities(user, subject)
-      when "PersonalSnippet" then personal_snippet_abilities(user, subject)
-      when "MergeRequest" then merge_request_abilities(user, subject)
-      when "Group" then group_abilities(user, subject)
-      when "Namespace" then namespace_abilities(user, subject)
-      when "GroupMember" then group_member_abilities(user, subject)
-      when "ProjectMember" then project_member_abilities(user, subject)
+      case subject
+      when CommitStatus then commit_status_abilities(user, subject)
+      when Project then project_abilities(user, subject)
+      when Issue then issue_abilities(user, subject)
+      when Note then note_abilities(user, subject)
+      when ProjectSnippet then project_snippet_abilities(user, subject)
+      when PersonalSnippet then personal_snippet_abilities(user, subject)
+      when MergeRequest then merge_request_abilities(user, subject)
+      when Group then group_abilities(user, subject)
+      when Namespace then namespace_abilities(user, subject)
+      when GroupMember then group_member_abilities(user, subject)
+      when ProjectMember then project_member_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
@@ -130,10 +126,8 @@ class Ability
 
         if project.public? || project.internal?
           rules.push(*public_project_rules)
-        end
 
-        # Allow to read builds for internal projects
-        if project.public? || project.internal?
+          # Allow to read builds for internal projects
           rules << :read_build if project.public_builds?
         end
 
@@ -416,11 +410,8 @@ class Ability
     def filter_build_abilities(rules)
       # If we can't read build we should also not have that
       # ability when looking at this in context of commit_status
-      unless rules.include?(:read_build)
-        rules -= [:read_commit_status]
-      end
-      unless rules.include?(:update_build)
-        rules -= [:update_commit_status]
+      %w(read create update admin).each do |rule|
+        rules -= [:"#{rule}_commit_status"] unless rules.include?(:"#{rule}_build")
       end
       rules
     end
