@@ -92,6 +92,8 @@ Since GitLab 8.0 one Unicorn worker will still allow all functionality (git acce
 
 To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
 
+For more background about the Unicorn workers please see [the unicorn section in the operations documentation](http://doc.gitlab.com/ce/operations/unicorn.html).
+
 ## Database
 
 If you want to run the database separately expect a size of about 1 MB per user.
