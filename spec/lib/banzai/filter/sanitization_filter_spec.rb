@@ -177,26 +177,4 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       expect(act.to_html).to eq exp
     end
   end
-
-  context 'when inline_sanitization is true' do
-    it 'uses a stricter whitelist' do
-      doc = filter('<h1>Description</h1>', inline_sanitization: true)
-      expect(doc.to_html.strip).to eq 'Description'
-    end
-
-    %w(pre code img ol ul li).each do |elem|
-      it "removes '#{elem}' elements" do
-        act = "<#{elem}>Description</#{elem}>"
-        expect(filter(act, inline_sanitization: true).to_html.strip).
-          to eq 'Description'
-      end
-    end
-
-    %w(b i strong em a ins del sup sub p).each do |elem|
-      it "still allows '#{elem}' elements" do
-        exp = act = "<#{elem}>Description</#{elem}>"
-        expect(filter(act, inline_sanitization: true).to_html).to eq exp
-      end
-    end
-  end
 end
