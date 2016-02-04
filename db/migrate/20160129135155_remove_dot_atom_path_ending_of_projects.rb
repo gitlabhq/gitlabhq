@@ -61,7 +61,7 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
   private
 
   def clean_path(project_path)
-    execute "UPDATE projects SET path = '#{project_path.clean_path}' WHERE id = #{project_path.id}"
+    execute "UPDATE projects SET path = #{sanitize(project_path.clean_path)} WHERE id = #{project_path.id}"
   end
 
   def rename_project_repo(project_path)
@@ -72,5 +72,9 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
     gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
   rescue
     false
+  end
+
+  def sanitize(value)
+    ActiveRecord::Base.connection.quote(value)
   end
 end
