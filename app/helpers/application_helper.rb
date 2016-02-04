@@ -293,6 +293,26 @@ module ApplicationHelper
     end
   end
 
+  def issuable_link_next(project,issuable)
+    if project.nil?
+      nil
+    elsif current_controller?(:issues)
+      namespace_project_issue_path(project.namespace, project, next_issuable_for(project, issuable.id).try(:iid))
+    elsif current_controller?(:merge_requests)
+      namespace_project_merge_request_path(project.namespace, project, next_issuable_for(project, issuable.id).try(:iid))
+    end
+  end
+
+  def issuable_link_prev(project,issuable)
+    if project.nil?
+      nil
+    elsif current_controller?(:issues)
+      namespace_project_issue_path(project.namespace, project, prev_issuable_for(project, issuable.id).try(:iid))
+    elsif current_controller?(:merge_requests)
+      namespace_project_merge_request_path(project.namespace, project, prev_issuable_for(project, issuable.id).try(:iid))
+    end
+  end
+
   def issuable_count(entity, project)
     if project.nil?
       0
