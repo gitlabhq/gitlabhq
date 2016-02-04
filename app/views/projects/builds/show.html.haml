@@ -84,7 +84,7 @@
       - else
         .erased.alert.alert-warning
           - erased_by = "by #{@build.erased_by.username}" if @build.erased_by
-          Build has been erased #{erased_by} #{time_ago_with_tooltip(@build.created_at)}
+          Build has been erased #{erased_by} #{time_ago_with_tooltip(@build.erased_at)}
 
       %div#down-build-trace
 
