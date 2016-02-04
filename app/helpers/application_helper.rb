@@ -169,18 +169,6 @@ module ApplicationHelper
     Gitlab.config.extra
   end
 
-  def search_placeholder
-    if @project && @project.persisted?
-      'Search'
-    elsif @snippet || @snippets || @show_snippets
-      'Search snippets'
-    elsif @group && @group.persisted?
-      'Search in this group'
-    else
-      'Search'
-    end
-  end
-
   # Render a `time` element with Javascript-based relative date and tooltip
   #
   # time       - Time object
