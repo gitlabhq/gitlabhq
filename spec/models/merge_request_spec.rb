@@ -188,6 +188,11 @@ describe MergeRequest, models: true do
       expect(subject).to be_work_in_progress
     end
 
+    it "detects the '[WIP]' prefix" do
+      subject.title = "[WIP]#{subject.title}"
+      expect(subject).to be_work_in_progress
+    end
+
     it "doesn't detect WIP for words starting with WIP" do
       subject.title = "Wipwap #{subject.title}"
       expect(subject).not_to be_work_in_progress

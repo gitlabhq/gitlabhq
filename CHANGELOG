@@ -180,6 +180,7 @@ v 8.3.0
   - Handle and report SSL errors in Web hook test (Stan Hu)
   - Bump Redis requirement to 2.8 for Sidekiq 4 (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
+  - WIP identifier on merge requests no longer requires trailing space
   - Add rake tasks for git repository maintainance (Zeger-Jan van de Weg)
   - Fix 500 error when update group member permission
   - Fix: As an admin, cannot add oneself as a member to a group/project

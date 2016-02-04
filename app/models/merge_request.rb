@@ -258,7 +258,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def work_in_progress?
-    !!(title =~ /\A\[?WIP\]?:? /i)
+    !!(title =~ /\A\[?WIP(\]|:| )/i)
   end
 
   def mergeable?
