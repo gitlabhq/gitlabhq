@@ -395,6 +395,14 @@ module SharedPaths
     visit merge_request_path("Bug NS-05")
   end
 
+  step 'I visit merge request page "Bug NS-07"' do
+    visit merge_request_path("Bug NS-07")
+  end
+
+  step 'I visit merge request page "Bug NS-08"' do
+    visit merge_request_path("Bug NS-08")
+  end
+
   step 'I visit merge request page "Bug CO-01"' do
     mr = MergeRequest.find_by(title: "Bug CO-01")
     visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)

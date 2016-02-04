@@ -34,6 +34,8 @@
         %span into
         = link_to namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch" do
           = @merge_request.target_branch
+        - if @merge_request.open? && @merge_request.diverged_from_target_branch?
+          %span (#{pluralize(@merge_request.diverged_commits_count, 'commit')} behind)
 
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
