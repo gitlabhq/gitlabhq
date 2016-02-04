@@ -284,7 +284,8 @@ class MergeRequest < ActiveRecord::Base
   def can_remove_source_branch?(current_user)
     !source_project.protected_branch?(source_branch) &&
       !source_project.root_ref?(source_branch) &&
-      Ability.abilities.allowed?(current_user, :push_code, source_project)
+      Ability.abilities.allowed?(current_user, :push_code, source_project) &&
+      last_commit == source_project.commit(source_branch)
   end
 
   def mr_and_commit_notes
