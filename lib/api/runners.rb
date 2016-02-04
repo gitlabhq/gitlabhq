@@ -31,7 +31,7 @@ module API
       #   GET /runners/:id
       get ':id' do
         runner = get_runner(params[:id])
-        can_show_runner?(runner) unless current_user.is_admin?
+        authenticate_show_runner!(runner)
 
         present runner, with: Entities::RunnerDetails, user_is_admin: current_user.is_admin?
       end
@@ -47,7 +47,7 @@ module API
       #   PUT /runners/:id
       put ':id' do
         runner = get_runner(params[:id])
-        can_update_runner?(runner) unless current_user.is_admin?
+        authenticate_update_runner!(runner)
 
         attrs = attributes_for_keys [:description, :active, :tag_list]
         if runner.update(attrs)
@@ -65,7 +65,7 @@ module API
       #   DELETE /runners/:id
       delete ':id' do
         runner = get_runner(params[:id])
-        can_delete_runner?(runner)
+        authenticate_delete_runner!(runner)
         runner.destroy!
 
         present runner, with: Entities::RunnerDetails
@@ -93,7 +93,7 @@ module API
       #   POST /projects/:id/runners/:runner_id
       post ':id/runners/:runner_id' do
         runner = get_runner(params[:runner_id])
-        can_enable_runner?(runner)
+        authenticate_enable_runner!(runner)
         Ci::RunnerProject.create(runner: runner, project: user_project)
 
         present runner, with: Entities::Runner
@@ -111,7 +111,7 @@ module API
         not_found!('Runner') unless runner_project
 
         runner = runner_project.runner
-        forbidden!("Can't disable runner - only one project associated with it. Please remove runner instead") if runner.projects.count == 1
+        forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
 
         runner_project.destroy
 
@@ -137,34 +137,32 @@ module API
         runner
       end
 
-      def can_show_runner?(runner)
-        return true if runner.is_shared
-        forbidden!("Can't show runner's details - no access granted") unless user_can_access_runner?(runner)
+      def authenticate_show_runner!(runner)
+        return if runner.is_shared || current_user.is_admin?
+        forbidden!("No access granted") unless user_can_access_runner?(runner)
       end
 
-      def can_update_runner?(runner)
-        return true if current_user.is_admin?
-        forbidden!("Can't update shared runner") if runner.is_shared?
-        forbidden!("Can't update runner - no access granted") unless user_can_access_runner?(runner)
+      def authenticate_update_runner!(runner)
+        return if current_user.is_admin?
+        forbidden!("Runner is shared") if runner.is_shared?
+        forbidden!("No access granted") unless user_can_access_runner?(runner)
       end
 
-      def can_delete_runner?(runner)
-        return true if current_user.is_admin?
-        forbidden!("Can't delete shared runner") if runner.is_shared?
-        forbidden!("Can't delete runner - associated with more than one project") if runner.projects.count > 1
-        forbidden!("Can't delete runner - no access granted") unless user_can_access_runner?(runner)
+      def authenticate_delete_runner!(runner)
+        return if current_user.is_admin?
+        forbidden!("Runner is shared") if runner.is_shared?
+        forbidden!("Runner associated with more than one project") if runner.projects.count > 1
+        forbidden!("No access granted") unless user_can_access_runner?(runner)
       end
 
-      def can_enable_runner?(runner)
-        forbidden!("Can't enable shared runner directly") if runner.is_shared?
-        return true if current_user.is_admin?
-        forbidden!("Can't update runner - no access granted") unless user_can_access_runner?(runner)
+      def authenticate_enable_runner!(runner)
+        forbidden!("Runner is shared") if runner.is_shared?
+        return if current_user.is_admin?
+        forbidden!("No access granted") unless user_can_access_runner?(runner)
       end
 
       def user_can_access_runner?(runner)
-        runner.projects.inject(false) do |final, project|
-          final || abilities.allowed?(current_user, :admin_project, project)
-        end
+        current_user.ci_authorized_runners.exists?(runner.id)
       end
     end
   end
