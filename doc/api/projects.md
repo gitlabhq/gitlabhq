@@ -82,7 +82,7 @@ Parameters:
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "allow_guest_to_access_builds": true
+    "public_builds": true
   },
   {
     "id": 6,
@@ -140,7 +140,7 @@ Parameters:
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "allow_guest_to_access_builds": true
+    "public_builds": true
   }
 ]
 ```
@@ -427,7 +427,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
-- `allow_guest_to_access_builds` (optional)
+- `public_builds` (optional)
 
 ### Create project for user
 
@@ -450,7 +450,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
-- `allow_guest_to_access_builds` (optional)
+- `public_builds` (optional)
 
 ### Edit project
 
@@ -474,7 +474,7 @@ Parameters:
 - `snippets_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
-- `allow_guest_to_access_builds` (optional)
+- `public_builds` (optional)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.

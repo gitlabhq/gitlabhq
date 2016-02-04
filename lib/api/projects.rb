@@ -99,7 +99,7 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - 0 by default
       #   import_url (optional)
-      #   allow_guest_to_access_builds (optional)
+      #   public_builds (optional)
       # Example Request
       #   POST /projects
       post do
@@ -117,7 +117,7 @@ module API
                                      :public,
                                      :visibility_level,
                                      :import_url,
-                                     :allow_guest_to_access_builds]
+                                     :public_builds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -147,7 +147,7 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
       #   import_url (optional)
-      #   allow_guest_to_access_builds (optional)
+      #   public_builds (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -165,7 +165,7 @@ module API
                                      :public,
                                      :visibility_level,
                                      :import_url,
-                                     :allow_guest_to_access_builds]
+                                     :public_builds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -209,7 +209,7 @@ module API
       #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
-      #   allow_guest_to_access_builds (optional)
+      #   public_builds (optional)
       # Example Request
       #   PUT /projects/:id
       put ':id' do
@@ -225,7 +225,7 @@ module API
                                      :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
-                                     :allow_guest_to_access_builds]
+                                     :public_builds]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?

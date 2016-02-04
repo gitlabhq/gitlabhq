@@ -64,7 +64,7 @@ class Ability
         ]
 
         # Allow to read builds by anonymous user if guests are allowed
-        rules << :read_build if project.allow_guest_to_access_builds?
+        rules << :read_build if project.public_builds?
 
         rules - project_disabled_features_rules(project)
       else
@@ -132,9 +132,9 @@ class Ability
           rules.push(*public_project_rules)
         end
 
-        # Allow to read builds if guests are allowed
-        if team.guest?(user) || project.public? || project.internal?
-          rules << :read_build if project.allow_guest_to_access_builds?
+        # Allow to read builds for internal projects
+        if project.public? || project.internal?
+          rules << :read_build if project.public_builds?
         end
 
         if project.owner == user || user.admin?
@@ -172,7 +172,6 @@ class Ability
         :read_project_member,
         :read_merge_request,
         :read_note,
-        :read_commit_status,
         :create_project,
         :create_issue,
         :create_note
@@ -187,6 +186,7 @@ class Ability
         :update_issue,
         :admin_issue,
         :admin_label,
+        :read_commit_status,
         :read_build,
       ]
     end
