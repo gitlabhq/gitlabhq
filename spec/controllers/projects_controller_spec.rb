@@ -88,10 +88,10 @@ describe ProjectsController do
     end
 
     context "when the url contains .atom" do
-      let(:public_project_with_dot_atom) { create(:project, :public, name: 'my.atom', path: 'my.atom') }
+      let(:public_project_with_dot_atom) { build(:project, :public, name: 'my.atom', path: 'my.atom') }
 
       it 'expect an error creating the project' do
-        expect { public_project_with_dot_atom }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(public_project_with_dot_atom).not_to be_valid
       end
     end
   end

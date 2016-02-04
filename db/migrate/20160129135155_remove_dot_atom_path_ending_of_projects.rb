@@ -4,19 +4,21 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
   class ProjectPath
     attr_reader :old_path, :id, :namespace_path
 
-    def initialize(old_path, id, namespace_path)
+    def initialize(old_path, id, namespace_path, namespace_id)
       @old_path = old_path
       @id = id
       @namespace_path = namespace_path
+      @namespace_id = namespace_id
     end
 
     def clean_path
-      @_clean_path ||= PathCleaner.clean(@old_path)
+      @_clean_path ||= PathCleaner.clean(@old_path, @namespace_id)
     end
   end
 
   class PathCleaner
-    def initialize(path)
+    def initialize(path, namespace_id)
+      @namespace_id = namespace_id
       @path = path
     end
 
@@ -34,22 +36,24 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
       path
     end
 
+    private
+
     def cleaned_path
       @_cleaned_path ||= @path.gsub(/\.atom\z/, '-atom')
     end
 
     def path_exists?(path)
-      Project.find_by_path(path)
+      Project.find_by_path_and_namespace_id(path, @namespace_id)
     end
   end
 
   def projects_with_dot_atom
-    select_all("SELECT p.id, p.path, n.path as namespace_path FROM projects p inner join namespaces n on n.id = p.namespace_id WHERE lower(p.path) LIKE '%.atom'")
+    select_all("SELECT p.id, p.path, n.path as namespace_path, n.id as namespace_id FROM projects p inner join namespaces n on n.id = p.namespace_id WHERE lower(p.path) LIKE '%.atom'")
   end
 
   def up
     projects_with_dot_atom.each do |project|
-      project_path = ProjectPath.new(project['path'], project['id'], project['namespace_path'])
+      project_path = ProjectPath.new(project['path'], project['id'], project['namespace_path'], project['namespace_id'])
       clean_path(project_path) if rename_project_repo(project_path)
     end
   end
@@ -66,5 +70,7 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
 
     gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
     gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
+  rescue
+    false
   end
 end
