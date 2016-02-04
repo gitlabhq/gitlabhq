@@ -2,7 +2,7 @@
   @include border-radius(3px);
   font-size: $gl-font-size;
   font-weight: 500;
-  padding: $gl-vert-padding $gl-padding;
+  padding: $gl-vert-padding $gl-btn-padding;
 
   &:focus,
   &:active {

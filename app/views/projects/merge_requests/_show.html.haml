@@ -70,12 +70,9 @@
             = render 'votes/votes_block', votable: @merge_request
 
           .row
-            %section.col-md-9
+            %section.col-md-12
               .issuable-discussion
                 = render "projects/merge_requests/discussion"
-            %aside.col-md-3
-              = render 'shared/issuable/sidebar', issuable: @merge_request
-            = render 'shared/show_aside'
 
         #commits.commits.tab-pane
           - # This tab is always loaded via AJAX
@@ -86,6 +83,8 @@
 
       .mr-loading-status
         = spinner
+
+= render 'shared/issuable/sidebar', issuable: @merge_request
 
 :javascript
   var merge_request;
