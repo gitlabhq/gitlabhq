@@ -411,7 +411,7 @@ class Ability
       # If we can't read build we should also not have that
       # ability when looking at this in context of commit_status
       %w(read create update admin).each do |rule|
-        rules -= [:"#{rule}_commit_status"] unless rules.include?(:"#{rule}_build")
+        rules.delete(:"#{rule}_commit_status") unless rules.include?(:"#{rule}_build")
       end
       rules
     end
