@@ -57,7 +57,11 @@ module ProjectsHelper
       link_output = simple_sanitize(project.name)
       link_output += content_tag :span, nil, { class: "fa fa-chevron-down dropdown-toggle-caret" } if current_user
 
-      link_output += project_select_tag :project_path, class: "project-item-select js-projects-dropdown", data: { include_groups: false } if current_user
+      if current_user
+        link_output += project_select_tag :project_path,
+          class: "project-item-select js-projects-dropdown",
+          data: { include_groups: false, order_by: 'last_activity_at' }
+      end
 
       link_output
     end
