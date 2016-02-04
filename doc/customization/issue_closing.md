@@ -16,7 +16,7 @@ Here, `%{issue_ref}` is a complex regular expression defined inside GitLab, that
 For example:
 
 ```
-git commit -m "Awesome commit message (Fix #20, Fixes #21 and Closes group/otherproject#2). This commit is also related to #17 and fixes #18, #19 and https://gitlab.example.com/group/otherproject/issues/23."
+git commit -m "Awesome commit message (Fix #20, Fixes #21 and Closes group/otherproject#22). This commit is also related to #17 and fixes #18, #19 and https://gitlab.example.com/group/otherproject/issues/23."
 ```
 
 will close `#18`, `#19`, `#20`, and `#21` in the project this commit is pushed to, as well as `#22` and `#23` in group/otherproject. `#17` won't be closed as it does not match the pattern. It also works with multiline commit messages.
