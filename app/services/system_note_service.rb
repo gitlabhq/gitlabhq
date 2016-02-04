@@ -291,8 +291,8 @@ class SystemNoteService
       notes = notes.where(noteable_id: noteable.id)
     end
 
-    gfm_reference = mentioner.gfm_reference(noteable.project)
-    notes = notes.where(note: cross_reference_note_content(gfm_reference))
+    gfm_reference = mentioner.gfm_reference(nil)
+    notes = notes.where('note LIKE ?', "#{cross_reference_note_prefix}%#{gfm_reference}")
 
     notes.count > 0
   end

@@ -424,6 +424,22 @@ describe SystemNoteService, services: true do
           to be_falsey
       end
     end
+
+    context 'commit from fork' do
+      let(:author2) { create(:user) }
+      let(:forked_project) { Projects::ForkService.new(project, author2).execute }
+      let(:service) { CreateCommitBuildsService.new }
+      let(:commit2) { forked_project.commit }
+
+      before do
+        described_class.cross_reference(commit0, commit2, author2)
+      end
+
+      it 'is falsey when is a fork mentioning an external issue' do
+        expect(described_class.cross_reference_exists?(commit0, commit2)).
+            to be_falsey
+      end
+    end
   end
 
   include JiraServiceHelper
