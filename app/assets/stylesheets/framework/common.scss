@@ -398,3 +398,19 @@ table {
   margin-right: -$gl-padding;
   border-top: 1px solid $border-color;
 }
+
+.search-area {
+  display: block;
+  border-bottom: 1px solid $table-border-color;
+  height: 50px;
+  
+  .search-controls {
+    float: right;
+
+    input[type='search'] {
+      float: left;
+      width: auto;
+      margin-right: 10px;
+    }
+  }
+}
