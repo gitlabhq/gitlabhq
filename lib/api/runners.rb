@@ -33,7 +33,11 @@ module API
         runner = get_runner(params[:id])
         authenticate_show_runner!(runner)
 
-        present runner, with: Entities::RunnerDetails, user_is_admin: current_user.is_admin?
+        available_projects_ids = runner.projects.select{ |p| can?(current_user, :read_project, p) }
+                                       .map(&:id) unless current_user.is_admin?
+
+        present runner, with: Entities::RunnerDetails, user_is_admin: current_user.is_admin?,
+                        available_projects_ids: available_projects_ids
       end
 
       # Update runner's details

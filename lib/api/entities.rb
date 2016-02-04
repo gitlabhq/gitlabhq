@@ -388,7 +388,13 @@ module API
       expose :version, :revision, :platform, :architecture
       expose :contacted_at, as: :last_contact
       expose :token, if: lambda { |runner, options| options[:user_is_admin] || !runner.is_shared? }
-      expose :projects, with: Entities::RunnerProjectDetails
+      expose :projects, with: Entities::RunnerProjectDetails do |runner, options|
+        if options[:user_is_admin]
+          runner.projects
+        else
+          runner.projects.where(id: options[:available_projects_ids])
+        end
+      end
     end
 
     class Build < Grape::Entity
