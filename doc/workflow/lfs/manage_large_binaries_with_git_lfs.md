@@ -104,7 +104,7 @@ To prevent this from happening, set the lfs url in project Git config:
 
 ```bash
 
-git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs/objects/batch"
+git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
 ```
 
 ### Credentials are always required when pushing an object
