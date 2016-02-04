@@ -160,12 +160,10 @@ describe Ci::API::API do
       let(:headers) { { "GitLab-Workhorse" => "1.0" } }
       let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token) }
 
+      before { build.run! }
+
       describe "POST /builds/:id/artifacts/authorize" do
         context "should authorize posting artifact to running build" do
-          before do
-            build.run!
-          end
-
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
             expect(response.status).to eq(200)
@@ -180,10 +178,6 @@ describe Ci::API::API do
         end
 
         context "should fail to post too large artifact" do
-          before do
-            build.run!
-          end
-
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { token: build.token, filesize: 100 }, headers
@@ -197,8 +191,8 @@ describe Ci::API::API do
           end
         end
 
-        context "should get denied" do
-          it do
+        context 'token is invalid' do
+          it 'should respond with forbidden'do
             post authorize_url, { token: 'invalid', filesize: 100 }
             expect(response.status).to eq(403)
           end
@@ -206,17 +200,13 @@ describe Ci::API::API do
       end
 
       describe "POST /builds/:id/artifacts" do
-        context "Disable sanitizer" do
+        context "disable sanitizer" do
           before do
             # by configuring this path we allow to pass temp file from any path
             allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
           end
 
           context "should post artifact to running build" do
-            before do
-              build.run!
-            end
-
             it "uses regual file post" do
               upload_artifacts(file_upload, headers_with_token, false)
               expect(response.status).to eq(201)
@@ -244,10 +234,7 @@ describe Ci::API::API do
             let(:stored_artifacts_file) { build.reload.artifacts_file.file }
             let(:stored_metadata_file) { build.reload.artifacts_metadata.file }
 
-            before do
-              build.run!
-              post(post_url, post_data, headers_with_token)
-            end
+            before { post(post_url, post_data, headers_with_token) }
 
             context 'post data accelerated by workhorse is correct' do
               let(:post_data) do
@@ -257,11 +244,8 @@ describe Ci::API::API do
                   'metadata.name' => metadata.original_filename }
               end
 
-              it 'responds with valid status' do
-                expect(response.status).to eq(201)
-              end
-
               it 'stores artifacts and artifacts metadata' do
+                expect(response.status).to eq(201)
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
               end
@@ -282,56 +266,42 @@ describe Ci::API::API do
             end
           end
 
-
-          context "should fail to post too large artifact" do
-            before do
-              build.run!
-            end
-
-            it do
+          context "artifacts file is too large" do
+            it "should fail to post too large artifact" do
               stub_application_setting(max_artifacts_size: 0)
               upload_artifacts(file_upload, headers_with_token)
               expect(response.status).to eq(413)
             end
           end
 
-          context "should fail to post artifacts without file" do
-            before do
-              build.run!
-            end
-
-            it do
+          context "artifacts post request does not contain file" do
+            it "should fail to post artifacts without file" do
               post post_url, {}, headers_with_token
               expect(response.status).to eq(400)
             end
           end
 
-          context "should fail to post artifacts without GitLab-Workhorse" do
-            before do
-              build.run!
-            end
-
-            it do
+          context 'GitLab Workhorse is not configured' do
+            it "should fail to post artifacts without GitLab-Workhorse" do
               post post_url, { token: build.token }, {}
               expect(response.status).to eq(403)
             end
           end
         end
 
-        context "should fail to post artifacts for outside of tmp path" do
+        context "artifacts are being stored outside of tmp path" do
           before do
             # by configuring this path we allow to pass file from @tmpdir only
             # but all temporary files are stored in system tmp directory
             @tmpdir = Dir.mktmpdir
             allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
-            build.run!
           end
 
           after do
             FileUtils.remove_entry @tmpdir
           end
 
-          it do
+          it "should fail to post artifacts for outside of tmp path" do
             upload_artifacts(file_upload, headers_with_token)
             expect(response.status).to eq(400)
           end
@@ -353,15 +323,9 @@ describe Ci::API::API do
         let(:build) { create(:ci_build, :artifacts) }
         before { delete delete_url, token: build.token }
 
-        it 'should respond valid status' do
+        it 'should remove build artifacts' do
           expect(response.status).to eq(200)
-        end
-
-        it 'should remove artifacts file' do
           expect(build.artifacts_file.exists?).to be_falsy
-        end
-
-        it 'should remove artifacts metadata' do
           expect(build.artifacts_metadata.exists?).to be_falsy
         end
       end
@@ -376,11 +340,8 @@ describe Ci::API::API do
               'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
           end
 
-          it 'should respond with valid status' do
-            expect(response.status).to eq(200)
-          end
-
           it 'should download artifact' do
+            expect(response.status).to eq(200)
             expect(response.headers).to include download_headers
           end
         end
