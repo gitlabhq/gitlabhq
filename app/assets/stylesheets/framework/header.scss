@@ -73,7 +73,6 @@ header {
 
     .title {
       margin: 0;
-      overflow: hidden;
       font-size: 19px;
       line-height: $header-height;
       font-weight: normal;
@@ -87,6 +86,13 @@ header {
         &:hover {
           text-decoration: underline;
         }
+      }
+
+      .dropdown-toggle-caret {
+        position: relative;
+        top: -2px;
+        margin-left: 5px;
+        font-size: 10px;
       }
     }
 

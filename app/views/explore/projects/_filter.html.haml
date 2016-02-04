@@ -2,6 +2,7 @@
   = form_tag explore_projects_filter_path, method: :get, class: 'form-inline form-tiny' do |f|
     .form-group
       = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input", id: "projects_search", spellcheck: false
+      = hidden_field_tag :sort, @sort
     .form-group
       = button_tag 'Search', class: "btn"
 
@@ -46,4 +47,3 @@
             = link_to explore_projects_filter_path(tag: tag.name) do
               %i.fa.fa-tag
               = tag.name
-  = render 'explore/projects/dropdown'

@@ -3,6 +3,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   def index
     @projects = current_user.authorized_projects.sorted_by_activity.non_archived
+    @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.includes(:namespace)
     @last_push = current_user.recent_push
 

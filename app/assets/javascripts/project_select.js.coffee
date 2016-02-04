@@ -3,6 +3,7 @@ class @ProjectSelect
     $('.ajax-project-select').each (i, select) ->
       @groupId = $(select).data('group-id')
       @includeGroups = $(select).data('include-groups')
+      @orderBy = $(select).data('order-by') || 'id'
 
       placeholder = "Search for project"
       placeholder += " or group" if @includeGroups
@@ -28,7 +29,7 @@ class @ProjectSelect
           if @groupId
             Api.groupProjects @groupId, query.term, projectsCallback
           else
-            Api.projects query.term, projectsCallback
+            Api.projects query.term, @orderBy, projectsCallback
 
         id: (project) ->
           project.web_url

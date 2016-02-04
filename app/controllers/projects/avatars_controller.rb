@@ -2,15 +2,13 @@ class Projects::AvatarsController < Projects::ApplicationController
   before_action :project
 
   def show
-    @blob = @project.repository.blob_at_branch('master', @project.avatar_in_git)
+    @blob = @repository.blob_at_branch('master', @project.avatar_in_git)
     if @blob
       headers['X-Content-Type-Options'] = 'nosniff'
-      send_data(
-        @blob.data,
-        type: @blob.mime_type,
-        disposition: 'inline',
-        filename: @blob.name
-      )
+      headers.store(*Gitlab::Workhorse.send_git_blob(@repository, @blob))
+      headers['Content-Disposition'] = 'inline'
+      headers['Content-Type'] = @blob.content_type
+      head :ok # 'render nothing: true' messes up the Content-Type
     else
       render_404
     end

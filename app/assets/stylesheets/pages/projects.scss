@@ -281,36 +281,6 @@
   margin-top: -1px;
 }
 
-.top-area {
-  border-bottom: 1px solid #EEE;
-
-  ul.nav-links {
-    display: inline-block;
-    width: 50%;
-    margin-bottom: 0px;
-    border-bottom: none;
-  }
-
-  .projects-search-form {
-    width: 50%;
-    display: inline-block;
-    float: right;
-    padding-top: 11px;
-    text-align: right;
-
-    .btn-green {
-      margin-left: 10px;
-      float: right;
-    }
-  }
-
-  @media (max-width: $screen-xs-max) {
-    .projects-search-form {
-      padding-top: 15px;
-    }
-  }
-}
-
 .fork-namespaces {
   .fork-thumbnail {
     text-align: center;
@@ -386,22 +356,6 @@ pre.light-well {
   border-color: #f1f1f1;
 }
 
-.projects-search-form {
-  padding: $gl-padding 0;
-  padding-bottom: 0;
-  margin-bottom: 0px;
-
-  input {
-    display: inline-block;
-    width: calc(100% - 151px);
-  }
-
-  .btn {
-    display: inline-block;
-    width: 135px;
-  }
-}
-
 .git-empty {
   margin: 0 7px 0 7px;
 
@@ -460,6 +414,10 @@ pre.light-well {
 
       a:hover {
         text-decoration: none;
+      }
+
+      > span {
+        margin-left: 10px;
       }
     }
 
@@ -559,50 +517,10 @@ pre.light-well {
   }
 }
 
-.cannot-be-merged, 
+.cannot-be-merged,
 .cannot-be-merged:hover {
   color: #E62958;
   margin-top: 2px;
-}
-
-/*
- * Forks list rendered on Project's forks page
- */
-
-.forks-top-block {
-  padding: 16px 0;
-}
-
-.projects-search-form {
-  .dropdown-toggle.btn {
-    margin-top: -3px;
-  }
-
-  &.fork-search-form {
-    margin: 0;
-    margin-top: -$gl-padding;
-    padding-bottom: 0;
-
-    input {
-      /* Small devices (tablets, 768px and up) */
-      @media (min-width: $screen-sm-min) { width: 180px; }
-
-      /* Medium devices (desktops, 992px and up) */
-      @media (min-width: $screen-md-min) { width: 350px; }
-
-      /* Large devices (large desktops, 1200px and up) */
-      @media (min-width: $screen-lg-min) { width: 400px; }
-    }
-
-    .sort-forks {
-      width: 160px;
-    }
-
-    .fork-link {
-      float: right;
-      margin-left: $gl-padding;
-    }
-  }
 }
 
 .private-forks-notice .private-fork-icon {

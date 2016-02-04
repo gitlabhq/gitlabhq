@@ -33,6 +33,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def edit
     @last_commit = Gitlab::Git::Commit.last_for_path(@repository, @ref, @path).sha
+    blob.load_all_data!(@repository)
   end
 
   def update
@@ -51,6 +52,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def preview
     @content = params[:content]
+    @blob.load_all_data!(@repository)
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines)

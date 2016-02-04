@@ -1,0 +1,21 @@
+- page_title "Spam Logs"
+%h3.page-title Spam Logs
+%hr
+- if @spam_logs.present?
+  .table-holder
+    %table.table
+      %thead
+        %tr
+          %th Date
+          %th User
+          %th Source IP
+          %th API?
+          %th Type
+          %th Title
+          %th Description
+          %th Primary Action
+          %th
+      = render @spam_logs
+  = paginate @spam_logs
+- else
+  %h4 There are no Spam Logs

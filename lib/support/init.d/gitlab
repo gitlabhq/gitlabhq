@@ -219,7 +219,7 @@ start_gitlab() {
     echo "The Unicorn web server already running with pid $wpid, not restarting."
   else
     # Remove old socket if it exists
-    rm -f "$socket_path"/gitlab.socket 2>/dev/null
+    rm -f "$rails_socket" 2>/dev/null
     # Start the web server
     RAILS_ENV=$RAILS_ENV bin/web start
   fi

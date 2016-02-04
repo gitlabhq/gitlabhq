@@ -188,6 +188,11 @@ describe MergeRequest, models: true do
       expect(subject).to be_work_in_progress
     end
 
+    it "detects the '[WIP]' prefix" do
+      subject.title = "[WIP]#{subject.title}"
+      expect(subject).to be_work_in_progress
+    end
+
     it "doesn't detect WIP for words starting with WIP" do
       subject.title = "Wipwap #{subject.title}"
       expect(subject).not_to be_work_in_progress
@@ -226,8 +231,14 @@ describe MergeRequest, models: true do
       expect(subject.can_remove_source_branch?(user2)).to be_falsey
     end
 
-    it "is can be removed in all other cases" do
+    it "can be removed if the last commit is the head of the source branch" do
+      allow(subject.source_project).to receive(:commit).and_return(subject.last_commit)
+
       expect(subject.can_remove_source_branch?(user)).to be_truthy
+    end
+
+    it "cannot be removed if the last commit is not also the head of the source branch" do
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
   end
 
