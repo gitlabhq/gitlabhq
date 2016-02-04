@@ -126,6 +126,7 @@ Example response:
             "path": "gitlab-org/gitlab-ce"
         }
     ],
+    "token": "205086a8e3b9a2b818ffac9b89d102",
     "revision": null,
     "tag_list": [
         "ruby",

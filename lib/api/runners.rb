@@ -33,7 +33,7 @@ module API
         runner = get_runner(params[:id])
         can_show_runner?(runner) unless current_user.is_admin?
 
-        present runner, with: Entities::RunnerDetails
+        present runner, with: Entities::RunnerDetails, user_is_admin: current_user.is_admin?
       end
 
       # Update runner's details

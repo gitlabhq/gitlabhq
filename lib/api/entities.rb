@@ -387,6 +387,7 @@ module API
       expose :tag_list
       expose :version, :revision, :platform, :architecture
       expose :contacted_at, as: :last_contact
+      expose :token, if: lambda { |runner, options| options[:user_is_admin] || !runner.is_shared? }
       expose :projects, with: Entities::RunnerProjectDetails
     end
 
