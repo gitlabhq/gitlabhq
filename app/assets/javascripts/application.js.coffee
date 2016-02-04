@@ -269,11 +269,19 @@ $ ->
         '<div class="device-lg visible-lg"></div>')
     checkBootstrapBreakpoints()
 
-  $(window).on "resize", (e) ->
+  fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
     checkBootstrapBreakpoints()
     if bootstrapBreakpoint != oldBootstrapBreakpoint
-      $(document).trigger('breakpoint:change',[bootstrapBreakpoint])
+      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+
+  checkInitialSidebarSize = ->
+    if bootstrapBreakpoint is "xs" or "sm"
+      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+
+  $(window).on "resize", (e) ->
+    fitSidebarForSize()
 
   setBootstrapBreakpoints()
+  checkInitialSidebarSize()
   new Aside()
