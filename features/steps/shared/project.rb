@@ -240,6 +240,10 @@ module SharedProject
     end
   end
 
+  step 'The project is internal' do
+    @project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+  end
+
   step 'public access for builds is enabled' do
     @project.update(public_builds: true)
   end
