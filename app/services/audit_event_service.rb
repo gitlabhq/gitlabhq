@@ -6,6 +6,7 @@ class AuditEventService
   def for_member(member)
     action = @details[:action]
     old_access_level = @details[:old_access_level]
+    author_name = @author.name
     user_id = member.id
     user_name = member.user.name
 
@@ -14,6 +15,7 @@ class AuditEventService
       when :destroy
         {
           remove: "user_access",
+          author_name: author_name,
           target_id: user_id,
           target_type: "User",
           target_details: user_name,
@@ -22,6 +24,7 @@ class AuditEventService
         {
           add: "user_access",
           as: Gitlab::Access.options_with_owner.key(member.access_level.to_i),
+          author_name: author_name,
           target_id: user_id,
           target_type: "User",
           target_details: user_name,
@@ -31,6 +34,7 @@ class AuditEventService
           change: "access_level",
           from: old_access_level,
           to: member.human_access,
+          author_name: author_name,
           target_id: user_id,
           target_type: "User",
           target_details: user_name,
@@ -42,12 +46,14 @@ class AuditEventService
 
   def for_deploy_key(key_title)
     action = @details[:action]
+    author_name = @author.name
 
     @details =
       case action
       when :destroy
         {
           remove: "deploy_key",
+          author_name: author_name,
           target_id: key_title,
           target_type: "DeployKey",
           target_details: key_title,
@@ -55,6 +61,7 @@ class AuditEventService
       when :create
         {
           add: "deploy_key",
+          author_name: author_name,
           target_id: key_title,
           target_type: "DeployKey",
           target_details: key_title,
