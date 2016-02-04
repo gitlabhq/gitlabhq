@@ -5,10 +5,9 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
+      # We check with `is_a?`, because CommitStatus uses inheritance
       if subject.is_a?(CommitStatus)
-        rules = project_abilities(user, subject)
-        rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
-        return rules
+        return commit_status_abilities(user, subject)
       end
 
       case subject.class.name
@@ -32,9 +31,7 @@ class Ability
       when subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
       when subject.is_a?(CommitStatus)
-        rules = anonymous_project_abilities(subject)
-        rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
-        rules
+        anonymous_commit_status_abilities(subject)
       when subject.is_a?(Project) || subject.respond_to?(:project)
         anonymous_project_abilities(subject)
       when subject.is_a?(Group) || subject.respond_to?(:group)
@@ -66,14 +63,20 @@ class Ability
           :download_code
         ]
 
-        if project.allow_guest_to_access_builds?
-          rules << :read_build
-        end
+        # Allow to read builds by anonymous user if guests are allowed
+        rules << :read_build if project.allow_guest_to_access_builds?
 
         rules - project_disabled_features_rules(project)
       else
         []
       end
+    end
+
+    def anonymous_commit_status_abilities(subject)
+      rules = anonymous_project_abilities(subject.project)
+      # If subject is Ci::Build which inherits from CommitStatus filter the abilities
+      rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
+      rules
     end
 
     def anonymous_group_abilities(subject)
@@ -123,18 +126,15 @@ class Ability
 
         elsif team.guest?(user)
           rules.push(*project_guest_rules)
-
-          if project.allow_guest_to_access_builds?
-            rules << :read_build
-          end
         end
 
         if project.public? || project.internal?
           rules.push(*public_project_rules)
+        end
 
-          if project.allow_guest_to_access_builds?
-            rules << :read_build
-          end
+        # Allow to read builds if guests are allowed
+        if team.guest?(user) || project.public? || project.internal?
+          rules << :read_build if project.allow_guest_to_access_builds?
         end
 
         if project.owner == user || user.admin?
@@ -403,6 +403,13 @@ class Ability
         end
       end
 
+      rules
+    end
+
+    def commit_status_abilities(user, subject)
+      rules = project_abilities(user, subject.project)
+      # If subject is Ci::Build which inherits from CommitStatus filter the abilities
+      rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
       rules
     end
 
