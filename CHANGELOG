@@ -26,6 +26,7 @@ v 8.5.0 (unreleased)
   - Fix API to keep request parameters in Link header (Michael Potthoff)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
+  - Prevent parse error when name of project ends with .atom and prevent path issues
   - Mark inline difference between old and new paths when a file is renamed
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
   - Improve UI consistency between projects and groups lists

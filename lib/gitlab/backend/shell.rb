@@ -47,7 +47,7 @@ module Gitlab
     # new_path - new project path with namespace
     #
     # Ex.
-    #   mv_repository("gitlab/gitlab-ci", "randx/gitlab-ci-new.git")
+    #   mv_repository("gitlab/gitlab-ci", "randx/gitlab-ci-new")
     #
     def mv_repository(path, new_path)
       Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'mv-project',
