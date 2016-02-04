@@ -227,7 +227,10 @@ Rails.application.routes.draw do
       get :test
     end
 
-    resources :broadcast_messages, only: [:index, :edit, :create, :update, :destroy]
+    resources :broadcast_messages, only: [:index, :edit, :create, :update, :destroy] do
+      post :preview, on: :collection
+    end
+
     resource :logs, only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
 
