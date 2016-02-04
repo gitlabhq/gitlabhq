@@ -14,6 +14,7 @@ v 8.5.0 (unreleased)
   - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Don't vendor minified JS
+  - Increase project import timeout to 15 minutes
   - Display 404 error on group not found
   - Track project import failure
   - Support Two-factor Authentication for LDAP users
