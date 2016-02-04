@@ -184,6 +184,7 @@
   &.right-sidebar-collapsed {
     width: $sidebar_collapsed_width;
     padding-top: 0;
+    overflow-x: hidden;
 
     hr {
       margin: 0;

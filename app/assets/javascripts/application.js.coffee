@@ -212,6 +212,13 @@ $ ->
     $this = $(this)
     $this.attr 'value', $this.val()
 
+  $(document).on 'breakpoint:change', (e, breakpoint) ->
+    if breakpoint is 'sm' or breakpoint is 'xs'
+      $gutterIcon = $('.gutter-toggle').find('i')
+      if $gutterIcon.hasClass('fa-angle-double-right')
+        $gutterIcon.closest('a').trigger('click')
+
+
   $(document).on 'click', 'aside .gutter-toggle', (e) ->
     e.preventDefault()
     $this = $(this)
@@ -240,4 +247,33 @@ $ ->
       $('.right-sidebar')
         .hasClass('right-sidebar-collapsed'), { path: '/' })
 
+  bootstrapBreakpoint = undefined;
+  checkBootstrapBreakpoints = ->
+    if $('.device-xs').is(':visible')
+      bootstrapBreakpoint = "xs"
+    else if $('.device-sm').is(':visible')
+      bootstrapBreakpoint = "sm"
+    else if $('.device-md').is(':visible')
+      bootstrapBreakpoint = "md"
+    else if $('.device-lg').is(':visible')
+      bootstrapBreakpoint = "lg"
+
+  setBootstrapBreakpoints = ->
+    if $('.device-xs').length
+      return
+
+    $("body")
+      .append('<div class="device-xs visible-xs"></div>'+
+        '<div class="device-sm visible-sm"></div>'+
+        '<div class="device-md visible-md"></div>'+
+        '<div class="device-lg visible-lg"></div>')
+    checkBootstrapBreakpoints()
+
+  $(window).on "resize", (e) ->
+    oldBootstrapBreakpoint = bootstrapBreakpoint
+    checkBootstrapBreakpoints()
+    if bootstrapBreakpoint != oldBootstrapBreakpoint
+      $(document).trigger('breakpoint:change',[bootstrapBreakpoint])
+
+  setBootstrapBreakpoints()
   new Aside()
