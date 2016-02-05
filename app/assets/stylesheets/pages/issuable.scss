@@ -88,6 +88,10 @@
       margin-left: 20px;
       border-left: 1px solid $border-gray-light;
       padding-left: 10px;
+
+      &:hover {
+        color: $gray-darkest;
+      }
     }
   }
 
@@ -192,11 +196,10 @@
   .btn {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
-  }
-
-  .btn:hover {
-    background: $gray-dark;
-    border: 1px solid $border-gray-dark;
+    &:hover {
+      background: $gray-dark;
+      border: 1px solid $border-gray-dark;
+    }
   }
 
   &.right-sidebar-collapsed {
