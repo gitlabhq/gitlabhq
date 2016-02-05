@@ -1,6 +1,6 @@
 @Dashboard =
   init: ->
-    $("#project-filter-form-field").unbind()
+    $("#project-filter-form-field").off('keyup')
     this.initSearch()
 
   initSearch: ->
