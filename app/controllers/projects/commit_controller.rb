@@ -57,9 +57,8 @@ class Projects::CommitController < Projects::ApplicationController
     render layout: false
   end
 
-  def status
-    status_sha = ci_commit.sha if ci_commit
-    image = Ci::ImageForBuildService.new.execute(@project, sha: status_sha)
+  def badge
+    image = Ci::ImageForBuildService.new.execute(@project, ref: params[:id])
     send_file(image.path, filename: image.name, disposition: 'inline', type: 'image/svg+xml')
   end
 
