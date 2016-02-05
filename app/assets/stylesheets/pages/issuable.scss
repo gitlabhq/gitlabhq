@@ -75,9 +75,13 @@
       border: none;
     }
 
-    span:not(.select2-container span) {
+    span {
       margin-top: 7px;
       display: inline-block;
+    }
+
+    .select2-container span {
+      margin-top: 0;
     }
 
     .issuable-count {
