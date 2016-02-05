@@ -185,9 +185,8 @@ notify:slack:
   script:
     - source ./scripts/notify_slack.sh "#ci-test" "Build failed for master/tags!"
   when: on_failure
-  # TODO: uncomment these lines.
-  #only:
-  #  - master@gitlab-org/gitlab-ce
-  #  - tags@gitlab-org/gitlab-ce
-  #  - master@gitlab-org/gitlab-ee
-  #  - tags@gitlab-org/gitlab-ee
+  only:
+    - master@gitlab-org/gitlab-ce
+    - tags@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - tags@gitlab-org/gitlab-ee
