@@ -34,6 +34,7 @@ v 8.5.0 (unreleased)
   - Add sort dropdown to dashboard projects page
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
   - In seach autocomplete show only groups and projects you are member of
+  - Faster snippet search
 
 v 8.4.3
   - Increase lfs_objects size column to 8-byte integer to allow files larger
