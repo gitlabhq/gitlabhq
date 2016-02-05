@@ -11,8 +11,8 @@ class @ProjectsList
       ProjectsList.filter_results($("#project-filter-form-field"))
 
   @filter_results: ($element) ->
-    terms = $($element).val()
-    filterSelector = $($element).data('filter-selector') || 'span.filter-title'
+    terms = $element.val()
+    filterSelector = $element.data('filter-selector') || 'span.filter-title'
 
     if not terms
       $("ul.projects-list li").show()

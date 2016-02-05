@@ -41,14 +41,21 @@ class GroupsController < Groups::ApplicationController
   def show
     @last_push = current_user.recent_push if current_user
     @projects = @projects.includes(:namespace)
+    @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
     @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html
 
       format.json do
-        load_events
-        pager_json("events/_events", @events.count)
+        if params[:filter_projects]
+          render json: {
+            html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
+          }
+        else
+          load_events
+          pager_json("events/_events", @events.count)
+        end
       end
 
       format.atom do

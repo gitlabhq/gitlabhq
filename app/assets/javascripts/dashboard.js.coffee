@@ -5,7 +5,7 @@
 
   initSearch: ->
     @timer = null
-    $("#project-filter-form-field").on('keyup', ->
+    $("#project-filter-form-field,.projects-list-filter").on('keyup', ->
       clearTimeout(@timer)
       @timer = setTimeout(Dashboard.filterResults, 500)
     )
@@ -25,7 +25,7 @@
       complete: ->
         $('.projects-list-holder').fadeTo(250, 1)
       success: (data) ->
-        $('div.projects-list-holder').replaceWith(data.html)
+        $('.projects-list-holder,.public-projects').replaceWith(data.html)
         # Change url so if user reload a page - search results are saved
         history.replaceState {page: project_filter_url}, document.title, project_filter_url
       dataType: "json"
