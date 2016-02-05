@@ -50,7 +50,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
       format.json do
         render json: {
-          html: view_to_html_string("dashboard/projects/projects", locals: { projects: @projects })
+          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
         }
       end
     end
