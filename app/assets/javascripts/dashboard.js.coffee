@@ -1,5 +1,6 @@
 @Dashboard =
   init: ->
+    $("#project-filter-form-field").unbind()
     this.initSearch()
 
   initSearch: ->
