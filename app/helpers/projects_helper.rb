@@ -70,7 +70,7 @@ module ProjectsHelper
 
       link_output
     end
-    project_link += content_tag :span, nil, { class: "fa fa-chevron-down dropdown-toggle-caret js-projects-dropdown-toggle" } if current_user
+    project_link += icon "chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle" if current_user
 
     full_title = namespace_link + ' / ' + project_link
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
