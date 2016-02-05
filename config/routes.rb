@@ -498,7 +498,7 @@ Rails.application.routes.draw do
             '/status/*id/badge',
             to: 'commit#badge',
             constraints: { format: /png/ },
-            as: :commit_badge
+            as: :build_badge
           )
         end
 

@@ -10,6 +10,11 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :commit
   before_action :define_show_vars, only: [:show, :builds]
 
+  # Skip authentication for status badge only
+  skip_before_action :authenticate_user!, :reject_blocked!, :project,
+    :repository, :require_non_empty_project, :authorize_download_code!,
+    :commit, only: [:badge]
+
   def show
     return git_not_found! unless @commit
 
@@ -58,7 +63,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def badge
-    image = Ci::ImageForBuildService.new.execute(@project, ref: params[:id])
+    project = Project.find_with_namespace("#{params[:namespace_id]}/#{params[:project_id]}")
+    image = Ci::ImageForBuildService.new.execute(project, ref: params[:id])
     send_file(image.path, filename: image.name, disposition: 'inline', type: 'image/svg+xml')
   end
 
