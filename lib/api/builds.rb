@@ -136,7 +136,7 @@ module API
 
         build = get_build(params[:build_id])
         return not_found!(build) unless build
-        return forbidden!('Build is not eraseable!') unless build.eraseable?
+        return forbidden!('Build is not erasable!') unless build.erasable?
 
         build.erase!
         present build, with: Entities::Build,

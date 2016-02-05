@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Ci::Build::Eraseable, models: true do
-  shared_examples 'eraseable' do
+describe Ci::Build::Erasable, models: true do
+  shared_examples 'erasable' do
     it 'should remove artifact file' do
       expect(build.artifacts_file.exists?).to be_falsy
     end
@@ -23,25 +23,20 @@ describe Ci::Build::Eraseable, models: true do
     end
   end
 
-  context 'build is not eraseable' do
+  context 'build is not erasable' do
     let!(:build) { create(:ci_build) }
 
     describe '#erase!' do
-      it { expect { build.erase! }.to raise_error(StandardError, /Build not eraseable!/ )}
+      it { expect { build.erase! }.to raise_error(StandardError, /Build not erasable!/ )}
     end
 
-    describe '#eraseable?' do
-      subject { build.eraseable? }
+    describe '#erasable?' do
+      subject { build.erasable? }
       it { is_expected.to eq false }
-    end
-
-    describe '#erase_url' do
-      subject { build.erase_url }
-      it { is_expected.to be_falsy }
     end
   end
 
-  context 'build is eraseable' do
+  context 'build is erasable' do
     let!(:build) { create(:ci_build_with_trace, :success, :artifacts) }
 
     describe '#erase!' do
@@ -50,7 +45,7 @@ describe Ci::Build::Eraseable, models: true do
       context 'erased by user' do
         let!(:user) { create(:user, username: 'eraser') }
 
-        include_examples 'eraseable'
+        include_examples 'erasable'
 
         it 'should record user who erased a build' do
           expect(build.erased_by).to eq user
@@ -60,7 +55,7 @@ describe Ci::Build::Eraseable, models: true do
       context 'erased by system' do
         let(:user) { nil }
 
-        include_examples 'eraseable'
+        include_examples 'erasable'
 
         it 'should not set user who erased a build' do
           expect(build.erased_by).to be_nil
@@ -68,14 +63,9 @@ describe Ci::Build::Eraseable, models: true do
       end
     end
 
-    describe '#eraseable?' do
-      subject { build.eraseable? }
+    describe '#erasable?' do
+      subject { build.erasable? }
       it { is_expected.to eq true }
-    end
-
-    describe '#erase_url' do
-      subject { build.erase_url }
-      it { is_expected.to be_truthy }
     end
 
     describe '#erased?' do

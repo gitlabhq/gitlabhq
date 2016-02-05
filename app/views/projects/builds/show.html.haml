@@ -76,15 +76,15 @@
         = link_to '#down-build-trace', class: 'btn' do
           %i.fa.fa-angle-down
 
-      - unless @build.erased?
+      - if @build.erased?
+        .erased.alert.alert-warning
+          - erased_by = "by #{@build.erased_by.username}" if @build.erased_by
+          Build has been erased #{erased_by} #{time_ago_with_tooltip(@build.erased_at)}
+      - else
         %pre.trace#build-trace
           %code.bash
             = preserve do
               = raw @build.trace_html
-      - else
-        .erased.alert.alert-warning
-          - erased_by = "by #{@build.erased_by.username}" if @build.erased_by
-          Build has been erased #{erased_by} #{time_ago_with_tooltip(@build.erased_at)}
 
       %div#down-build-trace
 
@@ -119,9 +119,10 @@
               - elsif @build.retry_url
                 = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
 
-              - if @build.eraseable?
-                = link_to @build.erase_url, class: 'btn btn-sm btn-warning', method: :delete,
-                                            data: { confirm: 'Are you sure you want to erase this build?' } do
+              - if @build.erasable?
+                = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
+                          class: 'btn btn-sm btn-warning', method: :delete,
+                          data: { confirm: 'Are you sure you want to erase this build?' } do
                   = icon('eraser')
                   Erase
 

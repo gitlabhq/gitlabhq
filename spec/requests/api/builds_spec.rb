@@ -175,7 +175,7 @@ describe API::API, api: true  do
       delete api("/projects/#{project.id}/builds/#{build.id}/content", user)
     end
 
-    context 'build is eraseable' do
+    context 'build is erasable' do
       let(:build) { create(:ci_build_with_trace, :artifacts, :success, project: project, commit: commit) }
 
       it 'should erase build content' do
@@ -186,7 +186,7 @@ describe API::API, api: true  do
       end
     end
 
-    context 'build is not eraseable' do
+    context 'build is not erasable' do
       let(:build) { create(:ci_build_with_trace, project: project, commit: commit) }
 
       it 'should respond with forbidden' do

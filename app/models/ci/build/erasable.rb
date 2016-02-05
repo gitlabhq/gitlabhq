@@ -1,6 +1,6 @@
 module Ci
   class Build
-    module Eraseable
+    module Erasable
       extend ActiveSupport::Concern
 
       included do
@@ -8,7 +8,7 @@ module Ci
       end
 
       def erase!(opts = {})
-        raise StandardError, 'Build not eraseable!' unless eraseable?
+        raise StandardError, 'Build not erasable!' unless erasable?
 
         remove_artifacts_file!
         remove_artifacts_metadata!
@@ -16,14 +16,8 @@ module Ci
         update_erased!(opts[:erased_by])
       end
 
-      def eraseable?
+      def erasable?
         complete? && (artifacts? || has_trace?)
-      end
-
-      def erase_url
-        if eraseable?
-          erase_namespace_project_build_path(project.namespace, project, self)
-        end
       end
 
       def erased?
