@@ -32,6 +32,7 @@ v 8.5.0 (unreleased)
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
   - Improve UI consistency between projects and groups lists
   - Add sort dropdown to dashboard projects page
+  - Fixed logo animation on Safari (Roman Rott)
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
   - In seach autocomplete show only groups and projects you are member of
 
