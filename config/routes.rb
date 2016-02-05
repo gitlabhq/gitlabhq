@@ -493,6 +493,13 @@ Rails.application.routes.draw do
             constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ },
             as: :commits
           )
+
+          get(
+            '/status/*id/badge',
+            to: 'commit#status',
+            constraints: { format: /png/ },
+            as: :commit_status
+          )
         end
 
         resource  :avatar, only: [:show, :destroy]
