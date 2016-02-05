@@ -33,7 +33,7 @@ describe API::API, api: true  do
       end
 
       it 'should filter runners by scope' do
-        get api('/runners?scope=specific', user)
+        get api('/runners?scope=active', user)
         shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
         expect(response.status).to eq(200)
@@ -78,7 +78,7 @@ describe API::API, api: true  do
       end
 
       it 'should filter runners by scope' do
-        get api('/runners?scope=specific', admin)
+        get api('/runners/all?scope=specific', admin)
         shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
         expect(response.status).to eq(200)

@@ -9,7 +9,7 @@ module API
       # Example Request:
       #   GET /runners
       get do
-        runners = filter_runners(current_user.ci_authorized_runners, params[:scope])
+        runners = filter_runners(current_user.ci_authorized_runners, params[:scope], without: ['specific', 'shared'])
         present paginate(runners), with: Entities::Runner
       end
 
@@ -124,10 +124,14 @@ module API
     end
 
     helpers do
-      def filter_runners(runners, scope)
+      def filter_runners(runners, scope, options = {})
         return runners unless scope.present?
 
         available_scopes = ::Ci::Runner::AVAILABLE_SCOPES
+        if options[:without]
+          available_scopes = available_scopes - options[:without]
+        end
+
         if (available_scopes & [scope]).empty?
           render_api_error!('Scope contains invalid value', 400)
         end
