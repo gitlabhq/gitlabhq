@@ -47,8 +47,6 @@ shell_path="/bin/bash"
 # Read configuration variable file if it is present
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
-cd $gitlab_workhorse_dir
-
 # Switch to the app_user if it is not he/she who is running the script.
 if [ `whoami` != "$app_user" ]; then
   eval su - "$app_user" -s $shell_path -c $(echo \")$0 "$@"$(echo \"); exit;
