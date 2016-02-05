@@ -92,6 +92,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :akismet_enabled
 
+  validates :max_attachment_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
