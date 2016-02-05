@@ -101,7 +101,7 @@
       .build-widget
         %h4.title
           Build ##{@build.id}
-          - if current_user && can?(current_user, :update_build, @project)
+          - if can?(current_user, :update_build, @project)
             .pull-right
               - if @build.cancel_url
                 = link_to "Cancel", @build.cancel_url, class: 'btn btn-sm btn-danger', method: :post
