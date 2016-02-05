@@ -226,6 +226,16 @@ $ ->
           $gutterIcon.closest('a').trigger('click')
 
   $(document)
+    .off 'shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]'
+    .on 'shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', (e) ->
+      action = $(e.target).attr("data-action")
+      if action is 'diffs' 
+        $gutterIcon = $('.gutter-toggle').find('i')
+        if $gutterIcon.hasClass('fa-angle-double-right')
+          $gutterIcon.closest('a').trigger('click')
+
+
+  $(document)
     .off 'click', 'aside .gutter-toggle'
     .on 'click', 'aside .gutter-toggle', (e) ->
       e.preventDefault()

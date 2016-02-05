@@ -3,6 +3,20 @@ module NavHelper
     cookies[:collapsed_nav] == 'true'
   end
 
+  def sidebar_gutter_collapsed_class
+    if current_path?('merge_requests#diffs') || 
+      cookies[:collapsed_gutter] == 'true'
+      "right-sidebar-collapsed"
+    else
+      "right-sidebar-expanded"
+    end
+  end
+
+  def sidebar_gutter_collapsed?
+    current_path?('merge_requests#diffs') || 
+      cookies[:collapsed_gutter] == 'true'
+  end
+
   def nav_sidebar_class
     if nav_menu_collapsed?
       "sidebar-collapsed"
@@ -29,6 +43,8 @@ module NavHelper
       else
         "page-gutter right-sidebar-expanded"
       end
+    elsif current_path?('merge_requests#diffs')
+      "page-gutter right-sidebar-collapsed"
     end
   end
 
