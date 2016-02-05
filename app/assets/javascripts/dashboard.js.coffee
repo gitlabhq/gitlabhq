@@ -4,12 +4,13 @@
 
   initSearch: ->
     @timer = null
-    $("#project-filter-form-field").keyup ->
+    $("#project-filter-form-field").on('keyup', ->
       clearTimeout(@timer)
       @timer = setTimeout(Dashboard.filterResults, 500)
+    )
 
   filterResults: =>
-    $('.projects-list-holder').css("opacity", '0.5')
+    $('.projects-list-holder').fadeTo(250, 0.5)
 
     form = null
     form = $("#project-filter-form")
@@ -21,7 +22,7 @@
       url: form.attr('action')
       data: form.serialize()
       complete: ->
-        $('.projects-list-holder').css("opacity", '1.0')
+        $('.projects-list-holder').fadeTo(250, 1)
       success: (data) ->
         $('div.projects-list-holder').replaceWith(data.html)
         # Change url so if user reload a page - search results are saved
