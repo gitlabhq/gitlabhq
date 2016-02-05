@@ -194,6 +194,11 @@
     border: 1px solid $border-gray-normal;
   }
 
+  .btn:hover {
+    background: $gray-dark;
+    border: 1px solid $border-gray-dark;
+  }
+
   &.right-sidebar-collapsed {
     .issuable-count,
     .issuable-nav,
