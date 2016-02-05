@@ -188,7 +188,7 @@ describe Projects::MergeRequestsController do
         expect(response).to render_template('diffs')
       end
     end
-    
+
     context 'as json' do
       it 'renders the diffs template to a string' do
         go format: 'json'
@@ -196,6 +196,18 @@ describe Projects::MergeRequestsController do
         expect(response).to render_template('projects/merge_requests/show/_diffs')
         expect(JSON.parse(response.body)).to have_key('html')
       end
+    end
+  end
+
+  describe 'GET diffs with view' do
+    it 'saves the preferred diff view in a cookie' do
+      get :diffs,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: merge_request.iid,
+          view: 'parallel'
+
+      expect(response.cookies['diff_view']).to eq('parallel')
     end
   end
 
