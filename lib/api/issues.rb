@@ -3,6 +3,8 @@ module API
   class Issues < Grape::API
     before { authenticate! }
 
+    helpers ::Gitlab::AkismetHelper
+
     helpers do
       def filter_issues_state(issues, state)
         case state
@@ -18,6 +20,17 @@ module API
 
       def filter_issues_milestone(issues, milestone)
         issues.includes(:milestone).where('milestones.title' => milestone)
+      end
+
+      def create_spam_log(project, current_user, attrs)
+        params = attrs.merge({
+          source_ip: env['REMOTE_ADDR'],
+          user_agent: env['HTTP_USER_AGENT'],
+          noteable_type: 'Issue',
+          via_api: true
+        })
+
+        ::CreateSpamLogService.new(project, current_user, params).execute
       end
     end
 
@@ -114,7 +127,15 @@ module API
           render_api_error!({ labels: errors }, 400)
         end
 
-        issue = ::Issues::CreateService.new(user_project, current_user, attrs).execute
+        project = user_project
+        text = [attrs[:title], attrs[:description]].reject(&:blank?).join("\n")
+
+        if check_for_spam?(project, current_user) && is_spam?(env, current_user, text)
+          create_spam_log(project, current_user, attrs)
+          render_api_error!({ error: 'Spam detected' }, 400)
+        end
+
+        issue = ::Issues::CreateService.new(project, current_user, attrs).execute
 
         if issue.valid?
           # Find or create labels and attach to issue. Labels are valid because

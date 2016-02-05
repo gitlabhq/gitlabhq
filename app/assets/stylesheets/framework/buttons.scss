@@ -2,7 +2,7 @@
   @include border-radius(3px);
   font-size: $gl-font-size;
   font-weight: 500;
-  padding: $gl-vert-padding $gl-padding;
+  padding: $gl-vert-padding $gl-btn-padding;
 
   &:focus,
   &:active {
@@ -82,8 +82,7 @@
   &.btn-success,
   &.btn-new,
   &.btn-create,
-  &.btn-save,
-  &.btn-green {
+  &.btn-save {
     @include btn-green;
   }
 
@@ -159,7 +158,6 @@
 
 .input-group-btn {
   .btn {
-    @include btn-gray;
     @include btn-middle;
 
     &:hover {
@@ -185,9 +183,5 @@
 
     border: 1px solid #c6cacf !important;
     background-color: #e4e7ed !important;
-  }
-
-  .btn-green {
-    @include btn-green
   }
 }

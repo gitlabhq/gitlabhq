@@ -20,6 +20,12 @@ module ProjectsHelper
     end
   end
 
+  def link_to_member_avatar(author, opts = {})
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    opts = default_opts.merge(opts)
+    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
+  end
+
   def link_to_member(project, author, opts = {})
     default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
     opts = default_opts.merge(opts)
@@ -53,14 +59,23 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to(simple_sanitize(project.name), project_path(project))
+    project_link = link_to project_path(project), { class: "project-item-select-holder #{"js-projects-dropdown-toggle" if current_user}" } do
+      link_output = simple_sanitize(project.name)
+      link_output += content_tag :span, nil, { class: "fa fa-chevron-down dropdown-toggle-caret" } if current_user
+
+      if current_user
+        link_output += project_select_tag :project_path,
+          class: "project-item-select js-projects-dropdown",
+          data: { include_groups: false, order_by: 'last_activity_at' }
+      end
+
+      link_output
+    end
 
     full_title = namespace_link + ' / ' + project_link
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
 
-    content_tag :span do
-      full_title
-    end
+    full_title
   end
 
   def remove_project_message(project)

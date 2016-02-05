@@ -177,6 +177,26 @@ is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
 issues or chunks. You can simply not set the weight of a parent issue and set
 weights to children issues.
 
+### Regression issues
+
+Every monthly release has a corresponding issue on the CE issue tracker to keep
+track of functionality broken by that release and any fixes that need to be
+included in a patch release (see [8.3 Regressions] as an example).
+
+As outlined in the issue description, the intended workflow is to post one note
+with a reference to an issue describing the regression, and then to update that
+note with a reference to the merge request that fixes it as it becomes available.
+
+If you're a contributor who doesn't have the required permissions to update
+other users' notes, please post a new note with a reference to both the issue
+and the merge request.
+
+The release manager will [update the notes] in the regression issue as fixes are
+addressed.
+
+[8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
+[update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
@@ -256,6 +276,18 @@ request feel free to mention one of the Merge Marshalls of the [core team][].
 Please ensure that your merge request meets the contribution acceptance criteria.
 
 When having your code reviewed and when reviewing merge requests please take the [thoughtbot code review guidelines](https://github.com/thoughtbot/guides/tree/master/code-review) into account.
+
+## Changes for Stable Releases
+
+Sometimes certain changes have to be added to an existing stable release.
+Two examples are bug fixes and performance improvements. In these cases the
+corresponding merge request should be updated to have the following:
+
+1. A milestone indicating what release the merge request should be merged into.
+1. The label "Pick into Stable"
+
+This makes it easier for release managers to keep track of what still has to be
+merged and where changes have to be merged into.
 
 ## Definition of done
 

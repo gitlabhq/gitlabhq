@@ -140,6 +140,7 @@ class User < ActiveRecord::Base
   has_many :approvals,                dependent: :destroy
   has_many :approvers,                dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
+  has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
 
 

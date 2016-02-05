@@ -8,14 +8,7 @@ module Banzai
     # Extends HTML::Pipeline::SanitizationFilter with a custom whitelist.
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
       def whitelist
-        # Descriptions are more heavily sanitized, allowing only a few elements.
-        # See http://git.io/vkuAN
-        if context[:inline_sanitization]
-          whitelist = LIMITED
-          whitelist[:elements] -= %w(pre code img ol ul li)
-        else
-          whitelist = super
-        end
+        whitelist = super
 
         customize_whitelist(whitelist)
 

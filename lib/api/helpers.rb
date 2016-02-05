@@ -30,7 +30,7 @@ module API
     end
 
     def sudo_identifier()
-      identifier ||= params[SUDO_PARAM] ||= env[SUDO_HEADER]
+      identifier ||= params[SUDO_PARAM] || env[SUDO_HEADER]
 
       # Regex for integers
       if !!(identifier =~ /^[0-9]+$/)
@@ -344,12 +344,22 @@ module API
 
     def pagination_links(paginated_data)
       request_url = request.url.split('?').first
+      request_params = params.clone
+      request_params[:per_page] = paginated_data.limit_value
 
       links = []
-      links << %(<#{request_url}?page=#{paginated_data.current_page - 1}&per_page=#{paginated_data.limit_value}>; rel="prev") unless paginated_data.first_page?
-      links << %(<#{request_url}?page=#{paginated_data.current_page + 1}&per_page=#{paginated_data.limit_value}>; rel="next") unless paginated_data.last_page?
-      links << %(<#{request_url}?page=1&per_page=#{paginated_data.limit_value}>; rel="first")
-      links << %(<#{request_url}?page=#{paginated_data.total_pages}&per_page=#{paginated_data.limit_value}>; rel="last")
+
+      request_params[:page] = paginated_data.current_page - 1
+      links << %(<#{request_url}?#{request_params.to_query}>; rel="prev") unless paginated_data.first_page?
+
+      request_params[:page] = paginated_data.current_page + 1
+      links << %(<#{request_url}?#{request_params.to_query}>; rel="next") unless paginated_data.last_page?
+
+      request_params[:page] = 1
+      links << %(<#{request_url}?#{request_params.to_query}>; rel="first")
+
+      request_params[:page] = paginated_data.total_pages
+      links << %(<#{request_url}?#{request_params.to_query}>; rel="last")
 
       links.join(', ')
     end

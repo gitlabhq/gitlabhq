@@ -1,11 +1,10 @@
-.projects-list-holder
-  .projects-search-form
-    .input-group
-      = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
-      - if can? current_user, :create_projects, @group
-        %span.input-group-btn
-          = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-green' do
-            %i.fa.fa-plus
-            New Project
+.projects-list-holder.prepend-top-default
+  .input-group
+    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
+    - if can? current_user, :create_projects, @group
+      %span.input-group-btn
+        = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new' do
+          = icon('plus')
+          New Project
 
   = render 'shared/projects/list', projects: @projects, projects_limit: 20, stars: false, skip_namespace: true

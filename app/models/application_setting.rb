@@ -89,6 +89,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :sentry_enabled
 
+  validates :akismet_api_key,
+            presence: true,
+            if: :akismet_enabled
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -144,7 +148,9 @@ class ApplicationSetting < ActiveRecord::Base
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       max_artifacts_size: Settings.artifacts['max_size'],
       require_two_factor_authentication: false,
-      two_factor_grace_period: 48
+      two_factor_grace_period: 48,
+      recaptcha_enabled: false,
+      akismet_enabled: false
     )
   end
 

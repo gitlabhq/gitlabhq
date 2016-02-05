@@ -1,14 +1,11 @@
 - page_title "Milestones"
 - header_title "Milestones", dashboard_milestones_path
 
-.project-issuable-filter
-  .controls
-    = render 'shared/new_project_item_select', path: 'milestones/new', label: "New Milestone", include_groups: true
-
+.top-area
   = render 'shared/milestones_filter'
 
-.gray-content-block
-  List all milestones from all projects you have access to.
+  .nav-controls
+    = render 'shared/new_project_item_select', path: 'milestones/new', label: "New Milestone", include_groups: true
 
 .milestones
   %ul.content-list

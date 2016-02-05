@@ -42,8 +42,6 @@
 
 .issuable-details {
   section {
-    border-right: 1px solid $border-white-light;
-
     .issuable-discussion {
       margin-right: 1px;
     }
@@ -73,10 +71,34 @@
   .block {
     @include clearfix;
     padding:  $gl-padding 0;
-    border-bottom: 1px solid #F0F0F0;
+    border-bottom: 1px solid $border-gray-light;
+    // This prevents the mess when resizing the sidebar 
+    // of elements repositioning themselves..
+    width: $gutter_inner_width;
+    overflow-x: hidden;
+    // --
+
+    &:first-child {
+      padding-top: 5px;
+    }
 
     &:last-child {
       border: none;
+    }
+
+    span {
+      margin-top: 7px;
+      display: inline-block;
+    }
+
+    .issuable-count {
+
+    }
+
+    .gutter-toggle {
+      margin-left: 20px;
+      border-left: 1px solid $border-gray-light;
+      padding-left: 10px;
     }
   }
 
@@ -131,5 +153,94 @@
   .participants .avatar {
     margin-top: 6px;
     margin-right: 2px;
+  }
+}
+
+
+.right-sidebar {
+  position: fixed;
+  top: 58px;
+  right: 0;
+  height: 100%;
+  transition-duration: .3s;
+  background: $gray-light;
+  overflow: scroll;
+  padding: 10px 20px;
+
+  &.right-sidebar-expanded {
+    width: $gutter_width;
+
+    hr {
+      display: none;
+    }
+  }
+
+  .subscribe-button {
+    span {
+      margin-top: 0;
+    }
+  }
+
+  &.right-sidebar-collapsed {
+    width: $sidebar_collapsed_width;
+    padding-top: 0;
+    overflow-x: hidden;
+
+    hr {
+      margin: 0;
+      color: $gray-normal;
+      border-color: $gray-normal;
+      width: 62px;
+      margin-left: -20px
+    }
+
+    .block {
+      border-bottom: none;
+      padding: 15px 0 0 0;
+    }
+  }
+
+  .btn {
+    background: $gray-normal;
+    border: 1px solid $border-gray-normal;
+  }
+
+  &.right-sidebar-collapsed {
+    .issuable-count, 
+    .issuable-nav,
+    .assignee > *,
+    .milestone > *,
+    .labels > *,
+    .participants > *,
+    .light > *,
+    .project-reference > * {
+      display: none;
+    }
+
+    .gutter-toggle {
+      margin-left: -$gutter_inner_width + 4;
+    }
+
+    .sidebar-collapsed-icon {
+      display: block;
+      float: left;
+      width: 62px;
+      text-align: center;
+      margin-left: -19px;
+      padding-bottom: 10px;
+      color: #999999;
+
+      span {
+        display: block;
+        margin-top: 0;
+      }
+    }
+
+  }
+
+  &.right-sidebar-expanded {
+    .sidebar-collapsed-icon {
+      display: none;
+    }
   }
 }
