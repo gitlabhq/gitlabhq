@@ -200,14 +200,28 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET diffs with view' do
+    def go(extra_params = {})
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id:   project.to_param,
+        id:           merge_request.iid
+      }
+
+      get :diffs, params.merge(extra_params)
+    end
+
     it 'saves the preferred diff view in a cookie' do
-      get :diffs,
-          namespace_id: project.namespace.to_param,
-          project_id: project.to_param,
-          id: merge_request.iid,
-          view: 'parallel'
+      go view: 'parallel'
 
       expect(response.cookies['diff_view']).to eq('parallel')
+    end
+
+    it 'assigns :view param based on cookie' do
+      request.cookies['diff_view'] = 'parallel'
+
+      go
+
+      expect(controller.params[:view]).to eq 'parallel'
     end
   end
 
