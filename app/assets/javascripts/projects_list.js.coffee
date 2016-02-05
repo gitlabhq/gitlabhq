@@ -22,5 +22,3 @@ class @ProjectsList
           else
             $(this).show()
       uiBox.find("ul.projects-list li.bottom").hide()
-
-

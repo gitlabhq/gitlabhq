@@ -49,7 +49,7 @@ class Event < ActiveRecord::Base
   scope :code_push, -> { where(action: PUSHED) }
 
   scope :in_projects, ->(projects) do
-    where(project_id: projects.select(:id).reorder(nil)).recent
+    where(project_id: projects.map(&:id)).recent
   end
 
   scope :with_associations, -> { includes(project: :namespace) }
