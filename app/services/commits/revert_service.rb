@@ -24,9 +24,7 @@ module Commits
       raw_repo = repository.rugged
 
       # Create branch with revert commit
-      reverted = repository.revert(current_user, @commit.id,
-                                   @commit.revert_branch_name, @target_branch,
-                                   @commit.revert_message, @create_merge_request)
+      reverted = repository.revert(current_user, @commit, @target_branch, @create_merge_request)
 
       unless @create_merge_request
         repository.rm_branch(current_user, @commit.revert_branch_name)

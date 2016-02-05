@@ -622,12 +622,13 @@ class Repository
     merge_commit_sha
   end
 
-  def revert(user, commit_id, target_branch, base_branch, commit_message, create_mr = false)
+  def revert(user, commit, base_branch, create_mr = false)
+    target_branch = commit.revert_branch_name
     source_sha = find_branch(base_branch).target
     target_sha = find_branch(target_branch).try(:target)
 
     # First make revert in temp branch
-    status = target_sha ? true : revert_commit(user, commit_id, target_branch, base_branch, commit_message)
+    status = target_sha ? true : revert_commit(user, commit, target_branch, base_branch)
 
     # Make the revert happen in the target branch
     source_sha = find_branch(target_branch).target
@@ -635,24 +636,26 @@ class Repository
     has_changes = is_there_something_to_merge?(source_sha, target_sha)
 
     if has_changes && !create_mr
-      status = revert_commit(user, commit_id, base_branch, base_branch, commit_message)
+      status = revert_commit(user, commit, base_branch, base_branch)
     end
 
-    ::File.open('/Users/ruben/Desktop/log.txt', 'w') { |f| f.puts "HAS CHANGES: #{has_changes && status}" }
     has_changes && status
   end
 
-  def revert_commit(user, commit_id, target_branch, base_branch, commit_message)
+  def revert_commit(user, commit, target_branch, base_branch)
     base_sha = find_branch(base_branch).target
 
     commit_with_hooks(user, target_branch) do |ref|
-      new_index = rugged.revert_commit(commit_id, base_sha)#, mainline: 1)
+      args = [commit.id, base_sha]
+      args << { mainline: 1 } if commit.is_a_merge_commit?
+
+      new_index = rugged.revert_commit(*args)
 
       return false if new_index.conflicts?
 
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged, {
-        message: commit_message,
+        message: commit.revert_message,
         author: committer,
         committer: committer,
         tree: new_index.write_tree(rugged),
