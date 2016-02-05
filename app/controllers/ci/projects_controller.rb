@@ -12,9 +12,12 @@ module Ci
 
     # Project status badge
     # Image with build status for sha or ref
+    #
+    # This action in DEPRECATED, this is here only for backwards compatibility
+    # with projects migrated from GitLab CI.
+    #
     def badge
       image = Ci::ImageForBuildService.new.execute(@project, params)
-
       send_file image.path, filename: image.name, disposition: 'inline', type:"image/svg+xml"
     end
 
