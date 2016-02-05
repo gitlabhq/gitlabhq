@@ -75,7 +75,7 @@
       border: none;
     }
 
-    span {
+    span:not(.select2-container span) {
       margin-top: 7px;
       display: inline-block;
     }
