@@ -16,7 +16,7 @@ module CreatesCommit
       flash[:notice] = success_notice || "Your changes have been successfully committed."
 
       if create_merge_request?
-        success_path = new_merge_request_path
+        success_path = merge_request_exists? ? existent_merge_request_path : new_merge_request_path
         target = different_project? ? "project" : "branch"
         flash[:notice] << " You can now submit a merge request to get this change into the original #{target}."
       end
@@ -62,6 +62,17 @@ module CreatesCommit
     )
   end
 
+  def existent_merge_request_path
+    namespace_project_merge_request_path(@mr_target_project.namespace, @mr_target_project, @merge_request)
+  end
+
+  def merge_request_exists?
+    @merge_request = @mr_target_project.merge_requests.opened.where(
+                       source_branch: @mr_source_branch,
+                       target_branch: @mr_target_branch
+                     ).first
+  end
+
   def different_project?
     @mr_source_project != @mr_target_project
   end
@@ -75,7 +86,7 @@ module CreatesCommit
   end
 
   def set_commit_variables
-    @mr_source_branch = @target_branch
+    @mr_source_branch ||= @target_branch
 
     if can?(current_user, :push_code, @project)
       # Edit file in this project
@@ -89,7 +100,7 @@ module CreatesCommit
       else
         # Merge request to this project
         @mr_target_project = @project
-        @mr_target_branch = @ref
+        @mr_target_branch ||= @ref
       end
     else
       # Edit file in fork

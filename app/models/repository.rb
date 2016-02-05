@@ -622,22 +622,24 @@ class Repository
     merge_commit_sha
   end
 
-  def revert(user, commit_id, target_branch, base_branch, commit_message)
+  def revert(user, commit_id, target_branch, base_branch, commit_message, create_mr = false)
     source_sha = find_branch(base_branch).target
     target_sha = find_branch(target_branch).try(:target)
 
     # First make revert in temp branch
-    unless target_sha
-      revert_commit(user, commit_id, target_branch, base_branch, commit_message)
-    end
+    status = target_sha ? true : revert_commit(user, commit_id, target_branch, base_branch, commit_message)
 
     # Make the revert happen in the target branch
     source_sha = find_branch(target_branch).target
     target_sha = find_branch(base_branch).target
+    has_changes = is_there_something_to_merge?(source_sha, target_sha)
 
-    if is_there_something_to_merge?(source_sha, target_sha)
-      revert_commit(user, commit_id, base_branch, base_branch, commit_message)
+    if has_changes && !create_mr
+      status = revert_commit(user, commit_id, base_branch, base_branch, commit_message)
     end
+
+    ::File.open('/Users/ruben/Desktop/log.txt', 'w') { |f| f.puts "HAS CHANGES: #{has_changes && status}" }
+    has_changes && status
   end
 
   def revert_commit(user, commit_id, target_branch, base_branch, commit_message)

@@ -4,8 +4,9 @@ module Commits
 
     def execute
       @source_project = params[:source_project] || @project
-      @target_branch  = params[:target_branch]
-      @commit_to_revert = @source_project.commit(params[:revert_commit_id])
+      @target_branch = params[:target_branch]
+      @commit = params[:commit]
+      @create_merge_request = params[:create_merge_request]
 
       # Check push permissions to branch
       validate
@@ -23,10 +24,13 @@ module Commits
       raw_repo = repository.rugged
 
       # Create branch with revert commit
-      reverted = repository.revert(current_user, @commit_to_revert.id,
-                                   @commit_to_revert.revert_branch_name, @target_branch,
-                                   @commit_to_revert.revert_message)
-      repository.rm_branch(current_user, @commit_to_revert.revert_branch_name)
+      reverted = repository.revert(current_user, @commit.id,
+                                   @commit.revert_branch_name, @target_branch,
+                                   @commit.revert_message, @create_merge_request)
+
+      unless @create_merge_request
+        repository.rm_branch(current_user, @commit.revert_branch_name)
+      end
 
       reverted
     end

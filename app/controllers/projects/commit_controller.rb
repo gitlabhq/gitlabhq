@@ -93,10 +93,13 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def assign_revert_commit_vars
+    @commit = project.commit(params[:id])
     @target_branch = params[:target_branch]
-
+    @mr_source_branch = @commit.revert_branch_name
+    @mr_target_branch = @target_branch
     @commit_params = {
-      revert_commit_id: params[:id],
+      commit: @commit,
+      create_merge_request: params[:create_merge_request].present? || different_project?
     }
   end
 end
