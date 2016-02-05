@@ -7,6 +7,7 @@ v 8.5.0 (unreleased)
 v 8.4.4
   - Re-introduce "Send email to users" link in Admin area
   - Fix category values for Jenkins and JenkinsDeprecated services
+  - Make elastic indexer more stable
 
 v 8.4.3
   - Elasticsearch: fix partial blob indexing on push

@@ -11,14 +11,15 @@ namespace :gitlab do
           puts "Indexing #{project.name_with_namespace} (ID=#{project.id})..."
 
           index_status = IndexStatus.find_or_create_by(project: project)
-          head_sha = project.repository.commit.sha
-
-          if index_status.last_commit == head_sha
-            puts "Skipped".yellow
-            next
-          end
 
           begin
+            head_sha = project.repository.commit.sha
+
+            if index_status.last_commit == head_sha
+              puts "Skipped".yellow
+              next
+            end
+
             project.repository.index_commits(from_rev: project.index_status.last_commit)
             project.repository.index_blobs(from_rev: project.index_status.last_commit)
 
