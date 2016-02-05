@@ -13,9 +13,12 @@ v 8.5.0 (unreleased)
     set it up
   - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
+  - Fix label links for a merge request pointing to issues list
   - Don't vendor minified JS
   - Display 404 error on group not found
   - Track project import failure
+  - Support Two-factor Authentication for LDAP users
+  - Display database type and version in Administration dashboard
   - Fix visibility level text in admin area (Zeger-Jan van de Weg)
   - Warn admin during OAuth of granting admin rights (Zeger-Jan van de Weg)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
@@ -24,6 +27,7 @@ v 8.5.0 (unreleased)
   - Fix API to keep request parameters in Link header (Michael Potthoff)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
+  - Prevent parse error when name of project ends with .atom and prevent path issues
   - Mark inline difference between old and new paths when a file is renamed
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
   - Improve UI consistency between projects and groups lists

@@ -2,16 +2,19 @@
 = render "header_title"
 
 = render 'projects/last_push'
-.project-issuable-filter
-  .controls
+
+.top-area
+  = render 'shared/issuable/nav', type: :merge_requests
+  .nav-controls
     = render 'shared/issuable/search_form', path: namespace_project_merge_requests_path(@project.namespace, @project)
 
     - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
     - if merge_project
-      .pull-left.hidden-xs
-        = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New Merge Request" do
-          %i.fa.fa-plus
-          New Merge Request
-  = render 'shared/issuable/filter', type: :merge_requests
+      = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New Merge Request" do
+        = icon('plus')
+        New Merge Request
+
+= render 'shared/issuable/filter', type: :merge_requests
+
 .merge-requests-holder
   = render 'merge_requests'

@@ -8,18 +8,22 @@
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
 
 %ul.projects-list
-  - projects.each_with_index do |project, i|
-    - css_class = (i >= projects_limit) ? 'hide' : nil
-    = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
-      avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
-      forks: forks, show_last_commit_as_description: show_last_commit_as_description
+  - if projects.any?
+    - projects.each_with_index do |project, i|
+      - css_class = (i >= projects_limit) ? 'hide' : nil
+      = render "shared/projects/project", project: project, skip_namespace: skip_namespace,
+        avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
+        forks: forks, show_last_commit_as_description: show_last_commit_as_description
 
-  - if projects.size > projects_limit
-    %li.bottom.center
-      .light
-        #{projects_limit} of #{pluralize(projects.count, 'project')} displayed.
-        = link_to '#', class: 'js-expand' do
-          Show all
+    - if projects.size > projects_limit && projects.kind_of?(Array)
+      %li.bottom.center
+        .light
+          #{projects_limit} of #{pluralize(projects.count, 'project')} displayed.
+          = link_to '#', class: 'js-expand' do
+            Show all
+    = paginate projects, theme: "gitlab" if !projects.kind_of?(Array)
+  - else
+    %h3 No projects found
 
 :javascript
   new ProjectsList();

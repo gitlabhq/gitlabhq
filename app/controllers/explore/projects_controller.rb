@@ -11,14 +11,14 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def trending
-    @trending_projects = TrendingProjectsFinder.new.execute(current_user)
-    @trending_projects = @trending_projects.non_archived
-    @trending_projects = @trending_projects.page(params[:page]).per(PER_PAGE)
+    @projects = TrendingProjectsFinder.new.execute(current_user)
+    @projects = @projects.non_archived
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
   end
 
   def starred
-    @starred_projects = ProjectsFinder.new.execute(current_user)
-    @starred_projects = @starred_projects.reorder('star_count DESC')
-    @starred_projects = @starred_projects.page(params[:page]).per(PER_PAGE)
+    @projects = ProjectsFinder.new.execute(current_user)
+    @projects = @projects.reorder('star_count DESC')
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
   end
 end
