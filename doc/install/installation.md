@@ -267,6 +267,9 @@ sudo usermod -aG redis git
     sudo chmod -R u+rwX tmp/pids/
     sudo chmod -R u+rwX tmp/sockets/
 
+    # Create the public/uploads/ directory
+    sudo -u git -H mkdir public/uploads/
+
     # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
 
