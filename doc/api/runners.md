@@ -2,7 +2,7 @@
 
 ## List owned runners
 
-Get a list of runners available to the user.
+Get a list of specific runners available to the user.
 
 ```
 GET /runners
@@ -11,7 +11,7 @@ GET /runners?scope=active
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`; showing all runners if none provided |
+| `scope`   | string  | no       | The scope of specific runners to show, one of: `active`, `paused`, `online`; showing all runners if none provided |
 
 ```
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/runners"
@@ -45,7 +45,7 @@ is restricted to users with `admin` privileges.
 
 ```
 GET /runners/all
-GET /runners?scope=online
+GET /runners/all?scope=online
 ```
 
 | Attribute | Type    | Required | Description         |
