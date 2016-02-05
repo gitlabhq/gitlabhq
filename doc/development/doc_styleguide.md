@@ -120,6 +120,17 @@ Inside the document:
   `http://doc.gitlab.com/ce/administration/restart_gitlab.html`.
   Replace `reconfigure` with `restart` where appropriate.
 
+## Installation guide
+
+- **Ruby:**
+  In [step 2 of the installation guide](../install/installation.md#2-ruby),
+  we install Ruby from source. Whenever there is a new version that needs to
+  be updated, remember to change it throughout the codeblock and also replace
+  the sha256sum (it can be found in the [downloads page][ruby-dl] of the Ruby
+  website).
+
+[ruby-dl]: https://www.ruby-lang.org/en/downloads/ "Ruby download website"
+
 ## API
 
 Here is a list of must-have items. Use them in the exact order that appears
