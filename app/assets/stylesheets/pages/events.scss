@@ -4,7 +4,7 @@
  */
 .event-item {
   font-size: $gl-font-size;
-  padding: $gl-padding 0 $gl-padding ($gl-avatar-size + 15px);
+  padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
   border-bottom: 1px solid $table-border-color;
   color: #7f8fa4;
 
@@ -16,7 +16,7 @@
 
     .event-title,
     .event-item-timestamp {
-      line-height: 44px;
+      line-height: 40px;
     }
   }
 
@@ -25,7 +25,7 @@
   }
 
   .avatar {
-    margin-left: -($gl-avatar-size + 15px);
+    margin-left: -($gl-avatar-size + $gl-padding-top);
   }
 
   .event-title {
@@ -41,7 +41,6 @@
     margin-right: 174px;
 
     .event-note {
-      margin-top: 5px;
       word-wrap: break-word;
 
       .md {
@@ -98,8 +97,6 @@
   &:last-child { border:none }
 
   .event_commits {
-    margin-top: 9px;
-
     li {
       &.commit {
         background: transparent;

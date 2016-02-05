@@ -1,4 +1,8 @@
 .block.participants
+  .sidebar-collapsed-icon
+    = icon('users')
+    %span
+      = participants.count
   .title
     = pluralize participants.count, "participant"
   - participants.each do |participant|

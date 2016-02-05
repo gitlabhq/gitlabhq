@@ -391,12 +391,11 @@ pre.light-well {
   @include basic-list;
 
   .project-row {
-    padding: $gl-padding 0;
     border-color: $table-border-color;
 
     &.no-description {
       .project {
-        line-height: 44px;
+        line-height: 40px;
       }
     }
 
@@ -409,7 +408,7 @@ pre.light-well {
     .project-controls {
       float: right;
       color: $gl-gray;
-      line-height: 45px;
+      line-height: 40px;
       color: #7f8fa4;
 
       a:hover {
