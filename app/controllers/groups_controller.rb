@@ -14,7 +14,7 @@ class GroupsController < Groups::ApplicationController
 
   # Load group projects
   before_action :load_projects, except: [:index, :new, :create, :projects, :edit, :update, :autocomplete]
-  before_action :event_filter, only: :show
+  before_action :event_filter, only: [:show, :events]
 
   layout :determine_layout
 
@@ -42,25 +42,29 @@ class GroupsController < Groups::ApplicationController
     @last_push = current_user.recent_push if current_user
     @projects = @projects.includes(:namespace)
     @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
-    @projects = @projects.page(params[:page]).per(PER_PAGE)
+    @projects = @projects.page(params[:page]).per(PER_PAGE) if !params[:filter_projects].present?
 
     respond_to do |format|
       format.html
 
       format.json do
-        if params[:filter_projects]
-          render json: {
-            html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
-          }
-        else
-          load_events
-          pager_json("events/_events", @events.count)
-        end
+        render json: {
+          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
+        }
       end
 
       format.atom do
         load_events
         render layout: false
+      end
+    end
+  end
+
+  def events
+    respond_to do |format|
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count)
       end
     end
   end

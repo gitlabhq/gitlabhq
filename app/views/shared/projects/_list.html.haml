@@ -21,7 +21,7 @@
           #{projects_limit} of #{pluralize(projects.count, 'project')} displayed.
           = link_to '#', class: 'js-expand' do
             Show all
-    = paginate projects, theme: "gitlab" if !projects.kind_of?(Array)
+    = paginate projects, theme: "gitlab" if projects.respond_to? :total_pages
   - else
     %h3 No projects found
 

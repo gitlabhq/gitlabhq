@@ -352,6 +352,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
+      get :events
     end
 
     scope module: :groups do
