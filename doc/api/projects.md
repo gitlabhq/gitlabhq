@@ -881,7 +881,7 @@ Parameters:
 Get a project git hook.
 
 ```
-GET /projects/:id/git_hooks
+GET /projects/:id/git_hook
 ```
 
 Parameters:
@@ -904,7 +904,7 @@ Parameters:
 Adds a git hook to a specified project.
 
 ```
-POST /projects/:id/git_hooks
+POST /projects/:id/git_hook
 ```
 
 Parameters:
@@ -918,7 +918,7 @@ Parameters:
 Edits a git hook for a specified project.
 
 ```
-PUT /projects/:id/git_hooks
+PUT /projects/:id/git_hook
 ```
 
 Parameters:
@@ -933,7 +933,7 @@ Removes a git hook from a project. This is an idempotent method and can be calle
 Either the git hook is available or not.
 
 ```
-DELETE /projects/:id/git_hooks
+DELETE /projects/:id/git_hook
 ```
 
 Parameters:
