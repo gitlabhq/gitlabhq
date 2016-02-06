@@ -235,6 +235,19 @@
         display: block;
         margin-top: 0;
       }
+
+      .btn-clipboard {
+        border: none;
+
+        &:hover {
+          background: transparent;
+        }
+
+        i {
+          color: #999999;
+        }
+      }
+
     }
 
   }
