@@ -220,7 +220,7 @@ class Commit
   end
 
   def revert_message
-    "Revert \"#{safe_message.lines.first}\"".truncate(80) + "\n\nReverts #{to_reference}"
+    "Revert \"#{safe_message.lines.first.chomp}\"".truncate(80) + "\n\nReverts #{to_reference}"
   end
 
   def is_a_merge_commit?

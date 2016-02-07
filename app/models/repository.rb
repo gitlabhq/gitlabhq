@@ -628,8 +628,7 @@ class Repository
     target_sha = find_branch(target_branch).try(:target)
 
     # First make revert in temp branch
-    rm_branch(user, target_branch) if target_sha
-    success = revert_commit(user, commit, target_branch, base_branch)
+    success = target_sha ? true : revert_commit(user, commit, target_branch, base_branch)
 
     # Make the revert happen in the target branch
     source_sha = find_branch(target_branch).target
