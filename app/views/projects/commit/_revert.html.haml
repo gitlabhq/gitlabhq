@@ -9,7 +9,7 @@
           .form-group.branch
             = label_tag 'target_branch', 'Target branch', class: 'control-label'
             .col-sm-10
-              = text_field_tag 'target_branch', nil, required: true, class: "form-control js-target-branch"
+              = select_tag "target_branch", grouped_options_refs, class: "select2 select2-sm js-target-branch"
               - if can?(current_user, :push_code, @project)
                 .js-create-merge-request-container
                   .checkbox
