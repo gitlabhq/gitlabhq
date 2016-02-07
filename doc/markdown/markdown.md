@@ -424,24 +424,24 @@ will point the link to `wikis/style` when the link is inside of a wiki markdown 
     Here's our logo (hover to see the title text):
 
     Inline-style:
-    ![alt text](assets/logo-white.png)
+    ![alt text](assets/logo.svg)
 
     Reference-style:
     ![alt text1][logo]
 
-    [logo]: assets/logo-white.png
+    [logo]: assets/logo.svg
 
 Here's our logo:
 
 Inline-style:
 
-![alt text](/assets/logo-white.png)
+![alt text](/assets/logo.svg)
 
 Reference-style:
 
 ![alt text][logo]
 
-[logo]: /assets/logo-white.png
+[logo]: /assets/logo.svg
 
 ## Blockquotes
 
