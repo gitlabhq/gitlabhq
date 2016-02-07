@@ -32,7 +32,7 @@ sidekiq_pid_path="$pid_path/sidekiq.pid"
 
 # The directory where the gitlab-workhorse binaries are. Usually
 # /home/git/gitlab-workhorse .
-gitlab_workhorse_dir=$(cd $app_root/../gitlab-workhorse && pwd)
+gitlab_workhorse_dir="$app_root/../gitlab-workhorse"
 gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
 # The -listenXxx settings determine where gitlab-workhorse
 # listens for connections from NGINX. To listen on localhost:8181, write
