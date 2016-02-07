@@ -14,7 +14,9 @@ module Commits
       if commit
         success
       else
-        error("Something went wrong. Your changes were not committed")
+        error("Sorry, we cannot revert this commit automatically.
+              It may have already been reverted, or a more recent commit may
+              have updated some of its content.")
       end
     rescue Repository::CommitError, Gitlab::Git::Repository::InvalidBlobName, GitHooksService::PreReceiveError, ValidationError => ex
       error(ex.message)
@@ -26,7 +28,7 @@ module Commits
       # Create branch with revert commit
       reverted = repository.revert(current_user, @commit, @target_branch, @create_merge_request)
 
-      unless @create_merge_request
+      if reverted && !@create_merge_request
         repository.rm_branch(current_user, @commit.revert_branch_name)
       end
 
