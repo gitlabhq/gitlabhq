@@ -65,6 +65,9 @@ class ProfilesController < Profiles::ApplicationController
 
   def user_params
     params.require(:user).permit(
+      :avatar_crop_x,
+      :avatar_crop_y,
+      :avatar_crop_size,
       :avatar,
       :bio,
       :email,

@@ -69,3 +69,39 @@
     text-decoration: none;
   }
 }
+
+.modal-profile-crop {
+  .modal-dialog {
+    width: 500px;
+  }
+
+  .modal-body {
+    p {
+      display: table;
+      margin: auto;
+      overflow: hidden;
+    }
+
+    img {
+      display: block;
+      max-width: 400px;
+      max-height: 400px;
+    }
+
+    .cropper-bg {
+      background: none;
+    }
+
+    .cropper-crop-box {
+      box-sizing: content-box;
+      border: 999px solid transparentize(#ccc, 0.5);
+      @include transform(translate(-999px, -999px));
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  .modal-profile-crop .modal-dialog {
+    width: auto;
+  }
+}

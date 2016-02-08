@@ -98,6 +98,11 @@ class User < ActiveRecord::Base
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
 
+  # Virtual attributes to define avatar cropping
+  [:avatar_crop_x, :avatar_crop_y, :avatar_crop_size].each do |field|
+    attr_accessor field
+  end
+
   #
   # Relations
   #
@@ -146,6 +151,11 @@ class User < ActiveRecord::Base
   # Validations
   #
   validates :name, presence: true
+
+  [:avatar_crop_x, :avatar_crop_y, :avatar_crop_size].each do |field|
+    validates field, numericality: { only_integer: true }, allow_blank: true
+  end
+
   # Note that a 'uniqueness' and presence check is provided by devise :validatable for email. We do not need to
   # duplicate that here as the validation framework will have duplicate errors in the event of a failure.
   validates :email, presence: true, email: { strict_mode: true }
