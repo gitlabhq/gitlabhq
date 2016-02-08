@@ -13,6 +13,8 @@ class Projects::CommitController < Projects::ApplicationController
   def show
     return git_not_found! unless @commit
 
+    apply_diff_view_cookie!
+
     @line_notes = commit.notes.inline
     @note = @project.build_commit_note(commit)
     @notes = commit.notes.not_inline.fresh
