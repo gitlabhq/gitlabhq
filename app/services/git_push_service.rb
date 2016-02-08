@@ -21,8 +21,12 @@ class GitPushService
     project.repository.expire_cache
 
     if push_remove_branch?(ref, newrev)
+      project.repository.expire_has_visible_content_cache
+
       @push_commits = []
     elsif push_to_new_branch?(ref, oldrev)
+      project.repository.expire_has_visible_content_cache
+
       # Re-find the pushed commits.
       if is_default_branch?(ref)
         # Initial push to the default branch. Take the full history of that branch as "newly pushed".

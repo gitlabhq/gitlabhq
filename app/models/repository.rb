@@ -44,7 +44,9 @@ class Repository
   end
 
   def empty?
-    raw_repository.empty?
+    return @empty unless @empty.nil?
+
+    @empty = cache.fetch(:empty?) { raw_repository.empty? }
   end
 
   #
@@ -57,7 +59,11 @@ class Repository
   # This method return true if repository contains some content visible in project page.
   #
   def has_visible_content?
-    raw_repository.branch_count > 0
+    return @has_visible_content unless @has_visible_content.nil?
+
+    @has_visible_content = cache.fetch(:has_visible_content?) do
+      raw_repository.branch_count > 0
+    end
   end
 
   def commit(id = 'HEAD')
@@ -241,6 +247,16 @@ class Repository
     branches.each do |branch|
       cache.expire(:"diverging_commit_counts_#{branch.name}")
     end
+  end
+
+  def expire_root_ref_cache
+    cache.expire(:root_ref)
+    @root_ref = nil
+  end
+
+  def expire_has_visible_content_cache
+    cache.expire(:has_visible_content?)
+    @has_visible_content = nil
   end
 
   def rebuild_cache
@@ -480,7 +496,7 @@ class Repository
   end
 
   def root_ref
-    @root_ref ||= raw_repository.root_ref
+    @root_ref ||= cache.fetch(:root_ref) { raw_repository.root_ref }
   end
 
   def commit_dir(user, path, message, branch)
