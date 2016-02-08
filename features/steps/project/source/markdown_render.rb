@@ -238,7 +238,11 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I see new wiki page named test' do
     expect(current_path).to eq  namespace_project_wiki_path(@project.namespace, @project, "test")
-    expect(page).to have_content "Edit Page test"
+
+    page.within(:css, ".nav-text") do
+      expect(page).to have_content "Test"
+      expect(page).to have_content "Edit Page"
+    end
   end
 
   When 'I go back to wiki page home' do
