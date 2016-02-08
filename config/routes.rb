@@ -493,13 +493,6 @@ Rails.application.routes.draw do
             constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ },
             as: :commits
           )
-
-          get(
-            '/status/*id/badge',
-            to: 'commit#badge',
-            constraints: { format: /png/ },
-            as: :build_badge
-          )
         end
 
         resource  :avatar, only: [:show, :destroy]
@@ -615,9 +608,11 @@ Rails.application.routes.draw do
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
 
-        resources :builds, only: [:index, :show] do
+        resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
+            get :badge, path: 'status/*ref/badge',
+                constraints: { ref: Gitlab::Regex.git_reference_regex, format: /svg/ }
           end
 
           member do

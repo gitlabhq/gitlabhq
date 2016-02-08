@@ -1,10 +1,12 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
-
   before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry]
   before_action :authorize_update_build!, except: [:index, :show, :status]
+  layout 'project'
 
-  layout "project"
+  # Skip authentication for status badge only
+  skip_before_action :authenticate_user!, :reject_blocked!, :project,
+    :repository, :authorize_manage_builds!, :build, only: [:badge]
 
   def index
     @scope = params[:scope]
@@ -24,7 +26,6 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def cancel_all
     @project.builds.running_or_pending.each(&:cancel)
-
     redirect_to namespace_project_builds_path(project.namespace, project)
   end
 
@@ -47,7 +48,6 @@ class Projects::BuildsController < Projects::ApplicationController
     end
 
     build = Ci::Build.retry(@build)
-
     redirect_to build_path(build)
   end
 
@@ -57,8 +57,13 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def cancel
     @build.cancel
-
     redirect_to build_path(@build)
+  end
+
+  def badge
+    project = Project.find_with_namespace("#{params[:namespace_id]}/#{params[:project_id]}")
+    image = Ci::ImageForBuildService.new.execute(project, ref: params[:ref])
+    send_file(image.path, filename: image.name, disposition: 'inline', type: 'image/svg+xml')
   end
 
   private
