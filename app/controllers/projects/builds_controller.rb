@@ -62,8 +62,14 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def badge
     project = Project.find_with_namespace("#{params[:namespace_id]}/#{params[:project_id]}")
-    image = Ci::ImageForBuildService.new.execute(project, ref: params[:ref])
-    send_file(image.path, filename: image.name, disposition: 'inline', type: 'image/svg+xml')
+
+    respond_to do |format|
+      format.html { render_404 }
+      format.svg do
+        image = Ci::ImageForBuildService.new.execute(project, ref: params[:ref])
+        send_file(image.path, filename: image.name, disposition: 'inline', type: 'image/svg+xml')
+      end
+    end
   end
 
   private
