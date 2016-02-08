@@ -623,50 +623,32 @@ class Repository
   end
 
   def revert(user, commit, base_branch, create_mr = false)
-    target_branch = commit.revert_branch_name
-    source_sha = find_branch(base_branch).target
-    target_sha = find_branch(target_branch).try(:target)
+    source_sha    = find_branch(base_branch).target
+    target_branch = create_mr ? commit.revert_branch_name : base_branch
+    args          = [commit.id, source_sha]
+    args          << { mainline: 1 } if commit.is_a_merge_commit?
 
-    # First make revert in temp branch
-    success = target_sha ? true : revert_commit(user, commit, target_branch, base_branch)
+    return false unless diff_exists?(source_sha, commit.id)
 
-    # Make the revert happen in the target branch
-    source_sha = find_branch(target_branch).target
-    target_sha = find_branch(base_branch).target
-    has_changes = is_there_something_to_merge?(source_sha, target_sha)
+    revert_index = rugged.revert_commit(*args)
 
-    if has_changes && !create_mr
-      success = revert_commit(user, commit, base_branch, base_branch)
-    end
-
-    has_changes && success
-  end
-
-  def revert_commit(user, commit, target_branch, base_branch)
-    base_sha = find_branch(base_branch).target
+    return false if revert_index.conflicts?
 
     commit_with_hooks(user, target_branch) do |ref|
-      args = [commit.id, base_sha]
-      args << { mainline: 1 } if commit.is_a_merge_commit?
-
-      new_index = rugged.revert_commit(*args)
-
-      return false if new_index.conflicts?
-
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged, {
         message: commit.revert_message,
         author: committer,
         committer: committer,
-        tree: new_index.write_tree(rugged),
-        parents: [rugged.lookup(base_sha)],
+        tree: revert_index.write_tree(rugged),
+        parents: [rugged.lookup(source_sha)],
         update_ref: ref
       })
     end
   end
 
-  def is_there_something_to_merge?(source_branch_sha, target_branch_sha)
-    CompareService.new.execute(project, source_branch_sha, project, target_branch_sha).diffs.present?
+  def diff_exists?(source_sha, target_sha)
+    rugged.diff(source_sha, target_sha).size.zero?
   end
 
   def merged_to_root_ref?(branch_name)

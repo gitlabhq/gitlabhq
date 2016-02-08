@@ -23,16 +23,7 @@ module Commits
     end
 
     def commit
-      raw_repo = repository.rugged
-
-      # Create branch with revert commit
-      reverted = repository.revert(current_user, @commit, @target_branch, @create_merge_request)
-
-      if reverted && !@create_merge_request
-        repository.rm_branch(current_user, @commit.revert_branch_name)
-      end
-
-      reverted
+      repository.revert(current_user, @commit, @target_branch, @create_merge_request)
     end
 
     private
