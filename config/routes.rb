@@ -612,7 +612,7 @@ Rails.application.routes.draw do
           collection do
             post :cancel_all
             get :badge, path: 'status/*ref/badge',
-                constraints: { ref: Gitlab::Regex.git_reference_regex, format: /svg/ }
+                        constraints: { ref: Gitlab::Regex.git_reference_regex, format: /svg/ }
           end
 
           member do
