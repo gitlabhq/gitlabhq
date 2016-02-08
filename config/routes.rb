@@ -617,7 +617,7 @@ Rails.application.routes.draw do
             get :status
             post :cancel
             post :retry
-            delete :erase
+            delete :erase, path: :content
           end
 
           resource :artifacts, only: [] do
