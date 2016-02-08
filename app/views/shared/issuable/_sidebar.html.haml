@@ -76,26 +76,6 @@
           = hidden_field_tag :issuable_context
           = f.submit class: 'btn hide'
 
-<<<<<<< HEAD
-    - if issuable.respond_to?(:weight)
-      .block.weight
-        .title
-          %label Weight
-          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-            .pull-right
-              = link_to 'Edit', '#', class: 'edit-link'
-        .value
-          - if issuable.weight
-            = icon('balance-scale')
-            = issuable.weight
-          - else
-            .light None
-        .selectbox
-          = f.select :weight, projects_weight_options(issuable.weight), { include_blank: true },
-            { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
-
-    = render "shared/issuable/participants", participants: issuable.participants(current_user)
-=======
       - if issuable.project.labels.any?
         .block.labels
           .sidebar-collapsed-icon
@@ -116,7 +96,23 @@
           .selectbox
             = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
               { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }
->>>>>>> 9afcacb3a4f50d45d19b7222edbe0902daa35bb4
+
+      - if issuable.respond_to?(:weight)
+        .block.weight
+          .title
+            %label Weight
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              .pull-right
+                = link_to 'Edit', '#', class: 'edit-link'
+          .value
+            - if issuable.weight
+              = icon('balance-scale')
+              = issuable.weight
+            - else
+              .light None
+          .selectbox
+            = f.select :weight, projects_weight_options(issuable.weight), { include_blank: true },
+              { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       %hr
@@ -148,12 +144,6 @@
               = project_ref
           = clipboard_button(clipboard_text: project_ref)
 
-<<<<<<< HEAD
-  :javascript
-    new Subscription("#{toggle_subscription_path(issuable)}");
-    new IssuableContext();
-=======
     :javascript
       new Subscription("#{toggle_subscription_path(issuable)}");
       new IssuableContext();
->>>>>>> 9afcacb3a4f50d45d19b7222edbe0902daa35bb4
