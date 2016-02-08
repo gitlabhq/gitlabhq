@@ -88,7 +88,7 @@ So for a machine with 2 cores, 3 unicorn workers is ideal.
 
 For all machines that have 1GB and up we recommend a minimum of three unicorn workers.
 If you have a 512MB machine we recommend to configure only one Unicorn worker to prevent excessive swapping.
-Since GitLab 8.0 one Unicorn worker will still allow all functionality (git access over ssh and http) because of [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse/).
+Since GitLab 8.0 one Unicorn worker will still allow all functionality (git access over ssh and http) thanks to [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse/).
 
 To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
 
