@@ -14,6 +14,10 @@ module SharedBuilds
     visit namespace_project_build_path(@project.namespace, @project, @build)
   end
 
+  step 'I visit project builds page' do
+    visit namespace_project_builds_path(@project.namespace, @project)
+  end
+
   step 'recent build has artifacts available' do
     artifacts = Rails.root + 'spec/fixtures/ci_build_artifacts.zip'
     archive = fixture_file_upload(artifacts, 'application/zip')

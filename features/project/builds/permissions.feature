@@ -7,7 +7,7 @@ Feature: Project Builds Permissions
 
   Scenario: I try to visit build details as guest
     Given I am member of a project with a guest role
-    When I visit recent build details page
+    When I visit recent build summary page
     Then page status code should be 404
 
   Scenario: I try to visit project builds page as guest
@@ -18,7 +18,7 @@ Feature: Project Builds Permissions
   Scenario: I try to visit build details of internal project without access to builds
     Given The project is internal
     And public access for builds is disabled
-    When I visit recent build details page
+    When I visit recent build summary page
     Then page status code should be 404
 
   Scenario: I try to visit internal project builds page without access to builds
@@ -30,7 +30,7 @@ Feature: Project Builds Permissions
   Scenario: I try to visit build details of internal project with access to builds
     Given The project is internal
     And public access for builds is enabled
-    When I visit recent build details page
+    When I visit recent build summary page
     Then I see details of a build
     And I see build trace
 
