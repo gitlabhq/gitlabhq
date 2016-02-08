@@ -9,6 +9,7 @@ v 8.4.4
   - Fix category values for Jenkins and JenkinsDeprecated services
   - Fix Elasticsearch indexing for newly added snippets
   - Make Elasticsearch indexer more stable
+  - Update gitlab-elasticsearch-git to 0.0.10 which contain a few important fixes
 
 v 8.4.3
   - Elasticsearch: fix partial blob indexing on push
