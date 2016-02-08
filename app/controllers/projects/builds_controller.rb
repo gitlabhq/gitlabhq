@@ -4,10 +4,6 @@ class Projects::BuildsController < Projects::ApplicationController
   before_action :authorize_update_build!, except: [:index, :show, :status]
   layout 'project'
 
-  # Skip authentication for status badge only
-  skip_before_action :authenticate_user!, :reject_blocked!, :project,
-    :repository, :authorize_manage_builds!, :build, only: [:badge]
-
   def index
     @scope = params[:scope]
     @all_builds = project.builds
@@ -51,18 +47,16 @@ class Projects::BuildsController < Projects::ApplicationController
     redirect_to build_path(build)
   end
 
-  def status
-    render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
-  end
-
   def cancel
     @build.cancel
     redirect_to build_path(@build)
   end
 
-  def badge
-    project = Project.find_with_namespace("#{params[:namespace_id]}/#{params[:project_id]}")
+  def status
+    render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
+  end
 
+  def badge
     respond_to do |format|
       format.html { render_404 }
       format.svg do

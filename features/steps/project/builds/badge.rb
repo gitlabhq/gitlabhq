@@ -1,4 +1,5 @@
 class Spinach::Features::ProjectBuildsBadge < Spinach::FeatureSteps
+  include SharedAuthentication
   include SharedProject
   include SharedBuilds
   include RepoHelpers

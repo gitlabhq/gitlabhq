@@ -1,6 +1,7 @@
 Feature: Project Builds Badge
   Background:
-    Given project exists in some group namespace
+    Given I sign in as a user
+    And I own a project
     And project has CI enabled
     And project has a recent build
 

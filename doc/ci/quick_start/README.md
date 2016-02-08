@@ -192,8 +192,6 @@ You can access a builds badge image using following link:
 http://example.gitlab.com/namespace/project/builds/status/branch/badge.svg
 ```
 
-Build badge is available for everyone, even if your project is private or internal.
-
 ## Next steps
 
 Awesome! You started using CI in GitLab!
