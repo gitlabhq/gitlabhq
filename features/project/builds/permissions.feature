@@ -5,6 +5,41 @@ Feature: Project Builds Permissions
     And project has CI enabled
     And project has a recent build
 
+  Scenario: I try to visit build details as guest
+    Given I am member of a project with a guest role
+    When I visit recent build summary page
+    Then page status code should be 404
+
+  Scenario: I try to visit project builds page as guest
+    Given I am member of a project with a guest role
+    When I visit project builds page
+    Then page status code should be 404
+
+  Scenario: I try to visit build details of internal project without access to builds
+    Given The project is internal
+    And public access for builds is disabled
+    When I visit recent build summary page
+    Then page status code should be 404
+
+  Scenario: I try to visit internal project builds page without access to builds
+    Given The project is internal
+    And public access for builds is disabled
+    When I visit project builds page
+    Then page status code should be 404
+
+  Scenario: I try to visit build details of internal project with access to builds
+    Given The project is internal
+    And public access for builds is enabled
+    When I visit recent build summary page
+    Then I see details of a build
+    And I see build trace
+
+  Scenario: I try to visit internal project builds page with access to builds
+    Given The project is internal
+    And public access for builds is enabled
+    When I visit project builds page
+    Then I see the build
+
   Scenario: I try to download build artifacts as guest
     Given I am member of a project with a guest role
     And recent build has artifacts available

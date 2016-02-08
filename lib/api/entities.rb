@@ -72,6 +72,7 @@ module API
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
+      expose :public_builds
     end
 
     class ProjectMember < UserBasic
@@ -383,7 +384,7 @@ module API
       #       for downloading of artifacts (see: https://gitlab.com/gitlab-org/gitlab-ce/issues/4255)
       expose :download_url do |repo_obj, options|
         if options[:user_can_download_artifacts]
-          repo_obj.download_url
+          repo_obj.artifacts_download_url
         end
       end
       expose :commit, with: RepoCommit do |repo_obj, _options|

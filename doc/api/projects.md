@@ -79,7 +79,9 @@ Parameters:
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
     "shared_runners_enabled": true,
     "forks_count": 0,
-    "star_count": 0
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_builds": true
   },
   {
     "id": 6,
@@ -136,7 +138,8 @@ Parameters:
     "shared_runners_enabled": true,
     "forks_count": 0,
     "star_count": 0,
-    "runners_token": "b8547b1dc37721d05889db52fa2f02"
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_builds": true
   }
 ]
 ```
@@ -420,6 +423,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
+- `public_builds` (optional)
 
 ### Create project for user
 
@@ -442,6 +446,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
+- `public_builds` (optional)
 
 ### Edit project
 
@@ -465,6 +470,7 @@ Parameters:
 - `snippets_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
+- `public_builds` (optional)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
