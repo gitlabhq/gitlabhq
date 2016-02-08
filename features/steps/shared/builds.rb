@@ -34,4 +34,21 @@ module SharedBuilds
   step 'I access artifacts download page' do
     visit download_namespace_project_build_artifacts_path(@project.namespace, @project, @build)
   end
+
+  step 'I see details of a build' do
+    expect(page).to have_content "Build ##{@build.id}"
+  end
+
+  step 'I see build trace' do
+    expect(page).to have_css '#build-trace'
+  end
+
+  step 'I see the build' do
+    page.within('.commit_status') do
+      expect(page).to have_content "##{@build.id}"
+      expect(page).to have_content @build.sha[0..7]
+      expect(page).to have_content @build.ref
+      expect(page).to have_content @build.name
+    end
+  end
 end
