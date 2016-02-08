@@ -192,27 +192,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  def revert
-    url_params = {
-      merge_request: { source_branch: @merge_request.revert_branch_name,
-                       target_branch: @merge_request.target_branch,
-                       source_project_id: @merge_request.target_project_id,
-                       target_project_id: @merge_request.target_project_id,
-                       description: @merge_request.revert_description }
-    }
-
-    if @merge_request.target_branch_exists? && @merge_request.merge_commit_sha.present?
-      @repository.revert_merge(current_user, @merge_request.merge_commit_sha,
-                               @merge_request.revert_branch_name, @merge_request.target_branch,
-                               @merge_request.revert_title)
-
-      redirect_to new_namespace_project_merge_request_url(@project.namespace, @project, url_params)
-    else
-      redirect_to namespace_project_merge_request_url(@project.namespace, @project, @merge_request),
-                  alert: 'Merge Request cannot be reverted because target branch was deleted.'
-    end
-  end
-
   def branch_from
     #This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project

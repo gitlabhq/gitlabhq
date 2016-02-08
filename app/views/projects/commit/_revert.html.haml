@@ -5,7 +5,7 @@
         %a.close{href: "#", "data-dismiss" => "modal"} ×
         %h3.page-title Revert commit
       .modal-body
-        = form_tag revert_namespace_project_commit_path(@project.namespace, @project, @commit.id), method: :post, remote: false, class: 'form-horizontal js-create-dir-form js-requires-input' do
+        = form_tag revert_namespace_project_commit_path(@project.namespace, @project, commit_id), method: :post, remote: false, class: 'form-horizontal js-create-dir-form js-requires-input' do
           .form-group.branch
             = label_tag 'target_branch', 'Target branch', class: 'control-label'
             .col-sm-10

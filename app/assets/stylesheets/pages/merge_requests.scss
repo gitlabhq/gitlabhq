@@ -237,3 +237,11 @@
     }
   }
 }
+
+// Revert Merge Request modal
+
+#modal-revert-commit {
+  .js-create-merge-request-container {
+    line-height: $line-height-base;
+  }
+}

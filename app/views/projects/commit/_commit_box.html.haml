@@ -17,7 +17,7 @@
       = icon('files-o')
       Browse Files
     - if can_collaborate_with_project?
-      = link_to '#modal-revert-commit', { 'data-target' => '#modal-revert-commit', 'data-toggle' => 'modal', class: 'btn btn-grouped'} do
+      = link_to '#modal-revert-commit', { 'data-target' => '#modal-revert-commit', 'data-toggle' => 'modal', class: 'btn btn-grouped btn-close'} do
         Revert
     - else
       - continue_params = { to:         namespace_project_commit_path(@project.namespace, @project, @commit.id),
