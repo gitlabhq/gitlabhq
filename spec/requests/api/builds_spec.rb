@@ -11,6 +11,7 @@ describe API::API, api: true  do
   let(:commit) { create(:ci_commit, project: project)}
   let(:build) { create(:ci_build, commit: commit) }
   let(:build_with_trace) { create(:ci_build_with_trace, commit: commit) }
+  let(:build_with_artifacts) { create(:ci_build, :artifacts, commit: commit) }
   let(:build_canceled) { create(:ci_build, :canceled, commit: commit) }
 
   describe 'GET /projects/:id/builds ' do
@@ -86,6 +87,30 @@ describe API::API, api: true  do
     context 'unauthorized user' do
       it 'should not return specific build data' do
         get api("/projects/#{project.id}/builds/#{build.id}")
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/builds/:build_id/artifacts' do
+    context 'authorized user' do
+      it 'should return specific build trace' do
+        get api("/projects/#{project.id}/builds/#{build_with_artifacts.id}/artifacts", user)
+
+        expect(response.status).to eq(200)
+      end
+
+      it 'should not return build artifacts if not uploaded' do
+        get api("/projects/#{project.id}/builds/#{build.id}/artifacts", user)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'should not return specific build artifacts' do
+        get api("/projects/#{project.id}/builds/#{build_with_artifacts.id}/trace")
 
         expect(response.status).to eq(401)
       end

@@ -57,6 +57,7 @@ v 8.5.0 (unreleased)
   - Don't process cross-reference notes from forks
   - Fix: init.d script not working on OS X
   - Faster snippet search
+  - Added API to download build artifacts
   - Title for milestones should be unique (Zeger-Jan van de Weg)
   - Validate correctness of maximum attachment size application setting
   - Replaces "Create merge request" link with one to the "Merge Request" when one exists
