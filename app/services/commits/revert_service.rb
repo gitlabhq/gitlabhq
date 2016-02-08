@@ -14,7 +14,7 @@ module Commits
       if commit
         success
       else
-        error("Sorry, we cannot revert this commit automatically.
+        error("Sorry, we cannot revert this #{params[:revert_type_title]} automatically.
               It may have already been reverted, or a more recent commit may
               have updated some of its content.")
       end

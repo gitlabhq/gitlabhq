@@ -227,6 +227,12 @@ class Commit
     parents.size > 1
   end
 
+  def merged_merge_request
+    return @merged_merge_request if defined?(@merged_merge_request)
+
+    @merged_merge_request = is_a_merge_commit? && MergeRequest.where(merge_commit_sha: id).first
+  end
+
   private
 
   def repo_changes

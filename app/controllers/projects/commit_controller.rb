@@ -62,12 +62,31 @@ class Projects::CommitController < Projects::ApplicationController
   def revert
     return render_404 if @target_branch.blank?
 
-    create_commit(Commits::RevertService, success_notice: "The commit has been successfully reverted.",
-                                          success_path: namespace_project_commits_path(@project.namespace, @project, @target_branch),
-                                          failure_path: namespace_project_commit_path(@project.namespace, @project, params[:id]))
+    create_commit(Commits::RevertService, success_notice: "The #{revert_type_title} has been successfully reverted.",
+                                          success_path: successful_revert_path, failure_path: failed_revert_path)
   end
 
   private
+
+  def revert_type_title
+    @commit.merged_merge_request ? 'merge request' : 'commit'
+  end
+
+  def successful_revert_path
+    return referenced_merge_request_url if @commit.merged_merge_request
+
+    namespace_project_commits_url(@project.namespace, @project, @target_branch)
+  end
+
+  def failed_revert_path
+    return referenced_merge_request_url if @commit.merged_merge_request
+
+    namespace_project_commit_url(@project.namespace, @project, params[:id])
+  end
+
+  def referenced_merge_request_url
+    namespace_project_merge_request_url(@project.namespace, @project, @commit.merged_merge_request)
+  end
 
   def commit
     @commit ||= @project.commit(params[:id])
@@ -99,6 +118,7 @@ class Projects::CommitController < Projects::ApplicationController
     @mr_target_branch = @target_branch
     @commit_params = {
       commit: @commit,
+      revert_type_title: revert_type_title,
       create_merge_request: params[:create_merge_request].present? || different_project?
     }
   end
