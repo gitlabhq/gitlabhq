@@ -60,7 +60,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def revert
-    # return render_404 unless @commit_params.values.all?
+    return render_404 if @target_branch.blank?
 
     create_commit(Commits::RevertService, success_notice: "The commit has been successfully reverted.",
                                           success_path: namespace_project_commits_path(@project.namespace, @project, @target_branch),
