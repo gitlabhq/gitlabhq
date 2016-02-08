@@ -533,16 +533,4 @@ class MergeRequest < ActiveRecord::Base
 
     [diff_base_commit, last_commit]
   end
-
-  def revert_branch_name
-    "revert-#{iid}-#{source_branch}"
-  end
-
-  def revert_title
-    "Revert \"#{title}\""
-  end
-
-  def revert_description
-    "Reverts #{to_reference}"
-  end
 end
