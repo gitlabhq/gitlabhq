@@ -41,6 +41,7 @@ class GroupsController < Groups::ApplicationController
   def show
     @last_push = current_user.recent_push if current_user
     @projects = @projects.includes(:namespace)
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     @shared_projects = @group.shared_projects
 

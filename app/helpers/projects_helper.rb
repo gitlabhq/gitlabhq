@@ -59,9 +59,8 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), { class: "project-item-select-holder #{"js-projects-dropdown-toggle" if current_user}" } do
+    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
       link_output = simple_sanitize(project.name)
-      link_output += content_tag :span, nil, { class: "fa fa-chevron-down dropdown-toggle-caret" } if current_user
 
       if current_user
         link_output += project_select_tag :project_path,
@@ -71,6 +70,7 @@ module ProjectsHelper
 
       link_output
     end
+    project_link += icon "chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle" if current_user
 
     full_title = namespace_link + ' / ' + project_link
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name

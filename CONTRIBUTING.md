@@ -1,3 +1,29 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Contribute to GitLab](#contribute-to-gitlab)
+  - [Contributor license agreement](#contributor-license-agreement)
+  - [Security vulnerability disclosure](#security-vulnerability-disclosure)
+  - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
+  - [Helping others](#helping-others)
+  - [I want to contribute!](#i-want-to-contribute)
+  - [Issue tracker](#issue-tracker)
+      - [Feature proposals](#feature-proposals)
+      - [Issue tracker guidelines](#issue-tracker-guidelines)
+      - [Issue weight](#issue-weight)
+      - [Regression issues](#regression-issues)
+  - [Merge requests](#merge-requests)
+      - [Merge request guidelines](#merge-request-guidelines)
+  - [Changes for Stable Releases](#changes-for-stable-releases)
+  - [Definition of done](#definition-of-done)
+  - [Merge request description format](#merge-request-description-format)
+  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+  - [Style guides](#style-guides)
+  - [Code of conduct](#code-of-conduct)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Contribute to GitLab
 
 Thank you for your interest in contributing to GitLab. This guide details how

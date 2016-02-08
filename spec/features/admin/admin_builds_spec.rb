@@ -18,7 +18,7 @@ describe 'Admin Builds' do
 
           visit admin_builds_path
 
-          expect(page).to have_selector('.project-issuable-filter li.active', text: 'All')
+          expect(page).to have_selector('.nav-links li.active', text: 'All')
           expect(page.all('.build-link').size).to eq(4)
           expect(page).to have_link 'Cancel all'
         end
@@ -28,7 +28,7 @@ describe 'Admin Builds' do
         it 'shows a message' do
           visit admin_builds_path
 
-          expect(page).to have_selector('.project-issuable-filter li.active', text: 'All')
+          expect(page).to have_selector('.nav-links li.active', text: 'All')
           expect(page).to have_content 'No builds to show'
           expect(page).not_to have_link 'Cancel all'
         end
@@ -44,7 +44,7 @@ describe 'Admin Builds' do
 
           visit admin_builds_path(scope: :running)
 
-          expect(page).to have_selector('.project-issuable-filter li.active', text: 'Running')
+          expect(page).to have_selector('.nav-links li.active', text: 'Running')
           expect(page.find('.build-link')).to have_content(build1.id)
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).not_to have_content(build3.id)
@@ -58,7 +58,7 @@ describe 'Admin Builds' do
 
           visit admin_builds_path(scope: :running)
 
-          expect(page).to have_selector('.project-issuable-filter li.active', text: 'Running')
+          expect(page).to have_selector('.nav-links li.active', text: 'Running')
           expect(page).to have_content 'No builds to show'
           expect(page).not_to have_link 'Cancel all'
         end
@@ -74,7 +74,7 @@ describe 'Admin Builds' do
 
           visit admin_builds_path(scope: :finished)
 
-          expect(page).to have_selector('.project-issuable-filter li.active', text: 'Finished')
+          expect(page).to have_selector('.nav-links li.active', text: 'Finished')
           expect(page.find('.build-link')).not_to have_content(build1.id)
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).to have_content(build3.id)
@@ -88,7 +88,7 @@ describe 'Admin Builds' do
 
           visit admin_builds_path(scope: :finished)
 
-          expect(page).to have_selector('.project-issuable-filter li.active', text: 'Finished')
+          expect(page).to have_selector('.nav-links li.active', text: 'Finished')
           expect(page).to have_content 'No builds to show'
           expect(page).to have_link 'Cancel all'
         end

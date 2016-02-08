@@ -2,8 +2,9 @@
   = render "layouts/broadcast"
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
     .header-logo
-      = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home' do
+      %a#logo
         = brand_header_logo
+      = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home' do
         .gitlab-text-container
           %h3 GitLab
 

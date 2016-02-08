@@ -4,8 +4,9 @@ class UsersController < ApplicationController
 
   def show
     @contributed_projects = contributed_projects.joined(@user).reject(&:forked?)
-
+    
     @projects = PersonalProjectsFinder.new(@user).execute(current_user)
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     @groups = @user.groups.order_id_desc
 
