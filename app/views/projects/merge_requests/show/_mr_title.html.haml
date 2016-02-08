@@ -18,7 +18,16 @@
           Edit
       - if @merge_request.closed?
         = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: "Reopen merge request"
-      - if @merge_request.merged? && @merge_request.merge_commit_sha.present?
-        = render "projects/commit/revert", commit_id: @merge_request.merge_commit_sha
+
+    - if @merge_request.merged? && @merge_request.merge_commit_sha.present?
+      - if can_update_merge_request?
         = link_to '#modal-revert-commit', { 'data-target' => '#modal-revert-commit', 'data-toggle' => 'modal', class: 'btn btn-grouped btn-close'} do
+          Revert
+      - else
+        - continue_params = { to:         namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
+                              notice:     edit_in_new_fork_notice,
+                              notice_now: edit_in_new_fork_notice_now }
+        - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                                                                                 continue:       continue_params)
+        = link_to fork_path, { class: 'btn btn-grouped btn-close', method: :post } do
           Revert

@@ -92,4 +92,11 @@ module MergeRequestsHelper
       ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
   end
+
+  def can_update_merge_request?
+    project ||= @project
+
+    can?(current_user, :update_merge_request, project) ||
+      (current_user && current_user.already_forked?(project))
+  end
 end
