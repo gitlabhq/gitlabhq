@@ -8,18 +8,23 @@ class Spinach::Features::ProjectBuildsBadge < Spinach::FeatureSteps
   end
 
   step 'I should see a build success badge' do
-    expect(svg.at('text:contains("success")')).to be_truthy
+    expect_badge('success')
   end
 
   step 'I should see a build failed badge' do
-    expect(svg.at('text:contains("failed")')).to be_truthy
+    expect_badge('failed')
   end
 
-  step 'build badge is a svg image' do
-    expect(page.response_headers).to include('Content-Type' => 'image/svg+xml')
+  step 'I should see a build running badge' do
+    expect_badge('running')
   end
 
   def svg
     Nokogiri::HTML.parse(page.body)
+  end
+
+  def expect_badge(status)
+    expect(page.response_headers).to include('Content-Type' => 'image/svg+xml')
+    expect(svg.at(%Q{text:contains("#{status}")})).to be_truthy
   end
 end

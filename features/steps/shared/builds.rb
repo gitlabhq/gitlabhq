@@ -18,6 +18,10 @@ module SharedBuilds
     @build.update_column(:status, 'failed')
   end
 
+  step 'project has an another build that is running' do
+    create(:ci_build, commit: @ci_commit, name: 'second build', status: 'running')
+  end
+
   step 'I visit recent build details page' do
     visit namespace_project_build_path(@project.namespace, @project, @build)
   end
