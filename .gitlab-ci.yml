@@ -183,7 +183,7 @@ spinach:ruby21:
 notify:slack:
   stage: notifications
   script:
-    - source ./scripts/notify_slack.sh "#ci-test" "Build failed for master/tags!"
+    - source ./scripts/notify_slack.sh "#notifications" "Build failed for master/tags!"
   when: on_failure
   only:
     - master@gitlab-org/gitlab-ce
