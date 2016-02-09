@@ -140,11 +140,7 @@ module IssuesHelper
   end
 
   def projects_weight_options(selected = nil)
-    options = (Issue::WEIGHT_RANGE).map do |i|
-      [i, i]
-    end
-
-    options.unshift(['Any', nil])
+    options = Issue.weight_options.map {|op| [op] * 2}
     options_for_select(options, selected || params[:weight])
   end
 

@@ -268,11 +268,25 @@ class IssuableFinder
   end
 
   def by_weight(items)
-    if params[:weight].present?
-      items = items.where(weight: params[:weight])
-    end
+    return items if filter_by_any_weight? || !weights?
 
-    items
+    if filter_by_no_weight?
+      items.where(weight: [-1, nil])
+    else
+      items.where(weight: params[:weight])
+    end
+  end
+
+  def weights?
+    params[:weight].present?
+  end
+
+  def filter_by_no_weight?
+    params[:weight] == Issue::WEIGHT_NONE
+  end
+
+  def filter_by_any_weight?
+    params[:weight] == Issue::WEIGHT_ANY
   end
 
   def current_user_related?

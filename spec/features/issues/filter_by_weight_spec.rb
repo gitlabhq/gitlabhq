@@ -24,7 +24,7 @@ feature 'Issue filtering by Weight', feature: true do
     visit_issues(project)
     filter_by_weight(Issue::WEIGHT_ANY)
 
-    expect(page).to have_css('.issue', count: 1)
+    expect(page).to have_css('.issue', count: 3)
   end
 
   scenario 'filters by a specific Weight', js: true do
