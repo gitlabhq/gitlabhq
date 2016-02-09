@@ -42,7 +42,7 @@ class GroupsController < Groups::ApplicationController
     @last_push = current_user.recent_push if current_user
     @projects = @projects.includes(:namespace)
     @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if !params[:filter_projects].present?
+    @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
 
     respond_to do |format|
       format.html
