@@ -90,6 +90,14 @@ module ProjectsHelper
     "You are going to remove the fork relationship to source project #{@project.forked_from_project.name_with_namespace}.  Are you ABSOLUTELY sure?"
   end
 
+  def remove_pages_message(project)
+    "You are going to remove the pages for #{project.name_with_namespace}.\n Are you ABSOLUTELY sure?"
+  end
+
+  def remove_pages_certificate_message(project)
+    "You are going to remove a certificates for #{project.name_with_namespace}.\n Are you ABSOLUTELY sure?"
+  end
+
   def project_nav_tabs
     @nav_tabs ||= get_project_nav_tabs(@project, current_user)
   end

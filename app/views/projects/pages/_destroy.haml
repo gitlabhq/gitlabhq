@@ -1,0 +1,10 @@
+- if can?(current_user, :remove_pages, @project) && @project.pages_url
+  .panel.panel-default.panel.panel-danger
+    .panel-heading Remove pages
+    .errors-holder
+    .panel-body
+      = form_tag(namespace_project_pages_path(@project.namespace, @project), method: :delete, class: 'form-horizontal') do
+        %p
+          Removing the pages will prevent from exposing them to outside world.
+        .form-actions
+          = button_to 'Remove pages', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_pages_message(@project) }

@@ -1,0 +1,35 @@
+- if can?(current_user, :update_pages, @project)
+  .panel.panel-default
+    .panel-heading
+      Settings
+    .panel-body
+      = form_for [@project], url: namespace_project_pages_path(@project.namespace, @project), html: { class: 'form-horizontal fieldset-form' } do |f|
+        - if @project.errors.any?
+          #error_explanation
+            .alert.alert-danger
+              - @project.errors.full_messages.each do |msg|
+                %p= msg
+
+        .form-group
+          = f.label :pages_domain, class: 'control-label' do
+            Custom domain
+          .col-sm-10
+            - if Settings.pages.custom_domain
+              = f.text_field :pages_custom_domain, required: false, autocomplete: 'off', class: 'form-control'
+              %span.help-inline Allows you to serve the pages under your domain
+            - else
+              .nothing-here-block
+                Support for custom domains and certificates is disabled.
+                Ask your system's administrator to enable it.
+
+        - if Settings.pages.https
+          .form-group
+            .col-sm-offset-2.col-sm-10
+              .checkbox
+                = f.label :pages_redirect_http do
+                  = f.check_box :pages_redirect_http
+                  %span.descr Force HTTPS
+                  .help-block Redirect the HTTP to HTTPS forcing to always use the secure connection
+
+        .form-actions
+          = f.submit 'Save changes', class: "btn btn-save"

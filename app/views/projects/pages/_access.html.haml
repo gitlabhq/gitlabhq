@@ -1,0 +1,34 @@
+- if @project.pages_url
+  .panel.panel-default
+    .panel-heading
+      Access pages
+    .panel-body
+      %p
+        %strong
+          Congratulations! Your pages are served at:
+      %p= link_to @project.pages_url, @project.pages_url
+
+      - if Settings.pages.custom_domain && @project.pages_custom_url
+        %p= link_to @project.pages_custom_url, @project.pages_custom_url
+
+      - if @project.pages_custom_certificate
+        - unless valid_certificate?
+          #error_explanation
+            .alert.alert-warning
+              Your certificate is invalid.
+
+        - unless valid_certificate_key?
+          #error_explanation
+            .alert.alert-warning
+              Your private key is invalid.
+
+        - unless valid_key_for_certificiate?
+          #error_explanation
+            .alert.alert-warning
+              Your private key can't be used with your certificate.
+
+        - unless valid_certificate_intermediates?
+          #error_explanation
+            .alert.alert-warning
+              Your certificate doesn't have intermediates.
+              Your page may not work properly.

@@ -428,7 +428,6 @@ Rails.application.routes.draw do
         delete :remove_fork
         post :archive
         post :unarchive
-        post :remove_pages
         post :housekeeping
         post :toggle_star
         post :markdown_preview
@@ -547,6 +546,9 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :pages, only: [:show, :update, :destroy] do
+          delete :certificates
+        end
         resources :compare, only: [:index, :create]
         resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
 
