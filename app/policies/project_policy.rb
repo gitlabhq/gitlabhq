@@ -110,6 +110,7 @@ class ProjectPolicy < BasePolicy
     can! :admin_pipeline
     can! :admin_environment
     can! :admin_deployment
+    can! :update_pages
   end
 
   def public_access!

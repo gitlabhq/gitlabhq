@@ -9,7 +9,11 @@ class PagesWorker
 
   def deploy(build_id)
     build = Ci::Build.find_by(id: build_id)
-    Projects::UpdatePagesService.new(build.project, build).execute
+    result = Projects::UpdatePagesService.new(build.project, build).execute
+    if result[:status] == :success
+      result = Projects::UpdatePagesConfigurationService.new(build.project).execute
+    end
+    result
   end
 
   def remove(namespace_path, project_path)

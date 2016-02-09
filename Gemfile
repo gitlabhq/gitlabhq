@@ -48,6 +48,9 @@ gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.0.0'
 gem 'u2f', '~> 0.2.1'
 
+# GitLab Pages
+gem 'validates_hostname', '~> 1.0.0'
+
 # Browser detection
 gem 'browser', '~> 2.2'
 

@@ -1,0 +1,32 @@
+- if can?(current_user, :update_pages, @project) && Settings.pages.https && Settings.pages.custom_domain
+  .panel.panel-default
+    .panel-heading
+      Certificate
+    .panel-body
+      %p
+        Allows you to upload your certificate which will be used to serve pages under your domain.
+        %br
+
+      = form_for [@project], url: namespace_project_pages_path(@project.namespace, @project), html: { class: 'form-horizontal fieldset-form' } do |f|
+        - if @project.errors.any?
+          #error_explanation
+            .alert.alert-danger
+              - @project.errors.full_messages.each do |msg|
+                %p= msg
+
+        .form-group
+          = f.label :pages_custom_certificate, class: 'control-label' do
+            Certificate (PEM)
+          .col-sm-10
+            = f.text_area :pages_custom_certificate, required: true, rows: 5, class: 'form-control', value: ''
+            %span.help-inline Upload a certificate for your domain with all intermediates
+
+        .form-group
+          = f.label :pages_custom_certificate_key, class: 'control-label' do
+            Key (PEM)
+          .col-sm-10
+            = f.text_area :pages_custom_certificate_key, required: true, rows: 5, class: 'form-control', value: ''
+            %span.help-inline Upload a certificate for your domain with all intermediates
+
+        .form-actions
+          = f.submit 'Update certificate', class: "btn btn-save"

@@ -76,6 +76,8 @@ class Project < ActiveRecord::Base
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
 
+  attr_encrypted :pages_custom_certificate_key, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
+
   alias_attribute :title, :name
 
   # Relations
@@ -204,6 +206,11 @@ class Project < ActiveRecord::Base
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
+
+  validates :pages_custom_domain, hostname: true, allow_blank: true, allow_nil: true
+  validates_uniqueness_of :pages_custom_domain, allow_nil: true, allow_blank: true
+  validates :pages_custom_certificate, certificate: { intermediate: true }
+  validates :pages_custom_certificate_key, certificate_key: true
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -1164,16 +1171,27 @@ class Project < ActiveRecord::Base
   end
 
   def pages_url
-    if Dir.exist?(public_pages_path)
-      host = "#{namespace.path}.#{Settings.pages.host}"
-      url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
-        "#{prefix}#{namespace.path}."
-      end
+    return unless Dir.exist?(public_pages_path)
 
-      # If the project path is the same as host, leave the short version
-      return url if host == path
+    host = "#{namespace.path}.#{Settings.pages.host}"
+    url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
+      "#{prefix}#{namespace.path}."
+    end
 
-      "#{url}/#{path}"
+    # If the project path is the same as host, leave the short version
+    return url if host == path
+
+    "#{url}/#{path}"
+  end
+
+  def pages_custom_url
+    return unless pages_custom_domain
+    return unless Dir.exist?(public_pages_path)
+
+    if Gitlab.config.pages.https
+      return "https://#{pages_custom_domain}"
+    else
+      return "http://#{pages_custom_domain}"
     end
   end
 
@@ -1185,6 +1203,15 @@ class Project < ActiveRecord::Base
     File.join(pages_path, 'public')
   end
 
+  def remove_pages_certificate
+    update(
+      pages_custom_certificate: nil,
+      pages_custom_certificate_key: nil
+    )
+
+    UpdatePagesConfigurationService.new(self).execute
+  end
+
   def remove_pages
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
@@ -1194,6 +1221,14 @@ class Project < ActiveRecord::Base
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)
     end
+
+    update(
+      pages_custom_certificate: nil,
+      pages_custom_certificate_key: nil,
+      pages_custom_domain: nil
+    )
+
+    UpdatePagesConfigurationService.new(self).execute
   end
 
   def wiki

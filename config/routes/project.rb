@@ -39,6 +39,10 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
+      resource :pages, only: [:show, :update, :destroy] do
+        delete :certificates
+      end
+
       resources :compare, only: [:index, :create] do
         collection do
           get :diff_for_path
@@ -329,7 +333,6 @@ constraints(ProjectUrlConstrainer.new) do
         post :archive
         post :unarchive
         post :housekeeping
-        post :remove_pages
         post :toggle_star
         post :preview_markdown
         post :export
