@@ -1,11 +1,11 @@
 @Dashboard =
   init: ->
-    $("#project-filter-form-field").off('keyup')
+    $("input#project-filter-form-field,.projects-list-filter").off('keyup')
     this.initSearch()
 
   initSearch: ->
     @timer = null
-    $("#project-filter-form-field,.projects-list-filter").on('keyup', ->
+    $("input#project-filter-form-field,.projects-list-filter").on('keyup', ->
       clearTimeout(@timer)
       @timer = setTimeout(Dashboard.filterResults, 500)
     )
@@ -14,8 +14,8 @@
     $('.projects-list-holder').fadeTo(250, 0.5)
 
     form = null
-    form = $("#project-filter-form")
-    search = $("#project-filter-form-field").val()
+    form = $("form#project-filter-form")
+    search = $("input#project-filter-form-field").val()
     project_filter_url = form.attr('action') + '?' + form.serialize()
 
     $.ajax
