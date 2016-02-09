@@ -115,6 +115,10 @@ group :unicorn do
   gem "unicorn", '~> 4.8.2'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end
+group :puma do
+  gem 'puma'
+  gem 'puma_worker_killer'
+end
 
 # State machine
 gem "state_machines-activerecord", '~> 0.3.0'

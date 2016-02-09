@@ -1,0 +1,234 @@
+#!/bin/sh
+#
+# Written by Denis Vazhenin <denis.vazhenin@me.com>
+#
+# This script was ported from Debian/Ubuntu version of start script for Gitlab:
+# https://raw.github.com/gitlabhq/gitlabhq/master/lib/support/init.d/gitlab
+#
+# PROVIDE: gitlab
+# REQUIRE: NETWORKING SERVERS DAEMON LOGIN
+# KEYWORD: shutdown
+#
+# Requirements:
+#
+# Before using this script, please install gitlab using guidelines from here:
+# https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
+#
+# This file should be placed to: /usr/local/etc/rc.d/gitlab
+#
+# Add the following lines to /etc/rc.conf to enable gitlab:
+#
+# Required:
+# gitlab_enable="YES"
+#
+# Optional:
+# gitlab_dir
+# gitlab_user
+# gitlab_env
+
+. /etc/rc.subr
+
+name="gitlab"
+rcvar=gitlab_enable
+extra_commands="status restart"
+
+load_rc_config $name
+
+###############################################################################
+# Set default values (overrides should be placed in /etc/rc.conf )
+###############################################################################
+
+: ${gitlab_enable:=NO}
+: ${gitlab_dir:=/usr/home/git/gitlab}
+: ${gitlab_user:=git}
+: ${gitlab_group:=git}
+: ${gitlab_env:=production}
+
+required_dirs="${gitlib_dir}"
+
+_grep=`command -v grep 2>&1 >/dev/null && command -v grep`
+_pgrep=`command -v pgrep 2>&1 >/dev/null && command -v pgrep`
+_sh=`command -v sh 2>&1 >/dev/null && command -v sh`
+_ps=`command -v ps 2>&1 >/dev/null && command -v ps`
+_wc=`command -v wc 2>&1 >/dev/null && command -v wc`
+_printf=`command -v printf 2>&1 >/dev/null && command -v printf`
+_mkdir=`command -v mkdir 2>&1 >/dev/null && command -v mkdir`
+_rm=`command -v rm 2>&1 >/dev/null && command -v rm`
+
+DAEMON_OPTS="-C ${gitlab_dir}/config/puma.rb -e ${gitlab_env}"
+PID_PATH="${gitlab_dir}/tmp/pids"
+WEB_SERVER_PID="${PID_PATH}/puma.pid"
+SIDEKIQ_PID="${PID_PATH}/sidekiq.pid"
+STOP_SIDEKIQ="RAILS_ENV=${gitlab_env} ${_bundle} exec rake sidekiq:stop"
+START_SIDEKIQ="RAILS_ENV=${gitlab_env} ${_bundle} exec rake sidekiq:start"
+
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+restart_cmd="${name}_restart"
+status_cmd="${name}_status"
+
+###############################################################################
+# Helper functions
+###############################################################################
+
+__pid=0
+__spid=0
+__status=0
+__skiqstat=0
+
+_bundle=/usr/local/bin/bundle
+
+gitlab_findbundler(){
+  __path='/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin'
+
+  if [ ! -f $_bundle ]; then
+    # clearing any custom path
+    __oldpath=$PATH
+    unset PATH
+    export PATH=$__path
+    
+    _bundle=`command -v bundle 2>&1 >/dev/null && command -v bundle`
+    unset PATH
+    export PATH=$__oldpath
+
+    if [ x"${_bundle}" = x ]; then
+      $_printf 'Unable to find %s command' 'bundle'
+      exit 1
+    fi
+  fi
+}
+
+gitlab_execute(){
+  su ${gitlab_user} -c "$1"
+}
+
+gitlab_check_if_running(){
+
+  # checking if bundle gem is installed before doing anything
+  gitlab_findbundler
+
+      # check if process is already running
+  if [ -f $WEB_SERVER_PID ]; then
+    __pid=`${_pgrep} -F $WEB_SERVER_PID`
+
+    if [ x"${__pid}" != x ]; then
+      __status=`${_ps} aux | ${_grep} ${__pid} | ${_grep} -v "grep" | ${_wc} -l`
+    else
+      __pid=0
+    fi
+  fi
+
+  # check if sidekiq process is already running
+  if [ -f $SIDEKIQ_PID ]; then
+    __spid=`${_pgrep} -F $SIDEKIQ_PID`
+
+    if [ x"${__spid}" != x ]; then
+      __skiqstat=`${_ps} aux | ${_grep} ${__spid} | ${_grep} -v "grep" | ${_wc} -l`
+    else
+      __spid=0
+    fi
+  fi 
+}
+
+gitlab_check_if_root(){
+  if [ `id -u` -ne 0 ]; then
+    ${_printf} 'Must be a root user (current is %s)\n' `whoami`
+    exit 1
+  fi
+}
+
+###############################################################################
+# Public functions
+###############################################################################
+
+gitlab_prestart_check(){
+  gitlab_check_if_running
+
+  # if process is already running, exit with code 1
+  if [ ${__pid} -ne 0 ] && [ ${__status} -ne 0 ]; then
+    ${_printf} '%s is already running...pid is %s\n' ${name} ${__pid}
+    exit 1
+  fi
+
+  gitlab_check_if_root
+}
+
+gitlab_prestop_check(){
+  gitlab_check_if_running
+
+  # if process is not running, exit with code 1
+  if [ ${__pid} -eq 0 ] && [ ${__status} -eq 0 ]; then
+    ${_printf} '%s not started\n' ${name}
+    exit 1
+  fi
+
+  gitlab_check_if_root
+}
+
+gitlab_start(){
+  gitlab_prestart_check
+
+  cd ${gitlab_dir}
+  gitlab_execute "RAILS_ENV=${gitlab_env} ${_bundle} exec puma $DAEMON_OPTS"
+  gitlab_execute "${_mkdir} -p $PID_PATH && $START_SIDEKIQ > /dev/null 2>&1 &"
+  ${_printf} '%s started\n' ${name}
+}
+
+gitlab_stop(){
+  gitlab_prestop_check
+
+  cd ${gitlab_dir}
+  kill -QUIT `${_pgrep} -F ${WEB_SERVER_PID}`
+  gitlab_execute "${_mkdir} -p $PID_PATH && $STOP_SIDEKIQ > /dev/null 2>&1 &"
+  ${_rm} "$WEB_SERVER_PID" >> /dev/null
+  ${_printf} '%s stopped\n' ${name}
+}
+
+gitlab_restart(){
+  gitlab_check_if_root
+
+  cd ${gitlab_dir}
+  ${_printf} 'Restarting %s service...\n' ${name}
+
+  gitlab_check_if_running
+
+  # check if gitlab puma service is running, if not then don't kill it
+  if [ ${__pid} -ne 0 ] && [ ${__status} -ne 0 ]; then
+#   kill -USR2 `${_pgrep} -F $WEB_SERVER_PID`
+    kill -QUIT `${_pgrep} -F ${WEB_SERVER_PID}`
+    ${_rm} "$WEB_SERVER_PID" >> /dev/null
+  fi
+
+  # check if background task manager sidekiq is running, if not then don't kill it 
+  if [ ${__spid} -ne 0 ] && [ ${__skiqstat} -ne 0 ]; then
+    gitlab_execute "${_mkdir} -p $PID_PATH && $STOP_SIDEKIQ > /dev/null 2>&1 &"
+  fi
+
+  # start services normally
+  gitlab_execute "RAILS_ENV=${gitlab_env} ${_bundle} exec puma $DAEMON_OPTS"
+  gitlab_execute "${_mkdir} -p $PID_PATH && $START_SIDEKIQ > /dev/null 2>&1 &"
+  ${_printf} 'Service %s restarted.\n' ${name}
+}
+
+gitlab_status(){
+  cd ${gitlab_dir}
+  gitlab_check_if_running
+
+  # checking if gitlab puma service is running
+  if [ ${__pid} -ne 0 ] && [ ${__status} -ne 0 ]; then
+    ${_printf} '%s service puma is running with pid %s\n' ${name} ${__pid}
+  else
+    ${_printf} '%s service puma is not running\n' ${name}
+  fi
+
+  # checking if gitlab puma service is running
+  if [ ${__spid} -ne 0 ] && [ ${__skiqstat} -ne 0 ]; then
+    ${_printf} '%s service sidekiq is running with pid %s\n' ${name} ${__spid}
+  else
+    ${_printf} '%s service sidekiq is not running\n' ${name}
+  fi
+
+}
+
+PATH="${PATH}:/usr/local/bin"
+run_rc_command "$1"

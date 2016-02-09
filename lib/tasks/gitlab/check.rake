@@ -161,7 +161,7 @@ namespace :gitlab do
         return
       end
 
-      script_path = "/etc/init.d/gitlab"
+      script_path = get_init_script_syspath
 
       if File.exists?(script_path)
         puts "yes".green
@@ -185,8 +185,8 @@ namespace :gitlab do
         return
       end
 
-      recipe_path = Rails.root.join("lib/support/init.d/", "gitlab")
-      script_path = "/etc/init.d/gitlab"
+      recipe_path = get_recipe_content_url
+      script_path = get_init_script_syspath
 
       unless File.exists?(script_path)
         puts "can't check because of previous errors".magenta
@@ -860,6 +860,27 @@ namespace :gitlab do
     puts "  For more information see:".blue
     sources.each do |source|
       puts "  #{source}"
+    end
+  end
+
+  def get_init_script_syspath
+    if "#{RUBY_PLATFORM}".include?('freebsd')
+      return "/usr/local/etc/rc.d/gitlab"
+    elsif "#{RUBY_PLATFORM}".include?('darwin')
+      # in case somebody would create a LunchDaemon plist for OS X
+      return "/Library/LaunchDaemons/org.gitlab.daemon.plist"
+    else
+      # default is Linux
+      return "/etc/init.d/gitlab"
+    end
+  end
+
+  def get_recipe_content_url
+    if "#{RUBY_PLATFORM}".include?('freebsd')
+      return Rails.root.join("lib/support/rc.d/", "gitlab")
+    else
+      # default is Linux
+      return Rails.root.join("lib/support/init.d/", "gitlab")
     end
   end
 

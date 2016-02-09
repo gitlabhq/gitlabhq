@@ -40,6 +40,9 @@ namespace :gitlab do
     os_name ||= if File.readable?('/etc/os-release')
                   File.read('/etc/os-release').match(/PRETTY_NAME=\"(.+)\"/)[1]
                 end
+    os_name ||= if bsd_version = run("uname -rs")
+                  "#{bsd_version}"
+                end
     os_name.try(:squish!)
   end
 

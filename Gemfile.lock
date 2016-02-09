@@ -564,6 +564,11 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.4)
       pry (>= 0.9.10)
+    puma (2.11.3)
+      rack (>= 1.1, < 2.0)
+    puma_worker_killer (0.0.3)
+      get_process_mem (~> 0.1)
+      puma (~> 2.7)
     pyu-ruby-sasl (0.0.3.3)
     quiet_assets (1.0.3)
       railties (>= 3.1, < 5.0)
@@ -981,6 +986,8 @@ DEPENDENCIES
   pg (~> 0.18.2)
   poltergeist (~> 1.8.1)
   pry-rails
+  puma
+  puma_worker_killer
   quiet_assets (~> 1.0.2)
   rack-attack (~> 4.3.1)
   rack-cors (~> 0.4.0)
