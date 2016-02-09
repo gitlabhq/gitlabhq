@@ -205,12 +205,6 @@ class Repository
        readme version contribution_guide changelog license)
   end
 
-  def branch_cache_keys
-    branches.map do |branch|
-      :"diverging_commit_counts_#{branch.name}"
-    end
-  end
-
   def build_cache
     cache_keys.each do |key|
       unless cache.exist?(key)
@@ -235,17 +229,26 @@ class Repository
     @branches = nil
   end
 
-  def expire_cache
+  def expire_cache(branch_name = nil)
     cache_keys.each do |key|
       cache.expire(key)
     end
 
-    expire_branch_cache
+    expire_branch_cache(branch_name)
   end
 
-  def expire_branch_cache
-    branches.each do |branch|
-      cache.expire(:"diverging_commit_counts_#{branch.name}")
+  def expire_branch_cache(branch_name = nil)
+    # When we push to the root branch we have to flush the cache for all other
+    # branches as their statistics are based on the commits relative to the
+    # root branch.
+    if !branch_name || branch_name == root_ref
+      branches.each do |branch|
+        cache.expire(:"diverging_commit_counts_#{branch.name}")
+      end
+    # In case a commit is pushed to a non-root branch we only have to flush the
+    # cache for said branch.
+    else
+      cache.expire(:"diverging_commit_counts_#{branch_name}")
     end
   end
 
