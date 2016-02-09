@@ -626,7 +626,7 @@ class Repository
     source_sha    = find_branch(base_branch).target
     target_branch = create_mr ? commit.revert_branch_name : base_branch
     args          = [commit.id, source_sha]
-    args          << { mainline: 1 } if commit.is_a_merge_commit?
+    args          << { mainline: 1 } if commit.merge_commit?
 
     # Temporary branch exists and contains the revert commit
     return true if create_mr && find_branch(target_branch)
@@ -638,14 +638,14 @@ class Repository
 
     commit_with_hooks(user, target_branch) do |ref|
       committer = user_to_committer(user)
-      source_sha = Rugged::Commit.create(rugged, {
+      source_sha = Rugged::Commit.create(rugged,
         message: commit.revert_message,
         author: committer,
         committer: committer,
         tree: revert_index.write_tree(rugged),
         parents: [rugged.lookup(source_sha)],
         update_ref: ref
-      })
+      )
     end
   end
 

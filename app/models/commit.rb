@@ -220,17 +220,17 @@ class Commit
   end
 
   def revert_message
-    "Revert \"#{safe_message.lines.first.chomp}\"".truncate(80) + "\n\nReverts #{to_reference}"
+    "Revert \"#{title}\"".truncate(80) + "\n\nReverts #{sha}"
   end
 
-  def is_a_merge_commit?
+  def merge_commit?
     parents.size > 1
   end
 
   def merged_merge_request
     return @merged_merge_request if defined?(@merged_merge_request)
 
-    @merged_merge_request = is_a_merge_commit? && MergeRequest.where(merge_commit_sha: id).first
+    @merged_merge_request = merge_commit? && MergeRequest.find_by(merge_commit_sha: id)
   end
 
   private

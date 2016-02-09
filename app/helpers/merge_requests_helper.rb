@@ -96,7 +96,6 @@ module MergeRequestsHelper
   def can_update_merge_request?
     project ||= @project
 
-    can?(current_user, :update_merge_request, project) ||
-      (current_user && current_user.already_forked?(project))
+    can_collaborate_with_project?(project)
   end
 end

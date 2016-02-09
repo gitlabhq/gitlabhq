@@ -13,16 +13,10 @@ module CreatesCommit
     result = service.new(@tree_edit_project, current_user, commit_params).execute
 
     if result[:status] == :success
-      flash[:notice] = success_notice || "Your changes have been successfully committed."
-
-      if create_merge_request?
-        success_path = merge_request_exists? ? existent_merge_request_path : new_merge_request_path
-        target = different_project? ? "project" : "branch"
-        flash[:notice] << " You can now submit a merge request to get this change into the original #{target}."
-      end
+      update_flash_notice(success_notice)
 
       respond_to do |format|
-        format.html { redirect_to success_path }
+        format.html { redirect_to final_success_path(success_path) }
         format.json { render json: { message: "success", filePath: success_path } }
       end
     else
@@ -41,13 +35,31 @@ module CreatesCommit
   end
 
   def authorize_edit_tree!
-    return if can?(current_user, :push_code, project)
-    return if current_user && current_user.already_forked?(project)
+    return if can_collaborate_with_project?
 
     access_denied!
   end
 
   private
+
+  def update_flash_notice(success_notice)
+    flash[:notice] = success_notice || "Your changes have been successfully committed."
+
+    if create_merge_request?
+      if merge_request_exists?
+        flash[:notice] = nil
+      else
+        target = different_project? ? "project" : "branch"
+        flash[:notice] << " You can now submit a merge request to get this change into the original #{target}."
+      end
+    end
+  end
+
+  def final_success_path(success_path)
+    return success_path unless create_merge_request?
+
+    merge_request_exists? ? existing_merge_request_path : new_merge_request_path
+  end
 
   def new_merge_request_path
     new_namespace_project_merge_request_path(
@@ -62,15 +74,15 @@ module CreatesCommit
     )
   end
 
-  def existent_merge_request_path
+  def existing_merge_request_path
     namespace_project_merge_request_path(@mr_target_project.namespace, @mr_target_project, @merge_request)
   end
 
   def merge_request_exists?
-    @merge_request = @mr_target_project.merge_requests.opened.where(
-                       source_branch: @mr_source_branch,
-                       target_branch: @mr_target_branch
-                     ).first
+    return @merge_request if defined?(@merge_request)
+
+    @merge_request = @mr_target_project.merge_requests.opened.find_by(
+                       source_branch: @mr_source_branch, target_branch: @mr_target_branch)
   end
 
   def different_project?

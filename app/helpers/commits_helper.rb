@@ -123,11 +123,28 @@ module CommitsHelper
     )
   end
 
-  def can_collaborate_with_project?(project = nil)
-    project ||= @project
+  def revert_commit_link(show_modal_condition, continue_to_path)
+    if show_modal_condition
+      link_to('Revert', '#modal-revert-commit',
+        'data-target' => '#modal-revert-commit',
+        'data-toggle' => 'modal',
+        class: 'btn btn-grouped btn-close',
+        title: 'Create merge request to revert commit'
+      )
+    else
+      continue_params = {
+        to: continue_to_path,
+        notice: edit_in_new_fork_notice + ' Try to revert this commit again.',
+        notice_now: edit_in_new_fork_notice_now
+      }
+      fork_path = namespace_project_forks_path(@project.namespace, @project,
+                    namespace_key: current_user.namespace.id,
+                    continue: continue_params
+                  )
 
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project))
+      link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post,
+        title: 'Create merge request to revert commit'
+    end
   end
 
   protected
