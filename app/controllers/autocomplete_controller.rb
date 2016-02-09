@@ -12,8 +12,14 @@ class AutocompleteController < ApplicationController
     if params[:search].blank?
       # Include current user if available to filter by "Me"
       if params[:current_user] && current_user
-        @users = [*@users, current_user].uniq
+        @users = [*@users, current_user]
       end
+
+      if params[:author_id]
+        @users = [User.find(params[:author_id]), *@users]
+      end
+
+      @users.uniq!
     end
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]

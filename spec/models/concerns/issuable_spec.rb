@@ -111,6 +111,20 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe "#can_assign_user?" do
+    let(:author)  { build(:user) }
+    let(:issue)   { build(:issue, author: author)}
+
+    it "Allows the author to change the assignee" do
+      expect(issue.can_assign_user?(author)).to be_truthy
+    end
+
+    it "Doesn't allow others, non-team members" do
+      other_user = build(:user)
+      expect(issue.can_assign_user?(other_user)).to be_falsey
+    end
+  end
+
   describe "votes" do
     before do
       author = create :user

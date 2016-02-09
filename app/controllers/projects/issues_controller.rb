@@ -59,8 +59,8 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
-    @note = @project.notes.new(noteable: @issue)
-    @notes = @issue.notes.nonawards.with_associations.fresh
+    @note     = @project.notes.new(noteable: @issue)
+    @notes    = @issue.notes.nonawards.with_associations.fresh
     @noteable = @issue
     @merge_requests = @issue.referenced_merge_requests(current_user)
 

@@ -78,6 +78,7 @@ v 8.5.0 (unreleased)
   - Add label description (Nuttanart Pornprasitsakul)
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
+  - Allow issues and merge requests to be assigned to the author(Zeger-Jan van de Weg)
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2

@@ -33,7 +33,7 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def filter_params(issuable_ability_name = :issue)
+  def filter_params(issuable_ability_name, issuable)
     params[:assignee_id]  = "" if params[:assignee_id] == IssuableFinder::NONE
     params[:milestone_id] = "" if params[:milestone_id] == IssuableFinder::NONE
 
@@ -42,13 +42,18 @@ class IssuableBaseService < BaseService
     unless can?(current_user, ability, project)
       params.delete(:milestone_id)
       params.delete(:label_ids)
-      params.delete(:assignee_id)
+
+      # The author of an issue can be assigned, to signal the ball being in his/her
+      # court. This allow him/her to reassign the issue back to the reviewer.
+      if issuable && !(issuable.author == current_user)
+        params.delete(:assignee_id)
+      end
     end
   end
 
   def update(issuable)
     change_state(issuable)
-    filter_params
+    filter_params(issuable)
     old_labels = issuable.labels.to_a
 
     if params.present? && issuable.update_attributes(params.merge(updated_by: current_user))

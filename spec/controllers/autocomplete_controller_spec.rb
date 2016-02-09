@@ -143,4 +143,17 @@ describe AutocompleteController do
       it { expect(body.size).to eq 0 }
     end
   end
+
+  context 'author of issuable included' do
+    before do
+      sign_in(user)
+      get(:users, author_id: non_member.id)
+    end
+
+    let(:body) { JSON.parse(response.body) }
+
+    it 'should also return the author' do
+      expect(body.first["username"]).to eq non_member.username
+    end
+  end
 end

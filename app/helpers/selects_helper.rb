@@ -6,12 +6,13 @@ module SelectsHelper
     value = opts[:selected] || ''
     placeholder = opts[:placeholder] || 'Search for a user'
 
-    null_user = opts[:null_user] || false
-    any_user = opts[:any_user] || false
-    email_user = opts[:email_user] || false
-    first_user = opts[:first_user] && current_user ? current_user.username : false
-    current_user = opts[:current_user] || false
-    project = opts[:project] || @project
+    null_user     = opts[:null_user]    || false
+    any_user      = opts[:any_user]     || false
+    email_user    = opts[:email_user]   || false
+    first_user    = opts[:first_user] && current_user ? current_user.username : false
+    current_user  = opts[:current_user] || false
+    author_id     = opts[:author_id]    || false
+    project       = opts[:project]      || @project
 
     html = {
       class: css_class,
@@ -21,7 +22,8 @@ module SelectsHelper
         any_user: any_user,
         email_user: email_user,
         first_user: first_user,
-        current_user: current_user
+        current_user: current_user,
+        author_id: author_id
       }
     }
 

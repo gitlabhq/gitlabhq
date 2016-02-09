@@ -116,6 +116,11 @@ module Issuable
     assignee_id_changed?
   end
 
+  def can_assign_user?(current_user)
+    author == current_user ||
+    Ability.abilities.allowed?(current_user, :"admin_#{to_ability_name}", project)
+  end
+
   def open?
     opened? || reopened?
   end

@@ -7,11 +7,12 @@ class @UsersSelect
       @projectId = $(select).data('project-id')
       @groupId = $(select).data('group-id')
       @showCurrentUser = $(select).data('current-user')
+      @authorId = $(select).data('author-id')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
       showEmailUser = $(select).data('email-user')
       firstUser = $(select).data('first-user')
-
+      
       $(select).select2
         placeholder: "Search for a user"
         multiple: $(select).hasClass('multiselect')
@@ -112,6 +113,7 @@ class @UsersSelect
         project_id: @projectId
         group_id: @groupId
         current_user: @showCurrentUser
+        author_id: @authorId
       dataType: "json"
     ).done (users) ->
       callback(users)

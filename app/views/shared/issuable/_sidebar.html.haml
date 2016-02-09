@@ -30,7 +30,7 @@
         .title
           %label
             Assignee
-          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+          - if issuable.can_assign_user?(current_user)
             .pull-right
               = link_to 'Edit', '#', class: 'edit-link'
         .value
@@ -43,7 +43,10 @@
             .light None
 
         .selectbox
-          = users_select_tag("#{issuable.class.table_name.singularize}[assignee_id]", placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: issuable.assignee_id, project: @target_project, null_user: true, current_user: true, first_user: true)
+          = users_select_tag("#{issuable.class.table_name.singularize}[assignee_id]",
+                            placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee',
+                            selected: issuable.assignee_id, project: @target_project, null_user: true, current_user: true,
+                            first_user: true, author_id: issuable.author_id)
 
       .block.milestone
         .sidebar-collapsed-icon
