@@ -57,6 +57,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def diffs
+    apply_diff_view_cookie!
+
     @commit = @merge_request.last_commit
     @base_commit = @merge_request.diff_base_commit
 

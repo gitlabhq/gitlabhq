@@ -45,6 +45,19 @@
     overflow: hidden;
     transition-duration: .3s;
 
+    .home {
+      z-index: 1;
+      position: absolute;
+      left: 0px;
+    }
+
+    #logo {
+      z-index: 2;
+      position: absolute;
+      width: 58px;
+      cursor: pointer;
+    }
+
     a {
       float: left;
       height: $header-height;
@@ -70,7 +83,7 @@
           width: 158px;
           float: left;
           margin: 0;
-          margin-left: 14px;
+          margin-left: 50px;
           font-size: 19px;
           line-height: 41px;
           font-weight: normal;
@@ -200,6 +213,14 @@
   }
 }
 
+@mixin expanded-gutter {
+  padding-right: $gutter_width;
+}
+
+@mixin collapsed-gutter {
+  padding-right: $sidebar_collapsed_width;
+}
+
 @mixin collapsed-sidebar {
   padding-left: $sidebar_collapsed_width;
 
@@ -266,6 +287,7 @@
   background: #f2f6f7;
 }
 
+// page is small enough
 @media (max-width: $screen-md-max) {
   .page-sidebar-collapsed {
     @include collapsed-sidebar;
@@ -275,12 +297,32 @@
     @include collapsed-sidebar;
   }
 
+  .page-gutter {
+    &.right-sidebar-collapsed {
+      @include collapsed-gutter;
+    }
+    &.right-sidebar-expanded {
+      @include expanded-gutter;
+    }
+  }
+
   .collapse-nav {
     display: none;
   }
 }
 
+// page is large enough
 @media(min-width: $screen-md-max) {
+
+  .page-gutter {
+    &.right-sidebar-collapsed {
+      @include collapsed-gutter;
+    }
+    &.right-sidebar-expanded {
+      @include expanded-gutter;
+    }
+  }
+
   .page-sidebar-collapsed {
     @include collapsed-sidebar;
   }

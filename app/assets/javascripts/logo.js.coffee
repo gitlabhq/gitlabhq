@@ -42,3 +42,8 @@ work = ->
 
 $(document).on('page:fetch',  start)
 $(document).on('page:change', stop)
+
+$ ->
+  # Make logo clickable
+  $('#logo').on 'click', ->
+    $('#js-shortcuts-home').get(0).click()

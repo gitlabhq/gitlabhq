@@ -1,9 +1,4 @@
-.project-issuable-filter
-  .controls
-    .pull-left.hidden-xs
-      - if @all_builds.running_or_pending.any?
-        = link_to 'Cancel all', cancel_all_admin_builds_path, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
-
+.top-area
   %ul.nav-links
     %li{class: ('active' if @scope.nil?)}
       = link_to admin_builds_path do
@@ -20,7 +15,11 @@
         Finished
         %span.badge.js-running-count= number_with_delimiter(@all_builds.finished.count(:id))
 
-.gray-content-block
+  .nav-controls
+    - if @all_builds.running_or_pending.any?
+      = link_to 'Cancel all', cancel_all_admin_builds_path, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+
+.gray-content-block.second-block
   #{(@scope || 'running').capitalize} builds
 
 %ul.content-list

@@ -1,6 +1,9 @@
 module Backup
   class Manager
     def pack
+      # Make sure there is a connection
+      ActiveRecord::Base.connection.reconnect!
+
       # saving additional informations
       s = {}
       s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"

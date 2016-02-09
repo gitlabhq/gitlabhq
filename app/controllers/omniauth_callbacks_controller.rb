@@ -30,7 +30,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
     # Do additional LDAP checks for the user filter and EE features
     if ldap_user.allowed?
-      if @user.otp_required_for_login?
+      if @user.two_factor_enabled?
         prompt_for_two_factor(@user)
       else
         log_audit_event(@user, with: :ldap)

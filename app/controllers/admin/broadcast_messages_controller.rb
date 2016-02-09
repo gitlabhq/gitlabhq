@@ -2,7 +2,7 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
   before_action :finder, only: [:edit, :update, :destroy]
 
   def index
-    @broadcast_messages = BroadcastMessage.reorder("starts_at ASC").page(params[:page])
+    @broadcast_messages = BroadcastMessage.reorder("ends_at DESC").page(params[:page])
     @broadcast_message  = BroadcastMessage.new
   end
 

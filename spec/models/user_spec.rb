@@ -91,6 +91,7 @@ describe User, models: true do
     it { is_expected.to have_many(:assigned_merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_one(:abuse_report) }
+    it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
   end
 
   describe 'validations' do

@@ -124,7 +124,7 @@ Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
     curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.4.tar.gz
-    echo 'e2e195a4a58133e3ad33b955c829bb536fa3c075  ruby-2.2.4.tar.gz' | shasum -c - && tar xzf ruby-2.2.4.tar.gz
+    echo 'b6eff568b48e0fda76e5a36333175df049b204e91217aa32a65153cc0cdcb761  ruby-2.2.4.tar.gz' | sha256sum -c - && tar xzf ruby-2.2.4.tar.gz
     cd ruby-2.2.4
     ./configure --disable-install-rdoc
     make
@@ -267,6 +267,9 @@ sudo usermod -aG redis git
     sudo chmod -R u+rwX tmp/pids/
     sudo chmod -R u+rwX tmp/sockets/
 
+    # Create the public/uploads/ directory
+    sudo -u git -H mkdir public/uploads/
+
     # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
 
@@ -358,7 +361,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout 0.6.2
+    sudo -u git -H git checkout 0.6.3
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
