@@ -29,6 +29,7 @@ v 8.5.0 (unreleased)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
   - Remember user's inline/side-by-side diff view preference in a cookie (Kirill Katsnelson)
   - Optimized performance of finding issues to be closed by a merge request
+  - API: Expose MergeRequest#merge_status (Andrei Dziahel)
   - Revert "Add IP check against DNSBLs at account sign-up"
   - Fix API to keep request parameters in Link header (Michael Potthoff)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
