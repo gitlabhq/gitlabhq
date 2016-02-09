@@ -189,7 +189,7 @@ GitLab, such as **Commits** and **Merge Requests**.
 You can access a builds badge image using following link:
 
 ```
-http://example.gitlab.com/namespace/project/builds/status/branch/badge.svg
+http://example.gitlab.com/namespace/project/badges/branch/build.svg
 ```
 
 ## Next steps

@@ -611,8 +611,6 @@ Rails.application.routes.draw do
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
-            get :badge, path: 'status/*ref/badge',
-                        constraints: { ref: Gitlab::Regex.git_reference_regex, format: /svg/ }
           end
 
           member do
@@ -699,6 +697,12 @@ Rails.application.routes.draw do
         end
 
         resources :runner_projects, only: [:create, :destroy]
+        resources :badges, only: [], path: 'badges/*ref',
+                           constraints: { ref: Gitlab::Regex.git_reference_regex } do
+          collection do
+            get :build, constraints: { format: /svg/ }
+          end
+        end
       end
     end
   end

@@ -56,16 +56,6 @@ class Projects::BuildsController < Projects::ApplicationController
     render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
   end
 
-  def badge
-    respond_to do |format|
-      format.html { render_404 }
-      format.svg do
-        image = Ci::ImageForBuildService.new.execute(project, ref: params[:ref])
-        send_file(image.path, filename: image.name, disposition: 'inline', type: 'image/svg+xml')
-      end
-    end
-  end
-
   private
 
   def build
