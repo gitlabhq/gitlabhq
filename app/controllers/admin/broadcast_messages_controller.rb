@@ -36,6 +36,10 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
     end
   end
 
+  def preview
+    @message = broadcast_message_params[:message]
+  end
+
   protected
 
   def finder
