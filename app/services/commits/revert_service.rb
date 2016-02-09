@@ -6,7 +6,7 @@ module Commits
       @source_project = params[:source_project] || @project
       @target_branch = params[:target_branch]
       @commit = params[:commit]
-      @create_merge_request = params[:create_merge_request]
+      @create_merge_request = params[:create_merge_request].present?
 
       # Check push permissions to branch
       validate
@@ -23,7 +23,11 @@ module Commits
     end
 
     def commit
-      repository.revert(current_user, @commit, @target_branch, @create_merge_request)
+      if @create_merge_request
+        repository.revert(current_user, @commit, @target_branch, @commit.revert_branch_name)
+      else
+        repository.revert(current_user, @commit, @target_branch)
+      end
     end
 
     private

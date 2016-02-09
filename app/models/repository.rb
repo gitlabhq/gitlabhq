@@ -622,14 +622,14 @@ class Repository
     merge_commit_sha
   end
 
-  def revert(user, commit, base_branch, create_mr = false)
+  def revert(user, commit, base_branch, target_branch = nil)
     source_sha    = find_branch(base_branch).target
-    target_branch = create_mr ? commit.revert_branch_name : base_branch
+    target_branch ||= base_branch
     args          = [commit.id, source_sha]
     args          << { mainline: 1 } if commit.merge_commit?
 
     # Temporary branch exists and contains the revert commit
-    return true if create_mr && find_branch(target_branch)
+    return true if (base_branch != target_branch) && find_branch(target_branch)
     return false unless diff_exists?(source_sha, commit.id)
 
     revert_index = rugged.revert_commit(*args)
