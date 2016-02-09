@@ -71,7 +71,7 @@ class ApplicationSetting < ActiveRecord::Base
             url: true
 
   validates :admin_notification_email,
-            format: { with: Devise.email_regexp },
+            email: true,
             allow_blank: true
 
   validates :two_factor_grace_period,

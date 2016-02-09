@@ -146,8 +146,8 @@ class User < ActiveRecord::Base
   # Validations
   #
   validates :name, presence: true
-  validates :notification_email, presence: true, format: { with: Devise.email_regexp }
-  validates :public_email, presence: true, uniqueness: true, format: { with: Devise.email_regexp }, allow_blank: true
+  validates :notification_email, presence: true, email: true
+  validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
