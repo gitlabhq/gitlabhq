@@ -22,6 +22,7 @@ v 8.5.0 (unreleased)
   - Fix visibility level text in admin area (Zeger-Jan van de Weg)
   - Warn admin during OAuth of granting admin rights (Zeger-Jan van de Weg)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
+  - Remember user's inline/side-by-side diff view preference in a cookie (Kirill Katsnelson)
   - Optimized performance of finding issues to be closed by a merge request
   - Revert "Add IP check against DNSBLs at account sign-up"
   - Fix API to keep request parameters in Link header (Michael Potthoff)
@@ -35,6 +36,7 @@ v 8.5.0 (unreleased)
   - Fixed logo animation on Safari (Roman Rott)
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
   - In seach autocomplete show only groups and projects you are member of
+  - Fix: init.d script not working on OS X
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
