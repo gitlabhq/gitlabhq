@@ -3,26 +3,20 @@
 # Custom validator for private keys.
 #
 #   class Project < ActiveRecord::Base
-#     validates :certificate_key, certificate_key: true
+#     validates :certificate_key, certificate: true
 #   end
 #
 class CertificateValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
-    certificate = parse_certificate(value)
-    unless certificate
+    unless valid_certificate_pem?(value)
       record.errors.add(attribute, "must be a valid PEM certificate")
-    end
-
-    if options[:intermediates]
-      unless certificate
-        record.errors.add(attribute, "certificate verification failed: missing intermediate certificates")
-      end
     end
   end
 
   private
 
-  def parse_certificate(value)
+  def valid_certificate_pem?(value)
+    return unless value
     OpenSSL::X509::Certificate.new(value)
   rescue OpenSSL::X509::CertificateError
     nil

@@ -95,8 +95,6 @@ class Project < ActiveRecord::Base
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
 
-  attr_encrypted :pages_custom_certificate_key, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
-
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
   belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
@@ -213,13 +211,15 @@ class Project < ActiveRecord::Base
 
   validates :pages_custom_domain, hostname: true, allow_blank: true, allow_nil: true
   validates_uniqueness_of :pages_custom_domain, allow_nil: true, allow_blank: true
-  validates :pages_custom_certificate, certificate: { intermediate: true }
-  validates :pages_custom_certificate_key, certificate_key: true
+  validates :pages_custom_certificate, certificate: true, allow_nil: true, allow_blank: true
+  validates :pages_custom_certificate_key, certificate_key: true, allow_nil: true, allow_blank: true
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
+
+  attr_encrypted :pages_custom_certificate_key, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
 
   # Scopes
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
