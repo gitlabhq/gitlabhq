@@ -38,8 +38,11 @@ production: &base
     # Otherwise, ssh host will be set to the `host:` value above
     # ssh_host: ssh.host_example.com
 
-    # WARNING: See config/application.rb under "Relative url support" for the list of
-    # other files that need to be changed for relative url support
+    # Relative URL support
+    # WARNING: We recommend using an FQDN to host GitLab in a root path instead of this.
+    # Documentation: http://doc.gitlab.com/ce/install/relative_url.html
+    # Uncomment and customize the following line to run in a non-root path
+    #
     # relative_url_root: /gitlab
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
