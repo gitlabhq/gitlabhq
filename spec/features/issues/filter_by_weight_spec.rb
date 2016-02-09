@@ -43,6 +43,6 @@ feature 'Issue filtering by Weight', feature: true do
   end
 
   def random_weight
-    Issue::WEIGHT_RANGE.sample
+    Issue::WEIGHT_RANGE.to_a.sample
   end
 end

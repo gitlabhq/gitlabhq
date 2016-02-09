@@ -30,6 +30,8 @@ class Issue < ActiveRecord::Base
   include Elastic::IssuesSearch
 
   WEIGHT_RANGE = 1..9
+  WEIGHT_ANY = 'Any Weight'
+  WEIGHT_NONE = 'No Weight'
 
   ActsAsTaggableOn.strict_case_match = true
 
@@ -122,5 +124,9 @@ class Issue < ActiveRecord::Base
     notes.system.flat_map do |note|
       note.all_references(current_user).merge_requests
     end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
+
+  def self.weight_options
+    [WEIGHT_ANY, WEIGHT_NONE] + WEIGHT_RANGE.to_a
   end
 end
