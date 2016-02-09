@@ -38,8 +38,8 @@ class Member < ActiveRecord::Base
     presence: {
       if: :invite?
     },
-    email: {
-      strict_mode: true,
+    format: {
+      with: Devise.email_regexp,
       allow_nil: true
     },
     uniqueness: {
