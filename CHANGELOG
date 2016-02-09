@@ -44,6 +44,7 @@ v 8.5.0 (unreleased)
   - Fix: init.d script not working on OS X
   - Faster snippet search
   - Title for milestones should be unique (Zeger-Jan van de Weg)
+  - Validate correctness of maximum attachment size application setting
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
