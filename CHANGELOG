@@ -41,6 +41,7 @@ v 8.5.0 (unreleased)
   - In seach autocomplete show only groups and projects you are member of
   - Fix: init.d script not working on OS X
   - Faster snippet search
+  - Title for milestones should be unique (Zeger-Jan van de Weg)
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
