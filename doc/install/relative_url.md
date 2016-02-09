@@ -98,11 +98,15 @@ Make sure to follow all steps below:
 1.  Make sure you have copied the supplied init script and the defaults file
     as stated in the [installation guide](installation.md#install-init-script).
     Then, edit `/etc/default/gitlab` and set in `gitlab_workhorse_options` the
-    `-authBackend` to read like:
+    `-authBackend` setting to read like:
 
     ```shell
     -authBackend http://127.0.0.1:8080/gitlab
     ```
+
+    **Note:**
+    If you are using a custom init script, make sure to edit the above
+    gitlab-workhorse setting as needed.
 
 1.  After all the above changes recompile the assets. This is an important task
     and will take some time to complete depending on the server resources.
