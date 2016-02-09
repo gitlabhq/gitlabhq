@@ -2,7 +2,7 @@ module API
   # Projects variables API
   class Variables < Grape::API
     before { authenticate! }
-    before { authorize_admin_project }
+    before { authorize! :admin_build, user_project }
 
     resource :projects do
       # Get project variables

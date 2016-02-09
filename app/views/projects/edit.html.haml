@@ -130,6 +130,7 @@
                     %strong git fetch
                     %br
                     %span.descr Faster
+
             .form-group
               = f.label :build_timeout_in_minutes, 'Timeout', class: 'control-label'
               .col-sm-10
@@ -158,6 +159,13 @@
                       phpunit --coverage-text --colors=never (PHP) -
                       %code ^\s*Lines:\s*\d+.\d+\%
 
+              .form-group
+                .col-sm-offset-2.col-sm-10
+                  .checkbox
+                    = f.label :public_builds do
+                      = f.check_box :public_builds
+                      %strong Public builds
+                    .help-block Allow everyone to access builds for Public and Internal projects
 
           %fieldset.features
             %legend

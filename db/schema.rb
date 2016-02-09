@@ -681,6 +681,7 @@ ActiveRecord::Schema.define(version: 20160209130428) do
     t.boolean  "build_allow_git_fetch",  default: true,     null: false
     t.integer  "build_timeout",          default: 3600,     null: false
     t.boolean  "pending_delete",         default: false
+    t.boolean  "public_builds",          default: true,     null: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
