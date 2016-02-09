@@ -16,6 +16,7 @@ v 8.5.0 (unreleased)
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Fix label links for a merge request pointing to issues list
   - Don't vendor minified JS
+  - Increase project import timeout to 15 minutes
   - Display 404 error on group not found
   - Track project import failure
   - Support Two-factor Authentication for LDAP users
