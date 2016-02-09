@@ -16,6 +16,7 @@ class CertificateKeyValidator < ActiveModel::EachValidator
   private
 
   def valid_private_key_pem?(value)
+    return unless value
     pkey = OpenSSL::PKey::RSA.new(value)
     pkey.private?
   rescue OpenSSL::PKey::PKeyError

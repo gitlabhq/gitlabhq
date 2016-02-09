@@ -54,8 +54,9 @@ class Projects::PagesController < Projects::ApplicationController
     return false unless certificate
     return false unless certificate_key
 
-    certificate.verify(certificate_key)
-  rescue OpenSSL::X509::CertificateError
+    # We compare the public key stored in certificate with public key from certificate key
+    certificate.public_key.to_pem == certificate_key.public_key.to_pem
+  rescue OpenSSL::X509::CertificateError, OpenSSL::PKey::PKeyError
     false
   end
 
