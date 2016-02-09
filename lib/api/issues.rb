@@ -19,7 +19,7 @@ module API
       end
 
       def filter_issues_milestone(issues, milestone)
-        issues.includes(:milestone).where('milestones.title' => milestone)
+        issues.includes(:milestones).where('milestones.title' => milestone)
       end
 
       def create_spam_log(project, current_user, attrs)
