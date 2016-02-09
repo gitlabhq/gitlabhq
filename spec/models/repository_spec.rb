@@ -291,6 +291,12 @@ describe Repository, models: true do
 
       repository.expire_cache
     end
+
+    it 'expires the caches for a specific branch' do
+      expect(repository).to receive(:expire_branch_cache).with('master')
+
+      repository.expire_cache('master')
+    end
   end
 
   describe '#expire_root_ref_cache' do
@@ -318,6 +324,34 @@ describe Repository, models: true do
       repository.expire_has_visible_content_cache
 
       expect(repository.has_visible_content?).to eq(false)
+    end
+  end
+
+  describe '#expire_branch_ache' do
+    # This method is private but we need it for testing purposes. Sadly there's
+    # no other proper way of testing caching operations.
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache for all branches' do
+      expect(cache).to receive(:expire).
+        at_least(repository.branches.length).
+        times
+
+      repository.expire_branch_cache
+    end
+
+    it 'expires the cache for all branches when the root branch is given' do
+      expect(cache).to receive(:expire).
+        at_least(repository.branches.length).
+        times
+
+      repository.expire_branch_cache(repository.root_ref)
+    end
+
+    it 'expires the cache for a specific branch' do
+      expect(cache).to receive(:expire).once
+
+      repository.expire_branch_cache('foo')
     end
   end
 end

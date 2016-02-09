@@ -18,7 +18,9 @@ class GitPushService
   def execute(project, user, oldrev, newrev, ref)
     @project, @user = project, user
 
-    project.repository.expire_cache
+    branch_name = Gitlab::Git.ref_name(ref)
+
+    project.repository.expire_cache(branch_name)
 
     if push_remove_branch?(ref, newrev)
       project.repository.expire_has_visible_content_cache
@@ -33,7 +35,6 @@ class GitPushService
         @push_commits = project.repository.commits(newrev)
 
         # Ensure HEAD points to the default branch in case it is not master
-        branch_name = Gitlab::Git.ref_name(ref)
         project.change_head(branch_name)
 
         # Set protection on the default branch if configured
