@@ -113,18 +113,19 @@
         %h4.title
           Build ##{@build.id}
           - if can?(current_user, :update_build, @project)
-            .pull-right
-              - if @build.cancel_url
-                = link_to "Cancel", @build.cancel_url, class: 'btn btn-sm btn-danger', method: :post
-              - elsif @build.retry_url
-                = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
+            .center
+              .btn-group{ role: :group }
+                - if @build.cancel_url
+                  = link_to "Cancel", @build.cancel_url, class: 'btn btn-sm btn-danger', method: :post
+                - elsif @build.retry_url
+                  = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
 
-              - if @build.erasable?
-                = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
-                          class: 'btn btn-sm btn-warning', method: :delete,
-                          data: { confirm: 'Are you sure you want to erase this build?' } do
-                  = icon('eraser')
-                  Erase
+                - if @build.erasable?
+                  = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
+                            class: 'btn btn-sm btn-warning', method: :delete,
+                            data: { confirm: 'Are you sure you want to erase this build?' } do
+                    = icon('eraser')
+                    Erase
 
         .clearfix
           - if @build.duration
