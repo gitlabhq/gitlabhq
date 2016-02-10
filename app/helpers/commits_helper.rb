@@ -124,6 +124,8 @@ module CommitsHelper
   end
 
   def revert_commit_link(show_modal_condition, continue_to_path)
+    return unless current_user
+
     if show_modal_condition
       link_to('Revert', '#modal-revert-commit',
         'data-target' => '#modal-revert-commit',

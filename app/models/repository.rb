@@ -628,8 +628,6 @@ class Repository
     args          = [commit.id, source_sha]
     args          << { mainline: 1 } if commit.merge_commit?
 
-    # Temporary branch exists and contains the revert commit
-    return true if (base_branch != target_branch) && find_branch(target_branch)
     return false unless diff_exists?(source_sha, commit.id)
 
     revert_index = rugged.revert_commit(*args)
