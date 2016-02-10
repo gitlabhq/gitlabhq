@@ -310,7 +310,7 @@ module API
         #   GET /projects/:id/merge_requests/:merge_request_id/closes_issues
         get "#{path}/closes_issues" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
-          issues = ::Kaminari.paginate_array(merge_request.closes_issues)
+          issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
           present paginate(issues), with: Entities::Issue
         end
       end
