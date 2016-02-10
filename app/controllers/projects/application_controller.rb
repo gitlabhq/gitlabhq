@@ -3,7 +3,6 @@ class Projects::ApplicationController < ApplicationController
   before_action :repository
   layout 'project'
 
-  helper_method :can_collaborate_with_project?
   def authenticate_user!
     # Restrict access to Projects area only
     # for non-signed users
@@ -36,12 +35,5 @@ class Projects::ApplicationController < ApplicationController
 
   def builds_enabled
     return render_404 unless @project.builds_enabled?
-  end
-
-  def can_collaborate_with_project?(project = nil)
-    project ||= @project
-
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project))
   end
 end

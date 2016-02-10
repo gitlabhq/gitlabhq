@@ -128,8 +128,7 @@ module CommitsHelper
 
     if show_modal_condition
       content_tag :span, 'data-toggle' => 'modal', 'data-target' => '#modal-revert-commit' do
-        link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'tooltip',
-                'data-original-title' => 'Create merge request to revert commit', class: "btn btn-close btn-#{btn_class}"
+        link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'tooltip', 'data-original-title' => 'Create merge request to revert commit', class: "btn btn-close btn-#{btn_class}"
       end
     else
       continue_params = {
@@ -138,12 +137,10 @@ module CommitsHelper
         notice_now: edit_in_new_fork_notice_now
       }
       fork_path = namespace_project_forks_path(@project.namespace, @project,
-                    namespace_key: current_user.namespace.id,
-                    continue: continue_params
-                  )
+        namespace_key: current_user.namespace.id,
+        continue: continue_params)
 
-      link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post,
-              'data-toggle' => 'tooltip', 'data-original-title' => 'Create merge request to revert commit'
+      link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post, 'data-toggle' => 'tooltip', 'data-original-title' => 'Create merge request to revert commit'
     end
   end
 

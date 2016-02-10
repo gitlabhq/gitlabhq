@@ -9,9 +9,10 @@ describe Repository, models: true do
     author = repository.user_to_committer(user)
     { message: 'Test message', committer: author, author: author }
   end
-  let(:merge_commit_id) do
+  let(:merge_commit) do
     source_sha = repository.find_branch('feature').target
-    repository.merge(user, source_sha, 'master', commit_options)
+    merge_commit_id = repository.merge(user, source_sha, 'master', commit_options)
+    repository.commit(merge_commit_id)
   end
 
   describe :branch_names_contains do
@@ -437,16 +438,14 @@ describe Repository, models: true do
 
   describe '#merge' do
     it 'should merge the code and return the commit id' do
-      expect(merge_commit_id).to be_present
-      expect(repository.blob_at(merge_commit_id, 'files/ruby/feature.rb')).to be_present
+      expect(merge_commit).to be_present
+      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
   end
 
   describe '#revert_merge' do
     it 'should revert the changes' do
-      repository.revert_merge(user, merge_commit_id, 'revert-changes', 'Revert changes')
-      source_sha = repository.find_branch('revert-changes').target
-      repository.merge(user, source_sha, 'master', commit_options)
+      repository.revert(user, merge_commit, 'master')
 
       expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
     end

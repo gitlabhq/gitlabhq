@@ -642,8 +642,7 @@ class Repository
         committer: committer,
         tree: revert_index.write_tree(rugged),
         parents: [rugged.lookup(source_sha)],
-        update_ref: ref
-      )
+        update_ref: ref)
     end
   end
 
