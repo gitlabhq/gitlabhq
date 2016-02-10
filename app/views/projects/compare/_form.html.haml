@@ -14,7 +14,7 @@
     &nbsp;
     = button_tag "Compare", class: "btn btn-create commits-compare-btn"
     - if @merge_request.present?
-      = link_to "View #{@merge_request.to_reference}", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'prepend-left-10 btn'
+      = link_to "View Open Merge Request", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'prepend-left-10 btn'
     - elsif create_mr_button?
       = link_to create_mr_path, class: 'prepend-left-10 btn' do
         = icon("plus")

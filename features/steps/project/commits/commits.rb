@@ -110,7 +110,7 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'I should see button to the merge request' do
     merge_request = MergeRequest.find_by(title: 'Feature')
-    expect(page).to have_link "View #{merge_request.to_reference}", href: namespace_project_merge_request_path(@project.namespace, @project, merge_request)
+    expect(page).to have_link "View Open Merge Request", href: namespace_project_merge_request_path(@project.namespace, @project, merge_request)
   end
 
   step 'I see breadcrumb links' do

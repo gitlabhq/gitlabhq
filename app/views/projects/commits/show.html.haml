@@ -13,7 +13,7 @@
   .block-controls.hidden-xs.hidden-sm
     - if @merge_request.present?
       .control
-        = link_to "View #{@merge_request.to_reference}", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-success'
+        = link_to "View Open Merge Request", namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn'
     - elsif create_mr_button?(@repository.root_ref, @ref)
       .control
         = link_to create_mr_path(@repository.root_ref, @ref), class: 'btn btn-success' do
