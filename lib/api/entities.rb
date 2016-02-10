@@ -387,12 +387,12 @@ module API
       expose :tag_list
       expose :version, :revision, :platform, :architecture
       expose :contacted_at, as: :last_contact
-      expose :token, if: lambda { |runner, options| options[:user_is_admin] || !runner.is_shared? }
+      expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
       expose :projects, with: Entities::RunnerProjectDetails do |runner, options|
-        if options[:user_is_admin]
+        if options[:current_user].is_admin?
           runner.projects
         else
-          runner.projects.where(id: options[:available_projects_ids])
+          options[:current_user].authorized_projects.where(id: runner.projects)
         end
       end
     end
