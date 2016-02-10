@@ -111,7 +111,7 @@
             - else
               .light None
           .selectbox
-            = f.select :weight, projects_weight_options(issuable.weight), { include_blank: true },
+            = f.select :weight, issues_weight_options_for_edit(issuable.weight), { include_blank: true },
               { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
