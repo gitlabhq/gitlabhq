@@ -127,12 +127,10 @@ module CommitsHelper
     return unless current_user
 
     if show_modal_condition
-      link_to('Revert', '#modal-revert-commit',
-        'data-target' => '#modal-revert-commit',
-        'data-toggle' => 'modal',
-        class: "btn btn-close btn-#{btn_class}",
-        title: 'Create merge request to revert commit'
-      )
+      content_tag :span, 'data-toggle' => 'modal', 'data-target' => '#modal-revert-commit' do
+        link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'tooltip',
+                'data-original-title' => 'Create merge request to revert commit', class: "btn btn-close btn-#{btn_class}"
+      end
     else
       continue_params = {
         to: continue_to_path,
@@ -145,7 +143,7 @@ module CommitsHelper
                   )
 
       link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post,
-        title: 'Create merge request to revert commit'
+              'data-toggle' => 'tooltip', 'data-original-title' => 'Create merge request to revert commit'
     end
   end
 
