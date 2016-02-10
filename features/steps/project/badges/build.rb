@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectBuildsBadge < Spinach::FeatureSteps
+class Spinach::Features::ProjectBadgesBuild < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedBuilds
@@ -20,11 +20,8 @@ class Spinach::Features::ProjectBuildsBadge < Spinach::FeatureSteps
     expect_badge('running')
   end
 
-  def svg
-    Nokogiri::HTML.parse(page.body)
-  end
-
   def expect_badge(status)
+    svg = Nokogiri::HTML.parse(page.body)
     expect(page.response_headers).to include('Content-Type' => 'image/svg+xml')
     expect(svg.at(%Q{text:contains("#{status}")})).to be_truthy
   end

@@ -1,4 +1,4 @@
-Feature: Project Builds Badge
+Feature: Project Badges Build
   Background:
     Given I sign in as a user
     And I own a project
