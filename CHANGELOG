@@ -1,13 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.0 (unreleased)
+  - Cache various Repository methods to improve performance (Yorick Peterse)
   - Ensure rake tasks that don't need a DB connection can be run without one
   - Update New Relic gem to 3.14.1.311 (Stan Hu)
   - Add "visibility" flag to GET /projects api endpoint
+  - Add an option to supply root email through an environmental variable (Koichiro Mikami)
   - Ignore binary files in code search to prevent Error 500 (Stan Hu)
   - Render sanitized SVG images (Stan Hu)
   - Support download access by PRIVATE-TOKEN header (Stan Hu)
   - Upgrade gitlab_git to 7.2.23 to fix commit message mentions in first branch push
+  - Add option to include the sender name in body of Notify email (Jason Lee)
   - New UI for pagination
   - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
     set it up
@@ -15,14 +18,18 @@ v 8.5.0 (unreleased)
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Fix label links for a merge request pointing to issues list
   - Don't vendor minified JS
+  - Increase project import timeout to 15 minutes
   - Display 404 error on group not found
   - Track project import failure
   - Support Two-factor Authentication for LDAP users
   - Display database type and version in Administration dashboard
+  - Allow limited Markdown in Broadcast Messages
   - Fix visibility level text in admin area (Zeger-Jan van de Weg)
   - Warn admin during OAuth of granting admin rights (Zeger-Jan van de Weg)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
+  - Remember user's inline/side-by-side diff view preference in a cookie (Kirill Katsnelson)
   - Optimized performance of finding issues to be closed by a merge request
+  - API: Expose MergeRequest#merge_status (Andrei Dziahel)
   - Revert "Add IP check against DNSBLs at account sign-up"
   - Fix API to keep request parameters in Link header (Michael Potthoff)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
@@ -32,9 +39,19 @@ v 8.5.0 (unreleased)
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
   - Improve UI consistency between projects and groups lists
   - Add sort dropdown to dashboard projects page
+  - Fixed logo animation on Safari (Roman Rott)
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
   - In seach autocomplete show only groups and projects you are member of
   - Don't process cross-reference notes from forks
+  - Fix: init.d script not working on OS X
+  - Faster snippet search
+  - Title for milestones should be unique (Zeger-Jan van de Weg)
+  - Validate correctness of maximum attachment size application setting
+
+v 8.4.4
+  - Update omniauth-saml gem to 1.4.2
+  - Prevent long-running backup tasks from timing out the database connection
+  - Add a Project setting to allow guests to view build logs (defaults to true)
 
 v 8.4.3
   - Increase lfs_objects size column to 8-byte integer to allow files larger

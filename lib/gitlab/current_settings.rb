@@ -7,8 +7,8 @@ module Gitlab
         settings = nil
 
         if connect_to_db?
-          settings = ApplicationSetting.current
-          settings ||= ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
+          settings = ::ApplicationSetting.current
+          settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
         end
 
         settings || fake_application_settings

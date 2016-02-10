@@ -4,17 +4,15 @@
   - if current_user
     = auto_discovery_link_tag(:atom, issues_group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} issues")
 
-.project-issuable-filter
-  .controls
-    .pull-left
-      - if current_user
-        .hidden-xs.pull-left
-          = link_to issues_group_url(@group, format: :atom, private_token: current_user.private_token), class: 'btn' do
-            %i.fa.fa-rss
-
+.top-area
+  = render 'shared/issuable/nav', type: :issues
+  .nav-controls
+    - if current_user
+      = link_to issues_group_url(@group, format: :atom, private_token: current_user.private_token), class: 'btn' do
+        = icon('rss')
     = render 'shared/new_project_item_select', path: 'issues/new', label: "New Issue"
 
-  = render 'shared/issuable/filter', type: :issues
+= render 'shared/issuable/filter', type: :issues
 
 .gray-content-block.second-block
   Only issues from

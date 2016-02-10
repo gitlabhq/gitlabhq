@@ -232,11 +232,126 @@ describe Repository, models: true do
     end
 
     describe 'when there are branches' do
-      before do
-        allow(repository.raw_repository).to receive(:branch_count).and_return(3)
+      it 'returns true' do
+        expect(repository.raw_repository).to receive(:branch_count).and_return(3)
+
+        expect(subject).to eq(true)
       end
 
-      it { is_expected.to eq(true) }
+      it 'caches the output' do
+        expect(repository.raw_repository).to receive(:branch_count).
+          once.
+          and_return(3)
+
+        repository.has_visible_content?
+        repository.has_visible_content?
+      end
+    end
+  end
+
+  describe '#empty?' do
+    let(:empty_repository) { create(:project_empty_repo).repository }
+
+    it 'returns true for an empty repository' do
+      expect(empty_repository.empty?).to eq(true)
+    end
+
+    it 'returns false for a non-empty repository' do
+      expect(repository.empty?).to eq(false)
+    end
+
+    it 'caches the output' do
+      expect(repository.raw_repository).to receive(:empty?).
+        once.
+        and_return(false)
+
+      repository.empty?
+      repository.empty?
+    end
+  end
+
+  describe '#root_ref' do
+    it 'returns a branch name' do
+      expect(repository.root_ref).to be_an_instance_of(String)
+    end
+
+    it 'caches the output' do
+      expect(repository.raw_repository).to receive(:root_ref).
+        once.
+        and_return('master')
+
+      repository.root_ref
+      repository.root_ref
+    end
+  end
+
+  describe '#expire_cache' do
+    it 'expires all caches' do
+      expect(repository).to receive(:expire_branch_cache)
+
+      repository.expire_cache
+    end
+
+    it 'expires the caches for a specific branch' do
+      expect(repository).to receive(:expire_branch_cache).with('master')
+
+      repository.expire_cache('master')
+    end
+  end
+
+  describe '#expire_root_ref_cache' do
+    it 'expires the root reference cache' do
+      repository.root_ref
+
+      expect(repository.raw_repository).to receive(:root_ref).
+        once.
+        and_return('foo')
+
+      repository.expire_root_ref_cache
+
+      expect(repository.root_ref).to eq('foo')
+    end
+  end
+
+  describe '#expire_has_visible_content_cache' do
+    it 'expires the visible content cache' do
+      repository.has_visible_content?
+
+      expect(repository.raw_repository).to receive(:branch_count).
+        once.
+        and_return(0)
+
+      repository.expire_has_visible_content_cache
+
+      expect(repository.has_visible_content?).to eq(false)
+    end
+  end
+
+  describe '#expire_branch_ache' do
+    # This method is private but we need it for testing purposes. Sadly there's
+    # no other proper way of testing caching operations.
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache for all branches' do
+      expect(cache).to receive(:expire).
+        at_least(repository.branches.length).
+        times
+
+      repository.expire_branch_cache
+    end
+
+    it 'expires the cache for all branches when the root branch is given' do
+      expect(cache).to receive(:expire).
+        at_least(repository.branches.length).
+        times
+
+      repository.expire_branch_cache(repository.root_ref)
+    end
+
+    it 'expires the cache for a specific branch' do
+      expect(cache).to receive(:expire).once
+
+      repository.expire_branch_cache('foo')
     end
   end
 end

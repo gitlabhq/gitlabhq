@@ -12,19 +12,6 @@ class @Admin
       e.preventDefault()
       $('.js-toggle-colors-container').toggle()
 
-    $('input#broadcast_message_color').on 'input', ->
-      previewColor = $(@).val()
-      $('div.broadcast-message-preview').css('background-color', previewColor)
-
-    $('input#broadcast_message_font').on 'input', ->
-      previewColor = $(@).val()
-      $('div.broadcast-message-preview').css('color', previewColor)
-
-    $('textarea#broadcast_message_message').on 'input', ->
-      previewMessage = $(@).val()
-      previewMessage = "Your message here" if previewMessage.trim() == ''
-      $('div.broadcast-message-preview span').text(previewMessage)
-
     $('.log-tabs a').click (e) ->
       e.preventDefault()
       $(this).tab('show')

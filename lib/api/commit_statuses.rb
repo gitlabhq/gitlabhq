@@ -18,7 +18,7 @@ module API
       # Examples:
       #   GET /projects/:id/repository/commits/:sha/statuses
       get ':id/repository/commits/:sha/statuses' do
-        authorize! :read_commit_statuses, user_project
+        authorize! :read_commit_status, user_project
         sha = params[:sha]
         ci_commit = user_project.ci_commit(sha)
         not_found! 'Commit' unless ci_commit

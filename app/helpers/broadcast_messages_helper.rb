@@ -3,7 +3,7 @@ module BroadcastMessagesHelper
     return unless message.present?
 
     content_tag :div, class: 'broadcast-message', style: broadcast_message_style(message) do
-      icon('bullhorn') << ' ' << message.message
+      icon('bullhorn') << ' ' << render_broadcast_message(message.message)
     end
   end
 
@@ -30,5 +30,9 @@ module BroadcastMessagesHelper
     else
       'Pending'
     end
+  end
+
+  def render_broadcast_message(message)
+    Banzai.render(message, pipeline: :broadcast_message).html_safe
   end
 end

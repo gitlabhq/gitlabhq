@@ -44,7 +44,9 @@ class Repository
   end
 
   def empty?
-    raw_repository.empty?
+    return @empty unless @empty.nil?
+
+    @empty = cache.fetch(:empty?) { raw_repository.empty? }
   end
 
   #
@@ -57,7 +59,11 @@ class Repository
   # This method return true if repository contains some content visible in project page.
   #
   def has_visible_content?
-    raw_repository.branch_count > 0
+    return @has_visible_content unless @has_visible_content.nil?
+
+    @has_visible_content = cache.fetch(:has_visible_content?) do
+      raw_repository.branch_count > 0
+    end
   end
 
   def commit(id = 'HEAD')
@@ -184,8 +190,11 @@ class Repository
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
-      number_commits_behind = commits_between(branch.target, root_ref_hash).size
-      number_commits_ahead = commits_between(root_ref_hash, branch.target).size
+      number_commits_behind = raw_repository.
+        count_commits_between(branch.target, root_ref_hash)
+
+      number_commits_ahead = raw_repository.
+        count_commits_between(root_ref_hash, branch.target)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
@@ -194,12 +203,6 @@ class Repository
   def cache_keys
     %i(size branch_names tag_names commit_count
        readme version contribution_guide changelog license)
-  end
-
-  def branch_cache_keys
-    branches.map do |branch|
-      :"diverging_commit_counts_#{branch.name}"
-    end
   end
 
   def build_cache
@@ -226,18 +229,37 @@ class Repository
     @branches = nil
   end
 
-  def expire_cache
+  def expire_cache(branch_name = nil)
     cache_keys.each do |key|
       cache.expire(key)
     end
 
-    expire_branch_cache
+    expire_branch_cache(branch_name)
   end
 
-  def expire_branch_cache
-    branches.each do |branch|
-      cache.expire(:"diverging_commit_counts_#{branch.name}")
+  def expire_branch_cache(branch_name = nil)
+    # When we push to the root branch we have to flush the cache for all other
+    # branches as their statistics are based on the commits relative to the
+    # root branch.
+    if !branch_name || branch_name == root_ref
+      branches.each do |branch|
+        cache.expire(:"diverging_commit_counts_#{branch.name}")
+      end
+    # In case a commit is pushed to a non-root branch we only have to flush the
+    # cache for said branch.
+    else
+      cache.expire(:"diverging_commit_counts_#{branch_name}")
     end
+  end
+
+  def expire_root_ref_cache
+    cache.expire(:root_ref)
+    @root_ref = nil
+  end
+
+  def expire_has_visible_content_cache
+    cache.expire(:has_visible_content?)
+    @has_visible_content = nil
   end
 
   def rebuild_cache
@@ -477,7 +499,7 @@ class Repository
   end
 
   def root_ref
-    @root_ref ||= raw_repository.root_ref
+    @root_ref ||= cache.fetch(:root_ref) { raw_repository.root_ref }
   end
 
   def commit_dir(user, path, message, branch)

@@ -8,7 +8,7 @@ describe "Builds" do
     @commit = FactoryGirl.create :ci_commit
     @build = FactoryGirl.create :ci_build, commit: @commit
     @project = @commit.project
-    @project.team << [@user, :master]
+    @project.team << [@user, :developer]
   end
 
   describe "GET /:project/builds" do

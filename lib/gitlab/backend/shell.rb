@@ -36,7 +36,7 @@ module Gitlab
     #   import_repository("gitlab/gitlab-ci", "https://github.com/randx/six.git")
     #
     def import_repository(name, url)
-      output, status = Popen::popen([gitlab_shell_projects_path, 'import-project', "#{name}.git", url, '240'])
+      output, status = Popen::popen([gitlab_shell_projects_path, 'import-project', "#{name}.git", url, '900'])
       raise Error, output unless status.zero?
       true
     end

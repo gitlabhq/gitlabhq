@@ -2,7 +2,7 @@
 
 ## List merge requests
 
-Get all merge requests for this project. 
+Get all merge requests for this project.
 The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
 The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
@@ -49,8 +49,24 @@ Parameters:
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
     },
+    "source_project_id": "2",
+    "target_project_id": "3",
+    "labels": [ ],
     "description":"fixed login page css paddings",
-    "work_in_progress": false
+    "work_in_progress": false,
+    "milestone": {
+      "id": 5,
+      "iid": 1,
+      "project_id": 3,
+      "title": "v2.0",
+      "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+      "state": "closed",
+      "created_at": "2015-02-02T19:49:26.013Z",
+      "updated_at": "2015-02-02T19:49:26.013Z",
+      "due_date": null
+    },
+    "merge_when_build_succeeds": true,
+    "merge_status": "can_be_merged"
   }
 ]
 ```
@@ -95,8 +111,24 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
+  "source_project_id": "2",
+  "target_project_id": "3",
+  "labels": [ ],
   "description":"fixed login page css paddings",
-  "work_in_progress": false
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 3,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 
@@ -156,8 +188,6 @@ Parameters:
   "iid": 1,
   "project_id": 4,
   "title": "Blanditiis beatae suscipit hic assumenda et molestias nisi asperiores repellat et.",
-  "description": "Qui voluptatibus placeat ipsa alias quasi. Deleniti rem ut sint. Optio velit qui distinctio.",
-  "work_in_progress": false,
   "state": "reopened",
   "created_at": "2015-02-02T19:49:39.159Z",
   "updated_at": "2015-02-02T20:08:49.959Z",
@@ -182,6 +212,8 @@ Parameters:
   "source_project_id": 4,
   "target_project_id": 4,
   "labels": [ ],
+  "description": "Qui voluptatibus placeat ipsa alias quasi. Deleniti rem ut sint. Optio velit qui distinctio.",
+  "work_in_progress": false,
   "milestone": {
     "id": 5,
     "iid": 1,
@@ -193,6 +225,8 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged",
   "changes": [
     {
     "old_path": "VERSION",
@@ -252,7 +286,24 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "description":"fixed login page css paddings"
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "description":"fixed login page css paddings",
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 
@@ -284,7 +335,6 @@ Parameters:
   "target_branch": "master",
   "project_id": 3,
   "title": "test1",
-  "description": "description1",
   "state": "opened",
   "upvotes": 0,
   "downvotes": 0,
@@ -303,7 +353,25 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "description": "description1",
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 
@@ -359,7 +427,25 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "description":"fixed login page css paddings",
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 
@@ -387,7 +473,7 @@ Parameters:
   "source_branch": "test1",
   "project_id": 3,
   "title": "test1",
-  "state": "merged",
+  "state": "opened",
   "upvotes": 0,
   "downvotes": 0,
   "author": {
@@ -405,7 +491,25 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "description":"fixed login page css paddings",
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 

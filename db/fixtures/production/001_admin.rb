@@ -6,8 +6,10 @@ else
   expire_time = nil
 end
 
+email = ENV['GITLAB_ROOT_EMAIL'].presence || 'admin@example.com'
+
 admin = User.create(
-  email: "admin@example.com",
+  email: email,
   name: "Administrator",
   username: 'root',
   password: password,
