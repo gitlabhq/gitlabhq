@@ -30,15 +30,16 @@ gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.0'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
-gem 'omniauth-saml',          '~> 1.4.0'
+gem 'omniauth-saml',          '~> 1.4.2'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
 gem 'gssapi', group: :kerberos
 gem 'rack-oauth2',            '~> 1.2.1'
 
-# reCAPTCHA protection
+# Spam and anti-bot protection
 gem 'recaptcha', require: 'recaptcha/rails'
+gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 2.0.0'
@@ -50,7 +51,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 7.2.23'
+gem "gitlab_git", '~> 8.1'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -94,7 +95,7 @@ gem "seed-fu", '~> 2.3.5'
 # Search
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
-gem 'gitlab-elasticsearch-git', '~> 0.0.9', require: "elasticsearch/git"
+gem 'gitlab-elasticsearch-git', '~> 0.0.10', require: "elasticsearch/git"
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
@@ -308,9 +309,6 @@ end
 group :production do
   gem "gitlab_meta", '7.0'
 end
-
-gem "newrelic_rpm", '~> 3.9.4.245'
-gem 'newrelic-grape'
 
 gem 'octokit', '~> 3.8.0'
 

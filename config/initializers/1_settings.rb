@@ -257,8 +257,8 @@ Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious'
 #
 Settings['elasticsearch'] ||= Settingslogic.new({})
 Settings.elasticsearch['enabled'] = false if Settings.elasticsearch['enabled'].nil?
-Settings.elasticsearch['host'] = "localhost" if Settings.elasticsearch['host'].nil?
-Settings.elasticsearch['port'] = 9200 if Settings.elasticsearch['port'].nil?
+Settings.elasticsearch['host'] ||=  ENV['ELASTIC_HOST'] || "localhost"
+Settings.elasticsearch['port'] ||= ENV['ELASTIC_PORT'] || 9200
 
 #
 # CI

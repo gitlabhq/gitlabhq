@@ -1,14 +1,12 @@
 - page_title "Merge Requests"
 - header_title  "Merge Requests", merge_requests_dashboard_path(assignee_id: current_user.id)
 
-.project-issuable-filter
-  .controls
+.top-area
+  = render 'shared/issuable/nav', type: :merge_requests
+  .nav-controls
     = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New Merge Request"
 
-  = render 'shared/issuable/filter', type: :merge_requests
-
-.gray-content-block.second-block
-  List all merge requests from all projects you have access to.
+= render 'shared/issuable/filter', type: :merge_requests
 
 .prepend-top-default
   = render 'shared/merge_requests'

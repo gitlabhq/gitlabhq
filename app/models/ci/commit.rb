@@ -205,7 +205,11 @@ module Ci
     end
 
     def ci_yaml_file
-      @ci_yaml_file ||= project.repository.blob_at(sha, '.gitlab-ci.yml').data
+      @ci_yaml_file ||= begin
+        blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
+        blob.load_all_data!(project.repository)
+        blob.data
+      end
     rescue
       nil
     end

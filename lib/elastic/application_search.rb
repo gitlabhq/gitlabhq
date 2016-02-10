@@ -30,16 +30,20 @@ module Elastic
           }
         }
       
-      if Gitlab.config.elasticsearch.enabled
-        after_commit on: :create do
+      after_commit on: :create do
+        if Gitlab.config.elasticsearch.enabled
           ElasticIndexerWorker.perform_async(:index, self.class.to_s, self.id)
         end
+      end
 
-        after_commit on: :update do
+      after_commit on: :update do
+        if Gitlab.config.elasticsearch.enabled
           ElasticIndexerWorker.perform_async(:update, self.class.to_s, self.id)
         end
+      end
 
-        after_commit on: :destroy do
+      after_commit on: :destroy do
+        if Gitlab.config.elasticsearch.enabled
           ElasticIndexerWorker.perform_async(:delete, self.class.to_s, self.id)
         end
       end

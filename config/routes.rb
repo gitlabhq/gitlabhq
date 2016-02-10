@@ -217,6 +217,8 @@ Rails.application.routes.draw do
 
     resources :git_hooks, only: [:index, :update]
     resources :abuse_reports, only: [:index, :destroy]
+    resources :spam_logs, only: [:index, :destroy]
+
     resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do

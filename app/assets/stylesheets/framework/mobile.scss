@@ -116,7 +116,7 @@
     display: none;
   }
 
-  aside {
+  aside:not(.right-sidebar){
     display: none;
   }
 

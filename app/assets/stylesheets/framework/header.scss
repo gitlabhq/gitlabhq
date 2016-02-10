@@ -73,7 +73,6 @@ header {
 
     .title {
       margin: 0;
-      overflow: hidden;
       font-size: 19px;
       line-height: $header-height;
       font-weight: normal;
@@ -87,6 +86,22 @@ header {
         &:hover {
           text-decoration: underline;
         }
+      }
+
+      .dropdown-toggle-caret {
+        position: relative;
+        top: -2px;
+        width: 12px;
+        line-height: 12px;
+        margin-left: 5px;
+        font-size: 10px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .project-item-select {
+        right: auto;
+        left: 0;
       }
     }
 

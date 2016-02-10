@@ -7,8 +7,8 @@ module Gitlab
         settings = nil
 
         if connect_to_db?
-          settings = ApplicationSetting.current
-          settings ||= ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
+          settings = ::ApplicationSetting.current
+          settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
         end
 
         settings || fake_application_settings
@@ -34,7 +34,8 @@ module Gitlab
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         max_artifacts_size: Settings.artifacts['max_size'],
         require_two_factor_authentication: false,
-        two_factor_grace_period: 48
+        two_factor_grace_period: 48,
+        akismet_enabled: false
       )
     end
 

@@ -40,10 +40,6 @@
   .avatar {
     @include border-radius(50%);
   }
-
-  .identicon {
-    line-height: 46px;
-  }
 }
 
 .dash-project-access-icon {

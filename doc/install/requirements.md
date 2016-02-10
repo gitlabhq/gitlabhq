@@ -66,7 +66,7 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 You need at least 2GB of addressable memory (RAM + swap) to install and use GitLab!
 With less memory GitLab will give strange errors during the reconfigure run and 500 errors during usage.
 
-- 512MB RAM + 1.5GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advise.
+- 512MB RAM + 1.5GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advice.
 - 1GB RAM + 1GB swap supports up to 100 users but it will be slow
 - **2GB RAM** is the **recommended** memory size and supports up to 100 users
 - 4GB RAM supports up to 1,000 users

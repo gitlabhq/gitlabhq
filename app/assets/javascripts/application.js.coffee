@@ -215,8 +215,89 @@ $ ->
     $this.attr 'value', $this.val()
     return
     
-  $(document).on 'keyup', 'input[type="search"]' , (e) ->
-    $this = $(this)
-    $this.attr 'value', $this.val()
+  $(document)
+    .off 'keyup', 'input[type="search"]'
+    .on 'keyup', 'input[type="search"]' , (e) ->
+      $this = $(this)
+      $this.attr 'value', $this.val()
 
+  $(document)
+    .off 'breakpoint:change'
+    .on 'breakpoint:change', (e, breakpoint) ->
+      if breakpoint is 'sm' or breakpoint is 'xs'
+        $gutterIcon = $('.gutter-toggle').find('i')
+        if $gutterIcon.hasClass('fa-angle-double-right')
+          $gutterIcon.closest('a').trigger('click')
+
+  $(document)
+    .off 'click', 'aside .gutter-toggle'
+    .on 'click', 'aside .gutter-toggle', (e) ->
+      e.preventDefault()
+      $this = $(this)
+      $thisIcon = $this.find 'i'
+      if $thisIcon.hasClass('fa-angle-double-right')
+        $thisIcon
+          .removeClass('fa-angle-double-right')
+          .addClass('fa-angle-double-left')
+        $this
+          .closest('aside')
+          .removeClass('right-sidebar-expanded')
+          .addClass('right-sidebar-collapsed')
+        $('.page-with-sidebar')
+          .removeClass('right-sidebar-expanded')
+          .addClass('right-sidebar-collapsed')
+      else
+        $thisIcon
+          .removeClass('fa-angle-double-left')
+          .addClass('fa-angle-double-right')
+        $this
+          .closest('aside')
+          .removeClass('right-sidebar-collapsed')
+          .addClass('right-sidebar-expanded')
+        $('.page-with-sidebar')
+          .removeClass('right-sidebar-collapsed')
+          .addClass('right-sidebar-expanded')
+      $.cookie("collapsed_gutter", 
+        $('.right-sidebar')
+          .hasClass('right-sidebar-collapsed'), { path: '/' })
+
+  bootstrapBreakpoint = undefined;
+  checkBootstrapBreakpoints = ->
+    if $('.device-xs').is(':visible')
+      bootstrapBreakpoint = "xs"
+    else if $('.device-sm').is(':visible')
+      bootstrapBreakpoint = "sm"
+    else if $('.device-md').is(':visible')
+      bootstrapBreakpoint = "md"
+    else if $('.device-lg').is(':visible')
+      bootstrapBreakpoint = "lg"
+
+  setBootstrapBreakpoints = ->
+    if $('.device-xs').length
+      return
+
+    $("body")
+      .append('<div class="device-xs visible-xs"></div>'+
+        '<div class="device-sm visible-sm"></div>'+
+        '<div class="device-md visible-md"></div>'+
+        '<div class="device-lg visible-lg"></div>')
+    checkBootstrapBreakpoints()
+
+  fitSidebarForSize = ->
+    oldBootstrapBreakpoint = bootstrapBreakpoint
+    checkBootstrapBreakpoints()
+    if bootstrapBreakpoint != oldBootstrapBreakpoint
+      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+
+  checkInitialSidebarSize = ->
+    if bootstrapBreakpoint is "xs" or "sm"
+      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+
+  $(window)
+    .off "resize"
+    .on "resize", (e) ->
+      fitSidebarForSize()
+
+  setBootstrapBreakpoints()
+  checkInitialSidebarSize()
   new Aside()

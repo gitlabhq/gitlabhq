@@ -77,6 +77,8 @@ ActiveRecord::Schema.define(version: 20160204190809) do
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
+    t.boolean  "akismet_enabled",                   default: false
+    t.string   "akismet_api_key"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -881,6 +883,19 @@ ActiveRecord::Schema.define(version: 20160204190809) do
   add_index "snippets", ["expires_at"], name: "index_snippets_on_expires_at", using: :btree
   add_index "snippets", ["project_id"], name: "index_snippets_on_project_id", using: :btree
   add_index "snippets", ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree
+
+  create_table "spam_logs", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "source_ip"
+    t.string   "user_agent"
+    t.boolean  "via_api"
+    t.integer  "project_id"
+    t.string   "noteable_type"
+    t.string   "title"
+    t.text     "description"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
 
   create_table "subscriptions", force: :cascade do |t|
     t.integer  "user_id"

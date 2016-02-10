@@ -141,8 +141,8 @@ production: &base
   # regular database search
   elasticsearch:
     enabled: false
-    host: localhost
-    port: 9200
+  #  host: localhost
+  #  port: 9200
 
   ## GitLab Pages
   pages:
