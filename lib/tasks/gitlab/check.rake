@@ -285,7 +285,7 @@ namespace :gitlab do
       unless File.directory?(Rails.root.join('public/uploads'))
         puts "no".red
         try_fixing_it(
-          "sudo -u #{gitlab_user} mkdir -m 0700 #{Rails.root}/public/uploads"
+          "sudo -u #{gitlab_user} mkdir #{Rails.root}/public/uploads"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
