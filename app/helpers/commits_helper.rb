@@ -123,14 +123,14 @@ module CommitsHelper
     )
   end
 
-  def revert_commit_link(show_modal_condition, continue_to_path)
+  def revert_commit_link(show_modal_condition, continue_to_path, btn_class: nil)
     return unless current_user
 
     if show_modal_condition
       link_to('Revert', '#modal-revert-commit',
         'data-target' => '#modal-revert-commit',
         'data-toggle' => 'modal',
-        class: 'btn btn-grouped btn-close',
+        class: "btn btn-close btn-#{btn_class}",
         title: 'Create merge request to revert commit'
       )
     else
