@@ -89,7 +89,7 @@ class Projects::PagesController < Projects::ApplicationController
   def certificate_key
     return unless @project.pages_custom_certificate_key
     @certificate_key ||= OpenSSL::PKey::RSA.new(@project.pages_custom_certificate_key)
-  rescue OpenSSL::PKey::PKeyError
+  rescue OpenSSL::PKey::PKeyError, OpenSSL::Cipher::CipherError
     nil
   end
 end
