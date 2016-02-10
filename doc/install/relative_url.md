@@ -9,15 +9,15 @@ first time._
 
 ---
 
-While it is recommended to install GitLab in its own (sub)domain, sometimes
+While it is recommended to install GitLab on its own (sub)domain, sometimes
 this is not possible due to a variety of reasons. In that case, GitLab can also
 be installed under a relative URL, for example `https://example.com/gitlab`.
 
-There is no limit as to how much deeply nested the relative URL can be. For
-example you could serve GitLab under `/foo/bar/gitlab/git` without any issues.
+There is no limit to how deeply nested the relative URL can be. For example you
+could serve GitLab under `/foo/bar/gitlab/git` without any issues.
 
 Note that by changing the URL on an existing GitLab installation, all remote
-URLS will change, so you'll have to manually edit them in any local repository
+URLs will change, so you'll have to manually edit them in any local repository
 that points to your GitLab instance.
 
 ---
@@ -47,8 +47,7 @@ See the [requirements](requirements.md) document for more information.
 
 _**Note:**
 Do not make any changes to your web server configuration file regarding
-relative URL. The relative URL support is basically implemented by GitLab
-Workhorse._
+relative URL. The relative URL support is implemented by GitLab Workhorse._
 
 ---
 
@@ -109,7 +108,7 @@ Make sure to follow all steps below:
     gitlab-workhorse setting as needed.
 
 1.  After all the above changes recompile the assets. This is an important task
-    and will take some time to complete depending on the server resources.
+    and will take some time to complete depending on the server resources:
 
     ```
     cd /home/git/gitlab
@@ -121,7 +120,7 @@ Make sure to follow all steps below:
 ### Disable relative URL in GitLab
 
 To disable the relative URL, follow the same steps as above and set up the
-GitLab URL to a one that doesn't contain a relative path.
+GitLab URL to one that doesn't contain a relative path.
 
 [omnibus-rel]: http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab "How to setup relative URL in Omnibus GitLab"
 [restart gitlab]: ../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"

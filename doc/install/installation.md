@@ -487,7 +487,7 @@ You can use `sudo service gitlab start` and `sudo service gitlab stop` to start 
 ### Relative URL support
 
 See the [Relative URL documentation](relative_url.md) for more information on
-how to set this up.
+how to configure GitLab with a relative URL.
 
 ### Using HTTPS
 
