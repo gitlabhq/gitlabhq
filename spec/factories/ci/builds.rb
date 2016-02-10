@@ -67,7 +67,7 @@ FactoryGirl.define do
 
         build.artifacts_metadata =
           fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-                            ' application/x-gzip')
+                             'application/x-gzip')
         
         build.save!
       end

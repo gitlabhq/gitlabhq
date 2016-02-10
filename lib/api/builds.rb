@@ -132,7 +132,7 @@ module API
       # example Request:
       #  delete  /projects/:id/build/:build_id/content
       delete ':id/builds/:build_id/content' do
-        authorize_manage_builds!
+        authorize_update_builds!
 
         build = get_build(params[:build_id])
         return not_found!(build) unless build
