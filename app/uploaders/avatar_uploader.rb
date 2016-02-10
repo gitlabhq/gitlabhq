@@ -11,8 +11,10 @@ class AvatarUploader < CarrierWave::Uploader::Base
   process :cropper
 
   def cropper
-    manipulate! do |img|
-      img.crop "#{model.avatar_crop_size}x#{model.avatar_crop_size}+#{model.avatar_crop_x}+#{model.avatar_crop_y}"
+    if model.instance_of? User
+      manipulate! do |img|
+        img.crop "#{model.avatar_crop_size}x#{model.avatar_crop_size}+#{model.avatar_crop_x}+#{model.avatar_crop_y}"
+      end
     end
   end
 
