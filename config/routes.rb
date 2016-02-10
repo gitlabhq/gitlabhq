@@ -547,7 +547,9 @@ Rails.application.routes.draw do
         end
 
         resources :pages, except: [:edit, :update] do
-          delete :remove_pages
+          collection do
+            delete :remove_pages
+          end
         end
         resources :compare, only: [:index, :create]
         resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
