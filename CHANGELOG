@@ -387,6 +387,7 @@ v 8.1.0
   - Improved performance of the trending projects page
   - Remove CI migration task
   - Improved performance of finding projects by their namespace
+  - Add assignee data to Issuables' hook_data (Bram Daams)
   - Fix bug where transferring a project would result in stale commit links (Stan Hu)
   - Fix build trace updating
   - Include full path of source and target branch names in New Merge Request page (Stan Hu)
