@@ -7,9 +7,7 @@ module Projects
     end
 
     def execute
-      update_file(pages_cname_file, project.pages_custom_domain)
-      update_file(pages_certificate_file, project.pages_custom_certificate)
-      update_file(pages_certificate_file_key, project.pages_custom_certificate_key)
+      update_file(pages_config_file, pages_config)
       reload_daemon
       success
     rescue => e
@@ -17,6 +15,22 @@ module Projects
     end
 
     private
+
+    def pages_config
+      {
+        domains: pages_domains_config
+      }
+    end
+
+    def pages_domains_config
+      project.pages_domains.map do |domain|
+        {
+          domain: domain.domain,
+          certificate: domain.certificate,
+          key: domain.key,
+        }
+      end
+    end
 
     def reload_daemon
       # GitLab Pages daemon constantly watches for modification time of `pages.path`
@@ -28,16 +42,8 @@ module Projects
       @pages_path ||= project.pages_path
     end
 
-    def pages_cname_file
-      File.join(pages_path, 'CNAME')
-    end
-
-    def pages_certificate_file
-      File.join(pages_path, 'domain.crt')
-    end
-
-    def pages_certificate_key_file
-      File.join(pages_path, 'domain.key')
+    def pages_config_file
+      File.join(pages_path, 'config.jso')
     end
 
     def update_file(file, data)

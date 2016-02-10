@@ -39,8 +39,8 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resource :pages, only: [:show, :update, :destroy] do
-        delete :certificates
+      resources :pages, except: [:edit, :update] do
+        delete :remove_pages
       end
 
       resources :compare, only: [:index, :create] do
