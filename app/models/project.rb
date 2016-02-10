@@ -162,6 +162,7 @@ class Project < ActiveRecord::Base
   has_many :lfs_objects, through: :lfs_objects_projects
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :pages_domains, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
@@ -209,17 +210,10 @@ class Project < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validates :approvals_before_merge, numericality: true, allow_blank: true
 
-  validates :pages_custom_domain, hostname: true, allow_blank: true, allow_nil: true
-  validates_uniqueness_of :pages_custom_domain, allow_nil: true, allow_blank: true
-  validates :pages_custom_certificate, certificate: true, allow_nil: true, allow_blank: true
-  validates :pages_custom_certificate_key, certificate_key: true, allow_nil: true, allow_blank: true
-
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
-
-  attr_encrypted :pages_custom_certificate_key, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
 
   # Scopes
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
@@ -1066,17 +1060,6 @@ class Project < ActiveRecord::Base
     "#{url}/#{path}"
   end
 
-  def pages_custom_url
-    return unless pages_custom_domain
-    return unless Dir.exist?(public_pages_path)
-
-    if Gitlab.config.pages.https
-      return "https://#{pages_custom_domain}"
-    else
-      return "http://#{pages_custom_domain}"
-    end
-  end
-
   def pages_path
     File.join(Settings.pages.path, path_with_namespace)
   end
@@ -1085,32 +1068,15 @@ class Project < ActiveRecord::Base
     File.join(pages_path, 'public')
   end
 
-  def remove_pages_certificate
-    update(
-      pages_custom_certificate: nil,
-      pages_custom_certificate_key: nil
-    )
-
-    UpdatePagesConfigurationService.new(self).execute
-  end
-
   def remove_pages
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
     # 3. We asynchronously remove pages with force
-    temp_path = "#{path}.#{SecureRandom.hex}"
+    temp_path = "#{path}.#{SecureRandom.hex}.deleted"
 
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)
     end
-
-    update(
-      pages_custom_certificate: nil,
-      pages_custom_certificate_key: nil,
-      pages_custom_domain: nil
-    )
-
-    UpdatePagesConfigurationService.new(self).execute
   end
 
   def merge_method
