@@ -40,7 +40,9 @@ constraints(ProjectUrlConstrainer.new) do
       end
 
       resources :pages, except: [:edit, :update] do
-        delete :remove_pages
+        collection do
+          delete :remove_pages
+        end
       end
 
       resources :compare, only: [:index, :create] do

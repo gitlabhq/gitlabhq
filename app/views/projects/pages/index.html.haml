@@ -2,9 +2,10 @@
 %h3.page_title
   Pages
 
-  = link_to new_namespace_project_page_path(@project.namespace, @project), class: "btn btn-new pull-right", title: "New Domain" do
-    %i.fa.fa-plus
-    New Domain
+  - if Settings.pages.external_http || Settings.pages.external_https
+    = link_to new_namespace_project_page_path(@project.namespace, @project), class: "btn btn-new pull-right", title: "New Domain" do
+      %i.fa.fa-plus
+      New Domain
 
 %p.light
   With GitLab Pages you can host for free your static websites on GitLab.

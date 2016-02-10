@@ -51,6 +51,11 @@ class Projects::PagesController < Projects::ApplicationController
     end
   end
 
+  def remove_pages
+    project.remove_pages
+    project.pages_domains.destroy_all
+  end
+
   private
 
   def pages_domain_params

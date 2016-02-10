@@ -43,7 +43,7 @@ module Projects
     end
 
     def pages_config_file
-      File.join(pages_path, 'config.jso')
+      File.join(pages_path, 'config.json')
     end
 
     def update_file(file, data)
@@ -52,7 +52,7 @@ module Projects
           file.write(data)
         end
       else
-        File.rm_r(file)
+        File.rm(file, force: true)
       end
     end
   end
