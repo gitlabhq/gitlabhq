@@ -16,6 +16,8 @@ class Dispatcher
     shortcut_handler = null
 
     switch page
+      when 'explore:projects:index', 'explore:projects:starred', 'explore:projects:trending'
+        Dashboard.init()
       when 'projects:issues:index'
         Issues.init()
         shortcut_handler = new ShortcutsNavigation()
