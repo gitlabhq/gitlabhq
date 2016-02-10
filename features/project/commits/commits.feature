@@ -7,6 +7,26 @@ Feature: Project Commits
 
   Scenario: I browse commits list for master branch
     Then I see project commits
+    And I should not see button to create a new merge request
+    Then I click the "Compare" tab
+    And I should not see button to create a new merge request
+
+  Scenario: I browse commits list for feature branch without a merge request
+    Given I visit commits list page for feature branch
+    Then I see feature branch commits
+    And I see button to create a new merge request
+    Then I click the "Compare" tab
+    And I see button to create a new merge request
+
+  Scenario: I browse commits list for feature branch with an open merge request
+    Given project have an open merge request
+    And I visit commits list page for feature branch
+    Then I see feature branch commits
+    And I should not see button to create a new merge request
+    And I should see button to the merge request
+    Then I click the "Compare" tab
+    And I should not see button to create a new merge request
+    And I should see button to the merge request
 
   Scenario: I browse atom feed of commits list for master branch
     Given I click atom feed link
@@ -29,6 +49,22 @@ Feature: Project Commits
     Given I click on commit link
     And I click side-by-side diff button
     Then I see inline diff button
+
+  @javascript
+  Scenario: I compare branches without a merge request
+    Given I visit compare refs page
+    And I fill compare fields with branches
+    Then I see compared branches
+    And I see button to create a new merge request
+
+  @javascript
+  Scenario: I compare branches with an open merge request
+    Given project have an open merge request
+    And I visit compare refs page
+    And I fill compare fields with branches
+    Then I see compared branches
+    And I should not see button to create a new merge request
+    And I should see button to the merge request
 
   @javascript
   Scenario: I compare refs
