@@ -13,11 +13,12 @@ module API
       # Example Request:
       #   GET /projects/:id/builds
       get ':id/builds' do
+
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
         present paginate(builds), with: Entities::Build,
-                                  user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
+                                  user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
       # Get builds for a specific commit of a project
@@ -30,6 +31,8 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/commits/:sha/builds
       get ':id/repository/commits/:sha/builds' do
+        authorize_read_builds!
+
         commit = user_project.ci_commits.find_by_sha(params[:sha])
         return not_found! unless commit
 
@@ -37,7 +40,7 @@ module API
         builds = filter_builds(builds, params[:scope])
 
         present paginate(builds), with: Entities::Build,
-                                  user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
+                                  user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
       # Get a specific build of a project
@@ -48,11 +51,13 @@ module API
       # Example Request:
       #   GET /projects/:id/builds/:build_id
       get ':id/builds/:build_id' do
+        authorize_read_builds!
+
         build = get_build(params[:build_id])
         return not_found!(build) unless build
 
         present build, with: Entities::Build,
-                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
+                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
       # Get a trace of a specific build of a project
@@ -67,6 +72,8 @@ module API
       #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
       #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
       get ':id/builds/:build_id/trace' do
+        authorize_read_builds!
+
         build = get_build(params[:build_id])
         return not_found!(build) unless build
 
@@ -86,7 +93,7 @@ module API
       # example request:
       #   post /projects/:id/build/:build_id/cancel
       post ':id/builds/:build_id/cancel' do
-        authorize_manage_builds!
+        authorize_update_builds!
 
         build = get_build(params[:build_id])
         return not_found!(build) unless build
@@ -94,7 +101,7 @@ module API
         build.cancel
 
         present build, with: Entities::Build,
-                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
+                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
       # Retry a specific build of a project
@@ -105,7 +112,7 @@ module API
       # example request:
       #   post /projects/:id/build/:build_id/retry
       post ':id/builds/:build_id/retry' do
-        authorize_manage_builds!
+        authorize_update_builds!
 
         build = get_build(params[:build_id])
         return forbidden!('Build is not retryable') unless build && build.retryable?
@@ -113,7 +120,7 @@ module API
         build = Ci::Build.retry(build)
 
         present build, with: Entities::Build,
-                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
+                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
     end
 
@@ -141,8 +148,12 @@ module API
         builds.where(status: available_statuses && scope)
       end
 
-      def authorize_manage_builds!
-        authorize! :manage_builds, user_project
+      def authorize_read_builds!
+        authorize! :read_build, user_project
+      end
+
+      def authorize_update_builds!
+        authorize! :update_build, user_project
       end
     end
   end

@@ -21,6 +21,18 @@ describe GitPushService, services: true do
       end
 
       it { is_expected.to be_truthy }
+
+      it 'flushes general cached data' do
+        expect(project.repository).to receive(:expire_cache).with('master')
+
+        subject
+      end
+
+      it 'flushes the visible content cache' do
+        expect(project.repository).to receive(:expire_has_visible_content_cache)
+
+        subject
+      end
     end
 
     context 'existing branch' do
@@ -29,6 +41,12 @@ describe GitPushService, services: true do
       end
 
       it { is_expected.to be_truthy }
+
+      it 'flushes general cached data' do
+        expect(project.repository).to receive(:expire_cache).with('master')
+
+        subject
+      end
     end
 
     context 'rm branch' do
@@ -37,6 +55,18 @@ describe GitPushService, services: true do
       end
 
       it { is_expected.to be_truthy }
+
+      it 'flushes the visible content cache' do
+        expect(project.repository).to receive(:expire_has_visible_content_cache)
+
+        subject
+      end
+
+      it 'flushes general cached data' do
+        expect(project.repository).to receive(:expire_cache).with('master')
+
+        subject
+      end
     end
   end
 

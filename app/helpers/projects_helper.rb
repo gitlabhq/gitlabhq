@@ -141,7 +141,7 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if project.builds_enabled? && can?(current_user, :read_build, project)
+    if can?(current_user, :read_build, project)
       nav_tabs << :builds
     end
 
