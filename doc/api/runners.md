@@ -167,6 +167,14 @@ Example response:
     "last_contact": "2016-01-25T16:39:48.066Z",
     "name": null,
     "platform": null,
+    "projects": [
+        {
+            "id": 1,
+            "name": "GitLab.org / GitLab Community Edition",
+            "path": "gitlab-org/gitlab-ce"
+        }
+    ],
+    "token": "205086a8e3b9a2b818ffac9b89d102",
     "revision": null,
     "tag_list": [
         "ruby",
@@ -199,16 +207,10 @@ Example response:
 ```json
 {
     "active": true,
-    "architecture": null,
     "description": "test-1-20150125-test",
     "id": 6,
     "is_shared": false,
-    "last_contact": "2016-01-25T16:39:48.066Z",
     "name": null,
-    "platform": null,
-    "revision": null,
-    "tag_list": [],
-    "version": null
 }
 ```
 

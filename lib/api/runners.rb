@@ -51,7 +51,7 @@ module API
 
         attrs = attributes_for_keys [:description, :active, :tag_list]
         if runner.update(attrs)
-          present runner, with: Entities::RunnerDetails
+          present runner, with: Entities::RunnerDetails, current_user: current_user
         else
           render_validation_error!(runner)
         end
@@ -68,7 +68,7 @@ module API
         authenticate_delete_runner!(runner)
         runner.destroy!
 
-        present runner, with: Entities::RunnerDetails
+        present runner, with: Entities::Runner
       end
     end
 
