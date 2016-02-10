@@ -46,12 +46,12 @@ v 8.5.0 (unreleased)
   - Faster snippet search
   - Title for milestones should be unique (Zeger-Jan van de Weg)
   - Validate correctness of maximum attachment size application setting
+  - Replaces "Create merge request" link with one to the "Merge Request" when one exists
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
   - Prevent long-running backup tasks from timing out the database connection
   - Add a Project setting to allow guests to view build logs (defaults to true)
-  - Replaces "Create merge request" link with one to the "Merge Request" when one exists
 
 v 8.4.3
   - Increase lfs_objects size column to 8-byte integer to allow files larger
