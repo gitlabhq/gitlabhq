@@ -1,7 +1,7 @@
 - page_title "#{@domain.domain}", "Pages Domain"
 
 %h3.page-title
-  #{@domain.domain}
+  Pages Domain
 
 .table-holder
   %table.table
@@ -14,9 +14,9 @@
       %td
         Certificate
       %td
-        - if @domain.certificate
+        - if @domain.x509
           %pre
-            = @domain.certificate.to_text
+            = @domain.x509.to_text
         - else
           .light
             missing
