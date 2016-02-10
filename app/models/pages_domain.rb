@@ -71,8 +71,6 @@ class PagesDomain < ActiveRecord::Base
     @fingeprint ||= OpenSSL::Digest::SHA256.new(x509.to_der).to_s
   end
 
-  private
-
   def x509
     return unless certificate
     @x509 ||= OpenSSL::X509::Certificate.new(certificate)
@@ -86,6 +84,8 @@ class PagesDomain < ActiveRecord::Base
   rescue OpenSSL::PKey::PKeyError, OpenSSL::Cipher::CipherError
     nil
   end
+
+  private
 
   def update
     ::Projects::UpdatePagesConfigurationService.new(project).execute
