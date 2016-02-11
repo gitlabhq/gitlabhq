@@ -10,7 +10,7 @@ module SharedBuilds
     @build = create(:ci_build, commit: @ci_commit)
   end
 
-  step 'recent build is successfull' do
+  step 'recent build is successful' do
     @build.update_column(:status, 'success')
   end
 
@@ -18,7 +18,7 @@ module SharedBuilds
     @build.update_column(:status, 'failed')
   end
 
-  step 'project has an another build that is running' do
+  step 'project has another build that is running' do
     create(:ci_build, commit: @ci_commit, name: 'second build', status: 'running')
   end
 
