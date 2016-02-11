@@ -99,7 +99,7 @@ module API
 
         begin
           RepositoryArchiveCacheWorker.perform_async
-          header *Gitlab::Workhorse.send_git_archive(@project, params[:ref], params[:format])
+          header *Gitlab::Workhorse.send_git_archive(user_project, params[:sha], params[:format])
         rescue
           not_found!('File')
         end

@@ -3,9 +3,9 @@ require 'json'
 
 module Gitlab
   class Workhorse
-    class << self
-      SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
+    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
 
+    class << self
       def send_git_blob(repository, blob)
         params = {
           'RepoPath' => repository.path_to_repo,
