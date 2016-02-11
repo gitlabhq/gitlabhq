@@ -220,7 +220,13 @@ class Commit
   end
 
   def revert_message
-    "Revert \"#{title}\"".truncate(80) + "\n\nReverts #{sha}"
+    description = if merged_merge_request
+                    "Reverts #{@merged_merge_request.to_reference}"
+                  else
+                    "Reverts #{sha}"
+                  end
+
+    "Revert \"#{title}\"".truncate(80) + "\n\n#{description}"
   end
 
   def merge_commit?
