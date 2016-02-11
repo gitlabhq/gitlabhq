@@ -38,7 +38,7 @@ class PostReceive
       if Gitlab::Git.tag_ref?(ref)
         GitTagPushService.new.execute(project, @user, oldrev, newrev, ref)
       else
-        GitPushService.new.execute(project, @user, oldrev, newrev, ref)
+        GitPushService.new(project, @user, oldrev, newrev, ref).execute
       end
     end
   end
