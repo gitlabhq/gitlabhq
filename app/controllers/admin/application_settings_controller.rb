@@ -83,6 +83,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :sentry_dsn,
       :akismet_enabled,
       :akismet_api_key,
+      :email_author_in_body,
       restricted_visibility_levels: [],
       import_sources: []
     )

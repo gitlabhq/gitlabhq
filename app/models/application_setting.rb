@@ -44,6 +44,7 @@
 #  metrics_port                      :integer          default(8089)
 #  sentry_enabled                    :boolean          default(FALSE)
 #  sentry_dsn                        :string
+#  email_author_in_body              :boolean          default(FALSE)
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -92,6 +93,10 @@ class ApplicationSetting < ActiveRecord::Base
   validates :akismet_api_key,
             presence: true,
             if: :akismet_enabled
+
+  validates :max_attachment_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?

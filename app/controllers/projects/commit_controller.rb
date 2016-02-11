@@ -4,10 +4,10 @@
 class Projects::CommitController < Projects::ApplicationController
   # Authorize
   before_action :require_non_empty_project
-  before_action :authorize_download_code!, except: [:cancel_builds]
-  before_action :authorize_manage_builds!, only: [:cancel_builds]
+  before_action :authorize_download_code!, except: [:cancel_builds, :retry_builds]
+  before_action :authorize_update_build!, only: [:cancel_builds, :retry_builds]
+  before_action :authorize_read_commit_status!, only: [:builds]
   before_action :commit
-  before_action :authorize_manage_builds!, only: [:cancel_builds, :retry_builds]
   before_action :define_show_vars, only: [:show, :builds]
 
   def show
@@ -78,11 +78,5 @@ class Projects::CommitController < Projects::ApplicationController
     @notes_count = commit.notes.count
 
     @statuses = ci_commit.statuses if ci_commit
-  end
-
-  def authorize_manage_builds!
-    unless can?(current_user, :manage_builds, project)
-      return render_404
-    end
   end
 end

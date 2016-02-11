@@ -33,6 +33,20 @@ describe Milestone, models: true do
   let(:milestone) { create(:milestone) }
   let(:issue) { create(:issue) }
 
+  describe "unique milestone title per project" do
+    it "shouldn't accept the same title in a project twice" do
+      new_milestone = Milestone.new(project: milestone.project, title: milestone.title)
+      expect(new_milestone).not_to be_valid
+    end
+
+    it "should accept the same title in another project" do
+      project = build(:project)
+      new_milestone = Milestone.new(project: project, title: milestone.title)
+
+      expect(new_milestone).to be_valid
+    end
+  end
+
   describe "#percent_complete" do
     it "should not count open issues" do
       milestone.issues << issue

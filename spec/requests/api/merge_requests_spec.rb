@@ -115,6 +115,7 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response['title']).to eq(merge_request.title)
       expect(json_response['iid']).to eq(merge_request.iid)
+      expect(json_response['merge_status']).to eq('can_be_merged')
     end
 
     it 'should return merge_request by iid' do

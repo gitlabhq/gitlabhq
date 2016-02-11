@@ -6,13 +6,7 @@ module Gitlab
         when 'snippet_titles'
           snippet_titles.records.page(page).per(per_page)
         when 'snippet_blobs'
-          # We process whole list of items then paginate it. Not too smart
-          # Should be refactored in the CE side first to prevent conflicts hell
-          Kaminari.paginate_array(
-            snippet_blobs.records.map do |snippet|
-              chunk_snippet(snippet)
-            end
-          ).page(page).per(per_page)
+          snippet_blobs.records.page(page).per(per_page)
         else
           super
         end

@@ -6,7 +6,7 @@
     == #{pluralize(@all_forks.size, 'fork')}: #{full_count_title}
 
   .nav-controls
-    = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter form-control input-short',
+    = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter project-filter-form-field form-control input-short',
       spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
     .dropdown

@@ -234,27 +234,11 @@ class ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(
-      :avatar,
-      :build_allow_git_fetch,
-      :build_coverage_regex,
-      :build_timeout_in_minutes,
-      :builds_enabled,
-      :default_branch,
-      :description,
-      :import_url,
-      :issues_enabled,
-      :issues_tracker,
-      :issues_tracker_id,
-      :last_activity_at,
-      :merge_requests_enabled,
-      :name,
-      :namespace_id,
-      :path,
-      :runners_token,
-      :snippets_enabled,
-      :tag_list,
-      :visibility_level,
-      :wiki_enabled,
+      :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
+      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
+      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
+      :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
+      :public_builds,
 
       # EE-only
       :approvals_before_merge,
