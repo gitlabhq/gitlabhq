@@ -13,7 +13,6 @@ describe Notify do
   let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
   let(:project) { create(:project) }
-  let(:build) { create(:ci_build) }
 
   before(:each) do
     ActionMailer::Base.deliveries.clear
@@ -45,13 +44,6 @@ describe Notify do
       is_expected.to have_header 'X-GitLab-Project', /#{project.name}/
       is_expected.to have_header 'X-GitLab-Project-Id', /#{project.id}/
       is_expected.to have_header 'X-GitLab-Project-Path', /#{project.path_with_namespace}/
-    end
-  end
-
-  shared_examples 'an email with X-GitLab headers containing build details' do
-    it 'has X-GitLab-Build* headers' do
-      is_expected.to have_header 'X-GitLab-Build-Id', /#{build.id}/
-      is_expected.to have_header 'X-GitLab-Build-Ref', /#{build.ref}/
     end
   end
 
@@ -971,49 +963,59 @@ describe Notify do
     end
   end
 
-  describe 'build success' do
-    before { build.success }
+  describe 'build notification email' do
+    let(:build) { create(:ci_build) }
+    let(:project) { build.project }
 
-    subject { Notify.build_success_email(build.id, 'wow@example.com') }
+    shared_examples 'build email' do
+      it 'contains name of project' do
+        is_expected.to have_body_text build.project_name
+      end
 
-    it_behaves_like 'an email with X-GitLab headers containing build details'
-    it_behaves_like 'an email with X-GitLab headers containing project details' do
-      let(:project) { build.project }
+      it 'contains link to project' do
+        is_expected.to have_body_text namespace_project_path(project.namespace, project)
+      end
     end
 
-    it 'has header indicating build status' do
-      is_expected.to have_header 'X-GitLab-Build-Status', 'success'
+    shared_examples 'an email with X-GitLab headers containing build details' do
+      it 'has X-GitLab-Build* headers' do
+        is_expected.to have_header 'X-GitLab-Build-Id', /#{build.id}/
+        is_expected.to have_header 'X-GitLab-Build-Ref', /#{build.ref}/
+      end
     end
 
-    it 'has the correct subject' do
-      should have_subject /Build success for/
+    describe 'build success' do
+      subject { Notify.build_success_email(build.id, 'wow@example.com') }
+      before { build.success }
+
+      it_behaves_like 'build email'
+      it_behaves_like 'an email with X-GitLab headers containing build details'
+      it_behaves_like 'an email with X-GitLab headers containing project details'
+
+      it 'has header indicating build status' do
+        is_expected.to have_header 'X-GitLab-Build-Status', 'success'
+      end
+
+      it 'has the correct subject' do
+        is_expected.to have_subject /Build success for/
+      end
     end
 
-    it 'contains name of project' do
-      should have_body_text build.project_name
-    end
-  end
+    describe 'build fail' do
+      subject { Notify.build_fail_email(build.id, 'wow@example.com') }
+      before { build.drop }
 
-  describe 'build fail' do
-    before { build.drop }
+      it_behaves_like 'build email'
+      it_behaves_like 'an email with X-GitLab headers containing build details'
+      it_behaves_like 'an email with X-GitLab headers containing project details'
 
-    subject { Notify.build_fail_email(build.id, 'wow@example.com') }
+      it 'has header indicating build status' do
+        is_expected.to have_header 'X-GitLab-Build-Status', 'failed'
+      end
 
-    it_behaves_like 'an email with X-GitLab headers containing build details'
-    it_behaves_like 'an email with X-GitLab headers containing project details' do
-      let(:project) { build.project }
-    end
-
-    it 'has header indicating build status' do
-      is_expected.to have_header 'X-GitLab-Build-Status', 'failed'
-    end
-
-    it 'has the correct subject' do
-      should have_subject /Build failed for/
-    end
-
-    it 'contains name of project' do
-      should have_body_text build.project_name
+      it 'has the correct subject' do
+        is_expected.to have_subject /Build failed for/
+      end
     end
   end
 end
