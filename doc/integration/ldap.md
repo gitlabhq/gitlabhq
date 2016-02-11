@@ -327,16 +327,52 @@ existing LDAP server should be named 'main'.
 
 ### 3. Add new LDAP servers
 
-Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (omnibus packages) or `gitlab.yml` (installations from source).
-Remember to run `sudo gitlab-ctl reconfigure` or `sudo service gitlab reload` for the new servers to become available.
+Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (omnibus packages)
+or `gitlab.yml` (installations from source).
 
-Tip: you can assign labels to the different servers to give them human-friendly names.
+Remember to run `sudo gitlab-ctl reconfigure` or `sudo service gitlab reload`
+for the new servers to become available.
+
+Tip: you can assign labels to the different servers to give them human-friendly
+names.
 
 ```
 ldap:
   servers:
     main:
       label: 'LDAP HQ'
+```
+
+#### Examples
+
+**Omnibus**
+
+```
+gitlab_rails['ldap_servers'] = YAML.load <<-'EOS' # remember to close this block with 'EOS' below
+ main: # 'main' is the GitLab 'provider ID' of this LDAP server
+   label: 'LDAP_1'
+   host: '_your_ldap_server'
+   ...
+ secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
+   label: 'LDAP_2'
+   host: '_your_ldap_2_server'
+   ...
+EOS
+```
+
+**Source**
+
+```
+ldap:
+  servers:
+    main: # 'main' is the GitLab 'provider ID' of this LDAP server
+       label: 'LDAP_1'
+       host: '_your_ldap_server'
+       ...
+     secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
+       label: 'LDAP_2'
+       host: '_your_ldap_2_server'
+       ...
 ```
 
 ## Automatic Daily LDAP Sync
