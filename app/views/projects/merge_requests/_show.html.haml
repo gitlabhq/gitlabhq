@@ -86,7 +86,7 @@
 
 = render 'shared/issuable/sidebar', issuable: @merge_request
 - if @merge_request.merge_commit_sha
-  = render "projects/commit/revert", commit_id: @merge_request.merge_commit_sha
+  = render "projects/commit/revert", commit_id: @merge_request.merge_commit_sha, title: @merge_request.title
 
 :javascript
   var merge_request;

@@ -3,7 +3,7 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3.page-title Revert commit
+        %h3.page-title== Revert: "#{title}"
       .modal-body
         = form_tag revert_namespace_project_commit_path(@project.namespace, @project, commit_id), method: :post, remote: false, class: 'form-horizontal js-create-dir-form js-requires-input' do
           .form-group.branch
