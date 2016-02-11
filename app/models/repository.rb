@@ -611,6 +611,8 @@ class Repository
   end
 
   def merge_base(first_commit_id, second_commit_id)
+    first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
+    second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
     rugged.merge_base(first_commit_id, second_commit_id)
   rescue Rugged::ReferenceError
     nil
