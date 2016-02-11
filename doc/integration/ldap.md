@@ -125,7 +125,7 @@ Common combinations are `method: 'plain'` and `port: 389`, OR `method: 'ssl'` an
 
 If you are using a GitLab installation from source you can find the LDAP settings in `/home/git/gitlab/config/gitlab.yml`:
 
-```
+```yaml
 production:
   # snip...
   ldap:
@@ -327,16 +327,18 @@ existing LDAP server should be named 'main'.
 
 ### 3. Add new LDAP servers
 
-Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (omnibus packages)
+Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (Omnibus packages)
 or `gitlab.yml` (installations from source).
 
-Remember to run `sudo gitlab-ctl reconfigure` or `sudo service gitlab reload`
+Remember to [reconfigure](../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+or [restart](../../administration/restart_gitlab.md#installations-from-source)
+GitLab for Omnibus packages or installations from source respectively, in order
 for the new servers to become available.
 
-Tip: you can assign labels to the different servers to give them human-friendly
+**Tip:** you can assign labels to the different servers to give them human-friendly
 names.
 
-```
+```yaml
 ldap:
   servers:
     main:
@@ -347,7 +349,7 @@ ldap:
 
 **Omnibus**
 
-```
+```ruby
 gitlab_rails['ldap_servers'] = YAML.load <<-'EOS' # remember to close this block with 'EOS' below
  main: # 'main' is the GitLab 'provider ID' of this LDAP server
    label: 'LDAP_1'
@@ -362,17 +364,17 @@ EOS
 
 **Source**
 
-```
+```yaml
 ldap:
   servers:
     main: # 'main' is the GitLab 'provider ID' of this LDAP server
        label: 'LDAP_1'
        host: '_your_ldap_server'
        ...
-     secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
-       label: 'LDAP_2'
-       host: '_your_ldap_2_server'
-       ...
+    secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
+     label: 'LDAP_2'
+     host: '_your_ldap_2_server'
+     ...
 ```
 
 ## Automatic Daily LDAP Sync
@@ -409,7 +411,7 @@ If you want a shorter or longer LDAP sync time, you can easily set this with the
 For Omnibus package installations, simply add `"sync_time"` in `/etc/gitlab/gitlab.rb` to your LDAP config.
 A typical LDAP configuration for GitLab installed with an Omnibus package might look like this:
 
-```
+```ruby
 gitlab_rails['ldap_servers'] = YAML.load <<-EOS
 main:
   label: 'LDAP'
