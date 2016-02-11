@@ -14,6 +14,7 @@ v 8.5.0 (unreleased)
   - New UI for pagination
   - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
     set it up
+  - API: Added "merge_requests/:merge_request_id/closes_issues" (Gal Schlezinger)
   - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Fix label links for a merge request pointing to issues list

@@ -449,6 +449,28 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET :id/merge_requests/:merge_request_id/closes_issues' do
+    it 'returns the issue that will be closed on merge' do
+      issue = create(:issue, project: project)
+      mr = merge_request.tap do |mr|
+        mr.update_attribute(:description, "Closes #{issue.to_reference(mr.project)}")
+      end
+
+      get api("/projects/#{project.id}/merge_requests/#{mr.id}/closes_issues", user)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(issue.id)
+    end
+
+    it 'returns an empty array when there are no issues to be closed' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+  end
+
   def mr_with_later_created_and_updated_at_time
     merge_request
     merge_request.created_at += 1.hour
