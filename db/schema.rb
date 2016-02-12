@@ -824,6 +824,24 @@ ActiveRecord::Schema.define(version: 20160217100506) do
 
   add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
 
+  create_table "tasks", force: :cascade do |t|
+    t.integer  "user_id",     null: false
+    t.integer  "project_id",  null: false
+    t.integer  "target_id",   null: false
+    t.string   "target_type", null: false
+    t.integer  "author_id"
+    t.integer  "action",      null: false
+    t.string   "state",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tasks", ["author_id"], name: "index_tasks_on_author_id", using: :btree
+  add_index "tasks", ["project_id"], name: "index_tasks_on_project_id", using: :btree
+  add_index "tasks", ["state"], name: "index_tasks_on_state", using: :btree
+  add_index "tasks", ["target_type", "target_id"], name: "index_tasks_on_target_type_and_target_id", using: :btree
+  add_index "tasks", ["user_id"], name: "index_tasks_on_user_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                       default: "",    null: false
     t.string   "encrypted_password",          default: "",    null: false
