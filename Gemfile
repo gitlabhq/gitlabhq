@@ -105,7 +105,7 @@ gem 'rouge',         '~> 1.10.1'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
-gem 'nokogiri', '1.6.7.2'
+gem 'nokogiri', '~> 1.6.7', '>= 1.6.7.2'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
