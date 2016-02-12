@@ -6,7 +6,8 @@ class PagesDomain < ActiveRecord::Base
   validates :certificate, certificate: true, allow_nil: true, allow_blank: true
   validates :key, certificate_key: true, allow_nil: true, allow_blank: true
 
-  validate :validate_matching_key, if: ->(domain) { domain.certificate.present? && domain.key.present? }
+  validate :validate_pages_domain
+  validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
   validate :validate_intermediates, if: ->(domain) { domain.certificate.present? }
 
   attr_encrypted :key, mode: :per_attribute_iv_and_salt, key: Gitlab::Application.secrets.db_key_base
@@ -30,8 +31,8 @@ class PagesDomain < ActiveRecord::Base
   end
 
   def has_matching_key?
-    return unless x509
-    return unless pkey
+    return false unless x509
+    return false unless pkey
 
     # We compare the public key stored in certificate with public key from certificate key
     x509.check_private_key(pkey)
@@ -39,6 +40,9 @@ class PagesDomain < ActiveRecord::Base
 
   def has_intermediates?
     return false unless x509
+
+    # self-signed certificates doesn't have the certificate chain
+    return true if x509.verify(x509.public_key)
 
     store = OpenSSL::X509::Store.new
     store.set_default_paths
@@ -66,23 +70,8 @@ class PagesDomain < ActiveRecord::Base
     return x509.subject.to_s
   end
 
-  def fingerprint
-    return unless x509
-    @fingeprint ||= OpenSSL::Digest::SHA256.new(x509.to_der).to_s
-  end
-
-  def x509
-    return unless certificate
-    @x509 ||= OpenSSL::X509::Certificate.new(certificate)
-  rescue OpenSSL::X509::CertificateError
-    nil
-  end
-
-  def pkey
-    return unless key
-    @pkey ||= OpenSSL::PKey::RSA.new(key)
-  rescue OpenSSL::PKey::PKeyError, OpenSSL::Cipher::CipherError
-    nil
+  def certificate_text
+    @certificate_text ||= x509.try(:to_text)
   end
 
   private
@@ -101,5 +90,26 @@ class PagesDomain < ActiveRecord::Base
     unless has_intermediates?
       self.errors.add(:certificate, 'misses intermediates')
     end
+  end
+
+  def validate_pages_domain
+    return unless domain
+    if domain.downcase.ends_with?(".#{Settings.pages.host}".downcase)
+      self.errors.add(:domain, "*.#{Settings.pages.host} is restricted")
+    end
+  end
+
+  def x509
+    return unless certificate
+    @x509 ||= OpenSSL::X509::Certificate.new(certificate)
+  rescue OpenSSL::X509::CertificateError
+    nil
+  end
+
+  def pkey
+    return unless key
+    @pkey ||= OpenSSL::PKey::RSA.new(key)
+  rescue OpenSSL::PKey::PKeyError, OpenSSL::Cipher::CipherError
+    nil
   end
 end

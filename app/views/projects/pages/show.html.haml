@@ -14,9 +14,9 @@
       %td
         Certificate
       %td
-        - if @domain.x509
+        - if @domain.certificate_text
           %pre
-            = @domain.x509.to_text
+            = @domain.certificate_text
         - else
           .light
             missing

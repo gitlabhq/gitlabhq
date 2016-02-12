@@ -35,7 +35,7 @@ module Projects
     def reload_daemon
       # GitLab Pages daemon constantly watches for modification time of `pages.path`
       # It reloads configuration when `pages.path` is modified
-      File.touch(Settings.pages.path)
+      update_file(pages_update_file, SecureRandom.hex(64))
     end
 
     def pages_path
@@ -46,14 +46,24 @@ module Projects
       File.join(pages_path, 'config.json')
     end
 
+    def pages_update_file
+      File.join(Settings.pages.path, '.update')
+    end
+
     def update_file(file, data)
-      if data
-        File.open(file, 'w') do |file|
-          file.write(data)
-        end
-      else
+      unless data
         File.rm(file, force: true)
+        return
       end
+
+      temp_file = "#{file}.#{SecureRandom.hex(16)}"
+      File.open(temp_file, 'w') do |file|
+        file.write(data)
+      end
+      File.mv(temp_file, file, force: true)
+    ensure
+      # In case if the updating fails
+      File.rm(temp_file, force: true)
     end
   end
 end

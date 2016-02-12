@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160209130428) do
+ActiveRecord::Schema.define(version: 20160210105555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -733,6 +733,17 @@ ActiveRecord::Schema.define(version: 20160209130428) do
 
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
+
+  create_table "pages_domains", force: :cascade do |t|
+    t.integer "project_id"
+    t.text    "certificate"
+    t.text    "encrypted_key"
+    t.string  "encrypted_key_iv"
+    t.string  "encrypted_key_salt"
+    t.string  "domain"
+  end
+
+  add_index "pages_domains", ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
 
   create_table "project_group_links", force: :cascade do |t|
     t.integer  "project_id",                null: false
