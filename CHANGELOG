@@ -14,11 +14,13 @@ v 8.5.0 (unreleased)
   - New UI for pagination
   - Don't prevent sign out when 2FA enforcement is enabled and user hasn't yet
     set it up
+  - API: Added "merge_requests/:merge_request_id/closes_issues" (Gal Schlezinger)
   - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Fix label links for a merge request pointing to issues list
   - Don't vendor minified JS
   - Increase project import timeout to 15 minutes
+  - Be more permissive with email address validation: it only has to contain a single '@'
   - Display 404 error on group not found
   - Track project import failure
   - Support Two-factor Authentication for LDAP users
@@ -31,12 +33,14 @@ v 8.5.0 (unreleased)
   - Optimized performance of finding issues to be closed by a merge request
   - API: Expose MergeRequest#merge_status (Andrei Dziahel)
   - Revert "Add IP check against DNSBLs at account sign-up"
+  - Actually use the `skip_merges` option in Repository#commits (Tony Chu)
   - Fix API to keep request parameters in Link header (Michael Potthoff)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
   - Prevent parse error when name of project ends with .atom and prevent path issues
   - Mark inline difference between old and new paths when a file is renamed
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
+  - API: Allow to set or update a merge-request's milestone (Kirill Skachkov)
   - Improve UI consistency between projects and groups lists
   - Add sort dropdown to dashboard projects page
   - Fixed logo animation on Safari (Roman Rott)
@@ -47,11 +51,14 @@ v 8.5.0 (unreleased)
   - Faster snippet search
   - Title for milestones should be unique (Zeger-Jan van de Weg)
   - Validate correctness of maximum attachment size application setting
+  - Replaces "Create merge request" link with one to the "Merge Request" when one exists
+  - Fix CI builds badge, add a new link to builds badge, deprecate the old one
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
   - Prevent long-running backup tasks from timing out the database connection
   - Add a Project setting to allow guests to view build logs (defaults to true)
+  - Sort project milestones by due date including issue editor (Oliver Rogers / Orih)
 
 v 8.4.3
   - Increase lfs_objects size column to 8-byte integer to allow files larger
@@ -387,6 +394,7 @@ v 8.1.0
   - Improved performance of the trending projects page
   - Remove CI migration task
   - Improved performance of finding projects by their namespace
+  - Add assignee data to Issuables' hook_data (Bram Daams)
   - Fix bug where transferring a project would result in stale commit links (Stan Hu)
   - Fix build trace updating
   - Include full path of source and target branch names in New Merge Request page (Stan Hu)

@@ -126,7 +126,7 @@ module Issuable
   end
 
   def to_hook_data(user)
-    {
+    hook_data = {
       object_kind: self.class.name.underscore,
       user: user.hook_attrs,
       repository: {
@@ -137,6 +137,9 @@ module Issuable
       },
       object_attributes: hook_attrs
     }
+    hook_data.merge!(assignee: assignee.hook_attrs) if assignee
+
+    hook_data
   end
 
   def label_names

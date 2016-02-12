@@ -184,6 +184,14 @@ you expected.
 You are also able to view the status of any commit in the various pages in
 GitLab, such as **Commits** and **Merge Requests**.
 
+## Builds badge
+
+You can access a builds badge image using following link:
+
+```
+http://example.gitlab.com/namespace/project/badges/branch/build.svg
+```
+
 ## Next steps
 
 Awesome! You started using CI in GitLab!

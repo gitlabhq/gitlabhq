@@ -71,8 +71,8 @@ class ApplicationSetting < ActiveRecord::Base
             url: true
 
   validates :admin_notification_email,
-            allow_blank: true,
-            email: true
+            email: true,
+            allow_blank: true
 
   validates :two_factor_grace_period,
             numericality: { greater_than_or_equal_to: 0 }
