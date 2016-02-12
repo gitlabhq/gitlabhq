@@ -425,18 +425,20 @@ describe SystemNoteService, services: true do
       end
     end
 
-    context 'commit from fork' do
+    context 'commit with cross-reference from fork' do
       let(:author2) { create(:user) }
       let(:forked_project) { Projects::ForkService.new(project, author2).execute }
       let(:commit2) { forked_project.commit }
 
       before do
-        described_class.cross_reference(noteable, commit2, author2)
+        allow(commit0).to receive(:to_reference) { noteable.project.to_reference +
+            commit0.class.reference_prefix + commit0.id}
+        described_class.cross_reference(noteable, commit0, author2)
       end
 
-      it 'is falsey when is a fork mentioning an external issue' do
+      it 'is true when a fork mentions an external issue' do
         expect(described_class.cross_reference_exists?(noteable, commit2)).
-            to be_falsey
+            to be true
       end
     end
   end
