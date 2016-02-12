@@ -39,6 +39,7 @@ v 8.5.0 (unreleased)
   - Prevent parse error when name of project ends with .atom and prevent path issues
   - Mark inline difference between old and new paths when a file is renamed
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
+  - API: Allow to set or update a merge-request's milestone (Kirill Skachkov)
   - Improve UI consistency between projects and groups lists
   - Add sort dropdown to dashboard projects page
   - Fixed logo animation on Safari (Roman Rott)
