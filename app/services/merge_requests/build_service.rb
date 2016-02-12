@@ -47,6 +47,17 @@ module MergeRequests
         merge_request.title = merge_request.source_branch.titleize.humanize
       end
 
+      # When your branch name starts with an iid followed by a dash this pattern will
+      # be interpreted as the use wants to close that issue on this project
+      # Pattern example: 112-fix-mep-mep
+      # Will lead to appending `Closes #112` to the description
+      if merge_request.source_branch =~ /\A\d+-/
+        closes_issue = "Closes ##{Regexp.last_match(0)[0...-1]}"
+        closes_issue.prepend("\n") if merge_request.description.present?
+
+        merge_request.description << closes_issue
+      end
+
       merge_request
     end
 

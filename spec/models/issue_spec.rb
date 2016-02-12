@@ -140,4 +140,16 @@ describe Issue, models: true do
   it_behaves_like 'a Taskable' do
     let(:subject) { create :issue }
   end
+
+  describe "#to_branch_name" do
+    let(:issue) { build(:issue, title: 'a' * 30) }
+
+    it "is expected not to exceed 25 chars" do
+      expect(issue.to_branch_name.length).to eq 25
+    end
+
+    it "starts with the issue iid" do
+      expect(issue.to_branch_name).to match /\A#{issue.iid}-a+\z/
+    end
+  end
 end

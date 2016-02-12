@@ -94,6 +94,10 @@ class Issue < ActiveRecord::Base
     end.sort_by(&:iid)
   end
 
+  def related_branches
+    self.project.repository.branch_names.select { |branch| /\A#{iid}-/ =~ branch }
+  end
+
   # Reset issue events cache
   #
   # Since we do cache @event we need to reset cache in special cases:
@@ -119,5 +123,15 @@ class Issue < ActiveRecord::Base
     notes.system.flat_map do |note|
       note.all_references(current_user).merge_requests
     end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
+
+  def to_branch_name
+    "#{iid}-#{title.parameterize}"[0,25]
+  end
+
+  def new_branch_button?(current_user)
+    !self.closed? &&
+    referenced_merge_requests(current_user).empty? &&
+    related_branches.empty?
   end
 end

@@ -175,6 +175,8 @@ v 8.5.0
   - Add label description (Nuttanart Pornprasitsakul)
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
+  - User project limit is reached notice is hidden if the projects limit is zero 
+  - New branch button appears on issues where applicable (Zeger-Jan van de Weg)
 
 v 8.4.5
   - No CE-specific changes
