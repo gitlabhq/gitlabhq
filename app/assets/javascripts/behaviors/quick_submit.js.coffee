@@ -34,3 +34,22 @@ $(document).on 'keydown.quick_submit', '.js-quick-submit', (e) ->
   $form = $(e.target).closest('form')
   $form.find('input[type=submit], button[type=submit]').disable()
   $form.submit()
+
+# If the user tabs to a submit button on a `js-quick-submit` form, display a
+# tooltip to let them know they could've used the hotkey
+$(document).on 'keyup.quick_submit', '.js-quick-submit input[type=submit], .js-quick-submit button[type=submit]', (e) ->
+  return unless keyCodeIs(e, 9) # Tab
+
+  if isMac()
+    title = "You can also press &#8984;-Enter"
+  else
+    title = "You can also press Ctrl-Enter"
+
+  $this = $(@)
+  $this.tooltip(
+    container: 'body'
+    html: 'true'
+    placement: 'auto top'
+    title: title
+    trigger: 'manual'
+  ).tooltip('show').one('blur', -> $this.tooltip('hide'))
