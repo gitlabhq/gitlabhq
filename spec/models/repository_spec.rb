@@ -369,7 +369,7 @@ describe Repository, models: true do
         project = create :project
 
         project.repository.index_commits
-        
+
         Repository.__elasticsearch__.refresh_index!
 
         expect(project.repository.find_commits_by_message_with_elastic('initial').first).to be_a(Commit)
@@ -393,6 +393,7 @@ describe Repository, models: true do
 
         parsed_result = project.repository.parse_search_result_from_elastic(result)
 
+        expect(parsed_result.ref). to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
         expect(parsed_result.filename).to eq('files/ruby/popen.rb')
         expect(parsed_result.startline).to eq(2)
         expect(parsed_result.data).to include("Popen")

@@ -710,7 +710,7 @@ class Repository
   end
 
   def parse_search_result_from_elastic(result)
-    ref = result["_source"]["blob"]["oid"]
+    ref = result["_source"]["blob"]["commit_sha"]
     filename = result["_source"]["blob"]["path"]
     content = result["_source"]["blob"]["content"]
     total_lines = content.lines.size
