@@ -43,8 +43,8 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
-    config.assets.paths << Emoji.images_path
-    config.assets.precompile << "emoji/*.png"
+    config.assets.paths << Gemojione.index.images_path
+    config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
 
     # Version of your assets, change this if you want to expire all your assets
