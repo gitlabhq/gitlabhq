@@ -112,7 +112,7 @@ GET /projects/:id/repository/commits/:sha/builds
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a project |
 | `sha`     | string  | yes      | The SHA id of a commit |
-| `scope`   | stringi **or** array of strings | no | The scope of builds to show, one or array of: `pending`, `running`, `failed`, `success`, `canceled`; showing all builds if none provided |
+| `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `pending`, `running`, `failed`, `success`, `canceled`; showing all builds if none provided |
 
 ```
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/0ff3ae198f8601a285adcf5c0fff204ee6fba5fd/builds"
