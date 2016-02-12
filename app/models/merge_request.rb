@@ -241,7 +241,7 @@ class MergeRequest < ActiveRecord::Base
     return unless unchecked?
 
     can_be_merged =
-      project.repository.can_be_merged?(source_sha, target_branch)
+      !broken? && project.repository.can_be_merged?(source_sha, target_branch)
 
     if can_be_merged
       mark_as_mergeable
