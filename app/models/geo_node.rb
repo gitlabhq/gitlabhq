@@ -27,4 +27,8 @@ class GeoNode < ActiveRecord::Base
   def url
     uri.to_s
   end
+
+  def notify_url
+    # TODO: Notification endpoint
+  end
 end

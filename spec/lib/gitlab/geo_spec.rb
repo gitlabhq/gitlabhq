@@ -68,4 +68,15 @@ describe Gitlab::Geo, lib: true do
       expect(described_class.geo_node?(host: 'inexistent', port: 1234)).to be_falsey
     end
   end
+
+  describe 'notify_update' do
+    let(:project) { FactoryGirl.build(:project) }
+
+    it 'delegates to NotifyService' do
+      expect(Geo::EnqueueUpdateService).to receive(:new).with(project).and_call_original
+      expect_any_instance_of(Geo::EnqueueUpdateService).to receive(:execute)
+
+      described_class.notify_update(project)
+    end
+  end
 end

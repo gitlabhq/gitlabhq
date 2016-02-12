@@ -9,7 +9,11 @@ module Gitlab
     end
 
     def self.primary_node
-      RequestStore.store[:geo_node_primary] ||= GeoNode.find_by(primary: true)
+      RequestStore.store[:geo_primary_node] ||= GeoNode.find_by(primary: true)
+    end
+
+    def self.secondary_nodes
+      RequestStore.store[:geo_secondary_nodes] ||= GeoNode.find_by(primary: false)
     end
 
     def self.enabled?
@@ -22,6 +26,10 @@ module Gitlab
 
     def self.geo_node?(host:, port:)
       GeoNode.where(host: host, port: port).exists?
+    end
+
+    def self.notify_update(project)
+      ::Geo::EnqueueUpdateService.new(project).execute
     end
   end
 end
