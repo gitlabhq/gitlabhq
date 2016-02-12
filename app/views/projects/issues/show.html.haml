@@ -46,8 +46,8 @@
           Edited
           = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
 
-        .merge-requests
-          = render 'merge_requests'
+      .merge-requests
+        = render 'merge_requests'
 
     .content-block
       = render 'votes/votes_block', votable: @issue
