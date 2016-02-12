@@ -431,8 +431,10 @@ describe SystemNoteService, services: true do
       let(:commit2) { forked_project.commit }
 
       before do
-        allow(commit0).to receive(:to_reference) { noteable.project.to_reference +
-            commit0.class.reference_prefix + commit0.id}
+        allow(commit0).to receive(:to_reference) {
+          noteable.project.to_reference +
+              commit0.class.reference_prefix + commit0.id
+        }
         described_class.cross_reference(noteable, commit0, author2)
       end
 
