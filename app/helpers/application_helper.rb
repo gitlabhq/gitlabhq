@@ -135,8 +135,6 @@ module ApplicationHelper
     # Skip if user removed branch right after that
     return false unless project.repository.branch_names.include?(event.branch_name)
 
-    return false if event.branch_name =~ Gitlab::Git::REVERT_BRANCH_PATTERN
-
     true
   end
 

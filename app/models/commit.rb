@@ -216,7 +216,7 @@ class Commit
   end
 
   def revert_branch_name
-    "revert-#{project.id}-#{short_id}"
+    "revert-#{short_id}"
   end
 
   def revert_message
