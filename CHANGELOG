@@ -57,6 +57,7 @@ v 8.4.4
   - Update omniauth-saml gem to 1.4.2
   - Prevent long-running backup tasks from timing out the database connection
   - Add a Project setting to allow guests to view build logs (defaults to true)
+  - Sort project milestones by due date including issue editor (Oliver Rogers / Orih)
 
 v 8.4.3
   - Increase lfs_objects size column to 8-byte integer to allow files larger
