@@ -40,7 +40,7 @@ class GitPushService
       else
         # Use the pushed commits that aren't reachable by the default branch
         # as a heuristic. This may include more commits than are actually pushed, but
-        # that shouldn't matter because we check for existing cross-@references later.
+        # that shouldn't matter because we check for existing cross-references later.
         @push_commits = @project.repository.commits_between(@project.default_branch, @newrev)
 
         # don't process commits for the initial push to the default branch
