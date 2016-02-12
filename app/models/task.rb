@@ -15,15 +15,38 @@
 #
 
 class Task < ActiveRecord::Base
+  ASSIGNED  = 1
+
   belongs_to :author, class_name: "User"
   belongs_to :project
   belongs_to :target, polymorphic: true, touch: true
   belongs_to :user
 
+  delegate :name, :email, to: :author, prefix: true, allow_nil: true
+
   validates :action, :project, :target, :user, presence: true
+
+  default_scope { reorder(id: :desc) }
+
+  scope :pending, -> { with_state(:pending) }
+  scope :done, -> { with_state(:done) }
 
   state_machine :state, initial: :pending do
     state :pending
     state :done
+  end
+
+  def action_name
+    case action
+    when ASSIGNED then 'assigned'
+    end
+  end
+
+  def body?
+    target.respond_to? :title
+  end
+
+  def target_iid
+    target.respond_to?(:iid) ? target.iid : target_id
   end
 end

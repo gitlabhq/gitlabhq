@@ -1,0 +1,17 @@
+%li{class: "task task-#{task.done? ? 'done' : 'pending'}", id: dom_id(task) }
+  .task-item{class: "#{task.body? ? 'task-block' : 'task-inline' }"}
+    = image_tag avatar_icon(task.author_email, 40), class: "avatar s40", alt:''
+
+    .task-title
+      %span.author_name= link_to_author task
+      %span.task_label{class: task.action_name}
+        = task_action_name(task)
+
+      %strong= link_to "##{task.target_iid}", [task.project.namespace.becomes(Namespace), task.project, task.target]
+
+      &middot; #{time_ago_with_tooltip(task.created_at)}
+
+    - if task.body?
+      .task-body
+        .task-note
+          = task.target.title

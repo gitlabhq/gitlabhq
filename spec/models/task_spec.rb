@@ -24,9 +24,32 @@ describe Task, models: true do
     it { is_expected.to belong_to(:user) }
   end
 
+  describe 'respond to' do
+    it { is_expected.to respond_to(:author_name) }
+    it { is_expected.to respond_to(:author_email) }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:action) }
     it { is_expected.to validate_presence_of(:target) }
     it { is_expected.to validate_presence_of(:user) }
+  end
+
+  describe '#action_name' do
+    it 'returns assigned when action is assigned' do
+      subject.action = Task::ASSIGNED
+
+      expect(subject.action_name).to eq 'assigned'
+    end
+  end
+
+  describe '#body?' do
+    it 'returns true when target respond to title'
+    it 'returns false when target does not respond to title'
+  end
+
+  describe '#target_iid' do
+    it 'returns target.iid when target respond to iid'
+    it 'returns target_id when target does not respond to iid'
   end
 end

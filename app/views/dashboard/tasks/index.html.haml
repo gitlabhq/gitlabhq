@@ -1,0 +1,25 @@
+- page_title "Tasks Queue"
+- header_title "Tasks Queue", dashboard_tasks_path
+
+.top-area
+  %ul.nav-links
+    %li{class: ("active" if params[:state].blank? || params[:state] == 'pending')}
+      = link_to dashboard_tasks_path(state: 'pending') do
+        Tasks (#{@pending_count})
+    %li{class: ("active" if params[:state] == 'done')}
+      = link_to dashboard_tasks_path(state: 'done') do
+        Done (#{@done_count})
+
+.tasks
+  - if @tasks.any?
+    - @tasks.group_by(&:project).each do |group|
+      .panel.panel-default
+        - project = group[0]
+        .panel-heading
+          = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
+
+        %ul.well-list.tasks-list
+          = render group[1]
+    = paginate @tasks, theme: "gitlab"
+  - else
+    .nothing-here-block No tasks to show
