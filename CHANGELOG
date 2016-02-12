@@ -20,6 +20,7 @@ v 8.5.0 (unreleased)
   - Fix label links for a merge request pointing to issues list
   - Don't vendor minified JS
   - Increase project import timeout to 15 minutes
+  - Be more permissive with email address validation: it only has to contain a single '@'
   - Display 404 error on group not found
   - Track project import failure
   - Support Two-factor Authentication for LDAP users

@@ -74,6 +74,10 @@ describe ApplicationSetting, models: true do
         .only_integer
         .is_greater_than(0)
     end
+
+    it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
+      subject { setting }
+    end
   end
 
   context 'restricted signup domains' do
