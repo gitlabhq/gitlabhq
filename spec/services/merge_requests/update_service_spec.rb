@@ -53,7 +53,7 @@ describe MergeRequests::UpdateService, services: true do
       it { expect(@merge_request.assignee).to eq(user2) }
       it { expect(@merge_request).to be_closed }
       it { expect(@merge_request.labels.count).to eq(1) }
-      it { expect(@merge_request.labels.first.title).to eq('Bug') }
+      it { expect(@merge_request.labels.first.title).to eq(label.name) }
       it { expect(@merge_request.target_branch).to eq('target') }
 
       it 'should execute hooks with update action' do
@@ -173,6 +173,60 @@ describe MergeRequests::UpdateService, services: true do
         it 'marks pending todos as done' do
           expect(pending_todo.reload).to be_done
         end
+      end
+    end
+
+    context "when the merge request is relabeled" do
+      it "sends notifications for subscribers of newly added labels" do
+        subscriber, non_subscriber = create_list(:user, 2)
+        label.toggle_subscription(subscriber)
+        2.times { label.toggle_subscription(non_subscriber) }
+
+        opts = { label_ids: [label.id] }
+
+        perform_enqueued_jobs do
+          @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+        end
+
+        @merge_request.reload
+        should_email(subscriber)
+        should_not_email(non_subscriber)
+      end
+
+      it "does send notifications for existing labels" do
+        second_label = create(:label)
+        merge_request.labels << label
+        subscriber, non_subscriber = create_list(:user, 2)
+        label.toggle_subscription(subscriber)
+        2.times { label.toggle_subscription(non_subscriber) }
+
+        opts = { label_ids: [label.id, second_label.id] }
+
+        perform_enqueued_jobs do
+          @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+        end
+
+        @merge_request.reload
+        should_email(subscriber)
+        should_not_email(non_subscriber)
+      end
+
+      it "does not send notifications for removed labels" do
+        second_label = create(:label)
+        merge_request.labels << label
+        subscriber, non_subscriber = create_list(:user, 2)
+        label.toggle_subscription(subscriber)
+        2.times { label.toggle_subscription(non_subscriber) }
+
+        opts = { label_ids: [second_label.id] }
+
+        perform_enqueued_jobs do
+          @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+        end
+
+        @merge_request.reload
+        should_not_email(subscriber)
+        should_not_email(non_subscriber)
       end
     end
 

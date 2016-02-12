@@ -8,6 +8,7 @@ module Issuable
   extend ActiveSupport::Concern
   include Participable
   include Mentionable
+  include Subscribable
   include StripAttribute
 
   included do
@@ -18,7 +19,6 @@ module Issuable
     has_many :notes, as: :noteable, dependent: :destroy
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
-    has_many :subscriptions, dependent: :destroy, as: :subscribable
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -149,28 +149,6 @@ module Issuable
     notes.awards.where(note: "thumbsup").count
   end
 
-  def subscribed?(user)
-    subscription = subscriptions.find_by_user_id(user.id)
-
-    if subscription
-      return subscription.subscribed
-    end
-
-    participants(user).include?(user)
-  end
-
-  def toggle_subscription(user)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id).
-      update(subscribed: !subscribed?(user))
-  end
-
-  def unsubscribe(user)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id).
-      update(subscribed: false)
-  end
-
   def to_hook_data(user)
     hook_data = {
       object_kind: self.class.name.underscore,
@@ -199,6 +177,12 @@ module Issuable
         find_or_create_by(title: label_name.strip)
       self.labels << label
     end
+  end
+
+  # Labels that are currently applied to this object
+  # that are not present in `old_labels`
+  def added_labels(old_labels)
+    self.labels - old_labels
   end
 
   # Convert this Issuable class name to a format usable by Ability definitions

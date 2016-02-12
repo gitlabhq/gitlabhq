@@ -1,0 +1,5 @@
+<%= issuable.class.model_name.human.titleize %> <%= issuable.iid %> was relabeled.
+
+Issue <%= issuable.iid %>: <%= url_for(namespace_project_issue_url(issuable.project.namespace, issuable.project, issuable)) %>
+Author: <%= issuable.author_name %>
+New Labels: <%= @label_names.to_sentence %>

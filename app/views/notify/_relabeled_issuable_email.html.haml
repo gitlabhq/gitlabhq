@@ -1,0 +1,5 @@
+%p
+  #{@updated_by.name} added the
+  %em= @label_names.to_sentence
+  #{"label".pluralize(@label_names.count)} to #{issuable.class.model_name.human} #{issuable.iid}.
+

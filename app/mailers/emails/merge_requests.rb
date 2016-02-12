@@ -19,10 +19,20 @@ module Emails
                          subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
+    def relabeled_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, label_names)
+      setup_merge_request_mail(merge_request_id, recipient_id)
+      @label_names = label_names
+      @updated_by = User.find(updated_by_user_id)
+      mail_answer_thread(@merge_request,
+                      from: sender(@merge_request.author_id),
+                      to: recipient(recipient_id),
+                      subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
+    end
+
     def closed_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
-      @updated_by = User.find updated_by_user_id
+      @updated_by = User.find(updated_by_user_id)
       mail_answer_thread(@merge_request,
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),
@@ -42,7 +52,7 @@ module Emails
       setup_merge_request_mail(merge_request_id, recipient_id)
 
       @mr_status = status
-      @updated_by = User.find updated_by_user_id
+      @updated_by = User.find(updated_by_user_id)
       mail_answer_thread(@merge_request,
                          from: sender(updated_by_user_id),
                          to: recipient(recipient_id),

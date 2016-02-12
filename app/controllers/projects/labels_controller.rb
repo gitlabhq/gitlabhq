@@ -1,8 +1,8 @@
 class Projects::LabelsController < Projects::ApplicationController
   before_action :module_enabled
-  before_action :label, only: [:edit, :update, :destroy]
+  before_action :label, only: [:edit, :update, :destroy, :toggle_subscription]
   before_action :authorize_read_label!
-  before_action :authorize_admin_labels!, except: [:index]
+  before_action :authorize_admin_labels!, except: [:index, :toggle_subscription]
 
   respond_to :js, :html
 
@@ -58,6 +58,11 @@ class Projects::LabelsController < Projects::ApplicationController
       end
       format.js
     end
+  end
+
+  def toggle_subscription
+    @label.toggle_subscription(current_user)
+    render nothing: true
   end
 
   protected

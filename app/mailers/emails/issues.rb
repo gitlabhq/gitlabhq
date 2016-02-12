@@ -16,7 +16,14 @@ module Emails
     def closed_issue_email(recipient_id, issue_id, updated_by_user_id)
       setup_issue_mail(issue_id, recipient_id)
 
-      @updated_by = User.find updated_by_user_id
+      @updated_by = User.find(updated_by_user_id)
+      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
+    end
+
+    def relabeled_issue_email(recipient_id, issue_id, updated_by_user_id, label_names)
+      setup_issue_mail(issue_id, recipient_id)
+      @label_names = label_names
+      @updated_by = User.find(updated_by_user_id)
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
     end
 
@@ -24,7 +31,7 @@ module Emails
       setup_issue_mail(issue_id, recipient_id)
 
       @issue_status = status
-      @updated_by = User.find updated_by_user_id
+      @updated_by = User.find(updated_by_user_id)
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
     end
 

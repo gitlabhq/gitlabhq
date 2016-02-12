@@ -10,6 +10,18 @@
       = link_to_label(label) do
         = pluralize label.open_issues_count, 'open issue'
 
+    - if current_user
+      %div{class: "label-subscription", data: {id: label.id}}
+        - subscribed = label.subscribed?(current_user)
+        - subscription_status = subscribed ? 'subscribed' : 'unsubscribed'
+        .subscription-status{data: {status: subscription_status}}
+        %button.btn.btn-sm.btn-info.subscribe-button{:type => 'button'}
+          %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+
     - if can? current_user, :admin_label, @project
       = link_to 'Edit', edit_namespace_project_label_path(@project.namespace, @project, label), class: 'btn btn-sm'
       = link_to 'Delete', namespace_project_label_path(@project.namespace, @project, label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?"}
+
+:javascript
+  new Subscription("#{toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)}",
+                   ".label-subscription[data-id='#{label.id}']");

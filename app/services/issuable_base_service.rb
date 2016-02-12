@@ -95,7 +95,7 @@ class IssuableBaseService < BaseService
 
     old_labels = options[:old_labels]
     if old_labels && (issuable.labels != old_labels)
-      create_labels_note(issuable, issuable.labels - old_labels, old_labels - issuable.labels)
+      create_labels_note(issuable, issuable.added_labels(old_labels), old_labels - issuable.labels)
     end
   end
 end

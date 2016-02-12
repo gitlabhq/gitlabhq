@@ -13,7 +13,7 @@
 
 FactoryGirl.define do
   factory :label do
-    title "Bug"
+    title { FFaker::Color.name }
     color "#990000"
     project
   end

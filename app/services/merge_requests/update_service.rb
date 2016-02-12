@@ -14,7 +14,7 @@ module MergeRequests
       update(merge_request)
     end
 
-    def handle_changes(merge_request, options = {})
+    def handle_changes(issue, old_labels: [], new_labels: [])
       if has_changes?(merge_request, options)
         todo_service.mark_pending_todos_as_done(merge_request, current_user)
       end
@@ -43,6 +43,11 @@ module MergeRequests
       if merge_request.previous_changes.include?('target_branch') ||
           merge_request.previous_changes.include?('source_branch')
         merge_request.mark_as_unchecked
+      end
+
+      new_labels = merge_request.added_labels(old_labels)
+      if new_labels.present?
+        notification_service.relabeled_merge_request(merge_request, new_labels, current_user)
       end
     end
 

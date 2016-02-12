@@ -48,7 +48,7 @@ describe Issues::UpdateService, services: true do
       it { expect(@issue.assignee).to eq(user2) }
       it { expect(@issue).to be_closed }
       it { expect(@issue.labels.count).to eq(1) }
-      it { expect(@issue.labels.first.title).to eq('Bug') }
+      it { expect(@issue.labels.first.title).to eq(label.name) }
 
       it 'should send email to user2 about assign of new issue and email to user3 about issue unassignment' do
         deliveries = ActionMailer::Base.deliveries
@@ -145,6 +145,60 @@ describe Issues::UpdateService, services: true do
         it 'marks todos as done' do
           expect(todo.reload.done?).to eq true
         end
+      end
+    end
+
+    context "when the issue is relabeled" do
+      it "sends notifications for subscribers of newly added labels" do
+        subscriber, non_subscriber = create_list(:user, 2)
+        label.toggle_subscription(subscriber)
+        2.times { label.toggle_subscription(non_subscriber) }
+
+        opts = { label_ids: [label.id] }
+
+        perform_enqueued_jobs do
+          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        end
+
+        @issue.reload
+        should_email(subscriber)
+        should_not_email(non_subscriber)
+      end
+
+      it "does send notifications for existing labels" do
+        second_label = create(:label)
+        issue.labels << label
+        subscriber, non_subscriber = create_list(:user, 2)
+        label.toggle_subscription(subscriber)
+        2.times { label.toggle_subscription(non_subscriber) }
+
+        opts = { label_ids: [label.id, second_label.id] }
+
+        perform_enqueued_jobs do
+          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        end
+
+        @issue.reload
+        should_email(subscriber)
+        should_not_email(non_subscriber)
+      end
+
+      it "does not send notifications for removed labels" do
+        second_label = create(:label)
+        issue.labels << label
+        subscriber, non_subscriber = create_list(:user, 2)
+        label.toggle_subscription(subscriber)
+        2.times { label.toggle_subscription(non_subscriber) }
+
+        opts = { label_ids: [second_label.id] }
+
+        perform_enqueued_jobs do
+          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+        end
+
+        @issue.reload
+        should_not_email(subscriber)
+        should_not_email(non_subscriber)
       end
     end
 

@@ -52,6 +52,14 @@ class NotificationService
     reassign_resource_email(issue, issue.project, current_user, 'reassigned_issue_email')
   end
 
+  # When we change labels on an issue we should send emails.
+  #
+  # We pass in the labels, here, because we only want the labels that
+  # have been *added* during this relabel, not all of them.
+  def relabeled_issue(issue, labels, current_user)
+    relabel_resource_email(issue, issue.project, labels, current_user, 'relabeled_issue_email')
+  end
+
 
   # When create a merge request we should send next emails:
   #
@@ -68,6 +76,14 @@ class NotificationService
   #
   def reassigned_merge_request(merge_request, current_user)
     reassign_resource_email(merge_request, merge_request.target_project, current_user, 'reassigned_merge_request_email')
+  end
+
+  # When we change labels on a merge request we should send emails.
+  #
+  # We pass in the labels, here, because we only want the labels that
+  # have been *added* during this relabel, not all of them.
+  def relabeled_merge_request(merge_request, labels, current_user)
+    relabel_resource_email(merge_request, merge_request.project, labels, current_user, 'relabeled_merge_request_email')
   end
 
   def close_mr(merge_request, current_user)
@@ -142,6 +158,7 @@ class NotificationService
     recipients = reject_muted_users(recipients, note.project)
 
     recipients = add_subscribed_users(recipients, note.noteable)
+    recipients = add_label_subscriptions(recipients, note.noteable)
     recipients = reject_unsubscribed_users(recipients, note.noteable)
 
     recipients.delete(note.author)
@@ -359,6 +376,16 @@ class NotificationService
     end
   end
 
+  def add_label_subscriptions(recipients, target)
+    return recipients unless target.respond_to? :labels
+
+    target.labels.each do |label|
+      recipients += label.subscriptions.where(subscribed: true).map(&:user)
+    end
+
+    recipients
+  end
+
   def new_resource_email(target, project, method)
     recipients = build_recipients(target, project, target.author)
 
@@ -392,6 +419,15 @@ class NotificationService
     end
   end
 
+  def relabel_resource_email(target, project, labels, current_user, method)
+    recipients = build_relabel_recipients(target, project, labels, current_user)
+    label_names = labels.map(&:name)
+
+    recipients.each do |recipient|
+      mailer.send(method, recipient.id, target.id, current_user.id, label_names).deliver_later
+    end
+  end
+
   def reopen_resource_email(target, project, current_user, method, status)
     recipients = build_recipients(target, project, current_user)
 
@@ -416,10 +452,18 @@ class NotificationService
 
     recipients = reject_muted_users(recipients, project)
     recipients = add_subscribed_users(recipients, target)
+    recipients = add_label_subscriptions(recipients, target)
     recipients = reject_unsubscribed_users(recipients, target)
 
     recipients.delete(current_user)
 
+    recipients.uniq
+  end
+
+  def build_relabel_recipients(target, project, labels, current_user)
+    recipients = add_label_subscriptions([], target)
+    recipients = reject_unsubscribed_users(recipients, target)
+    recipients.delete(current_user)
     recipients.uniq
   end
 
