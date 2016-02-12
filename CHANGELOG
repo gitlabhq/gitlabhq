@@ -52,6 +52,7 @@ v 8.5.0 (unreleased)
   - Validate correctness of maximum attachment size application setting
   - Replaces "Create merge request" link with one to the "Merge Request" when one exists
   - Fix CI builds badge, add a new link to builds badge, deprecate the old one
+  - Fix broken link to project in build notification emails
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
