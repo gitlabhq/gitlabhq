@@ -17,6 +17,7 @@ v 8.5.0 (unreleased)
     set it up
   - API: Added "merge_requests/:merge_request_id/closes_issues" (Gal Schlezinger)
   - Fix diff comments loaded by AJAX to load comment with diff in discussion tab
+  - Fix relative links in other markup formats (Ben Boeckel)
   - Whitelist raw "abbr" elements when parsing Markdown (Benedict Etzel)
   - Fix label links for a merge request pointing to issues list
   - Don't vendor minified JS
