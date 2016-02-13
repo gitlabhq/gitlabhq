@@ -7,7 +7,7 @@
         by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
       - if @merge_request.merge_commit_sha.present?
-        = revert_commit_link(can_update_merge_request?, namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')
+        = revert_commit_link(namespace_project_merge_request_path(@project.namespace, @project, @merge_request), btn_class: 'sm')
     %div
       - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
         The changes were merged into

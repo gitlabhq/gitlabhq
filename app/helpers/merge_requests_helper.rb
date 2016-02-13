@@ -92,10 +92,4 @@ module MergeRequestsHelper
       ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
   end
-
-  def can_update_merge_request?
-    project ||= @project
-
-    can_collaborate_with_project?(project)
-  end
 end

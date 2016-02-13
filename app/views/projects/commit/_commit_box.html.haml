@@ -16,7 +16,7 @@
     = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-grouped" do
       = icon('files-o')
       Browse Files
-    = revert_commit_link(can_collaborate_with_project?, namespace_project_commit_path(@project.namespace, @project, @commit.id))
+    = revert_commit_link(namespace_project_commit_path(@project.namespace, @project, @commit.id))
   %div
 
 %p
