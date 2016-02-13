@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.0 (unreleased)
+  - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
   - Cache various Repository methods to improve performance (Yorick Peterse)
   - Fix duplicated branch creation/deletion Web hooks/service notifications when using Web UI (Stan Hu)
   - Ensure rake tasks that don't need a DB connection can be run without one
