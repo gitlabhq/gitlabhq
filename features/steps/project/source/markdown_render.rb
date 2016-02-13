@@ -256,7 +256,11 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I see Gitlab API document' do
     expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "api")
-    expect(page).to have_content "Edit Page api"
+
+    page.within(:css, ".nav-text") do
+      expect(page).to have_content "Edit"
+      expect(page).to have_content "Api"
+    end
   end
 
   step 'I click on Rake tasks link' do
@@ -265,7 +269,11 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
 
   step 'I see Rake tasks directory' do
     expect(current_path).to eq namespace_project_wiki_path(@project.namespace, @project, "raketasks")
-    expect(page).to have_content "Edit Page raketasks"
+
+    page.within(:css, ".nav-text") do
+      expect(page).to have_content "Edit"
+      expect(page).to have_content "Rake"
+    end
   end
 
   step 'I go directory which contains README file' do
