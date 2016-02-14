@@ -43,26 +43,25 @@ class Projects::PagesController < Projects::ApplicationController
     end
   end
 
-  def destroy
-    @project.remove_pages
-
-    respond_to do |format|
-      format.html { redirect_to project_path(@project) }
-    end
-  end
-
   def remove_pages
     project.remove_pages
     project.pages_domains.destroy_all
+
+    respond_to do |format|
+      format.html  do
+        redirect_to(namespace_project_pages_path(@project.namespace, @project),
+                    notice: 'Pages were removed')
+      end
+    end
   end
 
   private
 
   def pages_domain_params
     params.require(:pages_domain).permit(
-                              :certificate,
-                              :key,
-                              :domain
+      :certificate,
+      :key,
+      :domain
     )
   end
 

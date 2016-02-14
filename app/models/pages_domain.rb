@@ -62,12 +62,12 @@ class PagesDomain < ActiveRecord::Base
   def expired?
     return false unless x509
     current = Time.new
-    return current < x509.not_before || x509.not_after < current
+    current < x509.not_before || x509.not_after < current
   end
 
   def subject
     return unless x509
-    return x509.subject.to_s
+    x509.subject.to_s
   end
 
   def certificate_text
