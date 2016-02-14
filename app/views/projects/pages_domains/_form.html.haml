@@ -1,4 +1,4 @@
-= form_for [@domain], url: namespace_project_pages_path(@project.namespace, @project), html: { class: 'form-horizontal fieldset-form' } do |f|
+= form_for [@project.namespace, @project, @domain], html: { class: 'form-horizontal fieldset-form' } do |f|
   - if @domain.errors.any?
     #error_explanation
       .alert.alert-danger

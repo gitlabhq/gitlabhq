@@ -546,11 +546,10 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :pages, except: [:edit, :update] do
-          collection do
-            delete :remove_pages
-          end
+        resource :pages, only: [:show, :destroy] do
+          resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains'
         end
+
         resources :compare, only: [:index, :create]
         resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
 

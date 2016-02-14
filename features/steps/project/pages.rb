@@ -67,7 +67,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I visit add a new Pages Domain' do
-    visit new_namespace_project_page_path(@project.namespace, @project)
+    visit new_namespace_project_pages_domain_path(@project.namespace, @project)
   end
 
   step 'I fill the domain' do
