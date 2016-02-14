@@ -2,7 +2,6 @@ image: "ruby:2.2"
 
 services:
   - mysql:latest
-  - postgres:latest
   - redis:latest
 
 variables:
@@ -41,6 +40,8 @@ spec:models:
     - ruby
     - mysql
   services:
+    - mysql:latest
+    - redis:latest
     - elasticsearch:latest
 
 spec:lib:
@@ -50,6 +51,8 @@ spec:lib:
     - ruby
     - mysql
   services:
+    - mysql:latest
+    - redis:latest
     - elasticsearch:latest
 
 spec:services:
@@ -74,6 +77,8 @@ spec:other:
     - ruby
     - mysql
   services:
+    - mysql:latest
+    - redis:latest
     - elasticsearch:latest
 
 spinach:project:half:
@@ -90,6 +95,8 @@ spinach:project:rest:
     - ruby
     - mysql
   services:
+    - mysql:latest
+    - redis:latest
     - elasticsearch:latest
 
 spinach:other:
