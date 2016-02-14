@@ -1,0 +1,22 @@
+- page_title "#{@domain.domain}", "Pages Domain"
+
+%h3.page-title
+  Pages Domain
+
+.table-holder
+  %table.table
+    %tr
+      %td
+        Domain
+      %td
+        = link_to @domain.domain, @domain.url
+    %tr
+      %td
+        Certificate
+      %td
+        - if @domain.certificate_text
+          %pre
+            = @domain.certificate_text
+        - else
+          .light
+            missing
