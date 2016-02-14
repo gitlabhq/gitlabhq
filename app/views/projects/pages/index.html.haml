@@ -2,7 +2,7 @@
 %h3.page_title
   Pages
 
-  - if Settings.pages.external_http || Settings.pages.external_https
+  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
     = link_to new_namespace_project_page_path(@project.namespace, @project), class: "btn btn-new pull-right", title: "New Domain" do
       %i.fa.fa-plus
       New Domain
@@ -14,10 +14,10 @@
 
 %hr.clearfix
 
-- if Settings.pages.enabled
+- if Gitlab.config.pages.enabled
   = render 'access'
   = render 'use'
-  - if Settings.pages.external_http || Settings.pages.external_https
+  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
     = render 'list'
   - else
     = render 'no_domains'
