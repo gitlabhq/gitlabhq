@@ -601,7 +601,6 @@ class Repository
   def merge(user, source_sha, target_branch, options = {})
     our_commit = rugged.branches[target_branch].target
     their_commit = rugged.lookup(source_sha)
-    merge_commit_sha = nil
 
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
@@ -616,10 +615,8 @@ class Repository
         update_ref: ref
       )
 
-      merge_commit_sha = Rugged::Commit.create(rugged, actual_options)
+      Rugged::Commit.create(rugged, actual_options)
     end
-
-    merge_commit_sha
   end
 
   def revert(user, commit, base_branch, target_branch = nil)
@@ -762,6 +759,8 @@ class Repository
           end
         end
       end
+
+      newrev
     end
   end
 
