@@ -7,7 +7,7 @@ module Projects
     end
 
     def execute
-      update_file(pages_config_file, pages_config)
+      update_file(pages_config_file, pages_config.to_json)
       reload_daemon
       success
     rescue => e
@@ -52,18 +52,18 @@ module Projects
 
     def update_file(file, data)
       unless data
-        File.rm(file, force: true)
+        FileUtils.remove(file, force: true)
         return
       end
 
       temp_file = "#{file}.#{SecureRandom.hex(16)}"
-      File.open(temp_file, 'w') do |file|
-        file.write(data)
+      File.open(temp_file, 'w') do |f|
+        f.write(data)
       end
-      File.mv(temp_file, file, force: true)
+      FileUtils.move(temp_file, file, force: true)
     ensure
       # In case if the updating fails
-      File.rm(temp_file, force: true)
+      FileUtils.remove(temp_file, force: true)
     end
   end
 end
