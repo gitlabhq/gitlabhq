@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe 'Gitlab::PushDataBuilder', lib: true do
+describe Gitlab::PushDataBuilder, lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
 
-  describe :build_sample do
-    let(:data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+  describe '.build_sample' do
+    let(:data) { described_class.build_sample(project, user) }
 
     it { expect(data).to be_a(Hash) }
     it { expect(data[:before]).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
@@ -22,13 +22,11 @@ describe 'Gitlab::PushDataBuilder', lib: true do
     it { expect(data[:commits].first[:removed]).to eq([]) }
   end
 
-  describe :build do
+  describe '.build' do
     let(:data) do
-      Gitlab::PushDataBuilder.build(project,
-                                    user,
-                                    Gitlab::Git::BLANK_SHA,
-                                    '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b',
-                                    'refs/tags/v1.1.0')
+      described_class.build(project, user, Gitlab::Git::BLANK_SHA,
+                            '8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b',
+                            'refs/tags/v1.1.0')
     end
 
     it { expect(data).to be_a(Hash) }
@@ -38,5 +36,10 @@ describe 'Gitlab::PushDataBuilder', lib: true do
     it { expect(data[:ref]).to eq('refs/tags/v1.1.0') }
     it { expect(data[:commits]).to be_empty }
     it { expect(data[:total_commits_count]).to be_zero }
+
+    it 'does not raise an error when given nil commits' do
+      expect { described_class.build(spy, spy, spy, spy, spy, nil) }.
+        not_to raise_error
+    end
   end
 end
