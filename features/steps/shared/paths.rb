@@ -103,6 +103,10 @@ module SharedPaths
     visit dashboard_groups_path
   end
 
+  step 'I visit dashboard task queue page' do
+    visit dashboard_tasks_path
+  end
+
   step 'I should be redirected to the dashboard groups page' do
     expect(current_path).to eq dashboard_groups_path
   end
