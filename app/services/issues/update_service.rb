@@ -12,6 +12,7 @@ module Issues
       if issue.previous_changes.include?('assignee_id')
         create_assignee_note(issue)
         notification_service.reassigned_issue(issue, current_user)
+        task_service.reassigned_issue(issue, current_user)
       end
     end
 

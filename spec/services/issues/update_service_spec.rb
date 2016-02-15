@@ -78,6 +78,19 @@ describe Issues::UpdateService, services: true do
         expect(note).not_to be_nil
         expect(note.note).to eq 'Title changed from **Old title** to **New title**'
       end
+
+      it 'creates a pending task if being reassigned' do
+        attributes = {
+          project: project,
+          author: user,
+          user: user2,
+          target: issue,
+          action: Task::ASSIGNED,
+          state: :pending
+        }
+
+        expect(Task.where(attributes).count).to eq 1
+      end
     end
 
     context 'when Issue has tasks' do
