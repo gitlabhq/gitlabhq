@@ -10,22 +10,21 @@
       Domain
     .col-sm-10
       = f.text_field :domain, required: true, autocomplete: 'off', class: 'form-control'
-      %span.help-inline * required
 
   - if Gitlab.config.pages.external_https
     .form-group
       = f.label :certificate, class: 'control-label' do
         Certificate (PEM)
       .col-sm-10
-        = f.text_area :certificate, rows: 5, class: 'form-control', value: ''
+        = f.text_area :certificate, rows: 5, class: 'form-control'
         %span.help-inline Upload a certificate for your domain with all intermediates
 
     .form-group
       = f.label :key, class: 'control-label' do
         Key (PEM)
       .col-sm-10
-        = f.text_area :key, rows: 5, class: 'form-control', value: ''
-        %span.help-inline Upload a certificate for your domain with all intermediates
+        = f.text_area :key, rows: 5, class: 'form-control'
+        %span.help-inline Upload a private key for your certificate
   - else
     .nothing-here-block
       Support for custom certificates is disabled.

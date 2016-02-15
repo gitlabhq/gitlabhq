@@ -24,9 +24,9 @@ class PagesDomain < ActiveRecord::Base
     return unless domain
 
     if certificate
-      return "https://#{domain}"
+      "https://#{domain}"
     else
-      return "http://#{domain}"
+      "http://#{domain}"
     end
   end
 
