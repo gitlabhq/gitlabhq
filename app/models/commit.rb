@@ -219,14 +219,20 @@ class Commit
     "revert-#{short_id}"
   end
 
-  def revert_message
-    description = if merged_merge_request
-                    "This reverts merge request #{merged_merge_request.to_reference}"
-                  else
-                    "This reverts commit #{sha}"
-                  end
+  def revert_description
+    if merged_merge_request
+      "This reverts merge request #{merged_merge_request.to_reference}"
+    else
+      "This reverts commit #{sha}"
+    end
+  end
 
-    "Revert \"#{title}\"" + "\n\n#{description}"
+  def revert_message
+    "Revert \"#{title}\"" + "\n\n#{revert_description}"
+  end
+
+  def reverts_commit?(commit)
+    description.include?(commit.revert_description)
   end
 
   def merge_commit?
@@ -237,6 +243,14 @@ class Commit
     return @merged_merge_request if defined?(@merged_merge_request)
 
     @merged_merge_request = merge_commit? && MergeRequest.find_by(merge_commit_sha: id)
+  end
+
+  def has_been_reverted?(current_user = nil, noteable = self)
+    Gitlab::ReferenceExtractor.lazily do
+      [self, *noteable.notes].flat_map do |note|
+        note.all_references(current_user).commits
+      end
+    end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
   end
 
   private

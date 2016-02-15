@@ -533,4 +533,14 @@ class MergeRequest < ActiveRecord::Base
 
     [diff_base_commit, last_commit]
   end
+
+  def merge_commit
+    @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
+  end
+
+  def has_been_reverted?(current_user = nil)
+    if merge_commit
+      merge_commit.has_been_reverted?(current_user, self)
+    end
+  end
 end
