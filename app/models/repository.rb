@@ -626,9 +626,9 @@ class Repository
     args          << { mainline: 1 } if commit.merge_commit?
 
     revert_index = rugged.revert_commit(*args)
-    tree_id = revert_index.write_tree(rugged)
-
     return false if revert_index.conflicts?
+
+    tree_id = revert_index.write_tree(rugged)
     return false unless diff_exists?(source_sha, tree_id)
 
     commit_with_hooks(user, target_branch) do |ref|

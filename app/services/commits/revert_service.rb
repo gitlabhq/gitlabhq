@@ -28,7 +28,7 @@ module Commits
       unless repository.revert(current_user, @commit, revert_into)
         error_msg = "Sorry, we cannot revert this #{params[:revert_type_title]} automatically.
                      It may have already been reverted, or a more recent commit may have updated some of its content."
-        raise_error(ReversionError, error_msg)
+        raise ReversionError, error_msg
       end
 
       success
@@ -41,19 +41,15 @@ module Commits
                                   .execute(@commit.revert_branch_name, @target_branch, source_project: @source_project)
 
       if result[:status] == :error
-        raise_error(ReversionError, "There was an error creating the source branch: #{result[:message]}")
+        raise ReversionError, "There was an error creating the source branch: #{result[:message]}"
       end
-    end
-
-    def raise_error(klass, message)
-      raise klass.new(message)
     end
 
     def validate
       allowed = ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(@target_branch)
 
       unless allowed
-        raise_error(ValidationError, "You are not allowed to push into this branch")
+        raise_error('You are not allowed to push into this branch')
       end
 
       true

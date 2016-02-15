@@ -13,4 +13,4 @@
          diff_refs: @diff_refs
 = render "projects/notes/notes_with_form"
 - if can_collaborate_with_project?
-  = render "projects/commit/revert", commit_id: @commit.id, title: @commit.title
+  = render "projects/commit/revert", commit: @commit, title: @commit.title

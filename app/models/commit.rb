@@ -228,7 +228,7 @@ class Commit
   end
 
   def revert_message
-    "Revert \"#{title}\"" + "\n\n#{revert_description}"
+    %Q{Revert "#{title}"\n\n#{revert_description}}
   end
 
   def reverts_commit?(commit)
@@ -242,7 +242,7 @@ class Commit
   def merged_merge_request
     return @merged_merge_request if defined?(@merged_merge_request)
 
-    @merged_merge_request = merge_commit? && MergeRequest.find_by(merge_commit_sha: id)
+    @merged_merge_request = merge_commit? && project.merge_requests.find_by(merge_commit_sha: id)
   end
 
   def has_been_reverted?(current_user = nil, noteable = self)

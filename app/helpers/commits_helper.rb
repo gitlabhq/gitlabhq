@@ -130,7 +130,7 @@ module CommitsHelper
 
     if can_collaborate_with_project?
       content_tag :span, 'data-toggle' => 'modal', 'data-target' => '#modal-revert-commit' do
-        link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'tooltip', 'data-original-title' => tooltip, class: "btn btn-close btn-#{btn_class}"
+        link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'tooltip', title: tooltip, class: "btn btn-default btn-grouped btn-#{btn_class}"
       end
     elsif can?(current_user, :fork_project, @project)
       continue_params = {
@@ -142,7 +142,7 @@ module CommitsHelper
         namespace_key: current_user.namespace.id,
         continue: continue_params)
 
-      link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post, 'data-toggle' => 'tooltip', 'data-original-title' => tooltip
+      link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post, 'data-toggle' => 'tooltip', title: tooltip
     end
   end
 
