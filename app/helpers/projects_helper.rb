@@ -98,10 +98,6 @@ module ProjectsHelper
     project_nav_tabs.include? name
   end
 
-  def project_active_milestones
-    @project.milestones.active.order("due_date, title ASC")
-  end
-
   def project_for_deploy_key(deploy_key)
     if deploy_key.projects.include?(@project)
       @project

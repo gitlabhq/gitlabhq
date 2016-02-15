@@ -10,6 +10,7 @@ describe API::API, api: true  do
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds) }
   let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   let!(:note2) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
+  let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
 
   before do
     project.team << [user, :reporters]
@@ -170,10 +171,12 @@ describe API::API, api: true  do
              source_branch: 'feature_conflict',
              target_branch: 'master',
              author: user,
-             labels: 'label, label2'
+             labels: 'label, label2',
+             milestone_id: milestone.id
         expect(response.status).to eq(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(['label', 'label2'])
+        expect(json_response['milestone']['id']).to eq(milestone.id)
       end
 
       it "should return 422 when source_branch equals target_branch" do
@@ -374,16 +377,22 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_id" do
-    it "should return merge_request" do
+    it "updates title and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), title: "New title"
       expect(response.status).to eq(200)
       expect(json_response['title']).to eq('New title')
     end
 
-    it "should return merge_request" do
+    it "updates description and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), description: "New description"
       expect(response.status).to eq(200)
       expect(json_response['description']).to eq('New description')
+    end
+
+    it "updates milestone_id and returns merge_request" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), milestone_id: milestone.id
+      expect(response.status).to eq(200)
+      expect(json_response['milestone']['id']).to eq(milestone.id)
     end
 
     it "should return 400 when source_branch is specified" do
@@ -446,6 +455,28 @@ describe API::API, api: true  do
     it "should return a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_requests/999/comments", user)
       expect(response.status).to eq(404)
+    end
+  end
+
+  describe 'GET :id/merge_requests/:merge_request_id/closes_issues' do
+    it 'returns the issue that will be closed on merge' do
+      issue = create(:issue, project: project)
+      mr = merge_request.tap do |mr|
+        mr.update_attribute(:description, "Closes #{issue.to_reference(mr.project)}")
+      end
+
+      get api("/projects/#{project.id}/merge_requests/#{mr.id}/closes_issues", user)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(issue.id)
+    end
+
+    it 'returns an empty array when there are no issues to be closed' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/closes_issues", user)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
     end
   end
 

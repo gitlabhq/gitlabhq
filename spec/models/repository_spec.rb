@@ -355,6 +355,13 @@ describe Repository, models: true do
     end
   end
 
+  describe :skip_merged_commit do
+    subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", nil, 100, 0, true).map{ |k| k.id } }
+
+    it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
+  end
+
+
   describe "Elastic search", elastic: true do
     before do
       Repository.__elasticsearch__.create_index!

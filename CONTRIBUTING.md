@@ -364,6 +364,7 @@ corresponding merge request should be updated to have the following:
 
 This makes it easier for release managers to keep track of what still has to be
 merged and where changes have to be merged into.
+Like all merge requests the target should be master so all bugfixes are in master.
 
 ## Definition of done
 

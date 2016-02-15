@@ -90,24 +90,6 @@ namespace :gitlab do
       end
     end
 
-    def check_database_is_not_sqlite
-      print "Database is SQLite ... "
-
-      database_config_file = Rails.root.join("config", "database.yml")
-
-      unless File.read(database_config_file) =~ /adapter:\s+sqlite/
-        puts "no".green
-      else
-        puts "yes".red
-        puts "Please fix this by removing the SQLite entry from the database.yml".blue
-        for_more_information(
-          "https://github.com/gitlabhq/gitlabhq/wiki/Migrate-from-SQLite-to-MySQL",
-          see_database_guide
-        )
-        fix_and_rerun
-      end
-    end
-
     def check_gitlab_config_exists
       print "GitLab config exists? ... "
 
