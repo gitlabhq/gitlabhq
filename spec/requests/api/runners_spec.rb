@@ -14,8 +14,6 @@ describe API::API, api: true  do
   let!(:shared_runner) { create(:ci_shared_runner, tag_list: ['mysql', 'ruby'], active: true) }
   let!(:specific_runner) { create(:ci_specific_runner, tag_list: ['mysql', 'ruby']) }
   let!(:specific_runner_project) { create(:ci_runner_project, runner: specific_runner, project: project) }
-  let!(:specific_runner2) { create(:ci_specific_runner) }
-  let!(:specific_runner2_project) { create(:ci_runner_project, runner: specific_runner2, project: project2) }
   let!(:unused_specific_runner) { create(:ci_specific_runner) }
   let!(:two_projects_runner) { create(:ci_specific_runner) }
   let!(:two_projects_runner_project) { create(:ci_runner_project, runner: two_projects_runner, project: project) }
@@ -25,7 +23,7 @@ describe API::API, api: true  do
     context 'authorized user' do
       it 'should return user available runners' do
         get api('/runners', user)
-        shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+        shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -34,7 +32,7 @@ describe API::API, api: true  do
 
       it 'should filter runners by scope' do
         get api('/runners?scope=active', user)
-        shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+        shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -61,7 +59,7 @@ describe API::API, api: true  do
       context 'with admin privileges' do
         it 'should return all runners' do
           get api('/runners/all', admin)
-          shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+          shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
@@ -79,7 +77,7 @@ describe API::API, api: true  do
 
       it 'should filter runners by scope' do
         get api('/runners/all?scope=specific', admin)
-        shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+        shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -103,18 +101,22 @@ describe API::API, api: true  do
 
   describe 'GET /runners/:id' do
     context 'admin user' do
-      it "should return runner's details" do
-        get api("/runners/#{specific_runner.id}", admin)
+      context 'when runner is shared' do
+        it "should return runner's details" do
+          get api("/runners/#{shared_runner.id}", admin)
 
-        expect(response.status).to eq(200)
-        expect(json_response['description']).to eq(specific_runner.description)
+          expect(response.status).to eq(200)
+          expect(json_response['description']).to eq(shared_runner.description)
+        end
       end
 
-      it "should return shared runner's details" do
-        get api("/runners/#{shared_runner.id}", admin)
+      context 'when runner is not shared' do
+        it "should return runner's details" do
+          get api("/runners/#{specific_runner.id}", admin)
 
-        expect(response.status).to eq(200)
-        expect(json_response['description']).to eq(shared_runner.description)
+          expect(response.status).to eq(200)
+          expect(json_response['description']).to eq(specific_runner.description)
+        end
       end
 
       it 'should return 404 if runner does not exists' do
@@ -125,18 +127,22 @@ describe API::API, api: true  do
     end
 
     context "runner project's administrative user" do
-      it "should return runner's details" do
-        get api("/runners/#{specific_runner.id}", user)
+      context 'when runner is not shared' do
+        it "should return runner's details" do
+          get api("/runners/#{specific_runner.id}", user)
 
-        expect(response.status).to eq(200)
-        expect(json_response['description']).to eq(specific_runner.description)
+          expect(response.status).to eq(200)
+          expect(json_response['description']).to eq(specific_runner.description)
+        end
       end
 
-      it "should return shared runner's details" do
-        get api("/runners/#{shared_runner.id}", user)
+      context 'when runner is shared' do
+        it "should return runner's details" do
+          get api("/runners/#{shared_runner.id}", user)
 
-        expect(response.status).to eq(200)
-        expect(json_response['description']).to eq(shared_runner.description)
+          expect(response.status).to eq(200)
+          expect(json_response['description']).to eq(shared_runner.description)
+        end
       end
     end
 
@@ -159,28 +165,32 @@ describe API::API, api: true  do
 
   describe 'PUT /runners/:id' do
     context 'admin user' do
-      it 'should update shared runner' do
-        description = shared_runner.description
-        active = shared_runner.active
-        tag_list = shared_runner.tag_list
-        put api("/runners/#{shared_runner.id}", admin), description: "#{description}_updated", active: !active,
-                                                        tag_list: ['ruby2.1', 'pgsql', 'mysql']
-        shared_runner.reload
+      context 'when runner is shared' do
+        it 'should update runner' do
+          description = shared_runner.description
+          active = shared_runner.active
+          tag_list = shared_runner.tag_list
+          put api("/runners/#{shared_runner.id}", admin), description: "#{description}_updated", active: !active,
+                                                          tag_list: ['ruby2.1', 'pgsql', 'mysql']
+          shared_runner.reload
 
-        expect(response.status).to eq(200)
-        expect(shared_runner.description).not_to eq(description)
-        expect(shared_runner.active).not_to eq(active)
-        expect(shared_runner.tag_list).not_to eq(tag_list)
+          expect(response.status).to eq(200)
+          expect(shared_runner.description).not_to eq(description)
+          expect(shared_runner.active).not_to eq(active)
+          expect(shared_runner.tag_list).not_to eq(tag_list)
+        end
       end
 
-      it 'should update specific runner' do
-        description = specific_runner.description
-        put api("/runners/#{specific_runner.id}", admin), description: 'test'
-        specific_runner.reload
+      context 'when runner is not shared' do
+        it 'should update runner' do
+          description = specific_runner.description
+          put api("/runners/#{specific_runner.id}", admin), description: 'test'
+          specific_runner.reload
 
-        expect(response.status).to eq(200)
-        expect(specific_runner.description).to eq('test')
-        expect(specific_runner.description).not_to eq(description)
+          expect(response.status).to eq(200)
+          expect(specific_runner.description).to eq('test')
+          expect(specific_runner.description).not_to eq(description)
+        end
       end
 
       it 'should return 404 if runner does not exists' do
@@ -191,28 +201,31 @@ describe API::API, api: true  do
     end
 
     context 'authorized user' do
-      it 'should not update shared runner' do
-        put api("/runners/#{shared_runner.id}", user), description: 'test'
+      context 'when runner is shared' do
+        it 'should not update runner' do
+          put api("/runners/#{shared_runner.id}", user), description: 'test'
 
-        expect(response.status).to eq(403)
+          expect(response.status).to eq(403)
+        end
       end
 
-      it 'should not update specific runner without access to' do
-        put api("/runners/#{specific_runner.id}", user2), description: 'test'
+      context 'when runner is not shared' do
+        it 'should not update runner without access to it' do
+          put api("/runners/#{specific_runner.id}", user2), description: 'test'
 
-        expect(response.status).to eq(403)
+          expect(response.status).to eq(403)
+        end
+
+        it 'should update runner with access to it' do
+          description = specific_runner.description
+          put api("/runners/#{specific_runner.id}", admin), description: 'test'
+          specific_runner.reload
+
+          expect(response.status).to eq(200)
+          expect(specific_runner.description).to eq('test')
+          expect(specific_runner.description).not_to eq(description)
+        end
       end
-
-      it 'should update specific runner' do
-        description = specific_runner.description
-        put api("/runners/#{specific_runner.id}", admin), description: 'test'
-        specific_runner.reload
-
-        expect(response.status).to eq(200)
-        expect(specific_runner.description).to eq('test')
-        expect(specific_runner.description).not_to eq(description)
-      end
-
     end
 
     context 'unauthorized user' do
@@ -226,25 +239,29 @@ describe API::API, api: true  do
 
   describe 'DELETE /runners/:id' do
     context 'admin user' do
-      it 'should delete shared runner' do
-        expect do
-          delete api("/runners/#{shared_runner.id}", admin)
-        end.to change{ Ci::Runner.shared.count }.by(-1)
-        expect(response.status).to eq(200)
+      context 'when runner is shared' do
+        it 'should delete runner' do
+          expect do
+            delete api("/runners/#{shared_runner.id}", admin)
+          end.to change{ Ci::Runner.shared.count }.by(-1)
+          expect(response.status).to eq(200)
+        end
       end
 
-      it 'should delete unused specific runner' do
-        expect do
-          delete api("/runners/#{unused_specific_runner.id}", admin)
-        end.to change{ Ci::Runner.specific.count }.by(-1)
-        expect(response.status).to eq(200)
-      end
+      context 'when runner is not shared' do
+        it 'should delete unused runner' do
+          expect do
+            delete api("/runners/#{unused_specific_runner.id}", admin)
+          end.to change{ Ci::Runner.specific.count }.by(-1)
+          expect(response.status).to eq(200)
+        end
 
-      it 'should delete used specific runner' do
-        expect do
-          delete api("/runners/#{specific_runner.id}", admin)
-        end.to change{ Ci::Runner.specific.count }.by(-1)
-        expect(response.status).to eq(200)
+        it 'should delete used runner' do
+          expect do
+            delete api("/runners/#{specific_runner.id}", admin)
+          end.to change{ Ci::Runner.specific.count }.by(-1)
+          expect(response.status).to eq(200)
+        end
       end
 
       it 'should return 404 if runner does not exists' do
@@ -255,26 +272,30 @@ describe API::API, api: true  do
     end
 
     context 'authorized user' do
-      it 'should not delete shared runner' do
-        delete api("/runners/#{shared_runner.id}", user)
-        expect(response.status).to eq(403)
+      context 'when runner is shared' do
+        it 'should not delete runner' do
+          delete api("/runners/#{shared_runner.id}", user)
+          expect(response.status).to eq(403)
+        end
       end
 
-      it 'should not delete runner without access to' do
-        delete api("/runners/#{specific_runner.id}", user2)
-        expect(response.status).to eq(403)
-      end
+      context 'when runner is not shared' do
+        it 'should not delete runner without access to it' do
+          delete api("/runners/#{specific_runner.id}", user2)
+          expect(response.status).to eq(403)
+        end
 
-      it 'should not delete runner with more than one associated project' do
-        delete api("/runners/#{two_projects_runner.id}", user)
-        expect(response.status).to eq(403)
-      end
+        it 'should not delete runner with more than one associated project' do
+          delete api("/runners/#{two_projects_runner.id}", user)
+          expect(response.status).to eq(403)
+        end
 
-      it 'should delete runner for one owned project' do
-        expect do
-          delete api("/runners/#{specific_runner.id}", user)
-        end.to change{ Ci::Runner.specific.count }.by(-1)
-        expect(response.status).to eq(200)
+        it 'should delete runner for one owned project' do
+          expect do
+            delete api("/runners/#{specific_runner.id}", user)
+          end.to change{ Ci::Runner.specific.count }.by(-1)
+          expect(response.status).to eq(200)
+        end
       end
     end
 
@@ -291,7 +312,7 @@ describe API::API, api: true  do
     context 'authorized user with master privileges' do
       it "should return project's runners" do
         get api("/projects/#{project.id}/runners", user)
-        shared = false || json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+        shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -317,6 +338,9 @@ describe API::API, api: true  do
   end
 
   describe 'POST /projects/:id/runners/:runner_id' do
+    let!(:specific_runner2) { create(:ci_specific_runner) }
+    let!(:specific_runner2_project) { create(:ci_runner_project, runner: specific_runner2, project: project2) }
+
     context 'authorized user' do
       it 'should enable specific runner' do
         expect do
