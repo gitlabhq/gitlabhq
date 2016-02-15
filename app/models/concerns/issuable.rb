@@ -168,6 +168,16 @@ module Issuable
     self.class.to_s.underscore
   end
 
+  # Convert this Issuable class name to a format usable for scoping
+  #
+  # Examples:
+  #
+  #   issuable.class         # => MergeRequest
+  #   issuable.to_scope_name # => "merge_requests"
+  def to_scope_name
+    self.class.to_s.tableize
+  end
+
   # Returns a Hash of attributes to be used for Twitter card metadata
   def card_attributes
     {
