@@ -336,7 +336,7 @@ GitLab for Omnibus packages or installations from source respectively, in order
 for the new servers to become available.
 
 **Tip:** you can assign labels to the different servers to give them human-friendly
-names.
+names:
 
 ```yaml
 ldap:
@@ -368,13 +368,13 @@ EOS
 ldap:
   servers:
     main: # 'main' is the GitLab 'provider ID' of this LDAP server
-       label: 'LDAP_1'
-       host: '_your_ldap_server'
-       ...
+      label: 'LDAP_1'
+      host: '_your_ldap_server'
+      ...
     secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
-     label: 'LDAP_2'
-     host: '_your_ldap_2_server'
-     ...
+      label: 'LDAP_2'
+      host: '_your_ldap_2_server'
+      ...
 ```
 
 ## Automatic Daily LDAP Sync
