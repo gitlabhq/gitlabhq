@@ -16,10 +16,12 @@ class @Notes
     @view = view
     @noteable_url = document.URL
     @notesCountBadge ||= $(".issuable-details").find(".notes-tab .badge")
+    @base_polling_interval = 15000
+    @limit_polling_interval = 120000
 
     @cleanBinding()
     @addBinding()
-    @initRefresh()
+    @setPollingInterval()
     @setupMainTargetNoteForm()
     @initTaskList()
 
@@ -91,7 +93,7 @@ class @Notes
     clearInterval(Notes.interval)
     Notes.interval = setInterval =>
       @refresh()
-    , 15000
+    , @polling_interval
 
   refresh: ->
     if not document.hidden and document.URL.indexOf(@noteable_url) is 0
@@ -105,12 +107,28 @@ class @Notes
       success: (data) =>
         notes = data.notes
         @last_fetched_at = data.last_fetched_at
+        @setPollingInterval(data.notes.length)
         $.each notes, (i, note) =>
           if note.discussion_with_diff_html?
             @renderDiscussionNote(note)
           else
             @renderNote(note)
 
+  ###
+  Increase @polling_interval up to 120 seconds on every function call,
+  if `shouldReset` has a truthy value, 'null' or 'undefined' the variable
+  will reset to @base_polling_interval.
+
+  Note: this function is used to gradually increase the polling interval
+  if there aren't new notes coming from the server
+  ###
+  setPollingInterval: (shouldReset = true) ->
+    if shouldReset
+      @polling_interval = @base_polling_interval
+    else if @polling_interval < @limit_polling_interval
+      @polling_interval *= 2
+
+    @initRefresh()
 
   ###
   Render note in main comments area.
