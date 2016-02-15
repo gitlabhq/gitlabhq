@@ -36,6 +36,7 @@ module Issues
     end
 
     def add_note_moved_to
+      SystemNoteService.issue_moved_to_another_project(@issue_old, @project, @project_new, @current_user)
     end
   end
 end

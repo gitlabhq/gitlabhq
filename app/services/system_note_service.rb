@@ -387,4 +387,21 @@ class SystemNoteService
     body = "Marked the task **#{new_task.source}** as #{status_label}"
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
+
+  # Called when issue has been moved to another project
+  #
+  # issue          - Issue that has been moved to another project
+  # project_from   - Source project of the issue
+  # project_to     - Destination project for the issue
+  # author         - User performing the move
+  #
+  # Example Note text:
+  #
+  #   "This issue has been moved to SomeNamespace / SomeProject"
+  #
+  # Returns the created Note object
+  def self.issue_moved_to_another_project(issue, project_from, project_to, author)
+    body = "This issue has been moved to #{project_to.to_reference} by #{author.to_reference}"
+    create_note(noteable: issue, project: project_from, author: author, note: body)
+  end
 end

@@ -18,5 +18,9 @@ describe Issues::MoveService, services: true do
     it 'should create a new issue in a new project' do
       expect(new_issue.project).to eq new_project
     end
+
+    it 'should add system note to old issue' do
+      expect(issue.notes.last.note).to match /This issue has been moved to/
+    end
   end
 end

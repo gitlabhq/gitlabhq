@@ -441,6 +441,26 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.issue_moved_to_another_project' do
+    subject do
+      described_class.issue_moved_to_another_project(noteable, project, new_project, author)
+    end
+
+    let(:new_project) { create(:project) }
+
+    it 'should notify about issue being moved' do
+      expect(subject.note).to match /This issue has been moved to/
+    end
+
+    it 'should mention destination project' do
+      expect(subject.note).to include new_project.to_reference
+    end
+
+    it 'should mention author of that change' do
+      expect(subject.note).to include author.to_reference
+    end
+  end
+
   include JiraServiceHelper
 
   describe 'JIRA integration' do
