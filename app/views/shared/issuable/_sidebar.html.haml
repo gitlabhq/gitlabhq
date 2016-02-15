@@ -99,6 +99,13 @@
 
       - if issuable.respond_to?(:weight)
         .block.weight
+          .sidebar-collapsed-icon
+            = icon('balance-scale')
+            %span
+              - if issuable.weight
+                = issuable.weight
+              - else
+                No
           .title
             %label Weight
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
