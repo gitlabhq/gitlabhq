@@ -9,7 +9,14 @@ class GeoRepositoryUpdateWorker
   def perform(project_id)
     @project = Project.find(project_id)
 
+    fetch_repository(@project.repository, @project.url_to_repo)
     # @current_user = @project.mirror_user || @project.creator
     # Projects::UpdateMirrorService.new(@project, @current_user).execute
+  end
+
+  private
+
+  def fetch_repository(repository, remote_url)
+    repository.fetch_upstream(remote_url)
   end
 end

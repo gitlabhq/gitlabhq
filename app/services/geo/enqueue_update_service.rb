@@ -1,7 +1,5 @@
-require_relative 'base_service'
-
 module Geo
-  class EnqueueUpdateService < BaseService
+  class EnqueueUpdateService < Geo::BaseService
     attr_reader :project
 
     def initialize(project)

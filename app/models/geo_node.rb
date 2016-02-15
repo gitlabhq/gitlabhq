@@ -29,6 +29,6 @@ class GeoNode < ActiveRecord::Base
   end
 
   def notify_url
-    # TODO: Notification endpoint
+    URI::join(uri, '/api/geo/refresh_projects').to_s
   end
 end

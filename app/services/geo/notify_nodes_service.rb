@@ -1,7 +1,5 @@
-require_relative 'base_service'
-
 module Geo
-  class NotifyNodesService < BaseService
+  class NotifyNodesService < Geo::BaseService
     include HTTParty
     BATCH_SIZE = 250
 
@@ -37,10 +35,10 @@ module Geo
 
     def notify_updated_projects(node, projects)
       self.post(node.notify_url,
-                body: projects.to_json,
+                body: { projects: projects }.to_json,
                 headers: {
-                  "Content-Type" => "application/json",
-                  "X-Gitlab-Geo-Event" => "Update Repositories"
+                  'Content-Type' => 'application/json',
+                  'X-Gitlab-Geo-Event' => 'Update Repositories'
                 })
 
       # TODO: Authentication
