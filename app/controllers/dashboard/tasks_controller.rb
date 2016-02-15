@@ -10,9 +10,6 @@ class Dashboard::TasksController < Dashboard::ApplicationController
       end
 
     @tasks = @tasks.page(params[:page]).per(PER_PAGE)
-
-    @pending_count = current_user.tasks.pending.count
-    @done_count = current_user.tasks.done.count
   end
 
   def destroy

@@ -9,6 +9,14 @@ module TasksHelper
     end
   end
 
+  def tasks_pending_count
+    current_user.tasks.pending.count
+  end
+
+  def tasks_done_count
+    current_user.tasks.done.count
+  end
+
   def task_action_name(task)
     target =  task.target_type.titleize.downcase
 

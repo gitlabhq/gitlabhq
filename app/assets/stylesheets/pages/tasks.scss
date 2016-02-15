@@ -2,6 +2,16 @@
  * Dashboard tasks queue
  *
  */
+
+.navbar-nav {
+  li {
+    .badge.tasks-pending-count {
+      background-color: #7f8fa4;
+      margin-top: -5px;
+    }
+  }
+}
+
 .tasks {
   .panel {
     border-top: none;

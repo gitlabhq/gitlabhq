@@ -5,10 +5,10 @@
   %ul.nav-links
     %li{class: ("active" if params[:state].blank? || params[:state] == 'pending')}
       = link_to dashboard_tasks_path(state: 'pending') do
-        Tasks (#{@pending_count})
+        Tasks (#{tasks_pending_count})
     %li{class: ("active" if params[:state] == 'done')}
       = link_to dashboard_tasks_path(state: 'done') do
-        Done (#{@done_count})
+        Done (#{tasks_done_count})
 
 .tasks
   - if @tasks.any?
