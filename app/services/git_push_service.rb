@@ -1,19 +1,10 @@
-class GitPushService
-  attr_accessor :project, :user, :push_data, :push_commits
+class GitPushService < BaseService
+  attr_accessor :push_data, :push_commits
   include Gitlab::CurrentSettings
   include Gitlab::Access
 
-  def initialize(project, user, oldrev, newrev, ref)
-    # TODO: Consider passing an options hash instead https://github.com/bbatsov/ruby-style-guide#too-many-params
-    @project = project
-    @user = user
-    @oldrev = oldrev
-    @newrev = newrev
-    @ref = ref
-  end
-
   # This method will be called after each git update
-  # and only if the provided user and project is present in GitLab.
+  # and only if the provided user and project are present in GitLab.
   #
   # All callbacks for post receive action should be placed here.
   #
@@ -41,14 +32,14 @@ class GitPushService
         # Use the pushed commits that aren't reachable by the default branch
         # as a heuristic. This may include more commits than are actually pushed, but
         # that shouldn't matter because we check for existing cross-references later.
-        @push_commits = @project.repository.commits_between(@project.default_branch, @newrev)
+        @push_commits = @project.repository.commits_between(@project.default_branch, params[:newrev])
 
         # don't process commits for the initial push to the default branch
         process_commit_messages
       end
     elsif push_to_existing_branch?
       # Collect data for this git push
-      @push_commits = @project.repository.commits_between(@oldrev, @newrev)
+      @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
       process_commit_messages
     end
     # Update merge requests that may be affected by this push. A new branch
@@ -59,17 +50,17 @@ class GitPushService
   protected
 
   def update_merge_requests
-    @project.update_merge_requests(@oldrev, @newrev, @ref, @user)
+    @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
 
-    EventCreateService.new.push(@project, @user, build_push_data)
+    EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    CreateCommitBuildsService.new.execute(@project, @user, build_push_data)
+    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
     ProjectCacheWorker.perform_async(@project.id)
   end
 
   def process_default_branch
-    @push_commits = project.repository.commits(@newrev)
+    @push_commits = project.repository.commits(params[:newrev])
 
     # Ensure HEAD points to the default branch in case it is not master
     project.change_head(branch_name)
@@ -103,7 +94,7 @@ class GitPushService
         # Close issues if these commits were pushed to the project's default branch and the commit message matches the
         # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
         # a different branch.
-        closed_issues = commit.closes_issues(user)
+        closed_issues = commit.closes_issues(current_user)
         closed_issues.each do |issue|
           Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit)
         end
@@ -115,36 +106,36 @@ class GitPushService
 
   def build_push_data
     @push_data ||= Gitlab::PushDataBuilder.
-        build(@project, @user, @oldrev, @newrev, @ref, push_commits)
+        build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
   end
 
   def push_to_existing_branch?
     # Return if this is not a push to a branch (e.g. new commits)
-    Gitlab::Git.branch_ref?(@ref) && !Gitlab::Git.blank_ref?(@oldrev)
+    Gitlab::Git.branch_ref?(params[:ref]) && !Gitlab::Git.blank_ref?(params[:oldrev])
   end
 
   def push_to_new_branch?
-    Gitlab::Git.branch_ref?(@ref) && Gitlab::Git.blank_ref?(@oldrev)
+    Gitlab::Git.branch_ref?(params[:ref]) && Gitlab::Git.blank_ref?(params[:oldrev])
   end
 
   def push_remove_branch?
-    Gitlab::Git.branch_ref?(@ref) && Gitlab::Git.blank_ref?(@newrev)
+    Gitlab::Git.branch_ref?(params[:ref]) && Gitlab::Git.blank_ref?(params[:newrev])
   end
 
   def push_to_branch?
-    Gitlab::Git.branch_ref?(@ref)
+    Gitlab::Git.branch_ref?(params[:ref])
   end
 
   def is_default_branch?
-    Gitlab::Git.branch_ref?(@ref) &&
-        (Gitlab::Git.ref_name(@ref) == project.default_branch || project.default_branch.nil?)
+    Gitlab::Git.branch_ref?(params[:ref]) &&
+        (Gitlab::Git.ref_name(params[:ref]) == project.default_branch || project.default_branch.nil?)
   end
 
   def commit_user(commit)
-    commit.author || user
+    commit.author || current_user
   end
 
   def branch_name
-    @_branch_name ||= Gitlab::Git.ref_name(@ref)
+    @_branch_name ||= Gitlab::Git.ref_name(params[:ref])
   end
 end
