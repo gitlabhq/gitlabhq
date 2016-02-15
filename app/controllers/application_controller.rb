@@ -164,7 +164,7 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render "errors/git_not_found", layout: "errors", status: 404
+    render "errors/git_not_found.html", layout: "errors", status: 404
   end
 
   def method_missing(method_sym, *arguments, &block)
