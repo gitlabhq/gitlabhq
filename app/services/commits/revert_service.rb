@@ -1,6 +1,7 @@
 module Commits
   class RevertService < ::BaseService
     class ValidationError < StandardError; end
+    class ReversionError < StandardError; end
 
     def execute
       @source_project = params[:source_project] || @project
@@ -8,61 +9,54 @@ module Commits
       @commit = params[:commit]
       @create_merge_request = params[:create_merge_request].present?
 
-      # Check push permissions to branch
-      validate
-
-      if commit
-        success
-      else
-        custom_error
-      end
-    rescue Repository::CommitError, Gitlab::Git::Repository::InvalidBlobName, GitHooksService::PreReceiveError, ValidationError => ex
+      validate and commit
+    rescue Repository::CommitError, Gitlab::Git::Repository::InvalidBlobName, GitHooksService::PreReceiveError,
+           ValidationError, ReversionError => ex
       error(ex.message)
     end
 
     def commit
+      revert_into = @create_merge_request ? @commit.revert_branch_name : @target_branch
+
       if @create_merge_request
         # Temporary branch exists and contains the revert commit
-        return true if repository.find_branch(@commit.revert_branch_name)
-        return false unless create_target_branch
+        return success if repository.find_branch(revert_into)
 
-        repository.revert(current_user, @commit, @commit.revert_branch_name)
-      else
-        repository.revert(current_user, @commit, @target_branch)
+        create_target_branch
       end
+
+      unless repository.revert(current_user, @commit, revert_into)
+        error_msg = "Sorry, we cannot revert this #{params[:revert_type_title]} automatically.
+                     It may have already been reverted, or a more recent commit may have updated some of its content."
+        raise_error(ReversionError, error_msg)
+      end
+
+      success
     end
 
     private
-
-    def custom_error
-      if @branch_error_msg
-        error("There was an error creating the source branch: #{@branch_error_msg}")
-      else
-        error("Sorry, we cannot revert this #{params[:revert_type_title]} automatically.
-              It may have already been reverted, or a more recent commit may
-              have updated some of its content.")
-      end
-    end
 
     def create_target_branch
       result = CreateBranchService.new(@project, current_user)
                                   .execute(@commit.revert_branch_name, @target_branch, source_project: @source_project)
 
-      @branch_error_msg = result[:message]
-
-      result[:status] != :error
+      if result[:status] == :error
+        raise_error(ReversionError, "There was an error creating the source branch: #{result[:message]}")
+      end
     end
 
-    def raise_error(message)
-      raise ValidationError.new(message)
+    def raise_error(klass, message)
+      raise klass.new(message)
     end
 
     def validate
       allowed = ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(@target_branch)
 
       unless allowed
-        raise_error("You are not allowed to push into this branch")
+        raise_error(ValidationError, "You are not allowed to push into this branch")
       end
+
+      true
     end
   end
 end
