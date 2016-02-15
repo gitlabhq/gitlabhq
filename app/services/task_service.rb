@@ -11,7 +11,7 @@ class TaskService
   #  * creates a pending task for assignee if issue is assigned
   #
   def new_issue(issue, current_user)
-    if issue.is_assigned?
+    if issue.is_assigned? && issue.assignee != current_user
       create_task(issue.project, issue, current_user, issue.assignee, Task::ASSIGNED)
     end
   end

@@ -25,6 +25,10 @@ describe TaskService, services: true do
       it 'does not create a task if unassigned' do
         is_expected_to_not_create_task { service.new_issue(unassigned_issue, author) }
       end
+
+      it 'does not create a task if assignee is the current user' do
+        is_expected_to_not_create_task { service.new_issue(unassigned_issue, john_doe) }
+      end
     end
 
     describe '#reassigned_issue' do
