@@ -1,10 +1,11 @@
 @Dashboard =
   init: ->
+    $(".projects-list-filter").off('keyup')
     this.initSearch()
 
   initSearch: ->
     @timer = null
-    $("#project-filter-form-field").on('keyup', ->
+    $(".projects-list-filter").on('keyup', ->
       clearTimeout(@timer)
       @timer = setTimeout(Dashboard.filterResults, 500)
     )
@@ -13,8 +14,8 @@
     $('.projects-list-holder').fadeTo(250, 0.5)
 
     form = null
-    form = $("#project-filter-form")
-    search = $("#project-filter-form-field").val()
+    form = $("form#project-filter-form")
+    search = $(".projects-list-filter").val()
     project_filter_url = form.attr('action') + '?' + form.serialize()
 
     $.ajax
@@ -24,7 +25,7 @@
       complete: ->
         $('.projects-list-holder').fadeTo(250, 1)
       success: (data) ->
-        $('div.projects-list-holder').replaceWith(data.html)
+        $('.projects-list-holder').replaceWith(data.html)
         # Change url so if user reload a page - search results are saved
         history.replaceState {page: project_filter_url}, document.title, project_filter_url
       dataType: "json"

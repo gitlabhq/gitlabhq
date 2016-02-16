@@ -1,6 +1,6 @@
 class Projects::RunnersController < Projects::ApplicationController
+  before_action :authorize_admin_build!
   before_action :set_runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
-  before_action :authorize_admin_project!
 
   layout 'project_settings'
 

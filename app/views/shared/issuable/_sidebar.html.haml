@@ -4,21 +4,18 @@
       %span.issuable-count.pull-left
         = issuable.iid
         of
-        = issuable_count(:all, @project)
+        = issuables_count(issuable)
       %span.pull-right
         %a.gutter-toggle{href: '#'}
-          - if sidebar_gutter_collapsed?
-            = icon('angle-double-left')
-          - else
-            = icon('angle-double-right')
+          = sidebar_gutter_toggle_icon
       .issuable-nav.pull-right.btn-group{role: 'group', "aria-label" => '...'}
-        - if has_prev_issuable?(@project, issuable.id)
-          = link_to 'Prev', issuable_link_prev(@project, issuable), class: 'btn btn-default prev-btn'
+        - if prev_issuable = prev_issuable_for(issuable)
+          = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn'
         - else
           %a.btn.btn-default.disabled{href: '#'}
             Prev
-        - if has_next_issuable?(@project, issuable.id)
-          = link_to 'Next', issuable_link_next(@project, issuable), class: 'btn btn-default next-btn'
+        - if next_issuable = next_issuable_for(issuable)
+          = link_to 'Next', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn'
         - else
           %a.btn.btn-default.disabled{href: '#'}
             Next
@@ -118,7 +115,7 @@
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
         .sidebar-collapsed-icon
-          = icon('clipboard')
+          = clipboard_button(clipboard_text: project_ref)
         .title
         .cross-project-reference
           %span

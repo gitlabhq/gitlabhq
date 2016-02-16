@@ -1,6 +1,6 @@
 class Projects::ArtifactsController < Projects::ApplicationController
   layout 'project'
-  before_action :authorize_read_build_artifacts!
+  before_action :authorize_read_build!
 
   def download
     unless artifacts_file.file_storage?
@@ -42,15 +42,5 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def artifacts_file
     @artifacts_file ||= build.artifacts_file
-  end
-
-  def authorize_read_build_artifacts!
-    unless can?(current_user, :read_build_artifacts, @project)
-      if current_user.nil?
-        return authenticate_user!
-      else
-        return render_404
-      end
-    end
   end
 end

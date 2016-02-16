@@ -1,6 +1,6 @@
 .gray-content-block.middle-block
   .pull-right
-    - if can?(current_user, :manage_builds, @ci_commit.project)
+    - if can?(current_user, :update_build, @ci_commit.project)
       - if @ci_commit.builds.latest.failed.any?(&:retryable?)
         = link_to "Retry failed", retry_builds_namespace_project_commit_path(@ci_commit.project.namespace, @ci_commit.project, @ci_commit.sha), class: 'btn btn-grouped btn-primary', method: :post
 

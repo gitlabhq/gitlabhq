@@ -66,6 +66,18 @@ describe ApplicationSetting, models: true do
     it { is_expected.to allow_value(http).for(:after_sign_out_path) }
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
+
+    it { is_expected.to validate_presence_of(:max_attachment_size) }
+
+    it do
+      is_expected.to validate_numericality_of(:max_attachment_size)
+        .only_integer
+        .is_greater_than(0)
+    end
+
+    it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
+      subject { setting }
+    end
   end
 
   context 'restricted signup domains' do

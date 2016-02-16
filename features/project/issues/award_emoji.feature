@@ -7,7 +7,16 @@ Feature: Award Emoji
     And I visit "Bugfix" issue page
 
   @javascript
-  Scenario: I add and remove award in the issue
+  Scenario: I repeatedly add and remove thumbsup award in the issue
+    Given I click the thumbsup award Emoji
+    Then I have award added
+    Given I click the thumbsup award Emoji
+    Then I have no awards added
+    Given I click the thumbsup award Emoji
+    Then I have award added
+
+  @javascript
+  Scenario: I add and remove custom award in the issue
     Given I click to emoji-picker
     Then The search field is focused
     And I click to emoji in the picker

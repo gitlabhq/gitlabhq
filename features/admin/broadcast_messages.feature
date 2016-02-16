@@ -25,3 +25,9 @@ Feature: Admin Broadcast Messages
     When I remove an existing broadcast message
     Then I should be redirected to admin messages page
     And I should not see the removed broadcast message
+
+  @javascript
+  Scenario: Live preview a customized broadcast message
+    When I visit admin messages page
+    And I enter a broadcast message with Markdown
+    Then I should see a live preview of the rendered broadcast message

@@ -151,16 +151,8 @@ class User < ActiveRecord::Base
   # Validations
   #
   validates :name, presence: true
-
-  [:avatar_crop_x, :avatar_crop_y, :avatar_crop_size].each do |field|
-    validates field, numericality: { only_integer: true }, allow_blank: true
-  end
-
-  # Note that a 'uniqueness' and presence check is provided by devise :validatable for email. We do not need to
-  # duplicate that here as the validation framework will have duplicate errors in the event of a failure.
-  validates :email, presence: true, email: { strict_mode: true }
-  validates :notification_email, presence: true, email: { strict_mode: true }
-  validates :public_email, presence: true, email: { strict_mode: true }, allow_blank: true, uniqueness: true
+  validates :notification_email, presence: true, email: true
+  validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
@@ -175,6 +167,10 @@ class User < ActiveRecord::Base
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+
+  [:avatar_crop_x, :avatar_crop_y, :avatar_crop_size].each do |field|
+    validates field, numericality: { only_integer: true }, allow_blank: true
+  end
 
   before_validation :generate_password, on: :create
   before_validation :restricted_signup_domains, on: :create

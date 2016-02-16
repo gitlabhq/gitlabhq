@@ -6,8 +6,20 @@ module SharedBuilds
   end
 
   step 'project has a recent build' do
-    ci_commit = create :ci_commit, project: @project, sha: sample_commit.id
-    @build = create :ci_build, commit: ci_commit
+    @ci_commit = create(:ci_commit, project: @project, sha: @project.commit.sha)
+    @build = create(:ci_build, commit: @ci_commit)
+  end
+
+  step 'recent build is successful' do
+    @build.update_column(:status, 'success')
+  end
+
+  step 'recent build failed' do
+    @build.update_column(:status, 'failed')
+  end
+
+  step 'project has another build that is running' do
+    create(:ci_build, commit: @ci_commit, name: 'second build', status: 'running')
   end
 
   step 'I visit recent build details page' do
@@ -37,5 +49,22 @@ module SharedBuilds
 
   step 'I access artifacts download page' do
     visit download_namespace_project_build_artifacts_path(@project.namespace, @project, @build)
+  end
+
+  step 'I see details of a build' do
+    expect(page).to have_content "Build ##{@build.id}"
+  end
+
+  step 'I see build trace' do
+    expect(page).to have_css '#build-trace'
+  end
+
+  step 'I see the build' do
+    page.within('.commit_status') do
+      expect(page).to have_content "##{@build.id}"
+      expect(page).to have_content @build.sha[0..7]
+      expect(page).to have_content @build.ref
+      expect(page).to have_content @build.name
+    end
   end
 end

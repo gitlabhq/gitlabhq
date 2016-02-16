@@ -43,6 +43,7 @@
 #  metrics_port                      :integer          default(8089)
 #  sentry_enabled                    :boolean          default(FALSE)
 #  sentry_dsn                        :string
+#  email_author_in_body              :boolean          default(FALSE)
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -70,8 +71,8 @@ class ApplicationSetting < ActiveRecord::Base
             url: true
 
   validates :admin_notification_email,
-            allow_blank: true,
-            email: true
+            email: true,
+            allow_blank: true
 
   validates :two_factor_grace_period,
             numericality: { greater_than_or_equal_to: 0 }
@@ -91,6 +92,10 @@ class ApplicationSetting < ActiveRecord::Base
   validates :akismet_api_key,
             presence: true,
             if: :akismet_enabled
+
+  validates :max_attachment_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?

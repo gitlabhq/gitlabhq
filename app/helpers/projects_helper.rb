@@ -98,10 +98,6 @@ module ProjectsHelper
     project_nav_tabs.include? name
   end
 
-  def project_active_milestones
-    @project.milestones.active.order("due_date, title ASC")
-  end
-
   def project_for_deploy_key(deploy_key)
     if deploy_key.projects.include?(@project)
       @project
@@ -141,7 +137,7 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if project.builds_enabled? && can?(current_user, :read_build, project)
+    if can?(current_user, :read_build, project)
       nav_tabs << :builds
     end
 

@@ -18,6 +18,9 @@ documentation](../workflow/add-user/add-user.md).
 |---------------------------------------|---------|------------|-------------|----------|--------|
 | Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
+| See a list of builds                  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| See a build log                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Download and browse build artifacts   | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
 | Download project                      |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
@@ -31,6 +34,7 @@ documentation](../workflow/add-user/add-user.md).
 | Remove non-protected branches         |         |            | ✓           | ✓        | ✓      |
 | Add tags                              |         |            | ✓           | ✓        | ✓      |
 | Write a wiki                          |         |            | ✓           | ✓        | ✓      |
+| Cancel and retry builds               |         |            | ✓           | ✓        | ✓      |
 | Create new milestones                 |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
@@ -40,11 +44,16 @@ documentation](../workflow/add-user/add-user.md).
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
 | Configure project hooks               |         |            |             | ✓        | ✓      |
+| Manage runners                        |         |            |             | ✓        | ✓      |
+| Manage build triggers                 |         |            |             | ✓        | ✓      |
+| Manage variables                      |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
 | Force push to protected branches      |         |            |             |          |        |
 | Remove protected branches             |         |            |             |          |        |
+
+[^1]: If **Allow guest to access builds** is enabled in CI settings
 
 ## Group
 
