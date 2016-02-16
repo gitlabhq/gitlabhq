@@ -122,8 +122,8 @@ Example response:
     "projects": [
         {
             "id": 1,
-            "name": "GitLab.org / GitLab Community Edition",
-            "path": "gitlab-org/gitlab-ce"
+            "name_with_namespace": "GitLab.org / GitLab Community Edition",
+            "path_with_namespace": "gitlab-org/gitlab-ce"
         }
     ],
     "token": "205086a8e3b9a2b818ffac9b89d102",
@@ -170,8 +170,8 @@ Example response:
     "projects": [
         {
             "id": 1,
-            "name": "GitLab.org / GitLab Community Edition",
-            "path": "gitlab-org/gitlab-ce"
+            "name_with_namespace": "GitLab.org / GitLab Community Edition",
+            "path_with_namespace": "gitlab-org/gitlab-ce"
         }
     ],
     "token": "205086a8e3b9a2b818ffac9b89d102",

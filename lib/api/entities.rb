@@ -371,8 +371,8 @@ module API
 
     class RunnerProjectDetails < Grape::Entity
       expose :id
-      expose :name_with_namespace, as: :name
-      expose :path_with_namespace, as: :path
+      expose :name_with_namespace
+      expose :path_with_namespace
     end
 
     class Runner < Grape::Entity
