@@ -40,7 +40,6 @@ class Member < ActiveRecord::Base
       if: :invite?
     },
     email: {
-      strict_mode: true,
       allow_nil: true
     },
     uniqueness: {

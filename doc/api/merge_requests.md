@@ -259,6 +259,7 @@ Parameters:
 - `description` (optional)       - Description of MR
 - `target_project_id` (optional) - The target project (numeric id)
 - `labels` (optional)            - Labels for MR as a comma-separated list
+- `milestone_id` (optional)      - Milestone ID
 
 ```json
 {
@@ -328,6 +329,7 @@ Parameters:
 - `description`                 - Description of MR
 - `state_event`                 - New state (close|reopen|merge)
 - `labels` (optional)           - Labels for MR as a comma-separated list
+- `milestone_id` (optional)     - Milestone ID
 
 ```json
 {
@@ -516,3 +518,65 @@ Parameters:
 ## Comments on merge requets
 
 Comments are done via the [notes](notes.md) resource.
+
+## List issues that will close on merge
+
+Get all the issues that would be closed by merging the provided merge request.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/closes_issues
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `merge_request_id` | integer | yes   | The ID of the merge request |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
+```
+
+Example response:
+
+```json
+[
+   {
+      "state" : "opened",
+      "description" : "Ratione dolores corrupti mollitia soluta quia.",
+      "author" : {
+         "state" : "active",
+         "id" : 18,
+         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "name" : "Alexandra Bashirian",
+         "avatar_url" : null,
+         "username" : "eileen.lowe"
+      },
+      "milestone" : {
+         "project_id" : 1,
+         "description" : "Ducimus nam enim ex consequatur cumque ratione.",
+         "state" : "closed",
+         "due_date" : null,
+         "iid" : 2,
+         "created_at" : "2016-01-04T15:31:39.996Z",
+         "title" : "v4.0",
+         "id" : 17,
+         "updated_at" : "2016-01-04T15:31:39.996Z"
+      },
+      "project_id" : 1,
+      "assignee" : {
+         "state" : "active",
+         "id" : 1,
+         "name" : "Administrator",
+         "web_url" : "https://gitlab.example.com/u/root",
+         "avatar_url" : null,
+         "username" : "root"
+      },
+      "updated_at" : "2016-01-04T15:31:51.081Z",
+      "id" : 76,
+      "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
+      "created_at" : "2016-01-04T15:31:51.081Z",
+      "iid" : 6,
+      "labels" : []
+   },
+]
+```

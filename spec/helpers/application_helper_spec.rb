@@ -293,6 +293,10 @@ describe ApplicationHelper do
 
   describe 'render_markup' do
     let(:content) { 'Noël' }
+    let(:user) { create(:user) }
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
 
     it 'should preserve encoding' do
       expect(content.encoding.name).to eq('UTF-8')

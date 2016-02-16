@@ -4,6 +4,11 @@ services:
   - mysql:latest
   - redis:latest
 
+cache:
+  key: "ruby22"
+  paths:
+  - vendor
+
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
 
@@ -159,6 +164,10 @@ spec:feature:ruby21:
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -169,6 +178,10 @@ spec:api:ruby21:
   - master
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -179,6 +192,10 @@ spec:models:ruby21:
   - master
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -189,6 +206,10 @@ spec:lib:ruby21:
   - master
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -199,6 +220,10 @@ spec:services:ruby21:
   - master
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -209,6 +234,10 @@ spec:benchmark:ruby21:
   - master
   script:
     - RAILS_ENV=test bundle exec rake spec:benchmark
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -220,6 +249,10 @@ spec:other:ruby21:
   - master
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -230,6 +263,10 @@ spinach:project:half:ruby21:
   - master
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -240,6 +277,10 @@ spinach:project:rest:ruby21:
   - master
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
@@ -250,6 +291,11 @@ spinach:other:ruby21:
   - master
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
+
