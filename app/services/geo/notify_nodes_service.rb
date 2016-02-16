@@ -24,13 +24,13 @@ module Geo
       projects = []
       @redis.multi do
         projects = @redis.lrange(QUEUE, 0, batch_size-1)
-        @redis.ltrim(QUEUE, 0, batch_size-1)
+        @redis.ltrim(QUEUE, batch_size, -1)
       end
 
       ::Gitlab::Geo.secondary_nodes.each do |node|
         success, message = notify_updated_projects(node, projects.value)
         unless success
-          Rails.logger.error("Gitlab Failed to notify #{node.url}: #{message}")
+          Rails.logger.error("Gitlab Failed to notify #{node.url} : #{message}")
           reenqueue_projects(projects.value)
         end
       end
@@ -39,15 +39,15 @@ module Geo
     private
 
     def notify_updated_projects(node, projects)
-      self.post(node.notify_url,
-                body: { projects: projects }.to_json,
-                headers: {
-                  'Content-Type' => 'application/json',
-                  'PRIVATE-TOKEN' => private_token
-                })
+      self.class.post(node.notify_url,
+                      body: { projects: projects }.to_json,
+                      headers: {
+                        'Content-Type' => 'application/json',
+                        'PRIVATE-TOKEN' => private_token
+                      })
 
       return [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
-    rescue HTTParty::Error => e
+    rescue HTTParty::Error, Errno::ECONNREFUSED => e
       return [false, ActionView::Base.full_sanitizer.sanitize(e.message)]
     end
 
