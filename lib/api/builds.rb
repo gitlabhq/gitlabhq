@@ -138,7 +138,7 @@ module API
         return not_found!(build) unless build
         return forbidden!('Build is not erasable!') unless build.erasable?
 
-        build.erase
+        build.erase(erased_by: current_user)
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end

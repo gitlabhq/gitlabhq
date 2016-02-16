@@ -184,6 +184,11 @@ describe API::API, api: true  do
         expect(build.artifacts_file.exists?).to be_falsy
         expect(build.artifacts_metadata.exists?).to be_falsy
       end
+
+      it 'should update build' do
+        expect(build.reload.erased_at).to be_truthy
+        expect(build.reload.erased_by).to eq user
+      end
     end
 
     context 'build is not erasable' do
