@@ -49,6 +49,7 @@ v 8.5.0 (unreleased)
   - Fixed logo animation on Safari (Roman Rott)
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
   - In seach autocomplete show only groups and projects you are member of
+  - Don't process cross-reference notes from forks
   - Fix: init.d script not working on OS X
   - Faster snippet search
   - Title for milestones should be unique (Zeger-Jan van de Weg)

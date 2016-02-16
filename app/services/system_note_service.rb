@@ -274,12 +274,15 @@ class SystemNoteService
   # Check if a cross reference to a noteable from a mentioner already exists
   #
   # This method is used to prevent multiple notes being created for a mention
-  # when a issue is updated, for example.
+  # when a issue is updated, for example. The method also calls notes_for_mentioner
+  # to check if the mentioner is a commit, and return matches only on commit hash
+  # instead of project + commit, to avoid repeated mentions from forks.
   #
   # noteable  - Noteable object being referenced
   # mentioner - Mentionable object
   #
   # Returns Boolean
+
   def self.cross_reference_exists?(noteable, mentioner)
     # Initial scope should be system notes of this noteable type
     notes = Note.system.where(noteable_type: noteable.class)
@@ -291,13 +294,19 @@ class SystemNoteService
       notes = notes.where(noteable_id: noteable.id)
     end
 
-    gfm_reference = mentioner.gfm_reference(noteable.project)
-    notes = notes.where(note: cross_reference_note_content(gfm_reference))
-
-    notes.count > 0
+    notes_for_mentioner(mentioner, noteable, notes).count > 0
   end
 
   private
+
+  def self.notes_for_mentioner(mentioner, noteable, notes)
+    if mentioner.is_a?(Commit)
+      notes.where('note LIKE ?', "#{cross_reference_note_prefix}%#{mentioner.to_reference(nil)}")
+    else
+      gfm_reference = mentioner.gfm_reference(noteable.project)
+      notes.where(note: cross_reference_note_content(gfm_reference))
+    end
+  end
 
   def self.create_note(args = {})
     Note.create(args.merge(system: true))
