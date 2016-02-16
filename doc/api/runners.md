@@ -258,7 +258,7 @@ Example response:
 Enable an available specific runner in the project.
 
 ```
-POST /projects/:id/runners/:runner_id
+POST /projects/:id/runners
 ```
 
 | Attribute   | Type    | Required | Description         |
@@ -267,7 +267,7 @@ POST /projects/:id/runners/:runner_id
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners/9"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/project/9/runners" -F "runner_id=9"
 ```
 
 Example response:
