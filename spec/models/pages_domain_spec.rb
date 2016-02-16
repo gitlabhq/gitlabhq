@@ -63,7 +63,7 @@ describe PagesDomain, models: true do
     end
 
     context 'for not matching key' do
-      let(:domain) { build(:pages_domain, :with_certificate_chain, :with_key) }
+      let(:domain) { build(:pages_domain, :with_missing_chain, :with_key) }
 
       it { is_expected.to_not be_valid }
     end
@@ -95,7 +95,7 @@ describe PagesDomain, models: true do
     end
 
     context 'for invalid key' do
-      let(:domain) { build(:pages_domain, :with_certificate_chain, :with_key) }
+      let(:domain) { build(:pages_domain, :with_missing_chain, :with_key) }
 
       it { is_expected.to be_falsey }
     end
@@ -110,10 +110,16 @@ describe PagesDomain, models: true do
       it { is_expected.to be_truthy }
     end
 
-    context 'for certificate chain without the root' do
-      let(:domain) { build(:pages_domain, :with_certificate_chain) }
+    context 'for missing certificate chain' do
+      let(:domain) { build(:pages_domain, :with_missing_chain) }
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'for trusted certificate chain' do
+      let(:domain) { build(:pages_domain, :with_trusted_chain) }
+
+      it { is_expected.to be_truthy }
     end
   end
 
