@@ -15,7 +15,8 @@ Feature: Project Builds Summary
     Then I see button to CI Lint
 
   Scenario: I erase a build
-    Given recent build has a build trace
+    Given recent build is successful
+    And recent build has a build trace
     When I visit recent build details page
     And I click erase build button
     Then recent build has been erased
