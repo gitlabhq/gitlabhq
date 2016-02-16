@@ -13,7 +13,7 @@ module Gitlab
     end
 
     def self.secondary_nodes
-      RequestStore.store[:geo_secondary_nodes] ||= GeoNode.find_by(primary: false)
+      RequestStore.store[:geo_secondary_nodes] ||= GeoNode.where(primary: false)
     end
 
     def self.enabled?
