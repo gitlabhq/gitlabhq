@@ -363,6 +363,14 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd gitlab-workhorse
     sudo -u git -H git checkout 0.6.4
     sudo -u git -H make
+    
+### Install gitlab-pages daemon
+
+    cd /home/git
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
+    cd gitlab-pages
+    sudo -u git -H git checkout 0.1.0
+    sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
 

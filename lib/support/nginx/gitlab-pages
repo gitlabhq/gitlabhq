@@ -7,21 +7,19 @@ server {
   listen [::]:80 ipv6only=on;
 
   ## Replace this with something like pages.gitlab.com
-  server_name ~^(?<group>.*)\.YOUR_GITLAB_PAGES\.DOMAIN$;
-  root /home/git/gitlab/shared/pages/${group};
+  server_name *.YOUR_GITLAB_PAGES.DOMAIN;
 
   ## Individual nginx logs for GitLab pages
   access_log  /var/log/nginx/gitlab_pages_access.log;
   error_log   /var/log/nginx/gitlab_pages_error.log;
 
-  # 1. Try to get /path/ from shared/pages/${group}/${path}/public/
-  # 2. Try to get / from shared/pages/${group}/${host}/public/
-  location ~ ^/([^/]*)(/.*)?$ {
-    try_files "/$1/public$2"
-              "/$1/public$2/index.html"
-              "/${host}/public/${uri}"
-              "/${host}/public/${uri}/index.html"
-              =404;
+  location / {
+    proxy_set_header    Host                $http_host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    # The same address as passed to GitLab Pages: `-listen-proxy`
+    proxy_pass          http://localhost:8282/;
   }
 
   # Define custom error pages

@@ -47,6 +47,19 @@ gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
 gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080 -authSocket $socket_path/gitlab.socket -documentRoot $app_root/public"
 gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
 
+# The GitLab Pages Daemon needs to use separate IP address on which it will listen
+# You can also use the different ports (80 or 443) that will be forwarded to GitLab Pages Daemon
+# To enable HTTP support for custom domains:
+#   -listen-http 1.1.1.1:80
+# The value of -listen-http must be set to `gitlab.yml:pages:external_http`
+# To enable HTTPS support for custom domains and certificates:
+#   -listen-https 1.1.1.1:443 -root-cert /path/to/example.com.crt -root-key /path/to/example.com.key
+# The value of -listen-https must be set to `gitlab.yml:pages:external_http`
+# The -pages-domain must be specified the same as in `gitlab.yml`
+gitlab_pages_enabled=true
+gitlab_pages_options="-pages-domain example.com -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8282"
+gitlab_pages_log="$app_root/log/gitlab-pages.log"
+
 # mail_room_enabled specifies whether mail_room, which is used to process incoming email, is enabled.
 # This is required for the Reply by email feature.
 # The default is "false"

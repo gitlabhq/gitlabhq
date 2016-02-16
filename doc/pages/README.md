@@ -47,13 +47,42 @@ URL it will be accessible.
 
 ## Enable the pages feature in your project
 
-The GitLab Pages feature needs to be explicitly enabled for each project
-under its **Settings**.
+The GitLab Pages feature is enabled when the valid `.gitlab-ci.yml` is configured
+in your project.
+
+## Use custom domain
+
+You can define multiple domains for your pages.
+Go to **Settings > Pages** and click a **New Domain**.
+You will be asked to fill simple form where you put the **Domain** name.
+You can use the specified domain only once.
+
+After adding domain you need to configure your DNS to point to your Pages.
+To do so add the **CNAME** record for your domain pointing to: `walter.example.com`.
+Where `walter` is your group or username.
+
+If you are unable to add a **CNAME**, because your is top-level domain.
+You can check the IP address of server serving GitLab Pages:
+
+    $ dig walter.example.com
+    walter.example.com.		300	IN	A	1.1.1.1
+
+Add a **A** record pointing to **1.1.1.1**.
+
+## Use custom domain with custom certificates
+
+_**Note:** This feature was [introduced][ee-80] in GitLab EE 8.5_
+
+When defining the domain you can also paste the custom certificates.
+You need to paste the certificate with all intermediate certificates required to build a trust chain in PEM format.
+The second you need to send us the private key for your certificate.
+
+_**Note:** This feature was [introduced][ee-80] in GitLab EE 8.5 and needs to be explicitly enabled by your Administrator_
 
 ## Remove the contents of your pages
 
 Pages can be explicitly removed from a project by clicking **Remove Pages**
-in a project's **Settings**.
+in a project's **Settings > Pages**.
 
 ## Explore the contents of .gitlab-ci.yml
 
