@@ -19,14 +19,13 @@
           %i.fa.fa-trash-o
   .title
     %span.item-title= @tag.name
-    - if @tag.message.present?
-      %span.light
-        &nbsp;
-        = strip_gpg_signature(@tag.message)
   - if @commit
     = render 'projects/branches/commit', commit: @commit, project: @project
   - else
     Cant find HEAD commit for this tag
+  - if @tag.message.present?
+    %pre.body
+      = strip_gpg_signature(@tag.message)
 
 
 .append-bottom-default.prepend-top-default
