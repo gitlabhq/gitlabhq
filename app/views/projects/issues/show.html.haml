@@ -25,7 +25,7 @@
       Issue ##{@issue.iid}
     %span.creator
       &middot;
-      opened by #{link_to_member(@project, @issue.author, size: 24)}
+      by #{link_to_member(@project, @issue.author, size: 24)}
       &middot;
       = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
 
