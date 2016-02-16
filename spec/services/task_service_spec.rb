@@ -31,6 +31,23 @@ describe TaskService, services: true do
       end
     end
 
+    describe '#close_issue' do
+      let!(:first_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: assigned_issue, author: author)
+      end
+
+      let!(:second_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: assigned_issue, author: author)
+      end
+
+      it 'marks related pending tasks to the target for the user as done' do
+        service.close_issue(assigned_issue, john_doe)
+
+        expect(first_pending_task.reload.done?).to eq true
+        expect(second_pending_task.reload.done?).to eq true
+      end
+    end
+
     describe '#reassigned_issue' do
       it 'creates a pending task for new assignee' do
         unassigned_issue.update_attribute(:assignee, john_doe)
