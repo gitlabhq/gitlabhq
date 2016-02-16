@@ -136,6 +136,23 @@ describe TaskService, services: true do
       end
     end
 
+    describe '#close_merge_request' do
+      let!(:first_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: mr_assigned, author: author)
+      end
+
+      let!(:second_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: mr_assigned, author: author)
+      end
+
+      it 'marks related pending tasks to the target for the user as done' do
+        service.close_merge_request(mr_assigned, john_doe)
+
+        expect(first_pending_task.reload).to be_done
+        expect(second_pending_task.reload).to be_done
+      end
+    end
+
     describe '#reassigned_merge_request' do
       it 'creates a pending task for new assignee' do
         mr_unassigned.update_attribute(:assignee, john_doe)

@@ -38,7 +38,15 @@ class TaskService
     new_issuable(merge_request, current_user)
   end
 
-  # When we reassign an merge request we should:
+  # When close a merge request we should:
+  #
+  #  * mark all pending tasks related to the target for the current user as done
+  #
+  def close_merge_request(merge_request, current_user)
+    mark_as_done(merge_request, current_user)
+  end
+
+  # When we reassign a merge request we should:
   #
   #  * creates a pending task for new assignee if merge request is assigned
   #
