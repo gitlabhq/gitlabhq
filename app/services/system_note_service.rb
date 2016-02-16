@@ -3,6 +3,7 @@
 # Used for creating system notes (e.g., when a user references a merge request
 # from an issue, an issue's assignee changes, an issue is closed, etc.)
 class SystemNoteService
+  extend GitlabMarkdownHelper
   # Called when commits are added to a Merge Request
   #
   # noteable         - Noteable object
@@ -388,20 +389,26 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
-  # Called when issue has been moved to another project
+  # Called when noteable has been moved to another project
   #
-  # issue          - Issue that has been moved to another project
-  # project_from   - Source project of the issue
-  # project_to     - Destination project for the issue
-  # author         - User performing the move
+  # direction    - symbol, :to or :from
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable
+  # author       - User performing the move
   #
   # Example Note text:
   #
-  #   "This issue has been moved to SomeNamespace / SomeProject"
+  #   "Moved to project_new/#11"
   #
   # Returns the created Note object
-  def self.issue_moved_to_another_project(issue, project_from, project_to, author)
-    body = "This issue has been moved to #{project_to.to_reference} by #{author.to_reference}"
-    create_note(noteable: issue, project: project_from, author: author, note: body)
+  def self.noteable_moved(direction, noteable, project, noteable_ref, author)
+    unless [:to, :from].include?(direction)
+      raise StandardError, "Invalid direction `#{direction}`"
+    end
+
+    cross_reference = cross_project_reference(noteable_ref.project, noteable_ref)
+
+    body = "Moved #{direction} #{cross_reference}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
   end
 end

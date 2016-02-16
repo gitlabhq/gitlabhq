@@ -20,7 +20,11 @@ describe Issues::MoveService, services: true do
     end
 
     it 'should add system note to old issue' do
-      expect(issue.notes.last.note).to match /This issue has been moved to/
+      expect(issue.notes.last.note).to match /^Moved to/
+    end
+
+    it 'should add system note to new issue' do
+      expect(new_issue.notes.last.note).to match /^Moved from/
     end
   end
 end

@@ -4,6 +4,7 @@ module Issues
       @issue_old = issue_old
       @issue_new = issue_old.dup
       @project_new = project_new
+      @project_old = @project
 
       open_new_issue
       rewrite_notes
@@ -33,10 +34,11 @@ module Issues
     end
 
     def add_note_moved_from
+      SystemNoteService.noteable_moved(:from, @issue_new, @project_new, @issue_old, @current_user)
     end
 
     def add_note_moved_to
-      SystemNoteService.issue_moved_to_another_project(@issue_old, @project, @project_new, @current_user)
+      SystemNoteService.noteable_moved(:to, @issue_old, @project_old, @issue_new, @current_user)
     end
   end
 end
