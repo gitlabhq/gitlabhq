@@ -247,7 +247,7 @@ class Commit
 
   def has_been_reverted?(current_user = nil, noteable = self)
     Gitlab::ReferenceExtractor.lazily do
-      [self, *noteable.notes].flat_map do |note|
+      noteable.notes.system.flat_map do |note|
         note.all_references(current_user).commits
       end
     end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
