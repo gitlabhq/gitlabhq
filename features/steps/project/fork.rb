@@ -62,6 +62,17 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
     end
   end
 
+  step 'I make forked repo invalid' do
+    project = @user.fork_of(@project)
+    project.path = 'test-crappy-path'
+    project.save!
+  end
+
+  step 'I should not see the invalid fork listed' do
+    project = @user.fork_of(@project)
+    expect(page).not_to have_content("#{project.namespace.human_name} / #{project.name}")
+  end
+
   step 'There is an existent fork of the "Shop" project' do
     user = create(:user, name: 'Mike')
     @forked_project = Projects::ForkService.new(@project, user).execute
