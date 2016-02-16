@@ -337,27 +337,27 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'POST /projects/:id/runners/:runner_id' do
+  describe 'POST /projects/:id/runners' do
     let!(:specific_runner2) { create(:ci_specific_runner) }
     let!(:specific_runner2_project) { create(:ci_runner_project, runner: specific_runner2, project: project2) }
 
     context 'authorized user' do
       it 'should enable specific runner' do
         expect do
-          post api("/projects/#{project.id}/runners/#{specific_runner2.id}", user)
+          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change{ project.runners.count }.by(+1)
         expect(response.status).to eq(201)
       end
 
       it 'should avoid changes when enabling already enabled runner' do
         expect do
-          post api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
+          post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
         end.to change{ project.runners.count }.by(0)
         expect(response.status).to eq(201)
       end
 
       it 'should not enable shared runner' do
-        post api("/projects/#{project.id}/runners/#{shared_runner.id}", user)
+        post api("/projects/#{project.id}/runners", user), runner_id: shared_runner.id
 
         expect(response.status).to eq(403)
       end
@@ -365,7 +365,7 @@ describe API::API, api: true  do
       context 'user is admin' do
         it 'should enable any specific runner' do
           expect do
-            post api("/projects/#{project.id}/runners/#{unused_specific_runner.id}", admin)
+            post api("/projects/#{project.id}/runners", admin), runner_id: unused_specific_runner.id
           end.to change{ project.runners.count }.by(+1)
           expect(response.status).to eq(201)
         end
@@ -373,16 +373,22 @@ describe API::API, api: true  do
 
       context 'user is not admin' do
         it 'should not enable runner without access to' do
-          post api("/projects/#{project.id}/runners/#{unused_specific_runner.id}", user)
+          post api("/projects/#{project.id}/runners", user), runner_id: unused_specific_runner.id
 
           expect(response.status).to eq(403)
         end
+      end
+
+      it 'should raise an error when no runner_id param is provided' do
+        post api("/projects/#{project.id}/runners", admin)
+
+        expect(response.status).to eq(400)
       end
     end
 
     context 'authorized user without permissions' do
       it 'should not enable runner' do
-        post api("/projects/#{project.id}/runners/#{specific_runner2.id}", user2)
+        post api("/projects/#{project.id}/runners", user2), runner_id: specific_runner2.id
 
         expect(response.status).to eq(403)
       end
@@ -390,7 +396,7 @@ describe API::API, api: true  do
 
     context 'unauthorized user' do
       it 'should not enable runner' do
-        post api("/projects/#{project.id}/runners/#{specific_runner2.id}")
+        post api("/projects/#{project.id}/runners"), runner_id: specific_runner2.id
 
         expect(response.status).to eq(401)
       end

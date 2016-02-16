@@ -91,7 +91,9 @@ module API
       #   runner_id (required) - The ID of the runner
       # Example Request:
       #   POST /projects/:id/runners/:runner_id
-      post ':id/runners/:runner_id' do
+      post ':id/runners' do
+        required_attributes! [:runner_id]
+
         runner = get_runner(params[:runner_id])
         authenticate_enable_runner!(runner)
         Ci::RunnerProject.create(runner: runner, project: user_project)
