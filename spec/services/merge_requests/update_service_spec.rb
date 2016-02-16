@@ -98,6 +98,31 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    context 'task queue' do
+      let!(:pending_task) do
+        create(:pending_assigned_task, user: user, project: project, target: merge_request, author: user2)
+      end
+
+      context 'when is reassigned' do
+        before do
+          update_merge_request({ assignee: user2 })
+        end
+
+        it 'creates a pending task for new assignee' do
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target: merge_request,
+            action: Task::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Task.where(attributes).count).to eq 1
+        end
+      end
+    end
+
     context 'when MergeRequest has tasks' do
       before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
 

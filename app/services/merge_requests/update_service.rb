@@ -28,6 +28,7 @@ module MergeRequests
       if merge_request.previous_changes.include?('assignee_id')
         create_assignee_note(merge_request)
         notification_service.reassigned_merge_request(merge_request, current_user)
+        task_service.reassigned_merge_request(merge_request, current_user)
       end
 
       if merge_request.previous_changes.include?('target_branch') ||

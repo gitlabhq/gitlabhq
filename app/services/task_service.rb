@@ -11,9 +11,7 @@ class TaskService
   #  * creates a pending task for assignee if issue is assigned
   #
   def new_issue(issue, current_user)
-    if issue.is_assigned? && issue.assignee != current_user
-      create_task(issue.project, issue, current_user, issue.assignee, Task::ASSIGNED)
-    end
+    new_issuable(issue, current_user)
   end
 
   # When close an issue we should:
@@ -29,9 +27,23 @@ class TaskService
   #  * creates a pending task for new assignee if issue is assigned
   #
   def reassigned_issue(issue, current_user)
-    if issue.is_assigned?
-      create_task(issue.project, issue, current_user, issue.assignee, Task::ASSIGNED)
-    end
+    reassigned_issuable(issue, current_user)
+  end
+
+  # When create a merge request we should:
+  #
+  #  * creates a pending task for assignee if merge request is assigned
+  #
+  def new_merge_request(merge_request, current_user)
+    new_issuable(merge_request, current_user)
+  end
+
+  # When we reassign an merge request we should:
+  #
+  #  * creates a pending task for new assignee if merge request is assigned
+  #
+  def reassigned_merge_request(merge_request, current_user)
+    reassigned_issuable(merge_request, current_user)
   end
 
   # When we mark a task as done we should:
@@ -82,5 +94,17 @@ class TaskService
 
   def pending_tasks_for(user, project, target)
     user.tasks.pending.where(project: project, target: target)
+  end
+
+  def new_issuable(issuable, user)
+    if issuable.is_assigned? && issuable.assignee != user
+      create_task(issuable.project, issuable, user, issuable.assignee, Task::ASSIGNED)
+    end
+  end
+
+  def reassigned_issuable(issuable, user)
+    if issuable.is_assigned?
+      create_task(issuable.project, issuable, user, issuable.assignee, Task::ASSIGNED)
+    end
   end
 end

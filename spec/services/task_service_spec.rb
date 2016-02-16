@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 describe TaskService, services: true do
+  let(:author) { create(:user) }
+  let(:john_doe) { create(:user) }
+  let(:project) { create(:project) }
   let(:service) { described_class.new }
 
+  before do
+    project.team << [author, :developer]
+    project.team << [john_doe, :developer]
+  end
+
   describe 'Issues' do
-    let(:author) { create(:user) }
-    let(:john_doe) { create(:user) }
-    let(:project) { create(:empty_project, :public) }
     let(:assigned_issue) { create(:issue, project: project, assignee: john_doe) }
     let(:unassigned_issue) { create(:issue, project: project, assignee: nil) }
-
-    before do
-      project.team << [author, :developer]
-      project.team << [john_doe, :developer]
-    end
 
     describe '#new_issue' do
       it 'creates a pending task if assigned' do
@@ -112,6 +112,42 @@ describe TaskService, services: true do
 
         expect(first_pending_task.reload).to be_pending
         expect(second_pending_task.reload).to be_pending
+      end
+    end
+  end
+
+  describe 'Merge Requests' do
+    let(:mr_assigned) { create(:merge_request, source_project: project, assignee: john_doe) }
+    let(:mr_unassigned) { create(:merge_request, source_project: project, assignee: nil) }
+
+    describe '#new_merge_request' do
+      it 'creates a pending task if assigned' do
+        service.new_merge_request(mr_assigned, author)
+
+        is_expected_to_create_pending_task(user: john_doe, target: mr_assigned, action: Task::ASSIGNED)
+      end
+
+      it 'does not create a task if unassigned' do
+        is_expected_to_not_create_task { service.new_merge_request(mr_unassigned, author) }
+      end
+
+      it 'does not create a task if assignee is the current user' do
+        is_expected_to_not_create_task { service.new_merge_request(mr_unassigned, john_doe) }
+      end
+    end
+
+    describe '#reassigned_merge_request' do
+      it 'creates a pending task for new assignee' do
+        mr_unassigned.update_attribute(:assignee, john_doe)
+        service.reassigned_merge_request(mr_unassigned, author)
+
+        is_expected_to_create_pending_task(user: john_doe, target: mr_unassigned, action: Task::ASSIGNED)
+      end
+
+      it 'does not create a task if unassigned' do
+        mr_assigned.update_attribute(:assignee, nil)
+
+        is_expected_to_not_create_task { service.reassigned_merge_request(mr_assigned, author) }
       end
     end
   end
