@@ -258,6 +258,14 @@ class Repository
     @root_ref = nil
   end
 
+  # Expires the cache(s) used to determine if a repository is empty or not.
+  def expire_emptiness_caches
+    cache.expire(:empty?)
+    @empty = nil
+
+    expire_has_visible_content_cache
+  end
+
   def expire_has_visible_content_cache
     cache.expire(:has_visible_content?)
     @has_visible_content = nil
