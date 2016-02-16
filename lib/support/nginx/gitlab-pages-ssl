@@ -11,7 +11,7 @@ server {
   listen [::]:80 ipv6only=on;
 
   ## Replace this with something like pages.gitlab.com
-  server_name ~^.*\.YOUR_GITLAB_PAGES\.DOMAIN$;
+  server_name *.YOUR_GITLAB_PAGES.DOMAIN;
   server_tokens off; ## Don't show the nginx version number, a security best practice
 
   return 301  https://$http_host$request_uri;
@@ -26,7 +26,7 @@ server {
   listen [::]:443 ipv6only=on ssl;
 
   ## Replace this with something like pages.gitlab.com
-  server_name ~^.*\.YOUR_GITLAB_PAGES\.DOMAIN$;
+  server_name *.YOUR_GITLAB_PAGES.DOMAIN;
   server_tokens off; ## Don't show the nginx version number, a security best practice
 
   ## Strong SSL Security
