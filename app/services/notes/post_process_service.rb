@@ -1,6 +1,5 @@
 module Notes
   class PostProcessService
-
     attr_accessor :note
 
     def initialize(note)
@@ -14,6 +13,8 @@ module Notes
         @note.create_cross_references!
         execute_note_hooks
       end
+
+      TaskService.new.new_note(note)
     end
 
     def hook_data
@@ -25,6 +26,5 @@ module Notes
       @note.project.execute_hooks(note_data, :note_hooks)
       @note.project.execute_services(note_data, :note_hooks)
     end
-
   end
 end

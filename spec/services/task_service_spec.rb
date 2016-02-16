@@ -43,8 +43,8 @@ describe TaskService, services: true do
       it 'marks related pending tasks to the target for the user as done' do
         service.close_issue(assigned_issue, john_doe)
 
-        expect(first_pending_task.reload.done?).to eq true
-        expect(second_pending_task.reload.done?).to eq true
+        expect(first_pending_task.reload).to be_done
+        expect(second_pending_task.reload).to be_done
       end
     end
 
@@ -75,8 +75,43 @@ describe TaskService, services: true do
       it 'marks related pending tasks to the target for the user as done' do
         service.mark_as_done(assigned_issue, john_doe)
 
-        expect(first_pending_task.reload.done?).to eq true
-        expect(second_pending_task.reload.done?).to eq true
+        expect(first_pending_task.reload).to be_done
+        expect(second_pending_task.reload).to be_done
+      end
+    end
+
+    describe '#new_note' do
+      let!(:first_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: assigned_issue, author: author)
+      end
+
+      let!(:second_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: assigned_issue, author: author)
+      end
+
+      let(:note) { create(:note, project: project, noteable: assigned_issue, author: john_doe) }
+      let(:award_note) { create(:note, :award, project: project, noteable: assigned_issue, author: john_doe, note: 'thumbsup') }
+      let(:system_note) { create(:system_note, project: project, noteable: assigned_issue) }
+
+      it 'mark related pending tasks to the noteable for the note author as done' do
+        service.new_note(note)
+
+        expect(first_pending_task.reload).to be_done
+        expect(second_pending_task.reload).to be_done
+      end
+
+      it 'mark related pending tasks to the noteable for the award note author as done' do
+        service.new_note(award_note)
+
+        expect(first_pending_task.reload).to be_done
+        expect(second_pending_task.reload).to be_done
+      end
+
+      it 'does not mark related pending tasks it is a system note' do
+        service.new_note(system_note)
+
+        expect(first_pending_task.reload).to be_pending
+        expect(second_pending_task.reload).to be_pending
       end
     end
   end

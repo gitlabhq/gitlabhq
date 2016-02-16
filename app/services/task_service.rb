@@ -43,6 +43,17 @@ class TaskService
     pending_tasks.update_all(state: :done)
   end
 
+  # When create a note we should:
+  #
+  #  * mark all pending tasks related to the noteable for the note author as done
+  #
+  def new_note(note)
+    # Skip system notes, like status changes and cross-references
+    unless note.system
+      mark_as_done(note.noteable, note.author)
+    end
+  end
+
   private
 
   def create_task(project, target, author, user, action)
