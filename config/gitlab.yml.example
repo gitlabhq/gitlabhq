@@ -160,8 +160,8 @@ production: &base
     host: example.com
     port: 80 # Set to 443 if you serve the pages with HTTPS
     https: false # Set to true if you serve the pages with HTTPS
-    # external_http: "1.1.1.1:80" # if defined notifies the GitLab pages do support Custom Domains
-    # external_https: "1.1.1.1:443" # if defined notifies the GitLab pages do support Custom Domains with Certificates
+    # external_http: "1.1.1.1:80" # If defined, enables custom domain support in GitLab Pages
+    # external_https: "1.1.1.1:443" # If defined, enables custom domain and certificate support in GitLab Pages
 
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
