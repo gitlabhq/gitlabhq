@@ -17,7 +17,6 @@ class Ability
       when Namespace then namespace_abilities(user, subject)
       when GroupMember then group_member_abilities(user, subject)
       when ProjectMember then project_member_abilities(user, subject)
-      when Task then task_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
@@ -414,16 +413,6 @@ class Ability
       %w(read create update admin).each do |rule|
         rules.delete(:"#{rule}_commit_status") unless rules.include?(:"#{rule}_build")
       end
-      rules
-    end
-
-    def task_abilities(user, task)
-      rules = []
-
-      if task && task.user == user
-        rules << :destroy_task
-      end
-
       rules
     end
 

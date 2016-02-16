@@ -1,6 +1,4 @@
 class Dashboard::TasksController < Dashboard::ApplicationController
-  before_action :authorize_destroy_task!, only: [:destroy]
-
   def index
     @tasks = case params[:state]
       when 'done'
@@ -22,12 +20,6 @@ class Dashboard::TasksController < Dashboard::ApplicationController
   end
 
   private
-
-  def authorize_destroy_task!
-    unless can?(current_user, :destroy_task, task)
-      return render_404
-    end
-  end
 
   def task
     @task ||= current_user.tasks.find(params[:id])
