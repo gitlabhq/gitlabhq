@@ -2,6 +2,7 @@ module Geo
   class NotifyNodesService < Geo::BaseService
     include HTTParty
     BATCH_SIZE = 250
+    QUEUE = 'updated_projects'
 
     # HTTParty timeout
     default_timeout Gitlab.config.gitlab.webhook_timeout
@@ -11,7 +12,7 @@ module Geo
     end
 
     def execute
-      queue_size = @redis.llen('updated_projects')
+      queue_size = @redis.llen(QUEUE)
       return if queue_size == 0
 
       if queue_size > BATCH_SIZE
@@ -21,13 +22,17 @@ module Geo
       end
 
       projects = []
-      @redis.multi do |redis|
-        projects = redis.lrange(0, batch_size-1)
-        redis.ltrim(0, batch_size-1)
+      @redis.multi do
+        projects = @redis.lrange(QUEUE, 0, batch_size-1)
+        @redis.ltrim(QUEUE, 0, batch_size-1)
       end
 
       ::Gitlab::Geo.secondary_nodes.each do |node|
-        notify_updated_projects(node, projects.value)
+        success, message = notify_updated_projects(node, projects.value)
+        unless success
+          Rails.logger.error("Gitlab Failed to notify #{node.url}: #{message}")
+          reenqueue_projects(projects.value)
+        end
       end
     end
 
@@ -38,11 +43,26 @@ module Geo
                 body: { projects: projects }.to_json,
                 headers: {
                   'Content-Type' => 'application/json',
-                  'X-Gitlab-Geo-Event' => 'Update Repositories'
+                  'PRIVATE-TOKEN' => private_token
                 })
 
-      # TODO: Authentication
-      [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
+      return [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
+    rescue HTTParty::Error => e
+      return [false, ActionView::Base.full_sanitizer.sanitize(e.message)]
+    end
+
+    def private_token
+      # TODO: should we ask admin user to be defined as part of configuration?
+      @private_token ||= User.find_by(admin: true).authentication_token
+    end
+
+    def reenqueue_projects(projects)
+      @redis.pipelined do
+        projects.each do |project|
+          # enqueue again to the head of the queue
+          @redis.lpush(QUEUE, project)
+        end
+      end
     end
   end
 end
