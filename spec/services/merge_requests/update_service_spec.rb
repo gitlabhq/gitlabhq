@@ -103,9 +103,33 @@ describe MergeRequests::UpdateService, services: true do
         create(:pending_assigned_task, user: user, project: project, target: merge_request, author: user2)
       end
 
+      context 'when the title change' do
+        before do
+          update_merge_request({ title: 'New title' })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload).to be_done
+        end
+      end
+
+      context 'when the description change' do
+        before do
+          update_merge_request({ description: 'Also please fix' })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload).to be_done
+        end
+      end
+
       context 'when is reassigned' do
         before do
           update_merge_request({ assignee: user2 })
+        end
+
+        it 'marks previous assignee pending tasks as done' do
+          expect(pending_task.reload).to be_done
         end
 
         it 'creates a pending task for new assignee' do
@@ -119,6 +143,36 @@ describe MergeRequests::UpdateService, services: true do
           }
 
           expect(Task.where(attributes).count).to eq 1
+        end
+      end
+
+      context 'when the milestone change' do
+        before do
+          update_merge_request({ milestone: create(:milestone) })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload).to be_done
+        end
+      end
+
+      context 'when the labels change' do
+        before do
+          update_merge_request({ label_ids: [label.id] })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload).to be_done
+        end
+      end
+
+      context 'when the target branch change' do
+        before do
+          update_merge_request({ target_branch: 'target' })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload).to be_done
         end
       end
     end
@@ -155,6 +209,5 @@ describe MergeRequests::UpdateService, services: true do
         end
       end
     end
-
   end
 end
