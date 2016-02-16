@@ -179,6 +179,7 @@
 }
 
 @mixin expanded-sidebar {
+  padding-right: $sidebar_collapsed_width;
 
   // when the screen is small enough
   @media (max-width: $screen-md-max) {
@@ -211,6 +212,7 @@
 
 @mixin collapsed-sidebar {
   padding-left: $sidebar_collapsed_width;
+  padding-right: $sidebar_collapsed_width;
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
