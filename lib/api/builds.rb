@@ -130,15 +130,15 @@ module API
       #   id (required) - the id of a project
       #   build_id (required) - the id of a build
       # example Request:
-      #  delete  /projects/:id/build/:build_id/content
-      delete ':id/builds/:build_id/content' do
+      #  post  /projects/:id/build/:build_id/erase
+      post ':id/builds/:build_id/erase' do
         authorize_update_builds!
 
         build = get_build(params[:build_id])
         return not_found!(build) unless build
         return forbidden!('Build is not erasable!') unless build.erasable?
 
-        build.erase!
+        build.erase
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end

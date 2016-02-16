@@ -122,7 +122,7 @@
 
                 - if @build.erasable?
                   = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
-                            class: 'btn btn-sm btn-warning', method: :delete,
+                            class: 'btn btn-sm btn-warning', method: :post,
                             data: { confirm: 'Are you sure you want to erase this build?' } do
                     = icon('eraser')
                     Erase

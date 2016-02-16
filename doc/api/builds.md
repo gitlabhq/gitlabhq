@@ -344,20 +344,20 @@ Example of response
 Erase a single build of a project (remove build artifacts and a build trace)
 
 ```
-DELETE /projects/:id/builds/:build_id/content
+POST /projects/:id/builds/:build_id/erase
 ```
 
 Parameters
 
-| Attribute | Type    | required | Description         |
-|-----------|---------|----------|---------------------|
+| Attribute   | Type    | required | Description         |
+|-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
-| `build_id` | integer | yes      | The ID of a build   |
+| `build_id`  | integer | yes      | The ID of a build   |
 
 Example of request
 
 ```
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/content"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/erase"
 ```
 
 Example of response

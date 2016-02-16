@@ -170,16 +170,16 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'DELETE /projects/:id/builds/:build_id/content' do
+  describe 'POST /projects/:id/builds/:build_id/erase' do
     before do
-      delete api("/projects/#{project.id}/builds/#{build.id}/content", user)
+      post api("/projects/#{project.id}/builds/#{build.id}/erase", user)
     end
 
     context 'build is erasable' do
       let(:build) { create(:ci_build_with_trace, :artifacts, :success, project: project, commit: commit) }
 
       it 'should erase build content' do
-        expect(response.status).to eq 200
+        expect(response.status).to eq 201
         expect(build.trace).to be_empty
         expect(build.artifacts_file.exists?).to be_falsy
         expect(build.artifacts_metadata.exists?).to be_falsy
