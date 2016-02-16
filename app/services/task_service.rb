@@ -54,6 +54,17 @@ class TaskService
     end
   end
 
+  # When update a note we should:
+  #
+  #  * mark all pending tasks related to the noteable for the current user as done
+  #
+  def update_note(note, current_user)
+    # Skip system notes, like status changes and cross-references
+    unless note.system
+      mark_as_done(note.noteable, current_user)
+    end
+  end
+
   private
 
   def create_task(project, target, author, user, action)
