@@ -10,8 +10,15 @@ class AvatarUploader < CarrierWave::Uploader::Base
 
   process :cropper
 
+  def is_integer? string
+    true if Integer(string) rescue false
+  end
+
   def cropper
-    if model.instance_of? User
+    is_compliant = model.kind_of?(User) && is_integer?(model.avatar_crop_size)
+    is_compliant = is_compliant && is_integer?(model.avatar_crop_x) && is_integer?(model.avatar_crop_y)
+
+    if is_compliant
       manipulate! do |img|
         img.crop "#{model.avatar_crop_size}x#{model.avatar_crop_size}+#{model.avatar_crop_x}+#{model.avatar_crop_y}"
       end

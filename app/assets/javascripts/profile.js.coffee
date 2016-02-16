@@ -31,7 +31,6 @@ class @Profile
       setTimeout ( -> # The cropper must be asynchronously initialized
         $modalCropImg.cropper
           aspectRatio: 1
-          autoCropArea: 1
           modal: false
           scalable: false
           rotatable: false
