@@ -38,12 +38,12 @@
 module Ci
   class Build < CommitStatus
     include Gitlab::Application.routes.url_helpers
-    include Build::Erasable
 
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
+    belongs_to :erased_by, class_name: 'User'
 
     serialize :options
 
@@ -365,6 +365,33 @@ module Ci
 
     def artifacts_metadata_entry(path, **options)
       Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
+    end
+
+    def erase(opts = {})
+      return false unless erasable?
+
+      remove_artifacts_file!
+      remove_artifacts_metadata!
+      erase_trace!
+      update_erased!(opts[:erased_by])
+    end
+
+    def erasable?
+      complete? && (artifacts? || has_trace?)
+    end
+
+    def erased?
+      !self.erased_at.nil?
+    end
+
+    private
+
+    def erase_trace!
+      self.trace = nil
+    end
+
+    def update_erased!(user = nil)
+      self.update(erased_by: user, erased_at: Time.now)
     end
 
     private
