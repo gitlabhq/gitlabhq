@@ -4,14 +4,14 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   include SharedProject
 
   step 'pages are enabled' do
-    Gitlab.config.pages.stub(:enabled).and_return(true)
-    Gitlab.config.pages.stub(:host).and_return('example.com')
-    Gitlab.config.pages.stub(:port).and_return(80)
-    Gitlab.config.pages.stub(:https).and_return(false)
+    allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+    allow(Gitlab.config.pages).to receive(:host).and_return('example.com')
+    allow(Gitlab.config.pages).to receive(:port).and_return(80)
+    allow(Gitlab.config.pages).to receive(:https).and_return(false)
   end
 
   step 'pages are disabled' do
-    Gitlab.config.pages.stub(:enabled).and_return(false)
+    allow(Gitlab.config.pages).to receive(:enabled).and_return(false)
   end
 
   step 'I visit the Project Pages' do
@@ -48,18 +48,18 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'support for external domains is disabled' do
-    Gitlab.config.pages.stub(:external_http).and_return(nil)
-    Gitlab.config.pages.stub(:external_https).and_return(nil)
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(nil)
+    allow(Gitlab.config.pages).to receive(:external_https).and_return(nil)
   end
 
   step 'pages are exposed on external HTTP address' do
-    Gitlab.config.pages.stub(:external_http).and_return('1.1.1.1:80')
-    Gitlab.config.pages.stub(:external_https).and_return(nil)
+    allow(Gitlab.config.pages).to receive(:external_http).and_return('1.1.1.1:80')
+    allow(Gitlab.config.pages).to receive(:external_https).and_return(nil)
   end
 
   step 'pages are exposed on external HTTPS address' do
-    Gitlab.config.pages.stub(:external_http).and_return('1.1.1.1:80')
-    Gitlab.config.pages.stub(:external_https).and_return('1.1.1.1:443')
+    allow(Gitlab.config.pages).to receive(:external_http).and_return('1.1.1.1:80')
+    allow(Gitlab.config.pages).to receive(:external_https).and_return('1.1.1.1:443')
   end
 
   step 'I should be able to add a New Domain' do
