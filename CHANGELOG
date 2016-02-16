@@ -34,6 +34,11 @@ v 8.5.0 (unreleased)
   - Update the ExternalIssue regex pattern (Blake Hitchcock)
   - Remember user's inline/side-by-side diff view preference in a cookie (Kirill Katsnelson)
   - Optimized performance of finding issues to be closed by a merge request
+  - Add `avatar_url`, `description`, `git_ssh_url`, `git_http_url`, `path_with_namespace`
+    and `default_branch` in `project` in push, issue, merge-request and note webhooks data (Kirill Zaitsev)
+  - Deprecate the `ssh_url` in favor of `git_ssh_url` and `http_url` in favor of `git_http_url`
+    in `project` for push, issue, merge-request and note webhooks data (Kirill Zaitsev)
+  - Deprecate the `repository` key in push, issue, merge-request and note webhooks data, use `project` instead (Kirill Zaitsev)
   - API: Expose MergeRequest#merge_status (Andrei Dziahel)
   - Revert "Add IP check against DNSBLs at account sign-up"
   - Actually use the `skip_merges` option in Repository#commits (Tony Chu)

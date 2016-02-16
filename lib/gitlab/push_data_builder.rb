@@ -47,18 +47,14 @@ module Gitlab
           user_id: user.id,
           user_name: user.name,
           user_email: user.email,
+          user_avatar: user.avatar_url,
           project_id: project.id,
-          repository: {
-            name: project.name,
-            url: project.url_to_repo,
-            description: project.description,
-            homepage: project.web_url,
-            git_http_url: project.http_url_to_repo,
-            git_ssh_url: project.ssh_url_to_repo,
-            visibility_level: project.visibility_level
-          },
+          project: project.hook_attrs,
           commits: commit_attrs,
-          total_commits_count: commits_count
+          total_commits_count: commits_count,
+          # DEPRECATED
+          repository: project.hook_attrs.slice(:name, :url, :description, :homepage,
+                                               :git_http_url, :git_ssh_url, :visibility_level)
         }
 
         data
