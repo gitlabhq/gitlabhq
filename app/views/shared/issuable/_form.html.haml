@@ -67,6 +67,14 @@
       - if can? current_user, :admin_label, issuable.project
         = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank
 
+- if issuable.is_a?(Issue)
+  %hr
+    .form-group
+      = f.label :move_to_project_id, 'Move', class: 'control-label'
+      .col-sm-10
+        = project_select_tag("#{issuable.class.model_name.param_key}[move_to_project_id]",
+            placeholder: 'Select project', class: 'custom-form-control')
+
 - if issuable.is_a?(MergeRequest)
   %hr
     - if @merge_request.new_record?
