@@ -19,15 +19,18 @@
           = icon('pencil-square-o')
           Edit
 
-    .status-box{ class: "status-box-closed #{issue_button_visibility(@issue, false)}"} Closed
-    .status-box{ class: "status-box-open #{issue_button_visibility(@issue, true)}"} Open
-    %span.identifier
-      Issue ##{@issue.iid}
-    %span.creator
-      &middot;
-      by #{link_to_member(@project, @issue.author, size: 24)}
-      &middot;
-      = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
+    .pull-left
+      .status-box{ class: "status-box-closed #{issue_button_visibility(@issue, false)}"} Closed
+      .status-box{ class: "status-box-open #{issue_button_visibility(@issue, true)}"} Open
+
+    .issue-meta
+      %span.identifier
+        Issue ##{@issue.iid}
+      %span.creator
+        &middot;
+        by #{link_to_member(@project, @issue.author, size: 24)}
+        &middot;
+        = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
 
   .issue-details.issuable-details
     .detail-page-description.content-block
