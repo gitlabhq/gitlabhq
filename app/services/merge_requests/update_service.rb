@@ -14,7 +14,7 @@ module MergeRequests
       update(merge_request)
     end
 
-    def handle_changes(merge_request)
+    def handle_changes(merge_request, options = {})
       if merge_request.previous_changes.include?('target_branch')
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,

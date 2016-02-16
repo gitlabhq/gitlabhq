@@ -26,6 +26,15 @@ class TaskService
     end
   end
 
+  # When we mark a task as done we should:
+  #
+  #  * mark all pending tasks related to the target for the user as done
+  #
+  def mark_as_done(target, user)
+    pending_tasks = pending_tasks_for(user, target.project, target)
+    pending_tasks.update_all(state: :done)
+  end
+
   private
 
   def create_task(project, target, author, user, action)
@@ -39,5 +48,9 @@ class TaskService
     }
 
     Task.create(attributes)
+  end
+
+  def pending_tasks_for(user, project, target)
+    user.tasks.pending.where(project: project, target: target)
   end
 end

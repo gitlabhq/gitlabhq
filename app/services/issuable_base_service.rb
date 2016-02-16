@@ -54,7 +54,7 @@ class IssuableBaseService < BaseService
     if params.present? && issuable.update_attributes(params.merge(updated_by: current_user))
       issuable.reset_events_cache
       handle_common_system_notes(issuable, old_labels: old_labels)
-      handle_changes(issuable)
+      handle_changes(issuable, old_labels: old_labels)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')
     end

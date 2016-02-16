@@ -45,6 +45,23 @@ describe TaskService, services: true do
         is_expected_to_not_create_task { service.reassigned_issue(assigned_issue, author) }
       end
     end
+
+    describe '#mark_as_done' do
+      let!(:first_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: assigned_issue, author: author)
+      end
+
+      let!(:second_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: assigned_issue, author: author)
+      end
+
+      it 'marks related pending tasks to the target for the user as done' do
+        service.mark_as_done(assigned_issue, john_doe)
+
+        expect(first_pending_task.reload.done?).to eq true
+        expect(second_pending_task.reload.done?).to eq true
+      end
+    end
   end
 
   def is_expected_to_create_pending_task(attributes = {})

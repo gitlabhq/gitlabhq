@@ -78,18 +78,74 @@ describe Issues::UpdateService, services: true do
         expect(note).not_to be_nil
         expect(note.note).to eq 'Title changed from **Old title** to **New title**'
       end
+    end
 
-      it 'creates a pending task if being reassigned' do
-        attributes = {
-          project: project,
-          author: user,
-          user: user2,
-          target: issue,
-          action: Task::ASSIGNED,
-          state: :pending
-        }
+    context 'task queue' do
+      let!(:pending_task) do
+        create(:pending_assigned_task, user: user, project: project, target: issue, author: user2)
+      end
 
-        expect(Task.where(attributes).count).to eq 1
+      context 'when the title change' do
+        before do
+          update_issue({ title: 'New title' })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload.done?).to eq true
+        end
+      end
+
+      context 'when the description change' do
+        before do
+          update_issue({ description: 'Also please fix' })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload.done?).to eq true
+        end
+      end
+
+      context 'when is reassigned' do
+        before do
+          update_issue({ assignee: user2 })
+        end
+
+        it 'marks previous assignee pending tasks as done' do
+          expect(pending_task.reload.done?).to eq true
+        end
+
+        it 'creates a pending task for new assignee' do
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target: issue,
+            action: Task::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Task.where(attributes).count).to eq 1
+        end
+      end
+
+      context 'when the milestone change' do
+        before do
+          update_issue({ milestone: create(:milestone) })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload.done?).to eq true
+        end
+      end
+
+      context 'when the labels change' do
+        before do
+          update_issue({ label_ids: [label.id] })
+        end
+
+        it 'marks pending tasks as done' do
+          expect(pending_task.reload.done?).to eq true
+        end
       end
     end
 
@@ -157,6 +213,5 @@ describe Issues::UpdateService, services: true do
         end
       end
     end
-
   end
 end
