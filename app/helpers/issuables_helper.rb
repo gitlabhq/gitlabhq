@@ -8,20 +8,16 @@ module IssuablesHelper
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 
-  def issuable_index(issuable)
-    base_issuable_scope(issuable).where('id < ?', issuable.id).size + 1
-  end
-
   def issuables_count(issuable)
-    base_issuable_scope(issuable).size
+    base_issuable_scope(issuable).maximum(:iid)
   end
 
   def next_issuable_for(issuable)
-    base_issuable_scope(issuable).where('id > ?', issuable.id).last
+    base_issuable_scope(issuable).where('iid > ?', issuable.iid).last
   end
 
   def prev_issuable_for(issuable)
-    base_issuable_scope(issuable).where('id < ?', issuable.id).first
+    base_issuable_scope(issuable).where('iid < ?', issuable.iid).first
   end
 
   private
@@ -31,7 +27,7 @@ module IssuablesHelper
   end
 
   def base_issuable_scope(issuable)
-    issuable.project.send(issuable.to_scope_name).send(issuable_state_scope(issuable))
+    issuable.project.send(issuable.class.table_name).send(issuable_state_scope(issuable))
   end
 
   def issuable_state_scope(issuable)
