@@ -274,7 +274,9 @@ class SystemNoteService
   # Check if a cross reference to a noteable from a mentioner already exists
   #
   # This method is used to prevent multiple notes being created for a mention
-  # when a issue is updated, for example.
+  # when a issue is updated, for example. The method also calls notes_for_mentioner
+  # to check if the mentioner is a commit, and return matches only on commit hash
+  # instead of project + commit, to avoid repeated mentions from forks.
   #
   # noteable  - Noteable object being referenced
   # mentioner - Mentionable object
