@@ -80,6 +80,10 @@
       display: inline-block;
     }
 
+    .select2-container span {
+      margin-top: 0;
+    }
+
     .issuable-count {
 
     }
@@ -88,6 +92,10 @@
       margin-left: 20px;
       border-left: 1px solid $border-gray-light;
       padding-left: 10px;
+
+      &:hover {
+        color: $gray-darkest;
+      }
     }
   }
 
@@ -192,6 +200,10 @@
   .btn {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
+    &:hover {
+      background: $gray-dark;
+      border: 1px solid $border-gray-dark;
+    }
   }
 
   &.right-sidebar-collapsed {
@@ -223,6 +235,19 @@
         display: block;
         margin-top: 0;
       }
+
+      .btn-clipboard {
+        border: none;
+
+        &:hover {
+          background: transparent;
+        }
+
+        i {
+          color: #999999;
+        }
+      }
+
     }
 
   }

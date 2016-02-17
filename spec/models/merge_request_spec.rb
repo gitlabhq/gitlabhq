@@ -254,13 +254,22 @@ describe MergeRequest, models: true do
   end
 
   describe "#hook_attrs" do
+    let(:attrs_hash) { subject.hook_attrs.to_h }
+
+    [:source, :target].each do |key|
+      describe "#{key} key" do
+        include_examples 'project hook data', project_key: key do
+          let(:data)    { attrs_hash }
+          let(:project) { subject.send("#{key}_project") }
+        end
+      end
+    end
+
     it "has all the required keys" do
-      attrs = subject.hook_attrs
-      attrs = attrs.to_h
-      expect(attrs).to include(:source)
-      expect(attrs).to include(:target)
-      expect(attrs).to include(:last_commit)
-      expect(attrs).to include(:work_in_progress)
+      expect(attrs_hash).to include(:source)
+      expect(attrs_hash).to include(:target)
+      expect(attrs_hash).to include(:last_commit)
+      expect(attrs_hash).to include(:work_in_progress)
     end
   end
 

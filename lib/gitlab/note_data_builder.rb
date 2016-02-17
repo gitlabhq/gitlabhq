@@ -53,13 +53,10 @@ module Gitlab
           object_kind: "note",
           user: user.hook_attrs,
           project_id: project.id,
-          repository: {
-            name: project.name,
-            url: project.url_to_repo,
-            description: project.description,
-            homepage: project.web_url,
-          },
-          object_attributes: note.hook_attrs
+          project: project.hook_attrs,
+          object_attributes: note.hook_attrs,
+          # DEPRECATED
+          repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
         }
 
         base_data[:object_attributes][:url] =

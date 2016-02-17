@@ -19,6 +19,18 @@ describe RepositoryForkWorker do
         fork_project.namespace.path)
     end
 
+    it 'flushes the empty caches' do
+      expect_any_instance_of(Gitlab::Shell).to receive(:fork_repository).
+        with(project.path_with_namespace, fork_project.namespace.path).
+        and_return(true)
+
+      expect_any_instance_of(Repository).to receive(:expire_emptiness_caches).
+        and_call_original
+
+      subject.perform(project.id, project.path_with_namespace,
+                      fork_project.namespace.path)
+    end
+
     it "handles bad fork" do
       expect_any_instance_of(Gitlab::Shell).to receive(:fork_repository).and_return(false)
       subject.perform(
