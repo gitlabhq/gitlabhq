@@ -6,18 +6,32 @@ describe API::API, api: true  do
   let(:admin) { create(:user, :admin) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id) }
-  let!(:project2) { create(:project, creator_id: user.id) }
-  let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
-  let!(:master2) { create(:project_member, user: user, project: project2, access_level: ProjectMember::MASTER) }
-  let!(:developer) { create(:project_member, user: user2, project: project, access_level: ProjectMember::REPORTER) }
+
+  let(:project) { create(:project, creator_id: user.id) }
+  let(:project2) { create(:project, creator_id: user.id) }
+
   let!(:shared_runner) { create(:ci_shared_runner, tag_list: ['mysql', 'ruby'], active: true) }
-  let!(:specific_runner) { create(:ci_specific_runner, tag_list: ['mysql', 'ruby']) }
-  let!(:specific_runner_project) { create(:ci_runner_project, runner: specific_runner, project: project) }
   let!(:unused_specific_runner) { create(:ci_specific_runner) }
-  let!(:two_projects_runner) { create(:ci_specific_runner) }
-  let!(:two_projects_runner_project) { create(:ci_runner_project, runner: two_projects_runner, project: project) }
-  let!(:two_projects_runner_project2) { create(:ci_runner_project, runner: two_projects_runner, project: project2) }
+
+  let!(:specific_runner) do
+    runner = create(:ci_specific_runner, tag_list: ['mysql', 'ruby'])
+    create(:ci_runner_project, runner: runner, project: project)
+    runner
+  end
+
+  let!(:two_projects_runner) do
+    runner = create(:ci_specific_runner)
+    create(:ci_runner_project, runner: runner, project: project)
+    create(:ci_runner_project, runner: runner, project: project2)
+    runner
+  end
+
+  before do
+    # Set project access for users
+    create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER)
+    create(:project_member, user: user, project: project2, access_level: ProjectMember::MASTER)
+    create(:project_member, user: user2, project: project, access_level: ProjectMember::REPORTER)
+  end
 
   describe 'GET /runners' do
     context 'authorized user' do
@@ -338,8 +352,11 @@ describe API::API, api: true  do
   end
 
   describe 'POST /projects/:id/runners' do
-    let!(:specific_runner2) { create(:ci_specific_runner) }
-    let!(:specific_runner2_project) { create(:ci_runner_project, runner: specific_runner2, project: project2) }
+    let(:specific_runner2) do
+      runner = create(:ci_specific_runner)
+      create(:ci_runner_project, runner: runner, project: project2)
+      runner
+    end
 
     context 'authorized user' do
       it 'should enable specific runner' do
