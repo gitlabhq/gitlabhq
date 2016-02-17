@@ -14,10 +14,17 @@ describe GitPushService, services: true do
   end
 
   describe 'Push branches' do
+
+    let(:oldrev) { @oldrev }
+    let(:newrev) { @newrev }
+
+    subject do
+      execute_service(project, user, oldrev, newrev, @ref )
+    end
+
     context 'new branch' do
-      subject do
-        execute_service(project, user, @blankrev, @newrev, @ref )
-      end
+
+      let(:oldrev) { @blankrev }
 
       it { is_expected.to be_truthy }
 
@@ -35,9 +42,6 @@ describe GitPushService, services: true do
     end
 
     context 'existing branch' do
-      subject do
-        execute_service(project, user, @oldrev, @newrev, @ref )
-      end
 
       it { is_expected.to be_truthy }
 
@@ -49,9 +53,8 @@ describe GitPushService, services: true do
     end
 
     context 'rm branch' do
-      subject do
-        execute_service(project, user, @oldrev, @blankrev, @ref )
-      end
+
+      let(:newrev) { @blankrev }
 
       it { is_expected.to be_truthy }
 
