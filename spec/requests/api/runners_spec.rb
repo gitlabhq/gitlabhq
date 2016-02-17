@@ -37,7 +37,7 @@ describe API::API, api: true  do
     context 'authorized user' do
       it 'should return user available runners' do
         get api('/runners', user)
-        shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+        shared = json_response.any?{ |r| r['is_shared'] }
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -46,7 +46,7 @@ describe API::API, api: true  do
 
       it 'should filter runners by scope' do
         get api('/runners?scope=active', user)
-        shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+        shared = json_response.any?{ |r| r['is_shared'] }
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -73,7 +73,7 @@ describe API::API, api: true  do
       context 'with admin privileges' do
         it 'should return all runners' do
           get api('/runners/all', admin)
-          shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+          shared = json_response.any?{ |r| r['is_shared'] }
 
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
@@ -91,7 +91,7 @@ describe API::API, api: true  do
 
       it 'should filter runners by scope' do
         get api('/runners/all?scope=specific', admin)
-        shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+        shared = json_response.any?{ |r| r['is_shared'] }
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
@@ -326,7 +326,7 @@ describe API::API, api: true  do
     context 'authorized user with master privileges' do
       it "should return project's runners" do
         get api("/projects/#{project.id}/runners", user)
-        shared = json_response.map{ |r| r['is_shared'] }.inject{ |sum, shr| sum || shr}
+        shared = json_response.any?{ |r| r['is_shared'] }
 
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
