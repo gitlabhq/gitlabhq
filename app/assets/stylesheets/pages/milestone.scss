@@ -23,15 +23,9 @@ li.milestone {
     font-weight: bold;
   }
 
-  .issue-row .assignee-icon {
+  .issue-row {
     .color-label {
-      float: left;
-      padding: 8px;
-      margin-left: 10px;
-    }
-
-    img {
-      margin-left: 8px;
+      padding: 5px !important;
     }
   }
 }
