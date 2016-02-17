@@ -36,7 +36,7 @@
       = render "download", blob: blob
     - elsif blob.text?
       - if blob_svg?(blob)
-        = render "image", blob: sanitize_svg(blob)
+        = render "image", blob: blob
       - else
         = render "text", blob: blob
     - elsif blob.image?
