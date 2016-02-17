@@ -144,10 +144,6 @@ describe Issue, models: true do
   describe "#to_branch_name" do
     let(:issue) { build(:issue, title: 'a' * 30) }
 
-    it "is expected not to exceed 25 chars" do
-      expect(issue.to_branch_name.length).to eq 25
-    end
-
     it "starts with the issue iid" do
       expect(issue.to_branch_name).to match /\A#{issue.iid}-a+\z/
     end

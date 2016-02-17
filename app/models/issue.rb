@@ -95,7 +95,7 @@ class Issue < ActiveRecord::Base
   end
 
   def related_branches
-    self.project.repository.branch_names.select { |branch| /\A#{iid}-/ =~ branch }
+    self.project.repository.branch_names.select { |branch| branch.start_with? "#{iid}-" }
   end
 
   # Reset issue events cache
@@ -126,12 +126,13 @@ class Issue < ActiveRecord::Base
   end
 
   def to_branch_name
-    "#{iid}-#{title.parameterize}"[0,25]
+    "#{iid}-#{title.parameterize}"
   end
 
-  def new_branch_button?(current_user)
+  def can_be_worked_on?(current_user)
     !self.closed? &&
-    referenced_merge_requests(current_user).empty? &&
-    related_branches.empty?
+      !self.project.forked? &&
+      referenced_merge_requests(current_user).none? { |mr| mr.closes_issue?(self) } &&
+      related_branches.empty?
   end
 end

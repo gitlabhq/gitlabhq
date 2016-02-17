@@ -27,6 +27,12 @@ class Projects::BranchesController < Projects::ApplicationController
     result = CreateBranchService.new(project, current_user).
         execute(branch_name, ref)
 
+    if params[:issue_id]
+      issue = Issue.where(id: params[:issue_id], project: @project).limit(1).first
+
+      SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name)
+    end
+
     if result[:status] == :success
       @branch = result[:branch]
       redirect_to namespace_project_tree_path(@project.namespace, @project,

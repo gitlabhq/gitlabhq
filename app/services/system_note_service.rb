@@ -207,6 +207,15 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when a branch is created from the 'new branch' button on a issue
+  # Example note text:
+  #
+  #   "Started branch `201-issue-branch-button`"
+  def self.new_issue_branch(issue, project, author, branch)
+    body = "Started branch `#{branch}`"
+    create_note(noteable: issue, project: project, author: author, note: body)
+  end
+
   # Called when a Mentionable references a Noteable
   #
   # noteable  - Noteable object being referenced
