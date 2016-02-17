@@ -117,6 +117,10 @@ describe PagesDomain, models: true do
     end
 
     context 'for trusted certificate chain' do
+      # We only validate that we can to rebuild the trust chain, for certificates
+      # We assume that 'AddTrustExternalCARoot' needed to validate the chain is in trusted store.
+      # It will be if ca-certificates is installed on Debian/Ubuntu/Alpine
+
       let(:domain) { build(:pages_domain, :with_trusted_chain) }
 
       it { is_expected.to be_truthy }
