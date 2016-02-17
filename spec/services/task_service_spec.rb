@@ -76,6 +76,12 @@ describe TaskService, services: true do
 
         should_not_create_any_task { service.reassigned_issue(issue, author) }
       end
+
+      it 'does not create a task if new assignee is the current user' do
+        unassigned_issue.update_attribute(:assignee, john_doe)
+
+        should_not_create_any_task { service.reassigned_issue(unassigned_issue, john_doe) }
+      end
     end
 
     describe '#mark_pending_tasks_as_done' do
@@ -202,6 +208,12 @@ describe TaskService, services: true do
         mr_assigned.update_attribute(:assignee, nil)
 
         should_not_create_any_task { service.reassigned_merge_request(mr_assigned, author) }
+      end
+
+      it 'does not create a task if new assignee is the current user' do
+        mr_assigned.update_attribute(:assignee, john_doe)
+
+        should_not_create_any_task { service.reassigned_merge_request(mr_assigned, john_doe) }
       end
     end
 

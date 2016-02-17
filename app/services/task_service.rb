@@ -125,7 +125,6 @@ class TaskService
 
     mentioned_users.delete(author)
     mentioned_users.delete(target.assignee) if target.respond_to?(:assignee)
-
     mentioned_users.uniq
   end
 
@@ -149,9 +148,9 @@ class TaskService
     end
   end
 
-  def reassigned_issuable(issuable, user)
-    if issuable.is_assigned?
-      create_task(issuable.project, issuable, user, issuable.assignee, Task::ASSIGNED)
+  def reassigned_issuable(issuable, current_user)
+    if issuable.is_assigned? && issuable.assignee != current_user
+      create_task(issuable.project, issuable, current_user, issuable.assignee, Task::ASSIGNED)
     end
   end
 end
