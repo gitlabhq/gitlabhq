@@ -25,12 +25,18 @@
       %span
         Issues
         %span.count= number_with_delimiter(current_user.assigned_issues.opened.count)
-    = nav_link(path: 'dashboard#merge_requests') do
-      = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests' do
-        = icon('tasks fw')
-        %span
-          Merge Requests
-          %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
+  = nav_link(path: 'dashboard#merge_requests') do
+    = link_to assigned_mrs_dashboard_path, title: 'Merge Requests', class: 'shortcuts-merge_requests' do
+      = icon('tasks fw')
+      %span
+        Merge Requests
+        %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
+  = nav_link(path: 'dashboard#tasks') do
+    = link_to dashboard_tasks_path, title: 'Task Queue' do
+      = icon('bell fw')
+      %span
+        Task Queue
+        %span.count= number_with_delimiter(tasks_pending_count)
   = nav_link(controller: :snippets) do
     = link_to dashboard_snippets_path, title: 'Snippets' do
       = icon('clipboard fw')
