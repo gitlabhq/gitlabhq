@@ -37,7 +37,7 @@ Feature: Project Fork
     When I fork to my namespace
     And I make forked repo invalid
     And I visit the forks page of the "Shop" project
-    Then I should not see the invalid fork listed
+    Then I should see my fork on the list
 
   Scenario: Viewing private forks of a Project
     Given There is an existent fork of the "Shop" project

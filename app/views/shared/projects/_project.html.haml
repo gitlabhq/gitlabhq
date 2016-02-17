@@ -4,7 +4,7 @@
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - css_class = '' unless local_assigns[:css_class]
-- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
+- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && !project.empty_repo? && project.commit
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - ci_commit = project.ci_commit(project.commit.sha) if ci && !project.empty_repo? && project.commit
 - cache_key = [project.namespace, project, controller.controller_name, controller.action_name, current_application_settings, 'v2.2']

@@ -5,9 +5,7 @@ class Projects::ForksController < Projects::ApplicationController
 
   def index
     @sort = params[:sort] || 'id_desc'
-    @all_forks = project.forks.includes(:creator).order_by(@sort).reject do  |project|
-      project.repository.raw_repository.nil?
-    end
+    @all_forks = project.forks.includes(:creator).order_by(@sort)
 
     @public_forks, @protected_forks = @all_forks.partition do |project|
       can?(current_user, :read_project, project)
