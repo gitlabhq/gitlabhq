@@ -67,8 +67,7 @@ class TaskService
   #  * mark all pending tasks related to the target for the user as done
   #
   def mark_pending_tasks_as_done(target, user)
-    pending_tasks = pending_tasks_for(user, target.project, target)
-    pending_tasks.update_all(state: :done)
+    pending_tasks(user, target.project, target).update_all(state: :done)
   end
 
   # When create a note we should:
@@ -108,13 +107,34 @@ class TaskService
     Task.create(attributes)
   end
 
-  def pending_tasks_for(user, project, target)
+  def build_mentioned_users(project, target, author)
+    mentioned_users = target.mentioned_users.select do |user|
+      user.can?(:read_project, project)
+    end
+
+    mentioned_users.delete(author)
+    mentioned_users.delete(target.assignee) if target.respond_to?(:assignee)
+
+    mentioned_users.uniq
+  end
+
+  def pending_tasks(user, project, target)
     user.tasks.pending.where(project: project, target: target)
   end
 
-  def new_issuable(issuable, user)
-    if issuable.is_assigned? && issuable.assignee != user
-      create_task(issuable.project, issuable, user, issuable.assignee, Task::ASSIGNED)
+  def new_issuable(issuable, current_user)
+    project = issuable.project
+    target  = issuable
+    author  = issuable.author
+
+    if target.is_assigned? && target.assignee != current_user
+      create_task(project, target, author, target.assignee, Task::ASSIGNED)
+    end
+
+    mentioned_users = build_mentioned_users(project, target, author)
+
+    mentioned_users.each do |mentioned_user|
+      create_task(project, target, author, mentioned_user, Task::MENTIONED)
     end
   end
 

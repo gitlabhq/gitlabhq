@@ -16,6 +16,7 @@
 
 class Task < ActiveRecord::Base
   ASSIGNED  = 1
+  MENTIONED = 2
 
   belongs_to :author, class_name: "User"
   belongs_to :project
@@ -43,6 +44,7 @@ class Task < ActiveRecord::Base
   def action_name
     case action
     when ASSIGNED then 'assigned'
+    when MENTIONED then 'mentioned on'
     end
   end
 
