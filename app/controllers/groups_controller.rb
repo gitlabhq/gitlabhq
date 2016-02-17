@@ -5,7 +5,7 @@ class GroupsController < Groups::ApplicationController
   respond_to :html
 
   skip_before_action :authenticate_user!, only: [:index, :show, :issues, :merge_requests]
-  before_action :group, except: [:index, :new, :create]
+  before_action :group, except: [:index, :new, :create, :autocomplete]
 
   # Authorize
   before_action :authorize_read_group!, except: [:index, :show, :new, :create, :autocomplete]
