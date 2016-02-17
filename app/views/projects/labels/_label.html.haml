@@ -1,10 +1,2 @@
 %li{id: dom_id(label)}
-  = link_to_label(label)
-  .pull-right
-    %strong.append-right-20
-      = link_to_label(label) do
-        = pluralize label.open_issues_count, 'open issue'
-
-    - if can? current_user, :admin_label, @project
-      = link_to 'Edit', edit_namespace_project_label_path(@project.namespace, @project, label), class: 'btn btn-sm'
-      = link_to 'Delete', namespace_project_label_path(@project.namespace, @project, label), class: 'btn btn-sm btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?"}
+  = render "shared/label_row", label: label, editable: true
