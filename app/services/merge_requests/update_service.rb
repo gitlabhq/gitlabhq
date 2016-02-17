@@ -48,22 +48,5 @@ module MergeRequests
     def close_service
       MergeRequests::CloseService
     end
-
-    private
-
-    def have_changes?(merge_request, options = {})
-      valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
-
-      attrs_changed = valid_attrs.any? do |attr|
-        merge_request.previous_changes.include?(attr.to_s)
-      end
-
-      old_labels = options[:old_labels]
-      labels_changed = old_labels && merge_request.labels != old_labels
-
-      if attrs_changed || labels_changed
-        task_service.mark_as_done(merge_request, current_user)
-      end
-    end
   end
 end

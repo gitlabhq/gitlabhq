@@ -71,6 +71,19 @@ class IssuableBaseService < BaseService
     end
   end
 
+  def have_changes?(issuable, options = {})
+    valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
+
+    attrs_changed = valid_attrs.any? do |attr|
+      issuable.previous_changes.include?(attr.to_s)
+    end
+
+    old_labels = options[:old_labels]
+    labels_changed = old_labels && issuable.labels != old_labels
+
+    attrs_changed || labels_changed
+  end
+
   def handle_common_system_notes(issuable, options = {})
     if issuable.previous_changes.include?('title')
       create_title_change_note(issuable, issuable.previous_changes['title'].first)
