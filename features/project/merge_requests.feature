@@ -39,6 +39,7 @@ Feature: Project Merge Requests
   Scenario: I visit merge request page
     Given I click link "Bug NS-04"
     Then I should see merge request "Bug NS-04"
+    And I should see "1 of 1" in the sidebar
 
   Scenario: I close merge request page
     Given I click link "Bug NS-04"

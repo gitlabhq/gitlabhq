@@ -16,7 +16,7 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 ### Predefined variables (Environment Variables)
 
 | Variable                | Runner | Description |
-|-------------------------|-------------|
+|-------------------------|-----|--------|
 | **CI**                  | 0.4 | Mark that build is executed in CI environment |
 | **GITLAB_CI**           | all | Mark that build is executed in GitLab CI environment |
 | **CI_SERVER**           | all | Mark that build is executed in CI environment |
