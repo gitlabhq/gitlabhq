@@ -167,6 +167,23 @@ describe TaskService, services: true do
         is_expected_to_not_create_task { service.reassigned_merge_request(mr_assigned, author) }
       end
     end
+
+    describe '#merge_merge_request' do
+      let!(:first_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: mr_assigned, author: author)
+      end
+
+      let!(:second_pending_task) do
+        create(:pending_assigned_task, user: john_doe, project: project, target: mr_assigned, author: author)
+      end
+
+      it 'marks related pending tasks to the target for the user as done' do
+        service.merge_merge_request(mr_assigned, john_doe)
+
+        expect(first_pending_task.reload).to be_done
+        expect(second_pending_task.reload).to be_done
+      end
+    end
   end
 
   def is_expected_to_create_pending_task(attributes = {})
