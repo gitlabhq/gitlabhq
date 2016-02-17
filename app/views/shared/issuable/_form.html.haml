@@ -73,7 +73,7 @@
       = f.label :move_to_project_id, 'Move', class: 'control-label'
       .col-sm-10
         = project_select_tag("#{issuable.class.model_name.param_key}[move_to_project_id]",
-            placeholder: 'Select project', class: 'custom-form-control')
+          placeholder: 'Select project', class: 'custom-form-control', data: { 'select-id' => 'id' })
 
 - if issuable.is_a?(MergeRequest)
   %hr

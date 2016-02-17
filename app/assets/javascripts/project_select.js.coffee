@@ -4,6 +4,7 @@ class @ProjectSelect
       @groupId = $(select).data('group-id')
       @includeGroups = $(select).data('include-groups')
       @orderBy = $(select).data('order-by') || 'id'
+      @selectId = $(select).data('select-id') || 'web_url'
 
       placeholder = "Search for project"
       placeholder += " or group" if @includeGroups
@@ -31,8 +32,8 @@ class @ProjectSelect
           else
             Api.projects query.term, @orderBy, projectsCallback
 
-        id: (project) ->
-          project.web_url
+        id: (project) =>
+          project[@selectId]
 
         text: (project) ->
           project.name_with_namespace || project.name
