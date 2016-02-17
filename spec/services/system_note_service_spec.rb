@@ -486,7 +486,7 @@ describe SystemNoteService, services: true do
     end
 
     context 'invalid direction' do
-      let (:direction) { :invalid }
+      let(:direction) { :invalid }
 
       it 'should raise error' do
         expect { subject }.to raise_error StandardError, /Invalid direction/

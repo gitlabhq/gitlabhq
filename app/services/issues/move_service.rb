@@ -1,10 +1,19 @@
 module Issues
   class MoveService < Issues::BaseService
-    def execute(issue_old, project_new)
-      @issue_old = issue_old
-      @issue_new = issue_old.dup
-      @project_new = project_new
+    def initialize(project, current_user, params, issue)
+      super(project, current_user, params)
+
+      @issue_old = issue
+      @issue_new = @issue_old.dup
       @project_old = @project
+
+      if params['move_to_project_id']
+        @project_new = Project.find(params['move_to_project_id'])
+      end
+    end
+
+    def execute
+      return unless move?
 
       open_new_issue
       rewrite_notes
@@ -14,7 +23,19 @@ module Issues
       @issue_new
     end
 
+    def move?
+      return false unless @project_new
+      return false unless @issue_new
+      return false unless can_move?
+
+      true
+    end
+
     private
+
+    def can_move?
+      true
+    end
 
     def open_new_issue
       @issue_new.project = @project_new

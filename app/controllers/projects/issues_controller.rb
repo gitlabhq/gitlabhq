@@ -88,6 +88,11 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def update
     @issue = Issues::UpdateService.new(project, current_user, issue_params).execute(issue)
+    move_service = Issues::MoveService.new(project, current_user, params.require(:issue).permit!, @issue)
+
+    if move_service.move?
+      @issue = move_service.execute
+    end
 
     respond_to do |format|
       format.js
