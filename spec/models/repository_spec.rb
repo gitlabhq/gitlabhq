@@ -200,12 +200,21 @@ describe Repository, models: true do
 
   describe :commit_with_hooks do
     context 'when pre hooks were successful' do
-      it 'should run without errors' do
-        expect_any_instance_of(GitHooksService).to receive(:execute).and_return(true)
+      before do
+        expect_any_instance_of(GitHooksService).to receive(:execute).
+          and_return(true)
+      end
 
+      it 'should run without errors' do
         expect do
           repository.commit_with_hooks(user, 'feature') { sample_commit.id }
         end.not_to raise_error
+      end
+
+      it 'should ensure the autocrlf Git option is set to :input' do
+        expect(repository).to receive(:update_autocrlf_option)
+
+        repository.commit_with_hooks(user, 'feature') { sample_commit.id }
       end
     end
 
@@ -245,6 +254,33 @@ describe Repository, models: true do
 
         repository.has_visible_content?
         repository.has_visible_content?
+      end
+    end
+  end
+
+  describe '#update_autocrlf_option' do
+    describe 'when autocrlf is not already set to :input' do
+      before do
+        repository.raw_repository.autocrlf = true
+      end
+
+      it 'sets autocrlf to :input' do
+        repository.update_autocrlf_option
+
+        expect(repository.raw_repository.autocrlf).to eq(:input)
+      end
+    end
+
+    describe 'when autocrlf is already set to :input' do
+      before do
+        repository.raw_repository.autocrlf = :input
+      end
+
+      it 'does nothing' do
+        expect(repository.raw_repository).to_not receive(:autocrlf=).
+          with(:input)
+
+        repository.update_autocrlf_option
       end
     end
   end

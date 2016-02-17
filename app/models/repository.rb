@@ -24,12 +24,14 @@ class Repository
     return nil unless path_with_namespace
 
     @raw_repository ||= begin
-      repo = Gitlab::Git::Repository.new(path_to_repo)
-      repo.autocrlf = :input
-      repo
+      Gitlab::Git::Repository.new(path_to_repo)
     rescue Gitlab::Git::Repository::NoRepository
       nil
     end
+  end
+
+  def update_autocrlf_option
+    raw_repository.autocrlf = :input if raw_repository.autocrlf != :input
   end
 
   # Return absolute path to repository
@@ -693,6 +695,8 @@ class Repository
   end
 
   def commit_with_hooks(current_user, branch)
+    update_autocrlf_option
+
     oldrev = Gitlab::Git::BLANK_SHA
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
     was_empty = empty?
