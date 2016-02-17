@@ -20,14 +20,12 @@ FactoryGirl.define do
     author
     user
 
-    factory :pending_assigned_task, traits: [:assgined, :pending]
-
-    trait :assgined do
+    trait :assigned do
       action { Task::ASSIGNED }
     end
 
-    trait :pending do
-      state { :pending }
+    trait :mentioned do
+      action { Task::MENTIONED }
     end
   end
 end

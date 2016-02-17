@@ -5,9 +5,7 @@ describe MergeRequests::CloseService, services: true do
   let(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, assignee: user2) }
   let(:project) { merge_request.project }
-  let!(:pending_task) do
-    create(:pending_assigned_task, user: user, project: project, target: merge_request, author: user2)
-  end
+  let!(:pending_task) { create(:task, :assigned, user: user, project: project, target: merge_request, author: user2) }
 
   before do
     project.team << [user, :master]

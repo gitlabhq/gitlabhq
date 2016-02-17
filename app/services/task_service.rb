@@ -8,10 +8,20 @@
 class TaskService
   # When create an issue we should:
   #
-  #  * creates a pending task for assignee if issue is assigned
+  #  * create a task for assignee if issue is assigned
+  #  * create a task for each mentioned user on issue
   #
   def new_issue(issue, current_user)
     new_issuable(issue, current_user)
+  end
+
+  # When update an issue we should:
+  #
+  #  * mark all pending tasks related to the issue for the current user as done
+  #  * create a task for each new user mentioned on issue
+  #
+  def update_issue(issue, current_user)
+    update_issuable(issue, current_user)
   end
 
   # When close an issue we should:
@@ -24,7 +34,7 @@ class TaskService
 
   # When we reassign an issue we should:
   #
-  #  * creates a pending task for new assignee if issue is assigned
+  #  * create a pending task for new assignee if issue is assigned
   #
   def reassigned_issue(issue, current_user)
     reassigned_issuable(issue, current_user)
@@ -33,9 +43,19 @@ class TaskService
   # When create a merge request we should:
   #
   #  * creates a pending task for assignee if merge request is assigned
+  #  * create a task for each mentioned user on merge request
   #
   def new_merge_request(merge_request, current_user)
     new_issuable(merge_request, current_user)
+  end
+
+  # When update a merge request we should:
+  #
+  #  * mark all pending tasks related to the merge request for the current user as done
+  #  * create a task for each new user mentioned on merge request
+  #
+  def update_merge_request(merge_request, current_user)
+    update_issuable(merge_request, current_user)
   end
 
   # When close a merge request we should:
@@ -62,17 +82,10 @@ class TaskService
     mark_pending_tasks_as_done(merge_request, current_user)
   end
 
-  # When we mark a task as done we should:
-  #
-  #  * mark all pending tasks related to the target for the user as done
-  #
-  def mark_pending_tasks_as_done(target, user)
-    pending_tasks(user, target.project, target).update_all(state: :done)
-  end
-
   # When create a note we should:
   #
   #  * mark all pending tasks related to the noteable for the note author as done
+  #  * create a task for each mentioned user on note
   #
   def new_note(note)
     # Skip system notes, like status changes and cross-references
@@ -94,11 +107,24 @@ class TaskService
   # When update a note we should:
   #
   #  * mark all pending tasks related to the noteable for the current user as done
+  #  * create a task for each new user mentioned on note
   #
   def update_note(note, current_user)
     # Skip system notes, like status changes and cross-references
     unless note.system
-      mark_pending_tasks_as_done(note.noteable, current_user)
+      project = note.project
+      target  = note.noteable
+      author  = current_user
+
+      mark_pending_tasks_as_done(target, author)
+
+      mentioned_users = build_mentioned_users(project, note, author)
+
+      mentioned_users.each do |user|
+        unless pending_tasks(mentioned_user, project, target, note: note, action: Task::MENTIONED).exists?
+          create_task(project, target, author, user, Task::MENTIONED, note)
+        end
+      end
     end
   end
 
@@ -128,8 +154,17 @@ class TaskService
     mentioned_users.uniq
   end
 
-  def pending_tasks(user, project, target)
-    user.tasks.pending.where(project: project, target: target)
+  def mark_pending_tasks_as_done(target, user)
+    pending_tasks(user, target.project, target).update_all(state: :done)
+  end
+
+  def pending_tasks(user, project, target, options = {})
+    options.reverse_merge({
+      project: project,
+      target: target
+    })
+
+    user.tasks.pending.where(options)
   end
 
   def new_issuable(issuable, current_user)
@@ -148,8 +183,24 @@ class TaskService
     end
   end
 
+  def update_issuable(issuable, current_user)
+    project = issuable.project
+    target  = issuable
+    author  = current_user
+
+    mark_pending_tasks_as_done(target, author)
+
+    mentioned_users = build_mentioned_users(project, target, author)
+
+    mentioned_users.each do |mentioned_user|
+      unless pending_tasks(mentioned_user, project, target, action: Task::MENTIONED).exists?
+        create_task(project, target, author, mentioned_user, Task::MENTIONED)
+      end
+    end
+  end
+
   def reassigned_issuable(issuable, current_user)
-    if issuable.is_assigned? && issuable.assignee != current_user
+    if issuable.assignee && issuable.assignee != current_user
       create_task(issuable.project, issuable, current_user, issuable.assignee, Task::ASSIGNED)
     end
   end

@@ -5,9 +5,7 @@ describe Issues::CloseService, services: true do
   let(:user2) { create(:user) }
   let(:issue) { create(:issue, assignee: user2) }
   let(:project) { issue.project }
-  let!(:pending_task) do
-    create(:pending_assigned_task, user: user, project: project, target: issue, author: user2)
-  end
+  let!(:pending_task) { create(:task, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
     project.team << [user, :master]

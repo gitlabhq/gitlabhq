@@ -16,7 +16,7 @@ describe TaskService, services: true do
   end
 
   describe 'Issues' do
-    let(:issue) { create(:issue, project: project, assignee: john_doe, author: author) }
+    let(:issue) { create(:issue, project: project, assignee: john_doe, author: author, description: mentions) }
     let(:unassigned_issue) { create(:issue, project: project, assignee: nil) }
 
     describe '#new_issue' do
@@ -35,8 +35,6 @@ describe TaskService, services: true do
       end
 
       it 'creates a task for each valid mentioned user' do
-        issue.update_attribute(:description, mentions)
-
         service.new_issue(issue, author)
 
         should_create_task(user: michael, target: issue, action: Task::MENTIONED)
@@ -46,20 +44,39 @@ describe TaskService, services: true do
       end
     end
 
+    describe '#update_issue' do
+      it 'marks pending tasks to the issue for the user as done' do
+        pending_task = create(:task, :assigned, user: john_doe, project: project, target: issue, author: author)
+        service.update_issue(issue, john_doe)
+
+        expect(pending_task.reload).to be_done
+      end
+
+      it 'creates a task for each valid mentioned user' do
+        service.update_issue(issue, author)
+
+        should_create_task(user: michael, target: issue, action: Task::MENTIONED)
+        should_not_create_task(user: author, target: issue, action: Task::MENTIONED)
+        should_not_create_task(user: john_doe, target: issue, action: Task::MENTIONED)
+        should_not_create_task(user: stranger, target: issue, action: Task::MENTIONED)
+      end
+
+      it 'does not create a task if user was already mentioned' do
+        create(:task, :mentioned, user: michael, project: project, target: issue, author: author)
+
+        should_not_create_any_task { service.update_issue(issue, author) }
+      end
+    end
+
     describe '#close_issue' do
-      let!(:first_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: issue, author: author)
-      end
-
-      let!(:second_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: issue, author: author)
-      end
-
       it 'marks related pending tasks to the target for the user as done' do
+        first_task = create(:task, :assigned, user: john_doe, project: project, target: issue, author: author)
+        second_task = create(:task, :assigned, user: john_doe, project: project, target: issue, author: author)
+
         service.close_issue(issue, john_doe)
 
-        expect(first_pending_task.reload).to be_done
-        expect(second_pending_task.reload).to be_done
+        expect(first_task.reload).to be_done
+        expect(second_task.reload).to be_done
       end
     end
 
@@ -84,60 +101,38 @@ describe TaskService, services: true do
       end
     end
 
-    describe '#mark_pending_tasks_as_done' do
-      let!(:first_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: issue, author: author)
-      end
-
-      let!(:second_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: issue, author: author)
-      end
-
-      it 'marks related pending tasks to the target for the user as done' do
-        service.mark_pending_tasks_as_done(issue, john_doe)
-
-        expect(first_pending_task.reload).to be_done
-        expect(second_pending_task.reload).to be_done
-      end
-    end
-
     describe '#new_note' do
-      let!(:first_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: issue, author: author)
-      end
-
-      let!(:second_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: issue, author: author)
-      end
-
-      let(:note) { create(:note, project: project, noteable: issue, author: john_doe) }
+      let!(:first_task) { create(:task, :assigned, user: john_doe, project: project, target: issue, author: author) }
+      let!(:second_task) { create(:task, :assigned, user: john_doe, project: project, target: issue, author: author) }
+      let(:note) { create(:note, project: project, noteable: issue, author: john_doe, note: mentions) }
       let(:award_note) { create(:note, :award, project: project, noteable: issue, author: john_doe, note: 'thumbsup') }
       let(:system_note) { create(:system_note, project: project, noteable: issue) }
 
       it 'mark related pending tasks to the noteable for the note author as done' do
+        first_task = create(:task, :assigned, user: john_doe, project: project, target: issue, author: author)
+        second_task = create(:task, :assigned, user: john_doe, project: project, target: issue, author: author)
+
         service.new_note(note)
 
-        expect(first_pending_task.reload).to be_done
-        expect(second_pending_task.reload).to be_done
+        expect(first_task.reload).to be_done
+        expect(second_task.reload).to be_done
       end
 
       it 'mark related pending tasks to the noteable for the award note author as done' do
         service.new_note(award_note)
 
-        expect(first_pending_task.reload).to be_done
-        expect(second_pending_task.reload).to be_done
+        expect(first_task.reload).to be_done
+        expect(second_task.reload).to be_done
       end
 
       it 'does not mark related pending tasks it is a system note' do
         service.new_note(system_note)
 
-        expect(first_pending_task.reload).to be_pending
-        expect(second_pending_task.reload).to be_pending
+        expect(first_task.reload).to be_pending
+        expect(second_task.reload).to be_pending
       end
 
       it 'creates a task for each valid mentioned user' do
-        note.update_attribute(:note, mentions)
-
         service.new_note(note)
 
         should_create_task(user: michael, target: issue, author: john_doe, action: Task::MENTIONED, note: note)
@@ -149,7 +144,7 @@ describe TaskService, services: true do
   end
 
   describe 'Merge Requests' do
-    let(:mr_assigned) { create(:merge_request, source_project: project, author: author, assignee: john_doe) }
+    let(:mr_assigned) { create(:merge_request, source_project: project, author: author, assignee: john_doe, description: mentions) }
     let(:mr_unassigned) { create(:merge_request, source_project: project, author: author, assignee: nil) }
 
     describe '#new_merge_request' do
@@ -168,8 +163,6 @@ describe TaskService, services: true do
       end
 
       it 'creates a task for each valid mentioned user' do
-        mr_assigned.update_attribute(:description, mentions)
-
         service.new_merge_request(mr_assigned, author)
 
         should_create_task(user: michael, target: mr_assigned, action: Task::MENTIONED)
@@ -179,20 +172,38 @@ describe TaskService, services: true do
       end
     end
 
+    describe '#update_merge_request' do
+      it 'marks pending tasks to the merge request for the user as done' do
+        pending_task = create(:task, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
+        service.update_merge_request(mr_assigned, john_doe)
+
+        expect(pending_task.reload).to be_done
+      end
+
+      it 'creates a task for each valid mentioned user' do
+        service.update_merge_request(mr_assigned, author)
+
+        should_create_task(user: michael, target: mr_assigned, action: Task::MENTIONED)
+        should_not_create_task(user: author, target: mr_assigned, action: Task::MENTIONED)
+        should_not_create_task(user: john_doe, target: mr_assigned, action: Task::MENTIONED)
+        should_not_create_task(user: stranger, target: mr_assigned, action: Task::MENTIONED)
+      end
+
+      it 'does not create a task if user was already mentioned' do
+        create(:task, :mentioned, user: michael, project: project, target: mr_assigned, author: author)
+
+        should_not_create_any_task { service.update_merge_request(mr_assigned, author) }
+      end
+    end
+
     describe '#close_merge_request' do
-      let!(:first_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: mr_assigned, author: author)
-      end
-
-      let!(:second_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: mr_assigned, author: author)
-      end
-
       it 'marks related pending tasks to the target for the user as done' do
+        first_task = create(:task, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
+        second_task = create(:task, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
         service.close_merge_request(mr_assigned, john_doe)
 
-        expect(first_pending_task.reload).to be_done
-        expect(second_pending_task.reload).to be_done
+        expect(first_task.reload).to be_done
+        expect(second_task.reload).to be_done
       end
     end
 
@@ -218,19 +229,13 @@ describe TaskService, services: true do
     end
 
     describe '#merge_merge_request' do
-      let!(:first_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: mr_assigned, author: author)
-      end
-
-      let!(:second_pending_task) do
-        create(:pending_assigned_task, user: john_doe, project: project, target: mr_assigned, author: author)
-      end
-
       it 'marks related pending tasks to the target for the user as done' do
+        first_task = create(:task, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
+        second_task = create(:task, :assigned, user: john_doe, project: project, target: mr_assigned, author: author)
         service.merge_merge_request(mr_assigned, john_doe)
 
-        expect(first_pending_task.reload).to be_done
-        expect(second_pending_task.reload).to be_done
+        expect(first_task.reload).to be_done
+        expect(second_task.reload).to be_done
       end
     end
   end

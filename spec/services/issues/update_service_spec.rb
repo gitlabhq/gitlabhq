@@ -81,9 +81,7 @@ describe Issues::UpdateService, services: true do
     end
 
     context 'task queue' do
-      let!(:pending_task) do
-        create(:pending_assigned_task, user: user, project: project, target: issue, author: user2)
-      end
+      let!(:pending_task) { create(:task, :assigned, user: user, project: project, target: issue, author: user2) }
 
       context 'when the title change' do
         before do
