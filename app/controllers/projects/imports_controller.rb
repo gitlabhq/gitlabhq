@@ -3,6 +3,7 @@ class Projects::ImportsController < Projects::ApplicationController
   before_action :authorize_admin_project!
   before_action :require_no_repo, only: [:new, :create]
   before_action :redirect_if_progress, only: [:new, :create]
+  before_action :redirect_if_no_import, only: :show
 
   def new
   end
@@ -63,14 +64,19 @@ class Projects::ImportsController < Projects::ApplicationController
 
   def require_no_repo
     if @project.repository_exists?
-      redirect_to(namespace_project_path(@project.namespace, @project))
+      redirect_to namespace_project_path(@project.namespace, @project)
     end
   end
 
   def redirect_if_progress
     if @project.import_in_progress?
-      redirect_to namespace_project_import_path(@project.namespace, @project) &&
-        return
+      redirect_to namespace_project_import_path(@project.namespace, @project)
+    end
+  end
+
+  def redirect_if_no_import
+    if @project.repository_exists? && @project.no_import?
+      redirect_to namespace_project_path(@project.namespace, @project)
     end
   end
 end

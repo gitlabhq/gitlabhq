@@ -1,5 +1,9 @@
 require 'spec_helper'
 
+class MigrationTest
+  include Gitlab::Database
+end
+
 describe Gitlab::Database, lib: true do
   # These are just simple smoke tests to check if the methods work (regardless
   # of what they may return).
@@ -32,6 +36,34 @@ describe Gitlab::Database, lib: true do
 
         expect(described_class.version).to eq '9.4.4'
       end
+    end
+  end
+
+  describe '#true_value' do
+    it 'returns correct value for PostgreSQL' do
+      expect(described_class).to receive(:postgresql?).and_return(true)
+
+      expect(MigrationTest.new.true_value).to eq "'t'"
+    end
+
+    it 'returns correct value for MySQL' do
+      expect(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(MigrationTest.new.true_value).to eq 1
+    end
+  end
+
+  describe '#false_value' do
+    it 'returns correct value for PostgreSQL' do
+      expect(described_class).to receive(:postgresql?).and_return(true)
+
+      expect(MigrationTest.new.false_value).to eq "'f'"
+    end
+
+    it 'returns correct value for MySQL' do
+      expect(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(MigrationTest.new.false_value).to eq 0
     end
   end
 end

@@ -31,6 +31,10 @@ describe Member, models: true do
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
 
+    it_behaves_like 'an object with email-formated attributes', :invite_email do
+      subject { build(:project_member) }
+    end
+
     context "when an invite email is provided" do
       let(:member) { build(:project_member, invite_email: "user@example.com", user: nil) }
 
@@ -159,7 +163,7 @@ describe Member, models: true do
 
   describe "#generate_invite_token" do
     let!(:member) { create(:project_member, invite_email: "user@example.com", user: nil) }
-    
+
     it "sets the invite token" do
       expect { member.generate_invite_token }.to change { member.invite_token}
     end

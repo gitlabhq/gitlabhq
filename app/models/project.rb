@@ -342,7 +342,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, nil, self)
+    @repository ||= Repository.new(path_with_namespace, self)
   end
 
   def commit(id = 'HEAD')
@@ -380,6 +380,10 @@ class Project < ActiveRecord::Base
 
   def import?
     external_import? || forked?
+  end
+
+  def no_import?
+    import_status == 'none'
   end
 
   def external_import?
@@ -738,11 +742,20 @@ class Project < ActiveRecord::Base
   def hook_attrs
     {
       name: name,
-      ssh_url: ssh_url_to_repo,
-      http_url: http_url_to_repo,
+      description: description,
       web_url: web_url,
+      avatar_url: avatar_url,
+      git_ssh_url: ssh_url_to_repo,
+      git_http_url: http_url_to_repo,
       namespace: namespace.name,
-      visibility_level: visibility_level
+      visibility_level: visibility_level,
+      path_with_namespace: path_with_namespace,
+      default_branch: default_branch,
+      # Backward compatibility
+      homepage: web_url,
+      url: url_to_repo,
+      ssh_url: ssh_url_to_repo,
+      http_url: http_url_to_repo
     }
   end
 

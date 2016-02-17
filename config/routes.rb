@@ -352,6 +352,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
+      get :events
     end
 
     scope module: :groups do
@@ -607,7 +608,7 @@ Rails.application.routes.draw do
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
 
-        resources :builds, only: [:index, :show] do
+        resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
           end
@@ -696,6 +697,12 @@ Rails.application.routes.draw do
         end
 
         resources :runner_projects, only: [:create, :destroy]
+        resources :badges, only: [], path: 'badges/*ref',
+                           constraints: { ref: Gitlab::Regex.git_reference_regex } do
+          collection do
+            get :build, constraints: { format: /svg/ }
+          end
+        end
       end
     end
   end

@@ -16,7 +16,7 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 ### Predefined variables (Environment Variables)
 
 | Variable                | Runner | Description |
-|-------------------------|-------------|
+|-------------------------|-----|--------|
 | **CI**                  | 0.4 | Mark that build is executed in CI environment |
 | **GITLAB_CI**           | all | Mark that build is executed in GitLab CI environment |
 | **CI_SERVER**           | all | Mark that build is executed in CI environment |
@@ -77,8 +77,11 @@ More information about Docker integration can be found in [Using Docker Images](
 
 GitLab CI allows you to define per-project **Secure Variables** that are set in build environment. 
 The secure variables are stored out of the repository (the `.gitlab-ci.yml`).
-These variables are securely stored in GitLab CI database and are hidden in the build log.
+The variables are securely passed to GitLab Runner and are available in build environment.
 It's desired method to use them for storing passwords, secret keys or whatever you want.
+
+**The value of the variable can be shown in build log if explicitly asked to do so.**
+If your project is public or internal you can make the builds private.
 
 Secure Variables can added by going to `Project > Variables > Add Variable`.
 

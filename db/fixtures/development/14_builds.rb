@@ -1,24 +1,13 @@
 class Gitlab::Seeder::Builds
-  BUILD_STATUSES = %w(running pending success failed canceled)
-
   def initialize(project)
     @project = project
   end
 
   def seed!
     ci_commits.each do |ci_commit|
-      build = Ci::Build.new(build_attributes_for(ci_commit))
-
-      artifacts_cache_file(artifacts_archive_path) do |file|
-        build.artifacts_file = file
-      end
-
-      artifacts_cache_file(artifacts_metadata_path) do |file|
-        build.artifacts_metadata = file
-      end
-
       begin
-        build.save!
+        build_create!(ci_commit, name: 'test build 1')
+        build_create!(ci_commit, status: 'success', name: 'test build 2')
         print '.'
       rescue ActiveRecord::RecordInvalid
         print 'F'
@@ -36,6 +25,28 @@ class Gitlab::Seeder::Builds
     []
   end
 
+  def build_create!(ci_commit, opts = {})
+    attributes = build_attributes_for(ci_commit).merge(opts)
+    build = Ci::Build.new(attributes)
+
+    if %w(success failed).include?(build.status)
+      artifacts_cache_file(artifacts_archive_path) do |file|
+        build.artifacts_file = file
+      end
+
+      artifacts_cache_file(artifacts_metadata_path) do |file|
+        build.artifacts_metadata = file
+      end
+    end
+
+    build.save!
+
+    if %w(running success failed).include?(build.status)
+      # We need to set build trace after saving a build (id required)
+      build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
+    end
+  end
+
   def build_attributes_for(ci_commit)
     { name: 'test build', commands: "$ build command",
       stage: 'test', stage_idx: 1, ref: 'master',
@@ -49,7 +60,7 @@ class Gitlab::Seeder::Builds
   end
 
   def build_status
-    BUILD_STATUSES.sample
+    Ci::Build::AVAILABLE_STATUSES.sample
   end
 
   def artifacts_archive_path

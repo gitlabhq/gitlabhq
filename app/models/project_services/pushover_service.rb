@@ -112,7 +112,7 @@ class PushoverService < Service
       priority: priority,
       title: "#{project.name_with_namespace}",
       message: message,
-      url: data[:repository][:homepage],
+      url: data[:project][:web_url],
       url_title: "See project #{project.name_with_namespace}"
     }
 

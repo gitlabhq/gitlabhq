@@ -42,22 +42,6 @@ module Gitlab
       end
     end
 
-    context "with project in context" do
-
-      let(:context) { { project: create(:project) } }
-
-      it "should filter converted input via HTML pipeline and return result" do
-        filtered_html = '<b>ASCII</b>'
-
-        allow(Asciidoctor).to receive(:convert).and_return(html)
-        expect(Banzai).to receive(:render)
-          .with(html, context.merge(pipeline: :asciidoc))
-          .and_return(filtered_html)
-
-        expect( render('foo', context) ).to eql filtered_html
-      end
-    end
-
     def render(*args)
       described_class.render(*args)
     end
