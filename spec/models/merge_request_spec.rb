@@ -137,9 +137,10 @@ describe MergeRequest, models: true do
   describe 'detection of issues to be closed' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
-    let(:commit0) { double('commit0', closes_issues: [issue0]) }
-    let(:commit1) { double('commit1', closes_issues: [issue0]) }
-    let(:commit2) { double('commit2', closes_issues: [issue1]) }
+
+    let(:commit0) { double('commit0', safe_message: "Fixes #{issue0.to_reference}") }
+    let(:commit1) { double('commit1', safe_message: "Fixes #{issue0.to_reference}") }
+    let(:commit2) { double('commit2', safe_message: "Fixes #{issue1.to_reference}") }
 
     before do
       allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
@@ -149,7 +150,9 @@ describe MergeRequest, models: true do
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.closes_issues).to eq([issue0, issue1].sort_by(&:id))
+      closed = subject.closes_issues
+
+      expect(closed).to include(issue0, issue1)
     end
 
     it 'only lists issues as to be closed if it targets the default branch' do
@@ -167,17 +170,6 @@ describe MergeRequest, models: true do
 
       expect(subject.closes_issues).to include(issue2)
     end
-
-    context 'for a project with JIRA integration' do
-      let(:issue0) { JiraIssue.new('JIRA-123', subject.project) }
-      let(:issue1) { JiraIssue.new('FOOBAR-4567', subject.project) }
-
-      it 'returns sorted JiraIssues' do
-        allow(subject.project).to receive_messages(default_branch: subject.target_branch)
-
-        expect(subject.closes_issues).to eq([issue0, issue1])
-      end
-    end
   end
 
   describe "#work_in_progress?" do
@@ -193,6 +185,11 @@ describe MergeRequest, models: true do
 
     it "detects the '[WIP] ' prefix" do
       subject.title = "[WIP] #{subject.title}"
+      expect(subject).to be_work_in_progress
+    end
+
+    it "detects the '[WIP]' prefix" do
+      subject.title = "[WIP]#{subject.title}"
       expect(subject).to be_work_in_progress
     end
 
@@ -234,8 +231,14 @@ describe MergeRequest, models: true do
       expect(subject.can_remove_source_branch?(user2)).to be_falsey
     end
 
-    it "is can be removed in all other cases" do
+    it "can be removed if the last commit is the head of the source branch" do
+      allow(subject.source_project).to receive(:commit).and_return(subject.last_commit)
+
       expect(subject.can_remove_source_branch?(user)).to be_truthy
+    end
+
+    it "cannot be removed if the last commit is not also the head of the source branch" do
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
   end
 
@@ -251,13 +254,22 @@ describe MergeRequest, models: true do
   end
 
   describe "#hook_attrs" do
+    let(:attrs_hash) { subject.hook_attrs.to_h }
+
+    [:source, :target].each do |key|
+      describe "#{key} key" do
+        include_examples 'project hook data', project_key: key do
+          let(:data)    { attrs_hash }
+          let(:project) { subject.send("#{key}_project") }
+        end
+      end
+    end
+
     it "has all the required keys" do
-      attrs = subject.hook_attrs
-      attrs = attrs.to_h
-      expect(attrs).to include(:source)
-      expect(attrs).to include(:target)
-      expect(attrs).to include(:last_commit)
-      expect(attrs).to include(:work_in_progress)
+      expect(attrs_hash).to include(:source)
+      expect(attrs_hash).to include(:target)
+      expect(attrs_hash).to include(:last_commit)
+      expect(attrs_hash).to include(:work_in_progress)
     end
   end
 

@@ -60,6 +60,8 @@ class ApplicationController < ActionController::Base
                    params[:authenticity_token].presence
                  elsif params[:private_token].presence
                    params[:private_token].presence
+                 elsif request.headers['PRIVATE-TOKEN'].present?
+                   request.headers['PRIVATE-TOKEN']
                  end
     user = user_token && User.find_by_authentication_token(user_token.to_s)
 
@@ -162,7 +164,7 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render html: "errors/git_not_found", layout: "errors", status: 404
+    render "errors/git_not_found.html", layout: "errors", status: 404
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -275,9 +277,10 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def view_to_html_string(partial)
+  def view_to_html_string(partial, locals = {})
     render_to_string(
       partial,
+      locals: locals,
       layout: false,
       formats: [:html]
     )

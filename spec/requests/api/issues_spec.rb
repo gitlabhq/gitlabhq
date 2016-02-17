@@ -46,10 +46,10 @@ describe API::API, api: true  do
         expect(json_response.first['title']).to eq(issue.title)
       end
 
-      it "should add pagination headers" do
-        get api("/issues?per_page=3", user)
+      it "should add pagination headers and keep query params" do
+        get api("/issues?state=closed&per_page=3", user)
         expect(response.headers['Link']).to eq(
-          '<http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="last"'
+          '<http://www.example.com/api/v3/issues?page=1&per_page=3&private_token=%s&state=closed>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3&private_token=%s&state=closed>; rel="last"' % [user.private_token, user.private_token]
         )
       end
 
@@ -238,6 +238,37 @@ describe API::API, api: true  do
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
+    end
+  end
+
+  describe 'POST /projects/:id/issues with spam filtering' do
+    before do
+      Grape::Endpoint.before_each do |endpoint|
+        allow(endpoint).to receive(:check_for_spam?).and_return(true)
+        allow(endpoint).to receive(:is_spam?).and_return(true)
+      end
+    end
+
+    let(:params) do
+      {
+        title: 'new issue',
+        description: 'content here',
+        labels: 'label, label2'
+      }
+    end
+
+    it "should not create a new project issue" do
+      expect { post api("/projects/#{project.id}/issues", user), params }.not_to change(Issue, :count)
+      expect(response.status).to eq(400)
+      expect(json_response['message']).to eq({ "error" => "Spam detected" })
+
+      spam_logs = SpamLog.all
+      expect(spam_logs.count).to eq(1)
+      expect(spam_logs[0].title).to eq('new issue')
+      expect(spam_logs[0].description).to eq('content here')
+      expect(spam_logs[0].user).to eq(user)
+      expect(spam_logs[0].noteable_type).to eq('Issue')
+      expect(spam_logs[0].project_id).to eq(project.id)
     end
   end
 

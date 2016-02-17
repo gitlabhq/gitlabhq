@@ -240,6 +240,18 @@ module SharedProject
     end
   end
 
+  step 'The project is internal' do
+    @project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+  end
+
+  step 'public access for builds is enabled' do
+    @project.update(public_builds: true)
+  end
+
+  step 'public access for builds is disabled' do
+    @project.update(public_builds: false)
+  end
+
   def user_owns_project(user_name:, project_name:, visibility: :private)
     user = user_exists(user_name, username: user_name.gsub(/\s/, '').underscore)
     project = Project.find_by(name: project_name)

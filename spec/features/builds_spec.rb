@@ -8,7 +8,7 @@ describe "Builds" do
     @commit = FactoryGirl.create :ci_commit
     @build = FactoryGirl.create :ci_build, commit: @commit
     @project = @commit.project
-    @project.team << [@user, :master]
+    @project.team << [@user, :developer]
   end
 
   describe "GET /:project/builds" do
@@ -18,7 +18,7 @@ describe "Builds" do
         visit namespace_project_builds_path(@project.namespace, @project, scope: :running)
       end
 
-      it { expect(page).to have_selector('.project-issuable-filter li.active', text: 'Running') }
+      it { expect(page).to have_selector('.nav-links li.active', text: 'Running') }
       it { expect(page).to have_link 'Cancel running' }
       it { expect(page).to have_content @build.short_sha }
       it { expect(page).to have_content @build.ref }
@@ -31,7 +31,7 @@ describe "Builds" do
         visit namespace_project_builds_path(@project.namespace, @project, scope: :finished)
       end
 
-      it { expect(page).to have_selector('.project-issuable-filter li.active', text: 'Finished') }
+      it { expect(page).to have_selector('.nav-links li.active', text: 'Finished') }
       it { expect(page).to have_content 'No builds to show' }
       it { expect(page).to have_link 'Cancel running' }
     end
@@ -42,7 +42,7 @@ describe "Builds" do
         visit namespace_project_builds_path(@project.namespace, @project)
       end
 
-      it { expect(page).to have_selector('.project-issuable-filter li.active', text: 'All') }
+      it { expect(page).to have_selector('.nav-links li.active', text: 'All') }
       it { expect(page).to have_content @build.short_sha }
       it { expect(page).to have_content @build.ref }
       it { expect(page).to have_content @build.name }
@@ -57,7 +57,7 @@ describe "Builds" do
       click_link "Cancel running"
     end
 
-    it { expect(page).to have_selector('.project-issuable-filter li.active', text: 'All') }
+    it { expect(page).to have_selector('.nav-links li.active', text: 'All') }
     it { expect(page).to have_content 'canceled' }
     it { expect(page).to have_content @build.short_sha }
     it { expect(page).to have_content @build.ref }

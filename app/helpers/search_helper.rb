@@ -70,7 +70,7 @@ module SearchHelper
 
   # Autocomplete results for the current user's groups
   def groups_autocomplete(term, limit = 5)
-    Group.search(term).limit(limit).map do |group|
+    current_user.authorized_groups.search(term).limit(limit).map do |group|
       {
         label: "group: #{search_result_sanitize(group.name)}",
         url: group_path(group)
@@ -80,7 +80,7 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    ProjectsFinder.new.execute(current_user).search_by_title(term).
+    current_user.authorized_projects.search_by_title(term).
       sorted_by_stars.non_archived.limit(limit).map do |p|
       {
         label: "project: #{search_result_sanitize(p.name_with_namespace)}",

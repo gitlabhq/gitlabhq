@@ -393,8 +393,12 @@ The above script will:
 
 ### artifacts
 
-_**Note:** Introduced in GitLab Runner v0.7.0. Also, the Windows shell executor
- does not currently support artifact uploads._
+_**Note:** Introduced in GitLab Runner v0.7.0 for non-Windows platforms._
+
+_**Note:** Limited Windows support was added in GitLab Runner v.1.0.0. 
+Currently not all executors are supported._ 
+
+_**Note:** Build artifacts are only collected for successful builds._
 
 `artifacts` is used to specify list of files and directories which should be
 attached to build after success. Below are some examples.

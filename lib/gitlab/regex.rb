@@ -34,29 +34,29 @@ module Gitlab
 
 
     def project_path_regex
-      @project_path_regex ||= /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\.]*(?<!\.git)\z/.freeze
+      @project_path_regex ||= /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\.]*(?<!\.git|\.atom)\z/.freeze
     end
 
     def project_path_regex_message
       "can contain only letters, digits, '_', '-' and '.'. " \
-      "Cannot start with '-' or end in '.git'" \
+      "Cannot start with '-', end in '.git' or end in '.atom'" \
     end
 
 
     def file_name_regex
-      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.]*\z/.freeze
+      @file_name_regex ||= /\A[a-zA-Z0-9_\-\.\@]*\z/.freeze
     end
 
     def file_name_regex_message
-      "can contain only letters, digits, '_', '-' and '.'. "
+      "can contain only letters, digits, '_', '-', '@' and '.'. "
     end
 
     def file_path_regex
-      @file_path_regex ||= /\A[a-zA-Z0-9_\-\.\/]*\z/.freeze
+      @file_path_regex ||= /\A[a-zA-Z0-9_\-\.\/\@]*\z/.freeze
     end
 
     def file_path_regex_message
-      "can contain only letters, digits, '_', '-' and '.'. Separate directories with a '/'. "
+      "can contain only letters, digits, '_', '-', '@' and '.'. Separate directories with a '/'. "
     end
 
 

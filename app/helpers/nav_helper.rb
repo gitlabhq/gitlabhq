@@ -19,6 +19,19 @@ module NavHelper
     end
   end
 
+  def page_gutter_class
+    if current_path?('merge_requests#show') ||
+      current_path?('merge_requests#diffs') ||
+      current_path?('merge_requests#commits') ||
+      current_path?('issues#show')
+      if cookies[:collapsed_gutter] == 'true'
+        "page-gutter right-sidebar-collapsed"
+      else
+        "page-gutter right-sidebar-expanded"
+      end
+    end
+  end
+
   def nav_header_class
     if nav_menu_collapsed?
       "header-collapsed"

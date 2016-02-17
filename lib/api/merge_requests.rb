@@ -71,6 +71,7 @@ module API
       #   title (required)         - Title of MR
       #   description              - Description of MR
       #   labels (optional)        - Labels for MR as a comma-separated list
+      #   milestone_id (optional)   - Milestone ID
       #
       # Example:
       #   POST /projects/:id/merge_requests
@@ -78,7 +79,7 @@ module API
       post ":id/merge_requests" do
         authorize! :create_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id]
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
@@ -163,11 +164,12 @@ module API
         #   state_event                 - Status of MR. (close|reopen|merge)
         #   description                 - Description of MR
         #   labels (optional)           - Labels for a MR as a comma-separated list
+        #   milestone_id (optional)     - Milestone ID
         # Example:
         #   PUT /projects/:id/merge_requests/:merge_request_id
         #
         put path do
-          attrs = attributes_for_keys [:target_branch, :assignee_id, :title, :state_event, :description]
+          attrs = attributes_for_keys [:target_branch, :assignee_id, :title, :state_event, :description, :milestone_id]
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
           authorize! :update_merge_request, merge_request
 
@@ -299,6 +301,19 @@ module API
           else
             render_api_error!("Failed to save note #{note.errors.messages}", 400)
           end
+        end
+
+        # List issues that will close on merge
+        #
+        # Parameters:
+        #   id (required)               - The ID of a project
+        #   merge_request_id (required) - ID of MR
+        # Examples:
+        #   GET /projects/:id/merge_requests/:merge_request_id/closes_issues
+        get "#{path}/closes_issues" do
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
+          issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
+          present paginate(issues), with: Entities::Issue
         end
       end
     end

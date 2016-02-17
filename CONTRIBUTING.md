@@ -1,3 +1,29 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Contribute to GitLab](#contribute-to-gitlab)
+  - [Contributor license agreement](#contributor-license-agreement)
+  - [Security vulnerability disclosure](#security-vulnerability-disclosure)
+  - [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
+  - [Helping others](#helping-others)
+  - [I want to contribute!](#i-want-to-contribute)
+  - [Issue tracker](#issue-tracker)
+      - [Feature proposals](#feature-proposals)
+      - [Issue tracker guidelines](#issue-tracker-guidelines)
+      - [Issue weight](#issue-weight)
+      - [Regression issues](#regression-issues)
+  - [Merge requests](#merge-requests)
+      - [Merge request guidelines](#merge-request-guidelines)
+      - [Merge request description format](#merge-request-description-format)
+      - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+  - [Changes for Stable Releases](#changes-for-stable-releases)
+  - [Definition of done](#definition-of-done)
+  - [Style guides](#style-guides)
+  - [Code of conduct](#code-of-conduct)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Contribute to GitLab
 
 Thank you for your interest in contributing to GitLab. This guide details how
@@ -177,6 +203,26 @@ is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
 issues or chunks. You can simply not set the weight of a parent issue and set
 weights to children issues.
 
+### Regression issues
+
+Every monthly release has a corresponding issue on the CE issue tracker to keep
+track of functionality broken by that release and any fixes that need to be
+included in a patch release (see [8.3 Regressions] as an example).
+
+As outlined in the issue description, the intended workflow is to post one note
+with a reference to an issue describing the regression, and then to update that
+note with a reference to the merge request that fixes it as it becomes available.
+
+If you're a contributor who doesn't have the required permissions to update
+other users' notes, please post a new note with a reference to both the issue
+and the merge request.
+
+The release manager will [update the notes] in the regression issue as fixes are
+addressed.
+
+[8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
+[update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
@@ -214,15 +260,17 @@ request is as follows:
 1. Add your changes to the [CHANGELOG](CHANGELOG)
 1. If you are changing the README, some documentation or other things which
    have no effect on the tests, add `[ci skip]` somewhere in the commit message
+   and make sure to read the [documentation styleguide][doc-styleguide]
 1. If you have multiple commits please combine them into one commit by
    [squashing them][git-squash]
 1. Push the commit(s) to your fork
 1. Submit a merge request (MR) to the master branch
 1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you
-   used to achieve it
+   used to achieve it, see the [merge request description format]
+   (#merge-request-description-format)
 1. If the MR changes the UI it should include before and after screenshots
-1. If the MR changes CSS classes please include the list of affected pages
+1. If the MR changes CSS classes please include the list of affected pages,
    `grep css-class ./app -R`
 1. Link any relevant [issues][ce-tracker] in the merge request description and
    leave a comment on them with a link back to the MR
@@ -255,7 +303,68 @@ For examples of feedback on merge requests please look at already
 request feel free to mention one of the Merge Marshalls of the [core team][].
 Please ensure that your merge request meets the contribution acceptance criteria.
 
-When having your code reviewed and when reviewing merge requests please take the [thoughtbot code review guidelines](https://github.com/thoughtbot/guides/tree/master/code-review) into account.
+When having your code reviewed and when reviewing merge requests please take the
+[thoughtbot code review guidelines](https://github.com/thoughtbot/guides/tree/master/code-review)
+into account.
+
+### Merge request description format
+
+Please submit merge requests using the following template in the merge request
+description area. Copy-paste it to retain the markdown format.
+
+```
+## What does this MR do?
+
+## Are there points in the code the reviewer needs to double check?
+
+## Why was this MR needed?
+
+## What are the relevant issue numbers?
+
+## Screenshots (if relevant)
+```
+
+### Contribution acceptance criteria
+
+1. The change is as small as possible
+1. Include proper tests and make all tests pass (unless it contains a test
+   exposing a bug in existing code)
+1. If you suspect a failing CI build is unrelated to your contribution, you may
+   try and restart the failing CI job or ask a developer to fix the
+   aforementioned failing test
+1. Your MR initially contains a single commit (please use `git rebase -i` to
+   squash commits)
+1. Your changes can merge without problems (if not please merge `master`, never
+   rebase commits pushed to the remote server)
+1. Does not break any existing functionality
+1. Fixes one specific issue or implements one specific feature (do not combine
+   things, send separate merge requests if needed)
+1. Migrations should do only one thing (e.g., either create a table, move data
+   to a new table or remove an old table) to aid retrying on failure
+1. Keeps the GitLab code base clean and well structured
+1. Contains functionality we think other users will benefit from too
+1. Doesn't add configuration options since they complicate future changes
+1. Changes after submitting the merge request should be in separate commits
+   (no squashing). If necessary, you will be asked to squash when the review is
+   over, before merging.
+1. It conforms to the [style guides](#style-guides) and the following:
+    - If your change touches a line that does not follow the style, modify the
+      entire line to follow it. This prevents linting tools from generating warnings.
+    - Don't touch neighbouring lines. As an exception, automatic mass
+      refactoring modifications may leave style non-compliant.
+
+## Changes for Stable Releases
+
+Sometimes certain changes have to be added to an existing stable release.
+Two examples are bug fixes and performance improvements. In these cases the
+corresponding merge request should be updated to have the following:
+
+1. A milestone indicating what release the merge request should be merged into.
+1. The label "Pick into Stable"
+
+This makes it easier for release managers to keep track of what still has to be
+merged and where changes have to be merged into.
+Like all merge requests the target should be master so all bugfixes are in master.
 
 ## Definition of done
 
@@ -266,7 +375,7 @@ the feature you contribute through all of these steps.
 1. Description explaining the relevancy (see following item)
 1. Working and clean code that is commented where needed
 1. Unit and integration tests that pass on the CI server
-1. Documented in the /doc directory
+1. [Documented][doc-styleguide] in the /doc directory
 1. Changelog entry added
 1. Reviewed and any concerns are addressed
 1. Merged by the project lead
@@ -287,43 +396,6 @@ merge request:
 1. Test suite https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/prepare_build.sh
 1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
 
-## Merge request description format
-
-1. What does this MR do?
-1. Are there points in the code the reviewer needs to double check?
-1. Why was this MR needed?
-1. What are the relevant issue numbers?
-1. Screenshots (if relevant)
-
-## Contribution acceptance criteria
-
-1. The change is as small as possible (see the above paragraph for details)
-1. Include proper tests and make all tests pass (unless it contains a test
-   exposing a bug in existing code)
-1. If you suspect a failing CI build is unrelated to your contribution, you may
-   try and restart the failing CI job or ask a developer to fix the
-   aforementioned failing test
-1. Your MR initially contains a single commit (please use `git rebase -i` to
-   squash commits)
-1. Your changes can merge without problems (if not please merge `master`, never
-   rebase commits pushed to the remote server)
-1. Does not break any existing functionality
-1. Fixes one specific issue or implements one specific feature (do not combine
-   things, send separate merge requests if needed)
-1. Migrations should do only one thing (eg: either create a table, move data to
-   a new table or remove an old table) to aid retrying on failure
-1. Keeps the GitLab code base clean and well structured
-1. Contains functionality we think other users will benefit from too
-1. Doesn't add configuration options since they complicate future changes
-1. Changes after submitting the merge request should be in separate commits
-   (no squashing). If necessary, you will be asked to squash when the review is
-   over, before merging.
-1. It conforms to the following style guides:
-    * If your change touches a line that does not follow the style, modify the
-      entire line to follow it. This prevents linting tools from generating warnings.
-    * Don't touch neighbouring lines. As an exception, automatic mass
-      refactoring modifications may leave style non-compliant.
-
 ## Style guides
 
 1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
@@ -338,7 +410,7 @@ merge request:
     contributors to enhance security
 1.  [Database Migrations](doc/development/migration_style_guide.md)
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
-1.  [Documentation styleguide](doc/development/doc_styleguide.md)
+1.  [Documentation styleguide][doc-styleguide]
 1.  Interface text should be written subjectively instead of objectively. It
     should be the GitLab core team addressing a person. It should be written in
     present time and never use past tense (has been/was). For example instead
@@ -379,7 +451,7 @@ reported by emailing `contact@gitlab.com`.
 This Code of Conduct is adapted from the [Contributor Covenant][], version 1.1.0,
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
 
-[core team]: https://about.gitlab.com/core-team/
+[core-team]: https://about.gitlab.com/core-team/
 [getting help page]: https://about.gitlab.com/getting-help/
 [Codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
 [up-for-grabs]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=up-for-grabs
@@ -400,3 +472,4 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [Contributor Covenant]: http://contributor-covenant.org
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
+[doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"

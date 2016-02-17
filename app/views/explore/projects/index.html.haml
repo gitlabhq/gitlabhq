@@ -6,7 +6,10 @@
 - else
   = render 'explore/head'
 
-.gray-content-block.clearfix.second-block
+.top-area
+  = render 'explore/projects/nav'
+
+.gray-content-block.second-block.clearfix
   = render 'filter'
+
 = render 'projects', projects: @projects
-= paginate @projects, theme: "gitlab"

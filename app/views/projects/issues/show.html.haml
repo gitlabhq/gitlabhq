@@ -15,11 +15,6 @@
       opened by #{link_to_member(@project, @issue.author, size: 24)}
       &middot;
       = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
-      - if @issue.updated_at != @issue.created_at
-        %span
-          &middot;
-          = icon('edit', title: 'edited')
-          = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
 
     .pull-right
       - if can?(current_user, :create_issue, @project)
@@ -46,19 +41,20 @@
                 = markdown(@issue.description, cache_key: [@issue, "description"])
             %textarea.hidden.js-task-list-field
               = @issue.description
+      - if @issue.updated_at != @issue.created_at
+        %small
+          Edited
+          = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
 
-        .merge-requests
-          = render 'merge_requests'
+      .merge-requests
+        = render 'merge_requests'
 
     .content-block
       = render 'votes/votes_block', votable: @issue
 
     .row
-      %section.col-md-9
+      %section.col-md-12
         .issuable-discussion
           = render 'projects/issues/discussion'
 
-      %aside.col-md-3
-        = render 'shared/issuable/sidebar', issuable: @issue
-
-      = render 'shared/show_aside'
+= render 'shared/issuable/sidebar', issuable: @issue
