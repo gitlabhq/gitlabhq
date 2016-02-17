@@ -122,7 +122,7 @@ class Admin::UsersController < Admin::ApplicationController
     DeleteUserService.new(current_user).execute(user)
 
     respond_to do |format|
-      format.html { redirect_to admin_users_path }
+      format.html { redirect_to admin_users_path, notice: "The user is being deleted." }
       format.json { head :ok }
     end
   end

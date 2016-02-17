@@ -178,6 +178,7 @@ v 8.5.0
 
 v 8.4.5
   - No CE-specific changes
+  - User deletion is now done in the background so the request can not time out
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
