@@ -23,8 +23,8 @@ module MergeRequests
 
     private
 
-    def filter_params(issuable = nil)
-      super(:merge_request, issuable)
+    def filter_params
+      super(:merge_request)
     end
   end
 end

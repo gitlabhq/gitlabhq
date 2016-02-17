@@ -30,7 +30,7 @@
         .title
           %label
             Assignee
-          - if issuable.can_assign_user?(current_user)
+          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             .pull-right
               = link_to 'Edit', '#', class: 'edit-link'
         .value

@@ -12,12 +12,12 @@ describe AutocompleteController do
       project.team << [user, :master]
     end
 
-    let(:body) { JSON.parse(response.body) }
-
     describe 'GET #users with project ID' do
       before do
         get(:users, project_id: project.id)
       end
+
+      let(:body) { JSON.parse(response.body) }
 
       it { expect(body).to be_kind_of(Array) }
       it { expect(body.size).to eq 1 }
