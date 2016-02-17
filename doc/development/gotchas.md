@@ -46,8 +46,8 @@ Rubocop](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-4-stable/.rubocop.yml#L9
 Using the inline `:coffee` or `:coffeescript` Haml filters comes with a
 performance overhead.
 
-We've [removed these two filters entirely](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-5-stable/config/initializers/haml.rb)
-through an initializer.
+_**Note:** We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-5-stable/config/initializers/haml.rb)
+in an initializer._
 
 ### Further reading
 
@@ -63,21 +63,20 @@ perfectly fine to write some JavaScript like the following:
 $('#js-my-selector').hide();
 ```
 
-But there's a feature of GitLab's Markdown processing that will automatically
-add `id` attributes underneath header elements in order to make them linkable.
-The content of the header is ["dasherized"][ToC Processing] and used in the `id`
-attribute.
+However, there's a feature of GitLab's Markdown processing that [automatically
+adds anchors to header elements][ToC Processing], with the `id` attribute being
+automatically generated based on the content of the header.
 
 Unfortunately, this feature makes it possible for user-generated content to
 create a header element with the same `id` attribute we're using in our
 selector, potentially breaking the JavaScript behavior. A user could break the
-above example JavaScript with the following Markdown:
+above example with the following Markdown:
 
 ```markdown
 ## JS My Selector
 ```
 
-Which gets converted to the following HTML after processing:
+Which gets converted to the following HTML:
 
 ```html
 <h2>
