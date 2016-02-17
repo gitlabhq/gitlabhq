@@ -50,6 +50,9 @@ class Projects::IssuesController < Projects::ApplicationController
     )
 
     @issue = @noteable = @project.issues.new(issue_params)
+
+    @issue.description = @project.repository_issues_template
+
     respond_with(@issue)
   end
 

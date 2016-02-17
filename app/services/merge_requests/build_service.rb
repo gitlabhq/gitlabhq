@@ -61,6 +61,8 @@ module MergeRequests
         merge_request.title = merge_request.source_branch.titleize.humanize
       end
 
+      merge_request.description = merge_request.target_project.repository_merge_requests_template
+
       merge_request
     end
 
