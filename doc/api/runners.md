@@ -116,7 +116,7 @@ Example response:
     "description": "test-1-20150125",
     "id": 6,
     "is_shared": false,
-    "last_contact": "2016-01-25T16:39:48.066Z",
+    "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
     "platform": null,
     "projects": [
@@ -166,7 +166,7 @@ Example response:
     "description": "test-1-20150125-test",
     "id": 6,
     "is_shared": false,
-    "last_contact": "2016-01-25T16:39:48.066Z",
+    "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
     "platform": null,
     "projects": [

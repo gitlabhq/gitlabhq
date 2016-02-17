@@ -380,7 +380,7 @@ module API
     class RunnerDetails < Runner
       expose :tag_list
       expose :version, :revision, :platform, :architecture
-      expose :contacted_at, as: :last_contact
+      expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
       expose :projects, with: Entities::ForkedFromProject do |runner, options|
         if options[:current_user].is_admin?
