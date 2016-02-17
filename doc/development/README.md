@@ -3,6 +3,7 @@
 - [Architecture](architecture.md) of GitLab
 - [Benchmarking](benchmarking.md)
 - [CI setup](ci_setup.md) for testing GitLab
+- [Gotchas](gotchas.md) to avoid
 - [How to dump production data to staging](db_dump.md)
 - [Migration Style Guide](migration_style_guide.md) for creating safe migrations
 - [Rake tasks](rake_tasks.md) for development
