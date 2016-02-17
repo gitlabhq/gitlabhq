@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::Runners, api: true  do
   include ApiHelpers
 
   let(:admin) { create(:user, :admin) }
@@ -10,20 +10,20 @@ describe API::API, api: true  do
   let(:project) { create(:project, creator_id: user.id) }
   let(:project2) { create(:project, creator_id: user.id) }
 
-  let!(:shared_runner) { create(:ci_shared_runner, tag_list: ['mysql', 'ruby'], active: true) }
-  let!(:unused_specific_runner) { create(:ci_specific_runner) }
+  let!(:shared_runner) { create(:ci_runner, :shared) }
+  let!(:unused_specific_runner) { create(:ci_runner) }
 
   let!(:specific_runner) do
-    runner = create(:ci_specific_runner, tag_list: ['mysql', 'ruby'])
-    create(:ci_runner_project, runner: runner, project: project)
-    runner
+    create(:ci_runner).tap do |runner|
+      create(:ci_runner_project, runner: runner, project: project)
+    end
   end
 
   let!(:two_projects_runner) do
-    runner = create(:ci_specific_runner)
-    create(:ci_runner_project, runner: runner, project: project)
-    create(:ci_runner_project, runner: runner, project: project2)
-    runner
+    create(:ci_runner).tap do |runner|
+      create(:ci_runner_project, runner: runner, project: project)
+      create(:ci_runner_project, runner: runner, project: project2)
+    end
   end
 
   before do
@@ -352,14 +352,12 @@ describe API::API, api: true  do
   end
 
   describe 'POST /projects/:id/runners' do
-    let(:specific_runner2) do
-      runner = create(:ci_specific_runner)
-      create(:ci_runner_project, runner: runner, project: project2)
-      runner
-    end
-
     context 'authorized user' do
       it 'should enable specific runner' do
+        specific_runner2 = create(:ci_runner).tap do |runner|
+          create(:ci_runner_project, runner: runner, project: project2)
+        end
+
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change{ project.runners.count }.by(+1)
