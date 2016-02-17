@@ -63,11 +63,9 @@ VM+d42lQAgoq318A84Xu5vRh1KCAJuztkhNbM+w=
     end
 
     trait :with_trusted_chain do
-      # This is
+      # This contains
       # [Intermediate #2 (SHA-2)] 'Comodo RSA Domain Validation Secure Server CA'
-      # [Intermediate #1 (SHA-2)] COMODO RSA Certification Authority
-      # We only validate that we want to rebuild the trust chain,
-      # we don't need end-to-end certificate to do that
+      # [Intermediate #1 (SHA-2)] 'COMODO RSA Certification Authority'
       certificate '-----BEGIN CERTIFICATE-----
 MIIGCDCCA/CgAwIBAgIQKy5u6tl1NmwUim7bo3yMBzANBgkqhkiG9w0BAQwFADCB
 hTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4G
