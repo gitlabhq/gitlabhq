@@ -8,6 +8,7 @@
 #  target_id   :integer          not null
 #  target_type :string           not null
 #  author_id   :integer
+#  note_id     :integer
 #  action      :integer
 #  state       :string           not null
 #  created_at  :datetime
@@ -19,6 +20,7 @@ require 'spec_helper'
 describe Task, models: true do
   describe 'relationships' do
     it { is_expected.to belong_to(:author).class_name("User") }
+    it { is_expected.to belong_to(:note) }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:target).touch(true) }
     it { is_expected.to belong_to(:user) }
@@ -46,6 +48,20 @@ describe Task, models: true do
   describe '#body?' do
     it 'returns true when target respond to title'
     it 'returns false when target does not respond to title'
+  end
+
+  describe '#note_text' do
+    it 'returns nil when note is blank' do
+      subject.note = nil
+
+      expect(subject.note_text).to be_nil
+    end
+
+    it 'returns note when note is present' do
+      subject.note = build(:note, note: 'quick fix')
+
+      expect(subject.note_text).to eq 'quick fix'
+    end
   end
 
   describe '#target_iid' do

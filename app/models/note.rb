@@ -37,6 +37,8 @@ class Note < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
 
+  has_many :tasks, dependent: :delete_all
+
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 

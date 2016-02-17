@@ -26,6 +26,8 @@ describe Note, models: true do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:noteable) }
     it { is_expected.to belong_to(:author).class_name('User') }
+
+    it { is_expected.to have_many(:tasks).dependent(:delete_all) }
   end
 
   describe 'validation' do

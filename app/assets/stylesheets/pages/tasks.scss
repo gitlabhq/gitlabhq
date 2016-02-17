@@ -59,6 +59,15 @@
     .task-note {
       word-wrap: break-word;
 
+      .md {
+        color: #7f8fa4;
+        font-size: $gl-font-size;
+
+        p {
+          color: #5c5d5e;
+        }
+      }
+
       pre {
         border: none;
         background: #f9f9f9;
@@ -68,9 +77,24 @@
         overflow: hidden;
       }
 
+      .note-image-attach {
+        margin-top: 4px;
+        margin-left: 0px;
+        max-width: 200px;
+        float: none;
+      }
+
       p:last-child {
         margin-bottom: 0;
       }
+    }
+
+    .task-note-icon {
+      color: #777;
+      float: left;
+      font-size: $gl-font-size;
+      line-height: 16px;
+      margin-right: 5px;
     }
   }
 

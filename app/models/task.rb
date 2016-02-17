@@ -8,6 +8,7 @@
 #  target_id   :integer          not null
 #  target_type :string           not null
 #  author_id   :integer
+#  note_id     :integer
 #  action      :integer
 #  state       :string           not null
 #  created_at  :datetime
@@ -19,6 +20,7 @@ class Task < ActiveRecord::Base
   MENTIONED = 2
 
   belongs_to :author, class_name: "User"
+  belongs_to :note
   belongs_to :project
   belongs_to :target, polymorphic: true, touch: true
   belongs_to :user
@@ -50,6 +52,10 @@ class Task < ActiveRecord::Base
 
   def body?
     target.respond_to? :title
+  end
+
+  def note_text
+    note.try(:note)
   end
 
   def target_iid

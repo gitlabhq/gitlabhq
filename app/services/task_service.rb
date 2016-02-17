@@ -77,7 +77,17 @@ class TaskService
   def new_note(note)
     # Skip system notes, like status changes and cross-references
     unless note.system
-      mark_pending_tasks_as_done(note.noteable, note.author)
+      project = note.project
+      target  = note.noteable
+      author  = note.author
+
+      mark_pending_tasks_as_done(target, author)
+
+      mentioned_users = build_mentioned_users(project, note, author)
+
+      mentioned_users.each do |user|
+        create_task(project, target, author, user, Task::MENTIONED, note)
+      end
     end
   end
 
@@ -94,14 +104,15 @@ class TaskService
 
   private
 
-  def create_task(project, target, author, user, action)
+  def create_task(project, target, author, user, action, note = nil)
     attributes = {
       project: project,
       user_id: user.id,
       author_id: author.id,
       target_id: target.id,
       target_type: target.class.name,
-      action: action
+      action: action,
+      note: note
     }
 
     Task.create(attributes)

@@ -128,6 +128,17 @@ describe TaskService, services: true do
         expect(first_pending_task.reload).to be_pending
         expect(second_pending_task.reload).to be_pending
       end
+
+      it 'creates a task for each valid mentioned user' do
+        note.update_attribute(:note, mentions)
+
+        service.new_note(note)
+
+        should_create_task(user: michael, target: issue, author: john_doe, action: Task::MENTIONED, note: note)
+        should_create_task(user: author, target: issue, author: john_doe, action: Task::MENTIONED, note: note)
+        should_not_create_task(user: john_doe, target: issue, author: john_doe, action: Task::MENTIONED, note: note)
+        should_not_create_task(user: stranger, target: issue, author: john_doe, action: Task::MENTIONED, note: note)
+      end
     end
   end
 
