@@ -12,8 +12,6 @@
 #  gl_project_id        :integer
 #
 
-# Read about factories at https://github.com/thoughtbot/factory_girl
-
 FactoryGirl.define do
   factory :ci_variable, class: Ci::Variable do
     sequence(:key) { |n| "VARIABLE_#{n}" }
