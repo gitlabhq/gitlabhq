@@ -369,12 +369,6 @@ module API
       expose :id, :variables
     end
 
-    class RunnerProjectDetails < Grape::Entity
-      expose :id
-      expose :name_with_namespace
-      expose :path_with_namespace
-    end
-
     class Runner < Grape::Entity
       expose :id
       expose :description
@@ -388,7 +382,7 @@ module API
       expose :version, :revision, :platform, :architecture
       expose :contacted_at, as: :last_contact
       expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
-      expose :projects, with: Entities::RunnerProjectDetails do |runner, options|
+      expose :projects, with: Entities::ForkedFromProject do |runner, options|
         if options[:current_user].is_admin?
           runner.projects
         else

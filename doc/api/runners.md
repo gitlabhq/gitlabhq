@@ -122,7 +122,9 @@ Example response:
     "projects": [
         {
             "id": 1,
+            "name": "GitLab Community Edition",
             "name_with_namespace": "GitLab.org / GitLab Community Edition",
+            "path": "gitlab-ce",
             "path_with_namespace": "gitlab-org/gitlab-ce"
         }
     ],
@@ -170,7 +172,9 @@ Example response:
     "projects": [
         {
             "id": 1,
+            "name": "GitLab Community Edition",
             "name_with_namespace": "GitLab.org / GitLab Community Edition",
+            "path": "gitlab-ce",
             "path_with_namespace": "gitlab-org/gitlab-ce"
         }
     ],
