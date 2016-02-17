@@ -88,7 +88,7 @@
               %i.fa.fa-paperclip
               %span Choose File ...
             &nbsp;
-            %span.file_name.js-avatar-filename{:'data-label' => 'File name...'} File name...
+            %span.file_name.js-avatar-filename File name...
             = f.file_field :avatar, class: "js-user-avatar-input hidden"
             = f.hidden_field :avatar_crop_x
             = f.hidden_field :avatar_crop_y
@@ -107,7 +107,7 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{:type => "button", :'data-dismiss' => "modal"}
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span
             &times;
         %h4.modal-title

@@ -53,7 +53,7 @@ class @Profile
     $avatarInput.on "change", ->
       form = $(this).closest("form")
       filename = $(this).val().replace(/^.*[\\\/]/, '')
-      $filename.text(filename)
+      $filename.data('label', $filename.text()).text(filename)
 
       reader = new FileReader
 
