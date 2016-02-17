@@ -245,6 +245,7 @@ class Ability
         :change_visibility_level,
         :rename_project,
         :remove_project,
+        :update_pages,
         :remove_pages,
         :archive_project,
         :remove_fork_project

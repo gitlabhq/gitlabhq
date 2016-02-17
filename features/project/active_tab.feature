@@ -70,6 +70,13 @@ Feature: Project Active Tab
     And no other sub navs should be active
     And the active main tab should be Settings
 
+  Scenario: On Project Settings/Pages
+    Given I visit my project's settings page
+    And I click the "Pages" tab
+    Then the active sub nav should be Pages
+    And no other sub navs should be active
+    And the active main tab should be Settings
+
   # Sub Tabs: Commits
 
   Scenario: On Project Commits/Commits

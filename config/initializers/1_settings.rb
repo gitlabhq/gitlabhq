@@ -299,6 +299,8 @@ Settings.pages['https']           = false if Settings.pages['https'].nil?
 Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
 Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
 Settings.pages['url']             ||= Settings.send(:build_pages_url)
+Settings.pages['external_http']   ||= false if Settings.pages['external_http'].nil?
+Settings.pages['external_https']  ||= false if Settings.pages['external_https'].nil?
 
 #
 # Git LFS

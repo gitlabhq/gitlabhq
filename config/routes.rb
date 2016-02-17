@@ -428,7 +428,6 @@ Rails.application.routes.draw do
         delete :remove_fork
         post :archive
         post :unarchive
-        post :remove_pages
         post :housekeeping
         post :toggle_star
         post :markdown_preview
@@ -545,6 +544,10 @@ Rails.application.routes.draw do
             post :cancel_builds
             post :retry_builds
           end
+        end
+
+        resource :pages, only: [:show, :destroy] do
+          resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains'
         end
 
         resources :compare, only: [:index, :create]

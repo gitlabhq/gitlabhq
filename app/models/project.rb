@@ -162,6 +162,7 @@ class Project < ActiveRecord::Base
   has_many :lfs_objects, through: :lfs_objects_projects
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :pages_domains, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
@@ -1046,17 +1047,17 @@ class Project < ActiveRecord::Base
   end
 
   def pages_url
-    if Dir.exist?(public_pages_path)
-      host = "#{namespace.path}.#{Settings.pages.host}"
-      url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
-        "#{prefix}#{namespace.path}."
-      end
+    return unless Dir.exist?(public_pages_path)
 
-      # If the project path is the same as host, leave the short version
-      return url if host == path
-
-      "#{url}/#{path}"
+    host = "#{namespace.path}.#{Settings.pages.host}"
+    url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
+      "#{prefix}#{namespace.path}."
     end
+
+    # If the project path is the same as host, leave the short version
+    return url if host == path
+
+    "#{url}/#{path}"
   end
 
   def pages_path
@@ -1071,7 +1072,7 @@ class Project < ActiveRecord::Base
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
     # 3. We asynchronously remove pages with force
-    temp_path = "#{path}.#{SecureRandom.hex}"
+    temp_path = "#{path}.#{SecureRandom.hex}.deleted"
 
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)

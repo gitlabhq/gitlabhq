@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.5.0 (unreleased)
   - Show warning when mirror repository default branch could not be updated because it has diverged from upstream.
   - More reliable wiki indexer
+  - GitLab Pages gets support for custom domain and custom certificate
 
 v 8.4.4
   - Re-introduce "Send email to users" link in Admin area
