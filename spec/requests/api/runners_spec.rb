@@ -183,15 +183,15 @@ describe API::API, api: true  do
         it 'should update runner' do
           description = shared_runner.description
           active = shared_runner.active
-          tag_list = shared_runner.tag_list
+
           put api("/runners/#{shared_runner.id}", admin), description: "#{description}_updated", active: !active,
                                                           tag_list: ['ruby2.1', 'pgsql', 'mysql']
           shared_runner.reload
 
           expect(response.status).to eq(200)
-          expect(shared_runner.description).not_to eq(description)
-          expect(shared_runner.active).not_to eq(active)
-          expect(shared_runner.tag_list).not_to eq(tag_list)
+          expect(shared_runner.description).to eq("#{description}_updated")
+          expect(shared_runner.active).to eq(!active)
+          expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
         end
       end
 
