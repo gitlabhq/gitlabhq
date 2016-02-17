@@ -106,7 +106,7 @@ class GitPushService < BaseService
 
   def build_push_data
     @push_data ||= Gitlab::PushDataBuilder.
-        build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
+      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
   end
 
   def push_to_existing_branch?
@@ -128,7 +128,7 @@ class GitPushService < BaseService
 
   def is_default_branch?
     Gitlab::Git.branch_ref?(params[:ref]) &&
-        (Gitlab::Git.ref_name(params[:ref]) == project.default_branch || project.default_branch.nil?)
+      (Gitlab::Git.ref_name(params[:ref]) == project.default_branch || project.default_branch.nil?)
   end
 
   def commit_user(commit)
@@ -136,6 +136,6 @@ class GitPushService < BaseService
   end
 
   def branch_name
-    @_branch_name ||= Gitlab::Git.ref_name(params[:ref])
+    @branch_name ||= Gitlab::Git.ref_name(params[:ref])
   end
 end
