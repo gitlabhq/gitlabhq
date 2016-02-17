@@ -19,7 +19,7 @@ class TaskService
   #  * mark all pending tasks related to the target for the current user as done
   #
   def close_issue(issue, current_user)
-    mark_as_done(issue, current_user)
+    mark_pending_tasks_as_done(issue, current_user)
   end
 
   # When we reassign an issue we should:
@@ -43,7 +43,7 @@ class TaskService
   #  * mark all pending tasks related to the target for the current user as done
   #
   def close_merge_request(merge_request, current_user)
-    mark_as_done(merge_request, current_user)
+    mark_pending_tasks_as_done(merge_request, current_user)
   end
 
   # When we reassign a merge request we should:
@@ -59,14 +59,14 @@ class TaskService
   #  * mark all pending tasks related to the target for the current user as done
   #
   def merge_merge_request(merge_request, current_user)
-    mark_as_done(merge_request, current_user)
+    mark_pending_tasks_as_done(merge_request, current_user)
   end
 
   # When we mark a task as done we should:
   #
   #  * mark all pending tasks related to the target for the user as done
   #
-  def mark_as_done(target, user)
+  def mark_pending_tasks_as_done(target, user)
     pending_tasks = pending_tasks_for(user, target.project, target)
     pending_tasks.update_all(state: :done)
   end
@@ -78,7 +78,7 @@ class TaskService
   def new_note(note)
     # Skip system notes, like status changes and cross-references
     unless note.system
-      mark_as_done(note.noteable, note.author)
+      mark_pending_tasks_as_done(note.noteable, note.author)
     end
   end
 
@@ -89,7 +89,7 @@ class TaskService
   def update_note(note, current_user)
     # Skip system notes, like status changes and cross-references
     unless note.system
-      mark_as_done(note.noteable, current_user)
+      mark_pending_tasks_as_done(note.noteable, current_user)
     end
   end
 

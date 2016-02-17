@@ -63,7 +63,7 @@ describe TaskService, services: true do
       end
     end
 
-    describe '#mark_as_done' do
+    describe '#mark_pending_tasks_as_done' do
       let!(:first_pending_task) do
         create(:pending_assigned_task, user: john_doe, project: project, target: assigned_issue, author: author)
       end
@@ -73,7 +73,7 @@ describe TaskService, services: true do
       end
 
       it 'marks related pending tasks to the target for the user as done' do
-        service.mark_as_done(assigned_issue, john_doe)
+        service.mark_pending_tasks_as_done(assigned_issue, john_doe)
 
         expect(first_pending_task.reload).to be_done
         expect(second_pending_task.reload).to be_done

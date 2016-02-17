@@ -6,7 +6,7 @@ module Issues
 
     def handle_changes(issue, options = {})
       if have_changes?(issue, options)
-        task_service.mark_as_done(issue, current_user)
+        task_service.mark_pending_tasks_as_done(issue, current_user)
       end
 
       if issue.previous_changes.include?('milestone_id')
