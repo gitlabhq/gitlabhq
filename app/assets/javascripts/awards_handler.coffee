@@ -49,10 +49,11 @@ class @AwardsHandler
       counter.text(parseInt(counter.text()) - 1)
       emojiIcon.removeClass("active")
       @removeMeFromAuthorList(emoji)
-    else if emoji =="thumbsup" || emoji == "thumbsdown"
+    else if emoji == "thumbsup" || emoji == "thumbsdown"
       emojiIcon.tooltip("destroy")
       counter.text(0)
       emojiIcon.removeClass("active")
+      @removeMeFromAuthorList(emoji)
     else
       emojiIcon.tooltip("destroy")
       emojiIcon.remove()
