@@ -1,6 +1,7 @@
 class Groups::MilestonesController < Groups::ApplicationController
   include GlobalMilestones
 
+  skip_before_action :authenticate_user!, only: [:show]
   before_action :projects
   before_action :milestones, only: [:index]
   before_action :milestone, only: [:show, :update]

@@ -33,6 +33,7 @@ v 8.6.0 (unreleased)
   - Fix bug where Bitbucket `closed` issues were imported as `opened` (Iuri de Silvio)
   - Don't show Issues/MRs from archived projects in Groups view
   - Fix wrong "iid of max iid" in Issuable sidebar for some merged MRs
+  - Make grouped milestone page public (Rodrigo Souto)
   - Increase the notes polling timeout over time (Roberto Dip)
   - Add shortcut to toggle markdown preview (Florent Baldino)
   - Show labels in dashboard and group milestone views
