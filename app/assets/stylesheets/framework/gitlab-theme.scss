@@ -120,9 +120,18 @@ body {
 }
 
 
-::-webkit-scrollbar{width: 3px;}
+::-webkit-scrollbar{
+  width: 3px;
+}
 
-::-webkit-scrollbar-thumb{background-color:$theme-charcoal; border-radius: 0;}
-::-webkit-scrollbar-thumb:hover{background-color:$theme-charcoal;}
+::-webkit-scrollbar-thumb{
+  background-color:$theme-charcoal; border-radius: 0;
+}
 
-::-webkit-scrollbar-track{background-color:#FFF;}
+::-webkit-scrollbar-thumb:hover{
+  background-color:$theme-charcoal;
+}
+
+::-webkit-scrollbar-track{
+  background-color:#FFF;
+}
