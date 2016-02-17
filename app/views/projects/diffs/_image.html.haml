@@ -5,7 +5,7 @@
   .image
     %span.wrap
       .frame{class: image_diff_class(diff)}
-        %img{src: file_raw_path}
+        %img{src: diff.deleted_file ? old_file_raw_path : file_raw_path}
       %p.image-info= "#{number_to_human_size file.size}"
 - else
   .image
