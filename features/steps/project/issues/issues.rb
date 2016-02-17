@@ -54,6 +54,10 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     expect(page).to have_content "Release 0.4"
   end
 
+  step 'I should see issue "Tweet control"' do
+    expect(page).to have_content "Tweet control"
+  end
+
   step 'I click link "New Issue"' do
     click_link "New Issue"
   end
@@ -301,4 +305,5 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   def filter_issue(text)
     fill_in 'issue_search', with: text
   end
+
 end

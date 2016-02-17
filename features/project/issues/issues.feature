@@ -25,9 +25,16 @@ Feature: Project Issues
   Scenario: I visit issue page
     Given I click link "Release 0.4"
     Then I should see issue "Release 0.4"
+    And I should see "1 of 2" in the sidebar
+
+  Scenario: I navigate between issues
+    Given I click link "Release 0.4"
+    Then I click link "Next" in the sidebar
+    Then I should see issue "Tweet control"
+    And I should see "2 of 2" in the sidebar
 
   @javascript
-  Scenario: I visit issue page
+  Scenario: I filter by author
     Given I add a user to project "Shop"
     And I click "author" dropdown
     Then I see current user as the first user

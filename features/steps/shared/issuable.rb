@@ -119,6 +119,24 @@ module SharedIssuable
     end
   end
 
+  step 'I should see "1 of 1" in the sidebar' do
+    expect_sidebar_content('1 of 1')
+  end
+
+  step 'I should see "1 of 2" in the sidebar' do
+    expect_sidebar_content('1 of 2')
+  end
+
+  step 'I should see "2 of 2" in the sidebar' do
+    expect_sidebar_content('2 of 2')
+  end
+
+  step 'I click link "Next" in the sidebar' do
+    page.within '.issuable-sidebar' do
+      click_link 'Next'
+    end
+  end
+
   def create_issuable_for_project(project_name:, title:, type: :issue)
     project = Project.find_by(name: project_name)
 
@@ -157,6 +175,12 @@ module SharedIssuable
 
     expect(page).to have_content(user_name)
     expect(page).to have_content("mentioned in #{issuable.class.to_s.titleize.downcase} #{issuable.to_reference(project)}")
+  end
+
+  def expect_sidebar_content(content)
+    page.within '.issuable-sidebar' do
+      expect(page).to have_content content
+    end
   end
 
 end
