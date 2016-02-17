@@ -217,7 +217,7 @@ describe API::API, api: true  do
     context 'authorized user' do
       context 'when runner is shared' do
         it 'should not update runner' do
-          put api("/runners/#{shared_runner.id}", user), description: 'test'
+          put api("/runners/#{shared_runner.id}", user)
 
           expect(response.status).to eq(403)
         end
@@ -225,7 +225,7 @@ describe API::API, api: true  do
 
       context 'when runner is not shared' do
         it 'should not update runner without access to it' do
-          put api("/runners/#{specific_runner.id}", user2), description: 'test'
+          put api("/runners/#{specific_runner.id}", user2)
 
           expect(response.status).to eq(403)
         end
@@ -244,7 +244,7 @@ describe API::API, api: true  do
 
     context 'unauthorized user' do
       it 'should not delete runner' do
-        put api("/runners/#{specific_runner.id}"), description: 'test'
+        put api("/runners/#{specific_runner.id}")
 
         expect(response.status).to eq(401)
       end
@@ -405,7 +405,7 @@ describe API::API, api: true  do
 
     context 'authorized user without permissions' do
       it 'should not enable runner' do
-        post api("/projects/#{project.id}/runners", user2), runner_id: specific_runner2.id
+        post api("/projects/#{project.id}/runners", user2)
 
         expect(response.status).to eq(403)
       end
@@ -413,7 +413,7 @@ describe API::API, api: true  do
 
     context 'unauthorized user' do
       it 'should not enable runner' do
-        post api("/projects/#{project.id}/runners"), runner_id: specific_runner2.id
+        post api("/projects/#{project.id}/runners")
 
         expect(response.status).to eq(401)
       end
