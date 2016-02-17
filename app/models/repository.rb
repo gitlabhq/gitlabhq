@@ -238,6 +238,15 @@ class Repository
     expire_branch_cache(branch_name)
   end
 
+  # Expires _all_ caches, including those that would normally only be expired
+  # under specific conditions.
+  def expire_all_caches!
+    expire_cache
+    expire_root_ref_cache
+    expire_emptiness_caches
+    expire_has_visible_content_cache
+  end
+
   def expire_branch_cache(branch_name = nil)
     # When we push to the root branch we have to flush the cache for all other
     # branches as their statistics are based on the commits relative to the
@@ -256,6 +265,14 @@ class Repository
   def expire_root_ref_cache
     cache.expire(:root_ref)
     @root_ref = nil
+  end
+
+  # Expires the cache(s) used to determine if a repository is empty or not.
+  def expire_emptiness_caches
+    cache.expire(:empty?)
+    @empty = nil
+
+    expire_has_visible_content_cache
   end
 
   def expire_has_visible_content_cache
