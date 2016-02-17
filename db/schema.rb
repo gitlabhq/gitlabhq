@@ -24,6 +24,17 @@ ActiveRecord::Schema.define(version: 20160209130428) do
     t.datetime "updated_at"
   end
 
+  create_table "appearances", force: :cascade do |t|
+    t.string   "title"
+    t.text     "description"
+    t.string   "logo"
+    t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "dark_logo"
+    t.string   "light_logo"
+  end
+
   create_table "application_settings", force: :cascade do |t|
     t.integer  "default_projects_limit"
     t.boolean  "signup_enabled"
@@ -68,6 +79,24 @@ ActiveRecord::Schema.define(version: 20160209130428) do
     t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
   end
+
+  create_table "approvals", force: :cascade do |t|
+    t.integer  "merge_request_id", null: false
+    t.integer  "user_id",          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "approvers", force: :cascade do |t|
+    t.integer  "target_id",   null: false
+    t.string   "target_type"
+    t.integer  "user_id",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
+  add_index "approvers", ["user_id"], name: "index_approvers_on_user_id", using: :btree
 
   create_table "audit_events", force: :cascade do |t|
     t.integer  "author_id",   null: false
@@ -374,6 +403,28 @@ ActiveRecord::Schema.define(version: 20160209130428) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
+  create_table "git_hooks", force: :cascade do |t|
+    t.string   "force_push_regex"
+    t.string   "delete_branch_regex"
+    t.string   "commit_message_regex"
+    t.boolean  "deny_delete_tag"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "author_email_regex"
+    t.boolean  "member_check",         default: false, null: false
+    t.string   "file_name_regex"
+    t.boolean  "is_sample",            default: false
+    t.integer  "max_file_size",        default: 0,     null: false
+  end
+
+  create_table "historical_data", force: :cascade do |t|
+    t.date     "date",              null: false
+    t.integer  "active_user_count"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string   "extern_uid"
     t.string   "provider"
@@ -447,6 +498,15 @@ ActiveRecord::Schema.define(version: 20160209130428) do
 
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
+  create_table "ldap_group_links", force: :cascade do |t|
+    t.string   "cn",           null: false
+    t.integer  "group_access", null: false
+    t.integer  "group_id",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "provider"
+  end
+
   create_table "lfs_objects", force: :cascade do |t|
     t.string   "oid",                  null: false
     t.integer  "size",       limit: 8, null: false
@@ -465,6 +525,12 @@ ActiveRecord::Schema.define(version: 20160209130428) do
   end
 
   add_index "lfs_objects_projects", ["project_id"], name: "index_lfs_objects_projects_on_project_id", using: :btree
+
+  create_table "licenses", force: :cascade do |t|
+    t.text     "data",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "members", force: :cascade do |t|
     t.integer  "access_level",       null: false
@@ -641,6 +707,14 @@ ActiveRecord::Schema.define(version: 20160209130428) do
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
+  create_table "project_group_links", force: :cascade do |t|
+    t.integer  "project_id",                null: false
+    t.integer  "group_id",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "group_access", default: 30, null: false
+  end
+
   create_table "project_import_data", force: :cascade do |t|
     t.integer "project_id"
     t.text    "data"
@@ -733,9 +807,9 @@ ActiveRecord::Schema.define(version: 20160209130428) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.boolean  "active",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
@@ -875,6 +949,7 @@ ActiveRecord::Schema.define(version: 20160209130428) do
     t.integer  "layout",                      default: 0
     t.boolean  "hide_project_limit",          default: false
     t.string   "unlock_token"
+    t.text     "note"
     t.datetime "otp_grace_period_started_at"
     t.boolean  "ldap_email",                  default: false, null: false
   end
