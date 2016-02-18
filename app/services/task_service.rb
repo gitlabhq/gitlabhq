@@ -89,18 +89,18 @@ class TaskService
   #
   def new_note(note)
     # Skip system notes, like status changes and cross-references
-    unless note.system
-      project = note.project
-      target  = note.noteable
-      author  = note.author
+    return if note.system
 
-      mark_pending_tasks_as_done(target, author)
+    project = note.project
+    target  = note.noteable
+    author  = note.author
 
-      mentioned_users = build_mentioned_users(project, note, author)
+    mark_pending_tasks_as_done(target, author)
 
-      mentioned_users.each do |user|
-        create_task(project, target, author, user, Task::MENTIONED, note)
-      end
+    mentioned_users = build_mentioned_users(project, note, author)
+
+    mentioned_users.each do |user|
+      create_task(project, target, author, user, Task::MENTIONED, note)
     end
   end
 
@@ -111,19 +111,19 @@ class TaskService
   #
   def update_note(note, current_user)
     # Skip system notes, like status changes and cross-references
-    unless note.system
-      project = note.project
-      target  = note.noteable
-      author  = current_user
+    return if note.system
 
-      mark_pending_tasks_as_done(target, author)
+    project = note.project
+    target  = note.noteable
+    author  = current_user
 
-      mentioned_users = build_mentioned_users(project, note, author)
+    mark_pending_tasks_as_done(target, author)
 
-      mentioned_users.each do |user|
-        unless pending_tasks(mentioned_user, project, target, note: note, action: Task::MENTIONED).exists?
-          create_task(project, target, author, user, Task::MENTIONED, note)
-        end
+    mentioned_users = build_mentioned_users(project, note, author)
+
+    mentioned_users.each do |user|
+      unless pending_tasks(mentioned_user, project, target, note: note, action: Task::MENTIONED).exists?
+        create_task(project, target, author, user, Task::MENTIONED, note)
       end
     end
   end
@@ -159,10 +159,10 @@ class TaskService
   end
 
   def pending_tasks(user, project, target, options = {})
-    options.reverse_merge({
+    options.reverse_merge(
       project: project,
       target: target
-    })
+    )
 
     user.tasks.pending.where(options)
   end
