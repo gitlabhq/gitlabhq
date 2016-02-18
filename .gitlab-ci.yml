@@ -179,6 +179,7 @@ spec:feature:ruby21:
     - mysql
 
 spec:api:ruby21:
+  stage: test
   image: ruby:2.1
   only:
   - master
@@ -208,6 +209,7 @@ spec:models:ruby21:
     - mysql
 
 spec:lib:ruby21:
+  stage: test
   image: ruby:2.1
   only:
   - master
@@ -222,6 +224,7 @@ spec:lib:ruby21:
     - mysql
 
 spec:services:ruby21:
+  stage: test
   image: ruby:2.1
   only:
   - master
@@ -236,6 +239,7 @@ spec:services:ruby21:
     - mysql
 
 spec:benchmark:ruby21:
+  stage: test
   image: ruby:2.1
   only:
   - master
@@ -251,6 +255,7 @@ spec:benchmark:ruby21:
   allow_failure: true
 
 spec:other:ruby21:
+  stage: test
   image: ruby:2.1
   only:
   - master
@@ -265,6 +270,7 @@ spec:other:ruby21:
     - mysql
 
 spinach:project:half:ruby21:
+  stage: test
   image: ruby:2.1
   only:
   - master
@@ -279,6 +285,7 @@ spinach:project:half:ruby21:
     - mysql
 
 spinach:project:rest:ruby21:
+  stage: test
   image: ruby:2.1
   only:
   - master
@@ -293,6 +300,7 @@ spinach:project:rest:ruby21:
     - mysql
 
 spinach:other:ruby21:
+  stage: test
   image: ruby:2.1
   only:
   - master
@@ -310,7 +318,7 @@ spinach:other:ruby21:
 notify:slack:
   stage: notifications
   script:
-    - source ./scripts/notify_slack.sh "#notifications" "Build failed for master/tags!"
+    - source ./scripts/notify_slack.sh "#builds" "Build failed for master/tags!"
   when: on_failure
   only:
     - master@gitlab-org/gitlab-ce
