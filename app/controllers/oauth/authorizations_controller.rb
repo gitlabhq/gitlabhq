@@ -7,6 +7,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     if pre_auth.authorizable?
       if skip_authorization? || matching_token?
         auth = authorization.authorize
+        reset_session
         redirect_to auth.redirect_uri
       else
         render "doorkeeper/authorizations/new"
