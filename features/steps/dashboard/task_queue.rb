@@ -31,9 +31,9 @@ class Spinach::Features::DashboardTaskQueue < Spinach::FeatureSteps
 
     expect(page).to have_link project.name_with_namespace
     should_see_task(1, "John Doe assigned merge request ##{merge_request.iid}", merge_request.title)
-    should_see_task(2, "John Doe mentioned on issue ##{issue.iid}", "#{current_user.to_reference} Wdyt?")
+    should_see_task(2, "John Doe mentioned you on issue ##{issue.iid}", "#{current_user.to_reference} Wdyt?")
     should_see_task(3, "John Doe assigned issue ##{issue.iid}", issue.title)
-    should_see_task(4, "Mary Jane mentioned on issue ##{issue.iid}", issue.title)
+    should_see_task(4, "Mary Jane mentioned you on issue ##{issue.iid}", issue.title)
   end
 
   step 'I mark the pending task as done' do
@@ -77,7 +77,7 @@ class Spinach::Features::DashboardTaskQueue < Spinach::FeatureSteps
   end
 
   step 'I should not see tasks related to "Mary Jane" in the list' do
-    should_not_see_task "Mary Jane mentioned on issue ##{issue.iid}"
+    should_not_see_task "Mary Jane mentioned you on issue ##{issue.iid}"
   end
 
   step 'I should not see tasks related to "Merge Requests" in the list' do

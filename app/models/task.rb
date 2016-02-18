@@ -46,7 +46,7 @@ class Task < ActiveRecord::Base
   def action_name
     case action
     when ASSIGNED then 'assigned'
-    when MENTIONED then 'mentioned on'
+    when MENTIONED then 'mentioned you on'
     end
   end
 

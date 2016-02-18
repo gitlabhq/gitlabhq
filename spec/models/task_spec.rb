@@ -38,10 +38,16 @@ describe Task, models: true do
   end
 
   describe '#action_name' do
-    it 'returns assigned when action is assigned' do
+    it 'returns proper message when action is an assigment' do
       subject.action = Task::ASSIGNED
 
       expect(subject.action_name).to eq 'assigned'
+    end
+
+    it 'returns proper message when action is a mention' do
+      subject.action = Task::MENTIONED
+
+      expect(subject.action_name).to eq 'mentioned you on'
     end
   end
 
