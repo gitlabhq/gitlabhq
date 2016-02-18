@@ -1,6 +1,7 @@
 .label-row
   = link_to_label(label)
-  = markdown(label.description, pipeline: :single_line)
+  %span.prepend-left-10
+    = markdown(label.description, pipeline: :single_line)
 
   .pull-right
     %strong.append-right-20
