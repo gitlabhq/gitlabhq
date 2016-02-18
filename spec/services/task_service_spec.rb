@@ -56,15 +56,15 @@ describe TaskService, services: true do
         service.update_issue(issue, author)
 
         should_create_task(user: michael, target: issue, action: Task::MENTIONED)
+        should_create_task(user: john_doe, target: issue, action: Task::MENTIONED)
         should_not_create_task(user: author, target: issue, action: Task::MENTIONED)
-        should_not_create_task(user: john_doe, target: issue, action: Task::MENTIONED)
         should_not_create_task(user: stranger, target: issue, action: Task::MENTIONED)
       end
 
       it 'does not create a task if user was already mentioned' do
         create(:task, :mentioned, user: michael, project: project, target: issue, author: author)
 
-        should_not_create_any_task { service.update_issue(issue, author) }
+        expect { service.update_issue(issue, author) }.not_to change(michael.tasks, :count)
       end
     end
 
@@ -184,15 +184,15 @@ describe TaskService, services: true do
         service.update_merge_request(mr_assigned, author)
 
         should_create_task(user: michael, target: mr_assigned, action: Task::MENTIONED)
+        should_create_task(user: john_doe, target: mr_assigned, action: Task::MENTIONED)
         should_not_create_task(user: author, target: mr_assigned, action: Task::MENTIONED)
-        should_not_create_task(user: john_doe, target: mr_assigned, action: Task::MENTIONED)
         should_not_create_task(user: stranger, target: mr_assigned, action: Task::MENTIONED)
       end
 
       it 'does not create a task if user was already mentioned' do
         create(:task, :mentioned, user: michael, project: project, target: mr_assigned, author: author)
 
-        should_not_create_any_task { service.update_merge_request(mr_assigned, author) }
+        expect { service.update_merge_request(mr_assigned, author) }.not_to change(michael.tasks, :count)
       end
     end
 

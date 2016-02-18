@@ -150,7 +150,6 @@ class TaskService
     end
 
     mentioned_users.delete(author)
-    mentioned_users.delete(target.assignee) if target.respond_to?(:assignee)
     mentioned_users.uniq
   end
 
@@ -177,6 +176,7 @@ class TaskService
     end
 
     mentioned_users = build_mentioned_users(project, target, author)
+    mentioned_users.delete(issuable.assignee)
 
     mentioned_users.each do |mentioned_user|
       create_task(project, target, author, mentioned_user, Task::MENTIONED)
@@ -185,16 +185,15 @@ class TaskService
 
   def update_issuable(issuable, current_user)
     project = issuable.project
-    target  = issuable
     author  = current_user
 
-    mark_pending_tasks_as_done(target, author)
+    mark_pending_tasks_as_done(issuable, author)
 
-    mentioned_users = build_mentioned_users(project, target, author)
+    mentioned_users = build_mentioned_users(project, issuable, author)
 
     mentioned_users.each do |mentioned_user|
-      unless pending_tasks(mentioned_user, project, target, action: Task::MENTIONED).exists?
-        create_task(project, target, author, mentioned_user, Task::MENTIONED)
+      unless pending_tasks(mentioned_user, project, issuable, action: Task::MENTIONED).exists?
+        create_task(project, issuable, author, mentioned_user, Task::MENTIONED)
       end
     end
   end
