@@ -1,5 +1,12 @@
 # GitLab JIRA integration
 
+_**Note:**
+Full JIRA integration was previously exclusive to GitLab Enterprise Edition.
+With [GitLab 8.3 forward][8_3_post], this feature in now [backported][jira-ce]
+to GitLab Community Edition as well._
+
+---
+
 GitLab can be configured to interact with [JIRA Core] either using an
 on-premises instance or the SaaS solution that Atlassian offers. Configuration
 happens via username and password on a per-project basis. Connecting to a JIRA
@@ -210,3 +217,5 @@ You can see from the above image that there are four references to GitLab:
 
 [services-templates]: ../project_services/services_templates.md "Services templates documentation"
 [JIRA Core]: https://www.atlassian.com/software/jira/core "The JIRA Core website"
+[jira-ce]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2146 "MR - Backport JIRA service"
+[8_3_post]: https://about.gitlab.com/2015/12/22/gitlab-8-3-released/ "GitLab 8.3 release post"

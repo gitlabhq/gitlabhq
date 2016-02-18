@@ -5,6 +5,12 @@
 An SSH key allows you to establish a secure connection between your
 computer and GitLab. Before generating an SSH key in your shell, check if your system
 already has one by running the following command:
+
+**Windows Command Line:**
+```bash
+type %userprofile%\.ssh\id_rsa.pub
+```
+**GNU/Linux/Mac/PowerShell:**
 ```bash
 cat ~/.ssh/id_rsa.pub
 ```
@@ -25,6 +31,12 @@ press enter to use the default. If you use a different name, the key will not
 be used automatically.
 
 Use the command below to show your public key:
+
+**Windows Command Line:**
+```bash
+type %userprofile%\.ssh\id_rsa.pub
+```
+**GNU/Linux/Mac/PowerShell:**
 ```bash
 cat ~/.ssh/id_rsa.pub
 ```
@@ -36,9 +48,14 @@ with your username and host.
 To copy your public key to the clipboard, use the code below. Depending on your
 OS you'll need to use a different command:
 
-**Windows:**
+**Windows Command Line:**
 ```bash
-clip < ~/.ssh/id_rsa.pub
+type %userprofile%\.ssh\id_rsa.pub | clip
+```
+
+**Windows PowerShell:**
+```bash
+cat ~/.ssh/id_rsa.pub | clip
 ```
 
 **Mac:**

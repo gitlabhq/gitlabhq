@@ -43,6 +43,7 @@
 #  metrics_port                      :integer          default(8089)
 #  sentry_enabled                    :boolean          default(FALSE)
 #  sentry_dsn                        :string
+#  email_author_in_body              :boolean          default(FALSE)
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -70,8 +71,8 @@ class ApplicationSetting < ActiveRecord::Base
             url: true
 
   validates :admin_notification_email,
-            allow_blank: true,
-            email: true
+            email: true,
+            allow_blank: true
 
   validates :two_factor_grace_period,
             numericality: { greater_than_or_equal_to: 0 }
@@ -87,6 +88,14 @@ class ApplicationSetting < ActiveRecord::Base
   validates :sentry_dsn,
             presence: true,
             if: :sentry_enabled
+
+  validates :akismet_api_key,
+            presence: true,
+            if: :akismet_enabled
+
+  validates :max_attachment_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
@@ -143,7 +152,9 @@ class ApplicationSetting < ActiveRecord::Base
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       max_artifacts_size: Settings.artifacts['max_size'],
       require_two_factor_authentication: false,
-      two_factor_grace_period: 48
+      two_factor_grace_period: 48,
+      recaptcha_enabled: false,
+      akismet_enabled: false
     )
   end
 

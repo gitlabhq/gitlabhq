@@ -3,24 +3,24 @@ class @ProjectsList
     $(".projects-list .js-expand").on 'click', (e) ->
       e.preventDefault()
       list = $(this).closest('.projects-list')
-      list.find("li").show()
-      list.find("li.bottom").hide()
 
-    $(".projects-list-filter").keyup ->
-      terms = $(this).val()
-      uiBox = $('div.projects-list-holder')
-      filterSelector = $(this).data('filter-selector') || 'span.filter-title'
+    $("#filter_projects").on 'keyup', ->
+      ProjectsList.filter_results($("#filter_projects"))
 
-      if terms == "" || terms == undefined
-        uiBox.find("ul.projects-list li").show()
-      else
-        uiBox.find("ul.projects-list li").each (index) ->
-          name = $(this).find(filterSelector).text()
+  @filter_results: ($element) ->
+    terms = $element.val()
+    filterSelector = $element.data('filter-selector') || 'span.filter-title'
 
-          if name.toLowerCase().search(terms.toLowerCase()) == -1
-            $(this).hide()
-          else
-            $(this).show()
-      uiBox.find("ul.projects-list li.bottom").hide()
+    if not terms
+      $(".projects-list li").show()
+      $('.gl-pagination').show()
+    else
+      $(".projects-list li").each (index) ->
+        $this = $(this)
+        name = $this.find(filterSelector).text()
 
-
+        if name.toLowerCase().indexOf(terms.toLowerCase()) == -1
+          $this.hide()
+        else
+          $this.show()
+      $('.gl-pagination').hide()

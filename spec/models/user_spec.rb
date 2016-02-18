@@ -91,6 +91,7 @@ describe User, models: true do
     it { is_expected.to have_many(:assigned_merge_requests).dependent(:destroy) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_one(:abuse_report) }
+    it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -118,37 +119,15 @@ describe User, models: true do
 
     it { is_expected.to validate_length_of(:bio).is_within(0..255) }
 
+    it_behaves_like 'an object with email-formated attributes', :email do
+      subject { build(:user) }
+    end
+
+    it_behaves_like 'an object with email-formated attributes', :public_email, :notification_email do
+      subject { build(:user).tap { |user| user.emails << build(:email, email: email_value) } }
+    end
+
     describe 'email' do
-      it 'accepts info@example.com' do
-        user = build(:user, email: 'info@example.com')
-        expect(user).to be_valid
-      end
-
-      it 'accepts info+test@example.com' do
-        user = build(:user, email: 'info+test@example.com')
-        expect(user).to be_valid
-      end
-
-      it "accepts o'reilly@example.com" do
-        user = build(:user, email: "o'reilly@example.com")
-        expect(user).to be_valid
-      end
-
-      it 'rejects test@test@example.com' do
-        user = build(:user, email: 'test@test@example.com')
-        expect(user).to be_invalid
-      end
-
-      it 'rejects mailto:test@example.com' do
-        user = build(:user, email: 'mailto:test@example.com')
-        expect(user).to be_invalid
-      end
-
-      it "rejects lol!'+=?><#$%^&*()@gmail.com" do
-        user = build(:user, email: "lol!'+=?><#$%^&*()@gmail.com")
-        expect(user).to be_invalid
-      end
-
       context 'when no signup domains listed' do
         before { allow(current_application_settings).to receive(:restricted_signup_domains).and_return([]) }
         it 'accepts any email' do

@@ -33,7 +33,7 @@ module SnippetsHelper
   # surrounding code.
   #
   # @returns Array, unique and sorted.
-  def matching_lines(lined_content, surrounding_lines)
+  def matching_lines(lined_content, surrounding_lines, query)
     used_lines = []
     lined_content.each_with_index do |line, line_number|
       used_lines.concat bounded_line_numbers(
@@ -51,9 +51,9 @@ module SnippetsHelper
   # surrounding_lines() worth of unmatching lines.
   #
   # @returns a hash with {snippet_object, snippet_chunks:{data,start_line}}
-  def chunk_snippet(snippet, surrounding_lines = 3)
+  def chunk_snippet(snippet, query, surrounding_lines = 3)
     lined_content = snippet.content.split("\n")
-    used_lines = matching_lines(lined_content, surrounding_lines)
+    used_lines = matching_lines(lined_content, surrounding_lines, query)
 
     snippet_chunk = []
     snippet_chunks = []

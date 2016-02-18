@@ -25,11 +25,7 @@ class DeleteBranchService < BaseService
     end
 
     if repository.rm_branch(current_user, branch_name)
-      push_data = build_push_data(branch)
-
-      project.execute_hooks(push_data.dup, :push_hooks)
-      project.execute_services(push_data.dup, :push_hooks)
-
+      # GitPushService handles execution of services and hooks for branch pushes
       success('Branch was removed')
     else
       error('Failed to remove branch')

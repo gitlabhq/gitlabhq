@@ -6,11 +6,5 @@
 - else
   = render 'explore/head'
 
-.explore-trending-block
-  .gray-content-block.second-block
-    .pull-right
-      = render 'explore/projects/dropdown'
-    .oneline
-      %i.fa.fa-comments-o
-      See most discussed projects for last month
-  = render 'projects', projects: @trending_projects
+= render 'explore/projects/nav'
+= render 'projects', projects: @projects

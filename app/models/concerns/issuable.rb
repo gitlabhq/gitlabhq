@@ -69,9 +69,34 @@ module Issuable
       case method.to_s
       when 'milestone_due_asc' then order_milestone_due_asc
       when 'milestone_due_desc' then order_milestone_due_desc
+      when 'downvotes_desc' then order_downvotes_desc
+      when 'upvotes_desc' then order_upvotes_desc
       else
         order_by(method)
       end
+    end
+
+    def order_downvotes_desc
+      order_votes_desc('thumbsdown')
+    end
+
+    def order_upvotes_desc
+      order_votes_desc('thumbsup')
+    end
+
+    def order_votes_desc(award_emoji_name)
+      issuable_table = self.arel_table
+      note_table = Note.arel_table
+
+      join_clause = issuable_table.join(note_table, Arel::Nodes::OuterJoin).on(
+        note_table[:noteable_id].eq(issuable_table[:id]).and(
+          note_table[:noteable_type].eq(self.name).and(
+            note_table[:is_award].eq(true).and(note_table[:note].eq(award_emoji_name))
+          )
+        )
+      ).join_sources
+
+      joins(join_clause).group(issuable_table[:id]).reorder("COUNT(notes.id) DESC")
     end
   end
 
@@ -126,17 +151,17 @@ module Issuable
   end
 
   def to_hook_data(user)
-    {
+    hook_data = {
       object_kind: self.class.name.underscore,
       user: user.hook_attrs,
-      repository: {
-          name: project.name,
-          url: project.url_to_repo,
-          description: project.description,
-          homepage: project.web_url
-      },
-      object_attributes: hook_attrs
+      project: project.hook_attrs,
+      object_attributes: hook_attrs,
+      # DEPRECATED
+      repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }
+    hook_data.merge!(assignee: assignee.hook_attrs) if assignee
+
+    hook_data
   end
 
   def label_names

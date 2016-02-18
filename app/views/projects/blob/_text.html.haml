@@ -1,3 +1,4 @@
+- blob.load_all_data!(@repository)
 - if markup?(blob.name)
   .file-content.wiki
     = render_markup(blob.name, blob.data)

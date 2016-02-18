@@ -137,6 +137,7 @@ class MergeRequest < ActiveRecord::Base
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :in_projects, ->(project_ids) { where("source_project_id in (:project_ids) OR target_project_id in (:project_ids)", project_ids: project_ids) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
+  scope :opened, -> { with_states(:opened, :reopened) }
   scope :merged, -> { with_state(:merged) }
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
@@ -240,7 +241,7 @@ class MergeRequest < ActiveRecord::Base
     return unless unchecked?
 
     can_be_merged =
-      project.repository.can_be_merged?(source_sha, target_branch)
+      !broken? && project.repository.can_be_merged?(source_sha, target_branch)
 
     if can_be_merged
       mark_as_mergeable
@@ -258,7 +259,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def work_in_progress?
-    !!(title =~ /\A\[?WIP\]?:? /i)
+    !!(title =~ /\A\[?WIP(\]|:| )/i)
   end
 
   def mergeable?
@@ -284,7 +285,8 @@ class MergeRequest < ActiveRecord::Base
   def can_remove_source_branch?(current_user)
     !source_project.protected_branch?(source_branch) &&
       !source_project.root_ref?(source_branch) &&
-      Ability.abilities.allowed?(current_user, :push_code, source_project)
+      Ability.abilities.allowed?(current_user, :push_code, source_project) &&
+      last_commit == source_project.commit(source_branch)
   end
 
   def mr_and_commit_notes

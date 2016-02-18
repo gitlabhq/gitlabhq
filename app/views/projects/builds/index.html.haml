@@ -1,18 +1,7 @@
 - page_title "Builds"
 = render "header_title"
 
-.project-issuable-filter
-  .controls
-    - if can?(current_user, :manage_builds, @project)
-      .pull-left.hidden-xs
-        - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project),
-            data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
-
-        = link_to ci_lint_path, class: 'btn btn-default' do
-          = icon('wrench')
-          %span CI Lint
-
+.top-area
   %ul.nav-links
     %li{class: ('active' if @scope.nil?)}
       = link_to project_builds_path(@project) do
@@ -31,6 +20,16 @@
         Finished
         %span.badge.js-running-count
           = number_with_delimiter(@all_builds.finished.count(:id))
+
+  .nav-controls
+    - if can?(current_user, :update_build, @project)
+      - if @all_builds.running_or_pending.any?
+        = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project),
+          data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+
+      = link_to ci_lint_path, class: 'btn btn-default' do
+        = icon('wrench')
+        %span CI Lint
 
 .gray-content-block
   #{(@scope || 'running').capitalize} builds from this project

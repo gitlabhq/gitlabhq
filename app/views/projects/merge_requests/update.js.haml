@@ -1,3 +1,3 @@
-$('.issuable-sidebar').html("#{escape_javascript(render 'shared/issuable/sidebar', issuable: @merge_request)}");
-$('.issuable-sidebar').parent().effect('highlight')
-merge_request = new MergeRequest();
+$('aside.right-sidebar')[0].outerHTML = "#{escape_javascript(render 'shared/issuable/sidebar', issuable: @merge_request)}";
+$('aside.right-sidebar').effect('highlight');
+new IssuableContext();

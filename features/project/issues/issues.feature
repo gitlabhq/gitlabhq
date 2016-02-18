@@ -25,9 +25,16 @@ Feature: Project Issues
   Scenario: I visit issue page
     Given I click link "Release 0.4"
     Then I should see issue "Release 0.4"
+    And I should see "1 of 2" in the sidebar
+
+  Scenario: I navigate between issues
+    Given I click link "Release 0.4"
+    Then I click link "Next" in the sidebar
+    Then I should see issue "Tweet control"
+    And I should see "2 of 2" in the sidebar
 
   @javascript
-  Scenario: I visit issue page
+  Scenario: I filter by author
     Given I add a user to project "Shop"
     And I click "author" dropdown
     Then I see current user as the first user
@@ -80,6 +87,16 @@ Feature: Project Issues
     And I sort the list by "Oldest updated"
     And I visit dashboard merge requests page
     Then The list should be sorted by "Oldest updated"
+
+  @javascript
+  Scenario: Sort issues by upvotes/downvotes
+    Given project "Shop" have "Bugfix" open issue
+    And issue "Release 0.4" have 2 upvotes and 1 downvote
+    And issue "Tweet control" have 1 upvote and 2 downvotes
+    And I sort the list by "Most popular"
+    Then The list should be sorted by "Most popular"
+    And I sort the list by "Least popular"
+    Then The list should be sorted by "Least popular"
 
   @javascript
   Scenario: I search issue

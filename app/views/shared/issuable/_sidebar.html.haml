@@ -1,88 +1,129 @@
-.issuable-sidebar.issuable-affix
-  = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
-    .block.assignee
-      .title
-        %label
-          Assignee
-        - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-          .pull-right
-            = link_to 'Edit', '#', class: 'edit-link'
-      .value
-        - if issuable.assignee
-          %strong= link_to_member(@project, issuable.assignee, size: 24)
-          - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
-            %a.pull-right.cannot-be-merged{href: '#', data: {toggle: 'tooltip'}, title: 'Not allowed to merge'}
-              = icon('exclamation-triangle')
+%aside.right-sidebar{ class: sidebar_gutter_collapsed_class }
+  .issuable-sidebar
+    .block
+      %span.issuable-count.pull-left
+        = issuable.iid
+        of
+        = issuables_count(issuable)
+      %span.pull-right
+        %a.gutter-toggle{href: '#'}
+          = sidebar_gutter_toggle_icon
+      .issuable-nav.pull-right.btn-group{role: 'group', "aria-label" => '...'}
+        - if prev_issuable = prev_issuable_for(issuable)
+          = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn'
         - else
-          .light None
-
-      .selectbox
-        = users_select_tag("#{issuable.class.table_name.singularize}[assignee_id]", placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: issuable.assignee_id, project: @target_project, null_user: true, current_user: true, first_user: true)
-
-    .block.milestone
-      .title
-        %label
-          Milestone
-        - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-          .pull-right
-            = link_to 'Edit', '#', class: 'edit-link'
-      .value
-        - if issuable.milestone
-          %span.back-to-milestone
-            = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
-              %strong
-                = icon('clock-o')
-                = issuable.milestone.title
+          %a.btn.btn-default.disabled{href: '#'}
+            Prev
+        - if next_issuable = next_issuable_for(issuable)
+          = link_to 'Next', [@project.namespace.becomes(Namespace), @project, next_issuable], class: 'btn btn-default next-btn'
         - else
-          .light None
-      .selectbox
-        = f.select(:milestone_id, milestone_options(issuable), { include_blank: true }, { class: 'select2 select2-compact js-select2 js-milestone', data: { placeholder: 'Select milestone' }})
-        = hidden_field_tag :issuable_context
-        = f.submit class: 'btn hide'
+          %a.btn.btn-default.disabled{href: '#'}
+            Next
 
-    - if issuable.project.labels.any?
-      .block
+    = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
+      .block.assignee
+        .sidebar-collapsed-icon
+          - if issuable.assignee
+            = link_to_member_avatar(issuable.assignee, size: 24)
+          - else
+            = icon('user')
         .title
-          %label Labels
+          %label
+            Assignee
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             .pull-right
               = link_to 'Edit', '#', class: 'edit-link'
-        .value.issuable-show-labels
-          - if issuable.labels.any?
-            - issuable.labels.each do |label|
-              = link_to_label(label)
+        .value
+          - if issuable.assignee
+            %strong= link_to_member(@project, issuable.assignee, size: 24)
+            - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+              %a.pull-right.cannot-be-merged{href: '#', data: {toggle: 'tooltip'}, title: 'Not allowed to merge'}
+                = icon('exclamation-triangle')
+          - else
+            .light None
+
+        .selectbox
+          = users_select_tag("#{issuable.class.table_name.singularize}[assignee_id]", placeholder: 'Select assignee', class: 'custom-form-control js-select2 js-assignee', selected: issuable.assignee_id, project: @target_project, null_user: true, current_user: true, first_user: true)
+
+      .block.milestone
+        .sidebar-collapsed-icon
+          = icon('clock-o')
+          %span
+            - if issuable.milestone
+              = issuable.milestone.title
+            - else
+              No
+        .title
+          %label
+            Milestone
+          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            .pull-right
+              = link_to 'Edit', '#', class: 'edit-link'
+        .value
+          - if issuable.milestone
+            %span.back-to-milestone
+              = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
+                %strong
+                  = icon('clock-o')
+                  = issuable.milestone.title
           - else
             .light None
         .selectbox
-          = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-            { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }
+          = f.select(:milestone_id, milestone_options(issuable), { include_blank: true }, { class: 'select2 select2-compact js-select2 js-milestone', data: { placeholder: 'Select milestone' }})
+          = hidden_field_tag :issuable_context
+          = f.submit class: 'btn hide'
 
-    = render "shared/issuable/participants", participants: issuable.participants(current_user)
+      - if issuable.project.labels.any?
+        .block.labels
+          .sidebar-collapsed-icon
+            = icon('tags')
+            %span
+              = issuable.labels.count
+          .title
+            %label Labels
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              .pull-right
+                = link_to 'Edit', '#', class: 'edit-link'
+          .value.issuable-show-labels
+            - if issuable.labels.any?
+              - issuable.labels.each do |label|
+                = link_to_label(label, type: issuable.to_ability_name)
+            - else
+              .light None
+          .selectbox
+            = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
+              { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }
 
-    - if current_user
-      - subscribed = issuable.subscribed?(current_user)
-      .block.light
+      = render "shared/issuable/participants", participants: issuable.participants(current_user)
+      %hr
+      - if current_user
+        - subscribed = issuable.subscribed?(current_user)
+        .block.light
+          .sidebar-collapsed-icon
+            = icon('rss')
+          .title
+            %label.light Notifications
+          - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
+          %button.btn.btn-block.btn-gray.subscribe-button{:type => 'button'}
+            %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+          .subscription-status{data: {status: subscribtion_status}}
+            .unsubscribed{class: ( 'hidden' if subscribed )}
+              You're not receiving notifications from this thread.
+            .subscribed{class: ( 'hidden' unless subscribed )}
+              You're receiving notifications because you're subscribed to this thread.
+
+      - project_ref = cross_project_reference(@project, issuable)
+      .block.project-reference
+        .sidebar-collapsed-icon
+          = clipboard_button(clipboard_text: project_ref)
         .title
-          %label.light Notifications
-        - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
-        %button.btn.btn-block.btn-gray.subscribe-button{:type => 'button'}
-          %span= subscribed ? 'Unsubscribe' : 'Subscribe'
-        .subscription-status{data: {status: subscribtion_status}}
-          .unsubscribed{class: ( 'hidden' if subscribed )}
-            You're not receiving notifications from this thread.
-          .subscribed{class: ( 'hidden' unless subscribed )}
-            You're receiving notifications because you're subscribed to this thread.
+        .cross-project-reference
+          %span
+            Reference:
+            %cite{title: project_ref}
+              = project_ref
+          = clipboard_button(clipboard_text: project_ref)
 
-    - project_ref = cross_project_reference(@project, issuable)
-    .block
-      .title
-      .cross-project-reference
-        %span
-          Reference:
-          %cite{title: project_ref}
-            = project_ref
-        = clipboard_button(clipboard_text: project_ref)
-
-  :javascript
-    new Subscription("#{toggle_subscription_path(issuable)}");
-    new IssuableContext();
+    :javascript
+      new Subscription("#{toggle_subscription_path(issuable)}");
+      new IssuableContext();

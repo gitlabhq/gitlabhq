@@ -24,7 +24,7 @@
       display: inline-block;
     }
 
-    .issue-no-comments {
+    .issue-no-comments, .issue-no-votes {
       opacity: 0.5;
     }
   }
@@ -63,10 +63,6 @@ form.edit-issue {
 .merge-request-id {
   display: inline-block;
   width: 3em;
-}
-
-.merge-request-info {
-  padding-left: 5px;
 }
 
 .merge-request-status {
