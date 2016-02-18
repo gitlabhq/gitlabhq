@@ -19,13 +19,15 @@ li.milestone {
     width: 105px;
   }
 
-  .panel-heading {
-    font-weight: bold;
-  }
-
   .issue-row {
     .color-label {
-      padding: 5px !important;
+      border-radius: 2px;
+      padding: 3px !important;
+    }
+
+    // Issue title
+    span a {
+      color: rgba(0,0,0,0.64);
     }
   }
 }
@@ -47,7 +49,7 @@ li.milestone {
     display: block;
 
     .issue-number{
-      color: #D1D1D1;
+      color: rgba(0,0,0,0.44);
       margin-right: 5px;
     }
     .color-label {
