@@ -123,6 +123,40 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'GET #index' do
+    def get_merge_requests
+      get :index,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          state: 'opened'
+    end
+
+    context 'when filtering by opened state' do
+
+      context 'with opened merge requests' do
+        it 'should list those merge requests' do
+          get_merge_requests
+
+          expect(assigns(:merge_requests)).to include(merge_request)
+        end
+      end
+
+      context 'with reopened merge requests' do
+        before do
+          merge_request.close!
+          merge_request.reopen!
+        end
+
+        it 'should list those merge requests' do
+          get_merge_requests
+
+          expect(assigns(:merge_requests)).to include(merge_request)
+        end
+      end
+
+    end
+  end
+
   describe 'GET diffs' do
     def go(format: 'html')
       get :diffs,
