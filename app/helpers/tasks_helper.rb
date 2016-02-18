@@ -38,4 +38,37 @@ module TasksHelper
     text = first_line_in_markdown(text, 150, options)
     sanitize(text, tags: %w(a img b pre code p span))
   end
+
+  def task_actions_options
+    actions = [
+      OpenStruct.new(id: '', title: 'Any Action'),
+      OpenStruct.new(id: Task::ASSIGNED, title: 'Assigned'),
+      OpenStruct.new(id: Task::MENTIONED, title: 'Mentioned')
+    ]
+
+    options_from_collection_for_select(actions, 'id', 'title', params[:action_id])
+  end
+
+  def task_projects_options
+    projects = current_user.authorized_projects.sorted_by_activity.non_archived
+    projects = projects.includes(:namespace)
+
+    projects = projects.map do |project|
+      OpenStruct.new(id: project.id, title: project.name_with_namespace)
+    end
+
+    projects.unshift(OpenStruct.new(id: '', title: 'Any Project'))
+
+    options_from_collection_for_select(projects, 'id', 'title', params[:project_id])
+  end
+
+  def task_types_options
+    types = [
+      OpenStruct.new(title: 'Any Type', name: ''),
+      OpenStruct.new(title: 'Issue', name: 'Issue'),
+      OpenStruct.new(title: 'Merge Request', name: 'MergeRequest')
+    ]
+
+    options_from_collection_for_select(types, 'name', 'title', params[:type])
+  end
 end
