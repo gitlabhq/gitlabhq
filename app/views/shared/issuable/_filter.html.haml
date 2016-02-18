@@ -41,7 +41,7 @@
           .filter-item.inline
             = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
-- if @label.present?
+- if @label
   .gray-content-block.second-block
     = render "shared/label_row", label: @label
 
