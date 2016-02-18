@@ -184,6 +184,22 @@ you expected.
 You are also able to view the status of any commit in the various pages in
 GitLab, such as **Commits** and **Merge Requests**.
 
+## Enabling build emails
+
+If you want to recieve notifications about builds (when build fails, for
+example), you should enable **Build Emails Service**.
+
+**Build Emails** service is available on a **Service** page in a project's
+settings. You should activate it by checking an *Active* checkbox, and clicking
+"Save changes".
+
+Note that you can also provide a list of recipients that will always recieve
+notifications or indicate that you want a pusher to also recieve notification
+about each build's status.
+
+If you decide to check *Notify only broken builds* checkbox, notifications will
+be sent only for failed builds.
+
 ## Builds badge
 
 You can access a builds badge image using following link:
