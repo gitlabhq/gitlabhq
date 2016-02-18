@@ -29,6 +29,6 @@ class GeoNode < ActiveRecord::Base
   end
 
   def notify_url
-    URI::join(uri, '/api/geo/refresh_projects').to_s
+    URI::join(uri, "#{uri.path}/", 'api/geo/refresh_projects').to_s
   end
 end
