@@ -4,7 +4,15 @@ namespace :gitlab do
     task index_repositories: :environment  do
       Repository.__elasticsearch__.create_index!
 
-      projects = apply_project_filters(Project)
+      projects = if ENV['NOT_INDEXED_ONLY']
+                   Project.includes(:index_status).
+                           where("index_statuses.id IS NULL").
+                           references(:index_statuses)
+                 else
+                   Project
+                 end
+
+      projects = apply_project_filters(projects)
 
       projects.find_each do |project|
         if project.repository.exists? && !project.repository.empty?
@@ -84,11 +92,11 @@ namespace :gitlab do
 
     def apply_project_filters(projects)
       if ENV['ID_FROM']
-        projects = projects.where("id >= ?", ENV['ID_FROM'])
+        projects = projects.where("projects.id >= ?", ENV['ID_FROM'])
       end
 
       if ENV['ID_TO']
-        projects = projects.where("id <= ?", ENV['ID_TO'])
+        projects = projects.where("projects.id <= ?", ENV['ID_TO'])
       end
 
       projects
