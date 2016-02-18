@@ -62,8 +62,8 @@ v 8.5.0 (unreleased)
   - Replaces "Create merge request" link with one to the "Merge Request" when one exists
   - Fix CI builds badge, add a new link to builds badge, deprecate the old one
   - Fix broken link to project in build notification emails
-  - Add label description
-  - Show label row when filtering issues or merge requests by label
+  - Add label description (Nuttanart Pornprasitsakul)
+  - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
