@@ -833,7 +833,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
-    unicorn (4.8.3)
+    unicorn (4.9.0)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
@@ -1034,7 +1034,7 @@ DEPENDENCIES
   uglifier (~> 2.7.2)
   underscore-rails (~> 1.8.0)
   unf (~> 0.1.4)
-  unicorn (~> 4.8.2)
+  unicorn (~> 4.9.0)
   unicorn-worker-killer (~> 0.4.2)
   version_sorter (~> 2.0.0)
   virtus (~> 1.0.1)

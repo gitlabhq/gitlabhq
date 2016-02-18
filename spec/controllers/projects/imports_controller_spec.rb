@@ -104,6 +104,18 @@ describe Projects::ImportsController do
           end
         end
       end
+
+      context 'when import never happened' do
+        before do
+          project.update_attribute(:import_status, :none)
+        end
+
+        it 'redirects to namespace_project_path' do
+          get :show, namespace_id: project.namespace.to_param, project_id: project.to_param
+
+          expect(response).to redirect_to namespace_project_path(project.namespace, project)
+        end
+      end
     end
   end
 end

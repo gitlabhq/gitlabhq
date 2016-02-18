@@ -382,6 +382,10 @@ class Project < ActiveRecord::Base
     external_import? || forked?
   end
 
+  def no_import?
+    import_status == 'none'
+  end
+
   def external_import?
     import_url.present?
   end
