@@ -64,6 +64,9 @@ v 8.5.0 (unreleased)
   - Fix broken link to project in build notification emails
   - Ability to see and sort on vote count from Issues and MR lists
   - Fix builds scheduler when first build in stage was allowed to fail
+  - Allow SAML users to login with no previous account without having to allow
+    all Omniauth providers to do so.
+  - Allow existing users to auto link their SAML credentials by logging in via SAML
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
