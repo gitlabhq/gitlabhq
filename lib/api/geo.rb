@@ -10,9 +10,8 @@ module API
       # Example request:
       #   POST /refresh_projects
       post 'refresh_projects' do
-        attrs = attributes_for_keys [:projects]
-
-        Geo::ScheduleRepoUpdateService.new(attrs[:projects]).execute
+        required_attributes! [:projects]
+        ::Geo::ScheduleRepoUpdateService.new(params[:projects]).execute
       end
     end
   end

@@ -25,7 +25,7 @@ module Gitlab
       private
 
       def disallowed_request?
-        DISALLOWED_METHODS.include?(@env['REQUEST_METHOD']) && !logout_route
+        DISALLOWED_METHODS.include?(@env['REQUEST_METHOD']) && !whitelisted_routes
       end
 
       def rack_flash
@@ -46,6 +46,10 @@ module Gitlab
 
       def route_hash
         @route_hash ||= Rails.application.routes.recognize_path(request.url, { method: request.request_method }) rescue {}
+      end
+
+      def whitelisted_routes
+        logout_route || @request.path.include?('api/v3/geo/refresh_projects')
       end
 
       def logout_route
