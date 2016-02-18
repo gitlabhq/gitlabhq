@@ -61,7 +61,7 @@ describe Gitlab::Saml::User, lib: true do
         end
 
         context 'with allow_single_sign_on disabled' do
-          before { stub_omniauth_config(allow_single_sign_on: []) }
+          before { stub_omniauth_config(allow_single_sign_on: false) }
           it 'should throw an error' do
             expect{ saml_user.save }.to raise_error StandardError
           end

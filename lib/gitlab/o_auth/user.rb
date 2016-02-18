@@ -106,7 +106,11 @@ module Gitlab
 
       def signup_enabled?
         providers = Gitlab.config.omniauth.allow_single_sign_on
-        providers.include?(auth_hash.provider)
+        if providers.is_a?(Array)
+          providers.include?(auth_hash.provider)
+        else
+          providers
+        end
       end
 
       def block_after_signup?
