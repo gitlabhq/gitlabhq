@@ -46,8 +46,21 @@ describe Task, models: true do
   end
 
   describe '#body?' do
-    it 'returns true when target respond to title'
-    it 'returns false when target does not respond to title'
+    let(:issue) { build(:issue) }
+
+    before do
+      subject.target = issue
+    end
+
+    it 'returns true when target respond to title' do
+      expect(subject.body?).to eq true
+    end
+
+    it 'returns false when target does not respond to title' do
+      allow(issue).to receive(:respond_to?).with(:title).and_return(false)
+
+      expect(subject.body?).to eq false
+    end
   end
 
   describe '#note_text' do
@@ -65,7 +78,20 @@ describe Task, models: true do
   end
 
   describe '#target_iid' do
-    it 'returns target.iid when target respond to iid'
-    it 'returns target_id when target does not respond to iid'
+    let(:issue) { build(:issue, id: 1, iid: 5) }
+
+    before do
+      subject.target = issue
+    end
+
+    it 'returns target.iid when target respond to iid' do
+      expect(subject.target_iid).to eq 5
+    end
+
+    it 'returns target_id when target does not respond to iid' do
+      allow(issue).to receive(:respond_to?).with(:iid).and_return(false)
+
+      expect(subject.target_iid).to eq 1
+    end
   end
 end
