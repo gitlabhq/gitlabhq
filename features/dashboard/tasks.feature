@@ -1,5 +1,5 @@
 @dashboard
-Feature: Dashboard Task Queue
+Feature: Dashboard Tasks
   Background:
     Given I sign in as a user
     And I own project "Shop"

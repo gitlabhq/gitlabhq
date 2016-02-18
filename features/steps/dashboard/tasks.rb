@@ -1,4 +1,4 @@
-class Spinach::Features::DashboardTaskQueue < Spinach::FeatureSteps
+class Spinach::Features::DashboardTasks < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject

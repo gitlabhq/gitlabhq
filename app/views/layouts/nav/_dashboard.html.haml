@@ -4,6 +4,12 @@
       = icon('home fw')
       %span
         Projects
+  = nav_link(controller: :tasks) do
+    = link_to dashboard_tasks_path, title: 'Tasks' do
+      = icon('bell fw')
+      %span
+        Tasks
+        %span.count= number_with_delimiter(tasks_pending_count)
   = nav_link(path: 'dashboard#activity') do
     = link_to activity_dashboard_path, class: 'shortcuts-activity', title: 'Activity' do
       = icon('dashboard fw')
@@ -31,12 +37,6 @@
       %span
         Merge Requests
         %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
-  = nav_link(path: 'dashboard#tasks') do
-    = link_to dashboard_tasks_path, title: 'Task Queue' do
-      = icon('bell fw')
-      %span
-        Task Queue
-        %span.count= number_with_delimiter(tasks_pending_count)
   = nav_link(controller: :snippets) do
     = link_to dashboard_snippets_path, title: 'Snippets' do
       = icon('clipboard fw')
