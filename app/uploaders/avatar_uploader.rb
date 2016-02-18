@@ -11,10 +11,10 @@ class AvatarUploader < CarrierWave::Uploader::Base
   process :cropper
 
   def cropper
-    if model.kind_of?(User) && model.valid?
-      manipulate! do |img|
-        img.crop "#{model.avatar_crop_size}x#{model.avatar_crop_size}+#{model.avatar_crop_x}+#{model.avatar_crop_y}"
-      end
+    return unless model.respond_to?(:avatar_crop_size) && model.valid?
+
+    manipulate! do |img|
+      img.crop "#{model.avatar_crop_size}x#{model.avatar_crop_size}+#{model.avatar_crop_x}+#{model.avatar_crop_y}"
     end
   end
 
