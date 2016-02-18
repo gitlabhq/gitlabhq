@@ -51,35 +51,21 @@ describe Task, models: true do
     end
   end
 
-  describe '#body?' do
-    let(:issue) { build(:issue) }
-
+  describe '#body' do
     before do
-      subject.target = issue
+      subject.target = build(:issue, title: 'Bugfix')
     end
 
-    it 'returns true when target respond to title' do
-      expect(subject.body?).to eq true
-    end
-
-    it 'returns false when target does not respond to title' do
-      allow(issue).to receive(:respond_to?).with(:title).and_return(false)
-
-      expect(subject.body?).to eq false
-    end
-  end
-
-  describe '#note_text' do
-    it 'returns nil when note is blank' do
+    it 'returns target title when note is blank' do
       subject.note = nil
 
-      expect(subject.note_text).to be_nil
+      expect(subject.body).to eq 'Bugfix'
     end
 
     it 'returns note when note is present' do
       subject.note = build(:note, note: 'quick fix')
 
-      expect(subject.note_text).to eq 'quick fix'
+      expect(subject.body).to eq 'quick fix'
     end
   end
 

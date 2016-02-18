@@ -50,12 +50,12 @@ class Task < ActiveRecord::Base
     end
   end
 
-  def body?
-    target.respond_to? :title
-  end
-
-  def note_text
-    note.try(:note)
+  def body
+    if note.present?
+      note.note
+    else
+      target.title
+    end
   end
 
   def target_iid

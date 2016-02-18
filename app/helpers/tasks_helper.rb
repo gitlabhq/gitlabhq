@@ -23,18 +23,20 @@ module TasksHelper
     [task.action_name, target].join(" ")
   end
 
-  def task_note_link_html(task)
-    link_to task_note_target_path(task) do
+  def task_target_link_html(task)
+    link_to task_target_path(task) do
       "##{task.target_iid}"
     end
   end
 
-  def task_note_target_path(task)
+  def task_target_path(task)
+    anchor = dom_id(task.note) if task.note.present?
+
     polymorphic_path([task.project.namespace.becomes(Namespace),
-                      task.project, task.target], anchor: dom_id(task.note))
+                      task.project, task.target], anchor: anchor)
   end
 
-  def task_note(text, options = {})
+  def task_body(text, options = {})
     text = first_line_in_markdown(text, 150, options)
     sanitize(text, tags: %w(a img b pre code p span))
   end
