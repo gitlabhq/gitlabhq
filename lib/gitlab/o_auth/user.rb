@@ -26,7 +26,7 @@ module Gitlab
         gl_user.try(:valid?)
       end
 
-      def save(provider = 'OAuth')
+      def save
         unauthorized_to_create unless gl_user
 
         if needs_blocking?
@@ -36,10 +36,10 @@ module Gitlab
           gl_user.save!
         end
 
-        log.info "(#{provider}) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
+        log.info "(OAuth) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
         gl_user
       rescue ActiveRecord::RecordInvalid => e
-        log.info "(#{provider}) Error saving user: #{gl_user.errors.full_messages}"
+        log.info "(OAuth) Error saving user: #{gl_user.errors.full_messages}"
         return self, e.record.errors
       end
 
@@ -105,8 +105,7 @@ module Gitlab
       end
 
       def signup_enabled?
-        providers = Gitlab.config.omniauth.allow_single_sign_on
-        providers.include?(auth_hash.provider)
+        Gitlab.config.omniauth.allow_single_sign_on
       end
 
       def block_after_signup?

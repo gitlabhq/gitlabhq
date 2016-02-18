@@ -24,10 +24,6 @@ module Gitlab
         update_user_attributes
       end
 
-      def save
-        super('LDAP')
-      end
-
       # instance methods
       def gl_user
         @gl_user ||= find_by_uid_and_provider || find_by_email || build_new_user
