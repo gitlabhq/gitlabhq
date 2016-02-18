@@ -85,7 +85,7 @@
         = spinner
 
 = render 'shared/issuable/sidebar', issuable: @merge_request
-- if @merge_request.merge_commit && !@merge_request.has_been_reverted?(current_user)
+- if @merge_request.can_be_reverted?
   = render "projects/commit/revert", commit: @merge_request.merge_commit, title: @merge_request.title
 
 :javascript

@@ -242,7 +242,7 @@ class Commit
   def merged_merge_request
     return @merged_merge_request if defined?(@merged_merge_request)
 
-    @merged_merge_request = merge_commit? && project.merge_requests.find_by(merge_commit_sha: id)
+    @merged_merge_request = project.merge_requests.find_by(merge_commit_sha: id) if merge_commit?
   end
 
   def has_been_reverted?(current_user = nil, noteable = self)

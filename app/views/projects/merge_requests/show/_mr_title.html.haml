@@ -17,4 +17,4 @@
           %i.fa.fa-pencil-square-o
           Edit
       - if @merge_request.closed?
-        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: "Reopen merge request"
+        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: 'Reopen merge request'

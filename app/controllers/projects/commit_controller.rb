@@ -11,7 +11,6 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_commit_status!, only: [:builds]
   before_action :commit
   before_action :define_show_vars, only: [:show, :builds]
-  before_action :assign_revert_commit_vars, only: [:revert]
   before_action :authorize_edit_tree!, only: [:revert]
 
   def show
@@ -60,6 +59,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def revert
+    assign_revert_commit_vars
+
     return render_404 if @target_branch.blank?
 
     create_commit(Commits::RevertService, success_notice: "The #{revert_type_title} has been successfully reverted.",
