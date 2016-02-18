@@ -181,6 +181,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
+    TaskService.new.merge_merge_request(merge_request, current_user)
+
     @merge_request.update(merge_error: nil)
 
     if params[:merge_when_build_succeeds].present? && @merge_request.ci_commit && @merge_request.ci_commit.active?

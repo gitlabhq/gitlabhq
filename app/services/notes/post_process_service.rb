@@ -13,8 +13,6 @@ module Notes
         @note.create_cross_references!
         execute_note_hooks
       end
-
-      TaskService.new.new_note(note)
     end
 
     def hook_data
