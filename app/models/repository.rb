@@ -38,6 +38,8 @@ class Repository
   end
 
   def exists?
+    return false unless raw_repository
+
     raw_repository.rugged
     true
   rescue Gitlab::Git::Repository::NoRepository

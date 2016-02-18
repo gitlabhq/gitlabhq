@@ -240,6 +240,12 @@ describe Repository, models: true do
 
       expect(repository.exists?).to eq(false)
     end
+
+    it 'returns false when there is no namespace' do
+      allow(repository).to receive(:path_with_namespace).and_return(nil)
+
+      expect(repository.exists?).to eq(false)
+    end
   end
 
   describe '#has_visible_content?' do
