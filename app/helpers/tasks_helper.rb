@@ -31,7 +31,7 @@ module TasksHelper
 
   def task_note_target_path(task)
     polymorphic_path([task.project.namespace.becomes(Namespace),
-      task.project, task.target], anchor: dom_id(task.note))
+                      task.project, task.target], anchor: dom_id(task.note))
   end
 
   def task_note(text, options = {})

@@ -43,9 +43,9 @@ describe MergeRequests::CloseService, services: true do
         expect(note.note).to include 'Status changed to closed'
       end
 
-        it 'marks pending tasks as done' do
-          expect(pending_task.reload).to be_done
-        end
+      it 'marks pending tasks as done' do
+        expect(pending_task.reload).to be_done
+      end
     end
   end
 end
