@@ -229,6 +229,19 @@ describe Repository, models: true do
     end
   end
 
+  describe '#exists?' do
+    it 'returns true when a repository exists' do
+      expect(repository.exists?).to eq(true)
+    end
+
+    it 'returns false when a repository does not exist' do
+      expect(repository.raw_repository).to receive(:rugged).
+        and_raise(Gitlab::Git::Repository::NoRepository)
+
+      expect(repository.exists?).to eq(false)
+    end
+  end
+
   describe '#has_visible_content?' do
     subject { repository.has_visible_content? }
 
