@@ -28,6 +28,18 @@ FactoryGirl.define do
       status 'canceled'
     end
 
+    trait :running do
+      status 'running'
+    end
+
+    trait :pending do
+      status 'pending'
+    end
+
+    trait :allowed_to_fail do
+      allow_failure true
+    end
+
     after(:build) do |build, evaluator|
       build.project = build.commit.project
     end
