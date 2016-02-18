@@ -6,6 +6,8 @@ I18n.config.enforce_available_locales = false
 Bundler.require(:default, Rails.env)
 
 module Gitlab
+  REDIS_CACHE_NAMESPACE = 'cache:gitlab'
+
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -89,7 +91,7 @@ module Gitlab
       redis_config_hash[:path] = redis_uri.path
     end
 
-    redis_config_hash[:namespace] = 'cache:gitlab'
+    redis_config_hash[:namespace] = REDIS_CACHE_NAMESPACE
     redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     config.cache_store = :redis_store, redis_config_hash
 
