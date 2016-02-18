@@ -23,11 +23,7 @@ class Repository
   def raw_repository
     return nil unless path_with_namespace
 
-    @raw_repository ||= begin
-      Gitlab::Git::Repository.new(path_to_repo)
-    rescue Gitlab::Git::Repository::NoRepository
-      nil
-    end
+    @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
   end
 
   def update_autocrlf_option
@@ -42,7 +38,10 @@ class Repository
   end
 
   def exists?
-    raw_repository
+    raw_repository.rugged
+    true
+  rescue Gitlab::Git::Repository::NoRepository
+    false
   end
 
   def empty?
