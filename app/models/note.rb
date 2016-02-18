@@ -375,6 +375,10 @@ class Note < ActiveRecord::Base
   #
   def set_award!
     return unless awards_supported? && contains_emoji_only?
+
+    # Responding with an emoji is not an award emoji if its on a diff comment
+    return if line_code
+
     self.is_award = true
     self.note = award_emoji_name
   end
