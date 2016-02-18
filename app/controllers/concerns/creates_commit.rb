@@ -17,7 +17,7 @@ module CreatesCommit
 
       respond_to do |format|
         format.html { redirect_to final_success_path(success_path) }
-        format.json { render json: { message: "success", filePath: success_path } }
+        format.json { render json: { message: "success", filePath: final_success_path(success_path) } }
       end
     else
       flash[:alert] = result[:message]
