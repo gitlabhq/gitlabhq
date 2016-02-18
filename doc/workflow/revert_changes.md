@@ -6,11 +6,11 @@ The new `Revert` button allows you to revert any changes introduced by a Commit 
 
 After the Merge Request has been merged, a `Revert` button will be available to revert the changes introduced by that Merge Request:
 
-![revert merge request](revert_changes/revert-mr.png)
+![revert merge request](img/revert-mr.png)
 
 You can revert the changes directly into the selected branch or you can opt to create a new Merge Request with the revert changes:
 
-![revert merge request modal](revert_changes/revert-mr-modal.png)
+![revert merge request modal](img/revert-mr-modal.png)
 
 After the Merge Request has been reverted, the `Revert` button will not be available anymore.
 
@@ -20,11 +20,11 @@ It's important to mention that this new button will be only available for Merge 
 
 You can revert a Commit from the Commit detail page:
 
-![revert commit](revert_changes/revert-commit.png)
+![revert commit](img/revert-commit.png)
 
 In the same way like reverting a Merge Request you can opt to revert the changes directly into the target branch or create a new Merge Request to revert the changes:
 
-![revert commit modal](revert_changes/revert-commit-modal.png)
+![revert commit modal](img/revert-commit-modal.png)
 
 After the Commit has been reverted, the `Revert` button will not be available anymore.
 
