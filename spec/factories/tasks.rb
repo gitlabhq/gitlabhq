@@ -8,7 +8,8 @@
 #  target_id   :integer          not null
 #  target_type :string           not null
 #  author_id   :integer
-#  action      :integer
+#  note_id     :integer
+#  action      :integer          not null
 #  state       :string           not null
 #  created_at  :datetime
 #  updated_at  :datetime
@@ -19,6 +20,8 @@ FactoryGirl.define do
     project
     author
     user
+    target factory: :issue
+    action { Task::ASSIGNED }
 
     trait :assigned do
       action { Task::ASSIGNED }
