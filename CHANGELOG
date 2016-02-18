@@ -75,6 +75,7 @@ v 8.5.0 (unreleased)
   - Emoji comment on diffs are not award emoji
   - Add label description (Nuttanart Pornprasitsakul)
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
+  - Add Task Queue
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
