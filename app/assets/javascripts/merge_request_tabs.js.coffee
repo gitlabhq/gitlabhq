@@ -146,6 +146,7 @@ class @MergeRequestTabs
       success: (data) =>
         document.querySelector("div#diffs").innerHTML = data.html
         $('div#diffs .js-syntax-highlight').syntaxHighlight()
+        @expandViewContainer() if @diffViewMode() is 'parallel'
         @diffsLoaded = true
         @scrollToElement("#diffs")
 
@@ -177,3 +178,10 @@ class @MergeRequestTabs
     options = $.extend({}, defaults, options)
 
     $.ajax(options)
+
+  diffViewMode: ->
+    btnID = $('a[id$="-diff-btn"].active').attr('id')
+    btnID.substr(0, btnID.indexOf('-'))
+
+  expandViewContainer: ->
+    $('.container-fluid').removeClass('container-limited')
