@@ -247,6 +247,35 @@ describe Ci::Commit, models: true do
       end
     end
 
+
+    context 'custom stage with first job allowed to fail' do
+      let(:yaml) do
+        {
+          stages: ['clean', 'test'],
+          clean_job: {
+            stage: 'clean',
+            allow_failure: true,
+            script: 'BUILD',
+          },
+          test_job: {
+            stage: 'test',
+            script: 'TEST',
+          },
+        }
+      end
+
+      before do
+        stub_ci_commit_yaml_file(YAML.dump(yaml))
+        create_builds
+      end
+
+      it 'properly schedules builds' do
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+        commit.builds.running_or_pending.each(&:drop)
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending', 'failed')
+      end
+    end
+
     context 'properly creates builds when "when" is defined' do
       let(:yaml) do
         {
