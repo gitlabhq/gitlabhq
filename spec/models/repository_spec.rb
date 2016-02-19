@@ -5,6 +5,15 @@ describe Repository, models: true do
 
   let(:repository) { create(:project).repository }
   let(:user) { create(:user) }
+  let(:commit_options) do
+    author = repository.user_to_committer(user)
+    { message: 'Test message', committer: author, author: author }
+  end
+  let(:merge_commit) do
+    source_sha = repository.find_branch('feature').target
+    merge_commit_id = repository.merge(user, source_sha, 'master', commit_options)
+    repository.commit(merge_commit_id)
+  end
 
   describe :branch_names_contains do
     subject { repository.branch_names_contains(sample_commit.id) }
@@ -425,5 +434,20 @@ describe Repository, models: true do
     subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", nil, 100, 0, true).map{ |k| k.id } }
 
     it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
+  end
+
+  describe '#merge' do
+    it 'should merge the code and return the commit id' do
+      expect(merge_commit).to be_present
+      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+    end
+  end
+
+  describe '#revert_merge' do
+    it 'should revert the changes' do
+      repository.revert(user, merge_commit, 'master')
+
+      expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+    end
   end
 end

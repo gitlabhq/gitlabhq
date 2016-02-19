@@ -525,6 +525,7 @@ ActiveRecord::Schema.define(version: 20160209130428) do
     t.text     "merge_params"
     t.boolean  "merge_when_build_succeeds", default: false, null: false
     t.integer  "merge_user_id"
+    t.string   "merge_commit_sha"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree

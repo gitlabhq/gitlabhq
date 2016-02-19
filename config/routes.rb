@@ -502,6 +502,7 @@ Rails.application.routes.draw do
             get :builds
             post :cancel_builds
             post :retry_builds
+            post :revert
           end
         end
 
