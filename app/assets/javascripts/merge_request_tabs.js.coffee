@@ -180,6 +180,8 @@ class @MergeRequestTabs
     $.ajax(options)
 
   diffViewMode: ->
+    # Gets diff view mode based from its ID
+    # See diff_btn helper method
     btnID = $('a[id$="-diff-btn"].active').attr('id')
     btnID.substr(0, btnID.indexOf('-'))
 
