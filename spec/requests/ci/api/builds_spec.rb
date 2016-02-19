@@ -131,20 +131,28 @@ describe Ci::API::API do
     end
 
     describe "PUT /builds/:id" do
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project)}
-      let(:build) { FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id) }
+      let(:commit) {create(:ci_commit, project: project)}
+      let(:build) { create(:ci_build_with_trace, commit: commit, runner_id: runner.id) }
 
-      it "should update a running build" do
+      before do
         build.run!
         put ci_api("/builds/#{build.id}"), token: runner.token
+      end
+
+      it "should update a running build" do
         expect(response.status).to eq(200)
       end
 
-      it 'Should not override trace information when no trace is given' do
-        build.run!
-        build.update!(trace: 'hello_world')
-        put ci_api("/builds/#{build.id}"), token: runner.token
-        expect(build.reload.trace).to eq 'hello_world'
+      it 'should not override trace information when no trace is given' do
+        expect(build.reload.trace).to eq 'BUILD TRACE'
+      end
+
+      context 'build has been erased' do
+        let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
+
+        it 'should respond with forbidden' do
+          expect(response.status).to eq 403
+        end
       end
     end
 
@@ -191,9 +199,10 @@ describe Ci::API::API do
           end
         end
 
-        context 'token is invalid' do
-          it 'should respond with forbidden'do
-            post authorize_url, { token: 'invalid', filesize: 100 }
+        context 'authorization token is invalid' do
+          before { post authorize_url, { token: 'invalid', filesize: 100 } }
+
+          it 'should respond with forbidden' do
             expect(response.status).to eq(403)
           end
         end
@@ -204,6 +213,15 @@ describe Ci::API::API do
           before do
             # by configuring this path we allow to pass temp file from any path
             allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
+          end
+
+          context 'build has been erased' do
+            let(:build) { create(:ci_build, erased_at: Time.now) }
+            before { upload_artifacts(file_upload, headers_with_token) }
+
+            it 'should respond with forbidden' do
+              expect(response.status).to eq 403
+            end
           end
 
           context "should post artifact to running build" do
@@ -234,7 +252,9 @@ describe Ci::API::API do
             let(:stored_artifacts_file) { build.reload.artifacts_file.file }
             let(:stored_metadata_file) { build.reload.artifacts_metadata.file }
 
-            before { post(post_url, post_data, headers_with_token) }
+            before do
+              post(post_url, post_data, headers_with_token)
+            end
 
             context 'post data accelerated by workhorse is correct' do
               let(:post_data) do
