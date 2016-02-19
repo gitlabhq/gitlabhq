@@ -49,31 +49,23 @@ class GitPushService < BaseService
 
   protected
 
-<<<<<<< HEAD
-    branch_name = Gitlab::Git.ref_name(ref)
-    mirror_update = project.mirror? && project.repository.up_to_date_with_upstream?(branch_name)
-
-    EventCreateService.new.push(project, user, @push_data)
-    project.execute_hooks(@push_data.dup, :push_hooks)
-    project.execute_services(@push_data.dup, :push_hooks)
-
-    if Gitlab.config.elasticsearch.enabled
-      project.repository.index_commits(from_rev: oldrev, to_rev: newrev)
-      project.repository.index_blobs(from_rev: oldrev, to_rev: newrev)
-    end
-
-    CreateCommitBuildsService.new.execute(project, @user, @push_data, mirror_update: mirror_update)
-    ProjectCacheWorker.perform_async(project.id)
-=======
   def update_merge_requests
     @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
+    mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
+
+    index_commits_blobs if Gitlab.config.elasticsearch.enabled
+
+    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data, mirror_update: mirror_update)
     ProjectCacheWorker.perform_async(@project.id)
->>>>>>> a8b32b1e604cd59474b84be9681104579447651d
+  end
+
+  def index_commits_blobs
+    @project.repository.index_commits(from_rev: params[:oldrev], to_rev: params[:newrev])
+    @project.repository.index_blobs(from_rev: params[:oldrev], to_rev: params[:newrev])
   end
 
   def process_default_branch
