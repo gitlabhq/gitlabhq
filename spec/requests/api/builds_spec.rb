@@ -169,4 +169,34 @@ describe API::API, api: true  do
       end
     end
   end
+
+  describe 'POST /projects/:id/builds/:build_id/erase' do
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/erase", user)
+    end
+
+    context 'build is erasable' do
+      let(:build) { create(:ci_build_with_trace, :artifacts, :success, project: project, commit: commit) }
+
+      it 'should erase build content' do
+        expect(response.status).to eq 201
+        expect(build.trace).to be_empty
+        expect(build.artifacts_file.exists?).to be_falsy
+        expect(build.artifacts_metadata.exists?).to be_falsy
+      end
+
+      it 'should update build' do
+        expect(build.reload.erased_at).to be_truthy
+        expect(build.reload.erased_by).to eq user
+      end
+    end
+
+    context 'build is not erasable' do
+      let(:build) { create(:ci_build_with_trace, project: project, commit: commit) }
+
+      it 'should respond with forbidden' do
+        expect(response.status).to eq 403
+      end
+    end
+  end
 end

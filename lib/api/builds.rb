@@ -115,12 +115,32 @@ module API
         authorize_update_builds!
 
         build = get_build(params[:build_id])
-        return forbidden!('Build is not retryable') unless build && build.retryable?
+        return not_found!(build) unless build
+        return forbidden!('Build is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build)
 
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
+      end
+
+      # Erase build (remove artifacts and build trace)
+      #
+      # Parameters:
+      #   id (required) - the id of a project
+      #   build_id (required) - the id of a build
+      # example Request:
+      #  post  /projects/:id/build/:build_id/erase
+      post ':id/builds/:build_id/erase' do
+        authorize_update_builds!
+
+        build = get_build(params[:build_id])
+        return not_found!(build) unless build
+        return forbidden!('Build is not erasable!') unless build.erasable?
+
+        build.erase(erased_by: current_user)
+        present build, with: Entities::Build,
+                       user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
     end
 
