@@ -16,7 +16,9 @@ module Elastic
       end
 
       def as_indexed_json(options = {})
-        as_json.merge({ updated_at_sort: updated_at })
+        as_json(
+          only: [:id, :note, :project_id, :created_at]
+        ).merge({ updated_at_sort: updated_at })
       end
 
       def self.elastic_search(query, options: {})
