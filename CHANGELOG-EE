@@ -6,6 +6,7 @@ v 8.5.0 (unreleased)
   - GitLab Pages gets support for custom domain and custom certificate
   - Fix of Elastic indexer. It should not trigger record validation for projects
   - Fix of Elastic indexer. Stabilze indexer when serialized data is corrupted
+  - [Elastic] Don't index unnecessary data into elastic
 
 v 8.4.4
   - Re-introduce "Send email to users" link in Admin area
