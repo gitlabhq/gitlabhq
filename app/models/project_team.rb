@@ -136,7 +136,7 @@ class ProjectTeam
   end
 
   def human_max_access(user_id)
-    Gitlab::Access.options.key max_member_access(user_id)
+    Gitlab::Access.options_with_owner.key(max_member_access(user_id))
   end
 
   # This method assumes project and group members are eager loaded for optimal
