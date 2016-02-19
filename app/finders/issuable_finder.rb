@@ -126,7 +126,7 @@ class IssuableFinder
       @labels = Label.where(title: label_names)
 
       if projects
-        @labels = labels.where(project: projects)
+        @labels = @labels.where(project: projects)
       end
     else
       @labels = Label.none
