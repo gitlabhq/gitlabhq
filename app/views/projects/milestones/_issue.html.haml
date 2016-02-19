@@ -1,9 +1,10 @@
 %li{ id: dom_id(issue, 'sortable'), class: 'issue-row', 'data-iid' => issue.iid, 'data-url' => issue_path(issue) }
-  .pull-right.assignee-icon
-    - if issue.assignee
-      = image_tag avatar_icon(issue.assignee, 16), class: "avatar s16", alt: ''
   %span
-    = link_to [@project.namespace.becomes(Namespace), @project, issue] do
-      %span.cgray ##{issue.iid}
     = link_to_gfm issue.title, [@project.namespace.becomes(Namespace), @project, issue], title: issue.title
-
+  .issue-detail
+    = link_to [@project.namespace.becomes(Namespace), @project, issue] do
+      %span.issue-number ##{issue.iid}
+    - issue.labels.each do |label|
+      = render_colored_label(label)
+    - if issue.assignee
+      = image_tag avatar_icon(issue.assignee, 16), class: "avatar s24", alt: ''
