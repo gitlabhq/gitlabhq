@@ -1724,10 +1724,12 @@
   height: 20px;
   width: 20px;
 
-  @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-  only screen and (-moz-min-device-pixel-ratio: 1.5),
-  only screen and (-o-min-device-pixel-ratio: 3/2),
-  only screen and (min-device-pixel-ratio: 1.5) {
+  @media only screen and (-webkit-min-device-pixel-ratio: 2),
+         only screen and (min--moz-device-pixel-ratio: 2),
+         only screen and (-o-min-device-pixel-ratio: 2/1),
+         only screen and (min-device-pixel-ratio: 2),
+         only screen and (min-resolution: 192dpi),
+         only screen and (min-resolution: 2dppx) {
     background-image: image-url('emoji@2x.png');
     background-size: 840px 820px;
   }
