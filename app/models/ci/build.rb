@@ -116,10 +116,6 @@ module Ci
       end
     end
 
-    def ignored?
-      failed? && allow_failure?
-    end
-
     def retryable?
       project.builds_enabled? && commands.present?
     end

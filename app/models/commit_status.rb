@@ -113,6 +113,10 @@ class CommitStatus < ActiveRecord::Base
     canceled? || success? || failed?
   end
 
+  def ignored?
+    failed? && allow_failure?
+  end
+
   def duration
     if started_at && finished_at
       finished_at - started_at
