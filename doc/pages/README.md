@@ -45,6 +45,14 @@ URL it will be accessible.
 | Specific project under a user's page  | `walter/area51`     | `https://walter.example.com/area51`     |
 | Specific project under a group's page | `therug/welovecats` | `https://therug.example.com/welovecats` |
 
+## Group pages
+
+You can create a group page in context of your group.
+The project for group page must be written in lower.
+
+If you have a group `TheRug` and pages are hosted under `Example.com` in order to create a group page
+create a new project named `therug.example.com`.
+
 ## Enable the pages feature in your project
 
 The GitLab Pages feature needs to be explicitly enabled for each project

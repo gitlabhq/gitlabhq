@@ -1062,12 +1062,16 @@ class Project < ActiveRecord::Base
   def pages_url
     return unless Dir.exist?(public_pages_path)
 
-    host = "#{namespace.path}.#{Settings.pages.host}"
+    # The hostname always needs to be in downcased
+    # All web servers convert hostname to lowercase
+    host = "#{namespace.path}.#{Settings.pages.host}".downcase
+
+    # The host in URL always needs to be downcased
     url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
       "#{prefix}#{namespace.path}."
-    end
+    end.downcase
 
-    # If the project path is the same as host, leave the short version
+    # If the project path is the same as host, we serve it as group page
     return url if host == path
 
     "#{url}/#{path}"
