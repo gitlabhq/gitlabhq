@@ -1059,9 +1059,11 @@ class Project < ActiveRecord::Base
     ensure_runners_token!
   end
 
-  def pages_url
-    return unless Dir.exist?(public_pages_path)
+  def pages_deployed?
+    Dir.exist?(public_pages_path)
+  end
 
+  def pages_url
     # The hostname always needs to be in downcased
     # All web servers convert hostname to lowercase
     host = "#{namespace.path}.#{Settings.pages.host}".downcase

@@ -620,7 +620,23 @@ describe Project, models: true do
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
+  end
 
+  describe '#pages_deployed?' do
+    let(:project) { create :empty_project }
+
+    subject { project.pages_deployed? }
+
+    context 'if public folder does exist' do
+      before { FileUtils.mkdir_p(project.public_pages_path) }
+      after { FileUtils.rmdir(project.public_pages_path) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context "if public folder doesn't exist" do
+      it { is_expected.to be_falsey }
+    end
   end
 
   describe '#pages_url' do
@@ -631,14 +647,8 @@ describe Project, models: true do
     subject { project.pages_url }
 
     before do
-      FileUtils.mkdir_p(project.public_pages_path)
-
       allow(Settings.pages).to receive(:host).and_return(domain)
       allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
-    end
-
-    after do
-      FileUtils.rmdir(project.public_pages_path)
     end
 
     context 'group page' do
