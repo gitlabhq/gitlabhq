@@ -379,7 +379,7 @@ class Repository
     cache.fetch(:issue_template) do
       [nil, '.gitlab', '.github'].each do |path|
         tree(:head, path).blobs.find do |file|
-          file.name =~ /\Aissue_template(?\.txt)(?\.md)\z/i
+          file.name =~ /\Aissue_template(\.txt|\.md)?\z/i
         end
       end
     end
@@ -389,7 +389,7 @@ class Repository
     cache.fetch(:merge_request_template) do
       [nil, '.gitlab', '.github'].each do |path|
         tree(:head, path).blobs.find do |file|
-          file.name =~ /\Amerge_request_template(?\.txt)(?\.md)\z/i
+          file.name =~ /\Amerge_request_template(\.txt|\.md)?\z/i
         end
       end
     end
