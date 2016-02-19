@@ -236,7 +236,7 @@ class ProjectsController < ApplicationController
       Emoji.emojis.map do |name, emoji|
         {
           name: name,
-          path: view_context.image_url("emoji/#{emoji["unicode"]}.png")
+          path: view_context.image_url("#{emoji["unicode"]}.png")
         }
       end
     end
