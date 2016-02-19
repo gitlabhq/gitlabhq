@@ -29,7 +29,7 @@ module Elastic
       end
 
       def as_indexed_json(options = {})
-        as_json.merge({
+        as_json(except: :runners_token).merge({
           name_with_namespace: name_with_namespace,
           path_with_namespace: path_with_namespace
         })
