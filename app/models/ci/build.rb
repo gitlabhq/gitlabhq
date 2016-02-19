@@ -107,15 +107,18 @@ module Ci
     end
 
     state_machine :status, initial: :pending do
-      after_transition pending: :running do |build, transition|
+      after_transition pending: :running do |build|
         build.execute_hooks
       end
 
-      after_transition any => [:success, :failed, :canceled] do |build, transition|
-        return unless build.project
+      # We use around_transition to create builds for next stage as soon as possible, before the `after_*` is executed
+      around_transition any => [:success, :failed, :canceled] do |build, block|
+        block.call
+        build.commit.create_next_builds(build) if build.commit
+      end
 
+      after_transition any => [:success, :failed, :canceled] do |build|
         build.update_coverage
-        build.commit.create_next_builds(build)
         build.execute_hooks
       end
     end
@@ -179,6 +182,7 @@ module Ci
     end
 
     def update_coverage
+      return unless project
       coverage_regex = project.build_coverage_regex
       return unless coverage_regex
       coverage = extract_coverage(trace, coverage_regex)
@@ -334,6 +338,7 @@ module Ci
     end
 
     def execute_hooks
+      return unless project
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)

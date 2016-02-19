@@ -63,6 +63,36 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       expect(MergeWorker).to receive(:perform_async)
       service.trigger(build)
     end
+
+    context 'properly handles multiple stages' do
+      let(:ref) { mr_merge_if_green_enabled.source_branch }
+      let(:build) { create(:ci_build, commit: ci_commit, ref: ref, name: 'build', stage: 'build') }
+      let(:test) { create(:ci_build, commit: ci_commit, ref: ref, name: 'test', stage: 'test') }
+
+      before do
+        # This behavior of MergeRequest: we instantiate a new object
+        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_wrap_original do
+          Ci::Commit.find(ci_commit.id)
+        end
+
+        # We create test after the build
+        allow(ci_commit).to receive(:create_next_builds).and_wrap_original do
+          test
+        end
+      end
+
+      it "doesn't merge if some stages failed" do
+        expect(MergeWorker).to_not receive(:perform_async)
+        build.success
+        test.drop
+      end
+
+      it 'merge when all stages succeeded' do
+        expect(MergeWorker).to receive(:perform_async)
+        build.success
+        test.success
+      end
+    end
   end
 
   describe "#cancel" do
