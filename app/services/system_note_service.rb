@@ -212,7 +212,10 @@ class SystemNoteService
   #
   #   "Started branch `201-issue-branch-button`"
   def self.new_issue_branch(issue, project, author, branch)
-    body = "Started branch `#{branch}`"
+    h = Gitlab::Application.routes.url_helpers
+    link = "#{Gitlab.config.gitlab.url}#{h.namespace_project_compare_path(project.namespace, project, from: project.default_branch, to: branch)}"
+
+    body = "Started branch [#{branch}](#{link})"
     create_note(noteable: issue, project: project, author: author, note: body)
   end
 
