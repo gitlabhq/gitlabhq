@@ -265,10 +265,10 @@ GET /projects/:id/builds/:build_id/artifacts
 
 ### Parameters
 
-| Attribute | Type    | required | Description         |
+| Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | id        | integer | yes      | The ID of a project |
-| build\_id  | integer | yes      | The ID of a build   |
+| build_id  | integer | yes      | The ID of a build   |
 
 ### Example of request
 
