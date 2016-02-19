@@ -24,6 +24,10 @@ class AutocompleteController < ApplicationController
     render json: @user, only: [:name, :username, :id], methods: [:avatar_url]
   end
 
+  def emoji_menu
+    render 'shared/emoji_menu', layout: false
+  end
+
   private
 
   def find_users
