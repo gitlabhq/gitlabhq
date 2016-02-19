@@ -12,7 +12,7 @@ further configuration instructions and details. Contributions are welcome.
 | Assembla 	| Project Management Software (Source Commits Endpoint) |
 | [Atlassian Bamboo CI](bamboo.md) | A continuous integration and build server |
 | Buildkite | Continuous integration and deployments |
-| Builds emails |	Email the builds status to a list of recipients |
+| [Builds emails](builds_emails.md) |	Email the builds status to a list of recipients |
 | Campfire | Simple web-based real-time group chat |
 | Custom Issue Tracker | Custom issue tracker |
 | Drone CI | Continuous Integration platform built on Docker, written in Go |
