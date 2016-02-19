@@ -36,13 +36,13 @@ file and start builds on _Runners_ according to the contents of the file,
 for that commit.
 
 Because `.gitlab-ci.yml` is in the repository, it is version controlled,
-old versions still build succesfully, forks can easily make use of CI,
+old versions still build successfully, forks can easily make use of CI,
 branches can have separate builds and you have a single source of truth for CI.
 You can read more about the reasons why we are using `.gitlab-ci.yml`
 [in our blog about it][blog-ci].
 
 **Note:** `.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file
-so you have to pay extra attention to the identation. Always use spaces, not
+so you have to pay extra attention to the indentation. Always use spaces, not
 tabs.
 
 ### Creating a simple `.gitlab-ci.yml` file
@@ -168,7 +168,7 @@ To enable **Shared Runners** you have to go to your project's
 
 ## Seeing the status of your build
 
-After configuring the Runner succesfully, you should see the status of your
+After configuring the Runner successfully, you should see the status of your
 last commit change from _pending_ to either _running_, _success_ or _failed_.
 
 You can view all builds, by going to the **Builds** page in your project.
@@ -186,19 +186,12 @@ GitLab, such as **Commits** and **Merge Requests**.
 
 ## Enabling build emails
 
-If you want to recieve notifications about builds (when build fails, for
-example), you should enable **Build Emails Service**.
+If you want to receive e-mail notifications about the result status of the
+builds, you should explicitly enable the **Builds Emails** service under your
+project's settings.
 
-**Build Emails** service is available on a **Service** page in a project's
-settings. You should activate it by checking an *Active* checkbox, and clicking
-"Save changes".
-
-Note that you can also provide a list of recipients that will always recieve
-notifications or indicate that you want a pusher to also recieve notification
-about each build's status.
-
-If you decide to check *Notify only broken builds* checkbox, notifications will
-be sent only for failed builds.
+For more information read the [Builds emails service documentation]
+(../../project_services/builds_emails.md).
 
 ## Builds badge
 
