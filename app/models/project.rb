@@ -929,16 +929,4 @@ class Project < ActiveRecord::Base
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
-
-  def repository_issues_template
-    repository.blob_at_branch('HEAD', 'ISSUE_TEMPLATE').data
-  rescue
-    nil
-  end
-
-  def repository_merge_requests_template
-    repository.blob_at_branch('HEAD', 'MERGE_REQUESTS_TEMPLATE').data
-  rescue
-    nil
-  end
 end
