@@ -62,11 +62,14 @@ The following table depicts the various user permission levels in a project.
 | Manage runners                        |         |            |             | ✓        | ✓      |
 | Manage build triggers                 |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
+| Manage pages                          |         |            |             | ✓        | ✓      |
+| Manage pages domains and certificates |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
 | Force push to protected branches [^3] |         |            |             |          |        |
 | Remove protected branches [^3]        |         |            |             |          |        |
+| Remove pages                          |         |            |             |          | ✓      |
 
 ## Group
 

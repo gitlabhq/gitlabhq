@@ -110,6 +110,8 @@ class ProjectPolicy < BasePolicy
     can! :admin_pipeline
     can! :admin_environment
     can! :admin_deployment
+    can! :admin_pages
+    can! :read_pages
     can! :update_pages
   end
 
