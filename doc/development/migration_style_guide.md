@@ -15,7 +15,7 @@ or inconsistencies and guard for that. Try to make as little assumptions as poss
 about the state of the database.
 
 Please don't depend on GitLab specific code since it can change in future versions.
-If needed copy-paste GitLab code into the migration to make make it forward compatible.
+If needed copy-paste GitLab code into the migration to make it forward compatible.
 
 ## Comments in the migration
 

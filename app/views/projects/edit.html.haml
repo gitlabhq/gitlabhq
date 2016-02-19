@@ -123,13 +123,13 @@
               .col-sm-offset-2.col-sm-10
                 %p Get recent application code using the following command:
                 .radio
-                  = f.label :build_allow_git_fetch do
+                  = f.label :build_allow_git_fetch_false do
                     = f.radio_button :build_allow_git_fetch, 'false'
                     %strong git clone
                     %br
                     %span.descr Slower but makes sure you have a clean dir before every build
                 .radio
-                  = f.label :build_allow_git_fetch do
+                  = f.label :build_allow_git_fetch_true do
                     = f.radio_button :build_allow_git_fetch, 'true'
                     %strong git fetch
                     %br

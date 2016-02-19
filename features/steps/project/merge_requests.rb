@@ -138,6 +138,56 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            author: project.users.first)
   end
 
+  step 'merge request "Bug NS-04" have 2 upvotes and 1 downvote' do
+    merge_request = MergeRequest.find_by(title: 'Bug NS-04')
+    create_list(:upvote_note, 2, project: project, noteable: merge_request)
+    create(:downvote_note, project: project, noteable: merge_request)
+  end
+
+  step 'merge request "Bug NS-06" have 1 upvote and 2 downvotes' do
+    merge_request = MergeRequest.find_by(title: 'Bug NS-06')
+    create(:upvote_note, project: project, noteable: merge_request)
+    create_list(:downvote_note, 2, project: project, noteable: merge_request)
+  end
+
+  step 'The list should be sorted by "Least popular"' do
+    page.within '.mr-list' do
+      page.within 'li.merge-request:nth-child(1)' do
+        expect(page).to have_content 'Bug NS-06'
+        expect(page).to have_content '1 2'
+      end
+
+      page.within 'li.merge-request:nth-child(2)' do
+        expect(page).to have_content 'Bug NS-04'
+        expect(page).to have_content '2 1'
+      end
+
+      page.within 'li.merge-request:nth-child(3)' do
+        expect(page).to have_content 'Bug NS-05'
+        expect(page).to have_content '0 0'
+      end
+    end
+  end
+
+  step 'The list should be sorted by "Most popular"' do
+    page.within '.mr-list' do
+      page.within 'li.merge-request:nth-child(1)' do
+        expect(page).to have_content 'Bug NS-04'
+        expect(page).to have_content '2 1'
+      end
+
+      page.within 'li.merge-request:nth-child(2)' do
+        expect(page).to have_content 'Bug NS-06'
+        expect(page).to have_content '1 2'
+      end
+
+      page.within 'li.merge-request:nth-child(3)' do
+        expect(page).to have_content 'Bug NS-05'
+        expect(page).to have_content '0 0'
+      end
+    end
+  end
+
   step 'I click on the Changes tab' do
     page.within '.merge-request-tabs' do
       click_link 'Changes'

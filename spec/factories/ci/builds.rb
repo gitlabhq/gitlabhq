@@ -16,8 +16,28 @@ FactoryGirl.define do
 
     commit factory: :ci_commit
 
+    trait :success do
+      status 'success'
+    end
+
+    trait :failed do
+      status 'failed'
+    end
+
     trait :canceled do
       status 'canceled'
+    end
+
+    trait :running do
+      status 'running'
+    end
+
+    trait :pending do
+      status 'pending'
+    end
+
+    trait :allowed_to_fail do
+      allow_failure true
     end
 
     after(:build) do |build, evaluator|
