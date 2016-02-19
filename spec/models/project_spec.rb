@@ -628,8 +628,7 @@ describe Project, models: true do
     subject { project.pages_deployed? }
 
     context 'if public folder does exist' do
-      before { FileUtils.mkdir_p(project.public_pages_path) }
-      after { FileUtils.rmdir(project.public_pages_path) }
+      before { allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true) }
 
       it { is_expected.to be_truthy }
     end
