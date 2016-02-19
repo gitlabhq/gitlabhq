@@ -3,6 +3,7 @@ image: "ruby:2.2"
 services:
   - mysql:latest
   - redis:latest
+  - elasticsearch:latest
 
 cache:
   key: "ruby22"
@@ -11,6 +12,7 @@ cache:
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  ELASTIC_HOST: "elasticsearch"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -40,25 +42,17 @@ spec:api:
 
 spec:models:
   script:
-    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:models
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
   tags:
     - ruby
     - mysql
-  services:
-    - mysql:latest
-    - redis:latest
-    - elasticsearch:latest
 
 spec:lib:
   script:
-    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:lib
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
   tags:
     - ruby
     - mysql
-  services:
-    - mysql:latest
-    - redis:latest
-    - elasticsearch:latest
 
 spec:services:
   script:
@@ -77,14 +71,10 @@ spec:benchmark:
 
 spec:other:
   script:
-    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:other
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
   tags:
     - ruby
     - mysql
-  services:
-    - mysql:latest
-    - redis:latest
-    - elasticsearch:latest
 
 spinach:project:half:
   script:
@@ -95,14 +85,10 @@ spinach:project:half:
 
 spinach:project:rest:
   script:
-    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spinach:project:rest
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   tags:
     - ruby
     - mysql
-  services:
-    - mysql:latest
-    - redis:latest
-    - elasticsearch:latest
 
 spinach:other:
   script:
