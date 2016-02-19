@@ -60,6 +60,30 @@ module API
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
+      # Download the artifacts file from build
+      #
+      # Parameters:
+      #   id (required) - The ID of a build
+      #   token (required) - The build authorization token
+      # Example Request:
+      #   GET /projects/:id/builds/:build_id/artifacts
+      get ':id/builds/:build_id/artifacts' do
+        authorize_read_builds!
+
+        build = get_build(params[:build_id])
+        return not_found!(build) unless build
+
+        artifacts_file = build.artifacts_file
+
+        unless artifacts_file.file_storage?
+          return redirect_to build.artifacts_file.url
+        end
+
+        return not_found! unless artifacts_file.exists?
+
+        present_file!(artifacts_file.path, artifacts_file.filename)
+      end
+
       # Get a trace of a specific build of a project
       #
       # Parameters:
