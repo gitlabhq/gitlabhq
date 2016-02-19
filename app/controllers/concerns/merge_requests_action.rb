@@ -6,6 +6,6 @@ module MergeRequestsAction
     @merge_requests = @merge_requests.page(params[:page]).per(ApplicationController::PER_PAGE)
     @merge_requests = @merge_requests.preload(:author, :target_project)
 
-    @label = Label.where(project: @projects).find_by(title: params[:label_name])
+    @label = @issuable_finder.labels.first
   end
 end

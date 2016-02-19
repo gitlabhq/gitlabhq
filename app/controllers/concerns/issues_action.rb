@@ -6,7 +6,7 @@ module IssuesAction
     @issues = @issues.page(params[:page]).per(ApplicationController::PER_PAGE)
     @issues = @issues.preload(:author, :project)
 
-    @label = Label.where(project: @projects).find_by(title: params[:label_name])
+    @label = @issuable_finder.labels.first
 
     respond_to do |format|
       format.html
