@@ -224,9 +224,11 @@ class Ability
 
     def project_master_rules
       @project_master_rules ||= project_dev_rules + [
+        :read_pages,
         :push_code_to_protected_branches,
         :update_project_snippet,
         :update_merge_request,
+        :update_pages,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
@@ -235,7 +237,8 @@ class Ability
         :admin_wiki,
         :admin_project,
         :admin_commit_status,
-        :admin_build
+        :admin_build,
+        :admin_pages,
       ]
     end
 
@@ -245,7 +248,6 @@ class Ability
         :change_visibility_level,
         :rename_project,
         :remove_project,
-        :update_pages,
         :remove_pages,
         :archive_project,
         :remove_fork_project
