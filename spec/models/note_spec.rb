@@ -212,7 +212,10 @@ describe Note, models: true do
 
     it "is not an award emoji when comment is on a diff" do
       note = create(:note, note: ":blowfish:", noteable: merge_request, line_code: "11d5d2e667e9da4f7f610f81d86c974b146b13bd_0_2")
-      expect(note.reload.note).to eq(":blowfish:")
+      note = note.reload
+
+      expect(note.note).to eq(":blowfish:")
+      expect(note.is_award?).to be_falsy
     end
   end
 end
