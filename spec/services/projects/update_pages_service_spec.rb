@@ -27,9 +27,9 @@ describe Projects::UpdatePagesService do
       end
 
       it 'succeeds' do
-        expect(project.pages_url).to be_nil
+        expect(project.pages_deployed?).to be_falsey
         expect(execute).to eq(:success)
-        expect(project.pages_url).to_not be_nil
+        expect(project.pages_deployed?).to be_truthy
       end
 
       it 'limits pages size' do
@@ -39,11 +39,11 @@ describe Projects::UpdatePagesService do
 
       it 'removes pages after destroy' do
         expect(PagesWorker).to receive(:perform_in)
-        expect(project.pages_url).to be_nil
+        expect(project.pages_deployed?).to be_falsey
         expect(execute).to eq(:success)
-        expect(project.pages_url).to_not be_nil
+        expect(project.pages_deployed?).to be_truthy
         project.destroy
-        expect(Dir.exist?(project.public_pages_path)).to be_falsey
+        expect(project.pages_deployed?).to be_falsey
       end
 
       it 'fails if sha on branch is not latest' do
@@ -61,7 +61,7 @@ describe Projects::UpdatePagesService do
 
   it 'fails to remove project pages when no pages is deployed' do
     expect(PagesWorker).to_not receive(:perform_in)
-    expect(project.pages_url).to be_nil
+    expect(project.pages_deployed?).to be_falsey
     project.destroy
   end
 
