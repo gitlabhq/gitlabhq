@@ -53,7 +53,7 @@ FactoryGirl.define do
       tag true
     end
 
-    factory :ci_build_with_trace do
+    trait :trace do
       after(:create) do |build, evaluator|
         build.trace = 'BUILD TRACE'
       end
