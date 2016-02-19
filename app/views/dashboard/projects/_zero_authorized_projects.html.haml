@@ -11,7 +11,7 @@
       %br
       - if current_user.can_create_project?
         You can create up to
-        %strong= pluralize(current_user.projects_limit, "project") + "."
+        %strong= pluralize(number_with_delimiter(current_user.projects_limit), "project") + "."
       - else
         If you are added to a project, it will be displayed here.
 
@@ -44,7 +44,7 @@
     .dashboard-intro-text
       %p.slead
         There are
-        %strong= publicish_project_count
+        %strong= number_with_delimiter(publicish_project_count)
         public projects on this server.
         %br
         Public projects are an easy way to allow everyone to have read-only access.
