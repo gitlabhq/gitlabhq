@@ -122,7 +122,7 @@ gem 'diffy', '~> 3.0.3'
 
 # Application server
 group :unicorn do
-  gem "unicorn", '~> 4.8.2'
+  gem "unicorn", '~> 4.9.0'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end
 

@@ -108,6 +108,17 @@ Feature: Project Merge Requests
     Then The list should be sorted by "Oldest updated"
 
   @javascript
+  Scenario: Sort merge requests by upvotes/downvotes
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And project "Shop" have "Bug NS-06" open merge request
+    And merge request "Bug NS-04" have 2 upvotes and 1 downvote
+    And merge request "Bug NS-06" have 1 upvote and 2 downvotes
+    And I sort the list by "Most popular"
+    Then The list should be sorted by "Most popular"
+    And I sort the list by "Least popular"
+    Then The list should be sorted by "Least popular"
+
+  @javascript
   Scenario: Visiting Merge Requests after commenting on diffs
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
