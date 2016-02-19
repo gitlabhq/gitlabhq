@@ -218,7 +218,7 @@ describe API::API, api: true  do
     end
 
     context 'build is erasable' do
-      let(:build) { create(:ci_build_with_trace, :artifacts, :success, project: project, commit: commit) }
+      let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, commit: commit) }
 
       it 'should erase build content' do
         expect(response.status).to eq 201
@@ -234,7 +234,7 @@ describe API::API, api: true  do
     end
 
     context 'build is not erasable' do
-      let(:build) { create(:ci_build_with_trace, project: project, commit: commit) }
+      let(:build) { create(:ci_build, :trace, project: project, commit: commit) }
 
       it 'should respond with forbidden' do
         expect(response.status).to eq 403

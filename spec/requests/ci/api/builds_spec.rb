@@ -132,7 +132,7 @@ describe Ci::API::API do
 
     describe "PUT /builds/:id" do
       let(:commit) {create(:ci_commit, project: project)}
-      let(:build) { create(:ci_build_with_trace, commit: commit, runner_id: runner.id) }
+      let(:build) { create(:ci_build, :trace, commit: commit, runner_id: runner.id) }
 
       before do
         build.run!

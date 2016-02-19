@@ -538,7 +538,7 @@ describe Ci::Build, models: true do
     end
 
     context 'build is erasable' do
-      let!(:build) { create(:ci_build_with_trace, :success, :artifacts) }
+      let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
 
       describe '#erase' do
         before { build.erase(erased_by: user) }
@@ -570,7 +570,7 @@ describe Ci::Build, models: true do
       end
 
       describe '#erased?' do
-        let!(:build) { create(:ci_build_with_trace, :success, :artifacts) }
+        let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
         subject { build.erased? }
 
         context 'build has not been erased' do
