@@ -22,6 +22,8 @@ module Gitlab
       # }
       #
       def build(project, user, oldrev, newrev, ref, commits = [], message = nil)
+        commits = Array(commits)
+
         # Total commits count
         commits_count = commits.size
 

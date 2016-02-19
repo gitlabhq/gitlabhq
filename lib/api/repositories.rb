@@ -98,11 +98,8 @@ module API
         authorize! :download_code, user_project
 
         begin
-          ArchiveRepositoryService.new(
-            user_project,
-            params[:sha],
-            params[:format]
-          ).execute
+          RepositoryArchiveCacheWorker.perform_async
+          header *Gitlab::Workhorse.send_git_archive(user_project, params[:sha], params[:format])
         rescue
           not_found!('File')
         end

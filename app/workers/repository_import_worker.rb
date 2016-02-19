@@ -18,6 +18,7 @@ class RepositoryImportWorker
       return
     end
 
+    project.repository.expire_emptiness_caches
     project.import_finish
 
     # Explicitly update mirror so that upstream remote is created and fetched
