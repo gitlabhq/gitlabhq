@@ -4,148 +4,190 @@ describe API::API, api: true  do
   include ApiHelpers
 
   let(:user) { create(:user) }
+  let(:api_user) { user }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:developer) { create(:project_member, user: user, project: project, access_level: ProjectMember::DEVELOPER) }
   let!(:reporter) { create(:project_member, user: user2, project: project, access_level: ProjectMember::REPORTER) }
   let(:commit) { create(:ci_commit, project: project)}
   let(:build) { create(:ci_build, commit: commit) }
-  let(:build_with_trace) { create(:ci_build_with_trace, commit: commit) }
-  let(:build_canceled) { create(:ci_build, :canceled, commit: commit) }
 
   describe 'GET /projects/:id/builds ' do
+    let(:query) { '' }
+
+    before { get api("/projects/#{project.id}/builds?#{query}", api_user) }
+
     context 'authorized user' do
       it 'should return project builds' do
-        get api("/projects/#{project.id}/builds", user)
-
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
       end
 
-      it 'should filter project with one scope element' do
-        get api("/projects/#{project.id}/builds?scope=pending", user)
+      context 'filter project with one scope element' do
+        let(:query) { 'scope=pending' }
 
-        expect(response.status).to eq(200)
-        expect(json_response).to be_an Array
+        it do
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+        end
       end
 
-      it 'should filter project with array of scope elements' do
-        get api("/projects/#{project.id}/builds?scope[0]=pending&scope[1]=running", user)
+      context 'filter project with array of scope elements' do
+        let(:query) { 'scope[0]=pending&scope[1]=running' }
 
-        expect(response.status).to eq(200)
-        expect(json_response).to be_an Array
+        it do
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+        end
       end
 
-      it 'should respond 400 when scope contains invalid state' do
-        get api("/projects/#{project.id}/builds?scope[0]=pending&scope[1]=unknown_status", user)
+      context 'respond 400 when scope contains invalid state' do
+        let(:query) { 'scope[0]=pending&scope[1]=unknown_status' }
 
-        expect(response.status).to eq(400)
+        it { expect(response.status).to eq(400) }
       end
     end
 
     context 'unauthorized user' do
-      it 'should not return project builds' do
-        get api("/projects/#{project.id}/builds")
+      let(:api_user) { nil }
 
+      it 'should not return project builds' do
         expect(response.status).to eq(401)
       end
     end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/builds' do
+    before do
+      project.ensure_ci_commit(commit.sha)
+      get api("/projects/#{project.id}/repository/commits/#{commit.sha}/builds", api_user)
+    end
+
     context 'authorized user' do
       it 'should return project builds for specific commit' do
-        project.ensure_ci_commit(commit.sha)
-        get api("/projects/#{project.id}/repository/commits/#{commit.sha}/builds", user)
-
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
       end
     end
 
     context 'unauthorized user' do
-      it 'should not return project builds' do
-        project.ensure_ci_commit(commit.sha)
-        get api("/projects/#{project.id}/repository/commits/#{commit.sha}/builds")
+      let(:api_user) { nil }
 
+      it 'should not return project builds' do
         expect(response.status).to eq(401)
       end
     end
   end
 
   describe 'GET /projects/:id/builds/:build_id' do
+    before { get api("/projects/#{project.id}/builds/#{build.id}", api_user) }
+
     context 'authorized user' do
       it 'should return specific build data' do
-        get api("/projects/#{project.id}/builds/#{build.id}", user)
-
         expect(response.status).to eq(200)
         expect(json_response['name']).to eq('test')
       end
     end
 
     context 'unauthorized user' do
-      it 'should not return specific build data' do
-        get api("/projects/#{project.id}/builds/#{build.id}")
+      let(:api_user) { nil }
 
+      it 'should not return specific build data' do
         expect(response.status).to eq(401)
       end
     end
   end
 
+  describe 'GET /projects/:id/builds/:build_id/artifacts' do
+    before { get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user) }
+
+    context 'build with artifacts' do
+      let(:build) { create(:ci_build, :artifacts, commit: commit) }
+
+      context 'authorized user' do
+        let(:download_headers) do
+          { 'Content-Transfer-Encoding'=>'binary',
+            'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
+        end
+
+        it 'should return specific build artifacts' do
+          expect(response.status).to eq(200)
+          expect(response.headers).to include(download_headers)
+        end
+      end
+
+      context 'unauthorized user' do
+        let(:api_user) { nil }
+
+        it 'should not return specific build artifacts' do
+          expect(response.status).to eq(401)
+        end
+      end
+    end
+
+    it 'should not return build artifacts if not uploaded' do
+      expect(response.status).to eq(404)
+    end
+  end
+
   describe 'GET /projects/:id/builds/:build_id/trace' do
+    let(:build) { create(:ci_build, :trace, commit: commit) }
+    
+    before { get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user) }
+
     context 'authorized user' do
       it 'should return specific build trace' do
-        get api("/projects/#{project.id}/builds/#{build_with_trace.id}/trace", user)
-
         expect(response.status).to eq(200)
-        expect(response.body).to eq(build_with_trace.trace)
+        expect(response.body).to eq(build.trace)
       end
     end
 
     context 'unauthorized user' do
-      it 'should not return specific build trace' do
-        get api("/projects/#{project.id}/builds/#{build_with_trace.id}/trace")
+      let(:api_user) { nil }
 
+      it 'should not return specific build trace' do
         expect(response.status).to eq(401)
       end
     end
   end
 
   describe 'POST /projects/:id/builds/:build_id/cancel' do
+    before { post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user) }
+
     context 'authorized user' do
       context 'user with :update_build persmission' do
         it 'should cancel running or pending build' do
-          post api("/projects/#{project.id}/builds/#{build.id}/cancel", user)
-
           expect(response.status).to eq(201)
           expect(project.builds.first.status).to eq('canceled')
         end
       end
 
       context 'user without :update_build permission' do
-        it 'should not cancel build' do
-          post api("/projects/#{project.id}/builds/#{build.id}/cancel", user2)
+        let(:api_user) { user2 }
 
+        it 'should not cancel build' do
           expect(response.status).to eq(403)
         end
       end
     end
 
     context 'unauthorized user' do
-      it 'should not cancel build' do
-        post api("/projects/#{project.id}/builds/#{build.id}/cancel")
+      let(:api_user) { nil }
 
+      it 'should not cancel build' do
         expect(response.status).to eq(401)
       end
     end
   end
 
   describe 'POST /projects/:id/builds/:build_id/retry' do
-    context 'authorized user' do
-      context 'user with :update_build persmission' do
-        it 'should retry non-running build' do
-          post api("/projects/#{project.id}/builds/#{build_canceled.id}/retry", user)
+    let(:build) { create(:ci_build, :canceled, commit: commit) }
 
+    before { post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user) }
+
+    context 'authorized user' do
+      context 'user with :update_build permission' do
+        it 'should retry non-running build' do
           expect(response.status).to eq(201)
           expect(project.builds.first.status).to eq('canceled')
           expect(json_response['status']).to eq('pending')
@@ -153,18 +195,18 @@ describe API::API, api: true  do
       end
 
       context 'user without :update_build permission' do
-        it 'should not retry build' do
-          post api("/projects/#{project.id}/builds/#{build_canceled.id}/retry", user2)
+        let(:api_user) { user2 }
 
+        it 'should not retry build' do
           expect(response.status).to eq(403)
         end
       end
     end
 
     context 'unauthorized user' do
-      it 'should not retry build' do
-        post api("/projects/#{project.id}/builds/#{build_canceled.id}/retry")
+      let(:api_user) { nil }
 
+      it 'should not retry build' do
         expect(response.status).to eq(401)
       end
     end
@@ -176,7 +218,7 @@ describe API::API, api: true  do
     end
 
     context 'build is erasable' do
-      let(:build) { create(:ci_build_with_trace, :artifacts, :success, project: project, commit: commit) }
+      let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, commit: commit) }
 
       it 'should erase build content' do
         expect(response.status).to eq 201
@@ -192,7 +234,7 @@ describe API::API, api: true  do
     end
 
     context 'build is not erasable' do
-      let(:build) { create(:ci_build_with_trace, project: project, commit: commit) }
+      let(:build) { create(:ci_build, :trace, project: project, commit: commit) }
 
       it 'should respond with forbidden' do
         expect(response.status).to eq 403

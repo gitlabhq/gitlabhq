@@ -34,6 +34,10 @@ Example of response
         "coverage": null,
         "created_at": "2015-12-24T15:51:21.802Z",
         "download_url": null,
+        "artifacts_file": {
+          "filename": "artifacts.zip",
+          "size": 1000
+        },
         "finished_at": "2015-12-24T17:54:27.895Z",
         "id": 7,
         "name": "teaspoon",
@@ -72,6 +76,7 @@ Example of response
         "coverage": null,
         "created_at": "2015-12-24T15:51:21.727Z",
         "download_url": null,
+        "artifacts_file": null,
         "finished_at": "2015-12-24T17:54:24.921Z",
         "id": 6,
         "name": "spinach:other",
@@ -135,6 +140,7 @@ Example of response
         "coverage": null,
         "created_at": "2016-01-11T10:13:33.506Z",
         "download_url": null,
+        "artifacts_file": null,
         "finished_at": "2016-01-11T10:14:09.526Z",
         "id": 69,
         "name": "rubocop",
@@ -159,6 +165,7 @@ Example of response
         "coverage": null,
         "created_at": "2015-12-24T15:51:21.957Z",
         "download_url": null,
+        "artifacts_file": null,
         "finished_at": "2015-12-24T17:54:33.913Z",
         "id": 9,
         "name": "brakeman",
@@ -220,6 +227,7 @@ Example of response
     "coverage": null,
     "created_at": "2015-12-24T15:51:21.880Z",
     "download_url": null,
+    "artifacts_file": null,
     "finished_at": "2015-12-24T17:54:31.198Z",
     "id": 8,
     "name": "rubocop",
@@ -246,6 +254,35 @@ Example of response
     }
 }
 ```
+
+## Get build artifacts
+
+Get build artifacts of a project
+
+```
+GET /projects/:id/builds/:build_id/artifacts
+```
+
+### Parameters
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| id        | integer | yes      | The ID of a project |
+| build_id  | integer | yes      | The ID of a build   |
+
+### Example of request
+
+```
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8"
+```
+
+### Response:
+
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 200       | Serves the artifacts file       |
+| 404       | Build not found or no artifacts |
 
 ## Cancel a build
 
@@ -280,6 +317,7 @@ Example of response
     "coverage": null,
     "created_at": "2016-01-11T10:13:33.506Z",
     "download_url": null,
+    "artifacts_file": null,
     "finished_at": "2016-01-11T10:14:09.526Z",
     "id": 69,
     "name": "rubocop",
@@ -326,6 +364,7 @@ Example of response
     "coverage": null,
     "created_at": "2016-01-11T10:13:33.506Z",
     "download_url": null,
+    "artifacts_file": null,
     "finished_at": null,
     "id": 69,
     "name": "rubocop",
