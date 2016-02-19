@@ -134,6 +134,6 @@ nNp/xedE1YxutQ==
   end
 
   step 'The Pages should get removed' do
-    expect(@project.pages_url).to be_nil
+    expect(@project.pages_deployed?).to be_falsey
   end
 end
