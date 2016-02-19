@@ -4,6 +4,7 @@ require 'mime/types'
 describe API::API, api: true  do
   include ApiHelpers
   include RepoHelpers
+  include WorkhorseHelpers
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -91,21 +92,27 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/repository/archive", user)
       repo_name = project.repository.name.gsub("\.git", "")
       expect(response.status).to eq(200)
-      expect(json_response['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.gz/)
+      type, params = workhorse_send_data
+      expect(type).to eq('git-archive')
+      expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.gz/)
     end
 
     it "should get the archive.zip" do
       get api("/projects/#{project.id}/repository/archive.zip", user)
       repo_name = project.repository.name.gsub("\.git", "")
       expect(response.status).to eq(200)
-      expect(json_response['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.zip/)
+      type, params = workhorse_send_data
+      expect(type).to eq('git-archive')
+      expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.zip/)
     end
 
     it "should get the archive.tar.bz2" do
       get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
       repo_name = project.repository.name.gsub("\.git", "")
       expect(response.status).to eq(200)
-      expect(json_response['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.bz2/)
+      type, params = workhorse_send_data
+      expect(type).to eq('git-archive')
+      expect(params['ArchivePath']).to match(/#{repo_name}\-[^\.]+\.tar.bz2/)
     end
 
     it "should return 404 for invalid sha" do

@@ -27,6 +27,7 @@ class RepositoryForkWorker
       return
     end
 
+    project.repository.expire_emptiness_caches
     project.import_finish
   end
 end

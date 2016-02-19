@@ -11,8 +11,6 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_show_vars, only: [:show, :builds]
 
   def show
-    return git_not_found! unless @commit
-
     apply_diff_view_cookie!
 
     @line_notes = commit.notes.inline
@@ -68,6 +66,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def define_show_vars
+    return git_not_found! unless commit
+
     if params[:w].to_i == 1
       @diffs = commit.diffs({ ignore_whitespace_change: true })
     else

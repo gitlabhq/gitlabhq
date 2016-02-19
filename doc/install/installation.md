@@ -182,25 +182,20 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 ## 6. Redis
 
-As of this writing, most Debian/Ubuntu distributions ship with Redis 2.2 or
-2.4. GitLab requires at least Redis 2.8.
+GitLab requires at least Redis 2.8.
 
-Ubuntu users [can use a PPA](https://launchpad.net/~chris-lea/+archive/ubuntu/redis-server)
-to install a recent version of Redis.
-
-The following instructions cover building and installing Redis from scratch:
+If you are using Debian 8 or Ubuntu 14.04 and up, then you can simply install
+Redis 2.8 with:
 
 ```sh
-# Build Redis
-wget http://download.redis.io/releases/redis-2.8.23.tar.gz
-tar xzf redis-2.8.23.tar.gz
-cd redis-2.8.23
-make
+sudo apt-get install redis-server
+```
 
-# Install Redis
-cd utils
-sudo ./install_server.sh
+If you are using Debian 7 or Ubuntu 12.04, follow the special documentation
+on [an alternate Redis installation](redis.md). Once done, follow the rest of
+the guide here.
 
+```
 # Configure redis to use sockets
 sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
 
@@ -224,7 +219,7 @@ if [ -d /etc/tmpfiles.d ]; then
 fi
 
 # Activate the changes to redis.conf
-sudo service redis_6379 start
+sudo service redis-server restart
 
 # Add git to the redis group
 sudo usermod -aG redis git
@@ -358,7 +353,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout 0.6.4
+    sudo -u git -H git checkout 0.6.5
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features

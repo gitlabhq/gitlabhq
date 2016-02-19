@@ -113,9 +113,43 @@ module SharedIssuable
     end
   end
 
+  step 'I sort the list by "Least popular"' do
+    find('button.dropdown-toggle.btn').click
+
+    page.within('ul.dropdown-menu.dropdown-menu-align-right li') do
+      click_link 'Least popular'
+    end
+  end
+
+  step 'I sort the list by "Most popular"' do
+    find('button.dropdown-toggle.btn').click
+
+    page.within('ul.dropdown-menu.dropdown-menu-align-right li') do
+      click_link 'Most popular'
+    end
+  end
+
   step 'The list should be sorted by "Oldest updated"' do
     page.within('div.dropdown.inline.prepend-left-10') do
       expect(page.find('button.dropdown-toggle.btn')).to have_content('Oldest updated')
+    end
+  end
+
+  step 'I should see "1 of 1" in the sidebar' do
+    expect_sidebar_content('1 of 1')
+  end
+
+  step 'I should see "1 of 2" in the sidebar' do
+    expect_sidebar_content('1 of 2')
+  end
+
+  step 'I should see "2 of 2" in the sidebar' do
+    expect_sidebar_content('2 of 2')
+  end
+
+  step 'I click link "Next" in the sidebar' do
+    page.within '.issuable-sidebar' do
+      click_link 'Next'
     end
   end
 
@@ -157,6 +191,12 @@ module SharedIssuable
 
     expect(page).to have_content(user_name)
     expect(page).to have_content("mentioned in #{issuable.class.to_s.titleize.downcase} #{issuable.to_reference(project)}")
+  end
+
+  def expect_sidebar_content(content)
+    page.within '.issuable-sidebar' do
+      expect(page).to have_content content
+    end
   end
 
 end

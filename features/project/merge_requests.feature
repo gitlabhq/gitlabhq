@@ -39,6 +39,7 @@ Feature: Project Merge Requests
   Scenario: I visit merge request page
     Given I click link "Bug NS-04"
     Then I should see merge request "Bug NS-04"
+    And I should see "1 of 1" in the sidebar
 
   Scenario: I close merge request page
     Given I click link "Bug NS-04"
@@ -105,6 +106,17 @@ Feature: Project Merge Requests
     And I sort the list by "Oldest updated"
     And I visit dashboard merge requests page
     Then The list should be sorted by "Oldest updated"
+
+  @javascript
+  Scenario: Sort merge requests by upvotes/downvotes
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And project "Shop" have "Bug NS-06" open merge request
+    And merge request "Bug NS-04" have 2 upvotes and 1 downvote
+    And merge request "Bug NS-06" have 1 upvote and 2 downvotes
+    And I sort the list by "Most popular"
+    Then The list should be sorted by "Most popular"
+    And I sort the list by "Least popular"
+    Then The list should be sorted by "Least popular"
 
   @javascript
   Scenario: Visiting Merge Requests after commenting on diffs
