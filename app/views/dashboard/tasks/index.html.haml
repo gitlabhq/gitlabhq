@@ -35,10 +35,10 @@
           class: 'select2 trigger-submit', include_blank: true,
           data: {placeholder: 'Action'})
 
-.tasks
+.prepend-top-default
   - if @tasks.any?
     - @tasks.group_by(&:project).each do |group|
-      .panel.panel-default
+      .panel.panel-default.panel-small
         - project = group[0]
         .panel-heading
           = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
