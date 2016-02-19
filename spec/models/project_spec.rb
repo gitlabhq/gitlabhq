@@ -1846,7 +1846,7 @@ describe Project, models: true do
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
   end
 
-  describe :pages_url do
+  describe '#pages_url' do
     let(:group) { create :group, name: group_name }
     let(:project) { create :empty_project, namespace: group, name: project_name }
     let(:domain) { 'Example.com' }
