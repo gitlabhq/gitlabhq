@@ -47,11 +47,10 @@ URL it will be accessible.
 
 ## Group pages
 
-You can create a group page in context of your group.
-The project for group page must be written in lower.
+To create a page for a group, add a new project to it. The project name must be lowercased.
 
-If you have a group `TheRug` and pages are hosted under `Example.com` in order to create a group page
-create a new project named `therug.example.com`.
+For example, if you have a group called `TheRug` and pages are hosted under `Example.com`,
+create a project named `therug.example.com`.
 
 ## Enable the pages feature in your project
 
