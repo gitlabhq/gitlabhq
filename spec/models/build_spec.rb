@@ -243,7 +243,7 @@ describe Ci::Build, models: true do
   end
 
   describe :can_be_served? do
-    let(:runner) { FactoryGirl.create :ci_specific_runner }
+    let(:runner) { FactoryGirl.create :ci_runner }
 
     before { build.project.runners << runner }
 
@@ -285,7 +285,7 @@ describe Ci::Build, models: true do
     end
 
     context 'if there are runner' do
-      let(:runner) { FactoryGirl.create :ci_specific_runner }
+      let(:runner) { FactoryGirl.create :ci_runner }
 
       before do
         build.project.runners << runner
@@ -322,7 +322,7 @@ describe Ci::Build, models: true do
         it { is_expected.to be_truthy }
 
         context "and there are specific runner" do
-          let(:runner) { FactoryGirl.create :ci_specific_runner, contacted_at: 1.second.ago }
+          let(:runner) { FactoryGirl.create :ci_runner, contacted_at: 1.second.ago }
 
           before do
             build.project.runners << runner

@@ -17,10 +17,10 @@ describe "Runners" do
       @project3 = FactoryGirl.create :empty_project
       @project3.team << [user, :developer]
 
-      @shared_runner = FactoryGirl.create :ci_shared_runner
-      @specific_runner = FactoryGirl.create :ci_specific_runner
-      @specific_runner2 = FactoryGirl.create :ci_specific_runner
-      @specific_runner3 = FactoryGirl.create :ci_specific_runner
+      @shared_runner = FactoryGirl.create :ci_runner, :shared
+      @specific_runner = FactoryGirl.create :ci_runner
+      @specific_runner2 = FactoryGirl.create :ci_runner
+      @specific_runner3 = FactoryGirl.create :ci_runner
       @project.runners << @specific_runner
       @project2.runners << @specific_runner2
       @project3.runners << @specific_runner3
@@ -84,7 +84,7 @@ describe "Runners" do
     before do
       @project = FactoryGirl.create :empty_project
       @project.team << [user, :master]
-      @specific_runner = FactoryGirl.create :ci_specific_runner
+      @specific_runner = FactoryGirl.create :ci_runner
       @project.runners << @specific_runner
     end
 

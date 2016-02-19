@@ -65,6 +65,7 @@ v 8.5.0 (unreleased)
   - Ability to see and sort on vote count from Issues and MR lists
   - Fix builds scheduler when first build in stage was allowed to fail
   - User project limit is reached notice is hidden if the projects limit is zero 
+  - Add API support for managing runners and project's runners
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
