@@ -124,7 +124,7 @@ In GitLab, Runners run the builds that you define in `.gitlab-ci.yml`.
 A Runner can be a virtual machine, a VPS, a bare-metal machine, a docker
 container or even a cluster of containers. GitLab and the Runners communicate
 through an API, so the only needed requirement is that the machine on which the
-Runner is configured to has Internet access.
+Runner is configured to have Internet access.
 
 A Runner can be specific to a certain project or serve multiple projects in
 GitLab. If it serves all projects it's called a _Shared Runner_.
