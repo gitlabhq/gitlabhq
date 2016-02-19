@@ -77,7 +77,7 @@ module Gitlab
 
       def update_permissions(options)
         if group_base.present?
-          if options[:update_groups]
+          if options[:update_ldap_group_links_synchronously]
             update_ldap_group_links
           else
             LdapGroupLinksWorker.perform_async(user.id)
