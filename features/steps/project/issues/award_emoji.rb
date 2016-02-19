@@ -96,6 +96,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'The search field is focused' do
+    sleep 0.8
     page.evaluate_script("document.activeElement.id").should eq "emoji_search"
   end
 end

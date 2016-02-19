@@ -5,7 +5,6 @@ class @AwardsHandler
       event.preventDefault()
 
       @showEmojiMenu()
-      $("#emoji_search").focus()
 
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
@@ -18,10 +17,12 @@ class @AwardsHandler
   showEmojiMenu: ->
     if $(".emoji-menu").length
       $(".emoji-menu").show()
+      $("#emoji_search").focus()
     else
       $.get "/emoji_menu", (response) ->
         $(".add-award").after response
         $(".emoji-menu").show()
+        $("#emoji_search").focus()
 
   addAward: (emoji) ->
     emoji = @normilizeEmojiName(emoji)
