@@ -255,9 +255,9 @@ Example of response
 }
 ```
 
-## Get a build artifacts
+## Get build artifacts
 
-Get a build artifacts of a project
+Get build artifacts of a project
 
 ```
 GET /projects/:id/builds/:build_id/artifacts
