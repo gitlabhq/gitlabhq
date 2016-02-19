@@ -79,9 +79,7 @@ module API
           return redirect_to build.artifacts_file.url
         end
 
-        unless artifacts_file.exists?
-          not_found!
-        end
+        return not_found! unless artifacts_file.exists?
 
         present_file!(artifacts_file.path, artifacts_file.filename)
       end
