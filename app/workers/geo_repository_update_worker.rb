@@ -2,9 +2,9 @@ class GeoRepositoryUpdateWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
-  sidekiq_options queue: :gitlab_shell
+  sidekiq_options queue: :default
 
-  attr_accessor :project, :repository, :current_user
+  attr_accessor :project
 
   def perform(project_id)
     @project = Project.find(project_id)
