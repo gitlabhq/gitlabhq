@@ -49,7 +49,7 @@ module API
       expose :enable_ssl_verification
     end
 
-    class ForkedFromProject < Grape::Entity
+    class BasicProjectDetails < Grape::Entity
       expose :id
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
@@ -67,7 +67,7 @@ module API
       expose :shared_runners_enabled
       expose :creator_id
       expose :namespace
-      expose :forked_from_project, using: Entities::ForkedFromProject, if: lambda{ |project, options| project.forked? }
+      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
@@ -375,6 +375,20 @@ module API
       expose :active
       expose :is_shared
       expose :name
+    end
+
+    class RunnerDetails < Runner
+      expose :tag_list
+      expose :version, :revision, :platform, :architecture
+      expose :contacted_at
+      expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
+      expose :projects, with: Entities::BasicProjectDetails do |runner, options|
+        if options[:current_user].is_admin?
+          runner.projects
+        else
+          options[:current_user].authorized_projects.where(id: runner.projects)
+        end
+      end
     end
 
     class Build < Grape::Entity

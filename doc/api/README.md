@@ -32,6 +32,7 @@ following locations:
 - [Builds](builds.md)
 - [Build triggers](build_triggers.md)
 - [Build Variables](build_variables.md)
+- [Runners](runners.md)
 
 ## Authentication
 
