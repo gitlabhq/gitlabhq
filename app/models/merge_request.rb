@@ -24,6 +24,7 @@
 #  merge_params              :text
 #  merge_when_build_succeeds :boolean          default(FALSE), not null
 #  merge_user_id             :integer
+#  merge_commit_sha          :string
 #
 
 require Rails.root.join("app/models/commit")
@@ -531,5 +532,13 @@ class MergeRequest < ActiveRecord::Base
     return nil unless diff_base_commit
 
     [diff_base_commit, last_commit]
+  end
+
+  def merge_commit
+    @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
+  end
+
+  def can_be_reverted?(current_user = nil)
+    merge_commit && !merge_commit.has_been_reverted?(current_user, self)
   end
 end
