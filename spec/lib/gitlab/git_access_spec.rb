@@ -249,6 +249,28 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
+    context "when in a readonly gitlab geo node" do
+      before do
+        allow(Gitlab::Geo).to receive(:enabled?) { true }
+        allow(Gitlab::Geo).to receive(:readonly?) { true }
+      end
+
+      permissions_matrix.keys.each do |role|
+        describe "#{role} access" do
+          before { protect_feature_branch }
+          before { project.team << [user, role] }
+
+          permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.push_access_check(changes[action]) }
+
+              it { expect(subject.allowed?).to be_falsey }
+            end
+          end
+        end
+      end
+    end
+
     context "when using git annex" do
       before { project.team << [user, :master] }
 

@@ -113,6 +113,10 @@ module Gitlab
         return build_status_object(false, "A repository for this project does not exist yet.")
       end
 
+      if Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
+        return build_status_object(false, "You can't push code on a secondary Gitlab Geo node.")
+      end
+
       if ::License.block_changes?
         message = ::LicenseHelper.license_message(signed_in: true, is_admin: (user && user.is_admin?))
         return build_status_object(false, message)
