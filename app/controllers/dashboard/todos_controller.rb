@@ -19,5 +19,3 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     @todo ||= current_user.todos.find(params[:id])
   end
 end
-
-
