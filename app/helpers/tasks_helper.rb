@@ -24,9 +24,7 @@ module TasksHelper
   end
 
   def task_target_link_html(task)
-    link_to task_target_path(task) do
-      "##{task.target_iid}"
-    end
+    link_to "##{task.target_iid}", task_target_path(task)
   end
 
   def task_target_path(task)
@@ -34,11 +32,6 @@ module TasksHelper
 
     polymorphic_path([task.project.namespace.becomes(Namespace),
                       task.project, task.target], anchor: anchor)
-  end
-
-  def task_body(text, options = {})
-    text = first_line_in_markdown(text, 150, options)
-    sanitize(text, tags: %w(a img b pre code p span))
   end
 
   def task_actions_options
