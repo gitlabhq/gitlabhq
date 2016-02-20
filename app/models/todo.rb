@@ -43,22 +43,11 @@ class Todo < ActiveRecord::Base
     state :done
   end
 
-  def action_name
-    case action
-    when ASSIGNED then 'assigned'
-    when MENTIONED then 'mentioned you on'
-    end
-  end
-
   def body
     if note.present?
       note.note
     else
       target.title
     end
-  end
-
-  def target_iid
-    target.respond_to?(:iid) ? target.iid : target_id
   end
 end
