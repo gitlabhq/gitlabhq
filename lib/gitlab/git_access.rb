@@ -85,6 +85,11 @@ module Gitlab
     end
 
     def push_access_check(changes)
+
+      if Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
+        return build_status_object(false, "You can't push code on a secondary Gitlab Geo node.")
+      end
+
       return build_status_object(true) if git_annex_branch_sync?(changes)
 
       if user
@@ -111,10 +116,6 @@ module Gitlab
 
       unless project.repository.exists?
         return build_status_object(false, "A repository for this project does not exist yet.")
-      end
-
-      if Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
-        return build_status_object(false, "You can't push code on a secondary Gitlab Geo node.")
       end
 
       if ::License.block_changes?
@@ -325,6 +326,10 @@ module Gitlab
 
       unless project.repository.exists?
         return build_status_object(false, "Repository does not exist")
+      end
+
+      if Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
+        return build_status_object(false, "You can't use git-anex with Gitlab Geo readonly node.")
       end
 
       if user.can?(:push_code, project)

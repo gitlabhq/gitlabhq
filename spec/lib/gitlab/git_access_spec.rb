@@ -274,6 +274,16 @@ describe Gitlab::GitAccess, lib: true do
     context "when using git annex" do
       before { project.team << [user, :master] }
 
+      describe 'and gitlab geo is enabled in a readonly node' do
+        before do
+          allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true)
+          allow(Gitlab::Geo).to receive(:enabled?) { true }
+          allow(Gitlab::Geo).to receive(:readonly?) { true }
+        end
+
+        it { expect(access.push_access_check(git_annex_changes)).not_to be_allowed }
+      end
+
       describe 'and git hooks unset' do
         describe 'git annex enabled' do
           before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true) }
