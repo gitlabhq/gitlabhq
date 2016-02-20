@@ -7,14 +7,9 @@ module TodosHelper
     current_user.todos.done.count
   end
 
-  def todo_action_name(todo)
-    target =  todo.target_type.titleize.downcase
-
-    [todo.action_name, target].join(" ")
-  end
-
-  def todo_target_link_html(todo)
-    link_to "##{todo.target_iid}", todo_target_path(todo)
+  def todo_target_link(todo)
+    target = todo.target_type.titleize.downcase
+    link_to "#{target} #{todo.target.to_reference}", todo_target_path(todo)
   end
 
   def todo_target_path(todo)
