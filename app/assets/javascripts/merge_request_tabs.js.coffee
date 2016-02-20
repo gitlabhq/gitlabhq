@@ -181,7 +181,7 @@ class @MergeRequestTabs
 
   # Returns diff view type
   diffViewType: ->
-    $('.diffs a[id$="-diff-btn"].active').data('view-type')
+    $('.inline-parallel-buttons a.active').data('view-type')
 
   expandViewContainer: ->
     $('.container-fluid').removeClass('container-limited')
