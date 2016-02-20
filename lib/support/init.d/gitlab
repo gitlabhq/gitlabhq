@@ -42,6 +42,11 @@ gitlab_workhorse_dir=$(cd $app_root/../gitlab-workhorse 2> /dev/null && pwd)
 gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
 gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080 -authSocket $rails_socket -documentRoot $app_root/public"
 gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
+gitlab_pages_enabled=false
+gitlab_pages_dir=$(cd $app_root/../gitlab-pages 2> /dev/null && pwd)
+gitlab_pages_pid_path="$pid_path/gitlab-pages.pid"
+gitlab_pages_options="-pages-domain example.com -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
+gitlab_pages_log="$app_root/log/gitlab-pages.log"
 shell_path="/bin/bash"
 
 # Read configuration variable file if it is present
