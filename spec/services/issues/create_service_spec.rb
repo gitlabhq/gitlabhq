@@ -24,17 +24,18 @@ describe Issues::CreateService, services: true do
       it { expect(@issue.title).to eq('Awesome issue') }
       it { expect(@issue.assignee).to eq assignee }
 
-      it 'creates a pending task for new assignee' do
+      it 'creates a pending todo for new assignee' do
         attributes = {
           project: project,
           author: user,
           user: assignee,
-          target: @issue,
-          action: Task::ASSIGNED,
+          target_id: @issue.id,
+          target_type: @issue.class.name,
+          action: Todo::ASSIGNED,
           state: :pending
         }
 
-        expect(Task.where(attributes).count).to eq 1
+        expect(Todo.where(attributes).count).to eq 1
       end
     end
   end

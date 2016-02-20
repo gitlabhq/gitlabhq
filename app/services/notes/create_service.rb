@@ -8,7 +8,7 @@ module Notes
       if note.save
         # Finish the harder work in the background
         NewNoteWorker.perform_in(2.seconds, note.id, params)
-        TaskService.new.new_note(note, current_user)
+        TodoService.new.new_note(note, current_user)
       end
 
       note

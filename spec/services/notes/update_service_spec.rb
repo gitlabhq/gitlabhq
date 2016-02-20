@@ -18,16 +18,16 @@ describe Notes::UpdateService, services: true do
       @note.reload
     end
 
-    context 'task queue' do
-      let!(:pending_task) { create(:task, :assigned, user: user, project: project, target: issue, author: user2) }
+    context 'todos' do
+      let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
       context 'when the note change' do
         before do
           update_note({ note: 'New note' })
         end
 
-        it 'marks pending tasks as done' do
-          expect(pending_task.reload).to be_done
+        it 'marks todos as done' do
+          expect(todo.reload).to be_done
         end
       end
 
@@ -36,8 +36,8 @@ describe Notes::UpdateService, services: true do
           update_note({ note: 'Old note' })
         end
 
-        it 'keep pending tasks' do
-          expect(pending_task.reload).to be_pending
+        it 'keep todos' do
+          expect(todo.reload).to be_pending
         end
       end
     end

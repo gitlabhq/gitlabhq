@@ -23,8 +23,8 @@ class BaseService
     EventCreateService.new
   end
 
-  def task_service
-    TaskService.new
+  def todo_service
+    TodoService.new
   end
 
   def log_info(message)

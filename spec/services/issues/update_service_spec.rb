@@ -80,16 +80,16 @@ describe Issues::UpdateService, services: true do
       end
     end
 
-    context 'task queue' do
-      let!(:pending_task) { create(:task, :assigned, user: user, project: project, target: issue, author: user2) }
+    context 'todos' do
+      let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
       context 'when the title change' do
         before do
           update_issue({ title: 'New title' })
         end
 
-        it 'marks pending tasks as done' do
-          expect(pending_task.reload.done?).to eq true
+        it 'marks pending todos as done' do
+          expect(todo.reload.done?).to eq true
         end
       end
 
@@ -98,8 +98,8 @@ describe Issues::UpdateService, services: true do
           update_issue({ description: 'Also please fix' })
         end
 
-        it 'marks pending tasks as done' do
-          expect(pending_task.reload.done?).to eq true
+        it 'marks todos as done' do
+          expect(todo.reload.done?).to eq true
         end
       end
 
@@ -108,21 +108,22 @@ describe Issues::UpdateService, services: true do
           update_issue({ assignee: user2 })
         end
 
-        it 'marks previous assignee pending tasks as done' do
-          expect(pending_task.reload.done?).to eq true
+        it 'marks previous assignee todos as done' do
+          expect(todo.reload.done?).to eq true
         end
 
-        it 'creates a pending task for new assignee' do
+        it 'creates a todo for new assignee' do
           attributes = {
             project: project,
             author: user,
             user: user2,
-            target: issue,
-            action: Task::ASSIGNED,
+            target_id: issue.id,
+            target_type: issue.class.name,
+            action: Todo::ASSIGNED,
             state: :pending
           }
 
-          expect(Task.where(attributes).count).to eq 1
+          expect(Todo.where(attributes).count).to eq 1
         end
       end
 
@@ -131,8 +132,8 @@ describe Issues::UpdateService, services: true do
           update_issue({ milestone: create(:milestone) })
         end
 
-        it 'marks pending tasks as done' do
-          expect(pending_task.reload.done?).to eq true
+        it 'marks todos as done' do
+          expect(todo.reload.done?).to eq true
         end
       end
 
@@ -141,8 +142,8 @@ describe Issues::UpdateService, services: true do
           update_issue({ label_ids: [label.id] })
         end
 
-        it 'marks pending tasks as done' do
-          expect(pending_task.reload.done?).to eq true
+        it 'marks todos as done' do
+          expect(todo.reload.done?).to eq true
         end
       end
     end

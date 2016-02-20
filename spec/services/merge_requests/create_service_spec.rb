@@ -34,13 +34,14 @@ describe MergeRequests::CreateService, services: true do
         expect(service).to have_received(:execute_hooks).with(@merge_request)
       end
 
-      it 'does not creates a pending task' do
+      it 'does not creates todos' do
         attributes = {
           project: project,
-          target: @merge_request
+          target_id: @merge_request.id,
+          target_type: @merge_request.class.name
         }
 
-        expect(Task.where(attributes).count).to be_zero
+        expect(Todo.where(attributes).count).to be_zero
       end
 
       context 'when merge request is assigned to someone' do
@@ -56,17 +57,18 @@ describe MergeRequests::CreateService, services: true do
 
         it { expect(@merge_request.assignee).to eq assignee }
 
-        it 'creates a pending task for new assignee' do
+        it 'creates a todo for new assignee' do
           attributes = {
             project: project,
             author: user,
             user: assignee,
-            target: @merge_request,
-            action: Task::ASSIGNED,
+            target_id: @merge_request.id,
+            target_type: @merge_request.class.name,
+            action: Todo::ASSIGNED,
             state: :pending
           }
 
-          expect(Task.where(attributes).count).to eq 1
+          expect(Todo.where(attributes).count).to eq 1
         end
       end
     end

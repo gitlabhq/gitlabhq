@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: tasks
+# Table name: todos
 #
 #  id          :integer          not null, primary key
 #  user_id     :integer          not null
@@ -15,7 +15,7 @@
 #  updated_at  :datetime
 #
 
-class Task < ActiveRecord::Base
+class Todo < ActiveRecord::Base
   ASSIGNED  = 1
   MENTIONED = 2
 

@@ -1,6 +1,6 @@
-# TasksFinder
+# TodosFinder
 #
-# Used to filter Tasks by set of params
+# Used to filter Todos by set of params
 #
 # Arguments:
 #   current_user - which user use
@@ -12,7 +12,7 @@
 #     type: 'Issue' or 'MergeRequest'
 #
 
-class TasksFinder
+class TodosFinder
   NONE = '0'
 
   attr_accessor :current_user, :params
@@ -23,7 +23,7 @@ class TasksFinder
   end
 
   def execute
-    items = current_user.tasks
+    items = current_user.todos
     items = by_action_id(items)
     items = by_author(items)
     items = by_project(items)
@@ -36,7 +36,7 @@ class TasksFinder
   private
 
   def action_id?
-    action_id.present? && [Task::ASSIGNED, Task::MENTIONED].include?(action_id.to_i)
+    action_id.present? && [Todo::ASSIGNED, Todo::MENTIONED].include?(action_id.to_i)
   end
 
   def action_id

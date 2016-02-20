@@ -8,7 +8,7 @@ module Notes
       note.reset_events_cache
 
       if note.previous_changes.include?('note')
-        TaskService.new.update_note(note, current_user)
+        TodoService.new.update_note(note, current_user)
       end
 
       note

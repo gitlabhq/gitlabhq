@@ -181,7 +181,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
-    TaskService.new.merge_merge_request(merge_request, current_user)
+    TodoService.new.merge_merge_request(merge_request, current_user)
 
     @merge_request.update(merge_error: nil)
 

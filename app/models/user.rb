@@ -140,7 +140,7 @@ class User < ActiveRecord::Base
   has_one  :abuse_report,             dependent: :destroy
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
-  has_many :tasks,                    dependent: :destroy
+  has_many :todos,                    dependent: :destroy
 
   #
   # Validations

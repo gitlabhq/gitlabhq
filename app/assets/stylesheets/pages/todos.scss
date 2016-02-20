@@ -1,37 +1,37 @@
 /**
- * Dashboard tasks queue
+ * Dashboard Todos
  *
  */
 
 .navbar-nav {
   li {
-    .badge.tasks-pending-count {
+    .badge.todos-pending-count {
       background-color: #7f8fa4;
       margin-top: -5px;
     }
   }
 }
 
-.tasks {
+.todos {
   .panel {
     border-top: none;
     margin-bottom: 0;
   }
 }
 
-.task-item {
+.todo-item {
   font-size: $gl-font-size;
   padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
   border-bottom: 1px solid $table-border-color;
   color: #7f8fa4;
 
-  &.task-inline {
+  &.todo-inline {
     .avatar {
       position: relative;
       top: -2px;
     }
 
-    .task-title {
+    .todo-title {
       line-height: 40px;
     }
   }
@@ -44,7 +44,7 @@
     margin-left: -($gl-avatar-size + $gl-padding-top);
   }
 
-  .task-title {
+  .todo-title {
     @include str-truncated(calc(100% - 174px));
     font-weight: 600;
 
@@ -53,10 +53,10 @@
     }
   }
 
-  .task-body {
+  .todo-body {
     margin-right: 174px;
 
-    .task-note {
+    .todo-note {
       word-wrap: break-word;
 
       .md {
@@ -89,7 +89,7 @@
       }
     }
 
-    .task-note-icon {
+    .todo-note-icon {
       color: #777;
       float: left;
       font-size: $gl-font-size;
@@ -102,10 +102,10 @@
 }
 
 @media (max-width: $screen-xs-max) {
-  .task-item {
+  .todo-item {
     padding-left: $gl-padding;
 
-    .task-title {
+    .todo-title {
       white-space: normal;
       overflow: visible;
       max-width: 100%;
@@ -115,7 +115,7 @@
       display: none;
     }
 
-    .task-body {
+    .todo-body {
       margin: 0;
       border-left: 2px solid #DDD;
       padding-left: 10px;

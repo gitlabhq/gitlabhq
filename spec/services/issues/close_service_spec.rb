@@ -5,7 +5,7 @@ describe Issues::CloseService, services: true do
   let(:user2) { create(:user) }
   let(:issue) { create(:issue, assignee: user2) }
   let(:project) { issue.project }
-  let!(:pending_task) { create(:task, :assigned, user: user, project: project, target: issue, author: user2) }
+  let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
     project.team << [user, :master]
@@ -34,8 +34,8 @@ describe Issues::CloseService, services: true do
         expect(note.note).to include "Status changed to closed"
       end
 
-      it 'marks pending tasks as done' do
-        expect(pending_task.reload).to be_done
+      it 'marks todos as done' do
+        expect(todo.reload).to be_done
       end
     end
 
@@ -47,7 +47,7 @@ describe Issues::CloseService, services: true do
 
       it { expect(@issue).to be_valid }
       it { expect(@issue).to be_opened }
-      it { expect(pending_task.reload).to be_pending }
+      it { expect(todo.reload).to be_pending }
     end
   end
 end

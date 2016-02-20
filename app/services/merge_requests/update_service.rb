@@ -16,12 +16,12 @@ module MergeRequests
 
     def handle_changes(merge_request, options = {})
       if has_changes?(merge_request, options)
-        task_service.mark_pending_tasks_as_done(merge_request, current_user)
+        todo_service.mark_pending_todos_as_done(merge_request, current_user)
       end
 
       if merge_request.previous_changes.include?('title') ||
          merge_request.previous_changes.include?('description')
-        task_service.update_merge_request(merge_request, current_user)
+        todo_service.update_merge_request(merge_request, current_user)
       end
 
       if merge_request.previous_changes.include?('target_branch')
@@ -37,7 +37,7 @@ module MergeRequests
       if merge_request.previous_changes.include?('assignee_id')
         create_assignee_note(merge_request)
         notification_service.reassigned_merge_request(merge_request, current_user)
-        task_service.reassigned_merge_request(merge_request, current_user)
+        todo_service.reassigned_merge_request(merge_request, current_user)
       end
 
       if merge_request.previous_changes.include?('target_branch') ||

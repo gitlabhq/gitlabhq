@@ -103,8 +103,8 @@ module SharedPaths
     visit dashboard_groups_path
   end
 
-  step 'I visit dashboard task queue page' do
-    visit dashboard_tasks_path
+  step 'I visit dashboard todos page' do
+    visit dashboard_todos_path
   end
 
   step 'I should be redirected to the dashboard groups page' do

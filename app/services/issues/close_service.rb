@@ -3,7 +3,7 @@ module Issues
     def execute(issue, commit = nil)
       if project.jira_tracker? && project.jira_service.active
         project.jira_service.execute(commit, issue)
-        task_service.close_issue(issue, current_user)
+        todo_service.close_issue(issue, current_user)
         return issue
       end
 
@@ -11,7 +11,7 @@ module Issues
         event_service.close_issue(issue, current_user)
         create_note(issue, commit)
         notification_service.close_issue(issue, current_user)
-        task_service.close_issue(issue, current_user)
+        todo_service.close_issue(issue, current_user)
         execute_hooks(issue, 'close')
       end
 

@@ -333,7 +333,7 @@ Rails.application.routes.draw do
 
       resources :groups, only: [:index]
       resources :snippets, only: [:index]
-      resources :tasks, only: [:index, :destroy]
+      resources :todos, only: [:index, :destroy]
 
       resources :projects, only: [:index] do
         collection do

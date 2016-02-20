@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: tasks
+# Table name: todos
 #
 #  id          :integer          not null, primary key
 #  user_id     :integer          not null
@@ -17,7 +17,7 @@
 
 require 'spec_helper'
 
-describe Task, models: true do
+describe Todo, models: true do
   describe 'relationships' do
     it { is_expected.to belong_to(:author).class_name("User") }
     it { is_expected.to belong_to(:note) }
@@ -39,13 +39,13 @@ describe Task, models: true do
 
   describe '#action_name' do
     it 'returns proper message when action is an assigment' do
-      subject.action = Task::ASSIGNED
+      subject.action = Todo::ASSIGNED
 
       expect(subject.action_name).to eq 'assigned'
     end
 
     it 'returns proper message when action is a mention' do
-      subject.action = Task::MENTIONED
+      subject.action = Todo::MENTIONED
 
       expect(subject.action_name).to eq 'mentioned you on'
     end

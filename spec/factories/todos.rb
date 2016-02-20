@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: tasks
+# Table name: todos
 #
 #  id          :integer          not null, primary key
 #  user_id     :integer          not null
@@ -16,19 +16,19 @@
 #
 
 FactoryGirl.define do
-  factory :task do
+  factory :todo do
     project
     author
     user
     target factory: :issue
-    action { Task::ASSIGNED }
+    action { Todo::ASSIGNED }
 
     trait :assigned do
-      action { Task::ASSIGNED }
+      action { Todo::ASSIGNED }
     end
 
     trait :mentioned do
-      action { Task::MENTIONED }
+      action { Todo::MENTIONED }
     end
   end
 end

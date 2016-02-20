@@ -1,53 +1,53 @@
-- page_title "Tasks"
-- header_title "Tasks", dashboard_tasks_path
+- page_title "Todos"
+- header_title "Todos", dashboard_todos_path
 
 .top-area
   %ul.nav-links
     %li{class: ('active' if params[:state].blank? || params[:state] == 'pending')}
       = link_to page_filter_path(state: 'pending') do
         %span
-          Tasks
+          Todos
         %span{class: 'badge'}
-          = tasks_pending_count
+          = todos_pending_count
     %li{class: ('active' if params[:state] == 'done')}
       = link_to page_filter_path(state: 'done') do
         %span
           Done
         %span{class: 'badge'}
-          = tasks_done_count
+          = todos_done_count
 
-.tasks-filters
+.todos-filters
   .gray-content-block.second-block
     = form_tag page_filter_path(without: [:assignee_id, :milestone_title, :label_name, :scope, :sort]), method: :get, class: 'filter-form' do
       .filter-item.inline
-        = select_tag('project_id', task_projects_options,
+        = select_tag('project_id', todo_projects_options,
           class: 'select2 trigger-submit', include_blank: true,
           data: {placeholder: 'Project'})
       .filter-item.inline
         = users_select_tag(:author_id, selected: params[:author_id],
           placeholder: 'Author', class: 'trigger-submit', any_user: "Any Author", first_user: true, current_user: true)
       .filter-item.inline
-        = select_tag('type', task_types_options,
+        = select_tag('type', todo_types_options,
           class: 'select2 trigger-submit', include_blank: true,
           data: {placeholder: 'Type'})
       .filter-item.inline.actions-filter
-        = select_tag('action_id', task_actions_options,
+        = select_tag('action_id', todo_actions_options,
           class: 'select2 trigger-submit', include_blank: true,
           data: {placeholder: 'Action'})
 
 .prepend-top-default
-  - if @tasks.any?
-    - @tasks.group_by(&:project).each do |group|
+  - if @todos.any?
+    - @todos.group_by(&:project).each do |group|
       .panel.panel-default.panel-small
         - project = group[0]
         .panel-heading
           = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
 
-        %ul.well-list.tasks-list
+        %ul.well-list.todos-list
           = render group[1]
-    = paginate @tasks, theme: "gitlab"
+    = paginate @todos, theme: "gitlab"
   - else
-    .nothing-here-block No tasks to show
+    .nothing-here-block No todos to show
 
 :javascript
   new UsersSelect();
