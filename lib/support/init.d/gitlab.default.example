@@ -68,7 +68,7 @@ gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
 # The -pages-domain must be specified the same as in `gitlab.yml > pages > host`.
 # Set `gitlab_pages_enabled=false` if you want to disable the Pages feature.
 gitlab_pages_enabled=true
-gitlab_pages_options="-pages-domain example.com -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8282"
+gitlab_pages_options="-pages-domain example.com -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
 gitlab_pages_log="$app_root/log/gitlab-pages.log"
 
 # mail_room_enabled specifies whether mail_room, which is used to process incoming email, is enabled.
