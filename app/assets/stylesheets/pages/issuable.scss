@@ -161,7 +161,7 @@
   height: 100%;
   transition-duration: .3s;
   background: $gray-light;
-  overflow: scroll;
+  overflow: hidden;
   padding: 10px 20px;
 
   &.right-sidebar-expanded {
