@@ -5,6 +5,15 @@ _**Note:** This feature was [introduced][ee-80] in GitLab EE 8.3_
 If you are looking for ways to upload your static content in GitLab Pages, you
 probably want to read the [user documentation](README.md).
 
+## Changes to GitLab Pages from GitLab 8.4 to 8.5
+
+In GitLab 8.5 we introduced the [gitlab-pages daemon] which is now the
+recommended way to set up GitLab Pages.
+
+The NGINX configs have changed to reflect this change.
+
+[gitlab-pages daemon]: https://gitlab.com/gitlab-org/gitlab-pages
+
 ## Configuration
 
 There are a couple of things to consider before enabling GitLab pages in your
