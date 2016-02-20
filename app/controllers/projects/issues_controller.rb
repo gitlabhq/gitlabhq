@@ -32,6 +32,7 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     @issues = @issues.page(params[:page]).per(PER_PAGE)
+    @label = @project.labels.find_by(title: params[:label_name])
 
     respond_to do |format|
       format.html

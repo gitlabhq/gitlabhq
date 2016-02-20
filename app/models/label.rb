@@ -2,13 +2,14 @@
 #
 # Table name: labels
 #
-#  id         :integer          not null, primary key
-#  title      :string(255)
-#  color      :string(255)
-#  project_id :integer
-#  created_at :datetime
-#  updated_at :datetime
-#  template   :boolean          default(FALSE)
+#  id           :integer          not null, primary key
+#  title        :string(255)
+#  color        :string(255)
+#  project_id   :integer
+#  created_at   :datetime
+#  updated_at   :datetime
+#  template     :boolean          default(FALSE)
+#  description  :string(255)
 #
 
 class Label < ActiveRecord::Base
