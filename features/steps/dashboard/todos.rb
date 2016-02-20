@@ -26,13 +26,13 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I should see todos assigned to me' do
-    expect(page).to have_content 'Todos 4'
+    expect(page).to have_content 'To do 4'
     expect(page).to have_content 'Done 0'
 
     expect(page).to have_link project.name_with_namespace
-    should_see_todo(1, "John Doe assigned merge request ##{merge_request.iid}", merge_request.title)
+    should_see_todo(1, "John Doe assigned you merge request !#{merge_request.iid}", merge_request.title)
     should_see_todo(2, "John Doe mentioned you on issue ##{issue.iid}", "#{current_user.to_reference} Wdyt?")
-    should_see_todo(3, "John Doe assigned issue ##{issue.iid}", issue.title)
+    should_see_todo(3, "John Doe assigned you issue ##{issue.iid}", issue.title)
     should_see_todo(4, "Mary Jane mentioned you on issue ##{issue.iid}", issue.title)
   end
 
@@ -42,9 +42,9 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     end
 
     expect(page).to have_content 'Todo was successfully marked as done.'
-    expect(page).to have_content 'Todos 3'
+    expect(page).to have_content 'To do 3'
     expect(page).to have_content 'Done 1'
-    should_not_see_todo "John Doe assigned merge request ##{merge_request.iid}"
+    should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
   end
 
   step 'I click on the "Done" tab' do
@@ -53,7 +53,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
 
   step 'I should see all todos marked as done' do
     expect(page).to have_link project.name_with_namespace
-    should_see_todo(1, "John Doe assigned merge request ##{merge_request.iid}", merge_request.title, false)
+    should_see_todo(1, "John Doe assigned you merge request !#{merge_request.iid}", merge_request.title, false)
   end
 
   step 'I filter by "Enterprise"' do
@@ -73,7 +73,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I should not see todos' do
-    expect(page).to have_content 'No todos to show'
+    expect(page).to have_content "You're all done!"
   end
 
   step 'I should not see todos related to "Mary Jane" in the list' do
@@ -81,12 +81,12 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I should not see todos related to "Merge Requests" in the list' do
-    should_not_see_todo "John Doe assigned merge request ##{merge_request.iid}"
+    should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
   end
 
   step 'I should not see todos related to "Assignments" in the list' do
-    should_not_see_todo "John Doe assigned merge request ##{merge_request.iid}"
-    should_not_see_todo "John Doe assigned issue ##{issue.iid}"
+    should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
+    should_not_see_todo "John Doe assigned you issue ##{issue.iid}"
   end
 
   def should_see_todo(position, title, body, pending = true)
