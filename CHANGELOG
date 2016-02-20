@@ -72,6 +72,7 @@ v 8.5.0 (unreleased)
   - Allow existing users to auto link their SAML credentials by logging in via SAML
   - Make it possible to erase a build (trace, artifacts) using UI and API
   - Ability to revert changes from a Merge Request or Commit
+  - Emoji comment on diffs are not award emoji
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
