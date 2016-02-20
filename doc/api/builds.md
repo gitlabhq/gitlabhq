@@ -263,21 +263,16 @@ Get build artifacts of a project
 GET /projects/:id/builds/:build_id/artifacts
 ```
 
-### Parameters
-
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| id        | integer | yes      | The ID of a project |
-| build_id  | integer | yes      | The ID of a build   |
-
-### Example of request
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer | yes      | The ID of a project |
+| `build_id` | integer | yes      | The ID of a build   |
 
 ```
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8/artifacts"
 ```
 
-### Response:
-
+Response:
 
 | Status    | Description                     |
 |-----------|---------------------------------|
