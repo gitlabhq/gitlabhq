@@ -375,6 +375,7 @@ class Note < ActiveRecord::Base
   #
   def set_award!
     return unless awards_supported? && contains_emoji_only?
+
     self.is_award = true
     self.note = award_emoji_name
   end
@@ -382,7 +383,7 @@ class Note < ActiveRecord::Base
   private
 
   def awards_supported?
-    noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)
+    (noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)) && !for_diff_line?
   end
 
   def contains_emoji_only?
