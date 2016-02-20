@@ -19,6 +19,32 @@ module TodosHelper
                       todo.project, todo.target], anchor: anchor)
   end
 
+  def todos_filter_params
+    {
+      state:      params[:state],
+      project_id: params[:project_id],
+      author_id:  params[:author_id],
+      type:       params[:type],
+      action_id:  params[:action_id],
+    }
+  end
+
+  def todos_filter_path(options = {})
+    without = options.delete(:without)
+
+    options = todos_filter_params.merge(options)
+
+    if without.present?
+      without.each do |key|
+        options.delete(key)
+      end
+    end
+
+    path = request.path
+    path << "?#{options.to_param}"
+    path
+  end
+
   def todo_actions_options
     actions = [
       OpenStruct.new(id: '', title: 'Any Action'),
