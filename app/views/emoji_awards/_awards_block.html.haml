@@ -1,0 +1,48 @@
+.awards.votes-block{data: { toggle_url: url_for([:toggle_emoji_award, @project.namespace.becomes(Namespace), @project, awardable]) }}
+  - awards_sort(awardable.grouped_awards).each do |emoji, awards|
+    .award{class: (award_active_class(awards, current_user)), title: award_user_list(awards, current_user)}
+      = emoji_icon(emoji)
+      .counter
+        = awards.count
+
+  - if current_user
+    .awards-controls
+      %a.add-award{"href" => "#"}
+        = icon('smile-o')
+      .emoji-menu
+        .emoji-menu-content
+          = text_field_tag :emoji_search, "", class: "emoji-search search-input form-control"
+          - AwardEmoji.emoji_by_category.each do |category, emojis|
+            %h5= AwardEmoji::CATEGORIES[category]
+            %ul
+              - emojis.each do |emoji|
+                %li
+                  = emoji_icon(emoji["name"], emoji["unicode"], emoji["aliases"])
+
+- if current_user
+  :javascript
+    var aliases = #{AwardEmoji.aliases.to_json};
+
+    $(".awards").each(function() {
+      container = $(this)
+      awards_handler = new AwardsHandler(
+        container.data("toggleUrl"),
+        aliases
+      );
+
+      container.data("awardsHandler", awards_handler);
+
+      container.on("click", ".emoji-menu-content li", function(e) {
+        var emoji = $(this).find(".emoji-icon").data("emoji");
+        container.data("awardsHandler").addAward(emoji);
+      });
+
+      container.on("click", ".award", function(e) {
+        var emoji = $(this).find(".icon").data("emoji");
+        container.data("awardsHandler").addAward(emoji);
+      });
+
+      container.find(".award").tooltip();
+    });
+
+    $(".emoji-menu-content").niceScroll({cursorwidth: "7px", autohidemode: false});

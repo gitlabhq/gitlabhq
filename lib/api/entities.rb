@@ -164,11 +164,12 @@ module API
       expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
+      expose :upvotes, :downvotes
     end
 
     class MergeRequest < ProjectEntity
       expose :target_branch, :source_branch
-      expose :upvotes,  :downvotes
+      expose :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
@@ -202,8 +203,8 @@ module API
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
       # upvote? and downvote? are deprecated, always return false
-      expose :upvote?, as: :upvote
-      expose :downvote?, as: :downvote
+      expose(:upvote?) { |note| false }
+      expose(:downvote?) { |note| false }
     end
 
     class MRNote < Grape::Entity

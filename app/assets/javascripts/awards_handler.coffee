@@ -1,5 +1,5 @@
 class @AwardsHandler
-  constructor: (@post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
+  constructor: (@post_emoji_url, @aliases) ->
     $(".add-award").click (event)->
       event.stopPropagation()
       event.preventDefault()
@@ -32,7 +32,7 @@ class @AwardsHandler
         counter = @findEmojiIcon(emoji).siblings(".counter")
         counter.text(parseInt(counter.text()) + 1)
         counter.parent().addClass("active")
-        @addMeToAuthorList(emoji)
+        @addMeToUserList(emoji)
     else
       @createEmoji(emoji)
 
@@ -48,31 +48,31 @@ class @AwardsHandler
     if parseInt(counter.text()) > 1
       counter.text(parseInt(counter.text()) - 1)
       emojiIcon.removeClass("active")
-      @removeMeFromAuthorList(emoji)
+      @removeMeFromUserList(emoji)
     else if emoji == "thumbsup" || emoji == "thumbsdown"
       emojiIcon.tooltip("destroy")
       counter.text(0)
       emojiIcon.removeClass("active")
-      @removeMeFromAuthorList(emoji)
+      @removeMeFromUserList(emoji)
     else
       emojiIcon.tooltip("destroy")
       emojiIcon.remove()
 
-  removeMeFromAuthorList: (emoji) ->
+  removeMeFromUserList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
-    authors = award_block.attr("data-original-title").split(", ")
-    authors.splice(authors.indexOf("me"),1)
-    award_block.closest(".award").attr("data-original-title", authors.join(", "))
+    users = award_block.attr("data-original-title").split(", ")
+    users.splice(users.indexOf("me"),1)
+    award_block.closest(".award").attr("data-original-title", users.join(", "))
     @resetTooltip(award_block)
 
-  addMeToAuthorList: (emoji) ->
+  addMeToUserList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
     origTitle = award_block.attr("data-original-title").trim()
-    authors = []
+    users = []
     if origTitle
-      authors = origTitle.split(', ')
-    authors.push("me")
-    award_block.attr("title", authors.join(", "))
+      users = origTitle.split(', ')
+    users.push("me")
+    award_block.attr("title", users.join(", "))
     @resetTooltip(award_block)
 
   resetTooltip: (award) ->
@@ -109,11 +109,7 @@ class @AwardsHandler
     "emoji-#{unicodeName}"
 
   postEmoji: (emoji, callback) ->
-    $.post @post_emoji_url, { note: {
-      note: ":#{emoji}:"
-      noteable_type: @noteable_type
-      noteable_id: @noteable_id
-    }},(data) ->
+    $.post @post_emoji_url, { name: emoji }, (data) ->
       if data.ok
         callback.call()
 

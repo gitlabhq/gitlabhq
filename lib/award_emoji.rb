@@ -14,7 +14,7 @@ class AwardEmoji
     food_drink: "Food"
   }.with_indifferent_access
 
-  def self.normilize_emoji_name(name)
+  def self.normalize_emoji_name(name)
     aliases[name] || name
   end
 

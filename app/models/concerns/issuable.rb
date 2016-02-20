@@ -9,6 +9,7 @@ module Issuable
   include Participable
   include Mentionable
   include StripAttribute
+  include Awardable
 
   included do
     belongs_to :author, class_name: "User"
@@ -75,29 +76,6 @@ module Issuable
         order_by(method)
       end
     end
-
-    def order_downvotes_desc
-      order_votes_desc('thumbsdown')
-    end
-
-    def order_upvotes_desc
-      order_votes_desc('thumbsup')
-    end
-
-    def order_votes_desc(award_emoji_name)
-      issuable_table = self.arel_table
-      note_table = Note.arel_table
-
-      join_clause = issuable_table.join(note_table, Arel::Nodes::OuterJoin).on(
-        note_table[:noteable_id].eq(issuable_table[:id]).and(
-          note_table[:noteable_type].eq(self.name).and(
-            note_table[:is_award].eq(true).and(note_table[:note].eq(award_emoji_name))
-          )
-        )
-      ).join_sources
-
-      joins(join_clause).group(issuable_table[:id]).reorder("COUNT(notes.id) DESC")
-    end
   end
 
   def today?
@@ -118,14 +96,6 @@ module Issuable
 
   def open?
     opened? || reopened?
-  end
-
-  def downvotes
-    notes.awards.where(note: "thumbsdown").count
-  end
-
-  def upvotes
-    notes.awards.where(note: "thumbsup").count
   end
 
   def subscribed?(user)

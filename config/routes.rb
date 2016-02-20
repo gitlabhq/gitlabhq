@@ -590,6 +590,7 @@ Rails.application.routes.draw do
             post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
+            post :toggle_emoji_award
           end
 
           collection do
@@ -648,6 +649,7 @@ Rails.application.routes.draw do
         resources :issues, constraints: { id: /\d+/ }, except: [:destroy] do
           member do
             post :toggle_subscription
+            post :toggle_emoji_award
           end
           collection do
             post  :bulk_update
@@ -672,10 +674,7 @@ Rails.application.routes.draw do
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
             delete :delete_attachment
-          end
-
-          collection do
-            post :award_toggle
+            post :toggle_emoji_award
           end
         end
 

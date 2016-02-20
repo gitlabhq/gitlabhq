@@ -127,18 +127,18 @@ describe IssuesHelper do
     it { is_expected.to eq("!1, !2, or !3") }
   end
 
-  describe "#note_active_class" do
+  describe "#award_active_class" do
     before do
       @note = create :note
       @note1 = create :note
     end
 
     it "returns empty string for unauthenticated user" do
-      expect(note_active_class(Note.all, nil)).to eq("")
+      expect(award_active_class(Note.all, nil)).to eq("")
     end
 
     it "returns active string for author" do
-      expect(note_active_class(Note.all, @note.author)).to eq("active")
+      expect(award_active_class(Note.all, @note.author)).to eq("active")
     end
   end
 

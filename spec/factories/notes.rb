@@ -29,7 +29,7 @@ FactoryGirl.define do
 
     factory :note_on_commit,             traits: [:on_commit]
     factory :note_on_commit_diff,        traits: [:on_commit, :on_diff]
-    factory :note_on_issue,              traits: [:on_issue], aliases: [:votable_note]
+    factory :note_on_issue,              traits: [:on_issue], aliases: [:awardable_note]
     factory :note_on_merge_request,      traits: [:on_merge_request]
     factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff]
     factory :note_on_project_snippet,    traits: [:on_project_snippet]

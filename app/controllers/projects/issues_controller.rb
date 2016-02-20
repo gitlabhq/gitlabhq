@@ -1,4 +1,6 @@
 class Projects::IssuesController < Projects::ApplicationController
+  include ToggleEmojiAward
+
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :toggle_subscription]
 
@@ -59,7 +61,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def show
     @note = @project.notes.new(noteable: @issue)
-    @notes = @issue.notes.nonawards.with_associations.fresh
+    @notes = @issue.notes.with_associations.fresh
     @noteable = @issue
     @merge_requests = @issue.referenced_merge_requests(current_user)
 
@@ -128,6 +130,8 @@ class Projects::IssuesController < Projects::ApplicationController
                  redirect_old
                end
   end
+
+  alias_method :awardable, :issue
 
   def authorize_update_issue!
     return render_404 unless can?(current_user, :update_issue, @issue)

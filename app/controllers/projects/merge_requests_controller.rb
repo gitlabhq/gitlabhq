@@ -1,4 +1,6 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
+  include ToggleEmojiAward
+
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
@@ -247,6 +249,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
 
+  alias_method :awardable, :merge_request
+
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues
   end
@@ -281,7 +285,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
-    @notes = @merge_request.mr_and_commit_notes.nonawards.inc_author.fresh
+    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
     @discussions = Note.discussions_from_notes(@notes)
     @noteable = @merge_request
 
