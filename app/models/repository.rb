@@ -239,6 +239,10 @@ class Repository
     end
 
     expire_branch_cache(branch_name)
+
+    # This ensures this particular cache is flushed after the first commit to a
+    # new repository.
+    expire_emptiness_caches if empty?
   end
 
   # Expires _all_ caches, including those that would normally only be expired

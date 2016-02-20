@@ -361,6 +361,20 @@ describe Repository, models: true do
 
       repository.expire_cache('master')
     end
+
+    it 'expires the emptiness cache for an empty repository' do
+      expect(repository).to receive(:empty?).and_return(true)
+      expect(repository).to receive(:expire_emptiness_caches)
+
+      repository.expire_cache
+    end
+
+    it 'does not expire the emptiness cache for a non-empty repository' do
+      expect(repository).to receive(:empty?).and_return(false)
+      expect(repository).to_not receive(:expire_emptiness_caches)
+
+      repository.expire_cache
+    end
   end
 
   describe '#expire_root_ref_cache' do
