@@ -2,37 +2,40 @@
 .select2-container, .select2-container.select2-drop-above {
   .select2-choice {
     background: #FFF;
-    border-color: #DDD;
-    height: 36px;
-    padding: 6px $gl-padding;
+    border-color: $input-border;
+    height: 35px;
+    padding: $gl-vert-padding $gl-btn-padding;
     font-size: $gl-font-size;
     line-height: 1.42857143;
 
-    @include border-radius(2px);
+    @include border-radius($input-border-radius);
 
     .select2-arrow {
-      background: #FFF;
-      border-left: none;
-      padding-top: 5px;
+      width: auto;
+      background-image: none;
+      background-color: transparent;
+      border: none;
+      top: calc(50% - 12px);
+      right: 8px;
+
+      b {
+        @extend .caret;
+        color: $gray-darkest;
+      }
     }
 
     .select2-chosen {
-      color: $gl-text-color;
+      margin-right: 15px;
     }
 
-    &.select2-default {
-      .select2-chosen {
-        color: #999;
-      }
+
+    &:hover {
+      background-color: $gray-dark;
+      border-color: $border-white-normal;
+      color: #313236;
     }
   }
 }
-
-.select2-container .select2-choice, .select2-container.select2-drop-above .select2-choice{
-  color: #7f8fa4;
-  border: 1px solid #e7e9ed;
-}
-
 
 .select2-drop {
   @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
@@ -61,9 +64,8 @@
 
 .select2-container-multi {
   .select2-choices {
-    @include border-radius(2px);
+    @include border-radius($input-border-radius);
     border-color: $input-border;
-    background: white;
     padding-left: $gl-padding / 2;
 
     .select2-search-field input {
@@ -76,7 +78,6 @@
 
     .select2-search-choice {
       margin: 8px 0 0 8px;
-      background: white;
       box-shadow: none;
       border-color: $input-border;
       color: $gl-text-color;
@@ -93,6 +94,22 @@
   }
 }
 
+.select2-container-active {
+  .select2-choice, .select2-choices {
+    @include box-shadow(none);
+  }
+}
+
+.select2-dropdown-open {
+  .select2-choice, .select2-choices {
+    outline: 0;
+    background-image: none;
+    border-color: #d6dae2;
+    background-color: $white-dark;
+    @include box-shadow (inset 0 0 4px rgba(0, 0, 0, 0.12));
+  }
+}
+
 .select2-drop-active {
   border: 1px solid #BBB !important;
   margin-top: 4px;
@@ -102,17 +119,20 @@
     margin-bottom: 8px;
   }
 
-  .select2-search input {
-    background: #fafafa;
-    border-color: #DDD;
-  }
-
   .select2-results {
     max-height: 350px;
     .select2-highlighted {
       background: $gl-primary;
     }
   }
+}
+
+.select2-search input {
+  background: #fff image-url('select2.png') no-repeat 99% -22px;
+}
+
+.select2-search input.select2-active {
+  background: #fff image-url('select2-spinner.gif') no-repeat 99%;
 }
 
 .select2-container {

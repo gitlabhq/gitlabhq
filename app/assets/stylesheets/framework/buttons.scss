@@ -68,6 +68,8 @@
   @include btn-default;
   @include btn-white;
 
+  color: $gl-text-color;
+
   &.btn-small,
   &.btn-sm {
     padding: 4px 10px;
@@ -129,6 +131,11 @@
   }
   &.disabled {
     pointer-events: auto !important;
+  }
+
+  .caret {
+    margin-left: 5px;
+    color: $gray-darkest;
   }
 }
 
