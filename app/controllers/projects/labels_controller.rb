@@ -69,7 +69,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def label_params
-    params.require(:label).permit(:title, :color)
+    params.require(:label).permit(:title, :description, :color)
   end
 
   def label
