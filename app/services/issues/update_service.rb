@@ -5,7 +5,7 @@ module Issues
     end
 
     def handle_changes(issue, options = {})
-      if have_changes?(issue, options)
+      if has_changes?(issue, options)
         task_service.mark_pending_tasks_as_done(issue, current_user)
       end
 

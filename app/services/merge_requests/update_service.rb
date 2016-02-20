@@ -15,7 +15,7 @@ module MergeRequests
     end
 
     def handle_changes(merge_request, options = {})
-      if have_changes?(merge_request, options)
+      if has_changes?(merge_request, options)
         task_service.mark_pending_tasks_as_done(merge_request, current_user)
       end
 

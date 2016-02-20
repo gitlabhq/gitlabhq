@@ -71,7 +71,7 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def have_changes?(issuable, options = {})
+  def has_changes?(issuable, options = {})
     valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
 
     attrs_changed = valid_attrs.any? do |attr|
