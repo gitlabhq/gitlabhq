@@ -6,7 +6,7 @@
     %li{class: ('active' if params[:state].blank? || params[:state] == 'pending')}
       = link_to page_filter_path(state: 'pending') do
         %span
-          Todos
+          To do
         %span{class: 'badge'}
           = todos_pending_count
     %li{class: ('active' if params[:state] == 'done')}
