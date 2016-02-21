@@ -23,11 +23,20 @@ class GeoNode < ActiveRecord::Base
   validates :schema, inclusion: %w(http https)
 
   def uri
-    URI.parse("#{schema}://#{host}:#{port}/#{relative_url_root}")
+    relative_url = relative_url_root[0] == '/' ? relative_url_root[1..-1] : relative_url_root
+    URI.parse("#{schema}://#{host}:#{port}/#{relative_url}")
   end
 
   def url
     uri.to_s
+  end
+
+  def url=(new_url)
+    new_uri = URI.parse(new_url)
+    self.schema = new_uri.scheme
+    self.host = new_uri.host
+    self.port = new_uri.port
+    self.relative_url_root = new_uri.path
   end
 
   def notify_url
