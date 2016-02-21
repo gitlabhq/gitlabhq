@@ -15,6 +15,27 @@ If you are looking for ways to upload your static content in GitLab Pages, you
 probably want to read the [user documentation](README.md).
 
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
+[ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
+
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Architecture](#architecture)
+- [Configuration](#configuration)
+    - [DNS configuration](#dns-configuration)
+    - [Omnibus package installations](#omnibus-package-installations)
+    - [Installations from source](#installations-from-source)
+    - [Running GitLab Pages with HTTPS](#running-gitlab-pages-with-https)
+- [Set maximum pages size](#set-maximum-pages-size)
+- [Change storage path](#change-storage-path)
+- [Backup](#backup)
+- [Security](#security)
+- [Changelog](#changelog)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Architecture
 
