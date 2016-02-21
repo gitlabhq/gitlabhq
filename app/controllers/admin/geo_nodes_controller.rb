@@ -2,10 +2,14 @@ class Admin::GeoNodesController < Admin::ApplicationController
   def index
     @nodes = GeoNode.all
     @node = GeoNode.new
+    @node.build_geo_node_key
   end
 
   def create
-    @node = GeoNode.new(geo_node_params)
+    @node = GeoNode.new
+    @node.build_geo_node_key
+    @node.attributes = geo_node_params
+    @node.geo_node_key.title = "Geo node: #{@node.url}"
 
     if @node.save
       redirect_to admin_geo_nodes_path, notice: 'Node was successfully created.'
@@ -23,6 +27,6 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def geo_node_params
-    params.require(:geo_node).permit(:url, :host, :port, :primary, :relative_url_root, :schema)
+    params.require(:geo_node).permit(:url, :primary, geo_node_key_attributes: [:key])
   end
 end

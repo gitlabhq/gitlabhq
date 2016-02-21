@@ -18,6 +18,8 @@ class GeoNode < ActiveRecord::Base
   default_value_for :relative_url_root, ''
   default_value_for :primary, false
 
+  accepts_nested_attributes_for :geo_node_key
+
   validates :host, host: true, presence: true, uniqueness: { case_sensitive: false, scope: :port }
   validates :primary, uniqueness: { message: 'primary node already exists' }, if: :primary
   validates :schema, inclusion: %w(http https)
