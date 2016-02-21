@@ -43,8 +43,8 @@ module Banzai
         # Allow any protocol in `a` elements...
         whitelist[:protocols].delete('a')
 
-        # ...but then remove links with the `javascript` protocol
-        whitelist[:transformers].push(remove_javascript_links)
+        # ...but then remove links with unsafe protocols
+        whitelist[:transformers].push(remove_unsafe_links)
 
         # Remove `rel` attribute from `a` elements
         whitelist[:transformers].push(remove_rel)
@@ -55,14 +55,14 @@ module Banzai
         whitelist
       end
 
-      def remove_javascript_links
+      def remove_unsafe_links
         lambda do |env|
           node = env[:node]
 
           return unless node.name == 'a'
           return unless node.has_attribute?('href')
 
-          if node['href'].start_with?('javascript', ':javascript')
+          if node['href'].start_with?('javascript', ':javascript', 'data')
             node.remove_attribute('href')
           end
         end
