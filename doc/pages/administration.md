@@ -13,9 +13,13 @@ probably want to read the [user documentation](README.md).
 
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
 
-The NGINX configs have changed to reflect this change.
+## Architecture
 
-[gitlab-pages daemon]: https://gitlab.com/gitlab-org/gitlab-pages
+GitLab uses a separate tool ([gitlab-pages]), a simple HTTP server written in
+Go that serves GitLab Pages with CNAMEs and SNI using HTTP/HTTP2. You are
+encouraged to read its [README][pages-readme] to fully understand how it works.
+
+[pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
 
 ## Configuration
 
