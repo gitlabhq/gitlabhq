@@ -212,8 +212,9 @@ than GitLab to prevent XSS attacks.
 
 GitLab Pages were first introduced in GitLab EE 8.3. Since then, many features
 where added, like custom CNAME and TLS support, and many more are likely to
-come. Below is a brief changelog. If no changes were introduced, assume that
-the documentation is the same as the previous version(s).
+come. Below is a brief changelog. If no changes were introduced or a version is
+missing from the changelog, assume that the documentation is the same as the
+latest previous version.
 
 ---
 
