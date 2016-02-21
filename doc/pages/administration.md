@@ -1,14 +1,17 @@
 # GitLab Pages Administration
 
-_**Note:** This feature was [introduced][ee-80] in GitLab EE 8.3_
+> **Note:**
+This feature was [introduced][ee-80] in GitLab EE 8.3.
+
+This document describes how to set up the _latest_ GitLab Pages feature. Make
+sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
+version as it may include new features and changes needed to be made in your
+configuration.
 
 If you are looking for ways to upload your static content in GitLab Pages, you
 probably want to read the [user documentation](README.md).
 
-## Changes to GitLab Pages from GitLab 8.4 to 8.5
-
-In GitLab 8.5 we introduced the [gitlab-pages daemon] which is now the
-recommended way to set up GitLab Pages.
+[ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
 
 The NGINX configs have changed to reflect this change.
 
@@ -177,5 +180,39 @@ Pages are part of the regular backup so there is nothing to configure.
 You should strongly consider running GitLab pages under a different hostname
 than GitLab to prevent XSS attacks.
 
-[ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
-[wiki-wildcard-dns]: https://en.wikipedia.org/wiki/Wildcard_DNS_record
+## Changelog
+
+GitLab Pages were first introduced in GitLab EE 8.3. Since then, many features
+where added, like custom CNAME and TLS support, and many more are likely to
+come. Below is a brief changelog. If no changes were introduced, assume that
+the documentation is the same as the previous version(s).
+
+---
+
+**GitLab 8.5 ([documentation][8-5-docs])**
+
+- In GitLab 8.5 we introduced the [gitlab-pages][] daemon which is now the
+  recommended way to set up GitLab Pages.
+- The [NGINX configs][] have changed to reflect this change. So make sure to
+  update them.
+- Custom CNAME and TLS certificates support
+
+[8-5-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/doc/pages/administration.md
+[gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.0
+[NGINX configs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/8-5-stable-ee/lib/support/nginx
+
+---
+
+**GitLab 8.4**
+
+No new changes.
+
+---
+
+**GitLab 8.3 ([documentation][8-3-docs])**
+
+- GitLab Pages feature was introduced.
+
+[8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
+
+---
