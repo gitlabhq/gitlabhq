@@ -23,12 +23,16 @@ probably want to read the [user documentation](README.md).
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Architecture](#architecture)
+- [The GitLab Pages daemon](#the-gitlab-pages-daemon)
+    - [Install the Pages daemon](#install-the-pages-daemon)
 - [Configuration](#configuration)
+    - [Configuration scenarios](#configuration-scenarios)
     - [DNS configuration](#dns-configuration)
-    - [Omnibus package installations](#omnibus-package-installations)
-    - [Installations from source](#installations-from-source)
+- [Custom domains without TLS](#custom-domains-without-tls)
+- [Custom domains with TLS](#custom-domains-with-tls)
+- [Installations from source](#installations-from-source)
     - [Running GitLab Pages with HTTPS](#running-gitlab-pages-with-https)
+- [Omnibus package installations](#omnibus-package-installations)
 - [Set maximum pages size](#set-maximum-pages-size)
 - [Change storage path](#change-storage-path)
 - [Backup](#backup)
