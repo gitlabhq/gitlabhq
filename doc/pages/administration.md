@@ -37,11 +37,52 @@ probably want to read the [user documentation](README.md).
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Architecture
+## The GitLab Pages daemon
 
-GitLab uses a separate tool ([gitlab-pages]), a simple HTTP server written in
-Go that serves GitLab Pages with CNAMEs and SNI using HTTP/HTTP2. You are
-encouraged to read its [README][pages-readme] to fully understand how it works.
+Starting from GitLab EE 8.5, Pages make use of a separate tool ([gitlab-pages]),
+a simple HTTP server written in Go that serves GitLab Pages with CNAMEs and SNI
+using HTTP/HTTP2. You are encouraged to read its [README][pages-readme] to fully
+understand how it works.
+
+What is supported when using the pages daemon:
+
+- Multiple domains per-project
+- One TLS certificate per-domain
+  - Validation of certificate
+  - Validation of certificate chain
+  - Validation of private key against certificate
+
+---
+
+In the case of custom domains, the Pages daemon needs to listen on ports `80`
+and/or `443`. For that reason, there is some flexibility in the way which you
+can set it up, so you basically have three choices:
+
+1. Run the pages daemon in the same server as GitLab, listening on a secondary IP
+1. Run the pages daemon in the same server as GitLab, listening on the same IP
+   but on different ports. In that case, you will have to proxy the traffic with
+   a loadbalancer.
+1. Run the pages daemon in a separate server. In that case, the Pages [`path`]
+   must also be present in the server that the pages daemon is installed, so
+   you will have to share it via network.
+
+[`path`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/config/gitlab.yml.example#L155
+
+### Install the Pages daemon
+
+**Install the Pages daemon on a source installation**
+
+```
+cd /home/git
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
+cd gitlab-pages
+sudo -u git -H git checkout 0.2.0
+sudo -u git -H make
+```
+
+**Install the Pages daemon on Omnibus**
+
+The `gitlab-pages` daemon is included in the Omnibus package.
 
 [pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
 
