@@ -13,6 +13,7 @@ table.code {
 
   td {
     line-height: $code_line_height;
+    font-family: $monospace_font;
     font-size: $code_font_size;
   }
 
