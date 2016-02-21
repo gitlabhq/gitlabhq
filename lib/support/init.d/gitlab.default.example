@@ -47,9 +47,9 @@ gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
 gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080 -authSocket $socket_path/gitlab.socket -documentRoot $app_root/public"
 gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
 
-# The GitLab Pages Daemon needs to use a separate IP address on which it will
-# listen. You can also use different ports than 80 or 443 that will be
-# forwarded to GitLab Pages Daemon.
+# The GitLab Pages Daemon needs either a separate IP address on which it will
+# listen or use different ports than 80 or 443 that will be forwarded to GitLab
+# Pages Daemon.
 #
 # To enable HTTP support for custom domains add the `-listen-http` directive
 # in `gitlab_pages_options` below.
@@ -66,8 +66,8 @@ gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
 #   -listen-https 1.1.1.1:443 -root-cert /path/to/example.com.crt -root-key /path/to/example.com.key
 #
 # The -pages-domain must be specified the same as in `gitlab.yml > pages > host`.
-# Set `gitlab_pages_enabled=false` if you want to disable the Pages feature.
-gitlab_pages_enabled=true
+# Set `gitlab_pages_enabled=true` if you want to enable the Pages feature.
+gitlab_pages_enabled=false
 gitlab_pages_options="-pages-domain example.com -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
 gitlab_pages_log="$app_root/log/gitlab-pages.log"
 
