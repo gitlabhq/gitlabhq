@@ -20,6 +20,8 @@ module Gitlab
           actor
         when DeployKey
           nil
+        when GeoNodeKey
+          nil
         when Key
           actor.user
         end
@@ -27,6 +29,10 @@ module Gitlab
 
     def deploy_key
       actor if actor.is_a?(DeployKey)
+    end
+
+    def geo_node_key
+      actor if actor.is_a?(GeoNodeKey)
     end
 
     def can_push_to_branch?(ref)
@@ -44,6 +50,8 @@ module Gitlab
         user.can?(:read_project, project)
       elsif deploy_key
         deploy_key.projects.include?(project)
+      elsif geo_node_key
+        true
       else
         false
       end
@@ -77,7 +85,7 @@ module Gitlab
     def download_access_check
       if user
         user_download_access_check
-      elsif deploy_key
+      elsif deploy_key || geo_node_key
         build_status_object(true)
       else
         raise 'Wrong actor'

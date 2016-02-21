@@ -115,6 +115,9 @@ FactoryGirl.define do
     factory :deploy_key, class: 'DeployKey' do
     end
 
+    factory :geo_node_key, class: 'GeoNodeKey' do
+    end
+
     factory :personal_key do
       user
     end

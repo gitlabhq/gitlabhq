@@ -11,6 +11,8 @@
 #
 
 class GeoNode < ActiveRecord::Base
+  belongs_to :geo_node_key
+
   default_value_for :schema, 'http'
   default_value_for :port, 80
   default_value_for :relative_url_root, ''

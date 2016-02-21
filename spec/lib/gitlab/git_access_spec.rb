@@ -125,6 +125,17 @@ describe Gitlab::GitAccess, lib: true do
         it { expect(subject.allowed?).to be_truthy }
       end
     end
+
+    describe 'geo node key permissions' do
+      let(:key) { build(:geo_node_key) }
+      let(:actor) { key }
+
+      context 'pull code' do
+        subject { access.download_access_check }
+
+        it { expect(subject.allowed?).to be_truthy }
+      end
+    end
   end
 
   describe 'push_access_check' do
