@@ -33,7 +33,7 @@ probably want to read the [user documentation](README.md).
     - [Custom domains without HTTPS support](#custom-domains-without-https-support)
     - [Wildcard HTTP domain without custom domains](#wildcard-http-domain-without-custom-domains)
     - [Wildcard HTTPS domain without custom domains](#wildcard-https-domain-without-custom-domains)
-- [NGINX caveats](#nginx-caveats)
+- [NGINX configuration](#nginx-configuration)
 - [Set maximum pages size](#set-maximum-pages-size)
 - [Change storage path](#change-storage-path)
 - [Backup](#backup)
@@ -206,7 +206,7 @@ Below are the four scenarios that are described in
     sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
     ```
 
-    Make sure to [properly edit the config](#nginx-caveats) to add your domain
+    Make sure to [properly edit the config](#nginx-configuration) to add your domain
     as well as correctly point to the right location of the SSL certificate
     files. Restart Nginx for the changes to take effect.
 
@@ -249,14 +249,14 @@ Below are the four scenarios that are described in
     gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 1.1.1.1:80"
     ```
 
-1. Copy the `gitlab-pages-ssl` Nginx configuration file:
+1. Copy the `gitlab-pages` Nginx configuration file:
 
     ```bash
-    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
-    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
+    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages.conf
+    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
     ```
 
-    Make sure to [properly edit the config](#nginx-caveats) to add your domain.
+    Make sure to [properly edit the config](#nginx-configuration) to add your domain.
     Restart Nginx for the changes to take effect.
 
 1. [Restart GitLab][restart]
@@ -298,7 +298,7 @@ Below are the four scenarios that are described in
     sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
     ```
 
-    Make sure to [properly edit the config](#nginx-caveats) to add your domain.
+    Make sure to [properly edit the config](#nginx-configuration) to add your domain.
     Restart Nginx for the changes to take effect.
 
 1. [Restart GitLab][restart]
@@ -340,7 +340,7 @@ Below are the four scenarios that are described in
     sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
     ```
 
-    Make sure to [properly edit the config](#nginx-caveats) to add your domain
+    Make sure to [properly edit the config](#nginx-configuration) to add your domain
     as well as correctly point to the right location of the SSL certificate
     files. Restart Nginx for the changes to take effect.
 
@@ -364,7 +364,7 @@ Below are the four scenarios that are described in
 
 1. [Reconfigure GitLab][reconfigure]
 
-## NGINX caveats
+## NGINX configuration
 
 Be extra careful when setting up the domain name in the NGINX config. You must
 not remove the backslashes.
