@@ -1,5 +1,5 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
-  before_filter :find_todos, only: [:index, :destroy_all]
+  before_action :find_todos, only: [:index, :destroy_all]
 
   def index
     @todos = @todos.page(params[:page]).per(PER_PAGE)
