@@ -88,18 +88,40 @@ The `gitlab-pages` daemon is included in the Omnibus package.
 
 ## Configuration
 
-There are a couple of things to consider before enabling GitLab pages in your
-GitLab EE instance.
+There are multiple ways to set up GitLab Pages according to what URL scheme you
+are willing to support. Below you will find all possible scenarios to choose
+from.
 
-1. You need to properly configure your DNS to point to the domain that pages
-   will be served
-1. Pages use a separate Nginx configuration file which needs to be explicitly
-   added in the server under which GitLab EE runs
-1. Optionally but recommended, you can add some
-   [shared runners](../ci/runners/README.md) so that your users don't have to
-   bring their own.
+### Configuration scenarios
 
-Both of these settings are described in detail in the sections below.
+Before proceeding you have to decide what Pages scenario you want to use.
+Remember that in either scenario, you need:
+
+1. A separate domain
+1. A separate Nginx configuration file which needs to be explicitly added in
+   the server under which GitLab EE runs (Omnibus does that automatically)
+1. (Optional) A wildcard certificate for that domain if you decide to serve
+   pages under HTTPS
+1. (Optional but recommended) [Shared runners](../ci/runners/README.md) so that
+   your users don't have to bring their own.
+
+The possible scenarios are depicted in the table below.
+
+| URL scheme | Option | Wildcard certificate | Pages daemon | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
+| --- |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| `http://page.gitlab.io`  | 1 | no  | no | no | no | no |
+| `https://page.gitlab.io` | 1 | yes | no | no | no | no |
+| `http://page.gitlab.io` and `http://page.com`   | 2 | no  | yes | yes    | no  | yes |
+| `https://page.gitlab.io` and `https://page.com` | 2 | yes | yes | yes/no | yes | yes |
+
+As you see from the table above, each URL scheme comes with an option:
+
+1. Pages enabled, daemon is enabled and NGINX will proxy all requests to the
+   daemon. Pages daemon doesn't listen to the outside world.
+1. Pages enabled, daemon is enabled AND pages has external IP support enabled.
+   In that case, the pages daemon is running, NGINX still proxies requests to
+   the daemon but the daemon is also able to receive requests from the outside
+   world. Custom domains and TLS are supported.
 
 ### DNS configuration
 
