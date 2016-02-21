@@ -44,17 +44,21 @@ probably want to read the [user documentation](README.md).
 ## The GitLab Pages daemon
 
 Starting from GitLab EE 8.5, Pages make use of a separate tool ([gitlab-pages]),
-a simple HTTP server written in Go that serves GitLab Pages with CNAMEs and SNI
-using HTTP/HTTP2. You are encouraged to read its [README][pages-readme] to fully
-understand how it works.
+a simple HTTP server written in Go that can listen on an external IP address
+and provide support for custom domains and custom certificates. The GitLab
+Pages Daemon supports dynamic certificates through SNI and exposes pages using
+HTTP2 by default.
 
-What is supported when using the pages daemon:
+Here is a brief list with what it is supported when using the pages daemon:
 
 - Multiple domains per-project
 - One TLS certificate per-domain
   - Validation of certificate
   - Validation of certificate chain
   - Validation of private key against certificate
+
+You are encouraged to read its [README][pages-readme] to fully understand how
+it works.
 
 ---
 
