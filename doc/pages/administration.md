@@ -28,11 +28,12 @@ probably want to read the [user documentation](README.md).
 - [Configuration](#configuration)
     - [Configuration scenarios](#configuration-scenarios)
     - [DNS configuration](#dns-configuration)
-- [Custom domains without TLS](#custom-domains-without-tls)
-- [Custom domains with TLS](#custom-domains-with-tls)
-- [Wildcard HTTPS domain without custom domains](#wildcard-https-domain-without-custom-domains)
-- [Wildcard HTTP domain without custom domains](#wildcard-http-domain-without-custom-domains)
-- [Omnibus package installations](#omnibus-package-installations)
+- [Setting up GitLab Pages](#setting-up-gitlab-pages)
+    - [Custom domains with HTTPS support](#custom-domains-with-https-support)
+    - [Custom domains without HTTPS support](#custom-domains-without-https-support)
+    - [Wildcard HTTP domain without custom domains](#wildcard-http-domain-without-custom-domains)
+    - [Wildcard HTTPS domain without custom domains](#wildcard-https-domain-without-custom-domains)
+- [NGINX caveats](#nginx-caveats)
 - [Set maximum pages size](#set-maximum-pages-size)
 - [Change storage path](#change-storage-path)
 - [Backup](#backup)
@@ -145,62 +146,25 @@ you need to add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
 ```
-*.example.com. 60 IN A 1.2.3.4
+*.example.io. 1800 IN A 1.2.3.4
 ```
 
-where `example.com` is the domain under which GitLab Pages will be served
+where `example.io` is the domain under which GitLab Pages will be served
 and `1.2.3.4` is the IP address of your GitLab instance.
 
 You should not use the GitLab domain to serve user pages. For more information
 see the [security section](#security).
 
-### Omnibus package installations
+[wiki-wildcard-dns]: https://en.wikipedia.org/wiki/Wildcard_DNS_record
 
-## Custom domains without TLS
+## Setting up GitLab Pages
 
-1. [Install the pages daemon](#install-the-pages-daemon)
-1. Edit `gitlab.yml` to look like the example below. You need to change the
-   `host` to the FQDN under which GitLab Pages will be served. Set
-   `external_http` to the secondary IP on which the pages daemon will listen
-   for connections:
+Below are the four scenarios that are described in
+[#configuration-scenarios](#configuration-scenarios).
 
-     ```yaml
-     pages:
-       enabled: true
-       # The location where pages are stored (default: shared/pages).
-       # path: shared/pages
+### Custom domains with HTTPS support
 
-       host: example.io
-       port: 80
-       https: false
-
-       external_http: 1.1.1.1:80
-     ```
-
-1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
-   order to enable the pages daemon. In `gitlab_pages_options` the
-   `-pages-domain` and `-listen-http` must match the `host` and `external_http`
-   settings that you set above respectively:
-
-    ```
-    gitlab_pages_enabled=true
-    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 1.1.1.1:80"
-    ```
-
-1. Copy the `gitlab-pages-ssl` Nginx configuration file:
-
-    ```bash
-    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
-    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
-    ```
-
-    Make sure to edit the config to add your domain as well as correctly point
-    to the right location of the SSL certificate files. Restart Nginx for the
-    changes to take effect.
-
-1. [Restart GitLab](../../administration/restart_gitlab.md)
-
-## Custom domains with TLS
+**Source installations:**
 
 1. [Install the pages daemon](#install-the-pages-daemon)
 1. Edit `gitlab.yml` to look like the example below. You need to change the
@@ -242,14 +206,70 @@ see the [security section](#security).
     sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
     ```
 
-    Make sure to edit the config to add your domain as well as correctly point
-    to the right location of the SSL certificate files. Restart Nginx for the
-    changes to take effect.
+    Make sure to [properly edit the config](#nginx-caveats) to add your domain
+    as well as correctly point to the right location of the SSL certificate
+    files. Restart Nginx for the changes to take effect.
 
-1. [Restart GitLab](../../administration/restart_gitlab.md)
+1. [Restart GitLab][restart]
 
-## Wildcard HTTPS domain without custom domains
+---
 
+**Omnibus installations:**
+
+### Custom domains without HTTPS support
+
+**Source installations:**
+
+1. [Install the pages daemon](#install-the-pages-daemon)
+1. Edit `gitlab.yml` to look like the example below. You need to change the
+   `host` to the FQDN under which GitLab Pages will be served. Set
+   `external_http` to the secondary IP on which the pages daemon will listen
+   for connections:
+
+     ```yaml
+     pages:
+       enabled: true
+       # The location where pages are stored (default: shared/pages).
+       # path: shared/pages
+
+       host: example.io
+       port: 80
+       https: false
+
+       external_http: 1.1.1.1:80
+     ```
+
+1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
+   order to enable the pages daemon. In `gitlab_pages_options` the
+   `-pages-domain` and `-listen-http` must match the `host` and `external_http`
+   settings that you set above respectively:
+
+    ```
+    gitlab_pages_enabled=true
+    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 1.1.1.1:80"
+    ```
+
+1. Copy the `gitlab-pages-ssl` Nginx configuration file:
+
+    ```bash
+    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
+    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
+    ```
+
+    Make sure to [properly edit the config](#nginx-caveats) to add your domain.
+    Restart Nginx for the changes to take effect.
+
+1. [Restart GitLab][restart]
+
+---
+
+**Omnibus installations:**
+
+### Wildcard HTTP domain without custom domains
+
+**Source installations:**
+
+1. [Install the pages daemon](#install-the-pages-daemon)
 1. Go to the GitLab installation directory:
 
      ```bash
@@ -266,12 +286,9 @@ see the [security section](#security).
        # The location where pages are stored (default: shared/pages).
        # path: shared/pages
 
-       # The domain under which the pages are served:
-       # http://group.example.com/project
-       # or project path can be a group page: group.example.com
-       host: example.com
-       port: 80 # Set to 443 if you serve the pages with HTTPS
-       https: false # Set to true if you serve the pages with HTTPS
+       host: example.io
+       port: 80
+       https: false
      ```
 
 1. Make sure you have copied the new `gitlab-pages` Nginx configuration file:
@@ -281,39 +298,27 @@ see the [security section](#security).
     sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
     ```
 
-    Don't forget to add your domain name in the Nginx config. For example if
-    your GitLab pages domain is `example.com`, replace
+    Make sure to [properly edit the config](#nginx-caveats) to add your domain.
+    Restart Nginx for the changes to take effect.
 
-    ```bash
-    server_name ~^(?<group>.*)\.YOUR_GITLAB_PAGES\.DOMAIN$;
+1. [Restart GitLab][restart]
+
+---
+
+**Omnibus installations:**
+
+1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    pages_external_url 'http://example.io'
     ```
+1. [Reconfigure GitLab][reconfigure]
 
-    with
+### Wildcard HTTPS domain without custom domains
 
-    ```
-    server_name ~^(?<group>.*)\.example\.com$;
-    ```
+**Source installations:**
 
-    You must be extra careful to not remove the backslashes. If you are using
-    a subdomain, make sure to escape all dots (`.`) with a backslash (\).
-    For example `pages.example.com` would be:
-
-    ```
-    server_name ~^(?<group>.*)\.pages\.example\.com$;
-    ```
-
-1. Restart Nginx and GitLab:
-
-    ```bash
-    sudo service nginx restart
-    sudo service gitlab restart
-    ```
-
-### Running GitLab Pages with HTTPS
-
-If you want the pages to be served under HTTPS, a wildcard SSL certificate is
-required.
-
+1. [Install the pages daemon](#install-the-pages-daemon)
 1. In `gitlab.yml`, set the port to `443` and https to `true`:
 
      ```bash
@@ -323,24 +328,65 @@ required.
        # The location where pages are stored (default: shared/pages).
        # path: shared/pages
 
-       # The domain under which the pages are served:
-       # http://group.example.com/project
-       # or project path can be a group page: group.example.com
-       host: example.com
-       port: 443 # Set to 443 if you serve the pages with HTTPS
-       https: true # Set to true if you serve the pages with HTTPS
+       host: example.io
+       port: 443
+       https: true
      ```
 
 1. Copy the `gitlab-pages-ssl` Nginx configuration file:
 
     ```bash
     sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
-    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages.conf
+    sudo ln -sf /etc/nginx/sites-{available,enabled}/gitlab-pages-ssl.conf
     ```
 
-    Make sure to edit the config to add your domain as well as correctly point
-    to the right location of the SSL certificate files. Restart Nginx for the
-    changes to take effect.
+    Make sure to [properly edit the config](#nginx-caveats) to add your domain
+    as well as correctly point to the right location of the SSL certificate
+    files. Restart Nginx for the changes to take effect.
+
+---
+
+**Omnibus installations:**
+
+1. Place the certificate and key inside `/etc/gitlab/ssl`
+1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
+
+    ```ruby
+    pages_external_url 'https://example.io'
+
+    pages_nginx['redirect_http_to_https'] = true
+    pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/pages-nginx.crt"
+    pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/pages-nginx.key"
+    ```
+
+    where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
+    respectively.
+
+1. [Reconfigure GitLab][reconfigure]
+
+## NGINX caveats
+
+Be extra careful when setting up the domain name in the NGINX config. You must
+not remove the backslashes.
+
+If your GitLab pages domain is `example.io`, replace:
+
+```bash
+server_name ~^(?<group>.*)\.YOUR_GITLAB_PAGES\.DOMAIN$;
+```
+
+with:
+
+```
+server_name ~^(?<group>.*)\.example\.io$;
+```
+
+If you are using a subdomain, make sure to escape all dots (`.`) with a
+backslash (\). For example `pages.example.io` would be:
+
+```
+server_name ~^(?<group>.*)\.pages\.example\.io$;
+```
 
 ## Set maximum pages size
 
@@ -413,3 +459,6 @@ No new changes.
 [8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
 
 ---
+
+[reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: ../../administration/restart_gitlab.md#installations-from-source
