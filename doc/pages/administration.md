@@ -108,25 +108,26 @@ from.
 
 ### Configuration scenarios
 
-Before proceeding you have to decide what Pages scenario you want to use.
-Remember that in either scenario, you need:
+Before proceeding with setting up GitLab Pages, you have to decide which route
+you want to take. Note that in either scenario, you need:
 
+1. To use the [GitLab Pages daemon](#the-gitlab-pages-daemon)
 1. A separate domain
 1. A separate Nginx configuration file which needs to be explicitly added in
    the server under which GitLab EE runs (Omnibus does that automatically)
 1. (Optional) A wildcard certificate for that domain if you decide to serve
    pages under HTTPS
 1. (Optional but recommended) [Shared runners](../ci/runners/README.md) so that
-   your users don't have to bring their own.
+   your users don't have to bring their own
 
 The possible scenarios are depicted in the table below.
 
-| URL scheme | Option | Wildcard certificate | Pages daemon | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
+| URL scheme | Option | Wildcard certificate | Custom domain with HTTP support | Custom domain with HTTPS support | Secondary IP |
 | --- |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| `http://page.gitlab.io`  | 1 | no  | no | no | no | no |
-| `https://page.gitlab.io` | 1 | yes | no | no | no | no |
-| `http://page.gitlab.io` and `http://page.com`   | 2 | no  | yes | yes    | no  | yes |
-| `https://page.gitlab.io` and `https://page.com` | 2 | yes | yes | yes/no | yes | yes |
+| `http://page.example.io`  | 1 | no  |  no | no | no |
+| `https://page.example.io` | 1 | yes |  no | no | no |
+| `http://page.example.io` and `http://page.com`   | 2 | no  |  yes    | no  | yes |
+| `https://page.example.io` and `https://page.com` | 2 | yes |  redirects to HTTPS | yes | yes |
 
 As you see from the table above, each URL scheme comes with an option:
 
