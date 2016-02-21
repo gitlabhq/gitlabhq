@@ -1,7 +1,10 @@
 # GitLab Pages Administration
 
 > **Note:**
-This feature was [introduced][ee-80] in GitLab EE 8.3.
+> This feature was first [introduced][ee-80] in GitLab EE 8.3.
+> Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
+
+---
 
 This document describes how to set up the _latest_ GitLab Pages feature. Make
 sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
