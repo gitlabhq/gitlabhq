@@ -20,9 +20,13 @@
       = f.text_field :url, class: 'form-control'
   = f.fields_for :geo_node_key, @node.geo_node_key do |fg|
     .form-group
-      = fg.label :key, 'Public Key', class: 'control-label'
+      = fg.label :key, 'Public Key:', class: 'control-label'
       .col-sm-10
-        = fg.text_area :key, class: 'form-control'
+        = fg.text_area :key, class: 'form-control thin_area', rows: 5
+        %p.help-block
+          Paste a machine public key here for the gitlab user running on this node. Read more about how to generate it
+          = link_to "here", help_page_path("ssh", "README")
+
   .form-group
     = f.label :primary, 'Primary', class: 'control-label checkbox'
     .col-sm-10
