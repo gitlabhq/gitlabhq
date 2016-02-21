@@ -67,12 +67,18 @@ and/or `443`. For that reason, there is some flexibility in the way which you
 can set it up, so you basically have three choices:
 
 1. Run the pages daemon in the same server as GitLab, listening on a secondary IP
-1. Run the pages daemon in the same server as GitLab, listening on the same IP
-   but on different ports. In that case, you will have to proxy the traffic with
-   a loadbalancer.
 1. Run the pages daemon in a separate server. In that case, the Pages [`path`]
    must also be present in the server that the pages daemon is installed, so
    you will have to share it via network.
+1. Run the pages daemon in the same server as GitLab, listening on the same IP
+   but on different ports. In that case, you will have to proxy the traffic with
+   a loadbalancer. If you choose that route note that you should use TCP load
+   balancing for HTTPS. If you use TLS-termination (HTTPS-load balancing) the
+   pages will not be able to be served with user provided certificates. For
+   HTTP it's OK to use HTTP or TCP load balancing.
+
+In this document, we will proceed assuming the first option. First let's
+install the pages daemon.
 
 [`path`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/config/gitlab.yml.example#L155
 
