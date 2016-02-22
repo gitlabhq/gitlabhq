@@ -32,6 +32,7 @@
   .cover-controls {
     .project-settings-dropdown {
       margin-left: 10px;
+      display: inline-block;
     }
   }
 
@@ -191,7 +192,7 @@
 
 .dropdown-menu {
   @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
-  @include border-radius ($input-border-radius);
+  @include border-radius ($border-radius-default);
 
   border: none;
   padding: 10px 0;
