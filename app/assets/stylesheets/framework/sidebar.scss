@@ -179,8 +179,6 @@
 }
 
 @mixin expanded-sidebar {
-  padding-right: $sidebar_collapsed_width;
-
   // when the screen is small enough
   @media (max-width: $screen-md-max) {
     padding-left: $sidebar_collapsed_width;
@@ -212,7 +210,6 @@
 
 @mixin collapsed-sidebar {
   padding-left: $sidebar_collapsed_width;
-  padding-right: $sidebar_collapsed_width;
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
@@ -275,6 +272,16 @@
 .collapse-nav a:hover {
   text-decoration: none;
   background: #f2f6f7;
+}
+
+.page-gutter {
+  &.right-sidebar-expanded {
+    padding-right: $gutter_width;
+  }
+
+  &.right-sidebar-collapsed {
+    padding-right: $gutter_collapsed_width;
+  }
 }
 
 .page-sidebar-collapsed {
