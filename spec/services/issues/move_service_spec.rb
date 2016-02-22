@@ -64,7 +64,7 @@ describe Issues::MoveService, services: true do
         end
 
         before do
-          note_params = { noteable: old_issue, project: old_project, author: user}
+          note_params = { noteable: old_issue, project: old_project, author: user }
           create(:system_note, note_params.merge(note: note_contents.first))
           create(:note, note_params.merge(note: note_contents.second))
           create(:system_note, note_params.merge(note: note_contents.third))
