@@ -334,6 +334,12 @@ Rails.application.routes.draw do
       resources :groups, only: [:index]
       resources :snippets, only: [:index]
 
+      resources :todos, only: [:index, :destroy] do
+        collection do
+          delete :destroy_all
+        end
+      end
+
       resources :projects, only: [:index] do
         collection do
           get :starred
