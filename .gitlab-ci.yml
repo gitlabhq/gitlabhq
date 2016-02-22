@@ -160,7 +160,7 @@ bundler:audit:
     - mysql
   allow_failure: true
 
-# Ruby 2.1 jobs
+# Ruby 2.2 jobs
 
 spec:feature:ruby22:
   stage: test
@@ -239,8 +239,8 @@ spec:services:ruby22:
     - mysql
 
 spec:benchmark:ruby22:
-   stage: test
- image: ruby:2.2
+  stage: test
+  image: ruby:2.2
   only:
   - master
   script:
