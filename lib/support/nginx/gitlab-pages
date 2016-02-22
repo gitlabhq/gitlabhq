@@ -7,7 +7,7 @@ server {
   listen [::]:80 ipv6only=on;
 
   ## Replace this with something like pages.gitlab.com
-  server_name ~^(?<group>.*)\.YOUR_GITLAB_PAGES\.DOMAIN$;
+  server_name ~^.*\.YOUR_GITLAB_PAGES\.DOMAIN$;
 
   ## Individual nginx logs for GitLab pages
   access_log  /var/log/nginx/gitlab_pages_access.log;
