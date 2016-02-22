@@ -490,6 +490,7 @@ latest previous version.
 - The [NGINX configs][] have changed to reflect this change. So make sure to
   update them.
 - Custom CNAME and TLS certificates support
+- Documentation was moved to one place
 
 [8-5-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/doc/pages/administration.md
 [gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.2.0
@@ -503,12 +504,12 @@ No new changes.
 
 ---
 
-**GitLab 8.3 ([documentation][8-3-docs])**
+**GitLab 8.3 ([source docs][8-3-docs], [Omnibus docs][8-3-omnidocs])**
 
 - GitLab Pages feature was introduced.
 
 [8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
-
+[8-3-omnidocs]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8-3-stable-ee/doc/settings/pages.md
 [reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../../administration/restart_gitlab.md#installations-from-source
 [backup]: ../../raketasks/backup_restore.md
