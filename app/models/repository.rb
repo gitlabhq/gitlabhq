@@ -181,6 +181,13 @@ class Repository
     raw_repository.remote_update(name, url: url)
   end
 
+  def set_remote_as_mirror(name)
+    # This is used by Gitlab Geo to define repository as equivalent as "git clone --mirror"
+    raw_repository.rugged.config["remote.#{name}.fetch"]='refs/*:refs/*'
+    raw_repository.rugged.config["remote.#{name}.mirror"]=true
+    raw_repository.rugged.config["remote.#{name}.prune"]=true
+  end
+
   def fetch_remote(remote)
     gitlab_shell.fetch_remote(path_with_namespace, remote)
   end
@@ -739,6 +746,12 @@ class Repository
 
   def fetch_upstream(url)
     add_remote(Repository::MIRROR_REMOTE, url)
+    fetch_remote(Repository::MIRROR_REMOTE)
+  end
+
+  def fetch_geo_mirror(url)
+    add_remote(Repository::MIRROR_REMOTE, url)
+    set_remote_as_mirror(Repository::MIRROR_REMOTE)
     fetch_remote(Repository::MIRROR_REMOTE)
   end
 
