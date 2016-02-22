@@ -67,7 +67,7 @@ v 8.5.0 (unreleased)
   - Fix broken link to project in build notification emails
   - Ability to see and sort on vote count from Issues and MR lists
   - Fix builds scheduler when first build in stage was allowed to fail
-  - User project limit is reached notice is hidden if the projects limit is zero 
+  - User project limit is reached notice is hidden if the projects limit is zero
   - Add API support for managing runners and project's runners
   - Allow SAML users to login with no previous account without having to allow
     all Omniauth providers to do so.
@@ -77,6 +77,7 @@ v 8.5.0 (unreleased)
   - Emoji comment on diffs are not award emoji
   - Add label description (Nuttanart Pornprasitsakul)
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
+  - Add Todos
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
