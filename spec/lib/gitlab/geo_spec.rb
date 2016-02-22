@@ -44,7 +44,7 @@ describe Gitlab::Geo, lib: true do
       before(:each) { secondary_node }
 
       it 'returns true' do
-        expect(described_class).to receive(:current_node) { secondary_node }
+        allow(described_class).to receive(:current_node) { secondary_node }
         expect(described_class.readonly?).to be_truthy
       end
     end
@@ -53,7 +53,7 @@ describe Gitlab::Geo, lib: true do
       before(:each) { primary_node }
 
       it 'returns false when ' do
-        expect(described_class).to receive(:current_node) { primary_node }
+        allow(described_class).to receive(:current_node) { primary_node }
         expect(described_class.readonly?).to be_falsey
       end
     end
