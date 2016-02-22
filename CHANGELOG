@@ -12,6 +12,7 @@ v 8.6.0 (unreleased)
   - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
+  - Fix bug where Bitbucket `closed` issues were imported as `opened` (Iuri de Silvio)
   - Don't show Issues/MRs from archived projects in Groups view
   - Increase the notes polling timeout over time (Roberto Dip)
   - Show labels in dashboard and group milestone views
