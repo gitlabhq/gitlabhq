@@ -64,7 +64,6 @@
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
     width: $gutter_inner_width;
-    overflow-x: hidden;
     // --
 
     &:first-child {
@@ -90,7 +89,6 @@
 
     .gutter-toggle {
       margin-left: 20px;
-      border-left: 1px solid $border-gray-light;
       padding-left: 10px;
 
       &:hover {
@@ -157,11 +155,10 @@
 .right-sidebar {
   position: fixed;
   top: 58px;
+  bottom: 0;
   right: 0;
-  height: 100%;
-  transition-duration: .3s;
+  transition: width .3s;
   background: $gray-light;
-  overflow: scroll;
   padding: 10px 20px;
 
   &.right-sidebar-expanded {
@@ -169,6 +166,14 @@
 
     hr {
       display: none;
+    }
+
+    .sidebar-collapsed-icon {
+      display: none;
+    }
+
+    .gutter-toggle {
+      border-left: 1px solid $border-gray-light;
     }
   }
 
@@ -181,7 +186,6 @@
   &.right-sidebar-collapsed {
     width: $sidebar_collapsed_width;
     padding-top: 0;
-    overflow-x: hidden;
 
     hr {
       margin: 0;
@@ -192,21 +196,13 @@
     }
 
     .block {
-      border-bottom: none;
+      width: $sidebar_collapsed_width - 1px;
+      margin-left: -19px;
       padding: 15px 0 0 0;
+      border-bottom: none;
+      overflow: hidden;
     }
-  }
 
-  .btn {
-    background: $gray-normal;
-    border: 1px solid $border-gray-normal;
-    &:hover {
-      background: $gray-dark;
-      border: 1px solid $border-gray-dark;
-    }
-  }
-
-  &.right-sidebar-collapsed {
     .issuable-count,
     .issuable-nav,
     .assignee > *,
@@ -219,15 +215,13 @@
     }
 
     .gutter-toggle {
-      margin-left: -$gutter_inner_width + 4;
+      margin-left: -36px;
     }
 
     .sidebar-collapsed-icon {
       display: block;
-      float: left;
-      width: 62px;
+      width: 100%;
       text-align: center;
-      margin-left: -19px;
       padding-bottom: 10px;
       color: #999999;
 
@@ -247,14 +241,15 @@
           color: #999999;
         }
       }
-
     }
-
   }
 
-  &.right-sidebar-expanded {
-    .sidebar-collapsed-icon {
-      display: none;
+  .btn {
+    background: $gray-normal;
+    border: 1px solid $border-gray-normal;
+    &:hover {
+      background: $gray-dark;
+      border: 1px solid $border-gray-dark;
     }
   }
 }
