@@ -86,8 +86,8 @@ can set it up, so you basically have three choices:
    pages will not be able to be served with user provided certificates. For
    HTTP it's OK to use HTTP or TCP load balancing.
 
-In this document, we will proceed assuming the first option. First let's
-install the pages daemon.
+In this document, we will proceed assuming the first option. Let's begin by
+installing the pages daemon.
 
 ### Install the Pages daemon
 
@@ -97,7 +97,7 @@ install the pages daemon.
 cd /home/git
 sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
 cd gitlab-pages
-sudo -u git -H git checkout 0.2.0
+sudo -u git -H git checkout v0.2.0
 sudo -u git -H make
 ```
 
