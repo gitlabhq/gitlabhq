@@ -46,12 +46,14 @@ v 8.5.0 (unreleased)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
   - Prevent parse error when name of project ends with .atom and prevent path issues
+  - Discover branches for commit statuses ref-less when doing merge when succeeded
   - Mark inline difference between old and new paths when a file is renamed
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
   - API: Allow to set or update a merge-request's milestone (Kirill Skachkov)
   - Improve UI consistency between projects and groups lists
   - Add sort dropdown to dashboard projects page
   - Fixed logo animation on Safari (Roman Rott)
+  - Fix Merge When Succeeded when multiple stages
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
   - In seach autocomplete show only groups and projects you are member of
   - Don't process cross-reference notes from forks
