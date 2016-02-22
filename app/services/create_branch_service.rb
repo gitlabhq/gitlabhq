@@ -29,11 +29,7 @@ class CreateBranchService < BaseService
     end
 
     if new_branch
-      push_data = build_push_data(project, current_user, new_branch)
-
-      project.execute_hooks(push_data.dup, :push_hooks)
-      project.execute_services(push_data.dup, :push_hooks)
-
+      # GitPushService handles execution of services and hooks for branch pushes
       success(new_branch)
     else
       error('Invalid reference name')

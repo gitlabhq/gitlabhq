@@ -1,0 +1,17 @@
+- if can?(current_user, :update_pages, @project) && @domains.any?
+  .panel.panel-default
+    .panel-heading
+      Domains (#{@domains.count})
+    %ul.well-list
+      - @domains.each do |domain|
+        %li
+          .pull-right
+            = link_to 'Details', namespace_project_pages_domain_path(@project.namespace, @project, domain), class: "btn btn-sm btn-grouped"
+            = link_to 'Remove', namespace_project_pages_domain_path(@project.namespace, @project, domain), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
+          .clearfix
+            %span= link_to domain.domain, domain.url
+          %p
+            - if domain.subject
+              %span.label.label-gray Certificate: #{domain.subject}
+            - if domain.expired?
+              %span.label.label-danger Expired

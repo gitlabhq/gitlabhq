@@ -233,7 +233,10 @@ Rails.application.routes.draw do
       get :test
     end
 
-    resources :broadcast_messages, only: [:index, :edit, :create, :update, :destroy]
+    resources :broadcast_messages, only: [:index, :edit, :create, :update, :destroy] do
+      post :preview, on: :collection
+    end
+
     resource :logs, only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
     resource :email, only: [:show, :create]
@@ -368,6 +371,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
+      get :events
     end
 
     collection do
@@ -424,7 +428,6 @@ Rails.application.routes.draw do
         delete :remove_fork
         post :archive
         post :unarchive
-        post :remove_pages
         post :housekeeping
         post :toggle_star
         post :markdown_preview
@@ -543,6 +546,10 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :pages, only: [:show, :destroy] do
+          resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains'
+        end
+
         resources :compare, only: [:index, :create]
         resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
 
@@ -655,7 +662,7 @@ Rails.application.routes.draw do
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
 
-        resources :builds, only: [:index, :show] do
+        resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
           end
@@ -747,6 +754,12 @@ Rails.application.routes.draw do
 
         resources :approvers, only: :destroy
         resources :runner_projects, only: [:create, :destroy]
+        resources :badges, only: [], path: 'badges/*ref',
+                           constraints: { ref: Gitlab::Regex.git_reference_regex } do
+          collection do
+            get :build, constraints: { format: /svg/ }
+          end
+        end
       end
 
       get "/audit_events" => "audit_events#project_log"

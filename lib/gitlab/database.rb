@@ -17,7 +17,7 @@ module Gitlab
     end
 
     def true_value
-      if self.class.postgresql?
+      if Gitlab::Database.postgresql?
         "'t'"
       else
         1
@@ -25,7 +25,7 @@ module Gitlab
     end
 
     def false_value
-      if self.class.postgresql?
+      if Gitlab::Database.postgresql?
         "'f'"
       else
         0
@@ -46,10 +46,6 @@ module Gitlab
       else
         row.first
       end
-    end
-
-    def connection
-      self.class.connection
     end
   end
 end

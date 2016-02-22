@@ -113,7 +113,7 @@ describe API::API, api: true  do
 
   describe 'POST /projects/:id/builds/:build_id/cancel' do
     context 'authorized user' do
-      context 'user with :manage_builds persmission' do
+      context 'user with :update_build persmission' do
         it 'should cancel running or pending build' do
           post api("/projects/#{project.id}/builds/#{build.id}/cancel", user)
 
@@ -122,7 +122,7 @@ describe API::API, api: true  do
         end
       end
 
-      context 'user without :manage_builds permission' do
+      context 'user without :update_build permission' do
         it 'should not cancel build' do
           post api("/projects/#{project.id}/builds/#{build.id}/cancel", user2)
 
@@ -142,7 +142,7 @@ describe API::API, api: true  do
 
   describe 'POST /projects/:id/builds/:build_id/retry' do
     context 'authorized user' do
-      context 'user with :manage_builds persmission' do
+      context 'user with :update_build persmission' do
         it 'should retry non-running build' do
           post api("/projects/#{project.id}/builds/#{build_canceled.id}/retry", user)
 
@@ -152,7 +152,7 @@ describe API::API, api: true  do
         end
       end
 
-      context 'user without :manage_builds permission' do
+      context 'user without :update_build permission' do
         it 'should not retry build' do
           post api("/projects/#{project.id}/builds/#{build_canceled.id}/retry", user2)
 

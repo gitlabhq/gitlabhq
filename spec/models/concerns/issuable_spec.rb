@@ -69,17 +69,28 @@ describe Issue, "Issuable" do
   end
 
   describe "#to_hook_data" do
-    let(:hook_data) { issue.to_hook_data(user) }
+    let(:data) { issue.to_hook_data(user) }
+    let(:project) { issue.project }
+
 
     it "returns correct hook data" do
-      expect(hook_data[:object_kind]).to eq("issue")
-      expect(hook_data[:user]).to eq(user.hook_attrs)
-      expect(hook_data[:repository][:name]).to eq(issue.project.name)
-      expect(hook_data[:repository][:url]).to eq(issue.project.url_to_repo)
-      expect(hook_data[:repository][:description]).to eq(issue.project.description)
-      expect(hook_data[:repository][:homepage]).to eq(issue.project.web_url)
-      expect(hook_data[:object_attributes]).to eq(issue.hook_attrs)
+      expect(data[:object_kind]).to eq("issue")
+      expect(data[:user]).to eq(user.hook_attrs)
+      expect(data[:object_attributes]).to eq(issue.hook_attrs)
+      expect(data).to_not have_key(:assignee)
     end
+
+    context "issue is assigned" do
+      before { issue.update_attribute(:assignee, user) }
+
+      it "returns correct hook data" do
+        expect(data[:object_attributes]['assignee_id']).to eq(user.id)
+        expect(data[:assignee]).to eq(user.hook_attrs)
+      end
+    end
+
+    include_examples 'project hook data'
+    include_examples 'deprecated repository hook data'
   end
 
   describe '#card_attributes' do

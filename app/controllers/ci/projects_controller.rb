@@ -1,8 +1,7 @@
 module Ci
   class ProjectsController < Ci::ApplicationController
-    before_action :project, except: [:index]
-    before_action :authenticate_user!, except: [:index, :build, :badge]
-    before_action :authorize_access_project!, except: [:index, :badge]
+    before_action :project
+    before_action :authorize_read_project!, except: [:badge]
     before_action :no_cache, only: [:badge]
     protect_from_forgery
 
@@ -13,9 +12,13 @@ module Ci
 
     # Project status badge
     # Image with build status for sha or ref
+    #
+    # This action in DEPRECATED, this is here only for backwards compatibility
+    # with projects migrated from GitLab CI.
+    #
     def badge
+      return render_404 unless @project
       image = Ci::ImageForBuildService.new.execute(@project, params)
-
       send_file image.path, filename: image.name, disposition: 'inline', type:"image/svg+xml"
     end
 

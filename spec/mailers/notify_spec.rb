@@ -1,237 +1,13 @@
 require 'spec_helper'
 require 'email_spec'
+require 'mailers/shared/notify'
 
 describe Notify do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
   include RepoHelpers
 
-  new_user_address = 'newguy@example.com'
-
-  let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
-  let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
-  let(:gitlab_sender_reply_to) { Gitlab.config.gitlab.email_reply_to }
-  let(:recipient) { create(:user, email: 'recipient@example.com') }
-  let(:project) { create(:project) }
-  let(:build) { create(:ci_build) }
-
-  before(:each) do
-    ActionMailer::Base.deliveries.clear
-    email = recipient.emails.create(email: "notifications@example.com")
-    recipient.update_attribute(:notification_email, email.email)
-  end
-
-  shared_examples 'a multiple recipients email' do
-    it 'is sent to the given recipient' do
-      is_expected.to deliver_to recipient.notification_email
-    end
-  end
-
-  shared_examples 'an email sent from GitLab' do
-    it 'is sent from GitLab' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq(gitlab_sender_display_name)
-      expect(sender.address).to eq(gitlab_sender)
-    end
-
-    it 'has a Reply-To address' do
-      reply_to = subject.header[:reply_to].addresses
-      expect(reply_to).to eq([gitlab_sender_reply_to])
-    end
-  end
-
-  shared_examples 'an email with X-GitLab headers containing project details' do
-    it 'has X-GitLab-Project* headers' do
-      is_expected.to have_header 'X-GitLab-Project', /#{project.name}/
-      is_expected.to have_header 'X-GitLab-Project-Id', /#{project.id}/
-      is_expected.to have_header 'X-GitLab-Project-Path', /#{project.path_with_namespace}/
-    end
-  end
-
-  shared_examples 'an email with X-GitLab headers containing build details' do
-    it 'has X-GitLab-Build* headers' do
-      is_expected.to have_header 'X-GitLab-Build-Id', /#{build.id}/
-      is_expected.to have_header 'X-GitLab-Build-Ref', /#{build.ref}/
-    end
-  end
-
-  shared_examples 'an email that contains a header with author username' do
-    it 'has X-GitLab-Author header containing author\'s username' do
-      is_expected.to have_header 'X-GitLab-Author', user.username
-    end
-  end
-
-  shared_examples 'an email starting a new thread' do |message_id_prefix|
-    include_examples 'an email with X-GitLab headers containing project details'
-
-    it 'has a discussion identifier' do
-      is_expected.to have_header 'Message-ID',  /<#{message_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
-    end
-  end
-
-  shared_examples 'an answer to an existing thread' do |thread_id_prefix|
-    include_examples 'an email with X-GitLab headers containing project details'
-
-    it 'has a subject that begins with Re: ' do
-      is_expected.to have_subject /^Re: /
-    end
-
-    it 'has headers that reference an existing thread' do
-      is_expected.to have_header 'Message-ID',  /<(.*)@#{Gitlab.config.gitlab.host}>/
-      is_expected.to have_header 'References',  /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
-      is_expected.to have_header 'In-Reply-To', /<#{thread_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
-    end
-  end
-
-  shared_examples 'a new user email' do |user_email, site_path|
-    it 'is sent to the new user' do
-      is_expected.to deliver_to user_email
-    end
-
-    it 'has the correct subject' do
-      is_expected.to have_subject /^Account was created for you$/i
-    end
-
-    it 'contains the new user\'s login name' do
-      is_expected.to have_body_text /#{user_email}/
-    end
-
-    it 'includes a link to the site' do
-      is_expected.to have_body_text /#{site_path}/
-    end
-  end
-
-  shared_examples 'it should have Gmail Actions links' do
-    it { is_expected.to have_body_text /ViewAction/ }
-  end
-
-  shared_examples 'it should not have Gmail Actions links' do
-    it { is_expected.to_not have_body_text /ViewAction/ }
-  end
-
-  shared_examples 'it should show Gmail Actions View Issue link' do
-    it_behaves_like 'it should have Gmail Actions links'
-
-    it { is_expected.to have_body_text /View Issue/ }
-  end
-
-  shared_examples 'it should show Gmail Actions View Merge request link' do
-    it_behaves_like 'it should have Gmail Actions links'
-
-    it { is_expected.to have_body_text /View Merge request/ }
-  end
-
-  shared_examples 'it should show Gmail Actions View Commit link' do
-    it_behaves_like 'it should have Gmail Actions links'
-
-    it { is_expected.to have_body_text /View Commit/ }
-  end
-
-  shared_examples 'an unsubscribeable thread' do
-    it { is_expected.to have_body_text /unsubscribe/ }
-  end
-
-  shared_examples "a user cannot unsubscribe through footer link" do
-    it { is_expected.not_to have_body_text /unsubscribe/ }
-  end
-
-  describe 'for new users, the email' do
-    let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: new_user_address, created_by_id: 1) }
-
-    token = 'kETLwRaayvigPq_x3SNM'
-
-    subject { Notify.new_user_email(new_user.id, token) }
-
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'a new user email', new_user_address
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user cannot unsubscribe through footer link'
-
-    it 'contains the password text' do
-      is_expected.to have_body_text /Click here to set your password/
-    end
-
-    it 'includes a link for user to set password' do
-      params = "reset_password_token=#{token}"
-      is_expected.to have_body_text(
-        %r{http://localhost(:\d+)?/users/password/edit\?#{params}}
-      )
-    end
-
-    it 'explains the reset link expiration' do
-      is_expected.to have_body_text(/This link is valid for \d+ (hours?|days?)/)
-      is_expected.to have_body_text(new_user_password_url)
-      is_expected.to have_body_text(/\?user_email=.*%40.*/)
-    end
-  end
-
-  describe 'for users that signed up, the email' do
-    let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: new_user_address, password: "securePassword") }
-
-    subject { Notify.new_user_email(new_user.id) }
-
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'a new user email', new_user_address
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user cannot unsubscribe through footer link'
-
-    it 'should not contain the new user\'s password' do
-      is_expected.not_to have_body_text /password/
-    end
-  end
-
-  describe 'user added ssh key' do
-    let(:key) { create(:personal_key) }
-
-    subject { Notify.new_ssh_key_email(key.id) }
-
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user cannot unsubscribe through footer link'
-
-    it 'is sent to the new user' do
-      is_expected.to deliver_to key.user.email
-    end
-
-    it 'has the correct subject' do
-      is_expected.to have_subject /^SSH key was added to your account$/i
-    end
-
-    it 'contains the new ssh key title' do
-      is_expected.to have_body_text /#{key.title}/
-    end
-
-    it 'includes a link to ssh keys page' do
-      is_expected.to have_body_text /#{profile_keys_path}/
-    end
-  end
-
-  describe 'user added email' do
-    let(:email) { create(:email) }
-
-    subject { Notify.new_email_email(email.id) }
-
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user cannot unsubscribe through footer link'
-
-    it 'is sent to the new user' do
-      is_expected.to deliver_to email.user.email
-    end
-
-    it 'has the correct subject' do
-      is_expected.to have_subject /^Email was added to your account$/i
-    end
-
-    it 'contains the new email address' do
-      is_expected.to have_body_text /#{email.email}/
-    end
-
-    it 'includes a link to emails page' do
-      is_expected.to have_body_text /#{profile_emails_path}/
-    end
-  end
+  include_context 'gitlab email notification'
 
   context 'for a project' do
     describe 'items that are assignable, the email' do
@@ -269,6 +45,17 @@ describe Notify do
 
           it 'contains a link to the new issue' do
             is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
+          end
+
+          context 'when enabled email_author_in_body' do
+            before do
+              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+            end
+
+            it 'contains a link to note author' do
+              is_expected.to have_body_text issue.author_name
+              is_expected.to have_body_text /wrote\:/
+            end
           end
         end
 
@@ -377,6 +164,17 @@ describe Notify do
 
           it 'has the correct message-id set' do
             is_expected.to have_header 'Message-ID', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
+          end
+
+          context 'when enabled email_author_in_body' do
+            before do
+              allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+            end
+
+            it 'contains a link to note author' do
+              is_expected.to have_body_text merge_request.author_name
+              is_expected.to have_body_text /wrote\:/
+            end
           end
         end
 
@@ -568,6 +366,21 @@ describe Notify do
 
         it 'contains the message from the note' do
           is_expected.to have_body_text /#{note.note}/
+        end
+
+        it 'not contains note author' do
+          is_expected.not_to have_body_text /wrote\:/
+        end
+
+        context 'when enabled email_author_in_body' do
+          before do
+            allow(current_application_settings).to receive(:email_author_in_body).and_return(true)
+          end
+
+          it 'contains a link to note author' do
+            is_expected.to have_body_text note.author_name
+            is_expected.to have_body_text /wrote\:/
+          end
         end
       end
 
@@ -976,52 +789,6 @@ describe Notify do
     it 'includes unsubscribe link' do
       unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
       should have_body_text(unsubscribe_link)
-    end
-  end
-
-  describe 'build success' do
-    before { build.success }
-
-    subject { Notify.build_success_email(build.id, 'wow@example.com') }
-
-    it_behaves_like 'an email with X-GitLab headers containing build details'
-    it_behaves_like 'an email with X-GitLab headers containing project details' do
-      let(:project) { build.project }
-    end
-
-    it 'has header indicating build status' do
-      is_expected.to have_header 'X-GitLab-Build-Status', 'success'
-    end
-
-    it 'has the correct subject' do
-      should have_subject /Build success for/
-    end
-
-    it 'contains name of project' do
-      should have_body_text build.project_name
-    end
-  end
-
-  describe 'build fail' do
-    before { build.drop }
-
-    subject { Notify.build_fail_email(build.id, 'wow@example.com') }
-
-    it_behaves_like 'an email with X-GitLab headers containing build details'
-    it_behaves_like 'an email with X-GitLab headers containing project details' do
-      let(:project) { build.project }
-    end
-
-    it 'has header indicating build status' do
-      is_expected.to have_header 'X-GitLab-Build-Status', 'failed'
-    end
-
-    it 'has the correct subject' do
-      should have_subject /Build failed for/
-    end
-
-    it 'contains name of project' do
-      should have_body_text build.project_name
     end
   end
 end

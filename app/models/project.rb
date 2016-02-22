@@ -162,6 +162,7 @@ class Project < ActiveRecord::Base
   has_many :lfs_objects, through: :lfs_objects_projects
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :pages_domains, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
@@ -377,7 +378,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, nil, self)
+    @repository ||= Repository.new(path_with_namespace, self)
   end
 
   def commit(id = 'HEAD')
@@ -423,6 +424,10 @@ class Project < ActiveRecord::Base
 
   def import?
     external_import? || forked?
+  end
+
+  def no_import?
+    import_status == 'none'
   end
 
   def external_import?
@@ -844,11 +849,20 @@ class Project < ActiveRecord::Base
   def hook_attrs
     {
       name: name,
-      ssh_url: ssh_url_to_repo,
-      http_url: http_url_to_repo,
+      description: description,
       web_url: web_url,
+      avatar_url: avatar_url,
+      git_ssh_url: ssh_url_to_repo,
+      git_http_url: http_url_to_repo,
       namespace: namespace.name,
-      visibility_level: visibility_level
+      visibility_level: visibility_level,
+      path_with_namespace: path_with_namespace,
+      default_branch: default_branch,
+      # Backward compatibility
+      homepage: web_url,
+      url: url_to_repo,
+      ssh_url: ssh_url_to_repo,
+      http_url: http_url_to_repo
     }
   end
 
@@ -896,6 +910,8 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     # Cached divergent commit counts are based on repository head
     repository.expire_branch_cache
+    repository.expire_root_ref_cache
+
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
@@ -1043,18 +1059,24 @@ class Project < ActiveRecord::Base
     ensure_runners_token!
   end
 
+  def pages_deployed?
+    Dir.exist?(public_pages_path)
+  end
+
   def pages_url
-    if Dir.exist?(public_pages_path)
-      host = "#{namespace.path}.#{Settings.pages.host}"
-      url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
-        "#{prefix}#{namespace.path}."
-      end
+    # The hostname always needs to be in downcased
+    # All web servers convert hostname to lowercase
+    host = "#{namespace.path}.#{Settings.pages.host}".downcase
 
-      # If the project path is the same as host, leave the short version
-      return url if host == path
+    # The host in URL always needs to be downcased
+    url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
+      "#{prefix}#{namespace.path}."
+    end.downcase
 
-      "#{url}/#{path}"
-    end
+    # If the project path is the same as host, we serve it as group page
+    return url if host == path
+
+    "#{url}/#{path}"
   end
 
   def pages_path
@@ -1069,7 +1091,7 @@ class Project < ActiveRecord::Base
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
     # 3. We asynchronously remove pages with force
-    temp_path = "#{path}.#{SecureRandom.hex}"
+    temp_path = "#{path}.#{SecureRandom.hex}.deleted"
 
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)

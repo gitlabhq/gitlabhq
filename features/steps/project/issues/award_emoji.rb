@@ -8,6 +8,15 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     visit namespace_project_issue_path(@project.namespace, @project, @issue)
   end
 
+  step 'I click the thumbsup award Emoji' do
+    page.within '.awards' do
+      thumbsup = page.find('.award .emoji-1F44D')
+      thumbsup.click
+      thumbsup.hover
+      sleep 0.3
+    end
+  end
+
   step 'I click to emoji-picker' do
     page.within '.awards-controls' do
       page.find('.add-award').click
@@ -37,9 +46,28 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I have award added' do
+    sleep 0.2
+
     page.within '.awards' do
       expect(page).to have_selector '.award'
       expect(page.find('.award.active .counter')).to have_content '1'
+      expect(page.find('.award.active')['data-original-title']).to eq('me')
+    end
+  end
+
+  step 'I have no awards added' do
+    page.within '.awards' do
+      expect(page).to have_selector '.award'
+      expect(page.all('.award').size).to eq(2)
+
+      # Check tooltip data
+      page.all('.award').each do |element|
+        expect(element['title']).to eq("")
+      end
+
+      page.all('.award .counter').each do |element|
+        expect(element).to have_content '0'
+      end
     end
   end
 

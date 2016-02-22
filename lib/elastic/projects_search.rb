@@ -29,7 +29,20 @@ module Elastic
       end
 
       def as_indexed_json(options = {})
-        as_json.merge({
+        as_json({
+          only: [
+            :id,
+            :name,
+            :path,
+            :description,
+            :namespace_id,
+            :created_at,
+            :archived,
+            :visibility_level,
+            :last_activity_at,
+            :last_pushed_at
+          ]
+        }).merge({
           name_with_namespace: name_with_namespace,
           path_with_namespace: path_with_namespace
         })

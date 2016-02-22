@@ -200,12 +200,21 @@ describe Repository, models: true do
 
   describe :commit_with_hooks do
     context 'when pre hooks were successful' do
-      it 'should run without errors' do
-        expect_any_instance_of(GitHooksService).to receive(:execute).and_return(true)
+      before do
+        expect_any_instance_of(GitHooksService).to receive(:execute).
+          and_return(true)
+      end
 
+      it 'should run without errors' do
         expect do
           repository.commit_with_hooks(user, 'feature') { sample_commit.id }
         end.not_to raise_error
+      end
+
+      it 'should ensure the autocrlf Git option is set to :input' do
+        expect(repository).to receive(:update_autocrlf_option)
+
+        repository.commit_with_hooks(user, 'feature') { sample_commit.id }
       end
     end
 
@@ -217,6 +226,25 @@ describe Repository, models: true do
           repository.commit_with_hooks(user, 'feature') { sample_commit.id }
         end.to raise_error(GitHooksService::PreReceiveError)
       end
+    end
+  end
+
+  describe '#exists?' do
+    it 'returns true when a repository exists' do
+      expect(repository.exists?).to eq(true)
+    end
+
+    it 'returns false when a repository does not exist' do
+      expect(repository.raw_repository).to receive(:rugged).
+        and_raise(Gitlab::Git::Repository::NoRepository)
+
+      expect(repository.exists?).to eq(false)
+    end
+
+    it 'returns false when there is no namespace' do
+      allow(repository).to receive(:path_with_namespace).and_return(nil)
+
+      expect(repository.exists?).to eq(false)
     end
   end
 
@@ -232,13 +260,173 @@ describe Repository, models: true do
     end
 
     describe 'when there are branches' do
-      before do
-        allow(repository.raw_repository).to receive(:branch_count).and_return(3)
+      it 'returns true' do
+        expect(repository.raw_repository).to receive(:branch_count).and_return(3)
+
+        expect(subject).to eq(true)
       end
 
-      it { is_expected.to eq(true) }
+      it 'caches the output' do
+        expect(repository.raw_repository).to receive(:branch_count).
+          once.
+          and_return(3)
+
+        repository.has_visible_content?
+        repository.has_visible_content?
+      end
     end
   end
+
+  describe '#update_autocrlf_option' do
+    describe 'when autocrlf is not already set to :input' do
+      before do
+        repository.raw_repository.autocrlf = true
+      end
+
+      it 'sets autocrlf to :input' do
+        repository.update_autocrlf_option
+
+        expect(repository.raw_repository.autocrlf).to eq(:input)
+      end
+    end
+
+    describe 'when autocrlf is already set to :input' do
+      before do
+        repository.raw_repository.autocrlf = :input
+      end
+
+      it 'does nothing' do
+        expect(repository.raw_repository).to_not receive(:autocrlf=).
+          with(:input)
+
+        repository.update_autocrlf_option
+      end
+    end
+  end
+
+  describe '#empty?' do
+    let(:empty_repository) { create(:project_empty_repo).repository }
+
+    it 'returns true for an empty repository' do
+      expect(empty_repository.empty?).to eq(true)
+    end
+
+    it 'returns false for a non-empty repository' do
+      expect(repository.empty?).to eq(false)
+    end
+
+    it 'caches the output' do
+      expect(repository.raw_repository).to receive(:empty?).
+        once.
+        and_return(false)
+
+      repository.empty?
+      repository.empty?
+    end
+  end
+
+  describe '#root_ref' do
+    it 'returns a branch name' do
+      expect(repository.root_ref).to be_an_instance_of(String)
+    end
+
+    it 'caches the output' do
+      expect(repository.raw_repository).to receive(:root_ref).
+        once.
+        and_return('master')
+
+      repository.root_ref
+      repository.root_ref
+    end
+  end
+
+  describe '#expire_cache' do
+    it 'expires all caches' do
+      expect(repository).to receive(:expire_branch_cache)
+
+      repository.expire_cache
+    end
+
+    it 'expires the caches for a specific branch' do
+      expect(repository).to receive(:expire_branch_cache).with('master')
+
+      repository.expire_cache('master')
+    end
+  end
+
+  describe '#expire_root_ref_cache' do
+    it 'expires the root reference cache' do
+      repository.root_ref
+
+      expect(repository.raw_repository).to receive(:root_ref).
+        once.
+        and_return('foo')
+
+      repository.expire_root_ref_cache
+
+      expect(repository.root_ref).to eq('foo')
+    end
+  end
+
+  describe '#expire_has_visible_content_cache' do
+    it 'expires the visible content cache' do
+      repository.has_visible_content?
+
+      expect(repository.raw_repository).to receive(:branch_count).
+        once.
+        and_return(0)
+
+      repository.expire_has_visible_content_cache
+
+      expect(repository.has_visible_content?).to eq(false)
+    end
+  end
+
+  describe '#expire_branch_ache' do
+    # This method is private but we need it for testing purposes. Sadly there's
+    # no other proper way of testing caching operations.
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache for all branches' do
+      expect(cache).to receive(:expire).
+        at_least(repository.branches.length).
+        times
+
+      repository.expire_branch_cache
+    end
+
+    it 'expires the cache for all branches when the root branch is given' do
+      expect(cache).to receive(:expire).
+        at_least(repository.branches.length).
+        times
+
+      repository.expire_branch_cache(repository.root_ref)
+    end
+
+    it 'expires the cache for a specific branch' do
+      expect(cache).to receive(:expire).once
+
+      repository.expire_branch_cache('foo')
+    end
+  end
+
+  describe '#expire_emptiness_caches' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the caches' do
+      expect(cache).to receive(:expire).with(:empty?)
+      expect(repository).to receive(:expire_has_visible_content_cache)
+
+      repository.expire_emptiness_caches
+    end
+  end
+
+  describe :skip_merged_commit do
+    subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", nil, 100, 0, true).map{ |k| k.id } }
+
+    it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
+  end
+
 
   describe "Elastic search", elastic: true do
     before do
@@ -254,7 +442,7 @@ describe Repository, models: true do
         project = create :project
 
         project.repository.index_commits
-        
+
         Repository.__elasticsearch__.refresh_index!
 
         expect(project.repository.find_commits_by_message_with_elastic('initial').first).to be_a(Commit)
@@ -278,6 +466,7 @@ describe Repository, models: true do
 
         parsed_result = project.repository.parse_search_result_from_elastic(result)
 
+        expect(parsed_result.ref). to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
         expect(parsed_result.filename).to eq('files/ruby/popen.rb')
         expect(parsed_result.startline).to eq(2)
         expect(parsed_result.data).to include("Popen")

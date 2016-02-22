@@ -12,9 +12,9 @@ module Gitlab
     def objects(scope, page = nil)
       case scope
       when 'snippet_titles'
-        Kaminari.paginate_array(snippet_titles).page(page).per(per_page)
+        snippet_titles.page(page).per(per_page)
       when 'snippet_blobs'
-        Kaminari.paginate_array(snippet_blobs).page(page).per(per_page)
+        snippet_blobs.page(page).per(per_page)
       else
         super
       end
@@ -39,11 +39,7 @@ module Gitlab
     end
 
     def snippet_blobs
-      search = Snippet.where(id: limit_snippet_ids).search_code(query)
-      search = search.order('updated_at DESC').to_a
-      snippets = []
-      search.each { |e| snippets << chunk_snippet(e) }
-      snippets
+      Snippet.where(id: limit_snippet_ids).search_code(query).order('updated_at DESC')
     end
 
     def default_scope

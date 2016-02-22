@@ -19,7 +19,7 @@ class Repository
     Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
   end
 
-  def initialize(path_with_namespace, default_branch = nil, project = nil)
+  def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
   end
@@ -27,13 +27,11 @@ class Repository
   def raw_repository
     return nil unless path_with_namespace
 
-    @raw_repository ||= begin
-      repo = Gitlab::Git::Repository.new(path_to_repo)
-      repo.autocrlf = :input
-      repo
-    rescue Gitlab::Git::Repository::NoRepository
-      nil
-    end
+    @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
+  end
+
+  def update_autocrlf_option
+    raw_repository.autocrlf = :input if raw_repository.autocrlf != :input
   end
 
   # Return absolute path to repository
@@ -44,11 +42,18 @@ class Repository
   end
 
   def exists?
-    raw_repository
+    return false unless raw_repository
+
+    raw_repository.rugged
+    true
+  rescue Gitlab::Git::Repository::NoRepository
+    false
   end
 
   def empty?
-    raw_repository.empty?
+    return @empty unless @empty.nil?
+
+    @empty = cache.fetch(:empty?) { raw_repository.empty? }
   end
 
   #
@@ -61,11 +66,15 @@ class Repository
   # This method return true if repository contains some content visible in project page.
   #
   def has_visible_content?
-    raw_repository.branch_count > 0
+    return @has_visible_content unless @has_visible_content.nil?
+
+    @has_visible_content = cache.fetch(:has_visible_content?) do
+      raw_repository.branch_count > 0
+    end
   end
 
   def commit(id = 'HEAD')
-    return nil unless raw_repository
+    return nil unless exists?
     commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit, @project) if commit
     commit
@@ -82,7 +91,8 @@ class Repository
       offset: offset,
       # --follow doesn't play well with --skip. See:
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
-      follow: false
+      follow: false,
+      skip_merges: skip_merges
     }
 
     commits = Gitlab::Git::Commit.where(options)
@@ -223,12 +233,6 @@ class Repository
        readme version contribution_guide changelog license)
   end
 
-  def branch_cache_keys
-    branches.map do |branch|
-      :"diverging_commit_counts_#{branch.name}"
-    end
-  end
-
   def build_cache
     cache_keys.each do |key|
       unless cache.exist?(key)
@@ -253,18 +257,54 @@ class Repository
     @branches = nil
   end
 
-  def expire_cache
+  def expire_cache(branch_name = nil)
     cache_keys.each do |key|
       cache.expire(key)
     end
 
-    expire_branch_cache
+    expire_branch_cache(branch_name)
   end
 
-  def expire_branch_cache
-    branches.each do |branch|
-      cache.expire(:"diverging_commit_counts_#{branch.name}")
+  # Expires _all_ caches, including those that would normally only be expired
+  # under specific conditions.
+  def expire_all_caches!
+    expire_cache
+    expire_root_ref_cache
+    expire_emptiness_caches
+    expire_has_visible_content_cache
+  end
+
+  def expire_branch_cache(branch_name = nil)
+    # When we push to the root branch we have to flush the cache for all other
+    # branches as their statistics are based on the commits relative to the
+    # root branch.
+    if !branch_name || branch_name == root_ref
+      branches.each do |branch|
+        cache.expire(:"diverging_commit_counts_#{branch.name}")
+      end
+    # In case a commit is pushed to a non-root branch we only have to flush the
+    # cache for said branch.
+    else
+      cache.expire(:"diverging_commit_counts_#{branch_name}")
     end
+  end
+
+  def expire_root_ref_cache
+    cache.expire(:root_ref)
+    @root_ref = nil
+  end
+
+  # Expires the cache(s) used to determine if a repository is empty or not.
+  def expire_emptiness_caches
+    cache.expire(:empty?)
+    @empty = nil
+
+    expire_has_visible_content_cache
+  end
+
+  def expire_has_visible_content_cache
+    cache.expire(:has_visible_content?)
+    @has_visible_content = nil
   end
 
   def rebuild_cache
@@ -504,7 +544,7 @@ class Repository
   end
 
   def root_ref
-    @root_ref ||= raw_repository.root_ref
+    @root_ref ||= cache.fetch(:root_ref) { raw_repository.root_ref }
   end
 
   def commit_dir(user, path, message, branch)
@@ -666,6 +706,8 @@ class Repository
   end
 
   def merge_base(first_commit_id, second_commit_id)
+    first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
+    second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
     rugged.merge_base(first_commit_id, second_commit_id)
   rescue Rugged::ReferenceError
     nil
@@ -691,7 +733,7 @@ class Repository
   end
 
   def parse_search_result_from_elastic(result)
-    ref = result["_source"]["blob"]["oid"]
+    ref = result["_source"]["blob"]["commit_sha"]
     filename = result["_source"]["blob"]["path"]
     content = result["_source"]["blob"]["content"]
     total_lines = content.lines.size
@@ -775,6 +817,8 @@ class Repository
   end
 
   def commit_with_hooks(current_user, branch)
+    update_autocrlf_option
+
     oldrev = Gitlab::Git::BLANK_SHA
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
     was_empty = empty?

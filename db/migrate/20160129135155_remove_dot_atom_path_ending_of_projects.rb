@@ -48,7 +48,7 @@ class RemoveDotAtomPathEndingOfProjects < ActiveRecord::Migration
   end
 
   def projects_with_dot_atom
-    select_all("SELECT p.id, p.path, n.path as namespace_path, n.id as namespace_id FROM projects p inner join namespaces n on n.id = p.namespace_id WHERE lower(p.path) LIKE '%.atom'")
+    select_all("SELECT p.id, p.path, n.path as namespace_path, n.id as namespace_id FROM projects p inner join namespaces n on n.id = p.namespace_id WHERE p.path LIKE '%.atom'")
   end
 
   def up

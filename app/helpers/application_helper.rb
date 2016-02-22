@@ -215,8 +215,7 @@ module ApplicationHelper
         file_content
       end
     else
-      GitHub::Markup.render(file_name, file_content).
-        force_encoding(file_content.encoding).html_safe
+      other_markup(file_name, file_content)
     end
   rescue RuntimeError
     simple_format(file_content)
@@ -281,76 +280,6 @@ module ApplicationHelper
       admin_user_key_path(@user, key)
     else
       profile_key_path(key)
-    end
-  end
-
-  def issuable_link_next(project,issuable)
-    if project.nil?
-      nil
-    elsif current_controller?(:issues)
-      namespace_project_issue_path(project.namespace, project, next_issuable_for(project, issuable.id).try(:iid))
-    elsif current_controller?(:merge_requests)
-      namespace_project_merge_request_path(project.namespace, project, next_issuable_for(project, issuable.id).try(:iid))
-    end
-  end
-
-  def issuable_link_prev(project,issuable)
-    if project.nil?
-      nil
-    elsif current_controller?(:issues)
-      namespace_project_issue_path(project.namespace, project, prev_issuable_for(project, issuable.id).try(:iid))
-    elsif current_controller?(:merge_requests)
-      namespace_project_merge_request_path(project.namespace, project, prev_issuable_for(project, issuable.id).try(:iid))
-    end
-  end
-
-  def issuable_count(entity, project)
-    if project.nil?
-      0
-    elsif current_controller?(:issues)
-      project.issues.send(entity).count
-    elsif current_controller?(:merge_requests)
-      project.merge_requests.send(entity).count
-    end
-  end
-
-  def next_issuable_for(project, id)
-    if project.nil?
-      nil
-    elsif current_controller?(:issues)
-      project.issues.where("id > ?", id).last
-    elsif current_controller?(:merge_requests)
-      project.merge_requests.where("id > ?", id).last
-    end
-  end
-
-  def has_next_issuable?(project, id)
-    if project.nil?
-      nil
-    elsif current_controller?(:issues)
-      project.issues.where("id > ?", id).last
-    elsif current_controller?(:merge_requests)
-      project.merge_requests.where("id > ?", id).last
-    end
-  end
-
-  def prev_issuable_for(project, id)
-    if project.nil?
-      nil
-    elsif current_controller?(:issues)
-      project.issues.where("id < ?", id).first
-    elsif current_controller?(:merge_requests)
-      project.merge_requests.where("id < ?", id).first
-    end
-  end
-
-  def has_prev_issuable?(project, id)
-    if project.nil?
-      nil
-    elsif current_controller?(:issues)
-      project.issues.where("id < ?", id).first
-    elsif current_controller?(:merge_requests)
-      project.merge_requests.where("id < ?", id).first
     end
   end
 

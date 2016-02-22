@@ -99,6 +99,7 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - 0 by default
       #   import_url (optional)
+      #   public_builds (optional)
       # Example Request
       #   POST /projects
       post do
@@ -115,7 +116,8 @@ module API
                                      :namespace_id,
                                      :public,
                                      :visibility_level,
-                                     :import_url]
+                                     :import_url,
+                                     :public_builds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -145,6 +147,7 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
       #   import_url (optional)
+      #   public_builds (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -161,7 +164,8 @@ module API
                                      :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
-                                     :import_url]
+                                     :import_url,
+                                     :public_builds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -205,6 +209,7 @@ module API
       #   shared_runners_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
+      #   public_builds (optional)
       # Example Request
       #   PUT /projects/:id
       put ':id' do
@@ -219,7 +224,8 @@ module API
                                      :snippets_enabled,
                                      :shared_runners_enabled,
                                      :public,
-                                     :visibility_level]
+                                     :visibility_level,
+                                     :public_builds]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?

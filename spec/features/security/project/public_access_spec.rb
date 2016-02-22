@@ -96,6 +96,60 @@ describe "Public Project Access", feature: true  do
     it { is_expected.to be_denied_for :visitor }
   end
 
+  describe "GET /:project_path/builds" do
+    subject { namespace_project_builds_path(project.namespace, project) }
+
+    context "when allowed for public" do
+      before { project.update(public_builds: true) }
+
+      it { is_expected.to be_allowed_for master }
+      it { is_expected.to be_allowed_for reporter }
+      it { is_expected.to be_allowed_for :admin }
+      it { is_expected.to be_allowed_for guest }
+      it { is_expected.to be_allowed_for :user }
+      it { is_expected.to be_allowed_for :visitor }
+    end
+
+    context "when disallowed for public" do
+      before { project.update(public_builds: false) }
+
+      it { is_expected.to be_allowed_for master }
+      it { is_expected.to be_allowed_for reporter }
+      it { is_expected.to be_allowed_for :admin }
+      it { is_expected.to be_denied_for guest }
+      it { is_expected.to be_denied_for :user }
+      it { is_expected.to be_denied_for :visitor }
+    end
+  end
+
+  describe "GET /:project_path/builds/:id" do
+    let(:commit) { create(:ci_commit, project: project) }
+    let(:build) { create(:ci_build, commit: commit) }
+    subject { namespace_project_build_path(project.namespace, project, build.id) }
+
+    context "when allowed for public" do
+      before { project.update(public_builds: true) }
+
+      it { is_expected.to be_allowed_for master }
+      it { is_expected.to be_allowed_for reporter }
+      it { is_expected.to be_allowed_for :admin }
+      it { is_expected.to be_allowed_for guest }
+      it { is_expected.to be_allowed_for :user }
+      it { is_expected.to be_allowed_for :visitor }
+    end
+
+    context "when disallowed for public" do
+      before { project.update(public_builds: false) }
+
+      it { is_expected.to be_allowed_for master }
+      it { is_expected.to be_allowed_for reporter }
+      it { is_expected.to be_allowed_for :admin }
+      it { is_expected.to be_denied_for guest }
+      it { is_expected.to be_denied_for :user }
+      it { is_expected.to be_denied_for :visitor }
+    end
+  end
+
   describe "GET /:project_path/blob" do
     before do
       commit = project.repository.commit

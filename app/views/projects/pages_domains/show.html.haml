@@ -1,0 +1,30 @@
+- page_title "#{@domain.domain}", 'Pages Domains'
+
+%h3.page-title
+  Pages Domain
+
+.table-holder
+  %table.table
+    %tr
+      %td
+        Domain
+      %td
+        = link_to @domain.domain, @domain.url
+    %tr
+      %td
+        DNS
+      %td
+        %p
+          To access the domain create a new DNS record:
+        %pre
+          #{@domain.domain} CNAME #{@domain.project.namespace.path}.#{Settings.pages.host}.
+    %tr
+      %td
+        Certificate
+      %td
+        - if @domain.certificate_text
+          %pre
+            = @domain.certificate_text
+        - else
+          .light
+            missing

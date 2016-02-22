@@ -2,11 +2,17 @@ image: "ruby:2.2"
 
 services:
   - mysql:latest
-  - postgres:latest
   - redis:latest
+  - elasticsearch:latest
+
+cache:
+  key: "ruby22"
+  paths:
+  - vendor
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  ELASTIC_HOST: "elasticsearch"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -36,21 +42,17 @@ spec:api:
 
 spec:models:
   script:
-    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:models
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
   tags:
     - ruby
     - mysql
-  services:
-    - elasticsearch:latest
 
 spec:lib:
   script:
-    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:lib
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
   tags:
     - ruby
     - mysql
-  services:
-    - elasticsearch:latest
 
 spec:services:
   script:
@@ -69,12 +71,10 @@ spec:benchmark:
 
 spec:other:
   script:
-    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spec:other
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
   tags:
     - ruby
     - mysql
-  services:
-    - elasticsearch:latest
 
 spinach:project:half:
   script:
@@ -85,12 +85,10 @@ spinach:project:half:
 
 spinach:project:rest:
   script:
-    - RAILS_ENV=test SIMPLECOV=true ELASTIC_HOST=elasticsearch bundle exec rake spinach:project:rest
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   tags:
     - ruby
     - mysql
-  services:
-    - elasticsearch:latest
 
 spinach:other:
   script:
@@ -145,23 +143,145 @@ bundler:audit:
 
 # Ruby 2.1 jobs
 
-spec:ruby21:
+spec:feature:ruby21:
   image: ruby:2.1
+  only:
+  - master
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
-  only:
-  - master
 
-spinach:ruby21:
+spec:api:ruby21:
   image: ruby:2.1
+  only:
+  - master
   script:
-    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
   tags:
     - ruby
     - mysql
+
+spec:models:ruby21:
+  image: ruby:2.1
   only:
   - master
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
+  tags:
+    - ruby
+    - mysql
+
+spec:lib:ruby21:
+  image: ruby:2.1
+  only:
+  - master
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
+  tags:
+    - ruby
+    - mysql
+
+spec:services:ruby21:
+  image: ruby:2.1
+  only:
+  - master
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
+  tags:
+    - ruby
+    - mysql
+
+spec:benchmark:ruby21:
+  image: ruby:2.1
+  only:
+  - master
+  script:
+    - RAILS_ENV=test bundle exec rake spec:benchmark
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
+  tags:
+    - ruby
+    - mysql
+  allow_failure: true
+
+spec:other:ruby21:
+  image: ruby:2.1
+  only:
+  - master
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
+  tags:
+    - ruby
+    - mysql
+
+spinach:project:half:ruby21:
+  image: ruby:2.1
+  only:
+  - master
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
+  tags:
+    - ruby
+    - mysql
+
+spinach:project:rest:ruby21:
+  image: ruby:2.1
+  only:
+  - master
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
+  tags:
+    - ruby
+    - mysql
+
+spinach:other:ruby21:
+  image: ruby:2.1
+  only:
+  - master
+  script:
+    - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
+  cache:
+    key: "ruby21"
+    paths:
+    - vendor
+  tags:
+    - ruby
+    - mysql
+

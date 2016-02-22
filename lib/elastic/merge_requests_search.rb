@@ -34,13 +34,28 @@ module Elastic
       end
 
       def as_indexed_json(options = {})
-        as_json(
+        as_json({
+          only: [
+            :id,
+            :iid,
+            :target_branch,
+            :source_branch,
+            :title,
+            :description,
+            :created_at,
+            :updated_at,
+            :state,
+            :merge_status,
+            :source_project_id,
+            :target_project_id,
+            :author_id
+          ],
           include: {
             source_project: { only: :id },
             target_project: { only: :id },
             author:         { only: :id }
           }
-        ).merge({ updated_at_sort: updated_at })
+        }).merge({ updated_at_sort: updated_at })
       end
 
       def self.elastic_search(query, options: {})

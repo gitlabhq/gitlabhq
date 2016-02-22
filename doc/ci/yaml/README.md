@@ -428,8 +428,30 @@ artifacts:
   - binaries/
 ```
 
-The artifacts will be send after a successful build success to GitLab, and will
-be accessible in the GitLab UI to download.
+You may want to create artifacts only for tagged releases to avoid filling the
+build server storage with temporary build artifacts.
+
+Create artifacts only for tags (`default-job` will not create artifacts):
+
+```yaml
+default-job:
+  script:
+    - mvn test -U
+  except:
+    - tags
+
+release-job:
+  script:
+    - mvn package -U
+  artifacts:
+    paths:
+    - target/*.war
+  only:
+    - tags
+```
+
+The artifacts will be sent to GitLab after a successful build and will
+be available for download in the GitLab UI.
 
 ### cache
 

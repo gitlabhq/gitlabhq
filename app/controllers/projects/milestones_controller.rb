@@ -11,11 +11,12 @@ class Projects::MilestonesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @milestones = case params[:state]
-                  when 'all'; @project.milestones.order("state, due_date DESC")
-                  when 'closed'; @project.milestones.closed.order("due_date DESC")
-                  else @project.milestones.active.order("due_date ASC")
-                  end
+    @milestones =
+      case params[:state]
+      when 'all' then @project.milestones.reorder(due_date: :desc, title: :asc)
+      when 'closed' then @project.milestones.closed.reorder(due_date: :desc, title: :asc)
+      else @project.milestones.active.reorder(due_date: :asc, title: :asc)
+      end
 
     @milestones = @milestones.includes(:project)
     @milestones = @milestones.page(params[:page]).per(PER_PAGE)
