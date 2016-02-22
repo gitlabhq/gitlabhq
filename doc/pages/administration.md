@@ -466,7 +466,7 @@ The default is 100MB.
 
 ## Backup
 
-Pages are part of the regular backup so there is nothing to configure.
+Pages are part of the [regular backup][backup] so there is nothing to configure.
 
 ## Security
 
@@ -509,7 +509,6 @@ No new changes.
 
 [8-3-docs]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md
 
----
-
 [reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../../administration/restart_gitlab.md#installations-from-source
+[backup]: ../../raketasks/backup_restore.md
