@@ -151,7 +151,7 @@
   padding: 2px 25px 2px 5px;
   background: #fff image-url('select2.png');
   background-repeat: no-repeat;
-  background-position: calc(100% - 3px) -23px;
+  background-position: right 0px bottom 6px;
   border: 1px solid $input-border;
   @include border-radius($border-radius-default);
   @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
@@ -162,9 +162,11 @@
 }
 
 .select2-search input.select2-active {
-  background: #fff image-url('select2-spinner.gif');
+  background-color: #fff;
+  background-image: image-url('select2-spinner.gif') !important;
   background-repeat: no-repeat;
-  background-position: calc(100% - 5px) 4px;
+  background-position: right 5px center !important;
+  background-size: 16px 16px !important;
 }
 
 /** Branch/tag selector **/
