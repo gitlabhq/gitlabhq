@@ -24,10 +24,14 @@ module MergeRequests
 
       merge_requests.each do |merge_request|
         next unless merge_request.merge_when_build_succeeds?
+        next unless merge_request.mergeable?
 
-        if merge_request.ci_commit && merge_request.ci_commit.success? && merge_request.mergeable?
-          MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id, merge_request.merge_params)
-        end
+        ci_commit = merge_request.ci_commit
+        next unless ci_commit
+        next unless ci_commit.sha == commit_status.sha
+        next unless ci_commit.success?
+
+        MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id, merge_request.merge_params)
       end
     end
 
@@ -50,6 +54,8 @@ module MergeRequests
 
       # This is for ref-less builds
       branches ||= @project.repository.branch_names_contains(commit_status.sha)
+
+      return [] if branches.blank?
 
       merge_requests = @project.origin_merge_requests.opened.where(source_branch: branches).to_a
       merge_requests += @project.fork_merge_requests.opened.where(source_branch: branches).to_a
