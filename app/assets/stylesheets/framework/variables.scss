@@ -101,6 +101,8 @@ $gl-success: $green-normal;
 $gl-info: $blue-normal;
 $gl-warning: $orange-normal;
 $gl-danger: $red-normal;
+$gl-btn-active-background: rgba(0, 0, 0, 0.12);
+$gl-btn-active-gradient: inset 0 0 4px $gl-btn-active-background;
 
 /*
  * Commit Diff Colors

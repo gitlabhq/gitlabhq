@@ -32,11 +32,10 @@
       margin-right: 15px;
     }
 
-
     &:hover {
       background-color: $gray-dark;
       border-color: $border-white-normal;
-      color: #313236;
+      color: $gl-text-color;
     }
   }
 }
@@ -61,7 +60,7 @@
 
 .select2-results li.select2-result-with-children > .select2-result-label {
   font-weight: 600;
-  color: #313236;
+  color: $gl-text-color;
 }
 
 .select2-container-active {
@@ -76,7 +75,7 @@
     outline: 0;
     background-image: none;
     background-color: $white-dark;
-    @include box-shadow (inset 0 0 4px rgba(0, 0, 0, 0.12));
+    @include box-shadow($gl-btn-active-gradient);
   }
 }
 
@@ -117,7 +116,7 @@
   &.select2-container-active .select2-choices,
   &.select2-dropdown-open .select2-choices {
     border-color: $border-white-normal;
-    @include box-shadow (inset 0 0 4px rgba(0, 0, 0, 0.12));
+    @include box-shadow($gl-btn-active-gradient);
   }
 }
 
