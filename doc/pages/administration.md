@@ -414,20 +414,20 @@ not remove the backslashes.
 If your GitLab pages domain is `example.io`, replace:
 
 ```bash
-server_name ~^(?<group>.*)\.YOUR_GITLAB_PAGES\.DOMAIN$;
+server_name ~^.*\.YOUR_GITLAB_PAGES\.DOMAIN$;
 ```
 
 with:
 
 ```
-server_name ~^(?<group>.*)\.example\.io$;
+server_name ~^.*\.example\.io$;
 ```
 
-If you are using a subdomain, make sure to escape all dots (`.`) with a
-backslash (\). For example `pages.example.io` would be:
+If you are using a subdomain, make sure to escape all dots (`.`) except from
+the first one with a backslash (\). For example `pages.example.io` would be:
 
 ```
-server_name ~^(?<group>.*)\.pages\.example\.io$;
+server_name ~^.*\.pages\.example\.io$;
 ```
 
 ## Set maximum pages size
