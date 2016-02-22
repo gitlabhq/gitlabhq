@@ -62,8 +62,8 @@
       %span
         Background Jobs
   = nav_link(controller: :appearances) do
-    = link_to admin_appearances_path do
-      %i.fa.fa-image
+    = link_to admin_appearances_path, title: 'Appearances' do
+      = icon('image')
       %span
         Appearance
 
