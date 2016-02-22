@@ -72,9 +72,9 @@ and/or `443`. For that reason, there is some flexibility in the way which you
 can set it up, so you basically have three choices:
 
 1. Run the pages daemon in the same server as GitLab, listening on a secondary IP
-1. Run the pages daemon in a separate server. In that case, the Pages [`path`]
-   must also be present in the server that the pages daemon is installed, so
-   you will have to share it via network.
+1. Run the pages daemon in a separate server. In that case, the
+   [Pages path](#change-storage-path) must also be present in the server that
+   the pages daemon is installed, so you will have to share it via network.
 1. Run the pages daemon in the same server as GitLab, listening on the same IP
    but on different ports. In that case, you will have to proxy the traffic with
    a loadbalancer. If you choose that route note that you should use TCP load
@@ -84,8 +84,6 @@ can set it up, so you basically have three choices:
 
 In this document, we will proceed assuming the first option. First let's
 install the pages daemon.
-
-[`path`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/config/gitlab.yml.example#L155
 
 ### Install the Pages daemon
 
@@ -404,6 +402,7 @@ you need to change **all** NGINX configs to listen on the first IP address.
     ```
     nginx['listen_addresses'] = ['1.1.1.1']
     ```
+
 1. [Reconfigure GitLab][reconfigure]
 
 ### NGINX caveats
@@ -438,22 +437,32 @@ The default is 100MB.
 
 ## Change storage path
 
-Pages are stored by default in `/home/git/gitlab/shared/pages`.
-If you wish to store them in another location you must set it up in
-`gitlab.yml` under the `pages` section:
+**Source installations:**
 
-```yaml
-pages:
-  enabled: true
-  # The location where pages are stored (default: shared/pages).
-  path: /mnt/storage/pages
-```
+1. Pages are stored by default in `/home/git/gitlab/shared/pages`.
+   If you wish to store them in another location you must set it up in
+   `gitlab.yml` under the `pages` section:
 
-Restart GitLab for the changes to take effect:
+     ```yaml
+     pages:
+       enabled: true
+       # The location where pages are stored (default: shared/pages).
+       path: /mnt/storage/pages
+     ```
 
-```bash
-sudo service gitlab restart
-```
+1. [Restart GitLab][restart]
+
+**Omnibus installations:**
+
+1. Pages are stored by default in `/var/opt/gitlab/gitlab-rails/shared/pages`.
+   If you wish to store them in another location you must set it up in
+   `/etc/gitlab/gitlab.rb`:
+
+     ```ruby
+     gitlab_rails['pages_path'] = "/mnt/storage/pages"
+     ```
+
+1. [Reconfigure GitLab][reconfigure]
 
 ## Backup
 
