@@ -232,7 +232,7 @@ class Commit
   end
 
   def reverts_commit?(commit)
-    description.include?(commit.revert_description)
+    description? && description.include?(commit.revert_description)
   end
 
   def merge_commit?
