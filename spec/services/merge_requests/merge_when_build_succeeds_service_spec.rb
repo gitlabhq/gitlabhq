@@ -54,14 +54,68 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
   end
 
   describe "#trigger" do
-    let(:build)     { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
+    context 'build with ref' do
+      let(:build)     { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
 
-    it "merges all merge requests with merge when build succeeds enabled" do
-      allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
-      allow(ci_commit).to receive(:success?).and_return(true)
+      it "merges all merge requests with merge when build succeeds enabled" do
+        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
+        allow(ci_commit).to receive(:success?).and_return(true)
 
-      expect(MergeWorker).to receive(:perform_async)
-      service.trigger(build)
+        expect(MergeWorker).to receive(:perform_async)
+        service.trigger(build)
+      end
+    end
+
+    context 'commit status without ref' do
+      let(:commit_status) { create(:generic_commit_status, status: 'success') }
+
+      it "doesn't merge a requests for status on other branch" do
+        allow(project.repository).to receive(:branch_names_contains).with(commit_status.sha).and_return([])
+
+        expect(MergeWorker).to_not receive(:perform_async)
+        service.trigger(commit_status)
+      end
+
+      it 'discovers branches and merges all merge requests when status is success' do
+        allow(project.repository).to receive(:branch_names_contains).
+          with(commit_status.sha).and_return([mr_merge_if_green_enabled.source_branch])
+        allow(ci_commit).to receive(:success?).and_return(true)
+        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
+        allow(ci_commit).to receive(:success?).and_return(true)
+
+        expect(MergeWorker).to receive(:perform_async)
+        service.trigger(commit_status)
+      end
+    end
+
+    context 'properly handles multiple stages' do
+      let(:ref) { mr_merge_if_green_enabled.source_branch }
+      let(:build) { create(:ci_build, commit: ci_commit, ref: ref, name: 'build', stage: 'build') }
+      let(:test) { create(:ci_build, commit: ci_commit, ref: ref, name: 'test', stage: 'test') }
+
+      before do
+        # This behavior of MergeRequest: we instantiate a new object
+        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_wrap_original do
+          Ci::Commit.find(ci_commit.id)
+        end
+
+        # We create test after the build
+        allow(ci_commit).to receive(:create_next_builds).and_wrap_original do
+          test
+        end
+      end
+
+      it "doesn't merge if some stages failed" do
+        expect(MergeWorker).to_not receive(:perform_async)
+        build.success
+        test.drop
+      end
+
+      it 'merge when all stages succeeded' do
+        expect(MergeWorker).to receive(:perform_async)
+        build.success
+        test.success
+      end
     end
   end
 
