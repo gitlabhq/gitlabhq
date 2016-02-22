@@ -34,17 +34,14 @@ module Issues
     end
 
     def move?
-      return false unless @project_new
-      return false unless @issue_new
-      return false unless can_move?
-
-      true
+      @project_new && can_move?
     end
 
     private
 
     def can_move?
-      true
+      can?(@current_user, :move_issue, @project_old) &&
+        can?(@current_user, :move_issue, @project_new)
     end
 
     def open_new_issue

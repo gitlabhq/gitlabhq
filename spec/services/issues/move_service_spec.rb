@@ -5,14 +5,25 @@ describe Issues::MoveService, services: true do
   let(:title) { 'Some issue' }
   let(:description) { 'Some issue description' }
   let(:old_issue) { create(:issue, title: title, description: description) }
-  let(:current_project) { old_issue.project }
+  let(:old_project) { old_issue.project }
   let(:new_project) { create(:project) }
-  let(:move_params) { { 'move_to_project_id' => new_project.id } }
-  let(:move_service) { described_class.new(current_project, user, move_params, old_issue) }
+  let(:move_service) { described_class.new(old_project, user, move_params, old_issue) }
 
-  before { current_project.team << [user, :master] }
+  shared_context 'issue move requested' do
+    let(:move_params) { { 'move_to_project_id' => new_project.id } }
+  end
 
+  shared_context 'user can move issue' do
+    before do
+      old_project.team << [user, :master]
+      new_project.team << [user, :master]
+    end
+  end
+    
   context 'issue movable' do
+    include_context 'issue move requested'
+    include_context 'user can move issue'
+
     describe '#move?' do
       subject { move_service.move? }
       it { is_expected.to be_truthy }
@@ -53,7 +64,7 @@ describe Issues::MoveService, services: true do
         end
 
         before do
-          note_params = { noteable: old_issue, project: current_project, author: user}
+          note_params = { noteable: old_issue, project: old_project, author: user}
           create(:system_note, note_params.merge(note: note_contents.first))
           create(:note, note_params.merge(note: note_contents.second))
           create(:system_note, note_params.merge(note: note_contents.third))
@@ -74,12 +85,51 @@ describe Issues::MoveService, services: true do
     end
   end
 
-  context 'issue not movable' do
-    context 'move not requested' do
-      let(:move_params) { {} }
+  context 'issue move not requested' do
+    let(:move_params) { {} }
 
-      describe '#move?' do
-        subject { move_service.move? }
+    describe '#move?' do
+      subject { move_service.move? }
+
+      context 'user do not have permissions to move issue' do
+        it { is_expected.to be_falsey }
+      end
+
+      context 'user has permissions to move issue' do
+        include_context 'user can move issue'
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
+
+  describe 'move permissions' do
+    include_context 'issue move requested'
+
+    describe '#move?' do
+      subject { move_service.move? }
+
+      context 'user is master in both projects' do
+        include_context 'user can move issue'
+        it { is_expected.to be_truthy }
+      end
+
+      context 'user is master only in new project' do
+        before { new_project.team << [user, :master] }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'user is master only in old project' do
+        before { old_project.team << [user, :master] }
+        it { is_expected.to be_falsey }
+      end
+
+      context 'user is master in one project and developer in another' do
+        before do
+          new_project.team << [user, :developer]
+          old_project.team << [user, :master]
+        end
+
         it { is_expected.to be_falsey }
       end
     end
