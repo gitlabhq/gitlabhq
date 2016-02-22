@@ -27,6 +27,7 @@ probably want to read the [user documentation](README.md).
     - [The GitLab Pages daemon and the case of custom domains](#the-gitlab-pages-daemon-and-the-case-of-custom-domains)
     - [Install the Pages daemon](#install-the-pages-daemon)
 - [Configuration](#configuration)
+    - [Configuration prerequisites](#configuration-prerequisites)
     - [Configuration scenarios](#configuration-scenarios)
     - [DNS configuration](#dns-configuration)
 - [Setting up GitLab Pages](#setting-up-gitlab-pages)
@@ -108,13 +109,13 @@ The `gitlab-pages` daemon is included in the Omnibus package.
 ## Configuration
 
 There are multiple ways to set up GitLab Pages according to what URL scheme you
-are willing to support. Below you will find all possible scenarios to choose
-from.
+are willing to support.
 
-### Configuration scenarios
+### Configuration prerequisites
 
-Before proceeding with setting up GitLab Pages, you have to decide which route
-you want to take. Note that in either scenario, you need:
+In the next section you will find all possible scenarios to choose from.
+
+In either scenario, you will need:
 
 1. To use the [GitLab Pages daemon](#the-gitlab-pages-daemon)
 1. A separate domain
@@ -124,6 +125,11 @@ you want to take. Note that in either scenario, you need:
    pages under HTTPS
 1. (Optional but recommended) [Shared runners](../ci/runners/README.md) so that
    your users don't have to bring their own
+
+### Configuration scenarios
+
+Before proceeding with setting up GitLab Pages, you have to decide which route
+you want to take.
 
 The possible scenarios are depicted in the table below.
 
