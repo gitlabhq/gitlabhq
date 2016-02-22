@@ -3,7 +3,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.5.1
   - Fix error 500 on some merged merge requests
   - Fix error 500 when trying to mark an already done todo as "done"
-  - Fix Side-by-side view after loading diff results
+  - Fix ther merge request side-by-side view after loading diff results
+  - Fix an issue causing the content of the issuable sidebar to disappear
   - Fix an issue where MRs weren't sortable
   - Fix a set of small UI glitches in project, profile, and wiki pages
   - Issues can now be dragged & dropped into empty milestone lists. This is also
