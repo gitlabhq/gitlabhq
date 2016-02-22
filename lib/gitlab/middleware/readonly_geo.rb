@@ -49,7 +49,8 @@ module Gitlab
       end
 
       def whitelisted_routes
-        logout_route || @request.path.include?('api/v3/geo/refresh_projects')
+        whitelisted = %w(api/v3/internal api/v3/geo/refresh_projects)
+        logout_route || whitelisted.any? { |path| @request.path.include?(path) }
       end
 
       def logout_route
