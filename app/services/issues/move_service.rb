@@ -23,8 +23,8 @@ module Issues
 
       # Old issue tasks
       #
-      close_old_issue
       add_moved_to_note
+      close_old_issue
 
       # Notifications
       #
@@ -45,20 +45,18 @@ module Issues
     end
 
     def open_new_issue
-      @issue_new.project = @project_new
-      @issue_new.save!
+      @issue_new.update(project: @project_new)
     end
 
     def rewrite_notes
       @issue_old.notes.find_each do |note|
-        note_new = note.dup
-        note_new.project = @project_new
-        note_new.noteable = @issue_new
-        note_new.save!
+        new_note = note.dup
+        new_note.update(project: @project_new, noteable: @issue_new)
       end
     end
 
     def close_old_issue
+      @issue_old.update(state: :closed)
     end
 
     def notify_participants

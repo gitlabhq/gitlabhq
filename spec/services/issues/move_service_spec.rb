@@ -56,6 +56,15 @@ describe Issues::MoveService, services: true do
         it 'adds system note to new issue at the end' do
           expect(new_issue.notes.last.note).to match /^Moved from/
         end
+
+        it 'closes old issue' do
+          expect(old_issue.closed?).to be true
+        end
+
+        it 'persists changes to old and new issue' do
+          expect(new_issue.changed?).to be false
+          expect(old_issue.changed?).to be false
+        end
       end
 
       context 'notes exist' do
