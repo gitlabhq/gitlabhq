@@ -16,12 +16,11 @@
     @include border-radius($border-radius-default);
 
     .select2-arrow {
-      width: auto;
       background-image: none;
       background-color: transparent;
       border: none;
-      top: calc(50% - 12px);
-      right: 8px;
+      padding-top: 6px;
+      padding-right: 10px;
 
       b {
         @extend .caret;
