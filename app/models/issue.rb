@@ -87,11 +87,16 @@ class Issue < ActiveRecord::Base
   end
 
   def referenced_merge_requests(current_user = nil)
-    Gitlab::ReferenceExtractor.lazily do
-      [self, *notes].flat_map do |note|
-        note.all_references(current_user).merge_requests
-      end
-    end.sort_by(&:iid)
+    if defined?(@referenced_merge_requests)
+      @referenced_merge_requests[current_user] ||=  Gitlab::ReferenceExtractor.lazily do
+                                                      [self, *notes].flat_map do |note|
+                                                        note.all_references(current_user).merge_requests
+                                                      end
+                                                    end.sort_by(&:iid).uniq
+    else
+      @referenced_merge_requests = {}
+      referenced_merge_requests(current_user)
+    end
   end
 
   def related_branches
@@ -132,7 +137,7 @@ class Issue < ActiveRecord::Base
   def can_be_worked_on?(current_user)
     !self.closed? &&
       !self.project.forked? &&
-      referenced_merge_requests(current_user).none? { |mr| mr.closes_issue?(self) } &&
-      related_branches.empty?
+      self.related_branches.empty? &&
+      self.referenced_merge_requests(current_user).empty?
   end
 end

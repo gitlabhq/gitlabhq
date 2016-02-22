@@ -59,6 +59,7 @@ v 8.5.3
   - Show commit message in JIRA mention comment
   - Makes issue page and merge request page usable on mobile browsers.
   - Improved UI for profile settings
+  - New branch button appears on issues where applicable
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
@@ -175,8 +176,6 @@ v 8.5.0
   - Add label description (Nuttanart Pornprasitsakul)
   - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
   - Add Todos
-  - User project limit is reached notice is hidden if the projects limit is zero 
-  - New branch button appears on issues where applicable (Zeger-Jan van de Weg)
 
 v 8.4.5
   - No CE-specific changes

@@ -11,5 +11,5 @@
             = render_ci_status(ci_commit)
         %span.related-branch-info
           %strong
-            = link_to namespace_project_compare_path(@project.namespace, @project, from: @project.default_branch, to: branch) do
+            = link_to namespace_project_compare_path(@project.namespace, @project, from: @project.default_branch, to: branch), class: "label-branch" do
               = branch

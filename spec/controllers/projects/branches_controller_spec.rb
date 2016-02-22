@@ -66,19 +66,28 @@ describe Projects::BranchesController do
 
     describe "created from the new branch button on issues" do
       let(:branch) { "1-feature-branch" }
-      let!(:issue) { create(:issue) }
+      let!(:issue) { create(:issue, project: project) }
 
-      before do
+
+      it 'redirects' do
         post :create,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
           branch_name: branch,
-          issue_id: issue.id
-        end
+          issue_iid: issue.iid
 
-      it 'redirects' do
         expect(subject).
           to redirect_to("/#{project.path_with_namespace}/tree/1-feature-branch")
+      end
+
+      it 'posts a system note' do
+        expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, "1-feature-branch")
+
+        post :create,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          branch_name: branch,
+          issue_iid: issue.iid
       end
 
     end

@@ -130,6 +130,15 @@ describe Issue, models: true do
     end
   end
 
+  describe '#related_branches' do
+    it "should " do
+      allow(subject.project.repository).to receive(:branch_names).
+                                    and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
+
+      expect(subject.related_branches).to eq [subject.to_branch_name]
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:issue) }
 

@@ -27,10 +27,9 @@ class Projects::BranchesController < Projects::ApplicationController
     result = CreateBranchService.new(project, current_user).
         execute(branch_name, ref)
 
-    if params[:issue_id]
-      issue = Issue.where(id: params[:issue_id], project: @project).limit(1).first
-
-      SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name)
+    if params[:issue_iid]
+      issue = @project.issues.find_by(iid: params[:issue_iid])
+      SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
     end
 
     if result[:status] == :success
