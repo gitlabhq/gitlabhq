@@ -56,5 +56,6 @@ module API
     mount Triggers
     mount Builds
     mount Variables
+    mount Runners
   end
 end

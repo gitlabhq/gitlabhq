@@ -5,6 +5,15 @@ describe Repository, models: true do
 
   let(:repository) { create(:project).repository }
   let(:user) { create(:user) }
+  let(:commit_options) do
+    author = repository.user_to_committer(user)
+    { message: 'Test message', committer: author, author: author }
+  end
+  let(:merge_commit) do
+    source_sha = repository.find_branch('feature').target
+    merge_commit_id = repository.merge(user, source_sha, 'master', commit_options)
+    repository.commit(merge_commit_id)
+  end
 
   describe :branch_names_contains do
     subject { repository.branch_names_contains(sample_commit.id) }
@@ -200,12 +209,21 @@ describe Repository, models: true do
 
   describe :commit_with_hooks do
     context 'when pre hooks were successful' do
-      it 'should run without errors' do
-        expect_any_instance_of(GitHooksService).to receive(:execute).and_return(true)
+      before do
+        expect_any_instance_of(GitHooksService).to receive(:execute).
+          and_return(true)
+      end
 
+      it 'should run without errors' do
         expect do
           repository.commit_with_hooks(user, 'feature') { sample_commit.id }
         end.not_to raise_error
+      end
+
+      it 'should ensure the autocrlf Git option is set to :input' do
+        expect(repository).to receive(:update_autocrlf_option)
+
+        repository.commit_with_hooks(user, 'feature') { sample_commit.id }
       end
     end
 
@@ -217,6 +235,25 @@ describe Repository, models: true do
           repository.commit_with_hooks(user, 'feature') { sample_commit.id }
         end.to raise_error(GitHooksService::PreReceiveError)
       end
+    end
+  end
+
+  describe '#exists?' do
+    it 'returns true when a repository exists' do
+      expect(repository.exists?).to eq(true)
+    end
+
+    it 'returns false when a repository does not exist' do
+      expect(repository.raw_repository).to receive(:rugged).
+        and_raise(Gitlab::Git::Repository::NoRepository)
+
+      expect(repository.exists?).to eq(false)
+    end
+
+    it 'returns false when there is no namespace' do
+      allow(repository).to receive(:path_with_namespace).and_return(nil)
+
+      expect(repository.exists?).to eq(false)
     end
   end
 
@@ -245,6 +282,33 @@ describe Repository, models: true do
 
         repository.has_visible_content?
         repository.has_visible_content?
+      end
+    end
+  end
+
+  describe '#update_autocrlf_option' do
+    describe 'when autocrlf is not already set to :input' do
+      before do
+        repository.raw_repository.autocrlf = true
+      end
+
+      it 'sets autocrlf to :input' do
+        repository.update_autocrlf_option
+
+        expect(repository.raw_repository.autocrlf).to eq(:input)
+      end
+    end
+
+    describe 'when autocrlf is already set to :input' do
+      before do
+        repository.raw_repository.autocrlf = :input
+      end
+
+      it 'does nothing' do
+        expect(repository.raw_repository).to_not receive(:autocrlf=).
+          with(:input)
+
+        repository.update_autocrlf_option
       end
     end
   end
@@ -296,6 +360,20 @@ describe Repository, models: true do
       expect(repository).to receive(:expire_branch_cache).with('master')
 
       repository.expire_cache('master')
+    end
+
+    it 'expires the emptiness cache for an empty repository' do
+      expect(repository).to receive(:empty?).and_return(true)
+      expect(repository).to receive(:expire_emptiness_caches)
+
+      repository.expire_cache
+    end
+
+    it 'does not expire the emptiness cache for a non-empty repository' do
+      expect(repository).to receive(:empty?).and_return(false)
+      expect(repository).to_not receive(:expire_emptiness_caches)
+
+      repository.expire_cache
     end
   end
 
@@ -370,5 +448,20 @@ describe Repository, models: true do
     subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", nil, 100, 0, true).map{ |k| k.id } }
 
     it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
+  end
+
+  describe '#merge' do
+    it 'should merge the code and return the commit id' do
+      expect(merge_commit).to be_present
+      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+    end
+  end
+
+  describe '#revert_merge' do
+    it 'should revert the changes' do
+      repository.revert(user, merge_commit, 'master')
+
+      expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+    end
   end
 end

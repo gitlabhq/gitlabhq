@@ -15,3 +15,5 @@ class @IssuableContext
       block.find('.selectbox').show()
       block.find('.value').hide()
       block.find('.js-select2').select2("open")
+
+    $(".right-sidebar").niceScroll()

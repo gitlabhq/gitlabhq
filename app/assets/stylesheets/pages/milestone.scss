@@ -11,3 +11,60 @@ li.milestone {
     height: 6px;
   }
 }
+
+.milestone-content {
+  .issues-count {
+    margin-right: 17px;
+    float: right;
+    width: 105px;
+  }
+
+  .issue-row {
+    .color-label {
+      border-radius: 2px;
+      padding: 3px !important;
+    }
+
+    // Issue title
+    span a {
+      color: rgba(0,0,0,0.64);
+    }
+  }
+}
+
+.milestone-summary {
+  margin-bottom: 25px;
+
+  .milestone-stat {
+    margin-right: 10px;
+  }
+
+  .time-elapsed {
+    color: $orange-light;
+  }
+}
+
+.issues-sortable-list {
+  .issue-detail {
+    display: block;
+
+    .issue-number{
+      color: rgba(0,0,0,0.44);
+      margin-right: 5px;
+    }
+    .color-label {
+      padding: 6px 10px;
+      margin-right: 7px;
+      margin-top: 10px;
+    }
+
+    .avatar {
+      float: none;
+    }
+  }
+}
+
+.milestone-detail {
+  border-bottom: 1px solid $border-color;
+  padding: 20px 0;
+}

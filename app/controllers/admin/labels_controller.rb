@@ -53,6 +53,6 @@ class Admin::LabelsController < Admin::ApplicationController
   end
 
   def label_params
-    params[:label].permit(:title, :color)
+    params[:label].permit(:title, :description, :color)
   end
 end

@@ -25,21 +25,13 @@
           = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
 
       - upvotes, downvotes = merge_request.upvotes, merge_request.downvotes
-      - if upvotes > 0 || downvotes > 0
+      - if upvotes > 0
         %li
-          = icon('thumbs-up')
-          = upvotes
-      - else
-        %li{ class: 'merge-request-no-votes' }
           = icon('thumbs-up')
           = upvotes
 
-      - if upvotes > 0 || downvotes > 0
+      - if downvotes > 0
         %li
-          = icon('thumbs-down')
-          = downvotes
-      - else
-        %li{ class: 'merge-request-no-votes' }
           = icon('thumbs-down')
           = downvotes
 

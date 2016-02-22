@@ -123,6 +123,37 @@ module CommitsHelper
     )
   end
 
+  def revert_commit_link(commit, continue_to_path, btn_class: nil)
+    return unless current_user
+
+    tooltip = "Revert this #{revert_commit_type(commit)} in a new merge request"
+
+    if can_collaborate_with_project?
+      content_tag :span, 'data-toggle' => 'modal', 'data-target' => '#modal-revert-commit' do
+        link_to 'Revert', '#modal-revert-commit', 'data-toggle' => 'tooltip', title: tooltip, class: "btn btn-default btn-grouped btn-#{btn_class}"
+      end
+    elsif can?(current_user, :fork_project, @project)
+      continue_params = {
+        to: continue_to_path,
+        notice: edit_in_new_fork_notice + ' Try to revert this commit again.',
+        notice_now: edit_in_new_fork_notice_now
+      }
+      fork_path = namespace_project_forks_path(@project.namespace, @project,
+        namespace_key: current_user.namespace.id,
+        continue: continue_params)
+
+      link_to 'Revert', fork_path, class: 'btn btn-grouped btn-close', method: :post, 'data-toggle' => 'tooltip', title: tooltip
+    end
+  end
+
+  def revert_commit_type(commit)
+    if commit.merged_merge_request
+      'merge request'
+    else
+      'commit'
+    end
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and

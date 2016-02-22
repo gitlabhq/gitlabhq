@@ -64,6 +64,7 @@ class @Milestone
   constructor: ->
     @bindIssuesSorting()
     @bindMergeRequestSorting()
+    @bindTabsSwitching
 
   bindIssuesSorting: ->
     $("#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed").sortable(
@@ -122,3 +123,12 @@ class @Milestone
         Milestone.updateMergeRequest(ui.item, merge_request_url, data)
 
     ).disableSelection()
+
+  bindMergeRequestSorting: ->
+    $('a[data-toggle="tab"]').on 'show.bs.tab', (e) ->
+      currentTabClass  = $(e.target).data('show')
+      previousTabClass =  $(e.relatedTarget).data('show')
+
+      $(previousTabClass).hide()
+      $(currentTabClass).removeClass('hidden')
+      $(currentTabClass).show()

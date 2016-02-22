@@ -73,21 +73,16 @@
       font-weight: normal;
     }
 
+    .visibility-icon {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 18px;
+      color: $gray;
+    }
+
     p {
       padding: 0 $gl-padding;
       color: #5c5d5e;
-    }
-  }
-
-  .visibility-level-label {
-    @extend .btn;
-    @extend .btn-gray;
-
-    color: $gray;
-    cursor: default;
-
-    i {
-      color: inherit;
     }
   }
 

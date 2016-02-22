@@ -68,14 +68,24 @@ describe ProjectTeam, models: true do
   end
 
   describe "#human_max_access" do
-    it "return master role" do
-      user = create :user
-      group = create :group
-      group.add_users([user.id], GroupMember::MASTER)
-      project = create(:project, namespace: group)
-      project.team << [user, :guest]
+    it 'returns Master role' do
+      user = create(:user)
+      group = create(:group)
+      group.add_master(user)
 
-      expect(project.team.human_max_access(user.id)).to eq("Master")
+      project = build_stubbed(:empty_project, namespace: group)
+
+      expect(project.team.human_max_access(user.id)).to eq 'Master'
+    end
+
+    it 'returns Owner role' do
+      user = create(:user)
+      group = create(:group)
+      group.add_owner(user)
+
+      project = build_stubbed(:empty_project, namespace: group)
+
+      expect(project.team.human_max_access(user.id)).to eq 'Owner'
     end
   end
 end
