@@ -24,6 +24,7 @@ probably want to read the [user documentation](README.md).
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [The GitLab Pages daemon](#the-gitlab-pages-daemon)
+    - [The GitLab Pages daemon and the case of custom domains](#the-gitlab-pages-daemon-and-the-case-of-custom-domains)
     - [Install the Pages daemon](#install-the-pages-daemon)
 - [Configuration](#configuration)
     - [Configuration scenarios](#configuration-scenarios)
@@ -61,7 +62,7 @@ Here is a brief list with what it is supported when using the pages daemon:
 You are encouraged to read its [README][pages-readme] to fully understand how
 it works.
 
----
+### The GitLab Pages daemon and the case of custom domains
 
 In the case of custom domains, the Pages daemon needs to listen on ports `80`
 and/or `443`. For that reason, there is some flexibility in the way which you
