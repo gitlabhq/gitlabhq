@@ -1,5 +1,9 @@
 # Runners API
 
+> [Introduced][ce-2640] in GitLab 8.5
+
+[ce-2640]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2640
+
 ## List owned runners
 
 Get a list of specific runners available to the user.

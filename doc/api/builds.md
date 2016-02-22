@@ -257,6 +257,8 @@ Example of response
 
 ## Get build artifacts
 
+> [Introduced][ce-2893] in GitLab 8.5
+
 Get build artifacts of a project
 
 ```
@@ -278,6 +280,8 @@ Response:
 |-----------|---------------------------------|
 | 200       | Serves the artifacts file       |
 | 404       | Build not found or no artifacts |
+
+[ce-2893]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2893
 
 ## Cancel a build
 
