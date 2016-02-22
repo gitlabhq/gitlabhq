@@ -13,7 +13,7 @@ GET /projects/:id/keys
 | `id` | integer | yes | The ID of the project |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/keys"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/keys"
 ```
 
 Example response:
@@ -51,7 +51,7 @@ Parameters:
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/keys/11"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/keys/11"
 ```
 
 Example response:
@@ -83,7 +83,7 @@ POST /projects/:id/keys
 | `key`   | string  | yes | New deploy key |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA..."}' "https://gitlab.example.com/api/v3/projects/5/keys/"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA..."}' "https://gitlab.com/api/v3/projects/5/keys/"
 ```
 
 Example response:
@@ -111,7 +111,7 @@ DELETE /projects/:id/keys/:key_id
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/keys/13"
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/keys/13"
 ```
 
 Example response:

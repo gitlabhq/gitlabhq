@@ -33,7 +33,7 @@ GET /issues?labels=foo,bar&state=opened
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/issues
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/issues
 ```
 
 Example response:
@@ -46,7 +46,7 @@ Example response:
       "author" : {
          "state" : "active",
          "id" : 18,
-         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "web_url" : "https://gitlab.com/u/eileen.lowe",
          "name" : "Alexandra Bashirian",
          "avatar_url" : null,
          "username" : "eileen.lowe"
@@ -67,7 +67,7 @@ Example response:
          "state" : "active",
          "id" : 1,
          "name" : "Administrator",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.com/u/root",
          "avatar_url" : null,
          "username" : "root"
       },
@@ -109,7 +109,7 @@ GET /projects/:id/issues?iid=42
 
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/4/issues
 ```
 
 Example response:
@@ -131,7 +131,7 @@ Example response:
       },
       "author" : {
          "state" : "active",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.com/u/root",
          "avatar_url" : null,
          "username" : "root",
          "id" : 1,
@@ -142,7 +142,7 @@ Example response:
       "iid" : 1,
       "assignee" : {
          "avatar_url" : null,
-         "web_url" : "https://gitlab.example.com/u/lennie",
+         "web_url" : "https://gitlab.com/u/lennie",
          "state" : "active",
          "username" : "lennie",
          "id" : 9,
@@ -171,7 +171,7 @@ GET /projects/:id/issues/:issue_id
 | `issue_id`| integer | yes   | The ID of a project's issue |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/41
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/4/issues/41
 ```
 
 Example response:
@@ -192,7 +192,7 @@ Example response:
    },
    "author" : {
       "state" : "active",
-      "web_url" : "https://gitlab.example.com/u/root",
+      "web_url" : "https://gitlab.com/u/root",
       "avatar_url" : null,
       "username" : "root",
       "id" : 1,
@@ -203,7 +203,7 @@ Example response:
    "iid" : 1,
    "assignee" : {
       "avatar_url" : null,
-      "web_url" : "https://gitlab.example.com/u/lennie",
+      "web_url" : "https://gitlab.com/u/lennie",
       "state" : "active",
       "username" : "lennie",
       "id" : 9,
@@ -239,7 +239,7 @@ POST /projects/:id/issues
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
 ```
 
 Example response:
@@ -260,7 +260,7 @@ Example response:
       "name" : "Alexandra Bashirian",
       "avatar_url" : null,
       "state" : "active",
-      "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+      "web_url" : "https://gitlab.com/u/eileen.lowe",
       "id" : 18,
       "username" : "eileen.lowe"
    },
@@ -295,7 +295,7 @@ PUT /projects/:id/issues/:issue_id
 | `state_event`   | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it |
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/4/issues/85?state_event=close
 ```
 
 Example response:
@@ -309,7 +309,7 @@ Example response:
       "username" : "eileen.lowe",
       "id" : 18,
       "state" : "active",
-      "web_url" : "https://gitlab.example.com/u/eileen.lowe"
+      "web_url" : "https://gitlab.com/u/eileen.lowe"
    },
    "state" : "closed",
    "title" : "Issues with auth",

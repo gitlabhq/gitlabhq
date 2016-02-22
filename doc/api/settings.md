@@ -13,7 +13,7 @@ GET /application/settings
 ```
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/application/settings
 ```
 
 Example response:
@@ -68,7 +68,7 @@ PUT /application/settings
 | `after_sign_out_path` | string | no | Where to redirect users after logout |
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
 ```
 
 Example response:

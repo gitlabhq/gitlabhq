@@ -14,7 +14,7 @@ GET /projects/:id/repository/commits
 | `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/repository/commits"
 ```
 
 Example response:
@@ -60,7 +60,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/repository/commits/master
 ```
 
 Example response:
@@ -99,7 +99,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/diff"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/repository/commits/master/diff"
 ```
 
 Example response:
@@ -135,7 +135,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/comments"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/5/repository/commits/master/comments"
 ```
 
 Example response:
@@ -188,7 +188,7 @@ POST /projects/:id/repository/commits/:sha/comments
 | `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -F "note=Nice picture man\!" -F "path=dudeism.md" -F "line=11" -F "line_type=new" https://gitlab.example.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -F "note=Nice picture man\!" -F "path=dudeism.md" -F "line=11" -F "line_type=new" https://gitlab.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
 ```
 
 Example response:
@@ -196,8 +196,8 @@ Example response:
 ```json
 {
    "author" : {
-      "web_url" : "https://gitlab.example.com/u/thedude",
-      "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
+      "web_url" : "https://gitlab.com/u/thedude",
+      "avatar_url" : "https://gitlab.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
       "username" : "thedude",
       "state" : "active",
       "name" : "Jeff Lebowski",
@@ -234,7 +234,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
 ```
 
 Example response:
@@ -252,14 +252,14 @@ Example response:
       "author" : {
          "username" : "thedude",
          "state" : "active",
-         "web_url" : "https://gitlab.example.com/u/thedude",
-         "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
+         "web_url" : "https://gitlab.com/u/thedude",
+         "avatar_url" : "https://gitlab.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
          "id" : 28,
          "name" : "Jeff Lebowski"
       },
       "description" : null,
       "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
-      "target_url" : "https://gitlab.example.com/thedude/gitlab-ce/builds/91",
+      "target_url" : "https://gitlab.com/thedude/gitlab-ce/builds/91",
       "finished_at" : null,
       "id" : 91,
       "ref" : "master"
@@ -270,7 +270,7 @@ Example response:
       "allow_failure" : false,
       "status" : "pending",
       "created_at" : "2016-01-19T08:40:25.832Z",
-      "target_url" : "https://gitlab.example.com/thedude/gitlab-ce/builds/90",
+      "target_url" : "https://gitlab.com/thedude/gitlab-ce/builds/90",
       "id" : 90,
       "finished_at" : null,
       "ref" : "master",
@@ -279,9 +279,9 @@ Example response:
          "id" : 28,
          "name" : "Jeff Lebowski",
          "username" : "thedude",
-         "web_url" : "https://gitlab.example.com/u/thedude",
+         "web_url" : "https://gitlab.com/u/thedude",
          "state" : "active",
-         "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png"
+         "avatar_url" : "https://gitlab.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png"
       },
       "description" : null
    },
@@ -309,7 +309,7 @@ POST /projects/:id/statuses/:sha
 | `description` | string  | no  | The short description of the status
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
 ```
 
 Example response:
@@ -317,9 +317,9 @@ Example response:
 ```json
 {
    "author" : {
-      "web_url" : "https://gitlab.example.com/u/thedude",
+      "web_url" : "https://gitlab.com/u/thedude",
       "name" : "Jeff Lebowski",
-      "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
+      "avatar_url" : "https://gitlab.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
       "username" : "thedude",
       "state" : "active",
       "id" : 28

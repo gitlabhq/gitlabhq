@@ -56,13 +56,13 @@ is defined in [`lib/api.rb`][lib-api-url].
 Example of a valid API request:
 
 ```shell
-GET https://gitlab.example.com/api/v3/projects?private_token=9koXpg98eAheJpvBs5tK
+GET https://gitlab.com/api/v3/projects?private_token=9koXpg98eAheJpvBs5tK
 ```
 
 Example of a valid API request using cURL and authentication via header:
 
 ```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects"
 ```
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the
@@ -76,7 +76,7 @@ header or as a parameter.
 Example of OAuth2 token as a parameter:
 
 ```shell
-curl https://gitlab.example.com/api/v3/user?access_token=OAUTH-TOKEN
+curl https://gitlab.com/api/v3/user?access_token=OAUTH-TOKEN
 ```
 
 Example of OAuth2 token as a header:
@@ -153,7 +153,7 @@ GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.example.com/api/v3/projects"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: username" "https://gitlab.com/api/v3/projects"
 ```
 
 Example of a valid API call and a request using cURL with sudo request,
@@ -164,7 +164,7 @@ GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v3/projects"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.com/api/v3/projects"
 ```
 
 ## Pagination
@@ -180,7 +180,7 @@ resources you can pass the following parameters:
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/namespaces?per_page=50
 ```
 
 ### Pagination Link header
@@ -194,7 +194,7 @@ and we request the second page (`page=2`) of [comments](notes.md) of the issue
 with ID `8` which belongs to the project with ID `8`:
 
 ```bash
-curl -I -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/issues/8/notes?per_page=3&page=2
+curl -I -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/8/issues/8/notes?per_page=3&page=2
 ```
 
 The response will then be:
@@ -205,7 +205,7 @@ Cache-Control: no-cache
 Content-Length: 1103
 Content-Type: application/json
 Date: Mon, 18 Jan 2016 09:43:18 GMT
-Link: <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=1&per_page=3>; rel="prev", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=3&per_page=3>; rel="next", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=1&per_page=3>; rel="first", <https://gitlab.example.com/api/v3/projects/8/issues/8/notes?page=3&per_page=3>; rel="last"
+Link: <https://gitlab.com/api/v3/projects/8/issues/8/notes?page=1&per_page=3>; rel="prev", <https://gitlab.com/api/v3/projects/8/issues/8/notes?page=3&per_page=3>; rel="next", <https://gitlab.com/api/v3/projects/8/issues/8/notes?page=1&per_page=3>; rel="first", <https://gitlab.com/api/v3/projects/8/issues/8/notes?page=3&per_page=3>; rel="last"
 Status: 200 OK
 Vary: Origin
 X-Next-Page: 3

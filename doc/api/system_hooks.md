@@ -20,7 +20,7 @@ GET /hooks
 Example request:
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/hooks
 ```
 
 Example response:
@@ -29,7 +29,7 @@ Example response:
 [
    {
       "id" : 1,
-      "url" : "https://gitlab.example.com/hook",
+      "url" : "https://gitlab.com/hook",
       "created_at" : "2015-11-04T20:07:35.874Z"
    }
 ]
@@ -52,7 +52,7 @@ POST /hooks
 Example request:
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/hooks?url=https://gitlab.example.com/hook"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/hooks?url=https://gitlab.com/hook"
 ```
 
 Example response:
@@ -61,7 +61,7 @@ Example response:
 [
    {
       "id" : 2,
-      "url" : "https://gitlab.example.com/hook",
+      "url" : "https://gitlab.com/hook",
       "created_at" : "2015-11-04T20:07:35.874Z"
    }
 ]
@@ -80,7 +80,7 @@ GET /hooks/:id
 Example request:
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/hooks/2
 ```
 
 Example response:
@@ -117,7 +117,7 @@ DELETE /hooks/:id
 Example request:
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/hooks/2
 ```
 
 Example response:
@@ -127,7 +127,7 @@ Example response:
    "note_events" : false,
    "project_id" : null,
    "enable_ssl_verification" : true,
-   "url" : "https://gitlab.example.com/hook",
+   "url" : "https://gitlab.com/hook",
    "updated_at" : "2015-11-04T20:12:15.931Z",
    "issues_events" : false,
    "merge_requests_events" : false,

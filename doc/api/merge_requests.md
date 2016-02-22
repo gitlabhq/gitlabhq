@@ -533,7 +533,7 @@ GET /projects/:id/merge_requests/:merge_request_id/closes_issues
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/76/merge_requests/1/closes_issues
 ```
 
 Example response:
@@ -546,7 +546,7 @@ Example response:
       "author" : {
          "state" : "active",
          "id" : 18,
-         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "web_url" : "https://gitlab.com/u/eileen.lowe",
          "name" : "Alexandra Bashirian",
          "avatar_url" : null,
          "username" : "eileen.lowe"
@@ -567,7 +567,7 @@ Example response:
          "state" : "active",
          "id" : 1,
          "name" : "Administrator",
-         "web_url" : "https://gitlab.example.com/u/root",
+         "web_url" : "https://gitlab.com/u/root",
          "avatar_url" : null,
          "username" : "root"
       },

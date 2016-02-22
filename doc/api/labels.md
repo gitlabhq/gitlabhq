@@ -13,7 +13,7 @@ GET /projects/:id/labels
 | `id` | integer | yes | The ID of the project |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/labels
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.com/api/v3/projects/1/labels
 ```
 
 Example response:
@@ -73,7 +73,7 @@ POST /projects/:id/labels
 | `color`   | string  | yes | The color of the label in 6-digit hex notation with leading `#` sign |
 
 ```bash
-curl --data "name=feature&color=#5843AD" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
+curl --data "name=feature&color=#5843AD" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/1/labels"
 ```
 
 Example response:
@@ -103,7 +103,7 @@ DELETE /projects/:id/labels
 | `name`    | string  | yes | The name of the label |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels?name=bug"
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/1/labels?name=bug"
 ```
 
 Example response:
@@ -141,7 +141,7 @@ PUT /projects/:id/labels
 | `color`   | string  | yes if `new_name` is not provided | The new color of the label in 6-digit hex notation with leading `#` sign |
 
 ```bash
-curl -X PUT --data "name=documentation&new_name=docs&color=#8E44AD" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
+curl -X PUT --data "name=documentation&new_name=docs&color=#8E44AD" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/1/labels"
 ```
 
 Example response:

@@ -15,7 +15,7 @@ GET /projects/:id/triggers
 | `id`      | integer | yes      | The ID of a project |
 
 ```
-curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers"
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/1/triggers"
 ```
 
 ```json
@@ -51,7 +51,7 @@ GET /projects/:id/triggers/:token
 | `token`   | string  | yes      | The `token` of a trigger |
 
 ```
-curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers/7b9148c158980bbd9bcea92c17522d"
+curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/1/triggers/7b9148c158980bbd9bcea92c17522d"
 ```
 
 ```json
@@ -77,7 +77,7 @@ POST /projects/:id/triggers
 | `id`      | integer | yes      | The ID of a project      |
 
 ```
-curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers"
+curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/1/triggers"
 ```
 
 ```json
@@ -104,5 +104,5 @@ DELETE /projects/:id/triggers/:token
 | `token`   | string  | yes      | The `token` of a project |
 
 ```
-curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/triggers/7b9148c158980bbd9bcea92c17522d"
+curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.com/api/v3/projects/1/triggers/7b9148c158980bbd9bcea92c17522d"
 ```
