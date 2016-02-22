@@ -48,7 +48,7 @@ probably want to read the [user documentation](README.md).
 
 ## The GitLab Pages daemon
 
-Starting from GitLab EE 8.5, Pages make use of a separate tool ([gitlab-pages]),
+Starting from GitLab EE 8.5, GitLab Pages make use of the [GitLab Pages daemon],
 a simple HTTP server written in Go that can listen on an external IP address
 and provide support for custom domains and custom certificates. The GitLab
 Pages Daemon supports dynamic certificates through SNI and exposes pages using
@@ -64,6 +64,9 @@ Here is a brief list with what it is supported when using the pages daemon:
 
 You are encouraged to read its [README][pages-readme] to fully understand how
 it works.
+
+[gitlab pages daemon]: https://gitlab.com/gitlab-org/gitlab-pages
+[pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
 
 ### The GitLab Pages daemon and the case of custom domains
 
@@ -87,7 +90,7 @@ install the pages daemon.
 
 ### Install the Pages daemon
 
-**Install the Pages daemon on a source installation**
+**Source installations**
 
 ```
 cd /home/git
@@ -97,11 +100,10 @@ sudo -u git -H git checkout 0.2.0
 sudo -u git -H make
 ```
 
-**Install the Pages daemon on Omnibus**
+**Omnibus installations**
 
 The `gitlab-pages` daemon is included in the Omnibus package.
 
-[pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
 
 ## Configuration
 
