@@ -42,6 +42,10 @@ module SharedBuilds
     @build.update_attributes(artifacts_metadata: gzip)
   end
 
+  step 'recent build has a build trace' do
+    @build.trace = 'build trace'
+  end
+
   step 'download of build artifacts archive starts' do
     expect(page.response_headers['Content-Type']).to eq 'application/zip'
     expect(page.response_headers['Content-Transfer-Encoding']).to eq 'binary'

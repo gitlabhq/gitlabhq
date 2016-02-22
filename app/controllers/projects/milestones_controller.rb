@@ -35,6 +35,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     @issues = @milestone.issues
     @users = @milestone.participants.uniq
     @merge_requests = @milestone.merge_requests
+    @labels = @milestone.labels
   end
 
   def create
