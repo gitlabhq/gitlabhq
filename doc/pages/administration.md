@@ -217,6 +217,23 @@ Below are the four scenarios that are described in
 
 **Omnibus installations:**
 
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    nginx['listen_addresses'] = ['1.1.1.1']
+    pages_nginx['enable'] = false
+    gitlab_pages['external_http'] = '1.1.1.2:80'
+    gitlab_pages['external_https'] = '1.1.1.2:443'
+    ```
+
+    where `1.1.1.1` is the primary IP address that GitLab is listening to and
+    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
+    Read more at the
+    [NGINX configuration for custom domains](#nginx-configuration-for-custom-domains)
+    section.
+
+1. [Reconfigure GitLab][reconfigure]
+
 ### Custom domains without HTTPS support
 
 **Source installations:**
@@ -266,6 +283,22 @@ Below are the four scenarios that are described in
 
 **Omnibus installations:**
 
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    nginx['listen_addresses'] = ['1.1.1.1']
+    pages_nginx['enable'] = false
+    gitlab_pages['external_http'] = '1.1.1.2:80'
+    ```
+
+    where `1.1.1.1` is the primary IP address that GitLab is listening to and
+    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
+    Read more at the
+    [NGINX configuration for custom domains](#nginx-configuration-for-custom-domains)
+    section.
+
+1. [Reconfigure GitLab][reconfigure]
+
 ### Wildcard HTTP domain without custom domains
 
 **Source installations:**
@@ -313,6 +346,7 @@ Below are the four scenarios that are described in
     ```ruby
     pages_external_url 'http://example.io'
     ```
+
 1. [Reconfigure GitLab][reconfigure]
 
 ### Wildcard HTTPS domain without custom domains
