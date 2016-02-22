@@ -219,8 +219,11 @@ Below are the four scenarios that are described in
 1. Edit `/etc/gitlab/gitlab.rb`:
 
     ```ruby
+    pages_external_url "https://example.io"
     nginx['listen_addresses'] = ['1.1.1.1']
     pages_nginx['enable'] = false
+    gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
+    gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
     gitlab_pages['external_http'] = '1.1.1.2:80'
     gitlab_pages['external_https'] = '1.1.1.2:443'
     ```
@@ -276,6 +279,7 @@ Below are the four scenarios that are described in
 1. Edit `/etc/gitlab/gitlab.rb`:
 
     ```ruby
+    pages_external_url "https://example.io"
     nginx['listen_addresses'] = ['1.1.1.1']
     pages_nginx['enable'] = false
     gitlab_pages['external_http'] = '1.1.1.2:80'
