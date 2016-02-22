@@ -18,6 +18,31 @@ class ElasticIndexerWorker
       record.__elasticsearch__.__send__ "#{operation}_document"
     when /delete/
       Client.delete index: cklass.index_name, type: cklass.document_type, id: record_id
+
+      if cklass == Project
+        # Remove repository index
+        Client.delete_by_query({
+          index: Repository.__elasticsearch__.index_name,
+          body: {
+            query: {
+              or: [
+                { term: { "commit.rid" => record_id } },
+                { term: { "blob.rid" => record_id}}
+              ]
+            }
+          }
+        })
+
+        # Remove wiki index
+        Client.delete_by_query({
+          index: ProjectWiki.__elasticsearch__.index_name,
+          body: {
+            query: {
+              term: { "blob.rid" => "wiki_#{record_id}" }
+            }
+          }
+        })
+      end
     end
   end
 end
