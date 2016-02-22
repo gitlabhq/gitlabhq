@@ -6,6 +6,7 @@ v 8.5.1
   - Fix a set of small UI glitches in project, profile, and wiki pages
   - Restrict permissions on public/uploads
   - Fix the merge request side-by-side view after loading diff results
+  - Fix the look of tooltip for the "Revert" button
   - Add when the Builds & Runners API changes got introduced
   - Fix error 500 on some merged merge requests
   - Fix an issue causing the content of the issuable sidebar to disappear
