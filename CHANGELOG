@@ -4,6 +4,7 @@ v 8.6.0 (unreleased)
   - Improve the formatting for the user page bio (Connor Shea)
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
   - Strip leading and trailing spaces in URL validator (evuez)
+  - Update documentation to reflect Guest role not being enforced on internal projects
 
 v 8.5.1
   - Fix group projects styles
