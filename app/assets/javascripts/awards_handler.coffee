@@ -19,7 +19,7 @@ class @AwardsHandler
       $(".emoji-menu").show()
       $("#emoji_search").focus()
     else
-      $.get "/emoji_menu", (response) ->
+      $.get "/emojis", (response) ->
         $(".add-award").after response
         $(".emoji-menu").show()
         $("#emoji_search").focus()
