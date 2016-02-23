@@ -8,6 +8,7 @@ v 8.5.1
   - Fix a set of small UI glitches in project, profile, and wiki pages
   - Issues can now be dragged & dropped into empty milestone lists. This is also
   possible with MRs
+  - Show Crowd login tab when sign in is disabled and Crowd is enabled (Peter Hudec)
   - Restrict permissions on public/uploads
   - Add when the Builds & Runners API changes got introduced
   - Update sentry-raven gem to 0.15.6
