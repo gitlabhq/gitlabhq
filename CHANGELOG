@@ -9,6 +9,7 @@ v 8.5.1
   - Fix an issue where MRs weren't sortable
   - Restrict permissions on public/uploads
   - Set of small UI fixes to project, profile, and wiki pages
+  - Update sentry-raven gem to 0.15.6
 
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
