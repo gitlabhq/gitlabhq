@@ -20,8 +20,12 @@ module Gitlab
       RequestStore.store[:geo_node_enabled] ||= GeoNode.exists?
     end
 
+    def self.primary?
+      RequestStore.store[:geo_node_primary?] ||= self.enabled? && self.current_node && self.current_node.primary?
+    end
+
     def self.readonly?
-      RequestStore.store[:geo_node_readonly] ||= self.enabled? && self.current_node && !self.current_node.primary?
+      RequestStore.store[:geo_node_readonly?] ||= self.enabled? && self.current_node && !self.current_node.primary?
     end
 
     def self.geo_node?(host:, port:)
@@ -30,6 +34,10 @@ module Gitlab
 
     def self.notify_update(project)
       ::Geo::EnqueueUpdateService.new(project).execute
+    end
+
+    def self.bulk_notify_job
+      Sidekiq::Cron::Job.find 'geo_bulk_notify_worker'
     end
   end
 end

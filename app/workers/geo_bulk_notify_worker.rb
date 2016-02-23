@@ -5,7 +5,6 @@ class GeoBulkNotifyWorker
 
 
   def perform
-    return unless Gitlab::Geo.enabled?
     Geo::NotifyNodesService.new.execute
   end
 end

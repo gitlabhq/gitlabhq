@@ -24,6 +24,8 @@ class GeoNode < ActiveRecord::Base
   validates :primary, uniqueness: { message: 'primary node already exists' }, if: :primary
   validates :schema, inclusion: %w(http https)
 
+  after_save :refresh_bulk_notify_worker_status
+  after_destroy :refresh_bulk_notify_worker_status
   after_destroy :destroy_orphaned_geo_node_key
 
   def uri
@@ -53,5 +55,9 @@ class GeoNode < ActiveRecord::Base
     return unless self.geo_node_key.destroyed_when_orphaned? && self.geo_node_key.orphaned?
 
     self.geo_node_key.destroy
+  end
+
+  def refresh_bulk_notify_worker_status
+    Gitlab::Geo.primary? ? Gitlab::Geo.bulk_notify_job.try(:enable!) : Gitlab::Geo.bulk_notify_job.try(:disable!)
   end
 end
