@@ -61,45 +61,17 @@
     = link_to '#tab-participants', 'data-toggle' => 'tab' do
       Participants
       %span.badge= @milestone.participants.count
+  %li
+    = link_to '#tab-labels', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
+      Labels
+      %span.badge= @milestone.labels.count
 
-.tab-content
+.tab-content.milestone-content
   .tab-pane.active#tab-issues
-    .gray-content-block.middle-block
-      .pull-right
-        = link_to 'Browse Issues', issues_dashboard_path(milestone_title: @milestone.title), class: "btn btn-grouped"
-
-      .oneline
-        All issues in this milestone
-
-    .row.prepend-top-default
-      .col-md-6
-        = render 'issues', title: "Open", issues: @milestone.opened_issues
-      .col-md-6
-        = render 'issues', title: "Closed", issues: @milestone.closed_issues
-
+    = render 'shared/milestones/issues_tab', unassigned: @milestone.opened_issues.unassigned, assigned: @milestone.opened_issues.assigned, closed: @milestone.closed_issues
   .tab-pane#tab-merge-requests
-    .gray-content-block.middle-block
-      .pull-right
-        = link_to 'Browse Merge Requests', merge_requests_dashboard_path(milestone_title: @milestone.title), class: "btn btn-grouped"
-
-      .oneline
-        All merge requests in this milestone
-
-    .row.prepend-top-default
-      .col-md-6
-        = render 'merge_requests', title: "Open", merge_requests: @milestone.opened_merge_requests
-      .col-md-6
-        = render 'merge_requests', title: "Closed", merge_requests: @milestone.closed_merge_requests
-
+    = render 'shared/milestones/merge_requests_tab', unassigned: @milestone.opened_merge_requests.unassigned, assigned: @milestone.opened_merge_requests.assigned, closed: @milestone.merge_requests.closed, merged: @milestone.merge_requests.merged
   .tab-pane#tab-participants
-    .gray-content-block.middle-block
-      .oneline
-        All participants to this milestone
-    %ul.bordered-list
-      - @milestone.participants.each do |user|
-        %li
-          = link_to user, title: user.name, class: "darken" do
-            = image_tag avatar_icon(user, 32), class: "avatar s32"
-            %strong= truncate(user.name, lenght: 40)
-            %br
-            %small.cgray= user.username
+    = render 'shared/milestones/participants_tab', users: @milestone.participants
+  .tab-pane#tab-labels
+    = render 'shared/milestones/labels_tab', labels: @milestone.labels
