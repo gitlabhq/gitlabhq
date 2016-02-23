@@ -15,19 +15,17 @@ deploy static pages for your individual projects, your user or your group.
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Enable the pages feature in your GitLab EE instance](#enable-the-pages-feature-in-your-gitlab-ee-instance)
-- [Understanding how GitLab Pages work](#understanding-how-gitlab-pages-work)
-- [Two kinds of GitLab Pages](#two-kinds-of-gitlab-pages)
+- [Getting started with GitLab Pages](#getting-started-with-gitlab-pages)
     - [GitLab pages per user or group](#gitlab-pages-per-user-or-group)
     - [GitLab pages per project](#gitlab-pages-per-project)
-- [Enable the pages feature in your project](#enable-the-pages-feature-in-your-project)
-- [Remove the contents of your pages](#remove-the-contents-of-your-pages)
-- [Explore the contents of .gitlab-ci.yml](#explore-the-contents-of-gitlab-ci-yml)
-- [Example projects](#example-projects)
-- [Custom error codes pages](#custom-error-codes-pages)
-    - [Adding a custom domain to your Pages](#adding-a-custom-domain-to-your-pages)
-    - [Securing your Pages with TLS](#securing-your-pages-with-tls)
-- [Enable the pages feature in your project](#enable-the-pages-feature-in-your-project)
-- [Remove the contents of your pages](#remove-the-contents-of-your-pages)
+    - [Enable the pages feature in your project](#enable-the-pages-feature-in-your-project)
+    - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
+    - [Explore the contents of .gitlab-ci.yml](#explore-the-contents-of-gitlab-ci-yml)
+- [Next steps](#next-steps)
+    - [Adding a custom domain to your Pages website](#adding-a-custom-domain-to-your-pages-website)
+    - [Securing your custom domain website with TLS](#securing-your-custom-domain-website-with-tls)
+    - [Example projects](#example-projects)
+    - [Custom error codes pages](#custom-error-codes-pages)
 - [Limitations](#limitations)
 - [Frequently Asked Questions](#frequently-asked-questions)
 
@@ -37,7 +35,7 @@ deploy static pages for your individual projects, your user or your group.
 
 The administrator guide is located at [administration](administration.md).
 
-## Understanding how GitLab Pages work
+## Getting started with GitLab Pages
 
 GitLab Pages rely heavily on GitLab CI and its ability to upload artifacts.
 The steps that are performed from the initialization of a project to the
@@ -60,8 +58,6 @@ administrator, you should be able to use them instead of bringing your own.
 > In the rest of this document we will assume that the general domain name that
 > is used for GitLab Pages is `example.io`.
 
-## Two kinds of GitLab Pages
-
 In general there are two kinds of pages one might create:
 
 - Pages per user/group
@@ -78,7 +74,7 @@ as namespaces. There can be only one namespace in a GitLab instance.
 
 Head over your GitLab instance that supports GitLab Pages and create a
 repository named `username.example.io`, where `username` is your username on
-GitLab. If the first part of the project name doesn’t match exactly your
+GitLab. If the first part of the project name doesn't match exactly your
 username, it won’t work, so make sure to get it right.
 
 ![Create a user-based pages repository](img/create_user_page.png)
@@ -97,18 +93,19 @@ access it under `http(s)://username.example.io`. Keep reading to find out how.
 > You do _not_ have to create a project named `username.example.io` in order to
 > serve a project's page.
 
+GitLab Pages for projects 
 
-## Enable the pages feature in your project
+### Enable the pages feature in your project
 
 The GitLab Pages feature needs to be explicitly enabled for each project
 under its **Settings**.
 
-## Remove the contents of your pages
+### Remove the contents of your pages
 
 Pages can be explicitly removed from a project by clicking **Remove Pages**
 Go to your project's **Settings > Pages**.
 
-## Explore the contents of .gitlab-ci.yml
+### Explore the contents of .gitlab-ci.yml
 
 Before reading this section, make sure you familiarize yourself with GitLab CI
 and the specific syntax of[`.gitlab-ci.yml`](../ci/yaml/README.md) by
@@ -151,7 +148,7 @@ pages:
 
 The example below doesn't use any static site generator, but simply moves all
 files from the root of the project to the `public/` directory. The `.public`
-workaround is so `cp` doesn’t also copy `public/` to itself in an infinite
+workaround is so `cp` doesn't also copy `public/` to itself in an infinite
 loop.
 
 ```yaml
@@ -168,36 +165,27 @@ pages:
   - master
 ```
 
-## Example projects
+## Next steps
+
+### Adding a custom domain to your Pages website
+
+
+### Securing your custom domain website with TLS
+
+### Example projects
 
 Below is a list of example projects for GitLab Pages with a plain HTML website
 or various static site generators. Contributions are very welcome.
 
-* [Plain HTML](https://gitlab.com/gitlab-examples/pages-plain-html)
-* [Jekyll](https://gitlab.com/gitlab-examples/pages-jekyll)
+- [Plain HTML](https://gitlab.com/gitlab-examples/pages-plain-html)
+- [Jekyll](https://gitlab.com/gitlab-examples/pages-jekyll)
 
-## Custom error codes pages
+### Custom error codes pages
 
 You can provide your own 403 and 404 error pages by creating the `403.html` and
 `404.html` files respectively in the `public/` directory that will be included
 in the artifacts.
 
-### Adding a custom domain to your Pages
-
-
-
-### Securing your Pages with TLS
-
-
-## Enable the pages feature in your project
-
-The GitLab Pages feature needs to be explicitly enabled for each project
-under **Settings > Pages**.
-
-## Remove the contents of your pages
-
-Pages can be explicitly removed from a project by clicking **Remove Pages**
-in a project's **Settings**.
 
 ## Limitations
 
@@ -215,6 +203,12 @@ don't redirect HTTP to HTTPS.
 **Q: Can I download my generated pages?**
 
 Sure. All you need to do is download the artifacts archive from the build page.
+
+
+**Q: Can I use GitLab Pages if my project is private?**
+
+Yes. GitLab Pages doesn't care whether you set your project's visibility level
+to private, internal or public.
 
 ---
 
