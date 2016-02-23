@@ -14,6 +14,18 @@ class PostReceive
     repo_path.gsub!(/\.git\z/, "")
     repo_path.gsub!(/\A\//, "")
 
+    if repo_path =~ /wiki\z/ && Gitlab.config.elasticsearch.enabled
+      repo_path.gsub!(/\.wiki\z/, "")
+
+      project = Project.find_with_namespace(repo_path)
+
+      if project
+        project.wiki.index_blobs
+      end
+
+      return false
+    end
+
     project = Project.find_with_namespace(repo_path)
 
     if project.nil?
