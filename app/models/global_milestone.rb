@@ -28,27 +28,27 @@ class GlobalMilestone
   end
 
   def projects
-    milestones.map { |milestone| milestone.project }
+    @projects ||= Project.for_milestones(milestones.map(&:id))
   end
 
-  def issue_count
-    milestones.map { |milestone| milestone.issues.count }.sum
+  def issues_count
+    issues.count
   end
 
   def merge_requests_count
-    milestones.map { |milestone| milestone.merge_requests.count }.sum
+    merge_requests.count
   end
 
   def open_items_count
-    milestones.map { |milestone| milestone.open_items_count }.sum
+    opened_issues.count + opened_merge_requests.count
   end
 
   def closed_items_count
-    milestones.map { |milestone| milestone.closed_items_count }.sum
+    closed_issues.count + closed_merge_requests.count
   end
 
   def total_items_count
-    milestones.map { |milestone| milestone.total_items_count }.sum
+    issues_count + merge_requests_count
   end
 
   def percent_complete
@@ -76,11 +76,11 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= milestones.map(&:issues).flatten.group_by(&:state)
+    @issues ||= Issue.of_milestones(milestones.map(&:id))
   end
 
   def merge_requests
-    @merge_requests ||= milestones.map(&:merge_requests).flatten.group_by(&:state)
+    @merge_requests ||= MergeRequest.of_milestones(milestones.map(&:id))
   end
 
   def participants
@@ -88,19 +88,19 @@ class GlobalMilestone
   end
 
   def opened_issues
-    issues.values_at("opened", "reopened").compact.flatten
+    issues.opened
   end
 
   def closed_issues
-    issues['closed']
+    issues.closed
   end
 
   def opened_merge_requests
-    merge_requests.values_at("opened", "reopened").compact.flatten
+    merge_requests.opened
   end
 
   def closed_merge_requests
-    merge_requests.values_at("closed", "merged", "locked").compact.flatten
+    merge_requests.with_states(:closed, :merged, :locked)
   end
 
   def complete?

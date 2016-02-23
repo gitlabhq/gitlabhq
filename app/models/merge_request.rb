@@ -139,7 +139,6 @@ class MergeRequest < ActiveRecord::Base
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
   scope :opened, -> { with_states(:opened, :reopened) }
   scope :merged, -> { with_state(:merged) }
-  scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
   scope :join_project, -> { joins(:target_project) }

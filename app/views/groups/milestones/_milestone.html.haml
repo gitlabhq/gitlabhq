@@ -8,7 +8,7 @@
   .row
     .col-sm-6
       = link_to issues_group_path(@group, milestone_title: milestone.title) do
-        = pluralize milestone.issue_count, 'Issue'
+        = pluralize milestone.issues_count, 'Issue'
       &middot;
       = link_to merge_requests_group_path(@group, milestone_title: milestone.title) do
         = pluralize milestone.merge_requests_count, 'Merge Request'
