@@ -56,7 +56,7 @@ module MergeRequests
       if commits && commits.count == 1
         commit = commits.first
         merge_request.title       = commit.title
-        merge_request.description = commit.description.try(:strip)
+        merge_request.description ||= commit.description.try(:strip)
       else
         merge_request.title = merge_request.source_branch.titleize.humanize
       end

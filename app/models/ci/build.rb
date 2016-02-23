@@ -31,15 +31,19 @@
 #  artifacts_file     :text
 #  gl_project_id      :integer
 #  artifacts_metadata :text
+#  erased_by_id       :integer
+#  erased_at          :datetime
 #
 
 module Ci
   class Build < CommitStatus
     include Gitlab::Application.routes.url_helpers
+
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
+    belongs_to :erased_by, class_name: 'User'
 
     serialize :options
 
@@ -103,21 +107,20 @@ module Ci
     end
 
     state_machine :status, initial: :pending do
-      after_transition pending: :running do |build, transition|
+      after_transition pending: :running do |build|
         build.execute_hooks
       end
 
-      after_transition any => [:success, :failed, :canceled] do |build, transition|
-        return unless build.project
+      # We use around_transition to create builds for next stage as soon as possible, before the `after_*` is executed
+      around_transition any => [:success, :failed, :canceled] do |build, block|
+        block.call
+        build.commit.create_next_builds(build) if build.commit
+      end
 
+      after_transition any => [:success, :failed, :canceled] do |build|
         build.update_coverage
-        build.commit.create_next_builds(build)
         build.execute_hooks
       end
-    end
-
-    def ignored?
-      failed? && allow_failure?
     end
 
     def retryable?
@@ -179,6 +182,7 @@ module Ci
     end
 
     def update_coverage
+      return unless project
       coverage_regex = project.build_coverage_regex
       return unless coverage_regex
       coverage = extract_coverage(trace, coverage_regex)
@@ -201,6 +205,10 @@ module Ci
         # if bad regex or something goes wrong we dont want to interrupt transition
         # so we just silentrly ignore error for now
       end
+    end
+
+    def has_trace?
+      raw_trace.present?
     end
 
     def raw_trace
@@ -330,6 +338,7 @@ module Ci
     end
 
     def execute_hooks
+      return unless project
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
@@ -357,6 +366,33 @@ module Ci
 
     def artifacts_metadata_entry(path, **options)
       Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
+    end
+
+    def erase(opts = {})
+      return false unless erasable?
+
+      remove_artifacts_file!
+      remove_artifacts_metadata!
+      erase_trace!
+      update_erased!(opts[:erased_by])
+    end
+
+    def erasable?
+      complete? && (artifacts? || has_trace?)
+    end
+
+    def erased?
+      !self.erased_at.nil?
+    end
+
+    private
+
+    def erase_trace!
+      self.trace = nil
+    end
+
+    def update_erased!(user = nil)
+      self.update(erased_by: user, erased_at: Time.now)
     end
 
     private

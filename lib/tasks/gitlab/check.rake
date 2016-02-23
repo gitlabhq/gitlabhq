@@ -16,7 +16,6 @@ namespace :gitlab do
 
       check_git_config
       check_database_config_exists
-      check_database_is_not_sqlite
       check_migrations_are_up
       check_orphaned_group_members
       check_gitlab_config_exists
