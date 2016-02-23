@@ -27,7 +27,7 @@ class ElasticIndexerWorker
             query: {
               or: [
                 { term: { "commit.rid" => record_id } },
-                { term: { "blob.rid" => record_id}}
+                { term: { "blob.rid" => record_id } }
               ]
             }
           }
