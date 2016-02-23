@@ -8,9 +8,14 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def destroy
     todo.done!
 
+    todo_notice = 'Todo was successfully marked as done.'
+
     respond_to do |format|
-      format.html { redirect_to dashboard_todos_path, notice: 'Todo was successfully marked as done.' }
+      format.html { redirect_to dashboard_todos_path, notice: todo_notice }
       format.js { render nothing: true }
+      format.json do
+        render json: { status: 'OK', notice: todo_notice }
+      end
     end
   end
 

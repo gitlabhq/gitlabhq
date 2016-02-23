@@ -3,13 +3,15 @@
 
 .top-area
   %ul.nav-links
-    %li{class: ('active' if params[:state].blank? || params[:state] == 'pending')}
+    - todo_pending_active = ('active' if params[:state].blank? || params[:state] == 'pending')
+    %li{class: "todos-pending #{todo_pending_active}"}
       = link_to todos_filter_path(state: 'pending') do
         %span
           To do
         %span{class: 'badge'}
           = todos_pending_count
-    %li{class: ('active' if params[:state] == 'done')}
+    - todo_done_active = ('active' if params[:state] == 'done')
+    %li{class: "todos-done #{todo_done_active}"}
       = link_to todos_filter_path(state: 'done') do
         %span
           Done
