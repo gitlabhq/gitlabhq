@@ -94,14 +94,7 @@
 
 .tab-content.milestone-content
   .tab-pane.active#tab-issues
-    .row.prepend-top-default
-      .col-md-4
-        = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned, id: 'unassigned')
-      .col-md-4
-        = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned, id: 'ongoing')
-      .col-md-4
-        = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed, id: 'closed')
-
+    = render 'shared/milestones/issues_tab', unassigned: @issues.opened.unassigned, assigned: @issues.opened.assigned, closed: @issues.closed
   .tab-pane#tab-merge-requests
     .row.prepend-top-default
       .col-md-3

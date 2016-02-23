@@ -1,0 +1,7 @@
+.row.prepend-top-default
+  .col-md-4
+    = render('shared/milestones/issues', title: 'Unstarted Issues (open and unassigned)', issues: unassigned, id: 'unassigned')
+  .col-md-4
+    = render('shared/milestones/issues', title: 'Ongoing Issues (open and assigned)', issues: assigned, id: 'ongoing')
+  .col-md-4
+    = render('shared/milestones/issues', title: 'Completed Issues (closed)', issues: closed, id: 'closed')

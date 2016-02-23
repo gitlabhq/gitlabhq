@@ -68,20 +68,9 @@
       Participants
       %span.badge= @milestone.participants.count
 
-.tab-content
+.tab-content.milestone-content
   .tab-pane.active#tab-issues
-    .gray-content-block.middle-block
-      .pull-right
-        = link_to 'Browse Issues', issues_group_path(@group, milestone_title: @milestone.title), class: "btn btn-grouped"
-
-      .oneline
-        All issues in this milestone
-
-    .row.prepend-top-default
-      .col-md-6
-        = render 'issues', title: "Open", issues: @milestone.opened_issues
-      .col-md-6
-        = render 'issues', title: "Closed", issues: @milestone.closed_issues
+    = render 'shared/milestones/issues_tab', unassigned: @milestone.opened_issues.unassigned, assigned: @milestone.opened_issues.assigned, closed: @milestone.closed_issues
 
   .tab-pane#tab-merge-requests
     .gray-content-block.middle-block
