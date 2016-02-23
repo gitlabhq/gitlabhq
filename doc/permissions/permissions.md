@@ -26,6 +26,7 @@ documentation](../workflow/add-user/add-user.md).
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
+| See a commit status                   |         | ✓          | ✓           | ✓        | ✓      |
 | Manage merge requests                 |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
 | Create new branches                   |         |            | ✓           | ✓        | ✓      |
@@ -35,6 +36,7 @@ documentation](../workflow/add-user/add-user.md).
 | Add tags                              |         |            | ✓           | ✓        | ✓      |
 | Write a wiki                          |         |            | ✓           | ✓        | ✓      |
 | Cancel and retry builds               |         |            | ✓           | ✓        | ✓      |
+| Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Create new milestones                 |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
