@@ -11,7 +11,7 @@
     border-bottom: 1px solid $border-white-light;
 
     &:target {
-      background: $hover;
+      background: $row-hover;
     }
 
     &:last-child {
