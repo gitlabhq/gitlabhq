@@ -36,7 +36,7 @@ class Todo < ActiveRecord::Base
 
   state_machine :state, initial: :pending do
     event :done do
-      transition pending: :done
+      transition [:pending, :done] => :done
     end
 
     state :pending
