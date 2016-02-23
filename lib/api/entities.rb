@@ -49,6 +49,11 @@ module API
       expose :enable_ssl_verification
     end
 
+    class ProjectGitHook < Grape::Entity
+      expose :id, :project_id, :created_at
+      expose :commit_message_regex, :deny_delete_tag
+    end
+
     class BasicProjectDetails < Grape::Entity
       expose :id
       expose :name, :name_with_namespace
