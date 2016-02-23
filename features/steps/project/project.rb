@@ -144,4 +144,14 @@ class Spinach::Features::Project < Spinach::FeatureSteps
       expect(page).to have_content 'Notification settings saved'
     end
   end
+
+  step 'I create bare repo' do
+    click_link 'Create empty bare repository'
+  end
+
+  step 'I should see command line instructions' do
+    page.within ".empty_wrapper" do
+      expect(page).to have_content("Command line instructions")
+    end
+  end
 end

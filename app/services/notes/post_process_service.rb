@@ -1,6 +1,5 @@
 module Notes
   class PostProcessService
-
     attr_accessor :note
 
     def initialize(note)
@@ -25,6 +24,5 @@ module Notes
       @note.project.execute_hooks(note_data, :note_hooks)
       @note.project.execute_services(note_data, :note_hooks)
     end
-
   end
 end

@@ -32,14 +32,4 @@
         = number_to_human_size(blob_size(blob))
       .file-actions.hidden-xs
         = render "actions"
-    - if blob.lfs_pointer?
-      = render "download", blob: blob
-    - elsif blob.text?
-      - if blob_svg?(blob)
-        = render "image", blob: sanitize_svg(blob)
-      - else
-        = render "text", blob: blob
-    - elsif blob.image?
-      = render "image", blob: blob
-    - else
-      = render "download", blob: blob
+    = render blob, blob: blob

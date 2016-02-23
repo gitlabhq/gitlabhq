@@ -118,12 +118,6 @@ module ApplicationHelper
     grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
-  def emoji_autocomplete_source
-    # should be an array of strings
-    # so to_s can be called, because it is sufficient and to_json is too slow
-    Emoji.names.to_s
-  end
-
   # Define whenever show last push event
   # with suggestion to create MR
   def show_last_push_widget?(event)

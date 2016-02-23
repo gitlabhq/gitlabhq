@@ -97,7 +97,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I should see a password error message" do
-    page.within '.alert' do
+    page.within '.alert-danger' do
       expect(page).to have_content "Password confirmation doesn't match"
     end
   end

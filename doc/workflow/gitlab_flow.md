@@ -16,7 +16,7 @@ It offers a simple, transparent and effective way to work with git.
 ![Four stages (working copy, index, local repo, remote repo) and three steps between them](four_stages.png)
 
 When converting to git you have to get used to the fact that there are three steps before a commit is shared with colleagues.
-Most version control systems have only step, committing from the working copy to a shared server.
+Most version control systems have only one step, committing from the working copy to a shared server.
 In git you add files from the working copy to the staging area. After that you commit them to the local repo.
 The third step is pushing to a shared remote repository.
 After getting used to these three steps the branching model becomes the challenge.

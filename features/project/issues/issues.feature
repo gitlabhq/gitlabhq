@@ -89,6 +89,16 @@ Feature: Project Issues
     Then The list should be sorted by "Oldest updated"
 
   @javascript
+  Scenario: Sort issues by upvotes/downvotes
+    Given project "Shop" have "Bugfix" open issue
+    And issue "Release 0.4" have 2 upvotes and 1 downvote
+    And issue "Tweet control" have 1 upvote and 2 downvotes
+    And I sort the list by "Most popular"
+    Then The list should be sorted by "Most popular"
+    And I sort the list by "Least popular"
+    Then The list should be sorted by "Least popular"
+
+  @javascript
   Scenario: I search issue
     Given I fill in issue search with "Re"
     Then I should see "Release 0.4" in issues

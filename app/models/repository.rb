@@ -23,13 +23,11 @@ class Repository
   def raw_repository
     return nil unless path_with_namespace
 
-    @raw_repository ||= begin
-      repo = Gitlab::Git::Repository.new(path_to_repo)
-      repo.autocrlf = :input
-      repo
-    rescue Gitlab::Git::Repository::NoRepository
-      nil
-    end
+    @raw_repository ||= Gitlab::Git::Repository.new(path_to_repo)
+  end
+
+  def update_autocrlf_option
+    raw_repository.autocrlf = :input if raw_repository.autocrlf != :input
   end
 
   # Return absolute path to repository
@@ -40,7 +38,12 @@ class Repository
   end
 
   def exists?
-    raw_repository
+    return false unless raw_repository
+
+    raw_repository.rugged
+    true
+  rescue Gitlab::Git::Repository::NoRepository
+    false
   end
 
   def empty?
@@ -67,7 +70,7 @@ class Repository
   end
 
   def commit(id = 'HEAD')
-    return nil unless raw_repository
+    return nil unless exists?
     commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit, @project) if commit
     commit
@@ -236,6 +239,19 @@ class Repository
     end
 
     expire_branch_cache(branch_name)
+
+    # This ensures this particular cache is flushed after the first commit to a
+    # new repository.
+    expire_emptiness_caches if empty?
+  end
+
+  # Expires _all_ caches, including those that would normally only be expired
+  # under specific conditions.
+  def expire_all_caches!
+    expire_cache
+    expire_root_ref_cache
+    expire_emptiness_caches
+    expire_has_visible_content_cache
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -256,6 +272,14 @@ class Repository
   def expire_root_ref_cache
     cache.expire(:root_ref)
     @root_ref = nil
+  end
+
+  # Expires the cache(s) used to determine if a repository is empty or not.
+  def expire_emptiness_caches
+    cache.expire(:empty?)
+    @empty = nil
+
+    expire_has_visible_content_cache
   end
 
   def expire_has_visible_content_cache
@@ -599,6 +623,34 @@ class Repository
     end
   end
 
+  def revert(user, commit, base_branch, target_branch = nil)
+    source_sha    = find_branch(base_branch).target
+    target_branch ||= base_branch
+    args          = [commit.id, source_sha]
+    args          << { mainline: 1 } if commit.merge_commit?
+
+    revert_index = rugged.revert_commit(*args)
+    return false if revert_index.conflicts?
+
+    tree_id = revert_index.write_tree(rugged)
+    return false unless diff_exists?(source_sha, tree_id)
+
+    commit_with_hooks(user, target_branch) do |ref|
+      committer = user_to_committer(user)
+      source_sha = Rugged::Commit.create(rugged,
+        message: commit.revert_message,
+        author: committer,
+        committer: committer,
+        tree: tree_id,
+        parents: [rugged.lookup(source_sha)],
+        update_ref: ref)
+    end
+  end
+
+  def diff_exists?(sha1, sha2)
+    rugged.diff(sha1, sha2).size > 0
+  end
+
   def merged_to_root_ref?(branch_name)
     branch_commit = commit(branch_name)
     root_ref_commit = commit(root_ref)
@@ -611,6 +663,8 @@ class Repository
   end
 
   def merge_base(first_commit_id, second_commit_id)
+    first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
+    second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
     rugged.merge_base(first_commit_id, second_commit_id)
   rescue Rugged::ReferenceError
     nil
@@ -674,12 +728,15 @@ class Repository
   end
 
   def commit_with_hooks(current_user, branch)
+    update_autocrlf_option
+
     oldrev = Gitlab::Git::BLANK_SHA
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
+    target_branch = find_branch(branch)
     was_empty = empty?
 
-    unless was_empty
-      oldrev = find_branch(branch).target
+    if !was_empty && target_branch
+      oldrev = target_branch.target
     end
 
     with_tmp_ref(oldrev) do |tmp_ref|
@@ -691,7 +748,7 @@ class Repository
       end
 
       GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
-        if was_empty
+        if was_empty || !target_branch
           # Create branch
           rugged.references.create(ref, newrev)
         else
@@ -706,6 +763,8 @@ class Repository
           end
         end
       end
+
+      newrev
     end
   end
 

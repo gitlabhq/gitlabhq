@@ -24,6 +24,7 @@
 #  merge_params              :text
 #  merge_when_build_succeeds :boolean          default(FALSE), not null
 #  merge_user_id             :integer
+#  merge_commit_sha          :string
 #
 
 require Rails.root.join("app/models/commit")
@@ -137,7 +138,7 @@ class MergeRequest < ActiveRecord::Base
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :in_projects, ->(project_ids) { where("source_project_id in (:project_ids) OR target_project_id in (:project_ids)", project_ids: project_ids) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
-  scope :opened, -> { with_state(:opened) }
+  scope :opened, -> { with_states(:opened, :reopened) }
   scope :merged, -> { with_state(:merged) }
   scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
@@ -531,5 +532,13 @@ class MergeRequest < ActiveRecord::Base
     return nil unless diff_base_commit
 
     [diff_base_commit, last_commit]
+  end
+
+  def merge_commit
+    @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
+  end
+
+  def can_be_reverted?(current_user = nil)
+    merge_commit && !merge_commit.has_been_reverted?(current_user, self)
   end
 end
