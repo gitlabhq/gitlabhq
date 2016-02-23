@@ -1,10 +1,37 @@
 # GitLab Pages
 
-_**Note:** This feature was [introduced][ee-80] in GitLab EE 8.3_
+> **Note:**
+> This feature was [introduced][ee-80] in GitLab EE 8.3.
+> Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
 
 With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of GitLab CI and the help of GitLab Runner you can
 deploy static pages for your individual projects, your user or your group.
+
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Enable the pages feature in your GitLab EE instance](#enable-the-pages-feature-in-your-gitlab-ee-instance)
+- [Understanding how GitLab Pages work](#understanding-how-gitlab-pages-work)
+- [Two kinds of GitLab Pages](#two-kinds-of-gitlab-pages)
+    - [GitLab pages per user or group](#gitlab-pages-per-user-or-group)
+    - [GitLab pages per project](#gitlab-pages-per-project)
+- [Enable the pages feature in your project](#enable-the-pages-feature-in-your-project)
+- [Remove the contents of your pages](#remove-the-contents-of-your-pages)
+- [Explore the contents of .gitlab-ci.yml](#explore-the-contents-of-gitlab-ci-yml)
+- [Example projects](#example-projects)
+- [Custom error codes pages](#custom-error-codes-pages)
+    - [Adding a custom domain to your Pages](#adding-a-custom-domain-to-your-pages)
+    - [Securing your Pages with TLS](#securing-your-pages-with-tls)
+- [Enable the pages feature in your project](#enable-the-pages-feature-in-your-project)
+- [Remove the contents of your pages](#remove-the-contents-of-your-pages)
+- [Limitations](#limitations)
+- [Frequently Asked Questions](#frequently-asked-questions)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Enable the pages feature in your GitLab EE instance
 
@@ -16,41 +43,60 @@ GitLab Pages rely heavily on GitLab CI and its ability to upload artifacts.
 The steps that are performed from the initialization of a project to the
 creation of the static content, can be summed up to:
 
-1. Create project (its name could be specific according to the case)
-1. Provide a specific job in `.gitlab-ci.yml`
+1. Find out the general domain name that is used for GitLab Pages
+   (ask your administrator). This is very important, so you should first make
+   sure you get that right.
+1. Create a project (its name should be specific according to the case)
+1. Provide a specific job named `pages` in `.gitlab-ci.yml`
 1. GitLab Runner builds the project
 1. GitLab CI uploads the artifacts
-1. Nginx serves the content
+1. The [GitLab Pages daemon][pages-daemon] serves the content
 
-As a user, you should normally be concerned only with the first three items.
-If [shared runners](../ci/runners/README.md) are enabled by your GitLab
+As a user, you should normally be concerned only with the first three or four
+items. If [shared runners](../ci/runners/README.md) are enabled by your GitLab
 administrator, you should be able to use them instead of bringing your own.
 
-In general there are four kinds of pages one might create. This is better
-explained with an example so let's make some assumptions.
+> **Note:**
+> In the rest of this document we will assume that the general domain name that
+> is used for GitLab Pages is `example.io`.
 
-The domain under which the pages are hosted is named `example.com`. There is a
-user with the username `walter` and they are the owner of an organization named
-`therug`. The personal project of `walter` is named `area51` and don't forget
-that the organization has also a project under its namespace, called
-`welovecats`.
+## Two kinds of GitLab Pages
 
-The following table depicts what the project's name should be and under which
-URL it will be accessible.
+In general there are two kinds of pages one might create:
 
-| Pages type | Repository name | URL schema |
-| ---------- | --------------- | ---------- |
-| User page  | `walter/walter.example.com`  | `https://walter.example.com`  |
-| Group page | `therug/therug.example.com`  | `https://therug.example.com`  |
-| Specific project under a user's page  | `walter/area51`     | `https://walter.example.com/area51`     |
-| Specific project under a group's page | `therug/welovecats` | `https://therug.example.com/welovecats` |
+- Pages per user/group
+- Pages per project
 
-## Group pages
+In GitLab, usernames and groupnames are unique and often people refer to them
+as namespaces. There can be only one namespace in a GitLab instance.
 
-To create a page for a group, add a new project to it. The project name must be lowercased.
+> **Warning:**
+> There are some known [limitations](#limitations) regarding namespaces served
+> under the general domain name and HTTPS. Make sure to read that section.
 
-For example, if you have a group called `TheRug` and pages are hosted under `Example.com`,
-create a project named `therug.example.com`.
+### GitLab pages per user or group
+
+Head over your GitLab instance that supports GitLab Pages and create a
+repository named `username.example.io`, where `username` is your username on
+GitLab. If the first part of the project name doesn’t match exactly your
+username, it won’t work, so make sure to get it right.
+
+![Create a user-based pages repository](img/create_user_page.png)
+
+---
+
+To create a group page the steps are exactly the same. Just make sure that
+you are creating the project within the group's namespace.
+
+After you upload some static content to your repository, you will be able to
+access it under `http(s)://username.example.io`. Keep reading to find out how.
+
+### GitLab pages per project
+
+> **Note:**
+> You do _not_ have to create a project named `username.example.io` in order to
+> serve a project's page.
+
 
 ## Enable the pages feature in your project
 
@@ -60,7 +106,7 @@ under its **Settings**.
 ## Remove the contents of your pages
 
 Pages can be explicitly removed from a project by clicking **Remove Pages**
-in a project's **Settings**.
+Go to your project's **Settings > Pages**.
 
 ## Explore the contents of .gitlab-ci.yml
 
@@ -136,6 +182,34 @@ You can provide your own 403 and 404 error pages by creating the `403.html` and
 `404.html` files respectively in the `public/` directory that will be included
 in the artifacts.
 
+### Adding a custom domain to your Pages
+
+
+
+### Securing your Pages with TLS
+
+
+## Enable the pages feature in your project
+
+The GitLab Pages feature needs to be explicitly enabled for each project
+under **Settings > Pages**.
+
+## Remove the contents of your pages
+
+Pages can be explicitly removed from a project by clicking **Remove Pages**
+in a project's **Settings**.
+
+## Limitations
+
+When using Pages under the general domain of a GitLab instance (`*.example.io`),
+you _cannot_ use HTTPS with sub-subdomains. That means that if your
+username/groupname contains a dot, for example `foo.bar`, the domain
+`https://foo.bar.example.io` will _not_ work. This is a limitation of the
+[HTTP Over TLS protocol][rfc]. HTTP pages will continue to work provided you
+don't redirect HTTP to HTTPS.
+
+[rfc]: https://tools.ietf.org/html/rfc2818#section-3.1 "HTTP Over TLS RFC"
+
 ## Frequently Asked Questions
 
 **Q: Can I download my generated pages?**
@@ -146,3 +220,5 @@ Sure. All you need to do is download the artifacts archive from the build page.
 
 [jekyll]: http://jekyllrb.com/
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
+[ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
+[pages-daemon]: https://gitlab.com/gitlab-org/gitlab-pages
