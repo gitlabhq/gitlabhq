@@ -170,10 +170,10 @@ module API
       expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
-
       expose :subscribed do |issue, options|
         issue.subscribed?(options[:current_user])
       end
+      expose :user_notes_count
     end
 
     class MergeRequest < ProjectEntity

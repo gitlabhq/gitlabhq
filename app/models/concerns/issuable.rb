@@ -160,6 +160,10 @@ module Issuable
     notes.awards.where(note: "thumbsup").count
   end
 
+  def user_notes_count
+    notes.user.count
+  end
+
   def subscribed_without_subscriptions?(user)
     participants(user).include?(user)
   end

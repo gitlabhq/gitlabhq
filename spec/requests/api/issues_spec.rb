@@ -39,6 +39,7 @@ describe API::API, api: true  do
   let!(:empty_milestone) do
     create(:milestone, title: '2.0.0', project: project)
   end
+  let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
 
   before { project.team << [user, :reporter] }
 
@@ -127,6 +128,13 @@ describe API::API, api: true  do
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
+      end
+
+      it 'should return an count notes in issue' do
+        get api("/issues", user)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['user_notes_count']).to eq(1)
       end
     end
   end
@@ -228,6 +236,13 @@ describe API::API, api: true  do
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_issue.id)
+    end
+
+    it 'should return an count notes in issue' do
+      get api("#{base_url}/issues", user)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.first['user_notes_count']).to eq(1)
     end
   end
 

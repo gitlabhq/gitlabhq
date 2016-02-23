@@ -51,6 +51,9 @@ v 8.7.2
   - Label titles in filters are now escaped properly
 
 v 8.7.1
+  - API: Expose Issue#user_notes_count (Anton Popov)
+
+v 8.7.1 (unreleased)
   - Throttle the update of `project.last_activity_at` to 1 minute. !3848
   - Fix .gitlab-ci.yml parsing issue when hidde job is a template without script definition. !3849
   - Fix license detection to detect all license files, not only known licenses. !3878
