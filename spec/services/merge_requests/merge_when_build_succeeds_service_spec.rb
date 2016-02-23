@@ -66,8 +66,24 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       end
     end
 
+    context 'triggered by an old build' do
+      let(:old_build) { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
+      let(:build)     { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch, status: "success") }
+
+      it "merges all merge requests with merge when build succeeds enabled" do
+        allow_any_instance_of(MergeRequest).to receive(:ci_commit).and_return(ci_commit)
+        allow(ci_commit).to receive(:success?).and_return(true)
+        allow(old_build).to receive(:sha).and_return('1234abcdef')
+
+        expect(MergeWorker).to_not receive(:perform_async)
+        service.trigger(old_build)
+      end
+    end
+
     context 'commit status without ref' do
       let(:commit_status) { create(:generic_commit_status, status: 'success') }
+
+      before { mr_merge_if_green_enabled }
 
       it "doesn't merge a requests for status on other branch" do
         allow(project.repository).to receive(:branch_names_contains).with(commit_status.sha).and_return([])

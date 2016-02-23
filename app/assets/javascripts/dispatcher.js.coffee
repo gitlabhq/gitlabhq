@@ -91,7 +91,7 @@ class Dispatcher
         new TreeView()
       when 'projects:find_file:show'
         shortcut_handler = true
-      when 'projects:blob:show'
+      when 'projects:blob:show', 'projects:blame:show'
         new LineHighlighter()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:labels:new', 'projects:labels:edit'
