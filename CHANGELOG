@@ -4,6 +4,9 @@ v 8.5.1
   - Add when the Builds & Runners API changes got introduced
   - Fix Side-by-side view after loading diff results
   - Fix error 500 on some merged merge requests
+  - Issues can now be dragged & dropped into empty milestone lists. This is also
+    possible with MRs
+  - Fix an issue where MRs weren't sortable
 
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
