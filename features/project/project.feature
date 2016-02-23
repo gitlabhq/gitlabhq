@@ -92,7 +92,3 @@ Feature: Project
     And I visit my empty project page
     And I create bare repo
     Then I should see command line instructions
-
-  Scenario: I should not see command line instructions
-    Given I visit an empty project page
-    Then I should not see command line instructions
