@@ -39,7 +39,8 @@ module MergeRequests
         committer: committer
       }
 
-      repository.merge(current_user, merge_request.source_sha, merge_request.target_branch, options)
+      commit_id = repository.merge(current_user, merge_request.source_sha, merge_request.target_branch, options)
+      merge_request.update(merge_commit_sha: commit_id)
     rescue StandardError => e
       merge_request.update(merge_error: "Something went wrong during merge")
       Rails.logger.error(e.message)

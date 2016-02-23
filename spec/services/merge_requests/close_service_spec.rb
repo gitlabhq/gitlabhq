@@ -5,6 +5,7 @@ describe MergeRequests::CloseService, services: true do
   let(:user2) { create(:user) }
   let(:merge_request) { create(:merge_request, assignee: user2) }
   let(:project) { merge_request.project }
+  let!(:todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
 
   before do
     project.team << [user, :master]
@@ -40,6 +41,10 @@ describe MergeRequests::CloseService, services: true do
       it 'should create system note about merge_request reassign' do
         note = @merge_request.notes.last
         expect(note.note).to include 'Status changed to closed'
+      end
+
+      it 'marks todos as done' do
+        expect(todo.reload).to be_done
       end
     end
   end

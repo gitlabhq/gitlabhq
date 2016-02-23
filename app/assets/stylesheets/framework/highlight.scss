@@ -44,8 +44,10 @@
       white-space: nowrap;
 
       i {
+        float: left;
+        margin-top: 3px;
+        margin-right: 5px;
         visibility: hidden;
-        @extend .pull-left;
       }
 
       &:hover i {

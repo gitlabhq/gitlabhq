@@ -23,6 +23,10 @@ class BaseService
     EventCreateService.new
   end
 
+  def todo_service
+    TodoService.new
+  end
+
   def log_info(message)
     Gitlab::AppLogger.info message
   end

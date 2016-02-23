@@ -214,7 +214,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
       page.within 'li.issue:nth-child(3)' do
         expect(page).to have_content 'Bugfix'
-        expect(page).to have_content '0 0'
+        expect(page).to_not have_content '0 0'
       end
     end
   end
@@ -233,7 +233,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
       page.within 'li.issue:nth-child(3)' do
         expect(page).to have_content 'Bugfix'
-        expect(page).to have_content '0 0'
+        expect(page).to_not have_content '0 0'
       end
     end
   end
