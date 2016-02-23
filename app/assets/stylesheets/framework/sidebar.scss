@@ -12,6 +12,10 @@
     height: 100%;
     transition-duration: .3s;
   }
+
+  &.right-sidebar-expanded {
+    padding-right: $gutter_width;
+  }
 }
 
 .sidebar-wrapper {
@@ -179,6 +183,9 @@
 }
 
 @mixin expanded-sidebar {
+  &.right-sidebar-collapsed {
+    padding-right: $sidebar_collapsed_width;
+  }
 
   // when the screen is small enough
   @media (max-width: $screen-md-max) {
@@ -211,6 +218,10 @@
 
 @mixin collapsed-sidebar {
   padding-left: $sidebar_collapsed_width;
+
+  &.right-sidebar-collapsed {
+    padding-right: $sidebar_collapsed_width;
+  }
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
