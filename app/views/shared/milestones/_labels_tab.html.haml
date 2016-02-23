@@ -1,0 +1,15 @@
+%ul.bordered-list.manage-labels-list
+  - labels.each do |label|
+    - milestone = @milestone.is_a?(Milestone) ? @milestone : label.milestone
+
+    %li
+      = render_colored_label(label)
+      - args = [milestone.project.namespace, milestone.project, milestone_title: milestone.title, label_name: label.title]
+      - options = args.extract_options!
+
+      %span.issues-count
+        = link_to namespace_project_issues_path(*args, options.merge(state: 'opened')) do
+          = pluralize label.open_issues_count, 'open issue'
+      %span.issues-count
+        = link_to namespace_project_issues_path(*args, options.merge(state: 'closed')) do
+          = pluralize label.closed_issues_count, 'closed issue'

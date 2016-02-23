@@ -87,6 +87,12 @@ class GlobalMilestone
     @participants ||= milestones.map(&:participants).flatten.compact.uniq
   end
 
+  def labels
+    @labels ||= milestones.map do |ms|
+                  ms.labels.map { |label| LabelWithMilestone.new(label, ms) }
+                end.flatten.sort_by!(&:title)
+  end
+
   def opened_issues
     issues.opened
   end
