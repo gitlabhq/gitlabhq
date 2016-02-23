@@ -1,4 +1,6 @@
-- project = issue.project
+-# @project is present when viewing Project's milestone
+- project = @project || issue.project
+
 %li{ id: dom_id(issue, 'sortable'), class: 'issue-row', 'data-iid' => issue.iid, 'data-url' => issue_path(issue) }
   %span
     = link_to_gfm issue.title, [project.namespace.becomes(Namespace), project, issue], title: issue.title

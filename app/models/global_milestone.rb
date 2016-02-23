@@ -76,11 +76,11 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= Issue.of_milestones(milestones.map(&:id))
+    @issues ||= Issue.of_milestones(milestones.map(&:id)).includes(:project)
   end
 
   def merge_requests
-    @merge_requests ||= MergeRequest.of_milestones(milestones.map(&:id))
+    @merge_requests ||= MergeRequest.of_milestones(milestones.map(&:id)).includes(:target_project)
   end
 
   def participants

@@ -73,7 +73,7 @@
     = render 'shared/milestones/issues_tab', unassigned: @milestone.opened_issues.unassigned, assigned: @milestone.opened_issues.assigned, closed: @milestone.closed_issues
 
   .tab-pane#tab-merge-requests
-    = render 'shared/milestones/merge_requests_tab', unassigned: @milestone.opened_merge_requests.unassigned, assigned: @milestone.opened_merge_requests.assigned, closed: @milestone.closed_merge_requests, merged: @milestone.merge_requests.merged
+    = render 'shared/milestones/merge_requests_tab', unassigned: @milestone.opened_merge_requests.unassigned, assigned: @milestone.opened_merge_requests.assigned, closed: @milestone.merge_requests.closed, merged: @milestone.merge_requests.merged
 
   .tab-pane#tab-participants
     .gray-content-block.middle-block
