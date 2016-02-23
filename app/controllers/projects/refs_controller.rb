@@ -64,7 +64,7 @@ class Projects::RefsController < Projects::ApplicationController
       }
     end
 
-    offset = (@offset +  @limit)
+    offset = (@offset + @limit)
     if contents.size > offset
       @more_log_url = logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: offset)
     end
