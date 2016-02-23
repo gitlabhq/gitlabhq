@@ -266,7 +266,7 @@ namespace :gitlab do
       unless File.directory?(Rails.root.join('public/uploads'))
         puts "no".red
         try_fixing_it(
-          "sudo -u #{gitlab_user} mkdir -m 750 #{Rails.root}/public/uploads"
+          "sudo -u #{gitlab_user} mkdir #{Rails.root}/public/uploads"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -278,21 +278,22 @@ namespace :gitlab do
       upload_path = File.realpath(Rails.root.join('public/uploads'))
       upload_path_tmp = File.join(upload_path, 'tmp')
 
-      if File.stat(upload_path).mode == 040750
+      if File.stat(upload_path).mode == 040700
         unless Dir.exists?(upload_path_tmp)
           puts 'skipped (no tmp uploads folder yet)'.magenta
           return
         end
 
-        # if tmp upload dir has incorrect permissions, assume others do as well
-        if File.stat(upload_path_tmp).mode == 040755 && File.owned?(upload_path_tmp) # verify drwxr-xr-x permissions
+        # If tmp upload dir has incorrect permissions, assume others do as well
+        # Verify drwx------ permissions
+        if File.stat(upload_path_tmp).mode == 040700 && File.owned?(upload_path_tmp)
           puts "yes".green
         else
           puts "no".red
           try_fixing_it(
             "sudo chown -R #{gitlab_user} #{upload_path}",
             "sudo find #{upload_path} -type f -exec chmod 0644 {} \\;",
-            "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0755 {} \\;"
+            "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0700 {} \\;"
           )
           for_more_information(
             see_installation_guide_section "GitLab"
@@ -302,7 +303,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "sudo chmod 0750 #{upload_path}",
+          "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0700 {} \\;"
         )
         for_more_information(
           see_installation_guide_section "GitLab"

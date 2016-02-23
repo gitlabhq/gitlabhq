@@ -7,6 +7,7 @@ v 8.5.1
   - Issues can now be dragged & dropped into empty milestone lists. This is also
     possible with MRs
   - Fix an issue where MRs weren't sortable
+  - Restrict permissions on public/uploads
 
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
