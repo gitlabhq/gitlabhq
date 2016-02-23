@@ -1,0 +1,13 @@
+.row.prepend-top-default
+  .col-md-3
+    = render('shared/milestones/merge_requests', title: 'Work in progress (open and unassigned)', merge_requests: unassigned, id: 'unassigned')
+  .col-md-3
+    = render('shared/milestones/merge_requests', title: 'Waiting for merge (open and assigned)', merge_requests: assigned, id: 'ongoing')
+  .col-md-3
+    = render('shared/milestones/merge_requests', title: 'Rejected (closed)', merge_requests: closed, id: 'closed')
+  .col-md-3
+    .panel.panel-primary
+      .panel-heading Merged
+      %ul.well-list
+        - merged.each do |merge_request|
+          = render 'shared/milestones/merge_request', merge_request: merge_request

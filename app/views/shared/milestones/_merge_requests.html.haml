@@ -2,4 +2,4 @@
   .panel-heading= title
   %ul{ class: "well-list merge_requests-sortable-list", id: "merge_requests-list-#{id}", "data-state" => id }
     - merge_requests.sort_by(&:position).each do |merge_request|
-      = render 'merge_request', merge_request: merge_request
+      = render 'shared/milestones/merge_request', merge_request: merge_request
