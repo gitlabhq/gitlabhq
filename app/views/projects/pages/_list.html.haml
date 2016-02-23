@@ -1,4 +1,4 @@
-- if @domains.any?
+- if can?(current_user, :update_pages, @project) && @domains.any?
   .panel.panel-default
     .panel-heading
       Domains (#{@domains.count})
