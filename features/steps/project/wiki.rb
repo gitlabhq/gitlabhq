@@ -120,7 +120,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   step 'I should see the new wiki page form' do
     expect(current_path).to match('wikis/image.jpg')
     expect(page).to have_content('New Wiki Page')
-    expect(page).to have_content('Edit Page image.jpg')
+    expect(page).to have_content('Edit Page')
   end
 
   step 'I create a New page with paths' do
@@ -159,7 +159,9 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the page history' do
-    expect(page).to have_content('History for')
+    page.within(:css, ".nav-text") do
+      expect(page).to have_content('History')
+    end
   end
 
   step 'I search for Wiki content' do
