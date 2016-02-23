@@ -245,15 +245,6 @@ class Repository
     expire_emptiness_caches if empty?
   end
 
-  # Expires _all_ caches, including those that would normally only be expired
-  # under specific conditions.
-  def expire_all_caches!
-    expire_cache
-    expire_root_ref_cache
-    expire_emptiness_caches
-    expire_has_visible_content_cache
-  end
-
   def expire_branch_cache(branch_name = nil)
     # When we push to the root branch we have to flush the cache for all other
     # branches as their statistics are based on the commits relative to the
@@ -310,7 +301,11 @@ class Repository
   # Runs code just before a repository is deleted.
   def before_delete
     # FIXME: a repository not existing shouldn't prevent us from flushing caches.
-    expire_all_caches! if exists?
+    if exists?
+      expire_cache
+      expire_root_ref_cache
+      expire_emptiness_caches
+    end
   end
 
   # Runs code just before the HEAD of a repository is changed.
