@@ -183,18 +183,10 @@
 }
 
 @mixin expanded-sidebar {
+  padding-left: $sidebar_width;
+
   &.right-sidebar-collapsed {
     padding-right: $sidebar_collapsed_width;
-  }
-
-  // when the screen is small enough
-  @media (max-width: $screen-md-max) {
-    padding-left: $sidebar_collapsed_width;
-  }
-
-  // when the screen is big enough
-  @media(min-width: $screen-md-max) {
-    padding-left: $sidebar_width;
   }
 
   .sidebar-wrapper {

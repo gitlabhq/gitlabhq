@@ -188,13 +188,9 @@ $ ->
     $container.remove()
 
   $('.navbar-toggle').on 'click', ->
-    $this = $(this);
     $('.header-content .title').toggle()
     $('.header-content .navbar-collapse').toggle()
-    if $this.toggleClass('active').hasClass('active')
-      $this.closest('header').css('z-index',100)
-    else
-      $this.closest('header').css('z-index',99)
+    $('.navbar-toggle').toggleClass('active')
 
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->
@@ -214,7 +210,7 @@ $ ->
     $this = $(this)
     $this.attr 'value', $this.val()
     return
-    
+
   $(document)
     .off 'keyup', 'input[type="search"]'
     .on 'keyup', 'input[type="search"]' , (e) ->
@@ -257,7 +253,7 @@ $ ->
         $('.page-with-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
-      $.cookie("collapsed_gutter", 
+      $.cookie("collapsed_gutter",
         $('.right-sidebar')
           .hasClass('right-sidebar-collapsed'), { path: '/' })
 

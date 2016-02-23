@@ -23,7 +23,7 @@ header {
 
   &.navbar-gitlab {
     padding: 0 20px;
-    z-index: 99;
+    z-index: 100;
     margin-bottom: 0;
     min-height: $header-height;
     background-color: #fff;
@@ -141,9 +141,13 @@ header {
 }
 
 @media (max-width: $screen-md-max) {
-  .header-collapsed, .header-expanded {
-    @include collapsed-header;
+  .header-collapsed {
+    margin-left: $sidebar_collapsed_width;
   }
+
+ .header-expanded {
+    margin-left: $sidebar_width;
+ }
 }
 
 @media(min-width: $screen-md-max) {
