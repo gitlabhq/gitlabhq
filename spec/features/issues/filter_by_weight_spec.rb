@@ -4,13 +4,12 @@ feature 'Issue filtering by Weight', feature: true do
   include Select2Helper
 
   let(:project)   { create(:project, :public) }
-  let(:weight) { create(:weight, project: project) }
   let(:weight_num) {random_weight}
 
   before(:each) do
     create(:issue, project: project, weight: nil)
     create(:issue, project: project, weight: weight_num)
-    create(:issue, project: project, weight: random_weight)
+    create(:issue, project: project, weight: weight_num)
   end
 
   scenario 'filters by no Weight', js: true do
@@ -24,14 +23,21 @@ feature 'Issue filtering by Weight', feature: true do
     visit_issues(project)
     filter_by_weight(Issue::WEIGHT_ANY)
 
-    expect(page).to have_css('.issue', count: 3)
+    expect(page).to have_css('.issue', count: 2)
   end
 
   scenario 'filters by a specific Weight', js: true do
     visit_issues(project)
     filter_by_weight(weight_num)
 
-    expect(page).to have_css('.issue', count: 1)
+    expect(page).to have_css('.issue', count: 2)
+  end
+
+  scenario 'all weights', js: true do
+    visit_issues(project)
+    filter_by_weight(Issue::WEIGHT_ALL)
+
+    expect(page).to have_css('.issue', count: 3)
   end
 
   def visit_issues(project)

@@ -30,6 +30,7 @@ class Issue < ActiveRecord::Base
   include Elastic::IssuesSearch
 
   WEIGHT_RANGE = 1..9
+  WEIGHT_ALL = 'Everything'
   WEIGHT_ANY = 'Any Weight'
   WEIGHT_NONE = 'No Weight'
 
@@ -127,6 +128,6 @@ class Issue < ActiveRecord::Base
   end
 
   def self.weight_options
-    [WEIGHT_ANY, WEIGHT_NONE] + WEIGHT_RANGE.to_a
+    [WEIGHT_ALL, WEIGHT_ANY, WEIGHT_NONE] + WEIGHT_RANGE.to_a
   end
 end

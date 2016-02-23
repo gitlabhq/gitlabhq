@@ -144,12 +144,12 @@ module IssuesHelper
   end
 
   def issues_weight_options_for_edit(selected = nil)
-    weights = issue_weights - [[Issue::WEIGHT_ANY] * 2]
+    weights = [[Issue::WEIGHT_NONE, nil]] + issue_weights(Issue::WEIGHT_RANGE.to_a)
     options_for_select(weights, selected || params[:weight])
   end
 
-  def issue_weights
-    Issue.weight_options.map {|op| [op] * 2}
+  def issue_weights(weight_array = Issue.weight_options)
+    weight_array.map {|op| [op] * 2}
   end
   # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
