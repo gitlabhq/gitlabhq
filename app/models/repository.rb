@@ -307,6 +307,44 @@ class Repository
     cache.expire(:branch_names)
   end
 
+  # Runs code just before a repository is deleted.
+  def before_delete
+    # FIXME: a repository not existing shouldn't prevent us from flushing caches.
+    expire_all_caches! if exists?
+  end
+
+  # Runs code just before the HEAD of a repository is changed.
+  def before_change_head
+    # Cached divergent commit counts are based on repository head
+    expire_branch_cache
+    expire_root_ref_cache
+  end
+
+  # Runs code before creating a new tag.
+  def before_create_tag
+    expire_cache
+  end
+
+  # Runs code after a repository has been forked/imported.
+  def after_import
+    expire_emptiness_caches
+  end
+
+  # Runs code after a new commit has been pushed.
+  def after_push_commit(branch_name)
+    expire_cache(branch_name)
+  end
+
+  # Runs code after a new branch has been created.
+  def after_create_branch
+    expire_has_visible_content_cache
+  end
+
+  # Runs code after an existing branch has been removed.
+  def after_remove_branch
+    expire_has_visible_content_cache
+  end
+
   def method_missing(m, *args, &block)
     if m == :lookup && !block_given?
       lookup_cache[m] ||= {}
