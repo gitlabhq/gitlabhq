@@ -1,8 +1,11 @@
 # OmniAuth
 
-GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and other popular services.
+GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and
+other popular services.
 
-Configuring OmniAuth does not prevent standard GitLab authentication or LDAP (if configured) from continuing to work. Users can choose to sign in using any of the configured mechanisms.
+Configuring OmniAuth does not prevent standard GitLab authentication or LDAP
+(if configured) from continuing to work. Users can choose to sign in using any
+of the configured mechanisms.
 
 - [Initial OmniAuth Configuration](#initial-omniauth-configuration)
 - [Supported Providers](#supported-providers)
@@ -28,17 +31,23 @@ contains some settings that are common for all providers.
 
 ## Initial OmniAuth Configuration
 
-Before configuring individual OmniAuth providers there are a few global settings that are in common for all providers that we need to consider.
+Before configuring individual OmniAuth providers there are a few global settings
+that are in common for all providers that we need to consider.
 
 - Omniauth needs to be enabled, see details below for example.
-- `allow_single_sign_on` defaults to `false`. If `false` users must be created manually or they will not be able to
-sign in via OmniAuth.
-- `block_auto_created_users` defaults to `true`. If `true` auto created users will be blocked by default and will
-have to be unblocked by an administrator before they are able to sign in.
-- **Note:** If you set `allow_single_sign_on` to `true` and `block_auto_created_users` to `false` please be aware
-that any user on the Internet will be able to successfully sign in to your GitLab without administrative approval.
+- `allow_single_sign_on` allows you to specify the providers you want to allow to
+  automatically create an account. It defaults to `false`. If `false` users must
+  be created manually or they will not be able to sign in via OmniAuth.
+- `block_auto_created_users` defaults to `true`. If `true` auto created users will
+  be blocked by default and will have to be unblocked by an administrator before
+  they are able to sign in.
+- **Note:** If you set `block_auto_created_users` to `false`, make sure to only
+  define providers under `allow_single_sign_on` that you are able to control, like
+  SAML, Shibboleth, Crowd or Google, or set it to `false` otherwise any user on
+  the Internet will be able to successfully sign in to your GitLab without
+  administrative approval.
 
-If you want to change these settings:
+To change these settings:
 
 * **For omnibus package**
 
@@ -50,9 +59,9 @@ If you want to change these settings:
 
     and change
 
-    ```
+    ```ruby
     gitlab_rails['omniauth_enabled'] = true
-    gitlab_rails['omniauth_allow_single_sign_on'] = false
+    gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'twitter'] # add providers that should be allowed to auto create accounts
     gitlab_rails['omniauth_block_auto_created_users'] = true
     ```
 
@@ -68,41 +77,52 @@ If you want to change these settings:
 
     and change the following section
 
-    ```
+    ```yaml
      ## OmniAuth settings
       omniauth:
         # Allow login via Twitter, Google, etc. using OmniAuth providers
         enabled: true
 
         # CAUTION!
-        # This allows users to login without having a user account first (default: false).
+        # This allows users to login without having a user account first. Define the allowed providers
+        # using an array, e.g. ["saml", "twitter"], or as true/false to allow all providers or none.
         # User accounts will be created automatically when authentication was successful.
-        allow_single_sign_on: false
+        allow_single_sign_on: ["saml", "twitter"]
+
         # Locks down those users until they have been cleared by the admin (default: true).
         block_auto_created_users: true
     ```
 
-Now we can choose one or more of the Supported Providers below to continue configuration.
+Now we can choose one or more of the Supported Providers listed above to continue
+the configuration process.
 
 ## Enable OmniAuth for an Existing User
 
-Existing users can enable OmniAuth for specific providers after the account is created. For example, if the user originally signed in with LDAP an OmniAuth provider such as Twitter can be enabled. Follow the steps below to enable an OmniAuth provider for an existing user.
+Existing users can enable OmniAuth for specific providers after the account is
+created. For example, if the user originally signed in with LDAP an OmniAuth
+provider such as Twitter can be enabled. Follow the steps below to enable an
+OmniAuth provider for an existing user.
 
 1. Sign in normally - whether standard sign in, LDAP, or another OmniAuth provider.
 1. Go to profile settings (the silhouette icon in the top right corner).
 1. Select the "Account" tab.
 1. Under "Connected Accounts" select the desired OmniAuth provider, such as Twitter.
-1. The user will be redirected to the provider. Once the user authorized GitLab they will be redirected back to GitLab.
+1. The user will be redirected to the provider. Once the user authorized GitLab
+   they will be redirected back to GitLab.
 
 The chosen OmniAuth provider is now active and can be used to sign in to GitLab from then on.
 
-## Using Custom Omniauth Providers
+## Using Custom Omniauth Providers (only works on installations from source)
 
-GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already ships with a few providers preinstalled (e.g. LDAP, GitHub, Twitter). But sometimes that is not enough and you need to integrate with other authentication solutions. For these cases you can use the Omniauth provider.
+GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already ships
+with a few providers pre-installed (e.g. LDAP, GitHub, Twitter). But sometimes that
+is not enough and you need to integrate with other authentication solutions. For
+these cases you can use the Omniauth provider.
 
 ### Steps
 
-These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
+These steps are fairly general and you will need to figure out the exact details
+from the Omniauth provider's documentation.
 
 -   Stop GitLab:
 
@@ -128,8 +148,12 @@ These steps are fairly general and you will need to figure out the exact details
 
 ### Examples
 
-If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
+If you have successfully set up a provider that is not shipped with GitLab itself,
+please let us know.
 
-You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
+You can help others by reporting successful configurations and probably share a
+few insights or provide warnings for common errors or pitfalls by sharing your
+experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
 
-While we can't officially support every possible authentication mechanism out there, we'd like to at least help those with specific needs.
+While we can't officially support every possible authentication mechanism out there,
+we'd like to at least help those with specific needs.
