@@ -1,5 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.5.1
+  - Add when the Builds & Runners API changes got introduced
+  - Fix Side-by-side view after loading diff results
+  - Fix error 500 on some merged merge requests
+
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
   - Cache various Repository methods to improve performance (Yorick Peterse)
