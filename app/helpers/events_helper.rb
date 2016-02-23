@@ -155,8 +155,6 @@ module EventsHelper
 
   def event_note_title_html(event)
     if event.note_target
-      link_prefix = event.note_target.class.reference_prefix
-
       if event.note_commit?
         link_to(
           namespace_project_commit_path(event.project.namespace, event.project,
