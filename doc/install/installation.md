@@ -265,8 +265,9 @@ sudo usermod -aG redis git
     # Create the public/uploads/ directory
     sudo -u git -H mkdir public/uploads/
 
-    # Make sure GitLab can write to the public/uploads/ directory
-    sudo chmod -R u+rwX  public/uploads
+    # Make sure only the GitLab user has access to the public/uploads/ directory
+    # now that files in public/uploads are served by gitlab-workhorse
+    sudo chmod 0700 public/uploads
 
     # Change the permissions of the directory where CI build traces are stored
     sudo chmod -R u+rwX builds/
