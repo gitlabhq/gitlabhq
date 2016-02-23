@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
+  - Improve the formatting for the user page bio (Connor Shea)
   - Show Crowd login tab when sign in is disabled and Crowd is enabled (Peter Hudec)
 
 v 8.5.0
