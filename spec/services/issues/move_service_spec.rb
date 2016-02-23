@@ -4,8 +4,8 @@ describe Issues::MoveService, services: true do
   let(:user) { create(:user) }
   let(:title) { 'Some issue' }
   let(:description) { 'Some issue description' }
-  let(:old_issue) { create(:issue, title: title, description: description) }
-  let(:old_project) { old_issue.project }
+  let(:old_project) { create(:project) }
+  let(:old_issue) { create(:issue, title: title, description: description, project: old_project) }
   let(:new_project) { create(:project) }
   let(:move_service) { described_class.new(old_project, user, move_params, old_issue) }
 
@@ -61,13 +61,12 @@ describe Issues::MoveService, services: true do
           expect(old_issue.closed?).to be true
         end
 
-        it 'persists changes to old and new issue' do
-          expect(new_issue.changed?).to be false
-          expect(old_issue.changed?).to be false
+        it 'persists new issue' do
+          expect(new_issue.persisted?).to be true
         end
       end
 
-      context 'notes exist' do
+      context 'issue with notes' do
         let(:note_contents) do
           ['Some system note 1', 'Some comment', 'Some system note 2']
         end
@@ -89,6 +88,20 @@ describe Issues::MoveService, services: true do
 
         it 'adds a system note about move after rewritten notes' do
           expect(new_notes.last).to match /^Moved from/
+        end
+      end
+
+      describe 'rewritting references' do
+        include_context 'issue move executed'
+
+        context 'issue reference' do
+          let(:another_issue) { create(:issue, project: old_project) }
+          let(:description) { "Some description #{another_issue.to_reference}" }
+
+          it 'rewrites referenced issues creating cross project reference' do
+            expect(new_issue.description)
+              .to eq "Some description #{old_project.to_reference}#{another_issue.to_reference}"
+          end
         end
       end
     end

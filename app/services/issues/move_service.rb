@@ -45,7 +45,8 @@ module Issues
     end
 
     def open_new_issue
-      @issue_new.update(project: @project_new)
+      new_description = rewrite_references(@issue_old, @issue_old.description)
+      @issue_new.update(project: @project_new, description: new_description)
     end
 
     def rewrite_notes
@@ -68,6 +69,20 @@ module Issues
 
     def add_moved_to_note
       SystemNoteService.noteable_moved(:to, @issue_old, @project_old, @issue_new, @current_user)
+    end
+
+    def rewrite_references(mentionable, text)
+      new_content = text.dup
+      references = mentionable.all_references
+
+      [:issues, :merge_requests, :milestones].each do |type|
+        references.public_send(type).each do |mentioned|
+          new_content.gsub!(mentioned.to_reference,
+                            mentioned.to_reference(@project_new))
+        end
+      end
+
+      new_content
     end
   end
 end
