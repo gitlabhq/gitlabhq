@@ -51,9 +51,17 @@
 .profile-link-holder {
   display: inline;
 
+  a {
+    color: $blue-dark;
+    text-decoration: none;
+  }
+}
+
+// Middle dot divider between each element in a list of items.
+.middle-dot-divider {
   &:after {
-    content: "\00B7";
-    padding: 0px 6px;
+    content: "\00B7"; // Middle Dot
+    padding: 0 6px;
     font-weight: bold;
   }
 
@@ -63,11 +71,12 @@
       padding: 0;
     }
   }
+}
 
-  a {
-    color: $blue-dark;
-    text-decoration: none;
-  }
+.profile-user-bio {
+  // Limits the width of the user bio for readability.
+  max-width: 750px;
+  margin: auto;
 }
 
 .modal-profile-crop {
