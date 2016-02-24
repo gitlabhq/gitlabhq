@@ -57,7 +57,10 @@ module Issues
     def rewrite_notes
       @issue_old.notes.find_each do |note|
         new_note = note.dup
-        new_note.update(project: @project_new, noteable: @issue_new)
+        new_params = { project: @project_new, noteable: @issue_new,
+                       note: rewrite_references(new_note) }
+
+        new_note.update(new_params)
       end
     end
 
@@ -79,8 +82,10 @@ module Issues
     def rewrite_references(mentionable)
       references = mentionable.all_references
       new_content = mentionable_content(mentionable).dup
+      cross_project_refs = [:issues, :merge_requests, :milestones,
+                            :snippets, :commits, :commit_ranges]
 
-      [:issues, :merge_requests, :milestones].each do |type|
+      cross_project_refs.each do |type|
         references.public_send(type).each do |mentioned|
           new_content.gsub!(mentioned.to_reference,
                             mentioned.to_reference(@project_new))

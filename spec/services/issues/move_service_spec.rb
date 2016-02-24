@@ -94,27 +94,54 @@ describe Issues::MoveService, services: true do
       end
 
       context 'issue with notes' do
-        let(:note_contents) do
-          ['Some system note 1', 'Some comment', 'Some system note 2']
+        context 'notes without references' do
+          let(:notes_params) do
+            [{ system: false, note: 'Some comment 1' },
+             { system: true, note: 'Some system note' },
+             { system: false, note: 'Some comment 2' }]
+          end
+
+          before do
+            note_params = { noteable: old_issue, project: old_project, author: author }
+            notes_params.each do |note|
+              create(:note, note_params.merge(note))
+            end
+          end
+
+          include_context 'issue move executed'
+
+          let(:all_notes) { new_issue.notes.order('id ASC') }
+          let(:system_notes) { all_notes.system }
+          let(:user_notes) { all_notes.user }
+
+          it 'rewrites existing notes in valid order' do
+            expect(all_notes.pluck(:note).first(3))
+              .to eq notes_params.map { |n| n[:note] }
+          end
+
+          it 'adds a system note about move after rewritten notes' do
+            expect(system_notes.last.note).to match /^Moved from/
+          end
+
+          it 'preserves orignal author of comment' do
+            expect(user_notes.pluck(:author_id)).to all(eq(author.id))
+          end
         end
 
-        before do
-          note_params = { noteable: old_issue, project: old_project, author: user }
-          create(:system_note, note_params.merge(note: note_contents.first))
-          create(:note, note_params.merge(note: note_contents.second))
-          create(:system_note, note_params.merge(note: note_contents.third))
-        end
+        context 'notes with references' do
+          before do
+            create(:merge_request, source_project: old_project)
+            create(:note, noteable: old_issue, project: old_project, author: author,
+                   note: 'Note with reference to merge request !1')
+          end
 
-        include_context 'issue move executed'
+          include_context 'issue move executed'
+          let(:new_note) { new_issue.notes.first }
 
-        let(:new_notes) { new_issue.notes.order('id ASC').pluck(:note) }
-
-        it 'rewrites existing system notes in valid order' do
-          expect(new_notes.first(3)).to eq note_contents
-        end
-
-        it 'adds a system note about move after rewritten notes' do
-          expect(new_notes.last).to match /^Moved from/
+          it 'rewrites references using a cross reference to old project' do
+            expect(new_note.note)
+              .to eq "Note with reference to merge request #{old_project.to_reference}!1"
+          end
         end
       end
 
