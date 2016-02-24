@@ -3,6 +3,10 @@
 
 %li{ id: dom_id(issue, 'sortable'), class: 'issue-row', 'data-iid' => issue.iid, 'data-url' => issue_path(issue) }
   %span
+    - if show_project_name
+      %strong #{project.name} &middot;
+    - elsif show_full_project_name
+      %strong #{project.name_with_namespace} &middot;
     = link_to_gfm issue.title, [project.namespace.becomes(Namespace), project, issue], title: issue.title
   .issue-detail
     = link_to [project.namespace.becomes(Namespace), project, issue] do

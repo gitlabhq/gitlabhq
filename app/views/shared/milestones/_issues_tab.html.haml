@@ -1,7 +1,10 @@
+- args = { show_project_name: local_assigns.fetch(:show_project_name, false),
+           show_full_project_name: local_assigns.fetch(:show_full_project_name, false) }
+
 .row.prepend-top-default
   .col-md-4
-    = render('shared/milestones/issues', title: 'Unstarted Issues (open and unassigned)', issues: unassigned, id: 'unassigned')
+    = render 'shared/milestones/issues', args.merge({ title: 'Unstarted Issues (open and unassigned)', issues: unassigned, id: 'unassigned' })
   .col-md-4
-    = render('shared/milestones/issues', title: 'Ongoing Issues (open and assigned)', issues: assigned, id: 'ongoing')
+    = render 'shared/milestones/issues', args.merge({ title: 'Ongoing Issues (open and assigned)', issues: assigned, id: 'ongoing' })
   .col-md-4
-    = render('shared/milestones/issues', title: 'Completed Issues (closed)', issues: closed, id: 'closed')
+    = render 'shared/milestones/issues', args.merge({ title: 'Completed Issues (closed)', issues: closed, id: 'closed' })

@@ -74,10 +74,10 @@
 
 .tab-content.milestone-content
   .tab-pane.active#tab-issues
-    = render 'shared/milestones/issues_tab', unassigned: @milestone.opened_issues.unassigned, assigned: @milestone.opened_issues.assigned, closed: @milestone.closed_issues
+    = render 'shared/milestones/issues_tab', unassigned: @milestone.opened_issues.unassigned, assigned: @milestone.opened_issues.assigned, closed: @milestone.closed_issues, show_project_name: true
   .tab-pane#tab-merge-requests
-    = render 'shared/milestones/merge_requests_tab', unassigned: @milestone.opened_merge_requests.unassigned, assigned: @milestone.opened_merge_requests.assigned, closed: @milestone.merge_requests.closed, merged: @milestone.merge_requests.merged
+    = render 'shared/milestones/merge_requests_tab', unassigned: @milestone.opened_merge_requests.unassigned, assigned: @milestone.opened_merge_requests.assigned, closed: @milestone.merge_requests.closed, merged: @milestone.merge_requests.merged, show_project_name: true
   .tab-pane#tab-participants
     = render 'shared/milestones/participants_tab', users: @milestone.participants
   .tab-pane#tab-labels
-    = render 'shared/milestones/labels_tab', labels: @milestone.labels
+    = render 'shared/milestones/labels_tab', labels: @milestone.labels, show_project_name: true

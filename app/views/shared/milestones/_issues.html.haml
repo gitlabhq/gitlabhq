@@ -4,4 +4,4 @@
     .pull-right= issues.size
   %ul{ class: "well-list issues-sortable-list", id: "issues-list-#{id}", "data-state" => id }
     - issues.sort_by(&:position).each do |issue|
-      = render 'shared/milestones/issue', issue: issue
+      = render 'shared/milestones/issue', issue: issue, show_project_name: show_project_name, show_full_project_name: show_full_project_name
