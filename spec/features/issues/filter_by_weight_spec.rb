@@ -3,8 +3,8 @@ require 'rails_helper'
 feature 'Issue filtering by Weight', feature: true do
   include Select2Helper
 
-  let(:project)   { create(:project, :public) }
-  let(:weight_num) {random_weight}
+  let(:project) { create(:project, :public) }
+  let(:weight_num) { random_weight }
 
   before(:each) do
     create(:issue, project: project, weight: nil)
