@@ -174,6 +174,18 @@ describe User, models: true do
         end
       end
     end
+
+    describe 'avatar' do
+      it 'only validates when avatar is present' do
+        user = build(:user, :with_avatar)
+
+        user.avatar_crop_x    = nil
+        user.avatar_crop_y    = nil
+        user.avatar_crop_size = nil
+
+        expect(user).not_to be_valid
+      end
+    end
   end
 
   describe "Respond to" do

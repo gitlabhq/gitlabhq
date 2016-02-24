@@ -169,7 +169,7 @@ class User < ActiveRecord::Base
   validates :avatar_crop_x, :avatar_crop_y, :avatar_crop_size,
     numericality: { only_integer: true },
     presence: true,
-    if: ->(user) { user.avatar_changed? }
+    if: ->(user) { user.avatar? }
 
   before_validation :generate_password, on: :create
   before_validation :restricted_signup_domains, on: :create
