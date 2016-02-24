@@ -4,6 +4,10 @@
 > This feature was [introduced][ee-80] in GitLab EE 8.3.
 > Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
 
+> **Note:**
+> This document is about the user guide. To learn how to enable GitLab Pages
+> across your GitLab instance, visit the [administrator documentation](administration.md).
+
 With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
 deploy static pages for your individual projects, your user or your group.
@@ -14,13 +18,11 @@ deploy static pages for your individual projects, your user or your group.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Enable the pages feature in your GitLab EE instance](#enable-the-pages-feature-in-your-gitlab-ee-instance)
 - [Getting started with GitLab Pages](#getting-started-with-gitlab-pages)
     - [GitLab pages per user or group](#gitlab-pages-per-user-or-group)
     - [GitLab pages per project](#gitlab-pages-per-project)
-    - [Enable the pages feature in your project](#enable-the-pages-feature-in-your-project)
-    - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
     - [Explore the contents of .gitlab-ci.yml](#explore-the-contents-of-gitlab-ci-yml)
+    - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
 - [Next steps](#next-steps)
     - [Adding a custom domain to your Pages website](#adding-a-custom-domain-to-your-pages-website)
     - [Securing your custom domain website with TLS](#securing-your-custom-domain-website-with-tls)
@@ -30,10 +32,6 @@ deploy static pages for your individual projects, your user or your group.
 - [Frequently Asked Questions](#frequently-asked-questions)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## Enable the pages feature in your GitLab EE instance
-
-The administrator guide is located at [administration](administration.md).
 
 ## Getting started with GitLab Pages
 
@@ -95,16 +93,6 @@ access it under `http(s)://username.example.io`. Keep reading to find out how.
 
 GitLab Pages for projects 
 
-### Enable the pages feature in your project
-
-The GitLab Pages feature needs to be explicitly enabled for each project
-under its **Settings**.
-
-### Remove the contents of your pages
-
-Pages can be explicitly removed from a project by clicking **Remove Pages**
-Go to your project's **Settings > Pages**.
-
 ### Explore the contents of .gitlab-ci.yml
 
 Before reading this section, make sure you familiarize yourself with GitLab CI
@@ -164,6 +152,11 @@ pages:
   only:
   - master
 ```
+
+### Remove the contents of your pages
+
+Pages can be explicitly removed from a project by clicking **Remove Pages**
+Go to your project's **Settings > Pages**.
 
 ## Next steps
 
