@@ -70,6 +70,7 @@ class @MergeRequestTabs
       @loadCommits($target.attr('href'))
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
+      @shrinkView()
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
 
@@ -185,3 +186,10 @@ class @MergeRequestTabs
 
   expandViewContainer: ->
     $('.container-fluid').removeClass('container-limited')
+
+  shrinkView: ->
+    $gutterIcon = $('.gutter-toggle i')
+
+    # Only when sidebar is collapsed
+    if $gutterIcon.is('.fa-angle-double-right')
+      $gutterIcon.closest('a').trigger('click')

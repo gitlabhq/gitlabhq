@@ -210,7 +210,7 @@ $ ->
     $this = $(this)
     $this.attr 'value', $this.val()
     return
-    
+
   $(document)
     .off 'keyup', 'input[type="search"]'
     .on 'keyup', 'input[type="search"]' , (e) ->
@@ -224,16 +224,6 @@ $ ->
         $gutterIcon = $('.gutter-toggle').find('i')
         if $gutterIcon.hasClass('fa-angle-double-right')
           $gutterIcon.closest('a').trigger('click')
-
-  $(document)
-    .off 'shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]'
-    .on 'shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', (e) ->
-      action = $(e.target).attr("data-action")
-      if action is 'diffs' 
-        $gutterIcon = $('.gutter-toggle').find('i')
-        if $gutterIcon.hasClass('fa-angle-double-right')
-          $gutterIcon.closest('a').trigger('click')
-
 
   $(document)
     .off 'click', 'aside .gutter-toggle'
@@ -263,7 +253,7 @@ $ ->
         $('.page-with-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
-      $.cookie("collapsed_gutter", 
+      $.cookie("collapsed_gutter",
         $('.right-sidebar')
           .hasClass('right-sidebar-collapsed'), { path: '/' })
 
