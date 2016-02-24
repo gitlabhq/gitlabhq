@@ -47,9 +47,12 @@ documentation](../workflow/add-user/add-user.md).
 | Manage runners                        |         |            |             | ✓        | ✓      |
 | Manage build triggers                 |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
+| Manage pages                          |         |            |             | ✓        | ✓      |
+| Manage pages domains and certificates |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
+| Remove pages                          |         |            |             |          | ✓      |
 | Force push to protected branches      |         |            |             |          |        |
 | Remove protected branches             |         |            |             |          |        |
 

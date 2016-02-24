@@ -118,4 +118,38 @@ eos
     it { expect(data[:modified]).to eq([".gitmodules"]) }
     it { expect(data[:removed]).to eq([]) }
   end
+
+  describe '#reverts_commit?' do
+    let(:another_commit) { double(:commit, revert_description: "This reverts commit #{commit.sha}") }
+
+    it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+
+    context 'commit has no description' do
+      before { allow(commit).to receive(:description?).and_return(false) }
+
+      it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+    end
+
+    context "another_commit's description does not revert commit" do
+      before { allow(commit).to receive(:description).and_return("Foo Bar") }
+
+      it { expect(commit.reverts_commit?(another_commit)).to be_falsy }
+    end
+
+    context "another_commit's description reverts commit" do
+      before { allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar") }
+
+      it { expect(commit.reverts_commit?(another_commit)).to be_truthy }
+    end
+
+    context "another_commit's description reverts merged merge request" do
+      before do
+        revert_description = "This reverts merge request !foo123"
+        allow(another_commit).to receive(:revert_description).and_return(revert_description)
+        allow(commit).to receive(:description).and_return("Foo #{another_commit.revert_description} Bar")
+      end
+
+      it { expect(commit.reverts_commit?(another_commit)).to be_truthy }
+    end
+  end
 end

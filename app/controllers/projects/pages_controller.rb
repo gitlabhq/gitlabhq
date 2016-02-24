@@ -1,7 +1,8 @@
 class Projects::PagesController < Projects::ApplicationController
   layout 'project_settings'
 
-  before_action :authorize_update_pages!
+  before_action :authorize_read_pages!, only: [:show]
+  before_action :authorize_update_pages!, except: [:show]
 
   def show
     @domains = @project.pages_domains.order(:domain)

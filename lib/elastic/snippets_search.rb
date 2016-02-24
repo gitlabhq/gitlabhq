@@ -28,12 +28,23 @@ module Elastic
       end
 
       def as_indexed_json(options = {})
-        as_json(
+        as_json({
+          only: [
+            :id,
+            :title,
+            :file_name,
+            :content,
+            :created_at,
+            :updated_at,
+            :state,
+            :project_id,
+            :author_id,
+          ],
           include: {
             project:  { only: :id },
             author:   { only: :id }
           }
-        )
+        })
       end
 
       def self.elastic_search(query, options: {})

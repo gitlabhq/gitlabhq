@@ -32,7 +32,7 @@ Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
 
-GitLab requires Ruby (MRI) 2.1.x or 2.2.x and currently does not work with version 2.3.
+GitLab requires Ruby (MRI) 2.1.x and currently does not work with versions 2.2 or 2.3.
 
 You will have to use the standard MRI implementation of Ruby.
 We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab
@@ -67,8 +67,8 @@ You need at least 2GB of addressable memory (RAM + swap) to install and use GitL
 With less memory GitLab will give strange errors during the reconfigure run and 500 errors during usage.
 
 - 512MB RAM + 1.5GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advice.
-- 1GB RAM + 1GB swap supports up to 100 users but it will be slow
-- **2GB RAM** is the **recommended** memory size and supports up to 100 users
+- 1GB RAM + 1GB swap supports up to 100 users but it will be very slow
+- **2GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
 - 4GB RAM supports up to 1,000 users
 - 8GB RAM supports up to 2,000 users
 - 16GB RAM supports up to 4,000 users

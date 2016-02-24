@@ -22,7 +22,7 @@ requests and closed issues. Hovering on each bar you can see the number of
 events for a specific member.
 
 Below is an example of the push events of the
-[gitlab-org][https://gitlab.com/groups/gitlab-org] group.
+[gitlab-org](https://gitlab.com/groups/gitlab-org/analytics) group.
 
 ![Contribution analytics bar graphs](img/group_stats_graph.png)
 
