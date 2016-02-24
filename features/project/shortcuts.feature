@@ -12,6 +12,7 @@ Feature: Project Shortcuts
 
   @javascript
   Scenario: Navigate to commits tab
+    Given I visit my project's files page
     Given I press "g" and "c"
     Then the active main tab should be Commits
 
