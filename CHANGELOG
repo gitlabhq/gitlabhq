@@ -2,7 +2,24 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
   - Improve the formatting for the user page bio (Connor Shea)
+
+v 8.5.1
+  - Fix group projects styles
   - Show Crowd login tab when sign in is disabled and Crowd is enabled (Peter Hudec)
+  - Fix a set of small UI glitches in project, profile, and wiki pages
+  - Restrict permissions on public/uploads
+  - Fix the merge request side-by-side view after loading diff results
+  - Fix the look of tooltip for the "Revert" button
+  - Add when the Builds & Runners API changes got introduced
+  - Fix error 500 on some merged merge requests
+  - Fix an issue causing the content of the issuable sidebar to disappear
+  - Fix error 500 when trying to mark an already done todo as "done"
+  - Fix an issue where MRs weren't sortable
+  - Issues can now be dragged & dropped into empty milestone lists. This is also
+  possible with MRs
+  - Changed padding & background color for highlighted notes
+  - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
+  - Update sentry-raven gem to 0.15.6
 
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
