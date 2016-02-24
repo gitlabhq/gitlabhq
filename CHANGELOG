@@ -7,6 +7,7 @@ v 8.6.0 (unreleased)
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
   - Don't load all of GitLab in mail_room
   - Strip leading and trailing spaces in URL validator (evuez)
+  - Add "last_sign_in_at" and "confirmed_at" to GET /users/* API endpoints for admins (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users

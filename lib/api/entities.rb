@@ -23,6 +23,8 @@ module API
     end
 
     class UserFull < User
+      expose :last_sign_in_at
+      expose :confirmed_at
       expose :email
       expose :theme_id, :color_scheme_id, :projects_limit, :current_sign_in_at
       expose :identities, using: Entities::Identity
