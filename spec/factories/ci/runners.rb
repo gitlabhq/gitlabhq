@@ -25,14 +25,12 @@ FactoryGirl.define do
       "My runner#{n}"
     end
 
-    platform "darwin"
+    platform  "darwin"
+    is_shared false
+    active    true
 
-    factory :ci_shared_runner do
+    trait :shared do
       is_shared true
-    end
-
-    factory :ci_specific_runner do
-      is_shared false
     end
   end
 end

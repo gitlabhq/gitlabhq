@@ -39,7 +39,7 @@ describe Ci::Runner, models: true do
 
   describe :assign_to do
     let!(:project) { FactoryGirl.create :empty_project }
-    let!(:shared_runner) { FactoryGirl.create(:ci_shared_runner) }
+    let!(:shared_runner) { FactoryGirl.create(:ci_runner, :shared) }
 
     before { shared_runner.assign_to(project) }
 
@@ -52,15 +52,15 @@ describe Ci::Runner, models: true do
     subject { Ci::Runner.online }
 
     before do
-      @runner1 = FactoryGirl.create(:ci_shared_runner, contacted_at: 1.year.ago)
-      @runner2 = FactoryGirl.create(:ci_shared_runner, contacted_at: 1.second.ago)
+      @runner1 = FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.year.ago)
+      @runner2 = FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.second.ago)
     end
 
     it { is_expected.to eq([@runner2])}
   end
 
   describe :online? do
-    let(:runner) { FactoryGirl.create(:ci_shared_runner) }
+    let(:runner) { FactoryGirl.create(:ci_runner, :shared) }
 
     subject { runner.online? }
 
@@ -84,7 +84,7 @@ describe Ci::Runner, models: true do
   end
 
   describe :status do
-    let(:runner) { FactoryGirl.create(:ci_shared_runner, contacted_at: 1.second.ago) }
+    let(:runner) { FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.second.ago) }
 
     subject { runner.status }
 
@@ -115,7 +115,7 @@ describe Ci::Runner, models: true do
 
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
-      runner = FactoryGirl.create(:ci_specific_runner)
+      runner = FactoryGirl.create(:ci_runner)
       project = FactoryGirl.create(:empty_project)
       project1 = FactoryGirl.create(:empty_project)
       project.runners << runner
@@ -125,7 +125,7 @@ describe Ci::Runner, models: true do
     end
 
     it "returns true" do
-      runner = FactoryGirl.create(:ci_specific_runner)
+      runner = FactoryGirl.create(:ci_runner)
       project = FactoryGirl.create(:empty_project)
       project.runners << runner
 

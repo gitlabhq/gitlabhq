@@ -56,6 +56,12 @@ class Projects::BuildsController < Projects::ApplicationController
     render json: @build.to_json(only: [:status, :id, :sha, :coverage], methods: :sha)
   end
 
+  def erase
+    @build.erase(erased_by: current_user)
+    redirect_to namespace_project_build_path(project.namespace, project, @build),
+                notice: "Build has been sucessfully erased!"
+  end
+
   private
 
   def build

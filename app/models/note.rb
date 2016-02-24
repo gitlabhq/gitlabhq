@@ -38,6 +38,8 @@ class Note < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
 
+  has_many :todos, dependent: :destroy
+
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 
@@ -377,6 +379,7 @@ class Note < ActiveRecord::Base
   #
   def set_award!
     return unless awards_supported? && contains_emoji_only?
+
     self.is_award = true
     self.note = award_emoji_name
   end
@@ -384,7 +387,7 @@ class Note < ActiveRecord::Base
   private
 
   def awards_supported?
-    noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)
+    (noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)) && !for_diff_line?
   end
 
   def contains_emoji_only?
