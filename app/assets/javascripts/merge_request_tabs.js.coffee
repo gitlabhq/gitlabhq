@@ -190,6 +190,10 @@ class @MergeRequestTabs
   shrinkView: ->
     $gutterIcon = $('.gutter-toggle i')
 
-    # Only when sidebar is collapsed
-    if $gutterIcon.is('.fa-angle-double-right')
-      $gutterIcon.closest('a').trigger('click')
+    # Wait until listeners are set
+    setTimeout( ->
+      # Only when sidebar is collapsed
+      if $gutterIcon.is('.fa-angle-double-right')
+        $gutterIcon.closest('a').trigger('click')
+    , 0)
+
