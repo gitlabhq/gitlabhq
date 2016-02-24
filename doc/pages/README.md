@@ -165,7 +165,9 @@ pages:
 ### Remove the contents of your pages
 
 Pages can be explicitly removed from a project by clicking **Remove Pages**
-Go to your project's **Settings > Pages**.
+in your project's **Settings > Pages**.
+
+![Remove pages](img/pages_remove.png)
 
 ## Next steps
 
