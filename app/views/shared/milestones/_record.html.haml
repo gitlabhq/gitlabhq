@@ -1,0 +1,17 @@
+-# @project is present when viewing Project's milestone
+- project = @project || record.project
+
+%li{ id: dom_id(record, 'sortable'),  class: "#{dom_class(record)}-row", 'data-iid' => record.iid, 'data-url' => polymorphic_path(record) }
+  %span
+    - if show_project_name
+      %strong #{project.name} &middot;
+    - elsif show_full_project_name
+      %strong #{project.name_with_namespace} &middot;
+    = link_to_gfm record.title, [project.namespace.becomes(Namespace), project, record], title: record.title
+  %div{class: "#{dom_class(record)}-detail"}
+    = link_to [project.namespace.becomes(Namespace), project, record] do
+      %span{ class: "#{dom_class(record)}-number" } ##{record.iid}
+    - record.labels.each do |label|
+      = render_colored_label(label)
+    - if record.assignee
+      = image_tag avatar_icon(record.assignee, 16), class: "avatar s16", alt: ''
