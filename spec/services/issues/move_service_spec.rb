@@ -2,12 +2,17 @@ require 'spec_helper'
 
 describe Issues::MoveService, services: true do
   let(:user) { create(:user) }
+  let(:author) { create(:user) }
   let(:title) { 'Some issue' }
   let(:description) { 'Some issue description' }
   let(:old_project) { create(:project) }
-  let(:old_issue) { create(:issue, title: title, description: description, project: old_project) }
   let(:new_project) { create(:project) }
   let(:issue_params) { old_issue.serializable_hash }
+
+  let(:old_issue) do
+    create(:issue, title: title, description: description,
+           project: old_project, author: author)
+  end
 
   let(:move_service) do
     described_class.new(old_project, user, issue_params, old_issue, new_project_id)
@@ -72,6 +77,19 @@ describe Issues::MoveService, services: true do
         it 'persist all changes' do
           expect(old_issue.changed?).to be false
           expect(new_issue.changed?).to be false
+        end
+
+        it 'changes author' do
+          expect(new_issue.author).to eq user
+        end
+
+        it 'removes data that is invalid in new context' do
+          expect(new_issue.milestone).to be_nil
+          expect(new_issue.labels).to be_empty
+        end
+
+        it 'creates a new internal id for issue' do
+          expect(new_issue.iid).to be 1
         end
       end
 

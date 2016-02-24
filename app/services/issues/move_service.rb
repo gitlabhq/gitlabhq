@@ -49,9 +49,7 @@ module Issues
     def new_issue_params
       new_params = { id: nil, iid: nil, milestone_id: nil, label_ids: [],
                      project_id: @project_new.id,
-                     author_id: @issue_old.author_id,
-                     description: rewrite_references(@issue_old),
-                     updated_by_id: current_user.id }
+                     description: rewrite_references(@issue_old) }
 
       params.merge(new_params)
     end
