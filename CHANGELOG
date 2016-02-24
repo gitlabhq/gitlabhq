@@ -1,8 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.5.0 (unreleased)
-  - Fix Elasticsearch blob results linking to the wrong reference ID (Stan Hu)
 v 8.6.0 (unreleased)
+
 v 8.5.1
   - Fix group projects styles
   - Show Crowd login tab when sign in is disabled and Crowd is enabled (Peter Hudec)
