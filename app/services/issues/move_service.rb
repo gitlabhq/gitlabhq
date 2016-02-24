@@ -4,7 +4,7 @@ module Issues
       super(project, current_user, params)
 
       @issue_old = issue
-      @issue_new = @issue_old.dup
+      @issue_new = nil
       @project_old = @project
       @project_new = Project.find(new_project_id) if new_project_id
     end
@@ -42,8 +42,18 @@ module Issues
     end
 
     def open_new_issue
-      new_description = rewrite_references(@issue_old, @issue_old.description)
-      @issue_new.update(project: @project_new, description: new_description)
+      create_service = CreateService.new(@project_new, current_user, new_issue_params)
+      @issue_new = create_service.execute
+    end
+
+    def new_issue_params
+      new_params = { id: nil, iid: nil, milestone_id: nil, label_ids: [],
+                     project_id: @project_new.id,
+                     author_id: @issue_old.author_id,
+                     description: rewrite_references(@issue_old),
+                     updated_by_id: current_user.id }
+
+      params.merge(new_params)
     end
 
     def rewrite_notes
@@ -68,9 +78,9 @@ module Issues
       SystemNoteService.noteable_moved(:to, @issue_old, @project_old, @issue_new, @current_user)
     end
 
-    def rewrite_references(mentionable, text)
-      new_content = text.dup
+    def rewrite_references(mentionable)
       references = mentionable.all_references
+      new_content = mentionable_content(mentionable).dup
 
       [:issues, :merge_requests, :milestones].each do |type|
         references.public_send(type).each do |mentioned|
@@ -80,6 +90,15 @@ module Issues
       end
 
       new_content
+    end
+
+    def mentionable_content(mentionable)
+      case mentionable
+      when Issue then mentionable.description
+      when Note then mentionable.note
+      else
+        raise 'Unexpected mentionable while moving an issue'
+      end
     end
   end
 end

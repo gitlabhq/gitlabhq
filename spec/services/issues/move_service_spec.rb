@@ -68,6 +68,11 @@ describe Issues::MoveService, services: true do
         it 'persists new issue' do
           expect(new_issue.persisted?).to be true
         end
+
+        it 'persist all changes' do
+          expect(old_issue.changed?).to be false
+          expect(new_issue.changed?).to be false
+        end
       end
 
       context 'issue with notes' do
