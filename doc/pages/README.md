@@ -20,8 +20,7 @@ deploy static pages for your individual projects, your user or your group.
 
 - [Getting started with GitLab Pages](#getting-started-with-gitlab-pages)
     - [GitLab Pages requirements](#gitlab-pages-requirements)
-    - [GitLab pages per user](#gitlab-pages-per-user)
-    - [GitLab pages per group](#gitlab-pages-per-group)
+    - [GitLab pages per user or group](#gitlab-pages-per-user-or-group)
     - [GitLab pages per project](#gitlab-pages-per-project)
     - [Explore the contents of .gitlab-ci.yml](#explore-the-contents-of-gitlab-ci-yml)
     - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
@@ -72,7 +71,7 @@ In brief, this is what you need to upload your website in GitLab Pages:
 > If [shared runners](../ci/runners/README.md) are enabled by your GitLab
 > administrator, you should be able to use them instead of bringing your own.
 
-### GitLab pages per user
+### GitLab pages per user or group
 
 Head over your GitLab instance that supports GitLab Pages and create a
 repository named `username.example.io`, where `username` is your username on
@@ -83,18 +82,13 @@ username, it won’t work, so make sure to get it right.
 
 ---
 
-After you push some static content to your repository and GitLab Runner uploads
-the artifacts to GitLab CI, you will be able to access your website under
-`http(s)://username.example.io`. Keep reading to find out how.
-
-### GitLab pages per group
-
-To create a group page the steps are the same like when creating a website for
+To create a group page, the steps are the same like when creating a website for
 users. Just make sure that you are creating the project within the group's
 namespace.
 
-After you upload some static content to your repository, you will be able to
-access it under `http(s)://groupname.example.io`.
+After you push some static content to your repository and GitLab Runner uploads
+the artifacts to GitLab CI, you will be able to access your website under
+`http(s)://username.example.io`. Keep reading to find out how.
 
 ### GitLab pages per project
 
