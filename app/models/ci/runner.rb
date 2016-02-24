@@ -22,6 +22,7 @@ module Ci
     extend Ci::Model
 
     LAST_CONTACT_TIME = 5.minutes.ago
+    AVAILABLE_SCOPES = ['specific', 'shared', 'active', 'paused', 'online']
     
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
@@ -37,6 +38,11 @@ module Ci
     scope :paused, ->() { where(active: false) }
     scope :online, ->() { where('contacted_at > ?', LAST_CONTACT_TIME) }
     scope :ordered, ->() { order(id: :desc) }
+
+    scope :owned_or_shared, ->(project_id) do
+      joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
+        .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
+    end
 
     acts_as_taggable
 

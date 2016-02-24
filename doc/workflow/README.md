@@ -26,6 +26,7 @@
 - [Releases](releases.md)
 - [Milestones](milestones.md)
 - [Merge Requests](merge_requests.md)
+- [Revert changes](revert_changes.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)
 - [Repository Mirroring](repository_mirroring.md)
 - [Merge When Build Succeeds](merge_when_build_succeeds.md)

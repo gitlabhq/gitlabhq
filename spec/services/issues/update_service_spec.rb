@@ -80,6 +80,74 @@ describe Issues::UpdateService, services: true do
       end
     end
 
+    context 'todos' do
+      let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
+
+      context 'when the title change' do
+        before do
+          update_issue({ title: 'New title' })
+        end
+
+        it 'marks pending todos as done' do
+          expect(todo.reload.done?).to eq true
+        end
+      end
+
+      context 'when the description change' do
+        before do
+          update_issue({ description: 'Also please fix' })
+        end
+
+        it 'marks todos as done' do
+          expect(todo.reload.done?).to eq true
+        end
+      end
+
+      context 'when is reassigned' do
+        before do
+          update_issue({ assignee: user2 })
+        end
+
+        it 'marks previous assignee todos as done' do
+          expect(todo.reload.done?).to eq true
+        end
+
+        it 'creates a todo for new assignee' do
+          attributes = {
+            project: project,
+            author: user,
+            user: user2,
+            target_id: issue.id,
+            target_type: issue.class.name,
+            action: Todo::ASSIGNED,
+            state: :pending
+          }
+
+          expect(Todo.where(attributes).count).to eq 1
+        end
+      end
+
+      context 'when the milestone change' do
+        before do
+          update_issue({ milestone: create(:milestone) })
+        end
+
+        it 'marks todos as done' do
+          expect(todo.reload.done?).to eq true
+        end
+      end
+
+      context 'when the labels change' do
+        before do
+          update_issue({ label_ids: [label.id] })
+        end
+
+        it 'marks todos as done' do
+          expect(todo.reload.done?).to eq true
+        end
+      end
+    end
+
     context 'when Issue has tasks' do
       before { update_issue({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
 
@@ -144,6 +212,5 @@ describe Issues::UpdateService, services: true do
         end
       end
     end
-
   end
 end

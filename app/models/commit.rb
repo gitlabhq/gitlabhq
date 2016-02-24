@@ -215,6 +215,44 @@ class Commit
     ci_commit.try(:status) || :not_found
   end
 
+  def revert_branch_name
+    "revert-#{short_id}"
+  end
+
+  def revert_description
+    if merged_merge_request
+      "This reverts merge request #{merged_merge_request.to_reference}"
+    else
+      "This reverts commit #{sha}"
+    end
+  end
+
+  def revert_message
+    %Q{Revert "#{title}"\n\n#{revert_description}}
+  end
+
+  def reverts_commit?(commit)
+    description? && description.include?(commit.revert_description)
+  end
+
+  def merge_commit?
+    parents.size > 1
+  end
+
+  def merged_merge_request
+    return @merged_merge_request if defined?(@merged_merge_request)
+
+    @merged_merge_request = project.merge_requests.find_by(merge_commit_sha: id) if merge_commit?
+  end
+
+  def has_been_reverted?(current_user = nil, noteable = self)
+    Gitlab::ReferenceExtractor.lazily do
+      noteable.notes.system.flat_map do |note|
+        note.all_references(current_user).commits
+      end
+    end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
+  end
+
   private
 
   def repo_changes
