@@ -14,7 +14,7 @@ describe Banzai::Filter::EmojiFilter, lib: true do
 
   it 'replaces supported emoji' do
     doc = filter('<p>:heart:</p>')
-    expect(doc.css('img').first.attr('src')).to eq 'https://foo.com/assets/emoji/2764.png'
+    expect(doc.css('img').first.attr('src')).to eq 'https://foo.com/assets/2764.png'
   end
 
   it 'ignores unsupported emoji' do
@@ -25,7 +25,7 @@ describe Banzai::Filter::EmojiFilter, lib: true do
 
   it 'correctly encodes the URL' do
     doc = filter('<p>:+1:</p>')
-    expect(doc.css('img').first.attr('src')).to eq 'https://foo.com/assets/emoji/1F44D.png'
+    expect(doc.css('img').first.attr('src')).to eq 'https://foo.com/assets/1F44D.png'
   end
 
   it 'matches at the start of a string' do

@@ -24,6 +24,17 @@
         %li
           = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
 
+      - upvotes, downvotes = merge_request.upvotes, merge_request.downvotes
+      - if upvotes > 0
+        %li
+          = icon('thumbs-up')
+          = upvotes
+
+      - if downvotes > 0
+        %li
+          = icon('thumbs-down')
+          = downvotes
+
       - note_count = merge_request.mr_and_commit_notes.user.count
       - if note_count > 0
         %li

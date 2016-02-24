@@ -519,8 +519,8 @@ describe Project, models: true do
 
   describe :any_runners do
     let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
-    let(:specific_runner) { create(:ci_specific_runner) }
-    let(:shared_runner) { create(:ci_shared_runner) }
+    let(:specific_runner) { create(:ci_runner) }
+    let(:shared_runner) { create(:ci_runner, :shared) }
 
     context 'for shared runners disabled' do
       let(:shared_runners_enabled) { false }

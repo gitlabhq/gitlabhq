@@ -14,6 +14,7 @@ if Rails.env.production?
   if sentry_enabled
     Raven.configure do |config|
       config.dsn = current_application_settings.sentry_dsn
+      config.release = Gitlab::REVISION
     end
   end
 end

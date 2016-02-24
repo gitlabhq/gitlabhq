@@ -41,6 +41,10 @@
           .filter-item.inline
             = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
+- if @label
+  .gray-content-block.second-block
+    = render "shared/label_row", label: @label
+
 :javascript
   new UsersSelect();
   $('form.filter-form').on('submit', function (event) {

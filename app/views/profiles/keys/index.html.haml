@@ -1,14 +1,14 @@
 - page_title "SSH Keys"
 - header_title page_title, profile_keys_path
 
-.gray-content-block.top-block
-  .pull-right
+.top-area
+  .nav-text
+    Before you can add an SSH key you need to
+    = link_to "generate it.", help_page_path("ssh", "README")
+  .nav-controls
     = link_to new_profile_key_path, class: "btn btn-new" do
       = icon('plus')
       Add SSH Key
-  .oneline
-    Before you can add an SSH key you need to
-    = link_to "generate it.", help_page_path("ssh", "README")
 
 .prepend-top-default
 = render 'key_table'

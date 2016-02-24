@@ -50,7 +50,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 8.1'
+gem "gitlab_git", '~> 8.2'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -112,7 +112,7 @@ gem 'diffy', '~> 3.0.3'
 
 # Application server
 group :unicorn do
-  gem "unicorn", '~> 4.8.2'
+  gem "unicorn", '~> 4.9.0'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end
 
@@ -204,7 +204,7 @@ gem 'jquery-turbolinks', '~> 2.1.0'
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.2'
-gem 'gitlab_emoji',       '~> 0.2.0'
+gem 'gitlab_emoji',       '~> 0.3.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.0.0'
@@ -218,7 +218,7 @@ gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 
 # Sentry integration
-gem 'sentry-raven'
+gem 'sentry-raven', '~> 0.15'
 
 # Metrics
 group :metrics do
@@ -302,6 +302,8 @@ end
 group :production do
   gem "gitlab_meta", '7.0'
 end
+
+gem "newrelic_rpm", '~> 3.14'
 
 gem 'octokit', '~> 3.8.0'
 

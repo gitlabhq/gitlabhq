@@ -1,4 +1,4 @@
-$hover: #faf9f9;
+$row-hover: #f4f8fe;
 $gl-text-color: #54565B;
 $gl-text-green: #4A2;
 $gl-text-red: #D12F19;
@@ -31,6 +31,7 @@ $gl-padding-top:10px;
 $gl-avatar-size: 40px;
 $secondary-text: #7f8fa4;
 $error-exclamation-point: #E62958;
+$border-radius-default: 3px;
 
 /*
  * Color schema
@@ -100,6 +101,8 @@ $gl-success: $green-normal;
 $gl-info: $blue-normal;
 $gl-warning: $orange-normal;
 $gl-danger: $red-normal;
+$gl-btn-active-background: rgba(0, 0, 0, 0.12);
+$gl-btn-active-gradient: inset 0 0 4px $gl-btn-active-background;
 
 /*
  * Commit Diff Colors

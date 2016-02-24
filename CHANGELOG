@@ -1,6 +1,27 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.5.0 (unreleased)
+v 8.6.0 (unreleased)
+  - Improve the formatting for the user page bio (Connor Shea)
+
+v 8.5.1
+  - Fix group projects styles
+  - Show Crowd login tab when sign in is disabled and Crowd is enabled (Peter Hudec)
+  - Fix a set of small UI glitches in project, profile, and wiki pages
+  - Restrict permissions on public/uploads
+  - Fix the merge request side-by-side view after loading diff results
+  - Fix the look of tooltip for the "Revert" button
+  - Add when the Builds & Runners API changes got introduced
+  - Fix error 500 on some merged merge requests
+  - Fix an issue causing the content of the issuable sidebar to disappear
+  - Fix error 500 when trying to mark an already done todo as "done"
+  - Fix an issue where MRs weren't sortable
+  - Issues can now be dragged & dropped into empty milestone lists. This is also
+  possible with MRs
+  - Changed padding & background color for highlighted notes
+  - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
+  - Update sentry-raven gem to 0.15.6
+
+v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
   - Cache various Repository methods to improve performance (Yorick Peterse)
   - Fix duplicated branch creation/deletion Web hooks/service notifications when using Web UI (Stan Hu)
@@ -46,22 +67,38 @@ v 8.5.0 (unreleased)
   - Deprecate API "merge_request/:merge_request_id/comments". Use "merge_requests/:merge_request_id/notes" instead
   - Deprecate API "merge_request/:merge_request_id/...". Use "merge_requests/:merge_request_id/..." instead
   - Prevent parse error when name of project ends with .atom and prevent path issues
+  - Discover branches for commit statuses ref-less when doing merge when succeeded
   - Mark inline difference between old and new paths when a file is renamed
   - Support Akismet spam checking for creation of issues via API (Stan Hu)
   - API: Allow to set or update a merge-request's milestone (Kirill Skachkov)
   - Improve UI consistency between projects and groups lists
   - Add sort dropdown to dashboard projects page
   - Fixed logo animation on Safari (Roman Rott)
+  - Fix Merge When Succeeded when multiple stages
   - Hide remove source branch button when the MR is merged but new commits are pushed (Zeger-Jan van de Weg)
   - In seach autocomplete show only groups and projects you are member of
   - Don't process cross-reference notes from forks
   - Fix: init.d script not working on OS X
   - Faster snippet search
+  - Added API to download build artifacts
   - Title for milestones should be unique (Zeger-Jan van de Weg)
   - Validate correctness of maximum attachment size application setting
   - Replaces "Create merge request" link with one to the "Merge Request" when one exists
   - Fix CI builds badge, add a new link to builds badge, deprecate the old one
   - Fix broken link to project in build notification emails
+  - Ability to see and sort on vote count from Issues and MR lists
+  - Fix builds scheduler when first build in stage was allowed to fail
+  - User project limit is reached notice is hidden if the projects limit is zero
+  - Add API support for managing runners and project's runners
+  - Allow SAML users to login with no previous account without having to allow
+    all Omniauth providers to do so.
+  - Allow existing users to auto link their SAML credentials by logging in via SAML
+  - Make it possible to erase a build (trace, artifacts) using UI and API
+  - Ability to revert changes from a Merge Request or Commit
+  - Emoji comment on diffs are not award emoji
+  - Add label description (Nuttanart Pornprasitsakul)
+  - Show label row when filtering issues or merge requests by label (Nuttanart Pornprasitsakul)
+  - Add Todos
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2

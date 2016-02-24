@@ -32,6 +32,7 @@
   .cover-controls {
     .project-settings-dropdown {
       margin-left: 10px;
+      display: inline-block;
     }
   }
 
@@ -73,21 +74,16 @@
       font-weight: normal;
     }
 
+    .visibility-icon {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 18px;
+      color: $gray;
+    }
+
     p {
       padding: 0 $gl-padding;
       color: #5c5d5e;
-    }
-  }
-
-  .visibility-level-label {
-    @extend .btn;
-    @extend .btn-gray;
-
-    color: $gray;
-    cursor: default;
-
-    i {
-      color: inherit;
     }
   }
 
@@ -191,10 +187,10 @@
 
 .dropdown-menu {
   @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
-  @include border-radius (0px);
+  @include border-radius ($border-radius-default);
 
   border: none;
-  padding: 16px 0;
+  padding: 10px 0;
   font-size: 14px;
   font-weight: 100;
 
