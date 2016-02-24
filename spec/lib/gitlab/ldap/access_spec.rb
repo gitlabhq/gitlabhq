@@ -150,14 +150,12 @@ describe Gitlab::LDAP::Access, lib: true do
     end
 
     context 'when synchronously updating group permissions' do
-      subject { access.update_permissions(update_ldap_group_links_synchronously: true) }
-      
       it 'updates group permissions directly' do
         allow(access).to receive_messages(group_base: 'my-group-base')
         expect(LdapGroupLinksWorker).not_to receive(:perform_async)
         expect(access).to receive(:update_ldap_group_links)
   
-        subject
+        access.update_permissions(update_ldap_group_links_synchronously: true)
       end      
     end
   end
