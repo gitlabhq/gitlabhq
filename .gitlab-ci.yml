@@ -164,7 +164,7 @@ bundler:audit:
 
 spec:feature:ruby22:
   stage: test
-  image: ruby:2.1
+  image: ruby:2.2
   only:
   - master
   script:
@@ -318,7 +318,7 @@ spinach:other:ruby22:
 notify:slack:
   stage: notifications
   script:
-    - source ./scripts/notify_slack.sh "#builds" "Build failed for master/tags!"
+    - ./scripts/notify_slack.sh "#builds" "Build failed for master/tags!"
   when: on_failure
   only:
     - master@gitlab-org/gitlab-ce
