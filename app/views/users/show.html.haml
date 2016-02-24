@@ -39,7 +39,7 @@
       @#{@user.username}
     %span.middle-dot-divider
       Member since #{@user.created_at.to_s(:medium)}
-  
+
   - if @user.bio.present?
     .cover-desc
       %p.profile-user-bio
@@ -73,18 +73,15 @@
     %li.active
       = link_to "#activity", 'data-toggle' => 'tab' do
         Activity
-    - if @groups.any?
-      %li
-        = link_to "#groups", 'data-toggle' => 'tab' do
-          Groups
-    - if @contributed_projects.present?
-      %li
-        = link_to "#contributed", 'data-toggle' => 'tab' do
-          Contributed projects
-    - if @projects.present?
-      %li
-        = link_to "#personal", 'data-toggle' => 'tab' do
-          Personal projects
+    %li
+      = link_to "#groups", 'data-toggle' => 'tab' do
+        Groups
+    %li
+      = link_to "#contributed", 'data-toggle' => 'tab' do
+        Contributed projects
+    %li
+      = link_to "#personal", 'data-toggle' => 'tab' do
+        Personal projects
 
 %div{ class: container_class }
   .tab-content
@@ -100,25 +97,28 @@
       .content_list
       = spinner
 
-    - if @groups.any?
-      .tab-pane#groups
-        %ul.content-list
-          - @groups.each do |group|
-            = render 'shared/groups/group', group: group
+    .tab-pane#groups
+      %ul.content-list.user-groups
+        %h4.center.light
+          %i.fa.fa-spinner.fa-spin
 
-    - if @contributed_projects.present?
-      .tab-pane#contributed
-        .contributed-projects
-          = render 'shared/projects/list',
-            projects: @contributed_projects.sort_by(&:star_count).reverse,
-            projects_limit: 10, stars: true, avatar: true
+    .tab-pane#contributed
+      .contributed-projects
+        %h4.center.light
+          %i.fa.fa-spinner.fa-spin
 
-    - if @projects.present?
-      .tab-pane#personal
-        .personal-projects
-          = render 'shared/projects/list',
-            projects: @projects.sort_by(&:star_count).reverse,
-            projects_limit: 10, stars: true, avatar: true
+    .tab-pane#personal
+      .personal-projects
+        %h4.center.light
+          %i.fa.fa-spinner.fa-spin
 
 :javascript
+  $('.nav-links').stickyTabs();
   $(".user-calendar").load("#{user_calendar_path}");
+  $(".user-groups").load("#{user_groups_path}");
+  $(".contributed-projects").load("#{user_contributed_projects_path}");
+  $(".personal-projects").load("#{user_projects_path}");
+
+  $("body").on("ajax:success", function(e, data, status, xhr) {
+    $(".personal-projects").html(xhr.responseText)
+  });

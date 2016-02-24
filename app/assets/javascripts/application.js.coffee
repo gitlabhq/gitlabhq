@@ -17,6 +17,7 @@
 #= require jquery.atwho
 #= require jquery.scrollTo
 #= require jquery.turbolinks
+#= require jquery.stickytabs
 #= require d3
 #= require cal-heatmap
 #= require turbolinks

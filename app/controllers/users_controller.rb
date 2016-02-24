@@ -3,13 +3,6 @@ class UsersController < ApplicationController
   before_action :set_user
 
   def show
-    @contributed_projects = contributed_projects.joined(@user).reject(&:forked?)
-    
-    @projects = PersonalProjectsFinder.new(@user).execute(current_user)
-    @projects = @projects.page(params[:page]).per(PER_PAGE)
-
-    @groups = @user.groups.order_id_desc
-
     respond_to do |format|
       format.html
 
@@ -23,6 +16,24 @@ class UsersController < ApplicationController
         pager_json("events/_events", @events.count)
       end
     end
+  end
+
+  def groups
+    load_groups
+
+    render 'shared/groups/_list', locals: { groups: @groups }, layout: false
+  end
+
+  def user_projects
+    load_projects
+
+    render 'shared/projects/_list', locals: { projects: @projects, remote: true }, layout: false
+  end
+
+  def user_contributed_projects
+    load_contributed_projects
+
+    render 'shared/projects/_list', locals: { projects: @contributed_projects }, layout: false
   end
 
   def calendar
@@ -67,6 +78,20 @@ class UsersController < ApplicationController
       references(:project).
       with_associations.
       limit_recent(20, params[:offset])
+  end
+
+  def load_projects
+    @projects =
+      PersonalProjectsFinder.new(@user).execute(current_user)
+      .page(params[:page]).per(PER_PAGE)
+  end
+
+  def load_contributed_projects
+    @contributed_projects = contributed_projects.joined(@user)
+  end
+
+  def load_groups
+    @groups = @user.groups.order_id_desc
   end
 
   def projects_for_current_user
