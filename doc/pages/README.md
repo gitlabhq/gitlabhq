@@ -5,7 +5,7 @@
 > Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
 
 With GitLab Pages you can host for free your static websites on GitLab.
-Combined with the power of GitLab CI and the help of GitLab Runner you can
+Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
 deploy static pages for your individual projects, your user or your group.
 
 ---
@@ -216,3 +216,5 @@ to private, internal or public.
 [ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
 [ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
 [pages-daemon]: https://gitlab.com/gitlab-org/gitlab-pages
+[gitlab ci]: https://about.gitlab.com/gitlab-ci
+[gitlab runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
