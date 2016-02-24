@@ -1,12 +1,19 @@
+- show_project_name = local_assigns.fetch(:show_project_name, false)
+- show_full_project_name = local_assigns.fetch(:show_full_project_name, false)
+
 %ul.bordered-list.manage-labels-list
   - labels.each do |label|
     - milestone = @milestone.is_a?(Milestone) ? @milestone : label.milestone
 
     %li
       = render_colored_label(label)
+      - if show_project_name
+        %strong &middot; #{milestone.project.name}
+      - elsif show_full_project_name
+        %strong &middot; #{milestone.project.name_with_namespace}
+
       - args = [milestone.project.namespace, milestone.project, milestone_title: milestone.title, label_name: label.title]
       - options = args.extract_options!
-
       %span.issues-count
         = link_to namespace_project_issues_path(*args, options.merge(state: 'opened')) do
           = pluralize label.open_issues_count, 'open issue'
