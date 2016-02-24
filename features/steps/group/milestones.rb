@@ -24,6 +24,9 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   end
 
   step 'I click on one group milestone' do
+    milestones = Milestone.where(title: 'GL-113')
+    @global_milestone = GlobalMilestone.new('GL-113', milestones)
+
     click_link 'GL-113'
   end
 
@@ -33,7 +36,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
 
   step 'I should see group milestone with all issues and MRs assigned to that milestone' do
     expect(page).to have_content('Milestone GL-113')
-    expect(page).to have_content('Progress: 0 closed – 3 open')
+    expect(page).to have_content('3 issues: 3 open and 0 closed')
     issue = Milestone.find_by(name: 'GL-113').issues.first
     expect(page).to have_link(issue.title, href: namespace_project_issue_path(issue.project.namespace, issue.project, issue))
   end
@@ -60,6 +63,47 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see the "bug" label' do
+    page.within('#tab-issues') do
+      expect(page).to have_content 'bug'
+    end
+  end
+
+  step 'I should see the "feature" label' do
+    page.within('#tab-issues') do
+      expect(page).to have_content 'bug'
+    end
+  end
+
+  step 'I should see the project name in the Issue row' do
+    page.within('#tab-issues') do
+      @global_milestone.projects.each do |project|
+        expect(page).to have_content project.name
+      end
+    end
+  end
+
+  step 'I click on the "Labels" tab' do
+    page.within('.nav-links') do
+      page.find(:xpath, "//a[@href='#tab-labels']").click
+    end
+  end
+
+  step 'I should see the list of labels' do
+    page.within('#tab-labels') do
+      expect(page).to have_content 'bug'
+      expect(page).to have_content 'feature'
+    end
+  end
+
+  step 'I should see the project name in the Label row' do
+    page.within('#tab-labels') do
+      @global_milestone.projects.each do |project|
+        expect(page).to have_content project.name
+      end
+    end
+  end
+
   private
 
   def group_milestone
@@ -68,6 +112,10 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     %w(gitlabhq gitlab-ci cookbook-gitlab).each do |path|
       project = create :project, path: path, group: group
       milestone = create :milestone, title: "Version 7.2", project: project
+
+      create(:label, project: project, title: 'bug')
+      create(:label, project: project, title: 'feature')
+
       create :issue,
         project: project,
         assignee: current_user,
@@ -80,11 +128,14 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
         due_date: '2114-08-20',
         description: 'Lorem Ipsum is simply dummy text'
 
-      create :issue,
+      issue = create :issue,
         project: project,
         assignee: current_user,
         author: current_user,
         milestone: milestone
+
+      issue.labels << project.labels.find_by(title: 'bug')
+      issue.labels << project.labels.find_by(title: 'feature')
     end
   end
 end

@@ -28,3 +28,21 @@ Feature: Group Milestones
     And I fill milestone name
     When I press create mileston button
     Then milestone in each project should be created
+
+  Scenario: I should see Issues listed with labels
+    Given Group has projects with milestones
+    When I visit group "Owned" page
+    And I click on group milestones
+    And I click on one group milestone
+    Then I should see the "bug" label
+    And I should see the "feature" label
+    And I should see the project name in the Issue row
+
+  Scenario: I should see the Labels tab
+    Given Group has projects with milestones
+    When I visit group "Owned" page
+    And I click on group milestones
+    And I click on one group milestone
+    And I click on the "Labels" tab
+    Then I should see the list of labels
+    And I should see the project name in the Label row
