@@ -5,6 +5,7 @@
 # the compiled file.
 #
 #= require jquery
+#= require vue
 #= require jquery-ui/autocomplete
 #= require jquery-ui/datepicker
 #= require jquery-ui/effect-highlight

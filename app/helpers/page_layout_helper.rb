@@ -34,6 +34,12 @@ module PageLayoutHelper
     end
   end
 
+  def container_id(title=nil)
+    if title
+      @container_id = title
+    end
+  end
+
   def page_image
     default = image_url('gitlab_logo.png')
 

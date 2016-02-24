@@ -21,6 +21,8 @@ class Dispatcher
       when 'projects:issues:index'
         Issues.init()
         shortcut_handler = new ShortcutsNavigation()
+      when 'dashboard:todos:index'
+        new Todos()
       when 'projects:issues:show'
         new Issue()
         shortcut_handler = new ShortcutsIssuable()
