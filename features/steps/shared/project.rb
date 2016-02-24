@@ -7,6 +7,12 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  step "I own a project in some group namespace" do
+    @group = create(:group, name: 'some group')
+    @project = create(:project, namespace: @group)
+    @project.team << [@user, :master]
+  end
+
   step "project exists in some group namespace" do
     @group = create(:group, name: 'some group')
     @project = create(:project, namespace: @group)

@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.5.1
+  - Fix adding pages domain to projects in groups
+
 v 8.5.0 (unreleased)
   - Show warning when mirror repository default branch could not be updated because it has diverged from upstream.
   - More reliable wiki indexer
