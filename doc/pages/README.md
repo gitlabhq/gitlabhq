@@ -36,10 +36,14 @@ deploy static pages for your individual projects, your user or your group.
 
 ## Getting started with GitLab Pages
 
+> **Note:**
+> In the rest of this document we will assume that the general domain name that
+> is used for GitLab Pages is `example.io`.
+
 GitLab Pages rely heavily on GitLab CI and its ability to upload
 [artifacts](../ci/yaml/README.md#artifacts).
 
-In general there are two kinds of pages one might create:
+In general there are two types of pages one might create:
 
 - Pages per user/group (`username.example.io`)
 - Pages per project (`username.example.io/projectname`)
@@ -47,9 +51,12 @@ In general there are two kinds of pages one might create:
 In GitLab, usernames and groupnames are unique and often people refer to them
 as namespaces. There can be only one namespace in a GitLab instance.
 
-> **Note:**
-> In the rest of this document we will assume that the general domain name that
-> is used for GitLab Pages is `example.io`.
+| Type of GitLab Pages | Project name | Website served under |
+| -------------------- | --------------- | -------------------- |
+| User pages  | `username.example.io`  | `http(s)://username.example.io`  |
+| Group pages | `groupname.example.io` | `http(s)://groupname.example.io` |
+| Project pages owned by a user  | `projectname` | `http(s)://username.example.io/projectname` |
+| Project pages owned by a group | `projectname` | `http(s)://groupname.example.io/projectname`|
 
 > **Warning:**
 > There are some known [limitations](#limitations) regarding namespaces served
