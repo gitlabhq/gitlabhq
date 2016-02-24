@@ -82,8 +82,9 @@ username, it won’t work, so make sure to get it right.
 
 ---
 
-After you upload some static content to your repository, you will be able to
-access it under `http(s)://username.example.io`. Keep reading to find out how.
+After you push some static content to your repository and GitLab Runner uploads
+the artifacts to GitLab CI, you will be able to access your website under
+`http(s)://username.example.io`. Keep reading to find out how.
 
 ### GitLab pages per group
 
