@@ -141,9 +141,13 @@ header {
 }
 
 @media (max-width: $screen-md-max) {
-  .header-collapsed, .header-expanded {
-    @include collapsed-header;
+  .header-collapsed {
+    margin-left: $sidebar_collapsed_width;
   }
+
+ .header-expanded {
+    margin-left: $sidebar_width;
+ }
 }
 
 @media(min-width: $screen-md-max) {
