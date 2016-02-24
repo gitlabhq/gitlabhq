@@ -40,9 +40,5 @@ rubocop:
 notify:slack:
   stage: notifications
   script:
-    - if [[ "$(basename „$PWD")" == "gitlab-ce" ]]; then
-        ./scripts/notify_slack.sh "#ci-test" "Build failed! Check https://gitlab.com/gitlab-org/gitlab-ee/commit/$CI_BUILD_REF/builds"
-      else
-        ./scripts/notify_slack.sh "#ci-test" "Build failed! Check https://gitlab.com/gitlab-org/gitlab-ee/commit/$CI_BUILD_REF/builds"
-      fi
+    - ./scripts/notify_slack.sh "#ci-test" "Build failed! Check https://gitlab.com/gitlab-org/$(basename „$PWD)/commit/$CI_BUILD_REF/builds"
   when: on_failure
