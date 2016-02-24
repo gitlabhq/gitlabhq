@@ -68,8 +68,9 @@ In brief, this is what you need to upload your website in GitLab Pages:
    [`.gitlab-ci.yml`](../ci/yaml/README.md)
 1. A GitLab Runner to build GitLab Pages
 
-If [shared runners](../ci/runners/README.md) are enabled by your GitLab
-administrator, you should be able to use them instead of bringing your own.
+> **Note:**
+> If [shared runners](../ci/runners/README.md) are enabled by your GitLab
+> administrator, you should be able to use them instead of bringing your own.
 
 ### GitLab pages per user
 
