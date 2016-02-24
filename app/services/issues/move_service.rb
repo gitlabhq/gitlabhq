@@ -1,15 +1,12 @@
 module Issues
   class MoveService < Issues::BaseService
-    def initialize(project, current_user, params, issue)
+    def initialize(project, current_user, params, issue, new_project_id)
       super(project, current_user, params)
 
       @issue_old = issue
       @issue_new = @issue_old.dup
       @project_old = @project
-
-      if params['move_to_project_id']
-        @project_new = Project.find(params['move_to_project_id'])
-      end
+      @project_new = Project.find(new_project_id) if new_project_id
     end
 
     def execute

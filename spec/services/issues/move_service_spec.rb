@@ -7,10 +7,14 @@ describe Issues::MoveService, services: true do
   let(:old_project) { create(:project) }
   let(:old_issue) { create(:issue, title: title, description: description, project: old_project) }
   let(:new_project) { create(:project) }
-  let(:move_service) { described_class.new(old_project, user, move_params, old_issue) }
+  let(:issue_params) { old_issue.serializable_hash }
+
+  let(:move_service) do
+    described_class.new(old_project, user, issue_params, old_issue, new_project_id)
+  end
 
   shared_context 'issue move requested' do
-    let(:move_params) { { 'move_to_project_id' => new_project.id } }
+    let(:new_project_id) { new_project.id }
   end
 
   shared_context 'user can move issue' do
@@ -108,7 +112,7 @@ describe Issues::MoveService, services: true do
   end
 
   context 'issue move not requested' do
-    let(:move_params) { {} }
+    let(:new_project_id) { nil }
 
     describe '#move?' do
       subject { move_service.move? }
