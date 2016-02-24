@@ -1,13 +1,12 @@
+- args = { show_project_name: local_assigns.fetch(:show_project_name, false),
+           show_full_project_name: local_assigns.fetch(:show_full_project_name, false) }
+
 .row.prepend-top-default
   .col-md-3
-    = render('shared/milestones/merge_requests', title: 'Work in progress (open and unassigned)', merge_requests: unassigned, id: 'unassigned')
+    = render 'shared/milestones/merge_requests', args.merge({ title: 'Work in progress (open and unassigned)', merge_requests: unassigned, id: 'unassigned' })
   .col-md-3
-    = render('shared/milestones/merge_requests', title: 'Waiting for merge (open and assigned)', merge_requests: assigned, id: 'ongoing')
+    = render 'shared/milestones/merge_requests', args.merge({ title: 'Waiting for merge (open and assigned)', merge_requests: assigned, id: 'ongoing' })
   .col-md-3
-    = render('shared/milestones/merge_requests', title: 'Rejected (closed)', merge_requests: closed, id: 'closed')
+    = render 'shared/milestones/merge_requests', args.merge({ title: 'Rejected (closed)', merge_requests: closed, id: 'closed' })
   .col-md-3
-    .panel.panel-primary
-      .panel-heading Merged
-      %ul.well-list
-        - merged.each do |merge_request|
-          = render 'shared/milestones/merge_request', merge_request: merge_request
+    = render 'shared/milestones/merge_requests', args.merge({ title: 'Merged', merge_requests: merged, id: 'merged', primary: true })
