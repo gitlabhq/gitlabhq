@@ -19,6 +19,7 @@ deploy static pages for your individual projects, your user or your group.
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Getting started with GitLab Pages](#getting-started-with-gitlab-pages)
+    - [GitLab Pages requirements](#gitlab-pages-requirements)
     - [GitLab pages per user](#gitlab-pages-per-user)
     - [GitLab pages per group](#gitlab-pages-per-group)
     - [GitLab pages per project](#gitlab-pages-per-project)
@@ -36,38 +37,39 @@ deploy static pages for your individual projects, your user or your group.
 
 ## Getting started with GitLab Pages
 
-GitLab Pages rely heavily on GitLab CI and its ability to upload artifacts.
-The steps that are performed from the initialization of a project to the
-creation of the static content, can be summed up to:
+GitLab Pages rely heavily on GitLab CI and its ability to upload
+[artifacts](../ci/yaml/README.md#artifacts).
 
-1. Find out the general domain name that is used for GitLab Pages
-   (ask your administrator). This is very important, so you should first make
-   sure you get that right.
-1. Create a project (its name should be specific according to the case)
-1. Provide a specific job named `pages` in `.gitlab-ci.yml`
-1. GitLab Runner builds the project
-1. GitLab CI uploads the artifacts
-1. The [GitLab Pages daemon][pages-daemon] serves the content
+In general there are two kinds of pages one might create:
 
-As a user, you should normally be concerned only with the first three or four
-items. If [shared runners](../ci/runners/README.md) are enabled by your GitLab
-administrator, you should be able to use them instead of bringing your own.
+- Pages per user/group (`username.example.io`)
+- Pages per project (`username.example.io/projectname`)
+
+In GitLab, usernames and groupnames are unique and often people refer to them
+as namespaces. There can be only one namespace in a GitLab instance.
 
 > **Note:**
 > In the rest of this document we will assume that the general domain name that
 > is used for GitLab Pages is `example.io`.
 
-In general there are two kinds of pages one might create:
-
-- Pages per user/group
-- Pages per project
-
-In GitLab, usernames and groupnames are unique and often people refer to them
-as namespaces. There can be only one namespace in a GitLab instance.
-
 > **Warning:**
 > There are some known [limitations](#limitations) regarding namespaces served
 > under the general domain name and HTTPS. Make sure to read that section.
+
+### GitLab Pages requirements
+
+In brief, this is what you need to upload your website in GitLab Pages:
+
+1. Find out the general domain name that is used for GitLab Pages
+   (ask your administrator). This is very important, so you should first make
+   sure you get that right.
+1. Create a project
+1. Provide a specific job named [`pages`](../ci/yaml/README.md#pages) in
+   [`.gitlab-ci.yml`](../ci/yaml/README.md)
+1. A GitLab Runner to build GitLab Pages
+
+If [shared runners](../ci/runners/README.md) are enabled by your GitLab
+administrator, you should be able to use them instead of bringing your own.
 
 ### GitLab pages per user
 
