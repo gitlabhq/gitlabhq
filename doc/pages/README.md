@@ -20,8 +20,8 @@ deploy static pages for your individual projects, your user or your group.
 
 - [Getting started with GitLab Pages](#getting-started-with-gitlab-pages)
     - [GitLab Pages requirements](#gitlab-pages-requirements)
-    - [GitLab pages per user or group](#gitlab-pages-per-user-or-group)
-    - [GitLab pages per project](#gitlab-pages-per-project)
+    - [User or group Pages](#user-or-group-pages)
+    - [Project Pages](#project-pages)
     - [Explore the contents of .gitlab-ci.yml](#explore-the-contents-of-gitlab-ci-yml)
     - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
 - [Next steps](#next-steps)
@@ -78,7 +78,7 @@ In brief, this is what you need to upload your website in GitLab Pages:
 > If [shared runners](../ci/runners/README.md) are enabled by your GitLab
 > administrator, you should be able to use them instead of bringing your own.
 
-### GitLab pages per user or group
+### User or group Pages
 
 Head over your GitLab instance that supports GitLab Pages and create a
 repository named `username.example.io`, where `username` is your username on
@@ -97,12 +97,11 @@ After you push some static content to your repository and GitLab Runner uploads
 the artifacts to GitLab CI, you will be able to access your website under
 `http(s)://username.example.io`. Keep reading to find out how.
 
-### GitLab pages per project
+### Project Pages
 
 > **Note:**
 > You do _not_ have to create a project named `username.example.io` in order to
 > serve a project's page.
-
 
 
 ### Explore the contents of .gitlab-ci.yml
