@@ -41,11 +41,19 @@
           = milestone.expires_at
 
 .context
-  %p.lead
-    Progress:
-    #{@milestone.closed_items_count} closed
-    &ndash;
-    #{@milestone.open_items_count} open
+  .milestone-summary
+    %h4 Progress
+    %strong= @milestone.issues.size
+    issues:
+    %span.milestone-stat
+      %strong= @milestone.opened_issues.size
+      open and
+      %strong= @milestone.closed_issues.size
+      closed
+    %span.milestone-stat
+      %strong== #{@milestone.percent_complete}%
+      complete
+
   = milestone_progress_bar(@milestone)
 
 %ul.nav-links.no-top.no-bottom
