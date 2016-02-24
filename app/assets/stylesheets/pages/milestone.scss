@@ -19,7 +19,7 @@ li.milestone {
     width: 105px;
   }
 
-  .issue-row, .mr-row {
+  .issue-row, .merge_request-row {
     .color-label {
       border-radius: 2px;
       padding: 3px !important;
@@ -45,10 +45,10 @@ li.milestone {
 }
 
 .issues-sortable-list, .merge_requests-sortable-list {
-  .issue-detail, .merge-request-detail {
+  .issue-detail, .merge_request-detail {
     display: block;
 
-    .issue-number, .merge-request-number {
+    .issue-number, .merge_request-number {
       color: rgba(0,0,0,0.44);
       margin-right: 5px;
     }

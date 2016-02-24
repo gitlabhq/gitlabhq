@@ -3,10 +3,10 @@
 
 .row.prepend-top-default
   .col-md-3
-    = render 'shared/milestones/merge_requests', args.merge({ title: 'Work in progress (open and unassigned)', merge_requests: unassigned, id: 'unassigned' })
+    = render 'shared/milestones/records', args.merge({ title: 'Work in progress (open and unassigned)', records: unassigned, id: 'unassigned' })
   .col-md-3
-    = render 'shared/milestones/merge_requests', args.merge({ title: 'Waiting for merge (open and assigned)', merge_requests: assigned, id: 'ongoing' })
+    = render 'shared/milestones/records', args.merge({ title: 'Waiting for merge (open and assigned)', records: assigned, id: 'ongoing' })
   .col-md-3
-    = render 'shared/milestones/merge_requests', args.merge({ title: 'Rejected (closed)', merge_requests: closed, id: 'closed' })
+    = render 'shared/milestones/records', args.merge({ title: 'Rejected (closed)', records: closed, id: 'closed' })
   .col-md-3
-    = render 'shared/milestones/merge_requests', args.merge({ title: 'Merged', merge_requests: merged, id: 'merged', primary: true })
+    = render 'shared/milestones/records', args.merge({ title: 'Merged', records: merged, id: 'merged', primary: true })
