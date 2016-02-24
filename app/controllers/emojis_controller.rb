@@ -1,5 +1,6 @@
 class EmojisController < ApplicationController
+  layout false
+
   def index
-    render :index, layout: false
   end
 end
