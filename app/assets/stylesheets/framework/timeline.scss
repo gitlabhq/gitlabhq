@@ -5,13 +5,13 @@
   padding: 0;
 
   .timeline-entry {
-    padding: $gl-padding 0;
+    padding: $gl-padding $gl-btn-padding;
     border-color: $table-border-color;
     color: $gl-gray;
     border-bottom: 1px solid $border-white-light;
 
     &:target {
-      background: $hover;
+      background: $row-hover;
     }
 
     &:last-child {

@@ -14,6 +14,7 @@ v 8.5.1
   - Fix an issue where MRs weren't sortable
   - Issues can now be dragged & dropped into empty milestone lists. This is also
   possible with MRs
+  - Changed padding & background color for highlighted notes
   - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
   - Update sentry-raven gem to 0.15.6
 
