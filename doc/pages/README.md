@@ -102,11 +102,10 @@ access it under `http(s)://groupname.example.io`.
 
 ### Explore the contents of .gitlab-ci.yml
 
-Before reading this section, make sure you familiarize yourself with GitLab CI
-and the specific syntax of[`.gitlab-ci.yml`](../ci/yaml/README.md) by
-following our [quick start guide](../ci/quick_start/README.md).
-
----
+> **Note:**
+> Before reading this section, make sure you familiarize yourself with GitLab CI
+> and the specific syntax of[`.gitlab-ci.yml`](../ci/yaml/README.md) by
+> following our [quick start guide](../ci/quick_start/README.md).
 
 To make use of GitLab Pages, your `.gitlab-ci.yml` must follow the rules below:
 
