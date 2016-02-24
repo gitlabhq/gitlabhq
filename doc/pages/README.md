@@ -64,7 +64,7 @@ In brief, this is what you need to upload your website in GitLab Pages:
    (ask your administrator). This is very important, so you should first make
    sure you get that right.
 1. Create a project
-1. Provide a specific job named [`pages`](../ci/yaml/README.md#pages) in
+1. Provide a specific job named [`pages`][pages] in
    [`.gitlab-ci.yml`](../ci/yaml/README.md)
 1. A GitLab Runner to build GitLab Pages
 
@@ -112,7 +112,7 @@ access it under `http(s)://groupname.example.io`.
 
 To make use of GitLab Pages, your `.gitlab-ci.yml` must follow the rules below:
 
-1. A special `pages` job must be defined
+1. A special [`pages`][pages] job must be defined
 1. Any static content must be placed under a `public/` directory
 1. `artifacts` with a path to the `public/` directory must be defined
 
@@ -222,3 +222,4 @@ to private, internal or public.
 [pages-daemon]: https://gitlab.com/gitlab-org/gitlab-pages
 [gitlab ci]: https://about.gitlab.com/gitlab-ci
 [gitlab runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
+[pages]: ../ci/yaml/README.md#pages
