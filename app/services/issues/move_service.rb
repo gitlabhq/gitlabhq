@@ -79,28 +79,30 @@ module Issues
       SystemNoteService.noteable_moved(:to, @issue_old, @project_old, @issue_new, @current_user)
     end
 
-    def rewrite_references(mentionable)
-      references = mentionable.all_references
-      new_content = mentionable_content(mentionable).dup
-      cross_project_refs = [:issues, :merge_requests, :milestones,
-                            :snippets, :commits, :commit_ranges]
+    def rewrite_references(noteable)
+      references = noteable.all_references
+      new_content = noteable_content(noteable).dup
+      cross_project_mentionables = [:issues, :merge_requests, :milestones,
+                                    :snippets, :commits, :commit_ranges]
 
-      cross_project_refs.each do |type|
-        references.public_send(type).each do |mentioned|
-          new_content.gsub!(mentioned.to_reference,
-                            mentioned.to_reference(@project_new))
+      cross_project_mentionables.each do |type|
+        references.public_send(type).each do |mentionable|
+          new_content.gsub!(mentionable.to_reference,
+                            mentionable.to_reference(@project_new))
         end
       end
 
       new_content
     end
 
-    def mentionable_content(mentionable)
-      case mentionable
-      when Issue then mentionable.description
-      when Note then mentionable.note
+    def noteable_content(noteable)
+      case noteable
+      when Issue
+        noteable.description
+      when Note
+        noteable.note
       else
-        raise 'Unexpected mentionable while moving an issue'
+        raise 'Unexpected noteable while moving an issue'
       end
     end
   end

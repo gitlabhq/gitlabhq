@@ -101,6 +101,8 @@ describe Issues::MoveService, services: true do
              { system: false, note: 'Some comment 2' }]
           end
 
+          let(:notes_contents) { notes_params.map { |n| n[:note] } }
+
           before do
             note_params = { noteable: old_issue, project: old_project, author: author }
             notes_params.each do |note|
@@ -115,8 +117,7 @@ describe Issues::MoveService, services: true do
           let(:user_notes) { all_notes.user }
 
           it 'rewrites existing notes in valid order' do
-            expect(all_notes.pluck(:note).first(3))
-              .to eq notes_params.map { |n| n[:note] }
+            expect(all_notes.pluck(:note).first(3)).to eq notes_contents
           end
 
           it 'adds a system note about move after rewritten notes' do
