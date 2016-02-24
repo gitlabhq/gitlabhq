@@ -117,8 +117,7 @@ describe Gitlab::LDAP::Access, lib: true do
   end
 
   describe '#update_permissions' do
-    subject { access.update_permissions(options) }
-    let(:options) { Hash.new }
+    subject { access.update_permissions({}) }
 
     it 'does update group permissions with a group base configured' do
       allow(access).to receive_messages(group_base: 'my-group-base')
@@ -149,7 +148,7 @@ describe Gitlab::LDAP::Access, lib: true do
     end
 
     context 'when synchronously updating group permissions' do
-      let(:options) { { update_ldap_group_links_synchronously: true } }
+      subject { access.update_permissions(update_ldap_group_links_synchronously: true) }
       
       it 'updates group permissions directly' do
         allow(access).to receive_messages(group_base: 'my-group-base')
