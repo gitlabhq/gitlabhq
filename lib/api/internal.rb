@@ -14,6 +14,14 @@ module API
       #   ref - branch name
       #   forced_push - forced_push
       #
+
+      helpers do
+        def wiki
+          @wiki ||= params[:project].end_with?('.wiki') &&
+            !Project.find_with_namespace(params[:project])
+        end
+      end
+
       post "/allowed" do
         status 200
 
@@ -30,7 +38,6 @@ module API
         # Strip out the .wiki from the pathname before finding the
         # project. This applies the correct project permissions to
         # the wiki repository as well.
-        wiki = project_path.end_with?('.wiki')
         project_path.chomp!('.wiki') if wiki
 
         project = Project.find_with_namespace(project_path)
