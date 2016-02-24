@@ -170,6 +170,13 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       expect(output.to_html).to eq '<a>XSS</a>'
     end
 
+    it 'disallows vbscript links' do
+      input = '<a href="vbscript:alert(document.domain)">XSS</a>'
+      output = filter(input)
+
+      expect(output.to_html).to eq '<a>XSS</a>'
+    end
+
     it 'allows non-standard anchor schemes' do
       exp = %q{<a href="irc://irc.freenode.net/git">IRC</a>}
       act = filter(exp)

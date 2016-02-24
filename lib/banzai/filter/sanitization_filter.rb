@@ -7,6 +7,8 @@ module Banzai
     #
     # Extends HTML::Pipeline::SanitizationFilter with a custom whitelist.
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
+      UNSAFE_PROTOCOLS = %w(javascript :javascript data vbscript).freeze
+
       def whitelist
         whitelist = super
 
@@ -62,7 +64,7 @@ module Banzai
           return unless node.name == 'a'
           return unless node.has_attribute?('href')
 
-          if node['href'].start_with?('javascript', ':javascript', 'data')
+          if node['href'].start_with?(*UNSAFE_PROTOCOLS)
             node.remove_attribute('href')
           end
         end
