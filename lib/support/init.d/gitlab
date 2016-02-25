@@ -107,7 +107,7 @@ check_pids(){
 wait_for_pids(){
   # We are sleeping a bit here mostly because sidekiq is slow at writing its pid
   i=0;
-  while [ ! -f $web_server_pid_path ] || [ ! -f $sidekiq_pid_path ] || [ ! -f $gitlab_workhorse_pid_path ] || { [ "$mail_room_enabled" = true ] && [ ! -f $mail_room_pid_path ] || { [ "$gitlab_pages_enabled" = true ] && [ ! -f $gitlab_pages_pid_path ]; }; do
+  while [ ! -f $web_server_pid_path ] || [ ! -f $sidekiq_pid_path ] || [ ! -f $gitlab_workhorse_pid_path ] || { [ "$mail_room_enabled" = true ] && [ ! -f $mail_room_pid_path ]; } || { [ "$gitlab_pages_enabled" = true ] && [ ! -f $gitlab_pages_pid_path ]; }; do
     sleep 0.1;
     i=$((i+1))
     if [ $((i%10)) = 0 ]; then
