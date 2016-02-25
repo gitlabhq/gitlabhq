@@ -35,8 +35,8 @@ These are the minimum requirements needed for Elasticsearch to work:
 
 ## Install Elasticsearch
 
-Providing detailed information on installing Elasticsearch is out of the scope
-of this document.
+Elasticsearch is _not_ included in the Omnibus packages. Providing detailed
+information on installing Elasticsearch is out of the scope of this document.
 
 You can follow the steps as described in the [official web site][install] or
 use the packages that are available for your OS.
