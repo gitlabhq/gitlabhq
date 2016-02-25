@@ -119,7 +119,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    DeleteUserService.new(current_user).execute(user)
+    DeleteUserWorker.perform_async(current_user.id, user.id)
 
     respond_to do |format|
       format.html { redirect_to admin_users_path, notice: "The user is being deleted." }

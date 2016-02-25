@@ -59,6 +59,7 @@ v 8.5.3
   - Show commit message in JIRA mention comment
   - Makes issue page and merge request page usable on mobile browsers.
   - Improved UI for profile settings
+  - User deletion is now done in the background so the request can not time out
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
@@ -178,7 +179,6 @@ v 8.5.0
 
 v 8.4.5
   - No CE-specific changes
-  - User deletion is now done in the background so the request can not time out
 
 v 8.4.4
   - Update omniauth-saml gem to 1.4.2
