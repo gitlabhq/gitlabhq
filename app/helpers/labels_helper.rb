@@ -50,7 +50,7 @@ module LabelsHelper
     @project.labels.pluck(:title)
   end
 
-  def render_colored_label(label)
+  def render_colored_label(label, label_prefix = '')
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
 
@@ -58,9 +58,14 @@ module LabelsHelper
     # by LabelReferenceFilter
     span = %(<span class="label color-label") +
       %( style="background-color: #{label_color}; color: #{text_color}">) +
-      escape_once(label.name) + '</span>'
+      label_prefix + escape_once(label.name) + '</span>'
 
     span.html_safe
+  end
+
+  def render_colored_cross_project_label(label)
+    label_prefix = "#{label.project.path_with_namespace} &raquo; "
+    render_colored_label(label, label_prefix)
   end
 
   def suggested_colors
@@ -119,5 +124,6 @@ module LabelsHelper
   end
 
   # Required for Banzai::Filter::LabelReferenceFilter
-  module_function :render_colored_label, :text_color_for_bg, :escape_once
+  module_function :render_colored_label, :render_colored_cross_project_label,
+                  :text_color_for_bg, :escape_once
 end

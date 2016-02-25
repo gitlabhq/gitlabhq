@@ -67,6 +67,7 @@ class Label < ActiveRecord::Base
     nil
   end
 
+  ##
   # Returns the String necessary to reference this Label in Markdown
   #
   # format - Symbol format to use (default: :id, optional: :name)
@@ -78,6 +79,7 @@ class Label < ActiveRecord::Base
   #   Label.first.to_reference(project)       # => "gitlab-org/gitlab-ce~1"
   #
   # Returns a String
+  #
   def to_reference(from_project = nil, format: :id)
     reference = label_format_reference(format)
 
@@ -87,7 +89,6 @@ class Label < ActiveRecord::Base
       reference
     end
   end
-
 
   def open_issues_count
     issues.opened.count

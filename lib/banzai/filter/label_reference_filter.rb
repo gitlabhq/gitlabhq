@@ -40,8 +40,12 @@ module Banzai
                                                                    only_path:  context[:only_path])
       end
 
-      def object_link_text(object, _matches)
-        LabelsHelper.render_colored_label(object)
+      def object_link_text(object, matches)
+        if context[:project] == object.project
+          LabelsHelper.render_colored_label(object)
+        else
+          LabelsHelper.render_colored_cross_project_label(object)
+        end
       end
 
       # Parameters to pass to `Label.find_by` based on the given arguments
