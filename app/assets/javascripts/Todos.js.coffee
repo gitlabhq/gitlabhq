@@ -1,7 +1,6 @@
 class @Todos
   constructor: ->
     @service = new TodosService()
-    @service.getTodos()
     new Vue(
       el: '#todos'
       data:{}   
