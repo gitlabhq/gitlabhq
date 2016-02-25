@@ -111,7 +111,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
   context 'String-based multi-word references in quotes' do
     let(:label)     { create(:label, name: 'gfm references', project: project) }
-    let(:reference) { label.to_reference(:name) }
+    let(:reference) { label.to_reference(format: :name) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")

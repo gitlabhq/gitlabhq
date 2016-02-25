@@ -66,16 +66,13 @@ class Label < ActiveRecord::Base
   #
   # format - Symbol format to use (default: :id, optional: :name)
   #
-  # Note that its argument differs from other objects implementing Referable. If
-  # a non-Symbol argument is given (such as a Project), it will default to :id.
-  #
   # Examples:
   #
-  #   Label.first.to_reference        # => "~1"
-  #   Label.first.to_reference(:name) # => "~\"bug\""
+  #   Label.first.to_reference                # => "~1"
+  #   Label.first.to_reference(format: :name) # => "~\"bug\""
   #
   # Returns a String
-  def to_reference(format = :id)
+  def to_reference(_from_project = nil, format: :id)
     if format == :name && !name.include?('"')
       %(#{self.class.reference_prefix}"#{name}")
     else

@@ -65,12 +65,12 @@ describe Label, models: true do
 
     context 'using name' do
       it 'returns a String reference to the object' do
-        expect(label.to_reference(:name)).to eq %(~"#{label.name}")
+        expect(label.to_reference(format: :name)).to eq %(~"#{label.name}")
       end
 
       it 'uses id when name contains double quote' do
         label = create(:label, name: %q{"irony"})
-        expect(label.to_reference(:name)).to eq "~#{label.id}"
+        expect(label.to_reference(format: :name)).to eq "~#{label.id}"
       end
     end
   end
