@@ -44,8 +44,31 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     end
   end
 
-  context "for user references" do
+  context 'with data-issue' do
+    it 'removes references for confidential issues' do
+      user = create(:user)
+      project = create(:empty_project)
+      issue = create(:issue, :confidential, project: project)
 
+      link = reference_link(issue: issue.id, reference_filter: 'IssueReferenceFilter')
+      doc = filter(link, current_user: user)
+
+      expect(doc.css('a').length).to eq 0
+    end
+
+    it 'allows references for non confidential issues' do
+      user = create(:user)
+      project = create(:empty_project)
+      issue = create(:issue, project: project)
+
+      link = reference_link(issue: issue.id, reference_filter: 'IssueReferenceFilter')
+      doc = filter(link, current_user: user)
+
+      expect(doc.css('a').length).to eq 1
+    end
+  end
+
+  context "for user references" do
     context 'with data-group' do
       it 'removes unpermitted Group references' do
         user = create(:user)

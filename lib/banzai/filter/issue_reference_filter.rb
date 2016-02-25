@@ -9,6 +9,15 @@ module Banzai
         Issue
       end
 
+      def self.user_can_see_reference?(user, node, context)
+        if node.has_attribute?('data-issue')
+          issue = Issue.find(node.attr('data-issue')) rescue nil
+          issue && !issue.confidential?
+        else
+          super
+        end
+      end
+
       def find_object(project, id)
         project.get_issue(id)
       end
