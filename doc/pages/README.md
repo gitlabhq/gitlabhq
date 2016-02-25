@@ -74,8 +74,8 @@ In brief, this is what you need to upload your website in GitLab Pages:
    (ask your administrator). This is very important, so you should first make
    sure you get that right.
 1. Create a project
-1. Provide a specific job named [`pages`][pages] in
-   [`.gitlab-ci.yml`](../ci/yaml/README.md)
+1. Push a [`.gitlab-ci.yml`](../ci/yaml/README.md) file in your repository with
+   a specific job named [`pages`][pages]
 1. A GitLab Runner to build GitLab Pages
 
 > **Note:**
