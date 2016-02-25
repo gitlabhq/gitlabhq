@@ -55,8 +55,8 @@ In general there are two types of pages one might create:
 In GitLab, usernames and groupnames are unique and we often refer to them
 as namespaces. There can be only one namespace in a GitLab instance.
 
-| Type of GitLab Pages | Project name | Website served under |
-| -------------------- | --------------- | -------------------- |
+| Type of GitLab Pages | Project name created in GitLab | Website URL |
+| -------------------- | ------------ | ----------- |
 | User pages  | `username.example.io`  | `http(s)://username.example.io`  |
 | Group pages | `groupname.example.io` | `http(s)://groupname.example.io` |
 | Project pages owned by a user  | `projectname` | `http(s)://username.example.io/projectname` |
