@@ -11,6 +11,10 @@
         %li
           CLOSED
 
+      - if issue.confidential?
+        %li
+          = icon('lock')
+
       - if issue.assignee
         %li
           = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
