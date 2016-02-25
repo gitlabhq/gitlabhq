@@ -44,10 +44,8 @@ GitLab Pages support any kind of [static site generator][staticgen].
 
 > **Note:**
 > In the rest of this document we will assume that the general domain name that
-> is used for GitLab Pages is `example.io`.
-
-GitLab Pages rely heavily on GitLab CI and its ability to upload
-[artifacts](../ci/yaml/README.md#artifacts).
+> is used for GitLab Pages is `example.io`. If you are using GitLab.com to
+> host your website, replace `example.io` with `gitlab.io`.
 
 In general there are two types of pages one might create:
 
