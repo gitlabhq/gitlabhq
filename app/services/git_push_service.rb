@@ -64,8 +64,13 @@ class GitPushService < BaseService
   end
 
   def index_commits_blobs
-    @project.repository.index_commits(from_rev: params[:oldrev], to_rev: params[:newrev])
-    @project.repository.index_blobs(from_rev: params[:oldrev], to_rev: params[:newrev])
+    indexer = Elastic::Indexer.new
+    indexer.run(
+      @project.id,
+      project.repository.path_to_repo,
+      params[:oldrev],
+      params[:newrev]
+    )
   end
 
   def process_default_branch

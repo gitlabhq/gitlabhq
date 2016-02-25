@@ -14,6 +14,8 @@ namespace :gitlab do
 
       projects = apply_project_filters(projects)
 
+      indexer = Elastic::Indexer.new
+
       projects.find_each do |project|
         if project.repository.exists? && !project.repository.empty?
           puts "Indexing #{project.name_with_namespace} (ID=#{project.id})..."
@@ -28,8 +30,11 @@ namespace :gitlab do
               next
             end
 
-            project.repository.index_commits(from_rev: project.index_status.last_commit)
-            project.repository.index_blobs(from_rev: project.index_status.last_commit)
+            indexer.run(
+              project.id,
+              project.repository.path_to_repo,
+              project.index_status.last_commit
+            )
 
             # During indexing the new commits can be pushed,
             # the last_commit parameter only indicates that at least this commit is in index
