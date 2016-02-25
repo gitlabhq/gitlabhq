@@ -29,12 +29,12 @@ GitLab Pages support any kind of [static site generator][staticgen].
     - [User or group Pages](#user-or-group-pages)
     - [Project Pages](#project-pages)
     - [Explore the contents of .gitlab-ci.yml](#explore-the-contents-of-gitlab-ci-yml)
-    - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
 - [Next steps](#next-steps)
     - [Adding a custom domain to your Pages website](#adding-a-custom-domain-to-your-pages-website)
     - [Securing your custom domain website with TLS](#securing-your-custom-domain-website-with-tls)
     - [Example projects](#example-projects)
     - [Custom error codes pages](#custom-error-codes-pages)
+    - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
 - [Limitations](#limitations)
 - [Frequently Asked Questions](#frequently-asked-questions)
 
@@ -196,6 +196,13 @@ or various static site generators. Contributions are very welcome.
 You can provide your own 403 and 404 error pages by creating the `403.html` and
 `404.html` files respectively in the `public/` directory that will be included
 in the artifacts.
+
+### Remove the contents of your pages
+
+If you ever feel the need to purge your Pages content, you can do so by going
+to your project's **Settings > Pages** and hit **Remove pages**. Simple as that.
+
+![Remove pages](img/pages_remove.png)
 
 
 ## Limitations
