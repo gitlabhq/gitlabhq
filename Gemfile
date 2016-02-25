@@ -67,7 +67,6 @@ gem "github-linguist", "~> 4.7.0", require: "linguist"
 gem 'grape',        '~> 0.13.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
-gem 'active_model_serializers', '~> 0.9.4'
 
 # Pagination
 gem "kaminari", "~> 0.16.3"
