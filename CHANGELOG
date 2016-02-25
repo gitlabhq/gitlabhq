@@ -20,6 +20,7 @@ v 8.5.1
   - Changed padding & background color for highlighted notes
   - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
   - Update sentry-raven gem to 0.15.6
+  - Add build coverage in project's builds page (Steffen Köhler)
 
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
