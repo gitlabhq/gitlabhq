@@ -22,6 +22,9 @@ v 8.5.1
   - Update sentry-raven gem to 0.15.6
   - Add build coverage in project's builds page (Steffen Köhler)
 
+v 8.5.2
+  - Fix error 500 when commenting on a commit
+
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
   - Cache various Repository methods to improve performance (Yorick Peterse)
