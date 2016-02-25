@@ -51,7 +51,8 @@ class Label < ActiveRecord::Base
   # Pattern used to extract label references from text
   def self.reference_pattern
     %r{
-      #{reference_prefix}
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}
       (?:
         (?<label_id>\d+) | # Integer-based label ID, or
         (?<label_name>
@@ -60,6 +61,10 @@ class Label < ActiveRecord::Base
         )
       )
     }x
+  end
+
+  def self.link_reference_pattern
+    nil
   end
 
   # Returns the String necessary to reference this Label in Markdown

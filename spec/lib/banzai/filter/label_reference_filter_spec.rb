@@ -176,4 +176,23 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
       expect(result[:references][:label]).to eq [label]
     end
   end
+
+  describe 'cross project label references' do
+    let(:another_project)  { create(:empty_project, :public) }
+    let(:label) { create(:label, project: another_project, color: '#00ff00') }
+    let(:reference) { label.to_reference(project) }
+
+    let!(:result) { reference_filter("See #{reference}") }
+
+    it 'points to referenced project issues page' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(another_project.namespace,
+                                                 another_project,
+                                                 label_name: label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style')).to match /background-color: #00ff00/
+    end
+  end
 end
