@@ -19,7 +19,7 @@
             = image_tag avatar_icon(project.creator.email, 40), class: "avatar s40", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s40')
-      %span.project-full-name
+      %span.project-full-name.title
         %span.namespace-name
           - if project.namespace && !skip_namespace
             = project.namespace.human_name
@@ -27,7 +27,7 @@
         %span.project-name.filter-title
           = project.name
 
-    .project-controls
+    .controls
       - if ci_commit
         %span
           = render_ci_status(ci_commit)

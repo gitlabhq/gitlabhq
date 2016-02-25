@@ -110,7 +110,12 @@ ul.content-list {
 
   > li {
     border-color: $table-border-color;
-    color: $gl-gray;
+    color: $list-text-color;
+
+    .title {
+      color: $list-title-color;
+      font-weight: 600;
+    }
 
     .avatar {
       margin-right: 15px;
