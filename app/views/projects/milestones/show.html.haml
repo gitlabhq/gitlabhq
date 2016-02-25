@@ -60,9 +60,7 @@
       %strong== #{@milestone.percent_complete}%
       complete
     %span.milestone-stat
-      %span.time-elapsed
-        %strong== #{@milestone.percent_time_used}%
-        time elapsed
+      %span.remaining-days= milestone_remaining_days(@milestone)
     %span.pull-right.tab-issues-buttons
       - if can?(current_user, :create_issue, @project)
         = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do

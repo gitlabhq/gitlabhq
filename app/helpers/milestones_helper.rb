@@ -36,4 +36,15 @@ module MilestonesHelper
 
     options_from_collection_for_select(grouped_milestones, 'name', 'title', params[:milestone_title])
   end
+
+  def milestone_remaining_days(milestone)
+    days = milestone.remaining_days
+
+    if days == 0
+      content_tag(:strong, 'expired')
+    elsif days.to_i > 0
+      content = content_tag(:strong, days)
+      content << " #{'day'.pluralize(days)} remaining"
+    end
+  end
 end
