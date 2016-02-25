@@ -30,8 +30,9 @@ Integration includes:
 
 Create a user or choose an existing user that Jenkins will use to interact
 through the GitLab API. This user will need to be a global Admin or added
-as a member to each Group/Project. Reporter permission is all that's required
-for cloning, building, and reporting build status. Some features of the GitLab
+as a member to each Group/Project. Developer permission is required for reporting
+build status. This is because a successful build status can trigger a merge
+when 'Merge when build succeeds' feature is used. Some features of the GitLab
 Plugin may require additional privileges. For example, there is an option to
 accept a merge request if the build is successful. Using this feature would
 require developer, master or owner-level permission.
