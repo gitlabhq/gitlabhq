@@ -5,7 +5,7 @@ module Projects
     end
 
     def issues
-      @project.issues.opened.select([:iid, :title])
+      @project.issues.not_confidential.opened.select([:iid, :title])
     end
 
     def merge_requests
