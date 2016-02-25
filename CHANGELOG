@@ -2,6 +2,9 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
 
+v 8.5.2
+  - Fix error 500 when commenting on a commit
+
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
   - Cache various Repository methods to improve performance (Yorick Peterse)
