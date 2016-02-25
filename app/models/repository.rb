@@ -300,12 +300,10 @@ class Repository
 
   # Runs code just before a repository is deleted.
   def before_delete
-    # FIXME: a repository not existing shouldn't prevent us from flushing caches.
-    if exists?
-      expire_cache
-      expire_root_ref_cache
-      expire_emptiness_caches
-    end
+    expire_cache if exists?
+
+    expire_root_ref_cache
+    expire_emptiness_caches
   end
 
   # Runs code just before the HEAD of a repository is changed.
