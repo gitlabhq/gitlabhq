@@ -203,14 +203,7 @@
       overflow: hidden;
     }
 
-    .issuable-count,
-    .issuable-nav,
-    .assignee > *,
-    .milestone > *,
-    .labels > *,
-    .participants > *,
-    .light > *,
-    .project-reference > * {
+    .hide-collapsed {
       display: none;
     }
 
