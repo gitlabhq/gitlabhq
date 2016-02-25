@@ -2,11 +2,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
   - Improve the formatting for the user page bio (Connor Shea)
+  - Fix issue when pushing to projects ending in .wiki
 
 v 8.5.1
   - Fix group projects styles
   - Show Crowd login tab when sign in is disabled and Crowd is enabled (Peter Hudec)
-  - Fix issue pushing to projects ending with .wiki
   - Fix a set of small UI glitches in project, profile, and wiki pages
   - Restrict permissions on public/uploads
   - Fix the merge request side-by-side view after loading diff results
