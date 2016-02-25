@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
+  - Fix error 500 when commenting on a commit
 
 v 8.5.1
   - Fix group projects styles
