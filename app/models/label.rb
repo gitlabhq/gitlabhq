@@ -70,15 +70,19 @@ class Label < ActiveRecord::Base
   #
   #   Label.first.to_reference                # => "~1"
   #   Label.first.to_reference(format: :name) # => "~\"bug\""
+  #   Label.first.to_reference(project)       # => "gitlab-org/gitlab-ce~1"
   #
   # Returns a String
-  def to_reference(_from_project = nil, format: :id)
-    if format == :name && !name.include?('"')
-      %(#{self.class.reference_prefix}"#{name}")
+  def to_reference(from_project = nil, format: :id)
+    reference = label_format_reference(format)
+
+    if cross_project_reference?(from_project)
+      project.to_reference + reference
     else
-      "#{self.class.reference_prefix}#{id}"
+      reference
     end
   end
+
 
   def open_issues_count
     issues.opened.count
@@ -94,5 +98,17 @@ class Label < ActiveRecord::Base
 
   def template?
     template
+  end
+
+  private
+
+  def label_format_reference(format = :id)
+    raise StandardError, 'Unknown format' unless [:id, :name].include?(format)
+
+    if format == :name && !name.include?('"')
+      %(#{self.class.reference_prefix}"#{name}")
+    else
+      "#{self.class.reference_prefix}#{id}"
+    end
   end
 end
