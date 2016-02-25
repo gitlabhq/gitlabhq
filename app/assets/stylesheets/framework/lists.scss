@@ -111,6 +111,7 @@ ul.content-list {
   > li {
     border-color: $table-border-color;
     color: $list-text-color;
+    font-size: $list-font-size;
 
     .title {
       color: $list-title-color;
@@ -129,13 +130,6 @@ ul.content-list {
         padding: 10px 14px;
       }
     }
-  }
-}
-
-.panel > .content-list {
-  li {
-    margin: 0;
-    padding: $gl-padding;
   }
 }
 
