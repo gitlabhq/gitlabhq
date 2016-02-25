@@ -43,6 +43,12 @@ module API
         end
       end
 
+      get ":id/todos" do
+        @user = User.find(params[:id])
+
+        present @user, with: Entities::UserTodos
+      end
+
       # Create user. Available only for admin
       #
       # Parameters:

@@ -31,6 +31,10 @@ module API
       expose :two_factor_enabled
     end
 
+    class UserTodos < UserBasic
+      expose :todos
+    end
+
     class UserLogin < UserFull
       expose :private_token
     end

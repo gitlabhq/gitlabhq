@@ -4,6 +4,32 @@
   namespaces_path: "/api/:version/namespaces.json"
   group_projects_path: "/api/:version/groups/:id/projects.json"
   projects_path: "/api/:version/projects.json"
+  users_path: "/api/:version/users/:id.json"
+  users_todos_path: "/api/:version/users/:id/todos.json"
+
+  user: (user_id, callback) ->
+    url = Api.buildUrl(Api.users_path)
+    url = url.replace(':id', user_id)
+
+    $.ajax(
+      url: url,
+      data:
+        private_token: gon.api_token
+      dataType: "json"
+    ).done (user) ->
+      callback(user)
+
+  userTodos: (user_id, callback) ->
+    url = Api.buildUrl(Api.users_todos_path)
+    url = url.replace(':id', user_id)
+
+    $.ajax(
+      url: url,
+      data:
+        private_token: gon.api_token
+      dataType: "json"
+    ).done (user) ->
+      callback(user)
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.group_path)

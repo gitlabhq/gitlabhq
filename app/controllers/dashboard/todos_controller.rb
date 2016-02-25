@@ -3,12 +3,6 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
   def index
     @todos = @todos.page(params[:page]).per(PER_PAGE)
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: @todos.group_by(&:project)
-      end
-    end
   end
 
   def destroy
