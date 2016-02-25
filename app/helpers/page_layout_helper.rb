@@ -37,6 +37,8 @@ module PageLayoutHelper
   def container_id(title=nil)
     if title
       @container_id = title
+    else
+      @container_id
     end
   end
 

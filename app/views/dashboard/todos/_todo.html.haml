@@ -13,7 +13,7 @@
 
     - if todo.pending?
       .todo-actions.pull-right
-        = link_to 'Done', [:dashboard, todo], method: :delete, class: 'btn'
+        = link_to 'Done', [:dashboard, todo], method: :delete, class: 'btn', '@click' => 'doneClicked($event)'
 
     .todo-body
       .todo-note
