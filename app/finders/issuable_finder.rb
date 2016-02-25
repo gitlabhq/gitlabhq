@@ -40,6 +40,7 @@ class IssuableFinder
     items = by_author(items)
     items = by_label(items)
     items = by_weight(items)
+    items = by_confidentiality(items)
     sort(items)
   end
 
@@ -306,6 +307,26 @@ class IssuableFinder
 
   def filter_by_any_weight?
     params[:weight] == Issue::WEIGHT_ANY
+  end
+
+  def by_confidentiality(items)
+    return items unless klass == Issue
+
+    if current_user
+      if current_user.admin? || project.team.member?(current_user.id)
+        items
+      else
+        issuable_table = items.arel_table
+
+        items.where(
+          issuable_table[:confidential].eq(false).or(
+            issuable_table[:confidential].eq(true).and(issuable_table[:author_id].eq(current_user.id))
+          )
+        )
+      end
+    else
+      items.not_confidential
+    end
   end
 
   def label_names

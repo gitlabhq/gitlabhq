@@ -43,6 +43,8 @@ class Ability
         anonymous_personal_snippet_abilities(subject)
       when subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
+      when subject.is_a?(Issue)
+        anonymous_issue_abilities(subject)
       when subject.is_a?(Project) || subject.respond_to?(:project)
         anonymous_project_abilities(subject)
       when subject.is_a?(Group) || subject.respond_to?(:group)
@@ -50,6 +52,12 @@ class Ability
       else
         []
       end
+    end
+
+    def anonymous_issue_abilities(subject)
+      rules = anonymous_project_abilities(subject)
+      rules -= confidential_issue_rules if subject.confidential?
+      rules
     end
 
     def anonymous_project_abilities(subject)
@@ -343,6 +351,13 @@ class Ability
         end
 
         rules += project_abilities(user, subject.project)
+
+        if subject.respond_to?(:confidential) && subject.confidential?
+          unless user.admin? || subject.author == user || subject.project.team.member?(user.id)
+            rules -= confidential_issue_rules
+          end
+        end
+
         rules
       end
     end
@@ -459,6 +474,13 @@ class Ability
         :"create_#{name}",
         :"update_#{name}",
         :"admin_#{name}"
+      ]
+    end
+
+    def confidential_issue_rules
+      [
+        :read_issue,
+        :update_issue
       ]
     end
   end
