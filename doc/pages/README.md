@@ -12,6 +12,12 @@ With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
 deploy static pages for your individual projects, your user or your group.
 
+The key thing about GitLab Pages is the [`.gitlab-ci.yml`](../ci/yaml/README.md)
+file, something that gives you absolute control over the build process. You can
+actually watch your website being built live by following the CI build traces.
+
+GitLab Pages support any kind of [static site generator][staticgen].
+
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -224,3 +230,4 @@ to private, internal or public.
 [gitlab ci]: https://about.gitlab.com/gitlab-ci
 [gitlab runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 [pages]: ../ci/yaml/README.md#pages
+[staticgen]: https://www.staticgen.com/
