@@ -64,8 +64,10 @@
 
   %h2#lists Lists
 
-  %h4
+  .lead
+    Simple list using
     %code .content-list
+
   %ul.content-list
     %li
       One item
@@ -73,6 +75,24 @@
       One item
     %li
       One item
+
+  .lead
+    List with avatar, title and description using
+    %code .content-list
+
+  %ul.content-list
+    %li
+      = image_tag 'no_avatar.png', class: 'avatar s40'
+      .title Title
+      .description Description
+    %li
+      = image_tag 'no_avatar.png', class: 'avatar s40'
+      .title Title
+      .description Description
+    %li
+      = image_tag 'no_avatar.png', class: 'avatar s40'
+      .title Title
+      .description Description
 
   %h4
     %code .well-list

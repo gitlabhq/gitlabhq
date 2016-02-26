@@ -410,13 +410,6 @@ pre.light-well {
         margin-left: 10px;
       }
     }
-
-    .project-description {
-      p {
-        @include str-truncated;
-        margin-bottom: 0;
-      }
-    }
   }
 
   .bottom {

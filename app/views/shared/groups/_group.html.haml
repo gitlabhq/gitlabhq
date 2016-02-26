@@ -30,5 +30,5 @@
     %span #{group_member.human_access}
 
   - if group.description.present?
-    .light
+    .description
       = markdown(group.description, pipeline: :description)

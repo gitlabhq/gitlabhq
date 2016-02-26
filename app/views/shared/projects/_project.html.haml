@@ -43,9 +43,9 @@
         title: "#{visibility_level_label(project.visibility_level)} - #{project_visibility_level_description(project.visibility_level)}"}
         = visibility_level_icon(project.visibility_level, fw: false)
     - if show_last_commit_as_description
-      .project-description
+      .description
         = link_to_gfm project.commit.title, namespace_project_commit_path(project.namespace, project, project.commit),
           class: "commit-row-message"
     - elsif project.description.present?
-      .project-description
+      .description
         = markdown(project.description, pipeline: :description)

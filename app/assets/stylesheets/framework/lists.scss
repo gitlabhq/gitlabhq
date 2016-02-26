@@ -118,6 +118,13 @@ ul.content-list {
       font-weight: 600;
     }
 
+    .description {
+      p {
+        @include str-truncated;
+        margin-bottom: 0;
+      }
+    }
+
     .avatar {
       margin-right: 15px;
     }
