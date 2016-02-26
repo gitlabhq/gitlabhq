@@ -11,7 +11,7 @@ describe Issues::MoveService, services: true do
 
   let(:old_issue) do
     create(:issue, title: title, description: description,
-           project: old_project, author: author)
+                   project: old_project, author: author)
   end
 
   let(:move_service) do
@@ -133,7 +133,7 @@ describe Issues::MoveService, services: true do
           before do
             create(:merge_request, source_project: old_project)
             create(:note, noteable: old_issue, project: old_project, author: author,
-                   note: 'Note with reference to merge request !1')
+                          note: 'Note with reference to merge request !1')
           end
 
           include_context 'issue move executed'

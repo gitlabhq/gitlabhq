@@ -86,10 +86,13 @@ module Issues
                                     :snippets, :commits, :commit_ranges]
 
       cross_project_mentionables.each do |type|
-        references.public_send(type).each do |mentionable|
-          new_content.gsub!(mentionable.to_reference,
-                            mentionable.to_reference(@project_new))
-        end
+        referables = references.public_send(type)
+
+        context = { objects: referables, project: @project_new,
+                    pipeline: :reference_unfold }
+
+        new_content = Banzai.render_result(new_content, context)
+        new_content = new_content[:output].to_s
       end
 
       new_content
