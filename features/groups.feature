@@ -22,6 +22,12 @@ Feature: Groups
     When I visit group "Owned" issues page
     Then I should see issues from group "Owned" assigned to me
 
+  Scenario: I should not see issues from archived project in "Owned" group issues list
+    Given Group "Owned" has archived project
+    And the archived project have some issues
+    When I visit group "Owned" issues page
+    Then I should not see issues from the archived project
+
   Scenario: I should see group "Owned" merge requests list
     Given project from group "Owned" has merge requests assigned to me
     When I visit group "Owned" merge requests page
