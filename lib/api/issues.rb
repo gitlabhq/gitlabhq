@@ -22,6 +22,20 @@ module API
         issues.includes(:milestone).where('milestones.title' => milestone)
       end
 
+      def filter_issues_confidentiality(issues)
+        if current_user.admin? || user_project.team.member?(current_user.id)
+          issues
+        else
+          issuable_table = issues.arel_table
+
+          issues.where(
+            issuable_table[:confidential].eq(false).or(
+              issuable_table[:author_id].eq(current_user.id).and(issuable_table[:confidential].eq(true))
+            )
+          )
+        end
+      end
+
       def create_spam_log(project, current_user, attrs)
         params = attrs.merge({
           source_ip: env['REMOTE_ADDR'],
@@ -86,6 +100,7 @@ module API
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
+        issues = filter_issues_confidentiality(issues)
 
         unless params[:milestone].nil?
           issues = filter_issues_milestone(issues, params[:milestone])
@@ -104,6 +119,7 @@ module API
       #   GET /projects/:id/issues/:issue_id
       get ":id/issues/:issue_id" do
         @issue = user_project.issues.find(params[:issue_id])
+        not_found! unless can?(current_user, :read_issue, @issue)
         present @issue, with: Entities::Issue
       end
 
