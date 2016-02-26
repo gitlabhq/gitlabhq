@@ -7,8 +7,6 @@ class ElasticIndexerWorker
                                      port: Gitlab.config.elasticsearch.port)
 
   def perform(operation, klass, record_id, options = {})
-    klass = "Snippet" if klass =~ /Snippet$/
-
     cklass = klass.constantize
 
     case operation.to_s
