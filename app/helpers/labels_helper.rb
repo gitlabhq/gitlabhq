@@ -50,22 +50,23 @@ module LabelsHelper
     @project.labels.pluck(:title)
   end
 
-  def render_colored_label(label, label_prefix = '')
+  def render_colored_label(label, label_suffix = '')
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
     span = %(<span class="label color-label") +
-      %( style="background-color: #{label_color}; color: #{text_color}">) +
-      label_prefix + escape_once(label.name) + '</span>'
+      %(style="background-color: #{label_color}; color: #{text_color}">) +
+      %(#{escape_once(label.name)}#{label_suffix}</span>)
 
     span.html_safe
   end
 
   def render_colored_cross_project_label(label)
-    label_prefix = "#{label.project.path_with_namespace} &raquo; "
-    render_colored_label(label, label_prefix)
+    label_suffix = label.project.name
+    label_suffix = " <i>&laquo; #{label_suffix}</i>"
+    render_colored_label(label, label_suffix)
   end
 
   def suggested_colors
