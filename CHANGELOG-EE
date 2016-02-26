@@ -8,6 +8,10 @@ v 8.5.1
 
 v 8.5.0
   - Fix Elasticsearch blob results linking to the wrong reference ID (Stan Hu)
+v 8.6.0(unreleased)
+  - [Elastic] Add elastic checker to gitlab:check
+
+v 8.5.0
   - Show warning when mirror repository default branch could not be updated because it has diverged from upstream.
   - More reliable wiki indexer
   - GitLab Pages gets support for custom domain and custom certificate
