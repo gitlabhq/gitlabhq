@@ -214,7 +214,7 @@ $ ->
     $this = $(this)
     $this.attr 'value', $this.val()
     return
-    
+
   $(document)
     .off 'keyup', 'input[type="search"]'
     .on 'keyup', 'input[type="search"]' , (e) ->
@@ -257,7 +257,7 @@ $ ->
         $('.page-with-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
-      $.cookie("collapsed_gutter", 
+      $.cookie("collapsed_gutter",
         $('.right-sidebar')
           .hasClass('right-sidebar-collapsed'), { path: '/' })
 

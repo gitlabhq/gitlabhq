@@ -76,6 +76,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:show'
         shortcut_handler = new ShortcutsNavigation()
+
+        new TreeView() if $('#tree-slider').length
       when 'groups:show'
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
@@ -88,6 +90,7 @@ class Dispatcher
       when 'groups:new', 'groups:edit', 'admin:groups:edit', 'admin:groups:new'
         new GroupAvatar()
       when 'projects:tree:show'
+        shortcut_handler = new ShortcutsNavigation()
         new TreeView()
       when 'projects:find_file:show'
         shortcut_handler = true

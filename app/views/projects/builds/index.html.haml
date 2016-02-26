@@ -51,9 +51,11 @@
             %th Name
             %th Duration
             %th Finished at
+            - if @project.build_coverage_enabled?
+              %th Coverage
             %th
 
         - @builds.each do |build|
-          = render 'projects/commit_statuses/commit_status', commit_status: build, commit_sha: true, stage: true, allow_retry: true
+          = render 'projects/commit_statuses/commit_status', commit_status: build, commit_sha: true, stage: true, coverage: @project.build_coverage_enabled?, allow_retry: true
 
     = paginate @builds, theme: 'gitlab'

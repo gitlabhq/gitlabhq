@@ -4,6 +4,12 @@ class Spinach::Features::ProjectBuildsSummary < Spinach::FeatureSteps
   include SharedBuilds
   include RepoHelpers
 
+  step 'I see coverage' do
+    page.within('td.coverage') do
+      expect(page).to have_content "99.9%"
+    end
+  end
+
   step 'I see button to CI Lint' do
     page.within('.nav-controls') do
       ci_lint_tool_link = page.find_link('CI Lint')

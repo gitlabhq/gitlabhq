@@ -25,7 +25,12 @@ before_script:
   - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
   - RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load db:migrate
 
+stages:
+- test
+- notifications
+
 spec:feature:
+  stage: test
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature
@@ -34,6 +39,7 @@ spec:feature:
     - mysql
 
 spec:api:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:api
   tags:
@@ -41,6 +47,7 @@ spec:api:
     - mysql
 
 spec:models:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:models
   tags:
@@ -48,6 +55,7 @@ spec:models:
     - mysql
 
 spec:lib:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:lib
   tags:
@@ -55,6 +63,7 @@ spec:lib:
     - mysql
 
 spec:services:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:services
   tags:
@@ -62,6 +71,7 @@ spec:services:
     - mysql
 
 spec:benchmark:
+  stage: test
   script:
     - RAILS_ENV=test bundle exec rake spec:benchmark
   tags:
@@ -70,6 +80,7 @@ spec:benchmark:
   allow_failure: true
 
 spec:other:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:other
   tags:
@@ -77,6 +88,7 @@ spec:other:
     - mysql
 
 spinach:project:half:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
   tags:
@@ -84,6 +96,7 @@ spinach:project:half:
     - mysql
 
 spinach:project:rest:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   tags:
@@ -91,6 +104,7 @@ spinach:project:rest:
     - mysql
 
 spinach:other:
+  stage: test
   script:
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
   tags:
@@ -98,6 +112,7 @@ spinach:other:
     - mysql
 
 teaspoon:
+  stage: test
   script:
     - RAILS_ENV=test bundle exec teaspoon
   tags:
@@ -105,6 +120,7 @@ teaspoon:
     - mysql
 
 rubocop:
+  stage: test
   script:
     - bundle exec rubocop
   tags:
@@ -112,6 +128,7 @@ rubocop:
     - mysql
 
 brakeman:
+  stage: test
   script:
     - bundle exec rake brakeman
   tags:
@@ -119,6 +136,7 @@ brakeman:
     - mysql
 
 flog:
+  stage: test
   script:
     - bundle exec rake flog
   tags:
@@ -126,6 +144,7 @@ flog:
     - mysql
 
 flay:
+  stage: test
   script:
     - bundle exec rake flay
   tags:
@@ -133,6 +152,7 @@ flay:
     - mysql
 
 bundler:audit:
+  stage: test
   script:
     - "bundle exec bundle-audit update"
     - "bundle exec bundle-audit check"
@@ -144,6 +164,7 @@ bundler:audit:
 # Ruby 2.2 jobs
 
 spec:feature:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -159,6 +180,7 @@ spec:feature:ruby22:
     - mysql
 
 spec:api:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -173,6 +195,7 @@ spec:api:ruby22:
     - mysql
 
 spec:models:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -187,6 +210,7 @@ spec:models:ruby22:
     - mysql
 
 spec:lib:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -201,6 +225,7 @@ spec:lib:ruby22:
     - mysql
 
 spec:services:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -215,6 +240,7 @@ spec:services:ruby22:
     - mysql
 
 spec:benchmark:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -230,6 +256,7 @@ spec:benchmark:ruby22:
   allow_failure: true
 
 spec:other:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -244,6 +271,7 @@ spec:other:ruby22:
     - mysql
 
 spinach:project:half:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -258,6 +286,7 @@ spinach:project:half:ruby22:
     - mysql
 
 spinach:project:rest:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -272,6 +301,7 @@ spinach:project:rest:ruby22:
     - mysql
 
 spinach:other:ruby22:
+  stage: test
   image: ruby:2.2
   only:
   - master
@@ -285,3 +315,14 @@ spinach:other:ruby22:
     - ruby
     - mysql
 
+
+notify:slack:
+  stage: notifications
+  script:
+    - ./scripts/notify_slack.sh "#builds" "Build failed for master/tags!"
+  when: on_failure
+  only:
+    - master@gitlab-org/gitlab-ce
+    - tags@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - tags@gitlab-org/gitlab-ee

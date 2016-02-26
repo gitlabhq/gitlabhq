@@ -1,6 +1,6 @@
 - page_title "Sign in"
 %div
-  - if signin_enabled? || ldap_enabled?
+  - if signin_enabled? || ldap_enabled? || crowd_enabled?
     = render 'devise/shared/signin_box'
 
   -# Omniauth fits between signin/ldap signin and signup and does not have a surrounding box

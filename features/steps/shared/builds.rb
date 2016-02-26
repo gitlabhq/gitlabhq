@@ -5,9 +5,13 @@ module SharedBuilds
     @project.enable_ci
   end
 
+  step 'project has coverage enabled' do
+    @project.update_attribute(:build_coverage_regex, /Coverage (\d+)%/)
+  end
+
   step 'project has a recent build' do
     @ci_commit = create(:ci_commit, project: @project, sha: @project.commit.sha)
-    @build = create(:ci_build, commit: @ci_commit)
+    @build = create(:ci_build_with_coverage, commit: @ci_commit)
   end
 
   step 'recent build is successful' do

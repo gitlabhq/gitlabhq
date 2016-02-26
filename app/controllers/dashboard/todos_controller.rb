@@ -15,7 +15,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def destroy_all
-    @todos.each(&:done)
+    @todos.each(&:done!)
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }

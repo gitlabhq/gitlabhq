@@ -8,12 +8,9 @@
     row.find("td.tree_time_ago").html('#{escape_javascript time_ago_with_tooltip(commit.committed_date)}');
     row.find("td.tree_commit").html('#{escape_javascript render("projects/tree/tree_commit_column", commit: commit)}');
 
-- if @logs.present?
+- if @more_log_url
   :plain
-    var current_url = location.href.replace(/\/?$/, '/');
-    var log_url = "#{escape_javascript(@log_url)}".replace(/\/?$/, '/');
-
-    if(current_url == log_url) {
+    if($('#tree-slider').length) {
       // Load more commit logs for each file in tree
       // if we still on the same page
       var url = "#{escape_javascript(@more_log_url)}";
