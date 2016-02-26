@@ -8,7 +8,7 @@
           .pull-right
             = link_to 'New merge request', new_namespace_project_merge_request_path(project.namespace, project)
 
-      %ul.well-list.mr-list
+      %ul.content-list.mr-list
         - group[1].each do |merge_request|
           = render 'projects/merge_requests/merge_request', merge_request: merge_request
   = paginate @merge_requests, theme: "gitlab"
