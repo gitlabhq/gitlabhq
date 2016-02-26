@@ -31,36 +31,52 @@
 
   %h2#blocks Blocks
 
-  %h4
-    %code .gray-content-block
+  .lead
+    Content block separated with botton border
+    %code .content-block
 
-  .gray-content-block.middle-block
-    %h4 Normal block inside content
-    = lorem
-
-  .gray-content-block.second-block
-    %h4 Second block
-    = lorem
-
-
-  %h4
-    %code .cover-block
-  %br
-  .cover-block
-    .avatar-holder
-      = image_tag avatar_icon('admin@example.com', 90), class: "avatar s90", alt: ''
-    .cover-title
-      John Smith
-
-    .cover-desc
+  .example
+    .content-block
+      %h4 Normal block inside content
       = lorem
 
-    .cover-controls
-      = link_to '#', class: 'btn btn-gray' do
-        = icon('pencil')
-      &nbsp;
-      = link_to '#', class: 'btn btn-gray' do
-        = icon('rss')
+    .content-block
+      %h4 Second block
+      = lorem
+
+  .lead
+    Gray content block with side padding using
+    %code .gray-content-block
+
+  .example
+    .gray-content-block
+      %h4 Normal block inside content
+      = lorem
+
+    .gray-content-block.second-block
+      %h4 Second block
+      = lorem
+
+
+  .lead
+    Cover block for profile page with avatar, name and description
+    %code .cover-block
+  .example
+    .cover-block
+      .avatar-holder
+        = image_tag avatar_icon('admin@example.com', 90), class: "avatar s90", alt: ''
+      .cover-title
+        John Smith
+
+      .cover-desc
+        = lorem
+
+      .cover-controls
+        = link_to '#', class: 'btn btn-gray' do
+          = icon('pencil')
+        &nbsp;
+        = link_to '#', class: 'btn btn-gray' do
+          = icon('rss')
 
   %h2#lists Lists
 
@@ -68,47 +84,38 @@
     Simple list using
     %code .content-list
 
-  %ul.content-list
-    %li
-      One item
-    %li
-      One item
-    %li
-      One item
+  .example
+    %ul.content-list
+      %li
+        One item
+      %li
+        One item
+      %li
+        One item
 
   .lead
     List with avatar, title and description using
     %code .content-list
 
-  %ul.content-list
-    %li
-      = image_tag 'no_avatar.png', class: 'avatar s40'
-      .title Title
-      .description Description
-    %li
-      = image_tag 'no_avatar.png', class: 'avatar s40'
-      .title Title
-      .description Description
-    %li
-      = image_tag 'no_avatar.png', class: 'avatar s40'
-      .title Title
-      .description Description
+  .example
+    %ul.content-list
+      %li
+        = image_tag 'no_avatar.png', class: 'avatar s40'
+        .title Title
+        .description Description
+      %li
+        = image_tag 'no_avatar.png', class: 'avatar s40'
+        .title Title
+        .description Description
+      %li
+        = image_tag 'no_avatar.png', class: 'avatar s40'
+        .title Title
+        .description Description
 
-  %h4
+  .lead
+    List with hover effect
     %code .well-list
-  %ul.well-list
-    %li
-      One item
-    %li
-      One item
-    %li
-      One item
-
-  %h4
-    %code .panel .well-list
-
-  .panel.panel-default
-    .panel-heading Your list
+  .example
     %ul.well-list
       %li
         One item
@@ -117,17 +124,18 @@
       %li
         One item
 
-  %h4
-    %code .bordered-list
-  %ul.bordered-list
-    %li
-      One item
-    %li
-      One item
-    %li
-      One item
-
-
+  .lead
+    List inside panel
+  .example
+    .panel.panel-default
+      .panel-heading Your list
+      %ul.well-list
+        %li
+          One item
+        %li
+          One item
+        %li
+          One item
 
   %h2#tables Tables
 
@@ -158,9 +166,9 @@
 
   %h2#navs Navigation
 
-  %h4
+  .lead
+    Holder for top page navigation. Includes navigation, search field, sorting and button
     %code .top-area
-  %p Holder for top page navigation. Includes navigation, search field, sorting and button
 
   .example
     .top-area
@@ -181,9 +189,9 @@
 
         = link_to 'New issue', '#', class: 'btn btn-new'
 
-  %h4
+  .lead
+    Only nav links without button and search
     %code .nav-links
-  %p Only nav links without button and search
   .example
     %ul.nav-links
       %li.active
@@ -248,43 +256,47 @@
 
   %h2#forms Forms
 
-  %h4
+  .lead
+    Horizontal form when label rendered inline with input
     %code form.horizontal-form
 
-  %form.form-horizontal
-    .form-group
-      %label.col-sm-2.control-label{:for => "inputEmail3"} Email
-      .col-sm-10
-        %input#inputEmail3.form-control{:placeholder => "Email", :type => "email"}/
-    .form-group
-      %label.col-sm-2.control-label{:for => "inputPassword3"} Password
-      .col-sm-10
-        %input#inputPassword3.form-control{:placeholder => "Password", :type => "password"}/
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        .checkbox
-          %label
-            %input{:type => "checkbox"}/
-            Remember me
-    .form-group
-      .col-sm-offset-2.col-sm-10
-        %button.btn.btn-default{:type => "submit"} Sign in
+  .example
+    %form.form-horizontal
+      .form-group
+        %label.col-sm-2.control-label{:for => "inputEmail3"} Email
+        .col-sm-10
+          %input#inputEmail3.form-control{:placeholder => "Email", :type => "email"}/
+      .form-group
+        %label.col-sm-2.control-label{:for => "inputPassword3"} Password
+        .col-sm-10
+          %input#inputPassword3.form-control{:placeholder => "Password", :type => "password"}/
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          .checkbox
+            %label
+              %input{:type => "checkbox"}/
+              Remember me
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          %button.btn.btn-default{:type => "submit"} Sign in
 
-  %h4
+  .lead
+    Form when label rendered above input
     %code form
 
-  %form
-    .form-group
-      %label{:for => "exampleInputEmail1"} Email address
-      %input#exampleInputEmail1.form-control{:placeholder => "Enter email", :type => "email"}/
-    .form-group
-      %label{:for => "exampleInputPassword1"} Password
-      %input#exampleInputPassword1.form-control{:placeholder => "Password", :type => "password"}/
-    .checkbox
-      %label
-        %input{:type => "checkbox"}/
-        Remember me
-    %button.btn.btn-default{:type => "submit"} Sign in
+  .example
+    %form
+      .form-group
+        %label{:for => "exampleInputEmail1"} Email address
+        %input#exampleInputEmail1.form-control{:placeholder => "Enter email", :type => "email"}/
+      .form-group
+        %label{:for => "exampleInputPassword1"} Password
+        %input#exampleInputPassword1.form-control{:placeholder => "Password", :type => "password"}/
+      .checkbox
+        %label
+          %input{:type => "checkbox"}/
+          Remember me
+      %button.btn.btn-default{:type => "submit"} Sign in
 
   %h2#file File
   %h4
