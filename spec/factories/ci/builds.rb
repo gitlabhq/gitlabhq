@@ -53,6 +53,10 @@ FactoryGirl.define do
       tag true
     end
 
+    factory :ci_build_with_coverage do
+      coverage 99.9
+    end
+
     trait :trace do
       after(:create) do |build, evaluator|
         build.trace = 'BUILD TRACE'
@@ -68,7 +72,7 @@ FactoryGirl.define do
         build.artifacts_metadata =
           fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
                              'application/x-gzip')
-        
+
         build.save!
       end
     end
