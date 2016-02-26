@@ -6,6 +6,8 @@ describe API::API, api: true  do
   let(:key) { create(:key, user: user) }
   let(:project) { create(:project) }
   let(:secret_token) { File.read Gitlab.config.gitlab_shell.secret_file }
+  # Project with path ending in .wiki
+  let(:project_wiki) { create(:project, name: 'my.wiki', path: 'my.wiki') }
 
   describe "GET /internal/check", no_db: true do
     it do
@@ -55,9 +57,13 @@ describe API::API, api: true  do
       end
 
       context "git push with project.wiki" do
-        let(:project) { create(:project, name: 'my.wiki', path: 'my.wiki') }
+
+        before do
+          project_wiki.team << [user, :developer]
+        end
+
         it do
-          push(key, project)
+          push(key, project_wiki)
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_truthy

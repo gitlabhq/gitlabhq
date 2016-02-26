@@ -16,7 +16,7 @@ module API
       #
 
       helpers do
-        def wiki
+        def wiki?
           @wiki ||= params[:project].end_with?('.wiki') &&
             !Project.find_with_namespace(params[:project])
         end
@@ -38,12 +38,12 @@ module API
         # Strip out the .wiki from the pathname before finding the
         # project. This applies the correct project permissions to
         # the wiki repository as well.
-        project_path.chomp!('.wiki') if wiki
+        project_path.chomp!('.wiki') if wiki?
 
         project = Project.find_with_namespace(project_path)
 
         access =
-          if wiki
+          if wiki?
             Gitlab::GitAccessWiki.new(actor, project)
           else
             Gitlab::GitAccess.new(actor, project)
