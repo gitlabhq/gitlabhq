@@ -469,9 +469,18 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/issues/:issue_id" do
-    it "should delete a project issue" do
+    it "should reject non admins form deleting an issue" do
       delete api("/projects/#{project.id}/issues/#{issue.id}", user)
-      expect(response.status).to eq(405)
+      expect(response.status).to eq(403)
+    end
+
+    it "deletes the issue if an admin requests it" do
+      user.admin = true
+      user.save
+
+      delete api("/projects/#{project.id}/issues/#{issue.id}", user)
+      expect(response.status).to eq(200)
+      expect(json_response['state']).to eq 'opened'
     end
   end
 end

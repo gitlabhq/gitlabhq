@@ -315,6 +315,24 @@ describe API::API, api: true  do
     end
   end
 
+  describe "DELETE /projects/:id/merge_request/:merge_request_id" do
+    it "rejects non admin users from deletions" do
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+
+      expect(response.status).to eq(403)
+    end
+
+    it "let's Admins delete a merge request" do
+      user.admin = true
+      user.save
+
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['id']).to eq merge_request.id
+    end
+  end
+
   describe "PUT /projects/:id/merge_requests/:merge_request_id to close MR" do
     it "should return merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"

@@ -142,6 +142,8 @@ class MergeRequest < ActiveRecord::Base
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
 
+  acts_as_paranoid
+
   def self.reference_prefix
     '!'
   end

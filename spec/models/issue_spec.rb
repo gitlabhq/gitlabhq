@@ -37,6 +37,11 @@ describe Issue, models: true do
 
   subject { create(:issue) }
 
+  describe "act_as_paranoid" do
+    it { is_expected.to have_db_column(:deleted_at) }
+    it { is_expected.to have_db_index(:deleted_at) }
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(subject.to_reference).to eq "##{subject.iid}"

@@ -326,15 +326,49 @@ Example response:
 }
 ```
 
-## Delete existing issue (**Deprecated**)
+## Delete existing issue
 
-This call is deprecated and returns a `405 Method Not Allowed` error if called.
-An issue gets now closed and is done by calling
-`PUT /projects/:id/issues/:issue_id` with the parameter `state_event` set to
-`close`. See [edit issue](#edit-issue) for more details.
+Only for admins. Soft deletes the issue in question. Returns the issue which was deleted.
 
 ```
 DELETE /projects/:id/issues/:issue_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`            | integer | yes | The ID of a project |
+| `issue_id`      | integer | yes | The ID of a project's issue |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
+```
+
+Example response:
+
+```json
+{
+   "created_at" : "2016-01-07T12:46:01.410Z",
+   "author" : {
+      "name" : "Alexandra Bashirian",
+      "avatar_url" : null,
+      "username" : "eileen.lowe",
+      "id" : 18,
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/u/eileen.lowe"
+   },
+   "state" : "closed",
+   "title" : "Issues with auth",
+   "project_id" : 4,
+   "description" : null,
+   "updated_at" : "2016-01-07T12:55:16.213Z",
+   "iid" : 15,
+   "labels" : [
+      "bug"
+   ],
+   "id" : 85,
+   "assignee" : null,
+   "milestone" : null
+}
 ```
 
 ## Comments on issues

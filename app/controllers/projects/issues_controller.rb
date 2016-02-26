@@ -108,6 +108,17 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
+  def destroy
+    return access_denied! unless current_user.admin?
+
+    issue.destroy
+
+    respond_to do |format|
+      format.html { redirect_to namespace_project_issues_path(@project.namespace, @project), notice: "The issues was deleted." }
+      format.json { head :ok }
+    end
+  end
+
   def bulk_update
     result = Issues::BulkUpdateService.new(project, current_user, bulk_update_params).execute
     redirect_back_or_default(default: { action: 'index' }, options: { notice: "#{result[:count]} issues updated" })

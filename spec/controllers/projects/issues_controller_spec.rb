@@ -1,11 +1,11 @@
 require('spec_helper')
 
 describe Projects::IssuesController do
-  describe "GET #index" do
-    let(:project) { create(:project) }
-    let(:user) { create(:user) }
-    let(:issue) { create(:issue, project: project) }
+  let(:project) { create(:project) }
+  let(:user)    { create(:user) }
+  let(:issue)   { create(:issue, project: project) }
 
+  describe "GET #index" do
     before do
       sign_in(user)
       project.team << [user, :developer]
@@ -183,6 +183,26 @@ describe Projects::IssuesController do
           project_id: project.to_param,
           id: id,
           issue: { title: 'New title' }
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    it "rejects a developer to destory an issue" do
+      delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+      expect(response.status).to eq 404
+    end
+
+    context "user is an admin" do
+      before do
+        user.admin = true
+        user.save
+      end
+
+      it "lets an admin delete an issue" do
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+
+        expect(response.status).to eq 302
       end
     end
   end

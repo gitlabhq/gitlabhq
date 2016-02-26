@@ -157,6 +157,27 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe "DELETE #destroy" do
+    it "lets mere mortals not acces this endpoint" do
+      delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
+
+      expect(response.status).to eq 404
+    end
+
+    context "user is an admin" do
+      before do
+        user.admin = true
+        user.save
+      end
+
+      it "lets an admin delete an issue" do
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
+
+        expect(response.status).to be 302
+      end
+    end
+  end
+
   describe 'GET diffs' do
     def go(format: 'html')
       get :diffs,
