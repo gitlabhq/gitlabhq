@@ -148,15 +148,8 @@
     position: relative;
 
     .merge-request-title {
-      margin-bottom: 5px;
-      font-size: $list-font-size;
-      font-weight: 600;
+      margin-bottom: 2px;
     }
-
-    .merge-request-info {
-      color: $gl-gray;
-    }
-
   }
 
   .merge-request-labels {
