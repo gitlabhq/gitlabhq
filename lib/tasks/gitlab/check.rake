@@ -30,6 +30,7 @@ namespace :gitlab do
       check_ruby_version
       check_git_version
       check_active_users
+      check_elasticsearch if Gitlab.config.elasticsearch.enabled
 
       finished_checking "GitLab"
     end
@@ -979,6 +980,29 @@ namespace :gitlab do
       end
     else
       puts "No ref lock files exist".green
+    end
+  end
+
+  def check_elasticsearch
+    client = Elasticsearch::Client.new(host: Gitlab.config.elasticsearch.host,
+                                     port: Gitlab.config.elasticsearch.port)
+
+    print "Elasticsearch version >= 2.0? ... "
+
+    version = client.info["version"]["number"]
+
+    if version.starts_with?("2")
+      puts "yes (#{version})".green
+    else
+      puts "no".red
+    end
+
+    print "Elasticsearch has plugin delete-by-query installed? ... "
+
+    if client.cat.plugins.include?("delete-by-query")
+      puts "yes".green
+    else
+      puts "no".red
     end
   end
 end

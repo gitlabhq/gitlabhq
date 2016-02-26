@@ -1,5 +1,9 @@
 # Runners API
 
+_**Note:** This API is intended to be used only by Runners as their own
+communication channel. For the consumer API see the
+[new Runners API](../../api/runners.md)._
+
 ## Runners
 
 ### Retrieve all runners

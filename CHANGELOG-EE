@@ -3,12 +3,25 @@ v 8.6.0
   - [Elasticsearch] Removing repository and wiki index after removing project
 
 v 8.5.0
+v 8.6.0 (unreleased)
+  - Improve weight filter for issues
+  - [Elastic] Add elastic checker to gitlab:check
+  - [Elastic] Added UPDATE_INDEX option to rake task
+
+v 8.5.1
+  - Fix adding pages domain to projects in groups
+
+v 8.5.0
+  - Fix Elasticsearch blob results linking to the wrong reference ID (Stan Hu)
   - Show warning when mirror repository default branch could not be updated because it has diverged from upstream.
   - More reliable wiki indexer
   - GitLab Pages gets support for custom domain and custom certificate
   - Fix of Elastic indexer. It should not trigger record validation for projects
   - Fix of Elastic indexer. Stabilze indexer when serialized data is corrupted
   - [Elastic] Don't index unnecessary data into elastic
+
+v 8.4.5
+  - Update LDAP groups asynchronously
 
 v 8.4.4
   - Re-introduce "Send email to users" link in Admin area

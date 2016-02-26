@@ -54,7 +54,7 @@ class IssuableBaseService < BaseService
     if params.present? && issuable.update_attributes(params.merge(updated_by: current_user))
       issuable.reset_events_cache
       handle_common_system_notes(issuable, old_labels: old_labels)
-      handle_changes(issuable)
+      handle_changes(issuable, old_labels: old_labels)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')
     end
@@ -69,6 +69,19 @@ class IssuableBaseService < BaseService
     when 'close'
       close_service.new(project, current_user, {}).execute(issuable)
     end
+  end
+
+  def has_changes?(issuable, options = {})
+    valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
+
+    attrs_changed = valid_attrs.any? do |attr|
+      issuable.previous_changes.include?(attr.to_s)
+    end
+
+    old_labels = options[:old_labels]
+    labels_changed = old_labels && issuable.labels != old_labels
+
+    attrs_changed || labels_changed
   end
 
   def handle_common_system_notes(issuable, options = {})

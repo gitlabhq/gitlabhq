@@ -40,6 +40,15 @@ Feature: Project Pages
     And I click on "Create New Domain"
     Then I should see a new domain added
 
+  Scenario: I should be able to add a new domain for project in group namespace
+    Given I own a project in some group namespace
+    And pages are enabled
+    And pages are exposed on external HTTP address
+    When I visit add a new Pages Domain
+    And I fill the domain
+    And I click on "Create New Domain"
+    Then I should see a new domain added
+
   Scenario: I should be denied to add the same domain twice
     Given pages are enabled
     And pages are exposed on external HTTP address

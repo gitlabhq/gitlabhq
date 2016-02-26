@@ -1,0 +1,62 @@
+- page_title "Todos"
+- header_title "Todos", dashboard_todos_path
+
+.top-area
+  %ul.nav-links
+    %li{class: ('active' if params[:state].blank? || params[:state] == 'pending')}
+      = link_to todos_filter_path(state: 'pending') do
+        %span
+          To do
+        %span{class: 'badge'}
+          = todos_pending_count
+    %li{class: ('active' if params[:state] == 'done')}
+      = link_to todos_filter_path(state: 'done') do
+        %span
+          Done
+        %span{class: 'badge'}
+          = todos_done_count
+
+  .nav-controls
+    - if @todos.any?(&:pending?)
+      = link_to 'Mark all as done', destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn', method: :delete
+
+.todos-filters
+  .gray-content-block.second-block
+    = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form' do
+      .filter-item.inline
+        = select_tag('project_id', todo_projects_options,
+          class: 'select2 trigger-submit', include_blank: true,
+          data: {placeholder: 'Project'})
+      .filter-item.inline
+        = users_select_tag(:author_id, selected: params[:author_id],
+          placeholder: 'Author', class: 'trigger-submit', any_user: "Any Author", first_user: true, current_user: true)
+      .filter-item.inline
+        = select_tag('type', todo_types_options,
+          class: 'select2 trigger-submit', include_blank: true,
+          data: {placeholder: 'Type'})
+      .filter-item.inline.actions-filter
+        = select_tag('action_id', todo_actions_options,
+          class: 'select2 trigger-submit', include_blank: true,
+          data: {placeholder: 'Action'})
+
+.prepend-top-default
+  - if @todos.any?
+    - @todos.group_by(&:project).each do |group|
+      .panel.panel-default.panel-small
+        - project = group[0]
+        .panel-heading
+          = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
+
+        %ul.well-list.todos-list
+          = render group[1]
+    = paginate @todos, theme: "gitlab"
+  - else
+    .nothing-here-block You're all done!
+
+:javascript
+  new UsersSelect();
+
+  $('form.filter-form').on('submit', function (event) {
+    event.preventDefault();
+    Turbolinks.visit(this.action + '&' + $(this).serialize());
+  });

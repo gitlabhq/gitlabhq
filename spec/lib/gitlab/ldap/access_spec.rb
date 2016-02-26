@@ -117,11 +117,12 @@ describe Gitlab::LDAP::Access, lib: true do
   end
 
   describe '#update_permissions' do
-    subject { access.update_permissions }
+    subject { access.update_permissions({}) }
 
     it 'does update group permissions with a group base configured' do
       allow(access).to receive_messages(group_base: 'my-group-base')
-      expect(access).to receive(:update_ldap_group_links)
+      expect(access).not_to receive(:update_ldap_group_links)
+      expect(LdapGroupLinksWorker).to receive(:perform_async).with(user.id)
 
       subject
     end
@@ -129,6 +130,7 @@ describe Gitlab::LDAP::Access, lib: true do
     it 'does not update group permissions without a group base configured' do
       allow(access).to receive_messages(group_base: '')
       expect(access).not_to receive(:update_ldap_group_links)
+      expect(LdapGroupLinksWorker).not_to receive(:perform_async)
 
       subject
     end
@@ -145,6 +147,16 @@ describe Gitlab::LDAP::Access, lib: true do
       expect(access).not_to receive(:update_admin_status)
 
       subject
+    end
+
+    context 'when synchronously updating group permissions' do
+      it 'updates group permissions directly' do
+        allow(access).to receive_messages(group_base: 'my-group-base')
+        expect(LdapGroupLinksWorker).not_to receive(:perform_async)
+        expect(access).to receive(:update_ldap_group_links)
+  
+        access.update_permissions(update_ldap_group_links_synchronously: true)
+      end      
     end
   end
 

@@ -4,12 +4,12 @@ namespace :gitlab do
     task index_repositories: :environment  do
       Repository.__elasticsearch__.create_index!
 
-      projects = if ENV['NOT_INDEXED_ONLY']
+      projects = if ENV['UPDATE_INDEX']
+                   Project
+                 else
                    Project.includes(:index_status).
                            where("index_statuses.id IS NULL").
                            references(:index_statuses)
-                 else
-                   Project
                  end
 
       projects = apply_project_filters(projects)

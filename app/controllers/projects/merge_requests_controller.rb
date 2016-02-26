@@ -34,6 +34,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
     @merge_requests = @merge_requests.preload(:target_project)
 
+    @label = @project.labels.find_by(title: params[:label_name])
+
     respond_to do |format|
       format.html
       format.json do
@@ -185,6 +187,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @status = :failed
       return
     end
+
+    TodoService.new.merge_merge_request(merge_request, current_user)
 
     @merge_request.update(merge_error: nil)
 
