@@ -14,11 +14,11 @@ module Gitlab
         end
       end
 
-      def self.allowed?(user)
+      def self.allowed?(user, options={})
         self.open(user) do |access|
           # Whether user is allowed, or not, we should update
           # permissions to keep things clean
-          access.update_permissions
+          access.update_permissions(options)
           if access.allowed?
             access.update_user
             user.last_credential_check_at = Time.now
@@ -75,8 +75,14 @@ module Gitlab
         update_kerberos_identity if import_kerberos_identities?
       end
 
-      def update_permissions
-        update_ldap_group_links if group_base.present?
+      def update_permissions(options)
+        if group_base.present?
+          if options[:update_ldap_group_links_synchronously]
+            update_ldap_group_links
+          else
+            LdapGroupLinksWorker.perform_async(user.id)
+          end
+        end
         update_admin_status if admin_group.present?
       end
 

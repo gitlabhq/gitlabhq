@@ -1,0 +1,124 @@
+/**
+ * Dashboard Todos
+ *
+ */
+
+.navbar-nav {
+  li {
+    .badge.todos-pending-count {
+      background-color: #7f8fa4;
+      margin-top: -5px;
+    }
+  }
+}
+
+.todos {
+  .panel {
+    border-top: none;
+    margin-bottom: 0;
+  }
+}
+
+.todo-item {
+  font-size: $gl-font-size;
+  padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
+  border-bottom: 1px solid $table-border-color;
+  color: #7f8fa4;
+
+  &.todo-inline {
+    .avatar {
+      position: relative;
+      top: -2px;
+    }
+
+    .todo-title {
+      line-height: 40px;
+    }
+  }
+
+  a {
+    color: #4c4e54;
+  }
+
+  .avatar {
+    margin-left: -($gl-avatar-size + $gl-padding-top);
+  }
+
+  .todo-title {
+    @include str-truncated(calc(100% - 174px));
+    font-weight: 600;
+
+    .author_name {
+      color: #333;
+    }
+  }
+
+  .todo-body {
+    margin-right: 174px;
+
+    .todo-note {
+      word-wrap: break-word;
+
+      .md {
+        color: #7f8fa4;
+        font-size: $gl-font-size;
+
+        p {
+          color: #5c5d5e;
+        }
+      }
+
+      pre {
+        border: none;
+        background: #f9f9f9;
+        border-radius: 0;
+        color: #777;
+        margin: 0 20px;
+        overflow: hidden;
+      }
+
+      .note-image-attach {
+        margin-top: 4px;
+        margin-left: 0px;
+        max-width: 200px;
+        float: none;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .todo-note-icon {
+      color: #777;
+      float: left;
+      font-size: $gl-font-size;
+      line-height: 16px;
+      margin-right: 5px;
+    }
+  }
+
+  &:last-child { border:none }
+}
+
+@media (max-width: $screen-xs-max) {
+  .todo-item {
+    padding-left: $gl-padding;
+
+    .todo-title {
+      white-space: normal;
+      overflow: visible;
+      max-width: 100%;
+    }
+
+    .avatar {
+      display: none;
+    }
+
+    .todo-body {
+      margin: 0;
+      border-left: 2px solid #DDD;
+      padding-left: 10px;
+    }
+  }
+}

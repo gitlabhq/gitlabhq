@@ -1,5 +1,5 @@
 .file-content.image_file
-  - if blob_svg?(blob)
+  - if blob.svg?
     - # We need to scrub SVG but we cannot do so in the RawController: it would
     - # be wrong/strange if RawController modified the data.
     - blob.load_all_data!(@repository)

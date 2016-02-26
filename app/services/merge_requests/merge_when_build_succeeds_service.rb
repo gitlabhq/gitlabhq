@@ -19,15 +19,19 @@ module MergeRequests
     end
 
     # Triggers the automatic merge of merge_request once the build succeeds
-    def trigger(build)
-      merge_requests = merge_request_from(build)
+    def trigger(commit_status)
+      merge_requests = merge_request_from(commit_status)
 
       merge_requests.each do |merge_request|
         next unless merge_request.merge_when_build_succeeds?
+        next unless merge_request.mergeable?
 
-        if merge_request.ci_commit && merge_request.ci_commit.success? && merge_request.mergeable?
-          MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id, merge_request.merge_params)
-        end
+        ci_commit = merge_request.ci_commit
+        next unless ci_commit
+        next unless ci_commit.sha == commit_status.sha
+        next unless ci_commit.success?
+
+        MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id, merge_request.merge_params)
       end
     end
 
@@ -45,9 +49,16 @@ module MergeRequests
 
     private
 
-    def merge_request_from(build)
-      merge_requests = @project.origin_merge_requests.opened.where(source_branch: build.ref).to_a
-      merge_requests += @project.fork_merge_requests.opened.where(source_branch: build.ref).to_a
+    def merge_request_from(commit_status)
+      branches = commit_status.ref
+
+      # This is for ref-less builds
+      branches ||= @project.repository.branch_names_contains(commit_status.sha)
+
+      return [] if branches.blank?
+
+      merge_requests = @project.origin_merge_requests.opened.where(source_branch: branches).to_a
+      merge_requests += @project.fork_merge_requests.opened.where(source_branch: branches).to_a
 
       merge_requests.uniq.select(&:source_project)
     end
