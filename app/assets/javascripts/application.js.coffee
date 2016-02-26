@@ -44,6 +44,7 @@
 #= require jquery.nicescroll
 #= require_tree .
 #= require fuzzaldrin-plus
+#= require cropper.js
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
