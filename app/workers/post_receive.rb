@@ -15,15 +15,7 @@ class PostReceive
     repo_path.gsub!(/\A\//, "")
 
     if repo_path =~ /wiki\z/ && Gitlab.config.elasticsearch.enabled
-      repo_path.gsub!(/\.wiki\z/, "")
-
-      project = Project.find_with_namespace(repo_path)
-
-      if project
-        project.wiki.index_blobs
-      end
-
-      return false
+      update_wiki_es_indexes(repo_path)
     end
 
     project = Project.find_with_namespace(repo_path)
@@ -70,5 +62,13 @@ class PostReceive
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
+  end
+
+  def update_wiki_es_indexes(repo_path)
+    project = Project.find_with_namespace(repo_path.gsub(/\.wiki\z/, ""))
+
+    if project
+      project.wiki.index_blobs
+    end
   end
 end
