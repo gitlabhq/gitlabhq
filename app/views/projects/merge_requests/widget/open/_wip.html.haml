@@ -2,4 +2,10 @@
   This merge request is currently a Work In Progress
 
 %p
-  When this merge request is ready, remove the "WIP" prefix from the title to allow it to be merged.
+  When this merge request is ready,
+  - text = 'remove the "WIP" prefix from the title'
+  - if can?(current_user, :update_merge_request, @merge_request)
+    = link_to text, remove_wip_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), method: :post
+  - else
+    = text
+  to allow it to be merged.
