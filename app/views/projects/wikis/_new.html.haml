@@ -5,9 +5,10 @@
         %a.close{href: "#", "data-dismiss" => "modal"} ×
         %h3.page-title New Wiki Page
       .modal-body
-        .form-group
-          = label_tag :new_wiki_path do
-            %span Page slug
-          = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => namespace_project_wikis_path(@project.namespace, @project)
-        .form-actions
-          = link_to 'Create Page', '#', class: 'build-new-wiki btn btn-create'
+        %form.new-wiki-page
+          .form-group
+            = label_tag :new_wiki_path do
+              %span Page slug
+            = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => namespace_project_wikis_path(@project.namespace, @project), autofocus: true
+          .form-actions
+            = button_tag 'Create Page', class: 'build-new-wiki btn btn-create'

@@ -56,6 +56,10 @@ hr {
   margin: $gl-padding 0;
 }
 
+.dropdown-menu {
+  margin: 6px 0 0;
+}
+
 .dropdown-menu > li > a {
   text-shadow: none;
 }
@@ -386,6 +390,7 @@ table {
 }
 
 .project-item-select-holder {
+  display: inline-block;
   position: relative;
 
   .project-item-select {

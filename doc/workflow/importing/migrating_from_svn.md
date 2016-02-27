@@ -69,6 +69,7 @@ branches and tags.
 ```bash
 git remote add origin git@gitlab.com:<group>/<project>.git
 git push --all origin
+git push --tags origin
 ```
 
 ## Contribute to this guide

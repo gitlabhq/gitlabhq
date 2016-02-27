@@ -18,7 +18,7 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   end
 
   step 'I should see empty public project details' do
-    expect(page).to have_content 'Git global setup'
+    expect(page).not_to have_content 'Git global setup'
   end
 
   step 'I should see empty public project details with http clone info' do

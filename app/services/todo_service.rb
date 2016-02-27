@@ -130,8 +130,8 @@ class TodoService
   end
 
   def handle_note(note, author)
-    # Skip system notes, like status changes and cross-references
-    return if note.system
+    # Skip system notes, notes on commit, and notes on project snippet
+    return if note.system? || ['Commit', 'Snippet'].include?(note.noteable_type)
 
     project = note.project
     target  = note.noteable

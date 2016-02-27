@@ -483,6 +483,10 @@ module SharedPaths
     visit namespace_project_path(project.namespace, project)
   end
 
+  step "I should not see command line instructions" do
+    expect(page).not_to have_css('.empty_wrapper')
+  end
+
   # ----------------------------------------
   # Public Projects
   # ----------------------------------------

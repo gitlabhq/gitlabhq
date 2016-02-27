@@ -105,3 +105,9 @@ Feature: Project
     Given I click notifications drop down button
     When I choose Mention setting
     Then I should see Notification saved message
+
+  Scenario: I should see command line instructions
+    Given I own an empty project
+    And I visit my empty project page
+    And I create bare repo
+    Then I should see command line instructions
