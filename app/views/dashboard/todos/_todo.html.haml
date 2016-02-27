@@ -1,11 +1,11 @@
 %li{class: "todo todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo) }
-  .todo-item{class: 'todo-block'}
+  .todo-item.todo-block
     = image_tag avatar_icon(todo.author_email, 40), class: 'avatar s40', alt:''
 
     .todo-title
-      %span.author_name
+      %span.author-name
         = link_to_author todo
-      %span.todo_label
+      %span.todo-label
         = todo_action_name(todo)
         = todo_target_link(todo)
 
