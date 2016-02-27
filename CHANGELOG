@@ -32,6 +32,7 @@ v 8.5.5
   - Prevent a 500 error in Todos when author was removed
   - Fix pagination for filtered dashboard and explore pages
   - Fix "Show all" link behavior
+  - HTTP error pages work independently from location and config (Artem Sidorenko)
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
