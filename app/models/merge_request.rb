@@ -259,8 +259,14 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
+  WIP_REGEX = /\A\[?WIP(\]|:| )\s*/i.freeze
+
   def work_in_progress?
-    !!(title =~ /\A\[?WIP(\]|:| )/i)
+    title =~ WIP_REGEX
+  end
+
+  def wipless_title
+    self.title.sub(WIP_REGEX, "")
   end
 
   def mergeable?

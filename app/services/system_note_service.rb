@@ -144,6 +144,18 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  def self.remove_merge_request_wip(noteable, project, author)
+    body = 'Unmarked this merge request as Work In Progress'
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  def self.add_merge_request_wip(noteable, project, author)
+    body = 'Marked this merge request as **Work In Progress**'
+
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   # Called when the title of a Noteable is changed
   #
   # noteable  - Noteable object that responds to `title`

@@ -5,6 +5,22 @@ module MergeRequests
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, merge_request.state, nil)
     end
 
+    def create_title_change_note(issuable, old_title)
+      wipless_old_title = old_title.sub(MergeRequest::WIP_REGEX, "")
+      wipless_new_title = issuable.title.sub(MergeRequest::WIP_REGEX, "")
+      
+      removed_wip = wipless_old_title == issuable.title
+      added_wip = wipless_new_title == old_title
+
+      if removed_wip
+        SystemNoteService.remove_merge_request_wip(issuable, issuable.project, current_user)
+      elsif added_wip
+        SystemNoteService.add_merge_request_wip(issuable, issuable.project, current_user)
+      else
+        super
+      end
+    end
+
     def hook_data(merge_request, action)
       hook_data = merge_request.to_hook_data(current_user)
       merge_request_url = Gitlab::UrlBuilder.new(:merge_request).build(merge_request.id)
