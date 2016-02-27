@@ -8,7 +8,7 @@ class Projects::ForksController < Projects::ApplicationController
 
     @forks = if current_user
                base_query.where('projects.visibility_level IN (?) OR projects.id IN (?)',
-                                Project::PUBLIC,
+                                Project.public_and_internal_levels,
                                 current_user.authorized_projects.pluck(:id))
              else
                base_query.where('projects.visibility_level = ?', Project::PUBLIC)
