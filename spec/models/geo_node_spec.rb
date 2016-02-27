@@ -3,8 +3,15 @@ require 'spec_helper'
 describe GeoNode, type: :model do
 
   context 'default values' do
+    let(:gitlab_host) { 'gitlabhost' }
+    before(:each) { allow(Gitlab.config.gitlab).to receive(:host) { gitlab_host } }
+
     it 'defines a default schema' do
       expect(subject.schema).to eq('http')
+    end
+
+    it 'defines a default host' do
+      expect(subject.host).to eq(gitlab_host)
     end
 
     it 'defines a default port' do
@@ -17,15 +24,25 @@ describe GeoNode, type: :model do
   end
 
   describe '#uri' do
-    subject { GeoNode.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
+    context 'when all fields are filled' do
+      subject { GeoNode.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
 
-    it 'returns an URI object' do
-      expect(subject.uri).to be_a URI
+      it 'returns an URI object' do
+        expect(subject.uri).to be_a URI
+      end
+
+      it 'includes schema home port and relative_url' do
+        expected_uri = URI.parse('https://localhost:3000/gitlab')
+        expect(subject.uri).to eq(expected_uri)
+      end
     end
 
-    it 'includes schema home port and relative_url' do
-      expected_uri = URI.parse('https://localhost:3000/gitlab')
-      expect(subject.uri).to eq(expected_uri)
+    context 'when required fields are not filled' do
+      subject { GeoNode.new(schema: nil, host: nil, port: nil, relative_url_root: nil) }
+
+      it 'returns an URI object' do
+        expect(subject.uri).to be_a URI
+      end
     end
   end
 

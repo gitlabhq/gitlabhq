@@ -13,10 +13,11 @@
 class GeoNode < ActiveRecord::Base
   belongs_to :geo_node_key
 
-  default_value_for :schema, 'http'
-  default_value_for :port, 80
-  default_value_for :relative_url_root, ''
-  default_value_for :primary, false
+  default_values schema: 'http',
+                 host: lambda { Gitlab.config.gitlab.host },
+                 port: 80,
+                 relative_url_root: '',
+                 primary: false
 
   accepts_nested_attributes_for :geo_node_key
 
@@ -29,8 +30,11 @@ class GeoNode < ActiveRecord::Base
   after_destroy :destroy_orphaned_geo_node_key
 
   def uri
-    relative_url = relative_url_root[0] == '/' ? relative_url_root[1..-1] : relative_url_root
-    URI.parse("#{schema}://#{host}:#{port}/#{relative_url}")
+    if relative_url_root
+      relative_url = relative_url_root.starts_with?('/') ? relative_url_root : relative_url_root.prepend('/')
+    end
+
+    URI.parse(URI::Generic.build(scheme: schema, host: host, port: port, path: relative_url).normalize.to_s)
   end
 
   def url
