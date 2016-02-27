@@ -30,7 +30,6 @@ server {
   listen [::]:80 default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
-  root /home/git/gitlab/public;
 
   ## See app/controllers/application_controller.rb for headers set
 
@@ -57,4 +56,14 @@ server {
 
     proxy_pass http://gitlab-workhorse;
   }
+
+  error_page 404 /404.html;
+  error_page 422 /422.html;
+  error_page 500 /500.html;
+  error_page 502 /502.html;
+  location ~ ^/(404|422|500|502)\.html$ {
+    root /home/git/gitlab/public;
+    internal;
+  }
+
 }
