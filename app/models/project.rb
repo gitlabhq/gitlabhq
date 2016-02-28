@@ -948,10 +948,10 @@ class Project < ActiveRecord::Base
 
   def main_language
     if !empty_repo?
-      languages = Linguist::Repository.new(
-        @repository.rugged,
-        @repository.rugged.head.target_id).languages
-        return languages.key(languages.values.max)
+      Rails.cache.fetch([self, "language"]) do
+        languages = Linguist::Repository.new(@repository.rugged, @repository.rugged.head.target_id).languages
+        languages.key(languages.values.max)
+      end
     end
   end
 end
