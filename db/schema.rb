@@ -820,6 +820,7 @@ ActiveRecord::Schema.define(version: 20160419120017) do
     t.boolean  "build_events",          default: false,    null: false
     t.string   "category",              default: "common", null: false
     t.boolean  "default",               default: false
+    t.boolean  "wiki_page_events",      default: true
   end
 
   add_index "services", ["category"], name: "index_services_on_category", using: :btree
@@ -1014,6 +1015,7 @@ ActiveRecord::Schema.define(version: 20160419120017) do
     t.boolean  "note_events",                          default: false,         null: false
     t.boolean  "enable_ssl_verification",              default: true
     t.boolean  "build_events",                         default: false,         null: false
+    t.boolean  "wiki_page_events",                     default: false,         null: false
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree

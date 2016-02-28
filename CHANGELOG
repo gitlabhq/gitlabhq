@@ -274,6 +274,7 @@ v 8.5.3
   - Show commit message in JIRA mention comment
   - Makes issue page and merge request page usable on mobile browsers.
   - Improved UI for profile settings
+  - Add Slack notifications when Wiki is edited (Sebastian Klier)
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
