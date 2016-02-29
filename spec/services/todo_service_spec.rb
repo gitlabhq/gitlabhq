@@ -110,6 +110,8 @@ describe TodoService, services: true do
       let!(:first_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
       let!(:second_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
       let(:note) { create(:note, project: project, noteable: issue, author: john_doe, note: mentions) }
+      let(:note_on_commit) { create(:note_on_commit, project: project, author: john_doe, note: mentions) }
+      let(:note_on_project_snippet) { create(:note_on_project_snippet, project: project, author: john_doe, note: mentions) }
       let(:award_note) { create(:note, :award, project: project, noteable: issue, author: john_doe, note: 'thumbsup') }
       let(:system_note) { create(:system_note, project: project, noteable: issue) }
 
@@ -144,6 +146,14 @@ describe TodoService, services: true do
         should_create_todo(user: author, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_not_create_todo(user: john_doe, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_not_create_todo(user: stranger, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
+      end
+
+      it 'does not create todo when leaving a note on commit' do
+        should_not_create_any_todo { service.new_note(note_on_commit, john_doe) }
+      end
+
+      it 'does not create todo when leaving a note on snippet' do
+        should_not_create_any_todo { service.new_note(note_on_project_snippet, john_doe) }
       end
     end
   end

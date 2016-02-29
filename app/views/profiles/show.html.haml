@@ -90,6 +90,9 @@
             &nbsp;
             %span.file_name.js-avatar-filename File name...
             = f.file_field :avatar, class: "js-user-avatar-input hidden"
+            = f.hidden_field :avatar_crop_x
+            = f.hidden_field :avatar_crop_y
+            = f.hidden_field :avatar_crop_size
             .light The maximum file size allowed is 200KB.
             - if @user.avatar?
               %hr
@@ -99,3 +102,19 @@
   .form-actions
     = f.submit 'Save changes', class: "btn btn-success"
     = link_to "Cancel", user_path(current_user), class: "btn btn-cancel"
+
+.modal.modal-profile-crop
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
+          %span
+            &times;
+        %h4.modal-title
+          Crop your new profile picture
+      .modal-body
+        %p
+          %img.modal-profile-crop-image
+      .modal-footer
+        %button.btn.btn-primary.js-upload-user-avatar{:type => "button"}
+          Set new profile picture

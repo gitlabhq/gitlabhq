@@ -16,11 +16,11 @@ class @Autosave
 
     try
       text = window.localStorage.getItem @key
-    catch
+    catch e
       return
 
     @field.val text if text?.length > 0
-    @field.trigger "input"    
+    @field.trigger "input"
 
   save: ->
     return unless window.localStorage?
@@ -35,5 +35,5 @@ class @Autosave
   reset: ->
     return unless window.localStorage?
 
-    try 
+    try
       window.localStorage.removeItem @key
