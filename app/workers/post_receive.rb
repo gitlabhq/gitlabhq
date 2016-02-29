@@ -14,9 +14,7 @@ class PostReceive
     repo_path.gsub!(/\.git\z/, "")
     repo_path.gsub!(/\A\//, "")
 
-    if repo_path =~ /wiki\z/ && Gitlab.config.elasticsearch.enabled
-      update_wiki_es_indexes(repo_path)
-    end
+    update_wiki_es_indexes(repo_path)
 
     project = Project.find_with_namespace(repo_path)
 
@@ -65,6 +63,8 @@ class PostReceive
   end
 
   def update_wiki_es_indexes(repo_path)
+    return unless repo_path =~ /wiki\z/ && Gitlab.config.elasticsearch.enabled
+
     project = Project.find_with_namespace(repo_path.gsub(/\.wiki\z/, ""))
 
     if project
