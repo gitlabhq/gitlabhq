@@ -7,6 +7,10 @@ module SharedPaths
     visit new_project_path
   end
 
+  step 'I visit login page' do
+    visit new_user_session_path
+  end
+
   # ----------------------------------------
   # User
   # ----------------------------------------
@@ -185,6 +189,10 @@ module SharedPaths
 
   step 'I visit admin groups page' do
     visit admin_groups_path
+  end
+
+  step 'I visit admin appearance page' do
+    visit admin_appearances_path
   end
 
   step 'I visit admin teams page' do
@@ -445,6 +453,10 @@ module SharedPaths
   step "I visit empty project page" do
     project = Project.find_by(name: "Empty Public Project")
     visit namespace_project_path(project.namespace, project)
+  end
+
+  step "I should not see command line instructions" do
+    expect(page).not_to have_css('.empty_wrapper')
   end
 
   # ----------------------------------------

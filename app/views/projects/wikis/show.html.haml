@@ -1,16 +1,17 @@
 - page_title @page.title.capitalize, "Wiki"
 = render "header_title"
-
 = render 'nav'
 
-.gray-content-block
-  = render 'main_links'
-  %h3.page-title.oneline
-    = @page.title.capitalize
+.top-area
+  .nav-text
+    %strong= @page.title.capitalize
 
     %span.wiki-last-edit-by
       &middot;
       last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
+
+  .nav-controls
+    = render 'main_links'
 
 - if @page.historical?
   .warning_message

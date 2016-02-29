@@ -124,7 +124,7 @@ In GitLab, Runners run the builds that you define in `.gitlab-ci.yml`.
 A Runner can be a virtual machine, a VPS, a bare-metal machine, a docker
 container or even a cluster of containers. GitLab and the Runners communicate
 through an API, so the only needed requirement is that the machine on which the
-Runner is configured to has Internet access.
+Runner is configured to have Internet access.
 
 A Runner can be specific to a certain project or serve multiple projects in
 GitLab. If it serves all projects it's called a _Shared Runner_.
@@ -201,6 +201,11 @@ You can access a builds badge image using following link:
 http://example.gitlab.com/namespace/project/badges/branch/build.svg
 ```
 
+## Examples
+
+Visit the [examples README][examples] to see a list of examples using GitLab
+CI with various languages.
+
 ## Next steps
 
 Awesome! You started using CI in GitLab!
@@ -212,3 +217,4 @@ Visit our various languages examples at <https://gitlab.com/groups/gitlab-exampl
 
 [runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#installation
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
+[examples]: ../examples/README.md

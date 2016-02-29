@@ -87,6 +87,7 @@ Feature: Explore Projects
 
   Scenario: I visit public project issues page as a non authorized user
     Given I visit project "Community" page
+    Then I should not see command line instructions
     And I visit "Community" issues page
     Then I should see list of issues for "Community" project
 

@@ -32,6 +32,7 @@
   .cover-controls {
     .project-settings-dropdown {
       margin-left: 10px;
+      display: inline-block;
     }
   }
 
@@ -186,10 +187,10 @@
 
 .dropdown-menu {
   @include box-shadow(rgba(76, 86, 103, 0.247059) 0px 0px 1px 0px, rgba(31, 37, 50, 0.317647) 0px 2px 18px 0px);
-  @include border-radius (0px);
+  @include border-radius ($border-radius-default);
 
   border: none;
-  padding: 16px 0;
+  padding: 10px 0;
   font-size: 14px;
   font-weight: 100;
 
@@ -396,15 +397,10 @@ pre.light-well {
 
     .project-full-name {
       @include str-truncated;
-      font-weight: 600;
-      color: #4c4e54;
     }
 
-    .project-controls {
-      float: right;
-      color: $gl-gray;
+    .controls {
       line-height: 40px;
-      color: #7f8fa4;
 
       a:hover {
         text-decoration: none;
@@ -412,16 +408,6 @@ pre.light-well {
 
       > span {
         margin-left: 10px;
-      }
-    }
-
-    .project-description {
-      color: #7f8fa4;
-
-      p {
-        @include str-truncated;
-        margin-bottom: 0;
-        color: #7f8fa4;
       }
     }
   }

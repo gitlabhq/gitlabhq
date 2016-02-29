@@ -37,20 +37,6 @@ describe Todo, models: true do
     it { is_expected.to validate_presence_of(:user) }
   end
 
-  describe '#action_name' do
-    it 'returns proper message when action is an assigment' do
-      subject.action = Todo::ASSIGNED
-
-      expect(subject.action_name).to eq 'assigned'
-    end
-
-    it 'returns proper message when action is a mention' do
-      subject.action = Todo::MENTIONED
-
-      expect(subject.action_name).to eq 'mentioned you on'
-    end
-  end
-
   describe '#body' do
     before do
       subject.target = build(:issue, title: 'Bugfix')
@@ -69,21 +55,15 @@ describe Todo, models: true do
     end
   end
 
-  describe '#target_iid' do
-    let(:issue) { build(:issue, id: 1, iid: 5) }
-
-    before do
-      subject.target = issue
+  describe '#done!' do
+    it 'changes state to done' do
+      todo = create(:todo, state: :pending)
+      expect { todo.done! }.to change(todo, :state).from('pending').to('done')
     end
 
-    it 'returns target.iid when target respond to iid' do
-      expect(subject.target_iid).to eq 5
-    end
-
-    it 'returns target_id when target does not respond to iid' do
-      allow(issue).to receive(:respond_to?).with(:iid).and_return(false)
-
-      expect(subject.target_iid).to eq 1
+    it 'does not raise error when is already done' do
+      todo = create(:todo, state: :done)
+      expect { todo.done! }.not_to raise_error
     end
   end
 end

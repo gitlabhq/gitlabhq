@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe NamespacesController do
-  let!(:user) { create(:user, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+  let!(:user) { create(:user, :with_avatar) }
 
   describe "GET show" do
     context "when the namespace belongs to a user" do

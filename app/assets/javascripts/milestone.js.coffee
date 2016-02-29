@@ -62,6 +62,11 @@ class @Milestone
       dataType: "json"
 
   constructor: ->
+    oldMouseStart = $.ui.sortable.prototype._mouseStart
+    $.ui.sortable.prototype._mouseStart = (event, overrideHandle, noActivation) ->
+      this._trigger "beforeStart", event, this._uiHash()
+      oldMouseStart.apply this, [event, overrideHandle, noActivation]
+
     @bindIssuesSorting()
     @bindMergeRequestSorting()
     @bindTabsSwitching
@@ -71,6 +76,10 @@ class @Milestone
       connectWith: ".issues-sortable-list",
       dropOnEmpty: true,
       items: "li:not(.ui-sort-disabled)",
+      beforeStart: (event, ui) ->
+        $(".issues-sortable-list").css "min-height", ui.item.outerHeight()
+      stop: (event, ui) ->
+        $(".issues-sortable-list").css "min-height", "0px"
       update: (event, ui) ->
         data = $(this).sortable("serialize")
         Milestone.sortIssues(data)
@@ -96,10 +105,22 @@ class @Milestone
     ).disableSelection()
 
   bindMergeRequestSorting: ->
+    $('a[data-toggle="tab"]').on 'show.bs.tab', (e) ->
+      currentTabClass  = $(e.target).data('show')
+      previousTabClass =  $(e.relatedTarget).data('show')
+
+      $(previousTabClass).hide()
+      $(currentTabClass).removeClass('hidden')
+      $(currentTabClass).show()
+      
     $("#merge_requests-list-unassigned, #merge_requests-list-ongoing, #merge_requests-list-closed").sortable(
       connectWith: ".merge_requests-sortable-list",
       dropOnEmpty: true,
       items: "li:not(.ui-sort-disabled)",
+      beforeStart: (event, ui) ->
+        $(".merge_requests-sortable-list").css "min-height", ui.item.outerHeight()
+      stop: (event, ui) ->
+        $(".merge_requests-sortable-list").css "min-height", "0px"
       update: (event, ui) ->
         data = $(this).sortable("serialize")
         Milestone.sortMergeRequests(data)
@@ -123,12 +144,3 @@ class @Milestone
         Milestone.updateMergeRequest(ui.item, merge_request_url, data)
 
     ).disableSelection()
-
-  bindMergeRequestSorting: ->
-    $('a[data-toggle="tab"]').on 'show.bs.tab', (e) ->
-      currentTabClass  = $(e.target).data('show')
-      previousTabClass =  $(e.relatedTarget).data('show')
-
-      $(previousTabClass).hide()
-      $(currentTabClass).removeClass('hidden')
-      $(currentTabClass).show()
