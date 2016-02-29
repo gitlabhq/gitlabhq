@@ -10,6 +10,6 @@ you will find all relevant information.
 
 ## Resources
 
+- [Builds](builds.md)
 - [Runners](runners.md)
 - [Commits](commits.md)
-- [Builds](builds.md)
