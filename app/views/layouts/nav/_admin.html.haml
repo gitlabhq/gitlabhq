@@ -56,6 +56,11 @@
       = icon('cog fw')
       %span
         Background Jobs
+  = nav_link(controller: :appearances) do
+    = link_to admin_appearances_path, title: 'Appearances' do
+      = icon('image')
+      %span
+        Appearance
 
   = nav_link(controller: :applications) do
     = link_to admin_applications_path, title: 'Applications' do

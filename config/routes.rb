@@ -154,6 +154,11 @@ Rails.application.routes.draw do
         to:           "uploads#show",
         constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /[^\/]+/ }
 
+    # Appearance
+    get ":model/:mounted_as/:id/:filename",
+        to:           "uploads#show",
+        constraints:  { model: /appearance/, mounted_as: /logo|header_logo/, filename: /.+/ }
+
     # Project markdown uploads
     get ":namespace_id/:project_id/:secret/:filename",
       to:           "projects/uploads#show",
@@ -248,6 +253,14 @@ Rails.application.routes.draw do
         end
 
         resources :runner_projects
+      end
+    end
+
+    resource :appearances, path: 'appearance' do
+      member do
+        get :preview
+        delete :logo
+        delete :header_logos
       end
     end
 
