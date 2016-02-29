@@ -41,6 +41,12 @@ class Spinach::Features::ProjectMilestone < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see the "bug" label listed only once' do
+    page.within('#tab-labels') do
+      expect(page).to have_content('bug', count: 1)
+    end
+  end
+
   step 'I click link "v2.2"' do
     click_link "v2.2"
   end
