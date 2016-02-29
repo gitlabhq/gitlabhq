@@ -372,7 +372,8 @@ class User < ActiveRecord::Base
 
   def namespace_uniq
     # Return early if username already failed the first uniqueness validation
-    return if self.errors[:username].include?('has already been taken')
+    return if self.errors.key?(:username) &&
+      self.errors[:username].include?('has already been taken')
 
     namespace_name = self.username
     existing_namespace = Namespace.by_path(namespace_name)
