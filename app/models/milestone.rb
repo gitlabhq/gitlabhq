@@ -27,7 +27,7 @@ class Milestone < ActiveRecord::Base
 
   belongs_to :project
   has_many :issues
-  has_many :labels, through: :issues
+  has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
   has_many :participants, through: :issues, source: :assignee
 
