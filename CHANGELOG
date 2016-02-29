@@ -4,6 +4,12 @@ v 8.6.0 (unreleased)
   - Improve the formatting for the user page bio (Connor Shea)
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
   - Don't load all of GitLab in mail_room
+  - Strip leading and trailing spaces in URL validator (evuez)
+  - Update documentation to reflect Guest role not being enforced on internal projects
+
+v 8.5.2
+  - Fix sidebar overlapping content when screen width was below 1200px
+  - Fix error 500 when commenting on a commit
 
 v 8.5.1
   - Fix group projects styles
@@ -23,9 +29,6 @@ v 8.5.1
   - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
   - Update sentry-raven gem to 0.15.6
   - Add build coverage in project's builds page (Steffen Köhler)
-
-v 8.5.2
-  - Fix error 500 when commenting on a commit
 
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
