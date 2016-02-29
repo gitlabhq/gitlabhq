@@ -21,19 +21,40 @@ class UsersController < ApplicationController
   def groups
     load_groups
 
-    render 'shared/groups/_list', locals: { groups: @groups }, layout: false
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          html: view_to_html_string("shared/groups/_list", groups: @groups)
+        }
+      end
+    end
   end
 
   def user_projects
     load_projects
 
-    render 'shared/projects/_list', locals: { projects: @projects, remote: true }, layout: false
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          html: view_to_html_string("shared/projects/_list", projects: @projects, remote: true)
+        }
+      end
+    end
   end
 
   def user_contributed_projects
     load_contributed_projects
 
-    render 'shared/projects/_list', locals: { projects: @contributed_projects }, layout: false
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          html: view_to_html_string("shared/projects/_list", projects: @contributed_projects)
+        }
+      end
+    end
   end
 
   def calendar
