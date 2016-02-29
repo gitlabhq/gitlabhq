@@ -2,63 +2,95 @@ require 'spec_helper'
 
 describe API::CommitStatus, api: true do
   include ApiHelpers
+
   let!(:project) { create(:project) }
   let(:commit) { project.repository.commit }
-  let!(:ci_commit) { project.ensure_ci_commit(commit.id) }
   let(:commit_status) { create(:commit_status, commit: ci_commit) }
   let(:guest) { create_user(ProjectMember::GUEST) }
   let(:reporter) { create_user(ProjectMember::REPORTER) }
   let(:developer) { create_user(ProjectMember::DEVELOPER) }
 
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
-    it_behaves_like 'a paginated resources' do
-      let(:request) { get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses", reporter) }
+    context 'ci commit exists' do
+      let!(:ci_commit) { project.ensure_ci_commit(commit.id) }
+
+      it_behaves_like 'a paginated resources' do
+        let(:request) { get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses", reporter) }
+      end
+
+      context "reporter user" do
+        let(:statuses_id) { json_response.map { |status| status['id'] } }
+
+        let!(:status1) do
+          create(:commit_status, commit: ci_commit, status: 'running')
+        end
+
+        let!(:status2) do
+          create(:commit_status, commit: ci_commit, name: 'coverage', status: 'pending')
+        end
+
+        let!(:status3) do
+          create(:commit_status, commit: ci_commit, name: 'coverage', ref: 'develop',
+                                 status: 'running', allow_failure: true)
+        end
+
+        let!(:status4) do
+          create(:commit_status, commit: ci_commit, name: 'coverage', status: 'success')
+        end
+
+        let!(:status5) do
+          create(:commit_status, commit: ci_commit, ref: 'develop', status: 'success')
+        end
+
+        let!(:status6) do
+          create(:commit_status, commit: ci_commit, status: 'success')
+        end
+
+        it "should return latest commit statuses" do
+          get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses", reporter)
+          expect(response.status).to eq(200)
+
+          expect(json_response).to be_an Array
+          expect(statuses_id).to contain_exactly(status3.id, status4.id, status5.id, status6.id)
+          json_response.sort_by!{ |status| status['id'] }
+          expect(json_response.map{ |status| status['allow_failure'] }).to eq([true, false, false, false])
+        end
+
+        it "should return all commit statuses" do
+          get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses?all=1", reporter)
+          expect(response.status).to eq(200)
+
+          expect(json_response).to be_an Array
+          expect(statuses_id).to contain_exactly(status1.id, status2.id, status3.id, status4.id, status5.id, status6.id)
+        end
+
+        it "should return latest commit statuses for specific ref" do
+          get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses?ref=develop", reporter)
+          expect(response.status).to eq(200)
+
+          expect(json_response).to be_an Array
+          expect(statuses_id).to contain_exactly(status3.id, status5.id)
+        end
+
+        it "should return latest commit statuses for specific name" do
+          get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses?name=coverage", reporter)
+          expect(response.status).to eq(200)
+
+          expect(json_response).to be_an Array
+          expect(statuses_id).to contain_exactly(status3.id, status4.id)
+        end
+      end
     end
 
-    context "reporter user" do
-      let(:statuses_id) { json_response.map { |status| status['id'] } }
-
+    context 'ci commit does not exist' do
       before do
-        @status1 = create(:commit_status, commit: ci_commit, status: 'running')
-        @status2 = create(:commit_status, commit: ci_commit, name: 'coverage', status: 'pending')
-        @status3 = create(:commit_status, commit: ci_commit, name: 'coverage', ref: 'develop', status: 'running', allow_failure: true)
-        @status4 = create(:commit_status, commit: ci_commit, name: 'coverage', status: 'success')
-        @status5 = create(:commit_status, commit: ci_commit, ref: 'develop', status: 'success')
-        @status6 = create(:commit_status, commit: ci_commit, status: 'success')
-      end
-
-      it "should return latest commit statuses" do
         get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses", reporter)
-        expect(response.status).to eq(200)
-
-        expect(json_response).to be_an Array
-        expect(statuses_id).to contain_exactly(@status3.id, @status4.id, @status5.id, @status6.id)
-        json_response.sort_by!{ |status| status['id'] }
-        expect(json_response.map{ |status| status['allow_failure'] }).to eq([true, false, false, false])
       end
 
-      it "should return all commit statuses" do
-        get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses?all=1", reporter)
-        expect(response.status).to eq(200)
-
+      it 'returns empty array' do
+        expect(response.status).to eq 200
         expect(json_response).to be_an Array
-        expect(statuses_id).to contain_exactly(@status1.id, @status2.id, @status3.id, @status4.id, @status5.id, @status6.id)
-      end
-
-      it "should return latest commit statuses for specific ref" do
-        get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses?ref=develop", reporter)
-        expect(response.status).to eq(200)
-
-        expect(json_response).to be_an Array
-        expect(statuses_id).to contain_exactly(@status3.id, @status5.id)
-      end
-
-      it "should return latest commit statuses for specific name" do
-        get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses?name=coverage", reporter)
-        expect(response.status).to eq(200)
-
-        expect(json_response).to be_an Array
-        expect(statuses_id).to contain_exactly(@status3.id, @status4.id)
+        expect(json_response).to be_empty
       end
     end
 
