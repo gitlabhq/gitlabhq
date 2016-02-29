@@ -12,29 +12,10 @@
   }
 }
 
-.todos {
-  .panel {
-    border-top: none;
-    margin-bottom: 0;
-  }
-}
-
 .todo-item {
   font-size: $gl-font-size;
-  padding: $gl-padding-top 0 $gl-padding-top ($gl-avatar-size + $gl-padding-top);
-  border-bottom: 1px solid $table-border-color;
-  color: #7f8fa4;
-
-  &.todo-inline {
-    .avatar {
-      position: relative;
-      top: -2px;
-    }
-
-    .todo-title {
-      line-height: 40px;
-    }
-  }
+  padding-left: $gl-avatar-size + $gl-padding-top;
+  color: $secondary-text;
 
   a {
     color: #4c4e54;
@@ -48,7 +29,7 @@
     @include str-truncated(calc(100% - 174px));
     font-weight: 600;
 
-    .author_name {
+    .author-name {
       color: #333;
     }
   }
@@ -88,17 +69,7 @@
         margin-bottom: 0;
       }
     }
-
-    .todo-note-icon {
-      color: #777;
-      float: left;
-      font-size: $gl-font-size;
-      line-height: 16px;
-      margin-right: 5px;
-    }
   }
-
-  &:last-child { border:none }
 }
 
 @media (max-width: $screen-xs-max) {
