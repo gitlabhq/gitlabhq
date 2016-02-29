@@ -9,8 +9,10 @@
     Merge Request #{@merge_request.to_reference}
   %span.creator
     &middot;
-    by #{link_to_member(@project, @merge_request.author, size: 24)}
-    = '@' + @merge_request.author.username
+    by 
+    =link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
+    =link_to_member(@project, @merge_request.author, size: 24,
+      by_username: true, avatar: false)
     &middot;
     = time_ago_with_tooltip(@merge_request.created_at)
 
