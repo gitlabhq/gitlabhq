@@ -143,6 +143,19 @@
   }
 }
 
+.btn-transparent {
+  color: #8F8F8F;
+  background-color: transparent;
+  border: 0;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
 .btn-block {
   width: 100%;
   margin: 0;

@@ -13,6 +13,7 @@ class ProfilesController < Profiles::ApplicationController
     @authorized_tokens = current_user.oauth_authorized_tokens
     @authorized_anonymous_tokens = @authorized_tokens.reject(&:application)
     @authorized_apps = @authorized_tokens.map(&:application).uniq - [nil]
+    @application = flash[:application] || Doorkeeper::Application.new
   end
 
   def update

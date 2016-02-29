@@ -11,6 +11,10 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     head :forbidden and return
   end
 
+  def new
+    redirect_to applications_profile_url
+  end
+
   def create
     @application = Doorkeeper::Application.new(application_params)
 
@@ -20,7 +24,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
       redirect_to oauth_application_url(@application)
     else
-      render :new
+      redirect_to applications_profile_url, flash: {application: @application}
     end
   end
 
