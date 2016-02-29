@@ -1,4 +1,4 @@
-NProgress.configure(showSpinner: false)
+Turbolinks.enableProgressBar();
 
 defaultClass = 'tanuki-shape'
 pieces = [
