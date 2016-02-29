@@ -1,5 +1,5 @@
-%li
-  %span.notification.fa.fa-holder
+%li.notification-list-item
+  %span.notification.fa.fa-holder.append-right-5
     - if notification.global?
       = notification_icon(@notification)
     - else
