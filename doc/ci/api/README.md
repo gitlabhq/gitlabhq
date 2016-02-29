@@ -20,4 +20,3 @@ You need to prepend this prefix to all examples in this documentation, like:
 
 - [Builds](builds.md)
 - [Runners](runners.md)
-- [Commits](commits.md)
