@@ -72,30 +72,22 @@ module Issues
     end
 
     def add_moved_from_note
-      SystemNoteService.noteable_moved(:from, @issue_new, @project_new, @issue_old, @current_user)
+      SystemNoteService.noteable_moved(:from, @issue_new, @project_new,
+                                       @issue_old, @current_user)
     end
 
     def add_moved_to_note
-      SystemNoteService.noteable_moved(:to, @issue_old, @project_old, @issue_new, @current_user)
+      SystemNoteService.noteable_moved(:to, @issue_old, @project_old,
+                                       @issue_new, @current_user)
     end
 
     def rewrite_references(noteable)
-      references = noteable.all_references
-      new_content = noteable_content(noteable).dup
-      cross_project_mentionables = [:issues, :merge_requests, :milestones,
-                                    :snippets, :commits, :commit_ranges]
+      content = noteable_content(noteable).dup
+      context = { pipeline: :reference_unfold,
+                  project: @project_old, new_project: @project_new }
 
-      cross_project_mentionables.each do |type|
-        referables = references.public_send(type)
-
-        context = { objects: referables, project: @project_new,
-                    pipeline: :reference_unfold }
-
-        new_content = Banzai.render_result(new_content, context)
-        new_content = new_content[:output].to_s
-      end
-
-      new_content
+      new_content = Banzai.render_result(content, context)
+      new_content[:output].to_s
     end
 
     def noteable_content(noteable)
