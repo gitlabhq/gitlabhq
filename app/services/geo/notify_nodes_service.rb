@@ -39,12 +39,12 @@ module Geo
     private
 
     def notify_updated_projects(node, projects)
-      self.class.post(node.notify_url,
-                      body: { projects: projects }.to_json,
-                      headers: {
-                        'Content-Type' => 'application/json',
-                        'PRIVATE-TOKEN' => private_token
-                      })
+      response = self.class.post(node.notify_url,
+                                 body: { projects: projects }.to_json,
+                                 headers: {
+                                   'Content-Type' => 'application/json',
+                                   'PRIVATE-TOKEN' => private_token
+                                 })
 
       return [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
     rescue HTTParty::Error, Errno::ECONNREFUSED => e

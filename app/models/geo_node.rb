@@ -50,7 +50,7 @@ class GeoNode < ActiveRecord::Base
   end
 
   def notify_url
-    URI::join(uri, "#{uri.path}/", 'api/geo/refresh_projects').to_s
+    URI::join(uri, "#{uri.path}/", 'api/v3/geo/refresh_projects').to_s
   end
 
   private
