@@ -54,11 +54,16 @@
   }
 }
 
-.two-factor-new-manual-panel {
+.account-well {
   padding: 10px 10px;
   background-color: #FAFAFA;
   border: 1px solid #E5E5E5;
   border-radius: 3px;
+
+  ul {
+    padding-left: 20px;
+    margin-bottom: 0;
+  }
 }
 
 .two-factor-new-manual-content {
