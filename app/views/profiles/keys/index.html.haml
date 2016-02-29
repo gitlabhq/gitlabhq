@@ -1,14 +1,29 @@
 - page_title "SSH Keys"
 - header_title page_title, profile_keys_path
+- is_admin = defined?(admin) ? true : false
 
-.top-area
-  .nav-text
-    Before you can add an SSH key you need to
-    = link_to "generate it.", help_page_path("ssh", "README")
-  .nav-controls
-    = link_to new_profile_key_path, class: "btn btn-new" do
-      = icon('plus')
-      Add SSH Key
-
-.prepend-top-default
-= render 'key_table'
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      SSH keys allow you to establish a secure connection between your computer and GitLab.
+  .col-lg-9
+    %h5.prepend-top-0
+      Add an SSH key
+    %p
+      Before you can add an SSH key you need to
+      = link_to "generate it.", help_page_path("ssh", "README")
+    = render 'form'
+    %hr
+    %h5
+      Your SSH keys (#{@keys.count})
+    %div.append-bottom-default
+      - if @keys.any?
+        = render 'key_table'
+      - else
+        %p.profile-settings-message.text-center
+          - if is_admin
+            User has no ssh keys
+          - else
+            There are no SSH keys with access to your account.
