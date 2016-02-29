@@ -175,3 +175,17 @@
     color: $profile-settings-link-color;
   }
 }
+
+.profile-settings-message {
+  line-height: 32px;
+  color: #9E8E60;
+  background-color: #FBF2D9;
+  border: 1px solid #F0E2BB;
+  border-radius: 3px;
+}
+
+.oauth-applications {
+  form {
+    display: inline-block;
+  }
+}
