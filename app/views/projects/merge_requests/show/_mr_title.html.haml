@@ -1,6 +1,10 @@
 .detail-page-header
   .status-box{ class: status_box_class(@merge_request) }
-    = @merge_request.state_human_name
+    %span.hidden-xs
+      = @merge_request.state_human_name
+    %span.hidden-sm.hidden-md.hidden-lg
+      =icon(@merge_request.state_icon_name)
+
   %span.identifier
     Merge Request #{@merge_request.to_reference}
   %span.creator
