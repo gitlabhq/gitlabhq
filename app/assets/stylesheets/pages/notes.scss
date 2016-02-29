@@ -14,6 +14,14 @@ ul.notes {
   margin: 0px;
   padding: 0px;
 
+  .timeline-icon {
+    float: left;
+  }
+
+  .timeline-content {
+    margin-left: 50px;
+  }
+
   .system-note {
     font-size: 14px;
     padding-top: 10px;
