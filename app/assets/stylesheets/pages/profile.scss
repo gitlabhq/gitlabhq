@@ -5,12 +5,6 @@
   }
 }
 
-.profile-settings-sidebar {
-  a {
-    color: $profile-settings-link-color;
-  }
-}
-
 .avatar-image {
   @media (min-width: $screen-sm-min) {
     float: left;
@@ -22,6 +16,11 @@
   position: relative;
   top: 2px;
   display: inline-block;
+}
+
+.account-btn-link,
+.profile-settings-sidebar a {
+  color: $profile-settings-link-color;
 }
 
 .oauth-buttons {
