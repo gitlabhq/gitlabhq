@@ -47,7 +47,7 @@
         - else
           .profile-settings-message.text-center
             You don't have any applications
-    .oauth-authorized-applications.prepend-top-20
+    .oauth-authorized-applications.prepend-top-20.append-bottom-default
       - if user_oauth_applications?
         %h5
           Authorized applications (#{@authorized_tokens.size})

@@ -28,21 +28,22 @@
           Your Public Email will be displayed on your public profile.
         %li
           All email addresses will be used to identify your commits.
-    %ul.well-list
-      %li
-        = @primary
-        %span.pull-right
-          %span.label.label-success Primary Email
-          - if @primary === current_user.public_email
-            %span.label.label-info Public Email
-          - if @primary === current_user.notification_email
-            %span.label.label-info Notification Email
-      - @emails.each do |email|
+    .append-bottom-default
+      %ul.well-list
         %li
-          = email.email
+          = @primary
           %span.pull-right
-            - if email.email === current_user.public_email
+            %span.label.label-success Primary Email
+            - if @primary === current_user.public_email
               %span.label.label-info Public Email
-            - if email.email === current_user.notification_email
+            - if @primary === current_user.notification_email
               %span.label.label-info Notification Email
-          = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'
+        - @emails.each do |email|
+          %li
+            = email.email
+            %span.pull-right
+              - if email.email === current_user.public_email
+                %span.label.label-info Public Email
+              - if email.email === current_user.notification_email
+                %span.label.label-info Notification Email
+            = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'

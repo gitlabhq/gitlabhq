@@ -17,10 +17,9 @@
   display: inline-block;
 }
 
-.profile-settings-sidebar {
-  a {
-    color: $gl-primary;
-  }
+.account-btn-link,
+.profile-settings-sidebar a {
+  color: $gl-primary;
 }
 
 .oauth-buttons {
