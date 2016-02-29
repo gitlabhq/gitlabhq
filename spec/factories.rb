@@ -32,6 +32,7 @@ FactoryGirl.define do
       before(:create) do |user|
         user.two_factor_enabled = true
         user.otp_secret = User.generate_otp_secret(32)
+        user.otp_grace_period_started_at = Time.now
         user.generate_otp_backup_codes!
       end
     end
