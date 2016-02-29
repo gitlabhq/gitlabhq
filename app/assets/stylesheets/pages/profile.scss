@@ -1,7 +1,6 @@
-.account-page {
-  fieldset {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
+.profile-avatar-form-option {
+  hr {
+    margin: 10px 0;
   }
 }
 
@@ -173,5 +172,46 @@
 .profile-settings-content {
   a {
     color: $profile-settings-link-color;
+  }
+}
+
+.change-username-title {
+  color: #FC6D26;
+}
+
+.remove-account-title {
+  color: #F00;
+}
+
+.provider-btn-group {
+  display: inline-block;
+  margin-right: 10px;
+  border: 1px solid #E5E5E5;
+  border-radius: 3px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.provider-btn-image {
+  display: inline-block;
+  padding: 5px 10px;
+  border-right: 1px solid #E5E5E5;
+
+  > img {
+    width: 20px;
+  }
+}
+
+.provider-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-left: -3px;
+  line-height: 22px;
+  background-color: $gray-light;
+
+  &.not-active {
+    color: #4688F1;
   }
 }
