@@ -1,4 +1,4 @@
-class CreateAppearancesCE < ActiveRecord::Migration
+class CreateAppearancesCe < ActiveRecord::Migration
   def change
     unless table_exists?(:appearances)
       create_table :appearances do |t|
