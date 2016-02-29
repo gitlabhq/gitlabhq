@@ -225,8 +225,8 @@ $ ->
           $gutterIcon.closest('a').trigger('click')
 
   $(document)
-    .off 'click', 'aside .gutter-toggle'
-    .on 'click', 'aside .gutter-toggle', (e) ->
+    .off 'click', '.gutter-toggle'
+    .on 'click', '.gutter-toggle', (e) ->
       e.preventDefault()
       $this = $(this)
       $thisIcon = $this.find 'i'

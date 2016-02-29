@@ -199,7 +199,12 @@
   padding-left: $sidebar_width;
 
   &.right-sidebar-collapsed {
-    padding-right: $sidebar_collapsed_width;
+    @media (max-width: $screen-sm-max) {
+      padding-right: 0;
+    }
+    @media (min-width: $screen-sm-min) {
+      padding-right: $sidebar_collapsed_width;
+    }
   }
 
   .sidebar-wrapper {
@@ -225,7 +230,12 @@
   padding-left: $sidebar_collapsed_width;
 
   &.right-sidebar-collapsed {
-    padding-right: $sidebar_collapsed_width;
+    @media (max-width: $screen-sm-max) {
+      padding-right: 0;
+    }
+    @media (min-width: $screen-sm-min) {
+      padding-right: $sidebar_collapsed_width;
+    }
   }
 
   .sidebar-wrapper {
@@ -292,7 +302,13 @@
 }
 
 .page-sidebar-collapsed {
-  @include collapsed-sidebar;
+  @media (max-width: $screen-sm-max) {
+    @include collapsed-sidebar;
+    padding-right: 0;
+  }
+  @media (min-width: $screen-sm-min) {
+    @include collapsed-sidebar;
+  }
 }
 
 .page-sidebar-expanded {
