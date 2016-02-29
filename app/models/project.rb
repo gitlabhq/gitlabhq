@@ -947,12 +947,6 @@ class Project < ActiveRecord::Base
   end
 
   def main_language
-    unless empty_repo?
-      Rails.cache.fetch([self, "language"]) do
-        Linguist::Repository.new(
-          @repository.rugged, 
-          @repository.rugged.head.target_id).language
-      end
-    end
+    @main_language = repository.main_language
   end
 end
