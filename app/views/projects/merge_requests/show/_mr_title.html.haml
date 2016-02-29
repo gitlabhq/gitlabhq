@@ -4,17 +4,17 @@
       = @merge_request.state_human_name
     %span.hidden-sm.hidden-md.hidden-lg
       =icon(@merge_request.state_icon_name)
-
-  %span.identifier
-    Merge Request #{@merge_request.to_reference}
-  %span.creator
-    &middot;
-    by 
-    =link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
-    =link_to_member(@project, @merge_request.author, size: 24,
-      by_username: true, avatar: false)
-    &middot;
-    = time_ago_with_tooltip(@merge_request.created_at)
+  .issue-meta
+    %strong.identifier
+      Merge Request ##{@merge_request.iid}
+    %span.creator
+      by
+      .editor-details
+        %strong
+          =link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
+          =link_to_member(@project, @merge_request.author, size: 24,
+            by_username: true, avatar: false)
+        = time_ago_with_tooltip(@merge_request.created_at)
 
   .issue-btn-group.pull-right
     - if can?(current_user, :update_merge_request, @merge_request)

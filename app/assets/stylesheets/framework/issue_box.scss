@@ -5,11 +5,17 @@
  */
 
 .status-box {
+  @media (max-width: $screen-sm-max) {
+        padding: 5px 11px;
+    margin-top: 4px;
+  }
+  @media (min-width: $screen-sm-min) {
+    padding: 0 $gl-btn-padding;
+    margin-top: 5px;
+  }
   @include border-radius(3px);
   display: block;
   float: left;
-  padding: 0 $gl-btn-padding;
-  margin-top: 5px;
   margin-right: 10px;
   color: #FFF;
   font-size: $gl-font-size;

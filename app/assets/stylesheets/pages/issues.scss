@@ -133,3 +133,12 @@ form.edit-issue {
   color: $secondary-text;
   margin-left: 52px;
 }
+
+.editor-details {
+  @media (max-width: $screen-sm-max) {
+    display: block;
+  }
+  @media (min-width: $screen-sm-min) {
+    display: inline-block;
+  }
+}
