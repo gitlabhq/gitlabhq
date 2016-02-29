@@ -12,7 +12,7 @@
     %p
       Your private token is used to access application resources without authentication.
   .col-lg-9
-    = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
+    = form_for @user, url: reset_private_token_profile_path, method: :put, html: {class: "update-token"} do |f|
       %p.cgray
         - if current_user.private_token
           = label_tag "token", "Private token", class: "label-light"

@@ -12,7 +12,7 @@
       Change your password
       - unless @user.password_automatically_set?
         or recover your current one
-    = form_for @user, url: profile_password_path, method: :put do |f|
+    = form_for @user, url: profile_password_path, method: :put, html: {class: "update-password"} do |f|
       -if @user.errors.any?
         .alert.alert-danger
           %ul
