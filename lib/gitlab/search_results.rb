@@ -2,12 +2,12 @@ module Gitlab
   class SearchResults
     attr_reader :query
 
-    # Limit search results by passed project ids
+    # Limit search results by passed projects
     # It allows us to search only for projects user has access to
-    attr_reader :limit_project_ids
+    attr_reader :limit_projects
 
-    def initialize(limit_project_ids, query)
-      @limit_project_ids = limit_project_ids || Project.all
+    def initialize(limit_projects, query)
+      @limit_projects = limit_projects || Project.all
       @query = Shellwords.shellescape(query) if query.present?
     end
 
@@ -27,7 +27,8 @@ module Gitlab
     end
 
     def total_count
-      @total_count ||= projects_count + issues_count + merge_requests_count + milestones_count
+      @total_count ||= projects_count + issues_count + merge_requests_count +
+        milestones_count
     end
 
     def projects_count
@@ -53,27 +54,29 @@ module Gitlab
     private
 
     def projects
-      Project.where(id: limit_project_ids).search(query)
+      limit_projects.search(query)
     end
 
     def issues
-      issues = Issue.where(project_id: limit_project_ids)
+      issues = Issue.where(project_id: project_ids_relation)
+
       if query =~ /#(\d+)\z/
         issues = issues.where(iid: $1)
       else
         issues = issues.full_search(query)
       end
+
       issues.order('updated_at DESC')
     end
 
     def milestones
-      milestones = Milestone.where(project_id: limit_project_ids)
+      milestones = Milestone.where(project_id: project_ids_relation)
       milestones = milestones.search(query)
       milestones.order('updated_at DESC')
     end
 
     def merge_requests
-      merge_requests = MergeRequest.in_projects(limit_project_ids)
+      merge_requests = MergeRequest.in_projects(project_ids_relation)
       if query =~ /[#!](\d+)\z/
         merge_requests = merge_requests.where(iid: $1)
       else
@@ -88,6 +91,10 @@ module Gitlab
 
     def per_page
       20
+    end
+
+    def project_ids_relation
+      limit_projects.select(:id)
     end
   end
 end
