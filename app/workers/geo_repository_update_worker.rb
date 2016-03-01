@@ -9,6 +9,7 @@ class GeoRepositoryUpdateWorker
   def perform(project_id)
     @project = Project.find(project_id)
 
+    @project.create_repository unless @project.repository_exists?
     fetch_repository(@project.repository, @project.url_to_repo)
   end
 
