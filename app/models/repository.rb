@@ -812,6 +812,12 @@ class Repository
     raw_repository.ls_files(actual_ref)
   end
 
+  def main_language
+    unless empty?
+      Linguist::Repository.new(rugged, rugged.head.target_id).language
+    end
+  end
+
   private
 
   def cache

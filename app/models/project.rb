@@ -89,12 +89,8 @@ class Project < ActiveRecord::Base
   # checks if the language main language of the project changed
   before_save :check_main_language
   def check_main_language
-    if !repository.empty? && self.changed?
-      language = Linguist::Repository.new(
-        repository.rugged,
-        repository.rugged.head.target_id).language
-
-        self.main_language = language
+    if commit_count.changed?
+      self.main_language = repository.main_language
     end
   end
 
@@ -956,5 +952,15 @@ class Project < ActiveRecord::Base
 
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
+  end
+
+  def main_language
+    language = read_attributes(:main_language)
+
+    return language if language
+
+    update_attributes(main_language: repository.main_language)
+
+    read_attributes(:main_language)
   end
 end
