@@ -6,9 +6,9 @@ gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
 
-# Specify a sprockets version due to security issue
-# See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
-gem 'sprockets', '~> 2.12.3'
+# Specify a sprockets version due to increased performance
+# See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
+gem 'sprockets', '~> 3.3.5'
 
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
