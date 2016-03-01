@@ -88,7 +88,7 @@
     #activity.tab-pane.active
       .gray-content-block.white.second-block
         %div{ class: container_class }
-          .user-calendar
+          .user-calendar{data: {url: user_calendar_path}}
             %h4.center.light
               %i.fa.fa-spinner.fa-spin
         .user-calendar-activities
@@ -107,6 +107,3 @@
 
   .loading-status
     = spinner
-
-:javascript
-  $(".user-calendar").load("#{user_calendar_path}");
