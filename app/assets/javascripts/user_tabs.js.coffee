@@ -1,7 +1,6 @@
 class @UserTabs
-  actions: ['activity', 'groups', 'contributed', 'personal'],
+  actions: ['activity', 'groups', 'contributed_projects', 'projects'],
   defaultAction: 'activity',
-  tabButtonSelector: '.nav-links a[data-toggle="tab"]'
 
   constructor: (@opts = {}) ->
     # Store the `location` object, allowing for easier stubbing in tests
@@ -9,16 +8,20 @@ class @UserTabs
     @loaded = {}
 
     @bindEvents()
-    @setTabState()
+    @tabStateInit()
 
-    # Set default tab
-    source = $(".#{@defaultAction}-tab a").attr('href')
-    @setTab(source, @defaultAction)
+    action = @opts.action
+    action = @defaultAction if action == 'show'
+
+    # Set active tab
+    source = $(".#{action}-tab a").attr('href')
+    @activateTab(action)
+    @setTab(source, action)
 
   bindEvents: ->
-    $(document).on 'shown.bs.tab', @tabButtonSelector, @tabShown
+    $(document).on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
 
-  setTabState: ->
+  tabStateInit: ->
     for action in @actions
       @loaded[action] = false
 
@@ -30,6 +33,9 @@ class @UserTabs
     @setTab(source, action)
     @setCurrentAction(action)
 
+  activateTab: (action) ->
+    $(".nav-links .#{action}-tab a").tab('show')
+
   setTab: (source, action) ->
     return if @loaded[action] is true
 
@@ -39,10 +45,10 @@ class @UserTabs
     if action is 'groups'
       @loadTab(source, action)
 
-    if action is 'contributed'
+    if action is 'contributed_projects'
       @loadTab(source, action)
 
-    if action is 'personal'
+    if action is 'projects'
       @loadTab(source, action)
 
   loadTab: (source, action) ->

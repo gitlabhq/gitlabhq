@@ -70,17 +70,17 @@
         = @user.location
 
   %ul.nav-links.center
-    %li.activity-tab.active
+    %li.activity-tab
       = link_to user_calendar_activities_path, data: {target: 'div#activity', action: 'activity', toggle: 'tab'} do
         Activity
     %li.groups-tab
       = link_to user_groups_path, data: {target: 'div#groups', action: 'groups', toggle: 'tab'} do
         Groups
-    %li.contributed-tab
-      = link_to user_contributed_projects_path, data: {target: 'div#contributed', action: 'contributed', toggle: 'tab'} do
+    %li.contributed_projects-tab
+      = link_to user_contributed_projects_path, data: {target: 'div#contributed_projects', action: 'contributed_projects', toggle: 'tab'} do
         Contributed projects
-    %li.personal-tab
-      = link_to user_projects_path, data: {target: 'div#personal', action: 'personal', toggle: 'tab'} do
+    %li.projects-tab
+      = link_to user_projects_path, data: {target: 'div#projects', action: 'projects', toggle: 'tab'} do
         Personal projects
 
 %div{ class: container_class }
@@ -99,10 +99,10 @@
     #groups.tab-pane
       - # This tab is always loaded via AJAX
 
-    #contributed.tab-pane
+    #contributed_projects.tab-pane
       - # This tab is always loaded via AJAX
 
-    #personal.tab-pane
+    #projects.tab-pane
       - # This tab is always loaded via AJAX
 
   .loading-status
