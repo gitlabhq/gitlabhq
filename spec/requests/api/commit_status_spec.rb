@@ -9,44 +9,32 @@ describe API::CommitStatus, api: true do
   let(:guest) { create_user(ProjectMember::GUEST) }
   let(:reporter) { create_user(ProjectMember::REPORTER) }
   let(:developer) { create_user(ProjectMember::DEVELOPER) }
+  let(:sha) { commit.id }
+
 
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
-    let(:get_url) { "/projects/#{project.id}/repository/commits/#{commit.id}/statuses" }
+    let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
       let!(:ci_commit) { project.ensure_ci_commit(commit.id) }
 
       it_behaves_like 'a paginated resources' do
-        let(:request) { get api("/projects/#{project.id}/repository/commits/#{commit.id}/statuses", reporter) }
+        let(:request) { get api(get_url, reporter) }
       end
 
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
 
-        let!(:status1) do
-          create(:commit_status, commit: ci_commit, status: 'running')
+        def create_status(opts = {})
+          create(:commit_status, { commit: ci_commit }.merge(opts))
         end
 
-        let!(:status2) do
-          create(:commit_status, commit: ci_commit, name: 'coverage', status: 'pending')
-        end
-
-        let!(:status3) do
-          create(:commit_status, commit: ci_commit, name: 'coverage', ref: 'develop',
-                                 status: 'running', allow_failure: true)
-        end
-
-        let!(:status4) do
-          create(:commit_status, commit: ci_commit, name: 'coverage', status: 'success')
-        end
-
-        let!(:status5) do
-          create(:commit_status, commit: ci_commit, ref: 'develop', status: 'success')
-        end
-
-        let!(:status6) do
-          create(:commit_status, commit: ci_commit, status: 'success')
-        end
+        let!(:status1) { create_status(status: 'running') }
+        let!(:status2) { create_status(name: 'coverage', status: 'pending') }
+        let!(:status3) { create_status(ref: 'develop', status: 'running', allow_failure: true) }
+        let!(:status4) { create_status(name: 'coverage', status: 'success') }
+        let!(:status5) { create_status(name: 'coverage', ref: 'develop', status: 'success') }
+        let!(:status6) { create_status(status: 'success') }
 
         context 'latest commit statuses' do
           before { get api(get_url, reporter) }
@@ -68,7 +56,9 @@ describe API::CommitStatus, api: true do
             expect(response.status).to eq(200)
 
             expect(json_response).to be_an Array
-            expect(statuses_id).to contain_exactly(status1.id, status2.id, status3.id, status4.id, status5.id, status6.id)
+            expect(statuses_id).to contain_exactly(status1.id, status2.id,
+                                                   status3.id, status4.id,
+                                                   status5.id, status6.id)
           end
         end
 
@@ -90,7 +80,7 @@ describe API::CommitStatus, api: true do
             expect(response.status).to eq(200)
 
             expect(json_response).to be_an Array
-            expect(statuses_id).to contain_exactly(status3.id, status4.id)
+            expect(statuses_id).to contain_exactly(status4.id, status5.id)
           end
         end
       end
@@ -124,7 +114,7 @@ describe API::CommitStatus, api: true do
   end
 
   describe 'POST /projects/:id/statuses/:sha' do
-    let(:post_url) { "/projects/#{project.id}/statuses/#{commit.id}" }
+    let(:post_url) { "/projects/#{project.id}/statuses/#{sha}" }
 
     context 'developer user' do
       context 'only required parameters' do
@@ -177,9 +167,8 @@ describe API::CommitStatus, api: true do
       end
 
       context 'invalid commit' do
-        before do
-          post api("/projects/#{project.id}/statuses/invalid_sha", developer), state: 'running'
-        end
+        let(:sha) { 'invalid_sha' }
+        before { post api(post_url, developer), state: 'running' }
 
         it 'returns not found error' do
           expect(response.status).to eq(404)
