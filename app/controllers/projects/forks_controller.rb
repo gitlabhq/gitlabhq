@@ -7,9 +7,7 @@ class Projects::ForksController < Projects::ApplicationController
     base_query = project.forks.includes(:creator)
 
     @forks = if current_user
-               base_query.where('projects.visibility_level IN (?) OR projects.id IN (?)',
-                                Project.public_and_internal_levels,
-                                current_user.authorized_projects.pluck(:id))
+               base_query.merge(ProjectsFinder.new.execute(current_user))
              else
                base_query.where('projects.visibility_level = ?', Project::PUBLIC)
              end
