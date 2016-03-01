@@ -19,7 +19,7 @@
           = icon("pencil")
 
       - if can?(current_user, :admin_project, @project)
-        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has_tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{tag.name}' tag cannot be undone. Are you sure?", container: 'body' } do
+        = link_to namespace_project_tag_path(@project.namespace, @project, tag.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has_tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{tag.name}' tag cannot be undone. Are you sure?", container: 'body' }, remote: true do
           = icon("trash-o")
 
   - if commit
