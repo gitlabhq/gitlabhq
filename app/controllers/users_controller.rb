@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     load_groups
 
     respond_to do |format|
-      format.html
+      format.html { render 'show' }
       format.json do
         render json: {
           html: view_to_html_string("shared/groups/_list", groups: @groups)
@@ -35,7 +35,7 @@ class UsersController < ApplicationController
     load_projects
 
     respond_to do |format|
-      format.html
+      format.html { render 'show' }
       format.json do
         render json: {
           html: view_to_html_string("shared/projects/_list", projects: @projects, remote: true)
@@ -48,7 +48,7 @@ class UsersController < ApplicationController
     load_contributed_projects
 
     respond_to do |format|
-      format.html
+      format.html { render 'show' }
       format.json do
         render json: {
           html: view_to_html_string("shared/projects/_list", projects: @contributed_projects)
