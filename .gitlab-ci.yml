@@ -89,6 +89,7 @@ spec:other:
 spinach:project:half:
   stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
   tags:
     - ruby
@@ -97,6 +98,7 @@ spinach:project:half:
 spinach:project:rest:
   stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   tags:
     - ruby
@@ -105,6 +107,7 @@ spinach:project:rest:
 spinach:other:
   stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
   tags:
     - ruby
@@ -275,6 +278,7 @@ spinach:project:half:ruby22:
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
   cache:
     key: "ruby22"
@@ -290,6 +294,7 @@ spinach:project:rest:ruby22:
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   cache:
     key: "ruby22"
@@ -305,6 +310,7 @@ spinach:other:ruby22:
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
   cache:
     key: "ruby22"
