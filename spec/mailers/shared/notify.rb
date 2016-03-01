@@ -50,7 +50,8 @@ shared_examples 'an email starting a new thread' do |message_id_prefix|
   include_examples 'an email with X-GitLab headers containing project details'
 
   it 'has a discussion identifier' do
-    is_expected.to have_header 'Message-ID',  /<#{message_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
+    is_expected.to have_header 'Message-ID',  /<reply\+(.*)@#{Gitlab.config.gitlab.host}>/
+    is_expected.to have_header 'References',  /<#{message_id_prefix}(.*)@#{Gitlab.config.gitlab.host}>/
   end
 end
 

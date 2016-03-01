@@ -121,9 +121,15 @@ class Notify < BaseMailer
   #
   # See: mail_answer_thread
   def mail_new_thread(model, headers = {})
-    headers['Message-ID'] = message_id(model)
+    headers['Message-ID'] = message_reply_id
+    headers['In-Reply-To'] = message_id(model)
+    headers['References'] = message_id(model)
 
     mail_thread(model, headers)
+  end
+
+  def message_reply_id
+    Gitlab.config.incoming_email["address"].gsub("%{key}", reply_key)
   end
 
   # Send an email that responds to an existing conversation thread,

@@ -217,7 +217,11 @@ describe Notify do
           end
 
           it 'has the correct message-id set' do
-            is_expected.to have_header 'Message-ID', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
+            is_expected.to have_header 'Message-ID', /<reply\+(.*)@#{Gitlab.config.gitlab.host}>/
+          end
+
+          it 'has the correct references set' do
+            is_expected.to have_header 'References', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
           end
 
           context 'when enabled email_author_in_body' do

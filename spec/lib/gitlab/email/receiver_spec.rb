@@ -137,5 +137,18 @@ describe Gitlab::Email::Receiver, lib: true do
 
       expect(note.note).to include(markdown)
     end
+
+    context "when the reply key is in the In-Reply-To header" do
+      let(:email_raw) { fixture_file("emails/key_in_headers_reply.eml") }
+
+      it "creates a comment" do
+        expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+        note = noteable.notes.last
+
+        expect(note.author).to eq(sent_notification.recipient)
+        expect(note.note).to include("I could not disagree more.")
+      end
+    end
   end
 end
+
