@@ -21,6 +21,8 @@ module Banzai
 
       def call
         @referables.each do |referable|
+          next unless referable.respond_to?(:to_reference)
+
           pattern = /#{Regexp.escape(referable.to_reference)}/
           @text.gsub!(pattern, referable.to_reference(@new_project))
         end
