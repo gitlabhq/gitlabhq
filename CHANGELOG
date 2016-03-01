@@ -11,6 +11,7 @@ v 8.6.0 (unreleased)
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
   - Fix error 500 when commenting on a commit
+  - Fix broken icons on installations with relative URL (Artem Sidorenko)
 
 v 8.5.1
   - Fix group projects styles

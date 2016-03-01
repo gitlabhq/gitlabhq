@@ -25,7 +25,7 @@ that points to your GitLab instance.
 The TL;DR list of configuration files that you need to change in order to
 serve GitLab under a relative URL is:
 
-- `/home/git/gitlab/config/application.rb`
+- `/home/git/gitlab/config/initializers/relative_url.rb`
 - `/home/git/gitlab/config/gitlab.yml`
 - `/home/git/gitlab/config/unicorn.rb`
 - `/home/git/gitlab-shell/config.yml`
@@ -66,8 +66,14 @@ Make sure to follow all steps below:
     sudo service gitlab stop
     ```
 
-1.  Edit `/home/git/gitlab/config/application.rb` and uncomment/change the
-    following line:
+1.  Create `/home/git/gitlab/config/initializers/relative_url.rb`
+
+    ```shell
+    cp /home/git/gitlab/config/initializers/relative_url.rb.sample \
+       /home/git/gitlab/config/initializers/relative_url.rb
+    ```
+
+    and change the following line:
 
     ```ruby
     config.relative_url_root = "/gitlab"
@@ -119,8 +125,12 @@ Make sure to follow all steps below:
 
 ### Disable relative URL in GitLab
 
-To disable the relative URL, follow the same steps as above and set up the
-GitLab URL to one that doesn't contain a relative path.
+To disable the relative URL:
+
+1.  Remove `/home/git/gitlab/config/initializers/relative_url.rb`
+
+1.  Follow the same as above starting from 2. and set up the
+    GitLab URL to one that doesn't contain a relative path.
 
 [omnibus-rel]: http://doc.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab "How to setup relative URL in Omnibus GitLab"
 [restart gitlab]: ../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
