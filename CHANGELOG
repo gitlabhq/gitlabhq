@@ -30,6 +30,7 @@ v 8.5.1
   - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
   - Update sentry-raven gem to 0.15.6
   - Add build coverage in project's builds page (Steffen Köhler)
+  - Changed # to ! for merge requests in activity view
 
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
