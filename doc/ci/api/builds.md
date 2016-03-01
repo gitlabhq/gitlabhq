@@ -8,35 +8,45 @@ communication channel. For the consumer API see the
 
 ## Authentication
 
-Unique runner token is required to authenticate. You can provide build token
-using a `token` parameter, or by sending `BUILD-TOKEN` header that contains it.
+This API uses two types of authentication:
 
-`token` parameter and `BUILD-TOKEN` header can be interchangeable.
+1.   Unique runner's token
+
+     Token assigned to runner after it has been registered.
+
+2.   Using build authorization token
+
+     This is project's CI token that can be found in Continuous Integration
+     project settings.
+
+     Build authorization token can be passed as a parameter or a value of
+     `BUILD-TOKEN` header. This method are interchangeable.
 
 ## Builds
 
 ### Runs oldest pending build by runner
 
-    POST /builds/register
+    POST /ci/api/v1/builds/register
 
 Parameters:
 
-  * `token` (required) - The unique token of runner
+  * `token` (required) - Unique runner token
 
 
 ### Update details of an existing build
 
-    PUT /builds/:id
+    PUT /ci/api/v1/builds/:id
 
 Parameters:
 
   * `id` (required) - The ID of a project
+  * `token` (required) - Unique runner token
   * `state` (optional) - The state of a build
   * `trace` (optional) - The trace of a build
 
 ### Upload artifacts to build
 
-    POST /builds/:id/artifacts
+    POST /ci/api/v1/builds/:id/artifacts
 
 Parameters:
 
@@ -46,7 +56,7 @@ Parameters:
 
 ### Download the artifacts file from build
 
-    GET /builds/:id/artifacts
+    GET /ci/api/v1/builds/:id/artifacts
 
 Parameters:
 
@@ -55,7 +65,7 @@ Parameters:
 
 ### Remove the artifacts file from build
 
-    DELETE /builds/:id/artifacts
+    DELETE /ci/api/v1/builds/:id/artifacts
 
 Parameters:
 
