@@ -88,54 +88,17 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
   end
 
   context 'table of contents' do
-    let(:pipeline) { Banzai::Pipeline[:wiki] }
+    it 'replaces [[<em>TOC</em>]] with ToC result' do
+      doc = described_class.call("<p>[[<em>TOC</em>]]</p>", { project_wiki: project_wiki }, { toc: "FOO" })
 
-    it 'replaces the tag with the TableOfContentsFilter result' do
-      markdown = <<-MD.strip_heredoc
-        [[_TOC_]]
-
-        ## Header
-
-        Foo
-      MD
-
-      result = pipeline.call(markdown, project_wiki: project_wiki, project: project)
-
-      aggregate_failures do
-        expect(result[:output].text).not_to include '[[_TOC_]]'
-        expect(result[:output].text).not_to include '[['
-        expect(result[:output].to_html).to include(result[:toc])
-      end
+      expect(doc.to_html).to eq("FOO")
     end
 
-    it 'is case-sensitive' do
-      markdown = <<-MD.strip_heredoc
-        [[_toc_]]
+    it 'handles an empty ToC result' do
+      input = output = "<p>[[<em>TOC</em>]]</p>"
+      doc = described_class.call(input, project_wiki: project_wiki)
 
-        # Header 1
-
-        Foo
-      MD
-
-      output = pipeline.to_html(markdown, project_wiki: project_wiki, project: project)
-
-      expect(output).to include('[[<em>toc</em>]]')
-    end
-
-    it 'handles an empty pipeline result' do
-      # No Markdown headers in this doc, so `result[:toc]` will be empty
-      markdown = <<-MD.strip_heredoc
-        [[_TOC_]]
-
-        Foo
-      MD
-
-      output = pipeline.to_html(markdown, project_wiki: project_wiki, project: project)
-
-      aggregate_failures do
-        expect(output).not_to include('<ul>')
-        expect(output).to include('[[<em>TOC</em>]]')
-      end
+      expect(doc.to_html).to eq output
     end
   end
 end
