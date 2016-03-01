@@ -22,13 +22,13 @@
       = number_with_delimiter(group.users.count)
 
   = image_tag group_icon(group), class: "avatar s40 hidden-xs"
-  = link_to group, class: 'group-name' do
-    %span.item-title= group.name
+  = link_to group, class: 'group-name title' do
+    = group.name
 
   - if group_member
     as
     %span #{group_member.human_access}
 
   - if group.description.present?
-    .light
+    .description
       = markdown(group.description, pipeline: :description)

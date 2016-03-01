@@ -90,6 +90,7 @@ spec:other:
 spinach:project:half:
   stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
   tags:
     - ruby
@@ -98,6 +99,7 @@ spinach:project:half:
 spinach:project:rest:
   stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   tags:
     - ruby
@@ -106,6 +108,7 @@ spinach:project:rest:
 spinach:other:
   stage: test
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
   tags:
     - ruby
@@ -276,6 +279,7 @@ spinach:project:half:ruby22:
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:half
   cache:
     key: "ruby22"
@@ -291,6 +295,7 @@ spinach:project:rest:ruby22:
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:project:rest
   cache:
     key: "ruby22"
@@ -306,6 +311,7 @@ spinach:other:ruby22:
   only:
   - master
   script:
+    - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spinach:other
   cache:
     key: "ruby22"
@@ -319,7 +325,7 @@ spinach:other:ruby22:
 notify:slack:
   stage: notifications
   script:
-    - ./scripts/notify_slack.sh "#builds" "Build failed for master/tags!"
+    - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
   when: on_failure
   only:
     - master@gitlab-org/gitlab-ce

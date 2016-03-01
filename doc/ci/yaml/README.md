@@ -518,3 +518,10 @@ You can find the link under `/ci/lint` of your gitlab instance.
 
 If your commit message contains `[ci skip]`, the commit will be created but the
 builds will be skipped.
+
+## Examples
+
+Visit the [examples README][examples] to see a list of examples using GitLab
+CI with various languages.
+
+[examples]: ../examples/README.md

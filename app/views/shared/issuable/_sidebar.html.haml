@@ -1,14 +1,14 @@
 %aside.right-sidebar{ class: sidebar_gutter_collapsed_class }
   .issuable-sidebar
     .block
-      %span.issuable-count.pull-left.hide-collapsed
+      %span.issuable-count.hide-collapsed.pull-left
         = issuable.iid
         of
         = issuables_count(issuable)
       %span.pull-right
         %a.gutter-toggle{href: '#'}
           = sidebar_gutter_toggle_icon
-      .issuable-nav.pull-right.btn-group.hide-collapsed{role: 'group', "aria-label" => '...'}
+      .issuable-nav.hide-collapsed.pull-right.btn-group{role: 'group', "aria-label" => '...'}
         - if prev_issuable = prev_issuable_for(issuable)
           = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn'
         - else

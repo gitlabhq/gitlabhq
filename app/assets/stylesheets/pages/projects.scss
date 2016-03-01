@@ -397,15 +397,10 @@ pre.light-well {
 
     .project-full-name {
       @include str-truncated;
-      font-weight: 600;
-      color: #4c4e54;
     }
 
-    .project-controls {
-      float: right;
-      color: $gl-gray;
+    .controls {
       line-height: 40px;
-      color: #7f8fa4;
 
       a:hover {
         text-decoration: none;
@@ -413,16 +408,6 @@ pre.light-well {
 
       > span {
         margin-left: 10px;
-      }
-    }
-
-    .project-description {
-      color: #7f8fa4;
-
-      p {
-        @include str-truncated;
-        margin-bottom: 0;
-        color: #7f8fa4;
       }
     }
   }

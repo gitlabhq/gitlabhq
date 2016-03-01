@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.2.5.1'
+gem 'rails', '4.2.5.2'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -81,6 +81,9 @@ gem "haml-rails", '~> 0.9.0'
 
 # Files attachments
 gem "carrierwave", '~> 0.9.0'
+
+# Image editing
+gem "mini_magick", '~> 4.4.0'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -220,7 +223,6 @@ gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.0.0'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
 gem 'jquery-ui-rails',    '~> 5.0.0'
-gem 'nprogress-rails',    '~> 0.1.6.7'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'

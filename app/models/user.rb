@@ -98,6 +98,9 @@ class User < ActiveRecord::Base
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
 
+  # Virtual attributes to define avatar cropping
+  attr_accessor :avatar_crop_x, :avatar_crop_y, :avatar_crop_size
+
   #
   # Relations
   #
@@ -164,6 +167,11 @@ class User < ActiveRecord::Base
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+
+  validates :avatar_crop_x, :avatar_crop_y, :avatar_crop_size,
+    numericality: { only_integer: true },
+    presence: true,
+    if: ->(user) { user.avatar? }
 
   before_validation :generate_password, on: :create
   before_validation :restricted_signup_domains, on: :create
@@ -383,11 +391,12 @@ class User < ActiveRecord::Base
 
   def disable_two_factor!
     update_attributes(
-      two_factor_enabled:        false,
-      encrypted_otp_secret:      nil,
-      encrypted_otp_secret_iv:   nil,
-      encrypted_otp_secret_salt: nil,
-      otp_backup_codes:          nil
+      two_factor_enabled:          false,
+      encrypted_otp_secret:        nil,
+      encrypted_otp_secret_iv:     nil,
+      encrypted_otp_secret_salt:   nil,
+      otp_grace_period_started_at: nil,
+      otp_backup_codes:            nil
     )
   end
 

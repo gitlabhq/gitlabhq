@@ -269,15 +269,6 @@ class Repository
     expire_emptiness_caches if empty?
   end
 
-  # Expires _all_ caches, including those that would normally only be expired
-  # under specific conditions.
-  def expire_all_caches!
-    expire_cache
-    expire_root_ref_cache
-    expire_emptiness_caches
-    expire_has_visible_content_cache
-  end
-
   def expire_branch_cache(branch_name = nil)
     # When we push to the root branch we have to flush the cache for all other
     # branches as their statistics are based on the commits relative to the
@@ -329,6 +320,46 @@ class Repository
 
   def expire_branch_names
     cache.expire(:branch_names)
+  end
+
+  # Runs code just before a repository is deleted.
+  def before_delete
+    expire_cache if exists?
+
+    expire_root_ref_cache
+    expire_emptiness_caches
+  end
+
+  # Runs code just before the HEAD of a repository is changed.
+  def before_change_head
+    # Cached divergent commit counts are based on repository head
+    expire_branch_cache
+    expire_root_ref_cache
+  end
+
+  # Runs code before creating a new tag.
+  def before_create_tag
+    expire_cache
+  end
+
+  # Runs code after a repository has been forked/imported.
+  def after_import
+    expire_emptiness_caches
+  end
+
+  # Runs code after a new commit has been pushed.
+  def after_push_commit(branch_name)
+    expire_cache(branch_name)
+  end
+
+  # Runs code after a new branch has been created.
+  def after_create_branch
+    expire_has_visible_content_cache
+  end
+
+  # Runs code after an existing branch has been removed.
+  def after_remove_branch
+    expire_has_visible_content_cache
   end
 
   def method_missing(m, *args, &block)

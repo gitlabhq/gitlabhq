@@ -110,7 +110,20 @@ ul.content-list {
 
   > li {
     border-color: $table-border-color;
-    color: $gl-gray;
+    color: $list-text-color;
+    font-size: $list-font-size;
+
+    .title {
+      color: $list-title-color;
+      font-weight: 600;
+    }
+
+    .description {
+      p {
+        @include str-truncated;
+        margin-bottom: 0;
+      }
+    }
 
     .avatar {
       margin-right: 15px;
@@ -124,13 +137,6 @@ ul.content-list {
         padding: 10px 14px;
       }
     }
-  }
-}
-
-.panel > .content-list {
-  li {
-    margin: 0;
-    padding: $gl-padding;
   }
 }
 

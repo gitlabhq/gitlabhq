@@ -41,6 +41,12 @@
   transition: $transition;
 }
 
+@mixin transform($transform) {
+  -webkit-transform: $transform;
+  -ms-transform: $transform;
+  transform: $transform;
+}
+
 /**
  * Prefilled mixins
  * Mixins with fixed values

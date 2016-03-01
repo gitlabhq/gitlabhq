@@ -362,14 +362,14 @@ describe Repository, models: true do
       repository.expire_cache('master')
     end
 
-    it 'expires the emptiness cache for an empty repository' do
+    it 'expires the emptiness caches for an empty repository' do
       expect(repository).to receive(:empty?).and_return(true)
       expect(repository).to receive(:expire_emptiness_caches)
 
       repository.expire_cache
     end
 
-    it 'does not expire the emptiness cache for a non-empty repository' do
+    it 'does not expire the emptiness caches for a non-empty repository' do
       expect(repository).to receive(:empty?).and_return(false)
       expect(repository).to_not receive(:expire_emptiness_caches)
 
@@ -462,6 +462,110 @@ describe Repository, models: true do
       repository.revert(user, merge_commit, 'master')
 
       expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+    end
+  end
+
+  describe '#before_delete' do
+    describe 'when a repository does not exist' do
+      before do
+        allow(repository).to receive(:exists?).and_return(false)
+      end
+
+      it 'does not flush caches that depend on repository data' do
+        expect(repository).to_not receive(:expire_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the root ref cache' do
+        expect(repository).to receive(:expire_root_ref_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the emptiness caches' do
+        expect(repository).to receive(:expire_emptiness_caches)
+
+        repository.before_delete
+      end
+    end
+
+    describe 'when a repository exists' do
+      before do
+        allow(repository).to receive(:exists?).and_return(true)
+      end
+
+      it 'flushes the caches that depend on repository data' do
+        expect(repository).to receive(:expire_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the root ref cache' do
+        expect(repository).to receive(:expire_root_ref_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the emptiness caches' do
+        expect(repository).to receive(:expire_emptiness_caches)
+
+        repository.before_delete
+      end
+    end
+  end
+
+  describe '#before_change_head' do
+    it 'flushes the branch cache' do
+      expect(repository).to receive(:expire_branch_cache)
+
+      repository.before_change_head
+    end
+
+    it 'flushes the root ref cache' do
+      expect(repository).to receive(:expire_root_ref_cache)
+
+      repository.before_change_head
+    end
+  end
+
+  describe '#before_create_tag' do
+    it 'flushes the cache' do
+      expect(repository).to receive(:expire_cache)
+
+      repository.before_create_tag
+    end
+  end
+
+  describe '#after_import' do
+    it 'flushes the emptiness cachess' do
+      expect(repository).to receive(:expire_emptiness_caches)
+
+      repository.after_import
+    end
+  end
+
+  describe '#after_push_commit' do
+    it 'flushes the cache' do
+      expect(repository).to receive(:expire_cache).with('master')
+
+      repository.after_push_commit('master')
+    end
+  end
+
+  describe '#after_create_branch' do
+    it 'flushes the visible content cache' do
+      expect(repository).to receive(:expire_has_visible_content_cache)
+
+      repository.after_create_branch
+    end
+  end
+
+  describe '#after_remove_branch' do
+    it 'flushes the visible content cache' do
+      expect(repository).to receive(:expire_has_visible_content_cache)
+
+      repository.after_remove_branch
     end
   end
 
