@@ -20,7 +20,7 @@ class Profiles::KeysController < Profiles::ApplicationController
     if @key.save
       redirect_to profile_key_path(@key)
     else
-      redirect_to profile_keys_path, flash: {key: @key}
+      redirect_to profile_keys_path, flash: { key: @key }
     end
   end
 
