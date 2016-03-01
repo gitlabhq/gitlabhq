@@ -1,10 +1,6 @@
 # Changing the appearance of the login page
 
-<<<<<<< HEAD
 GitLab Enterprise Edition offers a way to put your company's identity on the login page of your GitLab server and make it a branded login page.
-=======
-GitLab Community Edition offers a way to put your company's identity on the login page of your GitLab server and make it a branded login page.
->>>>>>> 204a9895333178cc90b40ef365ad566d750fa594
 
 By default, the page shows the GitLab logo and description.
 
