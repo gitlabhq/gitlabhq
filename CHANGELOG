@@ -16,6 +16,7 @@ v 8.6.0 (unreleased)
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
   - Don't show Issues/MRs from archived projects in Groups view
+  - Fix wrong "iid of max iid" in Issuable sidebar for some merged MRs
   - Increase the notes polling timeout over time (Roberto Dip)
   - Show labels in dashboard and group milestone views
   - Add main language of a project in the list of projects (Tiago Botelho)

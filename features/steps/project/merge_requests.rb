@@ -16,8 +16,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     click_link "Bug NS-04"
   end
 
+  step 'I click link "Feature NS-05"' do
+    click_link "Feature NS-05"
+  end
+
   step 'I click link "All"' do
     click_link "All"
+  end
+
+  step 'I click link "Merged"' do
+    click_link "Merged"
   end
 
   step 'I click link "Closed"' do
@@ -38,6 +46,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see merge request "Bug NS-04"' do
     expect(page).to have_content "Bug NS-04"
+  end
+
+  step 'I should see merge request "Feature NS-05"' do
+    expect(page).to have_content "Feature NS-05"
   end
 
   step 'I should not see "master" branch' do
@@ -115,6 +127,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'project "Shop" have "Bug NS-05" open merge request with diffs inside' do
     create(:merge_request_with_diffs,
            title: "Bug NS-05",
+           source_project: project,
+           target_project: project,
+           author: project.users.first)
+  end
+
+  step 'project "Shop" have "Feature NS-05" merged merge request' do
+    create(:merged_merge_request,
+           title: "Feature NS-05",
            source_project: project,
            target_project: project,
            author: project.users.first)

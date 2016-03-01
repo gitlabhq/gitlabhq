@@ -56,6 +56,10 @@ FactoryGirl.define do
       target_branch "feature"
     end
 
+    trait :merged do
+      state :merged
+    end
+
     trait :closed do
       state :closed
     end
@@ -84,6 +88,7 @@ FactoryGirl.define do
       merge_user author
     end
 
+    factory :merged_merge_request, traits: [:merged]
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]

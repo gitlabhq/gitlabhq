@@ -31,7 +31,11 @@ module IssuablesHelper
   end
 
   def issuable_state_scope(issuable)
-    issuable.open? ? :opened : :closed
+    if issuable.respond_to?(:merged?) && issuable.merged?
+      :merged
+    else
+      issuable.open? ? :opened : :closed
+    end
   end
 
 end
