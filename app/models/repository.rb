@@ -6,6 +6,7 @@ class Repository
   class CommitError < StandardError; end
 
   MIRROR_REMOTE = "upstream"
+  MIRROR_GEO = "geo"
 
   include Gitlab::ShellAdapter
 
@@ -190,6 +191,11 @@ class Repository
 
   def fetch_remote(remote)
     gitlab_shell.fetch_remote(path_with_namespace, remote)
+  end
+
+  def fetch_remote_forced!(remote)
+    args = %W(#{Gitlab.config.git.bin_path} fetch #{remote} -f)
+    Gitlab::Popen.popen(args, path_to_repo)
   end
 
   def branch_names
@@ -750,9 +756,9 @@ class Repository
   end
 
   def fetch_geo_mirror(url)
-    add_remote(Repository::MIRROR_REMOTE, url)
-    set_remote_as_mirror(Repository::MIRROR_REMOTE)
-    fetch_remote(Repository::MIRROR_REMOTE)
+    add_remote(Repository::MIRROR_GEO, url)
+    set_remote_as_mirror(Repository::MIRROR_GEO)
+    fetch_remote_forced!(Repository::MIRROR_GEO)
   end
 
   def upstream_branches
