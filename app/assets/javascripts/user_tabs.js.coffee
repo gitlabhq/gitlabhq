@@ -16,7 +16,6 @@ class @UserTabs
     # Set active tab
     source = $(".#{action}-tab a").attr('href')
     @activateTab(action)
-    @setTab(source, action)
 
   bindEvents: ->
     $(document).on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
