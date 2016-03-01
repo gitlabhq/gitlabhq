@@ -76,8 +76,8 @@
     %li.groups-tab
       = link_to user_groups_path, data: {target: 'div#groups', action: 'groups', toggle: 'tab'} do
         Groups
-    %li.contributed_projects-tab
-      = link_to user_contributed_projects_path, data: {target: 'div#contributed_projects', action: 'contributed_projects', toggle: 'tab'} do
+    %li.contributed-tab
+      = link_to user_contributed_projects_path, data: {target: 'div#contributed', action: 'contributed', toggle: 'tab'} do
         Contributed projects
     %li.projects-tab
       = link_to user_projects_path, data: {target: 'div#projects', action: 'projects', toggle: 'tab'} do
@@ -99,7 +99,7 @@
     #groups.tab-pane
       - # This tab is always loaded via AJAX
 
-    #contributed_projects.tab-pane
+    #contributed.tab-pane
       - # This tab is always loaded via AJAX
 
     #projects.tab-pane

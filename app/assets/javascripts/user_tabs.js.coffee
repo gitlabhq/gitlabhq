@@ -1,5 +1,5 @@
 class @UserTabs
-  actions: ['activity', 'groups', 'contributed_projects', 'projects'],
+  actions: ['activity', 'groups', 'contributed', 'projects'],
   defaultAction: 'activity',
 
   constructor: (@opts = {}) ->
@@ -45,7 +45,7 @@ class @UserTabs
     if action is 'groups'
       @loadTab(source, action)
 
-    if action is 'contributed_projects'
+    if action is 'contributed'
       @loadTab(source, action)
 
     if action is 'projects'

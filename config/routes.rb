@@ -335,10 +335,10 @@ Rails.application.routes.draw do
   get 'u/:username/groups' => 'users#groups', as: :user_groups,
       constraints: { username: /.*/ }
 
-  get 'u/:username/projects' => 'users#user_projects', as: :user_projects,
+  get 'u/:username/projects' => 'users#projects', as: :user_projects,
       constraints: { username: /.*/ }
 
-  get 'u/:username/contributed_projects' => 'users#user_contributed_projects', as: :user_contributed_projects,
+  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
       constraints: { username: /.*/ }
 
   get '/u/:username' => 'users#show', as: :user,

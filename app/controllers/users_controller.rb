@@ -31,7 +31,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def user_projects
+  def projects
     load_projects
 
     respond_to do |format|
@@ -44,7 +44,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def user_contributed_projects
+  def contributed
     load_contributed_projects
 
     respond_to do |format|
