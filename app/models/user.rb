@@ -286,8 +286,22 @@ class User < ActiveRecord::Base
       end
     end
 
+    # Searches users matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
+      table   = User.arel_table
+      pattern = "%#{query}%"
+
+      where(
+        table[:name].matches(pattern).
+          or(table[:email].matches(pattern)).
+          or(table[:username].matches(pattern))
+      )
     end
 
     def by_login(login)
