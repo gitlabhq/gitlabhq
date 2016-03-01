@@ -5,6 +5,7 @@ v 8.5.2
   - Don't repeat labels listed on Labels tab
   - Bring the "branded appearance" feature from EE to CE
   - Fix error 500 when commenting on a commit
+  - Fix broken icons on installations with relative URL (Artem Sidorenko)
   - Improve implementation to check read access to forks and add pagination
   - Don't show any "2FA required" message if it's not actually required
   - Update Rails to 4.2.5.2
