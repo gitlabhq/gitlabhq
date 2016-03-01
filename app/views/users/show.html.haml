@@ -85,7 +85,7 @@
 
 %div{ class: container_class }
   .tab-content
-    #activity.tab-pane.active
+    #activity.tab-pane
       .gray-content-block.white.second-block
         %div{ class: container_class }
           .user-calendar{data: {url: user_calendar_path}}
@@ -93,7 +93,7 @@
               %i.fa.fa-spinner.fa-spin
         .user-calendar-activities
 
-      .content_list
+      .content_list{ data: {href: user_path} }
       = spinner
 
     #groups.tab-pane
