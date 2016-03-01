@@ -9,7 +9,7 @@ describe Ci::ProjectsController do
   # Specs for *deprecated* CI badge
   #
   describe '#badge' do
-    context 'user not signed in'
+    context 'user not signed in' do
       before { get(:badge, id: ci_id) }
 
       context 'project has no ci_id reference' do
@@ -35,6 +35,7 @@ describe Ci::ProjectsController do
           expect(response.status).to eq 302
         end
       end
+    end
 
     context 'user signed in' do
       let(:user) { create(:user) }
