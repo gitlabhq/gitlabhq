@@ -698,4 +698,20 @@ describe Project, models: true do
       project.expire_caches_before_rename('foo')
     end
   end
+
+  describe '.search_by_title' do
+    let(:project) { create(:project, name: 'kittens') }
+
+    it 'returns projects with a matching name' do
+      expect(described_class.search_by_title(project.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching name' do
+      expect(described_class.search_by_title('kitten')).to eq([project])
+    end
+
+    it 'returns projects with a matching name regardless of the casing' do
+      expect(described_class.search_by_title('KITTENS')).to eq([project])
+    end
+  end
 end

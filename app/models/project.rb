@@ -298,7 +298,10 @@ class Project < ActiveRecord::Base
     end
 
     def search_by_title(query)
-      non_archived.where('LOWER(projects.name) LIKE :query', query: "%#{query.downcase}%")
+      pattern = "%#{query}%"
+      table   = Project.arel_table
+
+      non_archived.where(table[:name].matches(pattern))
     end
 
     def find_with_namespace(id)
