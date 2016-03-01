@@ -275,11 +275,12 @@ class Ability
         rules << :read_group
       end
 
-      # Only group masters and group owners can create new projects in group
+      # Only group masters and group owners can create new projects and change permission level
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules += [
           :create_projects,
-          :admin_milestones
+          :admin_milestones,
+          :change_visibility_level
         ]
       end
 

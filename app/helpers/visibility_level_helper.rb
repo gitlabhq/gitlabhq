@@ -19,6 +19,8 @@ module VisibilityLevelHelper
     case form_model
     when Project
       project_visibility_level_description(level)
+    when Group
+      group_visibility_level_description(level)
     when Snippet
       snippet_visibility_level_description(level, form_model)
     end
@@ -32,6 +34,17 @@ module VisibilityLevelHelper
       "The project can be cloned by any logged in user."
     when Gitlab::VisibilityLevel::PUBLIC
       "The project can be cloned without any authentication."
+    end
+  end
+
+  def group_visibility_level_description(level)
+    case level
+    when Gitlab::VisibilityLevel::PRIVATE
+      "The group can be accessed only by members."
+    when Gitlab::VisibilityLevel::INTERNAL
+      "The group can be accessed by any logged user."
+    when Gitlab::VisibilityLevel::PUBLIC
+      "The group can be accessed without any authentication."
     end
   end
 

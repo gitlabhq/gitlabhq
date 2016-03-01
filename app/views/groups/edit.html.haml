@@ -23,6 +23,8 @@
             %hr
             = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
 
+      = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
+
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"
 

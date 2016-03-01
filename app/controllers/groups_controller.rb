@@ -131,7 +131,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar, :public)
+    params.require(:group).permit(:name, :description, :path, :avatar, :public, :visibility_level)
   end
 
   def load_events

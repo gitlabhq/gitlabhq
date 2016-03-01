@@ -8,6 +8,7 @@ describe VisibilityLevelHelper do
   end
 
   let(:project)          { build(:project) }
+  let(:group)            { build(:group) }
   let(:personal_snippet) { build(:personal_snippet) }
   let(:project_snippet)  { build(:project_snippet) }
 
@@ -16,6 +17,13 @@ describe VisibilityLevelHelper do
       it 'delegates projects to #project_visibility_level_description' do
         expect(visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, project))
             .to match /project/i
+      end
+    end
+
+    context 'used with a Group' do
+      it 'delegates groups to #group_visibility_level_description' do
+        expect(visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, group))
+            .to match /group/i
       end
     end
 

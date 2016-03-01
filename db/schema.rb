@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160309140734) do
-
+ActiveRecord::Schema.define(version: 20160305220806) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -568,14 +567,15 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
 
   create_table "namespaces", force: :cascade do |t|
-    t.string   "name",                     null: false
-    t.string   "path",                     null: false
+    t.string   "name",                          null: false
+    t.string   "path",                          null: false
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.string   "description", default: "", null: false
+    t.string   "description",      default: "", null: false
     t.string   "avatar"
+    t.integer  "visibility_level", default: 0,  null: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree

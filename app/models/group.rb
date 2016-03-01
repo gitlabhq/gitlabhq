@@ -2,15 +2,16 @@
 #
 # Table name: namespaces
 #
-#  id          :integer          not null, primary key
-#  name        :string(255)      not null
-#  path        :string(255)      not null
-#  owner_id    :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#  type        :string(255)
-#  description :string(255)      default(""), not null
-#  avatar      :string(255)
+#  id                     :integer          not null, primary key
+#  name                   :string(255)      not null
+#  path                   :string(255)      not null
+#  owner_id               :integer
+#  visibility_level       :integer          default(20), not null
+#  created_at             :key => "value", datetime
+#  updated_at             :datetime
+#  type                   :string(255)
+#  description            :string(255)      default(""), not null
+#  avatar                 :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -18,7 +19,9 @@ require 'file_size_validator'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
+  include Gitlab::VisibilityLevel
   include Referable
+
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
@@ -31,6 +34,10 @@ class Group < Namespace
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
+
+  scope :public_only, -> { where(visibility_level: Group::PUBLIC) }
+  scope :public_and_internal_only, -> { where(visibility_level: [Group::PUBLIC, Group::INTERNAL] ) }
+
 
   class << self
     def search(query)

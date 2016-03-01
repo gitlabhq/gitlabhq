@@ -56,6 +56,24 @@ describe Group, models: true do
     end
   end
 
+  describe 'scopes' do
+    let!(:private_group)  { create(:group, visibility_level: 0)  }
+    let!(:internal_group) { create(:group, visibility_level: 10) }
+    let!(:public_group)   { create(:group, visibility_level: 20) }
+
+    describe 'public_only' do
+      subject { described_class.public_only }
+
+      it{ is_expected.to eq([public_group]) }
+    end
+
+    describe 'public_and_internal_only' do
+      subject { described_class.public_and_internal_only }
+
+      it{ is_expected.to eq([public_group, internal_group]) }
+    end
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(group.to_reference).to eq "@#{group.name}"

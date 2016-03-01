@@ -18,4 +18,19 @@ describe GroupsHelper do
       expect(group_icon(group.path)).to match('group_avatar.png')
     end
   end
+
+  describe 'permissions' do
+    let(:group) { create(:group) }
+    let!(:user)  { create(:user) }
+
+    before do
+      allow(self).to receive(:current_user).and_return(user)
+      allow(self).to receive(:can?) { true }
+    end
+
+    it 'checks user ability to change permissions' do
+      expect(self).to receive(:can?).with(user, :change_visibility_level, group)
+      can_change_group_visibility_level?(group)
+    end
+  end
 end
