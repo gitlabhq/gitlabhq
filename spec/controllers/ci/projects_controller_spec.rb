@@ -9,6 +9,14 @@ describe Ci::ProjectsController do
   # Specs for *deprecated* CI badge
   #
   describe '#badge' do
+    shared_examples 'badge provider' do
+      it 'shows badge' do
+        expect(response.status).to eq 200
+        expect(response.headers)
+          .to include('Content-Type' => 'image/svg+xml')
+      end
+    end
+
     context 'user not signed in' do
       before { get(:badge, id: ci_id) }
 
@@ -22,18 +30,12 @@ describe Ci::ProjectsController do
 
       context 'project is public' do
         let(:visibility) { :public }
-
-        it 'is available without authentication' do
-          expect(response.status).to eq 200
-        end
+        it_behaves_like 'badge provider'
       end
 
       context 'project is private' do
         let(:visibility) { :private }
-
-        it 'requires authentication' do
-          expect(response.status).to eq 302
-        end
+        it_behaves_like 'badge provider'
       end
     end
 
@@ -44,10 +46,7 @@ describe Ci::ProjectsController do
 
       context 'private is internal' do
         let(:visibility) { :internal }
-
-        it 'shows badge to signed in user' do
-          expect(response.status).to eq 200
-        end
+        it_behaves_like 'badge provider'
       end
     end
   end

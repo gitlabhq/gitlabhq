@@ -19,7 +19,6 @@ module Ci
     #
     def badge
       return render_404 unless @project
-      authenticate_user! unless @project.public?
 
       image = Ci::ImageForBuildService.new.execute(@project, params)
       send_file image.path, filename: image.name, disposition: 'inline', type:"image/svg+xml"
