@@ -32,8 +32,53 @@ describe Issue, "Issuable" do
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
-    it "matches by title" do
+    it 'returns notches with a matching title' do
+      expect(described_class.search(searchable_issue.title)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching title' do
       expect(described_class.search('able')).to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching title regardless of the casing' do
+      expect(described_class.search(searchable_issue.title.upcase)).
+        to eq([searchable_issue])
+    end
+  end
+
+  describe ".full_search" do
+    let!(:searchable_issue) do
+      create(:issue, title: "Searchable issue", description: 'kittens')
+    end
+
+    it 'returns notches with a matching title' do
+      expect(described_class.full_search(searchable_issue.title)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching title' do
+      expect(described_class.full_search('able')).to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching title regardless of the casing' do
+      expect(described_class.full_search(searchable_issue.title.upcase)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notches with a matching description' do
+      expect(described_class.full_search(searchable_issue.description)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching description' do
+      expect(described_class.full_search(searchable_issue.description)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching description regardless of the casing' do
+      expect(described_class.full_search(searchable_issue.description.upcase)).
+        to eq([searchable_issue])
     end
   end
 
