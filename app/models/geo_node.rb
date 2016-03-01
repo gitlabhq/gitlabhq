@@ -46,7 +46,7 @@ class GeoNode < ActiveRecord::Base
     self.schema = new_uri.scheme
     self.host = new_uri.host
     self.port = new_uri.port
-    self.relative_url_root = new_uri.path if new_uri.path != '/'
+    self.relative_url_root = new_uri.path != '/' ? new_uri.path : nil
   end
 
   def notify_url
