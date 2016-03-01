@@ -30,3 +30,12 @@ instructions with some extra requirements:
  * You cannot push code to secondary nodes
  * Git LFS is not supported yet
  * Git Annex is not supported yet
+
+### Frequently Asked Questions
+
+ * Can I use Geo in a disaster recovery situation?
+ 
+Gitlab Geo was not made with that in mind. There are limitations to what
+we replicate (see Current limitations). In an extreme data-loss situation
+you can make a secondary Geo into your primary, but this is not officially
+supported.
