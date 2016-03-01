@@ -107,3 +107,10 @@
 
   .loading-status
     = spinner
+
+:javascript
+  var userProfile;
+
+  userProfile = new User({
+    action: "#{controller.action_name}"
+  });
