@@ -56,7 +56,7 @@ class GeoNode < ActiveRecord::Base
   private
 
   def destroy_orphaned_geo_node_key
-    return unless self.geo_node_key.destroyed_when_orphaned? && self.geo_node_key.orphaned?
+    return unless self.geo_node_key && self.geo_node_key.destroyed_when_orphaned? && self.geo_node_key.orphaned?
 
     self.geo_node_key.destroy
   end
