@@ -595,4 +595,10 @@ describe Repository, models: true do
       repository.after_remove_branch
     end
   end
+
+  describe "#main_language" do
+    it 'shows the main language of the project' do
+      expect(repository.main_language).to eq("Ruby")
+    end
+  end
 end

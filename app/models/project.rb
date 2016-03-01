@@ -89,7 +89,7 @@ class Project < ActiveRecord::Base
   # checks if the language main language of the project changed
   before_save :check_main_language
   def check_main_language
-    if commit_count.changed?
+    if self.commit_count_changed?
       self.main_language = repository.main_language
     end
   end
@@ -955,12 +955,12 @@ class Project < ActiveRecord::Base
   end
 
   def main_language
-    language = read_attributes(:main_language)
+    language = read_attribute(:main_language)
 
     return language if language
 
     update_attributes(main_language: repository.main_language)
 
-    read_attributes(:main_language)
+    read_attribute(:main_language)
   end
 end
