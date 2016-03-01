@@ -8,6 +8,7 @@ v 8.6.0 (unreleased)
   - Don't load all of GitLab in mail_room
   - Strip leading and trailing spaces in URL validator (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
+  - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
 
