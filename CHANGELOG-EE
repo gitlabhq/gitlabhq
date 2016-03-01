@@ -6,6 +6,7 @@ v 8.6.0 (unreleased)
   - [Elastic] Added UPDATE_INDEX option to rake task
   - [Elastic] Removing repository and wiki index after removing project
   - [Elastic] Update index on push to wiki
+  - [Elastic] Use subprocesses for ElasticSearch index jobs
 
 v 8.5.1
   - Fix adding pages domain to projects in groups
