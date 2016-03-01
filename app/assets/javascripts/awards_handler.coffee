@@ -82,7 +82,7 @@ class @AwardsHandler
     award_block = @findEmojiIcon(emoji).parent()
     authors = award_block.attr("data-original-title").split(", ")
     authors.splice(authors.indexOf("me"),1)
-    award_block.closest(".award").attr("data-original-title", authors.join(", "))
+    award_block.closest(".js-emoji-btn").attr("data-original-title", authors.join(", "))
     @resetTooltip(award_block)
 
   addMeToAuthorList: (emoji) ->
