@@ -97,33 +97,33 @@ in your SAML IdP:
         }
     ```
 
-1.  Change the value for 'assertion_consumer_service_url' to match the HTTPS endpoint
-    of GitLab (append 'users/auth/saml/callback' to the HTTPS URL of your GitLab
+1.  Change the value for `assertion_consumer_service_url` to match the HTTPS endpoint
+    of GitLab (append `users/auth/saml/callback` to the HTTPS URL of your GitLab
     installation to generate the correct value).
 
-1.  Change the values of 'idp_cert_fingerprint', 'idp_sso_target_url',
-    'name_identifier_format' to match your IdP. Check
+1.  Change the values of `idp_cert_fingerprint`, `idp_sso_target_url`,
+    `name_identifier_format` to match your IdP. Check
     [the omniauth-saml documentation](https://github.com/omniauth/omniauth-saml)
     for details on these options.
 
-1.  Change the value of 'issuer' to a unique name, which will identify the application
+1.  Change the value of `issuer` to a unique name, which will identify the application
     to the IdP.
 
 1.  Restart GitLab for the changes to take effect.
 
 1.  Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
-    in 'issuer'.
+    in `issuer`.
 
 To ease configuration, most IdP accept a metadata URL for the application to provide
 configuration information to the IdP. To build the metadata URL for GitLab, append
-'users/auth/saml/metadata' to the HTTPS URL of your GitLab installation, for instance:
+`users/auth/saml/metadata` to the HTTPS URL of your GitLab installation, for instance:
    ```
    https://gitlab.example.com/users/auth/saml/metadata
    ```
 
 At a minimum the IdP *must* provide a claim containing the user's email address, using
-claim name 'email' or 'mail'. The email will be used to automatically generate the GitLab
-username. GitLab will also use claims with name 'name', 'first_name', 'last_name'
+claim name `email` or `mail`. The email will be used to automatically generate the GitLab
+username. GitLab will also use claims with name `name`, `first_name`, `last_name`
 (see [the omniauth-saml gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
 for supported claims).
 
@@ -137,7 +137,7 @@ If you see a "500 error" in GitLab when you are redirected back from the SAML si
 this likely indicates that GitLab could not get the email address for the SAML user.
 
 Make sure the IdP provides a claim containing the user's email address, using claim name
-'email' or 'mail'. The email will be used to automatically generate the GitLab username.
+`email` or `mail`.
 
 If after signing in into your SAML server you are redirected back to the sign in page and
 no error is displayed, check your `production.log` file. It will most likely contain the
