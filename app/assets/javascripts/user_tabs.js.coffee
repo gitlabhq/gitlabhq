@@ -1,3 +1,54 @@
+# UserTabs
+#
+# Handles persisting and restoring the current tab selection and lazily-loading
+# content on the Users#show page.
+#
+# ### Example Markup
+#
+#   <ul class="nav-links">
+#     <li class="activity-tab active">
+#       <a data-action="activity" data-target="#activity" data-toggle="tab" href="/u/username">
+#         Activity
+#       </a>
+#     </li>
+#     <li class="groups-tab">
+#       <a data-action="groups" data-target="#groups" data-toggle="tab" href="/u/username/groups">
+#         Groups
+#       </a>
+#     </li>
+#     <li class="contributed-tab">
+#       <a data-action="contributed" data-target="#contributed" data-toggle="tab" href="/u/username/contributed">
+#         Contributed projects
+#       </a>
+#     </li>
+#     <li class="projects-tab">
+#       <a data-action="projects" data-target="#projects" data-toggle="tab" href="/u/username/projects">
+#         Personal projects
+#       </a>
+#     </li>
+#   </ul>
+#
+#   <div class="tab-content">
+#     <div class="tab-pane" id="activity">
+#       Activity Content
+#     </div>
+#     <div class="tab-pane" id="groups">
+#       Groups Content
+#     </div>
+#     <div class="tab-pane" id="contributed">
+#       Contributed projects content
+#     </div>
+#     <div class="tab-pane" id="projects">
+#       Projects content
+#     </div>
+#   </div>
+#
+#   <div class="loading-status">
+#     <div class="loading">
+#       Loading Animation
+#     </div>
+#   </div>
+#
 class @UserTabs
   actions: ['activity', 'groups', 'contributed', 'projects'],
   defaultAction: 'activity',
