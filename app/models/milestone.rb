@@ -58,9 +58,18 @@ class Milestone < ActiveRecord::Base
   alias_attribute :name, :title
 
   class << self
+    # Searches for milestones matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      query = "%#{query}%"
-      where("title like ? or description like ?", query, query)
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
   end
 
