@@ -9,6 +9,7 @@ v 8.6.0 (unreleased)
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
+  - Fix permissions for deprecated CI build status badge
   - Fix error 500 when commenting on a commit
 
 v 8.5.1
