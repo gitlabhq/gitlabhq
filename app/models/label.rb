@@ -48,7 +48,11 @@ class Label < ActiveRecord::Base
     '~'
   end
 
+  ##
   # Pattern used to extract label references from text
+  #
+  # This pattern supports cross-project references.
+  #
   def self.reference_pattern
     %r{
       (#{Project.reference_pattern})?
