@@ -159,7 +159,7 @@ Rails.application.routes.draw do
     # Appearance
     get ":model/:mounted_as/:id/:filename",
         to:           "uploads#show",
-        constraints:  { model: /appearance/, mounted_as: /logo|dark_logo|light_logo/, filename: /.+/ }
+        constraints:  { model: /appearance/, mounted_as: /logo|header_logo/, filename: /.+/ }
 
     # Project markdown uploads
     get ":namespace_id/:project_id/:secret/:filename",
