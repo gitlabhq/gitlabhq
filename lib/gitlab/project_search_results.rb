@@ -2,7 +2,8 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(project, query, repository_ref = nil)
+    def initialize(user, project, query, repository_ref = nil)
+      @user = user
       @project = project
       @repository_ref = if repository_ref.present?
                           repository_ref
@@ -82,6 +83,28 @@ module Gitlab
       else
         project.repository.find_commits_by_message(query).compact
       end
+    end
+
+    def issues
+      issues = Issue.where(project_id: project_ids_relation)
+
+      unless user.admin? || project.team.member?(user.id)
+        issuable_table = issues.arel_table
+
+        issues = issues.where(
+          issuable_table[:confidential].eq(false).or(
+            issuable_table[:confidential].eq(true).and(issuable_table[:author_id].eq(user.id))
+          )
+        )
+      end
+
+      if query =~ /#(\d+)\z/
+        issues = issues.where(iid: $1)
+      else
+        issues = issues.full_search(query)
+      end
+
+      issues.order('updated_at DESC')
     end
 
     def project_ids_relation

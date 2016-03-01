@@ -14,7 +14,7 @@ module Search
       if Gitlab.config.elasticsearch.enabled
         Gitlab::Elastic::SearchResults.new(projects.pluck(:id), params[:search])
       else
-        Gitlab::SearchResults.new(projects, params[:search])
+        Gitlab::SearchResults.new(current_user, projects, params[:search])
       end
     end
   end

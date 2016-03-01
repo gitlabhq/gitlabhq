@@ -12,7 +12,8 @@ module Search
                                          params[:search],
                                          params[:repository_ref])
       else
-        Gitlab::ProjectSearchResults.new(project,
+        Gitlab::ProjectSearchResults.new(current_user,
+                                         project,
                                          params[:search],
                                          params[:repository_ref])
       end
