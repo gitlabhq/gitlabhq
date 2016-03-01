@@ -1,10 +1,12 @@
 %li.snippet-row
+  = image_tag avatar_icon(snippet.author_email), class: "avatar s40 hidden-xs", alt: ''
+
   .snippet-title
-    = link_to reliable_snippet_path(snippet) do
+    = link_to reliable_snippet_path(snippet), class: 'title' do
       = truncate(snippet.title, length: 60)
       - if snippet.private?
         %span.label.label-gray
-          %i.fa.fa-lock
+          = icon('lock')
           private
     %span.monospace.pull-right
       = snippet.file_name
@@ -15,6 +17,5 @@
 
   .snippet-info
     = link_to user_snippets_path(snippet.author) do
-      = image_tag avatar_icon(snippet.author_email), class: "avatar s24", alt: ''
       = snippet.author_name
     authored #{time_ago_with_tooltip(snippet.created_at)}

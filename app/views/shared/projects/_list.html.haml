@@ -7,7 +7,7 @@
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
 
-%ul.projects-list
+%ul.projects-list.content-list
   - if projects.any?
     - projects.each_with_index do |project, i|
       - css_class = (i >= projects_limit) ? 'hide' : nil

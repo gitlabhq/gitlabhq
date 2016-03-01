@@ -4,12 +4,22 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_download_code!
 
   def index
-    @sort = params[:sort] || 'id_desc'
-    @all_forks = project.forks.includes(:creator).order_by(@sort)
+    base_query = project.forks.includes(:creator)
 
-    @public_forks, @protected_forks = @all_forks.partition do |project|
-      can?(current_user, :read_project, project)
-    end
+    @forks = if current_user
+               base_query.where('projects.visibility_level IN (?) OR projects.id IN (?)',
+                                Project.public_and_internal_levels,
+                                current_user.authorized_projects.pluck(:id))
+             else
+               base_query.where('projects.visibility_level = ?', Project::PUBLIC)
+             end
+
+    @total_forks_count   = base_query.size
+    @private_forks_count = @total_forks_count - @forks.size
+    @public_forks_count  = @total_forks_count - @private_forks_count
+
+    @sort  = params[:sort] || 'id_desc'
+    @forks = @forks.order_by(@sort).page(params[:page]).per(PER_PAGE)
   end
 
   def new

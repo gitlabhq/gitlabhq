@@ -156,11 +156,25 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     }
 
     protocols.each do |name, data|
-      it "handles #{name}" do
+      it "disallows #{name}" do
         doc = filter(data[:input])
 
         expect(doc.to_html).to eq data[:output]
       end
+    end
+
+    it 'disallows data links' do
+      input = '<a href="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">XSS</a>'
+      output = filter(input)
+
+      expect(output.to_html).to eq '<a>XSS</a>'
+    end
+
+    it 'disallows vbscript links' do
+      input = '<a href="vbscript:alert(document.domain)">XSS</a>'
+      output = filter(input)
+
+      expect(output.to_html).to eq '<a>XSS</a>'
     end
 
     it 'allows non-standard anchor schemes' do

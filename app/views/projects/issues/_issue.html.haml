@@ -5,7 +5,7 @@
 
   .issue-title
     %span.issue-title-text
-      = link_to_gfm issue.title, issue_path(issue), class: "row_title"
+      = link_to_gfm issue.title, issue_path(issue), class: "title"
     %ul.controls.light
       - if issue.closed?
         %li

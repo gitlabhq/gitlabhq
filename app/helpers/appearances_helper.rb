@@ -3,7 +3,11 @@ module AppearancesHelper
     if brand_item && brand_item.title
       brand_item.title
     else
+<<<<<<< HEAD
       'GitLab Enterprise Edition'
+=======
+      'GitLab Community Edition'
+>>>>>>> 204a9895333178cc90b40ef365ad566d750fa594
     end
   end
 

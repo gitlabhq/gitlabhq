@@ -32,8 +32,6 @@
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require underscore
-#= require nprogress
-#= require nprogress-turbolinks
 #= require dropzone
 #= require mousetrap
 #= require mousetrap/pause
@@ -45,6 +43,7 @@
 #= require jquery.nicescroll
 #= require_tree .
 #= require fuzzaldrin-plus
+#= require cropper.js
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()

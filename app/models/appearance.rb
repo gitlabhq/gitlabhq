@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # == Schema Information
 #
 # Table name: appearances
@@ -12,6 +13,8 @@
 #  header_logo  :string(255)
 #
 
+=======
+>>>>>>> 204a9895333178cc90b40ef365ad566d750fa594
 class Appearance < ActiveRecord::Base
   validates :title,       presence: true
   validates :description, presence: true
