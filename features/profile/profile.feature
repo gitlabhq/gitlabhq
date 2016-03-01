@@ -76,8 +76,7 @@ Feature: Profile
 
   Scenario: I can manage application
     Given I visit profile applications page
-    Then I click on new application button
-    And I should see application form
+    Then I should see application form
     Then I fill application form out and submit
     And I see application
     Then I click edit

@@ -180,18 +180,14 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     end
   end
 
-  step 'I click on new application button' do
-    click_on 'New Application'
-  end
-
   step 'I should see application form' do
-    expect(page).to have_content "New Application"
+    expect(page).to have_content "Add new application"
   end
 
   step 'I fill application form out and submit' do
     fill_in :doorkeeper_application_name, with: 'test'
     fill_in :doorkeeper_application_redirect_uri, with: 'https://test.com'
-    click_on "Submit"
+    click_on "Save application"
   end
 
   step 'I see application' do
@@ -211,7 +207,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I change name of application and submit' do
     expect(page).to have_content "Edit application"
     fill_in :doorkeeper_application_name, with: 'test_changed'
-    click_on "Submit"
+    click_on "Save application"
   end
 
   step 'I see that application was changed' do
