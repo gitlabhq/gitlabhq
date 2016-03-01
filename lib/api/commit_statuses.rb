@@ -18,10 +18,12 @@ module API
       # Examples:
       #   GET /projects/:id/repository/commits/:sha/statuses
       get ':id/repository/commits/:sha/statuses' do
-        authorize! :read_commit_status, user_project
-        sha = params[:sha]
-        ci_commit = user_project.ci_commit(sha)
-        not_found! 'Commit' unless ci_commit
+        authorize!(:read_commit_status, user_project)
+
+        not_found!('Commit') unless user_project.commit(params[:sha])
+        ci_commit = user_project.ci_commit(params[:sha])
+        return [] unless ci_commit
+
         statuses = ci_commit.statuses
         statuses = statuses.latest unless parse_boolean(params[:all])
         statuses = statuses.where(ref: params[:ref]) if params[:ref].present?
