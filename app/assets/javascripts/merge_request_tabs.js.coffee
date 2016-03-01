@@ -146,6 +146,7 @@ class @MergeRequestTabs
       url: "#{source}.json" + @_location.search
       success: (data) =>
         document.querySelector("div#diffs").innerHTML = data.html
+        $('.js-timeago').timeago()
         $('div#diffs .js-syntax-highlight').syntaxHighlight()
         @expandViewContainer() if @diffViewType() is 'parallel'
         @diffsLoaded = true

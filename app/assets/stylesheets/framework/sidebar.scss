@@ -13,6 +13,19 @@
     transition-duration: .3s;
   }
 
+  .gitlab-text-container-link {
+    z-index: 1;
+    position: absolute;
+    left: 0px;
+  }
+
+  #logo {
+    z-index: 2;
+    position: absolute;
+    width: 58px;
+    cursor: pointer;
+  }
+
   &.right-sidebar-expanded {
     padding-right: $gutter_width;
   }
@@ -74,7 +87,7 @@
           width: 158px;
           float: left;
           margin: 0;
-          margin-left: 14px;
+          margin-left: 50px;
           font-size: 19px;
           line-height: 41px;
           font-weight: normal;

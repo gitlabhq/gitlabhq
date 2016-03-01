@@ -31,8 +31,6 @@
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require underscore
-#= require nprogress
-#= require nprogress-turbolinks
 #= require dropzone
 #= require mousetrap
 #= require mousetrap/pause

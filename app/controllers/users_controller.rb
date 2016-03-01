@@ -89,7 +89,7 @@ class UsersController < ApplicationController
 
   def contributions_calendar
     @contributions_calendar ||= Gitlab::ContributionsCalendar.
-      new(contributed_projects.reject(&:forked?), @user)
+      new(contributed_projects, @user)
   end
 
   def load_events

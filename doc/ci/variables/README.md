@@ -30,7 +30,7 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 | **CI_BUILD_REF_NAME**   | all | The branch or tag name for which project is built |
 | **CI_BUILD_ID**         | all | The unique id of the current build that GitLab CI uses internally |
 | **CI_BUILD_REPO**       | all | The URL to clone the Git repository |
-| **CI_BUILD_TRIGGERED**  | 0.5 | The flag to indicate that build was triggered |
+| **CI_BUILD_TRIGGERED**  | 0.5 | The flag to indicate that build was [triggered] |
 | **CI_PROJECT_ID**       | all | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_DIR**      | all | The full path where the repository is cloned and where the build is ran |
 
@@ -104,3 +104,5 @@ job_name:
   script:
     - export
 ```
+
+[triggered]: ../triggers/README.md
