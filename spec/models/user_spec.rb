@@ -256,6 +256,7 @@ describe User, models: true do
       expect(user).to be_two_factor_enabled
       expect(user.encrypted_otp_secret).not_to be_nil
       expect(user.otp_backup_codes).not_to be_nil
+      expect(user.otp_grace_period_started_at).not_to be_nil
 
       user.disable_two_factor!
 
@@ -264,6 +265,7 @@ describe User, models: true do
       expect(user.encrypted_otp_secret_iv).to be_nil
       expect(user.encrypted_otp_secret_salt).to be_nil
       expect(user.otp_backup_codes).to be_nil
+      expect(user.otp_grace_period_started_at).to be_nil
     end
   end
 
