@@ -61,6 +61,8 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def toggle_subscription
+    return unless current_user
+
     @label.toggle_subscription(current_user)
     render nothing: true
   end

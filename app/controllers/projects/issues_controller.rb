@@ -111,6 +111,8 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def toggle_subscription
+    return unless current_user
+
     @issue.toggle_subscription(current_user)
 
     render nothing: true

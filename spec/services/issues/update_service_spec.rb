@@ -6,6 +6,7 @@ describe Issues::UpdateService, services: true do
   let(:user3) { create(:user) }
   let(:issue) { create(:issue, title: 'Old title', assignee_id: user3.id) }
   let(:label) { create(:label) }
+  let(:label2) { create(:label) }
   let(:project) { issue.project }
 
   before do
@@ -148,57 +149,45 @@ describe Issues::UpdateService, services: true do
       end
     end
 
-    context "when the issue is relabeled" do
-      it "sends notifications for subscribers of newly added labels" do
-        subscriber, non_subscriber = create_list(:user, 2)
-        label.toggle_subscription(subscriber)
-        2.times { label.toggle_subscription(non_subscriber) }
+    context 'when the issue is relabeled' do
+      let!(:non_subscriber) { create(:user) }
+      let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
 
+      it 'sends notifications for subscribers of newly added labels' do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do
           @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
         end
 
-        @issue.reload
         should_email(subscriber)
         should_not_email(non_subscriber)
       end
 
-      it "does send notifications for existing labels" do
-        second_label = create(:label)
-        issue.labels << label
-        subscriber, non_subscriber = create_list(:user, 2)
-        label.toggle_subscription(subscriber)
-        2.times { label.toggle_subscription(non_subscriber) }
+      context 'when issue has the `label` label' do
+        before { issue.labels << label }
 
-        opts = { label_ids: [label.id, second_label.id] }
+        it 'does not send notifications for existing labels' do
+          opts = { label_ids: [label.id, label2.id] }
 
-        perform_enqueued_jobs do
-          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+          perform_enqueued_jobs do
+            @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+          end
+
+          should_not_email(subscriber)
+          should_not_email(non_subscriber)
         end
 
-        @issue.reload
-        should_email(subscriber)
-        should_not_email(non_subscriber)
-      end
+        it 'does not send notifications for removed labels' do
+          opts = { label_ids: [label2.id] }
 
-      it "does not send notifications for removed labels" do
-        second_label = create(:label)
-        issue.labels << label
-        subscriber, non_subscriber = create_list(:user, 2)
-        label.toggle_subscription(subscriber)
-        2.times { label.toggle_subscription(non_subscriber) }
+          perform_enqueued_jobs do
+            @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+          end
 
-        opts = { label_ids: [second_label.id] }
-
-        perform_enqueued_jobs do
-          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+          should_not_email(subscriber)
+          should_not_email(non_subscriber)
         end
-
-        @issue.reload
-        should_not_email(subscriber)
-        should_not_email(non_subscriber)
       end
     end
 

@@ -13,20 +13,21 @@ module Subscribable
   end
 
   def subscribed?(user)
-    subscription = subscriptions.find_by_user_id(user.id)
-
-    if subscription
-      return subscription.subscribed
+    if subscription = subscriptions.find_by_user_id(user.id)
+      subscription.subscribed
+    else
+      subscribed_without_subscriptions?(user)
     end
+  end
 
-    # FIXME
-    # Issue/MergeRequest has participants, but Label doesn't.
-    # Ideally, subscriptions should be separate from participations,
-    # but that seems like a larger change with farther-reaching
-    # consequences, so this is a compromise for the time being.
-    if respond_to?(:participants)
-      participants(user).include?(user)
-    end
+  # Override this method to define custom logic to consider a subscribable as
+  # subscribed without an explicit subscription record.
+  def subscribed_without_subscriptions?(user)
+    false
+  end
+
+  def subscribers
+    subscriptions.where(subscribed: true).map(&:user)
   end
 
   def toggle_subscription(user)

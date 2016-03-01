@@ -234,6 +234,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def toggle_subscription
+    return unless current_user
+
     @merge_request.toggle_subscription(current_user)
 
     render nothing: true

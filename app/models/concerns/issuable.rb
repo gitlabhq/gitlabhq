@@ -149,6 +149,10 @@ module Issuable
     notes.awards.where(note: "thumbsup").count
   end
 
+  def subscribed_without_subscriptions?(user)
+    participants(user).include?(user)
+  end
+
   def to_hook_data(user)
     hook_data = {
       object_kind: self.class.name.underscore,
@@ -177,12 +181,6 @@ module Issuable
         find_or_create_by(title: label_name.strip)
       self.labels << label
     end
-  end
-
-  # Labels that are currently applied to this object
-  # that are not present in `old_labels`
-  def added_labels(old_labels)
-    self.labels - old_labels
   end
 
   # Convert this Issuable class name to a format usable by Ability definitions
