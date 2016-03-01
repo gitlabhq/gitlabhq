@@ -63,7 +63,7 @@ describe GeoNode, type: :model do
     subject { GeoNode.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
 
     it 'returns api url based on node uri' do
-      expect(subject.notify_url).to eq('https://localhost:3000/gitlab/api/geo/refresh_projects')
+      expect(subject.notify_url).to eq('https://localhost:3000/gitlab/api/v3/geo/refresh_projects')
     end
   end
 
