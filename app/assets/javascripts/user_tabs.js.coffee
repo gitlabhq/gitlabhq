@@ -66,7 +66,7 @@ class @UserTabs
     return if @loaded['activity'] is true
 
     $calendarWrap = $('.user-calendar')
-    $calendarWrap.load($calendarWrap.data('url'))
+    $calendarWrap.load($calendarWrap.data('href'))
 
     new Activities()
     @loaded['activity'] = true
