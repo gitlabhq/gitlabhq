@@ -23,7 +23,7 @@ module Ci
 
     LAST_CONTACT_TIME = 5.minutes.ago
     AVAILABLE_SCOPES = ['specific', 'shared', 'active', 'paused', 'online']
-    
+
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
     has_many :projects, through: :runner_projects, class_name: '::Project', foreign_key: :gl_project_id
@@ -46,9 +46,23 @@ module Ci
 
     acts_as_taggable
 
+    # Searches for runners matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # This method performs a *partial* match on tokens, thus a query for "a"
+    # will match any runner where the token contains the letter "a". As a result
+    # you should *not* use this method for non-admin purposes as otherwise users
+    # might be able to query a list of all runners.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def self.search(query)
-      where('LOWER(ci_runners.token) LIKE :query OR LOWER(ci_runners.description) like :query',
-            query: "%#{query.try(:downcase)}%")
+      t = Ci::Runner.arel_table
+      pattern = "%#{query}%"
+
+      where(t[:token].matches(pattern).or(t[:description].matches(pattern)))
     end
 
     def set_default_values
