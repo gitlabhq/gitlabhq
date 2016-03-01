@@ -812,18 +812,6 @@ class Repository
     raw_repository.ls_files(actual_ref)
   end
 
-  def main_language
-    return @main_language unless @main_language.nil? 
-
-    unless empty?
-      @main_language = cache.fetch(:main_language) do
-        Linguist::Repository.new(
-          rugged,
-          rugged.head.target_id).language
-      end
-    end
-  end
-
   private
 
   def cache

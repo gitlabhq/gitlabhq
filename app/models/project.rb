@@ -957,8 +957,4 @@ class Project < ActiveRecord::Base
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
-
-  def main_language
-    @main_language = repository.main_language
-  end
 end
