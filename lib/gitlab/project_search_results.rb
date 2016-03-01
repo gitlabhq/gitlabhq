@@ -2,8 +2,8 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(project_id, query, repository_ref = nil)
-      @project = Project.find(project_id)
+    def initialize(project, query, repository_ref = nil)
+      @project = project
       @repository_ref = if repository_ref.present?
                           repository_ref
                         else
@@ -73,7 +73,7 @@ module Gitlab
     end
 
     def notes
-      Note.where(project_id: limit_project_ids).user.search(query).order('updated_at DESC')
+      project.notes.user.search(query).order('updated_at DESC')
     end
 
     def commits
@@ -82,10 +82,6 @@ module Gitlab
       else
         project.repository.find_commits_by_message(query).compact
       end
-    end
-
-    def limit_project_ids
-      [project.id]
     end
   end
 end
