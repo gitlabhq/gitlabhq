@@ -3,6 +3,7 @@ module Ci
     before_action :project
     before_action :authorize_read_project!, except: [:badge]
     before_action :no_cache, only: [:badge]
+    skip_before_action :authenticate_user!, only: [:badge]
     protect_from_forgery
 
     def show
@@ -18,6 +19,8 @@ module Ci
     #
     def badge
       return render_404 unless @project
+      authenticate_user! unless @project.public?
+
       image = Ci::ImageForBuildService.new.execute(@project, params)
       send_file image.path, filename: image.name, disposition: 'inline', type:"image/svg+xml"
     end
