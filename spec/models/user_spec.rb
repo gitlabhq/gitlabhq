@@ -176,7 +176,7 @@ describe User, models: true do
     end
 
     describe 'avatar' do
-      it 'only validates when avatar is present' do
+      it 'only validates when avatar is present and changed' do
         user = build(:user, :with_avatar)
 
         user.avatar_crop_x    = nil
@@ -184,6 +184,20 @@ describe User, models: true do
         user.avatar_crop_size = nil
 
         expect(user).not_to be_valid
+        expect(user.errors.keys).
+          to match_array %i(avatar_crop_x avatar_crop_y avatar_crop_size)
+      end
+
+      it 'does not validate when avatar has not changed' do
+        user = create(:user, :with_avatar)
+
+        expect { user.avatar_crop_x = nil }.not_to change(user, :valid?)
+      end
+
+      it 'does not validate when avatar is not present' do
+        user = create(:user)
+
+        expect { user.avatar_crop_y = nil }.not_to change(user, :valid?)
       end
     end
   end
