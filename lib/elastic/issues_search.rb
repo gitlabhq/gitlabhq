@@ -23,6 +23,8 @@ module Elastic
         indexes :project,     type: :nested
         indexes :author,      type: :nested
 
+        indexes :confidential, type: :boolean
+
         indexes :updated_at_sort, type: :date,   index: :not_analyzed
       end
 
@@ -48,9 +50,37 @@ module Elastic
           query_hash = basic_query_hash(%w(title^2 description), query)
         end
 
-        query_hash = project_ids_filter(query_hash, options[:project_ids])
+        query_hash = project_ids_filter(query_hash, options[:projects_ids])
+        query_hash = confidentiality_filter(query_hash, options[:user_id], options[:authorized_projects_ids])
 
         self.__elasticsearch__.search(query_hash)
+      end
+
+      def self.confidentiality_filter(query_hash, user_id, projects_ids)
+        if user_id
+          query_hash[:query][:filtered][:filter] = {
+            bool: {
+              should: [
+                { term: { confidential: false } },
+                { bool: {
+                    must: [
+                      { term: { confidential: true } },
+                      { bool: {
+                          should: [
+                            { term: { author_id: user_id } },
+                            { terms: { project_id: projects_ids } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        end
+
+        query_hash
       end
     end
   end
