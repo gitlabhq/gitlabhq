@@ -8,7 +8,7 @@ class Profiles::AccountsController < Profiles::ApplicationController
       current_user.otp_grace_period_started_at = Time.current
     end
 
-    current_user.save! if current_user.changed?
+    # current_user.save! if current_user.changed?
 
     @user = current_user
 

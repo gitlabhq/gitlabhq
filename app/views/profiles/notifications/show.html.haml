@@ -11,14 +11,14 @@
   = hidden_field_tag :notification_type, 'global'
   .row
     .col-lg-3.profile-settings-sidebar
-      %h4
+      %h4.prepend-top-0
         = page_title
       %p
         You can specify notification level per group or per project.
       %p
         By default, all projects and groups will use the global notifications setting.
     .col-lg-9
-      %h5
+      %h5.prepend-top-0
         Global notification settings
       .form-group
         = f.label :notification_email, class: "label-light"

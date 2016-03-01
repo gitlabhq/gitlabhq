@@ -5,7 +5,7 @@
   .alert.alert-info
     Some options are unavailable for LDAP accounts
 
-.row.prepend-top-default
+.row.prepend-top-default.append-bottom-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       Private Token
@@ -26,8 +26,8 @@
           = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
         - else
           = f.submit 'Generate', class: "btn btn-default"
-%hr
-.row.prepend-top-default
+  .col-sm-12
+    %hr
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
       Two-factor Authentication
@@ -63,9 +63,9 @@
           = text_field_tag :pin_code, nil, class: "form-control", required: true
         .prepend-top-default
           = submit_tag 'Enable two-factor authentication', class: 'btn btn-success'
-%hr
-- if button_based_providers.any?
-  .row.prepend-top-default
+  .col-sm-12
+    %hr
+  - if button_based_providers.any?
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0
         Social sign-in
@@ -85,9 +85,9 @@
           - else
             = link_to user_omniauth_authorize_path(provider), method: :post, class: "provider-btn #{'not-active' if !auth_active?(provider)}", "data-no-turbolink" => "true" do
               Connect
-  %hr
-- if current_user.can_change_username?
-  .row.prepend-top-default
+    .col-sm-12
+      %hr
+  - if current_user.can_change_username?
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0.change-username-title
         Change username
@@ -108,10 +108,10 @@
           = f.button class: "btn btn-warning", type: "submit" do
             = icon "spinner spin", class: "hidden loading-username"
             Update username
-  %hr
+    .col-sm-12
+      %hr
 
-- if signup_enabled?
-  .row.prepend-top-default
+  - if signup_enabled?
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0.remove-account-title
         Remove account
@@ -132,4 +132,3 @@
             %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
           %p
             You must transfer ownership or delete these groups before you can delete your account.
-.append-bottom-default

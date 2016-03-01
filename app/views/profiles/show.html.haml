@@ -1,102 +1,100 @@
-= form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit-user prepend-top-default" }, authenticity_token: true do |f|
+-if @user.errors.any?
+  .col-sm-12.alert.alert-danger
+    %ul
+      - @user.errors.full_messages.each do |msg|
+        %li= msg
+= form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "row edit-user prepend-top-default" }, authenticity_token: true do |f|
   = f.hidden_field :avatar_crop_x
   = f.hidden_field :avatar_crop_y
   = f.hidden_field :avatar_crop_size
-  -if @user.errors.any?
-    %div.alert.alert-danger
-      %ul
-        - @user.errors.full_messages.each do |msg|
-          %li= msg
-  .row
-    .col-lg-3.profile-settings-sidebar
-      %h4.prepend-top-0
-        Public Avatar
-      %p
-        - if @user.avatar?
-          You can change your avatar here
-          - if Gitlab.config.gravatar.enabled
-            or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
-        - else
-          You can upload an avatar here
-          - if Gitlab.config.gravatar.enabled
-            or change it at #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
-    .col-lg-9
-      .clearfix.avatar-image.append-bottom-default
-        = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
-      %h5.prepend-top-0
-        Upload new avatar
-      .prepend-top-5.append-bottom-10
-        %a.btn.js-choose-user-avatar-button
-          Browse file...
-        %span.avatar-file-name.prepend-left-default.js-avatar-filename No file chosen
-        = f.file_field :avatar, class: "js-user-avatar-input hidden"
-      .help-block
-        The maximum file size allowed is 200KB.
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      Public Avatar
+    %p
       - if @user.avatar?
-        %hr
-        = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-gray"
-  %hr
-  .row
-    .col-lg-3.profile-settings-sidebar
-      %h4.prepend-top-0
-        Main settings
-      %p
-        This information will appear on your profile.
-        - if current_user.ldap_user?
-          Some options are unavailable for LDAP accounts
-    .col-lg-9
-      .form-group
-        = f.label :name, class: "label-light"
-        = f.text_field :name, class: "form-control", required: true
-        %span.help-block Enter your name, so people you know can recognize you.
+        You can change your avatar here
+        - if Gitlab.config.gravatar.enabled
+          or remove the current avatar to revert to #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
+      - else
+        You can upload an avatar here
+        - if Gitlab.config.gravatar.enabled
+          or change it at #{link_to Gitlab.config.gravatar.host, "http://" + Gitlab.config.gravatar.host}
+  .col-lg-9
+    .clearfix.avatar-image.append-bottom-default
+      = image_tag avatar_icon(@user, 160), alt: '', class: 'avatar s160'
+    %h5.prepend-top-0
+      Upload new avatar
+    .prepend-top-5.append-bottom-10
+      %a.btn.js-choose-user-avatar-button
+        Browse file...
+      %span.avatar-file-name.prepend-left-default.js-avatar-filename No file chosen
+      = f.file_field :avatar, class: "js-user-avatar-input hidden"
+    .help-block
+      The maximum file size allowed is 200KB.
+    - if @user.avatar?
+      %hr
+      = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-gray"
+  .col-sm-12
+    %hr
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      Main settings
+    %p
+      This information will appear on your profile.
+      - if current_user.ldap_user?
+        Some options are unavailable for LDAP accounts
+  .col-lg-9
+    .form-group
+      = f.label :name, class: "label-light"
+      = f.text_field :name, class: "form-control", required: true
+      %span.help-block Enter your name, so people you know can recognize you.
 
-      .form-group
-        = f.label :email, class: "label-light"
-        - if @user.ldap_user? && @user.ldap_email?
-          = f.text_field :email, class: "form-control", required: true, readonly: true
-          %span.help-block.light
-            Your email address was automatically set based on the LDAP server.
+    .form-group
+      = f.label :email, class: "label-light"
+      - if @user.ldap_user? && @user.ldap_email?
+        = f.text_field :email, class: "form-control", required: true, readonly: true
+        %span.help-block.light
+          Your email address was automatically set based on the LDAP server.
+      - else
+        - if @user.temp_oauth_email?
+          = f.text_field :email, class: "form-control", required: true, value: nil
         - else
-          - if @user.temp_oauth_email?
-            = f.text_field :email, class: "form-control", required: true, value: nil
-          - else
-            = f.text_field :email, class: "form-control", required: true
-          - if @user.unconfirmed_email.present?
-            %span.help-block
-              Please click the link in the confirmation email before continuing. It was sent to
-              = succeed "." do
-                %strong #{@user.unconfirmed_email}
-              %p
-              = link_to "Resend confirmation e-mail", user_confirmation_path(user: { email: @user.unconfirmed_email }), method: :post
+          = f.text_field :email, class: "form-control", required: true
+        - if @user.unconfirmed_email.present?
+          %span.help-block
+            Please click the link in the confirmation email before continuing. It was sent to
+            = succeed "." do
+              %strong #{@user.unconfirmed_email}
+            %p
+            = link_to "Resend confirmation e-mail", user_confirmation_path(user: { email: @user.unconfirmed_email }), method: :post
 
-          - else
-            %span.help-block We also use email for avatar detection if no avatar is uploaded.
-      .form-group
-        = f.label :public_email, class: "label-light"
-        = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), {include_blank: 'Do not show on profile'}, class: "select2"
-        %span.help-block This email will be displayed on your public profile.
-      .form-group
-        = f.label :skype, class: "label-light"
-        = f.text_field :skype, class: "form-control"
-      .form-group
-        = f.label :linkedin, class: "label-light"
-        = f.text_field :linkedin, class: "form-control"
-      .form-group
-        = f.label :twitter, class: "label-light"
-        = f.text_field :twitter, class: "form-control"
-      .form-group
-        = f.label :website_url, 'Website', class: "label-light"
-        = f.text_field :website_url, class: "form-control"
-      .form-group
-        = f.label :location, 'Location', class: "label-light"
-        = f.text_field :location, class: "form-control"
-      .form-group
-        = f.label :bio, class: "label-light"
-        = f.text_area :bio, rows: 4, class: "form-control", maxlength: 250
-        %span.help-block Tell us about yourself in fewer than 250 characters.
-      .prepend-top-default.append-bottom-default
-        = f.submit 'Update profile settings', class: "btn btn-success"
-        = link_to "Cancel", user_path(current_user), class: "btn btn-cancel"
+        - else
+          %span.help-block We also use email for avatar detection if no avatar is uploaded.
+    .form-group
+      = f.label :public_email, class: "label-light"
+      = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email), {include_blank: 'Do not show on profile'}, class: "select2"
+      %span.help-block This email will be displayed on your public profile.
+    .form-group
+      = f.label :skype, class: "label-light"
+      = f.text_field :skype, class: "form-control"
+    .form-group
+      = f.label :linkedin, class: "label-light"
+      = f.text_field :linkedin, class: "form-control"
+    .form-group
+      = f.label :twitter, class: "label-light"
+      = f.text_field :twitter, class: "form-control"
+    .form-group
+      = f.label :website_url, 'Website', class: "label-light"
+      = f.text_field :website_url, class: "form-control"
+    .form-group
+      = f.label :location, 'Location', class: "label-light"
+      = f.text_field :location, class: "form-control"
+    .form-group
+      = f.label :bio, class: "label-light"
+      = f.text_area :bio, rows: 4, class: "form-control", maxlength: 250
+      %span.help-block Tell us about yourself in fewer than 250 characters.
+    .prepend-top-default.append-bottom-default
+      = f.submit 'Update profile settings', class: "btn btn-success"
 
 .modal.modal-profile-crop
   .modal-dialog
