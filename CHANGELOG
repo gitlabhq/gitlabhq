@@ -8,6 +8,7 @@ v 8.6.0 (unreleased)
   - Strip leading and trailing spaces in URL validator (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
   - Update documentation to reflect Guest role not being enforced on internal projects
+  - Allow search for logged out users
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px

@@ -13,30 +13,35 @@
           %li.visible-sm.visible-xs
             = link_to search_path, title: 'Search', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
               = icon('search')
-          - if session[:impersonator_id]
-            %li.impersonation
-              = link_to stop_impersonation_admin_users_path, method: :delete, title: 'Stop Impersonation', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-                = icon('user-secret fw')
-          - if current_user.is_admin?
+          - if current_user
+            - if session[:impersonator_id]
+              %li.impersonation
+                = link_to stop_impersonation_admin_users_path, method: :delete, title: 'Stop Impersonation', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+                  = icon('user-secret fw')
+            - if current_user.is_admin?
+              %li
+                = link_to admin_root_path, title: 'Admin Area', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('wrench fw')
             %li
-              = link_to admin_root_path, title: 'Admin Area', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('wrench fw')
-          %li
-            = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-              %span.badge.todos-pending-count
-                = todos_pending_count
-          - if current_user.can_create_project?
+              = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                %span.badge.todos-pending-count
+                  = todos_pending_count
+            - if current_user.can_create_project?
+              %li
+                = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('plus fw')
+            - if Gitlab::Sherlock.enabled?
+              %li
+                = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
+                  data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('tachometer fw')
             %li
-              = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('plus fw')
-          - if Gitlab::Sherlock.enabled?
-            %li
-              = link_to sherlock_transactions_path, title: 'Sherlock Transactions',
-                data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('tachometer fw')
-          %li
-            = link_to destroy_user_session_path, class: 'logout', method: :delete, title: 'Sign out', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-              = icon('sign-out')
+              = link_to destroy_user_session_path, class: 'logout', method: :delete, title: 'Sign out', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                = icon('sign-out')
+          - else
+            .pull-right
+              = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
+
 
       %h1.title= title
 
