@@ -231,6 +231,13 @@ $ ->
       $this = $(this)
       $thisIcon = $this.find 'i'
       if $thisIcon.hasClass('fa-angle-double-right')
+        # It's open -> close it
+        if bootstrapBreakpoint is 'xs'
+          # it's the gutter open button outside the aside
+          if not $this.closest('aside').length
+            $('aside').addClass('hidden-xs')
+
+        console.log(bootstrapBreakpoint);
         $thisIcon
           .removeClass('fa-angle-double-right')
           .addClass('fa-angle-double-left')
@@ -242,6 +249,12 @@ $ ->
           .removeClass('right-sidebar-expanded')
           .addClass('right-sidebar-collapsed')
       else
+        # It's closed -> open it
+        if bootstrapBreakpoint is 'xs'
+          # it's the gutter open button outside the aside
+          if not $this.closest('aside').length
+            $('aside').removeClass('hidden-xs')
+
         $thisIcon
           .removeClass('fa-angle-double-left')
           .addClass('fa-angle-double-right')
