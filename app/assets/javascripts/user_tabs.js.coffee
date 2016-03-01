@@ -1,45 +1,73 @@
 class @UserTabs
   actions: ['activity', 'groups', 'contributed', 'personal'],
   defaultAction: 'activity',
+  tabButtonSelector: '.nav-links a[data-toggle="tab"]'
 
-  constructor: ->
+  constructor: (@opts = {}) ->
     # Store the `location` object, allowing for easier stubbing in tests
     @_location = location
+    @loaded = {}
 
     @bindEvents()
+    @setTabState()
+
+    # Set default tab
+    source = $(".#{@defaultAction}-tab a").attr('href')
+    @setTab(source, @defaultAction)
 
   bindEvents: ->
-    $(document).on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
+    $(document).on 'shown.bs.tab', @tabButtonSelector, @tabShown
+
+  setTabState: ->
+    for action in @actions
+      @loaded[action] = false
 
   tabShown: (event) =>
     $target = $(event.target)
     action = $target.data('action')
     source = $target.attr('href')
 
-    @loadTab(source, action)
+    @setTab(source, action)
     @setCurrentAction(action)
 
+  setTab: (source, action) ->
+    return if @loaded[action] is true
+
+    if action is 'activity'
+      @loadActivities(source)
+
+    if action is 'groups'
+      @loadTab(source, action)
+
+    if action is 'contributed'
+      @loadTab(source, action)
+
+    if action is 'personal'
+      @loadTab(source, action)
+
   loadTab: (source, action) ->
-    @_get
-      url: "#{source}.json"
-      success: (data) =>
-        tabSelector = 'div#' + action
-        document.querySelector(tabSelector).innerHTML = data.html
-
-  toggleLoading: (status) ->
-    $('.loading-status .loading').toggle(status)
-
-  _get: (options) ->
-    defaults = {
+    $.ajax
       beforeSend: => @toggleLoading(true)
       complete:   => @toggleLoading(false)
       dataType: 'json'
       type: 'GET'
-    }
+      url: "#{source}.json"
+      success: (data) =>
+        tabSelector = 'div#' + action
+        document.querySelector(tabSelector).innerHTML = data.html
+        @loaded[action] = true
 
-    options = $.extend({}, defaults, options)
+  loadActivities: (source) ->
+    return if @loaded['activity'] is true
 
-    $.ajax(options)
+    $calendarWrap = $('.user-calendar')
+    $calendarWrap.load($calendarWrap.data('url'))
+
+    new Activities()
+    @loaded['activity'] = true
+
+  toggleLoading: (status) ->
+    $('.loading-status .loading').toggle(status)
 
   setCurrentAction: (action) ->
     # Remove possible actions from URL
