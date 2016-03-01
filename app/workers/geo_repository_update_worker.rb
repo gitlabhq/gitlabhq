@@ -6,16 +6,16 @@ class GeoRepositoryUpdateWorker
 
   attr_accessor :project
 
-  def perform(project_id)
+  def perform(project_id, clone_url)
     @project = Project.find(project_id)
 
-    @project.create_repository unless @project.repository_exists?
-    fetch_repository(@project.repository, @project.url_to_repo)
+    fetch_repository(@project, clone_url)
   end
 
   private
 
-  def fetch_repository(repository, remote_url)
-    repository.fetch_geo_mirror(remote_url)
+  def fetch_repository(project, remote_url)
+    project.create_repository unless project.repository_exists?
+    project.repository.fetch_geo_mirror(remote_url)
   end
 end

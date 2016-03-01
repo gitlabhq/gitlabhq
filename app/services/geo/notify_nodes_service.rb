@@ -1,37 +1,19 @@
 module Geo
   class NotifyNodesService < Geo::BaseService
     include HTTParty
-    BATCH_SIZE = 250
-    QUEUE = 'updated_projects'
 
     # HTTParty timeout
     default_timeout Gitlab.config.gitlab.webhook_timeout
 
-    def initialize
-      @redis = redis_connection
-    end
-
     def execute
-      queue_size = @redis.llen(QUEUE)
-      return if queue_size == 0
-
-      if queue_size > BATCH_SIZE
-        batch_size = BATCH_SIZE
-      else
-        batch_size = queue_size
-      end
-
-      projects = []
-      @redis.multi do
-        projects = @redis.lrange(QUEUE, 0, batch_size-1)
-        @redis.ltrim(QUEUE, batch_size, -1)
-      end
+      return if @queue.empty?
+      projects = @queue.fetch_batched_data
 
       ::Gitlab::Geo.secondary_nodes.each do |node|
-        success, message = notify_updated_projects(node, projects.value)
+        success, message = notify_updated_projects(node, projects)
         unless success
           Rails.logger.error("Gitlab Failed to notify #{node.url} : #{message}")
-          reenqueue_projects(projects.value)
+          @queue.store_batched_data(projects)
         end
       end
     end
@@ -54,15 +36,6 @@ module Geo
     def private_token
       # TODO: should we ask admin user to be defined as part of configuration?
       @private_token ||= User.find_by(admin: true).authentication_token
-    end
-
-    def reenqueue_projects(projects)
-      @redis.pipelined do
-        projects.each do |project|
-          # enqueue again to the head of the queue
-          @redis.lpush(QUEUE, project)
-        end
-      end
     end
   end
 end

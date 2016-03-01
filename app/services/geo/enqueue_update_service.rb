@@ -3,12 +3,12 @@ module Geo
     attr_reader :project
 
     def initialize(project)
+      super()
       @project = project
-      @redis = redis_connection
     end
 
     def execute
-      @redis.rpush('updated_projects', @project.id)
+      @queue.store({ id: @project.id, clone_url: @project.url_to_repo })
     end
   end
 end

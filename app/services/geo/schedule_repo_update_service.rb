@@ -7,8 +7,8 @@ module Geo
     end
 
     def execute
-      @projects.each do |project_id|
-        GeoRepositoryUpdateWorker.perform_async(project_id)
+      @projects.each do |project|
+        GeoRepositoryUpdateWorker.perform_async(project['id'], project['clone_url'])
       end
     end
   end
