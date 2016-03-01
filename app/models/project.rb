@@ -86,6 +86,18 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # checks if the language main language of the project changed
+  before_save :check_main_language
+  def check_main_language
+    if !repository.empty? && self.changed?
+      language = Linguist::Repository.new(
+        repository.rugged,
+        repository.rugged.head.target_id).language
+
+        self.main_language = language
+    end
+  end
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 
