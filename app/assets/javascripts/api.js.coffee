@@ -5,6 +5,7 @@
   group_projects_path: "/api/:version/groups/:id/projects.json"
   projects_path: "/api/:version/projects.json"
   labels_path: "/api/:version/projects/:id/labels"
+  license_path: "/api/:version/licenses/:key"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.group_path)
@@ -89,6 +90,18 @@
         search: query
         per_page: 20
       dataType: "json"
+    ).done (projects) ->
+      callback(projects)
+
+  # Return text for specific license
+  licenseText: (key, fullname, callback) ->
+    url = Api.buildUrl(Api.license_path)
+    url = url.replace(':key', key)
+
+    $.ajax(
+      url: url
+      data:
+        fullname: fullname
     ).done (projects) ->
       callback(projects)
 

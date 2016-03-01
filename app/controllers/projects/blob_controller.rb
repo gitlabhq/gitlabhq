@@ -122,6 +122,15 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def editor_variables
+    @licenses = {
+      'Popular' => Licensee::License.all(featured: true).map!{ |license| [license.name, license.key] },
+      'Other' => Licensee::License.all(featured: false).map!{ |license| [license.name, license.key] }
+    }
+
+    unless @repository.empty?
+      @current_license_key = Licensee.license(@repository.path).try(:key)
+    end
+
     @target_branch = params[:target_branch]
 
     @file_path =

@@ -306,6 +306,13 @@ module ProjectsHelper
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'README.md')
   end
 
+  def new_license_path
+    ref = @repository.root_ref if @repository
+    ref ||= 'master'
+
+    namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
+  end
+
   def last_push_event
     if current_user
       current_user.recent_push(@project.id)
