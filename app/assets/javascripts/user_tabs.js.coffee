@@ -50,11 +50,10 @@
 #   </div>
 #
 class @UserTabs
-  actions: ['activity', 'groups', 'contributed', 'projects'],
-  defaultAction: 'activity',
   constructor: (opts) ->
     {
       @action = 'activity'
+      @defaultAction = 'activity'
       @parentEl = $(document)
     } = opts
 
@@ -63,16 +62,21 @@ class @UserTabs
 
     # Store the `location` object, allowing for easier stubbing in tests
     @_location = location
+
+    # Set tab states
     @loaded = {}
+    for item in @parentEl.find('.nav-links a')
+      @loaded[$(item).attr 'data-action'] = false
+
+    # Actions
+    @actions = Object.keys @loaded
 
     @bindEvents()
-    @tabStateInit()
-
-    currAction = @defaultAction if @action is 'show'
 
     # Set active tab
-    source = $(".#{currAction}-tab a").attr('href')
-    @activateTab(currAction)
+    @action = @defaultAction if @action is 'show'
+    source = $(".#{@action}-tab a").attr('href')
+    @activateTab(@action)
 
   bindEvents: ->
     # Turn off existing event listeners
@@ -80,10 +84,6 @@ class @UserTabs
 
     # Set event listeners
     @parentEl.on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
-
-  tabStateInit: ->
-    for action in @actions
-      @loaded[action] = false
 
   tabShown: (event) =>
     $target = $(event.target)
