@@ -41,6 +41,12 @@ $btn-transparent-color: #8F8F8F;
 $ssh-key-icon-color: #8F8F8F;
 $ssh-key-icon-size: 18px;
 
+$change-username-title-color: #FC6D26;
+$remove-account-title-color: #F00;
+
+$provider-btn-group-border: #E5E5E5;
+$provider-btn-not-active-color: #4688F1;
+
 /*
  * Color schema
  */
@@ -98,8 +104,14 @@ $border-red-light: #F24F41;
 $border-red-normal: #D22852;
 $border-red-dark: #CA264F;
 
+<<<<<<< 454832ace49f1b1742b380441817663051ba8ac8
 $help-well-bg: #FAFAFA;
 $help-well-border: #E5E5E5;
+=======
+$account-well-bg: #FAFAFA;
+$account-well-border: #E5E5E5;
+$account-well-radius: 3px;
+>>>>>>> Fixed heading weight issue
 
 /* header */
 $light-grey-header: #faf9f9;

@@ -176,17 +176,17 @@
 }
 
 .change-username-title {
-  color: #FC6D26;
+  color: $change-username-title-color;
 }
 
 .remove-account-title {
-  color: #F00;
+  color: $remove-account-title-color;
 }
 
 .provider-btn-group {
   display: inline-block;
   margin-right: 10px;
-  border: 1px solid #E5E5E5;
+  border: 1px solid $provider-btn-group-border;
   border-radius: 3px;
 
   &:last-child {
@@ -197,7 +197,7 @@
 .provider-btn-image {
   display: inline-block;
   padding: 5px 10px;
-  border-right: 1px solid #E5E5E5;
+  border-right: 1px solid $provider-btn-group-border;
 
   > img {
     width: 20px;
@@ -212,6 +212,6 @@
   background-color: $gray-light;
 
   &.not-active {
-    color: #4688F1;
+    color: $provider-btn-not-active-color;
   }
 }
