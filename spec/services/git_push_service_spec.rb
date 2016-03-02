@@ -146,7 +146,7 @@ describe GitPushService, services: true do
     it "triggers indexer" do
       expect_any_instance_of(Elastic::Indexer).to receive(:run)
 
-      service = execute_service(project, user, @oldrev, @newrev, @ref )
+      execute_service(project, user, @oldrev, @newrev, @ref )
     end
   end
 
