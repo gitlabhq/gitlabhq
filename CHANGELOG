@@ -15,6 +15,7 @@ v 8.5.2
   - Update Rails to 4.2.5.2
   - Fix permissions for deprecated CI build status badge
   - Don't show "Welcome to GitLab" when the search didn't return any projects
+  - Add Todos documentation
 
 v 8.5.1
   - Fix group projects styles
