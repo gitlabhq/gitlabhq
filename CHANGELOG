@@ -12,6 +12,7 @@ v 8.5.2
   - Don't show any "2FA required" message if it's not actually required
   - Fix help keyboard shortcut on relative URL setups (Artem Sidorenko)
   - Update Rails to 4.2.5.2
+  - Fix permissions for deprecated CI build status badge
 
 v 8.5.1
   - Fix group projects styles
