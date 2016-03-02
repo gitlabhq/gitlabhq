@@ -7,7 +7,7 @@
 
 .profile-settings-sidebar {
   a {
-    color: $gl-primary;
+    color: $profile-settings-link-color;
   }
 }
 
@@ -22,12 +22,6 @@
   position: relative;
   top: 2px;
   display: inline-block;
-}
-
-.profile-settings-sidebar {
-  a {
-    color: $gl-primary;
-  }
 }
 
 .oauth-buttons {
