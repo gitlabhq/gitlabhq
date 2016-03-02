@@ -52,8 +52,15 @@
 class @UserTabs
   actions: ['activity', 'groups', 'contributed', 'projects'],
   defaultAction: 'activity',
+  constructor: (opts) ->
+    {
+      @action = 'activity'
+      @parentEl = $(document)
+    } = opts
 
-  constructor: (@opts = {}) ->
+    # Make jQuery object if selector is provided
+    @parentEl = $(@parentEl) if typeof @parentEl is 'string'
+
     # Store the `location` object, allowing for easier stubbing in tests
     @_location = location
     @loaded = {}
@@ -61,19 +68,18 @@ class @UserTabs
     @bindEvents()
     @tabStateInit()
 
-    action = @opts.action
-    action = @defaultAction if action == 'show'
+    currAction = @defaultAction if @action is 'show'
 
     # Set active tab
-    source = $(".#{action}-tab a").attr('href')
-    @activateTab(action)
+    source = $(".#{currAction}-tab a").attr('href')
+    @activateTab(currAction)
 
   bindEvents: ->
     # Turn off existing event listeners
-    $(document).off 'shown.bs.tab', '.nav-links a[data-toggle="tab"]'
+    @parentEl.off 'shown.bs.tab', '.nav-links a[data-toggle="tab"]'
 
     # Set event listeners
-    $(document).on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
+    @parentEl.on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
 
   tabStateInit: ->
     for action in @actions
@@ -88,7 +94,7 @@ class @UserTabs
     @setCurrentAction(action)
 
   activateTab: (action) ->
-    $(".nav-links .#{action}-tab a").tab('show')
+    @parentEl.find(".nav-links .#{action}-tab a").tab('show')
 
   setTab: (source, action) ->
     return if @loaded[action] is true
@@ -108,20 +114,20 @@ class @UserTabs
       url: "#{source}.json"
       success: (data) =>
         tabSelector = 'div#' + action
-        document.querySelector(tabSelector).innerHTML = data.html
+        @parentEl.find(tabSelector).html(data.html)
         @loaded[action] = true
 
   loadActivities: (source) ->
     return if @loaded['activity'] is true
 
-    $calendarWrap = $('.user-calendar')
+    $calendarWrap = @parentEl.find('.user-calendar')
     $calendarWrap.load($calendarWrap.data('href'))
 
     new Activities()
     @loaded['activity'] = true
 
   toggleLoading: (status) ->
-    $('.loading-status .loading').toggle(status)
+    @parentEl.find('.loading-status .loading').toggle(status)
 
   setCurrentAction: (action) ->
     # Remove possible actions from URL

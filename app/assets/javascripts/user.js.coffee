@@ -12,4 +12,7 @@ class @User
       e.preventDefault()
 
   initTabs: ->
-    new UserTabs(@opts)
+    new UserTabs(
+        parentEl: '.user-profile'
+        action: @opts.action
+      )
