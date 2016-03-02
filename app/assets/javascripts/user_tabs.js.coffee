@@ -69,6 +69,10 @@ class @UserTabs
     @activateTab(action)
 
   bindEvents: ->
+    # Turn off existing event listeners
+    $(document).off 'shown.bs.tab', '.nav-links a[data-toggle="tab"]'
+
+    # Set event listeners
     $(document).on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
 
   tabStateInit: ->
