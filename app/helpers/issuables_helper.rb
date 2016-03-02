@@ -5,7 +5,7 @@ module IssuablesHelper
   end
 
   def sidebar_gutter_collapsed_class
-    "hidden-xs right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
+    "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 
   def issuables_count(issuable)

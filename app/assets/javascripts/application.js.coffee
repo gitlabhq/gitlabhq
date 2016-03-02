@@ -220,7 +220,7 @@ $ ->
     .off 'breakpoint:change'
     .on 'breakpoint:change', (e, breakpoint) ->
       if breakpoint is 'sm' or breakpoint is 'xs'
-        $gutterIcon = $('.gutter-toggle').find('i')
+        $gutterIcon = $('aside .gutter-toggle').find('i')
         if $gutterIcon.hasClass('fa-angle-double-right')
           $gutterIcon.closest('a').trigger('click')
 
@@ -230,36 +230,22 @@ $ ->
       e.preventDefault()
       $this = $(this)
       $thisIcon = $this.find 'i'
+      $allGutterToggleIcons = $('.gutter-toggle i')
       if $thisIcon.hasClass('fa-angle-double-right')
-        # It's open -> close it
-        if bootstrapBreakpoint is 'xs'
-          # it's the gutter open button outside the aside
-          if not $this.closest('aside').length
-            $('aside').addClass('hidden-xs')
-
-        console.log(bootstrapBreakpoint);
-        $thisIcon
+        $allGutterToggleIcons
           .removeClass('fa-angle-double-right')
           .addClass('fa-angle-double-left')
-        $this
-          .closest('aside')
+        $('aside.right-sidebar')
           .removeClass('right-sidebar-expanded')
           .addClass('right-sidebar-collapsed')
         $('.page-with-sidebar')
           .removeClass('right-sidebar-expanded')
           .addClass('right-sidebar-collapsed')
       else
-        # It's closed -> open it
-        if bootstrapBreakpoint is 'xs'
-          # it's the gutter open button outside the aside
-          if not $this.closest('aside').length
-            $('aside').removeClass('hidden-xs')
-
-        $thisIcon
+        $allGutterToggleIcons
           .removeClass('fa-angle-double-left')
           .addClass('fa-angle-double-right')
-        $this
-          .closest('aside')
+        $('aside.right-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
         $('.page-with-sidebar')

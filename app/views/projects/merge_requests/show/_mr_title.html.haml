@@ -4,6 +4,8 @@
       = @merge_request.state_human_name
     %span.hidden-sm.hidden-md.hidden-lg
       =icon(@merge_request.state_icon_name)
+  %a.btn.btn-default.pull-right.hidden-sm.hidden-md.hidden-lg.gutter-toggle{ href: "#" }
+    =icon('angle-double-left')
   .issue-meta
     %strong.identifier
       Merge Request ##{@merge_request.iid}
