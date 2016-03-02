@@ -560,14 +560,6 @@ describe Project, models: true do
     end
   end
 
-  describe "#main_language" do
-    let(:project) { create :project }
-    
-    it 'shows the main language of the project' do
-      expect(project.main_language).to eq("Ruby")
-    end
-  end
-
   describe '#visibility_level_allowed?' do
     let(:project) { create :project, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
 
