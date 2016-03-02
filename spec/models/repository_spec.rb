@@ -600,5 +600,11 @@ describe Repository, models: true do
     it 'shows the main language of the project' do
       expect(repository.main_language).to eq("Ruby")
     end
+
+    it 'returns nil when the repository is empty' do
+      allow(repository).to receive(:empty?).and_return(true)
+
+      expect(repository.main_language).to be_nil
+    end
   end
 end
