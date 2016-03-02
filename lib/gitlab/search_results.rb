@@ -59,22 +59,7 @@ module Gitlab
     end
 
     def issues
-      issues = Issue.where(project_id: project_ids_relation)
-
-      unless user.admin?
-        issues_table = issues.arel_table
-        authorized_projects_ids = user.authorized_projects.pluck(:id)
-
-        issues = issues.where(
-          issues_table[:confidential].eq(false).or(
-            issues_table[:confidential].eq(true).and(
-              issues_table[:author_id].eq(user.id).or(
-                issues_table[:project_id].in(authorized_projects_ids)
-              )
-            )
-          )
-        )
-      end
+      issues = Issue.available_for(user).where(project_id: project_ids_relation)
 
       if query =~ /#(\d+)\z/
         issues = issues.where(iid: $1)

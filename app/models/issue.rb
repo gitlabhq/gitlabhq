@@ -65,6 +65,24 @@ class Issue < ActiveRecord::Base
     attributes
   end
 
+  def self.available_for(user)
+    return not_confidential if user.blank?
+    return all if user.admin?
+
+    issues_table = self.arel_table
+    project_ids  = user.authorized_projects.pluck(:id)
+
+    where(
+      issues_table[:confidential].eq(false).or(
+        issues_table[:confidential].eq(true).and(
+          issues_table[:author_id].eq(user.id).or(
+            issues_table[:project_id].in(project_ids)
+          )
+        )
+      )
+    )
+  end
+
   def self.reference_prefix
     '#'
   end
