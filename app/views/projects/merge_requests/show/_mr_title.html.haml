@@ -14,7 +14,10 @@
       .editor-details
         %strong
           =link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
-          =link_to_member(@project, @merge_request.author, size: 24,
+        %span.hidden-xs
+          = '@' + @merge_request.author.username
+        %strong
+          =link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
             by_username: true, avatar: false)
         = time_ago_with_tooltip(@merge_request.created_at)
 
