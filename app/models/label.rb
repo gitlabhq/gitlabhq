@@ -91,6 +91,10 @@ class Label < ActiveRecord::Base
     issues.closed.count
   end
 
+  def open_merge_requests_count
+    merge_requests.opened.count
+  end
+
   def template?
     template
   end
