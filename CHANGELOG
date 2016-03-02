@@ -14,6 +14,7 @@ v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
   - Fix error 500 when commenting on a commit
   - Fix broken icons on installations with relative URL (Artem Sidorenko)
+  - Fix help keyboard shortcut on relative URL setups (Artem Sidorenko)
 
 v 8.5.1
   - Fix group projects styles
