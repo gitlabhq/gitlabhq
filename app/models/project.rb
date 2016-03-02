@@ -91,6 +91,7 @@ class Project < ActiveRecord::Base
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+  attr_encrypted :import_credentials, key: Gitlab::Application.secrets.db_key_base
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
