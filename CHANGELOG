@@ -7,6 +7,7 @@ v 8.5.2
   - Fix error 500 when commenting on a commit
   - Show days remaining instead of elapsed time for Milestone
   - Fix broken icons on installations with relative URL (Artem Sidorenko)
+  - Fix issue where tag list wasn't refreshed after deleting a tag
   - Fix import from gitlab.com (KazSawada)
   - Improve implementation to check read access to forks and add pagination
   - Don't show any "2FA required" message if it's not actually required
