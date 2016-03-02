@@ -26,7 +26,7 @@ class CiService < Service
   default_value_for :category, 'ci'
 
   def valid_token?(token)
-    self.respond_to?(:token) && self.token.present? && self.token == token
+    self.respond_to?(:token) && self.token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
   end
 
   def supported_events
