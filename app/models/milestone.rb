@@ -111,8 +111,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def remaining_days
-    return nil if due_date.nil?
-    return 0   if due_date < Date.today
+    return 0 if !due_date || expired?
 
     (due_date - Date.today).to_i
   end
