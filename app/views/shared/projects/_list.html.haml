@@ -23,7 +23,7 @@
             Show all
     = paginate projects, theme: "gitlab" if projects.respond_to? :total_pages
   - else
-    %h3 No projects found
+    .nothing-here-block No projects found
 
 :javascript
   new ProjectsList();
