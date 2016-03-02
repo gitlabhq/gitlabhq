@@ -656,7 +656,7 @@ class Repository
 
   def revert(user, commit, base_branch, revert_tree_id = nil)
     source_sha = find_branch(base_branch).target
-    revert_tree_id = check_revert_content(commit, base_branch) unless revert_tree_id
+    revert_tree_id ||= check_revert_content(commit, base_branch)
 
     return false unless revert_tree_id
 
