@@ -27,6 +27,7 @@ class Label < ActiveRecord::Base
   belongs_to :project
   has_many :label_links, dependent: :destroy
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
+  has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   validates :color, color: true, allow_blank: false
   validates :project, presence: true, unless: Proc.new { |service| service.template? }
