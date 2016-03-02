@@ -92,13 +92,7 @@ class @UserTabs
     if action is 'activity'
       @loadActivities(source)
 
-    if action is 'groups'
-      @loadTab(source, action)
-
-    if action is 'contributed'
-      @loadTab(source, action)
-
-    if action is 'projects'
+    if action in ['groups', 'contributed', 'projects']
       @loadTab(source, action)
 
   loadTab: (source, action) ->
