@@ -6,6 +6,7 @@ v 8.5.2
   - Bring the "branded appearance" feature from EE to CE
   - Fix error 500 when commenting on a commit
   - Fix broken icons on installations with relative URL (Artem Sidorenko)
+  - Fix import from gitlab.com (KazSawada)
   - Improve implementation to check read access to forks and add pagination
   - Don't show any "2FA required" message if it's not actually required
   - Fix help keyboard shortcut on relative URL setups (Artem Sidorenko)
@@ -24,7 +25,7 @@ v 8.5.1
   - Fix error 500 when trying to mark an already done todo as "done"
   - Fix an issue where MRs weren't sortable
   - Issues can now be dragged & dropped into empty milestone lists. This is also
-  possible with MRs
+    possible with MRs
   - Changed padding & background color for highlighted notes
   - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
   - Update sentry-raven gem to 0.15.6
