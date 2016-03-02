@@ -5,6 +5,7 @@ v 8.5.2
   - Don't repeat labels listed on Labels tab
   - Bring the "branded appearance" feature from EE to CE
   - Fix error 500 when commenting on a commit
+  - Show days remaining instead of elapsed time for Milestone
   - Fix broken icons on installations with relative URL (Artem Sidorenko)
   - Fix import from gitlab.com (KazSawada)
   - Improve implementation to check read access to forks and add pagination
