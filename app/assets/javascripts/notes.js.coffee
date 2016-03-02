@@ -17,7 +17,7 @@ class @Notes
     @noteable_url = document.URL
     @notesCountBadge ||= $(".issuable-details").find(".notes-tab .badge")
     @base_polling_interval = 15000
-    @max_polling_steps = 5
+    @max_polling_steps = 4
 
     @cleanBinding()
     @addBinding()
