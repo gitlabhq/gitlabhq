@@ -90,7 +90,7 @@ class Project < ActiveRecord::Base
   before_save :check_main_language
   def check_main_language
     if commit_count_changed?
-      self.main_language = repository.main_language
+      main_language = repository.main_language
     end
   end
 
