@@ -953,14 +953,4 @@ class Project < ActiveRecord::Base
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
-
-  def main_language
-    language = read_attribute(:main_language)
-
-    return language if language
-
-    update_attributes(main_language: repository.main_language)
-
-    read_attribute(:main_language)
-  end
 end
