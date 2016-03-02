@@ -11,7 +11,4 @@
         %textarea.hidden.js-task-list-field
           = @merge_request.description
 
-  - if @merge_request.updated_at != @merge_request.created_at
-    %small
-      Edited
-      = time_ago_with_tooltip(@merge_request.updated_at, placement: 'bottom')
+  = edited_time_ago_with_tooltip(@merge_request, placement: 'bottom')

@@ -27,20 +27,13 @@
         %span.note-last-update
           %a{name: dom_id(note), href: "##{dom_id(note)}", title: 'Link here'}
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note_created_ago')
-          - if note.updated_at != note.created_at
-            %span.note-updated-at
-              &middot;
-              = icon('edit', title: 'edited')
-              = time_ago_with_tooltip(note.updated_at, placement: 'bottom', html_class: 'note_edited_ago')
-              - if note.updated_by && note.updated_by != note.author
-                by #{link_to_member(note.project, note.updated_by, avatar: false, author_class: nil)}
-
       .note-body{class: note_editable?(note) ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
             = markdown(note.note, pipeline: :note, cache_key: [note, "note"])
         - if note_editable?(note)
           = render 'projects/notes/edit_form', note: note
+      = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
 
       - if note.attachment.url
         .note-attachment
@@ -54,4 +47,3 @@
               = link_to delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note),
                 title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
                 = icon('trash-o', class: 'cred')
-      .clear
