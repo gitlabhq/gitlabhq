@@ -147,11 +147,17 @@
 }
 
 .key-icon {
-  color: #8F8F8F;
-  font-size: 18px;
+  color: $ssh-key-icon-color;
+  font-size: $ssh-key-icon-size;
   line-height: 42px;
 }
 
 .key-created-at {
   line-height: 42px;
+}
+
+.profile-settings-content {
+  a {
+    color: $gl-primary;
+  }
 }
