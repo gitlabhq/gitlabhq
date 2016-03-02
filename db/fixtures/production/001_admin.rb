@@ -1,33 +1,38 @@
+user_args = {
+  email:    ENV['GITLAB_ROOT_EMAIL'].presence || 'admin@example.com',
+  name:     'Administrator',
+  username: 'root',
+  admin:    true
+}
+
 if ENV['GITLAB_ROOT_PASSWORD'].blank?
-  password = '5iveL!fe'
-  expire_time = Time.now
+  user_args[:password_automatically_set] = true
+  user_args[:force_random_password] = true
 else
-  password = ENV['GITLAB_ROOT_PASSWORD']
-  expire_time = nil
+  user_args[:password] = ENV['GITLAB_ROOT_PASSWORD']
 end
 
-email = ENV['GITLAB_ROOT_EMAIL'].presence || 'admin@example.com'
+user = User.new(user_args)
+user.skip_confirmation!
 
-admin = User.create(
-  email: email,
-  name: "Administrator",
-  username: 'root',
-  password: password,
-  password_expires_at: expire_time,
-  theme_id: Gitlab::Themes::APPLICATION_DEFAULT
+if user.save
+  puts "Administrator account created:".green
+  puts
+  puts "login:    root".green
 
-)
+  if user_args.key?(:password)
+    puts "password: #{user_args[:password]}".green
+  else
+    puts "password: You'll be prompted to create one on your first visit.".green
+  end
+  puts
+else
+  puts "Could not create the default administrator account:".red
+  puts
+  user.errors.full_messages.map do |message|
+    puts "--> #{message}".red
+  end
+  puts
 
-admin.projects_limit = 10000
-admin.admin = true
-admin.save!
-admin.confirm
-
-if admin.valid?
-puts %Q[
-Administrator account created:
-
-login.........root
-password......#{password}
-]
+  exit 1
 end
