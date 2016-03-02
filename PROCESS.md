@@ -169,5 +169,5 @@ still an issue I encourage you to open it on the \[GitLab.com issue tracker\]\(h
 [core-team]: https://about.gitlab.com/core-team/
 [team]: https://about.gitlab.com/team/
 [contribution acceptance criteria]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
-["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md##implement-design-ui-elements
+["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements
 [Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
