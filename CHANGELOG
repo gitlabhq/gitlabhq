@@ -16,6 +16,7 @@ v 8.5.2
   - Fix broken icons on installations with relative URL (Artem Sidorenko)
   - Fix import from gitlab.com (KazSawada)
   - Fix help keyboard shortcut on relative URL setups (Artem Sidorenko)
+  - Don't show "Welcome to GitLab" when the search didn't return any projects
 
 v 8.5.1
   - Fix group projects styles

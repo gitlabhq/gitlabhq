@@ -10,7 +10,7 @@
 - if @last_push
   = render "events/event_last_push", event: @last_push
 
-- if @projects.any?
+- if @projects.any? || params[:filter_projects]
   = render 'projects'
 - else
   = render "zero_authorized_projects"
