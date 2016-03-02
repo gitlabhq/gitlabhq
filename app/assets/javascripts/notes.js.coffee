@@ -17,7 +17,7 @@ class @Notes
     @noteable_url = document.URL
     @notesCountBadge ||= $(".issuable-details").find(".notes-tab .badge")
     @base_polling_interval = 15000
-    @limit_polling_interval = 120000
+    @max_polling_steps = 5
 
     @cleanBinding()
     @addBinding()
@@ -127,9 +127,10 @@ class @Notes
   if there aren't new notes coming from the server
   ###
   setPollingInterval: (shouldReset = true) ->
+    nthInterval = @base_polling_interval * Math.pow(2, @max_polling_steps - 1)
     if shouldReset
       @polling_interval = @base_polling_interval
-    else if @polling_interval < @limit_polling_interval
+    else if @polling_interval < nthInterval
       @polling_interval *= 2
 
     @initRefresh()
