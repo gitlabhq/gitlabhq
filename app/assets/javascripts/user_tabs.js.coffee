@@ -75,7 +75,6 @@ class @UserTabs
 
     # Set active tab
     @action = @defaultAction if @action is 'show'
-    source = $(".#{@action}-tab a").attr('href')
     @activateTab(@action)
 
   bindEvents: ->
