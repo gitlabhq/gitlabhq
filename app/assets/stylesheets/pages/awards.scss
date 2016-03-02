@@ -17,7 +17,7 @@
   font-size: 14px;
   background-color: $award-emoji-menu-bg;
   border: 1px solid $award-emoji-menu-border;
-  border-radius: $award-emoji-menu-radius;
+  border-radius: $border-radius-base;
   box-shadow: 0 6px 12px rgba(0,0,0,.175);
 
   .emoji-menu-content {
@@ -55,10 +55,10 @@
   padding: 0;
   background: none;
   border: 0;
-  border-radius: $award-emoji-menu-btn-radius;
+  border-radius: $border-radius-base;
 
   &:hover {
-    background-color: $award-emoji-menu-btn-hover-bg;
+    background-color: $white-dark;
   }
 
   .emoji-icon {
@@ -80,7 +80,7 @@
 
   &.active,
   &:active {
-    background-color: $award-emoji-control-active-bg;
+    background-color: $white-dark;
     box-shadow: none;
     outline: 0;
   }
@@ -107,6 +107,6 @@
   }
 
   .award-control-icon {
-    color: $award-emoji-new-btn-color;
+    color: $award-emoji-new-btn-icon-color;
   }
 }
