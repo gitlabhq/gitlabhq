@@ -114,12 +114,17 @@ class @AwardsHandler
     emojiCssClass = @resolveNameToCssClass(emoji)
 
     nodes = []
-    nodes.push "<button class='btn award-control js-emoji-btn has_tooltip active' title='me'>"
-    nodes.push "<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>"
-    nodes.push "<span class='award-control-text js-counter'>1</span>"
-    nodes.push "</button>"
+    nodes.push(
+      "<button class='btn award-control js-emoji-btn has_tooltip active' title='me'>",
+      "<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>",
+      "<span class='award-control-text js-counter'>1</span>",
+      "</button>"
+    )
 
-    emoji_node = $(nodes.join("\n")).insertBefore(".js-award-holder").find(".emoji-icon").data("emoji", emoji)
+    emoji_node = $(nodes.join("\n"))
+      .insertBefore(".js-award-holder")
+      .find(".emoji-icon")
+      .data("emoji", emoji)
     $('.award-control').tooltip()
 
   resolveNameToCssClass: (emoji) ->
