@@ -1,6 +1,6 @@
 class @AwardsHandler
   constructor: (@post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
-    $(".js-add-award").click (event) =>
+    $(".js-add-award").on "click", (event) =>
       event.stopPropagation()
       event.preventDefault()
 
@@ -18,7 +18,9 @@ class @AwardsHandler
 
   handleClick: (e) ->
     e.preventDefault()
-    emoji = $(this).find(".icon").data "emoji"
+    emoji = $(this)
+      .find(".icon")
+      .data "emoji"
     awards_handler.addAward emoji
 
   showEmojiMenu: ->
@@ -80,9 +82,13 @@ class @AwardsHandler
 
   removeMeFromAuthorList: (emoji) ->
     award_block = @findEmojiIcon(emoji).parent()
-    authors = award_block.attr("data-original-title").split(", ")
+    authors = award_block
+      .attr("data-original-title")
+      .split(", ")
     authors.splice(authors.indexOf("me"),1)
-    award_block.closest(".js-emoji-btn").attr("data-original-title", authors.join(", "))
+    award_block
+      .closest(".js-emoji-btn")
+      .attr("data-original-title", authors.join(", "))
     @resetTooltip(award_block)
 
   addMeToAuthorList: (emoji) ->
