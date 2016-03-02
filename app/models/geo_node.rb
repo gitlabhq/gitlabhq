@@ -24,6 +24,7 @@ class GeoNode < ActiveRecord::Base
   validates :host, host: true, presence: true, uniqueness: { case_sensitive: false, scope: :port }
   validates :primary, uniqueness: { message: 'primary node already exists' }, if: :primary
   validates :schema, inclusion: %w(http https)
+  validates :relative_url_root, length: { minimum: 0, allow_nil: false }
 
   after_save :refresh_bulk_notify_worker_status
   after_destroy :refresh_bulk_notify_worker_status
@@ -46,7 +47,7 @@ class GeoNode < ActiveRecord::Base
     self.schema = new_uri.scheme
     self.host = new_uri.host
     self.port = new_uri.port
-    self.relative_url_root = new_uri.path != '/' ? new_uri.path : nil
+    self.relative_url_root = new_uri.path != '/' ? new_uri.path : ''
   end
 
   def notify_url
