@@ -41,7 +41,7 @@ Repository.__elasticsearch__.create_index!
 
 repo = Repository.new
 
-params = {from_rev: FROM_SHA, to_rev: TO_SHA}.compact
+params = { from_rev: FROM_SHA, to_rev: TO_SHA }.compact
 
 print "Indexing commits..."
 repo.index_commits(params)
