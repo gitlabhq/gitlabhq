@@ -728,13 +728,15 @@ namespace :gitlab do
     def check_imap_authentication
       print "IMAP server credentials are correct? ... "
 
-      config = Gitlab.config.incoming_email
+      config_path = Rails.root.join('config', 'mail_room.yml')
+      config_file = YAML.load(ERB.new(File.read(config_path)).result)
+      config = config_file[:mailboxes].first
 
       if config
         begin
-          imap = Net::IMAP.new(config.host, port: config.port, ssl: config.ssl)
-          imap.starttls if config.start_tls
-          imap.login(config.user, config.password)
+          imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
+          imap.starttls if config[:start_tls]
+          imap.login(config[:email], config[:password])
           connected = true
         rescue
           connected = false

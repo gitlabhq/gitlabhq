@@ -5,6 +5,7 @@ v 8.6.0 (unreleased)
   - Improve the formatting for the user page bio (Connor Shea)
   - Fix issue when pushing to projects ending in .wiki
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
+  - Don't load all of GitLab in mail_room
   - Strip leading and trailing spaces in URL validator (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
   - Update documentation to reflect Guest role not being enforced on internal projects
