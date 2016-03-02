@@ -1,8 +1,11 @@
 - page_title "Audit Log"
 - header_title page_title, audit_log_profile_path
 
-.alert.alert-help.prepend-top-default
-  History of authentications
-
-.prepend-top-default
-= render 'event_table', events: @events
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h3.prepend-top-0
+      = page_title
+    %p
+      This is a security log of important events involving your account.
+  .col-lg-9
+    = render 'event_table', events: @events
