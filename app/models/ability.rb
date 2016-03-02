@@ -83,7 +83,7 @@ class Ability
                 subject.group
               end
 
-      if group && group.projects.public_only.any?
+      if group && group.public?
         [:read_group]
       else
         []
@@ -271,16 +271,13 @@ class Ability
     def group_abilities(user, group)
       rules = []
 
-      if user.admin? || group.users.include?(user) || ProjectsFinder.new.execute(user, group: group).any?
-        rules << :read_group
-      end
+      rules << :read_group if can_read_group?(user, group)
 
       # Only group masters and group owners can create new projects and change permission level
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules += [
           :create_projects,
-          :admin_milestones,
-          :change_visibility_level
+          :admin_milestones
         ]
       end
 
@@ -289,11 +286,18 @@ class Ability
         rules += [
           :admin_group,
           :admin_namespace,
-          :admin_group_member
+          :admin_group_member,
+          :change_visibility_level
         ]
       end
 
       rules.flatten
+    end
+
+    def can_read_group?(user, group)
+      is_project_member = ProjectsFinder.new.execute(user, group: group).any?
+      internal_group_allowed = group.internal? && user.present?
+      user.admin? || group.users.include?(user) || is_project_member || group.public? || internal_group_allowed
     end
 
     def namespace_abilities(user, namespace)

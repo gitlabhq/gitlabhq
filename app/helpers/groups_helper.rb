@@ -28,7 +28,7 @@ module GroupsHelper
       group = Group.find_by(path: group)
     end
 
-    if group && group.avatar.present?
+    if group && can?(current_user, :read_group, group) && group.avatar.present?
       group.avatar.url
     else
       'no_group_avatar.png'

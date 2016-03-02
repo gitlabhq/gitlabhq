@@ -21,7 +21,7 @@ class Group < Namespace
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
   include Referable
-
+  include SharedScopes
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
@@ -34,10 +34,6 @@ class Group < Namespace
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
-
-  scope :public_only, -> { where(visibility_level: Group::PUBLIC) }
-  scope :public_and_internal_only, -> { where(visibility_level: [Group::PUBLIC, Group::INTERNAL] ) }
-
 
   class << self
     def search(query)
@@ -67,6 +63,10 @@ class Group < Namespace
 
   def human_name
     name
+  end
+
+  def visibility_level_field
+    visibility_level
   end
 
   def avatar_url(size = nil)

@@ -3,6 +3,16 @@ class UsersController < ApplicationController
   before_action :set_user
 
   def show
+<<<<<<< HEAD
+=======
+    @contributed_projects = contributed_projects.joined(@user).reject(&:forked?)
+
+    @projects = PersonalProjectsFinder.new(@user).execute(current_user)
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
+
+    @groups = @user.groups.order_id_desc
+
+>>>>>>> Code improvements
     respond_to do |format|
       format.html
 

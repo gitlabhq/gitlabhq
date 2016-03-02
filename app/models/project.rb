@@ -52,6 +52,7 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
+  include SharedScopes
 
   extend Gitlab::ConfigHelper
 
@@ -213,8 +214,6 @@ class Project < ActiveRecord::Base
   scope :in_group_namespace, -> { joins(:group) }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
-  scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
-  scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
 
