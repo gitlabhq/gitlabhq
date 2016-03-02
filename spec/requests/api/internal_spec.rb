@@ -48,6 +48,33 @@ describe API::API, api: true  do
     end
   end
 
+  describe "GET /internal/ssh-key" do
+    context "existing key" do
+      it "finds the key" do
+        get(api('/internal/ssh-key'), fingerprint: key.fingerprint, secret_token: secret_token)
+
+        expect(response.status).to eq(200)
+        expect(json_response["key"]).to eq(key.key)
+      end
+    end
+
+    context "non existing key" do
+      it "returns 404" do
+        get(api('/internal/ssh-key'), fingerprint: "not-valid", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "partial key match" do
+      it "returns 404" do
+        get(api('/internal/ssh-key'), fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
   describe "POST /internal/allowed" do
     context "access granted" do
       before do

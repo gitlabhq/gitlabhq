@@ -53,6 +53,15 @@ module API
       end
 
       #
+      # Get a ssh key using the fingerprint
+      #
+      get "/ssh-key" do
+        key = Key.find_by(fingerprint: params[:fingerprint])
+        not_found!("Key") if key.nil?
+        present key, with: Entities::SSHKey
+      end
+
+      #
       # Discover user by ssh key
       #
       get "/discover" do
