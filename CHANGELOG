@@ -13,6 +13,9 @@ v 8.6.0 (unreleased)
   - Don't show Issues/MRs from archived projects in Groups view
   - Increase the notes polling timeout over time (Roberto Dip)
 
+v 8.5.5
+  - No changes
+
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
 
