@@ -23,7 +23,7 @@
 
     .issue-meta
       - if @issue.confidential
-        = icon('lock')
+        = icon('eye-slash')
       %strong.identifier
         Issue ##{@issue.iid}
       %span.creator
@@ -51,7 +51,6 @@
         = link_to edit_namespace_project_issue_path(@project.namespace, @project, @issue), class: 'btn btn-nr btn-grouped issuable-edit' do
           = icon('pencil-square-o')
           Edit
-
 
   .issue-details.issuable-details
     .detail-page-description.content-block

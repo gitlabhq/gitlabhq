@@ -5,15 +5,14 @@
 
   .issue-title
     %span.issue-title-text
+      - if issue.confidential?
+        = icon('eye-slash')
+
       = link_to_gfm issue.title, issue_path(issue), class: "title"
     %ul.controls.light
       - if issue.closed?
         %li
           CLOSED
-
-      - if issue.confidential?
-        %li
-          = icon('lock')
 
       - if issue.assignee
         %li
