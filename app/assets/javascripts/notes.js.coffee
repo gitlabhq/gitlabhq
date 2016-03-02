@@ -96,6 +96,8 @@ class @Notes
     , @polling_interval
 
   refresh: ->
+    return if @refreshing is true
+    refreshing = true
     if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
@@ -113,6 +115,8 @@ class @Notes
             @renderDiscussionNote(note)
           else
             @renderNote(note)
+      always: =>
+        @refreshing = false
 
   ###
   Increase @polling_interval up to 120 seconds on every function call,
