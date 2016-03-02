@@ -8,6 +8,7 @@ v 8.5.2
   - Fix broken icons on installations with relative URL (Artem Sidorenko)
   - Improve implementation to check read access to forks and add pagination
   - Don't show any "2FA required" message if it's not actually required
+  - Fix help keyboard shortcut on relative URL setups (Artem Sidorenko)
   - Update Rails to 4.2.5.2
 
 v 8.5.1
