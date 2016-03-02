@@ -2,26 +2,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   skip_before_action :check_2fa_requirement
 
   def new
-    unless current_user.otp_secret
-      current_user.otp_secret = User.generate_otp_secret(32)
-    end
-
-    unless current_user.otp_grace_period_started_at && two_factor_grace_period
-      current_user.otp_grace_period_started_at = Time.current
-    end
-
-    current_user.save! if current_user.changed?
-
-    if two_factor_authentication_required?
-      if two_factor_grace_period_expired?
-        flash.now[:alert] = 'You must enable Two-factor Authentication for your account.'
-      else
-        grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-        flash.now[:alert] = "You must enable Two-factor Authentication for your account before #{l(grace_period_deadline)}."
-      end
-    end
-
-    @qr_code = build_qr_code
+    redirect_to profile_account_path
   end
 
   def create
@@ -32,10 +13,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       render 'create'
     else
-      @error = 'Invalid pin code'
-      @qr_code = build_qr_code
+      error = 'Invalid pin code'
 
-      render 'new'
+      redirect_to profile_account_path, flash: { error: error }
     end
   end
 

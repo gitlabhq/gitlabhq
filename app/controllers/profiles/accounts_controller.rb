@@ -1,4 +1,6 @@
 class Profiles::AccountsController < Profiles::ApplicationController
+  skip_before_action :check_2fa_requirement
+  
   def show
     unless current_user.otp_secret
       current_user.otp_secret = User.generate_otp_secret(32)
@@ -9,6 +11,15 @@ class Profiles::AccountsController < Profiles::ApplicationController
     end
 
     current_user.save! if current_user.changed?
+
+    if two_factor_authentication_required?
+      if two_factor_grace_period_expired?
+        flash.now[:alert] = 'You must enable Two-factor Authentication for your account.'
+      else
+        grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
+        flash.now[:alert] = "You must enable Two-factor Authentication for your account before #{l(grace_period_deadline)}."
+      end
+    end
 
     @user = current_user
 

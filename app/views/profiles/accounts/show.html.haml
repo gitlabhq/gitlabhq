@@ -57,12 +57,18 @@
               = current_user.otp_secret.scan(/.{4}/).join(' ')
             %p.two-factor-new-manual-content
               Time based: Yes
-      = form_for @user, url: "", method: :put do |f|
+      = form_for @user, url: profile_two_factor_auth_path, method: :post do |f|
+        - if flash[:error]
+          .alert.alert-danger
+            = flash[:error]
         .form-group
           = label_tag :pin_code, nil, class: "label-light"
           = text_field_tag :pin_code, nil, class: "form-control", required: true
         .prepend-top-default
           = submit_tag 'Enable two-factor authentication', class: 'btn btn-success'
+    - else
+      = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-danger',
+              data: { confirm: 'Are you sure?' }
 %hr
 - if button_based_providers.any?
   .row.prepend-top-default
