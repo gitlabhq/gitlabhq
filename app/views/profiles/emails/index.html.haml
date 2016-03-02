@@ -8,7 +8,8 @@
     %p
       Control emails linked to your account
   .col-lg-9
-    %h4 Add email address
+    %h4.prepend-top-0
+      Add email address
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
         = f.label :email, class: 'label-light'
@@ -16,7 +17,7 @@
       .prepend-top-default
         = f.submit 'Add email address', class: 'btn btn-create'
     %hr
-    %h4
+    %h4.prepend-top-0
       Linked emails (#{@emails.count + 1})
     .account-well.append-bottom-default
       %ul
