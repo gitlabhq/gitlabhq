@@ -178,10 +178,10 @@
 
 .profile-settings-message {
   line-height: 32px;
-  color: #9E8E60;
-  background-color: #FBF2D9;
-  border: 1px solid #F0E2BB;
-  border-radius: 3px;
+  color: $settings-message-color;
+  background-color: $settings-message-bg;
+  border: 1px solid $settings-message-border;
+  border-radius: $settings-message-radius;
 }
 
 .oauth-applications {
