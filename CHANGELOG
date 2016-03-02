@@ -14,6 +14,7 @@ v 8.5.2
   - Fix help keyboard shortcut on relative URL setups (Artem Sidorenko)
   - Update Rails to 4.2.5.2
   - Fix permissions for deprecated CI build status badge
+  - Don't show "Welcome to GitLab" when the search didn't return any projects
 
 v 8.5.1
   - Fix group projects styles
