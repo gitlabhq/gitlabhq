@@ -55,6 +55,18 @@
   }
 }
 
+.account-well {
+  padding: 10px 10px;
+  background-color: $help-well-bg;
+  border: 1px solid $help-well-border;
+  border-radius: $border-radius-base;
+
+  ul {
+    padding-left: 20px;
+    margin-bottom: 0;
+  }
+}
+
 .calendar-hint {
   margin-top: -12px;
   float: right;
