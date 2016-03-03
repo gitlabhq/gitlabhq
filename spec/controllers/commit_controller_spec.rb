@@ -81,7 +81,7 @@ describe Projects::CommitController do
 
         expect(response.body).to start_with("diff --git")
         # without whitespace option, there are more than 2 diff_splits
-        diff_splits = assigns(:diffs)[0].diff.split("\n")
+        diff_splits = assigns(:diffs).first.diff.split("\n")
         expect(diff_splits.length).to be <= 2
       end
     end

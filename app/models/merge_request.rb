@@ -48,7 +48,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, :diffs_no_whitespace, to: :merge_request_diff, prefix: nil
+  delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -56,8 +56,7 @@ class MergeRequest < ActiveRecord::Base
 
   # Temporary fields to store compare vars
   # when creating new merge request
-  attr_accessor :can_be_created, :compare_failed,
-    :compare_commits, :compare_diffs
+  attr_accessor :can_be_created, :compare_commits, :compare
 
   state_machine :state, initial: :opened do
     event :close do
@@ -180,6 +179,10 @@ class MergeRequest < ActiveRecord::Base
 
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
+  end
+
+  def diff_size
+    merge_request_diff.size
   end
 
   def diff_base_commit
