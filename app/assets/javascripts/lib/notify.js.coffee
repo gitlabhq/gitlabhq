@@ -1,11 +1,11 @@
-# Written by Jacob Schatz @jakecodes
+# Written by GitLab @gitlab
 
 ((w) ->
-  notifyMe = (message,body) ->
+  notifyMe = (message,body, icon) ->
     notification = undefined
     opts = 
       body: body
-      icon: "#{document.location.origin}/assets/gitlab_logo.png"
+      icon: icon
     # Let's check if the browser supports notifications
     if !('Notification' of window)
       # do nothing
