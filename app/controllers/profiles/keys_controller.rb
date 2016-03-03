@@ -3,7 +3,7 @@ class Profiles::KeysController < Profiles::ApplicationController
 
   def index
     @keys = current_user.keys
-    @key = flash[:key] || Key.new
+    @key = Key.new
   end
 
   def show
@@ -16,7 +16,8 @@ class Profiles::KeysController < Profiles::ApplicationController
     if @key.save
       redirect_to profile_key_path(@key)
     else
-      redirect_to profile_keys_path, flash: { key: @key }
+      @keys = current_user.keys.select(&:persisted?)
+      render :index
     end
   end
 
