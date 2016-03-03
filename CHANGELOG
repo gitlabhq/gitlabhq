@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.5.3
+  - Flush repository caches before renaming projects
+
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
   - Don't repeat labels listed on Labels tab
