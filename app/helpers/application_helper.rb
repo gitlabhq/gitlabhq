@@ -168,7 +168,6 @@ module ApplicationHelper
   # time       - Time object
   # placement  - Tooltip placement String (default: "top")
   # html_class - Custom class for `time` element (default: "time_ago")
-  # skip_js    - When true, exclude the `script` tag (default: false)
   #
   # By default also includes a `script` element with Javascript necessary to
   # initialize the `timeago` jQuery extension. If this method is called many
@@ -180,7 +179,7 @@ module ApplicationHelper
   # `html_class` argument is provided.
   #
   # Returns an HTML-safe String
-  def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
+  def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago')
     element = content_tag :time, time.to_s,
       class: "#{html_class} js-timeago",
       datetime: time.to_time.getutc.iso8601,
@@ -190,21 +189,17 @@ module ApplicationHelper
     element
   end
 
-  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', skip_js: false, include_author: false)
-    return nil if object.updated_at == object.created_at
+  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', include_author: false)
+    return if object.updated_at == object.created_at
 
     content_tag :small, class: "edited-text" do
-      output = content_tag :span do
-        "Edited "
-      end
-      output += time_ago_with_tooltip(object.updated_at)
+      output = content_tag(:span, "Edited ")
+      output << time_ago_with_tooltip(object.updated_at, placement: placement, html_class: html_class)
 
       if include_author
         if object.updated_by && object.updated_by != object.author
-          output += content_tag :span do
-            " by "
-          end
-          output += link_to_member(object.project, object.updated_by, avatar: false, author_class: nil)
+          output << content_tag(:span, " by ")
+          output << link_to_member(object.project, object.updated_by, avatar: false, author_class: nil)
         end
       end
 
