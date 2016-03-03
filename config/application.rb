@@ -6,6 +6,8 @@ I18n.config.enforce_available_locales = false
 Bundler.require(:default, Rails.env)
 
 module Gitlab
+  REDIS_CACHE_NAMESPACE = 'cache:gitlab'
+
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -31,7 +33,7 @@ module Gitlab
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters.push(:password, :password_confirmation, :private_token, :otp_attempt)
+    config.filter_parameters.push(:password, :password_confirmation, :private_token, :otp_attempt, :variables)
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
@@ -43,8 +45,8 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
-    config.assets.paths << Emoji.images_path
-    config.assets.precompile << "emoji/*.png"
+    config.assets.paths << Gemojione.index.images_path
+    config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
 
     # Version of your assets, change this if you want to expire all your assets
@@ -52,17 +54,11 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    # Relative url support
-    # Uncomment and customize the last line to run in a non-root path
-    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
-    # Note that following settings need to be changed for this to work.
-    # 1) In your application.rb file: config.relative_url_root = "/gitlab"
-    # 2) In your gitlab.yml file: relative_url_root: /gitlab
-    # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
-    # 4) In ../gitlab-shell/config.yml: gitlab_url: "http://127.0.0.1/gitlab"
-    # 5) In lib/support/nginx/gitlab : do not use asset gzipping, remove block starting with "location ~ ^/(assets)/"
-    #
-    # To update the path, run: sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+    # Relative URL support
+    # WARNING: We recommend using an FQDN to host GitLab in a root path instead
+    # of using a relative URL.
+    # Documentation: http://doc.gitlab.com/ce/install/relative_url.html
+    # Uncomment and customize the following line to run in a non-root path
     #
     # config.relative_url_root = "/gitlab"
 
@@ -95,7 +91,7 @@ module Gitlab
       redis_config_hash[:path] = redis_uri.path
     end
 
-    redis_config_hash[:namespace] = 'cache:gitlab'
+    redis_config_hash[:namespace] = REDIS_CACHE_NAMESPACE
     redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     config.cache_store = :redis_store, redis_config_hash
 
@@ -105,5 +101,8 @@ module Gitlab
 
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
+
+    # Gitlab Geo Middleware support
+    config.middleware.use 'Gitlab::Middleware::ReadonlyGeo'
   end
 end

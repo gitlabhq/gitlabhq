@@ -13,7 +13,9 @@ class ApplicationController < ActionController::Base
   before_action :validate_user_service_ticket!
   before_action :reject_blocked!
   before_action :check_password_expiration
+  before_action :check_2fa_requirement
   before_action :ldap_security_check
+  before_action :sentry_user_context
   before_action :default_headers
   before_action :add_gon_variables
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -23,6 +25,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :abilities, :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?
+  helper_method :repository, :can_collaborate_with_project?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -40,6 +43,16 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def sentry_user_context
+    if Rails.env.production? && current_application_settings.sentry_enabled && current_user
+      Raven.user_context(
+        id: current_user.id,
+        email: current_user.email,
+        username: current_user.username,
+      )
+    end
+  end
+
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
   # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
   def authenticate_user_from_token!
@@ -47,6 +60,8 @@ class ApplicationController < ActionController::Base
                    params[:authenticity_token].presence
                  elsif params[:private_token].presence
                    params[:private_token].presence
+                 elsif request.headers['PRIVATE-TOKEN'].present?
+                   request.headers['PRIVATE-TOKEN']
                  end
     user = user_token && User.find_by_authentication_token(user_token.to_s)
 
@@ -87,12 +102,16 @@ class ApplicationController < ActionController::Base
       flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
       new_user_session_path
     else
-      stored_location_for(:redirect) || stored_location_for(resource) || root_path
+      stored_location_for(:geo_node) || stored_location_for(:redirect) || stored_location_for(resource) || root_path
     end
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path || new_user_session_path
+    if Gitlab::Geo.readonly?
+      Gitlab::Geo.primary_node.url
+    else
+      current_application_settings.after_sign_out_path || new_user_session_path
+    end
   end
 
   def abilities
@@ -114,7 +133,7 @@ class ApplicationController < ActionController::Base
       #   localhost/group/project
       #
       if id =~ /\.git\Z/
-        redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+        redirect_to request.original_url.gsub(/\.git\/?\Z/, '') and return
       end
 
       project_path = "#{namespace}/#{id}"
@@ -149,7 +168,7 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render html: "errors/git_not_found", layout: "errors", status: 404
+    render "errors/git_not_found.html", layout: "errors", status: 404
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -223,6 +242,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def check_2fa_requirement
+    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled && !skip_two_factor?
+      redirect_to new_profile_two_factor_auth_path
+    end
+  end
+
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
       unless Gitlab::LDAP::Access.allowed?(current_user)
@@ -256,9 +281,10 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def view_to_html_string(partial)
+  def view_to_html_string(partial, locals = {})
     render_to_string(
       partial,
+      locals: locals,
       layout: false,
       formats: [:html]
     )
@@ -285,7 +311,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_filters_params
-    params[:sort] ||= 'created_desc'
+    set_default_sort
+
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
@@ -363,6 +390,23 @@ class ApplicationController < ActionController::Base
     current_application_settings.import_sources.include?('git')
   end
 
+  def two_factor_authentication_required?
+    current_application_settings.require_two_factor_authentication
+  end
+
+  def two_factor_grace_period
+    current_application_settings.two_factor_grace_period
+  end
+
+  def two_factor_grace_period_expired?
+    date = current_user.otp_grace_period_started_at
+    date && (date + two_factor_grace_period.hours) < Time.current
+  end
+
+  def skip_two_factor?
+    session[:skip_tfa] && session[:skip_tfa] > Time.current
+  end
+
   def redirect_to_home_page_url?
     # If user is not signed-in and tries to access root_path - redirect him to landing page
     # Don't redirect to the default URL to prevent endless redirections
@@ -374,5 +418,32 @@ class ApplicationController < ActionController::Base
     return false if root_urls.include?(home_page_url)
 
     current_user.nil? && root_path == request.path
+  end
+
+  def can_collaborate_with_project?(project = nil)
+    project ||= @project
+
+    can?(current_user, :push_code, project) ||
+      (current_user && current_user.already_forked?(project))
+  end
+
+  private
+
+  def set_default_sort
+    key = if is_a_listing_page_for?('issues') || is_a_listing_page_for?('merge_requests')
+            'issuable_sort'
+          end
+
+    cookies[key]  = params[:sort] if key && params[:sort].present?
+    params[:sort] = cookies[key] if key
+    params[:sort] ||= 'id_desc'
+  end
+
+  def is_a_listing_page_for?(page_type)
+    controller_name, action_name = params.values_at(:controller, :action)
+
+    (controller_name == "projects/#{page_type}" && action_name == 'index') ||
+    (controller_name == 'groups' && action_name == page_type) ||
+    (controller_name == 'dashboard' && action_name == page_type)
   end
 end

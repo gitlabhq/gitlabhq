@@ -14,11 +14,13 @@ module Gitlab
         end
       end
 
-      def self.allowed?(user)
+      def self.allowed?(user, options={})
         self.open(user) do |access|
+          # Whether user is allowed, or not, we should update
+          # permissions to keep things clean
+          access.update_permissions(options)
           if access.allowed?
-            access.update_permissions
-            access.update_email
+            access.update_user
             user.last_credential_check_at = Time.now
             user.save
             true
@@ -35,20 +37,20 @@ module Gitlab
       end
 
       def allowed?
-        if Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
+        if ldap_user
           return true unless ldap_config.active_directory
 
           # Block user in GitLab if he/she was blocked in AD
           if Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
-            user.block
+            user.ldap_block
             false
           else
-            user.activate if user.blocked? && !ldap_config.block_auto_created_users
+            user.activate if user.ldap_blocked?
             true
           end
         else
           # Block the user if they no longer exist in LDAP/AD
-          user.block 
+          user.ldap_block
           false
         end
       rescue
@@ -67,22 +69,21 @@ module Gitlab
         @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
       end
 
-      def update_permissions
-        if sync_ssh_keys?
-          update_ssh_keys
-        end
-
+      def update_user
+        update_email
+        update_ssh_keys if sync_ssh_keys?
         update_kerberos_identity if import_kerberos_identities?
+      end
 
-        # Skip updating group permissions
-        # if instance does not use group_base setting
-        return true unless group_base.present?
-
-        update_ldap_group_links
-
-        if admin_group.present?
-          update_admin_status
+      def update_permissions(options)
+        if group_base.present?
+          if options[:update_ldap_group_links_synchronously]
+            update_ldap_group_links
+          else
+            LdapGroupLinksWorker.perform_async(user.id)
+          end
         end
+        update_admin_status if admin_group.present?
       end
 
       # Update user ssh keys if they changed in LDAP
@@ -164,7 +165,7 @@ module Gitlab
         end
       end
 
-      # Loop throug all ldap conneted groups, and update the users link with it
+      # Loop through all ldap connected groups, and update the users link with it
       #
       # We documented what sort of queries an LDAP server can expect from
       # GitLab EE in doc/integration/ldap.md. Please remember to update that
@@ -174,7 +175,14 @@ module Gitlab
           active_group_links = group.ldap_group_links.where(cn: cns_with_access)
 
           if active_group_links.any?
-            group.add_users([user.id], fetch_group_access(group, user, active_group_links), skip_notification: true)
+            max_access = active_group_links.maximum(:group_access)
+
+            # Ensure we don't leave a group without an owner
+            if max_access < Gitlab::Access::OWNER && group.last_owner?(user)
+              logger.warn "#{self.class.name}: LDAP group sync cannot demote #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
+            else
+              group.add_users([user.id], max_access, skip_notification: true)
+            end
           elsif group.last_owner?(user)
             logger.warn "#{self.class.name}: LDAP group sync cannot remove #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
           else
@@ -191,6 +199,7 @@ module Gitlab
 
       # returns a collection of cn strings to which the user has access
       def cns_with_access
+        return [] unless ldap_user.present?
         @ldap_groups_with_access ||= ldap_groups.select do |ldap_group|
           ldap_group.has_member?(ldap_user)
         end.map(&:cn)
@@ -219,16 +228,6 @@ module Gitlab
         ::Group.includes(:ldap_group_links).references(:ldap_group_links).
           where.not(ldap_group_links: { id: nil }).
           where(ldap_group_links: { provider: provider })
-      end
-
-      # Get the group_access for a give user.
-      # Always respect the current level, never downgrade it.
-      def fetch_group_access(group, user, active_group_links)
-        current_access_level = group.group_members.where(user_id: user).maximum(:access_level)
-        max_group_access_level = active_group_links.maximum(:group_access)
-
-        # TODO: Test if nil value of current_access_level in handled properly
-        [current_access_level, max_group_access_level].compact.max
       end
 
       def logger

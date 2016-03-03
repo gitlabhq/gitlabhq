@@ -90,6 +90,29 @@ describe API::API, api: true  do
         end
       end
 
+      context 'and using the visibility filter' do
+        it 'should filter based on private visibility param' do
+          get api('/projects', user), { visibility: 'private' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).count)
+        end
+
+        it 'should filter based on internal visibility param' do
+          get api('/projects', user), { visibility: 'internal' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::INTERNAL).count)
+        end
+
+        it 'should filter based on public visibility param' do
+          get api('/projects', user), { visibility: 'public' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PUBLIC).count)
+        end
+      end
+
       context 'and using sorting' do
         before do
           project2
@@ -131,6 +154,7 @@ describe API::API, api: true  do
 
         expect(json_response).to satisfy do |response|
           response.one? do |entry|
+            entry.has_key?('permissions') &&
             entry['name'] == project.name &&
               entry['owner']['username'] == user.username
           end
@@ -352,6 +376,20 @@ describe API::API, api: true  do
     end
   end
 
+  describe "POST /projects/:id/uploads" do
+    before { project }
+
+    it "uploads the file and returns its info" do
+      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+
+      expect(response.status).to be(201)
+      expect(json_response['alt']).to eq("dk")
+      expect(json_response['url']).to start_with("/uploads/")
+      expect(json_response['url']).to end_with("/dk.png")
+      expect(json_response['is_image']).to eq(true)
+    end
+  end
+
   describe 'GET /projects/:id' do
     before { project }
     before { project_member }
@@ -381,7 +419,28 @@ describe API::API, api: true  do
       expect(response.status).to eq(404)
     end
 
+    it 'should handle users with dots' do
+      dot_user = create(:user, username: 'dot.user')
+      project = create(:project, creator_id: dot_user.id, namespace: dot_user.namespace)
+
+      get api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(project.name)
+    end
+
     describe 'permissions' do
+      context 'all projects' do
+        it 'Contains permission information' do
+          project.team << [user, :master]
+          get api("/projects", user)
+
+          expect(response.status).to eq(200)
+          expect(json_response.first['permissions']['project_access']['access_level']).
+              to eq(Gitlab::Access::MASTER)
+          expect(json_response.first['permissions']['group_access']).to be_nil
+        end
+      end
+
       context 'personal project' do
         it 'Sets project access and returns 200' do
           project.team << [user, :master]

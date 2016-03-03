@@ -135,6 +135,17 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
         message = "resolve #{reference}"
         expect(subject.closed_by_message(message)).to eq([issue])
       end
+
+      context 'with an external issue tracker reference' do
+        it 'extracts the referenced issue' do
+          jira_project = create(:jira_project, name: 'JIRA_EXT1')
+          jira_issue = ExternalIssue.new("#{jira_project.name}-1", project: jira_project)
+          closing_issue_extractor = described_class.new jira_project
+          message = "Resolve #{jira_issue.to_reference}"
+
+          expect(closing_issue_extractor.closed_by_message(message)).to eq([jira_issue])
+        end
+      end
     end
 
     context "with a cross-project reference" do

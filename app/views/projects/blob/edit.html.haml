@@ -2,7 +2,7 @@
 = render "header_title"
 
 .file-editor
-  %ul.center-top-menu.no-bottom.js-edit-mode
+  %ul.nav-links.no-bottom.js-edit-mode
     %li.active
       = link_to '#editor' do
         = icon('edit')
@@ -20,7 +20,7 @@
     = hidden_field_tag 'last_commit', @last_commit
     = hidden_field_tag 'content', '', id: "file-content"
     = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
-    = render 'projects/commit_button', ref: @ref, cancel_path: @after_edit_path
+    = render 'projects/commit_button', ref: @ref, cancel_path: namespace_project_blob_path(@project.namespace, @project, @id)
 
 :javascript
   blob = new EditBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", "#{@blob.language.try(:ace_mode)}")

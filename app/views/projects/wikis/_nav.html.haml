@@ -1,13 +1,5 @@
-.project-issuable-filter
-  .controls
-    - if can?(current_user, :create_wiki, @project)
-      = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
-        %i.fa.fa-plus
-        New Page
-
-      = render 'projects/wikis/new'
-
-  %ul.center-top-menu
+.top-area
+  %ul.nav-links
     = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
       = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
 
@@ -17,3 +9,11 @@
     = nav_link(path: 'wikis#git_access') do
       = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
         Git Access
+
+  .nav-controls
+    - if can?(current_user, :create_wiki, @project)
+      = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
+        = icon('plus')
+        New Page
+
+= render 'projects/wikis/new'

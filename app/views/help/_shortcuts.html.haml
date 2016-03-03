@@ -40,6 +40,28 @@
                 %td.shortcut
                   .key enter
                 %td Open Selection
+            %tbody
+              %tr
+                %th
+                %th Finding Project File
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-up
+                %td Move selection up
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-down
+                %td Move selection down
+              %tr
+                %td.shortcut
+                  .key enter
+                %td Open Selection
+              %tr
+                %td.shortcut
+                  .key esc
+                %td Go back
 
         .col-lg-4
           %table.shortcut-mappings
@@ -135,6 +157,10 @@
                   .key s
                 %td
                   Go to snippets
+              %tr
+                %td.shortcut
+                  .key t
+                %td Go to finding file
         .col-lg-4
           %table.shortcut-mappings
             %tbody{ class: 'hidden-shortcut network', style: 'display:none' }
@@ -203,6 +229,10 @@
                 %td.shortcut
                   .key r
                 %td Reply (quoting selected text)
+              %tr
+                %td.shortcut
+                  .key e
+                %td Edit issue
             %tbody{ class: 'hidden-shortcut merge_requests', style: 'display:none' }
               %tr
                 %th
@@ -219,11 +249,7 @@
                 %td.shortcut
                   .key r
                 %td Reply (quoting selected text)
-
-
-:javascript
-  $('.js-more-help-button').click(function (e) {
-    $(this).remove()l
-    $('.hidden-shortcut').show();
-    e.preventDefault();
-  });
+              %tr
+                %td.shortcut
+                  .key e
+                %td Edit merge request

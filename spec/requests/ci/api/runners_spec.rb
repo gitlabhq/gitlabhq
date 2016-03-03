@@ -8,7 +8,6 @@ describe Ci::API::API do
 
   before do
     stub_gitlab_calls
-    stub_application_setting(ensure_runners_registration_token: registration_token)
     stub_application_setting(runners_registration_token: registration_token)
   end
 
@@ -51,6 +50,20 @@ describe Ci::API::API do
       post ci_api("/runners/register")
 
       expect(response.status).to eq(400)
+    end
+
+    %w(name version revision platform architecture).each do |param|
+      context "creates runner with #{param} saved" do
+        let(:value) { "#{param}_value" }
+
+        subject { Ci::Runner.first.read_attribute(param.to_sym) }
+
+        it do
+          post ci_api("/runners/register"), token: registration_token, info: { param => value }
+          expect(response.status).to eq(201)
+          is_expected.to eq(value)
+        end
+      end
     end
   end
 

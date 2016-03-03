@@ -18,7 +18,7 @@ GET /ci/projects
 Returns:
 
 ```json
-    [
+[
   {
     "id" : 271,
     "name" : "gitlabhq",

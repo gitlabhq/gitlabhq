@@ -135,10 +135,9 @@ thus allowing to fine tune them.
 ### cache
 
 `cache` is used to specify a list of files and directories which should be
-cached between builds. Caches are stored according to the branch/ref and the
-job name. They are not currently shared between different job names or between
-branches/refs, which means that caching will benefit you if you push subsequent
-commits to an existing feature branch.
+cached between builds.
+
+**By default the caching is enabled per-job and per-branch.**
 
 If `cache` is defined outside the scope of the jobs, it means it is set
 globally and all jobs will use its definition.
@@ -150,6 +149,64 @@ cache:
   untracked: true
   paths:
   - binaries/
+```
+
+#### cache:key
+
+_**Note:** Introduced in GitLab Runner v1.0.0._
+
+The `key` directive allows you to define the affinity of caching
+between jobs, allowing to have a single cache for all jobs,
+cache per-job, cache per-branch or any other way you deem proper.
+
+This allows you to fine tune caching, allowing you to cache data between
+different jobs or even different branches.
+
+The `cache:key` variable can use any of the [predefined variables](../variables/README.md).
+
+---
+
+**Example configurations**
+
+To enable per-job caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_NAME"
+  untracked: true
+```
+
+To enable per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+To enable per-job and per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_NAME/$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+To enable per-branch and per-stage caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_STAGE/$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+If you use **Windows Batch** to run your shell scripts you need to replace
+`$` with `%`:
+
+```yaml
+cache:
+  key: "%CI_BUILD_STAGE%/%CI_BUILD_REF_NAME%"
+  untracked: true
 ```
 
 ## Jobs
@@ -336,8 +393,12 @@ The above script will:
 
 ### artifacts
 
-_**Note:** Introduced in GitLab Runner v0.7.0. Also, the Windows shell executor
- does not currently support artifact uploads._
+_**Note:** Introduced in GitLab Runner v0.7.0 for non-Windows platforms._
+
+_**Note:** Limited Windows support was added in GitLab Runner v.1.0.0. 
+Currently not all executors are supported._ 
+
+_**Note:** Build artifacts are only collected for successful builds._
 
 `artifacts` is used to specify list of files and directories which should be
 attached to build after success. Below are some examples.
@@ -367,8 +428,30 @@ artifacts:
   - binaries/
 ```
 
-The artifacts will be send after a successful build success to GitLab, and will
-be accessible in the GitLab UI to download.
+You may want to create artifacts only for tagged releases to avoid filling the
+build server storage with temporary build artifacts.
+
+Create artifacts only for tags (`default-job` will not create artifacts):
+
+```yaml
+default-job:
+  script:
+    - mvn test -U
+  except:
+    - tags
+
+release-job:
+  script:
+    - mvn package -U
+  artifacts:
+    paths:
+    - target/*.war
+  only:
+    - tags
+```
+
+The artifacts will be sent to GitLab after a successful build and will
+be available for download in the GitLab UI.
 
 ### cache
 
@@ -435,3 +518,10 @@ You can find the link under `/ci/lint` of your gitlab instance.
 
 If your commit message contains `[ci skip]`, the commit will be created but the
 builds will be skipped.
+
+## Examples
+
+Visit the [examples README][examples] to see a list of examples using GitLab
+CI with various languages.
+
+[examples]: ../examples/README.md

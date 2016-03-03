@@ -20,6 +20,12 @@ module ProjectsHelper
     end
   end
 
+  def link_to_member_avatar(author, opts = {})
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    opts = default_opts.merge(opts)
+    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
+  end
+
   def link_to_member(project, author, opts = {})
     default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
     opts = default_opts.merge(opts)
@@ -40,7 +46,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: "author_link").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => title, container: 'body' } ).html_safe
+      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { 'original-title'.to_sym => title, container: 'body' } ).html_safe
     end
   end
 
@@ -53,14 +59,23 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to(simple_sanitize(project.name), project_path(project))
+    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+      link_output = simple_sanitize(project.name)
+
+      if current_user
+        link_output += project_select_tag :project_path,
+          class: "project-item-select js-projects-dropdown",
+          data: { include_groups: false, order_by: 'last_activity_at' }
+      end
+
+      link_output
+    end
+    project_link += icon "chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle" if current_user
 
     full_title = namespace_link + ' / ' + project_link
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
 
-    content_tag :span do
-      full_title
-    end
+    full_title
   end
 
   def remove_project_message(project)
@@ -81,10 +96,6 @@ module ProjectsHelper
 
   def project_nav_tab?(name)
     project_nav_tabs.include? name
-  end
-
-  def project_active_milestones
-    @project.milestones.active.order("due_date, title ASC")
   end
 
   def project_for_deploy_key(deploy_key)
@@ -116,7 +127,7 @@ module ProjectsHelper
   private
 
   def get_project_nav_tabs(project, current_user)
-    nav_tabs = [:home]
+    nav_tabs = [:home, :forks]
 
     if !project.empty_repo? && can?(current_user, :download_code, project)
       nav_tabs << [:files, :commits, :network, :graphs]
@@ -126,7 +137,7 @@ module ProjectsHelper
       nav_tabs << :merge_requests
     end
 
-    if project.builds_enabled? && can?(current_user, :read_build, project)
+    if can?(current_user, :read_build, project)
       nav_tabs << :builds
     end
 

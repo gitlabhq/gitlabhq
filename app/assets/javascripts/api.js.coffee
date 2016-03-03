@@ -49,7 +49,7 @@
       callback(namespaces)
 
   # Return projects list. Filtered by query
-  projects: (query, callback) ->
+  projects: (query, order, callback) ->
     url = Api.buildUrl(Api.projects_path)
 
     $.ajax(
@@ -57,6 +57,7 @@
       data:
         private_token: gon.api_token
         search: query
+        order_by: order
         per_page: 20
       dataType: "json"
     ).done (projects) ->
@@ -96,17 +97,3 @@
       dataType: "json"
     ).done (groups) ->
       callback(groups)
-
-  # Return projects list. Filtered by query
-  projects: (query, callback) ->
-    project_url = Api.buildUrl(Api.projects_path)
-
-    project_query = $.ajax(
-      url: project_url
-      data:
-        private_token: gon.api_token
-        search: query
-        per_page: 20
-      dataType: "json"
-    ).done (projects) ->
-      callback(projects)

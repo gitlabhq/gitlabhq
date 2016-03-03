@@ -2,18 +2,19 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
 
-  skip_before_action :authenticate_user!, only: [:show, :issues, :merge_requests]
   respond_to :html
-  before_action :group, except: [:new, :create]
+
+  skip_before_action :authenticate_user!, only: [:index, :show, :issues, :merge_requests]
+  before_action :group, except: [:index, :new, :create, :autocomplete]
 
   # Authorize
-  before_action :authorize_read_group!, except: [:show, :new, :create, :autocomplete]
+  before_action :authorize_read_group!, except: [:index, :show, :new, :create, :autocomplete]
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_action :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
-  before_action :load_projects, except: [:new, :create, :projects, :edit, :update, :autocomplete]
-  before_action :event_filter, only: :show
+  before_action :load_projects, except: [:index, :new, :create, :projects, :edit, :update, :autocomplete]
+  before_action :event_filter, only: [:show, :events]
 
   layout :determine_layout
 
@@ -40,6 +41,8 @@ class GroupsController < Groups::ApplicationController
   def show
     @last_push = current_user.recent_push if current_user
     @projects = @projects.includes(:namespace)
+    @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
+    @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
 
     @shared_projects = @group.shared_projects
 
@@ -47,13 +50,23 @@ class GroupsController < Groups::ApplicationController
       format.html
 
       format.json do
-        load_events
-        pager_json("events/_events", @events.count)
+        render json: {
+          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
+        }
       end
 
       format.atom do
         load_events
         render layout: false
+      end
+    end
+  end
+
+  def events
+    respond_to do |format|
+      format.json do
+        load_events
+        pager_json("events/_events", @events.count)
       end
     end
   end
@@ -80,7 +93,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def autocomplete
-    groups = GroupsFinder.new.execute(current_user).search(params[:search]).limit(params[:per_page])
+    groups = Group.search(params[:search]).limit(params[:per_page])
 
     render json: groups.to_json
   end
@@ -89,14 +102,11 @@ class GroupsController < Groups::ApplicationController
 
   def group
     @group ||= Group.find_by(path: params[:id])
+    @group || render_404
   end
 
   def load_projects
     @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity.non_archived
-  end
-
-  def project_ids
-    @projects.pluck(:id)
   end
 
   # Dont allow unauthorized access to group
@@ -131,7 +141,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_events
-    @events = Event.in_projects(project_ids)
+    @events = Event.in_projects(@projects)
     @events = event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end

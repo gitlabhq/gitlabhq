@@ -1,30 +1,35 @@
 # == Schema Information
 #
-#  project_id            integer
-#  status                string
-#  finished_at           datetime
-#  trace                 text
-#  created_at            datetime
-#  updated_at            datetime
-#  started_at            datetime
-#  runner_id             integer
-#  coverage              float
-#  commit_id             integer
-#  commands              text
-#  job_id                integer
-#  name                  string
-#  deploy                boolean           default: false
-#  options               text
-#  allow_failure         boolean           default: false, null: false
-#  stage                 string
-#  trigger_request_id    integer
-#  stage_idx             integer
-#  tag                   boolean
-#  ref                   string
-#  user_id               integer
-#  type                  string
-#  target_url            string
-#  description           string
+# Table name: ci_builds
+#
+#  id                 :integer          not null, primary key
+#  project_id         :integer
+#  status             :string(255)
+#  finished_at        :datetime
+#  trace              :text
+#  created_at         :datetime
+#  updated_at         :datetime
+#  started_at         :datetime
+#  runner_id          :integer
+#  coverage           :float
+#  commit_id          :integer
+#  commands           :text
+#  job_id             :integer
+#  name               :string(255)
+#  deploy             :boolean          default(FALSE)
+#  options            :text
+#  allow_failure      :boolean          default(FALSE), not null
+#  stage              :string(255)
+#  trigger_request_id :integer
+#  stage_idx          :integer
+#  tag                :boolean
+#  ref                :string(255)
+#  user_id            :integer
+#  type               :string(255)
+#  target_url         :string(255)
+#  description        :string(255)
+#  artifacts_file     :text
+#  gl_project_id      :integer
 #
 
 class CommitStatus < ActiveRecord::Base
@@ -51,6 +56,8 @@ class CommitStatus < ActiveRecord::Base
   scope :ordered, -> { order(:ref, :stage_idx, :name) }
   scope :for_ref, ->(ref) { where(ref: ref) }
 
+  AVAILABLE_STATUSES = ['pending', 'running', 'success', 'failed', 'canceled']
+
   state_machine :status, initial: :pending do
     event :run do
       transition pending: :running
@@ -68,16 +75,16 @@ class CommitStatus < ActiveRecord::Base
       transition [:pending, :running] => :canceled
     end
 
-    after_transition pending: :running do |build, transition|
-      build.update_attributes started_at: Time.now
+    after_transition pending: :running do |commit_status|
+      commit_status.update_attributes started_at: Time.now
     end
 
-    after_transition any => [:success, :failed, :canceled] do |build, transition|
-      build.update_attributes finished_at: Time.now
+    after_transition any => [:success, :failed, :canceled] do |commit_status|
+      commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition [:pending, :running] => :success do |build, transition|
-      MergeRequests::MergeWhenBuildSucceedsService.new(build.commit.project, nil).trigger(build)
+    after_transition [:pending, :running] => :success do |commit_status|
+      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
     end
 
     state :pending, value: 'pending'
@@ -106,6 +113,10 @@ class CommitStatus < ActiveRecord::Base
     canceled? || success? || failed?
   end
 
+  def ignored?
+    failed? && allow_failure?
+  end
+
   def duration
     if started_at && finished_at
       finished_at - started_at
@@ -126,7 +137,11 @@ class CommitStatus < ActiveRecord::Base
     false
   end
 
-  def download_url
+  def artifacts_download_url
+    nil
+  end
+
+  def artifacts_browse_url
     nil
   end
 end

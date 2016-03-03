@@ -2,15 +2,6 @@
 - header_title  "Groups", dashboard_groups_path
 = render 'dashboard/groups_head'
 
-.gray-content-block
-  - if current_user.can_create_group?
-    %span.pull-right.hidden-xs
-      = link_to new_group_path, class: "btn btn-new" do
-        %i.fa.fa-plus
-        New Group
-  .oneline
-    Group members have access to all group projects.
-
 %ul.content-list
   - @group_members.each do |group_member|
     - group = group_member.group

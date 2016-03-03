@@ -2,10 +2,9 @@
 
 ## List merge requests
 
-Get all merge requests for this project. 
+Get all merge requests for this project.
 The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`).
-The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests. With GitLab 8.2 the return fields `upvotes` and
-`downvotes` are deprecated and always return `0`.
+The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
 ```
 GET /projects/:id/merge_requests
@@ -50,18 +49,34 @@ Parameters:
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
     },
+    "source_project_id": "2",
+    "target_project_id": "3",
+    "labels": [ ],
     "description":"fixed login page css paddings",
-    "work_in_progress": false
+    "work_in_progress": false,
+    "milestone": {
+      "id": 5,
+      "iid": 1,
+      "project_id": 3,
+      "title": "v2.0",
+      "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+      "state": "closed",
+      "created_at": "2015-02-02T19:49:26.013Z",
+      "updated_at": "2015-02-02T19:49:26.013Z",
+      "due_date": null
+    },
+    "merge_when_build_succeeds": true,
+    "merge_status": "can_be_merged"
   }
 ]
 ```
 
 ## Get single MR
 
-Shows information about a single merge request. With GitLab 8.2 the return fields `upvotes` and `downvotes` are deprecated and always return `0`.
+Shows information about a single merge request.
 
 ```
-GET /projects/:id/merge_request/:merge_request_id
+GET /projects/:id/merge_requests/:merge_request_id
 ```
 
 Parameters:
@@ -96,8 +111,24 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
+  "source_project_id": "2",
+  "target_project_id": "3",
+  "labels": [ ],
   "description":"fixed login page css paddings",
-  "work_in_progress": false
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 3,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 
@@ -106,7 +137,7 @@ Parameters:
 Get a list of merge request commits.
 
 ```
-GET /projects/:id/merge_request/:merge_request_id/commits
+GET /projects/:id/merge_requests/:merge_request_id/commits
 ```
 
 Parameters:
@@ -141,11 +172,9 @@ Parameters:
 ## Get single MR changes
 
 Shows information about the merge request including its files and changes.
-With GitLab 8.2 the return fields `upvotes` and `downvotes` are deprecated and
-always return `0`.
 
 ```
-GET /projects/:id/merge_request/:merge_request_id/changes
+GET /projects/:id/merge_requests/:merge_request_id/changes
 ```
 
 Parameters:
@@ -159,8 +188,6 @@ Parameters:
   "iid": 1,
   "project_id": 4,
   "title": "Blanditiis beatae suscipit hic assumenda et molestias nisi asperiores repellat et.",
-  "description": "Qui voluptatibus placeat ipsa alias quasi. Deleniti rem ut sint. Optio velit qui distinctio.",
-  "work_in_progress": false,
   "state": "reopened",
   "created_at": "2015-02-02T19:49:39.159Z",
   "updated_at": "2015-02-02T20:08:49.959Z",
@@ -185,6 +212,8 @@ Parameters:
   "source_project_id": 4,
   "target_project_id": 4,
   "labels": [ ],
+  "description": "Qui voluptatibus placeat ipsa alias quasi. Deleniti rem ut sint. Optio velit qui distinctio.",
+  "work_in_progress": false,
   "milestone": {
     "id": 5,
     "iid": 1,
@@ -196,6 +225,8 @@ Parameters:
     "updated_at": "2015-02-02T19:49:26.013Z",
     "due_date": null
   },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged",
   "changes": [
     {
     "old_path": "VERSION",
@@ -213,9 +244,7 @@ Parameters:
 
 ## Create MR
 
-Creates a new merge request. With GitLab 8.2 the return fields `upvotes` and `
-downvotes` are deprecated and always return `0`.
-
+Creates a new merge request.
 ```
 POST /projects/:id/merge_requests
 ```
@@ -230,6 +259,7 @@ Parameters:
 - `description` (optional)       - Description of MR
 - `target_project_id` (optional) - The target project (numeric id)
 - `labels` (optional)            - Labels for MR as a comma-separated list
+- `milestone_id` (optional)      - Milestone ID
 
 ```json
 {
@@ -257,7 +287,24 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "description":"fixed login page css paddings"
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "description":"fixed login page css paddings",
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 
@@ -266,11 +313,10 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Update MR
 
-Updates an existing merge request. You can change the target branch, title, or even close the MR. With GitLab 8.2 the return fields `upvotes` and `downvotes`
-are deprecated and always return `0`.
+Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
 ```
-PUT /projects/:id/merge_request/:merge_request_id
+PUT /projects/:id/merge_requests/:merge_request_id
 ```
 
 Parameters:
@@ -283,6 +329,7 @@ Parameters:
 - `description`                 - Description of MR
 - `state_event`                 - New state (close|reopen|merge)
 - `labels` (optional)           - Labels for MR as a comma-separated list
+- `milestone_id` (optional)     - Milestone ID
 
 ```json
 {
@@ -290,7 +337,6 @@ Parameters:
   "target_branch": "master",
   "project_id": 3,
   "title": "test1",
-  "description": "description1",
   "state": "opened",
   "upvotes": 0,
   "downvotes": 0,
@@ -309,7 +355,25 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "description": "description1",
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 
@@ -318,8 +382,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Accept MR
 
-Merge changes submitted with MR using this API. With GitLab 8.2 the return
-fields `upvotes` and `downvotes` are deprecated and always return `0`.
+Merge changes submitted with MR using this API.
 
 If merge success you get `200 OK`.
 
@@ -330,7 +393,7 @@ If merge request is already merged or closed - you get 405 and error message 'Me
 If you don't have permissions to accept this merge request - you'll get a 401
 
 ```
-PUT /projects/:id/merge_request/:merge_request_id/merge
+PUT /projects/:id/merge_requests/:merge_request_id/merge
 ```
 
 Parameters:
@@ -366,7 +429,25 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "description":"fixed login page css paddings",
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
 }
 ```
 
@@ -380,7 +461,7 @@ If the merge request is already merged or closed - you get 405 and error message
 
 In case the merge request is not set to be merged when the build succeeds, you'll also get a 406 error.
 ```
-PUT /projects/:id/merge_request/:merge_request_id/cancel_merge_when_build_succeeds
+PUT /projects/:id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds
 ```
 Parameters:
 
@@ -394,7 +475,7 @@ Parameters:
   "source_branch": "test1",
   "project_id": 3,
   "title": "test1",
-  "state": "merged",
+  "state": "opened",
   "upvotes": 0,
   "downvotes": 0,
   "author": {
@@ -412,70 +493,90 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
-}
-```
-
-## Post comment to MR
-
-Adds a comment to a merge request.
-
-```
-POST /projects/:id/merge_request/:merge_request_id/comments
-```
-
-Parameters:
-
-- `id` (required)               - The ID of a project
-- `merge_request_id` (required) - ID of merge request
-- `note` (required)             - Text of comment
-
-```json
-{
-  "note": "text1"
-}
-```
-
-## Get the comments on a MR
-
-Gets all the comments associated with a merge request.
-
-```
-GET /projects/:id/merge_request/:merge_request_id/comments
-```
-
-Parameters:
-
-- `id` (required)               - The ID of a project
-- `merge_request_id` (required) - ID of merge request
-
-```json
-[
-  {
-    "note": "this is the 1st comment on the 2merge merge request",
-    "author": {
-      "id": 11,
-      "username": "admin",
-      "email": "admin@example.com",
-      "name": "Administrator",
-      "state": "active",
-      "created_at": "2014-03-06T08:17:35.000Z"
-    }
   },
-  {
-    "note": "Status changed to closed",
-    "author": {
-      "id": 11,
-      "username": "admin",
-      "email": "admin@example.com",
-      "name": "Administrator",
-      "state": "active",
-      "created_at": "2014-03-06T08:17:35.000Z"
-    }
-  }
-]
+  "source_project_id": 4,
+  "target_project_id": 4,
+  "labels": [ ],
+  "description":"fixed login page css paddings",
+  "work_in_progress": false,
+  "milestone": {
+    "id": 5,
+    "iid": 1,
+    "project_id": 4,
+    "title": "v2.0",
+    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
+    "state": "closed",
+    "created_at": "2015-02-02T19:49:26.013Z",
+    "updated_at": "2015-02-02T19:49:26.013Z",
+    "due_date": null
+  },
+  "merge_when_build_succeeds": true,
+  "merge_status": "can_be_merged"
+}
 ```
 
 ## Comments on merge requets
 
-Comments are done via the notes resource.
+Comments are done via the [notes](notes.md) resource.
+
+## List issues that will close on merge
+
+Get all the issues that would be closed by merging the provided merge request.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/closes_issues
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a project |
+| `merge_request_id` | integer | yes   | The ID of the merge request |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
+```
+
+Example response:
+
+```json
+[
+   {
+      "state" : "opened",
+      "description" : "Ratione dolores corrupti mollitia soluta quia.",
+      "author" : {
+         "state" : "active",
+         "id" : 18,
+         "web_url" : "https://gitlab.example.com/u/eileen.lowe",
+         "name" : "Alexandra Bashirian",
+         "avatar_url" : null,
+         "username" : "eileen.lowe"
+      },
+      "milestone" : {
+         "project_id" : 1,
+         "description" : "Ducimus nam enim ex consequatur cumque ratione.",
+         "state" : "closed",
+         "due_date" : null,
+         "iid" : 2,
+         "created_at" : "2016-01-04T15:31:39.996Z",
+         "title" : "v4.0",
+         "id" : 17,
+         "updated_at" : "2016-01-04T15:31:39.996Z"
+      },
+      "project_id" : 1,
+      "assignee" : {
+         "state" : "active",
+         "id" : 1,
+         "name" : "Administrator",
+         "web_url" : "https://gitlab.example.com/u/root",
+         "avatar_url" : null,
+         "username" : "root"
+      },
+      "updated_at" : "2016-01-04T15:31:51.081Z",
+      "id" : 76,
+      "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
+      "created_at" : "2016-01-04T15:31:51.081Z",
+      "iid" : 6,
+      "labels" : []
+   },
+]
+```

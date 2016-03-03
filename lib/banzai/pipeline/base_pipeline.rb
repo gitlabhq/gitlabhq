@@ -1,4 +1,3 @@
-require 'banzai'
 require 'html/pipeline'
 
 module Banzai

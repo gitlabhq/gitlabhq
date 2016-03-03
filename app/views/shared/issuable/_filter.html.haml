@@ -1,28 +1,5 @@
 .issues-filters
-  .issues-state-filters
-    %ul.center-top-menu
-      %li{class: ("active" if params[:state] == 'opened')}
-        = link_to page_filter_path(state: 'opened') do
-          #{state_filters_text_for(:opened, @project)}
-
-      - if defined?(type) && type == :merge_requests
-        %li{class: ("active" if params[:state] == 'merged')}
-          = link_to page_filter_path(state: 'merged') do
-            #{state_filters_text_for(:merged, @project)}
-
-        %li{class: ("active" if params[:state] == 'closed')}
-          = link_to page_filter_path(state: 'closed') do
-            #{state_filters_text_for(:closed, @project)}
-      - else
-        %li{class: ("active" if params[:state] == 'closed')}
-          = link_to page_filter_path(state: 'closed') do
-            #{state_filters_text_for(:closed, @project)}
-
-      %li{class: ("active" if params[:state] == 'all')}
-        = link_to page_filter_path(state: 'all') do
-          #{state_filters_text_for(:all, @project)}
-
-  .issues-details-filters.gray-content-block
+  .issues-details-filters.gray-content-block.second-block
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name]), method: :get, class: 'filter-form' do
       - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
         .check-all-holder
@@ -30,12 +7,12 @@
             class: "check_all_issues left"
       .issues-other-filters
         .filter-item.inline
-          = users_select_tag(:assignee_id, selected: params[:assignee_id],
-            placeholder: 'Assignee', class: 'trigger-submit', any_user: "Any Assignee", null_user: true, first_user: true, current_user: true)
-
-        .filter-item.inline
           = users_select_tag(:author_id, selected: params[:author_id],
             placeholder: 'Author', class: 'trigger-submit', any_user: "Any Author", first_user: true, current_user: true)
+
+        .filter-item.inline
+          = users_select_tag(:assignee_id, selected: params[:assignee_id],
+          placeholder: 'Assignee', class: 'trigger-submit', any_user: "Any Assignee", null_user: true, first_user: true, current_user: true)
 
         .filter-item.inline.milestone-filter
           = select_tag('milestone_title', projects_milestones_options,
@@ -49,7 +26,7 @@
 
         - if controller.controller_name == 'issues'
           .filter-item.inline.weight-filter
-            = select_tag('weight', projects_weight_options,
+            = select_tag('weight', issues_weight_options(edit: false),
               class: 'select2 trigger-submit', include_blank: true,
               data: {placeholder: 'Weight'})
 
@@ -69,6 +46,10 @@
           = hidden_field_tag :state_event, params[:state_event]
           .filter-item.inline
             = button_tag "Update issues", class: "btn update_selected_issues btn-save"
+
+- if @label
+  .gray-content-block.second-block
+    = render "shared/label_row", label: @label
 
 :javascript
   new UsersSelect();

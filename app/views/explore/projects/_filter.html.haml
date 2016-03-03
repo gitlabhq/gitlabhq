@@ -1,10 +1,3 @@
-.pull-left
-  = form_tag explore_projects_filter_path, method: :get, class: 'form-inline form-tiny' do |f|
-    .form-group
-      = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input", id: "projects_search", spellcheck: false
-    .form-group
-      = button_tag 'Search', class: "btn"
-
 .pull-right.hidden-sm.hidden-xs
   - if current_user
     .dropdown.inline.append-right-10
@@ -46,4 +39,3 @@
             = link_to explore_projects_filter_path(tag: tag.name) do
               %i.fa.fa-tag
               = tag.name
-  = render 'explore/projects/dropdown'

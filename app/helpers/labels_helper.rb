@@ -7,6 +7,8 @@ module LabelsHelper
   # project - Project object which will be used as the context for the label's
   #           link. If omitted, defaults to `@project`, or the label's own
   #           project.
+  # type    - The type of item the link will point to (:issue or
+  #           :merge_request). If omitted, defaults to :issue.
   # block   - An optional block that will be passed to `link_to`, forming the
   #           body of the link element. If omitted, defaults to
   #           `render_colored_label`.
@@ -23,14 +25,19 @@ module LabelsHelper
   #   # Force the generated link to use a provided project
   #   link_to_label(label, project: Project.last)
   #
+  #   # Force the generated link to point to merge requests instead of issues
+  #   link_to_label(label, type: :merge_request)
+  #
   #   # Customize link body with a block
   #   link_to_label(label) { "My Custom Label Text" }
   #
   # Returns a String
-  def link_to_label(label, project: nil, &block)
+  def link_to_label(label, project: nil, type: :issue, &block)
     project ||= @project || label.project
-    link = namespace_project_issues_path(project.namespace, project,
-                                         label_name: label.name)
+    link = send("namespace_project_#{type.to_s.pluralize}_path",
+                project.namespace,
+                project,
+                label_name: label.name)
 
     if block_given?
       link_to link, &block
@@ -83,7 +90,11 @@ module LabelsHelper
   end
 
   def text_color_for_bg(bg_color)
-    r, g, b = bg_color.slice(1,7).scan(/.{2}/).map(&:hex)
+    if bg_color.length == 4
+      r, g, b = bg_color[1, 4].scan(/./).map { |v| (v * 2).hex }
+    else
+      r, g, b = bg_color[1, 7].scan(/.{2}/).map(&:hex)
+    end
 
     if (r + g + b) > 500
       '#333333'

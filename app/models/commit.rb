@@ -68,18 +68,18 @@ class Commit
 
   # Pattern used to extract commit references from text
   #
-  # The SHA can be between 6 and 40 hex characters.
+  # The SHA can be between 7 and 40 hex characters.
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
     %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>\h{6,40})
+      (?<commit>\h{7,40})
     }x
   end
 
   def self.link_reference_pattern
-    super("commit", /(?<commit>\h{6,40})/)
+    super("commit", /(?<commit>\h{7,40})/)
   end
 
   def to_reference(from_project = nil)
@@ -213,6 +213,44 @@ class Commit
 
   def status
     ci_commit.try(:status) || :not_found
+  end
+
+  def revert_branch_name
+    "revert-#{short_id}"
+  end
+
+  def revert_description
+    if merged_merge_request
+      "This reverts merge request #{merged_merge_request.to_reference}"
+    else
+      "This reverts commit #{sha}"
+    end
+  end
+
+  def revert_message
+    %Q{Revert "#{title}"\n\n#{revert_description}}
+  end
+
+  def reverts_commit?(commit)
+    description? && description.include?(commit.revert_description)
+  end
+
+  def merge_commit?
+    parents.size > 1
+  end
+
+  def merged_merge_request
+    return @merged_merge_request if defined?(@merged_merge_request)
+
+    @merged_merge_request = project.merge_requests.find_by(merge_commit_sha: id) if merge_commit?
+  end
+
+  def has_been_reverted?(current_user = nil, noteable = self)
+    Gitlab::ReferenceExtractor.lazily do
+      noteable.notes.system.flat_map do |note|
+        note.all_references(current_user).commits
+      end
+    end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
   end
 
   private

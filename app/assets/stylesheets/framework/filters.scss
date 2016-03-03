@@ -1,5 +1,5 @@
 .filter-item {
-  margin-right: 15px;
+  margin-right: 6px;
 }
 
 @media (min-width: 800px)  {
@@ -19,12 +19,5 @@
       width: 150px !important;
       display: inline-block;
     }
-  }
-}
-
-.issues-filters,
-.issues_bulk_update {
-  .select2-container .select2-choice {
-    color: #444 !important;
   }
 }

@@ -54,6 +54,18 @@ describe API::API, api: true  do
         project.team << [user, :developer]
       end
 
+      context "git push with project.wiki" do
+        it 'responds with success' do
+          project_wiki = create(:project, name: 'my.wiki', path: 'my.wiki')
+          project_wiki.team << [user, :developer]
+
+          push(key, project_wiki)
+
+          expect(response.status).to eq(200)
+          expect(json_response["status"]).to be_truthy
+        end
+      end
+
       context "git pull" do
         it do
           pull(key, project)

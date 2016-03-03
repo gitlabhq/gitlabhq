@@ -1,12 +1,11 @@
 - page_title "Account"
 - header_title page_title, profile_account_path
-- @blank_container = true
 
 - if current_user.ldap_user?
   .alert.alert-info
     Some options are unavailable for LDAP accounts
 
-.account-page
+.account-page.prepend-top-default
   .panel.panel-default.update-token
     .panel-heading
       Reset Private token

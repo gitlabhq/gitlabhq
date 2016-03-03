@@ -14,6 +14,8 @@ class PostReceive
     repo_path.gsub!(/\.git\z/, "")
     repo_path.gsub!(/\A\//, "")
 
+    update_wiki_es_indexes(repo_path)
+
     project = Project.find_with_namespace(repo_path)
 
     if project.nil?
@@ -38,7 +40,7 @@ class PostReceive
       if Gitlab::Git.tag_ref?(ref)
         GitTagPushService.new.execute(project, @user, oldrev, newrev, ref)
       else
-        GitPushService.new.execute(project, @user, oldrev, newrev, ref)
+        GitPushService.new(project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       end
     end
   end
@@ -58,5 +60,15 @@ class PostReceive
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
+  end
+
+  def update_wiki_es_indexes(repo_path)
+    return unless repo_path =~ /wiki\z/ && Gitlab.config.elasticsearch.enabled
+
+    project = Project.find_with_namespace(repo_path.gsub(/\.wiki\z/, ""))
+
+    if project
+      project.wiki.index_blobs
+    end
   end
 end

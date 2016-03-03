@@ -4,13 +4,7 @@
     position: relative;
 
     .issue-title {
-      margin-bottom: 5px;
-      font-size: $list-font-size;
-      font-weight: bold;
-    }
-
-    .issue-info {
-      color: $gl-gray;
+      margin-bottom: 2px;
     }
 
     .issue-check {
@@ -49,11 +43,6 @@
 .issue-search-form {
   margin: 0;
   height: 24px;
-
-  .issue_search {
-    border: 1px solid #DDD !important;
-    background-color: #f4f4f4;
-  }
 }
 
 form.edit-issue {
@@ -68,10 +57,6 @@ form.edit-issue {
 .merge-request-id {
   display: inline-block;
   width: 3em;
-}
-
-.merge-request-info {
-  padding-left: 5px;
 }
 
 .merge-request-status {
@@ -143,4 +128,9 @@ form.edit-issue {
 
 .issue-form .select2-container {
   width: 250px !important;
+}
+
+.issue-closed-by-widget {
+  color: $secondary-text;
+  margin-left: 52px;
 }

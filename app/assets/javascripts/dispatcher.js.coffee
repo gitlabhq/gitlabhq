@@ -16,6 +16,8 @@ class Dispatcher
     shortcut_handler = null
 
     switch page
+      when 'explore:projects:index', 'explore:projects:starred', 'explore:projects:trending'
+        Dashboard.init()
       when 'projects:issues:index'
         Issues.init()
         shortcut_handler = new ShortcutsNavigation()
@@ -49,7 +51,7 @@ class Dispatcher
         new DropzoneInput($('.release-form'))
       when 'projects:merge_requests:show'
         new Diff()
-        shortcut_handler = new ShortcutsIssuable()
+        shortcut_handler = new ShortcutsIssuable(true)
         new ZenMode()
       when "projects:merge_requests:diffs"
         new Diff()
@@ -58,7 +60,7 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
         MergeRequests.init()
       when 'dashboard:show', 'root:show'
-        new Dashboard()
+        Dashboard.init()
       when 'dashboard:activity'
         new Activities()
       when 'dashboard:projects:starred'
@@ -74,6 +76,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:show'
         shortcut_handler = new ShortcutsNavigation()
+
+        new TreeView() if $('#tree-slider').length
       when 'groups:show'
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
@@ -86,9 +90,11 @@ class Dispatcher
       when 'groups:new', 'groups:edit', 'admin:groups:edit', 'admin:groups:new'
         new GroupAvatar()
       when 'projects:tree:show'
-        new TreeView()
         shortcut_handler = new ShortcutsNavigation()
-      when 'projects:blob:show'
+        new TreeView()
+      when 'projects:find_file:show'
+        shortcut_handler = true
+      when 'projects:blob:show', 'projects:blame:show'
         new LineHighlighter()
         shortcut_handler = new ShortcutsNavigation()
       when 'projects:labels:new', 'projects:labels:edit'
@@ -99,6 +105,8 @@ class Dispatcher
         shortcut_handler = true
       when 'projects:forks:new'
         new ProjectFork()
+      when 'projects:artifacts:browse'
+        new BuildArtifacts()
       when 'users:show'
         new User()
         new Activities()

@@ -8,7 +8,7 @@ class ProjectsController < ApplicationController
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update]
+  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -94,6 +94,10 @@ class ProjectsController < ApplicationController
       return
     end
 
+    if @project.pending_delete?
+      flash[:alert] = "Project queued for delete."
+    end
+
     respond_to do |format|
       format.html do
         if @project.repository_exists?
@@ -121,8 +125,8 @@ class ProjectsController < ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, @project)
 
-    ::Projects::DestroyService.new(@project, current_user, {}).execute
-    flash[:alert] = "Project '#{@project.name}' was deleted."
+    ::Projects::DestroyService.new(@project, current_user, {}).pending_delete!
+    flash[:alert] = "Project '#{@project.name}' will be deleted."
 
     redirect_to dashboard_projects_path
   rescue Projects::DestroyService::DestroyError => ex
@@ -167,12 +171,11 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def remove_pages
-    return access_denied! unless can?(current_user, :remove_pages, @project)
-
-    @project.remove_pages
+  def housekeeping
+    ::Projects::HousekeepingService.new(@project).execute
 
     respond_to do |format|
+      flash[:notice] = "Housekeeping successfully started."
       format.html { redirect_to project_path(@project) }
     end
   end
@@ -182,14 +185,14 @@ class ProjectsController < ApplicationController
     @project.reload
 
     render json: {
-      html: view_to_html_string("projects/buttons/_star")
+      star_count: @project.star_count
     }
   end
 
   def markdown_preview
     text = params[:text]
 
-    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
+    ext = Gitlab::ReferenceExtractor.new(@project, current_user, current_user)
     ext.analyze(text)
 
     render json: {
@@ -221,37 +224,21 @@ class ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(
-      :avatar,
-      :build_allow_git_fetch,
-      :build_coverage_regex,
-      :build_timeout_in_minutes,
-      :builds_enabled,
-      :default_branch,
-      :description,
-      :import_url,
-      :issues_enabled,
-      :issues_tracker,
-      :issues_tracker_id,
-      :last_activity_at,
-      :merge_requests_enabled,
-      :name,
-      :namespace_id,
-      :path,
-      :runners_token,
-      :snippets_enabled,
-      :tag_list,
-      :visibility_level,
-      :wiki_enabled,
+      :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
+      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
+      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
+      :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
+      :public_builds,
 
       # EE-only
       :approvals_before_merge,
       :approver_ids,
       :issues_template,
-      :merge_requests_ff_only_enabled,
-      :merge_requests_rebase_enabled,
+      :merge_method,
       :merge_requests_template,
       :mirror,
       :mirror_user_id,
+      :mirror_trigger_builds,
       :reset_approvals_on_push
     )
   end
@@ -261,7 +248,7 @@ class ProjectsController < ApplicationController
       Emoji.emojis.map do |name, emoji|
         {
           name: name,
-          path: view_context.image_url("emoji/#{emoji["unicode"]}.png")
+          path: view_context.image_url("#{emoji["unicode"]}.png")
         }
       end
     end

@@ -1,13 +1,81 @@
-v 8.4.0 (unreleased)
+Please view this file on the master branch, on stable branches it's out of date.
+
+v 8.6.0 (unreleased)
+  - Improve weight filter for issues
+  - [Elastic] Add elastic checker to gitlab:check
+  - [Elastic] Added UPDATE_INDEX option to rake task
+  - [Elastic] Removing repository and wiki index after removing project
+  - [Elastic] Update index on push to wiki
+  - [Elastic] Use subprocesses for ElasticSearch index jobs
+
+v 8.5.3
+  - Prevent LDAP from downgrading a group's last owner
+  - Update gitlab-elastic-search gem to 0.0.11
+
+v 8.5.2
+  - Update LDAP groups asynchronously
+  - Fix an issue when weight text was displayed in Issuable collapsed sidebar
+
+v 8.5.1
+  - Fix adding pages domain to projects in groups
+
+v 8.5.0
+  - Fix Elasticsearch blob results linking to the wrong reference ID (Stan Hu)
+  - Show warning when mirror repository default branch could not be updated because it has diverged from upstream.
+  - More reliable wiki indexer
+  - GitLab Pages gets support for custom domain and custom certificate
+  - Fix of Elastic indexer. It should not trigger record validation for projects
+  - Fix of Elastic indexer. Stabilze indexer when serialized data is corrupted
+  - [Elastic] Don't index unnecessary data into elastic
+
+v 8.4.5
+  - Update LDAP groups asynchronously
+
+v 8.4.4
+  - Re-introduce "Send email to users" link in Admin area
+  - Fix category values for Jenkins and JenkinsDeprecated services
+  - Fix Elasticsearch indexing for newly added snippets
+  - Make Elasticsearch indexer more stable
+  - Update gitlab-elasticsearch-git to 0.0.10 which contain a few important fixes
+
+v 8.4.3
+  - Elasticsearch: fix partial blob indexing on push
+  - Elasticsearch: added advanced indexer for repositories
+  - Fix Mirror User dropdown
+
+v 8.4.2
+  - Elasticsearch indexer performance improvements
+  - Don't redirect away from Mirror Repository settings when repo is empty
+  - Fix updating of branches in mirrored repository
+  - Fix a 500 error preventing LDAP users with 2FA enabled from logging in
+  - Rake task gitlab:elastic:index_repositories handles errors and shows progress
+  - Partial indexing of repo on push (indexing changes only)
+
+v 8.4.1
+  - No EE-specific changes
+
+v 8.4.0
   - Add ability to create a note for user by admin
+  - Fix "Commit was rejected by git hook", when max_file_size was set null in project's Git hooks
+  - Fix "Approvals are not reset after a new push is made if the request is coming from a fork"
+  - Fix "User is not automatically removed from suggested approvers list if user is deleted"
+  - Add option to enforce a semi-linear history by only allowing merge requests to be merged that have been rebased
+  - Add option to trigger builds when branches or tags are updated from a mirrored upstream repository
+  - Ability to use Elasticsearch as a search engine
+
+v 8.3.2
+  - No EE-specific changes
+
+v 8.3.1
+  - Rename "Group Statistics" to "Contribution Analytics"
 
 v 8.3.0
   - License information can now be retrieved via the API
   - Show Kerberos clone url when Kerberos enabled and url different than HTTP url (Borja Aparicio)
   - Fix bug with negative approvals required
-  - Add group contribution analytics page 
+  - Add group contribution analytics page
   - Add GitLab Pages
-  - Add group contribution statistics page 
+  - Add group contribution statistics page
   - Automatically import Kerberos identities from Active Directory when Kerberos is enabled (Alex Lossent)
   - Canonicalization of Kerberos identities to always include realm (Alex Lossent)
 
@@ -51,7 +119,7 @@ v 8.1.1
 v 8.1.0
   - Add documentation for "Share project with group" API call
   - Added an issues template (Hannes Rosenögger)
-  - Add documentation for "Share project with group" API call 
+  - Add documentation for "Share project with group" API call
   - Ability to disable 'Share with Group' feature (via UI and API)
 
 v 8.0.6

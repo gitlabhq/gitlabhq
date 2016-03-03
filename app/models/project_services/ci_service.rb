@@ -16,20 +16,19 @@
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
 #  note_events           :boolean          default(TRUE), not null
+#  build_events          :boolean          default(FALSE), not null
 #
 
 # Base class for CI services
 # List methods you need to implement to get your CI service
 # working with GitLab Merge Requests
 class CiService < Service
-  def category
-    :ci
-  end
-  
+  default_value_for :category, 'ci'
+
   def valid_token?(token)
     self.respond_to?(:token) && self.token.present? && self.token == token
   end
-  
+
   def supported_events
     %w(push)
   end

@@ -1,11 +1,10 @@
-.milestones-filters
-  %ul.center-top-menu
-    %li{class: ("active" if params[:state].blank? || params[:state] == 'opened')}
-      = link_to milestones_filter_path(state: 'opened') do
-        Open
-    %li{class: ("active" if params[:state] == 'closed')}
-      = link_to milestones_filter_path(state: 'closed') do
-        Closed
-    %li{class: ("active" if params[:state] == 'all')}
-      = link_to milestones_filter_path(state: 'all') do
-        All
+%ul.nav-links
+  %li{class: ("active" if params[:state].blank? || params[:state] == 'opened')}
+    = link_to milestones_filter_path(state: 'opened') do
+      Open
+  %li{class: ("active" if params[:state] == 'closed')}
+    = link_to milestones_filter_path(state: 'closed') do
+      Closed
+  %li{class: ("active" if params[:state] == 'all')}
+    = link_to milestones_filter_path(state: 'all') do
+      All

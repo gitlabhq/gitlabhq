@@ -1,4 +1,4 @@
-$hover: #faf9f9;
+$row-hover: #f4f8fe;
 $gl-text-color: #54565B;
 $gl-text-green: #4A2;
 $gl-text-red: #D12F19;
@@ -7,11 +7,14 @@ $gl-header-color: #323232;
 $gl-link-color: #333c48;
 $md-text-color: #444;
 $md-link-color: #3084bb;
-$nprogress-color: #c0392b;
+$progress-color: #c0392b;
 $gl-font-size: 15px;
 $list-font-size: 15px;
 $sidebar_collapsed_width: 62px;
 $sidebar_width: 230px;
+$gutter_collapsed_width: 62px;
+$gutter_width: 290px;
+$gutter_inner_width: 258px;
 $avatar_radius: 50%;
 $code_font_size: 13px;
 $code_line_height: 1.5;
@@ -22,8 +25,15 @@ $header-height: 58px;
 $fixed-layout-width: 1280px;
 $gl-gray: #5a5a5a;
 $gl-padding: 16px;
+$gl-btn-padding: 10px;
+$gl-vert-padding: 6px;
 $gl-padding-top:10px;
-$gl-avatar-size: 46px;
+$gl-avatar-size: 40px;
+$secondary-text: #7f8fa4;
+$error-exclamation-point: #E62958;
+$border-radius-default: 3px;
+$list-title-color: #333333;
+$list-text-color: #555555;
 
 /*
  * Color schema
@@ -33,11 +43,12 @@ $white-light: #FFFFFF;
 $white-normal: #ededed;
 $white-dark: #ededed;
 
-$gray-light: #f7f7f7;
-$gray-normal: #ededed;
+$gray-light: #faf9f9;
+$gray-normal: #f5f5f5;
 $gray-dark: #ededed;
+$gray-darkest: #c9c9c9;
 
-$green-light: #31AF64;
+$green-light: #38ae67;
 $green-normal: #2FAA60;
 $green-dark: #2CA05B;
 
@@ -45,7 +56,11 @@ $blue-light: #2EA8E5;
 $blue-normal: #2D9FD8;
 $blue-dark: #2897CE;
 
-$orange-light: #FC6443;
+$blue-medium-light: #3498CB;
+$blue-medium: #2F8EBF;
+$blue-medium-dark: #2D86B4;
+
+$orange-light: rgba(252, 109, 38, 0.80);
 $orange-normal: #E75E40;
 $orange-dark: #CE5237;
 
@@ -57,8 +72,8 @@ $border-white-light: #F1F2F4;
 $border-white-normal: #D6DAE2;
 $border-white-dark: #C6CACF;
 
-$border-gray-light: #d1d1d1;
-$border-gray-normal: #D6DAE2;
+$border-gray-light: rgba(0, 0, 0, 0.06);
+$border-gray-normal: rgba(0, 0, 0, 0.10);;
 $border-gray-dark: #C6CACF;
 
 $border-green-light: #2FAA60;
@@ -69,7 +84,7 @@ $border-blue-light: #2D9FD8;
 $border-blue-normal: #2897CE;
 $border-blue-dark: #258DC1;
 
-$border-orange-light: #ED5C3D;
+$border-orange-light: #fc6d26;
 $border-orange-normal: #CE5237;
 $border-orange-dark: #C14E35;
 
@@ -88,6 +103,8 @@ $gl-success: $green-normal;
 $gl-info: $blue-normal;
 $gl-warning: $orange-normal;
 $gl-danger: $red-normal;
+$gl-btn-active-background: rgba(0, 0, 0, 0.12);
+$gl-btn-active-gradient: inset 0 0 4px $gl-btn-active-background;
 
 /*
  * Commit Diff Colors

@@ -10,7 +10,11 @@
     %tbody
       - events.each do |event|
         %tr
-          %td #{event.author_name}
+          %td
+            - if event.author_name
+              #{event.author_name}
+            - else
+              (removed)
           %td
             %span
               #{raw human_text(event.details)}

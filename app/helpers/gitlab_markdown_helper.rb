@@ -78,6 +78,21 @@ module GitlabMarkdownHelper
     )
   end
 
+  def other_markup(file_name, text)
+    Gitlab::OtherMarkup.render(
+      file_name,
+      text,
+      project:      @project,
+      current_user: (current_user if defined?(current_user)),
+
+      # RelativeLinkFilter
+      project_wiki:   @project_wiki,
+      requested_path: @path,
+      ref:            @ref,
+      commit:         @commit
+    )
+  end
+
   # Return the first line of +text+, up to +max_chars+, after parsing the line
   # as Markdown.  HTML tags in the parsed output are not counted toward the
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
@@ -91,7 +106,7 @@ module GitlabMarkdownHelper
   def render_wiki_content(wiki_page)
     case wiki_page.format
     when :markdown
-      markdown(wiki_page.content)
+      markdown(wiki_page.content, pipeline: :wiki, project_wiki: @project_wiki)
     when :asciidoc
       asciidoc(wiki_page.content)
     else

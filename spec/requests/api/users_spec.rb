@@ -8,6 +8,8 @@ describe API::API, api: true  do
   let(:key)   { create(:key, user: user) }
   let(:email)   { create(:email, user: user) }
   let(:omniauth_user) { create(:omniauth_user) }
+  let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
+  let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -26,6 +28,13 @@ describe API::API, api: true  do
         expect(json_response.detect do |user|
           user['username'] == username
         end['username']).to eq(username)
+      end
+
+      it "should return one user" do
+        get api("/users?username=#{omniauth_user.username}", user)
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['username']).to eq(omniauth_user.username)
       end
     end
 
@@ -788,6 +797,12 @@ describe API::API, api: true  do
       expect(user.reload.state).to eq('blocked')
     end
 
+    it 'should not re-block ldap blocked users' do
+      put api("/users/#{ldap_blocked_user.id}/block", admin)
+      expect(response.status).to eq(403)
+      expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
+    end
+
     it 'should not be available for non admin users' do
       put api("/users/#{user.id}/block", user)
       expect(response.status).to eq(403)
@@ -802,7 +817,9 @@ describe API::API, api: true  do
   end
 
   describe 'PUT /user/:id/unblock' do
+    let(:blocked_user)  { create(:user, state: 'blocked') }
     before { admin }
+
     it 'should unblock existing user' do
       put api("/users/#{user.id}/unblock", admin)
       expect(response.status).to eq(200)
@@ -810,12 +827,15 @@ describe API::API, api: true  do
     end
 
     it 'should unblock a blocked user' do
-      put api("/users/#{user.id}/block", admin)
+      put api("/users/#{blocked_user.id}/unblock", admin)
       expect(response.status).to eq(200)
-      expect(user.reload.state).to eq('blocked')
-      put api("/users/#{user.id}/unblock", admin)
-      expect(response.status).to eq(200)
-      expect(user.reload.state).to eq('active')
+      expect(blocked_user.reload.state).to eq('active')
+    end
+
+    it 'should not unblock ldap blocked users' do
+      put api("/users/#{ldap_blocked_user.id}/unblock", admin)
+      expect(response.status).to eq(403)
+      expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
     it 'should not be available for non admin users' do

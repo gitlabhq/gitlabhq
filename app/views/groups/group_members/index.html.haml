@@ -1,9 +1,8 @@
 - page_title "Members"
 - header_title group_title(@group, "Members", group_group_members_path(@group))
-- @blank_container = true
 
-.group-members-page
-  - if current_user && current_user.can?(:admin_group_member, @group)
+.group-members-page.prepend-top-default
+  - if current_user && can?(current_user, :admin_group_member, @group)
     .panel.panel-default
       .panel-heading
         Add new user to group
@@ -14,7 +13,7 @@
         .new-group-member-holder
           = render "new_group_member"
 
-  - if @group.ldap_synced?
+  - if current_user && @group.ldap_synced?
     .bs-callout.bs-callout-info
       The members of this group are managed using LDAP and cannot be added, changed or removed here.
       Because LDAP permissions in GitLab get updated one user at a time and because GitLab caches LDAP check results, changes on your LDAP server or in this group's LDAP sync settings may take up to #{Gitlab.config.ldap['sync_time']}s to show in the list below.
@@ -26,7 +25,7 @@
             are given
             %code= ldap_group_link.human_access
             access.
-      - if current_user && current_user.can?(:admin_group, @group)
+      - if can?(current_user, :admin_group_member, @group)
         = form_tag(reset_access_group_ldap_path(@group), method: :put, class: 'inline') do
           = button_to 'Clear LDAP permission cache', '#', class: "btn btn-remove js-confirm-danger",
             data: { "confirm-danger-message" => clear_ldap_permission_cache_message,
@@ -39,7 +38,7 @@
       group members
       %small
         (#{@members.total_count})
-      .pull-right
+      .controls
         = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
           .form-group
             = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }

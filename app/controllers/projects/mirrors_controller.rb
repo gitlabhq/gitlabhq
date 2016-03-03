@@ -1,6 +1,5 @@
 class Projects::MirrorsController < Projects::ApplicationController
   # Authorize
-  before_action :require_non_empty_project
   before_action :authorize_admin_project!, except: [:update_now]
   before_action :authorize_push_code!, only: [:update_now]
 
@@ -38,6 +37,6 @@ class Projects::MirrorsController < Projects::ApplicationController
   private
 
   def mirror_params
-    params.require(:project).permit(:mirror, :import_url, :mirror_user_id)
+    params.require(:project).permit(:mirror, :import_url, :mirror_user_id, :mirror_trigger_builds)
   end
 end

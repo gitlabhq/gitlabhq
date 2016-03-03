@@ -27,16 +27,24 @@ class Issue < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include Elastic::IssuesSearch
+
   WEIGHT_RANGE = 1..9
+  WEIGHT_ALL = 'Everything'
+  WEIGHT_ANY = 'Any Weight'
+  WEIGHT_NONE = 'No Weight'
 
   ActsAsTaggableOn.strict_case_match = true
 
   belongs_to :project
   validates :project, presence: true
 
-  scope :of_group, ->(group) { where(project_id: group.project_ids) }
+  scope :of_group,
+    ->(group) { where(project_id: group.projects.select(:id).reorder(nil)) }
+
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
+  scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
   state_machine :state, initial: :opened do
     event :close do
@@ -84,10 +92,10 @@ class Issue < ActiveRecord::Base
     reference
   end
 
-  def referenced_merge_requests
+  def referenced_merge_requests(current_user = nil)
     Gitlab::ReferenceExtractor.lazily do
       [self, *notes].flat_map do |note|
-        note.all_references.merge_requests
+        note.all_references(current_user).merge_requests
       end
     end.sort_by(&:iid)
   end
@@ -117,5 +125,9 @@ class Issue < ActiveRecord::Base
     notes.system.flat_map do |note|
       note.all_references(current_user).merge_requests
     end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
+
+  def self.weight_options
+    [WEIGHT_ALL, WEIGHT_ANY, WEIGHT_NONE] + WEIGHT_RANGE.to_a
   end
 end

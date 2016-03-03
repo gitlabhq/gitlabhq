@@ -41,7 +41,7 @@ class SystemNoteService
   #
   # Returns the created Note object
   def self.change_assignee(noteable, project, author, assignee)
-    body = assignee.nil? ? 'Assignee removed' : "Reassigned to @#{assignee.username}"
+    body = assignee.nil? ? 'Assignee removed' : "Reassigned to #{assignee.to_reference}"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -66,7 +66,7 @@ class SystemNoteService
   def self.change_label(noteable, project, author, added_labels, removed_labels)
     labels_count = added_labels.count + removed_labels.count
 
-    references     = ->(label) { "~#{label.id}" }
+    references     = ->(label) { label.to_reference(:id) }
     added_labels   = added_labels.map(&references).join(' ')
     removed_labels = removed_labels.map(&references).join(' ')
 
@@ -103,7 +103,7 @@ class SystemNoteService
   # Returns the created Note object
   def self.change_milestone(noteable, project, author, milestone)
     body = 'Milestone '
-    body += milestone.nil? ? 'removed' : "changed to #{milestone.title}"
+    body += milestone.nil? ? 'removed' : "changed to #{milestone.to_reference(project)}"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -274,12 +274,15 @@ class SystemNoteService
   # Check if a cross reference to a noteable from a mentioner already exists
   #
   # This method is used to prevent multiple notes being created for a mention
-  # when a issue is updated, for example.
+  # when a issue is updated, for example. The method also calls notes_for_mentioner
+  # to check if the mentioner is a commit, and return matches only on commit hash
+  # instead of project + commit, to avoid repeated mentions from forks.
   #
   # noteable  - Noteable object being referenced
   # mentioner - Mentionable object
   #
   # Returns Boolean
+
   def self.cross_reference_exists?(noteable, mentioner)
     # Initial scope should be system notes of this noteable type
     notes = Note.system.where(noteable_type: noteable.class)
@@ -291,10 +294,7 @@ class SystemNoteService
       notes = notes.where(noteable_id: noteable.id)
     end
 
-    gfm_reference = mentioner.gfm_reference(noteable.project)
-    notes = notes.where(note: cross_reference_note_content(gfm_reference))
-
-    notes.count > 0
+    notes_for_mentioner(mentioner, noteable, notes).count > 0
   end
 
   # Called when the merge request is approved by user
@@ -314,6 +314,15 @@ class SystemNoteService
   end
 
   private
+
+  def self.notes_for_mentioner(mentioner, noteable, notes)
+    if mentioner.is_a?(Commit)
+      notes.where('note LIKE ?', "#{cross_reference_note_prefix}%#{mentioner.to_reference(nil)}")
+    else
+      gfm_reference = mentioner.gfm_reference(noteable.project)
+      notes.where(note: cross_reference_note_content(gfm_reference))
+    end
+  end
 
   def self.create_note(args = {})
     Note.create(args.merge(system: true))

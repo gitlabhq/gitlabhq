@@ -3,6 +3,10 @@ Feature: Groups
     Given I sign in as "John Doe"
     And "John Doe" is owner of group "Owned"
 
+  Scenario: I should not see a group if it does not exist
+    When I visit group "NonExistentGroup" page
+    Then page status code should be 404
+
   Scenario: I should have back to group button
     When I visit group "Owned" page
     Then I should see back to dashboard button

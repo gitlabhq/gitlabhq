@@ -1,39 +1,47 @@
 # Session
 
-Login to get private token
+You can login with both GitLab and LDAP credentials in order to obtain the
+private token.
 
 ```
 POST /session
 ```
 
-Parameters:
+| Attribute  | Type    | Required | Description |
+| ---------- | ------- | -------- | -------- |
+| `login`    | string  | yes      | The username of the user|
+| `email`    | string  | yes if login is not provided | The email of the user |
+| `password` | string  | yes     | The password of the user |
 
-- `login` (required) - The login of user
-- `email` (required if login missing) - The email of user
-- `password` (required) - Valid password
+```bash
+curl -X POST "https://gitlab.example.com/api/v3/session?login=john_smith&password=strongpassw0rd"
+```
 
-**You can login with both GitLab and LDAP credentials now**
-
+Example response:
 
 ```json
 {
-  "id": 1,
-  "username": "john_smith",
-  "email": "john@example.com",
   "name": "John Smith",
-  "private_token": "dd34asd13as",
-  "blocked": false,
-  "created_at": "2012-05-23T08:00:58Z",
+  "username": "john_smith",
+  "id": 32,
+  "state": "active",
+  "avatar_url": null,
+  "created_at": "2015-01-29T21:07:19.440Z",
+  "is_admin": true,
   "bio": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
   "website_url": "",
-  "dark_scheme": false,
+  "email": "john@example.com",
   "theme_id": 1,
-  "is_admin": false,
+  "color_scheme_id": 1,
+  "projects_limit": 10,
+  "current_sign_in_at": "2015-07-07T07:10:58.392Z",
+  "identities": [],
   "can_create_group": true,
-  "can_create_team": true,
-  "can_create_project": true
+  "can_create_project": true,
+  "two_factor_enabled": false,
+  "private_token": "9koXpg98eAheJpvBs5tK"
 }
 ```

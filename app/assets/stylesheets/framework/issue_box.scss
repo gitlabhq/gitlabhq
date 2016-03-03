@@ -5,32 +5,29 @@
  */
 
 .status-box {
-  @include border-radius(2px);
-
+  @include border-radius(3px);
   display: block;
   float: left;
-  padding: 0 $gl-padding;
-  font-weight: normal;
+  padding: 0 $gl-btn-padding;
+  margin-top: 5px;
   margin-right: 10px;
+  color: #FFF;
   font-size: $gl-font-size;
+  line-height: 25px;
 
   &.status-box-closed {
     background-color: $gl-danger;
-    color: #FFF;
   }
 
   &.status-box-merged {
     background-color: $gl-primary;
-    color: #FFF;
   }
 
   &.status-box-open {
-    background-color: #019875;
-    color: #FFF;
+    background-color: $green-light;
   }
 
   &.status-box-expired {
     background: #cea61b;
-    color: #FFF;
   }
 }

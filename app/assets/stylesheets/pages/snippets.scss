@@ -2,30 +2,6 @@
   padding: 2px;
 }
 
-
-.snippet-row {
-  .snippet-title {
-    font-size: 15px;
-    font-weight: bold;
-    line-height: 20px;
-    margin-bottom: 2px;
-
-    .monospace {
-      font-weight: normal;
-    }
-  }
-
-  .snippet-info {
-    color: #888;
-    font-size: 13px;
-    line-height: 24px;
-
-    a {
-      color: #888;
-    }
-  }
-}
-
 .snippet-holder {
   margin-bottom: -$gl-padding;
 

@@ -65,13 +65,6 @@
   position: relative;
 }
 
-.md-header {
-  ul {
-    float: left;
-    margin-bottom: 1px;
-  }
-}
-
 .referenced-users {
   color: #4c4e54;
   padding-top: 10px;
@@ -85,28 +78,12 @@
   box-shadow: none;
 }
 
-.new_note,
-.edit_note,
-.detail-page-description,
-.milestone-description,
-.wiki-content,
-.merge-request-form {
-  .nav-tabs {
-    margin-bottom: 0;
-    border: none;
-
-    li a,
-    li.active a {
-      border: 1px solid #DDD;
-    }
-  }
-}
-
 .markdown-area {
   @include border-radius(0);
   background: #FFF;
   border: 1px solid #ddd;
   min-height: 140px;
+  max-height: 500px;
   padding: 5px;
   box-shadow: none;
   width: 100%;

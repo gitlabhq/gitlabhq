@@ -70,11 +70,6 @@ Feature: Project Wiki
     Then I should see non-escaped link in the pages list
 
   @javascript
-  Scenario: Creating an invalid new page
-    Given I create a New page with an invalid name
-    Then I should see an error message
-
-  @javascript
   Scenario: Edit Wiki page that has a path
     Given I create a New page with paths
     And I click on the "Pages" button

@@ -1,9 +1,10 @@
-.page-with-sidebar{ class: page_sidebar_class }
+.page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
   = render "layouts/broadcast"
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
     .header-logo
-      = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home' do
+      %a#logo
         = brand_header_logo
+      = link_to root_path, class: 'home', title: 'Dashboard', id: 'js-shortcuts-home' do
         .gitlab-text-container
           %h3 GitLab
 
@@ -24,7 +25,7 @@
   .content-wrapper
     = render "layouts/flash"
     = yield :flash_message
-    %div{ class: container_class }
+    %div{ class: (container_class unless @no_container) }
       .content
         .clearfix
           = yield

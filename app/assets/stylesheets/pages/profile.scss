@@ -51,9 +51,17 @@
 .profile-link-holder {
   display: inline;
 
+  a {
+    color: $blue-dark;
+    text-decoration: none;
+  }
+}
+
+// Middle dot divider between each element in a list of items.
+.middle-dot-divider {
   &:after {
-    content: "\00B7";
-    padding: 0px 6px;
+    content: "\00B7"; // Middle Dot
+    padding: 0 6px;
     font-weight: bold;
   }
 
@@ -63,9 +71,46 @@
       padding: 0;
     }
   }
+}
 
-  a {
-    color: $blue-dark;
-    text-decoration: none;
+.profile-user-bio {
+  // Limits the width of the user bio for readability.
+  max-width: 750px;
+  margin: auto;
+}
+
+.modal-profile-crop {
+  .modal-dialog {
+    width: 500px;
+  }
+
+  .modal-body {
+    p {
+      display: table;
+      margin: auto;
+      overflow: hidden;
+    }
+
+    img {
+      display: block;
+      max-width: 400px;
+      max-height: 400px;
+    }
+
+    .cropper-bg {
+      background: none;
+    }
+
+    .cropper-crop-box {
+      box-sizing: content-box;
+      border: 999px solid transparentize(#ccc, 0.5);
+      @include transform(translate(-999px, -999px));
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  .modal-profile-crop .modal-dialog {
+    width: auto;
   }
 }

@@ -44,14 +44,14 @@ module IssuesHelper
   end
 
   def bulk_update_milestone_options
-    milestones = project_active_milestones.to_a
+    milestones = @project.milestones.active.reorder(due_date: :asc, title: :asc).to_a
     milestones.unshift(Milestone::None)
 
     options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
   end
 
   def milestone_options(object)
-    milestones = object.project.milestones.active.to_a
+    milestones = object.project.milestones.active.reorder(due_date: :asc, title: :asc).to_a
     milestones.unshift(Milestone::None)
 
     options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)
@@ -69,6 +69,10 @@ module IssuesHelper
     end
   end
 
+  def issue_button_visibility(issue, closed)
+    return 'hidden' if issue.closed? == closed
+  end
+
   def issue_to_atom(xml, issue)
     xml.entry do
       xml.id      namespace_project_issue_url(issue.project.namespace,
@@ -76,7 +80,7 @@ module IssuesHelper
       xml.link    href: namespace_project_issue_url(issue.project.namespace,
                                                     issue.project, issue)
       xml.title   truncate(issue.title, length: 80)
-      xml.updated issue.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+      xml.updated issue.created_at.xmlschema
       xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
       xml.author do |author|
         xml.name issue.author_name
@@ -94,11 +98,17 @@ module IssuesHelper
     end.sort.to_sentence(last_word_connector: ', or ')
   end
 
-  def url_to_emoji(name)
-    emoji_path = ::AwardEmoji.path_to_emoji_image(name)
-    url_to_image(emoji_path)
-  rescue StandardError
-    ""
+  def emoji_icon(name, unicode = nil, aliases = [])
+    unicode ||= Emoji.emoji_filename(name) rescue ""
+
+    content_tag :div, "",
+      class: "icon emoji-icon emoji-#{unicode}",
+      title: name,
+      data: {
+        aliases: aliases.join(' '),
+        emoji: name,
+        unicode_name: unicode
+      }
   end
 
   def emoji_author_list(notes, current_user)
@@ -109,10 +119,6 @@ module IssuesHelper
     list.join(", ")
   end
 
-  def emoji_list
-    ::AwardEmoji::EMOJI_LIST
-  end
-
   def note_active_class(notes, current_user)
     if current_user && notes.pluck(:author_id).include?(current_user.id)
       "active"
@@ -121,13 +127,30 @@ module IssuesHelper
     end
   end
 
-  def projects_weight_options(selected = nil)
-    options = (Issue::WEIGHT_RANGE).map do |i|
-      [i, i]
-    end
+  def awards_sort(awards)
+    awards.sort_by do |award, notes|
+      if award == "thumbsup"
+        0
+      elsif award == "thumbsdown"
+        1
+      else
+        2
+      end
+    end.to_h
+  end
 
-    options.unshift(['Any', nil])
-    options_for_select(options, selected || params[:weight])
+  def issues_weight_options(selected = nil, edit: false)
+    weights = edit ? edit_weights : issue_weights
+
+    options_for_select(weights, selected || params[:weight])
+  end
+
+  def issue_weights(weight_array = Issue.weight_options)
+    weight_array.zip(weight_array)
+  end
+
+  def edit_weights
+    issue_weights([Issue::WEIGHT_NONE] + Issue::WEIGHT_RANGE.to_a)
   end
 
   # Required for Banzai::Filter::IssueReferenceFilter

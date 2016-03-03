@@ -41,7 +41,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should not see "master" branch' do
-    expect(page).not_to have_content "master"
+    expect(find('.merge-request-info')).not_to have_content "master"
   end
 
   step 'I should see "other_branch" branch' do
@@ -138,6 +138,56 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            author: project.users.first)
   end
 
+  step 'merge request "Bug NS-04" have 2 upvotes and 1 downvote' do
+    merge_request = MergeRequest.find_by(title: 'Bug NS-04')
+    create_list(:upvote_note, 2, project: project, noteable: merge_request)
+    create(:downvote_note, project: project, noteable: merge_request)
+  end
+
+  step 'merge request "Bug NS-06" have 1 upvote and 2 downvotes' do
+    merge_request = MergeRequest.find_by(title: 'Bug NS-06')
+    create(:upvote_note, project: project, noteable: merge_request)
+    create_list(:downvote_note, 2, project: project, noteable: merge_request)
+  end
+
+  step 'The list should be sorted by "Least popular"' do
+    page.within '.mr-list' do
+      page.within 'li.merge-request:nth-child(1)' do
+        expect(page).to have_content 'Bug NS-06'
+        expect(page).to have_content '1 2'
+      end
+
+      page.within 'li.merge-request:nth-child(2)' do
+        expect(page).to have_content 'Bug NS-04'
+        expect(page).to have_content '2 1'
+      end
+
+      page.within 'li.merge-request:nth-child(3)' do
+        expect(page).to have_content 'Bug NS-05'
+        expect(page).to_not have_content '0 0'
+      end
+    end
+  end
+
+  step 'The list should be sorted by "Most popular"' do
+    page.within '.mr-list' do
+      page.within 'li.merge-request:nth-child(1)' do
+        expect(page).to have_content 'Bug NS-04'
+        expect(page).to have_content '2 1'
+      end
+
+      page.within 'li.merge-request:nth-child(2)' do
+        expect(page).to have_content 'Bug NS-06'
+        expect(page).to have_content '1 2'
+      end
+
+      page.within 'li.merge-request:nth-child(3)' do
+        expect(page).to have_content 'Bug NS-05'
+        expect(page).to_not have_content '0 0'
+      end
+    end
+  end
+
   step 'I click on the Changes tab' do
     page.within '.merge-request-tabs' do
       click_link 'Changes'
@@ -179,6 +229,15 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I leave a comment like "Line is wrong" on diff' do
     init_diff_note
     leave_comment "Line is wrong"
+  end
+
+  step 'user "John Doe" leaves a comment like "Line is wrong" on diff' do
+    mr = MergeRequest.find_by(title: "Bug NS-05")
+    create(:note_on_merge_request_diff, project: project,
+                                        noteable_id: mr.id,
+                                        author: user_exists("John Doe"),
+                                        line_code: sample_commit.line_code,
+                                        note: 'Line is wrong')
   end
 
   step 'I leave a comment like "Line is wrong" on diff in commit' do
@@ -236,6 +295,22 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       expect(page).to have_content sample_commit.line_code_path
       expect(page).to have_content "Line is wrong"
     end
+  end
+
+  step 'I should see a discussion by user "John Doe" has started on diff' do
+    page.within(".notes .discussion") do
+      page.should have_content "#{user_exists("John Doe").name} started a discussion"
+      page.should have_content sample_commit.line_code_path
+      page.should have_content "Line is wrong"
+    end
+  end
+
+  step 'I should see a badge of "1" next to the discussion link' do
+    expect_discussion_badge_to_have_counter("1")
+  end
+
+  step 'I should see a badge of "0" next to the discussion link' do
+    expect_discussion_badge_to_have_counter("0")
   end
 
   step 'I should see a discussion has started on commit diff' do
@@ -540,6 +615,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see "Bug NS-05" at the top' do
+    expect(page.find('ul.content-list.mr-list li.merge-request:first-child')).to have_content("Bug NS-05")
+  end
+
+  step 'I should see "Bug NS-04" at the top' do
+    expect(page.find('ul.content-list.mr-list li.merge-request:first-child')).to have_content("Bug NS-04")
+  end
+
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end
@@ -568,5 +651,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   def have_visible_content (text)
     have_css("*", text: text, visible: true)
+  end
+
+  def expect_discussion_badge_to_have_counter(value)
+    page.within(".notes-tab .badge") do
+      page.should have_content value
+    end
   end
 end

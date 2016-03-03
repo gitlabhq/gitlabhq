@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LdapGroupResetService do
+describe LdapGroupResetService, services: true do
   # TODO: refactor to multi-ldap setup
   let(:group) { create(:group) }
   let(:user) { create(:user) }

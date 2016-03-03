@@ -1,4 +1,3 @@
-require 'banzai'
 require 'html/pipeline/filter'
 require 'html/pipeline/sanitization_filter'
 
@@ -8,15 +7,10 @@ module Banzai
     #
     # Extends HTML::Pipeline::SanitizationFilter with a custom whitelist.
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
+      UNSAFE_PROTOCOLS = %w(javascript :javascript data vbscript).freeze
+
       def whitelist
-        # Descriptions are more heavily sanitized, allowing only a few elements.
-        # See http://git.io/vkuAN
-        if context[:inline_sanitization]
-          whitelist = LIMITED
-          whitelist[:elements] -= %w(pre code img ol ul li)
-        else
-          whitelist = super
-        end
+        whitelist = super
 
         customize_whitelist(whitelist)
 
@@ -44,11 +38,15 @@ module Banzai
         # Allow span elements
         whitelist[:elements].push('span')
 
+        # Allow abbr elements with title attribute
+        whitelist[:elements].push('abbr')
+        whitelist[:attributes]['abbr'] = %w(title)
+
         # Allow any protocol in `a` elements...
         whitelist[:protocols].delete('a')
 
-        # ...but then remove links with the `javascript` protocol
-        whitelist[:transformers].push(remove_javascript_links)
+        # ...but then remove links with unsafe protocols
+        whitelist[:transformers].push(remove_unsafe_links)
 
         # Remove `rel` attribute from `a` elements
         whitelist[:transformers].push(remove_rel)
@@ -59,14 +57,14 @@ module Banzai
         whitelist
       end
 
-      def remove_javascript_links
+      def remove_unsafe_links
         lambda do |env|
           node = env[:node]
 
           return unless node.name == 'a'
           return unless node.has_attribute?('href')
 
-          if node['href'].start_with?('javascript', ':javascript')
+          if node['href'].start_with?(*UNSAFE_PROTOCOLS)
             node.remove_attribute('href')
           end
         end

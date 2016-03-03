@@ -26,6 +26,7 @@ class Note < ActiveRecord::Base
   include Gitlab::CurrentSettings
   include Participable
   include Mentionable
+  include Elastic::NotesSearch
 
   default_value_for :system, false
 
@@ -33,9 +34,11 @@ class Note < ActiveRecord::Base
   participant :author
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true
+  belongs_to :noteable, polymorphic: true, touch: true
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
+
+  has_many :todos, dependent: :destroy
 
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
@@ -58,6 +61,7 @@ class Note < ActiveRecord::Base
   # Scopes
   scope :awards, ->{ where(is_award: true) }
   scope :nonawards, ->{ where(is_award: false) }
+  scope :searchable, ->{ where("is_award IS FALSE AND system IS FALSE") }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
   scope :not_inline, ->{ where(line_code: [nil, '']) }
@@ -107,9 +111,16 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_awards
+      notes = {}
+
       awards.select(:note).distinct.map do |note|
-        [ note.note, where(note: note.note) ]
+        notes[note.note] = where(note: note.note)
       end
+
+      notes["thumbsup"] ||= Note.none
+      notes["thumbsdown"] ||= Note.none
+
+      notes
     end
   end
 
@@ -237,7 +248,7 @@ class Note < ActiveRecord::Base
     prev_match_line = nil
     prev_lines = []
 
-    diff_lines.each do |line|
+    highlighted_diff_lines.each do |line|
       if line.type == "match"
         prev_lines.clear
         prev_match_line = line
@@ -254,7 +265,11 @@ class Note < ActiveRecord::Base
   end
 
   def diff_lines
-    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.lines.to_a)
+    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.lines)
+  end
+
+  def highlighted_diff_lines
+    Gitlab::Diff::Highlight.new(diff_lines).highlight
   end
 
   def discussion_id
@@ -339,18 +354,20 @@ class Note < ActiveRecord::Base
     read_attribute(:system)
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def downvote?
-    false
+    is_award && note == "thumbsdown"
   end
 
-  # Deprecated. Still exists to preserve API compatibility.
   def upvote?
-    false
+    is_award && note == "thumbsup"
   end
 
   def editable?
     !system? && !is_award
+  end
+
+  def cross_reference_not_visible_for?(user)
+    cross_reference? && referenced_mentionables(user).empty?
   end
 
   # Checks if note is an award added as a comment
@@ -362,6 +379,7 @@ class Note < ActiveRecord::Base
   #
   def set_award!
     return unless awards_supported? && contains_emoji_only?
+
     self.is_award = true
     self.note = award_emoji_name
   end
@@ -369,7 +387,7 @@ class Note < ActiveRecord::Base
   private
 
   def awards_supported?
-    noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)
+    (noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)) && !for_diff_line?
   end
 
   def contains_emoji_only?

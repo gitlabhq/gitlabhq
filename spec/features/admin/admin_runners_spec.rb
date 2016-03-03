@@ -63,7 +63,7 @@ describe "Admin Runners" do
   end
 
   describe 'runners registration token' do
-    let!(:token) { current_application_settings.ensure_runners_registration_token }
+    let!(:token) { current_application_settings.runners_registration_token }
     before { visit admin_runners_path }
 
     it 'has a registration token' do

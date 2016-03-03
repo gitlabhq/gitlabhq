@@ -12,6 +12,23 @@
     height: 100%;
     transition-duration: .3s;
   }
+
+  .home {
+    z-index: 1;
+    position: absolute;
+    left: 0px;
+  }
+
+  #logo {
+    z-index: 2;
+    position: absolute;
+    width: 58px;
+    cursor: pointer;
+  }
+
+  &.right-sidebar-expanded {
+    padding-right: $gutter_width;
+  }
 }
 
 .sidebar-wrapper {
@@ -21,11 +38,10 @@
 
 .content-wrapper {
   width: 100%;
-  padding: 20px;
 
   .container-fluid {
     background: #FFF;
-    padding: $gl-padding;
+    padding: 0 $gl-padding;
 
     &.container-blank {
       background: none;
@@ -71,7 +87,7 @@
           width: 158px;
           float: left;
           margin: 0;
-          margin-left: 14px;
+          margin-left: 50px;
           font-size: 19px;
           line-height: 41px;
           font-weight: normal;
@@ -105,7 +121,7 @@
 .tanuki-shape {
   transition: all 0.8s;
 
-  &:hover {
+  &:hover, &.highlight {
     fill: rgb(255, 255, 255);
     transition: all 0.1s;
   }
@@ -182,6 +198,10 @@
 @mixin expanded-sidebar {
   padding-left: $sidebar_width;
 
+  &.right-sidebar-collapsed {
+    padding-right: $sidebar_collapsed_width;
+  }
+
   .sidebar-wrapper {
     width: $sidebar_width;
 
@@ -203,6 +223,10 @@
 
 @mixin collapsed-sidebar {
   padding-left: $sidebar_collapsed_width;
+
+  &.right-sidebar-collapsed {
+    padding-right: $sidebar_collapsed_width;
+  }
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
@@ -267,26 +291,10 @@
   background: #f2f6f7;
 }
 
-@media (max-width: $screen-md-max) {
-  .page-sidebar-collapsed {
-    @include collapsed-sidebar;
-  }
-
-  .page-sidebar-expanded {
-    @include collapsed-sidebar;
-  }
-
-  .collapse-nav {
-    display: none;
-  }
+.page-sidebar-collapsed {
+  @include collapsed-sidebar;
 }
 
-@media(min-width: $screen-md-max) {
-  .page-sidebar-collapsed {
-    @include collapsed-sidebar;
-  }
-
-  .page-sidebar-expanded {
-    @include expanded-sidebar;
-  }
+.page-sidebar-expanded {
+  @include expanded-sidebar;
 }

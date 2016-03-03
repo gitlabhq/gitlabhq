@@ -32,6 +32,7 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     @issues = @issues.page(params[:page]).per(PER_PAGE)
+    @label = @project.labels.find_by(title: params[:label_name])
 
     respond_to do |format|
       format.html
@@ -49,7 +50,7 @@ class Projects::IssuesController < Projects::ApplicationController
       assignee_id: ""
     )
 
-    @issue = @project.issues.new(issue_params)
+    @issue = @noteable = @project.issues.new(issue_params)
 
     # Set Issue description based on project template
     if @project.issues_template.present?
@@ -67,7 +68,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @note = @project.notes.new(noteable: @issue)
     @notes = @issue.notes.nonawards.with_associations.fresh
     @noteable = @issue
-    @merge_requests = @issue.referenced_merge_requests
+    @merge_requests = @issue.referenced_merge_requests(current_user)
 
     respond_with(@issue)
   end

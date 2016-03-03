@@ -21,6 +21,10 @@
             %li
               = link_to admin_root_path, title: 'Admin Area', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = icon('wrench fw')
+          %li
+            = link_to dashboard_todos_path, title: 'Todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              %span.badge.todos-pending-count
+                = todos_pending_count
           - if current_user.can_create_project?
             %li
               = link_to new_project_path, title: 'New project', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -37,3 +41,6 @@
       %h1.title= title
 
 = render 'shared/outdated_browser'
+- if @project && !@project.empty_repo?
+  :javascript
+    var findFileURL = "#{namespace_project_find_file_path(@project.namespace, @project, @ref || @project.repository.root_ref)}";

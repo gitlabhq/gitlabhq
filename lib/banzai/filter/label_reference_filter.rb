@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Banzai
   module Filter
     # HTML filter that replaces label references with links.
@@ -60,7 +58,7 @@ module Banzai
             text = link_text || render_colored_label(label)
 
             %(<a href="#{url}" #{data}
-                 class="#{klass}">#{text}</a>)
+                 class="#{klass}">#{escape_once(text)}</a>)
           else
             match
           end

@@ -8,3 +8,7 @@ en:
       wrong_size: "is the wrong size (should be %{file_size})"
       size_too_small: "is too small (should be at least %{file_size})"
       size_too_big: "is too big (should be at most %{file_size})"
+  views:
+    pagination:
+      previous: "Prev"
+      next: "Next"

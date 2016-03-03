@@ -1,4 +1,7 @@
-- page_title "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
+- page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
+- page_description     @merge_request.description
+- page_card_attributes @merge_request.card_attributes
+
 = render "header_title"
 
 - if params[:view] == 'parallel'
@@ -35,14 +38,14 @@
     = render "projects/merge_requests/show/how_to_merge"
     = render "projects/merge_requests/widget/show.html.haml"
 
-    - if @merge_request.open? && @merge_request.source_branch_exists? && @merge_request.can_be_merged? && @merge_request.can_be_merged_by?(current_user)
+    - if @merge_request.source_branch_exists? && @merge_request.mergeable? && @merge_request.can_be_merged_by?(current_user)
       .light.prepend-top-default
         You can also accept this merge request manually using the
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
     - if @commits.present?
-      %ul.merge-request-tabs.center-top-menu.no-top.no-bottom
+      %ul.merge-request-tabs.nav-links.no-top.no-bottom
         %li.notes-tab
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
             Discussion
@@ -63,16 +66,13 @@
 
       .tab-content
         #notes.notes.tab-pane.voting_notes
-          .gray-content-block.second-block.oneline-block
+          .content-block.oneline-block
             = render 'votes/votes_block', votable: @merge_request
 
           .row
-            %section.col-md-9
+            %section.col-md-12
               .issuable-discussion
                 = render "projects/merge_requests/discussion"
-            %aside.col-md-3
-              = render 'shared/issuable/sidebar', issuable: @merge_request
-            = render 'shared/show_aside'
 
         #commits.commits.tab-pane
           - # This tab is always loaded via AJAX
@@ -83,6 +83,10 @@
 
       .mr-loading-status
         = spinner
+
+= render 'shared/issuable/sidebar', issuable: @merge_request
+- if @merge_request.can_be_reverted?
+  = render "projects/commit/revert", commit: @merge_request.merge_commit, title: @merge_request.title
 
 :javascript
   var merge_request;

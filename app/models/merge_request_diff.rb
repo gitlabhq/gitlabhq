@@ -48,14 +48,11 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def diffs_no_whitespace
-    # Get latest sha of branch from source project
-    source_sha = merge_request.source_project.commit(source_branch).sha
-
     compare_result = Gitlab::CompareResult.new(
       Gitlab::Git::Compare.new(
-        merge_request.target_project.repository.raw_repository,
-        merge_request.target_branch,
-        source_sha,
+        self.repository.raw_repository,
+        self.target_branch,
+        self.source_sha,
       ), { ignore_whitespace_change: true }
     )
     @diffs_no_whitespace ||= load_diffs(dump_commits(compare_result.diffs))
@@ -73,11 +70,15 @@ class MergeRequestDiff < ActiveRecord::Base
     commits.last
   end
 
+  def base_commit
+    return nil unless self.base_commit_sha
+
+    merge_request.target_project.commit(self.base_commit_sha)
+  end
+
   def last_commit_short_sha
     @last_commit_short_sha ||= last_commit.short_id
   end
-
-  private
 
   def dump_commits(commits)
     commits.map(&:to_hash)
@@ -156,6 +157,9 @@ class MergeRequestDiff < ActiveRecord::Base
     end
 
     self.st_diffs = new_diffs
+
+    self.base_commit_sha = self.repository.merge_base(self.source_sha, self.target_branch)
+
     self.save
   end
 
@@ -172,7 +176,10 @@ class MergeRequestDiff < ActiveRecord::Base
     merge_request.target_project.repository
   end
 
-  private
+  def source_sha
+    source_commit = merge_request.source_project.commit(source_branch)
+    source_commit.try(:sha)
+  end
 
   def compare_result
     @compare_result ||=
@@ -180,15 +187,11 @@ class MergeRequestDiff < ActiveRecord::Base
         # Update ref for merge request
         merge_request.fetch_ref
 
-        # Get latest sha of branch from source project
-        source_commit = merge_request.source_project.commit(source_branch)
-        source_sha = source_commit.try(:sha)
-
         Gitlab::CompareResult.new(
           Gitlab::Git::Compare.new(
-            merge_request.target_project.repository.raw_repository,
-            merge_request.target_branch,
-            source_sha,
+            self.repository.raw_repository,
+            self.target_branch,
+            self.source_sha
           )
         )
       end

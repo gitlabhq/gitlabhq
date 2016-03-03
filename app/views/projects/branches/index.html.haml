@@ -10,7 +10,7 @@
       &nbsp;
     .dropdown.inline
       %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
-        %span.light sort:
+        %span.light
         - if @sort.present?
           = @sort.humanize
         - else

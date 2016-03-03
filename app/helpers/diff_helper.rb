@@ -1,4 +1,13 @@
 module DiffHelper
+  def mark_inline_diffs(old_line, new_line)
+    old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_line, new_line).inline_diffs
+
+    marked_old_line = Gitlab::Diff::InlineDiffMarker.new(old_line).mark(old_diffs)
+    marked_new_line = Gitlab::Diff::InlineDiffMarker.new(new_line).mark(new_diffs)
+
+    [marked_old_line, marked_new_line]
+  end
+
   def diff_view
     params[:view] == 'parallel' ? 'parallel' : 'inline'
   end
@@ -19,13 +28,13 @@ module DiffHelper
     end
   end
 
-  def safe_diff_files(diffs)
+  def safe_diff_files(diffs, diff_refs)
     lines = 0
     safe_files = []
     diffs.first(allowed_diff_size).each do |diff|
       lines += diff.diff.lines.count
       break if lines > allowed_diff_lines
-      safe_files << Gitlab::Diff::File.new(diff)
+      safe_files << Gitlab::Diff::File.new(diff, diff_refs)
     end
     safe_files
   end
@@ -43,64 +52,6 @@ module DiffHelper
     Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
   end
 
-  def parallel_diff(diff_file, index)
-    lines = []
-    skip_next = false
-
-    # Building array of lines
-    #
-    # [
-    # left_type, left_line_number, left_line_content, left_line_code,
-    # right_line_type, right_line_number, right_line_content, right_line_code
-    # ]
-    #
-    diff_file.diff_lines.each do |line|
-
-      full_line = line.text
-      type = line.type
-      line_code = generate_line_code(diff_file.file_path, line)
-      line_new = line.new_pos
-      line_old = line.old_pos
-
-      next_line = diff_file.next_line(line.index)
-
-      if next_line
-        next_line_code = generate_line_code(diff_file.file_path, next_line)
-        next_type = next_line.type
-        next_line = next_line.text
-      end
-
-      if type == 'match' || type.nil?
-        # line in the right panel is the same as in the left one
-        line = [type, line_old, full_line, line_code, type, line_new, full_line, line_code]
-        lines.push(line)
-      elsif type == 'old'
-        if next_type == 'new'
-          # Left side has text removed, right side has text added
-          line = [type, line_old, full_line, line_code, next_type, line_new, next_line, next_line_code]
-          lines.push(line)
-          skip_next = true
-        elsif next_type == 'old' || next_type.nil?
-          # Left side has text removed, right side doesn't have any change
-          # No next line code, no new line number, no new line text
-          line = [type, line_old, full_line, line_code, next_type, nil, "&nbsp;", nil]
-          lines.push(line)
-        end
-      elsif type == 'new'
-        if skip_next
-          # Change has been already included in previous line so no need to do it again
-          skip_next = false
-          next
-        else
-          # Change is only on the right side, left side has no change
-          line = [nil, nil, "&nbsp;", line_code, type, line_new, full_line, line_code]
-          lines.push(line)
-        end
-      end
-    end
-    lines
-  end
-
   def unfold_bottom_class(bottom)
     (bottom) ? 'js-unfold-bottom' : ''
   end
@@ -111,14 +62,14 @@ module DiffHelper
 
   def diff_line_content(line)
     if line.blank?
-      " &nbsp;"
+      " &nbsp;".html_safe
     else
       line
     end
   end
 
   def line_comments
-    @line_comments ||= @line_notes.select(&:active?).group_by(&:line_code)
+    @line_comments ||= @line_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
   end
 
   def organize_comments(type_left, type_right, line_code_left, line_code_right)
@@ -160,8 +111,7 @@ module DiffHelper
 
   def commit_for_diff(diff)
     if diff.deleted_file
-      first_commit = @first_commit || @commit
-      first_commit.parent || @first_commit
+      @base_commit || @commit.parent || @commit
     else
       @commit
     end
@@ -187,7 +137,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'btn active' : 'btn') do
+    link_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'btn active' : 'btn'), data: { view_type: name } do
       title
     end
   end

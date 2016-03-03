@@ -3,7 +3,7 @@ require 'spec_helper'
 describe LabelsHelper do
   describe 'link_to_label' do
     let(:project) { create(:empty_project) }
-    let(:label)   { create(:label, project: project) }
+    let(:label) { create(:label, project: project) }
 
     context 'with @project set' do
       before do
@@ -11,34 +11,31 @@ describe LabelsHelper do
       end
 
       it 'uses the instance variable' do
-        expect(label).not_to receive(:project)
-        link_to_label(label)
+        expect(link_to_label(label)).to match %r{<a href="/#{@project.to_reference}/issues\?label_name=#{label.name}">.*</a>}
       end
     end
 
     context 'without @project set' do
       it "uses the label's project" do
-        expect(label).to receive(:project).and_return(project)
-        link_to_label(label)
+        expect(link_to_label(label)).to match %r{<a href="/#{label.project.to_reference}/issues\?label_name=#{label.name}">.*</a>}
       end
     end
 
-    context 'with a named project argument' do
-      it 'uses the provided project' do
-        arg = double('project')
-        expect(arg).to receive(:namespace).and_return('foo')
-        expect(arg).to receive(:to_param).and_return('foo')
+    context 'with a project argument' do
+      let(:another_project) { double('project', namespace: 'foo3', to_param: 'bar3') }
 
-        link_to_label(label, project: arg)
+      it 'links to merge requests page' do
+        expect(link_to_label(label, project: another_project)).to match %r{<a href="/foo3/bar3/issues\?label_name=#{label.name}">.*</a>}
       end
+    end
 
-      it 'takes precedence over other types' do
-        @project = project
-        expect(@project).not_to receive(:namespace)
-        expect(label).not_to receive(:project)
-
-        arg = double('project', namespace: 'foo', to_param: 'foo')
-        link_to_label(label, project: arg)
+    context 'with a type argument' do
+      ['issue', :issue, 'merge_request', :merge_request].each do |type|
+        context "set to #{type}" do
+          it 'links to correct page' do
+            expect(link_to_label(label, type: type)).to match %r{<a href="/#{label.project.to_reference}/#{type.to_s.pluralize}\?label_name=#{label.name}">.*</a>}
+          end
+        end
       end
     end
 
@@ -65,6 +62,11 @@ describe LabelsHelper do
 
     it 'uses dark text on light backgrounds' do
       expect(text_color_for_bg('#EEEEEE')).to eq('#333333')
+    end
+
+    it 'supports RGB triplets' do
+      expect(text_color_for_bg('#FFF')).to eq '#333333'
+      expect(text_color_for_bg('#000')).to eq '#FFFFFF'
     end
   end
 end

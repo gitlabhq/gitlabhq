@@ -20,25 +20,17 @@
       position: fixed;
       top: 70px;
       margin-right: 35px;
+
+      &.no-affix {
+        position: relative;
+        top: 0;
+      }
     }
-  }
-}
-
-.project-issuable-filter {
-  .controls {
-    float: right;
-    margin-top: 7px;
-  }
-
-  .center-top-menu {
-    text-align: left;
   }
 }
 
 .issuable-details {
   section {
-    border-right: 1px solid $border-white-light;
-
     .issuable-discussion {
       margin-right: 1px;
     }
@@ -68,10 +60,40 @@
   .block {
     @include clearfix;
     padding:  $gl-padding 0;
-    border-bottom: 1px solid #F0F0F0;
+    border-bottom: 1px solid $border-gray-light;
+    // This prevents the mess when resizing the sidebar
+    // of elements repositioning themselves..
+    width: $gutter_inner_width;
+    // --
+
+    &:first-child {
+      padding-top: 5px;
+    }
 
     &:last-child {
       border: none;
+    }
+
+    span {
+      margin-top: 7px;
+      display: inline-block;
+    }
+
+    .select2-container span {
+      margin-top: 0;
+    }
+
+    .issuable-count {
+
+    }
+
+    .gutter-toggle {
+      margin-left: 20px;
+      padding-left: 10px;
+
+      &:hover {
+        color: $gray-darkest;
+      }
     }
   }
 
@@ -94,11 +116,24 @@
   }
 
   .cross-project-reference {
-    font-weight: bold;
     color: $gl-link-color;
+
+    span {
+      white-space: nowrap;
+      width: 85%;
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      text-overflow: ellipsis;
+    }
+
+    cite {
+      font-style: normal;
+    }
 
     button {
       float: right;
+      padding: 3px 5px;
     }
   }
 
@@ -113,5 +148,107 @@
   .participants .avatar {
     margin-top: 6px;
     margin-right: 2px;
+  }
+}
+
+
+.right-sidebar {
+  position: fixed;
+  top: 58px;
+  bottom: 0;
+  right: 0;
+  transition: width .3s;
+  background: $gray-light;
+  padding: 10px 20px;
+
+  &.right-sidebar-expanded {
+    width: $gutter_width;
+
+    hr {
+      display: none;
+    }
+
+    .sidebar-collapsed-icon {
+      display: none;
+    }
+
+    .gutter-toggle {
+      border-left: 1px solid $border-gray-light;
+    }
+  }
+
+  .subscribe-button {
+    span {
+      margin-top: 0;
+    }
+  }
+
+  &.right-sidebar-collapsed {
+    width: $sidebar_collapsed_width;
+    padding-top: 0;
+
+    hr {
+      margin: 0;
+      color: $gray-normal;
+      border-color: $gray-normal;
+      width: 62px;
+      margin-left: -20px
+    }
+
+    .block {
+      width: $sidebar_collapsed_width - 1px;
+      margin-left: -19px;
+      padding: 15px 0 0 0;
+      border-bottom: none;
+      overflow: hidden;
+    }
+
+    .hide-collapsed {
+      display: none;
+    }
+
+    .gutter-toggle {
+      margin-left: -36px;
+    }
+
+    .sidebar-collapsed-icon {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding-bottom: 10px;
+      color: #999999;
+
+      span {
+        display: block;
+        margin-top: 0;
+      }
+
+      .btn-clipboard {
+        border: none;
+
+        &:hover {
+          background: transparent;
+        }
+
+        i {
+          color: #999999;
+        }
+      }
+    }
+  }
+
+  .btn {
+    background: $gray-normal;
+    border: 1px solid $border-gray-normal;
+    &:hover {
+      background: $gray-dark;
+      border: 1px solid $border-gray-dark;
+    }
+  }
+}
+
+.detail-page-description {
+  small {
+    color: $gray-darkest;
   }
 }

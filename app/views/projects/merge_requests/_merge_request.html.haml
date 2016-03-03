@@ -1,7 +1,7 @@
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
     %span.merge-request-title-text
-      = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
+      = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "title"
     %ul.controls.light
       - if merge_request.merged?
         %li
@@ -17,12 +17,23 @@
 
       - if merge_request.open? && merge_request.broken?
         %li
-          = link_to merge_request_path(merge_request), class: "has_tooltip", title: "Cannot be merged automatically", data: {container: 'body'} do
+          = link_to merge_request_path(merge_request), class: "has_tooltip", title: "Cannot be merged automatically", data: { container: 'body' } do
             = icon('exclamation-triangle')
 
       - if merge_request.assignee
         %li
           = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
+
+      - upvotes, downvotes = merge_request.upvotes, merge_request.downvotes
+      - if upvotes > 0
+        %li
+          = icon('thumbs-up')
+          = upvotes
+
+      - if downvotes > 0
+        %li
+          = icon('thumbs-down')
+          = downvotes
 
       - note_count = merge_request.mr_and_commit_notes.user.count
       - if note_count > 0
@@ -37,7 +48,7 @@
             = note_count
 
   .merge-request-info
-    \##{merge_request.iid} &middot;
+    #{merge_request.to_reference} &middot;
     opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
     by #{link_to_member(@project, merge_request.author, avatar: false)}
     - if merge_request.target_project.default_branch != merge_request.target_branch
@@ -53,7 +64,7 @@
     - if merge_request.labels.any?
       &nbsp;
       - merge_request.labels.each do |label|
-        = link_to_label(label, project: merge_request.project)
+        = link_to_label(label, project: merge_request.project, type: 'merge_request')
     - if merge_request.tasks?
       &nbsp;
       %span.task-status

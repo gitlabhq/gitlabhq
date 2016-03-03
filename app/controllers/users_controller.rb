@@ -4,10 +4,11 @@ class UsersController < ApplicationController
 
   def show
     @contributed_projects = contributed_projects.joined(@user).reject(&:forked?)
-
+    
     @projects = PersonalProjectsFinder.new(@user).execute(current_user)
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
-    @groups = JoinedGroupsFinder.new(@user).execute(current_user)
+    @groups = @user.groups.order_id_desc
 
     respond_to do |format|
       format.html
@@ -56,7 +57,7 @@ class UsersController < ApplicationController
 
   def contributions_calendar
     @contributions_calendar ||= Gitlab::ContributionsCalendar.
-      new(contributed_projects.reject(&:forked?), @user)
+      new(contributed_projects, @user)
   end
 
   def load_events

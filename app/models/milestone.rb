@@ -22,10 +22,13 @@ class Milestone < ActiveRecord::Base
 
   include InternalId
   include Sortable
+  include Referable
   include StripAttribute
+  include Elastic::MilestonesSearch
 
   belongs_to :project
   has_many :issues
+  has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
   has_many :participants, through: :issues, source: :assignee
 
@@ -33,7 +36,7 @@ class Milestone < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :of_projects, ->(ids) { where(project_id: ids) }
 
-  validates :title, presence: true
+  validates :title, presence: true, uniqueness: { scope: :project_id }
   validates :project, presence: true
 
   strip_attributes :title
@@ -59,6 +62,27 @@ class Milestone < ActiveRecord::Base
       query = "%#{query}%"
       where("title like ? or description like ?", query, query)
     end
+  end
+
+  def self.reference_pattern
+    nil
+  end
+
+  def self.link_reference_pattern
+    super("milestones", /(?<milestone>\d+)/)
+  end
+
+  def to_reference(from_project = nil)
+    escaped_title = self.title.gsub("]", "\\]")
+
+    h = Gitlab::Application.routes.url_helpers
+    url = h.namespace_project_milestone_url(self.project.namespace, self.project, self)
+
+    "[#{escaped_title}](#{url})"
+  end
+
+  def reference_link_text(from_project = nil)
+    self.title
   end
 
   def expired?
@@ -87,12 +111,25 @@ class Milestone < ActiveRecord::Base
     0
   end
 
+  # Returns the elapsed time (in percent) since the Milestone creation date until today.
+  # If the Milestone doesn't have a due_date then returns 0 since we can't calculate the elapsed time.
+  # If the Milestone is overdue then it returns 100%.
+  def percent_time_used
+    return 0 unless due_date
+    return 100 if expired?
+
+    duration = ((created_at - due_date.to_datetime) / 1.day)
+    days_elapsed = ((created_at - Time.now) / 1.day)
+
+    ((days_elapsed.to_f / duration) * 100).floor
+  end
+
   def expires_at
     if due_date
       if due_date.past?
-        "expired at #{due_date.stamp("Aug 21, 2011")}"
+        "expired on #{due_date.to_s(:medium)}"
       else
-        "expires at #{due_date.stamp("Aug 21, 2011")}"
+        "expires on #{due_date.to_s(:medium)}"
       end
     end
   end

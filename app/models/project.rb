@@ -29,6 +29,14 @@
 #  import_source          :string(255)
 #  commit_count           :integer          default(0)
 #  import_error           :text
+#  ci_id                  :integer
+#  builds_enabled         :boolean          default(TRUE), not null
+#  shared_runners_enabled :boolean          default(TRUE), not null
+#  runners_token          :string
+#  build_coverage_regex   :string
+#  build_allow_git_fetch  :boolean          default(TRUE), not null
+#  build_timeout          :integer          default(3600), not null
+#  pending_delete         :boolean
 #
 
 require 'carrierwave/orm/activerecord'
@@ -43,6 +51,8 @@ class Project < ActiveRecord::Base
   include Sortable
   include AfterCommitQueue
   include CaseSensitivity
+  include TokenAuthenticatable
+  include Elastic::ProjectsSearch
 
   extend Gitlab::ConfigHelper
 
@@ -66,10 +76,24 @@ class Project < ActiveRecord::Base
 
   after_destroy :remove_pages
 
+  # update visibility_levet of forks
+  after_update :update_forks_visibility_level
+  def update_forks_visibility_level
+    return unless visibility_level < visibility_level_was
+
+    forks.each do |forked_project|
+      if forked_project.visibility_level > visibility_level
+        forked_project.visibility_level = visibility_level
+        forked_project.save!
+      end
+    end
+  end
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 
   attr_accessor :new_default_branch
+  attr_accessor :old_path_with_namespace
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
@@ -105,11 +129,14 @@ class Project < ActiveRecord::Base
   has_one :custom_issue_tracker_service, dependent: :destroy
   has_one :gitlab_issue_tracker_service, dependent: :destroy
   has_one :external_wiki_service, dependent: :destroy
+  has_one :index_status, dependent: :destroy
 
+  has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one  :forked_from_project,  through:   :forked_project_link
 
-  has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_many :forked_project_links, foreign_key: "forked_from_project_id"
+  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
 
-  has_one :forked_from_project, through: :forked_project_link
   # Merge Requests for target project should be removed with it
   has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
   # Merge requests from source project should be kept when source project was removed
@@ -135,6 +162,7 @@ class Project < ActiveRecord::Base
   has_many :lfs_objects, through: :lfs_objects_projects
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :pages_domains, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
@@ -182,10 +210,8 @@ class Project < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validates :approvals_before_merge, numericality: true, allow_blank: true
 
-  before_validation :set_runners_token_token
-  def set_runners_token_token
-    self.runners_token = SecureRandom.hex(15) if self.runners_token.blank?
-  end
+  add_authentication_token_field :runners_token
+  before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
 
@@ -237,6 +263,11 @@ class Project < ActiveRecord::Base
         project.mirror_last_successful_update_at = timestamp
         project.save
       end
+
+      if Gitlab.config.elasticsearch.enabled
+        project.repository.index_blobs
+        project.repository.index_commits
+      end
     end
 
     after_transition started: :failed do |project, transaction|
@@ -276,6 +307,10 @@ class Project < ActiveRecord::Base
               LOWER(namespaces.name) LIKE :query OR
               LOWER(projects.description) LIKE :query',
               query: "%#{query.try(:downcase)}%")
+    end
+
+    def search_by_visibility(level)
+      where(visibility_level: Gitlab::VisibilityLevel.const_get(level.upcase))
     end
 
     def search_by_title(query)
@@ -343,11 +378,16 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, nil, self)
+    @repository ||= Repository.new(path_with_namespace, self)
   end
 
   def commit(id = 'HEAD')
     repository.commit(id)
+  end
+
+  def merge_base_commit(first_commit_id, second_commit_id)
+    sha = repository.merge_base(first_commit_id, second_commit_id)
+    repository.commit(sha) if sha
   end
 
   def saved?
@@ -386,6 +426,10 @@ class Project < ActiveRecord::Base
     external_import? || forked?
   end
 
+  def no_import?
+    import_status == 'none'
+  end
+
   def external_import?
     import_url.present?
   end
@@ -411,7 +455,7 @@ class Project < ActiveRecord::Base
     result.password = '*****' unless result.password.nil?
     result.to_s
   rescue
-    original_url
+    self.import_url
   end
 
   def mirror_updated?
@@ -530,12 +574,9 @@ class Project < ActiveRecord::Base
     !external_issue_tracker
   end
 
-  def external_issues_trackers
-    services.select(&:issue_tracker?).reject(&:default?)
-  end
-
   def external_issue_tracker
-    @external_issues_tracker ||= external_issues_trackers.find(&:activated?)
+    @external_issue_tracker ||=
+      services.issue_trackers.active.without_defaults.first
   end
 
   def can_have_issues_tracker_id?
@@ -628,7 +669,9 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions(old_path_with_namespace)
-    NotificationService.new.project_was_moved(self, old_path_with_namespace)
+    # New project path needs to be committed to the DB or notification will
+    # retrieve stale information
+    run_after_commit { NotificationService.new.project_was_moved(self, old_path_with_namespace) }
   end
 
   def owner
@@ -782,6 +825,11 @@ class Project < ActiveRecord::Base
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
         reset_events_cache
+
+        @old_path_with_namespace = old_path_with_namespace
+
+        SystemHooksService.new.execute_hooks_for(self, :rename)
+
         @repository = nil
       rescue
         # Returning false does not rollback after_* transaction but gives
@@ -801,11 +849,20 @@ class Project < ActiveRecord::Base
   def hook_attrs
     {
       name: name,
-      ssh_url: ssh_url_to_repo,
-      http_url: http_url_to_repo,
+      description: description,
       web_url: web_url,
+      avatar_url: avatar_url,
+      git_ssh_url: ssh_url_to_repo,
+      git_http_url: http_url_to_repo,
       namespace: namespace.name,
-      visibility_level: visibility_level
+      visibility_level: visibility_level,
+      path_with_namespace: path_with_namespace,
+      default_branch: default_branch,
+      # Backward compatibility
+      homepage: web_url,
+      url: url_to_repo,
+      ssh_url: ssh_url_to_repo,
+      http_url: http_url_to_repo
     }
   end
 
@@ -851,6 +908,7 @@ class Project < ActiveRecord::Base
   end
 
   def change_head(branch)
+    repository.before_change_head
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
@@ -868,7 +926,7 @@ class Project < ActiveRecord::Base
   end
 
   def forks_count
-    ForkedProjectLink.where(forked_from_project_id: self.id).count
+    forks.count
   end
 
   def find_label(name)
@@ -909,6 +967,10 @@ class Project < ActiveRecord::Base
   rescue ProjectWiki::CouldNotCreateWikiError
     errors.add(:base, 'Failed create wiki')
     false
+  end
+
+  def wiki
+    @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
   def reference_issue_tracker?
@@ -985,18 +1047,33 @@ class Project < ActiveRecord::Base
     issues.opened.count
   end
 
+  def visibility_level_allowed?(level)
+    return true unless forked?
+    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i)
+  end
+
+  def runners_token
+    ensure_runners_token!
+  end
+
+  def pages_deployed?
+    Dir.exist?(public_pages_path)
+  end
+
   def pages_url
-    if Dir.exist?(public_pages_path)
-      host = "#{namespace.path}.#{Settings.pages.host}"
-      url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
-        "#{prefix}#{namespace.path}."
-      end
+    # The hostname always needs to be in downcased
+    # All web servers convert hostname to lowercase
+    host = "#{namespace.path}.#{Settings.pages.host}".downcase
 
-      # If the project path is the same as host, leave the short version
-      return url if host == path
+    # The host in URL always needs to be downcased
+    url = Gitlab.config.pages.url.sub(/^https?:\/\//) do |prefix|
+      "#{prefix}#{namespace.path}."
+    end.downcase
 
-      "#{url}/#{path}"
-    end
+    # If the project path is the same as host, we serve it as group page
+    return url if host == path
+
+    "#{url}/#{path}"
   end
 
   def pages_path
@@ -1011,10 +1088,38 @@ class Project < ActiveRecord::Base
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
     # 3. We asynchronously remove pages with force
-    temp_path = "#{path}.#{SecureRandom.hex}"
+    temp_path = "#{path}.#{SecureRandom.hex}.deleted"
 
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.path, temp_path)
     end
+  end
+
+  def merge_method
+    if self.merge_requests_ff_only_enabled
+      :ff
+    elsif self.merge_requests_rebase_enabled
+      :rebase_merge
+    else
+      :merge
+    end
+  end
+
+  def merge_method=(method)
+    case method.to_s
+    when "ff"
+      self.merge_requests_ff_only_enabled = true
+      self.merge_requests_rebase_enabled = true
+    when "rebase_merge"
+      self.merge_requests_ff_only_enabled = false
+      self.merge_requests_rebase_enabled = true
+    when "merge"
+      self.merge_requests_ff_only_enabled = false
+      self.merge_requests_rebase_enabled = false
+    end
+  end
+
+  def ff_merge_must_be_possible?
+    self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
   end
 end

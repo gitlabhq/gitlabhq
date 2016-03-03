@@ -1,7 +1,7 @@
 class @Project
   constructor: ->
     # Git protocol switcher
-    $('.js-protocol-switch').click ->
+    $('ul.clone-options-dropdown a').click ->
       return if $(@).hasClass('active')
 
 
@@ -10,7 +10,8 @@ class @Project
       # Add the active class for the clicked button
       $(@).toggleClass('active')
 
-      url = $(@).data('clone')
+      url = $("#project_clone").val()
+      console.log("url",url)
 
       # Update the input field
       $('#project_clone').val(url)
@@ -49,3 +50,19 @@ class @Project
       $('#notifications-button').empty().append("<i class='fa fa-bell'></i>" + label + "<i class='fa fa-angle-down'></i>")
       $(@).parents('ul').find('li.active').removeClass 'active'
       $(@).parent().addClass 'active'
+
+    @projectSelectDropdown()
+
+  projectSelectDropdown: ->
+    new ProjectSelect()
+
+    $('.project-item-select').on 'click', (e) =>
+      @changeProject $(e.currentTarget).val()
+
+    $('.js-projects-dropdown-toggle').on 'click', (e) ->
+      e.preventDefault()
+
+      $('.js-projects-dropdown').select2('open')
+
+  changeProject: (url) ->
+    window.location = url

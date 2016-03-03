@@ -171,7 +171,7 @@ describe SystemNoteService, services: true do
 
     context 'when milestone added' do
       it 'sets the note text' do
-        expect(subject.note).to eq "Milestone changed to #{milestone.title}"
+        expect(subject.note).to eq "Milestone changed to #{milestone.to_reference}"
       end
     end
 
@@ -422,6 +422,21 @@ describe SystemNoteService, services: true do
       it 'is falsey when not already mentioned' do
         expect(described_class.cross_reference_exists?(commit1, commit0)).
           to be_falsey
+      end
+    end
+
+    context 'commit with cross-reference from fork' do
+      let(:author2) { create(:user) }
+      let(:forked_project) { Projects::ForkService.new(project, author2).execute }
+      let(:commit2) { forked_project.commit }
+
+      before do
+        described_class.cross_reference(noteable, commit0, author2)
+      end
+
+      it 'is true when a fork mentions an external issue' do
+        expect(described_class.cross_reference_exists?(noteable, commit2)).
+            to be true
       end
     end
   end

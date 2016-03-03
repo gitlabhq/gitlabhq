@@ -1,4 +1,4 @@
-%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
+%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)] }
   .timeline-entry-inner
     .timeline-icon
       %a{href: user_path(note.author)}
@@ -28,7 +28,7 @@
           %a{name: dom_id(note), href: "##{dom_id(note)}", title: 'Link here'}
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note_created_ago')
           - if note.updated_at != note.created_at
-            %span
+            %span.note-updated-at
               &middot;
               = icon('edit', title: 'edited')
               = time_ago_with_tooltip(note.updated_at, placement: 'bottom', html_class: 'note_edited_ago')

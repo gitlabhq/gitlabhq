@@ -1,6 +1,6 @@
 %tr.commit_status
   %td.status
-    - if commit_status.target_url
+    - if can?(current_user, :read_commit_status, commit_status) && commit_status.target_url
       = link_to commit_status.target_url, class: "ci-status ci-#{commit_status.status}" do
         = ci_icon_for_status(commit_status.status)
         = commit_status.status
@@ -8,14 +8,14 @@
       = ci_status_with_icon(commit_status.status)
 
   %td.commit_status-link
-    - if commit_status.target_url
+    - if can?(current_user, :read_commit_status, commit_status) && commit_status.target_url
       = link_to commit_status.target_url do
         %strong ##{commit_status.id}
     - else
       %strong ##{commit_status.id}
 
     - if commit_status.show_warning?
-      %i.fa.fa-warning.text-warning
+      %i.fa.fa-warning.text-warning{data: { toggle: "tooltip" }, title: "This build is stuck, open it to know more"}
 
   - if defined?(commit_sha) && commit_sha
     %td
@@ -66,10 +66,10 @@
 
   %td
     .pull-right
-      - if current_user && can?(current_user, :download_build_artifacts, commit_status.project) && commit_status.download_url
-        = link_to commit_status.download_url, title: 'Download artifacts' do
+      - if can?(current_user, :read_commit_status, commit_status) && commit_status.artifacts_download_url
+        = link_to commit_status.artifacts_download_url, title: 'Download artifacts' do
           %i.fa.fa-download
-      - if current_user && can?(current_user, :manage_builds, commit_status.project)
+      - if can?(current_user, :update_commit_status, commit_status)
         - if commit_status.active?
           - if commit_status.cancel_url
             = link_to commit_status.cancel_url, method: :post, title: 'Cancel' do

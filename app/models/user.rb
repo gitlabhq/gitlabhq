@@ -2,62 +2,63 @@
 #
 # Table name: users
 #
-#  id                         :integer          not null, primary key
-#  email                      :string(255)      default(""), not null
-#  encrypted_password         :string(255)      default(""), not null
-#  reset_password_token       :string(255)
-#  reset_password_sent_at     :datetime
-#  remember_created_at        :datetime
-#  sign_in_count              :integer          default(0)
-#  current_sign_in_at         :datetime
-#  last_sign_in_at            :datetime
-#  current_sign_in_ip         :string(255)
-#  last_sign_in_ip            :string(255)
-#  created_at                 :datetime
-#  updated_at                 :datetime
-#  name                       :string(255)
-#  admin                      :boolean          default(FALSE), not null
-#  projects_limit             :integer          default(10)
-#  skype                      :string(255)      default(""), not null
-#  linkedin                   :string(255)      default(""), not null
-#  twitter                    :string(255)      default(""), not null
-#  authentication_token       :string(255)
-#  theme_id                   :integer          default(1), not null
-#  bio                        :string(255)
-#  failed_attempts            :integer          default(0)
-#  locked_at                  :datetime
-#  unlock_token               :string(255)
-#  username                   :string(255)
-#  can_create_group           :boolean          default(TRUE), not null
-#  can_create_team            :boolean          default(TRUE), not null
-#  state                      :string(255)
-#  color_scheme_id            :integer          default(1), not null
-#  notification_level         :integer          default(1), not null
-#  password_expires_at        :datetime
-#  created_by_id              :integer
-#  last_credential_check_at   :datetime
-#  avatar                     :string(255)
-#  confirmation_token         :string(255)
-#  confirmed_at               :datetime
-#  confirmation_sent_at       :datetime
-#  unconfirmed_email          :string(255)
-#  hide_no_ssh_key            :boolean          default(FALSE)
-#  website_url                :string(255)      default(""), not null
-#  notification_email         :string(255)
-#  hide_no_password           :boolean          default(FALSE)
-#  password_automatically_set :boolean          default(FALSE)
-#  location                   :string(255)
-#  encrypted_otp_secret       :string(255)
-#  encrypted_otp_secret_iv    :string(255)
-#  encrypted_otp_secret_salt  :string(255)
-#  otp_required_for_login     :boolean          default(FALSE), not null
-#  otp_backup_codes           :text
-#  public_email               :string(255)      default(""), not null
-#  dashboard                  :integer          default(0)
-#  project_view               :integer          default(0)
-#  consumed_timestep          :integer
-#  layout                     :integer          default(0)
-#  hide_project_limit         :boolean          default(FALSE)
+#  id                          :integer          not null, primary key
+#  email                       :string(255)      default(""), not null
+#  encrypted_password          :string(255)      default(""), not null
+#  reset_password_token        :string(255)
+#  reset_password_sent_at      :datetime
+#  remember_created_at         :datetime
+#  sign_in_count               :integer          default(0)
+#  current_sign_in_at          :datetime
+#  last_sign_in_at             :datetime
+#  current_sign_in_ip          :string(255)
+#  last_sign_in_ip             :string(255)
+#  created_at                  :datetime
+#  updated_at                  :datetime
+#  name                        :string(255)
+#  admin                       :boolean          default(FALSE), not null
+#  projects_limit              :integer          default(10)
+#  skype                       :string(255)      default(""), not null
+#  linkedin                    :string(255)      default(""), not null
+#  twitter                     :string(255)      default(""), not null
+#  authentication_token        :string(255)
+#  theme_id                    :integer          default(1), not null
+#  bio                         :string(255)
+#  failed_attempts             :integer          default(0)
+#  locked_at                   :datetime
+#  username                    :string(255)
+#  can_create_group            :boolean          default(TRUE), not null
+#  can_create_team             :boolean          default(TRUE), not null
+#  state                       :string(255)
+#  color_scheme_id             :integer          default(1), not null
+#  notification_level          :integer          default(1), not null
+#  password_expires_at         :datetime
+#  created_by_id               :integer
+#  last_credential_check_at    :datetime
+#  avatar                      :string(255)
+#  confirmation_token          :string(255)
+#  confirmed_at                :datetime
+#  confirmation_sent_at        :datetime
+#  unconfirmed_email           :string(255)
+#  hide_no_ssh_key             :boolean          default(FALSE)
+#  website_url                 :string(255)      default(""), not null
+#  notification_email          :string(255)
+#  hide_no_password            :boolean          default(FALSE)
+#  password_automatically_set  :boolean          default(FALSE)
+#  location                    :string(255)
+#  encrypted_otp_secret        :string(255)
+#  encrypted_otp_secret_iv     :string(255)
+#  encrypted_otp_secret_salt   :string(255)
+#  otp_required_for_login      :boolean          default(FALSE), not null
+#  otp_backup_codes            :text
+#  public_email                :string(255)      default(""), not null
+#  dashboard                   :integer          default(0)
+#  project_view                :integer          default(0)
+#  consumed_timestep           :integer
+#  layout                      :integer          default(0)
+#  hide_project_limit          :boolean          default(FALSE)
+#  unlock_token                :string
+#  otp_grace_period_started_at :datetime
 #
 
 require 'carrierwave/orm/activerecord'
@@ -97,6 +98,9 @@ class User < ActiveRecord::Base
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
 
+  # Virtual attributes to define avatar cropping
+  attr_accessor :avatar_crop_x, :avatar_crop_y, :avatar_crop_size
+
   #
   # Relations
   #
@@ -122,8 +126,8 @@ class User < ActiveRecord::Base
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
-  has_many :users_star_projects, dependent: :destroy
-  has_many :starred_projects, through: :users_star_projects, source: :project
+  has_many :users_star_projects,      dependent: :destroy
+  has_many :starred_projects,         through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
@@ -135,21 +139,20 @@ class User < ActiveRecord::Base
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
-  has_many :approvals, dependent: :destroy
+  has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+  has_many :approvals,                dependent: :destroy
+  has_many :approvers,                dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
+  has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
-
+  has_many :todos,                    dependent: :destroy
 
   #
   # Validations
   #
   validates :name, presence: true
-  # Note that a 'uniqueness' and presence check is provided by devise :validatable for email. We do not need to
-  # duplicate that here as the validation framework will have duplicate errors in the event of a failure.
-  validates :email, presence: true, email: { strict_mode: true }
-  validates :notification_email, presence: true, email: { strict_mode: true }
-  validates :public_email, presence: true, email: { strict_mode: true }, allow_blank: true, uniqueness: true
+  validates :notification_email, presence: true, email: true
+  validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :username,
@@ -164,6 +167,11 @@ class User < ActiveRecord::Base
   validate :owns_notification_email, if: ->(user) { user.notification_email_changed? }
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+
+  validates :avatar_crop_x, :avatar_crop_y, :avatar_crop_size,
+    numericality: { only_integer: true },
+    presence: true,
+    if: ->(user) { user.avatar? }
 
   before_validation :generate_password, on: :create
   before_validation :restricted_signup_domains, on: :create
@@ -196,10 +204,22 @@ class User < ActiveRecord::Base
   state_machine :state, initial: :active do
     event :block do
       transition active: :blocked
+      transition ldap_blocked: :blocked
+    end
+
+    event :ldap_block do
+      transition active: :ldap_blocked
     end
 
     event :activate do
       transition blocked: :active
+      transition ldap_blocked: :active
+    end
+
+    state :blocked, :ldap_blocked do
+      def blocked?
+        true
+      end
     end
   end
 
@@ -207,7 +227,7 @@ class User < ActiveRecord::Base
 
   # Scopes
   scope :admins, -> { where(admin: true) }
-  scope :blocked, -> { with_state(:blocked) }
+  scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
@@ -371,19 +391,23 @@ class User < ActiveRecord::Base
 
   def disable_two_factor!
     update_attributes(
-      two_factor_enabled:        false,
-      encrypted_otp_secret:      nil,
-      encrypted_otp_secret_iv:   nil,
-      encrypted_otp_secret_salt: nil,
-      otp_backup_codes:          nil
+      two_factor_enabled:          false,
+      encrypted_otp_secret:        nil,
+      encrypted_otp_secret_iv:     nil,
+      encrypted_otp_secret_salt:   nil,
+      otp_grace_period_started_at: nil,
+      otp_backup_codes:            nil
     )
   end
 
   def namespace_uniq
+    # Return early if username already failed the first uniqueness validation
+    return if self.errors[:username].include?('has already been taken')
+
     namespace_name = self.username
     existing_namespace = Namespace.by_path(namespace_name)
     if existing_namespace && existing_namespace != self.namespace
-      self.errors.add :username, "already exists"
+      self.errors.add(:username, 'has already been taken')
     end
   end
 
@@ -676,7 +700,10 @@ class User < ActiveRecord::Base
   end
 
   def all_emails
-    [self.email, *self.emails.map(&:email)]
+    all_emails = []
+    all_emails << self.email unless self.temp_oauth_email?
+    all_emails.concat(self.emails.map(&:email))
+    all_emails
   end
 
   def hook_attrs

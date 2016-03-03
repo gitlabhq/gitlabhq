@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Banzai
   module Filter
     # HTML filter that replaces external issue tracker references with links.
@@ -63,15 +61,15 @@ module Banzai
 
           url = url_for_issue(id, project, only_path: context[:only_path])
 
-          title = escape_once("Issue in #{project.external_issue_tracker.title}")
+          title = "Issue in #{project.external_issue_tracker.title}"
           klass = reference_class(:issue)
           data  = data_attribute(project: project.id, external_issue: id)
 
           text = link_text || match
 
           %(<a href="#{url}" #{data}
-               title="#{title}"
-               class="#{klass}">#{text}</a>)
+               title="#{escape_once(title)}"
+               class="#{klass}">#{escape_once(text)}</a>)
         end
       end
 

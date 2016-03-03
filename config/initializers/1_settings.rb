@@ -9,13 +9,8 @@ class Settings < Settingslogic
       on_standard_port?(gitlab)
     end
 
-    # get host without www, thanks to http://stackoverflow.com/a/6674363/1233435
-    def get_host_without_www(url)
-      url = URI.encode(url)
-      uri = URI.parse(url)
-      uri = URI.parse("http://#{url}") if uri.scheme.nil?
-      host = uri.host.downcase
-      host.start_with?('www.') ? host[4..-1] : host
+    def host_without_www(url)
+      host(url).sub('www.', '')
     end
 
     def build_gitlab_ci_url
@@ -119,6 +114,17 @@ class Settings < Settingslogic
     def on_standard_port?(config)
       config.port.to_i == (config.https ? 443 : 80)
     end
+
+    # Extract the host part of the given +url+.
+    def host(url)
+      url = url.downcase
+      url = "http://#{url}" unless url.start_with?('http')
+
+      # Get rid of the path so that we don't even have to encode it
+      url_without_path = url.sub(%r{(https?://[^\/]+)/?.*}, '\1')
+
+      URI.parse(url_without_path).host
+    end
   end
 end
 
@@ -144,6 +150,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
   Settings.ldap['servers'].each do |key, server|
     server = Settingslogic.new(server)
     server['label'] ||= 'LDAP'
+    server['timeout'] ||= 10.seconds
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
@@ -162,6 +169,7 @@ Settings.omniauth['auto_sign_in_with_provider'] = false if Settings.omniauth['au
 Settings.omniauth['allow_single_sign_on'] = false if Settings.omniauth['allow_single_sign_on'].nil?
 Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block_auto_created_users'].nil?
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
+Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
 
 Settings.omniauth['providers']  ||= []
 Settings.omniauth['cas3'] ||= Settingslogic.new({})
@@ -205,16 +213,16 @@ Settings.gitlab['default_projects_limit'] ||= 10
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
-Settings.gitlab['host']       ||= 'localhost'
+Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
-Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
-Settings.gitlab['email_display_name'] ||= "GitLab"
-Settings.gitlab['email_reply_to'] ||= "noreply@#{Settings.gitlab.host}"
+Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
+Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
+Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
 Settings.gitlab['base_url']   ||= Settings.send(:build_base_gitlab_url)
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
@@ -229,7 +237,7 @@ Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].
 Settings.gitlab['twitter_sharing_enabled'] ||= true if Settings.gitlab['twitter_sharing_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z]*-\d*))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -244,6 +252,14 @@ Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path']
 Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= ['github','bitbucket','gitlab','gitorious','google_code','fogbugz','git']
 
+
+#
+# Elasticseacrh
+#
+Settings['elasticsearch'] ||= Settingslogic.new({})
+Settings.elasticsearch['enabled'] = false if Settings.elasticsearch['enabled'].nil?
+Settings.elasticsearch['host'] ||=  ENV['ELASTIC_HOST'] || "localhost"
+Settings.elasticsearch['port'] ||= ENV['ELASTIC_PORT'] || 9200
 
 #
 # CI
@@ -284,6 +300,8 @@ Settings.pages['https']           = false if Settings.pages['https'].nil?
 Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
 Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
 Settings.pages['url']             ||= Settings.send(:build_pages_url)
+Settings.pages['external_http']   ||= false if Settings.pages['external_http'].nil?
+Settings.pages['external_https']  ||= false if Settings.pages['external_https'].nil?
 
 #
 # Git LFS
@@ -299,7 +317,7 @@ Settings['gravatar'] ||= Settingslogic.new({})
 Settings.gravatar['enabled']      = true if Settings.gravatar['enabled'].nil?
 Settings.gravatar['plain_url']  ||= 'http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
 Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon'
-Settings.gravatar['host']         = Settings.get_host_without_www(Settings.gravatar['plain_url'])
+Settings.gravatar['host']         = Settings.host_without_www(Settings.gravatar['plain_url'])
 
 #
 # Cron Jobs
@@ -333,6 +351,7 @@ Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
+Settings.gitlab_shell['git_annex_enabled'] ||= false
 
 #
 # Backup

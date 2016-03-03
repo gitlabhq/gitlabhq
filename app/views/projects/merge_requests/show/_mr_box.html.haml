@@ -1,4 +1,4 @@
-.detail-page-description.gray-content-block.second-block
+.detail-page-description.content-block
   %h2.title
     = markdown escape_once(@merge_request.title), pipeline: :single_line
 
@@ -10,3 +10,8 @@
             = markdown(@merge_request.description, cache_key: [@merge_request, "description"])
         %textarea.hidden.js-task-list-field
           = @merge_request.description
+
+  - if @merge_request.updated_at != @merge_request.created_at
+    %small
+      Edited
+      = time_ago_with_tooltip(@merge_request.updated_at, placement: 'bottom')

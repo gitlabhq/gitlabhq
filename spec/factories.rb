@@ -32,8 +32,16 @@ FactoryGirl.define do
       before(:create) do |user|
         user.two_factor_enabled = true
         user.otp_secret = User.generate_otp_secret(32)
+        user.otp_grace_period_started_at = Time.now
         user.generate_otp_backup_codes!
       end
+    end
+
+    trait :with_avatar do
+      avatar { fixture_file_upload(Rails.root.join(*%w(spec fixtures dk.png)), 'image/png') }
+      avatar_crop_x 0
+      avatar_crop_y 0
+      avatar_crop_size 256
     end
 
     factory :omniauth_user do
@@ -224,6 +232,13 @@ FactoryGirl.define do
     extern_uid 'my-ldap-id'
   end
 
+  factory :sent_notification do
+    project
+    recipient factory: :user
+    noteable factory: :issue
+    reply_key "0123456789abcdef" * 2
+  end
+
   factory :gitlab_license, class: "Gitlab::License" do
     starts_at { Date.today - 1.month }
     expires_at { Date.today + 11.months }
@@ -236,5 +251,15 @@ FactoryGirl.define do
 
   factory :license do
     data { build(:gitlab_license).export }
+  end
+
+  factory :geo_node do
+    host { Gitlab.config.gitlab.host }
+    sequence(:port) {|n| n}
+
+    trait :primary do
+      primary true
+      port { Gitlab.config.gitlab.port }
+    end
   end
 end

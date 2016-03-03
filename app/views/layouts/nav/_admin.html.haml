@@ -1,6 +1,6 @@
 %ul.nav.nav-sidebar
   = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
-    = link_to admin_root_path, title: "Stats" do
+    = link_to admin_root_path, title: 'Overview' do
       = icon('dashboard fw')
       %span
         Overview
@@ -25,17 +25,17 @@
       %span
         Deploy Keys
   = nav_link path: ['runners#index', 'runners#show'] do
-    = link_to admin_runners_path do
+    = link_to admin_runners_path, title: 'Runners' do
       = icon('cog fw')
       %span
         Runners
-        %span.count= Ci::Runner.count(:all)
+        %span.count= number_with_delimiter(Ci::Runner.count(:all))
   = nav_link path: 'builds#index' do
-    = link_to admin_builds_path do
+    = link_to admin_builds_path, title: 'Builds' do
       = icon('link fw')
       %span
         Builds
-        %span.count= Ci::Build.count(:all)
+        %span.count= number_with_delimiter(Ci::Build.count(:all))
   = nav_link(controller: :logs) do
     = link_to admin_logs_path, title: 'Logs' do
       = icon('file-text fw')
@@ -62,8 +62,8 @@
       %span
         Background Jobs
   = nav_link(controller: :appearances) do
-    = link_to admin_appearances_path do
-      %i.fa.fa-image
+    = link_to admin_appearances_path, title: 'Appearances' do
+      = icon('image')
       %span
         Appearance
 
@@ -90,7 +90,15 @@
       = icon('exclamation-circle fw')
       %span
         Abuse Reports
-        %span.count= AbuseReport.count(:all)
+        %span.count= number_with_delimiter(AbuseReport.count(:all))
+
+  - if askimet_enabled?
+    = nav_link(controller: :spam_logs) do
+      = link_to admin_spam_logs_path, title: "Spam Logs" do
+        = icon('exclamation-triangle fw')
+        %span
+          Spam Logs
+          %span.count= number_with_delimiter(SpamLog.count(:all))
 
   = nav_link(controller: :application_settings, html_options: { class: 'separate-item'}) do
     = link_to admin_application_settings_path, title: 'Settings' do

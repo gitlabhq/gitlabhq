@@ -14,7 +14,7 @@
 
   #up-build-trace
   - if @commit.matrix_for_ref?(@build.ref)
-    %ul.center-top-menu.no-top.no-bottom
+    %ul.nav-links.no-top.no-bottom
       - @commit.latest_builds_for_ref(@build.ref).each do |build|
         %li{class: ('active' if build == @build) }
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
@@ -76,10 +76,16 @@
         = link_to '#down-build-trace', class: 'btn' do
           %i.fa.fa-angle-down
 
-      %pre.trace#build-trace
-        %code.bash
-          = preserve do
-            = raw @build.trace_html
+      - if @build.erased?
+        .erased.alert.alert-warning
+          - erased_by = "by #{link_to @build.erased_by.name, user_path(@build.erased_by)}" if @build.erased_by
+          Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
+      - else
+        %pre.trace#build-trace
+          %code.bash
+            = preserve do
+              = raw @build.trace_html
+
       %div#down-build-trace
 
     .col-md-3
@@ -89,37 +95,60 @@
             Test coverage
           %h1 #{@build.coverage}%
 
-      - if current_user && can?(current_user, :download_build_artifacts, @project) && @build.download_url
-        .build-widget.center
-          = link_to "Download artifacts", @build.download_url, class: 'btn btn-sm btn-primary'
+      - if can?(current_user, :read_build, @project) && @build.artifacts?
+        .build-widget.artifacts
+          %h4.title Build artifacts
+          .center
+            .btn-group{ role: :group }
+              = link_to @build.artifacts_download_url, class: 'btn btn-sm btn-primary' do
+                = icon('download')
+                Download
+
+              - if @build.artifacts_metadata?
+                = link_to @build.artifacts_browse_url, class: 'btn btn-sm btn-primary' do
+                  = icon('folder-open')
+                  Browse
 
       .build-widget
         %h4.title
           Build ##{@build.id}
-          - if current_user && can?(current_user, :manage_builds, @project)
-            .pull-right
-              - if @build.cancel_url
-                = link_to "Cancel", @build.cancel_url, class: 'btn btn-sm btn-danger', method: :post
-              - elsif @build.retry_url
-                = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
+          - if can?(current_user, :update_build, @project)
+            .center
+              .btn-group{ role: :group }
+                - if @build.cancel_url
+                  = link_to "Cancel", @build.cancel_url, class: 'btn btn-sm btn-danger', method: :post
+                - elsif @build.retry_url
+                  = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
 
-        - if @build.duration
+                - if @build.erasable?
+                  = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
+                            class: 'btn btn-sm btn-warning', method: :post,
+                            data: { confirm: 'Are you sure you want to erase this build?' } do
+                    = icon('eraser')
+                    Erase
+
+        .clearfix
+          - if @build.duration
+            %p
+              %span.attr-name Duration:
+              #{duration_in_words(@build.finished_at, @build.started_at)}
           %p
-            %span.attr-name Duration:
-            #{duration_in_words(@build.finished_at, @build.started_at)}
-        %p
-          %span.attr-name Created:
-          #{time_ago_with_tooltip(@build.created_at)}
-        - if @build.finished_at
+            %span.attr-name Created:
+            #{time_ago_with_tooltip(@build.created_at)}
+          - if @build.finished_at
+            %p
+              %span.attr-name Finished:
+              #{time_ago_with_tooltip(@build.finished_at)}
+          - if @build.erased_at
+            %p
+              %span.attr-name Erased:
+              #{time_ago_with_tooltip(@build.erased_at)}
           %p
-            %span.attr-name Finished:
-            #{time_ago_with_tooltip(@build.finished_at)}
-        %p
-          %span.attr-name Runner:
-          - if @build.runner && current_user && current_user.admin
-            = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
-          - elsif @build.runner
-            \##{@build.runner.id}
+            %span.attr-name Runner:
+            - if @build.runner && current_user && current_user.admin
+              = link_to "##{@build.runner.id}", admin_runner_path(@build.runner.id)
+            - elsif @build.runner
+              \##{@build.runner.id}
 
       - if @build.trigger_request
         .build-widget

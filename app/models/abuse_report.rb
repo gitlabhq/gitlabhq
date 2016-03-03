@@ -17,5 +17,16 @@ class AbuseReport < ActiveRecord::Base
   validates :reporter, presence: true
   validates :user, presence: true
   validates :message, presence: true
-  validates :user_id, uniqueness: true
+  validates :user_id, uniqueness: { message: 'has already been reported' }
+
+  def remove_user
+    user.block
+    user.destroy
+  end
+
+  def notify
+    return unless self.persisted?
+
+    AbuseReportMailer.notify(self.id).deliver_later
+  end
 end

@@ -13,7 +13,7 @@
 #  tag           :boolean          default(FALSE)
 #  yaml_errors   :text
 #  committed_at  :datetime
-#  project_id :integer
+#  gl_project_id :integer
 #
 
 require 'spec_helper'
@@ -244,6 +244,35 @@ describe Ci::Commit, models: true do
           new_commit = Ci::Commit.find_by_id(commit.id)
           expect(new_commit.status).to eq('pending')
         end
+      end
+    end
+
+
+    context 'custom stage with first job allowed to fail' do
+      let(:yaml) do
+        {
+          stages: ['clean', 'test'],
+          clean_job: {
+            stage: 'clean',
+            allow_failure: true,
+            script: 'BUILD',
+          },
+          test_job: {
+            stage: 'test',
+            script: 'TEST',
+          },
+        }
+      end
+
+      before do
+        stub_ci_commit_yaml_file(YAML.dump(yaml))
+        create_builds
+      end
+
+      it 'properly schedules builds' do
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+        commit.builds.running_or_pending.each(&:drop)
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending', 'failed')
       end
     end
 

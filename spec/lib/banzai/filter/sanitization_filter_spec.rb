@@ -75,6 +75,11 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       expect(filter(act).to_html).to eq exp
     end
 
+    it 'allows `abbr` elements' do
+      exp = act = %q{<abbr title="HyperText Markup Language">HTML</abbr>}
+      expect(filter(act).to_html).to eq exp
+    end
+
     it 'removes `rel` attribute from `a` elements' do
       act = %q{<a href="#" rel="nofollow">Link</a>}
       exp = %q{<a href="#">Link</a>}
@@ -151,11 +156,25 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     }
 
     protocols.each do |name, data|
-      it "handles #{name}" do
+      it "disallows #{name}" do
         doc = filter(data[:input])
 
         expect(doc.to_html).to eq data[:output]
       end
+    end
+
+    it 'disallows data links' do
+      input = '<a href="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">XSS</a>'
+      output = filter(input)
+
+      expect(output.to_html).to eq '<a>XSS</a>'
+    end
+
+    it 'disallows vbscript links' do
+      input = '<a href="vbscript:alert(document.domain)">XSS</a>'
+      output = filter(input)
+
+      expect(output.to_html).to eq '<a>XSS</a>'
     end
 
     it 'allows non-standard anchor schemes' do
@@ -170,28 +189,6 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       act = filter(exp)
 
       expect(act.to_html).to eq exp
-    end
-  end
-
-  context 'when inline_sanitization is true' do
-    it 'uses a stricter whitelist' do
-      doc = filter('<h1>Description</h1>', inline_sanitization: true)
-      expect(doc.to_html.strip).to eq 'Description'
-    end
-
-    %w(pre code img ol ul li).each do |elem|
-      it "removes '#{elem}' elements" do
-        act = "<#{elem}>Description</#{elem}>"
-        expect(filter(act, inline_sanitization: true).to_html.strip).
-          to eq 'Description'
-      end
-    end
-
-    %w(b i strong em a ins del sup sub p).each do |elem|
-      it "still allows '#{elem}' elements" do
-        exp = act = "<#{elem}>Description</#{elem}>"
-        expect(filter(act, inline_sanitization: true).to_html).to eq exp
-      end
     end
   end
 end

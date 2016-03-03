@@ -14,6 +14,18 @@ ul.notes {
   margin: 0px;
   padding: 0px;
 
+  .timeline-icon {
+    float: left;
+  }
+
+  .timeline-content {
+    margin-left: 55px;
+  }
+
+  .note_created_ago, .note-updated-at {
+    white-space: nowrap;
+  }
+
   .system-note {
     font-size: 14px;
     padding-top: 10px;
@@ -128,7 +140,7 @@ ul.notes {
     }
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 1px solid $border-color;
     }
   }
 }
@@ -151,9 +163,11 @@ ul.notes {
     border-left: none;
 
     &.notes_line {
+      vertical-align: middle;
       text-align: center;
       padding: 10px 0;
       background: #FFF;
+      color: $text-color;
     }
     &.notes_line2 {
       text-align: center;
@@ -242,11 +256,8 @@ ul.notes {
 
   // "show" the icon also if we just hover somewhere over the line
   &:hover > td {
-    background: $hover !important;
-
     .add-diff-note {
       @include show-add-diff-note;
     }
   }
 }
-

@@ -1,6 +1,4 @@
-- @blank_container = true
-
-.project-edit-container
+.project-edit-container.prepend-top-default
   .project-edit-errors
   .project-edit-content
     .panel.panel-default
@@ -123,17 +121,18 @@
               .col-sm-offset-2.col-sm-10
                 %p Get recent application code using the following command:
                 .radio
-                  = f.label :build_allow_git_fetch do
+                  = f.label :build_allow_git_fetch_false do
                     = f.radio_button :build_allow_git_fetch, 'false'
                     %strong git clone
                     %br
                     %span.descr Slower but makes sure you have a clean dir before every build
                 .radio
-                  = f.label :build_allow_git_fetch do
+                  = f.label :build_allow_git_fetch_true do
                     = f.radio_button :build_allow_git_fetch, 'true'
                     %strong git fetch
                     %br
                     %span.descr Faster
+
             .form-group
               = f.label :build_timeout_in_minutes, 'Timeout', class: 'control-label'
               .col-sm-10
@@ -162,6 +161,16 @@
                       phpunit --coverage-text --colors=never (PHP) -
                       %code ^\s*Lines:\s*\d+.\d+\%
 
+              .form-group
+                .col-sm-offset-2.col-sm-10
+                  .checkbox
+                    = f.label :public_builds do
+                      = f.check_box :public_builds
+                      %strong Public builds
+                    .help-block Allow everyone to access builds for Public and Internal projects
+
+            - if @project.mirror?
+              = render 'shared/mirror_trigger_builds_setting', f: f
 
           %fieldset.features
             %legend
@@ -175,48 +184,20 @@
           .form-actions
             = f.submit 'Save changes', class: "btn btn-save"
 
-    - if Settings.pages.enabled
-      .pages-settings
-        .panel.panel-default
-          .panel-heading Pages
-          .errors-holder
-          .panel-body
-            - if @project.pages_url
-              %strong
-                Congratulations! Your pages are served at:
-                %p= link_to @project.pages_url, @project.pages_url
-            - else
-              %p
-                Learn how to upload your static site and have it served by
-                GitLab by following the #{link_to "documentation on GitLab Pages", "http://doc.gitlab.com/ee/pages/README.html", target: :blank}.
-              %p
-                In the example below we define a special job named
-                %code pages
-                which is using Jekyll to build a static site. The generated
-                HTML will be stored in the
-                %code public/
-                directory which will then be archived and uploaded to GitLab.
-                The name of the directory should not be different than
-                %code public/
-                in order for the pages to work.
-                %ul
-                  %li
-                    %pre
-                      :plain
-                        pages:
-                          image: jekyll/jekyll
-                          script: jekyll build -d public/
-                          artifacts:
-                            paths:
-                            - public/
-
-            - if @project.pages_url && can?(current_user, :remove_pages, @project)
-              .form-actions
-                = link_to 'Remove pages', remove_pages_namespace_project_path(@project.namespace, @project),
-                    data: { confirm: "Are you sure that you want to remove pages for this project?" },
-                    method: :post, class: "btn btn-warning"
-
     .danger-settings
+      .panel.panel-default
+        .panel-heading Housekeeping
+        .errors-holder
+        .panel-body
+          %p
+            Runs a number of housekeeping tasks within the current repository,
+            such as compressing file revisions and removing unreachable objects.
+            %br
+
+          .form-actions
+            = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
+                method: :post, class: "btn btn-default"
+
       - if can? current_user, :archive_project, @project
         - if @project.archived?
           .panel.panel-success

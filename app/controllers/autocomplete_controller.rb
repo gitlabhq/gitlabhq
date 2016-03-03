@@ -8,7 +8,8 @@ class AutocompleteController < ApplicationController
     @users = @users.active
     @users = @users.reorder(:name)
 
-    if params[:push_code_to_protected_branches].present? && project
+    if params[:push_code_to_protected_branches].present? && params[:project_id].present?
+      project = Project.find_by(id: params[:project_id])
       @users = @users.to_a.select { |user| user.can?(:push_code_to_protected_branches, project) }.take(PER_PAGE)
     else
       @users = @users.page(params[:page]).per(PER_PAGE)

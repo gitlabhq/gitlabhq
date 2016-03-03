@@ -36,7 +36,8 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   end
 
   step 'I click on HTTP' do
-    click_button 'HTTP'
+    find('#clone-dropdown').click
+    find('#http-selector').click
   end
 
   step 'Remote url should update to http link' do
@@ -44,7 +45,8 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   end
 
   step 'If I click on SSH' do
-    click_button 'SSH'
+    find('#clone-dropdown').click
+    find('#ssh-selector').click
   end
 
   step 'Remote url should update to ssh link' do
@@ -52,7 +54,8 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   end
 
   step 'If I click on KRB5' do
-    click_button 'KRB5'
+    find('#clone-dropdown').click
+    find('#kerberos-btn').click
   end
 
   step 'Remote url should update to kerberos link' do

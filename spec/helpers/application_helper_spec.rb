@@ -77,7 +77,7 @@ describe ApplicationHelper do
     let(:avatar_file_path) { File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif') }
 
     it 'should return an url for the avatar' do
-      user = create(:user, avatar: File.open(avatar_file_path))
+      user = create(:user, :with_avatar, avatar: File.open(avatar_file_path))
 
       expect(helper.avatar_icon(user.email).to_s).
         to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
@@ -88,7 +88,7 @@ describe ApplicationHelper do
       # Must be stubbed after the stub above, and separately
       stub_config_setting(url: Settings.send(:build_gitlab_url))
 
-      user = create(:user, avatar: File.open(avatar_file_path))
+      user = create(:user, :with_avatar, avatar: File.open(avatar_file_path))
 
       expect(helper.avatar_icon(user.email).to_s).
         to match("/gitlab/uploads/user/avatar/#{user.id}/banana_sample.gif")
@@ -102,7 +102,7 @@ describe ApplicationHelper do
 
     describe 'using a User' do
       it 'should return an URL for the avatar' do
-        user = create(:user, avatar: File.open(avatar_file_path))
+        user = create(:user, :with_avatar, avatar: File.open(avatar_file_path))
 
         expect(helper.avatar_icon(user).to_s).
           to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
@@ -240,7 +240,7 @@ describe ApplicationHelper do
   describe 'time_ago_with_tooltip' do
     def element(*arguments)
       Time.zone = 'UTC'
-      time = Time.zone.parse('2015-07-02 08:00')
+      time = Time.zone.parse('2015-07-02 08:23')
       element = helper.time_ago_with_tooltip(time, *arguments)
 
       Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
@@ -251,15 +251,15 @@ describe ApplicationHelper do
     end
 
     it 'includes the date string' do
-      expect(element.text).to eq '2015-07-02 08:00:00 UTC'
+      expect(element.text).to eq '2015-07-02 08:23:00 UTC'
     end
 
     it 'has a datetime attribute' do
-      expect(element.attr('datetime')).to eq '2015-07-02T08:00:00Z'
+      expect(element.attr('datetime')).to eq '2015-07-02T08:23:00Z'
     end
 
     it 'has a formatted title attribute' do
-      expect(element.attr('title')).to eq 'Jul 02, 2015 8:00am'
+      expect(element.attr('title')).to eq 'Jul 2, 2015 8:23am'
     end
 
     it 'includes a default js-timeago class' do
@@ -293,6 +293,10 @@ describe ApplicationHelper do
 
   describe 'render_markup' do
     let(:content) { 'Noël' }
+    let(:user) { create(:user) }
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
 
     it 'should preserve encoding' do
       expect(content.encoding.name).to eq('UTF-8')

@@ -2,24 +2,19 @@
   .status-box{ class: status_box_class(@merge_request) }
     = @merge_request.state_human_name
   %span.identifier
-    Merge Request ##{@merge_request.iid}
+    Merge Request #{@merge_request.to_reference}
   %span.creator
     &middot;
-    opened by #{link_to_member(@project, @merge_request.author, size: 24)}
+    by #{link_to_member(@project, @merge_request.author, size: 24)}
     &middot;
     = time_ago_with_tooltip(@merge_request.created_at)
-    - if @merge_request.updated_at != @merge_request.created_at
-      %span
-        &middot;
-        = icon('edit', title: 'edited')
-        = time_ago_with_tooltip(@merge_request.updated_at, placement: 'bottom')
 
   .issue-btn-group.pull-right
     - if can?(current_user, :update_merge_request, @merge_request)
       - if @merge_request.open?
-        = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: 'btn btn-grouped btn-close', title: 'Close merge request'
-        = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-grouped issuable-edit', id: 'edit_merge_request' do
+        = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: 'btn btn-nr btn-grouped btn-close', title: 'Close merge request'
+        = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-nr btn-grouped issuable-edit', id: 'edit_merge_request' do
           %i.fa.fa-pencil-square-o
           Edit
       - if @merge_request.closed?
-        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-grouped btn-reopen reopen-mr-link', title: 'Reopen merge request'
+        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: 'Reopen merge request'

@@ -1,9 +1,14 @@
 class SessionsController < Devise::SessionsController
   include AuthenticatesWithTwoFactor
+  include Recaptcha::ClientHelper
+
+  skip_before_action :check_2fa_requirement, only: [:destroy]
 
   prepend_before_action :authenticate_with_two_factor, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
+  before_action :gitlab_geo_login, only: [:new]
   before_action :auto_sign_in_with_provider, only: [:new]
+  before_action :load_recaptcha
 
   def new
     if Gitlab.config.ldap.enabled
@@ -40,25 +45,27 @@ class SessionsController < Devise::SessionsController
       User.find(session[:otp_user_id])
     end
   end
-  
+
   def store_redirect_path
-    redirect_path =
+    redirect_uri =
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
-        referer_uri = URI(request.referer)
-        if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.path
-        else
-          request.fullpath
-        end
+        URI(request.referer)
       else
-        request.fullpath
+        URI(request.url)
       end
 
     # Prevent a 'you are already signed in' message directly after signing:
     # we should never redirect to '/users/sign_in' after signing in successfully.
-    unless redirect_path == new_user_session_path
-      store_location_for(:redirect, redirect_path)
+    if redirect_uri.path == new_user_session_path
+      return true
+    elsif redirect_uri.host == Gitlab.config.gitlab.host && redirect_uri.port == Gitlab.config.gitlab.port
+      redirect_to = redirect_uri.to_s
+    elsif Gitlab::Geo.geo_node?(host: redirect_uri.host, port: redirect_uri.port)
+      redirect_to = redirect_uri.to_s
     end
+
+    @redirect_to = redirect_to
+    store_location_for(:redirect, redirect_to)
   end
 
   def authenticate_with_two_factor
@@ -83,18 +90,29 @@ class SessionsController < Devise::SessionsController
     end
   end
 
+  def gitlab_geo_login
+    if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
+      # share full url with primary node by shared session
+      user_return_to = URI.join(root_url, session[:user_return_to]).to_s
+      session[:geo_node_return_to] = @redirect_to || user_return_to
+
+      login_uri =  URI.join(Gitlab::Geo.primary_node.url, new_session_path(:user)).to_s
+      redirect_to login_uri
+    end
+  end
+
   def auto_sign_in_with_provider
     provider = Gitlab.config.omniauth.auto_sign_in_with_provider
     return unless provider.present?
 
-    # Auto sign in with an Omniauth provider only if the standard "you need to sign-in" alert is 
-    # registered or no alert at all. In case of another alert (such as a blocked user), it is safer  
+    # Auto sign in with an Omniauth provider only if the standard "you need to sign-in" alert is
+    # registered or no alert at all. In case of another alert (such as a blocked user), it is safer
     # to do nothing to prevent redirection loops with certain Omniauth providers.
     return unless flash[:alert].blank? || flash[:alert] == I18n.t('devise.failure.unauthenticated')
-    
+
     # Prevent alert from popping up on the first page shown after authentication.
-    flash[:alert] = nil 
-    
+    flash[:alert] = nil
+
     redirect_to user_omniauth_authorize_path(provider.to_sym)
   end
 
@@ -106,5 +124,9 @@ class SessionsController < Devise::SessionsController
   def log_audit_event(user, options = {})
     AuditEventService.new(user, user, options).
       for_authentication.security_event
+  end
+
+  def load_recaptcha
+    Gitlab::Recaptcha.load_configurations!
   end
 end

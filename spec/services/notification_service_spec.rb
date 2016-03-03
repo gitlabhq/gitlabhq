@@ -52,6 +52,9 @@ describe NotificationService, services: true do
         it do
           add_users_with_subscription(note.project, issue)
 
+          # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(7).times
+
           ActionMailer::Base.deliveries.clear
 
           notification.new_note(note)
@@ -61,6 +64,7 @@ describe NotificationService, services: true do
           should_email(note.noteable.assignee)
           should_email(@u_mentioned)
           should_email(@subscriber)
+          should_email(@watcher_and_subscriber)
           should_email(@subscribed_participant)
           should_not_email(note.author)
           should_not_email(@u_participating)
@@ -115,6 +119,7 @@ describe NotificationService, services: true do
 
       before do
         build_team(note.project)
+        note.project.team << [note.author, :master]
         ActionMailer::Base.deliveries.clear
       end
 
@@ -126,6 +131,8 @@ describe NotificationService, services: true do
           note.project.team.members.each do |member|
             # User with disabled notification should not be notified
             next if member.id == @u_disabled.id
+            # Author should not be notified
+            next if member.id == note.author.id
             should_email(member)
           end
 
@@ -220,13 +227,69 @@ describe NotificationService, services: true do
     end
 
     describe :reassigned_issue do
-      it 'should email new assignee' do
+      it 'emails new assignee' do
         notification.reassigned_issue(issue, @u_disabled)
 
         should_email(issue.assignee)
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'emails previous assignee even if he has the "on mention" notif level' do
+        issue.update_attribute(:assignee, @u_mentioned)
+        issue.update_attributes(assignee: @u_watcher)
+        notification.reassigned_issue(issue, @u_disabled)
+
+        should_email(@u_mentioned)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'emails new assignee even if he has the "on mention" notif level' do
+        issue.update_attributes(assignee: @u_mentioned)
+        notification.reassigned_issue(issue, @u_disabled)
+
+        expect(issue.assignee).to be @u_mentioned
+        should_email(issue.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'emails new assignee' do
+        issue.update_attribute(:assignee, @u_mentioned)
+        notification.reassigned_issue(issue, @u_disabled)
+
+        expect(issue.assignee).to be @u_mentioned
+        should_email(issue.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'does not email new assignee if they are the current user' do
+        issue.update_attribute(:assignee, @u_mentioned)
+        notification.reassigned_issue(issue, @u_mentioned)
+
+        expect(issue.assignee).to be @u_mentioned
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(issue.assignee)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -242,6 +305,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -257,6 +321,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
       end
@@ -279,6 +344,7 @@ describe NotificationService, services: true do
 
         should_email(merge_request.assignee)
         should_email(@u_watcher)
+        should_email(@watcher_and_subscriber)
         should_email(@u_participant_mentioned)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -293,6 +359,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -307,6 +374,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -321,6 +389,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -335,6 +404,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -384,14 +454,18 @@ describe NotificationService, services: true do
     @subscriber = create :user
     @unsubscriber = create :user
     @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: Notification::N_PARTICIPATING)
+    @watcher_and_subscriber = create(:user, notification_level: Notification::N_WATCH)
 
     project.team << [@subscribed_participant, :master]
     project.team << [@subscriber, :master]
     project.team << [@unsubscriber, :master]
+    project.team << [@watcher_and_subscriber, :master]
 
     issuable.subscriptions.create(user: @subscriber, subscribed: true)
     issuable.subscriptions.create(user: @subscribed_participant, subscribed: true)
     issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
+    # Make the watcher a subscriber to detect dupes
+    issuable.subscriptions.create(user: @watcher_and_subscriber, subscribed: true)
   end
 
   def sent_to_user?(user)

@@ -1,8 +1,12 @@
 class Admin::BroadcastMessagesController < Admin::ApplicationController
-  before_action :broadcast_messages
+  before_action :finder, only: [:edit, :update, :destroy]
 
   def index
-    @broadcast_message = BroadcastMessage.new
+    @broadcast_messages = BroadcastMessage.reorder("ends_at DESC").page(params[:page])
+    @broadcast_message  = BroadcastMessage.new
+  end
+
+  def edit
   end
 
   def create
@@ -15,8 +19,16 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
     end
   end
 
+  def update
+    if @broadcast_message.update(broadcast_message_params)
+      redirect_to admin_broadcast_messages_path, notice: 'Broadcast Message was successfully updated.'
+    else
+      render :edit
+    end
+  end
+
   def destroy
-    BroadcastMessage.find(params[:id]).destroy
+    @broadcast_message.destroy
 
     respond_to do |format|
       format.html { redirect_back_or_default(default: { action: 'index' }) }
@@ -24,16 +36,23 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
     end
   end
 
+  def preview
+    @message = broadcast_message_params[:message]
+  end
+
   protected
 
-  def broadcast_messages
-    @broadcast_messages ||= BroadcastMessage.order("starts_at DESC").page(params[:page])
+  def finder
+    @broadcast_message = BroadcastMessage.find(params[:id])
   end
 
   def broadcast_message_params
-    params.require(:broadcast_message).permit(
-      :alert_type, :color, :ends_at, :font,
-      :message, :starts_at
-    )
+    params.require(:broadcast_message).permit(%i(
+      color
+      ends_at
+      font
+      message
+      starts_at
+    ))
   end
 end

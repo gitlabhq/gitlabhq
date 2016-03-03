@@ -11,7 +11,7 @@ class @AdminEmailSelect
           group_result = Api.groups query.term, skip_ldap, (groups) ->
             groups
 
-          project_result = Api.projects query.term, (projects) ->
+          project_result = Api.projects query.term, 'id', (projects) ->
             projects
 
           $.when(project_result, group_result).done (projects, groups) ->

@@ -1,6 +1,7 @@
 # Controller for viewing a file's raw
 class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
+  include BlobHelper
 
   before_action :require_non_empty_project
   before_action :assign_ref_vars
@@ -15,7 +16,10 @@ class Projects::RawController < Projects::ApplicationController
       if @blob.lfs_pointer?
         send_lfs_object
       else
-        stream_data
+        headers.store(*Gitlab::Workhorse.send_git_blob(@repository, @blob))
+        headers['Content-Disposition'] = 'inline'
+        headers['Content-Type'] = safe_content_type(@blob)
+        head :ok # 'render nothing: true' messes up the Content-Type
       end
     else
       render_404
@@ -23,26 +27,6 @@ class Projects::RawController < Projects::ApplicationController
   end
 
   private
-
-  def get_blob_type
-    if @blob.text?
-      'text/plain; charset=utf-8'
-    elsif @blob.image?
-      @blob.content_type
-    else
-      'application/octet-stream'
-    end
-  end
-
-  def stream_data
-    type = get_blob_type
-
-    send_data(
-      @blob.data,
-      type: type,
-      disposition: 'inline'
-    )
-  end
 
   def send_lfs_object
     lfs_object = find_lfs_object

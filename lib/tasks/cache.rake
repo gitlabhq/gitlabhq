@@ -1,11 +1,21 @@
 namespace :cache do
+  CLEAR_BATCH_SIZE = 1000 # There seems to be no speedup when pushing beyond 1,000
+  REDIS_SCAN_START_STOP = '0' # Magic value, see http://redis.io/commands/scan
+
   desc "GitLab | Clear redis cache"
   task :clear => :environment do
-    # Hack into Rails.cache until https://github.com/redis-store/redis-store/pull/225
-    # is accepted (I hope) and we can update the redis-store gem.
     redis_store = Rails.cache.instance_variable_get(:@data)
-    redis_store.keys.each_slice(1000) do |key_slice|
-      redis_store.del(*key_slice)
+    cursor = REDIS_SCAN_START_STOP
+    loop do
+      cursor, keys = redis_store.scan(
+        cursor,
+        match: "#{Gitlab::REDIS_CACHE_NAMESPACE}*", 
+        count: CLEAR_BATCH_SIZE
+      )
+
+      redis_store.del(*keys) if keys.any?
+
+      break if cursor == REDIS_SCAN_START_STOP
     end
   end
 end

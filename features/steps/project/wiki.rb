@@ -120,7 +120,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   step 'I should see the new wiki page form' do
     expect(current_path).to match('wikis/image.jpg')
     expect(page).to have_content('New Wiki Page')
-    expect(page).to have_content('Edit Page image.jpg')
+    expect(page).to have_content('Edit Page')
   end
 
   step 'I create a New page with paths' do
@@ -130,16 +130,6 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     fill_in "wiki_content", with: 'wiki content'
     click_on "Create page"
     expect(current_path).to include 'one/two/three'
-  end
-
-  step 'I create a New page with an invalid name' do
-    click_on 'New Page'
-    fill_in 'Page slug', with: 'invalid name'
-    click_on 'Create Page'
-  end
-
-  step 'I should see an error message' do
-    expect(page).to have_content "The page slug is invalid"
   end
 
   step 'I should see non-escaped link in the pages list' do
@@ -169,11 +159,13 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the page history' do
-    expect(page).to have_content('History for')
+    page.within(:css, ".nav-text") do
+      expect(page).to have_content('History')
+    end
   end
 
   step 'I search for Wiki content' do
-    fill_in "Search in this project", with: "wiki_content"
+    fill_in "Search", with: "wiki_content"
     click_button "Search"
   end
 

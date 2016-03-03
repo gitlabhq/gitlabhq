@@ -1,13 +1,12 @@
-require 'banzai'
-
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor < Banzai::ReferenceExtractor
-    attr_accessor :project, :current_user
+    attr_accessor :project, :current_user, :author
 
-    def initialize(project, current_user = nil)
+    def initialize(project, current_user = nil, author = nil)
       @project = project
       @current_user = current_user
+      @author = author
 
       @references = {}
 
@@ -18,20 +17,24 @@ module Gitlab
       super(text, context.merge(project: project))
     end
 
-    %i(user label merge_request snippet commit commit_range).each do |type|
+    %i(user label milestone merge_request snippet commit commit_range).each do |type|
       define_method("#{type}s") do
-        @references[type] ||= references(type, project: project, current_user: current_user)
+        @references[type] ||= references(type, reference_context)
       end
     end
 
     def issues
-      options = { project: project, current_user: current_user }
-
       if project && project.jira_tracker?
-        @references[:external_issue] ||= references(:external_issue, options)
+        @references[:external_issue] ||= references(:external_issue, reference_context)
       else
-        @references[:issue] ||= references(:issue, options)
+        @references[:issue] ||= references(:issue, reference_context)
       end
+    end
+
+    private
+
+    def reference_context
+      { project: project, current_user: current_user, author: author }
     end
   end
 end

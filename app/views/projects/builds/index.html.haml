@@ -1,16 +1,16 @@
 - page_title "Builds"
 = render "header_title"
 
-.project-issuable-filter
-  .controls
-    - if can?(current_user, :manage_builds, @project)
-      .pull-left.hidden-xs
-        - if @all_builds.running_or_pending.any?
-          = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project), data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
-
-  %ul.center-top-menu
+.top-area
+  %ul.nav-links
     %li{class: ('active' if @scope.nil?)}
       = link_to project_builds_path(@project) do
+        All
+        %span.badge.js-totalbuilds-count
+          = number_with_delimiter(@all_builds.count(:id))
+
+    %li{class: ('active' if @scope == 'running')}
+      = link_to project_builds_path(@project, scope: :running) do
         Running
         %span.badge.js-running-count
           = number_with_delimiter(@all_builds.running_or_pending.count(:id))
@@ -21,11 +21,15 @@
         %span.badge.js-running-count
           = number_with_delimiter(@all_builds.finished.count(:id))
 
-    %li{class: ('active' if @scope == 'all')}
-      = link_to project_builds_path(@project, scope: :all) do
-        All
-        %span.badge.js-totalbuilds-count
-          = number_with_delimiter(@all_builds.count(:id))
+  .nav-controls
+    - if can?(current_user, :update_build, @project)
+      - if @all_builds.running_or_pending.any?
+        = link_to 'Cancel running', cancel_all_namespace_project_builds_path(@project.namespace, @project),
+          data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
+
+      = link_to ci_lint_path, class: 'btn btn-default' do
+        = icon('wrench')
+        %span CI Lint
 
 .gray-content-block
   #{(@scope || 'running').capitalize} builds from this project
@@ -40,16 +44,18 @@
         %thead
           %tr
             %th Status
-            %th Runner
+            %th Build ID
             %th Commit
             %th Ref
             %th Stage
             %th Name
             %th Duration
             %th Finished at
+            - if @project.build_coverage_enabled?
+              %th Coverage
             %th
 
         - @builds.each do |build|
-          = render 'projects/commit_statuses/commit_status', commit_status: build, commit_sha: true, stage: true, allow_retry: true
+          = render 'projects/commit_statuses/commit_status', commit_status: build, commit_sha: true, stage: true, coverage: @project.build_coverage_enabled?, allow_retry: true
 
     = paginate @builds, theme: 'gitlab'

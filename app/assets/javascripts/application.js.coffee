@@ -5,33 +5,33 @@
 # the compiled file.
 #
 #= require jquery
-#= require jquery.ui.all
+#= require jquery-ui/autocomplete
+#= require jquery-ui/datepicker
+#= require jquery-ui/effect-highlight
+#= require jquery-ui/sortable
 #= require jquery_ujs
 #= require jquery.cookie
 #= require jquery.endless-scroll
 #= require jquery.highlight
-#= require jquery.history
 #= require jquery.waitforimages
 #= require jquery.atwho
 #= require jquery.scrollTo
-#= require jquery.blockUI
 #= require jquery.turbolinks
 #= require jquery.tablesorter
+#= require d3
+#= require cal-heatmap
 #= require turbolinks
 #= require autosave
 #= require bootstrap
 #= require select2
 #= require raphael
-#= require g.raphael-min
-#= require g.bar-min
-#= require chart-lib.min
+#= require g.raphael
+#= require g.bar
+#= require Chart
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
-#= require d3
 #= require underscore
-#= require nprogress
-#= require nprogress-turbolinks
 #= require dropzone
 #= require mousetrap
 #= require mousetrap/pause
@@ -40,9 +40,10 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issuable
 #= require shortcuts_network
-#= require cal-heatmap
-#= require jquery.nicescroll.min
+#= require jquery.nicescroll
 #= require_tree .
+#= require fuzzaldrin-plus
+#= require cropper.js
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
@@ -208,4 +209,94 @@ $ ->
     form = btn.closest("form")
     new ConfirmDangerModal(form, text, warningMessage: warningMessage)
 
+  $('input[type="search"]').each ->
+    $this = $(this)
+    $this.attr 'value', $this.val()
+    return
+
+  $(document)
+    .off 'keyup', 'input[type="search"]'
+    .on 'keyup', 'input[type="search"]' , (e) ->
+      $this = $(this)
+      $this.attr 'value', $this.val()
+
+  $(document)
+    .off 'breakpoint:change'
+    .on 'breakpoint:change', (e, breakpoint) ->
+      if breakpoint is 'sm' or breakpoint is 'xs'
+        $gutterIcon = $('.gutter-toggle').find('i')
+        if $gutterIcon.hasClass('fa-angle-double-right')
+          $gutterIcon.closest('a').trigger('click')
+
+  $(document)
+    .off 'click', 'aside .gutter-toggle'
+    .on 'click', 'aside .gutter-toggle', (e) ->
+      e.preventDefault()
+      $this = $(this)
+      $thisIcon = $this.find 'i'
+      if $thisIcon.hasClass('fa-angle-double-right')
+        $thisIcon
+          .removeClass('fa-angle-double-right')
+          .addClass('fa-angle-double-left')
+        $this
+          .closest('aside')
+          .removeClass('right-sidebar-expanded')
+          .addClass('right-sidebar-collapsed')
+        $('.page-with-sidebar')
+          .removeClass('right-sidebar-expanded')
+          .addClass('right-sidebar-collapsed')
+      else
+        $thisIcon
+          .removeClass('fa-angle-double-left')
+          .addClass('fa-angle-double-right')
+        $this
+          .closest('aside')
+          .removeClass('right-sidebar-collapsed')
+          .addClass('right-sidebar-expanded')
+        $('.page-with-sidebar')
+          .removeClass('right-sidebar-collapsed')
+          .addClass('right-sidebar-expanded')
+      $.cookie("collapsed_gutter",
+        $('.right-sidebar')
+          .hasClass('right-sidebar-collapsed'), { path: '/' })
+
+  bootstrapBreakpoint = undefined;
+  checkBootstrapBreakpoints = ->
+    if $('.device-xs').is(':visible')
+      bootstrapBreakpoint = "xs"
+    else if $('.device-sm').is(':visible')
+      bootstrapBreakpoint = "sm"
+    else if $('.device-md').is(':visible')
+      bootstrapBreakpoint = "md"
+    else if $('.device-lg').is(':visible')
+      bootstrapBreakpoint = "lg"
+
+  setBootstrapBreakpoints = ->
+    if $('.device-xs').length
+      return
+
+    $("body")
+      .append('<div class="device-xs visible-xs"></div>'+
+        '<div class="device-sm visible-sm"></div>'+
+        '<div class="device-md visible-md"></div>'+
+        '<div class="device-lg visible-lg"></div>')
+    checkBootstrapBreakpoints()
+
+  fitSidebarForSize = ->
+    oldBootstrapBreakpoint = bootstrapBreakpoint
+    checkBootstrapBreakpoints()
+    if bootstrapBreakpoint != oldBootstrapBreakpoint
+      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+
+  checkInitialSidebarSize = ->
+    if bootstrapBreakpoint is "xs" or "sm"
+      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+
+  $(window)
+    .off "resize"
+    .on "resize", (e) ->
+      fitSidebarForSize()
+
+  setBootstrapBreakpoints()
+  checkInitialSidebarSize()
   new Aside()

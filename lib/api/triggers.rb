@@ -43,6 +43,75 @@ module API
           render_api_error!(errors, 400)
         end
       end
+
+      # Get triggers list
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   page (optional) - The page number for pagination
+      #   per_page (optional) - The value of items per page to show
+      # Example Request:
+      #   GET /projects/:id/triggers
+      get ':id/triggers' do
+        authenticate!
+        authorize! :admin_build, user_project
+
+        triggers = user_project.triggers.includes(:trigger_requests)
+        triggers = paginate(triggers)
+
+        present triggers, with: Entities::Trigger
+      end
+
+      # Get specific trigger of a project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   token (required) - The `token` of a trigger
+      # Example Request:
+      #   GET /projects/:id/triggers/:token
+      get ':id/triggers/:token' do
+        authenticate!
+        authorize! :admin_build, user_project
+
+        trigger = user_project.triggers.find_by(token: params[:token].to_s)
+        return not_found!('Trigger') unless trigger
+
+        present trigger, with: Entities::Trigger
+      end
+
+      # Create trigger
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   POST /projects/:id/triggers
+      post ':id/triggers' do
+        authenticate!
+        authorize! :admin_build, user_project
+
+        trigger = user_project.triggers.create
+
+        present trigger, with: Entities::Trigger
+      end
+
+      # Delete trigger
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   token (required) - The `token` of a trigger
+      # Example Request:
+      #   DELETE /projects/:id/triggers/:token
+      delete ':id/triggers/:token' do
+        authenticate!
+        authorize! :admin_build, user_project
+
+        trigger = user_project.triggers.find_by(token: params[:token].to_s)
+        return not_found!('Trigger') unless trigger
+
+        trigger.destroy
+
+        present trigger, with: Entities::Trigger
+      end
     end
   end
 end

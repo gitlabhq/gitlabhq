@@ -49,8 +49,10 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
 
-  # This setting allows an LDAP group to become GitLab administrators
-  admin_group: ''
+  # Set a timeout, in seconds, for LDAP queries. This helps avoid blocking
+  # a request if the LDAP server becomes unresponsive.
+  # A value of 0 means there is no timeout.
+  timeout: 10
 
   # This setting specifies if LDAP server is Active Directory LDAP server.
   # For non AD servers it skips the AD specific queries.
@@ -69,7 +71,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   allow_username_or_email_login: false
 
   # To maintain tight control over the number of active users on your GitLab installation,
-  # enable this setting to keep new users blocked until they have been cleared by the admin 
+  # enable this setting to keep new users blocked until they have been cleared by the admin
   # (default: false).
   block_auto_created_users: false
 
@@ -96,13 +98,13 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
     # The username will be used in paths for the user's own projects
     # (like `gitlab.example.com/username/project`) and when mentioning
     # them in issues, merge request and comments (like `@username`).
-    # If the attribute specified for `username` contains an email address, 
+    # If the attribute specified for `username` contains an email address,
     # the GitLab username will be the part of the email address before the '@'.
     username: ['uid', 'userid', 'sAMAccountName']
     email:    ['mail', 'email', 'userPrincipalName']
 
     # If no full name could be found at the attribute specified for `name`,
-    # the full name is determined using the attributes specified for 
+    # the full name is determined using the attributes specified for
     # `first_name` and `last_name`.
     name:       'cn'
     first_name: 'givenName'
@@ -123,7 +125,7 @@ Common combinations are `method: 'plain'` and `port: 389`, OR `method: 'ssl'` an
 
 If you are using a GitLab installation from source you can find the LDAP settings in `/home/git/gitlab/config/gitlab.yml`:
 
-```
+```yaml
 production:
   # snip...
   ldap:
@@ -154,18 +156,22 @@ If multiple LDAP email attributes are present, e.g. `mail: foo@bar.com` and `ema
 
 ## LDAP group synchronization (GitLab Enterprise Edition)
 
-LDAP group synchronization in GitLab Enterprise Edition allows you to synchronize the members of a GitLab group with one or more LDAP groups.
+LDAP group synchronization in GitLab Enterprise Edition allows you to
+synchronize the members of a GitLab group with one or more LDAP groups.
 
 ### Setting up LDAP group synchronization
 
-Before enabling group synchronization, you need to make sure that the `group_base` field is set in your LDAP settings on
-your `gitlab.rb` or `gitlab.yml` file. This setting will tell GitLab where to look for groups within your LDAP server.
+Before enabling group synchronization, you need to make sure that the
+`group_base` field is set in your LDAP settings on your `gitlab.rb` or
+`gitlab.yml` file. This setting will tell GitLab where to look for groups
+within your LDAP server.
 
 ```
 group_base: 'OU=groups,DC=example,DC=com'
 ```
 
-Suppose we want to synchronize the GitLab group 'example group' with the LDAP group 'Engineering'.
+Suppose we want to synchronize the GitLab group 'example group' with the LDAP
+group 'Engineering'.
 
 1. As an owner, go to the group settings page for 'example group'.
 
@@ -177,18 +183,25 @@ As an admin you can also go to the group edit page in the admin area.
 
 2. Enter 'Engineering' as the LDAP Common Name (CN) in the 'LDAP Group cn' field.
 
-3. Enter a default group access level in the 'LDAP Access' field; let's say Developer.
+3. Enter a default group access level in the 'LDAP Access' field; let's say
+Developer.
 
 ![LDAP group settings filled in](ldap/select_group_cn_engineering.png)
 
 4. Click 'Add synchronization' to add the new LDAP group link.
 
-Now every time a member of the 'Engineering' LDAP group signs in, they automatically become a Developer-level member of the 'example group' GitLab group. Users who are already signed in will see the change in membership after up to one hour.
+Now every time a member of the 'Engineering' LDAP group signs in, they
+automatically become a Developer-level member of the 'example group' GitLab
+group. Users who are already signed in will see the change in membership after
+up to one hour.
 
 ### Synchronizing with more than one LDAP group (GitLab EE 7.3 and newer)
 
-If you want to add the members of LDAP group to your GitLab group you can add an additional LDAP group link.
-If you have two LDAP group links, e.g. 'cn=Engineering' at level 'Developer' and 'cn=QA' at level 'Reporter', and user Jane belongs to both the 'Engineering' and 'QA' LDAP groups, she will get the _highest_ access level of the two, namely 'Developer'.
+If you have two LDAP group links, and a user belongs to both LDAP groups, they
+will receive the _highest_ access level of the two. For example, suppose you
+have configured group sync for the 'Engineering' group at level 'Developer' and
+'QA' group at level 'Reporter'. User 'Jane' belongs to both the 'Engineering' and
+'QA' LDAP groups so she will receive the 'Developer' role.
 
 ![Two linked LDAP groups](ldap/two_linked_ldap_groups.png)
 
@@ -314,16 +327,54 @@ existing LDAP server should be named 'main'.
 
 ### 3. Add new LDAP servers
 
-Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (omnibus packages) or `gitlab.yml` (installations from source).
-Remember to run `sudo gitlab-ctl reconfigure` or `sudo service gitlab reload` for the new servers to become available.
+Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (Omnibus packages)
+or `gitlab.yml` (installations from source).
 
-Tip: you can assign labels to the different servers to give them human-friendly names.
+Remember to [reconfigure](../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+or [restart](../../administration/restart_gitlab.md#installations-from-source)
+GitLab for Omnibus packages or installations from source respectively, in order
+for the new servers to become available.
 
-```
+**Tip:** you can assign labels to the different servers to give them human-friendly
+names:
+
+```yaml
 ldap:
   servers:
     main:
       label: 'LDAP HQ'
+```
+
+#### Examples
+
+**Omnibus**
+
+```ruby
+gitlab_rails['ldap_servers'] = YAML.load <<-'EOS' # remember to close this block with 'EOS' below
+ main: # 'main' is the GitLab 'provider ID' of this LDAP server
+   label: 'LDAP_1'
+   host: '_your_ldap_server'
+   ...
+ secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
+   label: 'LDAP_2'
+   host: '_your_ldap_2_server'
+   ...
+EOS
+```
+
+**Source**
+
+```yaml
+ldap:
+  servers:
+    main: # 'main' is the GitLab 'provider ID' of this LDAP server
+      label: 'LDAP_1'
+      host: '_your_ldap_server'
+      ...
+    secondary: # 'secondary' is the GitLab 'provider ID' of second LDAP server
+      label: 'LDAP_2'
+      host: '_your_ldap_2_server'
+      ...
 ```
 
 ## Automatic Daily LDAP Sync
@@ -360,7 +411,7 @@ If you want a shorter or longer LDAP sync time, you can easily set this with the
 For Omnibus package installations, simply add `"sync_time"` in `/etc/gitlab/gitlab.rb` to your LDAP config.
 A typical LDAP configuration for GitLab installed with an Omnibus package might look like this:
 
-```
+```ruby
 gitlab_rails['ldap_servers'] = YAML.load <<-EOS
 main:
   label: 'LDAP'
@@ -413,18 +464,18 @@ administrator.
 
 GitLab's LDAP client is based on [omniauth-ldap](https://gitlab.com/gitlab-org/omniauth-ldap)
 which encapsulates Ruby's `Net::LDAP` class. It provides a pure-Ruby implementation
-of the LDAP client protocol. As a result, GitLab is limited by `omniauth-ldap` and may impact your LDAP 
+of the LDAP client protocol. As a result, GitLab is limited by `omniauth-ldap` and may impact your LDAP
 server settings.
 
-### TLS Client Authentication  
-Not implemented by `Net::LDAP`.  
-So you should disable anonymous LDAP authentication and enable simple or SASL 
+### TLS Client Authentication
+Not implemented by `Net::LDAP`.
+So you should disable anonymous LDAP authentication and enable simple or SASL
 authentication. TLS client authentication setting in your LDAP server cannot be
-mandatory and clients cannot be authenticated with the TLS protocol. 
+mandatory and clients cannot be authenticated with the TLS protocol.
 
-### TLS Server Authentication  
-Not supported by GitLab's configuration options.  
-When setting `method: ssl`, the underlying authentication method used by 
-`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with 
+### TLS Server Authentication
+Not supported by GitLab's configuration options.
+When setting `method: ssl`, the underlying authentication method used by
+`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with
 the LDAP server before any LDAP-protocol data is exchanged but no validation of
 the LDAP server's SSL certificate is performed.

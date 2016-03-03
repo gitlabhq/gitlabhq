@@ -40,6 +40,27 @@ module API
         end
       end
 
+      # Delete tag
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   tag_name (required) - The name of the tag
+      # Example Request:
+      #   DELETE /projects/:id/repository/tags/:tag
+      delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.*/ } do
+        authorize_push_project
+        result = DeleteTagService.new(user_project, current_user).
+          execute(params[:tag_name])
+
+        if result[:status] == :success
+          {
+            tag_name: params[:tag_name]
+          }
+        else
+          render_api_error!(result[:message], result[:return_code])
+        end
+      end
+
       # Add release notes to tag
       #
       # Parameters:

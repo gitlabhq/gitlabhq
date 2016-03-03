@@ -55,7 +55,7 @@ describe MergeRequests::RefreshService, services: true do
       it { expect(@merge_request.merge_when_build_succeeds).to be_falsey}
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }
-      it { expect(@fork_merge_request.approvals).to be_empty }
+      it { expect(@fork_merge_request.approvals).not_to be_empty }
     end
 
     context 'push to origin repo target branch' do
@@ -109,7 +109,7 @@ describe MergeRequests::RefreshService, services: true do
       it { expect(@merge_request.approvals).not_to be_empty }
       it { expect(@fork_merge_request.notes.last.note).to include('Added 4 commits') }
       it { expect(@fork_merge_request).to be_open }
-      it { expect(@fork_merge_request.approvals).not_to be_empty }
+      it { expect(@fork_merge_request.approvals).to be_empty }
     end
 
     context 'push to fork repo target branch' do
@@ -142,7 +142,7 @@ describe MergeRequests::RefreshService, services: true do
     end
 
     context 'resetting approvals if they are enabled' do
-      it "does not reset approvals if approvals_before_merge si disabled" do
+      it "does not reset approvals if approvals_before_merge is disabled" do
         @project.update(approvals_before_merge: 0)
         refresh_service = service.new(@project, @user)
         allow(refresh_service).to receive(:execute_hooks)
@@ -152,7 +152,7 @@ describe MergeRequests::RefreshService, services: true do
         expect(@merge_request.approvals).not_to be_empty
       end
 
-      it "does not reset approvals if reset_approvals_on_push si disabled" do
+      it "does not reset approvals if reset_approvals_on_push is disabled" do
         @project.update(reset_approvals_on_push: false)
         refresh_service = service.new(@project, @user)
         allow(refresh_service).to receive(:execute_hooks)

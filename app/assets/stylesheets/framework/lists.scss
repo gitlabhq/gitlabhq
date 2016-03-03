@@ -38,7 +38,7 @@
     &.smoke { background-color: $background-color; }
 
     &:hover {
-      background: $hover;
+      background: $row-hover;
     }
 
     &:last-child {
@@ -74,7 +74,7 @@
 
 
 /** light list with border-bottom between li **/
-ul.bordered-list {
+ul.bordered-list, ul.unstyled-list {
   @include basic-list;
 
   &.top-list {
@@ -86,6 +86,10 @@ ul.bordered-list {
       }
     }
   }
+}
+
+ul.unstyled-list > li {
+  border-bottom: none;
 }
 
 ul.task-list {
@@ -105,11 +109,21 @@ ul.content-list {
   padding: 0;
 
   > li {
-    padding: $gl-padding;
     border-color: $table-border-color;
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
-    color: $gl-gray;
+    color: $list-text-color;
+    font-size: $list-font-size;
+
+    .title {
+      color: $list-title-color;
+      font-weight: 600;
+    }
+
+    .description {
+      p {
+        @include str-truncated;
+        margin-bottom: 0;
+      }
+    }
 
     .avatar {
       margin-right: 15px;
@@ -126,12 +140,6 @@ ul.content-list {
   }
 }
 
-.panel > .content-list {
-  li {
-    margin: 0;
-  }
-}
-
 ul.controls {
   padding-top: 1px;
   float: right;
@@ -144,7 +152,7 @@ ul.controls {
   > li {
     float: left;
     margin-right: 10px;
-    
+
     &:last-child {
       margin-right: 0;
     }

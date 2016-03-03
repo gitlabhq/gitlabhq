@@ -3,7 +3,7 @@ require 'spec_helper'
 module Ci
   describe GitlabCiYamlProcessor, lib: true do
     let(:path) { 'path' }
-    
+
     describe "#builds_for_ref" do
       let(:type) { 'test' }
 
@@ -29,7 +29,7 @@ module Ci
           when: "on_success"
         })
       end
-      
+
       describe :only do
         it "does not return builds if only has another branch" do
           config = YAML.dump({
@@ -336,7 +336,7 @@ module Ci
     describe "Caches" do
       it "returns cache when defined globally" do
         config = YAML.dump({
-                             cache: { paths: ["logs/", "binaries/"], untracked: true },
+                             cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
                              rspec: {
                                script: "rspec"
                              }
@@ -348,13 +348,14 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["logs/", "binaries/"],
           untracked: true,
+          key: 'key',
         )
       end
 
       it "returns cache when defined in a job" do
         config = YAML.dump({
                              rspec: {
-                               cache: { paths: ["logs/", "binaries/"], untracked: true },
+                               cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
                                script: "rspec"
                              }
                            })
@@ -365,15 +366,16 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["logs/", "binaries/"],
           untracked: true,
+          key: 'key',
         )
       end
 
       it "overwrite cache when defined for a job and globally" do
         config = YAML.dump({
-                             cache: { paths: ["logs/", "binaries/"], untracked: true },
+                             cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
                              rspec: {
                                script: "rspec",
-                               cache: { paths: ["test/"], untracked: false },
+                               cache: { paths: ["test/"], untracked: false, key: 'local' },
                              }
                            })
 
@@ -383,6 +385,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["test/"],
           untracked: false,
+          key: 'local',
         )
       end
     end
@@ -517,7 +520,7 @@ module Ci
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Unknown parameter: extra")
       end
 
-      it "returns errors if there is no any jobs defined" do
+      it "returns errors if there are no jobs defined" do
         config = YAML.dump({ before_script: ["bundle update"] })
         expect do
           GitlabCiYamlProcessor.new(config, path)
@@ -613,6 +616,20 @@ module Ci
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:paths parameter should be an array of strings")
+      end
+
+      it "returns errors if cache:key is not a string" do
+        config = YAML.dump({ cache: { key: 1 }, rspec: { script: "test" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:key parameter should be a string")
+      end
+
+      it "returns errors if job cache:key is not an a string" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", cache: { key: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:key parameter should be a string")
       end
 
       it "returns errors if job cache:untracked is not an array of strings" do

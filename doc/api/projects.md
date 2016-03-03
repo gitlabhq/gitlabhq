@@ -29,6 +29,7 @@ GET /projects
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
@@ -76,7 +77,12 @@ Parameters:
       "updated_at": "2013-09-30T13: 46: 02Z"
     },
     "archived": false,
-    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png"
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_builds": true
   },
   {
     "id": 6,
@@ -118,8 +124,23 @@ Parameters:
       "path": "brightbox",
       "updated_at": "2013-09-30T13:46:02Z"
     },
+    "permissions": {
+      "project_access": {
+        "access_level": 10,
+        "notification_level": 3
+      },
+      "group_access": {
+        "access_level": 50,
+        "notification_level": 3
+      }
+    },
     "archived": false,
-    "avatar_url": null
+    "avatar_url": null,
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_builds": true
   }
 ]
 ```
@@ -135,6 +156,7 @@ GET /projects/owned
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
@@ -150,6 +172,7 @@ GET /projects/starred
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
@@ -165,6 +188,7 @@ GET /projects/all
 Parameters:
 
 - `archived` (optional) - if passed, limit by archived status
+- `visibility` (optional) - if passed, limit by visibility `public`, `internal`, `private`
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `path`, `created_at`, `updated_at` or `last_activity_at` fields. Default is `created_at`
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
 - `search` (optional) - Return list of authorized projects according to a search criteria
@@ -234,7 +258,11 @@ Parameters:
     }
   },
   "archived": false,
-  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png"
+  "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "shared_runners_enabled": true,
+  "forks_count": 0,
+  "star_count": 0,
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
 }
 ```
 
@@ -399,6 +427,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
+- `public_builds` (optional)
 
 ### Create project for user
 
@@ -421,6 +450,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
+- `public_builds` (optional)
 
 ### Edit project
 
@@ -444,6 +474,7 @@ Parameters:
 - `snippets_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
+- `public_builds` (optional)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
@@ -471,6 +502,34 @@ DELETE /projects/:id
 Parameters:
 
 - `id` (required) - The ID of a project
+
+## Uploads
+
+### Upload a file
+
+Uploads a file to the specified project to be used in an issue or merge request description, or a comment.
+
+```
+POST /projects/:id/uploads
+```
+
+Parameters:
+
+- `id` (required) - The ID of the project
+- `file` (required) - The file to be uploaded
+
+```json
+{
+  "alt": "dk",
+  "url": "/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
+  "is_image": true,
+  "markdown": "![dk](/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png)"
+}
+```
+
+**Note**: The returned `url` is relative to the project path.
+In Markdown contexts, the link is automatically expanded when the format in `markdown` is used.
+
 
 ## Team members
 
@@ -828,7 +887,7 @@ Parameters:
 Get a project git hook.
 
 ```
-GET /projects/:id/git_hooks
+GET /projects/:id/git_hook
 ```
 
 Parameters:
@@ -851,7 +910,7 @@ Parameters:
 Adds a git hook to a specified project.
 
 ```
-POST /projects/:id/git_hooks
+POST /projects/:id/git_hook
 ```
 
 Parameters:
@@ -865,7 +924,7 @@ Parameters:
 Edits a git hook for a specified project.
 
 ```
-PUT /projects/:id/git_hooks
+PUT /projects/:id/git_hook
 ```
 
 Parameters:
@@ -880,7 +939,7 @@ Removes a git hook from a project. This is an idempotent method and can be calle
 Either the git hook is available or not.
 
 ```
-DELETE /projects/:id/git_hooks
+DELETE /projects/:id/git_hook
 ```
 
 Parameters:

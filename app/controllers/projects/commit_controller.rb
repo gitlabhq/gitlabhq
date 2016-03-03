@@ -2,16 +2,19 @@
 #
 # Not to be confused with CommitsController, plural.
 class Projects::CommitController < Projects::ApplicationController
+  include CreatesCommit
+
   # Authorize
   before_action :require_non_empty_project
-  before_action :authorize_download_code!, except: [:cancel_builds]
-  before_action :authorize_manage_builds!, only: [:cancel_builds]
+  before_action :authorize_download_code!, except: [:cancel_builds, :retry_builds]
+  before_action :authorize_update_build!, only: [:cancel_builds, :retry_builds]
+  before_action :authorize_read_commit_status!, only: [:builds]
   before_action :commit
-  before_action :authorize_manage_builds!, only: [:cancel_builds, :retry_builds]
   before_action :define_show_vars, only: [:show, :builds]
+  before_action :authorize_edit_tree!, only: [:revert]
 
   def show
-    return git_not_found! unless @commit
+    apply_diff_view_cookie!
 
     @line_notes = commit.notes.inline
     @note = @project.build_commit_note(commit)
@@ -55,7 +58,36 @@ class Projects::CommitController < Projects::ApplicationController
     render layout: false
   end
 
+  def revert
+    assign_revert_commit_vars
+
+    return render_404 if @target_branch.blank?
+
+    create_commit(Commits::RevertService, success_notice: "The #{revert_type_title} has been successfully reverted.",
+                                          success_path: successful_revert_path, failure_path: failed_revert_path)
+  end
+
   private
+
+  def revert_type_title
+    @commit.merged_merge_request ? 'merge request' : 'commit'
+  end
+
+  def successful_revert_path
+    return referenced_merge_request_url if @commit.merged_merge_request
+
+    namespace_project_commits_url(@project.namespace, @project, @target_branch)
+  end
+
+  def failed_revert_path
+    return referenced_merge_request_url if @commit.merged_merge_request
+
+    namespace_project_commit_url(@project.namespace, @project, params[:id])
+  end
+
+  def referenced_merge_request_url
+    namespace_project_merge_request_url(@project.namespace, @project, @commit.merged_merge_request)
+  end
 
   def commit
     @commit ||= @project.commit(params[:id])
@@ -66,20 +98,29 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def define_show_vars
+    return git_not_found! unless commit
+
     if params[:w].to_i == 1
       @diffs = commit.diffs({ ignore_whitespace_change: true })
     else
       @diffs = commit.diffs
     end
 
+    @diff_refs = [commit.parent || commit, commit]
     @notes_count = commit.notes.count
 
     @statuses = ci_commit.statuses if ci_commit
   end
 
-  def authorize_manage_builds!
-    unless can?(current_user, :manage_builds, project)
-      return page_404
-    end
+  def assign_revert_commit_vars
+    @commit = project.commit(params[:id])
+    @target_branch = params[:target_branch]
+    @mr_source_branch = @commit.revert_branch_name
+    @mr_target_branch = @target_branch
+    @commit_params = {
+      commit: @commit,
+      revert_type_title: revert_type_title,
+      create_merge_request: params[:create_merge_request].present? || different_project?
+    }
   end
 end

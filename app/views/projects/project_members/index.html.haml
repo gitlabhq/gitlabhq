@@ -1,17 +1,16 @@
 - page_title "Members"
 = render "header_title"
-- @blank_container = true
 
 - if membership_locked?
   .alert.alert-warning
     Adding new users is disabled at group level
 
-.project-members-page
+.project-members-page.prepend-top-default
   - if can?(current_user, :admin_project_member, @project) && !membership_locked?
     .panel.panel-default
       .panel-heading
         Add new user to project
-        .pull-right
+        .controls
           = link_to import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-grouped", title: "Import members from another project" do
             Import members
       .panel-body

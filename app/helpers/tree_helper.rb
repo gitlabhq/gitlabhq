@@ -50,22 +50,46 @@ module TreeHelper
     project.repository.branch_names.include?(ref)
   end
 
-  def allowed_tree_edit?(project = nil, ref = nil)
+  def can_edit_tree?(project = nil, ref = nil)
     project ||= @project
     ref ||= @ref
+
     return false unless on_top_of_branch?(project, ref)
 
-    can?(current_user, :push_code, project)
+    can_collaborate_with_project?(project)
   end
 
   def tree_edit_branch(project = @project, ref = @ref)
-    if allowed_tree_edit?(project, ref)
-      if can_push_branch?(project, ref)
-        ref
-      else
-        project.repository.next_patch_branch
-      end
+    return unless can_edit_tree?(project, ref)
+
+    if can_push_branch?(project, ref)
+      ref
+    else
+      project = tree_edit_project(project)
+      project.repository.next_patch_branch
     end
+  end
+
+  def tree_edit_project(project = @project)
+    if can?(current_user, :push_code, project)
+      project
+    elsif current_user && current_user.already_forked?(project)
+      current_user.fork_of(project)
+    end
+  end
+
+  def edit_in_new_fork_notice_now
+    "You're not allowed to make changes to this project directly." +
+      " A fork of this project is being created that you can make changes in, so you can submit a merge request."
+  end
+
+  def edit_in_new_fork_notice
+    "You're not allowed to make changes to this project directly." +
+      " A fork of this project has been created that you can make changes in, so you can submit a merge request."
+  end
+
+  def commit_in_fork_help
+    "A new branch will be created in your fork and a new merge request will be started."
   end
 
   def tree_breadcrumbs(tree, max_links = 2)

@@ -8,18 +8,18 @@ describe "Builds" do
     @commit = FactoryGirl.create :ci_commit
     @build = FactoryGirl.create :ci_build, commit: @commit
     @project = @commit.project
-    @project.team << [@user, :master]
+    @project.team << [@user, :developer]
   end
 
   describe "GET /:project/builds" do
     context "Running scope" do
       before do
         @build.run!
-        visit namespace_project_builds_path(@project.namespace, @project)
+        visit namespace_project_builds_path(@project.namespace, @project, scope: :running)
       end
 
-      it { expect(page).to have_content 'Running' }
-      it { expect(page).to have_content 'Cancel running' }
+      it { expect(page).to have_selector('.nav-links li.active', text: 'Running') }
+      it { expect(page).to have_link 'Cancel running' }
       it { expect(page).to have_content @build.short_sha }
       it { expect(page).to have_content @build.ref }
       it { expect(page).to have_content @build.name }
@@ -31,21 +31,22 @@ describe "Builds" do
         visit namespace_project_builds_path(@project.namespace, @project, scope: :finished)
       end
 
+      it { expect(page).to have_selector('.nav-links li.active', text: 'Finished') }
       it { expect(page).to have_content 'No builds to show' }
-      it { expect(page).to have_content 'Cancel running' }
+      it { expect(page).to have_link 'Cancel running' }
     end
 
     context "All builds" do
       before do
         @project.builds.running_or_pending.each(&:success)
-        visit namespace_project_builds_path(@project.namespace, @project, scope: :all)
+        visit namespace_project_builds_path(@project.namespace, @project)
       end
 
-      it { expect(page).to have_content 'All' }
+      it { expect(page).to have_selector('.nav-links li.active', text: 'All') }
       it { expect(page).to have_content @build.short_sha }
       it { expect(page).to have_content @build.ref }
       it { expect(page).to have_content @build.name }
-      it { expect(page).to_not have_content 'Cancel running' }
+      it { expect(page).to_not have_link 'Cancel running' }
     end
   end
 
@@ -56,8 +57,12 @@ describe "Builds" do
       click_link "Cancel running"
     end
 
-    it { expect(page).to have_content 'No builds to show' }
-    it { expect(page).to_not have_content 'Cancel running' }
+    it { expect(page).to have_selector('.nav-links li.active', text: 'All') }
+    it { expect(page).to have_content 'canceled' }
+    it { expect(page).to have_content @build.short_sha }
+    it { expect(page).to have_content @build.ref }
+    it { expect(page).to have_content @build.name }
+    it { expect(page).to_not have_link 'Cancel running' }
   end
 
   describe "GET /:project/builds/:id" do
@@ -75,7 +80,11 @@ describe "Builds" do
         visit namespace_project_build_path(@project.namespace, @project, @build)
       end
 
-      it { expect(page).to have_content 'Download artifacts' }
+      it 'has button to download artifacts' do
+        page.within('.artifacts') do
+          expect(page).to have_content 'Download'
+        end
+      end
     end
   end
 
@@ -106,7 +115,7 @@ describe "Builds" do
     before do
       @build.update_attributes(artifacts_file: artifacts_file)
       visit namespace_project_build_path(@project.namespace, @project, @build)
-      click_link 'Download artifacts'
+      page.within('.artifacts') { click_link 'Download' }
     end
 
     it { expect(page.response_headers['Content-Type']).to eq(artifacts_file.content_type) }

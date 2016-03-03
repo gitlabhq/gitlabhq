@@ -16,7 +16,6 @@ namespace :gitlab do
 
       check_git_config
       check_database_config_exists
-      check_database_is_not_sqlite
       check_migrations_are_up
       check_orphaned_group_members
       check_gitlab_config_exists
@@ -31,6 +30,7 @@ namespace :gitlab do
       check_ruby_version
       check_git_version
       check_active_users
+      check_elasticsearch if Gitlab.config.elasticsearch.enabled
 
       finished_checking "GitLab"
     end
@@ -85,24 +85,6 @@ namespace :gitlab do
         for_more_information(
           see_database_guide,
           "http://guides.rubyonrails.org/getting_started.html#configuring-a-database"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_database_is_not_sqlite
-      print "Database is SQLite ... "
-
-      database_config_file = Rails.root.join("config", "database.yml")
-
-      unless File.read(database_config_file) =~ /adapter:\s+sqlite/
-        puts "no".green
-      else
-        puts "yes".red
-        puts "Please fix this by removing the SQLite entry from the database.yml".blue
-        for_more_information(
-          "https://github.com/gitlabhq/gitlabhq/wiki/Migrate-from-SQLite-to-MySQL",
-          see_database_guide
         )
         fix_and_rerun
       end
@@ -285,7 +267,7 @@ namespace :gitlab do
       unless File.directory?(Rails.root.join('public/uploads'))
         puts "no".red
         try_fixing_it(
-          "sudo -u #{gitlab_user} mkdir -m 750 #{Rails.root}/public/uploads"
+          "sudo -u #{gitlab_user} mkdir #{Rails.root}/public/uploads"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -297,21 +279,22 @@ namespace :gitlab do
       upload_path = File.realpath(Rails.root.join('public/uploads'))
       upload_path_tmp = File.join(upload_path, 'tmp')
 
-      if File.stat(upload_path).mode == 040750
+      if File.stat(upload_path).mode == 040700
         unless Dir.exists?(upload_path_tmp)
           puts 'skipped (no tmp uploads folder yet)'.magenta
           return
         end
 
-        # if tmp upload dir has incorrect permissions, assume others do as well
-        if File.stat(upload_path_tmp).mode == 040755 && File.owned?(upload_path_tmp) # verify drwxr-xr-x permissions
+        # If tmp upload dir has incorrect permissions, assume others do as well
+        # Verify drwx------ permissions
+        if File.stat(upload_path_tmp).mode == 040700 && File.owned?(upload_path_tmp)
           puts "yes".green
         else
           puts "no".red
           try_fixing_it(
             "sudo chown -R #{gitlab_user} #{upload_path}",
             "sudo find #{upload_path} -type f -exec chmod 0644 {} \\;",
-            "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0755 {} \\;"
+            "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0700 {} \\;"
           )
           for_more_information(
             see_installation_guide_section "GitLab"
@@ -321,7 +304,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "sudo chmod 0750 #{upload_path}",
+          "sudo find #{upload_path} -type d -not -path #{upload_path} -exec chmod 0700 {} \\;"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -431,7 +414,7 @@ namespace :gitlab do
         try_fixing_it(
           "sudo chmod -R ug+rwX,o-rwx #{repo_base_path}",
           "sudo chmod -R ug-s #{repo_base_path}",
-          "find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
+          "sudo find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
         )
         for_more_information(
           see_installation_guide_section "GitLab Shell"
@@ -998,6 +981,29 @@ namespace :gitlab do
       end
     else
       puts "No ref lock files exist".green
+    end
+  end
+
+  def check_elasticsearch
+    client = Elasticsearch::Client.new(host: Gitlab.config.elasticsearch.host,
+                                     port: Gitlab.config.elasticsearch.port)
+
+    print "Elasticsearch version >= 2.0? ... "
+
+    version = client.info["version"]["number"]
+
+    if version.starts_with?("2")
+      puts "yes (#{version})".green
+    else
+      puts "no".red
+    end
+
+    print "Elasticsearch has plugin delete-by-query installed? ... "
+
+    if client.cat.plugins.include?("delete-by-query")
+      puts "yes".green
+    else
+      puts "no".red
     end
   end
 end

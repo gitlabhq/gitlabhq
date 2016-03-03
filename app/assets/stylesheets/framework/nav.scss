@@ -1,0 +1,138 @@
+.nav-links {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  height: auto;
+  border-bottom: 1px solid $border-color;
+
+  li {
+    display: inline-block;
+
+    a {
+      display: inline-block;
+      padding: 14px;
+      padding-top: $gl-padding;
+      padding-bottom: 11px;
+      margin-bottom: -1px;
+      font-size: 15px;
+      line-height: 28px;
+      color: #959494;
+      border-bottom: 2px solid transparent;
+
+      &:hover, &:active, &:focus {
+        text-decoration: none;
+        outline: none;
+      }
+    }
+
+    &.active a {
+      color: #000000;
+      border-bottom: 2px solid #4688f1;
+    }
+
+    .badge {
+      font-weight: normal;
+      background-color: #eee;
+      color: #78a;
+    }
+  }
+}
+
+.top-area {
+  @include clearfix;
+
+  border-bottom: 1px solid #EEE;
+
+  .nav-text {
+    padding-top: 16px;
+    padding-bottom: 11px;
+    display: inline-block;
+    width: 50%;
+    line-height: 28px;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (max-width: $screen-sm-min) {
+      width: 100%;
+    }
+  }
+
+  .nav-links {
+    display: inline-block;
+    width: 50%;
+    margin-bottom: 0px;
+    border-bottom: none;
+
+    /* Small devices (phones, tablets, 768px and lower) */
+    @media (max-width: $screen-sm-min) {
+      width: 100%;
+    }
+  }
+
+  .nav-controls {
+    width: 50%;
+    display: inline-block;
+    float: right;
+    text-align: right;
+    padding: 11px 0;
+    margin-bottom: 0px;
+
+    > .dropdown {
+      margin-right: $gl-padding-top;
+      display: inline-block;
+    }
+
+    > .btn {
+      margin-right: $gl-padding-top;
+      display: inline-block;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    > .btn-grouped {
+      float: none;
+    }
+
+    > form {
+      display: inline-block;
+    }
+
+    input {
+      height: 34px;
+      display: inline-block;
+      position: relative;
+      top: 1px;
+      margin-right: $gl-padding-top;
+
+      /* Medium devices (desktops, 992px and up) */
+      @media (min-width: $screen-md-min) { width: 200px; }
+
+      /* Large devices (large desktops, 1200px and up) */
+      @media (min-width: $screen-lg-min) { width: 250px; }
+
+      &.input-short {
+        /* Medium devices (desktops, 992px and up) */
+        @media (min-width: $screen-md-min) { width: 170px; }
+
+        /* Large devices (large desktops, 1200px and up) */
+        @media (min-width: $screen-lg-min) { width: 210px; }
+      }
+    }
+
+    /* Hide on extra small devices (phones) */
+    @media (max-width: $screen-xs-max) {
+      display: none;
+    }
+
+    /* Small devices (tablets, 768px and lower) */
+    @media (max-width: $screen-sm-max) {
+      width: 100%;
+      text-align: left;
+
+      input {
+        width: 300px;
+      }
+    }
+  }
+}

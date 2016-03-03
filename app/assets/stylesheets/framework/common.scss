@@ -56,6 +56,10 @@ hr {
   margin: $gl-padding 0;
 }
 
+.dropdown-menu {
+  margin: 6px 0 0;
+}
+
 .dropdown-menu > li > a {
   text-shadow: none;
 }
@@ -74,6 +78,8 @@ hr {
 .str-truncated {
   @include str-truncated;
 }
+
+.item-title { font-weight: 600; }
 
 /** FLASH message **/
 .author_link {
@@ -116,14 +122,6 @@ span.update-author {
 
 .field_with_errors {
   display: inline;
-}
-
-.line_holder {
-  &:hover {
-    td {
-      background: #FFFFCF !important;
-    }
-  }
 }
 
 p.time {
@@ -326,14 +324,6 @@ table {
   }
 }
 
-.wiki .highlight, .note-body .highlight {
-  margin: 12px 0 12px 0;
-}
-
-.wiki .code {
-  overflow-x: auto;
-}
-
 .footer-links {
   margin-bottom: 20px;
   a {
@@ -383,70 +373,6 @@ table {
   }
 }
 
-.center-top-menu {
-  @include nav-menu;
-  text-align: center;
-  margin-top: 5px;
-  margin-bottom: $gl-padding;
-  height: auto;
-  margin-top: -$gl-padding;
-
-  &.no-bottom {
-    margin-bottom: 0;
-  }
-
-  &.no-top {
-    margin-top: 0;
-  }
-
-  li a {
-    display: inline-block;
-    padding-top: $gl-padding;
-    padding-bottom: 11px;
-    margin-bottom: -1px;
-  }
-
-  &.bottom-border {
-    border-bottom: 1px solid $border-color;
-    height: 57px;
-  }
-
-  &.wide {
-    margin-left: -$gl-padding;
-    margin-right: -$gl-padding;
-  }
-}
-
-.center-middle-menu {
-  @include nav-menu;
-  padding: 0;
-  text-align: center;
-  margin: -$gl-padding;
-  margin-top: 0;
-  margin-bottom: 0;
-  height: 58px;
-  border-bottom: 1px solid $border-color;
-
-  li {
-    &:after {
-      content: "|";
-      color: $border-gray-light;
-    }
-
-    &:last-child {
-      &:after {
-        content: none;
-      }
-    }
-
-    > a {
-      display: inline-block;
-      text-transform: uppercase;
-      font-size: 13px;
-    }
-  }
-}
-
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
 }
@@ -463,11 +389,11 @@ table {
   margin-bottom: $gl-padding;
 }
 
-.new-project-item-select-holder {
+.project-item-select-holder {
   display: inline-block;
   position: relative;
 
-  .new-project-item-select {
+  .project-item-select {
     position: absolute;
     top: 0;
     right: 0;

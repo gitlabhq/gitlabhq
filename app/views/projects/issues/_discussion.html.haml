@@ -1,9 +1,7 @@
 - content_for :note_actions do
   - if can?(current_user, :update_issue, @issue)
-    - if @issue.closed?
-      = link_to 'Reopen Issue', issue_path(@issue, issue: {state_event: :reopen}, status_only: true), method: :put, class: 'btn btn-grouped btn-reopen js-note-target-reopen', title: 'Reopen Issue'
-    - else
-      = link_to 'Close Issue', issue_path(@issue, issue: {state_event: :close}, status_only: true), method: :put, class: 'btn btn-grouped btn-close js-note-target-close', title: 'Close Issue'
+    = link_to 'Reopen issue', issue_path(@issue, issue: {state_event: :reopen}, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn btn-nr btn-grouped btn-reopen btn-comment js-note-target-reopen #{issue_button_visibility(@issue, false)}", title: 'Reopen issue'
+    = link_to 'Close issue', issue_path(@issue, issue: {state_event: :close}, status_only: true, format: 'json'), data: {no_turbolink: true}, class: "btn btn-nr btn-grouped btn-close btn-comment js-note-target-close #{issue_button_visibility(@issue, true)}", title: 'Close issue'
 
 #notes
   = render 'projects/notes/notes_with_form'

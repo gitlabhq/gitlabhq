@@ -69,7 +69,6 @@ module VisibilityLevelHelper
 
   def skip_level?(form_model, level)
     form_model.is_a?(Project) &&
-    form_model.forked? &&
-    !Gitlab::VisibilityLevel.allowed_fork_levels(form_model.forked_from_project.visibility_level).include?(level)
+    !form_model.visibility_level_allowed?(level)
   end
 end

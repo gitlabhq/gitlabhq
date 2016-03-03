@@ -57,10 +57,9 @@
   - if issuable.respond_to?(:weight)
     .form-group
       = f.label :label_ids, class: 'control-label' do
-        = icon('magnet')
         Weight
       .col-sm-10
-        = f.select :weight, projects_weight_options(issuable.weight), { include_blank: true },
+        = f.select :weight, issues_weight_options(issuable.weight, edit: true), { include_blank: true },
           { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
 
   .form-group
@@ -155,30 +154,3 @@
     = link_to "#", data: { confirm: "Are you sure you want to remove approver {approver_name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
       = icon("sign-out")
       Remove
-- if issuable.is_a?(MergeRequest)
-  :coffeescript
-    $(".approver-list").on "click", ".project-approvers .btn-remove", ->
-      $(this).closest("li").remove()
-      return false
-    $("form.merge-request-form").submit ->
-      if $("input#merge_request_approver_ids").length
-        approver_ids = $.map $("li.project-approvers").not(".approver-template"), (li, i) ->
-          li.id.replace("user_", "")
-        approvers_input = $(this).find("input#merge_request_approver_ids")
-        approver_ids = approver_ids.concat(approvers_input.val().split(","))
-        approvers_input.val(_.compact(approver_ids).join(","))
-    $(".suggested-approvers a").click ->
-      user_id = this.id.replace("user_", "")
-      user_name = this.text
-      return false if $(".approver-list #user_" + user_id).length
-
-      approver_item_html = $(".project-approvers.approver-template").clone().
-        removeClass("hide approver-template")[0].
-        outerHTML.
-        replace(/\{approver_name\}/g, user_name).
-        replace(/\{user_id\}/g, user_id)
-      $(".no-approvers").remove()
-      $(".approver-list").append(approver_item_html)
-      return false
-
-

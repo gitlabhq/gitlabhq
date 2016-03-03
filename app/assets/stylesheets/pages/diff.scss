@@ -1,9 +1,7 @@
 // Common
 .diff-file {
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-  border: none;
-  border-bottom: 1px solid #E7E9EE;
+  border: 1px solid $border-color;
+  border-top: none;
 
   .diff-header {
     position: relative;
@@ -23,14 +21,6 @@
       }
     }
 
-    .diff-controls {
-      .btn {
-        padding: 0px 10px;
-        font-size: 13px;
-        line-height: 28px;
-      }
-    }
-
     .commit-short-id {
       font-family: $monospace_font;
       font-size: smaller;
@@ -42,16 +32,6 @@
     background: #FFF;
     color: #333;
 
-    .old {
-      span.idiff {
-        background-color: #f8cbcb;
-      }
-    }
-    .new {
-      span.idiff {
-        background-color: #a6f3a6;
-      }
-    }
     .unfold {
       cursor: pointer;
     }
@@ -76,6 +56,7 @@
       width: 100%;
       font-family: $monospace_font;
       border: none;
+      border-collapse: separate;
       margin: 0px;
       padding: 0px;
       .line_holder td {
@@ -85,7 +66,7 @@
     }
 
     tr.line_holder.parallel {
-      .old_line, .new_line, .diff_line {
+      .old_line, .new_line {
         min-width: 50px;
       }
 
@@ -94,14 +75,12 @@
       }
     }
 
-    .old_line, .new_line, .diff_line {
+    .old_line, .new_line {
       margin: 0px;
       padding: 0px;
       border: none;
-      background: $background-color;
-      color: rgba(0, 0, 0, 0.3);
       padding: 0px 5px;
-      border-right: 1px solid $border-color;
+      border-right: 1px solid;
       text-align: right;
       min-width: 35px;
       max-width: 50px;
@@ -111,31 +90,9 @@
         float: left;
         width: 35px;
         font-weight: normal;
-        color: rgba(0, 0, 0, 0.3);
         &:hover {
           text-decoration: underline;
         }
-      }
-      &.new {
-        background: #CFD;
-      }
-      &.old {
-        background: #FDD;
-      }
-    }
-    .diff_line {
-      padding: 0;
-    }
-    .line_holder {
-      &.old .old_line,
-      &.old .new_line {
-        background: #ffdddd;
-        border-color: #f1c0c0;
-      }
-      &.new .old_line,
-      &.new .new_line {
-        background: #dbffdb;
-        border-color: #c1e9c1;
       }
     }
     .line_content {
@@ -143,16 +100,6 @@
       margin: 0px;
       padding: 0px 0.5em;
       border: none;
-      &.new {
-        background: #eaffea;
-      }
-      &.old {
-        background: #ffecec;
-      }
-      &.matched {
-        color: $border-color;
-        background: #fafafa;
-      }
       &.parallel {
         display: table-cell;
       }
@@ -400,5 +347,17 @@
     position: absolute;
     top: 5px;
     right: 15px;
+  }
+}
+
+@mixin diff_background($background, $idiff, $border) {
+  background: $background;
+
+  &.line_content span.idiff {
+    background: $idiff;
+  }
+
+  &.diff-line-num {
+    border-color: $border;
   }
 }

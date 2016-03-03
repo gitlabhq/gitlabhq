@@ -1,5 +1,6 @@
 class ProjectWiki
   include Gitlab::ShellAdapter
+  include Elastic::WikiRepositoriesSearch
 
   MARKUPS = {
     'Markdown' => :md,
@@ -12,6 +13,8 @@ class ProjectWiki
   # Returns a string describing what went wrong after
   # an operation fails.
   attr_reader :error_message
+  attr_reader :project
+
 
   def initialize(project, user = nil)
     @project = project
@@ -36,6 +39,10 @@ class ProjectWiki
 
   def http_url_to_repo
     [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+  end
+
+  def wiki_base_path
+    ["/", @project.path_with_namespace, "/wikis"].join('')
   end
 
   # Returns the Gollum::Wiki object.
@@ -87,6 +94,8 @@ class ProjectWiki
 
     wiki.write_page(title, format, content, commit)
 
+    update_elastic_index
+
     update_project_activity
   rescue Gollum::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
@@ -98,11 +107,15 @@ class ProjectWiki
 
     wiki.update_page(page, page.name, format, content, commit)
 
+    update_elastic_index
+
     update_project_activity
   end
 
   def delete_page(page, message = nil)
     wiki.delete_page(page, commit_details(:deleted, message, page.title))
+
+    update_elastic_index
 
     update_project_activity
   end
@@ -118,7 +131,7 @@ class ProjectWiki
   end
 
   def repository
-    Repository.new(path_with_namespace, default_branch, @project)
+    Repository.new(path_with_namespace, @project)
   end
 
   def default_branch
@@ -155,5 +168,9 @@ class ProjectWiki
 
   def update_project_activity
     @project.touch(:last_activity_at)
+  end
+
+  def update_elastic_index
+    index_blobs if Gitlab.config.elasticsearch.enabled
   end
 end

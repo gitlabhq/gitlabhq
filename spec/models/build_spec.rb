@@ -1,32 +1,7 @@
-# == Schema Information
-#
-# Table name: builds
-#
-#  id                 :integer          not null, primary key
-#  project_id         :integer
-#  status             :string(255)
-#  finished_at        :datetime
-#  trace              :text
-#  created_at         :datetime
-#  updated_at         :datetime
-#  started_at         :datetime
-#  runner_id          :integer
-#  commit_id          :integer
-#  coverage           :float
-#  commands           :text
-#  job_id             :integer
-#  name               :string(255)
-#  deploy             :boolean          default(FALSE)
-#  options            :text
-#  allow_failure      :boolean          default(FALSE), not null
-#  stage              :string(255)
-#  trigger_request_id :integer
-#
-
 require 'spec_helper'
 
 describe Ci::Build, models: true do
-  let(:project) { FactoryGirl.create :empty_project }
+  let(:project) { FactoryGirl.create :project }
   let(:commit) { FactoryGirl.create :ci_commit, project: project }
   let(:build) { FactoryGirl.create :ci_build, commit: commit }
 
@@ -268,7 +243,7 @@ describe Ci::Build, models: true do
   end
 
   describe :can_be_served? do
-    let(:runner) { FactoryGirl.create :ci_specific_runner }
+    let(:runner) { FactoryGirl.create :ci_runner }
 
     before { build.project.runners << runner }
 
@@ -310,7 +285,7 @@ describe Ci::Build, models: true do
     end
 
     context 'if there are runner' do
-      let(:runner) { FactoryGirl.create :ci_specific_runner }
+      let(:runner) { FactoryGirl.create :ci_runner }
 
       before do
         build.project.runners << runner
@@ -347,7 +322,7 @@ describe Ci::Build, models: true do
         it { is_expected.to be_truthy }
 
         context "and there are specific runner" do
-          let(:runner) { FactoryGirl.create :ci_specific_runner, contacted_at: 1.second.ago }
+          let(:runner) { FactoryGirl.create :ci_runner, contacted_at: 1.second.ago }
 
           before do
             build.project.runners << runner
@@ -368,18 +343,58 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :download_url do
-    subject { build.download_url }
+  describe :artifacts_download_url do
+    subject { build.artifacts_download_url }
 
-    it "should be nil if artifact doesn't exist" do
-      build.update_attributes(artifacts_file: nil)
+    context 'artifacts file does not exist' do
+      before { build.update_attributes(artifacts_file: nil) }
+      it { is_expected.to be_nil }
+    end
+
+    context 'artifacts file exists' do
+      let(:build) { create(:ci_build, :artifacts) }
+      it { is_expected.to_not be_nil }
+    end
+  end
+
+  describe :artifacts_browse_url do
+    subject { build.artifacts_browse_url }
+
+    it "should be nil if artifacts browser is unsupported" do
+      allow(build).to receive(:artifacts_metadata?).and_return(false)
       is_expected.to be_nil
     end
 
-    it 'should be nil if artifact exist' do
-      gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-      build.update_attributes(artifacts_file: gif)
+    it 'should not be nil if artifacts browser is supported' do
+      allow(build).to receive(:artifacts_metadata?).and_return(true)
       is_expected.to_not be_nil
+    end
+  end
+
+  describe :artifacts? do
+    subject { build.artifacts? }
+
+    context 'artifacts archive does not exist' do
+      before { build.update_attributes(artifacts_file: nil) }
+      it { is_expected.to be_falsy }
+    end
+
+    context 'artifacts archive exists' do
+      let(:build) { create(:ci_build, :artifacts) }
+      it { is_expected.to be_truthy }
+    end
+  end
+
+
+  describe :artifacts_metadata? do
+    subject { build.artifacts_metadata? }
+    context 'artifacts metadata does not exist' do
+      it { is_expected.to be_falsy }
+    end
+
+    context 'artifacts archive is a zip file and metadata exists' do
+      let(:build) { create(:ci_build, :artifacts) }
+      it { is_expected.to be_truthy }
     end
   end
 
@@ -395,6 +410,30 @@ describe Ci::Build, models: true do
     it { is_expected.to include(build.token) }
     it { is_expected.to include('gitlab-ci-token') }
     it { is_expected.to include(project.web_url[7..-1]) }
+  end
+
+  describe :depends_on_builds do
+    let!(:build) { FactoryGirl.create :ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build' }
+    let!(:rspec_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test' }
+    let!(:rubocop_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test' }
+    let!(:staging) { FactoryGirl.create :ci_build, commit: commit, name: 'staging', stage_idx: 2, stage: 'deploy' }
+
+    it 'to have no dependents if this is first build' do
+      expect(build.depends_on_builds).to be_empty
+    end
+
+    it 'to have one dependent if this is test' do
+      expect(rspec_test.depends_on_builds.map(&:id)).to contain_exactly(build.id)
+    end
+
+    it 'to have all builds from build and test stage if this is last' do
+      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, rspec_test.id, rubocop_test.id)
+    end
+
+    it 'to have retried builds instead the original ones' do
+      retried_rspec = Ci::Build.retry(rspec_test)
+      expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
+    end
   end
 
   def create_mr(build, commit, factory: :merge_request, created_at: Time.now)
@@ -458,6 +497,103 @@ describe Ci::Build, models: true do
         expect(@build2.merge_request.id).to eq(@merge_request.id)
       end
     end
+  end
 
+  describe 'build erasable' do
+    shared_examples 'erasable' do
+      it 'should remove artifact file' do
+        expect(build.artifacts_file.exists?).to be_falsy
+      end
+
+      it 'should remove artifact metadata file' do
+        expect(build.artifacts_metadata.exists?).to be_falsy
+      end
+
+      it 'should erase build trace in trace file' do
+        expect(build.trace).to be_empty
+      end
+
+      it 'should set erased to true' do
+        expect(build.erased?).to be true
+      end
+
+      it 'should set erase date' do
+        expect(build.erased_at).to_not be_falsy
+      end
+    end
+
+    context 'build is not erasable' do
+      let!(:build) { create(:ci_build) }
+
+      describe '#erase' do
+        subject { build.erase }
+
+        it { is_expected.to be false }
+      end
+
+      describe '#erasable?' do
+        subject { build.erasable? }
+        it { is_expected.to eq false }
+      end
+    end
+
+    context 'build is erasable' do
+      let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+
+      describe '#erase' do
+        before { build.erase(erased_by: user) }
+
+        context 'erased by user' do
+          let!(:user) { create(:user, username: 'eraser') }
+
+          include_examples 'erasable'
+
+          it 'should record user who erased a build' do
+            expect(build.erased_by).to eq user
+          end
+        end
+
+        context 'erased by system' do
+          let(:user) { nil }
+
+          include_examples 'erasable'
+
+          it 'should not set user who erased a build' do
+            expect(build.erased_by).to be_nil
+          end
+        end
+      end
+
+      describe '#erasable?' do
+        subject { build.erasable? }
+        it { is_expected.to eq true }
+      end
+
+      describe '#erased?' do
+        let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+        subject { build.erased? }
+
+        context 'build has not been erased' do
+          it { is_expected.to be false }
+        end
+
+        context 'build has been erased' do
+          before { build.erase }
+
+          it { is_expected.to be true }
+        end
+      end
+
+      context 'metadata and build trace are not available' do
+        let!(:build) { create(:ci_build, :success, :artifacts) }
+        before { build.remove_artifacts_metadata! }
+
+        describe '#erase' do
+          it 'should not raise error' do
+            expect { build.erase }.to_not raise_error
+          end
+        end
+      end
+    end
   end
 end

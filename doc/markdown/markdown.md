@@ -88,6 +88,9 @@ GFM will autolink almost any URL you copy and paste into your text.
 
 ## Code and Syntax Highlighting
 
+_GitLab uses the [rouge ruby library][rouge] for syntax highlighting. For a
+list of supported languages visit the rouge website._
+
 Blocks of code are either fenced by lines with three back-ticks <code>```</code>, or are indented with four spaces. Only the fenced code blocks support syntax highlighting.
 
 ```no-highlight
@@ -421,24 +424,24 @@ will point the link to `wikis/style` when the link is inside of a wiki markdown 
     Here's our logo (hover to see the title text):
 
     Inline-style:
-    ![alt text](assets/logo-white.png)
+    ![alt text](img/logo.png)
 
     Reference-style:
     ![alt text1][logo]
 
-    [logo]: assets/logo-white.png
+    [logo]: img/logo.png
 
 Here's our logo:
 
 Inline-style:
 
-![alt text](/assets/logo-white.png)
+![alt text](img/logo.png)
 
 Reference-style:
 
 ![alt text][logo]
 
-[logo]: /assets/logo-white.png
+[logo]: img/logo.png
 
 ## Blockquotes
 
@@ -585,3 +588,5 @@ By including colons in the header row, you can align the text within that column
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 - The [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
 - [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
+
+[rouge]: http://rouge.jneen.net/ "Rouge website"

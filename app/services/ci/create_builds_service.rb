@@ -34,6 +34,7 @@ module Ci
 
           build = commit.builds.create!(build_attrs)
           build.execute_hooks
+          build
         end
       end
     end

@@ -4,7 +4,7 @@
     = ci_status_with_icon(build.status)
 
   %td.build-link
-    - if build.target_url
+    - if can?(current_user, :read_build, project) && build.target_url
       = link_to build.target_url do
         %strong Build ##{build.id}
     - else
@@ -60,10 +60,10 @@
 
   %td
     .pull-right
-      - if current_user && can?(current_user, :download_build_artifacts, project) && build.download_url
-        = link_to build.download_url, title: 'Download artifacts' do
+      - if can?(current_user, :read_build, project) && build.artifacts?
+        = link_to build.artifacts_download_url, title: 'Download artifacts' do
           %i.fa.fa-download
-      - if current_user && can?(current_user, :manage_builds, build.project)
+      - if can?(current_user, :update_build, build.project)
         - if build.active?
           - if build.cancel_url
             = link_to build.cancel_url, method: :post, title: 'Cancel' do

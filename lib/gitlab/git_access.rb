@@ -85,6 +85,8 @@ module Gitlab
     end
 
     def push_access_check(changes)
+      return build_status_object(true) if git_annex_branch_sync?(changes)
+
       if user
         user_push_access_check(changes)
       elsif deploy_key
@@ -182,10 +184,12 @@ module Gitlab
           return build_status_object(false, "You can not delete tag")
         end
       else
+        # if newrev is blank, the branch was deleted
         if Gitlab::Git.blank_ref?(newrev) || !git_hook.commit_validation?
           return build_status_object(true)
         end
 
+        # if oldrev is blank, the branch was just created
         oldrev = project.default_branch if Gitlab::Git.blank_ref?(oldrev)
 
         commits =
@@ -247,7 +251,7 @@ module Gitlab
       if git_hook.file_name_regex.present?
         commit.diffs.each do |diff|
           if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
-            return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern '#{git_hook.file_name_regex}'")
+            return build_status_object(false, "File name #{diff.new_path.inspect} is prohibited by the pattern '#{git_hook.file_name_regex}'")
           end
         end
       end
@@ -257,7 +261,7 @@ module Gitlab
           next if diff.deleted_file
 
           blob = project.repository.blob_at(commit.id, diff.new_path)
-          if blob.size > git_hook.max_file_size.megabytes
+          if blob && blob.size && blob.size > git_hook.max_file_size.megabytes
             return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{git_hook.max_file_size} MB")
           end
         end
@@ -324,6 +328,24 @@ module Gitlab
       else
         build_status_object(false, "You don't have permission")
       end
+    end
+
+    def git_annex_branch_sync?(changes)
+      return false unless Gitlab.config.gitlab_shell.git_annex_enabled
+      return false if changes.blank?
+
+      changes = changes.lines if changes.kind_of?(String)
+
+      # Iterate over all changes to find if user allowed all of them to be applied
+      # 0000000000000000000000000000000000000000 3073696294ddd52e9e6b6fc3f429109cac24626f refs/heads/synced/git-annex
+      # 0000000000000000000000000000000000000000 65be9df0e995d36977e6d76fc5801b7145ce19c9 refs/heads/synced/master
+      changes.map(&:strip).reject(&:blank?).each do |change|
+        unless change.end_with?("refs/heads/synced/git-annex") || change.include?("refs/heads/synced/")
+          return false
+        end
+      end
+
+      true
     end
   end
 end

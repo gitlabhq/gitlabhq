@@ -72,7 +72,7 @@ module ApplicationHelper
     if user_or_email.is_a?(User)
       user = user_or_email
     else
-      user = User.find_by(email: user_or_email)
+      user = User.find_by(email: user_or_email.downcase)
     end
 
     if user
@@ -118,12 +118,6 @@ module ApplicationHelper
     grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
-  def emoji_autocomplete_source
-    # should be an array of strings
-    # so to_s can be called, because it is sufficient and to_json is too slow
-    Emoji.names.to_s
-  end
-
   # Define whenever show last push event
   # with suggestion to create MR
   def show_last_push_widget?(event)
@@ -140,6 +134,9 @@ module ApplicationHelper
 
     # Skip if user removed branch right after that
     return false unless project.repository.branch_names.include?(event.branch_name)
+
+    # Skip if this was a mirror update
+    return false if project.mirror? && project.repository.up_to_date_with_upstream?(event.branch_name)
 
     true
   end
@@ -169,22 +166,6 @@ module ApplicationHelper
     Gitlab.config.extra
   end
 
-  def search_placeholder
-    if @project && @project.persisted?
-      'Search in this project'
-    elsif @snippet || @snippets || @show_snippets
-      'Search snippets'
-    elsif @group && @group.persisted?
-      'Search in this group'
-    else
-      'Search'
-    end
-  end
-
-  def broadcast_message
-    BroadcastMessage.current
-  end
-
   # Render a `time` element with Javascript-based relative date and tooltip
   #
   # time       - Time object
@@ -206,7 +187,7 @@ module ApplicationHelper
     element = content_tag :time, time.to_s,
       class: "#{html_class} js-timeago js-timeago-pending",
       datetime: time.to_time.getutc.iso8601,
-      title: time.in_time_zone.stamp('Aug 21, 2011 9:23pm'),
+      title: time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
     unless skip_js
@@ -228,8 +209,7 @@ module ApplicationHelper
         file_content
       end
     else
-      GitHub::Markup.render(file_name, file_content).
-        force_encoding(file_content.encoding).html_safe
+      other_markup(file_name, file_content)
     end
   rescue RuntimeError
     simple_format(file_content)
@@ -266,7 +246,7 @@ module ApplicationHelper
       state: params[:state],
       scope: params[:scope],
       label_name: params[:label_name],
-      milestone_id: params[:milestone_id],
+      milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
       author_id: params[:author_id],
       sort: params[:sort],

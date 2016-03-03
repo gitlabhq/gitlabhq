@@ -1,8 +1,8 @@
 class GitTagPushService
   attr_accessor :project, :user, :push_data
 
-  def execute(project, user, oldrev, newrev, ref)
-    project.repository.expire_cache
+  def execute(project, user, oldrev, newrev, ref, mirror_update: false)
+    project.repository.before_create_tag
 
     @project, @user = project, user
     @push_data = build_push_data(oldrev, newrev, ref)
@@ -10,7 +10,7 @@ class GitTagPushService
     EventCreateService.new.push(project, user, @push_data)
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
     project.execute_services(@push_data.dup, :tag_push_hooks)
-    CreateCommitBuildsService.new.execute(project, @user, @push_data)
+    CreateCommitBuildsService.new.execute(project, @user, @push_data, mirror_update: mirror_update)
     ProjectCacheWorker.perform_async(project.id)
 
     true

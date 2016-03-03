@@ -6,21 +6,20 @@ class Ability
       return [] if user.blocked?
 
       abilities =
-        case subject.class.name
-        when "Project" then project_abilities(user, subject)
-        when "Issue" then issue_abilities(user, subject)
-        when "Note" then note_abilities(user, subject)
-        when "ProjectSnippet" then project_snippet_abilities(user, subject)
-        when "PersonalSnippet" then personal_snippet_abilities(user, subject)
-        when "MergeRequest" then merge_request_abilities(user, subject)
-        when "Group" then group_abilities(user, subject)
-        when "Namespace" then namespace_abilities(user, subject)
-        when "GroupMember" then group_member_abilities(user, subject)
-        when "ProjectMember" then project_member_abilities(user, subject)
+        case subject
+        when CommitStatus then commit_status_abilities(user, subject)
+        when Project then project_abilities(user, subject)
+        when Issue then issue_abilities(user, subject)
+        when Note then note_abilities(user, subject)
+        when ProjectSnippet then project_snippet_abilities(user, subject)
+        when PersonalSnippet then personal_snippet_abilities(user, subject)
+        when MergeRequest then merge_request_abilities(user, subject)
+        when Group then group_abilities(user, subject)
+        when Namespace then namespace_abilities(user, subject)
+        when GroupMember then group_member_abilities(user, subject)
+        when ProjectMember then project_member_abilities(user, subject)
         else []
-        end
-
-      abilities.concat(global_abilities(user))
+        end.concat(global_abilities(user))
 
       abilities -= license_blocked_abilities if License.block_changes?
 
@@ -41,6 +40,8 @@ class Ability
       case true
       when subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
+      when subject.is_a?(CommitStatus)
+        anonymous_commit_status_abilities(subject)
       when subject.is_a?(Project) || subject.respond_to?(:project)
         anonymous_project_abilities(subject)
       when subject.is_a?(Group) || subject.respond_to?(:group)
@@ -68,14 +69,24 @@ class Ability
           :read_project_member,
           :read_merge_request,
           :read_note,
-          :read_build,
+          :read_commit_status,
           :download_code
         ]
+
+        # Allow to read builds by anonymous user if guests are allowed
+        rules << :read_build if project.public_builds?
 
         rules - project_disabled_features_rules(project)
       else
         []
       end
+    end
+
+    def anonymous_commit_status_abilities(subject)
+      rules = anonymous_project_abilities(subject.project)
+      # If subject is Ci::Build which inherits from CommitStatus filter the abilities
+      rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
+      rules
     end
 
     def anonymous_group_abilities(subject)
@@ -85,7 +96,7 @@ class Ability
                 subject.group
               end
 
-      if group && group.public_profile?
+      if group && group.projects.public_only.any?
         [:read_group]
       else
         []
@@ -129,6 +140,9 @@ class Ability
 
         if project.public? || project.internal?
           rules.push(*public_project_rules)
+
+          # Allow to read builds for internal projects
+          rules << :read_build if project.public_builds?
         end
 
         if project.owner == user || user.admin?
@@ -148,14 +162,15 @@ class Ability
     end
 
     def public_project_rules
-      project_guest_rules + [
+      @public_project_rules ||= project_guest_rules + [
         :download_code,
-        :fork_project
+        :fork_project,
+        :read_commit_status,
       ]
     end
 
     def project_guest_rules
-      [
+      @project_guest_rules ||= [
         :read_project,
         :read_wiki,
         :read_issue,
@@ -165,7 +180,6 @@ class Ability
         :read_project_member,
         :read_merge_request,
         :read_note,
-        :read_build,
         :create_project,
         :create_issue,
         :create_note
@@ -173,31 +187,33 @@ class Ability
     end
 
     def project_report_rules
-      project_guest_rules + [
-        :create_commit_status,
-        :read_commit_statuses,
+      @project_report_rules ||= project_guest_rules + [
         :download_code,
         :fork_project,
         :create_project_snippet,
         :update_issue,
         :admin_issue,
-        :admin_label
+        :admin_label,
+        :read_commit_status,
+        :read_build,
       ]
     end
 
     def project_dev_rules
-      project_report_rules + [
+      @project_dev_rules ||= project_report_rules + [
         :admin_merge_request,
+        :create_commit_status,
+        :update_commit_status,
+        :create_build,
+        :update_build,
         :create_merge_request,
         :create_wiki,
-        :manage_builds,
-        :download_build_artifacts,
         :push_code
       ]
     end
 
     def project_archived_rules
-      [
+      @project_archived_rules ||= [
         :create_merge_request,
         :push_code,
         :push_code_to_protected_branches,
@@ -207,22 +223,27 @@ class Ability
     end
 
     def project_master_rules
-      project_dev_rules + [
+      @project_master_rules ||= project_dev_rules + [
+        :read_pages,
         :push_code_to_protected_branches,
         :update_project_snippet,
         :update_merge_request,
+        :update_pages,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
         :admin_merge_request,
         :admin_note,
         :admin_wiki,
-        :admin_project
+        :admin_project,
+        :admin_commit_status,
+        :admin_build,
+        :admin_pages,
       ]
     end
 
     def project_admin_rules
-      project_master_rules + [
+      @project_admin_rules ||= project_master_rules + [
         :change_namespace,
         :change_visibility_level,
         :rename_project,
@@ -255,6 +276,10 @@ class Ability
 
       unless project.wiki_enabled
         rules += named_abilities('wiki')
+      end
+
+      unless project.builds_enabled
+        rules += named_abilities('build')
       end
 
       rules
@@ -353,7 +378,7 @@ class Ability
       end
 
       if snippet.public? || snippet.internal?
-        rules << :read_personal_snippet 
+        rules << :read_personal_snippet
       end
 
       rules
@@ -394,6 +419,22 @@ class Ability
         end
       end
 
+      rules
+    end
+
+    def commit_status_abilities(user, subject)
+      rules = project_abilities(user, subject.project)
+      # If subject is Ci::Build which inherits from CommitStatus filter the abilities
+      rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
+      rules
+    end
+
+    def filter_build_abilities(rules)
+      # If we can't read build we should also not have that
+      # ability when looking at this in context of commit_status
+      %w(read create update admin).each do |rule|
+        rules.delete(:"#{rule}_commit_status") unless rules.include?(:"#{rule}_build")
+      end
       rules
     end
 
