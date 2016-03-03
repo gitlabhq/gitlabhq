@@ -94,7 +94,7 @@ module Gitlab
     end
 
     def project_ids_relation
-      limit_projects.select(:id)
+      limit_projects.select(:id).reorder(nil)
     end
   end
 end
