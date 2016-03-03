@@ -152,4 +152,29 @@ module BlobHelper
       'application/octet-stream'
     end
   end
+
+  def set_cache_headers
+    if @project.visibility_level == Project::PUBLIC
+      cache_control = 'public, '
+    else
+      cache_control = 'private, '
+    end
+
+    if @ref && @commit && @ref == @commit.id
+      # This is a link to a commit by its commit SHA. That means that the blob
+      # is immutable.
+      cache_control << 'max-age=600' # 10 minutes
+    else
+      # A branch or tag points at this blob. That means that the expected blob
+      # value may change over time.
+      cache_control << 'max-age=60' # 1 minute
+    end
+
+    headers['Cache-Control'] = cache_control
+    headers['ETag'] = @blob.id
+  end
+
+  def check_etag!
+    stale?(etag: @blob.id)
+  end
 end

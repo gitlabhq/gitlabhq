@@ -12,6 +12,8 @@ class Projects::RawController < Projects::ApplicationController
 
     if @blob
       headers['X-Content-Type-Options'] = 'nosniff'
+      check_etag!
+      set_cache_headers
 
       if @blob.lfs_pointer?
         send_lfs_object
