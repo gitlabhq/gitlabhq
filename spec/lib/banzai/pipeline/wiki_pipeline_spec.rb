@@ -46,7 +46,7 @@ describe Banzai::Pipeline::WikiPipeline do
 
       aggregate_failures do
         expect(output).not_to include('<ul>')
-        expect(output).to include('[[<em>TOC</em>]]')
+        expect(output).not_to include('[[<em>TOC</em>]]')
       end
     end
   end

@@ -95,10 +95,10 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
     end
 
     it 'handles an empty ToC result' do
-      input = output = "<p>[[<em>TOC</em>]]</p>"
+      input = "<p>[[<em>TOC</em>]]</p>"
       doc = described_class.call(input, project_wiki: project_wiki)
 
-      expect(doc.to_html).to eq output
+      expect(doc.to_html).to eq ''
     end
   end
 end
