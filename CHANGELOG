@@ -11,6 +11,7 @@ v 8.6.0 (unreleased)
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
   - Don't show Issues/MRs from archived projects in Groups view
+  - Show commit message in JIRA mention comment
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
