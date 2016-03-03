@@ -28,7 +28,7 @@ module GroupsHelper
       group = Group.find_by(path: group)
     end
 
-    if group && can?(current_user, :read_group, group) && group.avatar.present?
+    if group && group.avatar.present?
       group.avatar.url
     else
       'no_group_avatar.png'
@@ -42,5 +42,9 @@ module GroupsHelper
     content_tag :span do
       full_title
     end
+  end
+
+  def group_visibility_description(group)
+    "#{visibility_level_label(group.visibility_level)} - #{group_visibility_level_description(group.visibility_level)}"
   end
 end
