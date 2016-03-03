@@ -92,6 +92,7 @@ describe User, models: true do
     it { is_expected.to have_many(:identities).dependent(:destroy) }
     it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
+    it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
   describe 'validations' do
@@ -171,6 +172,18 @@ describe User, models: true do
           user = build(:user, email: "example@test.com")
           expect(user).to be_invalid
         end
+      end
+    end
+
+    describe 'avatar' do
+      it 'only validates when avatar is present' do
+        user = build(:user, :with_avatar)
+
+        user.avatar_crop_x    = nil
+        user.avatar_crop_y    = nil
+        user.avatar_crop_size = nil
+
+        expect(user).not_to be_valid
       end
     end
   end
@@ -268,6 +281,7 @@ describe User, models: true do
       expect(user).to be_two_factor_enabled
       expect(user.encrypted_otp_secret).not_to be_nil
       expect(user.otp_backup_codes).not_to be_nil
+      expect(user.otp_grace_period_started_at).not_to be_nil
 
       user.disable_two_factor!
 
@@ -276,6 +290,7 @@ describe User, models: true do
       expect(user.encrypted_otp_secret_iv).to be_nil
       expect(user.encrypted_otp_secret_salt).to be_nil
       expect(user.otp_backup_codes).to be_nil
+      expect(user.otp_grace_period_started_at).to be_nil
     end
   end
 

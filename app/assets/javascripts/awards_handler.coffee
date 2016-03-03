@@ -1,10 +1,10 @@
 class @AwardsHandler
   constructor: (@post_emoji_url, @noteable_type, @noteable_id, @aliases) ->
-    $(".add-award").click (event)->
+    $(".add-award").click (event) =>
       event.stopPropagation()
       event.preventDefault()
-      $(".emoji-menu").show()
-      $("#emoji_search").focus()
+
+      @showEmojiMenu()
 
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
@@ -13,6 +13,16 @@ class @AwardsHandler
 
     @renderFrequentlyUsedBlock()
     @setupSearch()
+
+  showEmojiMenu: ->
+    if $(".emoji-menu").length
+      $(".emoji-menu").show()
+      $("#emoji_search").focus()
+    else
+      $.get "/emojis", (response) ->
+        $(".add-award").after response
+        $(".emoji-menu").show()
+        $("#emoji_search").focus()
 
   addAward: (emoji) ->
     emoji = @normilizeEmojiName(emoji)

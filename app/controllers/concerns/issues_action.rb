@@ -6,6 +6,8 @@ module IssuesAction
     @issues = @issues.page(params[:page]).per(ApplicationController::PER_PAGE)
     @issues = @issues.preload(:author, :project)
 
+    @label = @issuable_finder.labels.first
+
     respond_to do |format|
       format.html
       format.atom { render layout: false }

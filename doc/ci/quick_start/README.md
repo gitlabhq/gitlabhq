@@ -36,13 +36,13 @@ file and start builds on _Runners_ according to the contents of the file,
 for that commit.
 
 Because `.gitlab-ci.yml` is in the repository, it is version controlled,
-old versions still build succesfully, forks can easily make use of CI,
+old versions still build successfully, forks can easily make use of CI,
 branches can have separate builds and you have a single source of truth for CI.
 You can read more about the reasons why we are using `.gitlab-ci.yml`
 [in our blog about it][blog-ci].
 
 **Note:** `.gitlab-ci.yml` is a [YAML](https://en.wikipedia.org/wiki/YAML) file
-so you have to pay extra attention to the identation. Always use spaces, not
+so you have to pay extra attention to the indentation. Always use spaces, not
 tabs.
 
 ### Creating a simple `.gitlab-ci.yml` file
@@ -124,7 +124,7 @@ In GitLab, Runners run the builds that you define in `.gitlab-ci.yml`.
 A Runner can be a virtual machine, a VPS, a bare-metal machine, a docker
 container or even a cluster of containers. GitLab and the Runners communicate
 through an API, so the only needed requirement is that the machine on which the
-Runner is configured to has Internet access.
+Runner is configured to have Internet access.
 
 A Runner can be specific to a certain project or serve multiple projects in
 GitLab. If it serves all projects it's called a _Shared Runner_.
@@ -168,7 +168,7 @@ To enable **Shared Runners** you have to go to your project's
 
 ## Seeing the status of your build
 
-After configuring the Runner succesfully, you should see the status of your
+After configuring the Runner successfully, you should see the status of your
 last commit change from _pending_ to either _running_, _success_ or _failed_.
 
 You can view all builds, by going to the **Builds** page in your project.
@@ -184,6 +184,15 @@ you expected.
 You are also able to view the status of any commit in the various pages in
 GitLab, such as **Commits** and **Merge Requests**.
 
+## Enabling build emails
+
+If you want to receive e-mail notifications about the result status of the
+builds, you should explicitly enable the **Builds Emails** service under your
+project's settings.
+
+For more information read the [Builds emails service documentation]
+(../../project_services/builds_emails.md).
+
 ## Builds badge
 
 You can access a builds badge image using following link:
@@ -191,6 +200,11 @@ You can access a builds badge image using following link:
 ```
 http://example.gitlab.com/namespace/project/badges/branch/build.svg
 ```
+
+## Examples
+
+Visit the [examples README][examples] to see a list of examples using GitLab
+CI with various languages.
 
 ## Next steps
 
@@ -203,3 +217,4 @@ Visit our various languages examples at <https://gitlab.com/groups/gitlab-exampl
 
 [runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#installation
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
+[examples]: ../examples/README.md

@@ -243,7 +243,7 @@ describe Ci::Build, models: true do
   end
 
   describe :can_be_served? do
-    let(:runner) { FactoryGirl.create :ci_specific_runner }
+    let(:runner) { FactoryGirl.create :ci_runner }
 
     before { build.project.runners << runner }
 
@@ -285,7 +285,7 @@ describe Ci::Build, models: true do
     end
 
     context 'if there are runner' do
-      let(:runner) { FactoryGirl.create :ci_specific_runner }
+      let(:runner) { FactoryGirl.create :ci_runner }
 
       before do
         build.project.runners << runner
@@ -322,7 +322,7 @@ describe Ci::Build, models: true do
         it { is_expected.to be_truthy }
 
         context "and there are specific runner" do
-          let(:runner) { FactoryGirl.create :ci_specific_runner, contacted_at: 1.second.ago }
+          let(:runner) { FactoryGirl.create :ci_runner, contacted_at: 1.second.ago }
 
           before do
             build.project.runners << runner
@@ -346,15 +346,14 @@ describe Ci::Build, models: true do
   describe :artifacts_download_url do
     subject { build.artifacts_download_url }
 
-    it "should be nil if artifact doesn't exist" do
-      build.update_attributes(artifacts_file: nil)
-      is_expected.to be_nil
+    context 'artifacts file does not exist' do
+      before { build.update_attributes(artifacts_file: nil) }
+      it { is_expected.to be_nil }
     end
 
-    it 'should not be nil if artifact exist' do
-      gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-      build.update_attributes(artifacts_file: gif)
-      is_expected.to_not be_nil
+    context 'artifacts file exists' do
+      let(:build) { create(:ci_build, :artifacts) }
+      it { is_expected.to_not be_nil }
     end
   end
 
@@ -381,11 +380,7 @@ describe Ci::Build, models: true do
     end
 
     context 'artifacts archive exists' do
-      before do
-        gif = fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
-        build.update_attributes(artifacts_file: gif)
-      end
-
+      let(:build) { create(:ci_build, :artifacts) }
       it { is_expected.to be_truthy }
     end
   end
@@ -398,16 +393,7 @@ describe Ci::Build, models: true do
     end
 
     context 'artifacts archive is a zip file and metadata exists' do
-      before do
-        fixture_dir = Rails.root + 'spec/fixtures/'
-        archive = fixture_file_upload(fixture_dir + 'ci_build_artifacts.zip',
-                                      'application/zip')
-        metadata = fixture_file_upload(fixture_dir + 'ci_build_artifacts_metadata.gz',
-                                       'application/x-gzip')
-        build.update_attributes(artifacts_file: archive)
-        build.update_attributes(artifacts_metadata: metadata)
-      end
-
+      let(:build) { create(:ci_build, :artifacts) }
       it { is_expected.to be_truthy }
     end
   end
@@ -511,6 +497,103 @@ describe Ci::Build, models: true do
         expect(@build2.merge_request.id).to eq(@merge_request.id)
       end
     end
+  end
 
+  describe 'build erasable' do
+    shared_examples 'erasable' do
+      it 'should remove artifact file' do
+        expect(build.artifacts_file.exists?).to be_falsy
+      end
+
+      it 'should remove artifact metadata file' do
+        expect(build.artifacts_metadata.exists?).to be_falsy
+      end
+
+      it 'should erase build trace in trace file' do
+        expect(build.trace).to be_empty
+      end
+
+      it 'should set erased to true' do
+        expect(build.erased?).to be true
+      end
+
+      it 'should set erase date' do
+        expect(build.erased_at).to_not be_falsy
+      end
+    end
+
+    context 'build is not erasable' do
+      let!(:build) { create(:ci_build) }
+
+      describe '#erase' do
+        subject { build.erase }
+
+        it { is_expected.to be false }
+      end
+
+      describe '#erasable?' do
+        subject { build.erasable? }
+        it { is_expected.to eq false }
+      end
+    end
+
+    context 'build is erasable' do
+      let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+
+      describe '#erase' do
+        before { build.erase(erased_by: user) }
+
+        context 'erased by user' do
+          let!(:user) { create(:user, username: 'eraser') }
+
+          include_examples 'erasable'
+
+          it 'should record user who erased a build' do
+            expect(build.erased_by).to eq user
+          end
+        end
+
+        context 'erased by system' do
+          let(:user) { nil }
+
+          include_examples 'erasable'
+
+          it 'should not set user who erased a build' do
+            expect(build.erased_by).to be_nil
+          end
+        end
+      end
+
+      describe '#erasable?' do
+        subject { build.erasable? }
+        it { is_expected.to eq true }
+      end
+
+      describe '#erased?' do
+        let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+        subject { build.erased? }
+
+        context 'build has not been erased' do
+          it { is_expected.to be false }
+        end
+
+        context 'build has been erased' do
+          before { build.erase }
+
+          it { is_expected.to be true }
+        end
+      end
+
+      context 'metadata and build trace are not available' do
+        let!(:build) { create(:ci_build, :success, :artifacts) }
+        before { build.remove_artifacts_metadata! }
+
+        describe '#erase' do
+          it 'should not raise error' do
+            expect { build.erase }.to_not raise_error
+          end
+        end
+      end
+    end
   end
 end

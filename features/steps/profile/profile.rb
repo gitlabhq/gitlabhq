@@ -27,9 +27,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I change my avatar' do
-    attach_file(:user_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
-    click_button "Save changes"
-    @user.reload
+    attach_avatar
   end
 
   step 'I should see new avatar' do
@@ -42,9 +40,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I have an avatar' do
-    attach_file(:user_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
-    click_button "Save changes"
-    @user.reload
+    attach_avatar
   end
 
   step 'I remove my avatar' do
@@ -97,7 +93,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I should see a password error message" do
-    page.within '.alert' do
+    page.within '.alert-danger' do
       expect(page).to have_content "Password confirmation doesn't match"
     end
   end
@@ -232,5 +228,17 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step "I see that application is removed" do
     expect(page.find(".oauth-applications")).not_to have_content "test_changed"
+  end
+
+  def attach_avatar
+    attach_file :user_avatar, Rails.root.join(*%w(spec fixtures banana_sample.gif))
+
+    page.find('#user_avatar_crop_x',    visible: false).set('0')
+    page.find('#user_avatar_crop_y',    visible: false).set('0')
+    page.find('#user_avatar_crop_size', visible: false).set('256')
+
+    click_button "Save changes"
+
+    @user.reload
   end
 end

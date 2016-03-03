@@ -77,7 +77,7 @@ describe ApplicationHelper do
     let(:avatar_file_path) { File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif') }
 
     it 'should return an url for the avatar' do
-      user = create(:user, avatar: File.open(avatar_file_path))
+      user = create(:user, :with_avatar, avatar: File.open(avatar_file_path))
 
       expect(helper.avatar_icon(user.email).to_s).
         to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
@@ -88,7 +88,7 @@ describe ApplicationHelper do
       # Must be stubbed after the stub above, and separately
       stub_config_setting(url: Settings.send(:build_gitlab_url))
 
-      user = create(:user, avatar: File.open(avatar_file_path))
+      user = create(:user, :with_avatar, avatar: File.open(avatar_file_path))
 
       expect(helper.avatar_icon(user.email).to_s).
         to match("/gitlab/uploads/user/avatar/#{user.id}/banana_sample.gif")
@@ -102,7 +102,7 @@ describe ApplicationHelper do
 
     describe 'using a User' do
       it 'should return an URL for the avatar' do
-        user = create(:user, avatar: File.open(avatar_file_path))
+        user = create(:user, :with_avatar, avatar: File.open(avatar_file_path))
 
         expect(helper.avatar_icon(user).to_s).
           to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")

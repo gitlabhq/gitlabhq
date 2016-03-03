@@ -1,9 +1,6 @@
 - page_title "Notifications"
 - header_title page_title, profile_notifications_path
 
-.gray-content-block.top-block
-  These are your global notification settings.
-
 .prepend-top-default
 = form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications form-horizontal global-notifications-form' } do |f|
   -if @user.errors.any?

@@ -4,15 +4,17 @@ namespace :gitlab do
     task index_repositories: :environment  do
       Repository.__elasticsearch__.create_index!
 
-      projects = if ENV['NOT_INDEXED_ONLY']
+      projects = if ENV['UPDATE_INDEX']
+                   Project
+                 else
                    Project.includes(:index_status).
                            where("index_statuses.id IS NULL").
                            references(:index_statuses)
-                 else
-                   Project
                  end
 
       projects = apply_project_filters(projects)
+
+      indexer = Elastic::Indexer.new
 
       projects.find_each do |project|
         if project.repository.exists? && !project.repository.empty?
@@ -28,8 +30,11 @@ namespace :gitlab do
               next
             end
 
-            project.repository.index_commits(from_rev: project.index_status.last_commit)
-            project.repository.index_blobs(from_rev: project.index_status.last_commit)
+            indexer.run(
+              project.id,
+              project.repository.path_to_repo,
+              project.index_status.last_commit
+            )
 
             # During indexing the new commits can be pushed,
             # the last_commit parameter only indicates that at least this commit is in index

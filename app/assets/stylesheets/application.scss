@@ -9,6 +9,7 @@
  *= require_self
  *= require dropzone/basic
  *= require cal-heatmap
+ *= require cropper.css
 */
 
 /*
@@ -23,12 +24,6 @@
  * GitLab UI framework
  */
 @import "framework";
-
-/*
- * NProgress load bar css
- */
-@import 'nprogress';
-@import 'nprogress-bootstrap';
 
 /*
  * Font icons

@@ -2,10 +2,10 @@
   .status-box{ class: status_box_class(@merge_request) }
     = @merge_request.state_human_name
   %span.identifier
-    Merge Request ##{@merge_request.iid}
+    Merge Request #{@merge_request.to_reference}
   %span.creator
     &middot;
-    opened by #{link_to_member(@project, @merge_request.author, size: 24)}
+    by #{link_to_member(@project, @merge_request.author, size: 24)}
     &middot;
     = time_ago_with_tooltip(@merge_request.created_at)
 

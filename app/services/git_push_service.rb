@@ -16,13 +16,13 @@ class GitPushService < BaseService
   #  5. Executes the project's services
   #
   def execute
-    @project.repository.expire_cache(branch_name)
+    @project.repository.after_push_commit(branch_name)
 
     if push_remove_branch?
-      @project.repository.expire_has_visible_content_cache
+      @project.repository.after_remove_branch
       @push_commits = []
     elsif push_to_new_branch?
-      @project.repository.expire_has_visible_content_cache
+      @project.repository.after_create_branch
 
       # Re-find the pushed commits.
       if is_default_branch?
@@ -64,8 +64,13 @@ class GitPushService < BaseService
   end
 
   def index_commits_blobs
-    @project.repository.index_commits(from_rev: params[:oldrev], to_rev: params[:newrev])
-    @project.repository.index_blobs(from_rev: params[:oldrev], to_rev: params[:newrev])
+    indexer = Elastic::Indexer.new
+    indexer.run(
+      @project.id,
+      project.repository.path_to_repo,
+      params[:oldrev],
+      params[:newrev]
+    )
   end
 
   def process_default_branch

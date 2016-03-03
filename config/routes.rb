@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
 
+  # Emojis
+  resources :emojis, only: :index
 
   # Search
   get 'search' => 'search#show'
@@ -157,7 +159,7 @@ Rails.application.routes.draw do
     # Appearance
     get ":model/:mounted_as/:id/:filename",
         to:           "uploads#show",
-        constraints:  { model: /appearance/, mounted_as: /logo|dark_logo|light_logo/, filename: /.+/ }
+        constraints:  { model: /appearance/, mounted_as: /logo|header_logo/, filename: /.+/ }
 
     # Project markdown uploads
     get ":namespace_id/:project_id/:secret/:filename",
@@ -353,6 +355,12 @@ Rails.application.routes.draw do
       resources :groups, only: [:index]
       resources :snippets, only: [:index]
 
+      resources :todos, only: [:index, :destroy] do
+        collection do
+          delete :destroy_all
+        end
+      end
+
       resources :projects, only: [:index] do
         collection do
           get :starred
@@ -543,6 +551,7 @@ Rails.application.routes.draw do
             get :builds
             post :cancel_builds
             post :retry_builds
+            post :revert
           end
         end
 
@@ -671,6 +680,7 @@ Rails.application.routes.draw do
             get :status
             post :cancel
             post :retry
+            post :erase
           end
 
           resource :artifacts, only: [] do

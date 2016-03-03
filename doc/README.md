@@ -19,39 +19,41 @@
 - [GitLab Pages](pages/README.md) Using GitLab Pages.
 - [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
 
-## CI Documentation
+## CI User documentation
 
-- [Quick Start](ci/quick_start/README.md)
-- [Enable or disable GitLab CI](ci/enable_or_disable_ci.md)
-- [Configuring project (.gitlab-ci.yml)](ci/yaml/README.md)
-- [Configuring runner](ci/runners/README.md)
-- [Configuring deployment](ci/deployment/README.md)
-- [Using Docker Images](ci/docker/using_docker_images.md)
-- [Using Docker Build](ci/docker/using_docker_build.md)
-- [Using Variables](ci/variables/README.md)
-- [Using SSH keys](ci/ssh_keys/README.md)
+- [Get started with GitLab CI](ci/quick_start/README.md)
+- [Learn how to enable or disable GitLab CI](ci/enable_or_disable_ci.md)
+- [Learn how `.gitlab-ci.yml` works](ci/yaml/README.md)
+- [Configure a Runner, the application that runs your builds](ci/runners/README.md)
+- [Use Docker images with GitLab Runner](ci/docker/using_docker_images.md)
+- [Use CI to build Docker images](ci/docker/using_docker_build.md)
+- [Use variables in your `.gitlab-ci.yml`](ci/variables/README.md)
+- [Use SSH keys in your build environment](ci/ssh_keys/README.md)
+- [Trigger builds through the API](ci/triggers/README.md)
+- [Build artifacts](ci/build_artifacts/README.md)
 - [User permissions](ci/permissions/README.md)
 - [API](ci/api/README.md)
-- [Triggering builds through the API](ci/triggers/README.md)
-- [Build artifacts](ci/build_artifacts/README.md)
 
-### CI Languages
+### CI Examples
 
-- [Testing PHP](ci/languages/php.md)
+- [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
+- [Test your PHP applications](ci/examples/php.md)
+- [Test and deploy Ruby applications to Heroku](ci/examples/test-and-deploy-ruby-application-to-heroku.md)
+- [Test and deploy Python applications to Heroku](ci/examples/test-and-deploy-python-application-to-heroku.md)
+- [Test Clojure applications](ci/examples/test-clojure-application.md)
+- [Using `dpl` as deployment tool](ci/deployment/README.md)
+- Help your favorite programming language and GitLab by sending a merge request
+  with a guide for that language.
 
 ### CI Services
+
+GitLab CI uses the `services` keyword to define what docker containers should
+be linked with your base image. Below is a list of examples you may use:
 
 - [Using MySQL](ci/services/mysql.md)
 - [Using PostgreSQL](ci/services/postgres.md)
 - [Using Redis](ci/services/redis.md)
 - [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
-
-### CI Examples
-
-- [Test and deploy Ruby applications to Heroku](ci/examples/test-and-deploy-ruby-application-to-heroku.md)
-- [Test and deploy Python applications to Heroku](ci/examples/test-and-deploy-python-application-to-heroku.md)
-- [Test Clojure applications](ci/examples/test-clojure-application.md)
-- Help your favorite programming language and GitLab by sending a merge request with a guide for that language.
 
 ## Administrator documentation
 

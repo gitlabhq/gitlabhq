@@ -127,15 +127,29 @@ module BlobHelper
     end
   end
 
-  def blob_svg?(blob)
-    blob.language && blob.language.name == 'SVG'
-  end
-
   # SVGs can contain malicious JavaScript; only include whitelisted
   # elements and attributes. Note that this whitelist is by no means complete
   # and may omit some elements.
   def sanitize_svg(blob)
     blob.data = Loofah.scrub_fragment(blob.data, :strip).to_xml
     blob
+  end
+
+  # If we blindly set the 'real' content type when serving a Git blob we
+  # are enabling XSS attacks. An attacker could upload e.g. a Javascript
+  # file to a Git repository, trick the browser of a victim into
+  # downloading the blob, and then the 'application/javascript' content
+  # type would tell the browser to execute the attacker's Javascript. By
+  # overriding the content type and setting it to 'text/plain' (in the
+  # example of Javascript) we tell the browser of the victim not to
+  # execute untrusted data.
+  def safe_content_type(blob)
+    if blob.text?
+      'text/plain; charset=utf-8'
+    elsif blob.image?
+      blob.content_type
+    else
+      'application/octet-stream'
+    end
   end
 end

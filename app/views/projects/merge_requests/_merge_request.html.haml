@@ -1,7 +1,7 @@
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
     %span.merge-request-title-text
-      = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
+      = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "title"
     %ul.controls.light
       - if merge_request.merged?
         %li
@@ -25,21 +25,13 @@
           = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: "Assigned to :name")
 
       - upvotes, downvotes = merge_request.upvotes, merge_request.downvotes
-      - if upvotes > 0 || downvotes > 0
+      - if upvotes > 0
         %li
-          = icon('thumbs-up')
-          = upvotes
-      - else
-        %li{ class: 'merge-request-no-votes' }
           = icon('thumbs-up')
           = upvotes
 
-      - if upvotes > 0 || downvotes > 0
+      - if downvotes > 0
         %li
-          = icon('thumbs-down')
-          = downvotes
-      - else
-        %li{ class: 'merge-request-no-votes' }
           = icon('thumbs-down')
           = downvotes
 
@@ -56,7 +48,7 @@
             = note_count
 
   .merge-request-info
-    \##{merge_request.iid} &middot;
+    #{merge_request.to_reference} &middot;
     opened #{time_ago_with_tooltip(merge_request.created_at, placement: 'bottom')}
     by #{link_to_member(@project, merge_request.author, avatar: false)}
     - if merge_request.target_project.default_branch != merge_request.target_branch

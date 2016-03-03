@@ -2,7 +2,7 @@
 
 class @Wikis
   constructor: ->
-    $('.build-new-wiki').bind 'click', (e) =>
+    $('.new-wiki-page').on 'submit', (e) =>
       $('[data-error~=slug]').addClass('hidden')
       field = $('#new_wiki_path')
       slug = @slugify(field.val())
@@ -10,6 +10,7 @@ class @Wikis
       if (slug.length > 0)
         path = field.attr('data-wikis-path')
         location.href = path + '/' + slug
+        e.preventDefault()
 
   dasherize: (value) ->
     value.replace(/[_\s]+/g, '-')

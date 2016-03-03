@@ -70,6 +70,7 @@ class @MergeRequestTabs
       @loadCommits($target.attr('href'))
     else if action == 'diffs'
       @loadDiff($target.attr('href'))
+      @shrinkView()
     else if action == 'builds'
       @loadBuilds($target.attr('href'))
 
@@ -145,7 +146,9 @@ class @MergeRequestTabs
       url: "#{source}.json" + @_location.search
       success: (data) =>
         document.querySelector("div#diffs").innerHTML = data.html
+        $('.js-timeago').timeago()
         $('div#diffs .js-syntax-highlight').syntaxHighlight()
+        @expandViewContainer() if @diffViewType() is 'parallel'
         @diffsLoaded = true
         @scrollToElement("#diffs")
 
@@ -177,3 +180,21 @@ class @MergeRequestTabs
     options = $.extend({}, defaults, options)
 
     $.ajax(options)
+
+  # Returns diff view type
+  diffViewType: ->
+    $('.inline-parallel-buttons a.active').data('view-type')
+
+  expandViewContainer: ->
+    $('.container-fluid').removeClass('container-limited')
+
+  shrinkView: ->
+    $gutterIcon = $('.gutter-toggle i')
+
+    # Wait until listeners are set
+    setTimeout( ->
+      # Only when sidebar is collapsed
+      if $gutterIcon.is('.fa-angle-double-right')
+        $gutterIcon.closest('a').trigger('click')
+    , 0)
+

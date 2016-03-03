@@ -115,6 +115,10 @@ module SharedPaths
     visit dashboard_groups_path
   end
 
+  step 'I visit dashboard todos page' do
+    visit dashboard_todos_path
+  end
+
   step 'I should be redirected to the dashboard groups page' do
     expect(current_path).to eq dashboard_groups_path
   end
@@ -477,6 +481,10 @@ module SharedPaths
   step "I visit empty project page" do
     project = Project.find_by(name: "Empty Public Project")
     visit namespace_project_path(project.namespace, project)
+  end
+
+  step "I should not see command line instructions" do
+    expect(page).not_to have_css('.empty_wrapper')
   end
 
   # ----------------------------------------

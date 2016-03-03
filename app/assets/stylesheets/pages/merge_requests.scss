@@ -148,22 +148,15 @@
     position: relative;
 
     .merge-request-title {
-      margin-bottom: 5px;
-      font-size: $list-font-size;
-      font-weight: 600;
+      margin-bottom: 2px;
     }
-
-    .merge-request-info {
-      color: $gl-gray;
-    }
-
   }
 
   .merge-request-labels {
     display: inline-block;
   }
 
-  .merge-request-no-comments, .merge-request-no-votes {
+  .merge-request-no-comments {
     opacity: 0.5;
   }
 }

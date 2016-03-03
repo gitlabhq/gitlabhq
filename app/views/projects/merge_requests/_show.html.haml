@@ -1,4 +1,4 @@
-- page_title           "#{@merge_request.title} (##{@merge_request.iid})", "Merge Requests"
+- page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 
@@ -85,6 +85,8 @@
         = spinner
 
 = render 'shared/issuable/sidebar', issuable: @merge_request
+- if @merge_request.can_be_reverted?
+  = render "projects/commit/revert", commit: @merge_request.merge_commit, title: @merge_request.title
 
 :javascript
   var merge_request;

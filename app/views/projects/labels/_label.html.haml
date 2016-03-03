@@ -1,5 +1,6 @@
 %li{id: dom_id(label)}
-  = link_to_label(label)
+  = render "shared/label_row", label: label
+
   .pull-right
     %strong.append-right-20
       = link_to_label(label) do

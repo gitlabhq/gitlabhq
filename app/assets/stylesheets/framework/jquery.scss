@@ -48,8 +48,8 @@
 
   .ui-state-hover,
   .ui-state-focus {
-    border: 1px solid $hover;
-    background: $hover;
+    border: 1px solid $row-hover;
+    background: $row-hover;
     color: #333;
   }
 }

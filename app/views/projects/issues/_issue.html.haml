@@ -5,7 +5,7 @@
 
   .issue-title
     %span.issue-title-text
-      = link_to_gfm issue.title, issue_path(issue), class: "row_title"
+      = link_to_gfm issue.title, issue_path(issue), class: "title"
     %ul.controls.light
       - if issue.closed?
         %li
@@ -16,21 +16,13 @@
           = link_to_member(@project, issue.assignee, name: false, title: "Assigned to :name")
 
       - upvotes, downvotes = issue.upvotes, issue.downvotes
-      - if upvotes > 0 || downvotes > 0
+      - if upvotes > 0
         %li
-          = icon('thumbs-up')
-          = upvotes
-      - else
-        %li{ class: 'issue-no-votes' }
           = icon('thumbs-up')
           = upvotes
 
-      - if upvotes > 0 || downvotes > 0
+      - if downvotes > 0
         %li
-          = icon('thumbs-down')
-          = downvotes
-      - else
-        %li{ class: 'issue-no-votes' }
           = icon('thumbs-down')
           = downvotes
 

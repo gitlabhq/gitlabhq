@@ -32,8 +32,6 @@
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require underscore
-#= require nprogress
-#= require nprogress-turbolinks
 #= require dropzone
 #= require mousetrap
 #= require mousetrap/pause
@@ -45,6 +43,7 @@
 #= require jquery.nicescroll
 #= require_tree .
 #= require fuzzaldrin-plus
+#= require cropper.js
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
@@ -214,7 +213,7 @@ $ ->
     $this = $(this)
     $this.attr 'value', $this.val()
     return
-    
+
   $(document)
     .off 'keyup', 'input[type="search"]'
     .on 'keyup', 'input[type="search"]' , (e) ->
@@ -257,7 +256,7 @@ $ ->
         $('.page-with-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
-      $.cookie("collapsed_gutter", 
+      $.cookie("collapsed_gutter",
         $('.right-sidebar')
           .hasClass('right-sidebar-collapsed'), { path: '/' })
 

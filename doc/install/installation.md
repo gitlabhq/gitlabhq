@@ -107,7 +107,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-_**Note:** The current supported Ruby versions are 2.1.x and 2.2.x. Ruby 2.3 is
+_**Note:** The current supported Ruby version is 2.1.x. Ruby 2.2 and 2.3 are
 currently not supported._
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
@@ -123,9 +123,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.4.tar.gz
-    echo 'b6eff568b48e0fda76e5a36333175df049b204e91217aa32a65153cc0cdcb761  ruby-2.2.4.tar.gz' | sha256sum -c - && tar xzf ruby-2.2.4.tar.gz
-    cd ruby-2.2.4
+    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.8.tar.gz
+    echo 'c7e50159357afd87b13dc5eaf4ac486a70011149  ruby-2.1.8.tar.gz' | shasum -c - && tar xzf ruby-2.1.8.tar.gz
+    cd ruby-2.1.8
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -265,8 +265,9 @@ sudo usermod -aG redis git
     # Create the public/uploads/ directory
     sudo -u git -H mkdir public/uploads/
 
-    # Make sure GitLab can write to the public/uploads/ directory
-    sudo chmod -R u+rwX  public/uploads
+    # Make sure only the GitLab user has access to the public/uploads/ directory
+    # now that files in public/uploads are served by gitlab-workhorse
+    sudo chmod 0700 public/uploads
 
     # Change the permissions of the directory where CI build traces are stored
     sudo chmod -R u+rwX builds/

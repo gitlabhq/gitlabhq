@@ -117,11 +117,12 @@ describe Gitlab::LDAP::Access, lib: true do
   end
 
   describe '#update_permissions' do
-    subject { access.update_permissions }
+    subject { access.update_permissions({}) }
 
     it 'does update group permissions with a group base configured' do
       allow(access).to receive_messages(group_base: 'my-group-base')
-      expect(access).to receive(:update_ldap_group_links)
+      expect(access).not_to receive(:update_ldap_group_links)
+      expect(LdapGroupLinksWorker).to receive(:perform_async).with(user.id)
 
       subject
     end
@@ -129,6 +130,7 @@ describe Gitlab::LDAP::Access, lib: true do
     it 'does not update group permissions without a group base configured' do
       allow(access).to receive_messages(group_base: '')
       expect(access).not_to receive(:update_ldap_group_links)
+      expect(LdapGroupLinksWorker).not_to receive(:perform_async)
 
       subject
     end
@@ -145,6 +147,16 @@ describe Gitlab::LDAP::Access, lib: true do
       expect(access).not_to receive(:update_admin_status)
 
       subject
+    end
+
+    context 'when synchronously updating group permissions' do
+      it 'updates group permissions directly' do
+        allow(access).to receive_messages(group_base: 'my-group-base')
+        expect(LdapGroupLinksWorker).not_to receive(:perform_async)
+        expect(access).to receive(:update_ldap_group_links)
+  
+        access.update_permissions(update_ldap_group_links_synchronously: true)
+      end      
     end
   end
 
@@ -372,33 +384,50 @@ objectclass: posixGroup
       end
     end
 
-    context "existing access as master for group-1, not allowed" do
+    context 'existing access as master for group-1, not allowed via LDAP' do
       before do
         gitlab_group_1.group_members.masters.create(user_id: user.id)
         gitlab_group_1.ldap_group_links.create(cn: 'ldap-group1', group_access: Gitlab::Access::MASTER, provider: 'ldapmain')
         allow(access).to receive_messages(cns_with_access: ['ldap-group2'])
       end
 
-      it "removes user from gitlab_group_1" do
+      it 'removes user from gitlab_group_1' do
         expect { access.update_ldap_group_links }.to \
           change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
       end
     end
 
-    context "existing access as owner for group-1 with no other owner, not allowed" do
+    context 'existing access as owner for group-1 with no other owner, not allowed via LDAP' do
       before do
         gitlab_group_1.group_members.owners.create(user_id: user.id)
         gitlab_group_1.ldap_group_links.create(cn: 'ldap-group1', group_access: Gitlab::Access::OWNER, provider: 'ldapmain')
         allow(access).to receive_messages(cns_with_access: ['ldap-group2'])
       end
 
-      it "does not remove the user from gitlab_group_1 since it's the last owner" do
-        expect { access.update_ldap_group_links }.not_to \
-          change{ gitlab_group_1.has_owner?(user) }
+      # Note: Don't use `has_owner?` or `has_master?` in this expectation.
+      # It leads to false negatives.
+      it 'does not remove the user from gitlab_group_1 since its the last owner' do
+        expect { access.update_ldap_group_links }.not_to  \
+          change { gitlab_group_1.members.owners.where(user_id: user).any? }
       end
     end
 
-    context "existing access as owner for group-1 while other owners present, not allowed" do
+    context 'existing access as owner for group-1 with no other owner, allowed via ldap-group1 as DEVELOPER' do
+      before do
+        gitlab_group_1.group_members.owners.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create(cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER, provider: 'ldapmain')
+        allow(access).to receive_messages(cns_with_access: ['ldap-group1'])
+      end
+
+      # Note: Don't use `has_owner?` or `has_master?` in this expectation.
+      # It leads to false negatives.
+      it 'does not remove the user from gitlab_group_1 since its the last owner' do
+        expect { access.update_ldap_group_links }.not_to  \
+          change { gitlab_group_1.members.owners.where(user_id: user).any? }
+      end
+    end
+
+    context 'existing access as owner for group-1 while other owners present, not allowed via LDAP' do
       before do
         owner2 = create(:user) # a 2nd owner
         gitlab_group_1.group_members.owners.create([{ user_id: user.id }, { user_id: owner2.id }])
@@ -406,7 +435,7 @@ objectclass: posixGroup
         allow(access).to receive_messages(cns_with_access: ['ldap-group2'])
       end
 
-      it "removes user from gitlab_group_1" do
+      it 'removes user from gitlab_group_1' do
         expect { access.update_ldap_group_links }.to \
           change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
       end

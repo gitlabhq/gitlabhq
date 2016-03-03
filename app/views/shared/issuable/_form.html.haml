@@ -59,7 +59,7 @@
       = f.label :label_ids, class: 'control-label' do
         Weight
       .col-sm-10
-        = f.select :weight, projects_weight_options(issuable.weight), { include_blank: true },
+        = f.select :weight, issues_weight_options(issuable.weight, edit: true), { include_blank: true },
           { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
 
   .form-group

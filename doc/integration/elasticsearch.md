@@ -31,12 +31,14 @@ is installed or on a separate server.
 These are the minimum requirements needed for Elasticsearch to work:
 
 - GitLab 8.4+
-- Elasticsearch 2.0+
+- Elasticsearch 2.0+ (with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.0/plugins-delete-by-query.html) installed)
 
 ## Install Elasticsearch
 
-Providing detailed information on installing Elasticsearch is out of the scope
-of this document.
+Elasticsearch is _not_ included in the Omnibus packages. You will have to
+install it yourself whether you are using the Omnibus package or installed
+GitLab from source. Providing detailed information on installing Elasticsearch
+is out of the scope of this document.
 
 You can follow the steps as described in the [official web site][install] or
 use the packages that are available for your OS.
@@ -133,6 +135,15 @@ ID_TO=1000 sudo gitlab-rake gitlab:elastic:index_repositories
 ID_FROM=1001 ID_TO=2000 sudo gitlab-rake gitlab:elastic:index_repositories
 ID_FROM=2001 sudo gitlab-rake gitlab:elastic:index_repositories
 ```
+
+If you need to update any outdated indexes, you can use
+the `UPDATE_INDEX` parameter:
+
+```
+UPDATE_INDEX=true ID_TO=1000 sudo gitlab-rake gitlab:elastic:index_repositories
+```
+
+Keep in mind that it will scan all repositories to make sure that last commit is already indexed.
 
 To index all wikis:
 

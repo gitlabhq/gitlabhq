@@ -33,7 +33,7 @@ The YAML syntax allows for using more complex job specifications than in the
 above example:
 
 ```yaml
-image: ruby:2.2
+image: ruby:2.1
 services:
   - postgres
 
@@ -547,3 +547,10 @@ You can find the link under `/ci/lint` of your gitlab instance.
 
 If your commit message contains `[ci skip]`, the commit will be created but the
 builds will be skipped.
+
+## Examples
+
+Visit the [examples README][examples] to see a list of examples using GitLab
+CI with various languages.
+
+[examples]: ../examples/README.md

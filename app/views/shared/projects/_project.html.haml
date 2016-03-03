@@ -4,7 +4,7 @@
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - css_class = '' unless local_assigns[:css_class]
-- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
+- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - ci_commit = project.ci_commit(project.commit.sha) if ci && !project.empty_repo? && project.commit
 - cache_key = [project.namespace, project, controller.controller_name, controller.action_name, current_application_settings, 'v2.2']
@@ -19,7 +19,7 @@
             = image_tag avatar_icon(project.creator.email, 40), class: "avatar s40", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s40')
-      %span.project-full-name
+      %span.project-full-name.title
         %span.namespace-name
           - if project.namespace && !skip_namespace
             = project.namespace.human_name
@@ -27,7 +27,7 @@
         %span.project-name.filter-title
           = project.name
 
-    .project-controls
+    .controls
       - if ci_commit
         %span
           = render_ci_status(ci_commit)
@@ -39,10 +39,13 @@
         %span
           = icon('star')
           = project.star_count
+      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' },
+        title: "#{visibility_level_label(project.visibility_level)} - #{project_visibility_level_description(project.visibility_level)}"}
+        = visibility_level_icon(project.visibility_level, fw: false)
     - if show_last_commit_as_description
-      .project-description
+      .description
         = link_to_gfm project.commit.title, namespace_project_commit_path(project.namespace, project, project.commit),
           class: "commit-row-message"
     - elsif project.description.present?
-      .project-description
+      .description
         = markdown(project.description, pipeline: :description)
