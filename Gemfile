@@ -278,7 +278,7 @@ group :development, :test do
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
 
-  gem 'spring', '~> 1.3.6'
+  gem 'spring', '~> 1.6.4'
   gem 'spring-commands-rspec',    '~> 1.0.4'
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
