@@ -45,23 +45,48 @@ describe Banzai::Filter::RedactorFilter, lib: true do
   end
 
   context 'with data-issue' do
-    it 'removes references for confidential issues' do
-      user = create(:user)
-      project = create(:empty_project)
-      issue = create(:issue, :confidential, project: project)
+    context 'for confidential issues' do
+      it 'removes references for non project members' do
+        non_member = create(:user)
+        project = create(:empty_project, :public)
+        issue = create(:issue, :confidential, project: project)
 
-      link = reference_link(issue: issue.id, reference_filter: 'IssueReferenceFilter')
-      doc = filter(link, current_user: user)
+        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        doc = filter(link, current_user: non_member)
 
-      expect(doc.css('a').length).to eq 0
+        expect(doc.css('a').length).to eq 0
+      end
+
+      it 'allows references for author' do
+        author = create(:user)
+        project = create(:empty_project, :public)
+        issue = create(:issue, :confidential, project: project, author: author)
+
+        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        doc = filter(link, current_user: author)
+
+        expect(doc.css('a').length).to eq 1
+      end
+
+      it 'allows references for project members' do
+        member = create(:user)
+        project = create(:empty_project, :public)
+        project.team << [member, :developer]
+        issue = create(:issue, :confidential, project: project)
+
+        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        doc = filter(link, current_user: member)
+
+        expect(doc.css('a').length).to eq 1
+      end
     end
 
     it 'allows references for non confidential issues' do
       user = create(:user)
-      project = create(:empty_project)
+      project = create(:empty_project, :public)
       issue = create(:issue, project: project)
 
-      link = reference_link(issue: issue.id, reference_filter: 'IssueReferenceFilter')
+      link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
       doc = filter(link, current_user: user)
 
       expect(doc.css('a').length).to eq 1
