@@ -78,11 +78,10 @@ class @UserTabs
     @activateTab(@action)
 
   bindEvents: ->
-    # Turn off existing event listeners
-    @parentEl.off 'shown.bs.tab', '.nav-links a[data-toggle="tab"]'
-
-    # Set event listeners
-    @parentEl.on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
+    # Toggle event listeners
+    @parentEl
+      .off 'shown.bs.tab', '.nav-links a[data-toggle="tab"]'
+      .on 'shown.bs.tab', '.nav-links a[data-toggle="tab"]', @tabShown
 
   tabShown: (event) =>
     $target = $(event.target)
