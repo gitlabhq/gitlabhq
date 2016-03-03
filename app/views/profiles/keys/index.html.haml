@@ -1,6 +1,5 @@
 - page_title "SSH Keys"
 - header_title page_title, profile_keys_path
-- is_admin = defined?(admin) ? true : false
 
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
@@ -19,11 +18,4 @@
     %h5
       Your SSH keys (#{@keys.count})
     %div.append-bottom-default
-      - if @keys.any?
-        = render 'key_table'
-      - else
-        %p.profile-settings-message.text-center
-          - if is_admin
-            User has no ssh keys
-          - else
-            There are no SSH keys with access to your account.
+      = render 'key_table'

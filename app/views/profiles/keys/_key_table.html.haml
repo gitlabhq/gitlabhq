@@ -1,5 +1,11 @@
-- is_admin = defined?(admin) ? true : false
+- is_admin = local_assigns.fetch(:admin, false)
+
 - if @keys.any?
   %ul.well-list
-    - @keys.each do |key|
-      = render 'profiles/keys/key', key: key, is_admin: is_admin
+    = render partial: 'profiles/keys/key', collection: @keys, locals: { is_admin: is_admin }
+- else
+  %p.profile-settings-message.text-center
+    - if is_admin
+      There are no SSH keys associated with this account.
+    - else
+      There are no SSH keys with access to your account.
