@@ -16,8 +16,8 @@ class @Notes
     @view = view
     @noteable_url = document.URL
     @notesCountBadge ||= $(".issuable-details").find(".notes-tab .badge")
-    @base_polling_interval = 15000
-    @max_polling_steps = 4
+    @basePollingInterval = 15000
+    @maxPollingSteps = 4
 
     @cleanBinding()
     @addBinding()
@@ -93,7 +93,7 @@ class @Notes
     clearInterval(Notes.interval)
     Notes.interval = setInterval =>
       @refresh()
-    , @polling_interval
+    , @pollingInterval
 
   refresh: ->
     return if @refreshing is true
@@ -119,19 +119,19 @@ class @Notes
         @refreshing = false
 
   ###
-  Increase @polling_interval up to 120 seconds on every function call,
+  Increase @pollingInterval up to 120 seconds on every function call,
   if `shouldReset` has a truthy value, 'null' or 'undefined' the variable
-  will reset to @base_polling_interval.
+  will reset to @basePollingInterval.
 
   Note: this function is used to gradually increase the polling interval
   if there aren't new notes coming from the server
   ###
   setPollingInterval: (shouldReset = true) ->
-    nthInterval = @base_polling_interval * Math.pow(2, @max_polling_steps - 1)
+    nthInterval = @basePollingInterval * Math.pow(2, @maxPollingSteps - 1)
     if shouldReset
-      @polling_interval = @base_polling_interval
-    else if @polling_interval < nthInterval
-      @polling_interval *= 2
+      @pollingInterval = @basePollingInterval
+    else if @pollingInterval < nthInterval
+      @pollingInterval *= 2
 
     @initRefresh()
 
