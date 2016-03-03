@@ -16,10 +16,6 @@ module Banzai
         end
       end
 
-      def self.referenced_by(node)
-        { label: LazyReference.new(Label, node.attr("data-label")) }
-      end
-
       def references_in(text, pattern = Label.reference_pattern)
         text.gsub(pattern) do |match|
           project = project_from_ref($~[:project])

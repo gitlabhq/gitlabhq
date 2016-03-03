@@ -85,7 +85,8 @@ class Label < ActiveRecord::Base
   # Returns a String
   #
   def to_reference(from_project = nil, format: :id)
-    reference = label_format_reference(format)
+    format_reference = label_format_reference(format)
+    reference = "#{self.class.reference_prefix}#{format_reference}"
 
     if cross_project_reference?(from_project)
       project.to_reference + reference
@@ -116,9 +117,9 @@ class Label < ActiveRecord::Base
     raise StandardError, 'Unknown format' unless [:id, :name].include?(format)
 
     if format == :name && !name.include?('"')
-      %(#{self.class.reference_prefix}"#{name}")
+      %("#{name}")
     else
-      "#{self.class.reference_prefix}#{id}"
+      id
     end
   end
 end
