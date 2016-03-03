@@ -83,5 +83,9 @@ module Gitlab
         project.repository.find_commits_by_message(query).compact
       end
     end
+
+    def project_ids_relation
+      project
+    end
   end
 end
