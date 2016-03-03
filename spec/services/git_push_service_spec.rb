@@ -134,6 +134,22 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "ES indexing" do
+    before do
+      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
+    end
+
+    after do
+      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+    end
+
+    it "triggers indexer" do
+      expect_any_instance_of(Elastic::Indexer).to receive(:run)
+
+      execute_service(project, user, @oldrev, @newrev, @ref )
+    end
+  end
+
   describe "Push Event" do
     before do
       service = execute_service(project, user, @oldrev, @newrev, @ref )
