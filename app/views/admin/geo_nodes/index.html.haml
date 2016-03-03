@@ -1,10 +1,10 @@
 - page_title 'Geo nodes'
 %h3.page-title
-  Geo nodes
+  Geo Nodes
 
 %p.light
-  #{link_to 'Geo nodes', help_page_path('geo', 'nodes'), class: 'vlink'} are special GitLab
-  replicated instances.
+  With #{link_to 'GitLab Geo', help_page_path('gitlab-geo', 'overview'), class: 'vlink'} you can install a special
+  read-only and replicated instance anywhere.
 
 %hr
 
@@ -15,25 +15,24 @@
       - @node.errors.full_messages.each do |msg|
         %p= msg
   .form-group
-    = f.label :url, 'URL:', class: 'control-label'
-    .col-sm-10
-      = f.text_field :url, class: 'form-control'
-  = f.fields_for :geo_node_key, @node.geo_node_key do |fg|
-    .form-group
-      = fg.label :key, 'Public Key:', class: 'control-label'
-      .col-sm-10
-        = fg.text_area :key, class: 'form-control thin_area', rows: 5
-        %p.help-block
-          Paste a machine public key here for the gitlab user running on this node. Read more about how to generate it
-          = link_to "here", help_page_path("ssh", "README")
-
-  .form-group
-    = f.label :primary, 'Primary', class: 'control-label checkbox'
-    .col-sm-10
+    .col-sm-offset-2.col-sm-10
       .checkbox
         = f.label :primary do
           = f.check_box :primary
           %strong This is a primary node
+  .form-group
+    = f.label :url, 'URL', class: 'control-label'
+    .col-sm-10
+      = f.text_field :url, class: 'form-control'
+  = f.fields_for :geo_node_key, @node.geo_node_key do |fg|
+    .form-group
+      = fg.label :key, 'Public Key', class: 'control-label'
+      .col-sm-10
+        = fg.text_area :key, class: 'form-control thin_area', rows: 5
+        %p.help-block
+          Paste a machine public key here for the GitLab user this node runs on. Read more about how to generate it
+          = link_to "here", help_page_path("ssh", "README")
+
   .form-actions
     = f.submit 'Add Node', class: 'btn btn-create'
 %hr

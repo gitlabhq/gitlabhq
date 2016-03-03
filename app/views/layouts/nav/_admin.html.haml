@@ -85,6 +85,12 @@
       %span
         Labels
 
+  = nav_link(controller: :geo_nodes) do
+    = link_to admin_geo_nodes_path, title: 'Gitlab Geo' do
+      = icon('globe fw')
+      %span
+        Geo Nodes
+
   = nav_link(controller: :abuse_reports) do
     = link_to admin_abuse_reports_path, title: "Abuse Reports" do
       = icon('exclamation-circle fw')
