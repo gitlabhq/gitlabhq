@@ -45,12 +45,15 @@ module Gitlab
     #
     # name - project path with namespace
     # remote - remote name
+    # forced - should we use --force flag?
     #
     # Ex.
     #   fetch_remote("gitlab/gitlab-ci", "upstream")
     #
-    def fetch_remote(name, remote)
-      output, status = Popen::popen([gitlab_shell_projects_path, 'fetch-remote', "#{name}.git", remote, '600'])
+    def fetch_remote(name, remote, forced=false)
+      args = [gitlab_shell_projects_path, 'fetch-remote', "#{name}.git", remote, '600']
+      args << '--force' if forced
+      output, status = Popen::popen(args)
       raise Error, output unless status.zero?
       true
     end
