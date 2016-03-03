@@ -5,12 +5,8 @@ module Gitlab
       NAMESPACE = 'geo:gitlab'
       QUEUE = 'updated_projects'
 
-      def initialize
-        @redis = redis_connection
-      end
-
       def store(data)
-        @redis.rpush(QUEUE, data.to_json)
+        redis.rpush(QUEUE, data.to_json)
         expire_queue_size!
       end
 
@@ -28,9 +24,9 @@ module Gitlab
         projects = []
         bsize = batch_size
 
-        @redis.multi do
-          projects = @redis.lrange(QUEUE, 0, bsize - 1)
-          @redis.ltrim(QUEUE, bsize, -1)
+        redis.multi do
+          projects = redis.lrange(QUEUE, 0, bsize - 1)
+          redis.ltrim(QUEUE, bsize, -1)
         end
 
         expire_queue_size!
@@ -38,10 +34,10 @@ module Gitlab
       end
 
       def store_batched_data(projects)
-        @redis.pipelined do
+        redis.pipelined do
           projects.reverse_each do |project|
             # enqueue again to the head of the queue
-            @redis.lpush(QUEUE, project.to_json)
+            redis.lpush(QUEUE, project.to_json)
           end
         end
         expire_queue_size!
@@ -60,17 +56,17 @@ module Gitlab
       end
 
       def empty!
-        @redis.del(QUEUE)
+        redis.del(QUEUE)
       end
 
       protected
 
       def fetch(start, stop)
-        deserialize(@redis.lrange(QUEUE, start, stop))
+        deserialize(redis.lrange(QUEUE, start, stop))
       end
 
       def fetch_queue_size
-        @redis.llen(QUEUE)
+        redis.llen(QUEUE)
       end
 
       def expire_queue_size!
@@ -82,7 +78,11 @@ module Gitlab
         data
       end
 
-      def redis_connection
+      def redis
+        self.class.redis
+      end
+
+      def self.redis_connection
         redis_config_file = Rails.root.join('config', 'resque.yml')
 
         redis_url_string = if File.exists?(redis_config_file)
@@ -92,6 +92,10 @@ module Gitlab
                            end
 
         Redis::Namespace.new(NAMESPACE, redis: Redis.new(url: redis_url_string))
+      end
+
+      def self.redis
+        @redis ||= redis_connection
       end
     end
   end
