@@ -1,7 +1,7 @@
 - if current_user
   .dropdown
     %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
-      %i.fa.fa-globe
+      = icon('globe')
       %span.light Visibility:
       - if params[:visibility_level].present?
         = visibility_level_label(params[:visibility_level].to_i)
@@ -21,7 +21,7 @@
 - if @tags.present?
   .dropdown
     %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
-      %i.fa.fa-tags
+      = icon('tags')
       %span.light Tags:
       - if params[:tag].present?
         = params[:tag]
