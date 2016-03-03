@@ -12,6 +12,7 @@
 
 class GeoNode < ActiveRecord::Base
   belongs_to :geo_node_key, dependent: :destroy
+  belongs_to :oauth_application, class_name: 'Doorkeeper::Application'
 
   default_values schema: 'http',
                  host: lambda { Gitlab.config.gitlab.host },

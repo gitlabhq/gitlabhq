@@ -39,6 +39,11 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  namespace :oauth do
+    get 'geo/auth' => 'geo_auth#auth'
+    get 'geo/callback' => 'geo_auth#callback'
+  end
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'

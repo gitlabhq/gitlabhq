@@ -39,5 +39,11 @@ module Gitlab
     def self.bulk_notify_job
       Sidekiq::Cron::Job.find('geo_bulk_notify_worker')
     end
+
+    def self.oauth_authentication
+      return false unless self.readonly?
+
+      Gitlab::Geo.current_node.oauth_application
+    end
   end
 end
