@@ -173,12 +173,6 @@
 
     .gutter-toggle {
       border-left: 1px solid $border-gray-light;
-      @media (max-width: $screen-sm-max) {
-        display: none;
-      }
-      @media (min-width: $screen-sm-min) {
-        display: block
-      }
     }
   }
 

@@ -27,7 +27,13 @@
   }
 
   &.right-sidebar-expanded {
-    padding-right: $gutter_width;
+    @media (max-width: $screen-sm-max) {
+      padding-right: 0;
+    }
+    @media (min-width: $screen-sm-min) {
+      padding-right: $gutter_width;
+    }
+    
   }
 }
 
