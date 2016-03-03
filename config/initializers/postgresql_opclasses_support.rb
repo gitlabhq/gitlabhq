@@ -1,3 +1,5 @@
+# rubocop:disable all
+
 # These changes add support for PostgreSQL operator classes when creating
 # indexes and dumping/loading schemas. Taken from Rails pull request
 # https://github.com/rails/rails/pull/19090.
