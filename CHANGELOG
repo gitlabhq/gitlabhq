@@ -12,6 +12,9 @@ v 8.6.0 (unreleased)
   - Allow search for logged out users
   - Don't show Issues/MRs from archived projects in Groups view
 
+v 8.5.3
+  - Flush repository caches before renaming projects
+
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
   - Don't repeat labels listed on Labels tab
