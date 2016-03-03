@@ -107,9 +107,6 @@ class Dispatcher
         new ProjectFork()
       when 'projects:artifacts:browse'
         new BuildArtifacts()
-      when 'users:show'
-        new User()
-        new Activities()
 
     switch path.first()
       when 'admin'
