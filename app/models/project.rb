@@ -86,14 +86,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # checks if the language main language of the project changed
-  before_save :check_main_language
-  def check_main_language
-    if commit_count_changed?
-      main_language = repository.main_language
-    end
-  end
-
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
 
