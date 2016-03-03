@@ -1,4 +1,6 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
+  include DiffHelper
+
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
@@ -111,7 +113,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.last_commit
     @base_commit = @merge_request.diff_base_commit
-    @diffs = @merge_request.compare_diffs
+    @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
 
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit

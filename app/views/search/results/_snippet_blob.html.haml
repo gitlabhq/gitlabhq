@@ -30,7 +30,7 @@
           .line-numbers
             - snippet_chunks.each do |chunk|
               - unless chunk[:data].empty?
-                - chunk[:data].lines.to_a.size.times do |index|
+                - Gitlab::Git::Util.count_lines(chunk[:data]).times do |index|
                   - offset = defined?(chunk[:start_line]) ? chunk[:start_line] : 1
                   - i = index + offset
                   = link_to snippet_path+"#L#{i}", id: "L#{i}", rel: "#L#{i}", class: "diff-line-num" do

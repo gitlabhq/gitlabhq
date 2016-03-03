@@ -50,7 +50,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 8.2'
+gem "gitlab_git", '~> 9.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes

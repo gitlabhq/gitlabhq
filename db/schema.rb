@@ -509,6 +509,7 @@ ActiveRecord::Schema.define(version: 20160222153918) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "base_commit_sha"
+    t.string   "real_size"
   end
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree

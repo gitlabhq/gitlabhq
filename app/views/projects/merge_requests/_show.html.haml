@@ -62,7 +62,7 @@
         %li.diffs-tab
           = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
             Changes
-            %span.badge= @merge_request.diffs.size
+            %span.badge= @merge_request.diff_size
 
       .tab-content
         #notes.notes.tab-pane.voting_notes

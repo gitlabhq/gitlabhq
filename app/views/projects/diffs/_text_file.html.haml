@@ -6,7 +6,7 @@
 %table.text-file.code.js-syntax-highlight{ class: too_big ? 'hide' : '' }
 
   - last_line = 0
-  - raw_diff_lines = diff_file.diff_lines
+  - raw_diff_lines = diff_file.diff_lines.to_a
   - diff_file.highlighted_diff_lines.each_with_index do |line, index|
     - type = line.type
     - last_line = line.new_pos

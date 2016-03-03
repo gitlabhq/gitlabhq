@@ -131,9 +131,11 @@ class Note < ActiveRecord::Base
   end
 
   def find_diff
-    return nil unless noteable && noteable.diffs.present?
+    return nil unless noteable
+    return @diff if defined?(@diff)
 
-    @diff ||= noteable.diffs.find do |d|
+    # Don't use ||= because nil is a valid value for @diff
+    @diff = noteable.diffs(Commit.max_diff_options).find do |d|
       Digest::SHA1.hexdigest(d.new_path) == diff_file_index if d.new_path
     end
   end
@@ -165,20 +167,16 @@ class Note < ActiveRecord::Base
   def active?
     return true unless self.diff
     return false unless noteable
+    return @active if defined?(@active)
 
-    noteable.diffs.each do |mr_diff|
-      next unless mr_diff.new_path == self.diff.new_path
+    diffs = noteable.diffs(Commit.max_diff_options)
+    notable_diff = diffs.find { |d| d.new_path == self.diff.new_path }
 
-      lines = Gitlab::Diff::Parser.new.parse(mr_diff.diff.lines.to_a)
+    return @active = false if notable_diff.nil?
 
-      lines.each do |line|
-        if line.text == diff_line
-          return true
-        end
-      end
-    end
-
-    false
+    parsed_lines = Gitlab::Diff::Parser.new.parse(notable_diff.diff.each_line)
+    # We cannot use ||= because @active may be false
+    @active = parsed_lines.any? { |line_obj| line_obj.text == diff_line }
   end
 
   def outdated?
@@ -263,7 +261,7 @@ class Note < ActiveRecord::Base
   end
 
   def diff_lines
-    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.lines)
+    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
   end
 
   def highlighted_diff_lines
