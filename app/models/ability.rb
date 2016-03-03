@@ -43,8 +43,6 @@ class Ability
         anonymous_personal_snippet_abilities(subject)
       when subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
-      when subject.is_a?(Issue)
-        anonymous_issue_abilities(subject)
       when subject.is_a?(Project) || subject.respond_to?(:project)
         anonymous_project_abilities(subject)
       when subject.is_a?(Group) || subject.respond_to?(:group)
@@ -52,12 +50,6 @@ class Ability
       else
         []
       end
-    end
-
-    def anonymous_issue_abilities(subject)
-      rules = anonymous_project_abilities(subject)
-      rules -= confidential_issue_rules if subject.confidential?
-      rules
     end
 
     def anonymous_project_abilities(subject)
@@ -71,7 +63,6 @@ class Ability
         rules = [
           :read_project,
           :read_wiki,
-          :read_issue,
           :read_label,
           :read_milestone,
           :read_project_snippet,
@@ -84,6 +75,9 @@ class Ability
 
         # Allow to read builds by anonymous user if guests are allowed
         rules << :read_build if project.public_builds?
+
+        # Allow to read issues by anonymous user if issue is not confidential
+        rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
 
         rules - project_disabled_features_rules(project)
       else
@@ -351,13 +345,7 @@ class Ability
         end
 
         rules += project_abilities(user, subject.project)
-
-        if subject.respond_to?(:confidential) && subject.confidential?
-          unless user.admin? || subject.author == user || subject.project.team.member?(user.id)
-            rules -= confidential_issue_rules
-          end
-        end
-
+        rules = filter_confidential_issues_abilities(user, subject, rules) if subject.is_a?(Issue)
         rules
       end
     end
@@ -477,11 +465,15 @@ class Ability
       ]
     end
 
-    def confidential_issue_rules
-      [
-        :read_issue,
-        :update_issue
-      ]
+    def filter_confidential_issues_abilities(user, issue, rules)
+      return rules if user.admin? || !issue.confidential?
+
+      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user.id)
+        rules.delete(:read_issue)
+        rules.delete(:update_issue)
+      end
+
+      rules
     end
   end
 end

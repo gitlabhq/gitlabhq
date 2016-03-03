@@ -68,6 +68,17 @@ describe Banzai::Filter::RedactorFilter, lib: true do
         expect(doc.css('a').length).to eq 1
       end
 
+      it 'allows references for assignee' do
+        assignee = create(:user)
+        project = create(:empty_project, :public)
+        issue = create(:issue, :confidential, project: project, assignee: assignee)
+
+        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        doc = filter(link, current_user: assignee)
+
+        expect(doc.css('a').length).to eq 1
+      end
+
       it 'allows references for project members' do
         member = create(:user)
         project = create(:empty_project, :public)

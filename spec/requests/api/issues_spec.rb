@@ -5,6 +5,7 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:non_member) { create(:user) }
   let(:author) { create(:author) }
+  let(:assignee) { create(:assignee) }
   let(:admin) { create(:admin) }
   let!(:project) { create(:project, :public, namespace: user.namespace ) }
   let!(:closed_issue) do
@@ -19,7 +20,8 @@ describe API::API, api: true  do
     create :issue,
            :confidential,
            project: project,
-           author: author
+           author: author,
+           assignee: assignee
   end
   let!(:issue) do
     create :issue,
@@ -148,6 +150,14 @@ describe API::API, api: true  do
       expect(json_response.first['title']).to eq(issue.title)
     end
 
+    it 'should return project confidential issues for assignee' do
+      get api("#{base_url}/issues", assignee)
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(3)
+      expect(json_response.first['title']).to eq(issue.title)
+    end
+
     it 'should return project issues with confidential issues for project members' do
       get api("#{base_url}/issues", user)
       expect(response.status).to eq(200)
@@ -256,6 +266,13 @@ describe API::API, api: true  do
 
       it "should return confidential issue for author" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", author)
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq(confidential_issue.title)
+        expect(json_response['iid']).to eq(confidential_issue.iid)
+      end
+
+      it "should return confidential issue for assignee" do
+        get api("/projects/#{project.id}/issues/#{confidential_issue.id}", assignee)
         expect(response.status).to eq(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)

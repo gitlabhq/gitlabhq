@@ -86,14 +86,15 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     let(:query) { 'issue' }
     let(:limit_project_ids) { [project_1.id, project_2.id, project_3.id] }
     let(:author) { create(:user) }
+    let(:assignee) { create(:user) }
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project_1, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project_1, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project_1) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignee: assignee) }
     let!(:security_issue_3) { create(:issue, :confidential, project: project_2, title: 'Security issue 3', author: author) }
-    let!(:security_issue_4) { create(:issue, :confidential, project: project_3, title: 'Security issue 4') }
+    let!(:security_issue_4) { create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignee: assignee) }
     let!(:security_issue_5) { create(:issue, :confidential, project: project_4, title: 'Security issue 5') }
 
     before do
@@ -122,6 +123,19 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(issues).not_to include security_issue_2
       expect(issues).to include security_issue_3
       expect(issues).not_to include security_issue_4
+      expect(issues).not_to include security_issue_5
+      expect(results.issues_count).to eq 3
+    end
+
+    it 'should list confidential issues for assignee' do
+      results = described_class.new(assignee, limit_project_ids, query)
+      issues = results.objects('issues')
+
+      expect(issues).to include issue
+      expect(issues).not_to include security_issue_1
+      expect(issues).to include security_issue_2
+      expect(issues).not_to include security_issue_3
+      expect(issues).to include security_issue_4
       expect(issues).not_to include security_issue_5
       expect(results.issues_count).to eq 3
     end

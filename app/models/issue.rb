@@ -76,7 +76,9 @@ class Issue < ActiveRecord::Base
       issues_table[:confidential].eq(false).or(
         issues_table[:confidential].eq(true).and(
           issues_table[:author_id].eq(user.id).or(
-            issues_table[:project_id].in(project_ids)
+            issues_table[:assignee_id].eq(user.id).or(
+              issues_table[:project_id].in(project_ids)
+            )
           )
         )
       )

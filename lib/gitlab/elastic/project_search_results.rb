@@ -107,25 +107,6 @@ module Gitlab
         end
       end
 
-      def issues
-        opt = {
-          projects_ids: limit_project_ids
-        }
-
-        unless user.admin? || project.team.member?(user.id)
-          opt.merge!(
-            authorized_projects_ids: user.authorized_projects.pluck(:id),
-            user_id: user.id
-          )
-        end
-
-        if query =~ /#(\d+)\z/
-          Issue.in_projects(limit_project_ids).where(iid: $1)
-        else
-          Issue.elastic_search(query, options: opt).records
-        end
-      end
-
       def limit_project_ids
         [project.id]
       end

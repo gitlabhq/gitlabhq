@@ -64,15 +64,9 @@ module Gitlab
 
       def issues
         opt = {
-          project_ids: limit_project_ids
+          projects_ids: limit_project_ids,
+          user: user
         }
-
-        unless user.admin?
-          opt.merge!(
-            authorized_projects_ids: user.authorized_projects.pluck(:id),
-            user_id: user.id
-          )
-        end
 
         Issue.elastic_search(query, options: opt)
       end

@@ -42,13 +42,14 @@ describe Projects::IssuesController do
 
   describe 'Confidential Issues' do
     let(:project) { create(:empty_project, :public) }
+    let(:assignee) { create(:assignee) }
     let(:author) { create(:user) }
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project) }
     let!(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
-    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project) }
+    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignee: assignee) }
 
     describe 'GET #index' do
       it 'should not list confidential issues for guests' do
@@ -71,6 +72,14 @@ describe Projects::IssuesController do
 
         expect(assigns(:issues)).to include unescaped_parameter_value
         expect(assigns(:issues)).not_to include request_forgery_timing_attack
+      end
+
+      it 'should list confidential issues for assignee' do
+        sign_in(assignee)
+        get_issues
+
+        expect(assigns(:issues)).not_to include unescaped_parameter_value
+        expect(assigns(:issues)).to include request_forgery_timing_attack
       end
 
       it 'should list confidential issues for project members' do
@@ -116,6 +125,13 @@ describe Projects::IssuesController do
       it "returns #{http_status[:success]} for author" do
         sign_in(author)
         go(id: unescaped_parameter_value.to_param)
+
+        expect(response).to have_http_status http_status[:success]
+      end
+
+      it "returns #{http_status[:success]} for assignee" do
+        sign_in(assignee)
+        go(id: request_forgery_timing_attack.to_param)
 
         expect(response).to have_http_status http_status[:success]
       end

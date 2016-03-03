@@ -68,12 +68,13 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
   describe 'confidential issues' do
     let(:query) { 'issue' }
     let(:author) { create(:user) }
+    let(:assignee) { create(:user) }
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }
 
     before do
       Issue.__elasticsearch__.refresh_index!
@@ -96,6 +97,16 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       expect(issues).to include issue
       expect(issues).to include security_issue_1
       expect(issues).not_to include security_issue_2
+      expect(results.issues_count).to eq 2
+    end
+
+    it 'should list project confidential issues for assignee' do
+      results = described_class.new(assignee, project.id, query)
+      issues = results.objects('issues')
+
+      expect(issues).to include issue
+      expect(issues).not_to include security_issue_1
+      expect(issues).to include security_issue_2
       expect(results.issues_count).to eq 2
     end
 
