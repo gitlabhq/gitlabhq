@@ -196,11 +196,9 @@ module ApplicationHelper
       output = content_tag(:span, "Edited ")
       output << time_ago_with_tooltip(object.updated_at, placement: placement, html_class: html_class)
 
-      if include_author
-        if object.updated_by && object.updated_by != object.author
-          output << content_tag(:span, " by ")
-          output << link_to_member(object.project, object.updated_by, avatar: false, author_class: nil)
-        end
+      if include_author && object.updated_by && object.updated_by != object.author
+        output << content_tag(:span, " by ")
+        output << link_to_member(object.project, object.updated_by, avatar: false, author_class: nil)
       end
 
       output
