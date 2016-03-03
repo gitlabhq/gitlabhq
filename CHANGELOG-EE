@@ -10,6 +10,7 @@ v 8.6.0 (unreleased)
 
 v 8.5.3
   - Prevent LDAP from downgrading a group's last owner
+  - Update gitlab-elastic-search gem to 0.0.11
 
 v 8.5.2
   - Update LDAP groups asynchronously
