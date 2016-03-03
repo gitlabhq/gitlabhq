@@ -146,6 +146,20 @@
   }
 }
 
+.key-list-item {
+  .key-list-item-info {
+    @media (min-width: $screen-sm-min) {
+      float: left;
+    }
+  }
+
+  .description {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
 .key-icon {
   color: $ssh-key-icon-color;
   font-size: $ssh-key-icon-size;
