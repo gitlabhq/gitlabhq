@@ -8,6 +8,9 @@ v 8.6.0 (unreleased)
   - [Elastic] Update index on push to wiki
   - [Elastic] Use subprocesses for ElasticSearch index jobs
 
+v 8.5.3
+  - Prevent LDAP from downgrading a group's last owner
+
 v 8.5.2
   - Update LDAP groups asynchronously
   - Fix an issue when weight text was displayed in Issuable collapsed sidebar
