@@ -14,6 +14,10 @@ module Gitlab
         @adapter = adapter
       end
 
+      def active_directory?
+        adapter.config.active_directory
+      end
+
       def cn
         entry.cn.first
       end
@@ -34,22 +38,12 @@ module Gitlab
         entry.memberuid
       end
 
-      def has_member?(user)
-        user_uid = user.uid.downcase
-        user_dn = user.dn.downcase
-
-        if memberuid?
-          member_uids.any? { |member_uid| member_uid.downcase == user_uid }
-        elsif member_dns.any? { |member_dn| member_dn.downcase == user_dn }
-          true
-        elsif member_dns.any? { |member_dn| member_dn.downcase == "uid=" + user_uid }
-          true
-        elsif adapter.config.active_directory
-          adapter.dn_matches_filter?(user.dn, active_directory_recursive_memberof_filter)
-        end
-      end
-
       def member_dns
+        if active_directory?
+          dns = adapter.dns_for_filter(active_directory_recursive_memberof_filter)
+          return dns unless dns.empty?
+        end
+
         if (entry.respond_to? :member) && (entry.respond_to? :submember)
           entry.member + entry.submember
         elsif entry.respond_to? :member
