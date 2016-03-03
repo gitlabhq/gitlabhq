@@ -10,10 +10,6 @@ class Profiles::KeysController < Profiles::ApplicationController
     @key = current_user.keys.find(params[:id])
   end
 
-  def new
-    redirect_to profile_keys_path
-  end
-
   def create
     @key = current_user.keys.new(key_params)
 
