@@ -1,26 +1,31 @@
-class @ProjectsList
-  constructor: ->
-    $(".projects-list .js-expand").on 'click', (e) ->
-      e.preventDefault()
-      list = $(this).closest('.projects-list')
+@ProjectsList =
+  init: ->
+    $(".projects-list-filter").off('keyup')
+    this.initSearch()
 
-    $("#filter_projects").on 'keyup', ->
-      ProjectsList.filter_results($("#filter_projects"))
+  initSearch: ->
+    @timer = null
+    $(".projects-list-filter").on('keyup', ->
+      clearTimeout(@timer)
+      @timer = setTimeout(ProjectsList.filterResults, 500)
+    )
 
-  @filter_results: ($element) ->
-    terms = $element.val()
-    filterSelector = $element.data('filter-selector') || 'span.filter-title'
+  filterResults: =>
+    $('.projects-list-holder').fadeTo(250, 0.5)
 
-    if not terms
-      $(".projects-list li").show()
-      $('.gl-pagination').show()
-    else
-      $(".projects-list li").each (index) ->
-        $this = $(this)
-        name = $this.find(filterSelector).text()
+    form = null
+    form = $("form#project-filter-form")
+    search = $(".projects-list-filter").val()
+    project_filter_url = form.attr('action') + '?' + form.serialize()
 
-        if name.toLowerCase().indexOf(terms.toLowerCase()) == -1
-          $this.hide()
-        else
-          $this.show()
-      $('.gl-pagination').hide()
+    $.ajax
+      type: "GET"
+      url: form.attr('action')
+      data: form.serialize()
+      complete: ->
+        $('.projects-list-holder').fadeTo(250, 1)
+      success: (data) ->
+        $('.projects-list-holder').replaceWith(data.html)
+        # Change url so if user reload a page - search results are saved
+        history.replaceState {page: project_filter_url}, document.title, project_filter_url
+      dataType: "json"

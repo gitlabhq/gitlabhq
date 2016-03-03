@@ -12,7 +12,18 @@ class Projects::ForksController < Projects::ApplicationController
     @public_forks_count  = @total_forks_count - @private_forks_count
 
     @sort  = params[:sort] || 'id_desc'
+    @forks = @forks.search(params[:filter_projects]) if params[:filter_projects].present?
     @forks = @forks.order_by(@sort).page(params[:page]).per(PER_PAGE)
+
+    respond_to do |format|
+      format.html
+
+      format.json do
+        render json: {
+          html: view_to_html_string("projects/forks/_projects", projects: @forks)
+        }
+      end
+    end
   end
 
   def new

@@ -1,7 +1,6 @@
 class @User
   constructor: (@opts) ->
     $('.profile-groups-avatars').tooltip("placement": "top")
-    new ProjectsList()
 
     @initTabs()
 
