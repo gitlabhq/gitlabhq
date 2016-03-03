@@ -178,8 +178,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   describe 'cross project label references' do
-    let(:project_name) { 'Some project' }
-    let(:another_project)  { create(:empty_project, :public, name: project_name) }
+    let(:another_project)  { create(:empty_project, :public) }
+    let(:project_name) { another_project.name_with_namespace }
     let(:label) { create(:label, project: another_project, color: '#00ff00') }
     let(:reference) { label.to_reference(project) }
 
@@ -198,7 +198,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     end
 
     it 'contains cross project content' do
-      expect(result.css('a').first.text).to eq "#{label.name} « #{project_name}"
+      expect(result.css('a').first.text).to eq "#{label.name} in #{project_name}"
     end
   end
 end

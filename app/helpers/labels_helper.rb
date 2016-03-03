@@ -64,8 +64,8 @@ module LabelsHelper
   end
 
   def render_colored_cross_project_label(label)
-    label_suffix = label.project.name
-    label_suffix = " <i>&laquo; #{label_suffix}</i>"
+    label_suffix = label.project.name_with_namespace
+    label_suffix = " <i>in #{label_suffix}</i>"
     render_colored_label(label, label_suffix)
   end
 
