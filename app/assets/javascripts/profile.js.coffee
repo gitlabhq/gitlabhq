@@ -62,3 +62,12 @@ class @Profile
         $modalCropImg.attr('src', event.target.result)
 
       fileData = reader.readAsDataURL(this.files[0])
+
+$ ->
+  # Extract the SSH Key title from its comment
+  $(document).on 'focusout.ssh_key', '#key_key', ->
+    $title  = $('#key_title')
+    comment = $(@).val().match(/^\S+ \S+ (.+)\n?$/)
+
+    if comment && comment.length > 1 && $title.val() == ''
+      $title.val(comment[1]).change()
