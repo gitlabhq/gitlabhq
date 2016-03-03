@@ -51,15 +51,17 @@ class GitPushService < BaseService
     update_merge_requests
   end
 
-  protected
-
   def update_main_language
     current_language = @project.repository.main_language
 
     unless current_language == @project.main_language
-      @project.update_attributes(main_language: current_language)
+      return @project.update_attributes(main_language: current_language)
     end
+
+    true
   end
+
+  protected
 
   def update_merge_requests
     @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
