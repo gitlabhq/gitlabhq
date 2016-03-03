@@ -337,7 +337,7 @@ module Gitlab
       end
 
       if Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
-        return build_status_object(false, "You can't use git-anex with Gitlab Geo readonly node.")
+        return build_status_object(false, "You can't use git-annex with Gitlab Geo secondary node.")
       end
 
       if user.can?(:push_code, project)

@@ -12,7 +12,7 @@ module Geo
       ::Gitlab::Geo.secondary_nodes.each do |node|
         success, message = notify_updated_projects(node, projects)
         unless success
-          Rails.logger.error("Gitlab Failed to notify #{node.url} : #{message}")
+          Rails.logger.error("GitLab failed to notify #{node.url} : #{message}")
           @queue.store_batched_data(projects)
         end
       end
@@ -28,7 +28,7 @@ module Geo
                                    'PRIVATE-TOKEN' => private_token
                                  })
 
-      return [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
+      [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
     rescue HTTParty::Error, Errno::ECONNREFUSED => e
       return [false, ActionView::Base.full_sanitizer.sanitize(e.message)]
     end

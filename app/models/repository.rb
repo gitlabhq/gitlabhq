@@ -183,10 +183,12 @@ class Repository
   end
 
   def set_remote_as_mirror(name)
+    remote_config = raw_repository.rugged.config
+    
     # This is used by Gitlab Geo to define repository as equivalent as "git clone --mirror"
-    raw_repository.rugged.config["remote.#{name}.fetch"]='refs/*:refs/*'
-    raw_repository.rugged.config["remote.#{name}.mirror"]=true
-    raw_repository.rugged.config["remote.#{name}.prune"]=true
+    remote_config["remote.#{name}.fetch"] = 'refs/*:refs/*'
+    remote_config["remote.#{name}.mirror"] = true
+    remote_config["remote.#{name}.prune"] = true
   end
 
   def fetch_remote(remote)

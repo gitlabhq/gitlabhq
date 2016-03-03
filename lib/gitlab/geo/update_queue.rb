@@ -2,7 +2,7 @@ module Gitlab
   module Geo
     class UpdateQueue
       BATCH_SIZE = 250
-      NAMESPACE = :geo
+      NAMESPACE = 'geo:gitlab'
       QUEUE = 'updated_projects'
 
       def initialize
@@ -10,7 +10,8 @@ module Gitlab
       end
 
       def store(data)
-        @redis.rpush(QUEUE, data.to_json) and expire_queue_size!
+        @redis.rpush(QUEUE, data.to_json)
+        expire_queue_size!
       end
 
       def first
@@ -28,7 +29,7 @@ module Gitlab
         bsize = batch_size
 
         @redis.multi do
-          projects = @redis.lrange(QUEUE, 0, bsize-1)
+          projects = @redis.lrange(QUEUE, 0, bsize - 1)
           @redis.ltrim(QUEUE, bsize, -1)
         end
 

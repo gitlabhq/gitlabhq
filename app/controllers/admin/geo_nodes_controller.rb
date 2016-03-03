@@ -2,14 +2,10 @@ class Admin::GeoNodesController < Admin::ApplicationController
   def index
     @nodes = GeoNode.all
     @node = GeoNode.new
-    @node.build_geo_node_key
   end
 
   def create
-    @node = GeoNode.new
-    @node.build_geo_node_key
-    @node.attributes = geo_node_params
-    @node.geo_node_key.title = "Geo node: #{@node.url}"
+    @node = GeoNode.new(geo_node_params)
 
     if @node.save
       redirect_to admin_geo_nodes_path, notice: 'Node was successfully created.'
@@ -23,7 +19,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
     @node = GeoNode.find(params[:id])
     @node.destroy
 
-    redirect_to admin_geo_nodes_path
+    redirect_to admin_geo_nodes_path, notice: 'Node was successfully removed.'
   end
 
   def geo_node_params

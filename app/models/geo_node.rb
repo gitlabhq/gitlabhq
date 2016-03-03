@@ -26,9 +26,11 @@ class GeoNode < ActiveRecord::Base
   validates :schema, inclusion: %w(http https)
   validates :relative_url_root, length: { minimum: 0, allow_nil: false }
 
+  after_initialize :check_geo_node_key
   after_save :refresh_bulk_notify_worker_status
   after_destroy :refresh_bulk_notify_worker_status
   after_destroy :destroy_orphaned_geo_node_key
+  before_validation :change_geo_node_key_title
 
   def uri
     if relative_url_root
@@ -51,7 +53,7 @@ class GeoNode < ActiveRecord::Base
   end
 
   def notify_url
-    URI::join(uri, "#{uri.path}/", 'api/v3/geo/refresh_projects').to_s
+    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_projects").to_s
   end
 
   private
@@ -63,6 +65,18 @@ class GeoNode < ActiveRecord::Base
   end
 
   def refresh_bulk_notify_worker_status
-    Gitlab::Geo.primary? ? Gitlab::Geo.bulk_notify_job.try(:enable!) : Gitlab::Geo.bulk_notify_job.try(:disable!)
+    if Gitlab::Geo.primary?
+      Gitlab::Geo.bulk_notify_job.enable!
+    else
+      Gitlab::Geo.bulk_notify_job.disable!
+    end
+  end
+
+  def check_geo_node_key
+    self.build_geo_node_key if geo_node_key.nil?
+  end
+
+  def geo_node_key_title
+    self.geo_node_key.title = "Geo node: #{self.url}"
   end
 end
