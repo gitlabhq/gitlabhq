@@ -44,6 +44,18 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     end
   end
 
+  step 'I should not see issues from the archived project' do
+    @archived_project.issues.each do |issue|
+      expect(page).not_to have_content issue.title
+    end
+  end
+
+  step 'I should not see merge requests from the archived project' do
+    @archived_project.merge_requests.each do |mr|
+      expect(page).not_to have_content mr.title
+    end
+  end
+
   step 'I should see merge requests from group "Owned" assigned to me' do
     assigned_to_me(:merge_requests).each do |issue|
       expect(page).to have_content issue.title[0..80]
@@ -113,7 +125,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'Group "Owned" has archived project' do
     group = Group.find_by(name: 'Owned')
-    create(:project, namespace: group, archived: true, path: "archived-project")
+    @archived_project = create(:project, namespace: group, archived: true, path: "archived-project")
   end
 
   step 'I should see "archived" label' do
@@ -122,6 +134,21 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I visit group "NonExistentGroup" page' do
     visit group_path(-1)
+  end
+
+  step 'the archived project have some issues' do
+    create :issue,
+      project: @archived_project,
+      assignee: current_user,
+      author: current_user
+  end
+
+  step 'the archived project have some merge requests' do
+    create :merge_request,
+      source_project: @archived_project,
+      target_project: @archived_project,
+      assignee: current_user,
+      author: current_user
   end
 
   private
