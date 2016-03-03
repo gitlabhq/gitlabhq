@@ -17,10 +17,10 @@ class @Notes
     @noteable_url = document.URL
     @notesCountBadge ||= $(".issuable-details").find(".notes-tab .badge")
 
-    @initRefresh()
-    @setupMainTargetNoteForm()
     @cleanBinding()
     @addBinding()
+    @initRefresh()
+    @setupMainTargetNoteForm()
     @initTaskList()
 
   addBinding: ->
@@ -37,7 +37,7 @@ class @Notes
 
     # Reopen and close actions for Issue/MR combined with note form submit
     $(document).on "click", ".js-comment-button", @updateCloseButton
-    $(document).on "keyup", ".js-note-text", @updateTargetButtons
+    $(document).on "keyup input", ".js-note-text", @updateTargetButtons
 
     # remove a note (in general)
     $(document).on "click", ".js-note-delete", @removeNote
