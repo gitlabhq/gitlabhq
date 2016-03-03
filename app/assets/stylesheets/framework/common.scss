@@ -6,11 +6,15 @@
 .cdark { color: #444 }
 
 /** COMMON CLASSES **/
+.prepend-top-0 { margin-top: 0; }
+.prepend-top-5 { margin-top: 5px; }
 .prepend-top-10 { margin-top:10px }
 .prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-20 { margin-top:20px }
 .prepend-left-10 { margin-left:10px }
+.prepend-left-default { margin-left:$gl-padding }
 .prepend-left-20 { margin-left:20px }
+.append-right-5 { margin-right: 5px }
 .append-right-10 { margin-right:10px }
 .append-right-20 { margin-right:20px }
 .append-bottom-10 { margin-bottom:10px }
@@ -314,7 +318,7 @@ table {
 }
 
 .btn-sign-in {
-  margin-top: 8px;
+  margin-top: 10px;
   text-shadow: none;
 }
 

@@ -6,20 +6,24 @@ class Projects::ForksController < Projects::ApplicationController
   def index
     base_query = project.forks.includes(:creator)
 
-    @forks = if current_user
-               base_query.where('projects.visibility_level IN (?) OR projects.id IN (?)',
-                                Project.public_and_internal_levels,
-                                current_user.authorized_projects.pluck(:id))
-             else
-               base_query.where('projects.visibility_level = ?', Project::PUBLIC)
-             end
-
+    @forks               = base_query.merge(ProjectsFinder.new.execute(current_user))
     @total_forks_count   = base_query.size
     @private_forks_count = @total_forks_count - @forks.size
     @public_forks_count  = @total_forks_count - @private_forks_count
 
     @sort  = params[:sort] || 'id_desc'
+    @forks = @forks.search(params[:filter_projects]) if params[:filter_projects].present?
     @forks = @forks.order_by(@sort).page(params[:page]).per(PER_PAGE)
+
+    respond_to do |format|
+      format.html
+
+      format.json do
+        render json: {
+          html: view_to_html_string("projects/forks/_projects", projects: @forks)
+        }
+      end
+    end
   end
 
   def new

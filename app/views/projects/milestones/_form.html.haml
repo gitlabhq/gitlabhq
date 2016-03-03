@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form js-requires-input'}  do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @milestone], html: {class: 'form-horizontal milestone-form gfm-form js-quick-submit js-requires-input'}  do |f|
   -if @milestone.errors.any?
     .alert.alert-danger
       %ul
@@ -9,12 +9,12 @@
       .form-group
         = f.label :title, "Title", class: "control-label"
         .col-sm-10
-          = f.text_field :title, maxlength: 255, class: "form-control js-quick-submit", required: true, autofocus: true
+          = f.text_field :title, maxlength: 255, class: "form-control", required: true, autofocus: true
       .form-group.milestone-description
         = f.label :description, "Description", class: "control-label"
         .col-sm-10
           = render layout: 'projects/md_preview', locals: { preview_class: "md-preview" } do
-            = render 'projects/zen', f: f, attr: :description, classes: 'description form-control js-quick-submit'
+            = render 'projects/zen', f: f, attr: :description, classes: 'description form-control'
             = render 'projects/notes/hints'
           .clearfix
           .error-alert
