@@ -69,6 +69,7 @@ Feature: Search
   Scenario: I logout and should see project I am looking for
     Given project "Shop" is public
     And I logout
+    And I visit dashboard search page
     And I search for "Sho"
     Then I should see "Shop" project link
 
@@ -76,6 +77,7 @@ Feature: Search
     Given project "Shop" is public
     And I logout
     And project has issues
+    And I visit dashboard search page
     When I search for "Foo"
     And I click "Issues" link
     Then I should see "Foo" link in the search results
