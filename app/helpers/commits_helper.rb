@@ -214,7 +214,6 @@ module CommitsHelper
 
   def limited_commits(commits)
     if commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
-      # Not 100% sure we need to decorate but it is idempotent and not so slow
       [
         commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE),
         commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE
