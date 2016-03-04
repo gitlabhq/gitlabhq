@@ -23,7 +23,7 @@ describe "Issue", elastic: true do
 
     Issue.__elasticsearch__.refresh_index!
 
-    options = { projects_ids: [project.id] }
+    options = { project_ids: [project.id] }
 
     expect(Issue.elastic_search('term', options: options).total_count).to eq(2)
   end
