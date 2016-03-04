@@ -26,7 +26,6 @@ class @Todos
         return
 
       success: (data, textStatus, jqXHR) ->
-        new Flash(data.notice, 'success')
         _this.clearDone($this.closest('li'))
         return
 
