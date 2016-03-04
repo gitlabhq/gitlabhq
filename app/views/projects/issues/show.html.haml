@@ -19,7 +19,7 @@
           = icon('circle-o')
 
     %a.btn.btn-default.pull-right.hidden-sm.hidden-md.hidden-lg.gutter-toggle{ href: "#" }
-      =icon('angle-double-left')
+      = icon('angle-double-left')
 
     .issue-meta
       %strong.identifier
@@ -29,11 +29,11 @@
         .editor-details
           .editor-details
             %strong
-              =link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-xs")
+              = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-xs")
             %span.hidden-xs
               = '@' + @issue.author.username
             %strong
-              =link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
+              = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
                 by_username: true, avatar: false)
             = time_ago_with_tooltip(@issue.created_at)
 

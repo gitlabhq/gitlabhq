@@ -3,9 +3,9 @@
     %span.hidden-xs
       = @merge_request.state_human_name
     %span.hidden-sm.hidden-md.hidden-lg
-      =icon(@merge_request.state_icon_name)
+      = icon(@merge_request.state_icon_name)
   %a.btn.btn-default.pull-right.hidden-sm.hidden-md.hidden-lg.gutter-toggle{ href: "#" }
-    =icon('angle-double-left')
+    = icon('angle-double-left')
   .issue-meta
     %strong.identifier
       Merge Request ##{@merge_request.iid}
@@ -13,11 +13,11 @@
       by
       .editor-details
         %strong
-          =link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
+          = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
         %span.hidden-xs
           = '@' + @merge_request.author.username
         %strong
-          =link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
+          = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
             by_username: true, avatar: false)
         = time_ago_with_tooltip(@merge_request.created_at)
 

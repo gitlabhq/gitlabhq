@@ -135,9 +135,8 @@ form.edit-issue {
 }
 
 .editor-details {
-  @media (max-width: $screen-sm-max) {
-    display: block;
-  }
+  display: block;
+  
   @media (min-width: $screen-sm-min) {
     display: inline-block;
   }
