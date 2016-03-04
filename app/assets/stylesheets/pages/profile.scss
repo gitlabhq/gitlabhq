@@ -19,7 +19,7 @@
 
 .account-btn-link,
 .profile-settings-sidebar a {
-  color: $profile-settings-link-color;
+  color: $md-link-color;
 }
 
 .oauth-buttons {
@@ -171,16 +171,16 @@
 
 .profile-settings-content {
   a {
-    color: $profile-settings-link-color;
+    color: $md-link-color;
   }
 }
 
 .change-username-title {
-  color: $change-username-title-color;
+  color: $gl-warning;
 }
 
 .remove-account-title {
-  color: $remove-account-title-color;
+  color: $gl-danger;
 }
 
 .provider-btn-group {
