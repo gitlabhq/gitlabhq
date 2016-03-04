@@ -1,28 +1,23 @@
+- @sort ||= sort_value_recently_updated
+- archived = params[:archived]
 .dropdown.inline
   %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
     %span.light
-    - if @sort.present?
-      = sort_options_hash[@sort]
-    - else
-      = sort_title_recently_updated
+      = projects_sort_options_hash[@sort]
     %b.caret
   %ul.dropdown-menu.dropdown-menu-align-right
-    %li
-      = link_to filter_projects_path(sort: sort_value_name) do
-        = sort_title_name
-      = link_to filter_projects_path(sort: sort_value_recently_created) do
-        = sort_title_recently_created
-      = link_to filter_projects_path(sort: sort_value_oldest_created) do
-        = sort_title_oldest_created
-      = link_to filter_projects_path(sort: sort_value_recently_updated) do
-        = sort_title_recently_updated
-      = link_to filter_projects_path(sort: sort_value_oldest_updated) do
-        = sort_title_oldest_updated
+    - projects_sort_options_hash.each do |value, title|
+      %li
+        = link_to filter_projects_path(sort: value, archived: archived) do
+          = icon('check') if @sort == value
+          = title
+
     %li.divider
     %li
-      - if params[:archived].present?
-        = link_to filter_projects_path(sort: @sort, archived: nil) do
-          Hide archived projects
-      - else
-        = link_to filter_projects_path(sort: @sort, archived: true) do
-          Show archived projects
+      = link_to filter_projects_path(sort: @sort, archived: nil) do
+        = icon('check') unless params[:archived].present?
+        Hide archived projects
+    %li
+      = link_to filter_projects_path(sort: @sort, archived: true) do
+        = icon('check') if params[:archived].present?
+        Show archived projects
