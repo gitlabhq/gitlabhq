@@ -256,8 +256,46 @@ you started.
 
 #### How to set up GitLab Pages in a repository where there's also actual code
 
-You can have your project's code in the `master` branch and use an orphan
-`pages` branch that will host your static generator site.
+Remember that GitLab Pages are by default branch/tag agnostic and their
+deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
+the `pages` job with the [`only` parameter](../ci/yaml/README.md#only-and-except),
+whenever a new commit is pushed to a branch that will be used specifically for
+your pages.
+
+That way, you can have your project's code in the `master` branch and use an
+orphan branch (let's name it `pages`) that will host your static generator site.
+
+You can create a new empty branch like this:
+
+```bash
+git checkout --orphan pages
+```
+
+The first commit made on this new branch will have no parents and it will be
+the root of a new history totally disconnected from all the other branches and
+commits. Push the source files of your static generator in the `pages` branch.
+
+Below is a copy of `.gitlab-ci.yml` where the most significant line is the last
+one, specifying to execute everything in the `pages` branch:
+
+```
+pages:
+  images: jekyll/jekyll:latest
+  script:
+  - jekyll build -d public/
+  artifacts:
+    paths:
+    - public
+  only:
+  - pages
+```
+
+See an example that has different files in the [`master` branch][jekyll-master]
+and the source files for Jekyll are in a [`pages` branch][jekyll-pages] which
+also includes `.gitlab-ci.yml`.
+
+[jekyll-master]: https://gitlab.com/gitlab-examples/pages-jekyll-branched/tree/master
+[jekyll-pages]: https://gitlab.com/gitlab-examples/pages-jekyll-branched/tree/pages
 
 ## Next steps
 
