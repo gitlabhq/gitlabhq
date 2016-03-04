@@ -4,7 +4,6 @@ class @MergeRequestWidget
   #   check_enable           - Boolean, whether to check automerge status
   #   url_to_automerge_check - String, URL to use to check automerge status
   #   current_status         - String, current automerge status
-  #   ci_enable              - Boolean, whether a CI service is enabled
   #   url_to_ci_check        - String, URL to use to check CI status
   #
   constructor: (@opts) ->
