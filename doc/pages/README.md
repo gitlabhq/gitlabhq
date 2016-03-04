@@ -12,12 +12,6 @@ With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
 deploy static pages for your individual projects, your user or your group.
 
-The key thing about GitLab Pages is the [`.gitlab-ci.yml`](../ci/yaml/README.md)
-file, something that gives you absolute control over the build process. You can
-actually watch your website being built live by following the CI build traces.
-
-GitLab Pages support any kind of [static site generator][staticgen].
-
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -28,15 +22,22 @@ GitLab Pages support any kind of [static site generator][staticgen].
     - [GitLab Pages requirements](#gitlab-pages-requirements)
     - [User or group Pages](#user-or-group-pages)
     - [Project Pages](#project-pages)
-    - [Explore the contents of .gitlab-ci.yml](#explore-the-contents-of-gitlab-ci-yml)
+    - [Explore the contents of `.gitlab-ci.yml`](#explore-the-contents-of-gitlab-ciyml)
+        - [How `.gitlab-ci.yml` looks like when using plain HTML files](#how-gitlab-ciyml-looks-like-when-using-plain-html-files)
+        - [How `.gitlab-ci.yml` looks like when using a static generator](#how-gitlab-ciyml-looks-like-when-using-a-static-generator)
+        - [How to set up GitLab Pages in a repository where there's also actual code](#how-to-set-up-gitlab-pages-in-a-repository-where-there-s-also-actual-code)
 - [Next steps](#next-steps)
-    - [Adding a custom domain to your Pages website](#adding-a-custom-domain-to-your-pages-website)
-    - [Securing your custom domain website with TLS](#securing-your-custom-domain-website-with-tls)
-    - [Example projects](#example-projects)
+    - [Add a custom domain to your Pages website](#add-a-custom-domain-to-your-pages-website)
+    - [Secure your custom domain website with TLS](#secure-your-custom-domain-website-with-tls)
+    - [Use a static generator to develop your website](#use-a-static-generator-to-develop-your-website)
+        - [Example projects](#example-projects)
     - [Custom error codes pages](#custom-error-codes-pages)
     - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
 - [Limitations](#limitations)
 - [Frequently Asked Questions](#frequently-asked-questions)
+    - [Can I download my generated pages?](#can-i-download-my-generated-pages)
+    - [Can I use GitLab Pages if my project is private?](#can-i-use-gitlab-pages-if-my-project-is-private)
+    - [Q: Do I have to create a project named `username.example.io` in order to host a project website?](#q-do-i-have-to-create-a-project-named-username-example-io-in-order-to-host-a-project-website)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -49,13 +50,16 @@ GitLab Pages support any kind of [static site generator][staticgen].
 
 In general there are two types of pages one might create:
 
-- Pages per user/group (`username.example.io`)
-- Pages per project (`username.example.io/projectname`)
+- Pages per user (`username.example.io`) or per group (`groupname.example.io`)
+- Pages per project (`username.example.io/projectname` or `groupname.example.io/projectname`)
 
 In GitLab, usernames and groupnames are unique and we often refer to them
-as namespaces. There can be only one namespace in a GitLab instance.
+as namespaces. There can be only one namespace in a GitLab instance. Below you
+can see the connection between the type of GitLab Pages, what the project name
+that is created on GitLab looks like and the website URL it will be ultimately
+be served on.
 
-| Type of GitLab Pages | Project name created in GitLab | Website URL |
+| Type of GitLab Pages | The name of the project created in GitLab | Website URL |
 | -------------------- | ------------ | ----------- |
 | User pages  | `username.example.io`  | `http(s)://username.example.io`  |
 | Group pages | `groupname.example.io` | `http(s)://groupname.example.io` |
@@ -74,9 +78,9 @@ In brief, this is what you need to upload your website in GitLab Pages:
    (ask your administrator). This is very important, so you should first make
    sure you get that right.
 1. Create a project
-1. Push a [`.gitlab-ci.yml`](../ci/yaml/README.md) file in your repository with
-   a specific job named [`pages`][pages]
-1. A GitLab Runner to build GitLab Pages
+1. Push a [`.gitlab-ci.yml` file](../ci/yaml/README.md) in the root directory
+   of your repository with a specific job named [`pages`][pages].
+1. Set up a GitLab Runner to build your website
 
 > **Note:**
 > If [shared runners](../ci/runners/README.md) are enabled by your GitLab
@@ -84,63 +88,91 @@ In brief, this is what you need to upload your website in GitLab Pages:
 
 ### User or group Pages
 
+For user and group pages, the name of the project should be specific to the
+username or groupname and the general domain name that is used for GitLab Pages.
 Head over your GitLab instance that supports GitLab Pages and create a
 repository named `username.example.io`, where `username` is your username on
 GitLab. If the first part of the project name doesn't match exactly your
 username, it won’t work, so make sure to get it right.
 
-![Create a user-based pages repository](img/create_user_page.png)
-
----
-
 To create a group page, the steps are the same like when creating a website for
 users. Just make sure that you are creating the project within the group's
 namespace.
+
+![Create a user-based pages project](img/pages_create_user_page.png)
+
+---
 
 After you push some static content to your repository and GitLab Runner uploads
 the artifacts to GitLab CI, you will be able to access your website under
 `http(s)://username.example.io`. Keep reading to find out how.
 
+>**Note:**
+If your username/groupname contains a dot, for example `foo.bar`, you will not
+be able to use the wildcard domain HTTPS, read more at [limitations](#limitations).
+
 ### Project Pages
 
-> **Note:**
-> You do _not_ have to create a project named `username.example.io` in order to
-> serve a project's page.
+GitLab Pages for projects can be created by both user and group accounts.
+The steps to create a project page for a user or a group are identical:
 
+1. Create a new project
+1. Push a [`.gitlab-ci.yml` file](../ci/yaml/README.md) in the root directory
+   of your repository with a specific job named [`pages`][pages].
+1. Set up a GitLab Runner to build your website
 
-### Explore the contents of .gitlab-ci.yml
+A user's project will be served under `http(s)://username.example.io/projectname`
+whereas a group's project under `http(s)://groupname.example.io/projectname`.
+
+### Explore the contents of `.gitlab-ci.yml`
+
+The key thing about GitLab Pages is the `.gitlab-ci.yml` file, something that
+gives you absolute control over the build process. You can actually watch your
+website being built live by following the CI build traces.
 
 > **Note:**
 > Before reading this section, make sure you familiarize yourself with GitLab CI
 > and the specific syntax of[`.gitlab-ci.yml`](../ci/yaml/README.md) by
 > following our [quick start guide](../ci/quick_start/README.md).
 
-To make use of GitLab Pages, your `.gitlab-ci.yml` must follow the rules below:
+To make use of GitLab Pages, the contents of `.gitlab-ci.yml` must follow the
+rules below:
 
-1. A special [`pages`][pages] job must be defined
-1. Any static content must be placed under a `public/` directory
+1. A special job named [`pages`][pages] must be defined
+1. Any static content which will be served by GitLab Pages must be placed under
+   a `public/` directory
 1. `artifacts` with a path to the `public/` directory must be defined
+
+In its simplest form, `.gitlab-ci.yml` looks like:
+
+```yaml
+pages:
+  script:
+  - my_commands
+  artifacts:
+    paths:
+    - public
+```
+
+When the Runner reaches to build the `pages` job, it executes whatever is
+defined in the `script` parameter and if the build completes with a non-zero
+exit status, it then uploads the `public/` directory to GitLab Pages.
+
+The `public/` directory should contain all the static content of your website.
+Depending on how you plan to publish your website, the steps defined in the
+[`script` parameter](../ci/yaml/README.md#script) may differ.
 
 Be aware that Pages are by default branch/tag agnostic and their deployment
 relies solely on what you specify in `.gitlab-ci.yml`. If you don't limit the
 `pages` job with the [`only` parameter](../ci/yaml/README.md#only-and-except),
 whenever a new commit is pushed to whatever branch or tag, the Pages will be
-overwritten. In the examples below, we limit the Pages to be deployed whenever
-a commit is pushed only on the `master` branch, which is advisable to do so.
-
-The pages are created after the build completes successfully and the artifacts
-for the `pages` job are uploaded to GitLab.
-
-The example below uses [Jekyll][] and generates the created HTML files
-under the `public/` directory.
+overwritten. In the example below, we limit the Pages to be deployed whenever
+a commit is pushed only on the `master` branch:
 
 ```yaml
-image: ruby:2.1
-
 pages:
   script:
-  - gem install jekyll
-  - jekyll build -d public/
+  - my_commands
   artifacts:
     paths:
     - public
@@ -148,14 +180,28 @@ pages:
   - master
 ```
 
-The example below doesn't use any static site generator, but simply moves all
-files from the root of the project to the `public/` directory. The `.public`
-workaround is so `cp` doesn't also copy `public/` to itself in an infinite
-loop.
+We then tell the Runner to treat the `public/` directory as `artifacts` and
+upload it to GitLab. And since all these parameters were all under a `pages`
+job, the contents of the `public` directory will be served by GitLab Pages.
+
+#### How `.gitlab-ci.yml` looks like when the static content is in your repository
+
+Supposedly your repository contained the following files:
+
+```
+├── index.html
+├── css
+│   └── main.css
+└── js
+    └── main.js
+```
+
+Then the `.gitlab-ci.yml` example below simply moves all files from the root
+directory of the project to the `public/` directory. The `.public` workaround
+is so `cp` doesn't also copy `public/` to itself in an infinite loop:
 
 ```yaml
 pages:
-  stage: deploy
   script:
   - mkdir .public
   - cp -r * .public
@@ -167,27 +213,84 @@ pages:
   - master
 ```
 
-### Remove the contents of your pages
+### How `.gitlab-ci.yml` looks like when using a static generator
 
-Pages can be explicitly removed from a project by clicking **Remove Pages**
-in your project's **Settings > Pages**.
+In general, GitLab Pages support any kind of [static site generator][staticgen],
+since the Runner can be configured to run any possible command.
 
-![Remove pages](img/pages_remove.png)
+In the root directory of your Git repository, place the source files of your
+favorite static generator. Then provide a `.gitlab-ci.yml` file which is
+specific to your static generator.
+
+The example below, uses [Jekyll] to build the static site:
+
+```yaml
+pages:
+  images: jekyll/jekyll:latest
+  script:
+  - jekyll build -d public/
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+```
+
+Here, we used the Docker executor and in the first line we specified the base
+image against which our builds will run.
+
+You have to make sure that the generated static files are ultimately placed
+under the `public` directory, that's why in the `script` section we run the
+`jekyll` command that builds the website and puts all content in the `public/`
+directory.
+
+We then tell the Runner to treat the `public/` directory as `artifacts` and
+upload it to GitLab.
+
+---
+
+See the [jekyll example project][pages-jekyll] to better understand how this
+works.
+
+For a list of Pages projects, see [example projects](#example-projects) to get
+you started.
+
+#### How to set up GitLab Pages in a repository where there's also actual code
+
+You can have your project's code in the `master` branch and use an orphan
+`pages` branch that will host your static generator site.
 
 ## Next steps
 
-### Adding a custom domain to your Pages website
+### Add a custom domain to your Pages website
 
+If this setting is enabled by your GitLab administrator, you should be able to
+see the **New Domain** button when visiting your project's **Settings > Pages**.
 
-### Securing your custom domain website with TLS
+![New domain button](img/pages_new_domain_button.png)
 
-### Example projects
+---
+
+You are not limited to one domain per can add multiple domains pointing to your
+website hosted under GitLab.
+
+### Secure your custom domain website with TLS
+
+### Use a static generator to develop your website
+
+#### Example projects
 
 Below is a list of example projects for GitLab Pages with a plain HTML website
 or various static site generators. Contributions are very welcome.
 
 - [Plain HTML](https://gitlab.com/gitlab-examples/pages-plain-html)
 - [Jekyll](https://gitlab.com/gitlab-examples/pages-jekyll)
+- [Hugo](https://gitlab.com/gitlab-examples/pages-hugo)
+- [Middleman](https://gitlab.com/gitlab-examples/pages-middleman)
+- [Hexo](https://gitlab.com/gitlab-examples/pages-hexo)
+- [Brunch](https://gitlab.com/gitlab-examples/pages-brunch)
+- [Metalsmith](https://gitlab.com/gitlab-examples/pages-metalsmith)
+- [Harp](https://gitlab.com/gitlab-examples/pages-harp)
 
 ### Custom error codes pages
 
@@ -216,15 +319,20 @@ don't redirect HTTP to HTTPS.
 
 ## Frequently Asked Questions
 
-**Q: Can I download my generated pages?**
+### Can I download my generated pages?
 
 Sure. All you need to do is download the artifacts archive from the build page.
 
+### Can I use GitLab Pages if my project is private?
 
-**Q: Can I use GitLab Pages if my project is private?**
-
-Yes. GitLab Pages doesn't care whether you set your project's visibility level
+Yes. GitLab Pages don't care whether you set your project's visibility level
 to private, internal or public.
+
+### Q: Do I have to create a project named `username.example.io` in order to host a project website?
+
+No. You can create a new project named `foo` and have it served under
+`http(s)://username.example.io/foo` without having previously created a
+user page.
 
 ---
 
@@ -236,3 +344,4 @@ to private, internal or public.
 [gitlab runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 [pages]: ../ci/yaml/README.md#pages
 [staticgen]: https://www.staticgen.com/
+[pages-jekyll]: https://gitlab.com/gitlab-examples/pages-jekyll
