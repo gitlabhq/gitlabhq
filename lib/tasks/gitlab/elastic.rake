@@ -1,6 +1,13 @@
 namespace :gitlab do
   namespace :elastic do
-    desc "Indexing repositories"
+    desc "GitLab | Update Elasticsearch indexes"
+    task index: :environment do
+      Rake::Task["gitlab:elastic:index_repositories"].invoke
+      Rake::Task["gitlab:elastic:index_wikis"].invoke
+      Rake::Task["gitlab:elastic:index_database"].invoke
+    end
+
+    desc "GitLab | Update Elasticsearch indexes for Repository"
     task index_repositories: :environment  do
       Repository.__elasticsearch__.create_index!
 
@@ -47,7 +54,7 @@ namespace :gitlab do
       end
     end
 
-    desc "Indexing all wikis"
+    desc "GitLab | Update Elasticsearch indexes for Wiki"
     task index_wikis: :environment  do
       ProjectWiki.__elasticsearch__.create_index!
 
@@ -66,7 +73,7 @@ namespace :gitlab do
       end
     end
 
-    desc "Create indexes in the Elasticsearch from database records"
+    desc "GitLab | Update Elasticsearch indexes for all database objects"
     task index_database: :environment do
       [Project, Issue, MergeRequest, Snippet, Note, Milestone].each do |klass|
         klass.__elasticsearch__.create_index!
@@ -79,7 +86,7 @@ namespace :gitlab do
       end
     end
 
-    desc "Create empty indexes"
+    desc "GitLab | Create empty Elasticsearch indexes"
     task create_empty_indexes: :environment do
       [
         Project,
