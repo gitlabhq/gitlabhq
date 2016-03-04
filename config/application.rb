@@ -93,5 +93,9 @@ module Gitlab
 
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
+
+    config.generators do |g|
+      g.factory_girl false
+    end
   end
 end
