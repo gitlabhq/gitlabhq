@@ -474,7 +474,7 @@ describe User, models: true do
       expect(described_class.search(user.name[0..2])).to eq([user])
     end
 
-    it 'returns users with a matching name regarding of the casing' do
+    it 'returns users with a matching name regardless of the casing' do
       expect(described_class.search(user.name.upcase)).to eq([user])
     end
 
@@ -486,7 +486,7 @@ describe User, models: true do
       expect(described_class.search(user.email[0..2])).to eq([user])
     end
 
-    it 'returns users with a matching Email regarding of the casing' do
+    it 'returns users with a matching Email regardless of the casing' do
       expect(described_class.search(user.email.upcase)).to eq([user])
     end
 
@@ -498,7 +498,7 @@ describe User, models: true do
       expect(described_class.search(user.username[0..2])).to eq([user])
     end
 
-    it 'returns users with a matching username regarding of the casing' do
+    it 'returns users with a matching username regardless of the casing' do
       expect(described_class.search(user.username.upcase)).to eq([user])
     end
   end

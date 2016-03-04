@@ -32,7 +32,7 @@ describe Issue, "Issuable" do
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
-    it 'returns notches with a matching title' do
+    it 'returns notes with a matching title' do
       expect(described_class.search(searchable_issue.title)).
         to eq([searchable_issue])
     end
@@ -52,7 +52,7 @@ describe Issue, "Issuable" do
       create(:issue, title: "Searchable issue", description: 'kittens')
     end
 
-    it 'returns notches with a matching title' do
+    it 'returns notes with a matching title' do
       expect(described_class.full_search(searchable_issue.title)).
         to eq([searchable_issue])
     end
@@ -66,7 +66,7 @@ describe Issue, "Issuable" do
         to eq([searchable_issue])
     end
 
-    it 'returns notches with a matching description' do
+    it 'returns notes with a matching description' do
       expect(described_class.full_search(searchable_issue.description)).
         to eq([searchable_issue])
     end
