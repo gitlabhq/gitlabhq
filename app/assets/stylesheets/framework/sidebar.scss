@@ -39,7 +39,7 @@
 }
 
 .sidebar-wrapper {
-  z-index: 99;
+  z-index: 999;
   background: $background-color;
 }
 
@@ -203,7 +203,11 @@
 }
 
 @mixin expanded-sidebar {
-  padding-left: $sidebar_width;
+  padding-left: $sidebar_collapsed_width;
+
+  @media (min-width: $screen-sm-min) {
+    padding-left: $sidebar_width;
+  }
 
   &.right-sidebar-collapsed {
     /* Extra small devices (phones, less than 768px) */

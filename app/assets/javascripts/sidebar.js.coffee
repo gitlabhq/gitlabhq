@@ -1,8 +1,8 @@
-$(document).on("click", '.toggle-nav-collapse', (e) ->
-  e.preventDefault()
-  collapsed = 'page-sidebar-collapsed'
-  expanded = 'page-sidebar-expanded'
+mobileWidth = 768
+collapsed = 'page-sidebar-collapsed'
+expanded = 'page-sidebar-expanded'
 
+toggleSidebar = ->
   $('.page-with-sidebar').toggleClass("#{collapsed} #{expanded}")
   $('header').toggleClass("header-collapsed header-expanded")
   $('.sidebar-wrapper').toggleClass("sidebar-collapsed sidebar-expanded")
@@ -14,4 +14,13 @@ $(document).on("click", '.toggle-nav-collapse', (e) ->
     niceScrollBars.updateScrollBar();
   ), 300
 
+$(document).on("click", '.toggle-nav-collapse', (e) ->
+  e.preventDefault()
+
+  toggleSidebar()
 )
+
+$(document).ready ->
+  if $(window).width() < mobileWidth
+    if $('.page-with-sidebar').hasClass(expanded)
+      toggleSidebar()
