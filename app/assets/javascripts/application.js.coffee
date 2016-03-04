@@ -225,8 +225,8 @@ $ ->
           $gutterIcon.closest('a').trigger('click')
 
   $(document)
-    .off 'click', '.gutter-toggle'
-    .on 'click', '.gutter-toggle', (e) ->
+    .off 'click', 'aside .gutter-toggle'
+    .on 'click', 'aside .gutter-toggle', (e, manual) ->
       e.preventDefault()
       $this = $(this)
       $thisIcon = $this.find 'i'
@@ -251,9 +251,10 @@ $ ->
         $('.page-with-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
-      $.cookie("collapsed_gutter",
-        $('.right-sidebar')
-          .hasClass('right-sidebar-collapsed'), { path: '/' })
+      if not manual
+        $.cookie("collapsed_gutter",
+          $('.right-sidebar')
+            .hasClass('right-sidebar-collapsed'), { path: '/' })
 
   bootstrapBreakpoint = undefined;
   checkBootstrapBreakpoints = ->
