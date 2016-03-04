@@ -41,7 +41,7 @@ describe Namespace, models: true do
     it { expect(namespace.human_name).to eq(namespace.owner_name) }
   end
 
-  describe '#search' do
+  describe '.search' do
     let(:namespace) { create(:namespace) }
 
     it 'returns namespaces with a matching name' do
