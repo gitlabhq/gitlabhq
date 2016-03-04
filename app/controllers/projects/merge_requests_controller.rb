@@ -233,8 +233,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     response = {
-      status: status || :not_found,
-      coverage: coverage || :not_found
+      status: status || nil,
+      coverage: coverage || nil
     }
 
     render json: response, status: 200

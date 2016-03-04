@@ -1,5 +1,3 @@
-# Written by GitLab @gitlab
-
 ((w) ->
   notifyMe = (message,body, icon) ->
     notification = undefined
