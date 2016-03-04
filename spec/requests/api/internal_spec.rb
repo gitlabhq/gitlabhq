@@ -48,6 +48,14 @@ describe API::API, api: true  do
     end
   end
 
+  describe "GET /internal/ssh-key" do
+    it "fails with not implemented" do
+      get(api("/internal/ssh-key"), secret_token: secret_token)
+
+      expect(response.status).to eq(501)
+    end
+  end
+
   describe "POST /internal/allowed" do
     context "access granted" do
       before do

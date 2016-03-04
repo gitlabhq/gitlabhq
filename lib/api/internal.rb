@@ -53,6 +53,15 @@ module API
       end
 
       #
+      # Get a ssh key by the fingerprint
+      #
+      # Not supported in CE
+      #
+      get "/ssh-key" do
+        status 501
+      end
+
+      #
       # Discover user by ssh key
       #
       get "/discover" do
