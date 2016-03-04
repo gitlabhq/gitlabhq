@@ -23,30 +23,30 @@
   .line_holder {
     .diff-line-num {
       &.old {
-        background: #ffdddd;
-        border-color: #f1c0c0;
+        background: #f9d7dc;
+        border-color: #fac5cd;
       }
 
       &.new {
-        background: #dbffdb;
-        border-color: #c1e9c1;
+        background: #ddfbe6;
+        border-color: #c7f0d1;
       }
     }
 
     .line_content {
       &.old {
-        background: #ffecec;
+        background: #fbe9eb;
 
         span.idiff {
-          background-color: #f8cbcb;
+          background-color: #ffbfc9;
         }
       }
 
       &.new {
-        background: #eaffea;
+        background: #ecfdf0;
 
         span.idiff {
-          background-color: #a6f3a6;
+          background-color: #bdf0cc;
         }
       }
 
@@ -59,7 +59,7 @@
 
   // highlight line via anchor
   pre .hll {
-    background-color: #f8eec7 !important;
+    background-color: #fcf8e6 !important;
   }
 
   // Search result highlight
