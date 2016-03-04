@@ -17,6 +17,7 @@ v 8.6.0 (unreleased)
   - Return empty array instead of 404 when commit has no statuses in commit status API
   - Decrease the font size and the padding of the `.anchor` icons used in the README (Roberto Dip)
   - Rewrite logo to simplify SVG code (Sean Lang)
+  - Refactor and greatly improve search performance
   - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
