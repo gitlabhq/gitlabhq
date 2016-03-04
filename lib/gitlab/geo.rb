@@ -24,7 +24,7 @@ module Gitlab
       RequestStore.store[:geo_node_primary?] ||= self.enabled? && self.current_node && self.current_node.primary?
     end
 
-    def self.readonly?
+    def self.secondary?
       RequestStore.store[:geo_node_readonly?] ||= self.enabled? && self.current_node && !self.current_node.primary?
     end
 

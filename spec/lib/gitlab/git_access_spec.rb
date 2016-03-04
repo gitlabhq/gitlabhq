@@ -260,10 +260,10 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
-    context "when in a readonly gitlab geo node" do
+    context "when in a secondary gitlab geo node" do
       before do
         allow(Gitlab::Geo).to receive(:enabled?) { true }
-        allow(Gitlab::Geo).to receive(:readonly?) { true }
+        allow(Gitlab::Geo).to receive(:secondary?) { true }
       end
 
       permissions_matrix.keys.each do |role|
@@ -285,11 +285,11 @@ describe Gitlab::GitAccess, lib: true do
     context "when using git annex" do
       before { project.team << [user, :master] }
 
-      describe 'and gitlab geo is enabled in a readonly node' do
+      describe 'and gitlab geo is enabled in a secondary node' do
         before do
           allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true)
           allow(Gitlab::Geo).to receive(:enabled?) { true }
-          allow(Gitlab::Geo).to receive(:readonly?) { true }
+          allow(Gitlab::Geo).to receive(:secondary?) { true }
         end
 
         it { expect(access.push_access_check(git_annex_changes)).not_to be_allowed }

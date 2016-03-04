@@ -94,7 +94,7 @@ module Gitlab
 
     def push_access_check(changes)
 
-      if Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
+      if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
         return build_status_object(false, "You can't push code on a secondary Gitlab Geo node.")
       end
 
@@ -336,8 +336,8 @@ module Gitlab
         return build_status_object(false, "Repository does not exist")
       end
 
-      if Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
-        return build_status_object(false, "You can't use git-annex with Gitlab Geo secondary node.")
+      if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
+        return build_status_object(false, "You can't use git-annex with a secondary Gitlab Geo node.")
       end
 
       if user.can?(:push_code, project)

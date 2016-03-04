@@ -17,10 +17,10 @@ describe Gitlab::GitAccessWiki, lib: true do
 
       it { expect(subject.allowed?).to be_truthy }
 
-      context 'when in a readonly gitlab geo node' do
+      context 'when in a secondary gitlab geo node' do
         before do
           allow(Gitlab::Geo).to receive(:enabled?) { true }
-          allow(Gitlab::Geo).to receive(:readonly?) { true }
+          allow(Gitlab::Geo).to receive(:secondary?) { true }
         end
 
         it { expect(subject.allowed?).to be_falsey }
