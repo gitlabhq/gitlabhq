@@ -4,7 +4,7 @@
   height: 0;
   margin-left: 2px;
   vertical-align: middle;
-  border-top: $caret-width-base dashed;
+  border-top: $caret-width-base dashed $dropdown-caret-color;
   border-right: $caret-width-base solid transparent;
   border-left: $caret-width-base solid transparent;
 }
