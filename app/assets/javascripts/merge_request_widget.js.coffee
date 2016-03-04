@@ -11,9 +11,6 @@ class @MergeRequestWidget
     modal = $('#modal_merge_info').modal(show: false)
     @getBuildStatus()
     # clear the build poller
-    $(document)
-      .off 'page:fetch'
-      .on 'page:fetch', (e) => clearInterval(@fetchBuildStatusInterval)
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
@@ -65,7 +62,7 @@ class @MergeRequestWidget
               _this.ciLabelForStatus(data.status)), 
             _this.opts.gitlab_icon)
           setTimeout (->
-            window.location.reload()
+            Turbolinks.visit(location.href)
             return
           ), 2000
           _this.opts.current_status = data.status

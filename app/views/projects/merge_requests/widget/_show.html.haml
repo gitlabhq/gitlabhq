@@ -27,4 +27,6 @@
     opts.ci_message = "Build {{status}} for #{@merge_request.last_commit.sha}";
 
 :javascript
-  merge_request_widget = new MergeRequestWidget(opts);
+  if(typeof merge_request_widget === 'undefined') {
+    merge_request_widget = new MergeRequestWidget(opts);
+  }
