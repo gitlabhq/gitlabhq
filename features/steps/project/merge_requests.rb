@@ -404,7 +404,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is correct"
-      click_button "Add Comment"
+      click_button "Comment"
     end
 
     page.within ".files [id^=diff]:nth-child(2) .note-body > .note-text" do
