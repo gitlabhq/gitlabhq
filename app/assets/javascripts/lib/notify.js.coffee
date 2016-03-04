@@ -24,4 +24,5 @@
   return
 ) window
 
-Notification.requestPermission()
+if 'Notification' of window
+  Notification.requestPermission()
