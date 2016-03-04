@@ -470,6 +470,11 @@ class @Notes
     form.find("#note_line_code").val dataHolder.data("lineCode")
     form.find("#note_noteable_type").val dataHolder.data("noteableType")
     form.find("#note_noteable_id").val dataHolder.data("noteableId")
+    form.find('.js-note-discard')
+        .show()
+        .removeClass('js-note-discard')
+        .addClass('js-close-discussion-note-form')
+        .text(form.find('.js-close-discussion-note-form').data('cancel-text'))
     @setupNoteForm form
     form.find(".js-note-text").focus()
     form.addClass "js-discussion-note-form"
