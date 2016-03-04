@@ -24,7 +24,7 @@ deploy static pages for your individual projects, your user or your group.
     - [Project Pages](#project-pages)
     - [Explore the contents of `.gitlab-ci.yml`](#explore-the-contents-of-gitlab-ciyml)
         - [How `.gitlab-ci.yml` looks like when the static content is in your repository](#how-gitlab-ciyml-looks-like-when-the-static-content-is-in-your-repository)
-    - [How `.gitlab-ci.yml` looks like when using a static generator](#how-gitlab-ciyml-looks-like-when-using-a-static-generator)
+        - [How `.gitlab-ci.yml` looks like when using a static generator](#how-gitlab-ciyml-looks-like-when-using-a-static-generator)
         - [How to set up GitLab Pages in a repository where there's also actual code](#how-to-set-up-gitlab-pages-in-a-repository-where-there-s-also-actual-code)
 - [Next steps](#next-steps)
     - [Example projects](#example-projects)
@@ -212,7 +212,7 @@ pages:
   - master
 ```
 
-### How `.gitlab-ci.yml` looks like when using a static generator
+#### How `.gitlab-ci.yml` looks like when using a static generator
 
 In general, GitLab Pages support any kind of [static site generator][staticgen],
 since the Runner can be configured to run any possible command.
@@ -299,6 +299,9 @@ also includes `.gitlab-ci.yml`.
 
 ## Next steps
 
+So you have successfully deployed your website, congratulations! Let's check
+what more you can do with GitLab Pages.
+
 ### Example projects
 
 Below is a list of example projects for GitLab Pages with a plain HTML website
@@ -313,6 +316,9 @@ or various static site generators. Contributions are very welcome.
 - [Metalsmith](https://gitlab.com/gitlab-examples/pages-metalsmith)
 - [Harp](https://gitlab.com/gitlab-examples/pages-harp)
 
+Visit the gitlab-examples group for a full list of projects:
+<https://gitlab.com/groups/gitlab-examples>.
+
 ### Add a custom domain to your Pages website
 
 If this setting is enabled by your GitLab administrator, you should be able to
@@ -322,11 +328,27 @@ see the **New Domain** button when visiting your project's **Settings > Pages**.
 
 ---
 
-You are not limited to one domain per can add multiple domains pointing to your
-website hosted under GitLab.
+You can add multiple domains pointing to your website hosted under GitLab.
+Once the domain is added, you can see it listed under the **Domains** section.
+
+![Pages multiple domains](img/pages_multiple_domains.png)
+
+---
+
+As a last step, you need to configure your DNS and add a CNAME pointing to your
+user/group page. Click on the **Details** button of a domain for further
+instructions.
+
+![Pages DNS details](img/pages_dns_details.png)
 
 ### Secure your custom domain website with TLS
 
+When you add a new custom domain, you also have the chance to add a TLS
+certificate. If this setting is enabled by your GitLab administrator, you
+should be able to see the option to upload the public certificate and the
+private key when adding a new domain.
+
+![Pages upload cert](img/pages_upload_cert.png)
 
 ### Custom error codes pages
 
