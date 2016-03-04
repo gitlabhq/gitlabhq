@@ -37,7 +37,7 @@ module Elastic
           query_hash[:track_scores] = true
         end
 
-        query_hash = project_ids_filter(query_hash, options[:projects_ids])
+        query_hash = project_ids_filter(query_hash, options[:project_ids])
 
         query_hash[:sort] = [
           { updated_at_sort: { order: :desc, mode: :min } },

@@ -63,7 +63,7 @@ module Gitlab
 
       def issues
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids
         }
 
         Issue.elastic_search(query, options: opt)
@@ -71,7 +71,7 @@ module Gitlab
 
       def milestones
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids
         }
 
         Milestone.elastic_search(query, options: opt)
@@ -79,7 +79,7 @@ module Gitlab
 
       def merge_requests
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids
         }
 
         MergeRequest.elastic_search(query, options: opt)
