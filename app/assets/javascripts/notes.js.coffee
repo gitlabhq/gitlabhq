@@ -51,6 +51,9 @@ class @Notes
     $(document).on "ajax:complete", ".js-main-target-form", @reenableTargetFormSubmitButton
     $(document).on "ajax:success", ".js-main-target-form", @resetMainTargetForm
 
+    # reset main target form when clicking discard
+    $(document).on "click", ".js-note-discard", @resetMainTargetForm
+
     # update the file name when an attachment is selected
     $(document).on "change", ".js-note-attachment-input", @updateFormAttachment
 
@@ -85,6 +88,7 @@ class @Notes
     $(document).off "keyup", ".js-note-text"
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
+    $(document).off "click", ".js-note-discard"
 
     $('.note .js-task-list-container').taskList('disable')
     $(document).off 'tasklist:changed', '.note .js-task-list-container'
@@ -219,7 +223,7 @@ class @Notes
   Resets text and preview.
   Resets buttons.
   ###
-  resetMainTargetForm: ->
+  resetMainTargetForm: (e) =>
     form = $(".js-main-target-form")
 
     # remove validation errors
@@ -230,6 +234,8 @@ class @Notes
     form.find(".js-note-text").val("").trigger "input"
 
     form.find(".js-note-text").data("autosave").reset()
+
+    @updateTargetButtons(e)
 
   reenableTargetFormSubmitButton: ->
     form = $(".js-main-target-form")
@@ -274,8 +280,10 @@ class @Notes
     form.removeClass "js-new-note-form"
     form.find('.div-dropzone').remove()
 
+    # hide discard button
+    form.find('.js-note-discard').hide()
+
     # setup preview buttons
-    form.find(".js-md-write-button, .js-md-preview-button").tooltip placement: "left"
     previewButton = form.find(".js-md-preview-button")
 
     textarea = form.find(".js-note-text")
@@ -561,21 +569,52 @@ class @Notes
   updateCloseButton: (e) =>
     textarea = $(e.target)
     form = textarea.parents('form')
-    form.find('.js-note-target-close').text('Close')
+    closebtn = form.find('.js-note-target-close')
+    closebtn.text(closebtn.data('original-text'))
 
   updateTargetButtons: (e) =>
     textarea = $(e.target)
     form = textarea.parents('form')
+    reopenbtn = form.find('.js-note-target-reopen')
+    closebtn = form.find('.js-note-target-close')
+    discardbtn = form.find('.js-note-discard')
+
     if textarea.val().trim().length > 0
-      form.find('.js-note-target-reopen').text('Comment & reopen')
-      form.find('.js-note-target-close').text('Comment & close')
-      form.find('.js-note-target-reopen').addClass('btn-comment-and-reopen')
-      form.find('.js-note-target-close').addClass('btn-comment-and-close')
+      reopentext = reopenbtn.data('alternative-text')
+      closetext = closebtn.data('alternative-text')
+
+      if reopenbtn.text() isnt reopentext
+        reopenbtn.text(reopentext)
+
+      if closebtn.text() isnt closetext
+        closebtn.text(closetext)
+
+      if reopenbtn.is(':not(.btn-comment-and-reopen)')
+        reopenbtn.addClass('btn-comment-and-reopen')
+
+      if closebtn.is(':not(.btn-comment-and-close)')
+        closebtn.addClass('btn-comment-and-close')
+
+      if discardbtn.is(':hidden')
+        discardbtn.show()
     else
-      form.find('.js-note-target-reopen').text('Reopen')
-      form.find('.js-note-target-close').text('Close')
-      form.find('.js-note-target-reopen').removeClass('btn-comment-and-reopen')
-      form.find('.js-note-target-close').removeClass('btn-comment-and-close')
+      reopentext = reopenbtn.data('original-text')
+      closetext = closebtn.data('original-text')
+
+      if reopenbtn.text() isnt reopentext
+        reopenbtn.text(reopentext)
+
+      if closebtn.text() isnt closetext
+        closebtn.text(closebtn.data('original-text'))
+
+      if reopenbtn.is(':not(.btn-comment-and-reopen)')
+        reopenbtn.removeClass('btn-comment-and-reopen')
+
+      if closebtn.is(':not(.btn-comment-and-close)')
+        closebtn.removeClass('btn-comment-and-close')
+
+      if discardbtn.is(':visible')
+        discardbtn.hide()
 
   initTaskList: ->
     @enableTaskList()
