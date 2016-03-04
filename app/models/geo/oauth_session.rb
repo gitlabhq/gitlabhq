@@ -45,7 +45,7 @@ class Geo::OauthSession
   def generate_oauth_hmac(salt)
     return unless return_to
     digest = OpenSSL::Digest.new('sha256')
-    key = GitlabCi::Application.secrets.secret_key_base + salt
+    key = Gitlab::Application.secrets.secret_key_base + salt
     OpenSSL::HMAC.hexdigest(digest, key, return_to)
   end
 
