@@ -8,21 +8,21 @@
     %b.caret
   %ul.dropdown-menu.dropdown-menu-align-right
     %li
-      = link_to explore_projects_filter_path(sort: sort_value_name) do
+      = link_to filter_projects_path(sort: sort_value_name) do
         = sort_title_name
-      = link_to explore_projects_filter_path(sort: sort_value_recently_created) do
+      = link_to filter_projects_path(sort: sort_value_recently_created) do
         = sort_title_recently_created
-      = link_to explore_projects_filter_path(sort: sort_value_oldest_created) do
+      = link_to filter_projects_path(sort: sort_value_oldest_created) do
         = sort_title_oldest_created
-      = link_to explore_projects_filter_path(sort: sort_value_recently_updated) do
+      = link_to filter_projects_path(sort: sort_value_recently_updated) do
         = sort_title_recently_updated
-      = link_to explore_projects_filter_path(sort: sort_value_oldest_updated) do
+      = link_to filter_projects_path(sort: sort_value_oldest_updated) do
         = sort_title_oldest_updated
     %li.divider
     %li
       - if params[:archived].present?
-        = link_to explore_projects_filter_path(sort: @sort, archived: nil) do
+        = link_to filter_projects_path(sort: @sort, archived: nil) do
           Hide archived projects
       - else
-        = link_to explore_projects_filter_path(sort: @sort, archived: true) do
+        = link_to filter_projects_path(sort: @sort, archived: true) do
           Show archived projects
