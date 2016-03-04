@@ -13,16 +13,15 @@
     url_to_automerge_check: "#{merge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
     url_to_ci_check: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
-    gitlab_icon: "#{asset_path 'gitlab_logo.png'}"
+    gitlab_icon: "#{asset_path 'gitlab_logo.png'}",
+    current_status: ""
   };
 
 - if @merge_request.ci_commit
   :javascript
-    opts.current_status = "#{@merge_request.ci_commit.try(:status)}";
     opts.ci_message = "Build {{status}} for #{@merge_request.ci_commit.sha}";
 - else
   :javascript
-    opts.current_status = "#{@merge_request.source_project.ci_service.commit_status(@merge_request.last_commit.sha, merge_request.source_branch) if @merge_request.source_project.ci_service}";
     opts.ci_message = "Build {{status}} for #{@merge_request.last_commit.sha}";
 
 :javascript

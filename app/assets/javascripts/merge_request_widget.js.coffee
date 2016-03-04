@@ -3,12 +3,14 @@ class @MergeRequestWidget
   #
   #   check_enable           - Boolean, whether to check automerge status
   #   url_to_automerge_check - String, URL to use to check automerge status
-  #   current_status         - String, current automerge status
   #   url_to_ci_check        - String, URL to use to check CI status
   #
+
   constructor: (@opts) ->
+    @first = true
     modal = $('#modal_merge_info').modal(show: false)
     @getBuildStatus()
+    @readyForCICheck = true
     # clear the build poller
 
   mergeInProgress: (deleteSourceBranch = false)->
@@ -31,19 +33,6 @@ class @MergeRequestWidget
     $.get @opts.url_to_automerge_check, (data) ->
       $('.mr-state-widget').replaceWith(data)
 
-  ciIconForStatus: (status) ->
-    icon = undefined
-    switch status
-      when 'success'
-        icon = 'check'
-      when 'failed'
-        icon = 'close'
-      when 'running' or 'pending'
-        icon = 'clock-o'
-      else
-        icon = 'circle'
-    'fa fa-' + icon + ' fa-fw'
-
   ciLabelForStatus: (status) ->
     if status == 'success'
       'passed'
@@ -54,7 +43,13 @@ class @MergeRequestWidget
     urlToCiCheck = @opts.url_to_ci_check
     _this = @
     @fetchBuildStatusInterval = setInterval (->
+      if not _this.readyForCICheck
+        return;
       $.getJSON urlToCiCheck, (data) ->
+        _this.readyForCICheck = true
+        if _this.first
+          _this.first = false
+          _this.opts.current_status = data.status
         if data.status isnt _this.opts.current_status
           notify("Build #{_this.ciLabelForStatus(data.status)}",
             _this.opts.ci_message.replace('{{status}}',
@@ -65,16 +60,10 @@ class @MergeRequestWidget
             return
           ), 2000
           _this.opts.current_status = data.status
-          $('.mr-widget-heading i')
-            .removeClass()
-            .addClass(_this.ciIconForStatus(data.status));
-          $('.mr-widget-heading .ci_widget')
-            .removeClass()
-            .addClass("ci_widget ci-#{data.status}");
-          $('.mr-widget-heading span.ci-status-label')
-            .text(_this.ciLabelForStatus(data.status))
         return
+      _this.readyForCICheck = false
       return
+
     ), 5000
 
   getCiStatus: ->
