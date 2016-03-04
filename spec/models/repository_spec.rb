@@ -457,11 +457,38 @@ describe Repository, models: true do
     end
   end
 
-  describe '#revert_merge' do
-    it 'should revert the changes' do
-      repository.revert(user, merge_commit, 'master')
+  describe '#revert' do
+    let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
+    let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
 
-      expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+    context 'when there is a conflict' do
+      it 'should abort the operation' do
+        expect(repository.revert(user, new_image_commit, 'master')).to eq(false)
+      end
+    end
+
+    context 'when commit was already reverted' do
+      it 'should abort the operation' do
+        repository.revert(user, update_image_commit, 'master')
+
+        expect(repository.revert(user, update_image_commit, 'master')).to eq(false)
+      end
+    end
+
+    context 'when commit can be reverted' do
+      it 'should revert the changes' do
+        expect(repository.revert(user, update_image_commit, 'master')).to be_truthy
+      end
+    end
+
+    context 'reverting a merge commit' do
+      it 'should revert the changes' do
+        merge_commit
+        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
+
+        repository.revert(user, merge_commit, 'master')
+        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+      end
     end
   end
 

@@ -338,6 +338,15 @@ Rails.application.routes.draw do
   get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
       constraints: { username: /.*/ }
 
+  get 'u/:username/groups' => 'users#groups', as: :user_groups,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/projects' => 'users#projects', as: :user_projects,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
+      constraints: { username: /.*/ }
+
   get '/u/:username' => 'users#show', as: :user,
       constraints: { username: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }
 

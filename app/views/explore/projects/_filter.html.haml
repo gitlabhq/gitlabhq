@@ -1,41 +1,40 @@
-.pull-right.hidden-sm.hidden-xs
-  - if current_user
-    .dropdown.inline.append-right-10
-      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
-        %i.fa.fa-globe
-        %span.light Visibility:
-        - if params[:visibility_level].present?
-          = visibility_level_label(params[:visibility_level].to_i)
-        - else
+- if current_user
+  .dropdown
+    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      = icon('globe')
+      %span.light Visibility:
+      - if params[:visibility_level].present?
+        = visibility_level_label(params[:visibility_level].to_i)
+      - else
+        Any
+      %b.caret
+    %ul.dropdown-menu
+      %li
+        = link_to explore_projects_filter_path(visibility_level: nil) do
           Any
-        %b.caret
-      %ul.dropdown-menu
-        %li
-          = link_to explore_projects_filter_path(visibility_level: nil) do
-            Any
-        - Gitlab::VisibilityLevel.values.each do |level|
-          %li{ class: (level.to_s == params[:visibility_level]) ? 'active' : 'light' }
-            = link_to explore_projects_filter_path(visibility_level: level) do
-              = visibility_level_icon(level)
-              = visibility_level_label(level)
+      - Gitlab::VisibilityLevel.values.each do |level|
+        %li{ class: (level.to_s == params[:visibility_level]) ? 'active' : 'light' }
+          = link_to explore_projects_filter_path(visibility_level: level) do
+            = visibility_level_icon(level)
+            = visibility_level_label(level)
 
-  - if @tags.present?
-    .dropdown.inline.append-right-10
-      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
-        %i.fa.fa-tags
-        %span.light Tags:
-        - if params[:tag].present?
-          = params[:tag]
-        - else
+- if @tags.present?
+  .dropdown
+    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      = icon('tags')
+      %span.light Tags:
+      - if params[:tag].present?
+        = params[:tag]
+      - else
+        Any
+      %b.caret
+    %ul.dropdown-menu
+      %li
+        = link_to explore_projects_filter_path(tag: nil) do
           Any
-        %b.caret
-      %ul.dropdown-menu
-        %li
-          = link_to explore_projects_filter_path(tag: nil) do
-            Any
 
-        - @tags.each do |tag|
-          %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }
-            = link_to explore_projects_filter_path(tag: tag.name) do
-              %i.fa.fa-tag
-              = tag.name
+      - @tags.each do |tag|
+        %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }
+          = link_to explore_projects_filter_path(tag: tag.name) do
+            %i.fa.fa-tag
+            = tag.name

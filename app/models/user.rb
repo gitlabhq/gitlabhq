@@ -171,7 +171,7 @@ class User < ActiveRecord::Base
   validates :avatar_crop_x, :avatar_crop_y, :avatar_crop_size,
     numericality: { only_integer: true },
     presence: true,
-    if: ->(user) { user.avatar? }
+    if: ->(user) { user.avatar? && user.avatar_changed? }
 
   before_validation :generate_password, on: :create
   before_validation :restricted_signup_domains, on: :create
@@ -402,7 +402,8 @@ class User < ActiveRecord::Base
 
   def namespace_uniq
     # Return early if username already failed the first uniqueness validation
-    return if self.errors[:username].include?('has already been taken')
+    return if self.errors.key?(:username) &&
+      self.errors[:username].include?('has already been taken')
 
     namespace_name = self.username
     existing_namespace = Namespace.by_path(namespace_name)

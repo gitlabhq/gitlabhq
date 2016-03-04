@@ -16,8 +16,6 @@ class Dispatcher
     shortcut_handler = null
 
     switch page
-      when 'explore:projects:index', 'explore:projects:starred', 'explore:projects:trending'
-        Dashboard.init()
       when 'projects:issues:index'
         Issues.init()
         shortcut_handler = new ShortcutsNavigation()
@@ -59,8 +57,6 @@ class Dispatcher
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
         MergeRequests.init()
-      when 'dashboard:show', 'root:show'
-        Dashboard.init()
       when 'dashboard:activity'
         new Activities()
       when 'dashboard:projects:starred'
@@ -107,9 +103,6 @@ class Dispatcher
         new ProjectFork()
       when 'projects:artifacts:browse'
         new BuildArtifacts()
-      when 'users:show'
-        new User()
-        new Activities()
       when 'projects:group_links:index'
         new GroupsSelect()
       when 'projects:mirrors:show', 'projects:mirrors:update'

@@ -690,11 +690,28 @@ class Repository
     end
   end
 
-  def revert(user, commit, base_branch, target_branch = nil)
-    source_sha    = find_branch(base_branch).target
-    target_branch ||= base_branch
-    args          = [commit.id, source_sha]
-    args          << { mainline: 1 } if commit.merge_commit?
+  def revert(user, commit, base_branch, revert_tree_id = nil)
+    source_sha = find_branch(base_branch).target
+    revert_tree_id ||= check_revert_content(commit, base_branch)
+
+    return false unless revert_tree_id
+
+    commit_with_hooks(user, base_branch) do |ref|
+      committer = user_to_committer(user)
+      source_sha = Rugged::Commit.create(rugged,
+        message: commit.revert_message,
+        author: committer,
+        committer: committer,
+        tree: revert_tree_id,
+        parents: [rugged.lookup(source_sha)],
+        update_ref: ref)
+    end
+  end
+
+  def check_revert_content(commit, base_branch)
+    source_sha = find_branch(base_branch).target
+    args       = [commit.id, source_sha]
+    args       << { mainline: 1 } if commit.merge_commit?
 
     revert_index = rugged.revert_commit(*args)
     return false if revert_index.conflicts?
@@ -702,16 +719,7 @@ class Repository
     tree_id = revert_index.write_tree(rugged)
     return false unless diff_exists?(source_sha, tree_id)
 
-    commit_with_hooks(user, target_branch) do |ref|
-      committer = user_to_committer(user)
-      source_sha = Rugged::Commit.create(rugged,
-        message: commit.revert_message,
-        author: committer,
-        committer: committer,
-        tree: tree_id,
-        parents: [rugged.lookup(source_sha)],
-        update_ref: ref)
-    end
+    tree_id
   end
 
   def diff_exists?(sha1, sha2)

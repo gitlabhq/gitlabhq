@@ -4,8 +4,9 @@
     == #{pluralize(@total_forks_count, 'fork')}: #{full_count_title}
 
   .nav-controls
-    = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter project-filter-form-field form-control input-short',
-      spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
+    = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
+      = search_field_tag :filter_projects, nil, placeholder: 'Search forks', class: 'projects-list-filter project-filter-form-field form-control input-short',
+        spellcheck: false, data: { 'filter-selector' => 'span.namespace-name' }
 
     .dropdown
       %button.dropdown-toggle.btn.sort-forks{type: 'button', 'data-toggle' => 'dropdown'}
@@ -38,18 +39,10 @@
           Fork
 
 
-.projects-list-holder
-  - if @forks.blank?
-    %ul.content-list
-      %li
-        .nothing-here-block No forks to show
-  - else
-    = render 'shared/projects/list', projects: @forks, use_creator_avatar: true,
-      forks: true, show_last_commit_as_description: true
+= render 'projects', projects: @forks
 
-    - if @private_forks_count > 0
-      %ul.projects-list.private-forks-notice
-        %li.project-row
-          = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
-          %strong= pluralize(@private_forks_count, 'private fork')
-          %span you have no access to.
+- if @private_forks_count > 0
+  .private-forks-notice
+    = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
+    %strong= pluralize(@private_forks_count, 'private fork')
+    %span you have no access to.
