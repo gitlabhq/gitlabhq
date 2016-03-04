@@ -50,7 +50,7 @@ module Gitlab
     # Ex.
     #   fetch_remote("gitlab/gitlab-ci", "upstream")
     #
-    def fetch_remote(name, remote, forced=false)
+    def fetch_remote(name, remote, forced: false)
       args = [gitlab_shell_projects_path, 'fetch-remote', "#{name}.git", remote, '600']
       args << '--force' if forced
       output, status = Popen::popen(args)

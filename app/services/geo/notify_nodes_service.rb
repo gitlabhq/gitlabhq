@@ -30,7 +30,7 @@ module Geo
 
       [(response.code >= 200 && response.code < 300), ActionView::Base.full_sanitizer.sanitize(response.to_s)]
     rescue HTTParty::Error, Errno::ECONNREFUSED => e
-      return [false, ActionView::Base.full_sanitizer.sanitize(e.message)]
+      [false, ActionView::Base.full_sanitizer.sanitize(e.message)]
     end
 
     def private_token

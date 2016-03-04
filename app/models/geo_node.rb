@@ -76,7 +76,7 @@ class GeoNode < ActiveRecord::Base
     self.build_geo_node_key if geo_node_key.nil?
   end
 
-  def geo_node_key_title
-    self.geo_node_key.title = "Geo node: #{self.url}"
+  def change_geo_node_key_title
+    self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
   end
 end

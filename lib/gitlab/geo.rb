@@ -37,7 +37,7 @@ module Gitlab
     end
 
     def self.bulk_notify_job
-      Sidekiq::Cron::Job.find 'geo_bulk_notify_worker'
+      Sidekiq::Cron::Job.find('geo_bulk_notify_worker')
     end
   end
 end
