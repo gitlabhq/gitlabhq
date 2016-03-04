@@ -5,7 +5,9 @@
     %span.light
       = projects_sort_options_hash[@sort]
     %b.caret
-  %ul.dropdown-menu.dropdown-menu-align-right
+  %ul.dropdown-menu.dropdown-menu-align-right.dropdown-with-checkmark
+    %li
+      .legend Sort by
     - projects_sort_options_hash.each do |value, title|
       %li
         = link_to filter_projects_path(sort: value, archived: archived) do

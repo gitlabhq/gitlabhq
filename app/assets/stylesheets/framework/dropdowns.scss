@@ -100,3 +100,22 @@
   font-size: 13px;
   line-height: 22px;
 }
+
+.dropdown-with-checkmark {
+  li > .legend {
+    font-size: 13px;
+    color: $secondary-text;
+    margin-bottom: 5px;
+  }
+
+  li > a {
+    padding-left: 20px;
+    line-height: 28px;
+
+    i {
+      position: absolute;
+      left: 1px;
+      line-height: 28px;
+    }
+  }
+}
