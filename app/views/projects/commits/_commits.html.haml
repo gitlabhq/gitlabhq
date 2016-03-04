@@ -1,11 +1,7 @@
 - unless defined?(project)
   - project = @project
-- if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
-  - commits = @commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE)
-  - overflow = true
-- else
-  - commits = @commits
-  - overflow = false
+
+- commits, hidden = limited_commits(@commits)
 
 - commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
   .row.commits-row
@@ -20,6 +16,6 @@
         = render commits, project: project
   %hr.lists-separator
 
-- if overflow
+- if hidden > 0
   .alert.alert-warning
-    Not shown: #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} more commits
+    Not shown: #{hidden} more commits

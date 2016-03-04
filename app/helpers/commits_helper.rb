@@ -211,4 +211,16 @@ module CommitsHelper
   def clean(string)
     Sanitize.clean(string, remove_contents: true)
   end
+
+  def limited_commits(commits)
+    if commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+      # Not 100% sure we need to decorate but it is idempotent and not so slow
+      [
+        commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE),
+        commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE
+      ]
+    else
+      [commits, 0]
+    end
+  end
 end
