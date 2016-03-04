@@ -126,3 +126,14 @@ $deleted: #f77;
  */
 $monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
 $regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+/*
+* Dropdowns
+*/
+$dropdown-bg: #fff;
+$dropdown-link-color: #555;
+$dropdown-link-hover-bg: rgba(#000, .04);
+$dropdown-border-color: rgba(#000, .1);
+$dropdown-shadow-color: rgba(#000, .1);
+$dropdown-divider-color: rgba(#000, .1);
+$dropdown-header-color: #959494;
