@@ -12,7 +12,9 @@ module Gitlab
       end
 
       def import_url
-        project.import_url.sub(/\.git\z/, ".wiki.git")
+        import_url = Gitlab::ImportUrlExposer.expose(import_url: project.import_url,
+                                                     credentials: project.import_data.credentials)
+        import_url.sub(/\.git\z/, ".wiki.git")
       end
     end
   end

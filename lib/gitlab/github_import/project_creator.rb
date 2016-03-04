@@ -32,8 +32,8 @@ module Gitlab
 
       def create_import_data(project)
         project.create_import_data(
-          credentials: session_data.delete(:github_access_token),
-          data: { "github_session" => session_data })
+          credentials: { github_access_token: session_data.delete(:github_access_token) },
+          data: { github_session: session_data })
       end
     end
   end
