@@ -27,9 +27,10 @@
   }
 
   &.right-sidebar-expanded {
-    @media (max-width: $screen-sm-max) {
-      padding-right: 0;
-    }
+    /* Extra small devices (phones, less than 768px) */
+    /* No media query since this is the default in Bootstrap */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
     @media (min-width: $screen-sm-min) {
       padding-right: $gutter_width;
     }
