@@ -23,11 +23,16 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   end
 
   def up
-    projects_with_wrong_import_url.each do |project|
-      sanitizer = ImportUrlSanitizer.new(project.import_urls)
-      project.update_columns(import_url: sanitizer.sanitized_url)
-      if project.import_data
-        project.import_data.update_columns(credentials: sanitizer.credentials)
+    projects_with_wrong_import_url.each do |project_id|
+      project = Project.find(project_id["id"])
+      sanitizer = ImportUrlSanitizer.new(project.import_url)
+
+      ActiveRecord::Base.transaction do
+        project.update_columns(import_url: sanitizer.sanitized_url)
+        if project.import_data
+          project.import_data.credentials = sanitizer.credentials
+          project.save!
+        end
       end
     end
   end

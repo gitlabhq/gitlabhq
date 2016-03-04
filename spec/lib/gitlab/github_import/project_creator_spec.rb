@@ -26,7 +26,8 @@ describe Gitlab::GithubImport::ProjectCreator, lib: true do
     project_creator = Gitlab::GithubImport::ProjectCreator.new(repo, namespace, user, access_params)
     project = project_creator.execute
 
-    expect(project.import_url).to eq("https://asdffg@gitlab.com/asd/vim.git")
+    expect(project.import_url).to eq("https://gitlab.com/asd/vim.git")
+    expect(project.import_data.credentials).to eq("asdffg")
     expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
   end
 end

@@ -20,12 +20,20 @@ module Gitlab
           visibility_level: repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC,
           import_type: "github",
           import_source: repo.full_name,
-          import_url: repo.clone_url.sub("https://", "https://#{@session_data[:github_access_token]}@"),
+          import_url: repo.clone_url,
           wiki_enabled: !repo.has_wiki? # If repo has wiki we'll import it later
         ).execute
 
-        project.create_import_data(data: { "github_session" => session_data } )
+        create_import_data(project)
         project
+      end
+
+      private
+
+      def create_import_data(project)
+        project.create_import_data(
+          credentials: session_data.delete(:github_access_token),
+          data: { "github_session" => session_data })
       end
     end
   end
