@@ -1,5 +1,21 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.6.0 (unreleased)
+  - Contributions to forked projects are included in calendar
+  - Improve the formatting for the user page bio (Connor Shea)
+  - Fix issue when pushing to projects ending in .wiki
+  - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
+  - Don't load all of GitLab in mail_room
+  - Strip leading and trailing spaces in URL validator (evuez)
+  - Return empty array instead of 404 when commit has no statuses in commit status API
+  - Update documentation to reflect Guest role not being enforced on internal projects
+  - Allow search for logged out users
+  - Don't show Issues/MRs from archived projects in Groups view
+  - Increase the notes polling timeout over time (Roberto Dip)
+
+v 8.5.4 (unreleased)
+  - Do not cache requests for badges (including builds badge)
+
 v 8.5.3
   - Flush repository caches before renaming projects
 

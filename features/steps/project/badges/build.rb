@@ -20,6 +20,10 @@ class Spinach::Features::ProjectBadgesBuild < Spinach::FeatureSteps
     expect_badge('running')
   end
 
+  step 'I should see a badge that has not been cached' do
+    expect(page.response_headers).to include('Cache-Control' => 'no-cache')
+  end
+
   def expect_badge(status)
     svg = Nokogiri::XML.parse(page.body)
     expect(page.response_headers).to include('Content-Type' => 'image/svg+xml')
