@@ -206,9 +206,9 @@
   padding-left: $sidebar_width;
 
   &.right-sidebar-collapsed {
-    @media (max-width: $screen-sm-max) {
-      padding-right: 0;
-    }
+    /* Extra small devices (phones, less than 768px) */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
     @media (min-width: $screen-sm-min) {
       padding-right: $sidebar_collapsed_width;
     }
@@ -237,9 +237,9 @@
   padding-left: $sidebar_collapsed_width;
 
   &.right-sidebar-collapsed {
-    @media (max-width: $screen-sm-max) {
-      padding-right: 0;
-    }
+    /* Extra small devices (phones, less than 768px) */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
     @media (min-width: $screen-sm-min) {
       padding-right: $sidebar_collapsed_width;
     }
@@ -309,10 +309,10 @@
 }
 
 .page-sidebar-collapsed {
-  @media (max-width: $screen-sm-max) {
-    @include collapsed-sidebar;
-    padding-right: 0;
-  }
+  /* Extra small devices (phones, less than 768px) */
+  @include collapsed-sidebar;
+  padding-right: 0;
+  /* Small devices (tablets, 768px and up) */
   @media (min-width: $screen-sm-min) {
     @include collapsed-sidebar;
   }

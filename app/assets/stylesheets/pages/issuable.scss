@@ -183,10 +183,9 @@
   }
 
   &.right-sidebar-collapsed {
-
-    @media (max-width: $screen-sm-max) {
-      display: none;
-    }
+    /* Extra small devices (phones, less than 768px) */
+    display: none;
+    /* Small devices (tablets, 768px and up) */
     @media (min-width: $screen-sm-min) {
       display: block
     }
