@@ -20,6 +20,12 @@ module IssuablesHelper
     base_issuable_scope(issuable).where('iid < ?', issuable.iid).first
   end
 
+  def can_update_issuable?(issuable)
+    return false unless current_user
+
+    can?(current_user, :"update_#{issuable.to_ability_name}", issuable)
+  end
+
   private
 
   def sidebar_gutter_collapsed?

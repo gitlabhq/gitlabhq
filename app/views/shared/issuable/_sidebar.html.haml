@@ -30,7 +30,7 @@
         .title.hide-collapsed
           %label
             Assignee
-          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+          - if can_update_issuable?(issuable)
             .pull-right
               = link_to 'Edit', '#', class: 'edit-link'
         .value.hide-collapsed
@@ -56,7 +56,7 @@
         .title.hide-collapsed
           %label
             Milestone
-          - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+          - if can_update_issuable?(issuable)
             .pull-right
               = link_to 'Edit', '#', class: 'edit-link'
         .value.hide-collapsed
@@ -81,7 +81,7 @@
               = issuable.labels.count
           .title.hide-collapsed
             %label Labels
-            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+            - if can_update_issuable?(issuable)
               .pull-right
                 = link_to 'Edit', '#', class: 'edit-link'
           .value.issuable-show-labels.hide-collapsed
