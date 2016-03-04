@@ -23,14 +23,13 @@ deploy static pages for your individual projects, your user or your group.
     - [User or group Pages](#user-or-group-pages)
     - [Project Pages](#project-pages)
     - [Explore the contents of `.gitlab-ci.yml`](#explore-the-contents-of-gitlab-ciyml)
-        - [How `.gitlab-ci.yml` looks like when using plain HTML files](#how-gitlab-ciyml-looks-like-when-using-plain-html-files)
-        - [How `.gitlab-ci.yml` looks like when using a static generator](#how-gitlab-ciyml-looks-like-when-using-a-static-generator)
+        - [How `.gitlab-ci.yml` looks like when the static content is in your repository](#how-gitlab-ciyml-looks-like-when-the-static-content-is-in-your-repository)
+    - [How `.gitlab-ci.yml` looks like when using a static generator](#how-gitlab-ciyml-looks-like-when-using-a-static-generator)
         - [How to set up GitLab Pages in a repository where there's also actual code](#how-to-set-up-gitlab-pages-in-a-repository-where-there-s-also-actual-code)
 - [Next steps](#next-steps)
+    - [Example projects](#example-projects)
     - [Add a custom domain to your Pages website](#add-a-custom-domain-to-your-pages-website)
     - [Secure your custom domain website with TLS](#secure-your-custom-domain-website-with-tls)
-    - [Use a static generator to develop your website](#use-a-static-generator-to-develop-your-website)
-        - [Example projects](#example-projects)
     - [Custom error codes pages](#custom-error-codes-pages)
     - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
 - [Limitations](#limitations)
@@ -262,6 +261,20 @@ You can have your project's code in the `master` branch and use an orphan
 
 ## Next steps
 
+### Example projects
+
+Below is a list of example projects for GitLab Pages with a plain HTML website
+or various static site generators. Contributions are very welcome.
+
+- [Plain HTML](https://gitlab.com/gitlab-examples/pages-plain-html)
+- [Jekyll](https://gitlab.com/gitlab-examples/pages-jekyll)
+- [Hugo](https://gitlab.com/gitlab-examples/pages-hugo)
+- [Middleman](https://gitlab.com/gitlab-examples/pages-middleman)
+- [Hexo](https://gitlab.com/gitlab-examples/pages-hexo)
+- [Brunch](https://gitlab.com/gitlab-examples/pages-brunch)
+- [Metalsmith](https://gitlab.com/gitlab-examples/pages-metalsmith)
+- [Harp](https://gitlab.com/gitlab-examples/pages-harp)
+
 ### Add a custom domain to your Pages website
 
 If this setting is enabled by your GitLab administrator, you should be able to
@@ -304,7 +317,6 @@ If you ever feel the need to purge your Pages content, you can do so by going
 to your project's **Settings > Pages** and hit **Remove pages**. Simple as that.
 
 ![Remove pages](img/pages_remove.png)
-
 
 ## Limitations
 
