@@ -226,7 +226,7 @@ $ ->
 
   $(document)
     .off 'click', 'aside .gutter-toggle'
-    .on 'click', 'aside .gutter-toggle', (e, manual) ->
+    .on 'click', 'aside .gutter-toggle', (e, triggered) ->
       e.preventDefault()
       $this = $(this)
       $thisIcon = $this.find 'i'
@@ -251,7 +251,7 @@ $ ->
         $('.page-with-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
-      if not manual
+      if not triggered
         $.cookie("collapsed_gutter",
           $('.right-sidebar')
             .hasClass('right-sidebar-collapsed'), { path: '/' })
