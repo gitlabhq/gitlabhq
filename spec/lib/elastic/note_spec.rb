@@ -22,7 +22,7 @@ describe "Note", elastic: true do
 
     Note.__elasticsearch__.refresh_index!
 
-    options = { projects_ids: [issue.project.id] }
+    options = { project_ids: [issue.project.id] }
 
     expect(Note.elastic_search('term', options: options).total_count).to eq(1)
   end

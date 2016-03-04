@@ -40,7 +40,7 @@ module Elastic
         
         query_hash = basic_query_hash(options[:in], query)
 
-        query_hash = project_ids_filter(query_hash, options[:projects_ids])
+        query_hash = project_ids_filter(query_hash, options[:project_ids])
 
         self.__elasticsearch__.search(query_hash)
       end
