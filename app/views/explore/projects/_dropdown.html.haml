@@ -18,3 +18,11 @@
         = sort_title_recently_updated
       = link_to explore_projects_filter_path(sort: sort_value_oldest_updated) do
         = sort_title_oldest_updated
+    %li.divider
+    %li
+      - if params[:archived].present?
+        = link_to explore_projects_filter_path(sort: @sort, archived: nil) do
+          Hide archived projects
+      - else
+        = link_to explore_projects_filter_path(sort: @sort, archived: true) do
+          Show archived projects
