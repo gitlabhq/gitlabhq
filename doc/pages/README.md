@@ -289,27 +289,22 @@ website hosted under GitLab.
 
 ### Secure your custom domain website with TLS
 
-### Use a static generator to develop your website
-
-#### Example projects
-
-Below is a list of example projects for GitLab Pages with a plain HTML website
-or various static site generators. Contributions are very welcome.
-
-- [Plain HTML](https://gitlab.com/gitlab-examples/pages-plain-html)
-- [Jekyll](https://gitlab.com/gitlab-examples/pages-jekyll)
-- [Hugo](https://gitlab.com/gitlab-examples/pages-hugo)
-- [Middleman](https://gitlab.com/gitlab-examples/pages-middleman)
-- [Hexo](https://gitlab.com/gitlab-examples/pages-hexo)
-- [Brunch](https://gitlab.com/gitlab-examples/pages-brunch)
-- [Metalsmith](https://gitlab.com/gitlab-examples/pages-metalsmith)
-- [Harp](https://gitlab.com/gitlab-examples/pages-harp)
 
 ### Custom error codes pages
 
 You can provide your own 403 and 404 error pages by creating the `403.html` and
-`404.html` files respectively in the `public/` directory that will be included
-in the artifacts.
+`404.html` files respectively in the root directory of the `public/` directory
+that will be included in the artifacts.
+
+If the case of `404.html`, there are different scenarios. For example:
+
+- If you use project Pages (served under `/projectname/`) and try to access
+  `/projectname/non/exsiting_file`, GitLab Pages will try to serve first
+  `/projectname/404.html`, and then `/404.html`.
+- If you use user/group Pages (served under `/`) and try to access
+  `/non/existing_file` GitLab Pages will try to serve `/404.html`.
+- If you use a custom domain and try to access `/non/existing_file`, GitLab
+  Pages will try to server only `/404.html`.
 
 ### Remove the contents of your pages
 
