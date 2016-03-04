@@ -145,3 +145,33 @@
     width: auto;
   }
 }
+
+.key-list-item {
+  .key-list-item-info {
+    @media (min-width: $screen-sm-min) {
+      float: left;
+    }
+  }
+
+  .description {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+.key-icon {
+  color: $ssh-key-icon-color;
+  font-size: $ssh-key-icon-size;
+  line-height: 42px;
+}
+
+.key-created-at {
+  line-height: 42px;
+}
+
+.profile-settings-content {
+  a {
+    color: $profile-settings-link-color;
+  }
+}
