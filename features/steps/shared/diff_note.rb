@@ -93,14 +93,14 @@ module SharedDiffNote
 
       page.within("form[id$='#{sample_commit.line_code}']") do
         fill_in 'note[note]', with: ':smile:'
-        click_button('Add Comment')
+        click_button('Comment')
       end
     end
   end
 
   step 'I submit the diff comment' do
     page.within(diff_file_selector) do
-      click_button("Add Comment")
+      click_button("Comment")
     end
   end
 
