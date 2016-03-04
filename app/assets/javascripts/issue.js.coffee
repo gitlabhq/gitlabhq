@@ -7,6 +7,7 @@ class @Issue
     # Prevent duplicate event bindings
     @disableTaskList()
     @fixAffixScroll()
+    @initParticipants()
     if $('a.btn-close').length
       @initTaskList()
       @initIssueBtnEventListeners()
@@ -84,3 +85,26 @@ class @Issue
       type: 'PATCH'
       url: $('form.js-issuable-update').attr('action')
       data: patchData
+
+  initParticipants: ->
+    $(document).on "click", ".js-participants-more", @toggleHiddenParticipants
+
+    # hide any participants from number 6
+    $(".js-participants-author").each (i) ->
+      if i > 6
+        $(@)
+          .addClass "js-participants-hidden hidden"
+
+  toggleHiddenParticipants: (e) ->
+    e.preventDefault()
+
+    currentText = $(this).text().trim()
+    lessText = $(this).data("less-text")
+    originalText = $(this).data("original-text")
+    
+    if currentText is originalText
+      $(this).text(lessText)
+    else
+      $(this).text(originalText)
+
+    $(".js-participants-hidden").toggleClass "hidden"
