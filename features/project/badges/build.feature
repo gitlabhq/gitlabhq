@@ -20,3 +20,8 @@ Feature: Project Badges Build
     And project has another build that is running
     When I display builds badge for a master branch
     Then I should see a build running badge
+
+  Scenario: I want to see a fresh badge on each request
+    Given recent build is successful
+    When I display builds badge for a master branch
+    Then I should see a badge that has not been cached
