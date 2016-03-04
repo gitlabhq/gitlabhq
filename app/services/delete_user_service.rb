@@ -12,7 +12,7 @@ class DeleteUserService
     end
 
     user.solo_owned_groups.each do |group|
-      DeleteGroupService.new(group, current_user).execute
+      DestroyGroupService.new(group, current_user).execute
     end
 
     user.personal_projects.each do |project|

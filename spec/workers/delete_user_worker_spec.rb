@@ -7,16 +7,52 @@ describe DeleteUserWorker do
     let!(:namespace)    { create(:namespace, owner: user) }
     let!(:project)      { create(:project, namespace: namespace) }
 
-    before do
-      DeleteUserWorker.new.perform(current_user.id, user.id)
+    context 'no force flag given' do
+      before do
+        DeleteUserWorker.new.perform(current_user.id, user.id)
+      end
+
+      it 'deletes all personal projects' do
+        expect { Project.find(project.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'deletes the user' do
+        expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
 
-    it 'deletes all personal projects' do
-      expect { Project.find(project.id) }.to raise_error(ActiveRecord::RecordNotFound)
+    context "solo owned groups present" do
+      let(:solo_owned)  { create(:group) }
+      let(:member)      { create(:group_member) }
+      let(:user)        { user = member.user }
+
+      before do
+        solo_owned.group_members = [member]
+        DeleteUserWorker.new.perform(current_user.id, user.id)
+      end
+
+      it 'does not delete the user' do
+        expect(User.find(user.id)).to eq user
+      end
     end
 
-    it 'deletes the user' do
-      expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+    context "deletions with force" do
+      let(:solo_owned)      { create(:group) }
+      let(:member)          { create(:group_member) }
+      let(:user)            { user = member.user }
+
+      before do
+        solo_owned.group_members = [member]
+        DeleteUserWorker.new.perform(current_user.id, user.id, "force" => true)
+      end
+
+      it 'deletes solo owned groups' do
+        expect { Project.find(solo_owned.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'deletes the user' do
+        expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end
