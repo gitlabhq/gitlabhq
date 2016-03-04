@@ -11,8 +11,9 @@ class @AwardsHandler
         if $(".emoji-menu").is(":visible")
           $(".emoji-menu").hide()
 
-    $(".awards").off "click"
-    $(".awards").on "click", ".js-emoji-btn", @handleClick
+    $(".awards")
+      .off "click"
+      .on "click", ".js-emoji-btn", @handleClick
 
     @renderFrequentlyUsedBlock()
 
