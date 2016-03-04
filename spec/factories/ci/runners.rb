@@ -17,8 +17,6 @@
 #  architecture :string(255)
 #
 
-# Read about factories at https://github.com/thoughtbot/factory_girl
-
 FactoryGirl.define do
   factory :ci_runner, class: Ci::Runner do
     sequence :description do |n|

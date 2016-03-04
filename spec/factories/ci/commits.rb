@@ -16,7 +16,6 @@
 #  gl_project_id  :integer
 #
 
-# Read about factories at https://github.com/thoughtbot/factory_girl
 FactoryGirl.define do
   factory :ci_empty_commit, class: Ci::Commit do
     sha '97de212e80737a608d939f648d959671fb0a0142'
