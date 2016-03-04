@@ -29,7 +29,7 @@ module Elastic
             }
           }
         }
-      
+
       after_commit on: :create do
         if Gitlab.config.elasticsearch.enabled
           ElasticIndexerWorker.perform_async(:index, self.class.to_s, self.id)
@@ -93,6 +93,16 @@ module Elastic
         query_hash[:highlight] = highlight_options(fields)
 
         query_hash
+      end
+
+      def iid_query_hash(query_hash, iid)
+        {
+          query: {
+            filtered: {
+               query: { match: { iid: iid } }
+            }
+          }
+        }
       end
 
       def project_ids_filter(query_hash, project_ids)
