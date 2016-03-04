@@ -12,6 +12,7 @@ v 8.6.0 (unreleased)
   - Allow search for logged out users
   - Don't show Issues/MRs from archived projects in Groups view
   - Increase the notes polling timeout over time (Roberto Dip)
+  - Add ability to show archived projects on dashboard, explore and group pages
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
