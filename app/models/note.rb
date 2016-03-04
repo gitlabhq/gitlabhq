@@ -113,7 +113,7 @@ class Note < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      table   = Note.arel_table
+      table   = arel_table
       pattern = "%#{query}%"
 
       where(table[:note].matches(pattern))

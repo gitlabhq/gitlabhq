@@ -274,7 +274,7 @@ class Project < ActiveRecord::Base
     #
     # query - The search query as a String.
     def search(query)
-      ptable  = Project.arel_table
+      ptable  = arel_table
       ntable  = Namespace.arel_table
       pattern = "%#{query}%"
 

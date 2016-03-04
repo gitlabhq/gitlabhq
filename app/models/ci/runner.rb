@@ -59,7 +59,7 @@ module Ci
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      t = Ci::Runner.arel_table
+      t = arel_table
       pattern = "%#{query}%"
 
       where(t[:token].matches(pattern).or(t[:description].matches(pattern)))

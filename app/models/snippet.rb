@@ -121,7 +121,7 @@ class Snippet < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      t = Snippet.arel_table
+      t = arel_table
       pattern = "%#{query}%"
 
       where(t[:title].matches(pattern).or(t[:file_name].matches(pattern)))

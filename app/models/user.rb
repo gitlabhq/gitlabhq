@@ -294,7 +294,7 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      table   = User.arel_table
+      table   = arel_table
       pattern = "%#{query}%"
 
       where(

@@ -41,7 +41,7 @@ class Group < Namespace
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      table   = Group.arel_table
+      table   = Namespace.arel_table
       pattern = "%#{query}%"
 
       where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
