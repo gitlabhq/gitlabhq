@@ -18,6 +18,7 @@ v 8.5.4 (unreleased)
 
 v 8.5.3
   - Flush repository caches before renaming projects
+  - Sort starred projects on dashboard based on last activity by default
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
