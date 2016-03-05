@@ -81,8 +81,9 @@
       &::before {
         content: "\f00c";
         position: absolute;
-        left: 4px;
-        top: 8px;
+        left: 5px;
+        top: 50%;
+        margin-top: -7px;
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
@@ -94,28 +95,9 @@
 }
 
 .dropdown-header {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
   color: $dropdown-header-color;
   font-size: 13px;
   line-height: 22px;
-}
-
-.dropdown-with-checkmark {
-  li > .legend {
-    font-size: 13px;
-    color: $secondary-text;
-    margin-bottom: 5px;
-  }
-
-  li > a {
-    padding-left: 20px;
-    line-height: 28px;
-
-    i {
-      position: absolute;
-      left: 1px;
-      line-height: 28px;
-    }
-  }
 }
