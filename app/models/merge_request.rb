@@ -490,6 +490,16 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def state_icon_name
+    if merged?
+      "check"
+    elsif closed?
+      "times"
+    else
+      "circle-o"
+    end
+  end
+
   def target_sha
     @target_sha ||= target_project.repository.commit(target_branch).sha
   end

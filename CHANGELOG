@@ -20,6 +20,7 @@ v 8.5.3
   - Flush repository caches before renaming projects
   - Sort starred projects on dashboard based on last activity by default
   - Show commit message in JIRA mention comment
+  - Makes issue page and merge request page usable on mobile browsers.
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
