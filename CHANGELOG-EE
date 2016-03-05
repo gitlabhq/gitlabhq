@@ -18,6 +18,8 @@ v 8.5.3
 v 8.5.2
   - Update LDAP groups asynchronously
   - Fix an issue when weight text was displayed in Issuable collapsed sidebar
+v 8.5.2
+  - Fix importing projects from GitHub Enterprise Edition.
 
 v 8.5.1
   - Fix adding pages domain to projects in groups
