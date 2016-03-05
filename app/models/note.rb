@@ -342,10 +342,6 @@ class Note < ActiveRecord::Base
     Event.reset_event_cache_for(self)
   end
 
-  def system?
-    read_attribute(:system)
-  end
-
   def downvote?
     is_award && note == "thumbsdown"
   end
