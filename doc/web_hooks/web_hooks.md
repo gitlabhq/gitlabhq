@@ -582,7 +582,6 @@ X-Gitlab-Event: Note Hook
     "created_at": "2015-04-09 02:40:38 UTC",
     "updated_at": "2015-04-09 02:40:38 UTC",
     "file_name": "test.rb",
-    "expires_at": null,
     "type": "ProjectSnippet",
     "visibility_level": 0
   }

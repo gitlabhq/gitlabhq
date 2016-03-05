@@ -141,7 +141,7 @@ module API
     class ProjectSnippet < Grape::Entity
       expose :id, :title, :file_name
       expose :author, using: Entities::UserBasic
-      expose :expires_at, :updated_at, :created_at
+      expose :updated_at, :created_at
     end
 
     class ProjectEntity < Grape::Entity
