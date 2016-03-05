@@ -75,7 +75,7 @@ gem "kaminari", "~> 0.16.3"
 gem "haml-rails", '~> 0.9.0'
 
 # Files attachments
-gem "carrierwave", '~> 0.9.0'
+gem "carrierwave", '~> 0.10.0'
 
 # Image editing
 gem "mini_magick", '~> 4.4.0'
