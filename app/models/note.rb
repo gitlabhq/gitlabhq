@@ -87,7 +87,7 @@ class Note < ActiveRecord::Base
         next if discussion_ids.include?(note.discussion_id)
 
         # don't group notes for the main target
-        if !note.for_diff_line? && note.noteable_type == "MergeRequest"
+        if !note.for_diff_line? && note.for_merge_request?
           discussions << [note]
         else
           discussions << notes.select do |other_note|
@@ -383,7 +383,7 @@ class Note < ActiveRecord::Base
   private
 
   def awards_supported?
-    (noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)) && !for_diff_line?
+    (for_issue? || for_merge_request?) && !for_diff_line?
   end
 
   def contains_emoji_only?
