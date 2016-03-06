@@ -39,6 +39,7 @@ class Note < ActiveRecord::Base
 
   has_many :todos, dependent: :destroy
 
+  delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 
@@ -311,16 +312,6 @@ class Note < ActiveRecord::Base
   # if note commit id doesn't exist
   rescue
     nil
-  end
-
-  # Mentionable override.
-  def gfm_reference(from_project = nil)
-    noteable.gfm_reference(from_project)
-  end
-
-  # Mentionable override.
-  def local_reference
-    noteable
   end
 
   def noteable_type_name
