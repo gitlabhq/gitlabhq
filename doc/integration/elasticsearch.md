@@ -250,9 +250,8 @@ To minimize downtime of the search feature we recommend the following:
 
 1. Enable Elasticsearch and restart GitLab.
 
-1. Run indexers for database, wikis, and repositories. By running the repository
-   indexer twice you will be sure that everything is indexed because some
-   commits could be pushed while you performed initial indexing. The repository
+1. Run indexers for database (with UPDATE_INDEX=1 parameter), wikis, and repositories. 
+   By running  the repository indexer twice you will be sure that everything is indexed because some commits could be pushed while you performed initial indexing. The repository
    indexer will skip repositories and commits that are already indexed, so it
    will be much shorter than the first run.
 
