@@ -242,7 +242,7 @@
     }
   }
 
-  a {
+  a:not(.btn) {
     &:hover {
       color: $md-link-color;
       text-decoration: none;
@@ -291,14 +291,5 @@
 
   a {
     color: #8c8c8c;
-
-    &:hover {
-      color: $gl-text-color;
-      text-decoration: none;
-    }
-
-    &:focus {
-      text-decoration: none;
-    }
   }
 }
