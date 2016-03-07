@@ -218,7 +218,7 @@ pages:
 #### How `.gitlab-ci.yml` looks like when using a static generator
 
 In general, GitLab Pages support any kind of [static site generator][staticgen],
-since the Runner can be configured to run any possible command.
+since `.gitlab-ci.yml` can be configured to run any possible command.
 
 In the root directory of your Git repository, place the source files of your
 favorite static generator. Then provide a `.gitlab-ci.yml` file which is
