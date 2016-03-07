@@ -24,7 +24,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         iid: 1
       )
       @issue_2 = create(
-        :issue, project: project_1,
+        :issue,
+        project: project_1,
         title: 'Issue 2',
         description: 'Hello world, here I am!',
         iid: 2
