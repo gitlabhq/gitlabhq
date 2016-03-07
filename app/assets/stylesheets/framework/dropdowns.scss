@@ -187,13 +187,13 @@
   position: absolute;
   top: -1px;
   padding: 0;
-  color: #BFBFBF;
+  color: $dropdown-title-btn-color;
   font-size: 14px;
   border: 0;
   background: none;
 
   &:hover {
-    color: darken(#BFBFBF, 15%);
+    color: darken($dropdown-title-btn-color, 15%);
   }
 }
 
@@ -222,7 +222,7 @@
 .dropdown-input-field {
   width: 100%;
   padding: 0 7px;
-  color: #C7C7C7;
+  color: $dropdown-input-color;
   line-height: 30px;
   border: 1px solid $dropdown-divider-color;
   border-radius: 2px;
@@ -230,8 +230,8 @@
 
   &:focus {
     color: $dropdown-link-color;
-    border-color: rgb(58, 171, 240);
-    box-shadow: 0 0 4px rgba(#000, .2);
+    border-color: $dropdown-input-focus-border;
+    box-shadow: 0 0 4px $dropdown-input-focus-shadow;
 
     + .fa {
       color: $dropdown-link-color;
@@ -265,7 +265,7 @@
   left: 0;
   display: none;
   z-index: 9;
-  background-color: rgba(#fff, .6);
+  background-color: $dropdown-loading-bg;
   font-size: 28px;
 
   .fa {
