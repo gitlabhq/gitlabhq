@@ -9,7 +9,6 @@ class @LabelsSelect
         renderRow: (label) ->
           "<li>
             <a href='#'>
-              <span class='label' style='background-color: #{label.color}'>#{label.name}</span>
               #{label.name}
             </a>
           </li>"
