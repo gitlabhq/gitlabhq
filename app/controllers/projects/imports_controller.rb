@@ -1,5 +1,5 @@
 class Projects::ImportsController < Projects::ApplicationController
-  include ContinueToParams
+  include ContinueParams
 
   # Authorize
   before_action :authorize_admin_project!

@@ -1,5 +1,5 @@
 class Projects::ForksController < Projects::ApplicationController
-  include ContinueToParams
+  include ContinueParams
 
   # Authorize
   before_action :require_non_empty_project
