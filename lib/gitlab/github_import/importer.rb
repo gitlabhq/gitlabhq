@@ -7,8 +7,8 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        github_session = project.import_data.credentials if import_data
-        @client = Client.new(github_session["github_access_token"])
+        credentials = project.import_data.credentials if import_data
+        @client = Client.new(credentials["github_access_token"])
         @formatter = Gitlab::ImportFormatter.new
       end
 
