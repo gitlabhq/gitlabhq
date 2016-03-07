@@ -4,7 +4,8 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
   describe :save do
 
     let(:user) { create(:user) }
-    let!(:project) { create(:project, :public, name: 'searchable_project') }
+    let(:issue) { create(:issue, assignee: user) }
+    let!(:project) { create(:project, :public, name: 'searchable_project', issues: [issue] )}
     let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
     let(:project_tree_saver) { Projects::ImportExport::ProjectTreeSaver.new(project: project) }
 
@@ -21,9 +22,24 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
       expect(project_tree_saver.save).to be true
     end
 
-    it 'saves the correct json' do
-      project_tree_saver.save
-      expect(project_json(project_tree_saver.full_path)).to include({ "name" => project.name })
+    context 'JSON' do
+
+      let(:saved_project_json) do
+        project_tree_saver.save
+        project_json(project_tree_saver.full_path)
+      end
+
+      it 'saves the correct json' do
+        expect(saved_project_json).to include({ "name" => project.name })
+      end
+
+      it 'has events' do
+        expect(saved_project_json['events']).not_to be_empty
+      end
+
+      it 'has issues' do
+        expect(saved_project_json['issues']).not_to be_empty
+      end
     end
   end
 
