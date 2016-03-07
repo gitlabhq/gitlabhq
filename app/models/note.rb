@@ -323,10 +323,6 @@ class Note < ActiveRecord::Base
     noteable
   end
 
-  def noteable_type_name
-    noteable_type.downcase if noteable_type.present?
-  end
-
   # FIXME: Hack for polymorphic associations with STI
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(noteable_type)
@@ -344,10 +340,6 @@ class Note < ActiveRecord::Base
   # when the event is updated because the key changes.
   def reset_events_cache
     Event.reset_event_cache_for(self)
-  end
-
-  def system?
-    read_attribute(:system)
   end
 
   def downvote?
