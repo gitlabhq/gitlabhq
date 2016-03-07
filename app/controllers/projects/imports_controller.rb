@@ -1,4 +1,6 @@
 class Projects::ImportsController < Projects::ApplicationController
+  include ContinueToParams
+
   # Authorize
   before_action :authorize_admin_project!
   before_action :require_no_repo, only: [:new, :create]
@@ -43,16 +45,6 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   private
-
-  def continue_params
-    continue_params = params[:continue]
-
-    if continue_params
-      continue_params.permit(:to, :notice, :notice_now)
-    else
-      nil
-    end
-  end
 
   def finished_notice
     if @project.forked?

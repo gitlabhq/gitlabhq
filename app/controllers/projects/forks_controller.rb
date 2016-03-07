@@ -1,4 +1,6 @@
 class Projects::ForksController < Projects::ApplicationController
+  include ContinueToParams
+
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
@@ -51,17 +53,6 @@ class Projects::ForksController < Projects::ApplicationController
       end
     else
       render :error
-    end
-  end
-
-  private
-
-  def continue_params
-    continue_params = params[:continue]
-    if continue_params
-      continue_params.permit(:to, :notice, :notice_now)
-    else
-      nil
     end
   end
 end
