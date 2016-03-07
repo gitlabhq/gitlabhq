@@ -33,7 +33,7 @@ class GeoNode < ActiveRecord::Base
 
   def uri
     if relative_url_root
-      relative_url = relative_url_root.starts_with?('/') ? relative_url_root : relative_url_root.prepend('/')
+      relative_url = relative_url_root.starts_with?('/') ? relative_url_root : "/#{relative_url_root}"
     end
 
     URI.parse(URI::Generic.build(scheme: schema, host: host, port: port, path: relative_url).normalize.to_s)
@@ -59,9 +59,9 @@ class GeoNode < ActiveRecord::Base
 
   def refresh_bulk_notify_worker_status
     if Gitlab::Geo.primary?
-      Gitlab::Geo.bulk_notify_job.enable!
+      Gitlab::Geo.bulk_notify_job.try(:enable!)
     else
-      Gitlab::Geo.bulk_notify_job.disable!
+      Gitlab::Geo.bulk_notify_job.try(:disable!)
     end
   end
 
