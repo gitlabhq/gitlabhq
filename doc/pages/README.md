@@ -12,6 +12,9 @@ With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
 deploy static pages for your individual projects, your user or your group.
 
+Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlab-com) if you are
+using GitLab.com to host your website.
+
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -25,18 +28,19 @@ deploy static pages for your individual projects, your user or your group.
     - [Explore the contents of `.gitlab-ci.yml`](#explore-the-contents-of-gitlab-ciyml)
         - [How `.gitlab-ci.yml` looks like when the static content is in your repository](#how-gitlab-ciyml-looks-like-when-the-static-content-is-in-your-repository)
         - [How `.gitlab-ci.yml` looks like when using a static generator](#how-gitlab-ciyml-looks-like-when-using-a-static-generator)
-        - [How to set up GitLab Pages in a repository where there's also actual code](#how-to-set-up-gitlab-pages-in-a-repository-where-there-s-also-actual-code)
+        - [How to set up GitLab Pages in a repository where there's also actual code](#how-to-set-up-gitlab-pages-in-a-repository-where-theres-also-actual-code)
 - [Next steps](#next-steps)
     - [Example projects](#example-projects)
     - [Add a custom domain to your Pages website](#add-a-custom-domain-to-your-pages-website)
     - [Secure your custom domain website with TLS](#secure-your-custom-domain-website-with-tls)
     - [Custom error codes pages](#custom-error-codes-pages)
     - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
+- [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom)
 - [Limitations](#limitations)
 - [Frequently Asked Questions](#frequently-asked-questions)
     - [Can I download my generated pages?](#can-i-download-my-generated-pages)
     - [Can I use GitLab Pages if my project is private?](#can-i-use-gitlab-pages-if-my-project-is-private)
-    - [Q: Do I have to create a project named `username.example.io` in order to host a project website?](#q-do-i-have-to-create-a-project-named-username-example-io-in-order-to-host-a-project-website)
+    - [Do I have to create a project named `username.example.io` in order to host a project website?](#do-i-have-to-create-a-project-named-usernameexampleio-in-order-to-host-a-project-website)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -44,8 +48,7 @@ deploy static pages for your individual projects, your user or your group.
 
 > **Note:**
 > In the rest of this document we will assume that the general domain name that
-> is used for GitLab Pages is `example.io`. If you are using GitLab.com to
-> host your website, replace `example.io` with `gitlab.io`.
+> is used for GitLab Pages is `example.io`.
 
 In general there are two types of pages one might create:
 
@@ -78,7 +81,7 @@ In brief, this is what you need to upload your website in GitLab Pages:
    sure you get that right.
 1. Create a project
 1. Push a [`.gitlab-ci.yml` file](../ci/yaml/README.md) in the root directory
-   of your repository with a specific job named [`pages`][pages].
+   of your repository with a specific job named [`pages`][pages]
 1. Set up a GitLab Runner to build your website
 
 > **Note:**
@@ -383,6 +386,17 @@ to your project's **Settings > Pages** and hit **Remove pages**. Simple as that.
 
 ![Remove pages](img/pages_remove.png)
 
+## GitLab Pages on GitLab.com
+
+If you are using GitLab.com to host your website, then:
+
+- The general domain name for GitLab Pages on GitLab.com is `gitlab.io`
+- Shared runners are provided for free and can be used to build your website
+  if you cannot or don't want to set up your own Runner
+- Custom domains and TLS support are enabled
+
+The rest of the guide still applies.
+
 ## Limitations
 
 When using Pages under the general domain of a GitLab instance (`*.example.io`),
@@ -405,7 +419,7 @@ Sure. All you need to do is download the artifacts archive from the build page.
 Yes. GitLab Pages don't care whether you set your project's visibility level
 to private, internal or public.
 
-### Q: Do I have to create a project named `username.example.io` in order to host a project website?
+### Do I have to create a project named `username.example.io` in order to host a project website?
 
 No. You can create a new project named `foo` and have it served under
 `http(s)://username.example.io/foo` without having previously created a
