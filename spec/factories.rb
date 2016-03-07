@@ -115,15 +115,6 @@ FactoryGirl.define do
     factory :deploy_key, class: 'DeployKey' do
     end
 
-    factory :geo_node_key, class: 'GeoNodeKey' do
-      trait :another_key do
-        key do
-          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmTillFzNTrrGgwaCKaSj+QCz81E6jBc/s9av0+3b1Hwfxgkqjl4nAK/OD2NjgyrONDTDfR8cRN4eAAy6nY8GLkOyYBDyuc5nTMqs5z3yVuTwf3koGm/YQQCmo91psZ2BgDFTor8SVEE5Mm1D1k3JDMhDFxzzrOtRYFPci9lskTJaBjpqWZ4E9rDTD2q/QZntCqbC3wE9uSemRQB5f8kik7vD/AD8VQXuzKladrZKkzkONCPWsXDspUitjM8HkQdOf0PsYn1CMUC1xKYbCxkg5TkEosIwGv6CoEArUrdu/4+10LVslq494mAvEItywzrluCLCnwELfW+h/m8UHoVhZ"
-        end
-      end
-
-    end
-
     factory :personal_key do
       user
     end
@@ -235,17 +226,5 @@ FactoryGirl.define do
     recipient factory: :user
     noteable factory: :issue
     reply_key "0123456789abcdef" * 2
-  end
-
-  factory :geo_node do
-    host { Gitlab.config.gitlab.host }
-    sequence(:port) {|n| n}
-    association :geo_node_key
-
-    trait :primary do
-      primary true
-      port { Gitlab.config.gitlab.port }
-      association :geo_node_key, :another_key
-    end
   end
 end
