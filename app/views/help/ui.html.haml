@@ -182,9 +182,9 @@
       .nav-controls
         = text_field_tag 'sample', nil, class: 'form-control'
         .dropdown
-          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+          %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
             %span Sort by name
-            %b.caret
+            = icon('chevron-down')
           %ul.dropdown-menu
             %li
               %a Sort by date
@@ -219,17 +219,17 @@
   .example
     .clearfix
       .dropdown.inline.pull-left
-        %button.dropdown-toggle.btn{type: 'button', data: {toggle: 'dropdown'}}
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
           Dropdown
-          %b.caret
+          = icon('chevron-down')
         %ul.dropdown-menu
           %li
             %a{href: "#"}
               Dropdown Option
       .dropdown.inline.pull-right
-        %button.dropdown-toggle.btn{type: 'button', data: {toggle: 'dropdown'}}
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
           Dropdown
-          %b.caret
+          = icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-align-right
           %li
             %a{href: "#"}
@@ -237,9 +237,9 @@
   .example
     %div
       .dropdown.inline
-        %button.dropdown-toggle.btn{type: 'button', data: {toggle: 'dropdown'}}
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
           Dropdown
-          %b.caret
+          = icon('chevron-down')
         %ul.dropdown-menu.dropdown-menu-selectable
           %li
             %a.is-active{href: "#"}
@@ -247,9 +247,9 @@
   .example
     %div
       .dropdown.inline
-        %button.dropdown-toggle.btn{type: 'button', data: {toggle: 'dropdown'}}
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
           Dropdown
-          %b.caret
+          = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable
           .dropdown-title
             %span Dropdown Title
@@ -286,9 +286,9 @@
             %strong Tip:
             If an author is not a member of this project, you can still filter by his name while using the search field.
       .dropdown.inline
-        %button.dropdown-toggle.btn{type: 'button', data: {toggle: 'dropdown'}}
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
           Dropdown loading
-          %b.caret
+          = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable.is-loading
           .dropdown-title
             %span Dropdown Title
@@ -330,9 +330,9 @@
   .example
     %div
       .dropdown.inline
-        %button.dropdown-toggle.btn{type: 'button', data: {toggle: 'dropdown'}}
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
           Dropdown user
-          %b.caret
+          = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-user
           .dropdown-title
             %span Dropdown Title
@@ -354,9 +354,9 @@
   .example
     %div
       .dropdown.inline
-        %button.dropdown-toggle.btn{type: 'button', data: {toggle: 'dropdown'}}
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
           Dropdown page 2
-          %b.caret
+          = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-user.dropdown-menu-paging.is-page-two
           .dropdown-page-one
             .dropdown-title
