@@ -137,9 +137,7 @@ class MergeRequest < ActiveRecord::Base
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :in_projects, ->(project_ids) { where("source_project_id in (:project_ids) OR target_project_id in (:project_ids)", project_ids: project_ids) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
-  scope :opened, -> { with_states(:opened, :reopened) }
   scope :merged, -> { with_state(:merged) }
-  scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
   scope :join_project, -> { joins(:target_project) }

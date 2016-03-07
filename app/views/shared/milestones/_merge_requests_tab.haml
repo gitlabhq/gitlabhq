@@ -1,0 +1,12 @@
+- args = { show_project_name: local_assigns.fetch(:show_project_name, false),
+           show_full_project_name: local_assigns.fetch(:show_full_project_name, false) }
+
+.row.prepend-top-default
+  .col-md-3
+    = render 'shared/milestones/issuables', args.merge(title: 'Work in progress (open and unassigned)', issuables: merge_requests.opened.unassigned, id: 'unassigned')
+  .col-md-3
+    = render 'shared/milestones/issuables', args.merge(title: 'Waiting for merge (open and assigned)', issuables: merge_requests.opened.assigned, id: 'ongoing')
+  .col-md-3
+    = render 'shared/milestones/issuables', args.merge(title: 'Rejected (closed)', issuables: merge_requests.closed, id: 'closed')
+  .col-md-3
+    = render 'shared/milestones/issuables', args.merge(title: 'Merged', issuables: merge_requests.merged, id: 'merged', primary: true)

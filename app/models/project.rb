@@ -215,6 +215,7 @@ class Project < ActiveRecord::Base
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
+  scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
 
   state_machine :import_status, initial: :none do
     event :import_start do
