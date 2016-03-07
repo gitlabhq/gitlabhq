@@ -224,15 +224,17 @@ specific to your static generator.
 The example below, uses [Jekyll] to build the static site:
 
 ```yaml
-pages:
-  images: jekyll/jekyll:latest
+image: ruby:2.1             # the script will run in Ruby 2.1 using the Docker image ruby:2.1
+
+pages:                      # the build job must be named pages
   script:
-  - jekyll build -d public/
+  - gem install jekyll      # we install jekyll
+  - jekyll build -d public/ # we tell jekyll to build the site for us
   artifacts:
     paths:
-    - public
+    - public                # this is where the site will live and the Runner uploads it in GitLab
   only:
-  - master
+  - master                  # this script is only affecting the master branch
 ```
 
 Here, we used the Docker executor and in the first line we specified the base
@@ -241,7 +243,11 @@ image against which our builds will run.
 You have to make sure that the generated static files are ultimately placed
 under the `public` directory, that's why in the `script` section we run the
 `jekyll` command that builds the website and puts all content in the `public/`
-directory.
+directory. Depending on the static generator of your choice, this command will
+differ. Search in the documentation of the static generator you will use if
+there is an option to explicitly set the output directory. If there is not
+such an option, you can always add one more line under `script` to rename the
+resulting directory in `public/`.
 
 We then tell the Runner to treat the `public/` directory as `artifacts` and
 upload it to GitLab.
@@ -251,8 +257,8 @@ upload it to GitLab.
 See the [jekyll example project][pages-jekyll] to better understand how this
 works.
 
-For a list of Pages projects, see [example projects](#example-projects) to get
-you started.
+For a list of Pages projects, see the [example projects](#example-projects) to
+get you started.
 
 #### How to set up GitLab Pages in a repository where there's also actual code
 
@@ -279,9 +285,11 @@ Below is a copy of `.gitlab-ci.yml` where the most significant line is the last
 one, specifying to execute everything in the `pages` branch:
 
 ```
+image: ruby:2.1
+
 pages:
-  images: jekyll/jekyll:latest
   script:
+  - gem install jekyll
   - jekyll build -d public/
   artifacts:
     paths:
