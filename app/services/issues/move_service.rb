@@ -83,11 +83,8 @@ module Issues
 
     def rewrite_references(noteable)
       content = noteable_content(noteable).dup
-      context = { pipeline: :reference_unfold,
-                  project: @project_old, new_project: @project_new }
-
-      new_content = Banzai.render_result(content, context)
-      new_content[:output].to_s
+      unfolder = Gitlab::Gfm::ReferenceUnfolder.new(content, @project_old)
+      unfolder.unfold(@project_new)
     end
 
     def noteable_content(noteable)
