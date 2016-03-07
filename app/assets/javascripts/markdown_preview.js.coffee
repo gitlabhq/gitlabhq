@@ -6,6 +6,7 @@
 class @MarkdownPreview
   # Minimum number of users referenced before triggering a warning
   referenceThreshold: 10
+  ajaxCache: {}
 
   showPreview: (form) ->
     preview = form.find('.js-md-preview')
@@ -24,12 +25,16 @@ class @MarkdownPreview
   renderMarkdown: (text, success) ->
     return unless window.markdown_preview_path
 
+    return success(@ajaxCache[text]) if @ajaxCache[text]
+
     $.ajax
       type: 'POST'
       url: window.markdown_preview_path
       data: { text: text }
       dataType: 'json'
-      success: success
+      success: (response) =>
+        @ajaxCache[text] = response
+        success(response)
 
   hideReferencedUsers: (form) ->
     referencedUsers = form.find('.referenced-users')
@@ -49,6 +54,7 @@ markdownPreview = new MarkdownPreview()
 
 previewButtonSelector = '.js-md-preview-button'
 writeButtonSelector   = '.js-md-write-button'
+lastTextareaPreviewed = null
 
 $.fn.setupMarkdownPreview = ->
   $form = $(this)
@@ -58,10 +64,10 @@ $.fn.setupMarkdownPreview = ->
   form_textarea.on 'input', -> markdownPreview.hideReferencedUsers($form)
   form_textarea.on 'blur',  -> markdownPreview.showPreview($form)
 
-$(document).on 'click', previewButtonSelector, (e) ->
-  e.preventDefault()
+$(document).on 'markdown-preview:show', (e, $form) ->
+  return unless $form
 
-  $form = $(this).closest('form')
+  lastTextareaPreviewed = $form.find('textarea.markdown-area')
 
   # toggle tabs
   $form.find(writeButtonSelector).parent().removeClass('active')
@@ -73,10 +79,10 @@ $(document).on 'click', previewButtonSelector, (e) ->
 
   markdownPreview.showPreview($form)
 
-$(document).on 'click', writeButtonSelector, (e) ->
-  e.preventDefault()
+$(document).on 'markdown-preview:hide', (e, $form) ->
+  return unless $form
 
-  $form = $(this).closest('form')
+  lastTextareaPreviewed = null
 
   # toggle tabs
   $form.find(writeButtonSelector).parent().addClass('active')
@@ -84,4 +90,30 @@ $(document).on 'click', writeButtonSelector, (e) ->
 
   # toggle content
   $form.find('.md-write-holder').show()
+  $form.find('textarea.markdown-area').focus()
   $form.find('.md-preview-holder').hide()
+
+$(document).on 'markdown-preview:toggle', (e, keyboardEvent) ->
+  $target = $(keyboardEvent.target)
+
+  if $target.is('textarea.markdown-area')
+    $(document).triggerHandler('markdown-preview:show', [$target.closest('form')])
+    keyboardEvent.preventDefault()
+  else if lastTextareaPreviewed
+    $target = lastTextareaPreviewed
+    $(document).triggerHandler('markdown-preview:hide', [$target.closest('form')])
+    keyboardEvent.preventDefault()
+
+$(document).on 'click', previewButtonSelector, (e) ->
+  e.preventDefault()
+
+  $form = $(this).closest('form')
+
+  $(document).triggerHandler('markdown-preview:show', [$form])
+
+$(document).on 'click', writeButtonSelector, (e) ->
+  e.preventDefault()
+
+  $form = $(this).closest('form')
+
+  $(document).triggerHandler('markdown-preview:hide', [$form])
