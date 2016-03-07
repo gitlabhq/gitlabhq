@@ -72,7 +72,7 @@ describe Gitlab::Email::Message::RepositoryPush do
 
     describe '#compare_timeout' do
       subject { message.compare_timeout }
-      it { is_expected.to eq compare.timeout }
+      it { is_expected.to eq compare.diffs.overflow? }
     end
 
     describe '#reverse_compare?' do

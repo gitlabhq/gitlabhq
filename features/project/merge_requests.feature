@@ -26,6 +26,16 @@ Feature: Project Merge Requests
     When I visit project "Shop" merge requests page
     Then I should see "other_branch" branch
 
+  Scenario: I should not see the numbers of diverged commits if the branch is rebased on the target
+    Given project "Shop" have "Bug NS-07" open merge request with rebased branch
+    When I visit merge request page "Bug NS-07"
+    Then I should not see the diverged commits count
+
+  Scenario: I should see the numbers of diverged commits if the branch diverged from the target
+    Given project "Shop" have "Bug NS-08" open merge request with diverged branch
+    When I visit merge request page "Bug NS-08"
+    Then I should see the diverged commits count
+
   Scenario: I should see rejected merge requests
     Given I click link "Closed"
     Then I should see "Feature NS-03" in merge requests

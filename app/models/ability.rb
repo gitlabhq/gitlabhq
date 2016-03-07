@@ -202,6 +202,7 @@ class Ability
     def project_dev_rules
       @project_dev_rules ||= project_report_rules + [
         :admin_merge_request,
+        :update_merge_request,
         :create_commit_status,
         :update_commit_status,
         :create_build,
@@ -227,7 +228,6 @@ class Ability
         :read_pages,
         :push_code_to_protected_branches,
         :update_project_snippet,
-        :update_merge_request,
         :update_pages,
         :admin_milestone,
         :admin_project_snippet,

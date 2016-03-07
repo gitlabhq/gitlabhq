@@ -304,6 +304,70 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#diverged_commits_count' do
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
+
+    context 'diverged on same repository' do
+      subject(:merge_request_with_divergence) { create(:merge_request, :diverged, source_project: project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(5)
+      end
+    end
+
+    context 'diverged on fork' do
+      subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: fork_project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(5)
+      end
+    end
+
+    context 'rebased on fork' do
+      subject(:merge_request_rebased) { create(:merge_request, :rebased, source_project: fork_project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(0)
+      end
+    end
+
+    describe 'caching' do
+      before(:example) do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      end
+
+      it 'caches the output' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          once.
+          and_return(2)
+
+        subject.diverged_commits_count
+        subject.diverged_commits_count
+      end
+
+      it 'invalidates the cache when the source sha changes' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          twice.
+          and_return(2)
+
+        subject.diverged_commits_count
+        allow(subject).to receive(:source_sha).and_return('123abc')
+        subject.diverged_commits_count
+      end
+
+      it 'invalidates the cache when the target sha changes' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          twice.
+          and_return(2)
+
+        subject.diverged_commits_count
+        allow(subject).to receive(:target_sha).and_return('123abc')
+        subject.diverged_commits_count
+      end
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:merge_request) }
 

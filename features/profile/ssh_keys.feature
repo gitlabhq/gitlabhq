@@ -9,7 +9,7 @@ Feature: Profile SSH Keys
     Then I should see my ssh keys
 
   Scenario: Add new ssh key
-    Given I click link "Add new"
+    Given I should see new ssh key form
     And I submit new ssh key "Laptop"
     Then I should see new ssh key "Laptop"
 

@@ -191,7 +191,7 @@ module API
 
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
-        compare.diffs
+        compare.diffs(all_diffs: true).to_a
       end
     end
 
@@ -313,11 +313,11 @@ module API
       end
 
       expose :diffs, using: Entities::RepoDiff do |compare, options|
-        compare.diffs
+        compare.diffs(all_diffs: true).to_a
       end
 
       expose :compare_timeout do |compare, options|
-        compare.timeout
+        compare.diffs.overflow?
       end
 
       expose :same, as: :compare_same_ref

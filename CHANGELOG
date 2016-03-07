@@ -6,14 +6,23 @@ v 8.6.0 (unreleased)
   - Fix issue when pushing to projects ending in .wiki
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
   - Don't load all of GitLab in mail_room
+  - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
   - Strip leading and trailing spaces in URL validator (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
+  - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
   - Don't show Issues/MRs from archived projects in Groups view
+  - Increase the notes polling timeout over time (Roberto Dip)
+
+v 8.5.4
+  - Do not cache requests for badges (including builds badge)
 
 v 8.5.3
   - Flush repository caches before renaming projects
+  - Sort starred projects on dashboard based on last activity by default
+  - Show commit message in JIRA mention comment
+  - Makes issue page and merge request page usable on mobile browsers.
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px

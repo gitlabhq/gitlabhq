@@ -54,7 +54,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 8.2'
+gem "gitlab_git", '~> 9.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -80,7 +80,7 @@ gem "kaminari", "~> 0.16.3"
 gem "haml-rails", '~> 0.9.0'
 
 # Files attachments
-gem "carrierwave", '~> 0.9.0'
+gem "carrierwave", '~> 0.10.0'
 
 # Image editing
 gem "mini_magick", '~> 4.4.0'
@@ -270,10 +270,10 @@ group :development, :test do
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
-  gem 'database_cleaner', '~> 1.4.0'
-  gem 'factory_girl_rails', '~> 4.3.0'
-  gem 'rspec-rails',      '~> 3.3.0'
-  gem 'spinach-rails', '~> 0.2.1'
+  gem 'database_cleaner',   '~> 1.4.0'
+  gem 'factory_girl_rails', '~> 4.6.0'
+  gem 'rspec-rails',        '~> 3.3.0'
+  gem 'spinach-rails',      '~> 0.2.1'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -288,7 +288,7 @@ group :development, :test do
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
 
-  gem 'spring', '~> 1.3.6'
+  gem 'spring', '~> 1.6.4'
   gem 'spring-commands-rspec',    '~> 1.0.4'
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
