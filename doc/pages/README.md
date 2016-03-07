@@ -40,7 +40,6 @@ using GitLab.com to host your website.
 - [Frequently Asked Questions](#frequently-asked-questions)
     - [Can I download my generated pages?](#can-i-download-my-generated-pages)
     - [Can I use GitLab Pages if my project is private?](#can-i-use-gitlab-pages-if-my-project-is-private)
-    - [Do I have to create a project named `username.example.io` in order to host a project website?](#do-i-have-to-create-a-project-named-usernameexampleio-in-order-to-host-a-project-website)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -418,12 +417,6 @@ Sure. All you need to do is download the artifacts archive from the build page.
 
 Yes. GitLab Pages don't care whether you set your project's visibility level
 to private, internal or public.
-
-### Do I have to create a project named `username.example.io` in order to host a project website?
-
-No. You can create a new project named `foo` and have it served under
-`http(s)://username.example.io/foo` without having previously created a
-user page.
 
 ---
 
