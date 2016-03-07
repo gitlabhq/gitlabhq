@@ -56,7 +56,6 @@ class Project < ActiveRecord::Base
   extend Gitlab::ConfigHelper
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
-  AVATAR_BRANCH = 'master'
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -545,9 +544,9 @@ class Project < ActiveRecord::Base
   end
 
   def avatar_in_git
-    @avatar_file ||= 'logo.png' if repository.blob_at_branch(AVATAR_BRANCH, 'logo.png')
-    @avatar_file ||= 'logo.jpg' if repository.blob_at_branch(AVATAR_BRANCH, 'logo.jpg')
-    @avatar_file ||= 'logo.gif' if repository.blob_at_branch(AVATAR_BRANCH, 'logo.gif')
+    @avatar_file ||= 'logo.png' if repository.blob_at_branch('master', 'logo.png')
+    @avatar_file ||= 'logo.jpg' if repository.blob_at_branch('master', 'logo.jpg')
+    @avatar_file ||= 'logo.gif' if repository.blob_at_branch('master', 'logo.gif')
     @avatar_file
   end
 
