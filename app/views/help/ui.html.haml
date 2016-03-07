@@ -390,6 +390,51 @@
               %button.btn.btn-primary
                 Create
 
+  .example
+    %div
+      .dropdown.inline
+        %button#js-project-dropdown.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Projects
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable
+          .dropdown-title
+            %span Go to project
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            = icon('search')
+          .dropdown-content
+          .dropdown-loading
+            = icon('spinner spin')
+    :javascript
+      $('#js-project-dropdown').glDropdown({
+        data: function (callback) {
+          Api.projects("", "last_activity_at", function (data) {
+            callback(data);
+          });
+        },
+        text: function (project) {
+          return project.name_with_namespace || project.name;
+        },
+        selectable: true,
+        fieldName: "author_id",
+        filterable: true,
+        search: {
+          fields: ['name_with_namespace']
+        },
+        id: function (data) {
+          return data.id;
+        },
+        isSelected: function (data) {
+          return data.id === 2;
+        }
+      })
+
+  .example
+    %div
+      = dropdown_tag("Projects", title: "Go to project", filter: true, placeholder: "Filter projects")
+
   %h2#panels Panels
 
   .row

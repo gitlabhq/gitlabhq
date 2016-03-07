@@ -117,9 +117,12 @@
     white-space: nowrap;
     overflow: hidden;
 
-    &:hover {
+    &:hover,
+    &:focus,
+    &.is-focused {
       background-color: $dropdown-link-hover-bg;
       text-decoration: none;
+      outline: 0;
     }
   }
 }
