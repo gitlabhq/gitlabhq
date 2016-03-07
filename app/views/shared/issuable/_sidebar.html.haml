@@ -23,7 +23,7 @@
       .block.assignee
         .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.to_reference if issuable.assignee)}
           - if issuable.assignee
-            = link_to_member_avatar(issuable.assignee, size: 24)
+            = link_to_member(@project, issuable.assignee, size: 24)
           - else
             = icon('user')
         .title.hide-collapsed
