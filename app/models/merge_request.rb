@@ -537,6 +537,29 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def diverged_commits_count
+    cache = Rails.cache.read(:"merge_request_#{id}_diverged_commits")
+
+    if cache.blank? || cache[:source_sha] != source_sha || cache[:target_sha] != target_sha
+      cache = {
+        source_sha: source_sha,
+        target_sha: target_sha,
+        diverged_commits_count: compute_diverged_commits_count
+      }
+      Rails.cache.write(:"merge_request_#{id}_diverged_commits", cache)
+    end
+
+    cache[:diverged_commits_count]
+  end
+
+  def compute_diverged_commits_count
+    Gitlab::Git::Commit.between(target_project.repository.raw_repository, source_sha, target_sha).size
+  end
+
+  def diverged_from_target_branch?
+    diverged_commits_count > 0
+  end
+
   def ci_commit
     @ci_commit ||= source_project.ci_commit(last_commit.id) if last_commit && source_project
   end
