@@ -24,7 +24,7 @@ describe DeleteUserWorker do
     context "solo owned groups present" do
       let(:solo_owned)  { create(:group) }
       let(:member)      { create(:group_member) }
-      let(:user)        { user = member.user }
+      let(:user)        { member.user }
 
       before do
         solo_owned.group_members = [member]
@@ -39,7 +39,7 @@ describe DeleteUserWorker do
     context "deletions with force" do
       let(:solo_owned)      { create(:group) }
       let(:member)          { create(:group_member) }
-      let(:user)            { user = member.user }
+      let(:user)            { member.user }
 
       before do
         solo_owned.group_members = [member]

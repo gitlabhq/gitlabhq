@@ -49,6 +49,7 @@ v 8.5.5
   - Fix pagination for filtered dashboard and explore pages
   - Fix "Show all" link behavior
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
+  - User deletion is now done in the background so the request can not time out
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
