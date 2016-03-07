@@ -157,27 +157,20 @@ module BlobHelper
     stale = stale?(etag: @blob.id) # The #stale? method sets cache headers.
 
     # Because we are opionated we set the cache headers ourselves.
-    if @project.visibility_level == Project::PUBLIC
-      cache_control = 'public, '
-    else
-      cache_control = 'private, '
-    end
+    response.cache_control[:public] = @project.public?
 
     if @ref && @commit && @ref == @commit.id
       # This is a link to a commit by its commit SHA. That means that the blob
       # is immutable. The only reason to invalidate the cache is if the commit
       # was deleted or if the user lost access to the repository.
-      max_age = Blob::CACHE_TIME_IMMUTABLE
+      response.cache_control[:max_age] = Blob::CACHE_TIME_IMMUTABLE
     else
       # A branch or tag points at this blob. That means that the expected blob
       # value may change over time.
-      max_age = Blob::CACHE_TIME
+      response.cache_control[:max_age] = Blob::CACHE_TIME
     end
 
-    cache_control << "max-age=#{max_age}"
-    headers['Cache-Control'] = cache_control
-    headers['ETag'] = @blob.id
-
+    response.etag = @blob.id
     !stale
   end
 end
