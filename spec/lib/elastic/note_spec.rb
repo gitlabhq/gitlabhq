@@ -26,4 +26,19 @@ describe "Note", elastic: true do
 
     expect(Note.elastic_search('term', options: options).total_count).to eq(1)
   end
+
+  it "returns json with all needed elements" do
+    note = create :note
+
+    expected_hash =  note.attributes.extract!(
+      'id',
+      'note',
+      'project_id',
+      'created_at'
+    )
+
+    expected_hash['updated_at_sort'] = note.updated_at
+
+    expect(note.as_indexed_json).to eq(expected_hash)
+  end
 end

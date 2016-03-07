@@ -27,4 +27,18 @@ describe "Issue", elastic: true do
 
     expect(Issue.elastic_search('term', options: options).total_count).to eq(2)
   end
+
+  it "returns json with all needed elements" do
+    project = create :empty_project
+    issue = create :issue, project: project
+
+    expected_hash =  issue.attributes.extract!('id', 'iid', 'title', 'description', 'created_at',
+                                                'updated_at', 'state', 'project_id', 'author_id')
+
+    expected_hash['project'] = { "id" => project.id }
+    expected_hash['author'] = { "id" => issue.author_id }
+    expected_hash['updated_at_sort'] = issue.updated_at
+
+    expect(issue.as_indexed_json).to eq(expected_hash)
+  end
 end

@@ -16,9 +16,16 @@ module Elastic
       end
 
       def as_indexed_json(options = {})
-        as_json(
-          only: [:id, :note, :project_id, :created_at]
-        ).merge({ updated_at_sort: updated_at })
+        data = {}
+
+        # We don't use as_json(only: ...) because it calls all virtual and serialized attributtes
+        # https://gitlab.com/gitlab-org/gitlab-ee/issues/349
+        [:id, :note, :project_id, :created_at].each do |attr|
+          data[attr.to_s] = self.send(attr)
+        end
+
+        data['updated_at_sort'] = updated_at
+        data
       end
 
       def self.elastic_search(query, options: {})
