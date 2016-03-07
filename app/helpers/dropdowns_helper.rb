@@ -1,8 +1,8 @@
 module DropdownsHelper
-  def dropdown_tag(toggle_text, title: false, filter: false, placeholder: "", &block)
+  def dropdown_tag(toggle_text, id: nil, toggle_class: nil, title: false, filter: false, placeholder: "", &block)
     content_tag :div, class: "dropdown" do
       dropdown_output = ""
-      dropdown_output += content_tag :button, class: "dropdown-menu-toggle", type: "button", data: {toggle: "dropdown"} do
+      dropdown_output += content_tag :button, class: "dropdown-menu-toggle #{toggle_class}", id: id, type: "button", data: {toggle: "dropdown"} do
         output = toggle_text
         output << icon('chevron-down')
         output.html_safe
