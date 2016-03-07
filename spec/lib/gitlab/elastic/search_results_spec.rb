@@ -103,6 +103,19 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     context 'search by term' do
       let(:query) { 'issue' }
 
+      it 'should not list confidential issues for guests' do
+        results = described_class.new(nil, limit_project_ids, query)
+        issues = results.objects('issues')
+
+        expect(issues).to include issue
+        expect(issues).not_to include security_issue_1
+        expect(issues).not_to include security_issue_2
+        expect(issues).not_to include security_issue_3
+        expect(issues).not_to include security_issue_4
+        expect(issues).not_to include security_issue_5
+        expect(results.issues_count).to eq 1
+      end
+
       it 'should not list confidential issues for non project members' do
         results = described_class.new(non_member, limit_project_ids, query)
         issues = results.objects('issues')
@@ -174,6 +187,19 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
     context 'search by iid' do
       let(:query) { '#1' }
+
+      it 'should not list confidential issues for guests' do
+        results = described_class.new(nil, limit_project_ids, query)
+        issues = results.objects('issues')
+
+        expect(issues).to include issue
+        expect(issues).not_to include security_issue_1
+        expect(issues).not_to include security_issue_2
+        expect(issues).not_to include security_issue_3
+        expect(issues).not_to include security_issue_4
+        expect(issues).not_to include security_issue_5
+        expect(results.issues_count).to eq 1
+      end
 
       it 'should not list confidential issues for non project members' do
         results = described_class.new(non_member, limit_project_ids, query)
@@ -257,8 +283,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         iid: 1
       )
       @merge_request_2 = create(
-        :merge_request, 
-        :conflict, 
+        :merge_request,
+        :conflict,
         source_project: project_1,
         target_project: project_1,
         title: 'Merge Request 2',
@@ -315,7 +341,6 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     end
   end
 
-
   describe 'project scoping' do
     before do
       [Project, MergeRequest, Issue, Milestone].each do |model|
@@ -356,7 +381,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         model.__elasticsearch__.refresh_index!
       end
 
-      result = Gitlab::Elastic::SearchResults.new([project.id], 'term')
+      result = Gitlab::Elastic::SearchResults.new(user, [project.id], 'term')
 
       expect(result.issues_count).to eq(2)
       expect(result.merge_requests_count).to eq(2)

@@ -33,7 +33,8 @@ describe "Issue", elastic: true do
     issue = create :issue, project: project
 
     expected_hash =  issue.attributes.extract!('id', 'iid', 'title', 'description', 'created_at',
-                                                'updated_at', 'state', 'project_id', 'author_id')
+                                                'updated_at', 'state', 'project_id', 'author_id',
+                                                'assignee_id', 'confidential')
 
     expected_hash['project'] = { "id" => project.id }
     expected_hash['author'] = { "id" => issue.author_id }
