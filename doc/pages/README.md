@@ -354,7 +354,9 @@ private key when adding a new domain.
 
 You can provide your own 403 and 404 error pages by creating the `403.html` and
 `404.html` files respectively in the root directory of the `public/` directory
-that will be included in the artifacts.
+that will be included in the artifacts. Usually this is the root directory of
+your project, but that may differ depending on your static generator
+configuration.
 
 If the case of `404.html`, there are different scenarios. For example:
 
