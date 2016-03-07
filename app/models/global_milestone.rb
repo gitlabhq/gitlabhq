@@ -1,4 +1,6 @@
 class GlobalMilestone
+  include Milestoneish
+
   attr_accessor :title, :milestones
   alias_attribute :name, :title
 
@@ -29,32 +31,6 @@ class GlobalMilestone
 
   def projects
     @projects ||= Project.for_milestones(milestones.map(&:id))
-  end
-
-  def issues_count
-    issues.count
-  end
-
-  def merge_requests_count
-    merge_requests.count
-  end
-
-  def open_items_count
-    opened_issues.count + opened_merge_requests.count
-  end
-
-  def closed_items_count
-    closed_issues.count + closed_merge_requests.count
-  end
-
-  def total_items_count
-    issues_count + merge_requests_count
-  end
-
-  def percent_complete
-    ((closed_items_count * 100) / total_items_count).abs
-  rescue ZeroDivisionError
-    0
   end
 
   def state
@@ -88,29 +64,8 @@ class GlobalMilestone
   end
 
   def labels
-    @labels ||= milestones.map do |ms|
-                  ms.labels.map { |label| LabelWithMilestone.new(label, ms) }
-                end.flatten.sort_by!(&:title)
-  end
-
-  def opened_issues
-    issues.opened
-  end
-
-  def closed_issues
-    issues.closed
-  end
-
-  def opened_merge_requests
-    merge_requests.opened
-  end
-
-  def closed_merge_requests
-    merge_requests.with_states(:closed, :merged, :locked)
-  end
-
-  def complete?
-    total_items_count == closed_items_count
+    @labels ||= GlobalLabel.build_collection(milestones.map(&:labels).flatten)
+                           .sort_by!(&:title)
   end
 
   def due_date

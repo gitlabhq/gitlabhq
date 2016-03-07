@@ -96,14 +96,6 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     end
   end
 
-  step 'I should see the project name in the Label row' do
-    page.within('#tab-labels') do
-      @global_milestone.projects.each do |project|
-        expect(page).to have_content project.name
-      end
-    end
-  end
-
   private
 
   def group_milestone

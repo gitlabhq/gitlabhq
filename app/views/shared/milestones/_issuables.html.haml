@@ -6,9 +6,11 @@
   .panel-heading
     = title
     - if show_counter
-      .pull-right= records.size
+      .pull-right= issuables.size
 
-  - class_prefix = dom_class(records).pluralize
+  - class_prefix = dom_class(issuables).pluralize
   %ul{ class: "well-list #{class_prefix}-sortable-list", id: "#{class_prefix}-list-#{id}", "data-state" => id }
-    - records.sort_by(&:position).each do |record|
-      = render 'shared/milestones/record', record: record, show_project_name: show_project_name, show_full_project_name: show_full_project_name
+    = render partial: 'shared/milestones/issuable',
+             collection: issuables.sort_by(&:position),
+             as: :issuable,
+             locals: { show_project_name: show_project_name, show_full_project_name: show_full_project_name }

@@ -19,10 +19,11 @@ li.milestone {
     width: 105px;
   }
 
-  .issue-row, .merge_request-row {
+  .issuable-row {
     .color-label {
       border-radius: 2px;
       padding: 3px !important;
+      margin-right: 7px;
     }
 
     // Issue title
@@ -45,19 +46,14 @@ li.milestone {
 }
 
 .issues-sortable-list, .merge_requests-sortable-list {
-  .issue-detail, .merge_request-detail {
+  .issuable-detail {
     display: block;
+    margin-top: 7px;
 
-    .issue-number, .merge_request-number {
+    .issuable-number {
       color: rgba(0,0,0,0.44);
       margin-right: 5px;
     }
-    .color-label {
-      padding: 6px 10px;
-      margin-right: 7px;
-      margin-top: 10px;
-    }
-
     .avatar {
       float: none;
     }

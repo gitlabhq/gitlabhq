@@ -45,4 +45,3 @@ Feature: Group Milestones
     And I click on one group milestone
     And I click on the "Labels" tab
     Then I should see the list of labels
-    And I should see the project name in the Label row

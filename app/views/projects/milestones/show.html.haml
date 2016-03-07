@@ -42,62 +42,9 @@
           = preserve do
             = markdown @milestone.description
 
-- if @milestone.issues.any? && @milestone.can_be_closed?
+- if @milestone.complete? && @milestone.active?
   .alert.alert-success.prepend-top-default
     %span All issues for this milestone are closed. You may close milestone now.
 
-.context.prepend-top-default
-  .milestone-summary
-    %h4 Progress
-    %strong= @milestone.issues.count
-    issues:
-    %span.milestone-stat
-      %strong= @milestone.open_items_count
-      open and
-      %strong= @milestone.closed_items_count
-      closed
-    %span.milestone-stat
-      %strong== #{@milestone.percent_complete}%
-      complete
-    %span.milestone-stat
-      %span.remaining-days= milestone_remaining_days(@milestone)
-    %span.pull-right.tab-issues-buttons
-      - if can?(current_user, :create_issue, @project)
-        = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
-          %i.fa.fa-plus
-          New Issue
-      - if can?(current_user, :read_issue, @project)
-        = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
-    %span.pull-right.tab-merge-requests-buttons.hidden
-      - if can?(current_user, :read_merge_request, @project)
-        = link_to 'Browse Merge Requests', namespace_project_merge_requests_path(@milestone.project.namespace, @milestone.project, milestone_title: @milestone.title), class: "btn btn-grouped"
-
-  = milestone_progress_bar(@milestone)
-
-%ul.nav-links.no-top.no-bottom
-  %li.active
-    = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
-      Issues
-      %span.badge= @issues.count
-  %li
-    = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
-      Merge Requests
-      %span.badge= @merge_requests.count
-  %li
-    = link_to '#tab-participants', 'data-toggle' => 'tab' do
-      Participants
-      %span.badge= @users.count
-  %li
-    = link_to '#tab-labels', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
-      Labels
-      %span.badge= @labels.count
-
-.tab-content.milestone-content
-  .tab-pane.active#tab-issues
-    = render 'shared/milestones/issues_tab', unassigned: @issues.opened.unassigned, assigned: @issues.opened.assigned, closed: @issues.closed
-  .tab-pane#tab-merge-requests
-    = render 'shared/milestones/merge_requests_tab', unassigned: @merge_requests.opened.unassigned, assigned: @merge_requests.opened.assigned, closed: @merge_requests.closed, merged: @merge_requests.merged
-  .tab-pane#tab-participants
-    = render 'shared/milestones/participants_tab', users: @users
-  .tab-pane#tab-labels
-    = render 'shared/milestones/labels_tab', labels: @labels
+= render 'shared/milestones/summary', milestone: @milestone, project: @project
+= render 'shared/milestones/tabs', milestone: @milestone
