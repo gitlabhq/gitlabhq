@@ -9,6 +9,7 @@ v 8.6.0 (unreleased)
   - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
   - Strip leading and trailing spaces in URL validator (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
+  - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
   - Don't show Issues/MRs from archived projects in Groups view
