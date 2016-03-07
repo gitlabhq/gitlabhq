@@ -48,7 +48,7 @@ class @Profile
       $filename.text($filename.data('label'))
 
     $('.js-upload-user-avatar').on 'click', ->
-      $('.edit_user').submit()
+      $('.edit-user').submit()
 
     $avatarInput.on "change", ->
       form = $(this).closest("form")
@@ -62,4 +62,3 @@ class @Profile
         $modalCropImg.attr('src', event.target.result)
 
       fileData = reader.readAsDataURL(this.files[0])
-

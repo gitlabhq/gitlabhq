@@ -38,6 +38,7 @@ module Issuable
 
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
+    scope :non_archived, -> { join_project.merge(Project.non_archived) }
 
     delegate :name,
              :email,

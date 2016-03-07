@@ -23,7 +23,7 @@ describe "MergeRequest", elastic: true do
 
     MergeRequest.__elasticsearch__.refresh_index!
 
-    options = { projects_ids: [project.id] }
+    options = { project_ids: [project.id] }
 
     expect(MergeRequest.elastic_search('term', options: options).total_count).to eq(2)
   end

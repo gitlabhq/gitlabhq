@@ -29,6 +29,7 @@
       %span.creator
         &middot;
         by #{link_to_member(@project, @issue.author, size: 24)}
+        = '@' + @issue.author.username
         &middot;
         = time_ago_with_tooltip(@issue.created_at, placement: 'bottom', html_class: 'issue_created_ago')
 

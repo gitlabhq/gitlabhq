@@ -5,10 +5,23 @@
   }
 }
 
-.profile-avatar-form-option {
-  hr {
-    margin: 10px 0;
+.profile-settings-sidebar {
+  a {
+    color: $profile-settings-link-color;
   }
+}
+
+.avatar-image {
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    margin-bottom: 0;
+  }
+}
+
+.avatar-file-name {
+  position: relative;
+  top: 2px;
+  display: inline-block;
 }
 
 .oauth-buttons {
@@ -77,6 +90,13 @@
   // Limits the width of the user bio for readability.
   max-width: 750px;
   margin: auto;
+}
+
+.user-avatar-button {
+  .file-name {
+    display: inline-block;
+    padding-left: 10px;
+  }
 }
 
 .modal-profile-crop {

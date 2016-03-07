@@ -59,14 +59,18 @@ module Elastic
       end
 
       def self.elastic_search(query, options: {})
-        query_hash = basic_query_hash(%w(title^2 description), query)
+        if query =~ /#(\d+)\z/
+          query_hash = iid_query_hash(query_hash, $1)
+        else
+          query_hash = basic_query_hash(%w(title^2 description), query)
+        end
 
-        if options[:projects_ids]
+        if options[:project_ids]
           query_hash[:query][:filtered][:filter] = {
             and: [
               {
                 terms: {
-                  target_project_id: [options[:projects_ids]].flatten
+                  target_project_id: [options[:project_ids]].flatten
                 }
               }
             ]

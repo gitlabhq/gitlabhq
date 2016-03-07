@@ -1,6 +1,7 @@
 @Pager =
   init: (@limit = 0, preload, @disable = false) ->
-    @loading = $(".loading")
+    @loading = $('.loading').first()
+
     if preload
       @offset = 0
       @getOld()

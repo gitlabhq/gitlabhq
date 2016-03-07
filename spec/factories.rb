@@ -161,10 +161,6 @@ FactoryGirl.define do
     url
   end
 
-  factory :group_hook do
-    url
-  end
-
   factory :project_snippet do
     project
     author
@@ -220,13 +216,6 @@ FactoryGirl.define do
     project
   end
 
-  factory :ldap_group_link do
-    cn 'group1'
-    group_access Gitlab::Access::GUEST
-    provider 'ldapmain'
-    group
-  end
-
   factory :identity do
     provider 'ldapmain'
     extern_uid 'my-ldap-id'
@@ -237,29 +226,5 @@ FactoryGirl.define do
     recipient factory: :user
     noteable factory: :issue
     reply_key "0123456789abcdef" * 2
-  end
-
-  factory :gitlab_license, class: "Gitlab::License" do
-    starts_at { Date.today - 1.month }
-    expires_at { Date.today + 11.months }
-    licensee do
-      { "Name" => FFaker::Name.name }
-    end
-    notify_users_at   { |l| l.expires_at }
-    notify_admins_at  { |l| l.expires_at }
-  end
-
-  factory :license do
-    data { build(:gitlab_license).export }
-  end
-
-  factory :geo_node do
-    host { Gitlab.config.gitlab.host }
-    sequence(:port) {|n| n}
-
-    trait :primary do
-      primary true
-      port { Gitlab.config.gitlab.port }
-    end
   end
 end

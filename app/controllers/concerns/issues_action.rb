@@ -2,7 +2,7 @@ module IssuesAction
   extend ActiveSupport::Concern
 
   def issues
-    @issues = get_issues_collection
+    @issues = get_issues_collection.non_archived
     @issues = @issues.page(params[:page]).per(ApplicationController::PER_PAGE)
     @issues = @issues.preload(:author, :project)
 

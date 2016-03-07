@@ -36,11 +36,13 @@ module Elastic
       end
 
       def self.elastic_search(query, options: {})
-        options[:in] = %w(title^2 description)
-        
-        query_hash = basic_query_hash(options[:in], query)
+        if query =~ /#(\d+)\z/
+          query_hash = iid_query_hash(query_hash, $1)
+        else
+          query_hash = basic_query_hash(%w(title^2 description), query)
+        end
 
-        query_hash = project_ids_filter(query_hash, options[:projects_ids])
+        query_hash = project_ids_filter(query_hash, options[:project_ids])
 
         self.__elasticsearch__.search(query_hash)
       end

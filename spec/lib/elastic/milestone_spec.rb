@@ -18,11 +18,12 @@ describe "Milestone", elastic: true do
     create :milestone, description: 'bla-bla term', project: project
     create :milestone, project: project
 
+    # The milestone you have no access to
     create :milestone, title: 'bla-bla term'
 
     Milestone.__elasticsearch__.refresh_index!
 
-    options = { projects_ids: [project.id] }
+    options = { project_ids: [project.id] }
 
     expect(Milestone.elastic_search('term', options: options).total_count).to eq(2)
   end

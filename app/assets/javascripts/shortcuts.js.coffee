@@ -13,8 +13,10 @@ class @Shortcuts
     if $('#modal-shortcuts').length > 0
       $('#modal-shortcuts').modal('show')
     else
+      url = '/help/shortcuts'
+      url = gon.relative_url_root + url if gon.relative_url_root?
       $.ajax(
-        url: '/help/shortcuts',
+        url: url,
         dataType: 'script',
         success: (e) ->
           if location and location.length > 0

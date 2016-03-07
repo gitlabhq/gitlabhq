@@ -8,6 +8,9 @@ v 8.6.0 (unreleased)
   - [Elastic] Update index on push to wiki
   - [Elastic] Use subprocesses for ElasticSearch index jobs
 
+v 8.5.4
+  - [Elastic][Security] Notes exposure
+
 v 8.5.3
   - Prevent LDAP from downgrading a group's last owner
   - Update gitlab-elastic-search gem to 0.0.11
@@ -15,6 +18,8 @@ v 8.5.3
 v 8.5.2
   - Update LDAP groups asynchronously
   - Fix an issue when weight text was displayed in Issuable collapsed sidebar
+v 8.5.2
+  - Fix importing projects from GitHub Enterprise Edition.
 
 v 8.5.1
   - Fix adding pages domain to projects in groups
