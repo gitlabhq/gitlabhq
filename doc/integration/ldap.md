@@ -207,9 +207,7 @@ the LDAP server's SSL certificate is performed.
 
 ## Troubleshooting
 
-### Common problems
-
-**Invalid credentials when logging in**
+### Invalid credentials when logging in
 
 Make sure the user you are binding with has enough permissions to read the user's
 tree and traverse it.
@@ -219,15 +217,12 @@ Also make sure that the `user_filter` is not blocking otherwise valid users.
 To make sure that the LDAP settings are correct and GitLab can see your users,
 execute the following command:
 
-For Omnibus installations:
 
 ```bash
+# For Omnibus installations
 sudo gitlab-rake gitlab:ldap:check
-```
 
-For installations from source:
-
-```bash
+# For installations from source
 sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
 ```
 

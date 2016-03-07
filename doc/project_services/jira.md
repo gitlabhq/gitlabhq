@@ -222,13 +222,13 @@ You can see from the above image that there are four references to GitLab:
 
 ## Troubleshooting
 
-**GitLab is unable to comment on a ticket**
+### GitLab is unable to comment on a ticket
 
 Make sure that the user you set up for GitLab to communicate with JIRA has the
 correct access permission to post comments on a ticket and to also transition the
 ticket, if you'd like GitLab to also take care of closing them.
 
-**GitLab is unable to close a ticket**
+### GitLab is unable to close a ticket
 
 Make sure the the `Transition ID` you set within the JIRA settings matches the
 one your project needs to close a ticket.
