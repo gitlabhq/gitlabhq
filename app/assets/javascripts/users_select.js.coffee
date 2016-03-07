@@ -3,6 +3,47 @@ class @UsersSelect
     @usersPath = "/autocomplete/users.json"
     @userPath = "/autocomplete/users/:id.json"
 
+    $('.js-user-search').each (i, dropdown) =>
+      projectId = $(dropdown).data('project-id')
+      showNullUser = $(dropdown).data('null-user')
+      selectedId = $(dropdown).data('selected')
+
+      $(dropdown).glDropdown(
+        data: (callback) =>
+          @users "", (users) =>
+            if showNullUser
+              users.unshift(
+                name: 'Unassigned',
+                id: 0
+              )
+
+            # Send the data back
+            callback users
+        filterable: true
+        search:
+          fields: ['name', 'username']
+        selectable: true
+        fieldName: $(dropdown).data('field-name')
+        clicked: ->
+          $(dropdown).parents('form').submit()
+        renderRow: (user) ->
+          username = if user.username then "@#{user.username}" else ""
+          avatar = if user.avatar_url then user.avatar_url else gon.default_avatar_url
+          selected = if user.id is selectedId then "is-active" else ""
+
+          "<li>
+            <a href='#' class='dropdown-menu-user-link #{selected}'>
+              <img src='#{avatar}' class='avatar avatar-inline' width='30' />
+              <strong class='dropdown-menu-user-full-name'>
+                #{user.name}
+              </strong>
+              <span class='dropdown-menu-user-username'>
+                #{username}
+              </span>
+            </a>
+          </li>"
+      )
+
     $('.ajax-users-select').each (i, select) =>
       @projectId = $(select).data('project-id')
       @groupId = $(select).data('group-id')

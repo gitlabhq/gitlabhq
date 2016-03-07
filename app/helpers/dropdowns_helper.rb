@@ -1,14 +1,16 @@
 module DropdownsHelper
-  def dropdown_tag(toggle_text, id: nil, toggle_class: nil, title: false, filter: false, placeholder: "", &block)
+  def dropdown_tag(toggle_text, id: nil, toggle_class: nil, dropdown_class: nil, title: false, filter: false, placeholder: "", data: {}, &block)
     content_tag :div, class: "dropdown" do
+      toggle_hash = data.merge({toggle: "dropdown"})
+
       dropdown_output = ""
-      dropdown_output += content_tag :button, class: "dropdown-menu-toggle #{toggle_class}", id: id, type: "button", data: {toggle: "dropdown"} do
+      dropdown_output += content_tag :button, class: "dropdown-menu-toggle #{toggle_class}", id: id, type: "button", data: toggle_hash do
         output = toggle_text
         output << icon('chevron-down')
         output.html_safe
       end
 
-      dropdown_output += content_tag :div, class: "dropdown-menu dropdown-select dropdown-menu-selectable" do
+      dropdown_output += content_tag :div, class: "dropdown-menu dropdown-select #{dropdown_class}" do
         output = ""
 
         if title

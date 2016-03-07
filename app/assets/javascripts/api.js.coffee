@@ -4,6 +4,7 @@
   namespaces_path: "/api/:version/namespaces.json"
   group_projects_path: "/api/:version/groups/:id/projects.json"
   projects_path: "/api/:version/projects.json"
+  labels_path: "/api/:version/projects/:id/labels"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.group_path)
@@ -60,6 +61,18 @@
       dataType: "json"
     ).done (projects) ->
       callback(projects)
+
+  projectLabels: (project_id, callback) ->
+    url = Api.buildUrl(Api.labels_path)
+    url = url.replace(':id', project_id)
+
+    $.ajax(
+      url: url
+      data:
+        private_token: gon.api_token
+      dataType: "json"
+    ).done (labels) ->
+      callback(labels)
 
   # Return group projects list. Filtered by query
   groupProjects: (group_id, query, callback) ->

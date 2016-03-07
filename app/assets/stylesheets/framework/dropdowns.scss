@@ -320,3 +320,14 @@
     margin-left: -14px;
   }
 }
+
+.dropdown-menu-labels {
+  .label {
+    position: relative;
+    top: 5px;
+    width: 30px;
+    margin-right: 5px;
+    text-indent: -99999px;
+    overflow: hidden;
+  }
+}

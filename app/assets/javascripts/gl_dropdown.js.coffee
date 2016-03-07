@@ -185,9 +185,10 @@ class GitLabDropdown
     # Toggle active class for the tick mark
     el.toggleClass "is-active"
 
-    # Create hidden input for form
-    input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
-    @dropdown.before input
+    if value isnt 0
+      # Create hidden input for form
+      input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
+      @dropdown.before input
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
