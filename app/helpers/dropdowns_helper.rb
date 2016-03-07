@@ -1,5 +1,5 @@
 module DropdownsHelper
-  def dropdown_tag(toggle_text, id: nil, toggle_class: nil, dropdown_class: nil, title: false, filter: false, placeholder: "", data: {}, &block)
+  def dropdown_tag(toggle_text, id: nil, toggle_class: nil, dropdown_class: nil, title: false, filter: false, placeholder: "", footer_content: false, data: {}, &block)
     content_tag :div, class: "dropdown" do
       toggle_hash = data.merge({toggle: "dropdown"})
 
@@ -33,7 +33,13 @@ module DropdownsHelper
         end
 
         output += content_tag :div, class: "dropdown-content" do
-          capture(&block) if block
+          capture(&block) if block && !footer_content
+        end
+
+        if block && footer_content
+          output += content_tag :div, class: "dropdown-footer" do
+            capture(&block)
+          end
         end
 
         output += content_tag :div, class: "dropdown-loading" do

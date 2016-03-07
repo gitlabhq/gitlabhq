@@ -301,6 +301,14 @@
   border-top: 1px solid $dropdown-divider-color;
 }
 
+.dropdown-footer-list {
+  font-size: 14px;
+
+  a {
+    padding-left: 10px;
+  }
+}
+
 .dropdown-loading {
   position: absolute;
   top: 0;

@@ -25,7 +25,11 @@
 
         .filter-item.inline.labels-filter
           = dropdown_tag("Label", title: "Filter by label", toggle_class: "js-label-select", filter: true, dropdown_class: "dropdown-menu-labels dropdown-menu-selectable",
-            placeholder: "Search labels", data: {field_name: "label_name", selected: params[:label_name], project_id: @project.id})
+            placeholder: "Search labels", footer_content: true, data: {field_name: "label_name", selected: params[:label_name], project_id: @project.id}) do
+            %ul.dropdown-footer-list
+              %li
+                = link_to namespace_project_labels_path(@project.namespace, @project) do
+                  Manage labels
 
         .pull-right
           = render 'shared/sort_dropdown'
