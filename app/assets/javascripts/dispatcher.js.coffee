@@ -103,6 +103,8 @@ class Dispatcher
         new ProjectFork()
       when 'projects:artifacts:browse'
         new BuildArtifacts()
+      when 'projects:builds:show'
+        new CiBuild()
 
     switch path.first()
       when 'admin'
