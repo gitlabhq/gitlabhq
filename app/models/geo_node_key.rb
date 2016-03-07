@@ -14,7 +14,7 @@
 #
 
 class GeoNodeKey < Key
-  has_one :geo_nodes
+  has_one :geo_node
 
   def orphaned?
     self.geo_nodes.length == 0

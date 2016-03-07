@@ -3,6 +3,10 @@ require 'spec_helper'
 describe GeoNode, type: :model do
   let(:dummy_url) { 'https://localhost:3000/gitlab' }
 
+  context 'associations' do
+    it { is_expected.to belong_to(:geo_node_key).dependent(:destroy) }
+  end
+
   context 'default values' do
     let(:gitlab_host) { 'gitlabhost' }
     before(:each) { allow(Gitlab.config.gitlab).to receive(:host) { gitlab_host } }
@@ -105,5 +109,4 @@ describe GeoNode, type: :model do
       expect(subject.notify_url).to eq(refresh_url)
     end
   end
-
 end

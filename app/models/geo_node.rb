@@ -11,7 +11,7 @@
 #
 
 class GeoNode < ActiveRecord::Base
-  belongs_to :geo_node_key
+  belongs_to :geo_node_key, dependent: :destroy
 
   default_values schema: 'http',
                  host: lambda { Gitlab.config.gitlab.host },
@@ -29,7 +29,6 @@ class GeoNode < ActiveRecord::Base
   after_initialize :check_geo_node_key
   after_save :refresh_bulk_notify_worker_status
   after_destroy :refresh_bulk_notify_worker_status
-  after_destroy :destroy_orphaned_geo_node_key
   before_validation :change_geo_node_key_title
 
   def uri
@@ -57,12 +56,6 @@ class GeoNode < ActiveRecord::Base
   end
 
   private
-
-  def destroy_orphaned_geo_node_key
-    return unless self.geo_node_key && self.geo_node_key.destroyed_when_orphaned? && self.geo_node_key.orphaned?
-
-    self.geo_node_key.destroy
-  end
 
   def refresh_bulk_notify_worker_status
     if Gitlab::Geo.primary?

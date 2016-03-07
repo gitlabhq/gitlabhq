@@ -46,7 +46,7 @@
         %li
           .list-item-name
             %strong= node.url
-            %p #{node.primary ? 'Primary node' : 'Readonly node'}
+            %p #{node.primary ? 'Primary node' : 'Secondary node'}
 
           .pull-right
             = link_to 'Remove', admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'

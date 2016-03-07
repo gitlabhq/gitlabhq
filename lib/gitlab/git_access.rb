@@ -95,7 +95,7 @@ module Gitlab
     def push_access_check(changes)
 
       if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
-        return build_status_object(false, "You can't push code on a secondary Gitlab Geo node.")
+        return build_status_object(false, "You can't push code on a secondary GitLab Geo node.")
       end
 
       return build_status_object(true) if git_annex_branch_sync?(changes)

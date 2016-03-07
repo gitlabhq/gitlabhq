@@ -25,7 +25,7 @@ module Gitlab
     end
 
     def self.secondary?
-      RequestStore.store[:geo_node_readonly?] ||= self.enabled? && self.current_node && !self.current_node.primary?
+      RequestStore.store[:geo_node_secondary] ||= self.enabled? && self.current_node && !self.current_node.primary?
     end
 
     def self.geo_node?(host:, port:)

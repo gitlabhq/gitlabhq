@@ -20,6 +20,6 @@ describe GeoNodeKey, models: true do
   let(:geo_node_key) { create(:geo_node_key, geo_nodes: [geo_node]) }
 
   describe 'Associations' do
-    it { is_expected.to have_many(:geo_nodes) }
+    it { is_expected.to have_one(:geo_node) }
   end
 end
