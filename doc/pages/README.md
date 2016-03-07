@@ -12,8 +12,8 @@ With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
 deploy static pages for your individual projects, your user or your group.
 
-Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlab-com) if you are
-using GitLab.com to host your website.
+Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom) for specific
+information, if you are using GitLab.com to host your website.
 
 ---
 
