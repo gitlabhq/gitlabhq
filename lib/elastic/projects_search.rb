@@ -55,28 +55,6 @@ module Elastic
 
         filters = []
 
-        if options[:abandoned]
-          filters << {
-            range: {
-              last_pushed_at: {
-                lte: "now-6M/m"
-              }
-            }
-          }
-        end
-
-        if options[:with_push]
-          filters << {
-            not: {
-              missing: {
-                field: :last_pushed_at,
-                existence: true,
-                null_value: true
-              }
-            }
-          }
-        end
-
         if options[:namespace_id]
           filters << {
             terms: {
