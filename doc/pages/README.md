@@ -40,6 +40,7 @@ information, if you are using GitLab.com to host your website.
 - [Frequently Asked Questions](#frequently-asked-questions)
     - [Can I download my generated pages?](#can-i-download-my-generated-pages)
     - [Can I use GitLab Pages if my project is private?](#can-i-use-gitlab-pages-if-my-project-is-private)
+    - [Do I need to create a user/group website before creating a project website?](#do-i-need-to-create-a-usergroup-website-before-creating-a-project-website)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -417,6 +418,11 @@ Sure. All you need to do is download the artifacts archive from the build page.
 
 Yes. GitLab Pages don't care whether you set your project's visibility level
 to private, internal or public.
+
+### Do I need to create a user/group website before creating a project website?
+
+No, you don't. You can create your project first and it will be accessed under
+`http(s)://namespace.example.io/projectname`.
 
 ---
 
