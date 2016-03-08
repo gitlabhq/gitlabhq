@@ -648,4 +648,15 @@ describe Repository, models: true do
       repository.expire_tag_count_cache
     end
   end
+
+  describe '#rm_branch' do
+    let(:user) { create(:user) }
+
+    it 'removes a branch' do
+      expect(repository).to receive(:before_remove_branch)
+      expect(repository).to receive(:after_remove_branch)
+
+      repository.rm_branch(user, 'feature')
+    end
+  end
 end

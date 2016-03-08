@@ -144,7 +144,7 @@ class Repository
   end
 
   def rm_branch(user, branch_name)
-    expire_branches_cache
+    before_remove_branch
 
     branch = find_branch(branch_name)
     oldrev = branch.try(:target)
@@ -155,7 +155,7 @@ class Repository
       rugged.branches.delete(branch_name)
     end
 
-    expire_branches_cache
+    after_remove_branch
     true
   end
 
@@ -359,10 +359,16 @@ class Repository
     expire_branch_count_cache
   end
 
+  # Runs code before removing an existing branch.
+  def before_remove_branch
+    expire_branches_cache
+  end
+
   # Runs code after an existing branch has been removed.
   def after_remove_branch
     expire_has_visible_content_cache
     expire_branch_count_cache
+    expire_branches_cache
   end
 
   def method_missing(m, *args, &block)
