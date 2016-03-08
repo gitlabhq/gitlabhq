@@ -17,7 +17,7 @@ module DropdownsHelper
           output += content_tag :div, class: "dropdown-title" do
             title_output = content_tag(:span, title)
 
-            title_output += content_tag :button, class: "dropdown-title-button dropdown-menu-close", aria: {label: "close"} do
+            title_output += content_tag :button, class: "dropdown-title-button dropdown-menu-close", aria: {label: "close"}, type: "button" do
               icon('times')
             end.html_safe
           end

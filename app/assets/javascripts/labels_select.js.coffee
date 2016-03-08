@@ -5,7 +5,7 @@ class @LabelsSelect
       selectedLabel = $(dropdown).data('selected')
 
       $(dropdown).glDropdown(
-        data: (callback) ->
+        data: (term, callback) ->
           Api.projectLabels 8, callback
         renderRow: (label) ->
           selected = if label.name is selectedLabel then "is-active" else ""

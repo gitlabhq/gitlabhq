@@ -6,20 +6,41 @@ class @UsersSelect
     $('.js-user-search').each (i, dropdown) =>
       projectId = $(dropdown).data('project-id')
       showNullUser = $(dropdown).data('null-user')
+      showAnyUser = $(dropdown).data('any-user')
+      firstUser = $(dropdown).data('first-user')
       selectedId = $(dropdown).data('selected')
 
       $(dropdown).glDropdown(
-        data: (callback) =>
-          @users "", (users) =>
-            if showNullUser
-              users.unshift(
-                name: 'Unassigned',
-                id: 0
-              )
+        data: (term, callback) =>
+          @users term, (users) =>
+            if term.length is 0
+              if firstUser
+                # Move current user to the front of the list
+                for obj, index in users
+                  if obj.username == firstUser
+                    users.splice(index, 1)
+                    users.unshift(obj)
+                    break
+
+              if showNullUser
+                users.unshift(
+                  name: 'Unassigned',
+                  id: 0
+                )
+
+              if showAnyUser
+                name = showAnyUser
+                name = 'Any User' if name == true
+                anyUser = {
+                  name: name,
+                  id: null
+                }
+                users.unshift(anyUser)
 
             # Send the data back
             callback users
         filterable: true
+        filterRemote: true
         search:
           fields: ['name', 'username']
         selectable: true

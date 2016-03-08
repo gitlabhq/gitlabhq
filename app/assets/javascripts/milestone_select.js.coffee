@@ -5,11 +5,11 @@ class @MilestoneSelect
       selectedMilestone = $(dropdown).data('selected')
 
       $(dropdown).glDropdown(
-        data: (callback) ->
+        data: (term, callback) ->
           Api.milestones projectId, callback
         filterable: true
         search:
-          fields: ['name']
+          fields: ['title']
         selectable: true
         fieldName: $(dropdown).data('field-name')
         text: (milestone) ->

@@ -7,18 +7,26 @@
             class: "check_all_issues left"
       .issues-other-filters
         .filter-item.inline
+          - if params[:author_id]
+            = hidden_field_tag(:author_id, params[:author_id])
           = dropdown_tag("Author", toggle_class: "js-user-search", title: "Filter by author", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
             placeholder: "Search authors", data: {any_user: "Any Author", first_user: true, current_user: true, project_id: @project.id, selected: params[:author_id], field_name: "author_id"})
 
         .filter-item.inline
+          - if params[:assignee_id]
+            = hidden_field_tag(:assignee_id, params[:assignee_id])
           = dropdown_tag("Assignee", toggle_class: "js-user-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
             placeholder: "Search assignee", data: {any_user: "Any Author", first_user: true, null_user: true, current_user: true, project_id: @project.id, selected: params[:assignee_id], field_name: "assignee_id"})
 
         .filter-item.inline.milestone-filter
+          - if params[:milestone_title]
+            = hidden_field_tag(:milestone_title, params[:milestone_title])
           = dropdown_tag("Milestone", title: "Filter by milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable",
             placeholder: "Search milestones", data: {field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.id})
 
         .filter-item.inline.labels-filter
+          - if params[:label_name]
+            = hidden_field_tag(:label_name, params[:label_name])
           = dropdown_tag("Label", title: "Filter by label", toggle_class: "js-label-select", filter: true, dropdown_class: "dropdown-menu-labels dropdown-menu-selectable",
             placeholder: "Search labels", footer_content: true, data: {field_name: "label_name", selected: params[:label_name], project_id: @project.id}) do
             %ul.dropdown-footer-list

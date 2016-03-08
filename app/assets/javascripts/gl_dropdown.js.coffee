@@ -1,22 +1,26 @@
 class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
 
-  constructor: (@dropdown, @remote, @data, @callback) ->
+  constructor: (@dropdown, @remote, @query, @data, @callback) ->
     @input = @dropdown.find(".dropdown-input-field")
 
     # Key events
+    timeout = ""
     @input.on "keyup", (e) =>
-      blur_field = @shouldBlur e.keyCode
-      search_text = @input.val()
+      clearTimeout timeout
+      timeout = setTimeout =>
+        blur_field = @shouldBlur e.keyCode
+        search_text = @input.val()
 
-      if blur_field
-        @input.blur()
+        if blur_field
+          @input.blur()
 
-      if @remote
-        @remote search_text, (data) =>
-          @callback(data)
-      else
-        @filter search_text
+        if @remote
+          @query search_text, (data) =>
+            @callback(data)
+        else
+          @filter search_text
+      , 250
 
   shouldBlur: (keyCode) ->
     return BLUR_KEYCODES.indexOf(keyCode) >= 0
@@ -38,7 +42,7 @@ class GitLabDropdownRemote
         @options.beforeSend()
 
       # Fetch the data by calling the data funcfion
-      @dataEndpoint (data) =>
+      @dataEndpoint "", (data) =>
         if @options.success
           @options.success(data)
 
@@ -86,13 +90,14 @@ class GitLabDropdown
 
     # Init filiterable
     if @options.filterable
-      @filter = new GitLabDropdownFilter @dropdown, @options.query, =>
+      @filter = new GitLabDropdownFilter @dropdown, @options.filterRemote, @options.data, =>
         return @fullData
       , (data) =>
         @parseData data
 
     # Event listeners
     $(@el).parent().on "shown.bs.dropdown", @opened
+    $(@el).parent().on "hidden.bs.dropdown", @hidden
 
     if @options.selectable
       @dropdown.on "click", "a", (e) ->
@@ -123,6 +128,13 @@ class GitLabDropdown
   opened: =>
     if @remote
       @remote.execute()
+
+    if @options.filterable
+      @dropdown.find(".dropdown-input-field").focus()
+
+  hidden: =>
+    if @options.filterable
+      @dropdown.find(".dropdown-input-field").blur().val("")
 
   # Render the full menu
   renderMenu: (html) ->
