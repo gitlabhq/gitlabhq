@@ -213,8 +213,7 @@ Example response:
 
 ## Commit status
 
-Since GitLab 8.1, this is the new commit status API. The documentation in
-[ci/api/commits](../ci/api/commits.md) is deprecated.
+Since GitLab 8.1, this is the new commit status API.
 
 ### Get the status of a commit
 
