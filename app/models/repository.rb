@@ -160,7 +160,7 @@ class Repository
   end
 
   def rm_tag(tag_name)
-    expire_tags_cache
+    before_remove_tag
 
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
@@ -181,6 +181,14 @@ class Repository
         0
       end
     end
+  end
+
+  def branch_count
+    @branch_count ||= cache.fetch(:branch_count) { raw_repository.branch_count }
+  end
+
+  def tag_count
+    @tag_count ||= cache.fetch(:tag_count) { raw_repository.rugged.tags.count }
   end
 
   # Return repo size in megabytes
@@ -278,6 +286,16 @@ class Repository
     @has_visible_content = nil
   end
 
+  def expire_branch_count_cache
+    cache.expire(:branch_count)
+    @branch_count = nil
+  end
+
+  def expire_tag_count_cache
+    cache.expire(:tag_count)
+    @tag_count = nil
+  end
+
   def rebuild_cache
     cache_keys.each do |key|
       cache.expire(key)
@@ -313,9 +331,16 @@ class Repository
     expire_root_ref_cache
   end
 
-  # Runs code before creating a new tag.
-  def before_create_tag
+  # Runs code before pushing (= creating or removing) a tag.
+  def before_push_tag
     expire_cache
+    expire_tag_count_cache
+  end
+
+  # Runs code before removing a tag.
+  def before_remove_tag
+    expire_tags_cache
+    expire_tag_count_cache
   end
 
   # Runs code after a repository has been forked/imported.
@@ -331,11 +356,13 @@ class Repository
   # Runs code after a new branch has been created.
   def after_create_branch
     expire_has_visible_content_cache
+    expire_branch_count_cache
   end
 
   # Runs code after an existing branch has been removed.
   def after_remove_branch
     expire_has_visible_content_cache
+    expire_branch_count_cache
   end
 
   def method_missing(m, *args, &block)
