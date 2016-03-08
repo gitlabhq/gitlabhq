@@ -3,6 +3,32 @@ class @LabelsSelect
     $('.js-label-select').each (i, dropdown) ->
       projectId = $(dropdown).data('project-id')
       selectedLabel = $(dropdown).data('selected')
+      newLabelField = $('#new_label_name')
+      newColorField = $('#new_label_color')
+
+      if newLabelField.length
+        $('.suggest-colors-dropdown a').on "click", (e) ->
+          e.preventDefault()
+          e.stopPropagation()
+          newColorField.val $(this).data("color")
+          $('.js-dropdown-label-color-preview')
+            .css 'background-color', $(this).data("color")
+            .addClass 'is-active'
+
+        $('.js-new-label-btn').on "click", (e) ->
+          e.preventDefault()
+          e.stopPropagation()
+
+          if newLabelField.val() isnt "" && newColorField.val() isnt ""
+            $('.js-new-label-btn').disable()
+
+            # Create new label with API
+            Api.newLabel projectId, {
+              name: newLabelField.val()
+              color: newColorField.val()
+            }, (label) ->
+              $('.js-new-label-btn').enable()
+              $('.dropdown-menu-back', $(dropdown).parent()).trigger "click"
 
       $(dropdown).glDropdown(
         data: (term, callback) ->

@@ -2,7 +2,7 @@ class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
 
   constructor: (@dropdown, @remote, @query, @data, @callback) ->
-    @input = @dropdown.find(".dropdown-input-field")
+    @input = @dropdown.find(".dropdown-input .dropdown-input-field")
 
     # Key events
     timeout = ""
@@ -108,10 +108,10 @@ class GitLabDropdown
         @togglePage()
 
     if @options.selectable
-      selector = "a"
+      selector = ".dropdown-content a"
 
       if @dropdown.find(".dropdown-toggle-page").length
-        selector = ".dropdown-page-one a"
+        selector = ".dropdown-page-one .dropdown-content a"
 
       @dropdown.on "click", selector, (e) ->
         self.rowClicked $(@)

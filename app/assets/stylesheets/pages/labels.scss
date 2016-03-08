@@ -10,13 +10,24 @@
 
   &.suggest-colors-dropdown {
     margin-bottom: 5px;
-    
+
     a {
       @include border-radius(0);
       width: 36.7px;
       margin-right: 0;
       margin-bottom: -5px;
     }
+  }
+}
+
+.dropdown-label-color-preview {
+  display: none;
+  margin-top: 5px;
+  width: 100%;
+  height: 25px;
+
+  &.is-active {
+    display: block;
   }
 }
 

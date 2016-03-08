@@ -75,6 +75,20 @@
     ).done (labels) ->
       callback(labels)
 
+  newLabel: (project_id, data, callback) ->
+    url = Api.buildUrl(Api.labels_path)
+    url = url.replace(':id', project_id)
+
+    data.private_token = gon.api_token
+    $.ajax(
+      url: url
+      type: "POST"
+      data: data
+      dataType: "json"
+    ).done (label) ->
+      callback(label)
+
+
   milestones: (project_id, callback) ->
     url = Api.buildUrl(Api.milestones_path)
     url = url.replace(':id', project_id)

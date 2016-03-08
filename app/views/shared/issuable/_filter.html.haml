@@ -73,13 +73,17 @@
                       = icon('arrow-left')
                     %span
                       Create new label
+                    %button.dropdown-title-button.dropdown-menu-close{type: "button", aria: {label: "close"}}
+                      = icon('times')
                   .dropdown-content
-                    = text_field_tag :label_name, nil, class: "dropdown-input-field", placeholder: "Name new label"
+                    = hidden_field_tag :new_label_color, nil
+                    = text_field_tag :new_label_name, nil, class: "dropdown-input-field", placeholder: "Name new label"
+                    .dropdown-label-color-preview.js-dropdown-label-color-preview
                     .suggest-colors.suggest-colors-dropdown
                       - suggested_colors.each do |color|
                         = link_to '#', style: "background-color: #{color}", data: { color: color } do
                           &nbsp
-                    %button.btn.btn-primary{type: "button"}
+                    %button.btn.btn-primary.js-new-label-btn{type: "button"}
                       Create
               .dropdown-loading
                 = icon('spinner spin')

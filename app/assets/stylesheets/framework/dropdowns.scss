@@ -238,6 +238,7 @@
   font-size: 14px;
   border: 0;
   background: none;
+  outline: 0;
 
   &:hover {
     color: darken($dropdown-title-btn-color, 15%);
