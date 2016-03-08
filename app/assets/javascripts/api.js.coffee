@@ -5,7 +5,6 @@
   group_projects_path: "/api/:version/groups/:id/projects.json"
   projects_path: "/api/:version/projects.json"
   labels_path: "/api/:version/projects/:id/labels"
-  milestones_path: "/api/:version/projects/:id/milestones"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.group_path)
@@ -63,18 +62,6 @@
     ).done (projects) ->
       callback(projects)
 
-  projectLabels: (project_id, callback) ->
-    url = Api.buildUrl(Api.labels_path)
-    url = url.replace(':id', project_id)
-
-    $.ajax(
-      url: url
-      data:
-        private_token: gon.api_token
-      dataType: "json"
-    ).done (labels) ->
-      callback(labels)
-
   newLabel: (project_id, data, callback) ->
     url = Api.buildUrl(Api.labels_path)
     url = url.replace(':id', project_id)
@@ -87,19 +74,6 @@
       dataType: "json"
     ).done (label) ->
       callback(label)
-
-
-  milestones: (project_id, callback) ->
-    url = Api.buildUrl(Api.milestones_path)
-    url = url.replace(':id', project_id)
-
-    $.ajax(
-      url: url
-      data:
-        private_token: gon.api_token
-      dataType: "json"
-    ).done (milestones) ->
-      callback(milestones)
 
   # Return group projects list. Filtered by query
   groupProjects: (group_id, query, callback) ->

@@ -2,6 +2,7 @@ class @LabelsSelect
   constructor: ->
     $('.js-label-select').each (i, dropdown) ->
       projectId = $(dropdown).data('project-id')
+      labelUrl = $(dropdown).data("labels")
       selectedLabel = $(dropdown).data('selected')
       newLabelField = $('#new_label_name')
       newColorField = $('#new_label_color')
@@ -32,13 +33,25 @@ class @LabelsSelect
 
       $(dropdown).glDropdown(
         data: (term, callback) ->
-          Api.projectLabels 8, callback
+          # We have to fetch the JS version of the labels list because there is no
+          # public facing JSON url for labels
+          $.ajax(
+            url: labelUrl
+          ).done (data) ->
+            html = $(data)
+            data = []
+            html.find('.label-row a').each ->
+              data.push(
+                title: $(@).text().trim()
+              )
+
+            callback data
         renderRow: (label) ->
-          selected = if label.name is selectedLabel then "is-active" else ""
+          selected = if label.title is selectedLabel then "is-active" else ""
 
           "<li>
             <a href='#' class='#{selected}'>
-              #{label.name}
+              #{label.title}
             </a>
           </li>"
         filterable: true
@@ -47,7 +60,7 @@ class @LabelsSelect
         selectable: true
         fieldName: $(dropdown).data('field-name')
         id: (label) ->
-          label.name
+          label.title
         clicked: ->
           if $(dropdown).hasClass "js-filter-submit"
             $(dropdown).parents('form').submit()

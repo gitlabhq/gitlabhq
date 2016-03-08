@@ -2,18 +2,29 @@ class @MilestoneSelect
   constructor: ->
     $('.js-milestone-select').each (i, dropdown) ->
       projectId = $(dropdown).data('project-id')
+      milestonesUrl = $(dropdown).data('milestones')
       selectedMilestone = $(dropdown).data('selected')
       showNo = $(dropdown).data('show-no')
       showAny = $(dropdown).data('show-any')
+      useId = $(dropdown).data('use-id')
 
       $(dropdown).glDropdown(
         data: (term, callback) ->
-          Api.milestones projectId, (data) ->
-            data = $.map data, (milestone) ->
-              return milestone if milestone.state isnt "closed"
+          $.ajax(
+            url: milestonesUrl
+          ).done (data) ->
+            html = $(data)
+            data = []
+            html.find('.milestone strong a').each ->
+              link = $(@).attr("href").split("/")
+              data.push(
+                id: link[link.length - 1]
+                title: $(@).text().trim()
+              )
 
             if showNo
               data.unshift(
+                id: "0"
                 title: 'No milestone'
               )
 
@@ -34,10 +45,13 @@ class @MilestoneSelect
         text: (milestone) ->
           milestone.title
         id: (milestone) ->
-          if milestone.title isnt "Any milestone"
-            milestone.title
+          if !useId
+            if milestone.title isnt "Any milestone"
+              milestone.title
+            else
+              ""
           else
-            ""
+            milestone.id
         isSelected: (milestone) ->
           milestone.title is selectedMilestone
         clicked: ->

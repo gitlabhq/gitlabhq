@@ -220,7 +220,6 @@ class GitLabDropdown
     if @renderedData
       selectedObject = @renderedData[selectedIndex]
     value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
-    console.log value
 
     if @options.multiSelect
       fieldName = "#{fieldName}[]"

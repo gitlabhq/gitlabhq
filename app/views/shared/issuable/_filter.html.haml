@@ -22,7 +22,7 @@
           - if params[:milestone_title]
             = hidden_field_tag(:milestone_title, params[:milestone_title])
           = dropdown_tag("Milestone", title: "Filter by milestone", toggle_class: 'js-milestone-select js-filter-submit', filter: true, dropdown_class: "dropdown-menu-selectable",
-            placeholder: "Search milestones", footer_content: true, data: {show_no: true, show_any: true, field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.id}) do
+            placeholder: "Search milestones", footer_content: true, data: {show_no: true, show_any: true, field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :js)}) do
             %ul.dropdown-footer-list
               - if can? current_user, :admin_milestone, @project
                 %li
@@ -39,7 +39,7 @@
           - if params[:label_name]
             = hidden_field_tag(:label_name, params[:label_name])
           .dropdown
-            %button.dropdown-menu-toggle.js-label-select.js-filter-submit{type: "button", data: {toggle: "dropdown", field_name: "label_name", selected: params[:label_name], project_id: @project.id}}
+            %button.dropdown-menu-toggle.js-label-select.js-filter-submit{type: "button", data: {toggle: "dropdown", field_name: "label_name", selected: params[:label_name], project_id: @project.id, labels: namespace_project_labels_path(@project.namespace, @project, :js)}}
               %span.dropdown-toggle-text
                 Label
               = icon('chevron-down')
@@ -106,7 +106,7 @@
               placeholder: "Search authors", data: {first_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]"})
           .filter-item.inline
             = dropdown_tag("Milestone", title: "Assign milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable",
-              placeholder: "Search milestones", data: {show_no: true, field_name: "update[milestone_id]", project_id: @project.id})
+              placeholder: "Search milestones", data: {show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :js), use_id: true})
           = hidden_field_tag 'update[issues_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
           .filter-item.inline
