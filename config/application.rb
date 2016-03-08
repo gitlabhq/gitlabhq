@@ -95,7 +95,7 @@ module Gitlab
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
 
     # Gitlab Geo Middleware support
-    config.middleware.use 'Gitlab::Middleware::ReadonlyGeo'
+    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadonlyGeo'
 
     config.generators do |g|
       g.factory_girl false

@@ -1,11 +1,8 @@
 class Geo::OauthSession
   include ActiveModel::Model
-  include HTTParty
 
   attr_accessor :state
   attr_accessor :return_to
-
-  API_PREFIX = '/api/v3/'
 
   def is_oauth_state_valid?
     return true unless state
@@ -23,15 +20,6 @@ class Geo::OauthSession
 
   def get_oauth_state_return_to
     state.split(':', 3)[2] if state
-  end
-
-  def authenticate(access_token)
-    opts = {
-      query: access_token
-    }
-    response = self.class.get(authenticate_endpoint, default_opts.merge(opts))
-
-    build_response(response)
   end
 
   def authorize_url(params = {})
@@ -73,28 +61,7 @@ class Geo::OauthSession
     Gitlab::Geo.oauth_authentication
   end
 
-  def authenticate_endpoint
-    File.join(primary_node_url, API_PREFIX, 'user')
-  end
-
   def primary_node_url
     Gitlab::Geo.primary_node.url
-  end
-
-  def default_opts
-    {
-      headers: { 'Content-Type' => 'application/json' },
-    }
-  end
-
-  def build_response(response)
-    case response.code
-    when 200
-      response.parsed_response
-    when 401
-      raise UnauthorizedError
-    else
-      nil
-    end
   end
 end

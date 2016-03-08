@@ -18,7 +18,7 @@ class Oauth::GeoAuthController < ActionController::Base
     end
 
     token = oauth.get_token(params[:code], redirect_uri: oauth_geo_callback_url)
-    remote_user = oauth.authenticate(access_token: token)
+    remote_user = Geo::RemoteNode.new.authenticate(token)
 
     user = User.find(remote_user['id'])
 
@@ -27,7 +27,7 @@ class Oauth::GeoAuthController < ActionController::Base
       redirect_to(return_to || root_path)
     else
       @error = 'Invalid credentials'
-      render :new
+      render :error
     end
   end
 
