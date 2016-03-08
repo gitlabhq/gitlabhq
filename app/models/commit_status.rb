@@ -45,6 +45,10 @@ class CommitStatus < ActiveRecord::Base
     after_transition [:pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.commit.project, nil).trigger(commit_status)
     end
+
+    after_transition any => :failed do |commit_status|
+      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.commit.project, nil).execute(commit_status)
+    end
   end
 
   delegate :sha, :short_sha, to: :commit
