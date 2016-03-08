@@ -6,6 +6,7 @@
   %span.creator
     &middot;
     by #{link_to_member(@project, @merge_request.author, size: 24)}
+    = '@' + @merge_request.author.username
     &middot;
     = time_ago_with_tooltip(@merge_request.created_at)
 

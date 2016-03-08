@@ -23,8 +23,35 @@ describe "MergeRequest", elastic: true do
 
     MergeRequest.__elasticsearch__.refresh_index!
 
-    options = { projects_ids: [project.id] }
+    options = { project_ids: [project.id] }
 
     expect(MergeRequest.elastic_search('term', options: options).total_count).to eq(2)
+  end
+
+  it "returns json with all needed elements" do
+    merge_request = create :merge_request
+
+    expected_hash =  merge_request.attributes.extract!(
+      'id',
+      'iid',
+      'target_branch',
+      'source_branch',
+      'title',
+      'description',
+      'created_at',
+      'updated_at',
+      'state',
+      'merge_status',
+      'source_project_id',
+      'target_project_id',
+      'author_id'
+    )
+
+    expected_hash['source_project'] = { 'id' => merge_request.source_project_id }
+    expected_hash['target_project'] = { 'id' => merge_request.target_project_id }
+    expected_hash['author']         = { 'id' => merge_request.author.id }
+    expected_hash['updated_at_sort'] = merge_request.updated_at
+
+    expect(merge_request.as_indexed_json).to eq(expected_hash)
   end
 end

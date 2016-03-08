@@ -42,11 +42,11 @@ module Gitlab
       private
 
       def config
-        Gitlab.config.omniauth.providers.find { |provider| provider.name == "github"}
+        Gitlab.config.omniauth.providers.find { |provider| provider.name == "github" }
       end
 
       def github_options
-        OmniAuth::Strategies::GitHub.default_options[:client_options].to_h.symbolize_keys
+        config["args"]["client_options"].deep_symbolize_keys
       end
     end
   end

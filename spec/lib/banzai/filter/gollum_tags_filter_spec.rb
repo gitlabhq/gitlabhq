@@ -86,4 +86,56 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
       expect(doc.at_css('a')['href']).to eq 'wiki-slug'
     end
   end
+
+  context 'table of contents' do
+    let(:pipeline) { Banzai::Pipeline[:wiki] }
+
+    it 'replaces the tag with the TableOfContentsFilter result' do
+      markdown = <<-MD.strip_heredoc
+        [[_TOC_]]
+
+        ## Header
+
+        Foo
+      MD
+
+      result = pipeline.call(markdown, project_wiki: project_wiki, project: project)
+
+      aggregate_failures do
+        expect(result[:output].text).not_to include '[[_TOC_]]'
+        expect(result[:output].text).not_to include '[['
+        expect(result[:output].to_html).to include(result[:toc])
+      end
+    end
+
+    it 'is case-sensitive' do
+      markdown = <<-MD.strip_heredoc
+        [[_toc_]]
+
+        # Header 1
+
+        Foo
+      MD
+
+      output = pipeline.to_html(markdown, project_wiki: project_wiki, project: project)
+
+      expect(output).to include('[[<em>toc</em>]]')
+    end
+
+    it 'handles an empty pipeline result' do
+      # No Markdown headers in this doc, so `result[:toc]` will be empty
+      markdown = <<-MD.strip_heredoc
+        [[_TOC_]]
+
+        Foo
+      MD
+
+      output = pipeline.to_html(markdown, project_wiki: project_wiki, project: project)
+
+      aggregate_failures do
+        expect(output).not_to include('<ul>')
+        expect(output).to include('[[<em>TOC</em>]]')
+      end
+    end
+  end
 end

@@ -13,7 +13,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     fill_in 'user_website_url', with: 'testurl'
     fill_in 'user_location', with: 'Ukraine'
     fill_in 'user_bio', with: 'I <3 GitLab'
-    click_button 'Save changes'
+    click_button 'Update profile settings'
     @user.reload
   end
 
@@ -237,7 +237,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     page.find('#user_avatar_crop_y',    visible: false).set('0')
     page.find('#user_avatar_crop_size', visible: false).set('256')
 
-    click_button "Save changes"
+    click_button "Update profile settings"
 
     @user.reload
   end

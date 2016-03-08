@@ -1,8 +1,7 @@
 - page_title "Notifications"
 - header_title page_title, profile_notifications_path
 
-.prepend-top-default
-= form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications form-horizontal global-notifications-form' } do |f|
+= form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications prepend-top-default' } do |f|
   -if @user.errors.any?
     %div.alert.alert-danger
       %ul
@@ -10,65 +9,66 @@
           %li= msg
 
   = hidden_field_tag :notification_type, 'global'
+  .row
+    .col-lg-3.profile-settings-sidebar
+      %h4
+        = page_title
+      %p
+        You can specify notification level per group or per project.
+      %p
+        By default, all projects and groups will use the global notifications setting.
+    .col-lg-9
+      %h5
+        Global notification settings
+      .form-group
+        = f.label :notification_email, class: "label-light"
+        = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "select2"
+      .form-group
+        = f.label :notification_level, class: 'label-light'
+        .radio
+          = f.label :notification_level, value: Notification::N_DISABLED do
+            = f.radio_button :notification_level, Notification::N_DISABLED
+            .level-title
+              Disabled
+            %p You will not get any notifications via email
 
-  .form-group
-    = f.label :notification_email, class: "control-label"
-    .col-sm-10
-      = f.select :notification_email, @user.all_emails, { include_blank: false }, class: "form-control"
+        .radio
+          = f.label :notification_level, value: Notification::N_MENTION do
+            = f.radio_button :notification_level, Notification::N_MENTION
+            .level-title
+              On Mention
+            %p You will receive notifications only for comments in which you were @mentioned
 
-  .form-group
-    = f.label :notification_level, class: 'control-label'
-    .col-sm-10
-      .radio
-        = f.label :notification_level, value: Notification::N_DISABLED do
-          = f.radio_button :notification_level, Notification::N_DISABLED
-          .level-title
-            Disabled
-          %p You will not get any notifications via email
+        .radio
+          = f.label :notification_level, value: Notification::N_PARTICIPATING do
+            = f.radio_button :notification_level, Notification::N_PARTICIPATING
+            .level-title
+              Participating
+            %p You will only receive notifications from related resources (e.g. from your commits or assigned issues)
 
-      .radio
-        = f.label :notification_level, value: Notification::N_MENTION do
-          = f.radio_button :notification_level, Notification::N_MENTION
-          .level-title
-            On Mention
-          %p You will receive notifications only for comments in which you were @mentioned
+        .radio
+          = f.label :notification_level, value: Notification::N_WATCH do
+            = f.radio_button :notification_level, Notification::N_WATCH
+            .level-title
+              Watch
+            %p You will receive notifications for any activity
 
-      .radio
-        = f.label :notification_level, value: Notification::N_PARTICIPATING do
-          = f.radio_button :notification_level, Notification::N_PARTICIPATING
-          .level-title
-            Participating
-          %p You will only receive notifications from related resources (e.g. from your commits or assigned issues)
-
-      .radio
-        = f.label :notification_level, value: Notification::N_WATCH do
-          = f.radio_button :notification_level, Notification::N_WATCH
-          .level-title
-            Watch
-          %p You will receive notifications for any activity
-
-  .gray-content-block
-    = f.submit 'Save changes', class: "btn btn-create"
-
-.row.all-notifications.prepend-top-default
-  .col-md-6
-    %p
-      You can also specify notification level per group or per project.
-      %br
-      By default, all projects and groups will use the notification level set above.
-    %h4 Groups:
-    %ul.bordered-list
-      - @group_members.each do |group_member|
-        - notification = Notification.new(group_member)
-        = render 'settings', type: 'group', membership: group_member, notification: notification
-
-  .col-md-6
-    %p
-      To specify the notification level per project of a group you belong to,
-      %br
-      you need to be a member of the project itself, not only its group.
-    %h4 Projects:
-    %ul.bordered-list
-      - @project_members.each do |project_member|
-        - notification = Notification.new(project_member)
-        = render 'settings', type: 'project', membership: project_member, notification: notification
+      .prepend-top-default
+        = f.submit 'Update settings', class: "btn btn-create"
+      %hr
+      %h5
+        Groups (#{@group_members.count})
+      %div
+        %ul.bordered-list
+          - @group_members.each do |group_member|
+            - notification = Notification.new(group_member)
+            = render 'settings', type: 'group', membership: group_member, notification: notification
+      %h5
+        Projects (#{@project_members.count})
+      %p.account-well
+        To specify the notification level per project of a group you belong to, you need to be a member of the project itself, not only its group.
+      .append-bottom-default
+        %ul.bordered-list
+          - @project_members.each do |project_member|
+            - notification = Notification.new(project_member)
+            = render 'settings', type: 'project', membership: project_member, notification: notification

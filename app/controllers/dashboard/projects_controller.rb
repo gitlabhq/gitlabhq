@@ -6,7 +6,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.includes(:namespace)
 
-    terms = params['filter_projects']
+    terms = params[:filter_projects]
 
     if terms.present?
       @projects = @projects.search(terms)
@@ -35,7 +35,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = @projects.includes(:namespace, :forked_from_project, :tags)
     @projects = @projects.sort(@sort = params[:sort])
 
-    terms = params['filter_projects']
+    terms = params[:filter_projects]
 
     if terms.present?
       @projects = @projects.search(terms)

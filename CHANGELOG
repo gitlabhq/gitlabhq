@@ -5,12 +5,32 @@ v 8.6.0 (unreleased)
   - Improve the formatting for the user page bio (Connor Shea)
   - Fix issue when pushing to projects ending in .wiki
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
+  - Don't load all of GitLab in mail_room
   - Strip leading and trailing spaces in URL validator (evuez)
+  - Return empty array instead of 404 when commit has no statuses in commit status API
   - Update documentation to reflect Guest role not being enforced on internal projects
+  - Allow search for logged out users
+  - Don't show Issues/MRs from archived projects in Groups view
+
+v 8.5.3
+  - Flush repository caches before renaming projects
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px
+  - Don't repeat labels listed on Labels tab
+  - Bring the "branded appearance" feature from EE to CE
   - Fix error 500 when commenting on a commit
+  - Show days remaining instead of elapsed time for Milestone
+  - Fix broken icons on installations with relative URL (Artem Sidorenko)
+  - Fix issue where tag list wasn't refreshed after deleting a tag
+  - Fix import from gitlab.com (KazSawada)
+  - Improve implementation to check read access to forks and add pagination
+  - Don't show any "2FA required" message if it's not actually required
+  - Fix help keyboard shortcut on relative URL setups (Artem Sidorenko)
+  - Update Rails to 4.2.5.2
+  - Fix permissions for deprecated CI build status badge
+  - Don't show "Welcome to GitLab" when the search didn't return any projects
+  - Add Todos documentation
 
 v 8.5.1
   - Fix group projects styles
@@ -25,7 +45,7 @@ v 8.5.1
   - Fix error 500 when trying to mark an already done todo as "done"
   - Fix an issue where MRs weren't sortable
   - Issues can now be dragged & dropped into empty milestone lists. This is also
-  possible with MRs
+    possible with MRs
   - Changed padding & background color for highlighted notes
   - Re-add the newrelic_rpm gem which was removed without any deprecation or warning (Stan Hu)
   - Update sentry-raven gem to 0.15.6

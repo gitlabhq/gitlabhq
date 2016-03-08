@@ -24,4 +24,25 @@ describe "Projects", elastic: true do
     expect(Project.elastic_search('test1', options: { pids: @project_ids }).total_count).to eq(1)
     expect(Project.elastic_search('someone_elses_project', options: { pids: @project_ids }).total_count).to eq(0)
   end
+
+  it "returns json with all needed elements" do
+    project = create :project
+
+    expected_hash = project.attributes.extract!(
+      'id',
+      'name',
+      'path',
+      'description',
+      'namespace_id',
+      'created_at',
+      'archived',
+      'visibility_level',
+      'last_activity_at'
+    )
+
+    expected_hash['name_with_namespace'] = project.name_with_namespace
+    expected_hash['path_with_namespace'] = project.path_with_namespace
+
+    expect(project.as_indexed_json).to eq(expected_hash)
+  end
 end

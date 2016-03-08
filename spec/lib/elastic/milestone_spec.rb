@@ -18,12 +18,29 @@ describe "Milestone", elastic: true do
     create :milestone, description: 'bla-bla term', project: project
     create :milestone, project: project
 
+    # The milestone you have no access to
     create :milestone, title: 'bla-bla term'
 
     Milestone.__elasticsearch__.refresh_index!
 
-    options = { projects_ids: [project.id] }
+    options = { project_ids: [project.id] }
 
     expect(Milestone.elastic_search('term', options: options).total_count).to eq(2)
+  end
+
+  it "returns json with all needed elements" do
+    milestone = create :milestone
+
+    expected_hash =  milestone.attributes.extract!(
+      'id',
+      'title',
+      'description',
+      'project_id',
+      'created_at'
+    )
+
+    expected_hash[:updated_at_sort] = milestone.updated_at
+
+    expect(milestone.as_indexed_json).to eq(expected_hash)
   end
 end
