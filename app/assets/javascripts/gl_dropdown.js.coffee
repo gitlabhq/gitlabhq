@@ -1,12 +1,17 @@
 class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
 
-  constructor: (@dropdown, @remote, @query, @keys, @data, @callback) ->
+  constructor: (@dropdown, @options) ->
     @input = @dropdown.find(".dropdown-input .dropdown-input-field")
 
     # Key events
     timeout = ""
     @input.on "keyup", (e) =>
+      if e.keyCode is 13 && @input.val() isnt ""
+        if @options.enterCallback
+          @options.enterCallback()
+        return
+
       clearTimeout timeout
       timeout = setTimeout =>
         blur_field = @shouldBlur e.keyCode
@@ -15,9 +20,9 @@ class GitLabDropdownFilter
         if blur_field
           @input.blur()
 
-        if @remote
-          @query search_text, (data) =>
-            @callback(data)
+        if @options.remote
+          @options.query search_text, (data) =>
+            @options.callback(data)
         else
           @filter search_text
       , 250
@@ -26,12 +31,12 @@ class GitLabDropdownFilter
     return BLUR_KEYCODES.indexOf(keyCode) >= 0
 
   filter: (search_text) ->
-    data = @data()
+    data = @options.data()
     results = data
 
     if search_text isnt ""
       results = fuzzaldrinPlus.filter(data, search_text,
-        key: @keys
+        key: @options.keys
       )
 
     @callback results
@@ -89,10 +94,16 @@ class GitLabDropdown
 
     # Init filiterable
     if @options.filterable
-      @filter = new GitLabDropdownFilter @dropdown, @options.filterRemote, @options.data, @options.search.fields, =>
-        return @fullData
-      , (data) =>
-        @parseData data
+      @filter = new GitLabDropdownFilter @dropdown,
+        remote: @options.filterRemote
+        query: @options.data
+        keys: @options.search.fields
+        data: =>
+          return @fullData
+        callback: (data) =>
+          @parseData data
+        enterCallback: =>
+          @selectFirstRow()
 
     # Event listeners
     @dropdown.on "shown.bs.dropdown", @opened
@@ -233,6 +244,14 @@ class GitLabDropdown
       # Create hidden input for form
       input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
       @dropdown.before input
+
+  selectFirstRow: ->
+    selector = '.dropdown-content li:first-child a'
+    if @dropdown.find(".dropdown-toggle-page").length
+      selector = ".dropdown-page-one .dropdown-content li:first-child a"
+
+    # similute a click on the first link
+    $(selector).trigger "click"
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
