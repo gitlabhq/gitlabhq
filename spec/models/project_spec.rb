@@ -68,6 +68,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
   describe 'modules' do

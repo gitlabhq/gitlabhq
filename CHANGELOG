@@ -16,6 +16,9 @@ v 8.6.0 (unreleased)
   - Increase the notes polling timeout over time (Roberto Dip)
   - Show labels in dashboard and group milestone views
 
+v 8.5.5
+  - Fix: Destroy all related todos when removing a project
+
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
 
