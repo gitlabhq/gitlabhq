@@ -659,4 +659,15 @@ describe Repository, models: true do
       repository.rm_branch(user, 'feature')
     end
   end
+
+  describe '#rm_tag' do
+    it 'removes a tag' do
+      expect(repository).to receive(:before_remove_tag)
+
+      expect_any_instance_of(Gitlab::Shell).to receive(:rm_tag).
+        with(repository.path_with_namespace, '8.5')
+
+      repository.rm_tag('8.5')
+    end
+  end
 end
