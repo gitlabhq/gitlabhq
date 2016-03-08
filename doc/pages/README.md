@@ -390,10 +390,10 @@ to your project's **Settings > Pages** and hit **Remove pages**. Simple as that.
 
 If you are using GitLab.com to host your website, then:
 
-- The general domain name for GitLab Pages on GitLab.com is `gitlab.io`
-- Shared runners are provided for free and can be used to build your website
-  if you cannot or don't want to set up your own Runner
-- Custom domains and TLS support are enabled
+- The general domain name for GitLab Pages on GitLab.com is `gitlab.io`.
+- Custom domains and TLS support are enabled.
+- Shared runners are enabled by default, provided for free and can be used to
+  build your website. If you want you can still bring your own Runner.
 
 The rest of the guide still applies.
 
