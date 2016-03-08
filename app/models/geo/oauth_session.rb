@@ -12,13 +12,13 @@ class Geo::OauthSession
     salt, hmac, return_to = state.split(':', 3)
 
     return false unless return_to
-    hmac == self.generate_oauth_hmac(salt)
+    hmac == generate_oauth_hmac(salt, return_to)
   end
 
   def generate_oauth_state
     return unless return_to
     salt = generate_oauth_salt
-    hmac = generate_oauth_hmac(salt)
+    hmac = generate_oauth_hmac(salt, return_to)
     "#{salt}:#{hmac}:#{return_to}"
   end
 
@@ -42,8 +42,8 @@ class Geo::OauthSession
     SecureRandom.hex(16)
   end
 
-  def generate_oauth_hmac(salt)
-    return unless return_to
+  def generate_oauth_hmac(salt, return_to)
+    return false unless return_to
     digest = OpenSSL::Digest.new('sha256')
     key = Gitlab::Application.secrets.secret_key_base + salt
     OpenSSL::HMAC.hexdigest(digest, key, return_to)

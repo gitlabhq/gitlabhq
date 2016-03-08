@@ -23,7 +23,7 @@ class Oauth::GeoAuthController < ActionController::Base
 
     token = client.auth_code.get_token(params[:code], redirect_uri: oauth_geo_callback_url).token
 
-    @user_session = ::Geo::User.new(state: params[:state])
+    @user_session = Geo::OauthSession.new(state: params[:state])
     remote_user = @user_session.authenticate(access_token: token)
 
     user = User.find(remote_user['id'])

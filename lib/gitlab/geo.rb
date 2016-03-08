@@ -41,7 +41,7 @@ module Gitlab
     end
 
     def self.oauth_authentication
-      return false unless self.readonly?
+      return false unless Gitlab::Geo.secondary?
 
       Gitlab::Geo.current_node.oauth_application
     end
