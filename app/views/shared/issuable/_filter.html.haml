@@ -15,13 +15,8 @@
             placeholder: "Search assignee", data: {any_user: "Any Author", first_user: true, null_user: true, current_user: true, project_id: @project.id, selected: params[:assignee_id], field_name: "assignee_id"})
 
         .filter-item.inline.milestone-filter
-          = dropdown_tag("Milestone", title: "Filter by milestone", filter: true, dropdown_class: "dropdown-menu-selectable",
-            placeholder: "Search milestones", data: {field_name: "milestone_title"}) do
-            %ul
-              - @project.milestones.each do |milestone|
-                %li
-                  %a{href: "#", data: {id: milestone.id}}
-                    = milestone.name
+          = dropdown_tag("Milestone", title: "Filter by milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable",
+            placeholder: "Search milestones", data: {field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.id})
 
         .filter-item.inline.labels-filter
           = dropdown_tag("Label", title: "Filter by label", toggle_class: "js-label-select", filter: true, dropdown_class: "dropdown-menu-labels dropdown-menu-selectable",
@@ -55,6 +50,7 @@
 :javascript
   new UsersSelect();
   new LabelsSelect();
+  new MilestoneSelect();
   $('form.filter-form').on('submit', function (event) {
     event.preventDefault();
     Turbolinks.visit(this.action + '&' + $(this).serialize());

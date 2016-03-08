@@ -148,7 +148,7 @@ class GitLabDropdown
       html = @options.renderRow(data)
     else
       selected = if @options.isSelected then @options.isSelected(data) else false
-      url = if @options.url then @options.url(data) else ""
+      url = if @options.url then @options.url(data) else "#"
       text = if @options.text then @options.text(data) else ""
       cssClass = "";
 

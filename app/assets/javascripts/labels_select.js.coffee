@@ -2,13 +2,16 @@ class @LabelsSelect
   constructor: ->
     $('.js-label-select').each (i, dropdown) ->
       projectId = $(dropdown).data('project-id')
+      selectedLabel = $(dropdown).data('selected')
 
       $(dropdown).glDropdown(
         data: (callback) ->
           Api.projectLabels 8, callback
         renderRow: (label) ->
+          selected = if label.name is selectedLabel then "is-active" else ""
+
           "<li>
-            <a href='#'>
+            <a href='#' class='#{selected}'>
               #{label.name}
             </a>
           </li>"
