@@ -649,6 +649,17 @@ describe Repository, models: true do
     end
   end
 
+  describe '#add_tag' do
+    it 'adds a tag' do
+      expect(repository).to receive(:before_push_tag)
+
+      expect_any_instance_of(Gitlab::Shell).to receive(:add_tag).
+        with(repository.path_with_namespace, '8.5', 'master', 'foo')
+
+      repository.add_tag('8.5', 'master', 'foo')
+    end
+  end
+
   describe '#rm_branch' do
     let(:user) { create(:user) }
 

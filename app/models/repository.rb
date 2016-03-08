@@ -138,7 +138,7 @@ class Repository
   end
 
   def add_tag(tag_name, ref, message = nil)
-    expire_tags_cache
+    before_push_tag
 
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
@@ -334,6 +334,7 @@ class Repository
   # Runs code before pushing (= creating or removing) a tag.
   def before_push_tag
     expire_cache
+    expire_tags_cache
     expire_tag_count_cache
   end
 
