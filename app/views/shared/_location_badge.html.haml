@@ -1,0 +1,13 @@
+- if controller.controller_path =~ /^groups/
+  - label = 'This group'
+- if controller.controller_path =~ /^projects/
+  - label = 'This project'
+
+.search-location-badge
+  - if label.present?
+    %span.label.label-primary
+      %i.location-text
+        = label
+
+      %a.remove-badge{href: '#'}
+        x
