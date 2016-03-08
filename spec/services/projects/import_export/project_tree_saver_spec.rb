@@ -23,7 +23,8 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
     end
     let!(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }
     let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
-    let(:project_tree_saver) { Projects::ImportExport::ProjectTreeSaver.new(project: project) }
+    let(:shared) { Projects::ImportExport::Shared.new(project_name: @project_name) }
+    let(:project_tree_saver) { Projects::ImportExport::ProjectTreeSaver.new(project: project, shared: shared) }
 
     before(:each) do
       project.team << [user, :master]
