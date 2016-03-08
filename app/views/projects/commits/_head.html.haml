@@ -15,9 +15,9 @@
   = nav_link(html_options: {class: branches_tab_class}) do
     = link_to namespace_project_branches_path(@project.namespace, @project) do
       Branches
-      %span.badge.js-totalbranch-count= @repository.branches.size
+      %span.badge.js-totalbranch-count= @repository.branch_count
 
   = nav_link(controller: [:tags, :releases]) do
     = link_to namespace_project_tags_path(@project.namespace, @project) do
       Tags
-      %span.badge.js-totaltags-count= @repository.tags.length
+      %span.badge.js-totaltags-count= @repository.tag_count
