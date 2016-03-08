@@ -6,6 +6,8 @@ class @LabelsSelect
       selectedLabel = $(dropdown).data('selected')
       newLabelField = $('#new_label_name')
       newColorField = $('#new_label_color')
+      showNo = $(dropdown).data('show-no')
+      showAny = $(dropdown).data('show-any')
 
       if newLabelField.length
         $('.suggest-colors-dropdown a').on "click", (e) ->
@@ -45,6 +47,20 @@ class @LabelsSelect
                 title: $(@).text().trim()
               )
 
+            if showNo
+              data.unshift(
+                id: "0"
+                title: 'No label'
+              )
+
+            if showAny
+              data.unshift(
+                title: 'Any label'
+              )
+
+            if data.length > 2
+              data.splice 2, 0, "divider"
+              
             callback data
         renderRow: (label) ->
           selected = if label.title is selectedLabel then "is-active" else ""
@@ -56,7 +72,7 @@ class @LabelsSelect
           </li>"
         filterable: true
         search:
-          fields: ['name']
+          fields: ['title']
         selectable: true
         fieldName: $(dropdown).data('field-name')
         id: (label) ->

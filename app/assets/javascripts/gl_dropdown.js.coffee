@@ -148,7 +148,8 @@ class GitLabDropdown
     @appendMenu(full_html)
 
   opened: =>
-    if @remote
+    contentHtml = $('.dropdown-content', @dropdown).html()
+    if @remote && contentHtml is ""
       @remote.execute()
 
     if @options.filterable
