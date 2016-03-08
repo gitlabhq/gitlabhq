@@ -4,7 +4,8 @@ class @UsersSelect
     @userPath = "/autocomplete/users/:id.json"
 
     $('.js-user-search').each (i, dropdown) =>
-      projectId = $(dropdown).data('project-id')
+      @projectId = $(dropdown).data('project-id')
+      @showCurrentUser = $(dropdown).data('current-user')
       showNullUser = $(dropdown).data('null-user')
       showAnyUser = $(dropdown).data('any-user')
       firstUser = $(dropdown).data('first-user')
