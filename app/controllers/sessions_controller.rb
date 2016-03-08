@@ -112,7 +112,7 @@ class SessionsController < Devise::SessionsController
       oauth = Geo::OauthSession.new
 
       # share full url with primary node by shared session
-      user_return_to = URI.join(root_url, session[:user_return_to]).to_s
+      user_return_to = URI.join(root_url, session[:user_return_to].to_s).to_s
       oauth.return_to = @redirect_to || user_return_to
 
       redirect_to oauth_geo_auth_url(state: oauth.generate_oauth_state)

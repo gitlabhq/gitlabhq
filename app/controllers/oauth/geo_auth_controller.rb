@@ -1,5 +1,4 @@
 class Oauth::GeoAuthController < ActionController::Base
-  # skip_before_action :authenticate_user!
 
   def auth
     oauth = Geo::OauthSession.new(state: params[:state])
@@ -8,10 +7,7 @@ class Oauth::GeoAuthController < ActionController::Base
       return
     end
 
-    redirect_to client.auth_code.authorize_url({
-                                                 redirect_uri: oauth_geo_callback_url,
-                                                 state: params[:state]
-                                               })
+    redirect_to oauth.authorize_url(redirect_uri: oauth_geo_callback_url, state: params[:state])
   end
 
   def callback
@@ -21,15 +17,13 @@ class Oauth::GeoAuthController < ActionController::Base
       return
     end
 
-    token = client.auth_code.get_token(params[:code], redirect_uri: oauth_geo_callback_url).token
-
-    @user_session = Geo::OauthSession.new(state: params[:state])
-    remote_user = @user_session.authenticate(access_token: token)
+    token = oauth.get_token(params[:code], redirect_uri: oauth_geo_callback_url)
+    remote_user = oauth.authenticate(access_token: token)
 
     user = User.find(remote_user['id'])
 
     if user && sign_in(user)
-      return_to = @user_session.get_oauth_state_return_to
+      return_to = oauth.get_oauth_state_return_to
       redirect_to(return_to || root_path)
     else
       @error = 'Invalid credentials'
@@ -37,18 +31,4 @@ class Oauth::GeoAuthController < ActionController::Base
     end
   end
 
-  private
-
-  def client
-    app = Gitlab::Geo.oauth_authentication
-    @client ||= ::OAuth2::Client.new(
-      app.uid,
-      app.secret,
-      {
-        site: Gitlab::Geo.primary_node.url,
-        authorize_url: 'oauth/authorize',
-        token_url: 'oauth/token'
-      }
-    )
-  end
 end
