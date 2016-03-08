@@ -2,7 +2,7 @@ module Projects
   module ImportExport
     class ExportService < BaseService
       def execute(options = {})
-        @shared = Projects::ImportExport::Shared.new(project_name: @project_name)
+        @shared = Projects::ImportExport::Shared.new(relative_path: project.path_with_namespace)
         save_project_tree
         bundle_repo
       end

@@ -6,7 +6,7 @@ module Projects
       end
 
       def export_path
-        @export_path ||= ImportExport.export_path(project_name: @opts[:project_name])
+        @export_path ||= Projects::ImportExport.export_path(relative_path: @opts[:relative_path])
       end
     end
   end

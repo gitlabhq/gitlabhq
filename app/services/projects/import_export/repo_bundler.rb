@@ -11,14 +11,15 @@ module Projects
       end
 
       def bundle
-        return false if project.empty_repo?
-        @full_path = File.join(export_path, project_filename)
+        return false if @project.empty_repo?
+        @full_path = File.join(@export_path, project_filename)
         bundle_to_disk
       end
 
       private
 
       def bundle_to_disk
+        FileUtils.mkdir_p(@export_path)
         tar_cf(archive: full_path, dir: path_to_repo)
       rescue
         #TODO: handle error
@@ -26,7 +27,7 @@ module Projects
       end
 
       def project_filename
-        @project.path_with_namespace + ".bundle"
+        "#{@project.namespace}#{@project.name}.bundle"
       end
 
       def path_to_repo

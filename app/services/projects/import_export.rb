@@ -2,8 +2,8 @@ module Projects
   module ImportExport
     extend self
 
-    def export_path(project_name:)
-      File.join(storage_path, "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_gitlab_export_#{project_name}")
+    def export_path(relative_path:)
+      File.join(storage_path, "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_gitlab_export/#{relative_path}")
     end
 
     def project_atts
