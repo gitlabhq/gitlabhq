@@ -1,7 +1,7 @@
 class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
 
-  constructor: (@dropdown, @remote, @query, @data, @callback) ->
+  constructor: (@dropdown, @remote, @query, @keys, @data, @callback) ->
     @input = @dropdown.find(".dropdown-input .dropdown-input-field")
 
     # Key events
@@ -27,7 +27,12 @@ class GitLabDropdownFilter
 
   filter: (search_text) ->
     data = @data()
-    results = if search_text isnt "" then data.search(search_text) else data.list
+    results = data
+
+    if search_text isnt ""
+      results = fuzzaldrinPlus.filter(data, search_text,
+        key: @keys
+      )
 
     @callback results
 
@@ -78,20 +83,13 @@ class GitLabDropdown
         beforeSend: @toggleLoading.bind(@)
         success: (data) =>
           @fullData = data
-          dataToPrase = @fullData
 
-          if @options.filterable
-            @fullData = new Fuse data, {
-              keys: search_fields
-            }
-            dataToPrase = @fullData.list
-
-          @parseData dataToPrase
+          @parseData @fullData
       }
 
     # Init filiterable
     if @options.filterable
-      @filter = new GitLabDropdownFilter @dropdown, @options.filterRemote, @options.data, =>
+      @filter = new GitLabDropdownFilter @dropdown, @options.filterRemote, @options.data, @options.search.fields, =>
         return @fullData
       , (data) =>
         @parseData data
