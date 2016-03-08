@@ -53,7 +53,8 @@ class @UsersSelect
         selectable: true
         fieldName: $(dropdown).data('field-name')
         clicked: ->
-          $(dropdown).parents('form').submit()
+          if $(dropdown).hasClass "js-filter-submit"
+            $(dropdown).parents('form').submit()
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false

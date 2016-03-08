@@ -217,8 +217,10 @@ class GitLabDropdown
   rowClicked: (el) ->
     fieldName = @options.fieldName
     selectedIndex = el.parent().index()
-    selectedObject = @renderedData[selectedIndex]
-    value = if @options.id then @options.id(selectedObject) else selectedObject.id
+    if @renderedData
+      selectedObject = @renderedData[selectedIndex]
+    value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
+    console.log value
 
     if @options.multiSelect
       fieldName = "#{fieldName}[]"
@@ -229,7 +231,7 @@ class GitLabDropdown
     # Toggle active class for the tick mark
     el.toggleClass "is-active"
 
-    if value isnt 0
+    if value
       # Create hidden input for form
       input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
       @dropdown.before input

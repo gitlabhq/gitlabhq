@@ -49,5 +49,6 @@ class @LabelsSelect
         id: (label) ->
           label.name
         clicked: ->
-          $(dropdown).parents('form').submit()
+          if $(dropdown).hasClass "js-filter-submit"
+            $(dropdown).parents('form').submit()
       )

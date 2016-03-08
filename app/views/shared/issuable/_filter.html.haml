@@ -9,19 +9,19 @@
         .filter-item.inline
           - if params[:author_id]
             = hidden_field_tag(:author_id, params[:author_id])
-          = dropdown_tag("Author", toggle_class: "js-user-search", title: "Filter by author", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
+          = dropdown_tag("Author", toggle_class: "js-user-search js-filter-submit", title: "Filter by author", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
             placeholder: "Search authors", data: {any_user: "Any Author", first_user: true, current_user: true, project_id: @project.id, selected: params[:author_id], field_name: "author_id"})
 
         .filter-item.inline
           - if params[:assignee_id]
             = hidden_field_tag(:assignee_id, params[:assignee_id])
-          = dropdown_tag("Assignee", toggle_class: "js-user-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
+          = dropdown_tag("Assignee", toggle_class: "js-user-search js-filter-submit", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
             placeholder: "Search assignee", data: {any_user: "Any Author", first_user: true, null_user: true, current_user: true, project_id: @project.id, selected: params[:assignee_id], field_name: "assignee_id"})
 
         .filter-item.inline.milestone-filter
           - if params[:milestone_title]
             = hidden_field_tag(:milestone_title, params[:milestone_title])
-          = dropdown_tag("Milestone", title: "Filter by milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable",
+          = dropdown_tag("Milestone", title: "Filter by milestone", toggle_class: 'js-milestone-select js-filter-submit', filter: true, dropdown_class: "dropdown-menu-selectable",
             placeholder: "Search milestones", footer_content: true, data: {show_no: true, show_any: true, field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.id}) do
             %ul.dropdown-footer-list
               - if can? current_user, :admin_milestone, @project
@@ -39,7 +39,7 @@
           - if params[:label_name]
             = hidden_field_tag(:label_name, params[:label_name])
           .dropdown
-            %button.dropdown-menu-toggle.js-label-select{type: "button", data: {toggle: "dropdown", field_name: "label_name", selected: params[:label_name], project_id: @project.id}}
+            %button.dropdown-menu-toggle.js-label-select.js-filter-submit{type: "button", data: {toggle: "dropdown", field_name: "label_name", selected: params[:label_name], project_id: @project.id}}
               %span.dropdown-toggle-text
                 Label
               = icon('chevron-down')
@@ -76,8 +76,8 @@
                     %button.dropdown-title-button.dropdown-menu-close{type: "button", aria: {label: "close"}}
                       = icon('times')
                   .dropdown-content
-                    = hidden_field_tag :new_label_color, nil
-                    = text_field_tag :new_label_name, nil, class: "dropdown-input-field", placeholder: "Name new label"
+                    %input#new_label_color{type: "hidden"}
+                    %input#new_label_name.dropdown-input-field{type: "text", placeholder: "Name new label"}
                     .dropdown-label-color-preview.js-dropdown-label-color-preview
                     .suggest-colors.suggest-colors-dropdown
                       - suggested_colors.each do |color|
@@ -95,11 +95,18 @@
       .issues_bulk_update.hide
         = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post  do
           .filter-item.inline
-            = select_tag('update[state_event]', options_for_select([['Open', 'reopen'], ['Closed', 'close']]), include_blank: true, data: { placeholder: "Status" })
+            = dropdown_tag("Status", toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-selectable", data: {field_name: "update[state_event]"}) do
+              %ul
+                %li
+                  %a{href: "#", data: {id: "reopen"}} Open
+                %li
+                  %a{href: "#", data: {id: "close"}} Closed
           .filter-item.inline
-            = users_select_tag('update[assignee_id]', placeholder: 'Assignee', null_user: true, first_user: true, current_user: true)
+            = dropdown_tag("Assignee", toggle_class: "js-user-search", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
+              placeholder: "Search authors", data: {first_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]"})
           .filter-item.inline
-            = select_tag('update[milestone_id]', bulk_update_milestone_options, include_blank: true, data: { placeholder: "Milestone" })
+            = dropdown_tag("Milestone", title: "Assign milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable",
+              placeholder: "Search milestones", data: {show_no: true, field_name: "update[milestone_id]", project_id: @project.id})
           = hidden_field_tag 'update[issues_ids]', []
           = hidden_field_tag :state_event, params[:state_event]
           .filter-item.inline
@@ -113,6 +120,7 @@
   new UsersSelect();
   new LabelsSelect();
   new MilestoneSelect();
+  new IssueStatusSelect();
   $('form.filter-form').on('submit', function (event) {
     event.preventDefault();
     Turbolinks.visit(this.action + '&' + $(this).serialize());

@@ -16,7 +16,7 @@ class @MilestoneSelect
               data.unshift(
                 title: 'No milestone'
               )
-              
+
             if showAny
               data.unshift(
                 title: 'Any milestone'
@@ -41,5 +41,6 @@ class @MilestoneSelect
         isSelected: (milestone) ->
           milestone.title is selectedMilestone
         clicked: ->
-          $(dropdown).parents('form').submit()
+          if $(dropdown).hasClass "js-filter-submit"
+            $(dropdown).parents('form').submit()
       )
