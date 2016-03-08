@@ -3,6 +3,9 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.6.0 (unreleased)
   - Contributions to forked projects are included in calendar
   - Improve the formatting for the user page bio (Connor Shea)
+  - Removed the default password from the initial admin account created during
+    setup. A password can be provided during setup (see installation docs), or
+    GitLab will ask the user to create a new one upon first visit.
   - Fix issue when pushing to projects ending in .wiki
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
   - Don't load all of GitLab in mail_room
