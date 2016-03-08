@@ -27,6 +27,7 @@ module API
 
     helpers Helpers
 
+    mount Geo
     mount Groups
     mount GroupMembers
     mount Users
