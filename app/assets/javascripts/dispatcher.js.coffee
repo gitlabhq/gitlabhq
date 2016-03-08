@@ -148,9 +148,4 @@ class Dispatcher
       new Shortcuts()
 
   initSearch: ->
-    opts = $('.search-autocomplete-opts')
-    path = opts.data('autocomplete-path')
-    project_id = opts.data('autocomplete-project-id')
-    project_ref = opts.data('autocomplete-project-ref')
-
-    new SearchAutocomplete(path, project_id, project_ref)
+    new SearchAutocomplete()
