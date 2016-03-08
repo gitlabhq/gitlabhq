@@ -4,6 +4,8 @@ class @LabelsSelect
       projectId = $(dropdown).data('project-id')
       labelUrl = $(dropdown).data("labels")
       selectedLabel = $(dropdown).data('selected')
+      if selectedLabel
+        selectedLabel = selectedLabel.split(",")
       newLabelField = $('#new_label_name')
       newColorField = $('#new_label_color')
       showNo = $(dropdown).data('show-no')
@@ -60,10 +62,17 @@ class @LabelsSelect
 
             if data.length > 2
               data.splice 2, 0, "divider"
-              
+
             callback data
         renderRow: (label) ->
-          selected = if label.title is selectedLabel then "is-active" else ""
+          if $.isArray(selectedLabel)
+            selected = ""
+            $.each selectedLabel, (i, selectedLbl) ->
+              selectedLbl = selectedLbl.trim()
+              if selected is "" && label.title is selectedLbl
+                selected = "is-active"
+          else
+            selected = if label.title is selectedLabel then "is-active" else ""
 
           "<li>
             <a href='#' class='#{selected}'>

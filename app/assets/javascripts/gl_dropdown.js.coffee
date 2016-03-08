@@ -39,7 +39,7 @@ class GitLabDropdownFilter
         key: @options.keys
       )
 
-    @callback results
+    @options.callback results
 
 class GitLabDropdownRemote
   constructor: (@dataEndpoint, @options) ->
@@ -75,6 +75,7 @@ class GitLabDropdownRemote
 class GitLabDropdown
   LOADING_CLASS = "is-loading"
   PAGE_TWO_CLASS = "is-page-two"
+  ACTIVE_CLASS = "is-active"
 
   constructor: (@el, @options) ->
     self = @
@@ -226,24 +227,35 @@ class GitLabDropdown
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
-    selectedIndex = el.parent().index()
-    if @renderedData
-      selectedObject = @renderedData[selectedIndex]
-    value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
+    field = @dropdown.parent().find("input[name='#{fieldName}']")
 
-    if @options.multiSelect
-      fieldName = "#{fieldName}[]"
+    if el.hasClass(ACTIVE_CLASS)
+      field.remove()
     else
-      @dropdown.find('.is-active').removeClass 'is-active'
-      @dropdown.parent().find("input[name='#{fieldName}']").remove()
+      fieldName = @options.fieldName
+      selectedIndex = el.parent().index()
+      if @renderedData
+        selectedObject = @renderedData[selectedIndex]
+      value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
 
-    # Toggle active class for the tick mark
-    el.toggleClass "is-active"
+      if @options.multiSelect
+        oldValue = field.val()
+        if oldValue
+          value = "#{oldValue},#{value}"
+      else
+        @dropdown.find(ACTIVE_CLASS).removeClass ACTIVE_CLASS
+        field.remove()
 
-    if value
-      # Create hidden input for form
-      input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
-      @dropdown.before input
+      # Toggle active class for the tick mark
+      el.toggleClass "is-active"
+
+      if value
+        if !field.length
+          # Create hidden input for form
+          input = "<input type='hidden' name='#{fieldName}' />"
+          @dropdown.before input
+
+        @dropdown.parent().find("input[name='#{fieldName}']").val value
 
   selectFirstRow: ->
     selector = '.dropdown-content li:first-child a'
