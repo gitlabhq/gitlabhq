@@ -14,6 +14,8 @@ class @UsersSelect
         data: (term, callback) =>
           @users term, (users) =>
             if term.length is 0
+              showDivider = 0
+
               if firstUser
                 # Move current user to the front of the list
                 for obj, index in users
@@ -23,12 +25,14 @@ class @UsersSelect
                     break
 
               if showNullUser
+                showDivider += 1
                 users.unshift(
                   name: 'Unassigned',
                   id: 0
                 )
 
               if showAnyUser
+                showDivider += 1
                 name = showAnyUser
                 name = 'Any User' if name == true
                 anyUser = {
@@ -36,6 +40,9 @@ class @UsersSelect
                   id: null
                 }
                 users.unshift(anyUser)
+
+            if showDivider
+              users.splice(showDivider, 0, "divider")
 
             # Send the data back
             callback users
@@ -49,12 +56,16 @@ class @UsersSelect
           $(dropdown).parents('form').submit()
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
-          avatar = if user.avatar_url then user.avatar_url else gon.default_avatar_url
+          avatar = if user.avatar_url then user.avatar_url else false
           selected = if user.id is selectedId then "is-active" else ""
+          img = ""
+
+          if avatar
+            img = "<img src='#{avatar}' class='avatar avatar-inline' width='30' />"
 
           "<li>
             <a href='#' class='dropdown-menu-user-link #{selected}'>
-              <img src='#{avatar}' class='avatar avatar-inline' width='30' />
+              #{img}
               <strong class='dropdown-menu-user-full-name'>
                 #{user.name}
               </strong>

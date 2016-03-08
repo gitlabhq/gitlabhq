@@ -64,6 +64,7 @@ class GitLabDropdownRemote
 
 class GitLabDropdown
   LOADING_CLASS = "is-loading"
+  PAGE_TWO_CLASS = "is-page-two"
 
   constructor: (@el, @options) ->
     self = @
@@ -96,11 +97,23 @@ class GitLabDropdown
         @parseData data
 
     # Event listeners
-    $(@el).parent().on "shown.bs.dropdown", @opened
-    $(@el).parent().on "hidden.bs.dropdown", @hidden
+    @dropdown.on "shown.bs.dropdown", @opened
+    @dropdown.on "hidden.bs.dropdown", @hidden
+
+    if @dropdown.find(".dropdown-toggle-page").length
+      @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>
+        e.preventDefault()
+        e.stopPropagation()
+
+        @togglePage()
 
     if @options.selectable
-      @dropdown.on "click", "a", (e) ->
+      selector = "a"
+
+      if @dropdown.find(".dropdown-toggle-page").length
+        selector = ".dropdown-page-one a"
+
+      @dropdown.on "click", selector, (e) ->
         self.rowClicked $(@)
 
         if self.options.clicked
@@ -108,6 +121,15 @@ class GitLabDropdown
 
   toggleLoading: ->
     $('.dropdown-menu', @dropdown).toggleClass LOADING_CLASS
+
+  togglePage: ->
+    menu = $('.dropdown-menu', @dropdown)
+
+    if menu.hasClass(PAGE_TWO_CLASS)
+      if @remote
+        @remote.execute()
+
+    menu.toggleClass PAGE_TWO_CLASS
 
   parseData: (data) ->
     @renderedData = data
@@ -136,6 +158,10 @@ class GitLabDropdown
     if @options.filterable
       @dropdown.find(".dropdown-input-field").blur().val("")
 
+    if @dropdown.find(".dropdown-toggle-page").length
+      $('.dropdown-menu', @dropdown).removeClass PAGE_TWO_CLASS
+
+
   # Render the full menu
   renderMenu: (html) ->
     menu_html = ""
@@ -149,11 +175,17 @@ class GitLabDropdown
 
   # Append the menu into the dropdown
   appendMenu: (html) ->
-    $('.dropdown-content', @dropdown).html html
+    selector = '.dropdown-content'
+    if @dropdown.find(".dropdown-toggle-page").length
+      selector = ".dropdown-page-one .dropdown-content"
+
+    $(selector, @dropdown).html html
 
   # Render the row
   renderItem: (data) ->
     html = ""
+
+    return "<li class='divider'></li>" if data is "divider"
 
     if @options.renderRow
       # Call the render function
@@ -189,7 +221,7 @@ class GitLabDropdown
     value = if @options.id then @options.id(selectedObject) else selectedObject.id
 
     if @options.multiSelect
-      fieldName = "[#{fieldName}]"
+      fieldName = "#{fieldName}[]"
     else
       @dropdown.find('.is-active').removeClass 'is-active'
       @dropdown.parent().find("input[name='#{fieldName}']").remove()

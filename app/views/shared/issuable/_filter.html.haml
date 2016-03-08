@@ -22,17 +22,67 @@
           - if params[:milestone_title]
             = hidden_field_tag(:milestone_title, params[:milestone_title])
           = dropdown_tag("Milestone", title: "Filter by milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable",
-            placeholder: "Search milestones", data: {field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.id})
+            placeholder: "Search milestones", footer_content: true, data: {show_no: true, show_any: true, field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.id}) do
+            %ul.dropdown-footer-list
+              - if can? current_user, :admin_milestone, @project
+                %li
+                  = link_to new_namespace_project_milestone_path(@project.namespace, @project), title: "New Milestone" do
+                    Create new
+              %li
+                = link_to namespace_project_milestones_path(@project.namespace, @project) do
+                  - if can? current_user, :admin_milestone, @project
+                    Manage milestones
+                  - else
+                    View milestones
 
         .filter-item.inline.labels-filter
           - if params[:label_name]
             = hidden_field_tag(:label_name, params[:label_name])
-          = dropdown_tag("Label", title: "Filter by label", toggle_class: "js-label-select", filter: true, dropdown_class: "dropdown-menu-labels dropdown-menu-selectable",
-            placeholder: "Search labels", footer_content: true, data: {field_name: "label_name", selected: params[:label_name], project_id: @project.id}) do
-            %ul.dropdown-footer-list
-              %li
-                = link_to namespace_project_labels_path(@project.namespace, @project) do
-                  Manage labels
+          .dropdown
+            %button.dropdown-menu-toggle.js-label-select{type: "button", data: {toggle: "dropdown", field_name: "label_name", selected: params[:label_name], project_id: @project.id}}
+              %span.dropdown-toggle-text
+                Label
+              = icon('chevron-down')
+            .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
+              .dropdown-page-one
+                .dropdown-title
+                  %span
+                    Filter by label
+                  %button.dropdown-title-button.dropdown-menu-close{type: "button", aria: {label: "close"}}
+                    = icon('times')
+                .dropdown-input
+                  = search_field_tag nil, nil, class: "dropdown-input-field", placeholder: "Search labels"
+                  = icon('search')
+                .dropdown-content
+                .dropdown-footer
+                  %ul.dropdown-footer-list
+                    - if can? current_user, :admin_label, @project
+                      %li
+                        %a.dropdown-toggle-page{href: "#"}
+                          Create new
+                    %li
+                      = link_to namespace_project_labels_path(@project.namespace, @project) do
+                        - if can? current_user, :admin_label, @project
+                          Manage labels
+                        - else
+                          View labels
+              - if can? current_user, :admin_label, @project
+                .dropdown-page-two
+                  .dropdown-title
+                    %button.dropdown-title-button.dropdown-menu-back{aria: {label: "Go back"}}
+                      = icon('arrow-left')
+                    %span
+                      Create new label
+                  .dropdown-content
+                    = text_field_tag :label_name, nil, class: "dropdown-input-field", placeholder: "Name new label"
+                    .suggest-colors.suggest-colors-dropdown
+                      - suggested_colors.each do |color|
+                        = link_to '#', style: "background-color: #{color}", data: { color: color } do
+                          &nbsp
+                    %button.btn.btn-primary{type: "button"}
+                      Create
+              .dropdown-loading
+                = icon('spinner spin')
 
         .pull-right
           = render 'shared/sort_dropdown'

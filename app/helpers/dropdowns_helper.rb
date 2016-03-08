@@ -5,7 +5,7 @@ module DropdownsHelper
 
       dropdown_output = ""
       dropdown_output += content_tag :button, class: "dropdown-menu-toggle #{toggle_class}", id: id, type: "button", data: toggle_hash do
-        output = toggle_text
+        output = content_tag(:span, toggle_text, class: "dropdown-toggle-text")
         output << icon('chevron-down')
         output.html_safe
       end

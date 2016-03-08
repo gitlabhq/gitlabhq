@@ -29,7 +29,7 @@
 
 .dropdown-menu-toggle {
   position: relative;
-  min-width: 160px;
+  width: 160px;
   padding: 5px 20px 5px 10px;
   background-color: $dropdown-toggle-bg;
   color: $dropdown-toggle-color;
@@ -128,7 +128,8 @@
 }
 
 .dropdown-menu-paging {
-  .dropdown-page-two {
+  .dropdown-page-two,
+  .dropdown-menu-back {
     display: none;
   }
 
@@ -137,7 +138,8 @@
       display: none;
     }
 
-    .dropdown-page-two {
+    .dropdown-page-two,
+    .dropdown-menu-back {
       display: block;
     }
   }
@@ -160,6 +162,7 @@
 .dropdown-menu-user-full-name {
   display: block;
   margin-bottom: 2px;
+  font-weight: 600;
   line-height: 1;
   text-overflow: ellipsis;
   overflow: hidden;
