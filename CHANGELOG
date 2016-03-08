@@ -18,6 +18,7 @@ v 8.6.0 (unreleased)
   - Don't show Issues/MRs from archived projects in Groups view
   - Increase the notes polling timeout over time (Roberto Dip)
   - Show labels in dashboard and group milestone views
+  - Add main language of a project in the list of projects (Tiago Botelho)
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)

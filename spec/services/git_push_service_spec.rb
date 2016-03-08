@@ -155,6 +155,23 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "Updates main language" do
+
+    context "before push" do
+      it { expect(project.main_language).to eq(nil) }
+    end
+
+    context "after push" do
+      before do
+        @service = execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it { expect(@service.update_main_language).to eq(true) }
+      it { expect(project.main_language).to eq("Ruby") }
+    end
+  end
+
+
   describe "Web Hooks" do
     context "execute web hooks" do
       it "when pushing a branch for the first time" do
