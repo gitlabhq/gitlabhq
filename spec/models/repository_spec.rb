@@ -148,6 +148,12 @@ describe Repository, models: true do
 
         expect(branch.name).to eq('new_feature')
       end
+
+      it 'calls the after_create_branch hook' do
+        expect(repository).to receive(:after_create_branch)
+
+        repository.add_branch(user, 'new_feature', 'master')
+      end
     end
 
     context 'when pre hooks failed' do

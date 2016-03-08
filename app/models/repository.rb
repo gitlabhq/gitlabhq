@@ -133,7 +133,7 @@ class Repository
       rugged.branches.create(branch_name, target)
     end
 
-    expire_branches_cache
+    after_create_branch
     find_branch(branch_name)
   end
 
@@ -356,6 +356,7 @@ class Repository
 
   # Runs code after a new branch has been created.
   def after_create_branch
+    expire_branches_cache
     expire_has_visible_content_cache
     expire_branch_count_cache
   end
