@@ -1,16 +1,18 @@
-.global-notifications-form .level-title {
-  font-size: 15px;
-  color: #333;
-  font-weight: bold;
+.notification-list-item {
+  line-height: 34px;
 }
 
-.notification-icon-holder {
-  width: 20px;
-  float: left;
+.notification {
+  position: relative;
+  top: 1px;
+
+  > .fa {
+    font-size: 18px;
+  }
 }
 
 .ns-part {
-  color: $gl-primary;
+  color: $gl-text-green;
 }
 
 .ns-watch {

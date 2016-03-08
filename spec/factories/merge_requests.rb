@@ -69,6 +69,16 @@ FactoryGirl.define do
       target_branch "master"
     end
 
+    trait :rebased do
+      source_branch "markdown"
+      target_branch "improve/awesome"
+    end
+
+    trait :diverged do
+      source_branch "feature"
+      target_branch "master"
+    end
+
     trait :merge_when_build_succeeds do
       merge_when_build_succeeds true
       merge_user author

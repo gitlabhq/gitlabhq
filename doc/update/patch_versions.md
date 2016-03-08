@@ -62,7 +62,13 @@ sudo -u git -H bundle install --without development test mysql --deployment
 # MySQL
 sudo -u git -H bundle install --without development test postgres --deployment
 
+# Optional: clean up old gems
+sudo -u git -H bundle clean
+
+# Run database migrations
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
+
+# Clean up assets and cache
 sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS_ENV=production
 ```
 

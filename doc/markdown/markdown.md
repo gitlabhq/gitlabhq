@@ -207,6 +207,7 @@ GFM also recognizes certain cross-project references:
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
+| `namespace/project~"Some label"`        | issues with given label |
 
 ## Task Lists
 

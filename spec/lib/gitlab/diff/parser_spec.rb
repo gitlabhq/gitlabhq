@@ -47,7 +47,7 @@ eos
     end
 
     before do
-      @lines = parser.parse(diff.lines)
+      @lines = parser.parse(diff.lines).to_a
     end
 
     it { expect(@lines.size).to eq(30) }

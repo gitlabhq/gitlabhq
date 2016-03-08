@@ -314,7 +314,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys
+      resources :keys, except: [:new]
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
       resource :two_factor_auth, only: [:new, :create, :destroy] do
@@ -330,6 +330,15 @@ Rails.application.routes.draw do
       constraints: { username: /.*/ }
 
   get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/groups' => 'users#groups', as: :user_groups,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/projects' => 'users#projects', as: :user_projects,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
       constraints: { username: /.*/ }
 
   get '/u/:username' => 'users#show', as: :user,

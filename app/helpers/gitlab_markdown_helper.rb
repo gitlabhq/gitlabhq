@@ -50,6 +50,8 @@ module GitlabMarkdownHelper
 
     context[:project] ||= @project
 
+    text = Banzai.pre_process(text, context)
+
     html = Banzai.render(text, context)
 
     context.merge!(

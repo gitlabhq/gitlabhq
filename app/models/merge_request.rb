@@ -48,7 +48,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :create_merge_request_diff
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, :diffs_no_whitespace, to: :merge_request_diff, prefix: nil
+  delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -56,8 +56,7 @@ class MergeRequest < ActiveRecord::Base
 
   # Temporary fields to store compare vars
   # when creating new merge request
-  attr_accessor :can_be_created, :compare_failed,
-    :compare_commits, :compare_diffs
+  attr_accessor :can_be_created, :compare_commits, :compare
 
   state_machine :state, initial: :opened do
     event :close do
@@ -138,9 +137,7 @@ class MergeRequest < ActiveRecord::Base
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :in_projects, ->(project_ids) { where("source_project_id in (:project_ids) OR target_project_id in (:project_ids)", project_ids: project_ids) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
-  scope :opened, -> { with_states(:opened, :reopened) }
   scope :merged, -> { with_state(:merged) }
-  scope :closed, -> { with_state(:closed) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
 
   scope :join_project, -> { joins(:target_project) }
@@ -180,6 +177,10 @@ class MergeRequest < ActiveRecord::Base
 
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
+  end
+
+  def diff_size
+    merge_request_diff.size
   end
 
   def diff_base_commit
@@ -487,6 +488,16 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def state_icon_name
+    if merged?
+      "check"
+    elsif closed?
+      "times"
+    else
+      "circle-o"
+    end
+  end
+
   def target_sha
     @target_sha ||= target_project.repository.commit(target_branch).sha
   end
@@ -522,6 +533,29 @@ class MergeRequest < ActiveRecord::Base
     ensure
       unlock_mr if locked?
     end
+  end
+
+  def diverged_commits_count
+    cache = Rails.cache.read(:"merge_request_#{id}_diverged_commits")
+
+    if cache.blank? || cache[:source_sha] != source_sha || cache[:target_sha] != target_sha
+      cache = {
+        source_sha: source_sha,
+        target_sha: target_sha,
+        diverged_commits_count: compute_diverged_commits_count
+      }
+      Rails.cache.write(:"merge_request_#{id}_diverged_commits", cache)
+    end
+
+    cache[:diverged_commits_count]
+  end
+
+  def compute_diverged_commits_count
+    Gitlab::Git::Commit.between(target_project.repository.raw_repository, source_sha, target_sha).size
+  end
+
+  def diverged_from_target_branch?
+    diverged_commits_count > 0
   end
 
   def ci_commit

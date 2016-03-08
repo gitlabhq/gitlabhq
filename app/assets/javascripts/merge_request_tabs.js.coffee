@@ -195,6 +195,6 @@ class @MergeRequestTabs
     setTimeout( ->
       # Only when sidebar is collapsed
       if $gutterIcon.is('.fa-angle-double-right')
-        $gutterIcon.closest('a').trigger('click')
+        $gutterIcon.closest('a').trigger('click',[true])
     , 0)
 

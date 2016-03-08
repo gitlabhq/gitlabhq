@@ -141,7 +141,7 @@ class IrkerWorker
   end
 
   def files_count(commit)
-    files = "#{commit.diffs.count} file"
+    files = "#{commit.diffs.real_size} file"
     files += 's' if commit.diffs.count > 1
     files
   end

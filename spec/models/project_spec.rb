@@ -102,7 +102,7 @@ describe Project, models: true do
       expect(project2.errors[:limit_reached].first).to match(/Your project limit is 0/)
     end
   end
-  
+
   describe 'project token' do
     it 'should set an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''
@@ -524,30 +524,30 @@ describe Project, models: true do
 
     context 'for shared runners disabled' do
       let(:shared_runners_enabled) { false }
-      
+
       it 'there are no runners available' do
         expect(project.any_runners?).to be_falsey
       end
-  
+
       it 'there is a specific runner' do
         project.runners << specific_runner
         expect(project.any_runners?).to be_truthy
       end
-  
+
       it 'there is a shared runner, but they are prohibited to use' do
         shared_runner
         expect(project.any_runners?).to be_falsey
       end
-  
+
       it 'checks the presence of specific runner' do
         project.runners << specific_runner
         expect(project.any_runners? { |runner| runner == specific_runner }).to be_truthy
       end
     end
-    
+
     context 'for shared runners enabled' do
       let(:shared_runners_enabled) { true }
-      
+
       it 'there is a shared runner' do
         shared_runner
         expect(project.any_runners?).to be_truthy
@@ -582,5 +582,68 @@ describe Project, models: true do
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
 
+  end
+
+  describe '#rename_repo' do
+    let(:project) { create(:project) }
+    let(:gitlab_shell) { Gitlab::Shell.new }
+
+    before do
+      # Project#gitlab_shell returns a new instance of Gitlab::Shell on every
+      # call. This makes testing a bit easier.
+      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+    end
+
+    it 'renames a repository' do
+      allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+
+      ns = project.namespace_dir
+
+      expect(gitlab_shell).to receive(:mv_repository).
+        ordered.
+        with("#{ns}/foo", "#{ns}/#{project.path}").
+        and_return(true)
+
+      expect(gitlab_shell).to receive(:mv_repository).
+        ordered.
+        with("#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
+        and_return(true)
+
+      expect_any_instance_of(SystemHooksService).
+        to receive(:execute_hooks_for).
+        with(project, :rename)
+
+      expect_any_instance_of(Gitlab::UploadsTransfer).
+        to receive(:rename_project).
+        with('foo', project.path, ns)
+
+      expect(project).to receive(:expire_caches_before_rename)
+
+      project.rename_repo
+    end
+  end
+
+  describe '#expire_caches_before_rename' do
+    let(:project) { create(:project) }
+    let(:repo)    { double(:repo, exists?: true) }
+    let(:wiki)    { double(:wiki, exists?: true) }
+
+    it 'expires the caches of the repository and wiki' do
+      allow(Repository).to receive(:new).
+        with('foo', project).
+        and_return(repo)
+
+      allow(Repository).to receive(:new).
+        with('foo.wiki', project).
+        and_return(wiki)
+
+      expect(repo).to receive(:expire_cache)
+      expect(repo).to receive(:expire_emptiness_caches)
+
+      expect(wiki).to receive(:expire_cache)
+      expect(wiki).to receive(:expire_emptiness_caches)
+
+      project.expire_caches_before_rename('foo')
+    end
   end
 end

@@ -60,7 +60,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).not_to have_content "Feature NS-03"
   end
 
-
   step 'I should not see "Bug NS-04" in merge requests' do
     expect(page).not_to have_content "Bug NS-04"
   end
@@ -119,6 +118,22 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            source_project: project,
            target_project: project,
            author: project.users.first)
+  end
+
+  step 'project "Shop" have "Bug NS-07" open merge request with rebased branch' do
+    create(:merge_request, :rebased,
+      title: "Bug NS-07",
+      source_project: project,
+      target_project: project,
+      author: project.users.first)
+  end
+
+  step 'project "Shop" have "Bug NS-08" open merge request with diverged branch' do
+    create(:merge_request, :diverged,
+      title: "Bug NS-08",
+      source_project: project,
+      target_project: project,
+      author: project.users.first)
   end
 
   step 'project "Shop" have "Feature NS-03" closed merge request' do
@@ -490,12 +505,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I should see "Bug NS-05" at the top' do
-    expect(page.find('ul.content-list.mr-list li.merge-request:first-child')).to have_content("Bug NS-05")
+  step 'I should see the diverged commits count' do
+    page.within ".mr-source-target" do
+      expect(page).to have_content /([0-9]+ commits behind)/
+    end
   end
 
-  step 'I should see "Bug NS-04" at the top' do
-    expect(page.find('ul.content-list.mr-list li.merge-request:first-child')).to have_content("Bug NS-04")
+  step 'I should not see the diverged commits count' do
+    page.within ".mr-source-target" do
+      expect(page).not_to have_content /([0-9]+ commit[s]? behind)/
+    end
   end
 
   def merge_request

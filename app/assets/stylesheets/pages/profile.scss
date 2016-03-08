@@ -5,10 +5,22 @@
   }
 }
 
-.profile-avatar-form-option {
-  hr {
-    margin: 10px 0;
+.avatar-image {
+  @media (min-width: $screen-sm-min) {
+    float: left;
+    margin-bottom: 0;
   }
+}
+
+.avatar-file-name {
+  position: relative;
+  top: 2px;
+  display: inline-block;
+}
+
+.account-btn-link,
+.profile-settings-sidebar a {
+  color: $profile-settings-link-color;
 }
 
 .oauth-buttons {
@@ -39,6 +51,18 @@
     dl {
       font-size: 1.1em;
     }
+  }
+}
+
+.account-well {
+  padding: 10px 10px;
+  background-color: $help-well-bg;
+  border: 1px solid $help-well-border;
+  border-radius: $border-radius-base;
+
+  ul {
+    padding-left: 20px;
+    margin-bottom: 0;
   }
 }
 
@@ -79,6 +103,13 @@
   margin: auto;
 }
 
+.user-avatar-button {
+  .file-name {
+    display: inline-block;
+    padding-left: 10px;
+  }
+}
+
 .modal-profile-crop {
   .modal-dialog {
     width: 500px;
@@ -112,5 +143,35 @@
 @media (max-width: 520px) {
   .modal-profile-crop .modal-dialog {
     width: auto;
+  }
+}
+
+.key-list-item {
+  .key-list-item-info {
+    @media (min-width: $screen-sm-min) {
+      float: left;
+    }
+  }
+
+  .description {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+.key-icon {
+  color: $ssh-key-icon-color;
+  font-size: $ssh-key-icon-size;
+  line-height: 42px;
+}
+
+.key-created-at {
+  line-height: 42px;
+}
+
+.profile-settings-content {
+  a {
+    color: $profile-settings-link-color;
   }
 }

@@ -169,7 +169,7 @@ class User < ActiveRecord::Base
   validates :avatar_crop_x, :avatar_crop_y, :avatar_crop_size,
     numericality: { only_integer: true },
     presence: true,
-    if: ->(user) { user.avatar? }
+    if: ->(user) { user.avatar? && user.avatar_changed? }
 
   before_validation :generate_password, on: :create
   before_validation :restricted_signup_domains, on: :create
@@ -362,17 +362,19 @@ class User < ActiveRecord::Base
 
   def disable_two_factor!
     update_attributes(
-      two_factor_enabled:        false,
-      encrypted_otp_secret:      nil,
-      encrypted_otp_secret_iv:   nil,
-      encrypted_otp_secret_salt: nil,
-      otp_backup_codes:          nil
+      two_factor_enabled:          false,
+      encrypted_otp_secret:        nil,
+      encrypted_otp_secret_iv:     nil,
+      encrypted_otp_secret_salt:   nil,
+      otp_grace_period_started_at: nil,
+      otp_backup_codes:            nil
     )
   end
 
   def namespace_uniq
     # Return early if username already failed the first uniqueness validation
-    return if self.errors[:username].include?('has already been taken')
+    return if self.errors.key?(:username) &&
+      self.errors[:username].include?('has already been taken')
 
     namespace_name = self.username
     existing_namespace = Namespace.by_path(namespace_name)

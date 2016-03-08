@@ -209,7 +209,7 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 
 - Label by ID: <%= simple_label.to_reference %>
 - Label by name: <%= Label.reference_prefix %><%= simple_label.name %>
-- Label by name in quotes: <%= label.to_reference(:name) %>
+- Label by name in quotes: <%= label.to_reference(format: :name) %>
 - Ignored in code: `<%= simple_label.to_reference %>`
 - Ignored in links: [Link to <%= simple_label.to_reference %>](#label-link)
 - Link to label by reference: [Label](<%= label.to_reference %>)

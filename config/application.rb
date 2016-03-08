@@ -54,14 +54,6 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    # Relative URL support
-    # WARNING: We recommend using an FQDN to host GitLab in a root path instead
-    # of using a relative URL.
-    # Documentation: http://doc.gitlab.com/ce/install/relative_url.html
-    # Uncomment and customize the following line to run in a non-root path
-    #
-    # config.relative_url_root = "/gitlab"
-
     config.middleware.use Rack::Attack
 
     # Allow access to GitLab API from other domains
@@ -101,5 +93,9 @@ module Gitlab
 
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
+
+    config.generators do |g|
+      g.factory_girl false
+    end
   end
 end

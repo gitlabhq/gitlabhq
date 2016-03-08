@@ -3,13 +3,6 @@ class UsersController < ApplicationController
   before_action :set_user
 
   def show
-    @contributed_projects = contributed_projects.joined(@user).reject(&:forked?)
-    
-    @projects = PersonalProjectsFinder.new(@user).execute(current_user)
-    @projects = @projects.page(params[:page]).per(PER_PAGE)
-
-    @groups = @user.groups.order_id_desc
-
     respond_to do |format|
       format.html
 
@@ -25,6 +18,45 @@ class UsersController < ApplicationController
     end
   end
 
+  def groups
+    load_groups
+
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json do
+        render json: {
+          html: view_to_html_string("shared/groups/_list", groups: @groups)
+        }
+      end
+    end
+  end
+
+  def projects
+    load_projects
+
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json do
+        render json: {
+          html: view_to_html_string("shared/projects/_list", projects: @projects, remote: true)
+        }
+      end
+    end
+  end
+
+  def contributed
+    load_contributed_projects
+
+    respond_to do |format|
+      format.html { render 'show' }
+      format.json do
+        render json: {
+          html: view_to_html_string("shared/projects/_list", projects: @contributed_projects)
+        }
+      end
+    end
+  end
+
   def calendar
     calendar = contributions_calendar
     @timestamps = calendar.timestamps
@@ -35,12 +67,8 @@ class UsersController < ApplicationController
   end
 
   def calendar_activities
-    @calendar_date = Date.parse(params[:date]) rescue nil
-    @events = []
-
-    if @calendar_date
-      @events = contributions_calendar.events_by_date(@calendar_date)
-    end
+    @calendar_date = Date.parse(params[:date]) rescue Date.today
+    @events = contributions_calendar.events_by_date(@calendar_date)
 
     render 'calendar_activities', layout: false
   end
@@ -67,6 +95,20 @@ class UsersController < ApplicationController
       references(:project).
       with_associations.
       limit_recent(20, params[:offset])
+  end
+
+  def load_projects
+    @projects =
+      PersonalProjectsFinder.new(@user).execute(current_user)
+      .page(params[:page]).per(PER_PAGE)
+  end
+
+  def load_contributed_projects
+    @contributed_projects = contributed_projects.joined(@user)
+  end
+
+  def load_groups
+    @groups = @user.groups.order_id_desc
   end
 
   def projects_for_current_user
