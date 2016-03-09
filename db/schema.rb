@@ -73,11 +73,11 @@ ActiveRecord::Schema.define(version: 20160302141317) do
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
+    t.boolean  "akismet_enabled",                   default: false
+    t.string   "akismet_api_key"
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
-    t.boolean  "akismet_enabled",                   default: false
-    t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
   end
 
@@ -812,6 +812,7 @@ ActiveRecord::Schema.define(version: 20160302141317) do
     t.boolean  "mirror_trigger_builds",            default: false,    null: false
     t.boolean  "pending_delete",                   default: false
     t.boolean  "public_builds",                    default: true,     null: false
+    t.string   "main_language"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
