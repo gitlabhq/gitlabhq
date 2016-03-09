@@ -1,5 +1,7 @@
 module Gitlab
   module Geo
+    class OauthApplicationUndefinedError < StandardError; end
+
     def self.current_node
       RequestStore.store[:geo_node_current] ||= begin
         GeoNode.find_by(host: Gitlab.config.gitlab.host,
@@ -43,7 +45,8 @@ module Gitlab
     def self.oauth_authentication
       return false unless Gitlab::Geo.secondary?
 
-      RequestStore.store[:geo_oauth_application] ||= Gitlab::Geo.current_node.oauth_application
+      RequestStore.store[:geo_oauth_application] ||= Gitlab::Geo.current_node.oauth_application or
+                                                     raise GeoOauthApplicationUndefinedError
     end
   end
 end
