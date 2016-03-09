@@ -3,11 +3,10 @@
 - if controller.controller_path =~ /^projects/
   - label = 'This project'
 
-.search-location-badge
-  - if label.present?
-    %span.label.label-primary
-      %i.location-text
-        = label
+- if label.present?
+  %span.location-badge
+    %i.location-text
+      = label
 
-      %a.remove-badge{href: '#'}
-        x
+    %a.remove-badge{href: '#'}
+      x
