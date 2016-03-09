@@ -697,6 +697,7 @@ ActiveRecord::Schema.define(version: 20160305220806) do
     t.integer  "build_timeout",          default: 3600,     null: false
     t.boolean  "pending_delete",         default: false
     t.boolean  "public_builds",          default: true,     null: false
+    t.string   "main_language"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
