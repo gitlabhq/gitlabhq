@@ -354,6 +354,14 @@ instructions.
 
 ![Pages DNS details](img/pages_dns_details.png)
 
+---
+
+>**Note:**
+Currently there is support only for custom domains on per-project basis. That
+means that if you add a custom domain (`example.com`) for your user website
+(`username.example.io`), a project that is served under `username.example.io/foo`,
+will not be accessible under `example.com/foo`.
+
 ### Secure your custom domain website with TLS
 
 When you add a new custom domain, you also have the chance to add a TLS
