@@ -367,7 +367,7 @@ describe GitPushService, services: true do
             }
           }.to_json
 
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, commit_author, @oldrev, @newrev, @ref )
           expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
             body: transition_body
           ).once
@@ -378,7 +378,7 @@ describe GitPushService, services: true do
             body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
           }.to_json
 
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, commit_author, @oldrev, @newrev, @ref )
           expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
             body: comment_body
           ).once
