@@ -152,7 +152,7 @@ describe Note, models: true do
     end
   end
 
-  describe :grouped_awards do
+  describe '.grouped_awards' do
     before do
       create :note, note: "smile", is_award: true
       create :note, note: "smile", is_award: true
@@ -166,6 +166,66 @@ describe Note, models: true do
     it "returns thumbsup and thumbsdown always" do
       expect(Note.grouped_awards["thumbsup"]).to match_array(Note.none)
       expect(Note.grouped_awards["thumbsdown"]).to match_array(Note.none)
+    end
+  end
+
+  describe '#active?' do
+    it 'is always true when the note has no associated diff' do
+      note = build(:note)
+
+      expect(note).to receive(:diff).and_return(nil)
+
+      expect(note).to be_active
+    end
+
+    it 'is never true when the note has no noteable associated' do
+      note = build(:note)
+
+      expect(note).to receive(:diff).and_return(double)
+      expect(note).to receive(:noteable).and_return(nil)
+
+      expect(note).not_to be_active
+    end
+
+    it 'returns the memoized value if defined' do
+      note = build(:note)
+
+      expect(note).to receive(:diff).and_return(double)
+      expect(note).to receive(:noteable).and_return(double)
+
+      note.instance_variable_set(:@active, 'foo')
+      expect(note).not_to receive(:find_noteable_diff)
+
+      expect(note.active?).to eq 'foo'
+    end
+
+    context 'for a merge request noteable' do
+      it 'is false when noteable has no matching diff' do
+        merge = build_stubbed(:merge_request, :simple)
+        note = build(:note, noteable: merge)
+
+        allow(note).to receive(:diff).and_return(double)
+        expect(note).to receive(:find_noteable_diff).and_return(nil)
+
+        expect(note).not_to be_active
+      end
+
+      it 'is true when noteable has a matching diff' do
+        merge = create(:merge_request, :simple)
+
+        # Generate a real line_code value so we know it will match. We use a
+        # random line from a random diff just for funsies.
+        diff = merge.diffs.to_a.sample
+        line = Gitlab::Diff::Parser.new.parse(diff.diff.each_line).to_a.sample
+        code = Gitlab::Diff::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
+
+        # We're persisting in order to trigger the set_diff callback
+        note = create(:note, noteable: merge, line_code: code)
+
+        # Make sure we don't get a false positive from a guard clause
+        expect(note).to receive(:find_noteable_diff).and_call_original
+        expect(note).to be_active
+      end
     end
   end
 

@@ -172,26 +172,29 @@ class Note < ActiveRecord::Base
     Note.where(noteable_id: noteable_id, noteable_type: noteable_type, line_code: line_code).last.try(:diff)
   end
 
-  # Check if such line of code exists in merge request diff
-  # If exists - its active discussion
-  # If not - its outdated diff
+  # Check if this note is part of an "active" discussion
+  #
+  # This will always return true for anything except MergeRequest noteables,
+  # which have special logic.
+  #
+  # If the note's current diff cannot be matched in the MergeRequest's current
+  # diff, it's considered inactive.
   def active?
     return true unless self.diff
     return false unless noteable
     return @active if defined?(@active)
 
-    diffs = noteable.diffs(Commit.max_diff_options)
-    notable_diff = diffs.find { |d| d.new_path == self.diff.new_path }
+    noteable_diff = find_noteable_diff
 
-    return @active = false if notable_diff.nil?
+    if noteable_diff
+      parsed_lines = Gitlab::Diff::Parser.new.parse(noteable_diff.diff.each_line)
 
-    parsed_lines = Gitlab::Diff::Parser.new.parse(notable_diff.diff.each_line)
-    # We cannot use ||= because @active may be false
-    @active = parsed_lines.any? { |line_obj| line_obj.text == diff_line }
-  end
+      @active = parsed_lines.any? { |line_obj| line_obj.text == diff_line }
+    else
+      @active = false
+    end
 
-  def outdated?
-    !active?
+    @active
   end
 
   def diff_file_index
@@ -374,6 +377,12 @@ class Note < ActiveRecord::Base
   end
 
   private
+
+  # Find the diff on noteable that matches our own
+  def find_noteable_diff
+    diffs = noteable.diffs(Commit.max_diff_options)
+    diffs.find { |d| d.new_path == self.diff.new_path }
+  end
 
   def awards_supported?
     (for_issue? || for_merge_request?) && !for_diff_line?
