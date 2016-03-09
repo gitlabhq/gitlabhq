@@ -271,22 +271,24 @@ describe GitPushService, services: true do
 
       allow(project.repository).to receive(:commits_between).
         and_return([closing_commit])
+
+      project.team << [commit_author, :master]
     end
 
     context "to default branches" do
       it "closes issues" do
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
         expect(Issue.find(issue.id)).to be_closed
       end
 
       it "adds a note indicating that the issue is now closed" do
         expect(SystemNoteService).to receive(:change_status).with(issue, project, commit_author, "closed", closing_commit)
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
 
       it "doesn't create additional cross-reference notes" do
         expect(SystemNoteService).not_to receive(:cross_reference)
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
 
       it "doesn't close issues when external issue tracker is in use" do
@@ -294,7 +296,7 @@ describe GitPushService, services: true do
 
         # The push still shouldn't create cross-reference notes.
         expect do
-          execute_service(project, user, @oldrev, @newrev,  'refs/heads/hurf' )
+          execute_service(project, commit_author, @oldrev, @newrev,  'refs/heads/hurf' )
         end.not_to change { Note.where(project_id: project.id, system: true).count }
       end
     end
@@ -316,7 +318,6 @@ describe GitPushService, services: true do
       end
     end
 
-    # EE-only tests
     context "for jira issue tracker" do
       include JiraServiceHelper
 
