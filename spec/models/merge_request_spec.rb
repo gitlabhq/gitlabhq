@@ -86,6 +86,24 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#source_sha' do
+    let(:last_branch_commit) { subject.source_project.repository.commit(subject.source_branch) }
+
+    context 'with diffs' do
+      subject { create(:merge_request, :with_diffs) }
+      it 'returns the sha of the source branch last commit' do
+        expect(subject.source_sha).to eq(last_branch_commit.sha)
+      end
+    end
+
+    context 'when the merge request is being created' do
+      subject { build(:merge_request, source_branch: nil, compare_commits: []) }
+      it 'returns nil' do
+        expect(subject.source_sha).to be_nil
+      end
+    end
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(subject.to_reference).to eq "!#{subject.iid}"
