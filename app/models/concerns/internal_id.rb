@@ -7,8 +7,7 @@ module InternalId
   end
 
   def set_iid
-    max_iid = case self.class
-              when Issue, MergeRequest
+    max_iid = if self.paranoid?
                 project.send(self.class.name.tableize).with_deleted.maximum(:iid)
               else
                 project.send(self.class.name.tableize).maximum(:iid)

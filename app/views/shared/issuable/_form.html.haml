@@ -106,6 +106,10 @@
     = f.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
     = f.submit 'Save changes', class: 'btn btn-save'
+    - if current_user.admin? || current_user.owner?(@project)
+      = link_to namespace_project_issue_path(@project.namespace, @project, issuable), method: :delete, class: 'btn' do
+        = icon('trash-o')
+        Delete
 
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
     .inline.prepend-left-10

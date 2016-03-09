@@ -948,7 +948,6 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.string   "unlock_token"
     t.datetime "otp_grace_period_started_at"
     t.boolean  "ldap_email",                  default: false, null: false
-    t.boolean  "external",                    default: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
