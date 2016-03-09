@@ -109,7 +109,7 @@ class SessionsController < Devise::SessionsController
 
   def gitlab_geo_login
     if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
-      oauth = Geo::OauthSession.new
+      oauth = Gitlab::Geo::OauthSession.new
 
       # share full url with primary node by shared session
       user_return_to = URI.join(root_url, session[:user_return_to].to_s).to_s
