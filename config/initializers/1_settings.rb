@@ -331,6 +331,9 @@ Settings.cron_jobs['update_all_mirrors_worker']['job_class'] = 'UpdateAllMirrors
 Settings.cron_jobs['ldap_sync_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
 Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
+Settings.cron_jobs['geo_bulk_notify_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['geo_bulk_notify_worker']['cron'] ||= '*/10 * * * * *'
+Settings.cron_jobs['geo_bulk_notify_worker']['job_class'] ||= 'GeoBulkNotifyWorker'
 
 #
 # GitLab Shell

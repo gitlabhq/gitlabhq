@@ -413,8 +413,10 @@ ActiveRecord::Schema.define(version: 20160302141317) do
     t.integer "port"
     t.string  "relative_url_root"
     t.boolean "primary"
+    t.integer "geo_node_key_id"
   end
 
+  add_index "geo_nodes", ["geo_node_key_id"], name: "index_geo_nodes_on_geo_node_key_id", using: :btree
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
 

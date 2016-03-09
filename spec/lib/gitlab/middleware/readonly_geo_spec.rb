@@ -31,8 +31,8 @@ describe Gitlab::Middleware::ReadonlyGeo, lib: true do
   let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
   let(:request) { @request ||= Rack::MockRequest.new(rack_stack) }
 
-  context 'when in Gitlab Geo readonly node' do
-    before(:each) { allow(Gitlab::Geo).to receive(:readonly?) { true } }
+  context 'when in secondary Gitlab Geo node' do
+    before(:each) { allow(Gitlab::Geo).to receive(:secondary?) { true } }
 
     it 'expects PATCH requests to be disallowed' do
       response = request.patch('/test_request')
