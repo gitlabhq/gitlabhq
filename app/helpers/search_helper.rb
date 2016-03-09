@@ -72,7 +72,7 @@ module SearchHelper
     current_user.authorized_groups.search(term).limit(limit).map do |group|
       {
         category: "Groups",
-        scope: "groups",
+        location: "groups",
         id: group.id,
         label: "#{search_result_sanitize(group.name)}",
         url: group_path(group)
@@ -86,7 +86,7 @@ module SearchHelper
       sorted_by_stars.non_archived.limit(limit).map do |p|
       {
         category: "Projects",
-        scope: "projects",
+        location: "projects",
         id: p.id,
         value: "#{search_result_sanitize(p.name)}",
         label: "#{search_result_sanitize(p.name_with_namespace)}",
