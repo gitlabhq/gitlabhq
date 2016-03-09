@@ -96,6 +96,13 @@ describe MergeRequest, models: true do
       end
     end
 
+    context 'without diffs' do
+      subject { create(:merge_request, :without_diffs) }
+      it 'returns the sha of the source branch last commit' do
+        expect(subject.source_sha).to eq(last_branch_commit.sha)
+      end
+    end
+
     context 'when the merge request is being created' do
       subject { build(:merge_request, source_branch: nil, compare_commits: []) }
       it 'returns nil' do

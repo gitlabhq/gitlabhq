@@ -51,6 +51,11 @@ FactoryGirl.define do
     trait :with_diffs do
     end
 
+    trait :without_diffs do
+      source_branch "improve/awesome"
+      target_branch "master"
+    end
+
     trait :conflict do
       source_branch "feature_conflict"
       target_branch "feature"
