@@ -22,7 +22,7 @@ if [ -f /.dockerinit ]; then
 
       sleep 3s
       echo "Retrying package installation..."
-    fi
+    done
 
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
