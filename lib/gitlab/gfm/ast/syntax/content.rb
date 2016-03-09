@@ -13,6 +13,10 @@ module Gitlab
           def self.pattern
             /(?<value>.+)/m
           end
+
+          def to_s
+            nodes.map(&:to_s).join
+          end
         end
       end
     end

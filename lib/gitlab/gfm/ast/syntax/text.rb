@@ -6,6 +6,10 @@ module Gitlab
         # Text description
         #
         class Text < Node
+          def to_s
+            @text
+          end
+
           def self.allowed
             []
           end

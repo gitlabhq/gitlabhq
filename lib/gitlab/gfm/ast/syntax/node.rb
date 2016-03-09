@@ -30,7 +30,7 @@ module Gitlab
           # Method that is used to create a string representation of this node
           #
           def to_s
-            @text
+            raise NotImplementedError
           end
 
           ##

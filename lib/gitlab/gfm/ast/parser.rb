@@ -2,18 +2,20 @@ module Gitlab
   module Gfm
     module Ast
       class Parser
+        attr_reader :tree
+
         def initialize(text)
           @text = text
+          @lexer = Lexer.new(@text, [Syntax::Content])
+          @nodes = @lexer.process!
         end
 
         def tree
-          content_nodes.first
+          @nodes.first
         end
 
-        private
-
-        def content_nodes
-          Lexer.new(@text, [Syntax::Content]).process!
+        def recreate
+          tree.to_s
         end
       end
     end

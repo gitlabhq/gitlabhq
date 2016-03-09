@@ -24,7 +24,7 @@ module Gitlab
             end
           end
 
-          validate!
+          # TODO, validate!
           @nodes.each(&:process!)
           @nodes.sort!
         end
@@ -39,19 +39,12 @@ module Gitlab
         #
         def process_range(token, range)
           (@text[range]).scan(token.pattern).each do
-            match = Regexp.last_match
-            next if ranges_taken.any? { |taken| taken.include?(match.begin(0)) }
+            match, offset = Regexp.last_match, range.begin
+            range = (match.begin(0) + offset)...(match.end(0) + offset)
 
-            @nodes << lexeme(token, match)
+            next if ranges_taken.any? { |taken| taken.include?(range.begin) }
+            @nodes << token.new(match[0], range, match, @parent)
           end
-        end
-
-        def lexeme(token, match)
-          text, range = match[0], (match.begin(0)..(match.end(0)))
-          token.new(text, range, match, @parent)
-        end
-
-        def validate!
         end
 
         def ranges_taken

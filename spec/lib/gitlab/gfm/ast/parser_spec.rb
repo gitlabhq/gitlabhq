@@ -15,16 +15,26 @@ describe Gitlab::Gfm::Ast::Parser do
     end
 
     context 'plain text and ruby block' do
-      let(:text) { "some text\n\n\n```ruby\nblock\n```" }
+      let(:text) { "some text\n\n\n```ruby\nblock\n``` another text" }
 
       it 'contains two lexemes' do
-        expect(tree.nodes.count).to eq 2
+        expect(tree.nodes.count).to eq 3
       end
 
       it 'contains valid lexemes' do
         expect(tree.nodes.first).to be_a Gitlab::Gfm::Ast::Syntax::Text
         expect(tree.nodes.second).to be_a Gitlab::Gfm::Ast::Syntax::Markdown::CodeBlock
+        expect(tree.nodes.third).to be_a Gitlab::Gfm::Ast::Syntax::Text
       end
+    end
+  end
+
+  describe '#recreate' do
+    let(:output) { parser.recreate }
+    let(:text) { "some text\n\n\n```ruby\nblock\n``` another text" }
+
+    it 'matches original text' do
+      expect(output).to eq text
     end
   end
 end
