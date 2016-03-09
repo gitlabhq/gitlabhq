@@ -68,6 +68,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:runners) }
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
+    it { is_expected.to have_many(:todos).dependent(:destroy) }
   end
 
   describe 'modules' do
@@ -561,7 +562,7 @@ describe Project, models: true do
   end
 
   describe '#visibility_level_allowed?' do
-    let(:project) { create :project, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+    let(:project) { create(:project, :internal) }
 
     context 'when checking on non-forked project' do
       it { expect(project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }

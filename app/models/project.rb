@@ -151,6 +151,7 @@ class Project < ActiveRecord::Base
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
+  has_many :todos, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
@@ -215,6 +216,7 @@ class Project < ActiveRecord::Base
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
+  scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
 
   state_machine :import_status, initial: :none do
     event :import_start do

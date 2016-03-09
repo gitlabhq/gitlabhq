@@ -1,81 +1,46 @@
 # Runners API
 
+API used by runners to register and delete themselves.
+
 _**Note:** This API is intended to be used only by Runners as their own
 communication channel. For the consumer API see the
 [new Runners API](../../api/runners.md)._
 
+## Authentication
+
+This API uses two types of authentication:
+
+1.   Unique runner's token
+
+     Token assigned to runner after it has been registered.
+
+2.   Using runners' registration token
+
+     This is a token that can be found in project's settings.
+     It can be also found in Admin area &raquo; Runners settings.
+
+     There are two types of tokens you can pass - shared runner registration
+     token or project specific registration token.
+
 ## Runners
-
-### Retrieve all runners
-
-__Authentication is done by GitLab user token & GitLab url__
-
-Used to get information about all runners registered on the GitLab CI
-instance.
-
-    GET /ci/runners
-
-Returns:
-
-```json
-[
-  {
-    "id" : 85,
-    "token" : "12b68e90394084703135"
-  },
-  {
-    "id" : 86,
-    "token" : "76bf894e969364709864"
-  },
-]
-```
 
 ### Register a new runner
 
-
-__Authentication is done with a Shared runner registration token or a project Specific runner registration token__
-
 Used to make GitLab CI aware of available runners.
 
-    POST /ci/runners/register
+    POST /ci/api/v1/runners/register
 
 Parameters:
 
-  * `token` (required) - The registration token. It is 2 types of token you can pass here. 
+  * `token` (required) - Registration token
 
-1. Shared runner registration token
-2. Project specific registration token
-
-Returns:
-
-```json
-{
-  "id" : 85,
-  "token" : "12b68e90394084703135"
-}
-```
 
 ### Delete a runner
 
+Used to remove runner.
 
-__Authentication is done by runner token__
-
-Used to removing runners.
-
-    DELETE /ci/runners/delete
+    DELETE /ci/api/v1/runners/delete
 
 Parameters:
 
-  * `token` (required) - The runner token.
-
-Returns:
-
-```json
-{
-  "id" : 1,
-  "token" : "d14963981a428f70121777e50643d1",
-  "created_at" : "2015-02-26T11:39:39.232Z",
-  "updated_at" : "2015-02-26T11:39:39.232Z",
-  "description" : "awesome runner"
-}
-```
+  * `token` (required) - Unique runner token

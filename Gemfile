@@ -263,7 +263,9 @@ group :development, :test do
   gem 'database_cleaner',   '~> 1.4.0'
   gem 'factory_girl_rails', '~> 4.6.0'
   gem 'rspec-rails',        '~> 3.3.0'
+  gem 'rspec-retry'
   gem 'spinach-rails',      '~> 0.2.1'
+  gem 'spinach-rerun-reporter', '~> 0.0.2'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -273,7 +275,7 @@ group :development, :test do
 
   gem 'capybara',            '~> 2.4.0'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist',         '~> 1.8.1'
+  gem 'poltergeist',         '~> 1.9.0'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'

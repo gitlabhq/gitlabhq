@@ -140,4 +140,4 @@ Feature: Explore Projects
     When I visit the explore starred projects
     Then I should see project "Community"
     And I should see project "Internal"
-    And I should see project "Archive"
+    And I should not see project "Archive"

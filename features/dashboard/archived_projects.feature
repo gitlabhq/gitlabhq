@@ -10,3 +10,8 @@ Feature: Dashboard Archived Projects
   Scenario: I should see non-archived projects on dashboard
     Then I should see "Shop" project link
     And I should not see "Forum" project link
+
+  Scenario: I toggle show of archived projects on dashboard
+    When I click "Show archived projects" link
+    Then I should see "Shop" project link
+    And I should see "Forum" project link

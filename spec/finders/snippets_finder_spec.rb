@@ -5,15 +5,14 @@ describe SnippetsFinder do
   let(:user1) { create :user }
   let(:group) { create :group }
 
-  let(:project1) { create(:empty_project, :public,   group: group) }
-  let(:project2) { create(:empty_project, :private,  group: group) }
-  
+  let(:project1) { create(:empty_project, :public,  group: group) }
+  let(:project2) { create(:empty_project, :private, group: group) }
 
   context ':all filter' do
     before do
-      @snippet1 = create(:personal_snippet, visibility_level: Snippet::PRIVATE)
-      @snippet2 = create(:personal_snippet, visibility_level: Snippet::INTERNAL)
-      @snippet3 = create(:personal_snippet, visibility_level: Snippet::PUBLIC)
+      @snippet1 = create(:personal_snippet, :private)
+      @snippet2 = create(:personal_snippet, :internal)
+      @snippet3 = create(:personal_snippet, :public)
     end
 
     it "returns all private and internal snippets" do
@@ -31,9 +30,9 @@ describe SnippetsFinder do
 
   context ':by_user filter' do
     before do
-      @snippet1 = create(:personal_snippet, visibility_level: Snippet::PRIVATE, author: user)
-      @snippet2 = create(:personal_snippet, visibility_level: Snippet::INTERNAL, author: user)
-      @snippet3 = create(:personal_snippet, visibility_level: Snippet::PUBLIC, author: user)
+      @snippet1 = create(:personal_snippet, :private,  author: user)
+      @snippet2 = create(:personal_snippet, :internal, author: user)
+      @snippet3 = create(:personal_snippet, :public,   author: user)
     end
 
     it "returns all public and internal snippets" do
@@ -75,9 +74,9 @@ describe SnippetsFinder do
 
   context 'by_project filter' do
     before do
-      @snippet1 = create(:project_snippet, visibility_level: Snippet::PRIVATE, project: project1)
-      @snippet2 = create(:project_snippet, visibility_level: Snippet::INTERNAL, project: project1)
-      @snippet3 = create(:project_snippet, visibility_level: Snippet::PUBLIC, project: project1)
+      @snippet1 = create(:project_snippet, :private,  project: project1)
+      @snippet2 = create(:project_snippet, :internal, project: project1)
+      @snippet3 = create(:project_snippet, :public,   project: project1)
     end
 
     it "returns public snippets for unauthorized user" do
@@ -93,7 +92,7 @@ describe SnippetsFinder do
     end
 
     it "returns all snippets for project members" do
-      project1.team << [user, :developer] 
+      project1.team << [user, :developer]
       snippets = SnippetsFinder.new.execute(user, filter: :by_project, project: project1)
       expect(snippets).to include(@snippet1, @snippet2, @snippet3)
     end

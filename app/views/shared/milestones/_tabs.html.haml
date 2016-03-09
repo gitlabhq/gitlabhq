@@ -1,0 +1,30 @@
+%ul.nav-links.no-top.no-bottom
+  %li.active
+    = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
+      Issues
+      %span.badge= milestone.issues.size
+  %li
+    = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
+      Merge Requests
+      %span.badge= milestone.merge_requests.size
+  %li
+    = link_to '#tab-participants', 'data-toggle' => 'tab' do
+      Participants
+      %span.badge= milestone.participants.count
+  %li
+    = link_to '#tab-labels', 'data-toggle' => 'tab' do
+      Labels
+      %span.badge= milestone.labels.count
+
+- show_project_name = local_assigns.fetch(:show_project_name, false)
+- show_full_project_name = local_assigns.fetch(:show_full_project_name, false)
+
+.tab-content.milestone-content
+  .tab-pane.active#tab-issues
+    = render 'shared/milestones/issues_tab', issues: milestone.issues, show_project_name: show_project_name, show_full_project_name: show_full_project_name
+  .tab-pane#tab-merge-requests
+    = render 'shared/milestones/merge_requests_tab', merge_requests: milestone.merge_requests, show_project_name: show_project_name, show_full_project_name: show_full_project_name
+  .tab-pane#tab-participants
+    = render 'shared/milestones/participants_tab', users: milestone.participants
+  .tab-pane#tab-labels
+    = render 'shared/milestones/labels_tab', labels: milestone.labels
