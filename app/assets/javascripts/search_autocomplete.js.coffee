@@ -17,7 +17,7 @@ class @SearchAutocomplete
     @locationBadgeEl = @$('.search-location-badge')
     @locationText = @$('.location-text')
     @searchInput = @$('.search-input')
-    @projectInputEl = @$('#project_id')
+    @projectInputEl = @$('#search_project_id')
     @groupInputEl = @$('#group_id')
     @searchCodeInputEl = @$('#search_code')
     @repositoryInputEl = @$('#repository_ref')
