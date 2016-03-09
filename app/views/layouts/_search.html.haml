@@ -5,6 +5,7 @@
         = render 'shared/location_badge'
       .search-input-wrap
         = search_field_tag "search", nil, placeholder: 'Search', class: "search-input", spellcheck: false, tabindex: "1", autocomplete: 'off'
+        %i.search-icon
 
     = hidden_field_tag :group_id, @group.try(:id)
     = hidden_field_tag :project_id, @project && @project.persisted? ? @project.id : '', id: 'search_project_id'

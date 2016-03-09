@@ -37,6 +37,12 @@
       background-color: $input-border-focus;
       color: $white-light;
     }
+
+    .search-input-wrap {
+      i {
+        color: $input-border-focus;
+      }
+    }
   }
 
   form {
@@ -61,7 +67,7 @@
     font-size: 14px;
     outline: none;
     padding: 0;
-    margin-left: 2px;
+    margin-left: 5px;
     line-height: 25px;
     width: 100%;
   }
@@ -89,5 +95,36 @@
 
   .search-input-wrap {
     width: 100%;
+    position: relative;
+
+    .search-icon {
+      @extend .fa-search;
+      @include transition(color .15s);
+      position: absolute;
+      right: 5px;
+      color: #E7E9ED;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+
+      &:before {
+        font-family: FontAwesome;
+        font-weight: normal;
+        font-style: normal;
+      }
+    }
+
+    .ui-autocomplete-loading + .search-icon {
+      height: 25px;
+      width: 25px;
+      position: absolute;
+      right: 0;
+      background-image: image-url('spinner.svg');
+      fill: red;
+
+      &:before {
+        display: none;
+      }
+    }
   }
 }
