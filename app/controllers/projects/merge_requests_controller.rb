@@ -233,11 +233,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     response = {
-      status: status || nil,
-      coverage: coverage || nil
+      status: status,
+      coverage: coverage
     }
 
-    render json: response, status: 200
+    render json: response
   end
 
   protected
