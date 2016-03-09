@@ -647,4 +647,23 @@ describe Project, models: true do
       project.expire_caches_before_rename('foo')
     end
   end
+
+  describe '#unlink_fork' do
+    let(:fork_link) { create(:forked_project_link) }
+    let(:fork_project) { fork_link.forked_to_project }
+    let(:user) { create(:user) }
+    let(:merge_request) { create(:merge_request, source_project: fork_project, target_project: fork_link.forked_from_project) }
+    let!(:close_service) { MergeRequests::CloseService.new(fork_project, user) }
+
+    it 'remove fork relation and close all pending merge requests' do
+      allow(MergeRequests::CloseService).to receive(:new).
+        with(fork_project, user).
+        and_return(close_service)
+
+      expect(close_service).to receive(:execute).with(merge_request)
+      expect(fork_project.forked_project_link).to receive(:destroy)
+
+      fork_project.unlink_fork(user)
+    end
+  end
 end

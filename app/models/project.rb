@@ -890,10 +890,20 @@ class Project < ActiveRecord::Base
     self.builds_enabled = true
   end
 
-  def unlink_fork
+  def unlink_fork(user)
     if forked?
       forked_from_project.lfs_objects.find_each do |lfs_object|
         lfs_object.projects << self
+      end
+
+      merge_requests = forked_from_project.merge_requests.opened.from_project(self)
+
+      unless merge_requests.empty?
+        close_service = MergeRequests::CloseService.new(self, user)
+
+        merge_requests.each do |mr|
+          close_service.execute(mr)
+        end
       end
 
       forked_project_link.destroy
