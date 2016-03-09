@@ -3,8 +3,9 @@ module Gitlab
     def self.allowed?(user)
       return false if user.blocked?
 
-      if user.requires_ldap_check?
-        return false unless Gitlab::LDAP::Access.allowed?(user)
+      if user.requires_ldap_check? && Gitlab::LDAP::Access.try_lock_user(user)
+          return Gitlab::LDAP::Access.allowed?(user)
+        end
       end
 
       true

@@ -7,6 +7,12 @@ module Gitlab
     class Access
       attr_reader :provider, :user
 
+      LOCK_TIMEOUT = 600
+
+      def self.try_lock_user(user)
+        Gitlab::ExpiringLock.new("user_ldap_check:#{user.id}", LOCK_TIMEOUT).try_lock
+      end
+
       def self.open(user, &block)
         Gitlab::LDAP::Adapter.open(user.ldap_identity.provider) do |adapter|
           block.call(self.new(user, adapter))
