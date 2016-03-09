@@ -43,8 +43,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with mixed projects' do
@@ -55,8 +53,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with internal projects' do
@@ -67,8 +63,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with no projects' do
@@ -77,8 +71,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
   end
 
@@ -93,8 +85,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with mixed projects' do
@@ -105,8 +95,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with internal projects' do
@@ -117,8 +105,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
 
     context 'with no projects' do
@@ -127,8 +113,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_denied_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
   end
 
@@ -143,8 +127,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with mixed projects' do
@@ -155,8 +137,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with internal projects' do
@@ -167,8 +147,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
 
     context 'with no projects' do
@@ -177,8 +155,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_denied_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
   end
 
@@ -193,8 +169,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with mixed projects' do
@@ -205,8 +179,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
     end
 
     context 'with internal projects' do
@@ -217,8 +189,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
 
     context 'with no projects' do
@@ -227,8 +197,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_allowed_for group_member(:reporter) }
       it { is_expected.to be_allowed_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_denied_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
   end
 
@@ -243,8 +211,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_denied_for group_member(:reporter) }
       it { is_expected.to be_denied_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_denied_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
 
     context 'with mixed projects' do
@@ -255,8 +221,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_denied_for group_member(:reporter) }
       it { is_expected.to be_denied_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_denied_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
 
     context 'with internal projects' do
@@ -267,8 +231,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_denied_for group_member(:reporter) }
       it { is_expected.to be_denied_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_denied_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
 
     context 'with no projects' do
@@ -277,8 +239,6 @@ describe 'Group access', feature: true do
       it { is_expected.to be_denied_for group_member(:reporter) }
       it { is_expected.to be_denied_for group_member(:guest) }
       it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_denied_for :user }
-      it { is_expected.to be_denied_for :visitor }
     end
   end
 end

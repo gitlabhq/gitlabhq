@@ -296,7 +296,7 @@ class Ability
 
     def can_read_group?(user, group)
       is_project_member = ProjectsFinder.new.execute(user, group: group).any?
-      user.admin? || group.public? || group.internal? || group.users.include?(user)
+      user.admin? || group.public? || group.internal? || is_project_member || group.users.include?(user)
     end
 
     def namespace_abilities(user, namespace)
