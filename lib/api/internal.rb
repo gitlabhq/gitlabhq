@@ -25,7 +25,7 @@ module API
       post "/allowed" do
         status 200
 
-        actor = 
+        actor =
           if params[:key_id]
             Key.find_by(id: params[:key_id])
           elsif params[:user_id]
@@ -33,7 +33,7 @@ module API
           end
 
         project_path = params[:project]
-        
+
         # Check for *.wiki repositories.
         # Strip out the .wiki from the pathname before finding the
         # project. This applies the correct project permissions to
@@ -55,7 +55,7 @@ module API
       #
       # Get a ssh key using the fingerprint
       #
-      get "/ssh-key" do
+      get "/authorized_keys" do
         key = Key.find_by(fingerprint: params[:fingerprint])
         not_found!("Key") if key.nil?
         present key, with: Entities::SSHKey
