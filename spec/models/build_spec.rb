@@ -312,8 +312,8 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :show_warning? do
-    subject { build.show_warning? }
+  describe :stuck? do
+    subject { build.stuck? }
 
     %w(pending).each do |state|
       context "if commit_status.status is #{state}" do
@@ -340,34 +340,6 @@ describe Ci::Build, models: true do
 
         it { is_expected.to be_falsey }
       end
-    end
-  end
-
-  describe :artifacts_download_url do
-    subject { build.artifacts_download_url }
-
-    context 'artifacts file does not exist' do
-      before { build.update_attributes(artifacts_file: nil) }
-      it { is_expected.to be_nil }
-    end
-
-    context 'artifacts file exists' do
-      let(:build) { create(:ci_build, :artifacts) }
-      it { is_expected.to_not be_nil }
-    end
-  end
-
-  describe :artifacts_browse_url do
-    subject { build.artifacts_browse_url }
-
-    it "should be nil if artifacts browser is unsupported" do
-      allow(build).to receive(:artifacts_metadata?).and_return(false)
-      is_expected.to be_nil
-    end
-
-    it 'should not be nil if artifacts browser is supported' do
-      allow(build).to receive(:artifacts_metadata?).and_return(true)
-      is_expected.to_not be_nil
     end
   end
 

@@ -68,7 +68,7 @@ module SharedBuilds
   end
 
   step 'I see the build' do
-    page.within('.commit_status') do
+    page.within('.build') do
       expect(page).to have_content "##{@build.id}"
       expect(page).to have_content @build.sha[0..7]
       expect(page).to have_content @build.ref
