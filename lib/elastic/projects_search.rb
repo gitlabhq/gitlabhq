@@ -29,23 +29,27 @@ module Elastic
       end
 
       def as_indexed_json(options = {})
-        as_json({
-          only: [
-            :id,
-            :name,
-            :path,
-            :description,
-            :namespace_id,
-            :created_at,
-            :archived,
-            :visibility_level,
-            :last_activity_at,
-            :last_pushed_at
-          ]
-        }).merge({
-          name_with_namespace: name_with_namespace,
-          path_with_namespace: path_with_namespace
-        })
+        # We don't use as_json(only: ...) because it calls all virtual and serialized attributtes
+        # https://gitlab.com/gitlab-org/gitlab-ee/issues/349
+        data = {}
+
+        [
+          :id,
+          :name,
+          :path,
+          :description,
+          :namespace_id,
+          :created_at,
+          :archived,
+          :visibility_level,
+          :last_activity_at,
+          :name_with_namespace,
+          :path_with_namespace
+        ].each do |attr|
+          data[attr.to_s] = self.send(attr)
+        end
+
+        data
       end
 
       def self.elastic_search(query, options: {})
@@ -54,28 +58,6 @@ module Elastic
         query_hash = basic_query_hash(options[:in], query)
 
         filters = []
-
-        if options[:abandoned]
-          filters << {
-            range: {
-              last_pushed_at: {
-                lte: "now-6M/m"
-              }
-            }
-          }
-        end
-
-        if options[:with_push]
-          filters << {
-            not: {
-              missing: {
-                field: :last_pushed_at,
-                existence: true,
-                null_value: true
-              }
-            }
-          }
-        end
 
         if options[:namespace_id]
           filters << {

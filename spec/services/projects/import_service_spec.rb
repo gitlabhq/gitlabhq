@@ -95,9 +95,16 @@ describe Projects::ImportService, services: true do
 
     def stub_github_omniauth_provider
       provider = OpenStruct.new(
-        name: 'github',
-        app_id: 'asd123',
-        app_secret: 'asd123'
+        'name' => 'github',
+        'app_id' => 'asd123',
+        'app_secret' => 'asd123',
+        'args' => {
+          'client_options' => {
+            'site' => 'https://github.com/api/v3',
+            'authorize_url' => 'https://github.com/login/oauth/authorize',
+            'token_url' => 'https://github.com/login/oauth/access_token'
+          }
+        }
       )
 
       Gitlab.config.omniauth.providers << provider
