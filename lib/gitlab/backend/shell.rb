@@ -271,6 +271,38 @@ module Gitlab
       File.exists?(full_path(dir_name))
     end
 
+    # Push branch to remote repository
+    #
+    # project_name - project's name with namespace
+    # remote_name - remote name
+    # branch_name - remote branch name
+    #
+    # Ex.
+    #   push_branches('upstream', 'feature')
+    #
+    def push_branches(project_name, remote_name, branch_names)
+      args = [gitlab_shell_projects_path, 'push-branches', "#{project_name}.git", remote_name, *branch_names]
+      output, status = Popen::popen(args)
+      raise Error, output unless status.zero?
+      true
+    end
+
+    # Delete branch from remote repository
+    #
+    # project_name - project's name with namespace
+    # remote_name - remote name
+    # branch_name - remote branch name
+    #
+    # Ex.
+    #   delete_remote_branches('upstream', 'feature')
+    #
+    def delete_remote_branches(project_name, remote_name, branch_names)
+      args = [gitlab_shell_projects_path, 'delete-remote-branches', "#{project_name}.git", remote_name, *branch_names]
+      output, status = Popen::popen(args)
+      raise Error, output unless status.zero?
+      true
+    end
+
     protected
 
     def gitlab_shell_path

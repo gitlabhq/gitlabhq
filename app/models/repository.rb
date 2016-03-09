@@ -183,10 +183,25 @@ class Repository
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
+  def push_branches(project_name, remote, branch_names)
+    gitlab_shell.push_branches(project_name, remote, branch_names)
+  end
+
+  def delete_remote_branches(project_name, remote, branch_names)
+    gitlab_shell.delete_remote_branches(project_name, remote, branch_names)
+  end
+
   def add_remote(name, url)
     raw_repository.remote_add(name, url)
   rescue Rugged::ConfigError
     raw_repository.remote_update(name, url: url)
+  end
+
+  def remove_remote(name)
+    raw_repository.remote_delete(name)
+    true
+  rescue Rugged::ConfigError
+    false
   end
 
   def set_remote_as_mirror(name)
@@ -667,6 +682,10 @@ class Repository
 
   alias_method :branches, :local_branches
 
+  def remote_branches(remote_name)
+    branches_from_ref("remotes/#{remote_name}")
+  end
+
   def tags
     @tags ||= raw_repository.tags
   end
@@ -841,9 +860,9 @@ class Repository
     fetch_remote_forced!(Repository::MIRROR_GEO)
   end
 
-  def upstream_branches
-    rugged.references.each("refs/remotes/#{Repository::MIRROR_REMOTE}/*").map do |ref|
-      name = ref.name.sub(/\Arefs\/remotes\/#{Repository::MIRROR_REMOTE}\//, "")
+  def branches_from_ref(ref_name)
+    rugged.references.each("refs/#{ref_name}/*").map do |ref|
+      name = ref.name.sub(/\Arefs\/#{ref_name}\//, "")
 
       begin
         Gitlab::Git::Branch.new(name, ref.target)
@@ -853,12 +872,27 @@ class Repository
     end.compact
   end
 
+  def upstream_branches
+    branches_from_ref("remotes/#{Repository::MIRROR_REMOTE}")
+  end
+
   def diverged_from_upstream?(branch_name)
     branch_commit = commit(branch_name)
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
       !is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
+    end
+  end
+
+  def upstream_has_diverged?(branch_name, remote_ref)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
+
+    if upstream_commit
+      !is_ancestor?(upstream_commit.id, branch_commit.id)
     else
       false
     end

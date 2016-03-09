@@ -2,41 +2,54 @@
 #
 # Table name: projects
 #
-#  id                     :integer          not null, primary key
-#  name                   :string(255)
-#  path                   :string(255)
-#  description            :text
-#  created_at             :datetime
-#  updated_at             :datetime
-#  creator_id             :integer
-#  issues_enabled         :boolean          default(TRUE), not null
-#  wall_enabled           :boolean          default(TRUE), not null
-#  merge_requests_enabled :boolean          default(TRUE), not null
-#  wiki_enabled           :boolean          default(TRUE), not null
-#  namespace_id           :integer
-#  issues_tracker         :string(255)      default("gitlab"), not null
-#  issues_tracker_id      :string(255)
-#  snippets_enabled       :boolean          default(TRUE), not null
-#  last_activity_at       :datetime
-#  import_url             :string(255)
-#  visibility_level       :integer          default(0), not null
-#  archived               :boolean          default(FALSE), not null
-#  avatar                 :string(255)
-#  import_status          :string(255)
-#  repository_size        :float            default(0.0)
-#  star_count             :integer          default(0), not null
-#  import_type            :string(255)
-#  import_source          :string(255)
-#  commit_count           :integer          default(0)
-#  import_error           :text
-#  ci_id                  :integer
-#  builds_enabled         :boolean          default(TRUE), not null
-#  shared_runners_enabled :boolean          default(TRUE), not null
-#  runners_token          :string
-#  build_coverage_regex   :string
-#  build_allow_git_fetch  :boolean          default(TRUE), not null
-#  build_timeout          :integer          default(3600), not null
-#  pending_delete         :boolean
+#  id                               :integer          not null, primary key
+#  name                             :string(255)
+#  path                             :string(255)
+#  description                      :text
+#  created_at                       :datetime
+#  updated_at                       :datetime
+#  creator_id                       :integer
+#  issues_enabled                   :boolean          default(TRUE), not null
+#  wall_enabled                     :boolean          default(TRUE), not null
+#  merge_requests_enabled           :boolean          default(TRUE), not null
+#  wiki_enabled                     :boolean          default(TRUE), not null
+#  namespace_id                     :integer
+#  issues_tracker                   :string(255)      default("gitlab"), not null
+#  issues_tracker_id                :string(255)
+#  snippets_enabled                 :boolean          default(TRUE), not null
+#  last_activity_at                 :datetime
+#  import_url                       :string(255)
+#  visibility_level                 :integer          default(0), not null
+#  archived                         :boolean          default(FALSE), not null
+#  avatar                           :string(255)
+#  import_status                    :string(255)
+#  repository_size                  :float            default(0.0)
+#  star_count                       :integer          default(0), not null
+#  import_type                      :string(255)
+#  import_source                    :string(255)
+#  commit_count                     :integer          default(0)
+#  import_error                     :text
+#  ci_id                            :integer
+#  builds_enabled                   :boolean          default(TRUE), not null
+#  shared_runners_enabled           :boolean          default(TRUE), not null
+#  runners_token                    :string
+#  build_coverage_regex             :string
+#  build_allow_git_fetch            :boolean          default(TRUE), not null
+#  build_timeout                    :integer          default(3600), not null
+#  pending_delete                   :boolean          default(FALSE)
+#  public_builds                    :boolean          default(TRUE), not null
+#  merge_requests_template          :text
+#  merge_requests_rebase_enabled    :boolean          default(FALSE)
+#  approvals_before_merge           :integer          default(0), not null
+#  reset_approvals_on_push          :boolean          default(TRUE)
+#  merge_requests_ff_only_enabled   :boolean          default(FALSE)
+#  issues_template                  :text
+#  mirror                           :boolean          default(FALSE), not null
+#  mirror_last_update_at            :datetime
+#  mirror_last_successful_update_at :datetime
+#  mirror_user_id                   :integer
+#  mirror_trigger_builds            :boolean          default(FALSE), not null
+#  main_language                    :string
 #
 
 require 'carrierwave/orm/activerecord'
@@ -76,18 +89,8 @@ class Project < ActiveRecord::Base
 
   after_destroy :remove_pages
 
-  # update visibility_level of forks
   after_update :update_forks_visibility_level
-  def update_forks_visibility_level
-    return unless visibility_level < visibility_level_was
-
-    forks.each do |forked_project|
-      if forked_project.visibility_level > visibility_level
-        forked_project.visibility_level = visibility_level
-        forked_project.save!
-      end
-    end
-  end
+  after_update :remove_mirror_repository_reference, if: :import_url_changed?
 
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :tags
@@ -175,8 +178,11 @@ class Project < ActiveRecord::Base
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, dependent: :destroy, class_name: 'Ci::Variable', foreign_key: :gl_project_id
   has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :gl_project_id
+  has_many :remote_mirrors, dependent: :destroy
 
   accepts_nested_attributes_for :variables, allow_destroy: true
+  accepts_nested_attributes_for :remote_mirrors,
+    allow_destroy: true, reject_if: proc { |attrs| attrs[:id].blank? && attrs[:url].blank? }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -204,6 +210,7 @@ class Project < ActiveRecord::Base
     url: { protocols: %w(ssh git http https) },
     if: :external_import?
   validates :import_url, presence: true, if: :mirror?
+  validate  :import_url_availability, if: :import_url_changed?
   validates :mirror_user, presence: true, if: :mirror?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
@@ -216,6 +223,7 @@ class Project < ActiveRecord::Base
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
+  before_validation :mark_remote_mirrors_for_removal
 
   mount_uploader :avatar, AvatarUploader
 
@@ -236,6 +244,7 @@ class Project < ActiveRecord::Base
   scope :non_archived, -> { where(archived: false) }
   scope :mirror, -> { where(mirror: true) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
+  scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -522,6 +531,23 @@ class Project < ActiveRecord::Base
     else
       import_start
     end
+  end
+
+  def mark_import_as_failed(error_message)
+    import_fail
+    update_column(:import_error, error_message)
+  end
+
+  def remote_mirror?
+    remote_mirrors.enabled.exists?
+  end
+
+  def updating_remote_mirror?
+    remote_mirrors.enabled.started.exists?
+  end
+
+  def update_remote_mirrors
+    remote_mirrors.each(&:sync)
   end
 
   def fetch_mirror
@@ -1183,5 +1209,32 @@ class Project < ActiveRecord::Base
 
   def ff_merge_must_be_possible?
     self.merge_requests_ff_only_enabled || self.merge_requests_rebase_enabled
+  end
+
+  private
+
+  def remove_mirror_repository_reference
+    repository.remove_remote(Repository::MIRROR_REMOTE)
+  end
+
+  def update_forks_visibility_level
+    return unless visibility_level < visibility_level_was
+
+    forks.each do |forked_project|
+      if forked_project.visibility_level > visibility_level
+        forked_project.visibility_level = visibility_level
+        forked_project.save!
+      end
+    end
+  end
+
+  def import_url_availability
+    if remote_mirrors.find_by(url: import_url)
+      errors.add(:import_url, 'is already in use by the remote mirror')
+    end
+  end
+
+  def mark_remote_mirrors_for_removal
+    remote_mirrors.each(&:mark_for_delete_if_blank_url)
   end
 end

@@ -13,8 +13,7 @@ class UpdateAllMirrorsWorker
       where('mirror_last_update_at < ?', 1.day.ago)
 
     stuck.find_each(batch_size: 50) do |project|
-      project.import_fail
-      project.update_attribute(:import_error, 'The mirror update took too long to complete.')
+      project.mark_import_as_failed('The mirror update took too long to complete.')
     end
   end
 end

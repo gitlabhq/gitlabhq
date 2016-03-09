@@ -2,6 +2,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!, except: [:update_now]
   before_action :authorize_push_code!, only: [:update_now]
+  before_action :remote_mirror, only: [:show, :update]
 
   layout "project_settings"
 
@@ -34,9 +35,21 @@ class Projects::MirrorsController < Projects::ApplicationController
     redirect_back_or_default(default: namespace_project_path(@project.namespace, @project))
   end
 
+  def update_remote_now
+    @project.update_remote_mirrors
+
+    flash[:notice] = "The remote repository is being updated..."
+    redirect_back_or_default(default: namespace_project_path(@project.namespace, @project))
+  end
+
   private
 
+  def remote_mirror
+    @remote_mirror = @project.remote_mirrors.first_or_initialize
+  end
+
   def mirror_params
-    params.require(:project).permit(:mirror, :import_url, :mirror_user_id, :mirror_trigger_builds)
+    params.require(:project).permit(:mirror, :import_url, :mirror_user_id, :mirror_trigger_builds,
+      remote_mirrors_attributes: [:url, :id, :enabled])
   end
 end

@@ -461,7 +461,7 @@ pre.light-well {
 
 .cannot-be-merged,
 .cannot-be-merged:hover {
-  color: #e62958;
+  color: $error-exclamation-point;
   margin-top: 2px;
 }
 
@@ -473,4 +473,8 @@ pre.light-well {
   i:nth-child(2) {
     color: #fff;
   }
+}
+
+.disabled-item {
+  @extend .btn.disabled;
 }

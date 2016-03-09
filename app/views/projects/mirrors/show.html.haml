@@ -1,33 +1,42 @@
 - page_title "Mirror Repository"
-.pull-right
-  - if @project.mirror_last_update_success?
-    Successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
-  %span.prepend-left-10
-    = render "shared/mirror_update_button"
-%h3.page-title
+%h3.page_title
   Mirror Repository
 
 %p.light
-  Set up your project to automatically have its branches, tags, and commits updated from an upstream repository every hour.
+  A repository can be setup as a mirror of another repository, and can also have a remote mirror associated.
+
+%p.light
+  When the repository is configured as a mirror, all of its content will automatically be updated from the repository configured in the <strong>Pull from a remote repository</strong> section.
+
+%p.light
+  When the repository has a remote mirror associated, it means that the remote repository configured in the <strong>Push to a remote repository</strong> section will automatically receive updates from the current repository.
 
 %hr.clearfix
-
-- if @project.mirror_last_update_failed?
-  .panel.panel-danger
-    .panel-heading
-      The repository failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
-      - if @project.mirror_ever_updated_successfully?
-        Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
-    .panel-body
-      %pre
-        :preserve
-          #{@project.import_error.try(:strip)}
 
 = form_for @project, url: namespace_project_mirror_path(@project.namespace, @project), html: { class: 'form-horizontal' } do |f|
   - if @project.errors.any?
     .alert.alert-danger
       - @project.errors.full_messages.each do |msg|
         %p= msg
+
+  %h4 Pull from a remote repository
+  %p.light
+    Set up your project to automatically have its branches, tags, and commits updated from an upstream repository every hour.
+  = render "shared/mirror_update_button"
+  - if @project.mirror_last_update_success?
+    %span &nbsp;Successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+  %hr.clearfix
+
+  - if @project.mirror_last_update_failed?
+    .panel.panel-danger
+      .panel-heading
+        The repository failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
+        - if @project.mirror_ever_updated_successfully?
+          Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+      .panel-body
+        %pre
+          :preserve
+            #{@project.import_error.try(:strip)}
 
   .form-group
     .col-sm-offset-2.col-sm-10
@@ -68,6 +77,45 @@
 
   - if @project.builds_enabled?
     = render 'shared/mirror_trigger_builds_setting', f: f
+
+  %h4 Push to a remote repository
+  %p.light
+    Set up the remote repository that you want to update with the content of the current repository every hour.
+  = render "shared/remote_mirror_update_button", remote_mirror: @remote_mirror
+  - if @remote_mirror.last_successful_update_at
+    %span &nbsp;Successfully updated #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.
+
+  %hr.clearfix
+
+  - if @remote_mirror.last_error.present?
+    .panel.panel-danger
+      .panel-heading
+        The remote repository failed to update #{time_ago_with_tooltip(@remote_mirror.last_update_at)}.
+        - if @remote_mirror.last_successful_update_at
+          Last successful update #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.
+      .panel-body
+        %pre
+          :preserve
+            #{@remote_mirror.last_error.strip}
+
+  = f.fields_for :remote_mirrors, @remote_mirror do |rm_form|
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = rm_form.label :enabled do
+            = rm_form.check_box :enabled
+            %strong
+              Remote Mirror Repository
+          .help-block
+            Automatically update the remote mirror's branches, tags, and commits from this repository every hour.
+
+    .form-group.has-feedback
+      = rm_form.label :url, class: 'control-label' do
+        %span Git repository URL
+      .col-sm-10
+        = rm_form.text_field :url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+        .well.prepend-top-20
+          The requirements for the URL format are the same mentioned in the <strong>Pull from a remote repository</strong> section.
 
   .form-actions
     = f.submit "Save Changes", class: "btn btn-create"
