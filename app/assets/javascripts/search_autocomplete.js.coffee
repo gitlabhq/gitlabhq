@@ -24,7 +24,10 @@ class @SearchAutocomplete
     @scopeInputEl = @$('#scope')
 
     @saveOriginalState()
-    @createAutocomplete()
+
+    if @locationBadgeEl.is(':empty')
+      @createAutocomplete()
+
     @bindEvents()
 
   $: (selector) ->
@@ -66,6 +69,12 @@ class @SearchAutocomplete
       appendTo: 'form.navbar-form'
       source: @autocompletePath + @query
       minLength: 1
+      maxShowItems: 15
+      position:
+        # { my: "left top", at: "left bottom", collision: "none" }
+        my: "left-10 top+9"
+        at: "left bottom"
+        collision: "none"
       close: (e) ->
         e.preventDefault()
 
@@ -89,7 +98,9 @@ class @SearchAutocomplete
 
 
   bindEvents: ->
-    @searchInput.on 'keydown', @onSearchKeyDown
+    @searchInput.on 'keydown', @onSearchInputKeyDown
+    @searchInput.on 'focus', @onSearchInputFocus
+    @searchInput.on 'blur', @onSearchInputBlur
     @wrap.on 'click', '.remove-badge', @onRemoveLocationBadgeClick
 
   onRemoveLocationBadgeClick: (e) =>
@@ -97,7 +108,7 @@ class @SearchAutocomplete
     @removeLocationBadge()
     @searchInput.focus()
 
-  onSearchKeyDown: (e) =>
+  onSearchInputKeyDown: (e) =>
     # Remove tag when pressing backspace and input search is empty
     if e.keyCode is @keyCode.BACKSPACE and e.currentTarget.value is ''
       @removeLocationBadge()
@@ -106,14 +117,24 @@ class @SearchAutocomplete
     else if e.keyCode is @keyCode.ESCAPE
       @restoreOriginalState()
     else
-      # Create new autocomplete instance if it's not created
-      @createAutocomplete() unless @catcomplete?
+      # Create new autocomplete if hasn't been created yet and there's no badge
+      if !@catComplete? and @locationBadgeEl.is(':empty')
+        @createAutocomplete()
+
+  onSearchInputFocus: =>
+    @wrap.addClass('search-active')
+
+  onSearchInputBlur: =>
+    @wrap.removeClass('search-active')
+
+    # If input is blank then restore state
+    @restoreOriginalState() if @searchInput.val() is ''
 
   addLocationBadge: (item) ->
     category = if item.category? then "#{item.category}: " else ''
     value = if item.value? then item.value else ''
 
-    html = "<span class='label label-primary'>
+    html = "<span class='location-badge'>
               <i class='location-text'>#{category}#{value}</i>
               <a class='remove-badge' href='#'>x</a>
             </span>"
@@ -160,5 +181,5 @@ class @SearchAutocomplete
     location.href = result.url
 
   destroyAutocomplete: ->
-    @catComplete.destroy() if @catcomplete?
+    @catComplete.destroy() if @catComplete?
     @catComplete = null
