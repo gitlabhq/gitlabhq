@@ -25,7 +25,8 @@ class @SearchAutocomplete
 
     @saveOriginalState()
 
-    if @locationBadgeEl.is(':empty')
+    # If there's no location badge
+    if !@locationBadgeEl.children().length
       @createAutocomplete()
 
     @bindEvents()
@@ -65,7 +66,7 @@ class @SearchAutocomplete
   createAutocomplete: ->
     @query = "?project_id=" + @projectId + "&project_ref=" + @projectRef
 
-    @catComplete = @searchInput.catcomplete
+    @searchInput.catcomplete
       appendTo: 'form.navbar-form'
       source: @autocompletePath + @query
       minLength: 1
@@ -96,6 +97,7 @@ class @SearchAutocomplete
           # Return false to avoid focus on the next element
           return false
 
+    @autocomplete = @searchInput.data 'customCatcomplete'
 
   bindEvents: ->
     @searchInput.on 'keydown', @onSearchInputKeyDown
@@ -112,14 +114,19 @@ class @SearchAutocomplete
     # Remove tag when pressing backspace and input search is empty
     if e.keyCode is @keyCode.BACKSPACE and e.currentTarget.value is ''
       @removeLocationBadge()
-      @destroyAutocomplete()
+      # @destroyAutocomplete()
       @searchInput.focus()
     else if e.keyCode is @keyCode.ESCAPE
       @restoreOriginalState()
     else
       # Create new autocomplete if hasn't been created yet and there's no badge
-      if !@catComplete? and @locationBadgeEl.is(':empty')
-        @createAutocomplete()
+      if @autocomplete is undefined
+        if !@locationBadgeEl.children().length
+          @createAutocomplete()
+      else
+        # There's a badge
+        if @locationBadgeEl.children().length
+          @destroyAutocomplete()
 
   onSearchInputFocus: =>
     @wrap.addClass('search-active')
@@ -181,5 +188,6 @@ class @SearchAutocomplete
     location.href = result.url
 
   destroyAutocomplete: ->
-    @catComplete.destroy() if @catComplete?
-    @catComplete = null
+    @autocomplete.destroy() if @autocomplete isnt undefined
+    @searchInput.attr('autocomplete', 'off')
+    @autocomplete = undefined
