@@ -18,6 +18,10 @@ module Projects
 
       private
 
+      def project_filename
+        "#{@project.name}.wiki.bundle"
+      end
+
       def path_to_repo
         @wiki.repository.path_to_repo
       end

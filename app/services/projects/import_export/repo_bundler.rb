@@ -27,7 +27,7 @@ module Projects
       end
 
       def project_filename
-        "#{@project.namespace}#{@project.name}.bundle"
+        "#{@project.name}.bundle"
       end
 
       def path_to_repo
