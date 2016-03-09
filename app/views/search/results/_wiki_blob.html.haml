@@ -2,9 +2,9 @@
 .blob-result
   .file-holder
     .file-title
-      = link_to namespace_project_wiki_path(@project.namespace, @project, wiki_blob.filename) do
+      = link_to namespace_project_wiki_path(@project.namespace, @project, wiki_blob.basename) do
         %i.fa.fa-file
         %strong
-          = wiki_blob.filename
+          = wiki_blob.basename
     .file-content.code.term
       = render 'shared/file_highlight', blob: wiki_blob, first_line_number: wiki_blob.startline
