@@ -179,12 +179,18 @@ module ApplicationHelper
   # `html_class` argument is provided.
   #
   # Returns an HTML-safe String
-  def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago')
+  def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
     element = content_tag :time, time.to_s,
-      class: "#{html_class} js-timeago",
+      class: "#{html_class} js-timeago #{"js-timeago-pending" unless skip_js}",
       datetime: time.to_time.getutc.iso8601,
       title: time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
+
+      unless skip_js
+        element << javascript_tag(
+          "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
+        )
+      end
 
     element
   end
