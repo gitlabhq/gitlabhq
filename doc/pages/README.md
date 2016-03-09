@@ -37,6 +37,7 @@ information, if you are using GitLab.com to host your website.
     - [Remove the contents of your pages](#remove-the-contents-of-your-pages)
 - [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom)
 - [Limitations](#limitations)
+- [Redirects in GitLab Pages](#redirects-in-gitlab-pages)
 - [Frequently Asked Questions](#frequently-asked-questions)
     - [Can I download my generated pages?](#can-i-download-my-generated-pages)
     - [Can I use GitLab Pages if my project is private?](#can-i-use-gitlab-pages-if-my-project-is-private)
@@ -408,6 +409,16 @@ don't redirect HTTP to HTTPS.
 
 [rfc]: https://tools.ietf.org/html/rfc2818#section-3.1 "HTTP Over TLS RFC"
 
+## Redirects in GitLab Pages
+
+Since you cannot use any custom server configuration files, like `.htaccess` or
+any `.conf` file for that matter, if you want to redirect a web page to another
+location, you can use the [HTTP meta refresh tag][metarefresh].
+
+Some static site generators provide plugins for that functionality so that you
+don't have to create and edit HTML files manually. For example, Jekyll has the
+[redirect-from plugin](https://github.com/jekyll/jekyll-redirect-from).
+
 ## Frequently Asked Questions
 
 ### Can I download my generated pages?
@@ -435,3 +446,4 @@ No, you don't. You can create your project first and it will be accessed under
 [pages]: ../ci/yaml/README.md#pages
 [staticgen]: https://www.staticgen.com/
 [pages-jekyll]: https://gitlab.com/gitlab-examples/pages-jekyll
+[metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
