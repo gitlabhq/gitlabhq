@@ -42,6 +42,7 @@ information, if you are using GitLab.com to host your website.
     - [Can I download my generated pages?](#can-i-download-my-generated-pages)
     - [Can I use GitLab Pages if my project is private?](#can-i-use-gitlab-pages-if-my-project-is-private)
     - [Do I need to create a user/group website before creating a project website?](#do-i-need-to-create-a-usergroup-website-before-creating-a-project-website)
+- [Known issues](#known-issues)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -435,6 +436,10 @@ to private, internal or public.
 No, you don't. You can create your project first and it will be accessed under
 `http(s)://namespace.example.io/projectname`.
 
+## Known issues
+
+For a list of known issues, visit GitLab's [public issue tracker].
+
 ---
 
 [jekyll]: http://jekyllrb.com/
@@ -447,3 +452,4 @@ No, you don't. You can create your project first and it will be accessed under
 [staticgen]: https://www.staticgen.com/
 [pages-jekyll]: https://gitlab.com/gitlab-examples/pages-jekyll
 [metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
+[public issue tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Pages
