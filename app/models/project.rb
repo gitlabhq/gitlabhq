@@ -52,7 +52,6 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
-  include SharedScopes
 
   extend Gitlab::ConfigHelper
 
@@ -934,8 +933,10 @@ class Project < ActiveRecord::Base
   end
 
   def visibility_level_allowed?(level)
-    return true unless forked?
-    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i)
+    allowed_by_forks = forked? ? Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i) : true
+    allowed_by_groups = group.present? ? level.to_i <= group.visibility_level : true
+
+    allowed_by_forks && allowed_by_groups
   end
 
   def runners_token

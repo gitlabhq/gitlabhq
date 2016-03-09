@@ -1,8 +1,5 @@
 - @no_container = true
 
-- unless can?(current_user, :read_group, @group)
-  - @disable_search_panel = true
-
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
@@ -17,8 +14,12 @@
   .avatar-holder
     = link_to group_icon(@group), target: '_blank' do
       = image_tag group_icon(@group), class: "avatar group-avatar s90"
-  .cover-title
-    = @group.name
+  .group-projects-show-title
+    %h1
+      = @group.name
+
+      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: "#{visibility_level_label(@group.visibility_level)} - #{project_visibility_level_description(@group.visibility_level)}"}
+        = visibility_level_icon(@group.visibility_level, fw: false)
 
   .cover-desc.username
     @#{@group.path}
@@ -26,7 +27,6 @@
   - if @group.description.present?
     .cover-desc.description
       = markdown(@group.description, pipeline: :description)
-
 
   %ul.nav-links
     %li.active

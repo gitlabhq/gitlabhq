@@ -2,7 +2,7 @@
 .project-home-panel.cover-block.clearfix{:class => ("empty-project" if empty_repo)}
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
-  .project-home-desc
+  .group-projects-show-title
     %h1
       = @project.name
       %span.visibility-icon.has_tooltip{data: { container: 'body' },

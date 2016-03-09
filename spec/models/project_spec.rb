@@ -583,6 +583,21 @@ describe Project, models: true do
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
 
+    context 'when checking projects from groups' do
+      let(:private_group)    { create(:group, visibility_level: 0)  }
+      let(:internal_group)   { create(:group, visibility_level: 10) }
+
+      let(:private_project)  { create :project, group: private_group, visibility_level: Gitlab::VisibilityLevel::PRIVATE   }
+      let(:internal_project) { create :project, group: internal_group, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+
+      context 'when group is private project can not be internal' do
+        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
+      end
+
+      context 'when group is internal project can not be public' do
+        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
+      end
+    end
   end
 
   describe '#rename_repo' do

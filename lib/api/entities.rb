@@ -332,6 +332,7 @@ module API
       expose :session_expire_delay
       expose :default_project_visibility
       expose :default_snippet_visibility
+      expose :default_group_visibility
       expose :restricted_signup_domains
       expose :user_oauth_applications
       expose :after_sign_out_path

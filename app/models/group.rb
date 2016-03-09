@@ -21,7 +21,6 @@ class Group < Namespace
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
   include Referable
-  include SharedScopes
 
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members

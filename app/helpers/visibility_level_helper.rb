@@ -80,6 +80,10 @@ module VisibilityLevelHelper
     current_application_settings.default_snippet_visibility
   end
 
+  def default_group_visibility
+    current_application_settings.default_group_visibility
+  end
+
   def skip_level?(form_model, level)
     form_model.is_a?(Project) &&
     !form_model.visibility_level_allowed?(level)

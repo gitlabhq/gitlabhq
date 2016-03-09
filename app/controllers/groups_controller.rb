@@ -79,7 +79,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def update
-    if @group.update_attributes(group_params)
+    if Groups::UpdateService.new(@group, current_user, group_params).execute
       redirect_to edit_group_path(@group), notice: "Group '#{@group.name}' was successfully updated."
     else
       render action: "edit"

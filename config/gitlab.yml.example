@@ -90,6 +90,10 @@ production: &base
       snippets: false
       builds: true
 
+    ## Default group features settings
+    default_groups_features:
+      visibility_level: 20
+
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
     # webhook_timeout: 10

@@ -7,9 +7,8 @@
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav.pull-right
-          - unless @disable_search_panel
-            %li.hidden-sm.hidden-xs
-              = render 'layouts/search'
+          %li.hidden-sm.hidden-xs
+            = render 'layouts/search'
           %li.visible-sm.visible-xs
             = link_to search_path, title: 'Search', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
               = icon('search')

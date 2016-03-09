@@ -54,6 +54,7 @@ describe GroupsController do
     let(:group) { create(:group, visibility_level: 20) }
 
     it 'checks if group can be updated' do
+      expect_any_instance_of(Groups::UpdateService).to receive(:execute)
       expect(controller).to receive(:authorize_admin_group!)
       put :update, id: group.path, group: { name: 'test' }
     end
