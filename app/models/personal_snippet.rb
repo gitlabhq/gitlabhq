@@ -10,7 +10,6 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #  file_name        :string(255)
-#  expires_at       :datetime
 #  type             :string(255)
 #  visibility_level :integer          default(0), not null
 #
