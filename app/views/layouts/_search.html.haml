@@ -7,7 +7,7 @@
         = search_field_tag "search", nil, placeholder: 'Search', class: "search-input", spellcheck: false, tabindex: "1", autocomplete: 'off'
 
     = hidden_field_tag :group_id, @group.try(:id)
-    = hidden_field_tag :project_id, @project && @project.persisted? ? @project.id : ''
+    = hidden_field_tag :project_id, @project && @project.persisted? ? @project.id : '', id: 'search_project_id'
 
     - if @project && @project.persisted?
       - if current_controller?(:issues)
