@@ -409,8 +409,8 @@
             = icon('spinner spin')
     :javascript
       $('#js-project-dropdown').glDropdown({
-        data: function (callback) {
-          Api.projects("", "last_activity_at", function (data) {
+        data: function (term, callback) {
+          Api.projects(term, "last_activity_at", function (data) {
             callback(data);
           });
         },
@@ -433,7 +433,7 @@
 
   .example
     %div
-      = dropdown_tag("Projects", title: "Go to project", filter: true, placeholder: "Filter projects")
+      = dropdown_tag("Projects", options: { title: "Go to project", filter: true, placeholder: "Filter projects" })
 
   %h2#panels Panels
 
