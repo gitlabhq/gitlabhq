@@ -19,13 +19,41 @@
   }
 
   &.ui-autocomplete {
-    border-color: #DDD;
-    padding: 0;
     margin-top: 2px;
     z-index: 1001;
+    width: 240px;
+    margin-bottom: 0;
+    padding: 10px 10px;
+    font-size: 14px;
+    font-weight: normal;
+    background-color: $dropdown-bg;
+    border: 1px solid $dropdown-border-color;
+    border-radius: $border-radius-base;
+    box-shadow: 0 2px 4px $dropdown-shadow-color;
 
-    .ui-menu-item a {
-      padding: 4px 10px;
+    .ui-menu-item {
+      display: block;
+      position: relative;
+      padding: 0 10px;
+      color: $dropdown-link-color;
+      line-height: 34px;
+      text-overflow: ellipsis;
+      border-radius: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      border: none;
+
+      &.ui-state-focus {
+        background-color: $dropdown-link-hover-bg;
+        text-decoration: none;
+        margin: 0;
+      }
+    }
+
+    .ui-autocomplete-category {
+      text-transform: uppercase;
+      font-size: 11px;
+      color: #7f8fa4;
     }
   }
 

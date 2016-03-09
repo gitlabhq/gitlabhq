@@ -1,9 +1,12 @@
-.search
-  = form_tag search_path, method: :get, class: 'navbar-form pull-left' do |f|
-    = render 'shared/location_badge'
-    = search_field_tag "search", nil, placeholder: 'Search', class: "search-input form-control", spellcheck: false, tabindex: "1"
-    = hidden_field_tag :group_id, @group.try(:id)
+.search.search-form
+  = form_tag search_path, method: :get, class: 'navbar-form' do |f|
+    .search-input-container
+      .search-location-badge
+        = render 'shared/location_badge'
+      .search-input-wrap
+        = search_field_tag "search", nil, placeholder: 'Search', class: "search-input", spellcheck: false, tabindex: "1", autocomplete: 'off'
 
+    = hidden_field_tag :group_id, @group.try(:id)
     = hidden_field_tag :project_id, @project && @project.persisted? ? @project.id : ''
 
     - if @project && @project.persisted?

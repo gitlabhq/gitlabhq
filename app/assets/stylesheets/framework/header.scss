@@ -112,26 +112,6 @@ header {
     }
   }
 
-  .search {
-    margin-right: 10px;
-    margin-left: 10px;
-    margin-top: ($header-height - 36) / 2;
-
-    form {
-      margin: 0;
-      padding: 0;
-    }
-
-    .search-input {
-      width: 220px;
-
-      &:focus {
-        @include box-shadow(none);
-        outline: none;
-      }
-    }
-  }
-
   .impersonation i {
     color: $red-normal;
   }
