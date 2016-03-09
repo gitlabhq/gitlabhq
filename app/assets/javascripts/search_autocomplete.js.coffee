@@ -84,14 +84,14 @@ class @SearchAutocomplete
         if event.keyCode is @keyCode.ENTER
           @goToResult(ui.item)
         else
-          # Pressing tab sets the scope
-          if event.keyCode is @keyCode.TAB and ui.item.scope?
+          # Pressing tab sets the location
+          if event.keyCode is @keyCode.TAB and ui.item.location?
             @setLocationBadge(ui.item)
             @searchInput
               .val('') # remove selected value from input
               .focus()
           else
-            # If option is not a scope go to page
+            # If option is not a location go to page
             @goToResult(ui.item)
 
           # Return false to avoid focus on the next element
@@ -153,7 +153,7 @@ class @SearchAutocomplete
     # Reset input states
     @resetSearchState()
 
-    switch item.scope
+    switch item.location
       when 'projects'
         @projectInputEl.val(item.id)
         # @searchCodeInputEl.val('true') # TODO: always true for projects?
