@@ -21,6 +21,7 @@ v 8.6.0 (unreleased)
   - Increase the notes polling timeout over time (Roberto Dip)
   - Show labels in dashboard and group milestone views
   - Add main language of a project in the list of projects (Tiago Botelho)
+  - Add ability to show archived projects on dashboard, explore and group pages
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
