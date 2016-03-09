@@ -31,6 +31,9 @@ feature 'Issue filtering by Milestone', feature: true do
   end
 
   def filter_by_milestone(title)
-    select2(title, from: '#milestone_title')
+    find(".js-milestone-select").click
+    sleep 1
+    find(".milestone-filter a", text: title).click
+    sleep 1
   end
 end

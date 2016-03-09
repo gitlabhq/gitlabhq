@@ -25,12 +25,12 @@ class @MilestoneSelect
             if showNo
               data.unshift(
                 id: "0"
-                title: 'No milestone'
+                title: 'No Milestone'
               )
 
             if showAny
               data.unshift(
-                title: 'Any milestone'
+                title: 'Any Milestone'
               )
 
             if data.length > 2
