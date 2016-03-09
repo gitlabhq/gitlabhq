@@ -25,7 +25,7 @@ class @MarkdownPreview
   renderMarkdown: (text, success) ->
     return unless window.markdown_preview_path
 
-    return success(@ajaxCache[text]) if @ajaxCache[text]
+    return success(@ajaxCache.response) if text == @ajaxCache.text
 
     $.ajax
       type: 'POST'
@@ -33,7 +33,7 @@ class @MarkdownPreview
       data: { text: text }
       dataType: 'json'
       success: (response) =>
-        @ajaxCache[text] = response
+        @ajaxCache = text: text, response: response
         success(response)
 
   hideReferencedUsers: (form) ->
