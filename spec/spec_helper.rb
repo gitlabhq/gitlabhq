@@ -15,6 +15,7 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
 require 'benchmark/ips'
+require 'rspec/retry'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -24,6 +25,9 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
   config.mock_with :rspec
+
+  config.verbose_retry = true
+  config.display_try_failure_messages = true
 
   config.include Devise::TestHelpers, type: :controller
   config.include LoginHelpers,        type: :feature
