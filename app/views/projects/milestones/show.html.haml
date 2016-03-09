@@ -42,10 +42,11 @@
           = preserve do
             = markdown @milestone.description
 
-- if @milestone.issues.any? && @milestone.can_be_closed?
+- if @milestone.complete? && @milestone.active?
   .alert.alert-success.prepend-top-default
     %span All issues for this milestone are closed. You may close milestone now.
 
+<<<<<<< HEAD
 .context.prepend-top-default
   .milestone-summary
     %h4 Progress
@@ -153,3 +154,7 @@
           %span.issues-count
             = link_to namespace_project_issues_path(*args, options.merge(state: 'closed')) do
               = pluralize label.closed_issues_count, 'closed issue'
+=======
+= render 'shared/milestones/summary', milestone: @milestone, project: @project
+= render 'shared/milestones/tabs', milestone: @milestone
+>>>>>>> e8cd04e831a2db36c4029f2c193fc40d2568c79e

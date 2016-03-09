@@ -25,12 +25,13 @@ class Milestone < ActiveRecord::Base
   include Referable
   include StripAttribute
   include Elastic::MilestonesSearch
+  include Milestoneish
 
   belongs_to :project
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
-  has_many :participants, through: :issues, source: :assignee
+  has_many :participants, -> { distinct.reorder('users.name') }, through: :issues, source: :assignee
 
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
@@ -91,30 +92,6 @@ class Milestone < ActiveRecord::Base
     else
       false
     end
-  end
-
-  def open_items_count
-    self.issues.opened.count + self.merge_requests.opened.count
-  end
-
-  def closed_items_count
-    self.issues.closed.count + self.merge_requests.closed_and_merged.count
-  end
-
-  def total_items_count
-    self.issues.count + self.merge_requests.count
-  end
-
-  def percent_complete
-    ((closed_items_count * 100) / total_items_count).abs
-  rescue ZeroDivisionError
-    0
-  end
-
-  def remaining_days
-    return 0 if !due_date || expired?
-
-    (due_date - Date.today).to_i
   end
 
   def expires_at

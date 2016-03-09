@@ -60,7 +60,7 @@ describe Milestone, models: true do
     end
 
     it "should recover from dividing by zero" do
-      expect(milestone.issues).to receive(:count).and_return(0)
+      expect(milestone.issues).to receive(:size).and_return(0)
       expect(milestone.percent_complete).to eq(0)
     end
   end
@@ -114,7 +114,6 @@ describe Milestone, models: true do
     end
 
     it { expect(milestone.closed_items_count).to eq(1) }
-    it { expect(milestone.open_items_count).to eq(2) }
     it { expect(milestone.total_items_count).to eq(3) }
     it { expect(milestone.is_empty?).to be_falsey }
   end

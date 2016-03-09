@@ -14,6 +14,7 @@ class GitPushService < BaseService
   #  3. Recognizes cross-references from commit messages
   #  4. Executes the project's web hooks
   #  5. Executes the project's services
+  #  6. Checks if the project's main language has changed
   #
   def execute
     @project.repository.after_push_commit(branch_name)
@@ -42,9 +43,22 @@ class GitPushService < BaseService
       @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
       process_commit_messages
     end
+    # Checks if the main language has changed in the project and if so
+    # it updates it accordingly
+    update_main_language
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     update_merge_requests
+  end
+
+  def update_main_language
+    current_language = @project.repository.main_language
+
+    unless current_language == @project.main_language
+      return @project.update_attributes(main_language: current_language)
+    end
+
+    true
   end
 
   protected
