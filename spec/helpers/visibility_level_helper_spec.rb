@@ -58,7 +58,7 @@ describe VisibilityLevelHelper do
 
   describe "skip_level?" do
     describe "forks" do
-      let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+      let(:project) { create(:project, :internal) }
       let(:fork_project) { create(:forked_project_with_submodules) }
 
       before do
@@ -74,7 +74,7 @@ describe VisibilityLevelHelper do
     end
 
     describe "non-forked project" do
-      let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+      let(:project) { create(:project, :internal) }
 
       it "skips levels" do
         expect(skip_level?(project, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
@@ -84,7 +84,7 @@ describe VisibilityLevelHelper do
     end
 
     describe "Snippet" do
-      let(:snippet) { create(:snippet, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+      let(:snippet) { create(:snippet, :internal) }
 
       it "skips levels" do
         expect(skip_level?(snippet, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
