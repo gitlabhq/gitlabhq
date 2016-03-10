@@ -12,7 +12,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       @projects = @projects.search(terms)
     end
 
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if terms.blank?
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
     @last_push = current_user.recent_push
 
     respond_to do |format|
@@ -41,7 +41,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       @projects = @projects.search(terms)
     end
 
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if terms.blank?
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
     @last_push = current_user.recent_push
     @groups = []
 

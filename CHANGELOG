@@ -12,10 +12,15 @@ v 8.6.0 (unreleased)
   - Allow search for logged out users
   - Don't show Issues/MRs from archived projects in Groups view
   - Increase the notes polling timeout over time (Roberto Dip)
+  - Add shortcut to toggle markdown preview (Florent Baldino)
+  - Show labels in dashboard and group milestone views
+  - Add main language of a project in the list of projects (Tiago Botelho)
+  - Add ability to show archived projects on dashboard, explore and group pages
 
 v 8.5.5
   - Ensure removing a project removes associated Todo entries
   - Prevent a 500 error in Todos when author was removed
+  - Fix pagination for filtered dashboard and explore pages
   - Fix "Show all" link behavior
 
 v 8.5.4

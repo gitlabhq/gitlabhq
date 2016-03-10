@@ -8,7 +8,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     @projects = @projects.search(params[:search]) if params[:search].present?
     @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
     @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.includes(:namespace).page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
+    @projects = @projects.includes(:namespace).page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html
@@ -24,7 +24,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     @projects = TrendingProjectsFinder.new.execute(current_user)
     @projects = @projects.non_archived
     @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html
@@ -40,7 +40,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     @projects = ProjectsFinder.new.execute(current_user)
     @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
     @projects = @projects.reorder('star_count DESC')
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html
