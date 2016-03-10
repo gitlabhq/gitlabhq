@@ -7,7 +7,7 @@
       %li
         %span.merge-request-ci-status
           - if merge_request.ci_commit
-            = render_ci_status(merge_request.ci_commit, placement: 'bottom')
+            = render_ci_status(merge_request.ci_commit)
           - elsif has_any_ci
             = icon('blank fw')
         %span.merge-request-id
