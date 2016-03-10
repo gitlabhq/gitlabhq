@@ -20,7 +20,7 @@ module Gitlab
       @key, @timeout = key, timeout
     end
 
-    # Try to obtain the lease. Return true on succes,
+    # Try to obtain the lease. Return true on success,
     # false if the lease is already taken.
     def try_obtain
       # Performing a single SET is atomic
