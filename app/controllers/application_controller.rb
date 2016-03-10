@@ -246,7 +246,7 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
-      return unless Gitlab::LDAP::Access.try_lock_user(user)
+      return unless Gitlab::LDAP::Access.try_lock_user(current_user)
 
       unless Gitlab::LDAP::Access.allowed?(current_user)
         sign_out current_user

@@ -10,7 +10,7 @@ module Gitlab
       LOCK_TIMEOUT = 600
 
       def self.try_lock_user(user)
-        Gitlab::ExpiringLock.new("user_ldap_check:#{user.id}", LOCK_TIMEOUT).try_lock
+        Gitlab::ExclusiveLease.new("user_ldap_check:#{user.id}", LOCK_TIMEOUT).try_obtain
       end
 
       def self.open(user, &block)
