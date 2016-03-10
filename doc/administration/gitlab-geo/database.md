@@ -47,7 +47,7 @@ The following guide assumes that:
    (for Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
 
     ```bash
-    listen_address = 'localhost,1.2.3.4'
+    listen_address = '1.2.3.4'
     wal_level = hot_standby
     max_wal_senders = 5
     checkpoint_segments = 10
@@ -57,56 +57,156 @@ The following guide assumes that:
 
     Edit these values as you see fit.
 
-1. Edit the access control on the master to allow the connection from the slave
-   in `pg_hba.conf` (for Ubuntu that would be `/etc/postgresql/9.2/main/pg_hba.conf`):
+1. Set the access control on the master to allow TCP connections using the
+   server's public IP and set the connection from the slave to require a
+   password.  Edit `pg_hba.conf` (for Ubuntu that would be `/etc/postgresql/9.2/main/pg_hba.conf`):
 
     ```bash
+    host    all             all                      1.2.3.4/32      trust
     host    replication     gitlab_replicator        5.6.7.8/32      md5
     ```
 
-    Note that `5.6.7.8` is the IP of the slave.
+    Where `1.2.3.4` is the public IP address of the master server, and `5.6.7.8`
+    the public IP address of the slave server.
 
-1. Restart PostgreSQL
+1. Restart PostgreSQL for the changes to take effect
+
+---
 
 **For Omnibus installations**
 
-Edit `/etc/gitla/gitlab.rb` and add the following:
+1. Omnibus GitLab already has a replicator user called `gitlab_replicator`.
+   You must set its password manually:
 
-```ruby
-postgresql['listen_address'] = "localhost,1.2.3.4"
-postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
-postgresql['sql_replication_user'] = "gitlab_replicator"
-postgresql['wal_level'] = "hot_standby"
-postgresql['max_wal_senders'] = 10
-postgresql['wal_keep_segments'] = 10
-postgresql['hot_standby'] = "on"
+    ```bash
+    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql \
+         -d template1 \
+         -c "ALTER USER gitlab_replicator WITH ENCRYPTED PASSWORD 'thepassword'"
+    ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+
+    ```ruby
+    postgresql['listen_address'] = "1.2.3.4"
+    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
+    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
+    postgresql['sql_replication_user'] = "gitlab_replicator"
+    postgresql['wal_level'] = "hot_standby"
+    postgresql['max_wal_senders'] = 10
+    postgresql['wal_keep_segments'] = 10
+    postgresql['hot_standby'] = "on"
+    ```
+
+1. [Reconfigure GitLab][] for the changes to take effect.
+
+---
+
+Now that the PostgreSQL server is set up to accept remote connections, run
+`netstat -plnt` to make sure that PostgreSQL is listening to the server's
+public IP.
+
+Test that the remote connection works by going to the slave server and
+running:
+
 ```
+# For Omnibus installations
+sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d gitlabhq_production -W
+
+# For source installations
+sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d gitlabhq_production -W
+```
+
+When prompted enter the password you set in the first step for the
+`gitlab_replicator` user. If all worked correctly, you should see the database
+prompt.
 
 ### PostgreSQL - Configure the slave server
 
 **For installations from source**
 
-1. Edit `postgresql.conf`
-1. Restart postgres
+1. Edit `postgresql.conf` to configure the slave for streaming replication
+   (for Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
+
+    ```bash
+    wal_level = hot_standby
+    max_wal_senders = 5
+    checkpoint_segments = 10
+    wal_keep_segments = 10
+    hot_standby = on
+    ```
+
+    Edit these values as you see fit.
+
+1. Restart PostgreSQL for the changes to take effect
+
+---
+
+**For Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+
+    ```ruby
+    postgresql['wal_level'] = "hot_standby"
+    postgresql['max_wal_senders'] = 10
+    postgresql['wal_keep_segments'] = 10
+    postgresql['hot_standby'] = "on"
+    ```
+
+1. [Reconfigure GitLab][] for the changes to take effect.
 
 ### PostgreSQL - Initiate the replication process
 
-```bash
-psql -c "select pg_start_backup('initial_backup');"
-rsync -cva --inplace --exclude=*pg_xlog* /var/lib/postgresql/9.5/main/ slave_IP_address:/var/lib/postgresql/9.5/main/
-psql -c "select pg_stop_backup();"
-```
+Below we provide a script that connects to the primary server, replicates the
+database and creates the needed files for replication. Make sure to run this on
+the secondary server as it removes all PostgreSQL's data before running
+`pg_basebackup`.
+
+The directories used are the defaults that are set up in Omnibus. Configure it
+as you see fit replacing the directories and paths:
 
 ```bash
-psql -c "select pg_start_backup('initial_backup');"
-rsync -cva --inplace --exclude=*pg_xlog* /var/opt/gitlab/postgresql/data/ slave_IP_address:/var/opt/gitlab/postgresql/data/
-psql -c "select pg_stop_backup();"
+#!/bin/bash
+
+PORT="5432"
+USER="gitlab_replicator"
+echo Enter ip of primary postgresql server
+read HOST
+echo Enter password for $USER@$HOST
+read -s PASSWORD
+
+echo Stopping PostgreSQL
+gitlab-ctl stop
+
+echo Backup postgresql.conf
+sudo -u gitlab-psql mv /var/opt/gitlab/postgresql/data/postgresql.conf /var/opt/gitlab/postgresql/
+
+echo Cleaning up old cluster directory
+sudo -u gitlab-psql rm -rf /var/opt/gitlab/postgresql/data
+rm -f /tmp/postgresql.trigger
+
+echo Starting base backup as replicator
+echo Enter password for $USER@$HOST
+sudo -u gitlab-psql /opt/gitlab/embedded/bin/pg_basebackup -h $HOST -D /var/opt/gitlab/postgresql/data -U gitlab_replicator -v -x -P
+
+echo Writing recovery.conf file
+sudo -u gitlab-psql bash -c "cat > /var/opt/gitlab/postgresql/data/recovery.conf <<- _EOF1_
+  standby_mode = 'on'
+  primary_conninfo = 'host=$HOST port=$PORT user=$USER password=$PASSWORD'
+  trigger_file = '/tmp/postgresql.trigger'
+_EOF1_
+"
+
+echo Restore postgresql.conf
+sudo -u gitlab-psql mv /var/opt/gitlab/postgresql/postgresql.conf /var/opt/gitlab/postgresql/data/
+
+echo Starting PostgreSQL
+gitlab-ctl start
 ```
+
+When prompted, enter the password you set up for the `gitlab_replicator` user.
 
 ## GitLab Geo MySQL replication
 
 TODO
 
-## Acknowledgments
-
-
+[reconfigure gitlab]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
