@@ -223,19 +223,12 @@ You can access a builds badge image using following link:
 http://example.gitlab.com/namespace/project/badges/branch/build.svg
 ```
 
+Awesome! You started using CI in GitLab!
+
 ## Examples
 
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
-
-## Next steps
-
-Awesome! You started using CI in GitLab!
-
-Next you can look into doing more with the CI. Many people are using GitLab
-to package, containerize, test and deploy software.
-
-Visit our various languages examples at <https://gitlab.com/groups/gitlab-examples>.
 
 [runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#installation
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
