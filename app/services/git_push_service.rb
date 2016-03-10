@@ -12,7 +12,7 @@ class GitPushService < BaseService
   #  1. Creates the push event
   #  2. Updates merge requests
   #  3. Recognizes cross-references from commit messages
-  #  4. Executes the project's web hooks
+  #  4. Executes the project's webhooks
   #  5. Executes the project's services
   #  6. Checks if the project's main language has changed
   #
