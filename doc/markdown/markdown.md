@@ -29,7 +29,7 @@
 
 ## GitLab Flavored Markdown (GFM)
 
-_GitLab uses the [redcarpet ruby library][redcarpet] for markdown processing._
+_GitLab uses the [Redcarpet Ruby library][redcarpet] for Markdown processing._
 
 For GitLab we developed something we call "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality.
 
