@@ -11,7 +11,7 @@
           - elsif has_any_ci
             = icon('blank fw')
         %span.merge-request-id
-          #{merge_request.to_reference}
+          = merge_request.to_reference
         %span.merge-request-info
           %strong
             = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
