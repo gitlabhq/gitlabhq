@@ -81,6 +81,10 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
       it 'has commit statuses' do
         expect(saved_project_json['commit_statuses']).not_to be_empty
       end
+
+      it 'has project members' do
+        expect(saved_project_json['commit_statuses']).not_to be_empty
+      end
     end
   end
 

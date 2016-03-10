@@ -7,7 +7,7 @@ module Projects
     end
 
     def project_atts
-      %i(id name path description issues_enabled wall_enabled merge_requests_enabled wiki_enabled snippets_enabled visibility_level archived)
+      %i(project_members name path description issues_enabled wall_enabled merge_requests_enabled wiki_enabled snippets_enabled visibility_level archived)
     end
 
     def project_tree
