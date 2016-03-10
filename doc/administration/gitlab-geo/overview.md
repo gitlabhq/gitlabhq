@@ -1,36 +1,35 @@
-# GitLab Geo
-
-> **Note:**
-This feature was introduced in GitLab 8.5 EE.
-
-GitLab Geo allows you to replicate your GitLab instance to other geographical
-locations as a read-only fully operational version.
-
-When Geo is enabled, we refer to your original instance as a **primary** node
-and the replicated read-only ones as **secondaries**.
+# GitLab Geo configuration
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Setup instructions](#setup-instructions)
-    - [Primary Node](#primary-node)
-    - [Secondary Node](#secondary-node)
-- [Current limitations](#current-limitations)
-- [Frequently Asked Questions](#frequently-asked-questions)
-    - [Can I use Geo in a disaster recovery situation?](#can-i-use-geo-in-a-disaster-recovery-situation)
-    - [What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)
-    - [Can I git push to a secondary node?](#can-i-git-push-to-a-secondary-node)
-    - [How long does it take to have a commit replicated to a secondary node?](#how-long-does-it-take-to-have-a-commit-replicated-to-a-secondary-node)
+- [Repositories data replication](#repositories-data-replication)
+- [Primary Node setup](#primary-node-setup)
+- [Secondary Node](#secondary-node)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Setup instructions
+## Repositories data replication
 
-GitLab Geo requires some additional work installing and configuring your
-instance, than a normal setup.
+Getting a new secondary Geo node up and running, will also require the
+repositories directory to be rsynced from the primary node.
 
-### Primary Node
+If this step is not followed, the secondary node will eventually clone and
+fetch every missing repository as they are updated on the primary node.
+
+The final step will be to regenerate the keys for `.ssh/authorized_keys` using
+the following commands (https clone will work without this extra step):
+
+```
+# For source installations
+sudo -u git -H bundle exec rake gitlab:shell:setup
+
+# For Omnibus installations
+gitlab-rake gitlab:shell:setup
+```
+
+## Primary Node setup
 
 To turn your GitLab instance into a primary Geo node, go to
 **Admin Area > Geo Nodes** (`/admin/geo_nodes`).
@@ -56,7 +55,7 @@ You will need to setup your database into a **Master <-> Slave** replication
 topology, and your Primary node should always point to a database's
 Master instance.
 
-### Secondary Node
+## Secondary Node
 
 To install a secondary node, you must follow your a normal GitLab install
 instructions with some extra requirements:
@@ -64,41 +63,3 @@ instructions with some extra requirements:
 - You should point your database connection to a Slave replicated instance.
 - Your secondary node should be allowed to communicate by HTTP/HTTPS and
   SSH with your primary node (make sure your firewall is not blocking that).
-
-## Current limitations
-
-- You cannot push code to secondary nodes
-- Git LFS is not supported yet
-- Git Annex is not supported yet
-- Wiki's are not being replicated yet
-- Git clone from secondaries by HTTP/HTTPS only (ssh-keys aren't being
-  replicated yet)
-
-## Frequently Asked Questions
-
-### Can I use Geo in a disaster recovery situation?
-
-There are limitations to what we replicate (see Current limitations).
-In an extreme data-loss situation you can make a secondary Geo into your
-primary, but this is not officially supported yet.
-
-### What data is replicated to a secondary node?
-
-We currently replicate project repositories and the whole database. This
-means user accounts, issues, merge requests, groups, project data, etc.,
-will be available for query.
-We currently don't replicate user generated attachments / avatars or any
-other file in `public/upload`. We also don't replicate LFS / Annex or
-artifacts data (`shared/folder`).
-
-### Can I git push to a secondary node?
-
-No. All writing operations (this includes `git push`) must be done in your
-primary node.
-
-### How long does it take to have a commit replicated to a secondary node?
-
-All replication operations are asynchronous and are queued to be dispatched in
-a batched request every 10 seconds. Besides that, it depends on a lot of other
-factors including the amount of traffic, how big your commit is, the
-connectivity between your nodes, your hardware, etc.

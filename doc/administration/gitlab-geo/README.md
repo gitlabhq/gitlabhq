@@ -1,11 +1,90 @@
+# GitLab Geo
+
+> **Note:**
+This feature was introduced in GitLab 8.5 EE.
+
+GitLab Geo allows you to replicate your GitLab instance to other geographical
+locations as a read-only fully operational version.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [GitLab Geo](#gitlab-geo)
+
+- [Overview](#overview)
+- [Setup instructions](#setup-instructions)
+- [Current limitations](#current-limitations)
+- [Frequently Asked Questions](#frequently-asked-questions)
+    - [Can I use Geo in a disaster recovery situation?](#can-i-use-geo-in-a-disaster-recovery-situation)
+    - [What data is replicated to a secondary node?](#what-data-is-replicated-to-a-secondary-node)
+    - [Can I git push to a secondary node?](#can-i-git-push-to-a-secondary-node)
+    - [How long does it take to have a commit replicated to a secondary node?](#how-long-does-it-take-to-have-a-commit-replicated-to-a-secondary-node)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# GitLab Geo
+## Overview
 
-* [Overview](overview.md)
+If you have two or more teams geographically spread out, but your GitLab
+instance is in a single location, fetching large repositories can take a long
+time.
+
+Your Geo instance can be used for cloning and fetching projects, in addition to
+reading any data. This will make working with large repositories over large
+distances much faster.
+
+![GitLab Geo overview](img/geo-overview.png)
+
+When Geo is enabled, we refer to your original instance as a **primary** node
+and the replicated read-only ones as **secondaries**.
+
+## Setup instructions
+
+GitLab Geo requires some additional work installing and configuring your
+instance, than a normal setup.
+
+There are two main things you need to do in order to have one or more GitLab
+Geo instances:
+
+1. The very first step you need to take, is [setup a database replication](database.md)
+   in `master <-> slave` topology
+1. Then you have to [configure GitLab](configuration.md) and set the primary
+   and secondary nodes
+
+Follow the above steps in that order.
+
+## Current limitations
+
+- You cannot push code to secondary nodes
+- Git LFS is not supported yet
+- Git Annex is not supported yet
+- Wiki's are not being replicated yet
+- Git clone from secondaries by HTTP/HTTPS only (ssh-keys aren't being
+  replicated yet)
+
+## Frequently Asked Questions
+
+### Can I use Geo in a disaster recovery situation?
+
+There are limitations to what we replicate (see Current limitations).
+In an extreme data-loss situation you can make a secondary Geo into your
+primary, but this is not officially supported yet.
+
+### What data is replicated to a secondary node?
+
+We currently replicate project repositories and the whole database. This
+means user accounts, issues, merge requests, groups, project data, etc.,
+will be available for query.
+We currently don't replicate user generated attachments / avatars or any
+other file in `public/upload`. We also don't replicate LFS / Annex or
+artifacts data (`shared/folder`).
+
+### Can I git push to a secondary node?
+
+No. All writing operations (this includes `git push`) must be done in your
+primary node.
+
+### How long does it take to have a commit replicated to a secondary node?
+
+All replication operations are asynchronous and are queued to be dispatched in
+a batched request every 10 seconds. Besides that, it depends on a lot of other
+factors including the amount of traffic, how big your commit is, the
+connectivity between your nodes, your hardware, etc.
