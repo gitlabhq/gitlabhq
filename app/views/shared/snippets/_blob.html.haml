@@ -1,6 +1,6 @@
 - unless @snippet.content.empty?
   - if markup?(@snippet.file_name)
-    .hidden.blob-content{data: {blob_id: @snippet.id}}
+    %textarea.markdown-snippet-copy.blob-content{data: {blob_id: @snippet.id}}
       = @snippet.data
     .file-content.wiki
       = render_markup(@snippet.file_name, @snippet.data)
