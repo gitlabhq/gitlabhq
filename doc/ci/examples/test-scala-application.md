@@ -7,6 +7,8 @@ This example demonstrates the integration of Gitlab CI with Scala applications u
 The following `.gitlab-ci.yml` should be added in the root of your repository to trigger CI:
 
 ```yaml
+image: java:8
+
 before_script:
   # Install SBT
   - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
