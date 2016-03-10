@@ -4,6 +4,8 @@ class CiBuild
   constructor: (build_url, build_status) ->
     clearInterval(CiBuild.interval)
 
+    @initScrollButtonAffix()
+
     if build_status == "running" || build_status == "pending"
       #
       # Bind autoscroll button to follow build output
@@ -37,5 +39,16 @@ class CiBuild
 
   checkAutoscroll: ->
     $("html,body").scrollTop $("#build-trace").height()  if "enabled" is $("#autoscroll-button").data("state")
+
+  initScrollButtonAffix: ->
+    buildScroll = $('#js-build-scroll')
+    body = $('body')
+    buildTrace = $('#build-trace')
+
+    buildScroll.affix(
+      offset:
+        bottom: ->
+          body.outerHeight() - (buildTrace.outerHeight() + buildTrace.offset().top)
+    )
 
 @CiBuild = CiBuild
