@@ -172,8 +172,8 @@ describe GitPushService, services: true do
   end
 
 
-  describe "Web Hooks" do
-    context "execute web hooks" do
+  describe "Webhooks" do
+    context "execute webhooks" do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")

@@ -40,7 +40,7 @@ module SearchHelper
       { label: "help: Rake Tasks Help",    url: help_page_path("raketasks", "README") },
       { label: "help: SSH Keys Help",      url: help_page_path("ssh", "README") },
       { label: "help: System Hooks Help",  url: help_page_path("system_hooks", "system_hooks") },
-      { label: "help: Web Hooks Help",     url: help_page_path("web_hooks", "web_hooks") },
+      { label: "help: Webhooks Help",     url: help_page_path("web_hooks", "web_hooks") },
       { label: "help: Workflow Help",      url: help_page_path("workflow", "README") },
     ]
   end
