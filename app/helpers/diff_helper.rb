@@ -44,6 +44,7 @@ module DiffHelper
     if line.blank?
       " &nbsp;".html_safe
     else
+      line[0] = ''
       line
     end
   end

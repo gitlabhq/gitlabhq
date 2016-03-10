@@ -62,6 +62,12 @@
       .line_holder td {
         line-height: $code_line_height;
         font-size: $code_font_size;
+        &.noteable_line.old:before {
+          content: '-';
+        }
+        &.noteable_line.new:before {
+          content: '+';
+        }
       }
     }
 
