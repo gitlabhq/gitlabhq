@@ -20,6 +20,7 @@ v 8.6.0 (unreleased)
   - Fix bug where Bitbucket `closed` issues were imported as `opened` (Iuri de Silvio)
   - Don't show Issues/MRs from archived projects in Groups view
   - Increase the notes polling timeout over time (Roberto Dip)
+  - Add shortcut to toggle markdown preview (Florent Baldino)
   - Show labels in dashboard and group milestone views
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
