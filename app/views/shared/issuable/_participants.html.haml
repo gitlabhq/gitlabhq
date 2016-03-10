@@ -1,5 +1,8 @@
+- participants_row = 7
 - participants_size = participants.size
-- participants_extra = participants_size - 7
+- participants_extra = participants_size - participants_row
+:javascript
+  var PARTICIPANTS_ROW = #{participants_row};
 .block.participants
   .sidebar-collapsed-icon
     = icon('users')
@@ -14,4 +17,4 @@
     - if participants_extra > 0
       %div.participants-more
         %a.js-participants-more{href: "#", data: {original_text: "+ #{participants_size - 7} more", less_text: "- show less"}}
-          + #{participants_size - 7} more
+          + #{participants_extra} more

@@ -91,7 +91,7 @@ class @Issue
 
     # hide any participants from number 6
     $(".js-participants-author").each (i) ->
-      if i > 6
+      if i >= PARTICIPANTS_ROW
         $(@)
           .addClass "js-participants-hidden hidden"
 
@@ -101,7 +101,7 @@ class @Issue
     currentText = $(this).text().trim()
     lessText = $(this).data("less-text")
     originalText = $(this).data("original-text")
-    
+
     if currentText is originalText
       $(this).text(lessText)
     else
