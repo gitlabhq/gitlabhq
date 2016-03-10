@@ -28,6 +28,9 @@ class Issue < ActiveRecord::Base
   include Sortable
   include Taskable
 
+  NO_DUE_DATE = ['No Due Date', '0']
+  ANY_DUE_DATE = ['Any Due Date', '']
+
   ActsAsTaggableOn.strict_case_match = true
 
   belongs_to :project

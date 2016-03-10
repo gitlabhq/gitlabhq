@@ -39,6 +39,7 @@ class IssuableFinder
     items = by_assignee(items)
     items = by_author(items)
     items = by_label(items)
+    items = by_due_date(items)
     sort(items)
   end
 
@@ -110,6 +111,14 @@ class IssuableFinder
       else
         nil
       end
+  end
+
+  def due_date?
+    params[:due_date].present?
+  end
+
+  def filter_by_no_due_date?
+    due_date? && params[:due_date] == Issue::NO_DUE_DATE[1]
   end
 
   def labels?
@@ -281,6 +290,19 @@ class IssuableFinder
     # When filtering by multiple labels we may end up duplicating issues (if one
     # has multiple labels). This ensures we only return unique issues.
     items.distinct
+  end
+
+  def by_due_date(items)
+    if due_date?
+      if filter_by_no_due_date?
+        items = items.no_due_date
+      else
+        items = items.has_due_date
+        # Must use issues prefix to avoid ambiguous match with Milestone#due_date
+        items = items.where("issues.due_date > ? AND issues.due_date <= ?", Date.today, params[:due_date])
+      end
+    end
+    items
   end
 
   def label_names

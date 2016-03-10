@@ -39,6 +39,8 @@ module Issuable
     scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
     scope :with_label, ->(title) { joins(:labels).where(labels: { title: title }) }
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
+    scope :has_due_date, ->{ where("issues.due_date IS NOT NULL") }
+    scope :no_due_date, ->{ where("issues.due_date IS NULL")}
 
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }

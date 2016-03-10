@@ -153,6 +153,69 @@ describe 'Issues', feature: true do
       expect(first_issue).to include('baz')
     end
 
+    describe 'sorting by due date' do
+      before :each do
+        foo.due_date = 1.day.from_now
+        foo.save
+        bar.due_date = 6.days.from_now
+        bar.save
+      end
+
+      it 'sorts by recently due date' do
+        visit namespace_project_issues_path(project.namespace, project, sort: sort_value_due_date_soon)
+        expect(first_issue).to include('foo')
+      end
+
+      it 'sorts by least recently due date' do
+        visit namespace_project_issues_path(project.namespace, project, sort: sort_value_due_date_later)
+        expect(first_issue).to include('bar')
+      end
+
+      it 'sorts by least recently due date by excluding nil due dates' do
+        bar.update(due_date: nil)
+        visit namespace_project_issues_path(project.namespace, project, sort: sort_value_due_date_later)
+        expect(first_issue).to include('foo')
+      end
+    end
+
+    describe 'filtering by due date' do
+      before :each do
+        foo.due_date = 1.day.from_now
+        foo.save
+        bar.due_date = 6.days.from_now
+        bar.save
+      end
+
+      it 'filters by none' do
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::NO_DUE_DATE[1])
+        expect(page).not_to have_content("foo")
+        expect(page).not_to have_content("bar")
+        expect(page).to have_content("baz")
+      end
+
+      it 'filters by any' do
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::ANY_DUE_DATE[1])
+        expect(page).to have_content("foo")
+        expect(page).to have_content("bar")
+        expect(page).to have_content("baz")
+      end
+
+      it 'filters by due to tomorrow' do
+        visit namespace_project_issues_path(project.namespace, project, due_date: Date.tomorrow.to_s)
+        expect(page).to have_content("foo")
+        expect(page).not_to have_content("bar")
+        expect(page).not_to have_content("baz")
+      end
+
+      it 'filters by due in this week' do
+        visit namespace_project_issues_path(project.namespace, project, due_date: 7.days.from_now.to_date.to_s)
+        expect(page).to have_content("foo")
+        expect(page).to have_content("bar")
+        expect(page).not_to have_content("baz")
+      end
+
+    end
+
     describe 'sorting by milestone' do
       before :each do
         foo.milestone = newer_due_milestone
