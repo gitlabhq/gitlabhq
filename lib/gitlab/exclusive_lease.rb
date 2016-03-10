@@ -23,8 +23,7 @@ module Gitlab
     # Try to obtain the lease. Return true on succes,
     # false if the lease is already taken.
     def try_obtain
-      # This is expected to be atomic because we are talking to a
-      # single-threaded Redis server.
+      # Performing a single SET is atomic
       !!redis.set(redis_key, '1', nx: true, ex: @timeout)
     end
 
