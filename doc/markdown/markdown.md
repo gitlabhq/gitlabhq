@@ -29,6 +29,8 @@
 
 ## GitLab Flavored Markdown (GFM)
 
+_GitLab uses the [redcarpet ruby library][redcarpet] for markdown processing._
+
 For GitLab we developed something we call "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality.
 
 You can use GFM in
@@ -591,3 +593,4 @@ By including colons in the header row, you can align the text within that column
 - [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
 
 [rouge]: http://rouge.jneen.net/ "Rouge website"
+[redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
