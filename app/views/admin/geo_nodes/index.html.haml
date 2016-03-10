@@ -45,8 +45,11 @@
       - @nodes.each do |node|
         %li
           .list-item-name
+            %span
+              = node.primary ? icon('star fw') : icon('globe fw')
             %strong= node.url
-            %p #{node.primary ? 'Primary node' : 'Secondary node'}
+            %p
+              %span.help-block #{node.primary ? 'Primary node' : 'Secondary node'}
 
           .pull-right
             = link_to 'Remove', admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'
