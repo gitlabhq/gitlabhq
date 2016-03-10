@@ -19,6 +19,7 @@ class Milestone < ActiveRecord::Base
   MilestoneStruct = Struct.new(:title, :name, :id)
   None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
   Any = MilestoneStruct.new('Any Milestone', '', -1)
+  Upcoming = MilestoneStruct.new('Upcoming', '', -2)
 
   include InternalId
   include Sortable

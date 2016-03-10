@@ -94,6 +94,10 @@ class IssuableFinder
     params[:milestone_title].present?
   end
 
+  def upcoming?
+    params[:milestone_title] == 'Upcoming'
+  end
+
   def filter_by_no_milestone?
     milestones? && params[:milestone_title] == Milestone::None.title
   end
@@ -248,6 +252,10 @@ class IssuableFinder
     if milestones?
       if filter_by_no_milestone?
         items = items.where(milestone_id: [-1, nil])
+      elsif upcoming?
+        upcoming = Milestone.where(project_id: projects)
+                            .where('due_date > ?', Time.now).order(due_date: :asc).first
+        items = items.joins(:milestone).where(milestone: { title: upcoming.title })
       else
         items = items.joins(:milestone).where(milestones: { title: params[:milestone_title] })
 
