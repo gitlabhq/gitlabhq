@@ -16,13 +16,13 @@
           - line_code = generate_line_code(note.file_path, line)
           %tr.line_holder{ id: line_code, class: "#{type}" }
             - if type == "match"
-              %td.old_line.diff-line-num= "..."
-              %td.new_line.diff-line-num= "..."
+              %td.old_line.diff-line-num.unselectable= "..."
+              %td.new_line.diff-line-num.unselectable= "..."
               %td.line_content.match= line.text
             - else
-              %td.old_line.diff-line-num
+              %td.old_line.diff-line-num.unselectable
                 = raw(type == "new" ? "&nbsp;" : line.old_pos)
-              %td.new_line.diff-line-num
+              %td.new_line.diff-line-num.unselectable
                 = raw(type == "old" ? "&nbsp;" : line.new_pos)
               %td.line_content{class: "noteable_line #{type} #{line_code}", line_code: line_code}= diff_line_content(line.text)
 

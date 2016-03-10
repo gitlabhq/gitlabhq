@@ -9,12 +9,12 @@
           = render "projects/diffs/match_line_parallel", { line: left[:text],
           line_old: left[:number], line_new: right[:number] }
         - elsif left[:type] == 'nonewline'
-          %td.old_line.diff-line-num
+          %td.old_line.diff-line-num.unselectable
           %td.line_content.parallel.match= left[:text]
-          %td.new_line.diff-line-num
+          %td.new_line.diff-line-num.unselectable
           %td.line_content.parallel.match= left[:text]
         - else
-          %td.old_line.diff-line-num{id: left[:line_code], class: "#{left[:type]}"}
+          %td.old_line.diff-line-num.unselectable{id: left[:line_code], class: "#{left[:type]}"}
             = link_to raw(left[:number]), "##{left[:line_code]}", id: left[:line_code]
             - if @comments_allowed && can?(current_user, :create_note, @project)
               = link_to_new_diff_note(left[:line_code], 'old')
@@ -27,7 +27,7 @@
             - new_line_class = nil
             - new_line_code = left[:line_code]
 
-          %td.new_line.diff-line-num{id: new_line_code, class: "#{new_line_class}", data: { linenumber: right[:number] }}
+          %td.new_line.diff-line-num.unselectable{id: new_line_code, class: "#{new_line_class}", data: { linenumber: right[:number] }}
             = link_to raw(right[:number]), "##{new_line_code}", id: new_line_code
             - if @comments_allowed && can?(current_user, :create_note, @project)
               = link_to_new_diff_note(right[:line_code], 'new')
