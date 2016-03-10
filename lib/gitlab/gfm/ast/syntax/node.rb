@@ -3,7 +3,7 @@ module Gitlab
     module Ast
       module Syntax
         class Node
-          attr_reader :text, :range, :parent, :value, :nodes
+          attr_reader :text, :range, :parent, :nodes
 
           def initialize(text, range, match, parent)
             @text = text
@@ -16,14 +16,12 @@ module Gitlab
           end
 
           ##
-          # Process children nodes
+          # Nodes allowed inside this one.
           #
-          def process!
-            @nodes = lexer.new(@text, self.class.allowed, self).process!
-          end
-
-          def index
-            @range.begin
+          # This is pipeline of lexemes, order is relevant.
+          #
+          def allowed
+            raise NotImplementedError
           end
 
           ##
@@ -34,14 +32,35 @@ module Gitlab
           end
 
           ##
-          # Is this node a leaf node?
+          # Returns the value of this nodes, without node-specific tokens.
+          #
+          def value
+            raise NotImplementedError
+          end
+
+          ##
+          # Process children nodes
+          #
+          def process!
+            @nodes = lexer.new(value, allowed, self).process!
+          end
+
+          ##
+          # Position of this node in parent
+          #
+          def index
+            @range.begin
+          end
+
+          ##
+          # Returns true if node is a leaf in the three.
           #
           def leaf?
             @nodes.empty?
           end
 
           ##
-          # Lexer for this node
+          # Each node can have it's own lexer.
           #
           def lexer
             Ast::Lexer
@@ -65,18 +84,7 @@ module Gitlab
           end
 
           ##
-          # Nodes allowed inside this one.
-          #
-          # This is pipeline of lexemes, order is relevant.
-          #
-          def self.allowed
-            raise NotImplementedError
-          end
-
-          ##
-          # Regexp pattern for this node
-          #
-          # Each pattern must contain at least `value` capture group.
+          # Regexp pattern for this token.
           #
           def self.pattern
             raise NotImplementedError

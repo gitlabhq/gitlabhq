@@ -4,16 +4,20 @@ module Gitlab
       module Syntax
         module Markdown
           class CodeBlock < Node
+            def allowed
+              []
+            end
+
             def to_s
-              @match[:start_token] + @value + @match[:end_token]
+              @text
+            end
+
+            def value
+              @text
             end
 
             def lang
               @match[:lang]
-            end
-
-            def self.allowed
-              []
             end
 
             def self.pattern

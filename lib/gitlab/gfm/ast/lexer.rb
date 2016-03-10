@@ -84,6 +84,16 @@ module Gitlab
             end
           end
         end
+
+        ##
+        # Processes single token, and returns first lexeme that has been
+        # created.
+        #
+        def self.single(text, token)
+          lexer = new(text, [token])
+          nodes = lexer.process!
+          nodes.first
+        end
       end
     end
   end

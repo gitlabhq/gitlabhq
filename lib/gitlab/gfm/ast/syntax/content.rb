@@ -6,12 +6,16 @@ module Gitlab
         # Main GFM content
         #
         class Content < Node
-          def self.allowed
+          def allowed
             [Syntax::Markdown::CodeBlock, Syntax::Text]
           end
 
           def self.pattern
             /(?<value>.+)/m
+          end
+
+          def value
+            @text
           end
 
           def to_s

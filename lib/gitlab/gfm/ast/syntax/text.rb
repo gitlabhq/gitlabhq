@@ -6,12 +6,16 @@ module Gitlab
         # Text description
         #
         class Text < Node
-          def to_s
+          def allowed
+            []
+          end
+
+          def value
             @text
           end
 
-          def self.allowed
-            []
+          def to_s
+            @text
           end
 
           def self.pattern
