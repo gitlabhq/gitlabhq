@@ -28,7 +28,10 @@ module Gitlab
     end
 
     def list_of_involved_files
-      compare_diffs = @merge_request.compare_diffs || @merge_request.diffs
+      diffable = [@merge_request.compare, @merge_request.merge_request_diff].compact
+      return [] if diffable.empty?
+
+      compare_diffs = diffable.first.diffs
 
       return [] unless compare_diffs.present?
       
