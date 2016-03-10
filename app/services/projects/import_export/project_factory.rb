@@ -3,7 +3,7 @@ module Projects
     module ProjectFactory
       extend self
 
-      def create(project_params:, user:)
+      def create(project_params:, user:, members:)
         project = Project.new(project_params.except('id'))
         project.creator = user
         check_namespace(project_params['namespace_id'], project, user)

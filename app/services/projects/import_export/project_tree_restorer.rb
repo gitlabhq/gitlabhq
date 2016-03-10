@@ -8,32 +8,42 @@ module Projects
         @user = user
       end
 
-      #TODO deal with ID issues.
-      #TODO refactor this method
       def restore
         json = IO.read(@path)
-        tree_hash = ActiveSupport::JSON.decode(json)
-        project = create_project(tree_hash)
-        ImportExport.project_tree.each do |relation|
-          next if tree_hash[relation.to_s].empty?
-          relation_hash = create_relation(relation, tree_hash[relation.to_s], project.id)
-          project.update_attribute(relation, relation_hash)
-        end
+        @tree_hash = ActiveSupport::JSON.decode(json)
+        create_relations
       end
 
       private
 
-      def create_project(tree_hash)
-        project_params = tree_hash.reject { |_key, value| value.is_a?(Array) }
-        project = Projects::ImportExport::ProjectFactory.create(project_params: project_params, user: @user)
+      def members
+        @members ||= Projects::ImportExport::MembersMapper.map(exported_members: @tree_hash.delete('project_members'))
+      end
+
+      def create_relations
+        (ImportExport.project_tree - [:project_members]).each do |relation|
+          next if @tree_hash[relation.to_s].empty?
+          relation_hash = create_relation(relation, @tree_hash[relation.to_s])
+          project.update_attribute(relation, relation_hash)
+        end
+      end
+
+      def project
+        @project ||= create_project
+      end
+
+      def create_project
+        project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
+        project = Projects::ImportExport::ProjectFactory.create(
+          project_params: project_params, user: @user, members: members)
         project.save
         project
       end
 
-      def create_relation(relation, relation_hash_list, project_id)
+      def create_relation(relation, relation_hash_list)
         relation_hash_list.map do |relation_hash|
           Projects::ImportExport::RelationFactory.create(
-            relation_sym: relation, relation_hash: relation_hash.merge(project_id: project_id))
+            relation_sym: relation, relation_hash: relation_hash.merge(project_id: project.id), members: members)
         end
       end
     end
