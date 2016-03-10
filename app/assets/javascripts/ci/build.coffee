@@ -41,9 +41,9 @@ class CiBuild
     $("html,body").scrollTop $("#build-trace").height()  if "enabled" is $("#autoscroll-button").data("state")
 
   initScrollButtonAffix: ->
-    buildScroll = $('#js-build-scroll')
-    body = $('body')
-    buildTrace = $('#build-trace')
+    $buildScroll = $('#js-build-scroll')
+    $body = $('body')
+    $buildTrace = $('#build-trace')
 
     buildScroll.affix(
       offset:
