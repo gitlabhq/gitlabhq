@@ -160,7 +160,7 @@ args: {
         idp_sso_target_url: 'https://login.example.com/idp',
         issuer: 'https://gitlab.example.com',
         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-        attribute_statements: { :email => ['EmailAddress'] }
+        attribute_statements: { email: ['EmailAddress'] }
 }
 ```
 
@@ -178,7 +178,7 @@ args: {
         idp_sso_target_url: 'https://login.example.com/idp',
         issuer: 'https://gitlab.example.com',
         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
-        attribute_statements: { :email => ['EmailAddress'] },
+        attribute_statements: { email: ['EmailAddress'] },
         allowed_clock_drift: 1 # for one second clock drift
 }
 ```
