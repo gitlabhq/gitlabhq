@@ -32,6 +32,6 @@
       dataType: "json"
 
   initPagination: ->
-    $('.projects-list-holder .pagination').bind('ajax:success', (e, data) ->
+    $('.projects-list-holder .pagination').on('ajax:success', (e, data) ->
       $('.projects-list-holder').replaceWith(data.html)
     )
