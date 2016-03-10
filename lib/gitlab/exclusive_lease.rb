@@ -14,8 +14,8 @@ module Gitlab
   # most once an hour). If the timeout is lower than how long your
   # operation may take then you cannot count on exclusivity. For example,
   # if the timeout is 10 seconds and you do an operation which may take 20
-  # seconds then two overlapping operations may hold a lease at the
-  # same time.
+  # seconds then two overlapping operations may hold a lease for the same
+  # key at the same time.
   #
   class ExclusiveLease
     def initialize(key, timeout:)
