@@ -115,16 +115,8 @@
     }
 
     .ui-autocomplete-loading + .search-icon {
-      height: 25px;
-      width: 25px;
-      position: absolute;
-      right: 0;
-      background-image: image-url('spinner.svg');
-      fill: red;
-
-      &:before {
-        display: none;
-      }
+      @extend .fa-spinner;
+      @extend .fa-spin;
     }
   }
 }
