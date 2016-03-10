@@ -23,7 +23,7 @@ module Elastic
 
       output, status = Gitlab::Popen.popen(command, nil, vars)
 
-      raise Error, output.join("\n") unless status.zero?
+      raise Error, output unless status.zero?
 
       true
     end
