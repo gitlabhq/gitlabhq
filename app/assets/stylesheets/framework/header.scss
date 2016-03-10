@@ -141,7 +141,7 @@ header {
   margin-left: $sidebar_collapsed_width;
 }
 
-@media (max-width: $screen-sm) {
+@media (max-width: $screen-sm-min) {
   .header-collapsed {
     margin-left: $sidebar_collapsed_width;
   }
@@ -151,7 +151,7 @@ header {
   }
 }
 
-@media(min-width: $screen-sm) {
+@media(min-width: $screen-sm-min) {
   .header-collapsed {
     @include collapsed-header;
   }
