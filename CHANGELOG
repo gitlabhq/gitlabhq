@@ -25,6 +25,7 @@ v 8.6.0 (unreleased)
   - Show labels in dashboard and group milestone views
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
+  - Fix pagination for filtered dashboard and explore pages
 
 v 8.5.5
   - Ensure removing a project removes associated Todo entries.
