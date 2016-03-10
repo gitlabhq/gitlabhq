@@ -2,6 +2,7 @@
   init: ->
     $(".projects-list-filter").off('keyup')
     this.initSearch()
+    this.initPagination()
 
   initSearch: ->
     @timer = null
@@ -29,3 +30,8 @@
         # Change url so if user reload a page - search results are saved
         history.replaceState {page: project_filter_url}, document.title, project_filter_url
       dataType: "json"
+
+  initPagination: ->
+    $('.projects-list-holder .pagination').bind('ajax:success', (e, data) ->
+      $('.projects-list-holder').replaceWith(data.html)
+    )
