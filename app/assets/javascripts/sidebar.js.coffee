@@ -20,7 +20,7 @@ $(document).on("click", '.toggle-nav-collapse', (e) ->
   toggleSidebar()
 )
 
-$(document).ready ->
+$ ->
   if $(window).width() < mobileWidth
     if $('.page-with-sidebar').hasClass(expanded)
       toggleSidebar()
