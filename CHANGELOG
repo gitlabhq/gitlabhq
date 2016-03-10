@@ -14,6 +14,7 @@ v 8.6.0 (unreleased)
   - Strip leading and trailing spaces in URL validator (evuez)
   - Add "last_sign_in_at" and "confirmed_at" to GET /users/* API endpoints for admins (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
+  - Decrease the font size and the padding of the `.anchor` icons used in the README (Roberto Dip)
   - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
