@@ -90,8 +90,8 @@ GFM will autolink almost any URL you copy and paste into your text.
 
 ## Code and Syntax Highlighting
 
-_GitLab uses the [rouge ruby library][rouge] for syntax highlighting. For a
-list of supported languages visit the rouge website._
+_GitLab uses the [Rouge Ruby library][rouge] for syntax highlighting. For a
+list of supported languages visit the Rouge website._
 
 Blocks of code are either fenced by lines with three back-ticks <code>```</code>, or are indented with four spaces. Only the fenced code blocks support syntax highlighting.
 
