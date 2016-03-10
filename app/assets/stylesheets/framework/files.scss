@@ -169,6 +169,7 @@
      */
     &.code {
       padding: 0;
+      -webkit-overflow-scrolling: auto; // Issue #13987
     }
   }
 }
