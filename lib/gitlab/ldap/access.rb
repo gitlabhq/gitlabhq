@@ -7,10 +7,14 @@ module Gitlab
     class Access
       attr_reader :provider, :user
 
-      LOCK_TIMEOUT = 600
+      # This timeout acts as a throttle on LDAP user checks. Its value of 600
+      # seconds (10 minutes) means that after calling try_lock_user for user
+      # janedoe, no new LDAP checks can start for that user for the next 10
+      # minutes.
+      LEASE_TIMEOUT = 600
 
       def self.try_lock_user(user)
-        Gitlab::ExclusiveLease.new("user_ldap_check:#{user.id}", LOCK_TIMEOUT).try_obtain
+        Gitlab::ExclusiveLease.new("user_ldap_check:#{user.id}", LEASE_TIMEOUT).try_obtain
       end
 
       def self.open(user, &block)
