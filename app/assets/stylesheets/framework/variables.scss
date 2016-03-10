@@ -138,3 +138,15 @@ $dropdown-shadow-color: rgba(#000, .1);
 $dropdown-divider-color: rgba(#000, .1);
 $dropdown-header-color: #959494;
 $dropdown-caret-color: #54565B;
+$dropdown-title-btn-color: #BFBFBF;
+$dropdown-input-color: #C7C7C7;
+$dropdown-input-focus-border: rgb(58, 171, 240);
+$dropdown-input-focus-shadow: rgba(#000, .2);
+$dropdown-loading-bg: rgba(#fff, .6);
+
+$dropdown-toggle-bg: #fff;
+$dropdown-toggle-color: #626262;
+$dropdown-toggle-border-color: #EAEAEA;
+$dropdown-toggle-hover-border-color: darken($dropdown-toggle-border-color, 15%);
+$dropdown-toggle-icon-color: #C4C4C4;
+$dropdown-toggle-hover-icon-color: $dropdown-toggle-hover-border-color;
