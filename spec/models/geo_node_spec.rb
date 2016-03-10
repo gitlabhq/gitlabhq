@@ -32,6 +32,16 @@ describe GeoNode, type: :model do
     end
   end
 
+  context 'prevent locking yourself out' do
+    subject { GeoNode.new(host: Gitlab.config.gitlab.host,
+                          port: Gitlab.config.gitlab.port,
+                          relative_url_root: Gitlab.config.gitlab.relative_url_root) }
+
+    it 'does not accept adding a non primary node with same details as current_node' do
+      expect(subject).not_to be_valid
+    end
+  end
+
   describe '#uri' do
     context 'when all fields are filled' do
       subject { GeoNode.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }

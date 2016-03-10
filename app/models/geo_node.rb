@@ -72,4 +72,13 @@ class GeoNode < ActiveRecord::Base
   def change_geo_node_key_title
     self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
   end
+
+  def validate(record)
+    # Prevent locking yourself out
+    if record.host == Gitlab.config.gitlab.host &&
+       record.port == Gitlab.config.gitlab.port &&
+       record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
+      record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
+    end
+  end
 end
