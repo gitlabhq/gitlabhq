@@ -61,6 +61,11 @@
           .col-sm-10 You cannot remove your own admin rights
         - else
           .col-sm-10= f.check_box :admin
+
+      .form-group
+        = f.label :external, class: 'control-label'
+        .col-sm-10= f.check_box :external
+
     %fieldset
       %legend Profile
       .form-group

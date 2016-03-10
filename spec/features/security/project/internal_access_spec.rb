@@ -34,6 +34,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -45,6 +46,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -56,6 +58,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -67,6 +70,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -78,6 +82,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -89,22 +94,21 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
   describe "GET /:project_path/blob" do
-    before do
-      commit = project.repository.commit
-      path = '.gitignore'
-      @blob_path = namespace_project_blob_path(project.namespace, project, File.join(commit.id, path))
-    end
+    let(:commit) { project.repository.commit }
+    subject { namespace_project_blob_path(project.namespace, project, File.join(commit.id, '.gitignore')) }
 
-    it { expect(@blob_path).to be_allowed_for master }
-    it { expect(@blob_path).to be_allowed_for reporter }
-    it { expect(@blob_path).to be_allowed_for :admin }
-    it { expect(@blob_path).to be_allowed_for guest }
-    it { expect(@blob_path).to be_allowed_for :user }
-    it { expect(@blob_path).to be_denied_for :visitor }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for guest }
+    it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
   end
 
   describe "GET /:project_path/edit" do
@@ -115,6 +119,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -126,6 +131,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -137,6 +143,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -149,6 +156,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -160,6 +168,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -171,6 +180,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -182,6 +192,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -193,6 +204,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -209,6 +221,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -225,6 +238,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -236,6 +250,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
 end

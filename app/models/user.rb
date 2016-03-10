@@ -59,6 +59,7 @@
 #  hide_project_limit          :boolean          default(FALSE)
 #  unlock_token                :string
 #  otp_grace_period_started_at :datetime
+#  external                    :boolean           default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -77,6 +78,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
+  default_value_for :external, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
@@ -179,6 +181,7 @@ class User < ActiveRecord::Base
 
   after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
   before_save :ensure_authentication_token
+  before_save :ensure_external_user_rights
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
   after_create :post_create_hook
@@ -847,5 +850,14 @@ class User < ActiveRecord::Base
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
+  end
+
+  def ensure_external_user_rights
+    return unless self.external?
+
+    self.can_create_team    = false
+    self.can_create_group   = false
+    self.projects_limit     = 0
+    self.hide_project_limit = true
   end
 end

@@ -109,23 +109,10 @@ class Ability
       key = "/user/#{user.id}/project/#{project.id}"
 
       RequestStore.store[key] ||= begin
-        team = project.team
+        # Push abilities on the users team role
+        rules.push(*project_team_rules(project.team, user))
 
-        # Rules based on role in project
-        if team.master?(user)
-          rules.push(*project_master_rules)
-
-        elsif team.developer?(user)
-          rules.push(*project_dev_rules)
-
-        elsif team.reporter?(user)
-          rules.push(*project_report_rules)
-
-        elsif team.guest?(user)
-          rules.push(*project_guest_rules)
-        end
-
-        if project.public? || project.internal?
+        if project.public? || (project.internal? && !user.external?)
           rules.push(*public_project_rules)
 
           # Allow to read builds for internal projects
@@ -145,6 +132,19 @@ class Ability
         end
 
         rules - project_disabled_features_rules(project)
+      end
+    end
+
+    def project_team_rules(team, user)
+      # Rules based on role in project
+      if team.master?(user)
+        project_master_rules
+      elsif team.developer?(user)
+        project_dev_rules
+      elsif team.reporter?(user)
+        project_report_rules
+      elsif team.guest?(user)
+        project_guest_rules
       end
     end
 
@@ -356,7 +356,7 @@ class Ability
         ]
       end
 
-      if snippet.public? || snippet.internal?
+      if snippet.public? || (snippet.internal? && !user.external?)
         rules << :read_personal_snippet
       end
 
