@@ -5,7 +5,10 @@ class AddTrigramIndexesForSearching < ActiveRecord::Migration
     return unless Gitlab::Database.postgresql?
 
     unless trigrams_enabled?
-      raise 'You must enable the pg_trgm extension as a PostgreSQL super user'
+      raise 'You must enable the pg_trgm extension. You can do so by running ' \
+        '"CREATE EXTENSION pg_trgm;" as a PostgreSQL super user, this must be ' \
+        'done for every GitLab database. For more information see ' \
+        'http://www.postgresql.org/docs/current/static/sql-createextension.html'
     end
 
     # trigram indexes are case-insensitive so we can just index the column
