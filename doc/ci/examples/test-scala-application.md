@@ -1,6 +1,6 @@
 ## Test a Scala application
 
-This example demonstrates the integration of Gitlab CI with Scala applications using SBT. Checkout the example [project](https://gitlab.com/jasperdenkers/scala-sbt-sample-app) and [build status](https://gitlab.com/jasperdenkers/scala-sbt-sample-app/builds).
+This example demonstrates the integration of Gitlab CI with Scala applications using SBT. Checkout the example [project](https://gitlab.com/gitlab-examples/scala-sbt) and [build status](https://gitlab.com/gitlab-examples/scala-sbt/builds).
 
 ### Add `.gitlab-ci.yml` file to project
 
