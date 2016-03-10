@@ -14,8 +14,9 @@ v 8.6.0 (unreleased)
   - Increase the notes polling timeout over time (Roberto Dip)
 
 v 8.5.5
-  - Ensure removing a project removes associated Todo entries.
-  - Prevent a 500 error in Todos when author was removed.
+  - Ensure removing a project removes associated Todo entries
+  - Prevent a 500 error in Todos when author was removed
+  - Fix "Show all" link behavior
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
