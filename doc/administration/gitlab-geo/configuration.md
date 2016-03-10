@@ -1,5 +1,12 @@
 # GitLab Geo configuration
 
+Other relevant documents:
+
+- [GitLab Geo overview](README.md)
+- [GitLab database replication](./database.md)
+
+---
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
@@ -31,6 +38,11 @@ gitlab-rake gitlab:shell:setup
 
 ## Primary Node setup
 
+>**Note:**
+You will need to setup your database into a **Master <-> Slave** replication
+topology, and your Primary node should always point to a database's Master
+instance. If you haven't done that already, read [database replication](database.md).
+
 To turn your GitLab instance into a primary Geo node, go to
 **Admin Area > Geo Nodes** (`/admin/geo_nodes`).
 
@@ -51,15 +63,12 @@ your GitLab instance runs on (unless changed, should be the user `git`).
 Repeat the same instructions to add your secondaries instances remembering not
 to check `This is a primary node`, and to use the correct Public Key.
 
-You will need to setup your database into a **Master <-> Slave** replication
-topology, and your Primary node should always point to a database's
-Master instance.
-
 ## Secondary Node
 
 To install a secondary node, you must follow your a normal GitLab install
 instructions with some extra requirements:
 
-- You should point your database connection to a Slave replicated instance.
+- You should point your database connection to a Slave
+  [replicated instance](database.md).
 - Your secondary node should be allowed to communicate by HTTP/HTTPS and
   SSH with your primary node (make sure your firewall is not blocking that).
