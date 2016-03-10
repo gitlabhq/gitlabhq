@@ -1,5 +1,3 @@
-require 'securerandom'
-
 module Gitlab
   # This class implements an 'exclusive lease'. We call it a 'lease'
   # because it has a set expiry time. We call it 'exclusive' because only
@@ -27,7 +25,7 @@ module Gitlab
     def try_obtain
       # This is expected to be atomic because we are talking to a
       # single-threaded Redis server.
-      !!redis.set(redis_key, redis_value, nx: true, ex: @timeout)
+      !!redis.set(redis_key, '1', nx: true, ex: @timeout)
     end
 
     private
@@ -39,10 +37,6 @@ module Gitlab
 
     def redis_key
       "gitlab:exclusive_lease:#{@key}"
-    end
-
-    def redis_value
-      @redis_value ||= SecureRandom.hex(10)
     end
   end
 end
