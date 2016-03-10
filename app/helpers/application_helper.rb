@@ -72,7 +72,7 @@ module ApplicationHelper
     if user_or_email.is_a?(User)
       user = user_or_email
     else
-      user = User.find_by(email: user_or_email.downcase)
+      user = User.find_by(email: user_or_email.try(:downcase))
     end
 
     if user

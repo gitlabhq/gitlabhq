@@ -1,5 +1,16 @@
 #!/bin/bash
 
+retry() {
+    for i in $(seq 1 3); do
+        if eval "$@"; then
+            return 0
+        fi
+        sleep 3s
+        echo "Retrying..."
+    done
+    return 1
+}
+
 if [ -f /.dockerinit ]; then
     mkdir -p vendor
 
@@ -12,17 +23,8 @@ if [ -f /.dockerinit ]; then
     popd
 
     # Try to install packages
-    for i in $(seq 1 3); do
-      apt-get update -yqqq || true
-
-      if apt-get -o dir::cache::archives="vendor/apt" install -y -qq --force-yes \
-          libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip; then
-          break
-      fi
-
-      sleep 3s
-      echo "Retrying package installation..."
-    done
+    retry 'apt-get update -yqqq; apt-get -o dir::cache::archives="vendor/apt" install -y -qq --force-yes \
+      libicu-dev libkrb5-dev cmake nodejs postgresql-client mysql-client unzip'
 
     cp config/database.yml.mysql config/database.yml
     sed -i 's/username:.*/username: root/g' config/database.yml
