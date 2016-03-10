@@ -15,7 +15,7 @@
           Project Settings
     - if @project.allowed_to_share_with_group?
       = nav_link(controller: :group_links) do
-        = link_to namespace_project_group_links_path(@project.namespace, @project) do
+        = link_to namespace_project_group_links_path(@project.namespace, @project), title: "Groups" do
           = icon('share-square-o fw')
           %span
             Groups
@@ -30,7 +30,7 @@
         %span
           Web Hooks
     = nav_link(controller: :git_hooks) do
-      = link_to namespace_project_git_hooks_path(@project.namespace, @project) do
+      = link_to namespace_project_git_hooks_path(@project.namespace, @project), title: "Git Hooks" do
         = icon('git-square fw')
         %span
           Git Hooks
@@ -55,7 +55,7 @@
         %span
           Pages
     = nav_link(controller: :audit_events) do
-      = link_to namespace_project_audit_events_path(@project.namespace, @project) do
+      = link_to namespace_project_audit_events_path(@project.namespace, @project), title: "Audit Events" do
         = icon('file-text-o fw')
         %span
           Audit Events
