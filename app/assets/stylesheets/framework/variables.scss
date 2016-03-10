@@ -36,6 +36,11 @@ $list-title-color: #333333;
 $list-text-color: #555555;
 $profile-settings-link-color: $md-link-color;
 
+$btn-transparent-color: #8F8F8F;
+
+$ssh-key-icon-color: #8F8F8F;
+$ssh-key-icon-size: 18px;
+
 /*
  * Color schema
  */
@@ -93,6 +98,9 @@ $border-red-light: #E52C5A;
 $border-red-normal: #D22852;
 $border-red-dark: #CA264F;
 
+$help-well-bg: #FAFAFA;
+$help-well-border: #E5E5E5;
+
 /* header */
 $light-grey-header: #faf9f9;
 
@@ -118,3 +126,15 @@ $deleted: #f77;
  */
 $monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
 $regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+/*
+* Dropdowns
+*/
+$dropdown-bg: #fff;
+$dropdown-link-color: #555;
+$dropdown-link-hover-bg: rgba(#000, .04);
+$dropdown-border-color: rgba(#000, .1);
+$dropdown-shadow-color: rgba(#000, .1);
+$dropdown-divider-color: rgba(#000, .1);
+$dropdown-header-color: #959494;
+$dropdown-caret-color: #54565B;

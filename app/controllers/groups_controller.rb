@@ -1,4 +1,5 @@
 class GroupsController < Groups::ApplicationController
+  include FilterProjects
   include IssuesAction
   include MergeRequestsAction
 
@@ -41,7 +42,8 @@ class GroupsController < Groups::ApplicationController
   def show
     @last_push = current_user.recent_push if current_user
     @projects = @projects.includes(:namespace)
-    @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
+    @projects = filter_projects(@projects)
+    @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
 
     @shared_projects = @group.shared_projects
@@ -106,7 +108,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_projects
-    @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity.non_archived
+    @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity
   end
 
   # Dont allow unauthorized access to group

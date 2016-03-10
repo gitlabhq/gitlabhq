@@ -151,7 +151,6 @@
   }
 }
 
-
 .right-sidebar {
   position: fixed;
   top: 58px;
@@ -184,6 +183,13 @@
   }
 
   &.right-sidebar-collapsed {
+    /* Extra small devices (phones, less than 768px) */
+    display: none;
+    /* Small devices (tablets, 768px and up) */
+    @media (min-width: $screen-sm-min) {
+      display: block
+    }
+
     width: $sidebar_collapsed_width;
     padding-top: 0;
 
@@ -245,6 +251,10 @@
       border: 1px solid $border-gray-dark;
     }
   }
+}
+
+.btn-default.gutter-toggle {
+  margin-top: 4px;
 }
 
 .detail-page-description {

@@ -4,6 +4,7 @@ class SessionsController < Devise::SessionsController
 
   skip_before_action :check_2fa_requirement, only: [:destroy]
 
+  prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
   before_action :gitlab_geo_login, only: [:new]
@@ -33,6 +34,22 @@ class SessionsController < Devise::SessionsController
   end
 
   private
+
+  # Handle an "initial setup" state, where there's only one user, it's an admin,
+  # and they require a password change.
+  def check_initial_setup
+    return unless User.count == 1
+
+    user = User.admins.last
+
+    return unless user && user.require_password?
+
+    token = user.generate_reset_token
+    user.save
+
+    redirect_to edit_user_password_path(reset_password_token: token),
+      notice: "Please create a password for your new account."
+  end
 
   def user_params
     params.require(:user).permit(:login, :password, :remember_me, :otp_attempt)

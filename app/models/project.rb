@@ -163,6 +163,7 @@ class Project < ActiveRecord::Base
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
   has_many :pages_domains, dependent: :destroy
+  has_many :todos, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
@@ -231,6 +232,7 @@ class Project < ActiveRecord::Base
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
   scope :mirror, -> { where(mirror: true) }
+  scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
 
   state_machine :import_status, initial: :none do
     event :import_start do

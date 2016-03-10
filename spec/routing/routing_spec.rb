@@ -137,7 +137,6 @@ end
 
 #     keys GET    /keys(.:format)          keys#index
 #          POST   /keys(.:format)          keys#create
-#  new_key GET    /keys/new(.:format)      keys#new
 # edit_key GET    /keys/:id/edit(.:format) keys#edit
 #      key GET    /keys/:id(.:format)      keys#show
 #          PUT    /keys/:id(.:format)      keys#update
@@ -149,10 +148,6 @@ describe Profiles::KeysController, "routing" do
 
   it "to #create" do
     expect(post("/profile/keys")).to route_to('profiles/keys#create')
-  end
-
-  it "to #new" do
-    expect(get("/profile/keys/new")).to route_to('profiles/keys#new')
   end
 
   it "to #edit" do

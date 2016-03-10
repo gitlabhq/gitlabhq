@@ -24,10 +24,7 @@ keyCodeIs = (e, keyCode) ->
 $(document).on 'keydown.quick_submit', '.js-quick-submit', (e) ->
   return unless keyCodeIs(e, 13) # Enter
 
-  if isMac()
-    return unless (e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey)
-  else
-    return unless (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey)
+  return unless (e.metaKey && !e.altKey && !e.ctrlKey && !e.shiftKey) || (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey)
 
   e.preventDefault()
 

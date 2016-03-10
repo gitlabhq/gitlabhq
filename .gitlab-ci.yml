@@ -2,6 +2,7 @@ image: "ruby:2.1"
 
 services:
   - mysql:latest
+  - postgres:latest
   - redis:latest
   - elasticsearch:latest
 
@@ -12,17 +13,20 @@ cache:
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
+  # retry tests only in CI environment
+  RSPEC_RETRY_RETRY_COUNT: "3"
   ELASTIC_HOST: "elasticsearch"
+
 
 before_script:
   - source ./scripts/prepare_build.sh
   - ruby -v
   - which ruby
-  - gem install bundler --no-ri --no-rdoc
+  - retry gem install bundler --no-ri --no-rdoc
   - cp config/gitlab.yml.example config/gitlab.yml
   - touch log/application.log
   - touch log/test.log
-  - bundle install --without postgres production --jobs $(nproc)  "${FLAGS[@]}"
+  - retry bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}"
   - RAILS_ENV=test bundle exec rake db:drop db:create db:schema:load db:migrate
 
 stages:

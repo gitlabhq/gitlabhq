@@ -31,6 +31,12 @@ module Banzai
       Pipeline[context[:pipeline]].call(text, context)
     end
 
+    def self.pre_process(text, context)
+      pipeline = Pipeline[:pre_process]
+
+      pipeline.to_html(text, context)
+    end
+
     # Perform post-processing on an HTML String
     #
     # This method is used to perform state-dependent changes to a String of

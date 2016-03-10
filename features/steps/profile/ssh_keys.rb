@@ -7,8 +7,8 @@ class Spinach::Features::ProfileSshKeys < Spinach::FeatureSteps
     end
   end
 
-  step 'I click link "Add new"' do
-    click_link "Add SSH Key"
+  step 'I should see new ssh key form' do
+    expect(page).to have_content("Add an SSH key")
   end
 
   step 'I submit new ssh key "Laptop"' do

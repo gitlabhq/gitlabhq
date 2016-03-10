@@ -322,7 +322,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys
+      resources :keys, except: [:new]
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
       resource :two_factor_auth, only: [:new, :create, :destroy] do

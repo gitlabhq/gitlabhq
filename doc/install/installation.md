@@ -474,12 +474,15 @@ NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit proj
 
 ### Initial Login
 
-Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created a default admin account for you. You can use it to log in:
+Visit YOUR_SERVER in your web browser for your first GitLab login.
 
-    root
-    5iveL!fe
+If you didn't [provide a root password during setup](#initialize-database-and-activate-advanced-features),
+you'll be redirected to a password reset screen to provide the password for the
+initial administrator account. Enter your desired password and you'll be
+redirected back to the login screen.
 
-**Important Note:** On login you'll be prompted to change the password.
+The default account's username is **root**. Provide the password you created
+earlier and login. After login you can change the username if you wish.
 
 **Enjoy!**
 

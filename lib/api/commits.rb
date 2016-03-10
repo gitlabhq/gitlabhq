@@ -48,7 +48,7 @@ module API
         sha = params[:sha]
         commit = user_project.commit(sha)
         not_found! "Commit" unless commit
-        commit.diffs
+        commit.diffs.to_a
       end
 
       # Get a commit's comments
@@ -90,9 +90,9 @@ module API
         }
 
         if params[:path] && params[:line] && params[:line_type]
-          commit.diffs.each do |diff|
+          commit.diffs(all_diffs: true).each do |diff|
             next unless diff.new_path == params[:path]
-            lines = Gitlab::Diff::Parser.new.parse(diff.diff.lines.to_a)
+            lines = Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
 
             lines.each do |line|
               next unless line.new_pos == params[:line].to_i && line.type == params[:line_type]

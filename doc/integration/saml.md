@@ -133,11 +133,15 @@ will be returned to GitLab and will be signed in.
 
 ## Troubleshooting
 
+### 500 error after login
+
 If you see a "500 error" in GitLab when you are redirected back from the SAML sign in page,
 this likely indicates that GitLab could not get the email address for the SAML user.
 
 Make sure the IdP provides a claim containing the user's email address, using claim name
 `email` or `mail`.
+
+### Redirect back to login screen with no evident error
 
 If after signing in into your SAML server you are redirected back to the sign in page and
 no error is displayed, check your `production.log` file. It will most likely contain the
@@ -148,3 +152,35 @@ To bypass this you can add `skip_before_action :verify_authenticity_token` to th
 `omniauth_callbacks_controller.rb` file. This will allow the error to hit GitLab,
 where it can then be seen in the usual logs, or as a flash message in the login
 screen.
+
+### Invalid audience
+
+This error means that the IdP doesn't recognize GitLab as a valid sender and
+receiver of SAML requests. Make sure to add the GitLab callback URL to the approved
+audiences of the IdP server.
+
+### Missing claims
+
+The IdP server needs to pass certain information in order for GitLab to either
+create an account, or match the login information to an existing account. `email`
+is the minimum amount of information that needs to be passed. If the IdP server
+is not providing this information, all SAML requests will fail.
+
+Make sure this information is provided.
+
+### Key validation error, Digest mismatch or Fingerprint mismatch
+
+These errors all come from a similar place, the SAML certificate. SAML requests
+need to be validated using a fingerprint, a certificate or a validator.
+
+For this you need take the following into account:
+
+- If no certificate is provided in the settings, a fingerprint or fingerprint
+  validator needs to be provided and the response from the server must contain
+  a certificate (`<ds:KeyInfo><ds:X509Data><ds:X509Certificate>`)
+- If a certificate is provided in the settings, it is no longer necessary for
+  the request to contain one. In this case the fingerprint or fingerprint
+  validators are optional
+
+Make sure that one of the above described scenarios is valid, or the requests will
+fail with one of the mentioned errors.

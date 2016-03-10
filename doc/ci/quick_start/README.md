@@ -1,7 +1,39 @@
 # Quick Start
 
-Starting from version 8.0, GitLab Continuous Integration (CI) is fully
-integrated into GitLab itself and is enabled by default on all projects.
+>**Note:** Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
+is fully integrated into GitLab itself and is [enabled] by default on all
+projects.
+
+The TL;DR version of how GitLab CI works is the following.
+
+---
+
+GitLab offers a [continuous integration][ci] service. If you
+[add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
+and configure your GitLab project to use a [Runner], then each merge request or
+push triggers a build.
+
+The `.gitlab-ci.yml` file tells the GitLab runner what do to. By default it
+runs three [stages]: `build`, `test`, and `deploy`.
+
+If everything runs OK (no non-zero return values), you'll get a nice green
+checkmark associated with the pushed commit or merge request. This makes it
+easy to see whether a merge request will cause any of the tests to fail before
+you even look at the code.
+
+Most projects only use GitLab's CI service to run the test suite so that
+developers get immediate feedback if they broke something.
+
+So in brief, the steps needed to have a working CI can be summed up to:
+
+1. Add `.gitlab-ci.yml` to the root directory of your repository
+1. Configure a Runner
+
+From there on, on every push to your Git repository, the build will be
+automagically started by the Runner and will appear under the project's
+`/builds` page.
+
+---
 
 This guide assumes that you:
 
@@ -9,17 +41,7 @@ This guide assumes that you:
   [GitLab.com](https://gitlab.com/users/sign_in)
 - have a project in GitLab that you would like to use CI for
 
-In brief, the steps needed to have a working CI can be summed up to:
-
-1. Create a new project
-1. Add `.gitlab-ci.yml` to the git repository and push to GitLab
-1. Configure a Runner
-
-From there on, on every push to your git repository the build will be
-automagically started by the Runner and will appear under the project's
-`/builds` page.
-
-Now, let's break it down to pieces and work on solving the GitLab CI puzzle.
+Let's break it down to pieces and work on solving the GitLab CI puzzle.
 
 ## Creating a `.gitlab-ci.yml` file
 
@@ -218,3 +240,8 @@ Visit our various languages examples at <https://gitlab.com/groups/gitlab-exampl
 [runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#installation
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
 [examples]: ../examples/README.md
+[ci]: https://about.gitlab.com/gitlab-ci/
+[yaml]: ../yaml/README.md
+[runner]: ../runners/README.md
+[enabled]: ../enable_or_disable_ci.md
+[stages]: ../yaml/README.md#stages

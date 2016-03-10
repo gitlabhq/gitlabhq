@@ -1,3 +1,5 @@
+include ActionDispatch::TestProcess
+
 FactoryGirl.define do
   factory :ci_build, class: Ci::Build do
     name 'test'

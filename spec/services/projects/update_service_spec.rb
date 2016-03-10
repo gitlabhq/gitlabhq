@@ -102,8 +102,8 @@ describe Projects::UpdateService, services: true do
 
   describe :visibility_level do
     let(:user) { create :user, admin: true }
-    let(:project) { create :project, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
-    let(:forked_project) { create :forked_project_with_submodules, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+    let(:project) { create(:project, :internal) }
+    let(:forked_project) { create(:forked_project_with_submodules, :internal) }
     let(:opts) { {} }
 
     before do

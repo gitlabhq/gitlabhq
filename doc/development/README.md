@@ -9,4 +9,5 @@
 - [Rake tasks](rake_tasks.md) for development
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Sidekiq debugging](sidekiq_debugging.md)
+- [SQL guidelines](sql.md) for SQL guidelines
 - [UI guide](ui_guide.md) for building GitLab with existing css styles and elements

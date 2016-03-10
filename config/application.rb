@@ -96,5 +96,9 @@ module Gitlab
 
     # Gitlab Geo Middleware support
     config.middleware.use 'Gitlab::Middleware::ReadonlyGeo'
+
+    config.generators do |g|
+      g.factory_girl false
+    end
   end
 end

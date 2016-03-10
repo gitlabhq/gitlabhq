@@ -3,6 +3,7 @@
 # Not to be confused with CommitsController, plural.
 class Projects::CommitController < Projects::ApplicationController
   include CreatesCommit
+  include DiffHelper
 
   # Authorize
   before_action :require_non_empty_project
@@ -100,12 +101,10 @@ class Projects::CommitController < Projects::ApplicationController
   def define_show_vars
     return git_not_found! unless commit
 
-    if params[:w].to_i == 1
-      @diffs = commit.diffs({ ignore_whitespace_change: true })
-    else
-      @diffs = commit.diffs
-    end
+    opts = diff_options
+    opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
 
+    @diffs = commit.diffs(opts)
     @diff_refs = [commit.parent || commit, commit]
     @notes_count = commit.notes.count
 

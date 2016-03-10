@@ -48,10 +48,15 @@ class Label < ActiveRecord::Base
     '~'
   end
 
+  ##
   # Pattern used to extract label references from text
+  #
+  # This pattern supports cross-project references.
+  #
   def self.reference_pattern
     %r{
-      #{reference_prefix}
+      (#{Project.reference_pattern})?
+      #{Regexp.escape(reference_prefix)}
       (?:
         (?<label_id>\d+) | # Integer-based label ID, or
         (?<label_name>
@@ -62,24 +67,31 @@ class Label < ActiveRecord::Base
     }x
   end
 
+  def self.link_reference_pattern
+    nil
+  end
+
+  ##
   # Returns the String necessary to reference this Label in Markdown
   #
   # format - Symbol format to use (default: :id, optional: :name)
   #
-  # Note that its argument differs from other objects implementing Referable. If
-  # a non-Symbol argument is given (such as a Project), it will default to :id.
-  #
   # Examples:
   #
-  #   Label.first.to_reference        # => "~1"
-  #   Label.first.to_reference(:name) # => "~\"bug\""
+  #   Label.first.to_reference                # => "~1"
+  #   Label.first.to_reference(format: :name) # => "~\"bug\""
+  #   Label.first.to_reference(project)       # => "gitlab-org/gitlab-ce~1"
   #
   # Returns a String
-  def to_reference(format = :id)
-    if format == :name && !name.include?('"')
-      %(#{self.class.reference_prefix}"#{name}")
+  #
+  def to_reference(from_project = nil, format: :id)
+    format_reference = label_format_reference(format)
+    reference = "#{self.class.reference_prefix}#{format_reference}"
+
+    if cross_project_reference?(from_project)
+      project.to_reference + reference
     else
-      "#{self.class.reference_prefix}#{id}"
+      reference
     end
   end
 
@@ -97,5 +109,17 @@ class Label < ActiveRecord::Base
 
   def template?
     template
+  end
+
+  private
+
+  def label_format_reference(format = :id)
+    raise StandardError, 'Unknown format' unless [:id, :name].include?(format)
+
+    if format == :name && !name.include?('"')
+      %("#{name}")
+    else
+      id
+    end
   end
 end

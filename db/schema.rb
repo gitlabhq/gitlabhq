@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160302141317) do
+ActiveRecord::Schema.define(version: 20160309140734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,11 +73,11 @@ ActiveRecord::Schema.define(version: 20160302141317) do
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                      default: 8089
+    t.boolean  "akismet_enabled",                   default: false
+    t.string   "akismet_api_key"
     t.integer  "metrics_sample_interval",           default: 15
     t.boolean  "sentry_enabled",                    default: false
     t.string   "sentry_dsn"
-    t.boolean  "akismet_enabled",                   default: false
-    t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
   end
 
@@ -592,6 +592,7 @@ ActiveRecord::Schema.define(version: 20160302141317) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "base_commit_sha"
+    t.string   "real_size"
   end
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
@@ -811,6 +812,7 @@ ActiveRecord::Schema.define(version: 20160302141317) do
     t.boolean  "mirror_trigger_builds",            default: false,    null: false
     t.boolean  "pending_delete",                   default: false
     t.boolean  "public_builds",                    default: true,     null: false
+    t.string   "main_language"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -891,7 +893,6 @@ ActiveRecord::Schema.define(version: 20160302141317) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_name"
-    t.datetime "expires_at"
     t.string   "type"
     t.integer  "visibility_level", default: 0, null: false
   end
@@ -899,7 +900,6 @@ ActiveRecord::Schema.define(version: 20160302141317) do
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
   add_index "snippets", ["created_at", "id"], name: "index_snippets_on_created_at_and_id", using: :btree
   add_index "snippets", ["created_at"], name: "index_snippets_on_created_at", using: :btree
-  add_index "snippets", ["expires_at"], name: "index_snippets_on_expires_at", using: :btree
   add_index "snippets", ["project_id"], name: "index_snippets_on_project_id", using: :btree
   add_index "snippets", ["updated_at"], name: "index_snippets_on_updated_at", using: :btree
   add_index "snippets", ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree

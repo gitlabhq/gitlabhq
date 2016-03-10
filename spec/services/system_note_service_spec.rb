@@ -474,8 +474,8 @@ describe SystemNoteService, services: true do
 
       describe "existing reference" do
         before do
-          message = "[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]."
-          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: "{\"comments\":[{\"body\":\"#{message}\"}]}")
+          message = %Q{[#{author.name}|http://localhost/u/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\\n'#{commit.title}'}
+          WebMock.stub_request(:get, jira_api_comment_url).to_return(body: %Q({"comments":[{"body":"#{message}"}]}))
         end
 
         subject { described_class.cross_reference(jira_issue, commit, author) }

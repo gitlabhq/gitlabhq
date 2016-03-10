@@ -66,7 +66,7 @@ class SystemNoteService
   def self.change_label(noteable, project, author, added_labels, removed_labels)
     labels_count = added_labels.count + removed_labels.count
 
-    references     = ->(label) { label.to_reference(:id) }
+    references     = ->(label) { label.to_reference(format: :id) }
     added_labels   = added_labels.map(&references).join(' ')
     removed_labels = removed_labels.map(&references).join(' ')
 

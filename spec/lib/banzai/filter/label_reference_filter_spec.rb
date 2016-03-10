@@ -111,7 +111,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
   context 'String-based multi-word references in quotes' do
     let(:label)     { create(:label, name: 'gfm references', project: project) }
-    let(:reference) { label.to_reference(:name) }
+    let(:reference) { label.to_reference(format: :name) }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -174,6 +174,31 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     it 'adds to the results hash' do
       result = reference_pipeline_result("Label #{reference}")
       expect(result[:references][:label]).to eq [label]
+    end
+  end
+
+  describe 'cross project label references' do
+    let(:another_project)  { create(:empty_project, :public) }
+    let(:project_name) { another_project.name_with_namespace }
+    let(:label) { create(:label, project: another_project, color: '#00ff00') }
+    let(:reference) { label.to_reference(project) }
+
+    let!(:result) { reference_filter("See #{reference}") }
+
+    it 'points to referenced project issues page' do
+      expect(result.css('a').first.attr('href'))
+        .to eq urls.namespace_project_issues_url(another_project.namespace,
+                                                 another_project,
+                                                 label_name: label.name)
+    end
+
+    it 'has valid color' do
+      expect(result.css('a span').first.attr('style'))
+        .to match /background-color: #00ff00/
+    end
+
+    it 'contains cross project content' do
+      expect(result.css('a').first.text).to eq "#{label.name} in #{project_name}"
     end
   end
 end

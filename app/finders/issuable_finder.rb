@@ -264,11 +264,9 @@ class IssuableFinder
   def by_label(items)
     if labels?
       if filter_by_no_label?
-        items = items.
-          joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{klass.name}' AND label_links.target_id = #{klass.table_name}.id").
-          where(label_links: { id: nil })
+        items = items.without_label
       else
-        items = items.joins(:labels).where(labels: { title: label_names })
+        items = items.with_label(label_names)
 
         if projects
           items = items.where(labels: { project_id: projects })

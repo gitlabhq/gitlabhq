@@ -363,7 +363,8 @@ description area. Copy-paste it to retain the markdown format.
    to a new table or remove an old table) to aid retrying on failure
 1. Keeps the GitLab code base clean and well structured
 1. Contains functionality we think other users will benefit from too
-1. Doesn't add configuration options since they complicate future changes
+1. Doesn't add configuration options or settings options since they complicate
+   making and testing future changes
 1. Changes after submitting the merge request should be in separate commits
    (no squashing). If necessary, you will be asked to squash when the review is
    over, before merging.

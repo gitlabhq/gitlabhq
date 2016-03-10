@@ -16,11 +16,13 @@ class @Notes
     @view = view
     @noteable_url = document.URL
     @notesCountBadge ||= $(".issuable-details").find(".notes-tab .badge")
+    @basePollingInterval = 15000
+    @maxPollingSteps = 4
 
-    @initRefresh()
-    @setupMainTargetNoteForm()
     @cleanBinding()
     @addBinding()
+    @setPollingInterval()
+    @setupMainTargetNoteForm()
     @initTaskList()
 
   addBinding: ->
@@ -37,7 +39,7 @@ class @Notes
 
     # Reopen and close actions for Issue/MR combined with note form submit
     $(document).on "click", ".js-comment-button", @updateCloseButton
-    $(document).on "keyup", ".js-note-text", @updateTargetButtons
+    $(document).on "keyup input", ".js-note-text", @updateTargetButtons
 
     # remove a note (in general)
     $(document).on "click", ".js-note-delete", @removeNote
@@ -91,9 +93,11 @@ class @Notes
     clearInterval(Notes.interval)
     Notes.interval = setInterval =>
       @refresh()
-    , 15000
+    , @pollingInterval
 
   refresh: ->
+    return if @refreshing is true
+    refreshing = true
     if not document.hidden and document.URL.indexOf(@noteable_url) is 0
       @getContent()
 
@@ -105,12 +109,31 @@ class @Notes
       success: (data) =>
         notes = data.notes
         @last_fetched_at = data.last_fetched_at
+        @setPollingInterval(data.notes.length)
         $.each notes, (i, note) =>
           if note.discussion_with_diff_html?
             @renderDiscussionNote(note)
           else
             @renderNote(note)
+      always: =>
+        @refreshing = false
 
+  ###
+  Increase @pollingInterval up to 120 seconds on every function call,
+  if `shouldReset` has a truthy value, 'null' or 'undefined' the variable
+  will reset to @basePollingInterval.
+
+  Note: this function is used to gradually increase the polling interval
+  if there aren't new notes coming from the server
+  ###
+  setPollingInterval: (shouldReset = true) ->
+    nthInterval = @basePollingInterval * Math.pow(2, @maxPollingSteps - 1)
+    if shouldReset
+      @pollingInterval = @basePollingInterval
+    else if @pollingInterval < nthInterval
+      @pollingInterval *= 2
+
+    @initRefresh()
 
   ###
   Render note in main comments area.
