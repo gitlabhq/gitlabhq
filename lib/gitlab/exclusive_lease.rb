@@ -8,14 +8,25 @@ module Gitlab
   # servers. It is a 'cheap' alternative to using SQL queries and updates:
   # you do not need to change the SQL schema to start using
   # ExclusiveLease.
+  #
+  # It is important to choose the timeout wisely. If the timeout is very
+  # high (1 hour) then the throughput of your operation gets very low (at
+  # most once an hour). If the timeout is lower than how long your
+  # operation may take then you cannot count on exclusivity. For example,
+  # if the timeout is 10 seconds and you do an operation which may take 20
+  # seconds then two overlapping operations may hold a lease at the
+  # same time.
+  #
   class ExclusiveLease
-    def initialize(key, timeout)
+    def initialize(key, timeout:)
       @key, @timeout = key, timeout
     end
 
     # Try to obtain the lease. Return true on succes,
     # false if the lease is already taken.
     def try_obtain
+      # This is expected to be atomic because we are talking to a
+      # single-threaded Redis server.
       !!redis.set(redis_key, redis_value, nx: true, ex: @timeout)
     end
 
