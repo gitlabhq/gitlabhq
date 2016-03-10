@@ -186,11 +186,11 @@ module ApplicationHelper
       title: time.in_time_zone.to_s(:medium),
       data: { toggle: 'tooltip', placement: placement, container: 'body' }
 
-      unless skip_js
-        element << javascript_tag(
-          "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
-        )
-      end
+    unless skip_js
+      element << javascript_tag(
+        "$('.js-timeago-pending').removeClass('js-timeago-pending').timeago()"
+      )
+    end
 
     element
   end
