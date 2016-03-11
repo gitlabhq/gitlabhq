@@ -19,7 +19,7 @@ class Milestone < ActiveRecord::Base
   MilestoneStruct = Struct.new(:title, :name, :id)
   None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
   Any = MilestoneStruct.new('Any Milestone', '', -1)
-  Upcoming = MilestoneStruct.new('Upcoming', '', -2)
+  Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
 
   include InternalId
   include Sortable
@@ -80,6 +80,11 @@ class Milestone < ActiveRecord::Base
 
   def self.link_reference_pattern
     super("milestones", /(?<milestone>\d+)/)
+  end
+
+  def self.upcoming(projects)
+    self.where(project_id: projects)
+        .where('due_date > ?', Time.now). order(due_date: :asc).first
   end
 
   def to_reference(from_project = nil)
