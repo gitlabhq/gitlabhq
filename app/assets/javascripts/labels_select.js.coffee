@@ -33,7 +33,7 @@ class @LabelsSelect
               color: newColorField.val()
             }, (label) ->
               $('.js-new-label-btn').enable()
-              $('.dropdown-menu-back', $(dropdown).parent()).trigger "click"
+              $('.dropdown-menu-back', $(dropdown).parents('.dropdown')).trigger "click"
 
       $(dropdown).glDropdown(
         data: (term, callback) ->
