@@ -7,11 +7,11 @@ module Projects
     end
 
     def project_atts
-      %i(project_members name path description issues_enabled wall_enabled merge_requests_enabled wiki_enabled snippets_enabled visibility_level archived)
+      %i(name path description issues_enabled wall_enabled merge_requests_enabled wiki_enabled snippets_enabled visibility_level archived)
     end
 
     def project_tree
-      %i(issues merge_requests labels milestones snippets releases events commit_statuses)
+      %i(project_members issues merge_requests labels milestones snippets releases events commit_statuses)
     end
 
     private
