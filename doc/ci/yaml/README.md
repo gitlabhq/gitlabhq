@@ -241,6 +241,7 @@ job_name:
 | tags          | no | Defines a list of tags which are used to select runner |
 | allow_failure | no | Allow build to fail. Failed build doesn't contribute to commit status |
 | when          | no | Define when to run build. Can be `on_success`, `on_failure` or `always` |
+| dependencies  | no | Define a builds that this build depends on |
 | artifacts     | no | Define list build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
 
@@ -513,6 +514,60 @@ job:
     name: "%CI_BUILD_STAGE%_%CI_BUILD_REF_NAME%"
     untracked: true
 ```
+
+### dependencies
+
+_**Note:** Introduced in GitLab 8.6 and GitLab Runner v1.1.1._
+
+This feature should be used with `artifacts` and allows to define artifacts passing between different builds.
+
+`artifacts` from previous stages are passed by default.
+
+To use a feature define `dependencies` in context of the build and pass 
+a list of all previous builds from which the artifacts should be downloaded.
+You can only define a builds from stages that are executed before this one.
+Error will be shown if you define builds from current stage or next stages.
+
+How to use artifacts passing between stages:
+
+```
+build:osx:
+  stage: build
+  script: ...
+  artifacts:
+    paths:
+    - binaries/
+    
+build:linux:
+  stage: build
+  script: ...
+  artifacts:
+    paths:
+    - binaries/
+
+test:osx:
+  stage: test
+  script: ...
+  dependencies:
+  - build:osx
+
+test:linux:
+  stage: test
+  script: ...
+  dependencies:
+  - build:linux
+
+deploy:
+  stage: deploy
+  script: ...
+```
+
+The above will create a build artifacts for two jobs: `build:osx` and `build:linux`.
+When executing the `test:osx` the artifacts for `build:osx` will be downloaded and extracted in context of the build.
+The same happens for `test:linux` and artifacts from `build:linux`.
+
+The job `deploy` will download artifacts from all previous builds.
+However, only the `build:osx` and `build:linux` exports artifacts so only these will be downloaded.
 
 ### cache
 

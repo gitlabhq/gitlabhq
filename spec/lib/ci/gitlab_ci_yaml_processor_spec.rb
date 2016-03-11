@@ -428,6 +428,44 @@ module Ci
       end
     end
 
+    describe "Dependencies" do
+      let(:config) do
+        {
+          build1: { stage: 'build', script: 'test' },
+          build2: { stage: 'build', script: 'test' },
+          test1: { stage: 'test', script: 'test', dependencies: dependencies },
+          test2: { stage: 'test', script: 'test' },
+          deploy: { stage: 'test', script: 'test' }
+        }
+      end
+
+      subject { GitlabCiYamlProcessor.new(YAML.dump(config)) }
+
+      context 'no dependencies' do
+        let(:dependencies) { }
+
+        it { expect { subject }.to_not raise_error }
+      end
+
+      context 'dependencies to builds' do
+        let(:dependencies) { [:build1, :build2] }
+
+        it { expect { subject }.to_not raise_error }
+      end
+
+      context 'undefined dependency' do
+        let(:dependencies) { [:undefined] }
+
+        it { expect { subject }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'test1 job: undefined dependency: undefined') }
+      end
+
+      context 'dependencies to deploy' do
+        let(:dependencies) { [:deploy] }
+
+        it { expect { subject }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'test1 job: dependency deploy is not defined in prior stages') }
+      end
+    end
+
     describe "Hidden jobs" do
       let(:config) do
         YAML.dump({
@@ -681,6 +719,13 @@ module Ci
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:paths parameter should be an array of strings")
+      end
+
+      it "returns errors if job dependencies is not an array of strings" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", dependencies: "string" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: dependencies parameter should be an array of strings")
       end
     end
   end

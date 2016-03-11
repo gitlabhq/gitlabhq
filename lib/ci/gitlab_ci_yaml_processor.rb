@@ -5,7 +5,9 @@ module Ci
     DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
     ALLOWED_YAML_KEYS = [:before_script, :image, :services, :types, :stages, :variables, :cache]
-    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services, :allow_failure, :type, :stage, :when, :artifacts, :cache]
+    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
+                        :allow_failure, :type, :stage, :when, :artifacts, :cache,
+                        :dependencies]
 
     attr_reader :before_script, :image, :services, :variables, :path, :cache
 
@@ -145,6 +147,7 @@ module Ci
       validate_job_stage!(name, job) if job[:stage]
       validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
+      validate_job_dependencies!(name, job) if job[:dependencies]
     end
 
     private
@@ -228,6 +231,22 @@ module Ci
 
       if job[:artifacts][:paths] && !validate_array_of_strings(job[:artifacts][:paths])
         raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
+      end
+    end
+
+    def validate_job_dependencies!(name, job)
+      if !validate_array_of_strings(job[:dependencies])
+        raise ValidationError, "#{name} job: dependencies parameter should be an array of strings"
+      end
+
+      stage_index = stages.index(job[:stage])
+
+      job[:dependencies].each do |dependency|
+        raise ValidationError, "#{name} job: undefined dependency: #{dependency}" unless @jobs[dependency]
+
+        unless stages.index(@jobs[dependency][:stage]) < stage_index
+          raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
+        end
       end
     end
 
