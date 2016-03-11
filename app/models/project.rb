@@ -881,8 +881,7 @@ class Project < ActiveRecord::Base
   end
 
   def allowed_to_share_with_group?
-    # TODO: replace with logic
-    true
+    !namespace.share_with_group_lock
   end
 
   def ci_commit(sha)

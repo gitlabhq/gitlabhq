@@ -568,14 +568,15 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   add_index "milestones", ["title"], name: "index_milestones_on_title", using: :btree
 
   create_table "namespaces", force: :cascade do |t|
-    t.string   "name",                     null: false
-    t.string   "path",                     null: false
+    t.string   "name",                                  null: false
+    t.string   "path",                                  null: false
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.string   "description", default: "", null: false
+    t.string   "description",           default: "",    null: false
     t.string   "avatar"
+    t.boolean  "share_with_group_lock", default: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
