@@ -419,6 +419,7 @@ production: &base
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET',
       #     url: "https://github.com/",
+      #     verify_ssl: true,
       #     args: { scope: 'user:email' } }
       # - { name: 'bitbucket',
       #     app_id: 'YOUR_APP_ID',

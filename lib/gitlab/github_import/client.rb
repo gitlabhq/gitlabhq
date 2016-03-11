@@ -12,7 +12,14 @@ module Gitlab
 
         if access_token
           ::Octokit.auto_paginate = true
-          @api = ::Octokit::Client.new(access_token: access_token, api_endpoint: github_options[:site])
+
+          @api = ::Octokit::Client.new(
+            access_token: access_token,
+            api_endpoint: github_options[:site],
+            connection_options: {
+              ssl: { verify: config.verify_ssl }
+            }
+          )
         end
       end
 
