@@ -5,7 +5,7 @@ module Projects
 
       OVERRIDES = { snippets: :project_snippets }
 
-      def create(relation_sym:, relation_hash:)
+      def create(relation_sym:, relation_hash:, members_map:)
         relation_sym = parse_relation_sym(relation_sym)
         klass = relation_class(relation_sym)
         relation_hash.delete('id') #screw IDs for now

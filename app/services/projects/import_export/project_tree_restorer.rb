@@ -16,7 +16,7 @@ module Projects
 
       private
 
-      def members
+      def members_map
         @members ||= Projects::ImportExport::MembersMapper.map(exported_members: @tree_hash.delete('project_members'))
       end
 
@@ -35,7 +35,7 @@ module Projects
       def create_project
         project_params = @tree_hash.reject { |_key, value| value.is_a?(Array) }
         project = Projects::ImportExport::ProjectFactory.create(
-          project_params: project_params, user: @user, members: members)
+          project_params: project_params, user: @user, members_map: members_map)
         project.save
         project
       end
@@ -43,7 +43,7 @@ module Projects
       def create_relation(relation, relation_hash_list)
         relation_hash_list.map do |relation_hash|
           Projects::ImportExport::RelationFactory.create(
-            relation_sym: relation, relation_hash: relation_hash.merge(project_id: project.id), members: members)
+            relation_sym: relation, relation_hash: relation_hash.merge(project_id: project.id), members_map: members_map)
         end
       end
     end
