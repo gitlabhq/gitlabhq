@@ -226,4 +226,12 @@ describe Note, models: true do
       expect(note.is_award?).to be_falsy
     end
   end
+
+  describe 'clear_blank_line_code!' do
+    it 'clears a blank line code before validation' do
+      note = build(:note, line_code: ' ')
+
+      expect { note.valid? }.to change(note, :line_code).to(nil)
+    end
+  end
 end
