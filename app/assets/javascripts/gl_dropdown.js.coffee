@@ -2,7 +2,9 @@ class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
 
   constructor: (@dropdown, @options) ->
-    @input = @dropdown.find(".dropdown-input .dropdown-input-field")
+    {
+      @input
+    } = @options
 
     # Key events
     timeout = ""
@@ -77,14 +79,30 @@ class GitLabDropdown
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
 
+  FILTER_INPUT = '.dropdown-input .dropdown-input-field'
+
   constructor: (@el, @options) ->
-    self = @
     @dropdown = $(@el).parent()
+
+    # Set Defaults
+    {
+      # If no input is passed create a default one
+      @filterInput = @$(FILTER_INPUT)
+    } = @options
+
+    self = @
+
+    # If selector was passed
+    if _.isString(@filterInput)
+      @filterInput = @$(@filterInput)
+
+
     search_fields = if @options.search then @options.search.fields else [];
 
     if @options.data
       # If data is an array
       if _.isArray @options.data
+        @fullData = @options.data
         @parseData @options.data
       else
         # Remote data
@@ -100,6 +118,7 @@ class GitLabDropdown
     # Init filiterable
     if @options.filterable
       @filter = new GitLabDropdownFilter @dropdown,
+        input: @filterInput
         remote: @options.filterRemote
         query: @options.data
         keys: @options.search.fields
@@ -132,6 +151,9 @@ class GitLabDropdown
 
         if self.options.clicked
           self.options.clicked()
+
+  $: (selector) ->
+    $(selector, @dropdown)
 
   toggleLoading: ->
     $('.dropdown-menu', @dropdown).toggleClass LOADING_CLASS
@@ -167,7 +189,7 @@ class GitLabDropdown
       @remote.execute()
 
     if @options.filterable
-      @dropdown.find(".dropdown-input-field").focus()
+      @filterInput.focus()
 
   hidden: =>
     if @options.filterable
