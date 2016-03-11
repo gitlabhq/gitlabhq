@@ -83,15 +83,19 @@ class GitLabDropdown
     search_fields = if @options.search then @options.search.fields else [];
 
     if @options.data
-      # Remote data
-      @remote = new GitLabDropdownRemote @options.data, {
-        dataType: @options.dataType,
-        beforeSend: @toggleLoading.bind(@)
-        success: (data) =>
-          @fullData = data
+      # If data is an array
+      if _.isArray @options.data
+        @parseData @options.data
+      else
+        # Remote data
+        @remote = new GitLabDropdownRemote @options.data, {
+          dataType: @options.dataType,
+          beforeSend: @toggleLoading.bind(@)
+          success: (data) =>
+            @fullData = data
 
-          @parseData @fullData
-      }
+            @parseData @fullData
+        }
 
     # Init filiterable
     if @options.filterable
@@ -204,7 +208,12 @@ class GitLabDropdown
     else
       selected = if @options.isSelected then @options.isSelected(data) else false
       url = if @options.url then @options.url(data) else "#"
-      text = if @options.text then @options.text(data) else ""
+
+      if @options.text?
+        text = @options.text(data)
+      else
+        text = data.text if data.text?
+
       cssClass = "";
 
       if selected
