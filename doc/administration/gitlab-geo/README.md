@@ -42,17 +42,24 @@ GitLab Geo requires some additional work installing and configuring your
 instance, than a normal setup.
 
 There are two main things you need to do in order to have one or more GitLab
-Geo instances:
+Geo instances. Follow the steps below in the order that they appear:
 
 1. The very first step you need to take, is [setup a database replication](database.md)
    in `master <-> slave` topology
-1. Then you have to [configure GitLab](configuration.md) and set the primary
+1. Then, you have to [configure GitLab](configuration.md) and set the primary
    and secondary nodes
 
-Follow the above steps in that order.
+After you set up the database replication and configure the GitLab Geo nodes,
+there are a few things to consider:
+
+1. When you create a new project in the primary node, the Git repository will
+   appear in the secondary after the first `git push`
+1. To fetch from the secondary node, a separate remote URL must be set in your
+   Git repository locally
 
 ## Current limitations
 
+- The secondary node cannot be used for browsing
 - You cannot push code to secondary nodes
 - Git LFS is not supported yet
 - Git Annex is not supported yet
