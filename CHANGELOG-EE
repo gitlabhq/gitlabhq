@@ -8,6 +8,7 @@ v 8.6.0 (unreleased)
   - [Elastic] Update index on push to wiki
   - [Elastic] Use subprocesses for ElasticSearch index jobs
   - [Elastic] More accurate as_indexed_json (More stable database indexer)
+  - [Elastic] Fix: Don't index newly created system messages and awards
 
 v 8.5.5
   - GitLab Geo: Repository synchronization between primary and secondary nodes

@@ -41,4 +41,11 @@ describe "Note", elastic: true do
 
     expect(note.as_indexed_json).to eq(expected_hash)
   end
+
+  it "does not create ElasticIndexerWorker job for award or system messages" do
+    project = create :empty_project
+    expect(ElasticIndexerWorker).to_not receive(:perform_async)
+    create :note, :system, project: project
+    create :note, :award, project: project
+  end
 end
