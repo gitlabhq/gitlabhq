@@ -63,7 +63,7 @@ module Gitlab
       end
 
       # This method provide a sample data generated with
-      # existing project and commits to test web hooks
+      # existing project and commits to test webhooks
       def build_sample(project, user)
         commits = project.repository.commits(project.default_branch, nil, 3)
         ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{project.default_branch}"

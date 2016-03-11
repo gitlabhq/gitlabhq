@@ -13,9 +13,12 @@ end
 if Rails.env.test?
   Gitlab::Application.config.session_store :cookie_store, key: "_gitlab_session"
 else
+  redis_config = Gitlab::RedisConfig.redis_store_options
+  redis_config[:namespace] = 'session:gitlab'
+  
   Gitlab::Application.config.session_store(
     :redis_store, # Using the cookie_store would enable session replay attacks.
-    servers: Rails.application.config.cache_store[1].merge(namespace: 'session:gitlab'), # re-use the Redis config from the Rails cache store
+    servers: redis_config,
     key: '_gitlab_session',
     secure: Gitlab.config.gitlab.https,
     httponly: true,

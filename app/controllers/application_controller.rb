@@ -250,6 +250,8 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
+      return unless current_user.try_obtain_ldap_lease
+
       unless Gitlab::LDAP::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = "Access denied for your LDAP account."

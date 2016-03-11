@@ -31,7 +31,7 @@ class @Notes
     $(document).on "ajax:success", ".js-discussion-note-form", @addDiscussionNote
 
     # change note in UI after update
-    $(document).on "ajax:success", "form.edit_note", @updateNote
+    $(document).on "ajax:success", "form.edit-note", @updateNote
 
     # Edit note link
     $(document).on "click", ".js-note-edit", @showEditForm
@@ -72,7 +72,7 @@ class @Notes
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
-    $(document).off "ajax:success", "form.edit_note"
+    $(document).off "ajax:success", "form.edit-note"
     $(document).off "click", ".js-note-edit"
     $(document).off "click", ".note-edit-cancel"
     $(document).off "click", ".js-note-delete"
@@ -347,22 +347,26 @@ class @Notes
     note = $(this).closest(".note")
     note.find(".note-body > .note-text").hide()
     note.find(".note-header").hide()
-    base_form = note.find(".note-edit-form")
-    form = base_form.clone().insertAfter(base_form)
-    form.addClass('current-note-edit-form gfm-form')
-    form.find('.div-dropzone').remove()
+    form = note.find(".note-edit-form")
+    isNewForm = form.is(':not(.gfm-form)')
+    if isNewForm
+      form.addClass('gfm-form')
+    form.addClass('current-note-edit-form')
+    form.show()
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
 
     # Setup markdown form
-    GitLab.GfmAutoComplete.setup()
-    new DropzoneInput(form)
+    if isNewForm
+      GitLab.GfmAutoComplete.setup()
+      new DropzoneInput(form)
 
-    form.show()
     textarea = form.find("textarea")
     textarea.focus()
-    autosize(textarea)
+
+    if isNewForm
+      autosize(textarea)
 
     # HACK (rspeicher/DouweM): Work around a Chrome 43 bug(?).
     # The textarea has the correct value, Chrome just won't show it unless we
@@ -371,7 +375,8 @@ class @Notes
     textarea.val ""
     textarea.val value
 
-    disableButtonIfEmptyField textarea, form.find(".js-comment-button")
+    if isNewForm
+      disableButtonIfEmptyField textarea, form.find(".js-comment-button")
 
   ###
   Called in response to clicking the edit note link
@@ -383,7 +388,9 @@ class @Notes
     note = $(this).closest(".note")
     note.find(".note-body > .note-text").show()
     note.find(".note-header").show()
-    note.find(".current-note-edit-form").remove()
+    note.find(".current-note-edit-form")
+      .removeClass("current-note-edit-form")
+      .hide()
 
   ###
   Called in response to deleting a note of any kind.
