@@ -5,6 +5,7 @@ describe GeoNode, type: :model do
 
   context 'associations' do
     it { is_expected.to belong_to(:geo_node_key).dependent(:destroy) }
+    it { is_expected.to belong_to(:oauth_application).dependent(:destroy) }
   end
 
   context 'default values' do
@@ -41,6 +42,45 @@ describe GeoNode, type: :model do
 
     it 'does not accept adding a non primary node with same details as current_node' do
       expect(subject).not_to be_valid
+    end
+  end
+
+  context 'dependent models for GeoNode' do
+    let(:geo_node_key_attributes) { FactoryGirl.build(:geo_node_key).attributes }
+    subject { GeoNode.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
+
+    context 'on initialize' do
+      before(:each) do
+        subject.geo_node_key_attributes = geo_node_key_attributes
+      end
+
+      it 'initializes a corresponding key' do
+        expect(subject.geo_node_key).to be_present
+      end
+
+      it 'initializes a corresponding oauth application' do
+        expect(subject.oauth_application).to be_present
+      end
+
+      it 'is valid' do
+        expect(subject).to be_valid
+      end
+    end
+
+    context 'on create' do
+
+      before(:each) do
+        subject.geo_node_key_attributes = geo_node_key_attributes
+        subject.save!
+      end
+
+      it 'saves a corresponding key' do
+        expect(subject.geo_node_key).to be_persisted
+      end
+
+      it 'saves a corresponding oauth application' do
+        expect(subject.oauth_application).to be_persisted
+      end
     end
   end
 

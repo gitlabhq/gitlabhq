@@ -12,7 +12,7 @@
 
 class GeoNode < ActiveRecord::Base
   belongs_to :geo_node_key, dependent: :destroy
-  belongs_to :oauth_application, class_name: 'Doorkeeper::Application'
+  belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
 
   default_values schema: 'http',
                  host: lambda { Gitlab.config.gitlab.host },
@@ -23,14 +23,14 @@ class GeoNode < ActiveRecord::Base
   accepts_nested_attributes_for :geo_node_key
 
   validates :host, host: true, presence: true, uniqueness: { case_sensitive: false, scope: :port }
-  validates :primary, uniqueness: { message: 'primary node already exists' }, if: :primary
+  validates :primary, uniqueness: { message: 'node already exists' }, if: :primary
   validates :schema, inclusion: %w(http https)
   validates :relative_url_root, length: { minimum: 0, allow_nil: false }
 
-  after_initialize :check_geo_node_key
+  after_initialize :build_dependents
   after_save :refresh_bulk_notify_worker_status
   after_destroy :refresh_bulk_notify_worker_status
-  before_validation :change_geo_node_key_title
+  before_validation :update_dependents_attributes
 
   def uri
     if relative_url_root
@@ -66,12 +66,15 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
-  def check_geo_node_key
+  def build_dependents
     self.build_geo_node_key if geo_node_key.nil?
+    self.build_oauth_application if oauth_application.nil?
   end
 
-  def change_geo_node_key_title
+  def update_dependents_attributes
     self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
+    self.oauth_application.name = "Geo node: #{self.url}" if self.geo_node_key
+    self.oauth_application.redirect_uri = oauth_callback_url
   end
 
   def validate(record)
@@ -81,5 +84,10 @@ class GeoNode < ActiveRecord::Base
        record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
       record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
     end
+  end
+
+  def oauth_callback_url
+    url_helpers = Rails.application.routes.url_helpers
+    URI.join(uri, "#{uri.path}/", url_helpers.oauth_geo_callback_path).to_s
   end
 end
