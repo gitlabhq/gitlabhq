@@ -56,6 +56,10 @@ class GeoNode < ActiveRecord::Base
     URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_projects").to_s
   end
 
+  def missing_oauth_application?
+    self.primary? ? false : !oauth_application.present?
+  end
+
   private
 
   def refresh_bulk_notify_worker_status
