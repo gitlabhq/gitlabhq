@@ -9,7 +9,7 @@ class @AwardsHandler
     $("html").on 'click', (event) ->
       if !$(event.target).closest(".emoji-menu").length
         if $(".emoji-menu").is(":visible")
-          $(".emoji-menu").hide()
+          $(".emoji-menu").removeClass "is-visible"
 
     $(".awards")
       .off "click"
@@ -26,23 +26,29 @@ class @AwardsHandler
 
   showEmojiMenu: ->
     if $(".emoji-menu").length
-      $(".emoji-menu").show()
-      $("#emoji_search").focus()
+      if $(".emoji-menu").is ".is-visible"
+        $(".emoji-menu").removeClass "is-visible"
+        $("#emoji_search").blur()
+      else
+        $(".emoji-menu").addClass "is-visible"
+        $("#emoji_search").focus()
     else
       $('.js-add-award').addClass "is-loading"
       $.get "/emojis", (response) =>
         $('.js-add-award').removeClass "is-loading"
         $(".js-award-holder").append response
-        $(".emoji-menu").show()
-        $("#emoji_search").focus()
-        @setupSearch()
+        setTimeout =>
+          $(".emoji-menu").addClass "is-visible"
+          $("#emoji_search").focus()
+          @setupSearch()
+        , 200
 
   addAward: (emoji) ->
     emoji = @normilizeEmojiName(emoji)
     @postEmoji emoji, =>
       @addAwardToEmojiBar(emoji)
 
-    $(".emoji-menu").hide()
+    $(".emoji-menu").removeClass "is-visible"
 
   addAwardToEmojiBar: (emoji) ->
     @addEmojiToFrequentlyUsedList(emoji)

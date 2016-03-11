@@ -11,14 +11,25 @@
   position: absolute;
   top: 100%;
   left: 0;
+  margin-top: 3px;
   z-index: 1000;
-  display: none;
   min-width: 160px;
   font-size: 14px;
   background-color: $award-emoji-menu-bg;
   border: 1px solid $award-emoji-menu-border;
   border-radius: $border-radius-base;
   box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(.2);
+  transform-origin: 0 -45px;
+  transition: all .3s cubic-bezier(.87,-.41,.19,1.44);
+
+  &.is-visible {
+    pointer-events: all;
+    opacity: 1;
+    transform: scale(1);
+  }
 
   .emoji-menu-content {
     padding: $gl-padding;
@@ -56,9 +67,17 @@
   background: none;
   border: 0;
   border-radius: $border-radius-base;
+  transition: transform .15s cubic-bezier(.3, 0, .2, 2);
 
   &:hover {
-    background-color: $white-dark;
+    background-color: transparent;
+    outline: 0;
+    transform: scale(1.3);
+  }
+
+  &:focus,
+  &:active {
+    outline: 0;
   }
 
   .emoji-icon {
