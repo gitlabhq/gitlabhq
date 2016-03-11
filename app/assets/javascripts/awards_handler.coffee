@@ -185,13 +185,13 @@ class @AwardsHandler
       term = $(ev.target).val()
 
       # Clean previous search results
-      $("ul.emoji-search,h5.emoji-search").remove()
+      $("ul.emoji-menu-search, h5.emoji-search").remove()
 
       if term
         # Generate a search result block
         h5 = $("<h5>").text("Search results").addClass("emoji-search")
         found_emojis = @searchEmojis(term).show()
-        ul = $("<ul>").addClass("emoji-search").append(found_emojis)
+        ul = $("<ul>").addClass("emoji-menu-list emoji-menu-search").append(found_emojis)
         $(".emoji-menu-content ul, .emoji-menu-content h5").hide()
         $(".emoji-menu-content").append(h5).append(ul)
       else
