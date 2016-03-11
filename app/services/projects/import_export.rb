@@ -11,10 +11,14 @@ module Projects
     end
 
     def project_tree
-      %i(project_members issues merge_requests labels milestones snippets releases events commit_statuses)
+      %i(issues merge_requests labels milestones snippets releases events commit_statuses) + members
     end
 
     private
+
+    def members
+      [{ project_members: { include: [user: { only: [:email, :username] }] } }]
+    end
 
     def storage_path
       File.join(Settings.shared['path'], 'tmp/project_exports')
