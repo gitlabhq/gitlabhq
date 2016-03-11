@@ -509,6 +509,77 @@ rspec:
 The cache is provided on best effort basis, so don't expect that cache will be
 always present. For implementation details please check GitLab Runner.
 
+## Special features
+
+It's possible special YAML features like anchors and map merging.
+Thus allowing to greatly reduce the complexity of `.gitlab-ci.yml`.
+
+#### Anchors
+
+You can read more about YAML features [here](https://learnxinyminutes.com/docs/yaml/).
+
+```yaml
+.job_template: &job_definition
+  image: ruby:2.1
+  services:
+    - postgres
+    - redis
+
+test1:
+  << *job_definition
+  script:
+    - test project
+
+test2:
+  << *job_definition
+  script:
+    - test project
+```
+
+The above example uses anchors and map merging.
+It will create a two jobs: `test1` and `test2` that will have the parameters of `.job_template` and custom `script` defined.
+
+```yaml
+.job_template: &job_definition
+  script:
+    - test project
+
+.postgres_services:
+  services: &postgres_definition
+    - postgres
+    - ruby
+
+.mysql_services: 
+  services: &mysql_definition
+    - mysql
+    - ruby
+
+test:postgres:
+  << *job_definition
+  services: *postgres_definition
+
+test:mysql:
+  << *job_definition
+  services: *mysql_definition
+```
+
+The above example uses anchors to define two set of services.
+It will create a two jobs: `test:postgres` and `test:mysql` that will have the script defined in `.job_template`
+and one, the service defined in `.postgres_services` and second the services defined in `.mysql_services`.
+
+### Hidden jobs
+
+The jobs that start with `.` will be not processed by GitLab.
+
+Example of such hidden jobs:
+```yaml
+.job_name:
+  script:
+    - rake spec
+```
+
+The `.job_name` will be ignored. You can use this feature to ignore jobs, or use them as templates with special YAML features.
+
 ## Validate the .gitlab-ci.yml
 
 Each instance of GitLab CI has an embedded debug tool called Lint.

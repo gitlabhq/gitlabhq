@@ -60,6 +60,7 @@ module Ci
 
       @jobs = {}
       @config.each do |key, job|
+        next if key.to_s.start_with?('.')
         stage = job[:stage] || job[:type] || DEFAULT_STAGE
         @jobs[key] = { stage: stage }.merge(job)
       end
@@ -81,6 +82,7 @@ module Ci
           services: job[:services] || @services,
           artifacts: job[:artifacts],
           cache: job[:cache] || @cache,
+          dependencies: job[:dependencies],
         }.compact
       }
     end

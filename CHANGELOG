@@ -16,6 +16,8 @@ v 8.6.0 (unreleased)
   - Return empty array instead of 404 when commit has no statuses in commit status API
   - Decrease the font size and the padding of the `.anchor` icons used in the README (Roberto Dip)
   - Rewrite logo to simplify SVG code (Sean Lang)
+  - Allow to use YAML anchors when parsing the `.gitlab-ci.yml` (Pascal Bach)
+  - Ignore jobs that start with `.` (hidden jobs)
   - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users

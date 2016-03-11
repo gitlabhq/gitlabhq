@@ -427,6 +427,35 @@ module Ci
       end
     end
 
+    describe "Hidden jobs" do
+      let(:config) do
+        YAML.dump({
+                    '.hidden_job' => { script: 'test' },
+                    'normal_job' => { script: 'test' }
+                  })
+      end
+
+      let(:config_processor) { GitlabCiYamlProcessor.new(config) }
+
+      subject { config_processor.builds_for_stage_and_ref("test", "master") }
+
+      it "doesn't create jobs that starts with dot" do
+        expect(subject.size).to eq(1)
+        expect(subject.first).to eq({
+          except: nil,
+          stage: "test",
+          stage_idx: 1,
+          name: :normal_job,
+          only: nil,
+          commands: "\ntest",
+          tag_list: [],
+          options: {},
+          when: "on_success",
+          allow_failure: false
+        })
+      end
+    end
+
     describe "Error handling" do
       it "fails to parse YAML" do
         expect{GitlabCiYamlProcessor.new("invalid: yaml: test")}.to raise_error(Psych::SyntaxError)
