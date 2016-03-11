@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :doorkeeper_access_grant, class: Doorkeeper::AccessGrant do
     sequence(:resource_owner_id) { |n| n }
-    application
+    association :application, factory: :doorkeeper_application
     redirect_uri 'https://app.com/callback'
     expires_in 100
     scopes 'public write'
@@ -9,7 +9,7 @@ FactoryGirl.define do
 
   factory :doorkeeper_access_token, class: Doorkeeper::AccessToken do
     sequence(:resource_owner_id) { |n| n }
-    application
+    association :application, factory: :doorkeeper_application
     expires_in 2.hours
 
     factory :clientless_access_token do
