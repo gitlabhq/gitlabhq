@@ -656,6 +656,14 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
+  create_table "project_group_links", force: :cascade do |t|
+    t.integer  "project_id",                null: false
+    t.integer  "group_id",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "group_access", default: 30, null: false
+  end
+
   create_table "project_import_data", force: :cascade do |t|
     t.integer "project_id"
     t.text    "data"
@@ -749,9 +757,9 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.boolean  "active",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
