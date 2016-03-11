@@ -68,18 +68,25 @@ describe GeoNode, type: :model do
     end
 
     context 'on create' do
-
       before(:each) do
         subject.geo_node_key_attributes = geo_node_key_attributes
-        subject.save!
       end
 
       it 'saves a corresponding key' do
+        subject.save!
         expect(subject.geo_node_key).to be_persisted
       end
 
-      it 'saves a corresponding oauth application' do
+      it 'saves a corresponding oauth application if it is a secondary node' do
+        subject.save!
         expect(subject.oauth_application).to be_persisted
+      end
+
+      it 'has no oauth_application if it is a primary node' do
+        subject.primary=true
+        subject.save!
+
+        expect(subject.oauth_application).not_to be_present
       end
     end
   end

@@ -73,8 +73,13 @@ class GeoNode < ActiveRecord::Base
 
   def update_dependents_attributes
     self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
-    self.oauth_application.name = "Geo node: #{self.url}" if self.geo_node_key
-    self.oauth_application.redirect_uri = oauth_callback_url
+
+    if self.primary?
+      self.oauth_application = nil
+    else
+      self.oauth_application.name = "Geo node: #{self.url}" if self.geo_node_key
+      self.oauth_application.redirect_uri = oauth_callback_url
+    end
   end
 
   def validate(record)
