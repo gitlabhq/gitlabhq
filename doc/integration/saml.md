@@ -133,15 +133,15 @@ will be returned to GitLab and will be signed in.
 
 ## Customization
 
-### attribute_statements:
+### `attribute_statements`
 
 >**Note:**
 This setting is only available on GitLab 8.6 and above.
 This setting should only be used to map attributes that are part of the
 OmniAuth info hash schema.
 
-Used to map Attribute Names in a SAMLResponse to entries in the OmniAuth
-[info hash](https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
+`attribute_statements` is used to map Attribute Names in a SAMLResponse to entries
+in the OmniAuth [info hash](https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
 
 For example, if your SAMLResponse contains an Attribute called 'EmailAddress',
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
@@ -149,7 +149,7 @@ corresponding key in the info hash.  URI-named Attributes are also supported, e.
 `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
 
 This setting allows you tell GitLab where to look for certain attributes required
-to create an account. Like mentioned above, if your IdP send the user's email
+to create an account. Like mentioned above, if your IdP sends the user's email
 address as `EmailAddress` instead of `email`, let GitLab know by setting it on
 your configuration:
 
@@ -164,12 +164,12 @@ args: {
 }
 ```
 
-### allowed_clock_drift:
+### `allowed_clock_drift`
 
 The clock of the Identity Provider may drift slightly ahead of your system clocks.
-To allow for a small amount of clock drift you can use this argument within your
-settings. Its value must be given in a number (and/or fraction) of seconds. The
-value given is added to the current time at which the response is validated.
+To allow for a small amount of clock drift you can use `allowed_clock_drift` within
+your settings. Its value must be given in a number (and/or fraction) of seconds.
+The value given is added to the current time at which the response is validated.
 
 ```yaml
 args: {
