@@ -108,10 +108,7 @@ class Projects::IssuesController < Projects::ApplicationController
         end
       end
       format.json do
-        render json: {
-          saved: @issue.valid?,
-          assignee_avatar_url: @issue.assignee.try(:avatar_url)
-        }
+        render json: @issue
       end
     end
   end

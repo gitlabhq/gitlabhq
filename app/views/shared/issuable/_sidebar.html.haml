@@ -64,7 +64,7 @@
             .light None
 
         .selectbox.hide-collapsed
-          = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search milestones", data: { show_no: true, field_name: "milestone_id", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :js), use_id: true }})
+          = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search milestones", data: { show_no: true, field_name: "milestone_id", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), issue_update: namespace_project_issue_path(@project.namespace, @project, issuable.id, :json), use_id: true }})
 
       - if issuable.project.labels.any?
         .block.labels

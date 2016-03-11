@@ -1,10 +1,10 @@
 class @MilestoneSelect
-  constructor: (@opts) ->
-    opts = @opts
+  constructor: () ->
     $('.js-milestone-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
       projectId = $dropdown.data('project-id')
       milestonesUrl = $dropdown.data('milestones')
+      issueUpdateURL = $dropdown.data('issueUpdate')
       selectedMilestone = $dropdown.data('selected')
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
@@ -57,12 +57,20 @@ class @MilestoneSelect
           milestone.title is selectedMilestone
 
         clicked: (e) ->
-          if $(dropdown).hasClass "js-filter-submit" && opts.submitForm
-            $(dropdown).parents('form').submit()
+          if $dropdown.hasClass "js-filter-submit"
+            $dropdown.parents('form').submit()
           else
-            milestoneVal = $(@)
+            selected = $dropdown
               .closest('.selectbox')
               .find('input[type="hidden"]')
               .val()
-              Api.issues.update(projectId, issuableId, milestone_id: milestoneVal, (data) => console.log 'data', data)
+
+            $.ajax(
+              type: 'PUT'
+              url: issueUpdateURL
+              data:
+                issue: 
+                  milestone_id: selected
+            ).done (data) ->
+              console.log 'databack', data
       )
