@@ -28,9 +28,10 @@ module Projects
       end
 
       def assign_member(existing_user, member)
+        old_user_id = member['user']['id']
         member['user'] = existing_user
         project_member = ProjectMember.new(member_hash(member))
-        @project_member_map[existing_user.id] = project_member if project_member.save
+        @project_member_map[old_user_id] = project_member.user.id if project_member.save
       end
 
       def member_hash(member)
@@ -42,7 +43,7 @@ module Projects
         @default_project_member ||=
           begin
             default_member = ProjectMember.new(default_project_member_hash)
-            default_member if default_member.save
+            default_member.user.id if default_member.save
           end
       end
 

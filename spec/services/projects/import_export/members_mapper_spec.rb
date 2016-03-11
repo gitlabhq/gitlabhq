@@ -6,6 +6,7 @@ describe Projects::ImportExport::MembersMapper, services: true do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public, name: 'searchable_project') }
     let(:user2) { create(:user) }
+    let(:exported_user_id) { 99 }
     let(:exported_members) do
       [{
          "id" => 2,
@@ -22,6 +23,7 @@ describe Projects::ImportExport::MembersMapper, services: true do
          "invite_accepted_at" => nil,
          "user" =>
            {
+             "id" => exported_user_id,
              "email" => user2.email,
              "username" => user2.username
            }
@@ -34,15 +36,15 @@ describe Projects::ImportExport::MembersMapper, services: true do
     end
 
     it 'maps a project member' do
-      expect(project_member_user_id(user2.id)).to eq(user2.id)
+      expect(members_mapper.map[exported_user_id]).to eq(user2.id)
     end
 
     it 'defaults to importer project member if it does not exist' do
-      expect(project_member_user_id(-1)).to eq(user.id)
+      expect(members_mapper.map[-1]).to eq(user.id)
     end
   end
 
   def project_member_user_id(id)
-    members_mapper.map[id].user.id
+    members_mapper.map[id]
   end
 end

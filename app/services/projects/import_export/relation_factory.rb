@@ -3,16 +3,27 @@ module Projects
     module RelationFactory
       extend self
 
-      OVERRIDES = { snippets: :project_snippets }
+      OVERRIDES = { snippets: :project_snippets }.freeze
+      USER_REFERENCES = %w(author_id assignee_id updated_by_id).freeze
 
       def create(relation_sym:, relation_hash:, members_map:)
         relation_sym = parse_relation_sym(relation_sym)
         klass = relation_class(relation_sym)
         relation_hash.delete('id') #screw IDs for now
+        update_user_references(relation_hash, members_map)
         klass.new(relation_hash)
       end
 
       private
+
+      #TODO nice to have, optimize this to only get called for specific models
+      def update_user_references(relation_hash, members_map)
+        USER_REFERENCES.each do |reference|
+          if relation_hash[reference]
+            relation_hash[reference] = members_map[relation_hash[reference]]
+          end
+        end
+      end
 
       def relation_class(relation_sym)
         relation_sym.to_s.classify.constantize
