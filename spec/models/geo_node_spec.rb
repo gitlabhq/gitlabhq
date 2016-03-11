@@ -4,6 +4,8 @@ describe GeoNode, type: :model do
   subject(:new_node) { described_class.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab') }
   subject(:new_primary_node) { described_class.new(schema: 'https', host: 'localhost', port: 3000, relative_url_root: 'gitlab', primary: true) }
   subject(:empty_node) { described_class.new(schema: nil, host: nil, port: nil, relative_url_root: nil) }
+  subject(:primary_node) { FactoryGirl.create(:geo_node, :primary) }
+  subject(:node) { FactoryGirl.create(:geo_node) }
 
   let(:dummy_url) { 'https://localhost:3000/gitlab' }
 
@@ -62,35 +64,22 @@ describe GeoNode, type: :model do
         expect(new_node.geo_node_key).to be_present
       end
 
-      it 'initializes a corresponding oauth application' do
-        expect(new_node.oauth_application).to be_present
-      end
-
       it 'is valid' do
         expect(new_node).to be_valid
       end
     end
 
     context 'on create' do
-      before(:each) do
-        new_node.geo_node_key_attributes = geo_node_key_attributes
-        new_primary_node.geo_node_key_attributes = geo_node_key_attributes
-      end
-
       it 'saves a corresponding key' do
-        new_node.save!
-        expect(new_node.geo_node_key).to be_persisted
+        expect(node.geo_node_key).to be_persisted
       end
 
       it 'saves a corresponding oauth application if it is a secondary node' do
-        new_node.save!
-        expect(new_node.oauth_application).to be_persisted
+        expect(node.oauth_application).to be_persisted
       end
 
       it 'has no oauth_application if it is a primary node' do
-        new_primary_node.save!
-
-        expect(new_primary_node.oauth_application).not_to be_present
+        expect(primary_node.oauth_application).not_to be_present
       end
     end
   end
@@ -169,17 +158,18 @@ describe GeoNode, type: :model do
   describe '#missing_oauth_application?' do
     context 'on a primary node' do
       it 'returns false' do
-        expect(new_primary_node).not_to be_missing_oauth_application
+        expect(primary_node).not_to be_missing_oauth_application
       end
     end
 
     it 'returns false when present' do
-      expect(new_node).not_to be_missing_oauth_application
+      expect(node).not_to be_missing_oauth_application
     end
 
     it 'returns true when it is not present' do
-      new_node.oauth_application = nil
-      expect(new_node).to be_missing_oauth_application
+      node.oauth_application.destroy!
+      node.reload
+      expect(node).to be_missing_oauth_application
     end
   end
 end

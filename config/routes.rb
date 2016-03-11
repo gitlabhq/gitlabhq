@@ -282,7 +282,11 @@ Rails.application.routes.draw do
       get :download, on: :member
     end
 
-    resources :geo_nodes, only: [:index, :create, :destroy]
+    resources :geo_nodes, only: [:index, :create, :destroy] do
+      member do
+        post :repair
+      end
+    end
 
     resources :labels
 

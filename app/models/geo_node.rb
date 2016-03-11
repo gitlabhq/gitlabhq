@@ -72,7 +72,6 @@ class GeoNode < ActiveRecord::Base
 
   def build_dependents
     self.build_geo_node_key if geo_node_key.nil?
-    self.build_oauth_application if oauth_application.nil?
   end
 
   def update_dependents_attributes
@@ -81,6 +80,7 @@ class GeoNode < ActiveRecord::Base
     if self.primary?
       self.oauth_application = nil
     else
+      self.build_oauth_application if oauth_application.nil?
       self.oauth_application.name = "Geo node: #{self.url}" if self.geo_node_key
       self.oauth_application.redirect_uri = oauth_callback_url
     end
