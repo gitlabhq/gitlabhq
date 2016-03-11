@@ -30,6 +30,9 @@ class @Notes
     $(document).on "ajax:success", ".js-main-target-form", @addNote
     $(document).on "ajax:success", ".js-discussion-note-form", @addDiscussionNote
 
+    # catch note ajax errors
+    $(document).on "ajax:error", ".js-main-target-form", @addNoteError
+
     # change note in UI after update
     $(document).on "ajax:success", "form.edit-note", @updateNote
 
@@ -308,6 +311,10 @@ class @Notes
   ###
   addNote: (xhr, note, status) =>
     @renderNote(note)
+
+  addNoteError: (xhr, note, status) =>
+    flash = new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert')
+    flash.pinTo('.md-area')
 
   ###
   Called in response to the new note form being submitted
