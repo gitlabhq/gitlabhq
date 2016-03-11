@@ -17,7 +17,7 @@ module Projects
     private
 
     def members
-      [{ project_members: { include: [user: { only: [:email, :username] }] } }]
+      [{ project_members: { include: [user: { only: [:id, :email, :username] }] } }]
     end
 
     def storage_path
