@@ -30,13 +30,14 @@ module Projects
       def assign_member(existing_user, member)
         member['user'] = existing_user
         project_member = ProjectMember.new(member_hash(member))
-        @project_member_map[member['id']] = project_member if project_member.save
+        @project_member_map[existing_user.id] = project_member if project_member.save
       end
 
       def member_hash(member)
         member.except('id').merge(source_id: @project_id)
       end
 
+      #TODO: If default, then we need to leave a comment 'Comment by <original username>' on comments
       def default_project_member
         @default_project_member ||=
           begin
