@@ -222,7 +222,11 @@ class GitLabDropdown
   renderItem: (data) ->
     html = ""
 
+    # Separator
     return "<li class='divider'></li>" if data is "divider"
+
+    # Header
+    return "<li class='dropdown-header'>#{data.header}</li>" if data.header?
 
     if @options.renderRow
       # Call the render function
