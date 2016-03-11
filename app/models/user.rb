@@ -286,8 +286,22 @@ class User < ActiveRecord::Base
       end
     end
 
+    # Searches users matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
+      table   = arel_table
+      pattern = "%#{query}%"
+
+      where(
+        table[:name].matches(pattern).
+          or(table[:email].matches(pattern)).
+          or(table[:username].matches(pattern))
+      )
     end
 
     def by_login(login)
@@ -426,6 +440,11 @@ class User < ActiveRecord::Base
   # Returns the groups a user is authorized to access.
   def authorized_projects
     Project.where("projects.id IN (#{projects_union.to_sql})")
+  end
+
+  # Returns all the project relations
+  def project_relations
+    [personal_projects, groups_projects, projects]
   end
 
   def owned_projects
@@ -816,9 +835,7 @@ class User < ActiveRecord::Base
   private
 
   def projects_union
-    Gitlab::SQL::Union.new([personal_projects.select(:id),
-                            groups_projects.select(:id),
-                            projects.select(:id)])
+    Gitlab::SQL::Union.new(project_relations.map { |r| r.select(:id) })
   end
 
   def ci_projects_union

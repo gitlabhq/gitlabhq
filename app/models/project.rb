@@ -266,13 +266,31 @@ class Project < ActiveRecord::Base
       joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC')
     end
 
+    # Searches for a list of projects based on the query given in `query`.
+    #
+    # On PostgreSQL this method uses "ILIKE" to perform a case-insensitive
+    # search. On MySQL a regular "LIKE" is used as it's already
+    # case-insensitive.
+    #
+    # query - The search query as a String.
     def search(query)
-      joins(:namespace).
-        where('LOWER(projects.name) LIKE :query OR
-              LOWER(projects.path) LIKE :query OR
-              LOWER(namespaces.name) LIKE :query OR
-              LOWER(projects.description) LIKE :query',
-              query: "%#{query.try(:downcase)}%")
+      ptable  = arel_table
+      ntable  = Namespace.arel_table
+      pattern = "%#{query}%"
+
+      projects = select(:id).where(
+        ptable[:path].matches(pattern).
+          or(ptable[:name].matches(pattern)).
+          or(ptable[:description].matches(pattern))
+      )
+
+      namespaces = select(:id).
+        joins(:namespace).
+        where(ntable[:name].matches(pattern))
+
+      union = Gitlab::SQL::Union.new([projects, namespaces])
+
+      where("projects.id IN (#{union.to_sql})")
     end
 
     def search_by_visibility(level)
@@ -280,7 +298,10 @@ class Project < ActiveRecord::Base
     end
 
     def search_by_title(query)
-      non_archived.where('LOWER(projects.name) LIKE :query', query: "%#{query.downcase}%")
+      pattern = "%#{query}%"
+      table   = Project.arel_table
+
+      non_archived.where(table[:name].matches(pattern))
     end
 
     def find_with_namespace(id)

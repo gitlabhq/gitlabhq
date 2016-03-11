@@ -105,8 +105,18 @@ class Note < ActiveRecord::Base
       [:discussion, type.try(:underscore), id, line_code].join("-").to_sym
     end
 
+    # Searches for notes matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String.
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(note) like :query", query: "%#{query.downcase}%")
+      table   = arel_table
+      pattern = "%#{query}%"
+
+      where(table[:note].matches(pattern))
     end
 
     def grouped_awards
