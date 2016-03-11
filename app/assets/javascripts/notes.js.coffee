@@ -610,7 +610,7 @@ class @Notes
         reopenbtn.text(reopentext)
 
       if closebtn.text() isnt closetext
-        closebtn.text(closebtn.data('original-text'))
+        closebtn.text(closetext)
 
       if reopenbtn.is(':not(.btn-comment-and-reopen)')
         reopenbtn.removeClass('btn-comment-and-reopen')
