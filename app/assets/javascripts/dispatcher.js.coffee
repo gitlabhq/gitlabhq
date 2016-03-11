@@ -103,6 +103,8 @@ class Dispatcher
         new ProjectFork()
       when 'projects:artifacts:browse'
         new BuildArtifacts()
+      when 'projects:group_links:index'
+        new GroupsSelect()
 
     switch path.first()
       when 'admin'

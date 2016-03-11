@@ -13,6 +13,12 @@
         = icon('pencil-square-o fw')
         %span
           Project Settings
+    - if @project.allowed_to_share_with_group?
+      = nav_link(controller: :group_links) do
+        = link_to namespace_project_group_links_path(@project.namespace, @project), title: "Groups" do
+          = icon('share-square-o fw')
+          %span
+            Groups
     = nav_link(controller: :deploy_keys) do
       = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys' do
         = icon('key fw')

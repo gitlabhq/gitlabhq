@@ -880,6 +880,11 @@ class Project < ActiveRecord::Base
     jira_tracker? && jira_service.active
   end
 
+  def allowed_to_share_with_group?
+    # TODO: replace with logic
+    true
+  end
+
   def ci_commit(sha)
     ci_commits.find_by(sha: sha)
   end
