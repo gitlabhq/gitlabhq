@@ -22,7 +22,7 @@ If the highest number stable branch is unclear please check the [GitLab Blog](ht
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [requirements.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
 
 This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
@@ -160,19 +160,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Install the database packages
     sudo apt-get install -y postgresql postgresql-client libpq-dev
-
-    # Login to PostgreSQL
-    sudo -u postgres psql -d template1
-
+    
     # Create a user for GitLab
-    # Do not type the 'template1=#', this is part of the prompt
-    template1=# CREATE USER git CREATEDB;
+    sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
 
     # Create the GitLab production database & grant all privileges on database
-    template1=# CREATE DATABASE gitlabhq_production OWNER git;
-
-    # Quit the database session
-    template1=# \q
+    sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
 
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
