@@ -24,7 +24,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
 
   def repair
     @node = GeoNode.find(params[:id])
-    
+
     if @node.primary? || !@node.missing_oauth_application?
       redirect_to admin_geo_nodes_path, notice: "This node doesn't need to be repaired."
     elsif @node.save

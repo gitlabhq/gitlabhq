@@ -25,7 +25,7 @@ class Oauth::GeoAuthController < ActionController::Base
 
     user = User.find(remote_user['id'])
 
-    if user && sign_in(user)
+    if user && sign_in(user, bypass: true)
       return_to = oauth.get_oauth_state_return_to
       redirect_to(return_to || root_path)
     else
