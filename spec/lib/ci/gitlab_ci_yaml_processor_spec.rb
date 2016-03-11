@@ -495,6 +495,45 @@ module Ci
       end
     end
 
+    describe "YAML Alias/Anchor" do
+      it "is correctly supported for jobs" do
+        config = <<EOT
+job1: &JOBTMPL
+  script: execute-script-for-job
+
+job2: *JOBTMPL
+EOT
+
+        config_processor = GitlabCiYamlProcessor.new(config)
+
+        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(2)
+        expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+          except: nil,
+          stage: "test",
+          stage_idx: 1,
+          name: :job1,
+          only: nil,
+          commands: "\nexecute-script-for-job",
+          tag_list: [],
+          options: {},
+          when: "on_success",
+          allow_failure: false
+        })
+        expect(config_processor.builds_for_stage_and_ref("test", "master").second).to eq({
+          except: nil,
+          stage: "test",
+          stage_idx: 1,
+          name: :job2,
+          only: nil,
+          commands: "\nexecute-script-for-job",
+          tag_list: [],
+          options: {},
+          when: "on_success",
+          allow_failure: false
+        })
+      end
+    end
+
     describe "Error handling" do
       it "fails to parse YAML" do
         expect{GitlabCiYamlProcessor.new("invalid: yaml: test")}.to raise_error(Psych::SyntaxError)

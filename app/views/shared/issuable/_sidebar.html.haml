@@ -6,7 +6,7 @@
         of
         = issuables_count(issuable)
       %span.pull-right
-        %a.gutter-toggle{href: '#'}
+        %a.gutter-toggle.js-sidebar-toggle{href: '#'}
           = sidebar_gutter_toggle_icon
       .issuable-nav.hide-collapsed.pull-right.btn-group{role: 'group', "aria-label" => '...'}
         - if prev_issuable = prev_issuable_for(issuable)

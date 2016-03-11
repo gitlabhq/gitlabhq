@@ -5,114 +5,113 @@
   .alert.alert-info
     Some options are unavailable for LDAP accounts
 
-.account-page.prepend-top-default
-  .panel.panel-default.update-token
-    .panel-heading
-      Reset Private token
-    .panel-body
-      = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
-        .data
-          %p
-            Your private token is used to access application resources without authentication.
-            %br
-            It can be used for atom feeds or the API.
-            %span.cred
-              Keep it secret!
-
-          %p.cgray
-            - if current_user.private_token
-              = text_field_tag "token", current_user.private_token, class: "form-control"
-            - else
-              %span You don`t have one yet. Click generate to fix it.
-
-        .form-actions
-          - if current_user.private_token
-            = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
-          - else
-            = f.submit 'Generate', class: "btn btn-default"
-
-  .panel.panel-default
-    .panel-heading
-      Two-factor Authentication
-    .panel-body
-      - if current_user.two_factor_enabled?
-        .pull-right
-          = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-close btn-sm',
-              data: { confirm: 'Are you sure?' }
-        %p.text-success
-          %strong
-            Two-factor Authentication is enabled
-        %p
-          If you lose your recovery codes you can
-          %strong
-            = succeed ',' do
-              = link_to 'generate new ones', codes_profile_two_factor_auth_path, method: :post, data: { confirm: 'Are you sure?' }
-          invalidating all previous codes.
-
-      - else
-        %p
-          Increase your account's security by enabling two-factor authentication (2FA).
-        %p
-          Each time you log in you’ll be required to provide your username and
-          password as usual, plus a randomly-generated code from your phone.
-
-        .form-actions
-          = link_to 'Enable Two-factor Authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
-
-  - if button_based_providers.any?
-    .panel.panel-default
-      .panel-heading
-        Connected Accounts
-      .panel-body
-        .oauth-buttons.append-bottom-10
-          %p Click on icon to activate signin with one of the following services
-          - button_based_providers.each do |provider|
-            .btn-group
-              = link_to provider_image_tag(provider), user_omniauth_authorize_path(provider), method: :post, class: "btn btn-lg #{'active' if auth_active?(provider)}", "data-no-turbolink" => "true"
-
-              - if auth_active?(provider)
-                = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'btn btn-lg' do
-                  = icon('close')
-
-  - if current_user.can_change_username?
-    .panel.panel-warning.update-username
-      .panel-heading
-        Change Username
-      .panel-body
-        = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
-          %p
-            Changing your username will change path to all personal projects!
-          %div
-            .input-group
-              .input-group-addon
-                = "#{root_url}u/"
-              = f.text_field :username, required: true, class: 'form-control'
-            &nbsp;
-          .loading-gif.hide
-            %p
-              = icon('spinner spin')
-              Saving new username
-          .form-actions
-            = f.submit 'Save username', class: "btn btn-warning"
-
-  - if signup_enabled?
-    .panel.panel-danger.remove-account
-      .panel-heading
-        Remove account
-      .panel-body
-        - if @user.can_be_removed?
-          %p Deleting an account has the following effects:
-          %ul
-            %li All user content like authored issues, snippets, comments will be removed
-            - rp = current_user.personal_projects.count
-            - unless rp.zero?
-              %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
-          .form-actions
-            = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      Private Token
+    %p
+      Your private token is used to access application resources without authentication.
+  .col-lg-9
+    = form_for @user, url: reset_private_token_profile_path, method: :put, html: {class: "private-token"} do |f|
+      %p.cgray
+        - if current_user.private_token
+          = label_tag "token", "Private token", class: "label-light"
+          = text_field_tag "token", current_user.private_token, class: "form-control"
         - else
-          - if @user.solo_owned_groups.present?
-            %p
-              Your account is currently an owner in these groups:
-              %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
-            %p
-              You must transfer ownership or delete these groups before you can delete your account.
+          %span You don`t have one yet. Click generate to fix it.
+      %p.help-block
+        It can be used for atom feeds or the API. Keep it secret!
+      .prepend-top-default
+        - if current_user.private_token
+          = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
+        - else
+          = f.submit 'Generate', class: "btn btn-default"
+%hr
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      Two-factor Authentication
+    %p
+      Increase your account's security by enabling two-factor authentication (2FA).
+  .col-lg-9
+    %p
+      Status: #{current_user.two_factor_enabled? ? 'enabled' : 'disabled'}
+    - if !current_user.two_factor_enabled?
+      %p
+        Download the Google Authenticator application from App Store for iOS or Google Play for Android and scan this code.
+        More information is available in the #{link_to('documentation', help_page_path('profile', 'two_factor_authentication'))}.
+      .append-bottom-10
+        = link_to 'Enable two-factor authentication', new_profile_two_factor_auth_path, class: 'btn btn-success'
+    - else
+      = link_to 'Disable Two-factor Authentication', profile_two_factor_auth_path, method: :delete, class: 'btn btn-danger',
+              data: { confirm: 'Are you sure?' }
+%hr
+- if button_based_providers.any?
+  .row.prepend-top-default
+    .col-lg-3.profile-settings-sidebar
+      %h4.prepend-top-0
+        Social sign-in
+      %p
+        Activate signin with one of the following services
+    .col-lg-9
+      %label.label-light
+        Connected Accounts
+      %p Click on icon to activate signin with one of the following services
+      - button_based_providers.each do |provider|
+        .provider-btn-group
+          .provider-btn-image
+            = provider_image_tag(provider)
+          - if auth_active?(provider)
+            = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
+              Disconnect
+          - else
+            = link_to user_omniauth_authorize_path(provider), method: :post, class: "provider-btn #{'not-active' if !auth_active?(provider)}", "data-no-turbolink" => "true" do
+              Connect
+  %hr
+- if current_user.can_change_username?
+  .row.prepend-top-default
+    .col-lg-3.profile-settings-sidebar
+      %h4.prepend-top-0.change-username-title
+        Change username
+      %p
+        Changing your username will change path to all personal projects!
+    .col-lg-9
+      = form_for @user, url: update_username_profile_path, method: :put, remote: true, html: {class: "update-username"} do |f|
+        .form-group
+          = f.label :username, "Path", class: "label-light"
+          .input-group
+            .input-group-addon
+              = "#{root_url}u/"
+            = f.text_field :username, required: true, class: 'form-control'
+        .help-block
+          Current path:
+          = "#{root_url}u/#{current_user.username}"
+        .prepend-top-default
+          = f.button class: "btn btn-warning", type: "submit" do
+            = icon "spinner spin", class: "hidden loading-username"
+            Update username
+  %hr
+
+- if signup_enabled?
+  .row.prepend-top-default
+    .col-lg-3.profile-settings-sidebar
+      %h4.prepend-top-0.remove-account-title
+        Remove account
+    .col-lg-9
+      - if @user.can_be_removed?
+        %p
+          Deleting an account has the following effects:
+        %ul
+          %li All user content like authored issues, snippets, comments will be removed
+          - rp = current_user.personal_projects.count
+          - unless rp.zero?
+            %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+        = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+      - else
+        - if @user.solo_owned_groups.present?
+          %p
+            Your account is currently an owner in these groups:
+            %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
+          %p
+            You must transfer ownership or delete these groups before you can delete your account.
+.append-bottom-default

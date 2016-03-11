@@ -361,7 +361,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can see the new rendered SVG image' do
-    expect(find('.file-content')).to have_css('img')
+    expect(page).to have_css('.file-content img')
   end
 
   private
