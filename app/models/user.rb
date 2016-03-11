@@ -818,7 +818,8 @@ class User < ActiveRecord::Base
   def projects_union
     Gitlab::SQL::Union.new([personal_projects.select(:id),
                             groups_projects.select(:id),
-                            projects.select(:id)])
+                            projects.select(:id),
+                            groups.joins(:shared_projects).select(:project_id)])
   end
 
   def ci_projects_union
