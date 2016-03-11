@@ -1,3 +1,5 @@
+require "gitlab/key_fingerprint"
+
 module API
   # Internal access API
   class Internal < Grape::API
