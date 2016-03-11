@@ -55,7 +55,9 @@
 :javascript
   new UsersSelect();
   new LabelsSelect();
-  new MilestoneSelect();
+  new MilestoneSelect({
+    submitForm: true
+  });
   new IssueStatusSelect();
   $('form.filter-form').on('submit', function (event) {
     event.preventDefault();

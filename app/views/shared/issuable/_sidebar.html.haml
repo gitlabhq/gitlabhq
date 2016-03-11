@@ -62,10 +62,9 @@
               = issuable.milestone.title
           - else
             .light None
+
         .selectbox.hide-collapsed
-          = f.select(:milestone_id, milestone_options(issuable), { include_blank: true }, { class: 'select2 select2-compact js-select2 js-milestone', data: { placeholder: 'Select milestone' }})
-          = hidden_field_tag :issuable_context
-          = f.submit class: 'btn hide'
+          = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search milestones", data: { show_no: true, field_name: "milestone_id", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :js), use_id: true }})
 
       - if issuable.project.labels.any?
         .block.labels
@@ -117,4 +116,5 @@
 
     :javascript
       new Subscription('.subscription');
+      new MilestoneSelect();
       new IssuableContext();

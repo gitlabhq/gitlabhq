@@ -143,10 +143,11 @@ class GitLabDropdown
         selector = ".dropdown-page-one .dropdown-content a"
 
       @dropdown.on "click", selector, (e) ->
+        e.preventDefault()
         self.rowClicked $(@)
 
         if self.options.clicked
-          self.options.clicked()
+          self.options.clicked.call(@,e)
 
   toggleLoading: ->
     $('.dropdown-menu', @dropdown).toggleClass LOADING_CLASS

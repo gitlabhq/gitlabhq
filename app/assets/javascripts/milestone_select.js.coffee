@@ -1,5 +1,6 @@
 class @MilestoneSelect
-  constructor: ->
+  constructor: (@opts) ->
+    opts = @opts
     $('.js-milestone-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
       projectId = $dropdown.data('project-id')
@@ -9,6 +10,7 @@ class @MilestoneSelect
       showAny = $dropdown.data('show-any')
       useId = $dropdown.data('use-id')
       defaultLabel = $dropdown.data('default-label')
+      issuableId = $dropdown.data('issuable-id')
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -53,13 +55,14 @@ class @MilestoneSelect
             milestone.id
         isSelected: (milestone) ->
           milestone.title is selectedMilestone
-        clicked: ->
-          page = $('body').data 'page'
-          isIssueIndex = page is 'projects:issues:index'
-          isMRIndex = page is page is 'projects:merge_requests:index'
 
-          if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
-            Issues.filterResults $dropdown.closest('form')
-          else if $dropdown.hasClass 'js-filter-submit'
-            $dropdown.closest('form').submit()
+        clicked: (e) ->
+          if $(dropdown).hasClass "js-filter-submit" && opts.submitForm
+            $(dropdown).parents('form').submit()
+          else
+            milestoneVal = $(@)
+              .closest('.selectbox')
+              .find('input[type="hidden"]')
+              .val()
+              Api.issues.update(projectId, issuableId, milestone_id: milestoneVal, (data) => console.log 'data', data)
       )
