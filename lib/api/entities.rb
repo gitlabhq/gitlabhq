@@ -56,6 +56,10 @@ module API
       expose :id
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+
+      expose :web_url do |project, options|
+        Gitlab::Application.routes.url_helpers.namespace_project_url(project.namespace, project)
+      end
     end
 
     class Project < Grape::Entity
@@ -270,6 +274,31 @@ module API
 
     class ProjectGroupLink < Grape::Entity
       expose :id, :project_id, :group_id, :group_access
+    end
+
+    class Todo < Grape::Entity
+      expose :id
+      expose :project, using: Entities::BasicProjectDetails
+      expose :author, using: Entities::UserBasic
+      expose :action_name
+      expose :target_id
+      expose :target_type
+      expose :target_reference do |todo, options|
+        todo.target.to_reference
+      end
+
+      expose :target_url do |todo, options|
+        target_type   = todo.target_type.underscore
+        target_url    = "namespace_project_#{target_type}_url"
+        target_anchor = "note_#{todo.note_id}" if todo.note.present?
+
+        Gitlab::Application.routes.url_helpers.public_send(target_url,
+          todo.project.namespace, todo.project, todo.target, anchor: target_anchor)
+      end
+
+      expose :body
+      expose :state
+      expose :created_at
     end
 
     class Namespace < Grape::Entity
