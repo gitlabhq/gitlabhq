@@ -56,7 +56,10 @@ module API
       # Get a ssh key using the fingerprint
       #
       get "/authorized_keys" do
-        key = Key.find_by(fingerprint: params[:fingerprint])
+        fingerprint = params.fetch(:fingerprint) {
+          Gitlab::InsecureKeyFingerprint.new(params.fetch(:key)).fingerprint
+        }
+        key = Key.find_by(fingerprint: fingerprint)
         not_found!("Key") if key.nil?
         present key, with: Entities::SSHKey
       end

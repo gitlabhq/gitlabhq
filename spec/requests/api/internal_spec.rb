@@ -49,7 +49,7 @@ describe API::API, api: true  do
   end
 
   describe "GET /internal/authorized_keys" do
-    context "existing key" do
+    context "unsing an existing key's fingerprint" do
       it "finds the key" do
         get(api('/internal/authorized_keys'), fingerprint: key.fingerprint, secret_token: secret_token)
 
@@ -58,17 +58,38 @@ describe API::API, api: true  do
       end
     end
 
-    context "non existing key" do
+    context "non existing key's fingerprint" do
       it "returns 404" do
-        get(api('/internal/authorized_keys'), fingerprint: "not-valid", secret_token: secret_token)
+        get(api('/internal/authorized_keys'), fingerprint: "no:t-:va:li:d0", secret_token: secret_token)
 
         expect(response.status).to eq(404)
       end
     end
 
-    context "partial key match" do
+    context "using a partial fingerprint" do
       it "returns 404" do
         get(api('/internal/authorized_keys'), fingerprint: "#{key.fingerprint[0..5]}%", secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "sending the key" do
+      it "finds the key" do
+        get(api('/internal/authorized_keys'), key: key.key.split[1], secret_token: secret_token)
+
+        expect(response.status).to eq(200)
+        expect(json_response["key"]).to eq(key.key)
+      end
+
+      it "returns 404 with a partial key" do
+        get(api('/internal/authorized_keys'), key: key.key.split[1][0...-3], secret_token: secret_token)
+
+        expect(response.status).to eq(404)
+      end
+
+      it "returns 404 with an not valid base64 string" do
+        get(api('/internal/authorized_keys'), key: "whatever!", secret_token: secret_token)
 
         expect(response.status).to eq(404)
       end
