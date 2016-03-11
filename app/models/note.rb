@@ -125,6 +125,10 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def searchable?
+    !is_award && !system
+  end
+
   def cross_reference?
     system && SystemNoteService.cross_reference?(note)
   end
