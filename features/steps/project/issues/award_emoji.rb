@@ -79,7 +79,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   step 'I leave comment with a single emoji' do
     page.within('.js-main-target-form') do
       fill_in 'note[note]', with: ':smile:'
-      click_button 'Add Comment'
+      click_button 'Comment'
     end
   end
 

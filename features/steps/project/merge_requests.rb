@@ -419,7 +419,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is correct"
-      click_button "Add Comment"
+      click_button "Comment"
     end
 
     page.within ".files [id^=diff]:nth-child(2) .note-body > .note-text" do
@@ -432,7 +432,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is wrong on here"
-      click_button "Add Comment"
+      click_button "Comment"
     end
   end
 
@@ -528,7 +528,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   def leave_comment(message)
     page.within(".js-discussion-note-form", visible: true) do
       fill_in "note_note", with: message
-      click_button "Add Comment"
+      click_button "Comment"
     end
     page.within(".notes_holder", visible: true) do
       expect(page).to have_content message
