@@ -603,6 +603,13 @@ class User < ActiveRecord::Base
     end
   end
 
+  def try_obtain_ldap_lease
+    # After obtaining this lease LDAP checks will be blocked for 600 seconds
+    # (10 minutes) for this user.
+    lease = Gitlab::ExclusiveLease.new("user_ldap_check:#{id}", timeout: 600)
+    lease.try_obtain
+  end
+
   def solo_owned_groups
     @solo_owned_groups ||= owned_groups.select do |group|
       group.owners == [self]
