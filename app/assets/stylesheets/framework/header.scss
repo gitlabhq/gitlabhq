@@ -141,22 +141,18 @@ header {
   margin-left: $sidebar_collapsed_width;
 }
 
-@media (max-width: $screen-sm-min) {
-  .header-collapsed {
-    margin-left: $sidebar_collapsed_width;
-  }
+.header-collapsed {
+  margin-left: $sidebar_collapsed_width;
 
-  .header-expanded {
-    margin-left: $sidebar_collapsed_width;
+  @media (min-width: $screen-sm-max) {
+    @include collapsed-header;
   }
 }
 
-@media(min-width: $screen-sm-min) {
-  .header-collapsed {
-    @include collapsed-header;
-  }
+.header-expanded {
+  margin-left: $sidebar_collapsed_width;
 
-  .header-expanded {
+  @media (min-width: $screen-sm-max) {
     margin-left: $sidebar_width;
   }
 }

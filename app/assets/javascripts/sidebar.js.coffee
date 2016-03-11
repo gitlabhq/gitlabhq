@@ -1,4 +1,4 @@
-mobileWidth = 768
+mobileWidth = 991
 collapsed = 'page-sidebar-collapsed'
 expanded = 'page-sidebar-expanded'
 
@@ -21,6 +21,9 @@ $(document).on("click", '.toggle-nav-collapse', (e) ->
 )
 
 $ ->
-  if $(window).width() < mobileWidth
+  breakpoints = new Breakpoints()
+  size = breakpoints.getBreakpointSize()
+
+  if size is "xs" or size is "sm"
     if $('.page-with-sidebar').hasClass(expanded)
       toggleSidebar()
