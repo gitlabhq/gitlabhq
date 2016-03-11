@@ -45,10 +45,10 @@ class CiBuild
     $body = $('body')
     $buildTrace = $('#build-trace')
 
-    buildScroll.affix(
+    $buildScroll.affix(
       offset:
         bottom: ->
-          body.outerHeight() - (buildTrace.outerHeight() + buildTrace.offset().top)
+          $body.outerHeight() - ($buildTrace.outerHeight() + $buildTrace.offset().top)
     )
 
 @CiBuild = CiBuild
