@@ -33,10 +33,36 @@ describe Gitlab::Gfm::ReferenceUnfolder do
       end
 
       context 'description ambigous elements' do
-        let(:url) { 'http://gitlab.com/#1' }
-        let(:text) { "This references #1, but not #{url}" }
+        context 'url' do
+          let(:url) { 'http://gitlab.com/#1' }
+          let(:text) { "This references #1, but not #{url}" }
 
-        it { is_expected.to include url }
+          it { is_expected.to include url }
+        end
+
+        context 'code' do
+          let(:text) { "#1, but not `[#1]`" }
+          it { is_expected.to eq "#{issue_first.to_reference(new_project)}, but not `[#1]`" }
+        end
+
+        context 'code reverse' do
+          let(:text) { "not `#1`, but #1" }
+          it { is_expected.to eq "not `#1`, but #{issue_first.to_reference(new_project)}" }
+        end
+
+        context 'code in random order' do
+          let(:text) { "#1, `#1`, #1, `#1`" }
+          let(:ref) { issue_first.to_reference(new_project) }
+
+          it { is_expected.to eq "#{ref}, `#1`, #{ref}, `#1`" }
+        end
+      end
+
+      context 'reference contains milestone' do
+        let(:milestone) { create(:milestone) }
+        let(:text) { "milestone ref: #{milestone.to_reference}" }
+
+        it { is_expected.to eq text }
       end
     end
   end
