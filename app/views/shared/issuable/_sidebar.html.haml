@@ -127,9 +127,6 @@
                 = link_to_label(label, type: issuable.to_ability_name)
             - else
               .light None
-          .selectbox.hide-collapsed
-            -# = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
-            -#   { selected: issuable.label_ids }, multiple: true, class: 'select2 js-select2', data: { placeholder: "Select labels" }
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       %hr
