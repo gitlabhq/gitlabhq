@@ -7,44 +7,49 @@ some values according to your database setup, how big it is, etc.
 The GitLab primary node where the write operations happen will act as `master`,
 and the secondary ones which are read-only will act as `slaves`.
 
+>**Note:**
+To be on par with GitLab's notation, we will use `primary` to denote the `master`
+server, and `secondary` for the `slave`.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [GitLab Geo PostgreSQL replication](#gitlab-geo-postgresql-replication)
-    - [PostgreSQL - Configure the master server](#postgresql-configure-the-master-server)
-    - [PostgreSQL - Configure the slave server](#postgresql-configure-the-slave-server)
+- [PostgreSQL replication](#postgresql-replication)
+    - [PostgreSQL - Configure the primary server](#postgresql-configure-the-primary-server)
+    - [PostgreSQL - Configure the secondary server](#postgresql-configure-the-secondary-server)
     - [PostgreSQL - Initiate the replication process](#postgresql-initiate-the-replication-process)
-- [GitLab Geo MySQL replication](#gitlab-geo-mysql-replication)
+- [MySQL replication](#mysql-replication)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## GitLab Geo PostgreSQL replication
+## PostgreSQL replication
 
 The following guide assumes that:
 
 - You are using PostgreSQL 9.1 or later which includes the
   [`pg_basebackup` tool][pgback]. As of this writing, the latest Omnibus
   packages (8.5) have version 9.2.
-- You have a master server already set up, running PostgreSQL 9.2.x, and you
-  have a new slave server set up on the same OS and PostgreSQL version.
-- The IP of master server for our examples will be `1.2.3.4`, whereas the
-  slave's IP will be `5.6.7.8`.
+- You have a primary server already set up, running PostgreSQL 9.2.x, and you
+  have a new secondary server set up on the same OS and PostgreSQL version. If
+  you are using Omnibus, make sure the GitLab version is the same on all nodes.
+- The IP of the primary server for our examples will be `1.2.3.4`, whereas the
+  secondary's IP will be `5.6.7.8`.
 
 [pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
 
-### PostgreSQL - Configure the master server
+### PostgreSQL - Configure the primary server
 
 **For installations from source**
 
-1. Create a replication user:
+1. Login as root and create a replication user:
 
     ```bash
-    sudo -u postgres psql -c "CREATE USER gitlab_replicator REPLICATION LOGIN ENCRYPTED PASSWORD 'thepassword';"
+    sudo -u postgres psql -c "CREATE USER gitlab_replicator REPLICATION ENCRYPTED PASSWORD 'thepassword';"
     ```
 
-1. Edit `postgresql.conf` to configure the master for streaming replication
-   (for Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
+1. Edit `postgresql.conf` to configure the primary server for streaming replication
+   (for Debian/Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
 
     ```bash
     listen_address = '1.2.3.4'
@@ -55,19 +60,21 @@ The following guide assumes that:
     hot_standby = on
     ```
 
-    Edit these values as you see fit.
+    Edit the `wal` values as you see fit.
 
-1. Set the access control on the master to allow TCP connections using the
-   server's public IP and set the connection from the slave to require a
-   password.  Edit `pg_hba.conf` (for Ubuntu that would be `/etc/postgresql/9.2/main/pg_hba.conf`):
+1. Set the access control on the primary to allow TCP connections using the
+   server's public IP and set the connection from the secondary to require a
+   password.  Edit `pg_hba.conf` (for Debian/Ubuntu that would be
+   `/etc/postgresql/9.2/main/pg_hba.conf`):
 
     ```bash
+    host    all             all                      127.0.0.1/32    trust
     host    all             all                      1.2.3.4/32      trust
     host    replication     gitlab_replicator        5.6.7.8/32      md5
     ```
 
-    Where `1.2.3.4` is the public IP address of the master server, and `5.6.7.8`
-    the public IP address of the slave server.
+    Where `1.2.3.4` is the public IP address of the primary server, and `5.6.7.8`
+    the public IP address of the secondary one.
 
 1. Restart PostgreSQL for the changes to take effect
 
@@ -75,7 +82,7 @@ The following guide assumes that:
 
 **For Omnibus installations**
 
-1. Omnibus GitLab already has a replicator user called `gitlab_replicator`.
+1. Omnibus GitLab has already a replicator user called `gitlab_replicator`.
    You must set its password manually:
 
     ```bash
@@ -97,6 +104,11 @@ The following guide assumes that:
     postgresql['hot_standby'] = "on"
     ```
 
+    Where `1.2.3.4` is the public IP address of the primary server, and `5.6.7.8`
+    the public IP address of the secondary one.
+
+    Edit the `wal` values as you see fit.
+
 1. [Reconfigure GitLab][] for the changes to take effect.
 
 ---
@@ -105,7 +117,7 @@ Now that the PostgreSQL server is set up to accept remote connections, run
 `netstat -plnt` to make sure that PostgreSQL is listening to the server's
 public IP.
 
-Test that the remote connection works by going to the slave server and
+Test that the remote connection works by going to the secondary server and
 running:
 
 ```
@@ -120,12 +132,12 @@ When prompted enter the password you set in the first step for the
 `gitlab_replicator` user. If all worked correctly, you should see the database
 prompt.
 
-### PostgreSQL - Configure the slave server
+### PostgreSQL - Configure the secondary server
 
 **For installations from source**
 
-1. Edit `postgresql.conf` to configure the slave for streaming replication
-   (for Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
+1. Edit `postgresql.conf` to configure the secondary for streaming replication
+   (for Debian/Ubuntu that would be `/etc/postgresql/9.2/main/postgresql.conf`):
 
     ```bash
     wal_level = hot_standby
@@ -134,8 +146,6 @@ prompt.
     wal_keep_segments = 10
     hot_standby = on
     ```
-
-    Edit these values as you see fit.
 
 1. Restart PostgreSQL for the changes to take effect
 
@@ -157,12 +167,14 @@ prompt.
 ### PostgreSQL - Initiate the replication process
 
 Below we provide a script that connects to the primary server, replicates the
-database and creates the needed files for replication. Make sure to run this on
-the secondary server as it removes all PostgreSQL's data before running
-`pg_basebackup`.
+database and creates the needed files for replication.
 
 The directories used are the defaults that are set up in Omnibus. Configure it
-as you see fit replacing the directories and paths:
+as you see fit replacing the directories and paths.
+
+>**Warning:**
+Make sure to run this on the _**secondary**_ server as it removes all PostgreSQL's
+data before running `pg_basebackup`.
 
 ```bash
 #!/bin/bash
@@ -205,7 +217,7 @@ gitlab-ctl start
 
 When prompted, enter the password you set up for the `gitlab_replicator` user.
 
-## GitLab Geo MySQL replication
+## MySQL replication
 
 TODO
 
