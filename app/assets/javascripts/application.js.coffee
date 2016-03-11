@@ -108,6 +108,9 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
+  breakpoints = new Breakpoints()
+  bootstrapBreakpoint = breakpoints.getBreakpointSize()
+
   $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
 
   # Click a .js-select-on-focus field, select the contents
@@ -258,7 +261,6 @@ $ ->
 
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
-    checkBootstrapBreakpoints()
     bootstrapBreakpoint = breakpoints.getBreakpointSize()
     if bootstrapBreakpoint != oldBootstrapBreakpoint
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
@@ -274,6 +276,4 @@ $ ->
       fitSidebarForSize()
 
   checkInitialSidebarSize()
-  breakpoints = new Breakpoints()
-  bootstrapBreakpoint = breakpoints.getBreakpointSize()
   new Aside()
