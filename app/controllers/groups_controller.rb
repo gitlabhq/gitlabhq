@@ -46,6 +46,8 @@ class GroupsController < Groups::ApplicationController
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
 
+    @shared_projects = @group.shared_projects
+
     respond_to do |format|
       format.html
 

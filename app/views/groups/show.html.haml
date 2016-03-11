@@ -35,6 +35,10 @@
     %li
       = link_to "#projects", 'data-toggle' => 'tab' do
         Projects
+    - if @shared_projects.present?
+      %li
+        = link_to "#shared", 'data-toggle' => 'tab' do
+          Shared Projects
 
 - if can?(current_user, :read_group, @group)
   %div{ class: container_class }
@@ -51,6 +55,9 @@
 
       .tab-pane#projects
         = render "projects", projects: @projects
+
+      .tab-pane#shared
+        = render "shared_projects", projects: @shared_projects
 
 - else
   %p.nav-links.no-top
