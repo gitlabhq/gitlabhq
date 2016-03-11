@@ -8,6 +8,24 @@
   issues_paths:
     update : "/api/:version/projects/:id/issues/:issue_id"
   merge_request_path: "/api/:version/issues/:id.json"
+  milestones_paths:
+    index: "/api/:version/projects/:id/milestones"
+
+  milestones:
+    index: (project_id, callback) ->
+      data = {}
+      url = Api.buildUrl(Api.milestones_paths.index)
+      url = url
+              .replace(":id", project_id)
+      data.private_token = gon.api_token
+      $.ajax(
+        url: url
+        type: "GET"
+        data: data
+        dataType: "json"
+      ).done (milestones) ->
+        if callback?
+          callback(milestones)
 
   issues: 
     update: (project_id, issue_id, data, callback) ->
