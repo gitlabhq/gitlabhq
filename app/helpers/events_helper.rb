@@ -3,7 +3,7 @@ module EventsHelper
     author = event.author
 
     if author
-      link_to author.name, user_path(author.username), title: author.name
+      link_to author.name, user_path(author.username), title: h(author.name)
     else
       event.author_name
     end
@@ -159,7 +159,7 @@ module EventsHelper
         link_to(
           namespace_project_commit_path(event.project.namespace, event.project,
                                         event.note_commit_id,
-                                        anchor: dom_id(event.target), title: event.target_title),
+                                        anchor: dom_id(event.target), title: h(event.target_title)),
           class: "commit_short_id"
         ) do
           "#{event.note_target_type} #{event.note_short_commit_id}"
@@ -167,11 +167,11 @@ module EventsHelper
       elsif event.note_project_snippet?
         link_to(namespace_project_snippet_path(event.project.namespace,
                                                event.project,
-                                               event.note_target), title: event.project.name) do
+                                               event.note_target), title: h(event.project.name)) do
           "#{event.note_target_type} #{truncate event.note_target.to_reference}"
         end
       else
-        link_to event_note_target_path(event), title: event.note_target.to_reference do
+        link_to event_note_target_path(event), title: h(event.note_target.to_reference) do
           "#{event.note_target_type} #{truncate event.note_target.to_reference}"
         end
       end
