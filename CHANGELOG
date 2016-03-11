@@ -9,6 +9,7 @@ v 8.6.0 (unreleased)
   - Fix issue when pushing to projects ending in .wiki
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
   - Don't load all of GitLab in mail_room
+  - Update `omniauth-saml` to 1.5.0 to allow for custom response attributes to be set
   - Memoize @group in Admin::GroupsController (Yatish Mehta)
   - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
   - Strip leading and trailing spaces in URL validator (evuez)
