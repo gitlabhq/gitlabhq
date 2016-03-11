@@ -5,7 +5,7 @@
     %strong= event.ref_name
   - else
     %strong
-      = link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name)
+      = link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), title: event.target_title
   at
   = link_to_project event.project
 
