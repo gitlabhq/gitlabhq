@@ -122,6 +122,14 @@ rubocop:
     - ruby
     - mysql
 
+scss-lint:
+  stage: test
+  script:
+    - bundle exec rake scss_lint
+  tags:
+    - ruby
+  allow_failure: true
+
 brakeman:
   stage: test
   script:
