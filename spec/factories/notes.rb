@@ -71,6 +71,7 @@ FactoryGirl.define do
 
     trait :award do
       is_award true
+      note Emoji.emojis_names.sample
     end
 
     trait :downvote do
