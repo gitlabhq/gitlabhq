@@ -10,6 +10,12 @@ module Projects
         relation_sym = parse_relation_sym(relation_sym)
         klass = relation_class(relation_sym)
         relation_hash.delete('id') #screw IDs for now
+        #TODO refactor this...
+        if relation_sym == :merge_requests
+          relation_hash['target_project_id'] = relation_hash.delete('project_id')
+          relation_hash['source_project_id'] = -1
+          relation_hash['importing'] = true
+        end
         update_user_references(relation_hash, members_map)
         klass.new(relation_hash)
       end

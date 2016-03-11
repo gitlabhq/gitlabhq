@@ -50,6 +50,8 @@ class MergeRequest < ActiveRecord::Base
 
   delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
 
+  attr_accessor :importing
+
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
@@ -128,7 +130,7 @@ class MergeRequest < ActiveRecord::Base
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches
+  validate :validate_branches, unless: :importing
   validate :validate_fork
 
   scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.projects.select(:id).reorder(nil)) }

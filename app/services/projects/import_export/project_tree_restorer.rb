@@ -44,7 +44,7 @@ module Projects
       def create_relation(relation, relation_hash_list)
         relation_hash_list.map do |relation_hash|
           Projects::ImportExport::RelationFactory.create(
-            relation_sym: relation, relation_hash: relation_hash.merge(project_id: project.id), members_map: members_map)
+            relation_sym: relation, relation_hash: relation_hash.merge('project_id' => project.id), members_map: members_map)
         end
       end
     end
