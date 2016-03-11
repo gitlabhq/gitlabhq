@@ -3,6 +3,7 @@
 class @IssuableContext
   constructor: ->
     new UsersSelect()
+    new LabelsSelect()
     $('select.select2').select2({width: 'resolve', dropdownAutoWidth: true})
 
     $(".issuable-sidebar .inline-update").on "change", "select", ->
@@ -15,5 +16,9 @@ class @IssuableContext
       block.find('.selectbox').show()
       block.find('.value').hide()
       block.find('.js-select2').select2("open")
+
+      $(@).parents('.dropdown')
+        .addClass("open")
+        .trigger('shown.bs.dropdown')
 
     $(".right-sidebar").niceScroll()

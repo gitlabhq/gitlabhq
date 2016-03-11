@@ -5,7 +5,7 @@ class @LabelsSelect
       labelUrl = $(dropdown).data("labels")
       selectedLabel = $(dropdown).data('selected')
       if selectedLabel
-        selectedLabel = selectedLabel.split(",")
+        selectedLabel = selectedLabel.toString().split(",")
       newLabelField = $('#new_label_name')
       newColorField = $('#new_label_color')
       showNo = $(dropdown).data('show-no')
@@ -41,13 +41,21 @@ class @LabelsSelect
           # public facing JSON url for labels
           $.ajax(
             url: labelUrl
-          ).done (data) ->
-            html = $(data)
+          ).done (labels) ->
             data = []
-            html.find('.label-row a').each ->
-              data.push(
-                title: $(@).text().trim()
-              )
+            if $(dropdown).hasClass "js-sidebar-label-select"
+              $.each labels, (i, label) ->
+                data.push(
+                  id: label.id
+                  color: label.color
+                  title: label.title
+                )
+            else
+              html = $(labels)
+              html.find('.label-row a').each ->
+                data.push(
+                  title: $(@).text().trim()
+                )
 
             if showNo
               data.unshift(
@@ -60,7 +68,7 @@ class @LabelsSelect
                 title: 'Any label'
               )
 
-            if data.length > 2
+            if data.length > 2 && (showNo or showAny)
               data.splice 2, 0, "divider"
 
             callback data
@@ -69,7 +77,9 @@ class @LabelsSelect
             selected = ""
             $.each selectedLabel, (i, selectedLbl) ->
               selectedLbl = selectedLbl.trim()
-              if selected is "" && label.title is selectedLbl
+              labelToCompare = if label.id then label.id.toString() else label.title
+
+              if selected is "" && labelToCompare is selectedLbl
                 selected = "is-active"
           else
             selected = if label.title is selectedLabel then "is-active" else ""
@@ -83,9 +93,13 @@ class @LabelsSelect
         search:
           fields: ['title']
         selectable: true
+        multiSelect: $(dropdown).data('multi-select')
         fieldName: $(dropdown).data('field-name')
         id: (label) ->
-          label.title
+          if label.id
+            label.id
+          else
+            label.title
         clicked: ->
           if $(dropdown).hasClass "js-filter-submit"
             $(dropdown).parents('form').submit()

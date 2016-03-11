@@ -251,6 +251,10 @@
       border: 1px solid $border-gray-dark;
     }
   }
+
+  .dropdown-menu {
+    left: -15px;
+  }
 }
 
 .btn-default.gutter-toggle {

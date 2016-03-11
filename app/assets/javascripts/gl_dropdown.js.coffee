@@ -79,7 +79,7 @@ class GitLabDropdown
 
   constructor: (@el, @options) ->
     self = @
-    @dropdown = $(@el).parent()
+    @dropdown = $(@el).parents('.dropdown')
     search_fields = if @options.search then @options.search.fields else [];
 
     if @options.data
@@ -227,21 +227,20 @@ class GitLabDropdown
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
-    field = @dropdown.parent().find("input[name='#{fieldName}']")
+    selectedIndex = el.parent().index()
+    if @renderedData
+      selectedObject = @renderedData[selectedIndex]
+    value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
+    field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
 
     if el.hasClass(ACTIVE_CLASS)
       field.remove()
+      el.removeClass ACTIVE_CLASS
     else
       fieldName = @options.fieldName
-      selectedIndex = el.parent().index()
-      if @renderedData
-        selectedObject = @renderedData[selectedIndex]
-      value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
 
       if @options.multiSelect
-        oldValue = field.val()
-        if oldValue
-          value = "#{oldValue},#{value}"
+        fieldName = "#{fieldName}"
       else
         @dropdown.find(ACTIVE_CLASS).removeClass ACTIVE_CLASS
         field.remove()
@@ -250,12 +249,15 @@ class GitLabDropdown
       el.toggleClass "is-active"
 
       if value
-        if !field.length
-          # Create hidden input for form
-          input = "<input type='hidden' name='#{fieldName}' />"
-          @dropdown.before input
+        if @options.multiSelect
+          @dropdown.before "<input type='hidden' name='#{fieldName}' value='#{value}' />"
+        else
+          if !field.length
+            # Create hidden input for form
+            input = "<input type='hidden' name='#{fieldName}' />"
+            @dropdown.before input
 
-        @dropdown.parent().find("input[name='#{fieldName}']").val value
+          @dropdown.parent().find("input[name='#{fieldName}']").val value
 
   selectFirstRow: ->
     selector = '.dropdown-content li:first-child a'

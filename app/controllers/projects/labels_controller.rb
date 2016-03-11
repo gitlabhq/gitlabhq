@@ -8,6 +8,12 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def index
     @labels = @project.labels.page(params[:page]).per(PER_PAGE)
+
+    respond_to do |format|
+      format.js
+      format.html
+      format.json { render json: @labels }
+    end
   end
 
   def new
