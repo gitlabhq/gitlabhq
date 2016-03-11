@@ -4,16 +4,16 @@ namespace :cache do
 
   desc "GitLab | Clear redis cache"
   task :clear => :environment do
-    redis_store = Rails.cache.instance_variable_get(:@data)
+    redis = Redis.new(url: Gitlab::RedisConfig.url)
     cursor = REDIS_SCAN_START_STOP
     loop do
-      cursor, keys = redis_store.scan(
+      cursor, keys = redis.scan(
         cursor,
         match: "#{Gitlab::REDIS_CACHE_NAMESPACE}*", 
         count: CLEAR_BATCH_SIZE
       )
 
-      redis_store.del(*keys) if keys.any?
+      redis.del(*keys) if keys.any?
 
       break if cursor == REDIS_SCAN_START_STOP
     end

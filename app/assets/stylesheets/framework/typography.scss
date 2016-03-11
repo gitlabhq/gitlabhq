@@ -149,13 +149,13 @@
     }
 
     &:hover > a.anchor {
-      $size: 16px;
+      $size: 14px;
       position: absolute;
       right: 100%;
       top: 50%;
-      margin-top: -$size/2;
-      margin-right: 0px;
-      padding-right: 20px;
+      margin-top: -11px;
+      margin-right: 0;
+      padding-right: 15px;
       display: inline-block;
       width: $size;
       height: $size;

@@ -28,6 +28,10 @@
   border-bottom: 1px solid $border-color;
   color: $gl-gray;
 
+  a {
+    color: $md-link-color;
+  }
+
   &.oneline-block {
     line-height: 42px;
   }

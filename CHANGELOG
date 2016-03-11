@@ -14,19 +14,24 @@ v 8.6.0 (unreleased)
   - Strip leading and trailing spaces in URL validator (evuez)
   - Add "last_sign_in_at" and "confirmed_at" to GET /users/* API endpoints for admins (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
+  - Decrease the font size and the padding of the `.anchor` icons used in the README (Roberto Dip)
+  - Rewrite logo to simplify SVG code (Sean Lang)
   - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
   - Fix bug where Bitbucket `closed` issues were imported as `opened` (Iuri de Silvio)
   - Don't show Issues/MRs from archived projects in Groups view
   - Increase the notes polling timeout over time (Roberto Dip)
+  - Add shortcut to toggle markdown preview (Florent Baldino)
   - Show labels in dashboard and group milestone views
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
 
 v 8.5.5
-  - Ensure removing a project removes associated Todo entries.
-  - Prevent a 500 error in Todos when author was removed.
+  - Ensure removing a project removes associated Todo entries
+  - Prevent a 500 error in Todos when author was removed
+  - Fix pagination for filtered dashboard and explore pages
+  - Fix "Show all" link behavior
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
@@ -95,7 +100,7 @@ v 8.5.1
 v 8.5.0
   - Fix duplicate "me" in tooltip of the "thumbsup" awards Emoji (Stan Hu)
   - Cache various Repository methods to improve performance (Yorick Peterse)
-  - Fix duplicated branch creation/deletion Web hooks/service notifications when using Web UI (Stan Hu)
+  - Fix duplicated branch creation/deletion Webhooks/service notifications when using Web UI (Stan Hu)
   - Ensure rake tasks that don't need a DB connection can be run without one
   - Update New Relic gem to 3.14.1.311 (Stan Hu)
   - Add "visibility" flag to GET /projects api endpoint
@@ -231,7 +236,7 @@ v 8.4.0
   - The default GitLab logo now acts as a loading indicator
   - LDAP group sync: Remove user from group when they are removed from LDAP
   - Fix caching issue where build status was not updating in project dashboard (Stan Hu)
-  - Accept 2xx status codes for successful Web hook triggers (Stan Hu)
+  - Accept 2xx status codes for successful Webhook triggers (Stan Hu)
   - Fix missing date of month in network graph when commits span a month (Stan Hu)
   - Expire view caches when application settings change (e.g. Gravatar disabled) (Stan Hu)
   - Don't notify users twice if they are both project watchers and subscribers (Stan Hu)
@@ -334,7 +339,7 @@ v 8.3.0
   - Fix broken group avatar upload under "New group" (Stan Hu)
   - Update project repositorize size and commit count during import:repos task (Stan Hu)
   - Fix API setting of 'public' attribute to false will make a project private (Stan Hu)
-  - Handle and report SSL errors in Web hook test (Stan Hu)
+  - Handle and report SSL errors in Webhook test (Stan Hu)
   - Bump Redis requirement to 2.8 for Sidekiq 4 (Stan Hu)
   - Fix: Assignee selector is empty when 'Unassigned' is selected (Jose Corcuera)
   - WIP identifier on merge requests no longer requires trailing space
@@ -554,7 +559,7 @@ v 8.1.0
   - Ensure code blocks are properly highlighted after a note is updated
   - Fix wrong access level badge on MR comments
   - Hide password in the service settings form
-  - Move CI web hooks page to project settings area
+  - Move CI webhooks page to project settings area
   - Fix User Identities API. It now allows you to properly create or update user's identities.
   - Add user preference to change layout width (Peter Göbel)
   - Use commit status in merge request widget as preferred source of CI status
@@ -597,7 +602,7 @@ v 8.0.3
   - Fix URL shown in Slack notifications
   - Fix bug where projects would appear to be stuck in the forked import state (Stan Hu)
   - Fix Error 500 in creating merge requests with > 1000 diffs (Stan Hu)
-  - Add work_in_progress key to MR web hooks (Ben Boeckel)
+  - Add work_in_progress key to MR webhooks (Ben Boeckel)
 
 v 8.0.2
   - Fix default avatar not rendering in network graph (Stan Hu)
@@ -888,7 +893,7 @@ v 7.12.0
   - Fix milestone "Browse Issues" button.
   - Set milestone on new issue when creating issue from index with milestone filter active.
   - Make namespace API available to all users (Stan Hu)
-  - Add web hook support for note events (Stan Hu)
+  - Add webhook support for note events (Stan Hu)
   - Disable "New Issue" and "New Merge Request" buttons when features are disabled in project settings (Stan Hu)
   - Remove Rack Attack monkey patches and bump to version 4.3.0 (Stan Hu)
   - Fix clone URL losing selection after a single click in Safari and Chrome (Stan Hu)
@@ -995,7 +1000,7 @@ v 7.11.0
   - Add "Create Merge Request" buttons to commits and branches pages and push event.
   - Show user roles by comments.
   - Fix automatic blocking of auto-created users from Active Directory.
-  - Call merge request web hook for each new commits (Arthur Gautier)
+  - Call merge request webhook for each new commits (Arthur Gautier)
   - Use SIGKILL by default in Sidekiq::MemoryKiller
   - Fix mentioning of private groups.
   - Add style for <kbd> element in markdown
@@ -1169,7 +1174,7 @@ v 7.9.0
   - Add brakeman (security scanner for Ruby on Rails)
   - Slack username and channel options
   - Add grouped milestones from all projects to dashboard.
-  - Web hook sends pusher email as well as commiter
+  - Webhook sends pusher email as well as commiter
   - Add Bitbucket omniauth provider.
   - Add Bitbucket importer.
   - Support referencing issues to a project whose name starts with a digit
@@ -1292,7 +1297,7 @@ v 7.8.0
   - Allow notification email to be set separately from primary email.
   - API: Add support for editing an existing project (Mika Mäenpää and Hannes Rosenögger)
   - Don't have Markdown preview fail for long comments/wiki pages.
-  - When test web hook - show error message instead of 500 error page if connection to hook url was reset
+  - When test webhook - show error message instead of 500 error page if connection to hook url was reset
   - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
   - Added persistent collapse button for left side nav bar (Jason Blanchard)
   - Prevent losing unsaved comments by automatically restoring them when comment page is loaded again.
@@ -1309,7 +1314,7 @@ v 7.8.0
   - Show projects user contributed to on user page. Show stars near project on user page.
   - Improve database performance for GitLab
   - Add Asana service (Jeremy Benoist)
-  - Improve project web hooks with extra data
+  - Improve project webhooks with extra data
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
@@ -1794,7 +1799,7 @@ v 6.4.0
   - Side-by-side diff view (Steven Thonus)
   - Internal projects (Jason Hollingsworth)
   - Allow removal of avatar (Drew Blessing)
-  - Project web hooks now support issues and merge request events
+  - Project webhooks now support issues and merge request events
   - Visiting project page while not logged in will redirect to sign-in instead of 404 (Jason Hollingsworth)
   - Expire event cache on avatar creation/removal (Drew Blessing)
   - Archiving old projects (Steven Thonus)
@@ -1864,7 +1869,7 @@ v 6.2.0
   - Added search for projects by name to api (Izaak Alpert)
   - Make default user theme configurable (Izaak Alpert)
   - Update logic for validates_merge_request for tree of MR (Andrew Kumanyaev)
-  - Rake tasks for web hooks management (Jonhnny Weslley)
+  - Rake tasks for webhooks management (Jonhnny Weslley)
   - Extended User API to expose admin and can_create_group for user creation/updating (Boyan Tabakov)
   - API: Remove group
   - API: Remove project
@@ -2067,7 +2072,7 @@ v 4.2.0
   - Async gitolite calls
   - added satellites logs
   - can_create_group, can_create_team booleans for User
-  - Process web hooks async
+  - Process webhooks async
   - GFM: Fix images escaped inside links
   - Network graph improved
   - Switchable branches for network graph
@@ -2101,7 +2106,7 @@ v 4.1.0
 
 v 4.0.0
   - Remove project code and path from API. Use id instead
-  - Return valid cloneable url to repo for web hook
+  - Return valid cloneable url to repo for webhook
   - Fixed backup issue
   - Reorganized settings
   - Fixed commits compare

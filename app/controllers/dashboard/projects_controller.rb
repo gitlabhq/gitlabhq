@@ -8,7 +8,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = filter_projects(@projects)
     @projects = @projects.includes(:namespace)
     @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     @last_push = current_user.recent_push
 
@@ -32,7 +32,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = filter_projects(@projects)
     @projects = @projects.includes(:namespace, :forked_from_project, :tags)
     @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     @last_push = current_user.recent_push
     @groups = []

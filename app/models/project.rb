@@ -620,11 +620,11 @@ class Project < ActiveRecord::Base
   end
 
   def ci_services
-    services.select { |service| service.category == :ci }
+    services.where(category: :ci)
   end
 
   def ci_service
-    @ci_service ||= ci_services.find(&:activated?)
+    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
