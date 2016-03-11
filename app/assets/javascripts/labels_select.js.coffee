@@ -41,7 +41,7 @@ class @LabelsSelect
           # public facing JSON url for labels
           $.ajax(
             url: labelUrl
-          ).done (labels) ->
+          ).always (labels) ->
             data = []
             if $(dropdown).hasClass "js-sidebar-label-select"
               $.each labels, (i, label) ->
@@ -51,7 +51,7 @@ class @LabelsSelect
                   title: label.title
                 )
             else
-              html = $(labels)
+              html = $(labels.responseText)
               html.find('.label-row a').each ->
                 data.push(
                   title: $(@).text().trim()
