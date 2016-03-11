@@ -209,10 +209,17 @@ class GitLabDropdown
       selected = if @options.isSelected then @options.isSelected(data) else false
       url = if @options.url then @options.url(data) else "#"
 
+      # Set URL
+      if @options.url?
+        url = @options.url(data)
+      else
+        url = if data.url? then data.url else ''
+
+      # Set Text
       if @options.text?
         text = @options.text(data)
       else
-        text = data.text if data.text?
+        text = if data.text? then data.text else ''
 
       cssClass = "";
 
