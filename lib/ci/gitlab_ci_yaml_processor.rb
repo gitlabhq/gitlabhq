@@ -218,6 +218,10 @@ module Ci
     end
 
     def validate_job_artifacts!(name, job)
+      if job[:artifacts][:name] && !validate_string(job[:artifacts][:name])
+        raise ValidationError, "#{name} job: artifacts:name parameter should be a string"
+      end
+
       if job[:artifacts][:untracked] && !validate_boolean(job[:artifacts][:untracked])
         raise ValidationError, "#{name} job: artifacts:untracked parameter should be an boolean"
       end

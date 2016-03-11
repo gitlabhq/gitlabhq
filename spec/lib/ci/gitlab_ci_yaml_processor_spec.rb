@@ -397,7 +397,7 @@ module Ci
                              services:      ["mysql"],
                              before_script: ["pwd"],
                              rspec:         {
-                               artifacts: { paths: ["logs/", "binaries/"], untracked: true },
+                               artifacts: { paths: ["logs/", "binaries/"], untracked: true, name: "custom_name" },
                                script: "rspec"
                              }
                            })
@@ -417,6 +417,7 @@ module Ci
             image: "ruby:2.1",
             services: ["mysql"],
             artifacts: {
+              name: "custom_name",
               paths: ["logs/", "binaries/"],
               untracked: true
             }
@@ -617,6 +618,13 @@ module Ci
         expect do
           GitlabCiYamlProcessor.new(config, path)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure or always")
+      end
+
+      it "returns errors if job artifacts:name is not an a string" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { name: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:name parameter should be a string")
       end
 
       it "returns errors if job artifacts:untracked is not an array of strings" do

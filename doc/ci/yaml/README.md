@@ -453,6 +453,67 @@ release-job:
 The artifacts will be sent to GitLab after a successful build and will
 be available for download in the GitLab UI.
 
+#### artifacts:name
+
+_**Note:** Introduced in GitLab 8.6 and GitLab Runner v1.1.0._
+
+The `name` directive allows you to define the name of created artifacts archive.
+
+Currently the `artifacts` is used. 
+It may be useful when you will want to download the archive from GitLab. 
+You could possible have the unique name of every archive.
+
+The `artifacts:name` variable can use any of the [predefined variables](../variables/README.md).
+
+---
+
+**Example configurations**
+
+To create a archive with a name of current build:
+
+```yaml
+job:
+  artifacts:
+    name: "$CI_BUILD_NAME"
+```
+
+To create a archive with a name of current branch or tag:
+
+```yaml
+job:
+   artifacts:
+     name: "$CI_BUILD_REF_NAME"
+     untracked: true
+```
+
+To create a archive with a name of current branch or tag:
+
+```yaml
+job:
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
+    untracked: true
+```
+
+To create a archive with a name of stage and branch name:
+
+```yaml
+job:
+  artifacts:
+    name: "${CI_BUILD_STAGE}_${CI_BUILD_REF_NAME}"
+    untracked: true
+```
+
+If you use **Windows Batch** to run your shell scripts you need to replace
+`$` with `%`:
+
+```yaml
+job:
+  artifacts:
+    name: "%CI_BUILD_STAGE%_%CI_BUILD_REF_NAME%"
+    untracked: true
+```
+
 ### cache
 
 _**Note:** Introduced in GitLab Runner v0.7.0._
