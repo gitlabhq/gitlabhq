@@ -81,7 +81,7 @@ class GeoNode < ActiveRecord::Base
       self.oauth_application = nil
     else
       self.build_oauth_application if oauth_application.nil?
-      self.oauth_application.name = "Geo node: #{self.url}" if self.geo_node_key
+      self.oauth_application.name = "Geo node: #{self.url}"
       self.oauth_application.redirect_uri = oauth_callback_url
     end
   end
@@ -89,14 +89,13 @@ class GeoNode < ActiveRecord::Base
   def validate(record)
     # Prevent locking yourself out
     if record.host == Gitlab.config.gitlab.host &&
-       record.port == Gitlab.config.gitlab.port &&
-       record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
+      record.port == Gitlab.config.gitlab.port &&
+      record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
       record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
     end
   end
 
   def oauth_callback_url
-    url_helpers = Rails.application.routes.url_helpers
-    URI.join(uri, "#{uri.path}/", url_helpers.oauth_geo_callback_path).to_s
+    URI.join(uri, "#{uri.path}/", 'oauth', 'geo', 'callback').to_s
   end
 end
