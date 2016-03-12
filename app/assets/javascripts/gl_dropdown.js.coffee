@@ -252,6 +252,8 @@ class GitLabDropdown
       if selected
         cssClass = "is-active"
 
+      text = @highlightTextMatches(text, @filterInput.val())
+
       html = "<li>"
       html += "<a href='#{url}' class='#{cssClass}'>"
       html += text
@@ -259,6 +261,15 @@ class GitLabDropdown
       html += "</li>"
 
     return html
+
+  highlightTextMatches: (text, term) ->
+    occurrences = fuzzaldrinPlus.match(text, term)
+    textArr = text.split('')
+    textArr.forEach (character, i, textArr) ->
+      if i in occurrences
+        textArr[i] = "<b>#{character}</b>"
+
+    textArr.join ''
 
   noResults: ->
     html = "<li>"
