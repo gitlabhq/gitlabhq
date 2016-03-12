@@ -54,6 +54,7 @@
               No
         .title.hide-collapsed
           Milestone
+          =icon('spinner spin', class: 'block-loading')
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.bold.hide-collapsed

@@ -14,6 +14,7 @@ class @MilestoneSelect
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
       $value = $block.find('.value')
+      $loading = $block.find('.block-loading').fadeOut()
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -67,7 +68,10 @@ class @MilestoneSelect
               .closest('.selectbox')
               .find('input[type="hidden"]')
               .val()
-            console.log 'gonna ajax it with', url: issueUpdateURL, data: issue: milestone_id: selected
+            # need inline-block here instead of show, 
+            # which will default to the element's style in this case inline.
+            $loading
+              .fadeIn()
             $.ajax(
               type: 'PUT'
               url: issueUpdateURL
@@ -75,14 +79,15 @@ class @MilestoneSelect
                 issue: 
                   milestone_id: selected
             ).done (data) ->
+              $loading.fadeOut()
               $selectbox.hide()
               href = $value
-                .show()
-                .find('.milestone-title')
-                .text(data.milestone.title)
-                .end()
-                .find('a')
-                .attr('href')
+                      .show()
+                      .find('.milestone-title')
+                      .text(data.milestone.title)
+                      .end()
+                      .find('a')
+                      .attr('href')
               splitHref = href.split('/')
               splitHref[splitHref.length - 1] = data.id
               $value
