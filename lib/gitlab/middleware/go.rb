@@ -26,7 +26,7 @@ module Gitlab
       end
 
       def go_request?(request)
-        request["go-get"].to_i == 1
+        request["go-get"].to_i == 1 && request.env["PATH_INFO"].present?
       end
 
       def go_body(request)
