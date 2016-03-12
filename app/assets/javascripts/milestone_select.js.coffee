@@ -59,7 +59,9 @@ class @MilestoneSelect
             milestone.id
         isSelected: (milestone) ->
           milestone.title is selectedMilestone
-
+        hidden: ->
+          $selectbox.hide()
+          $value.show()
         clicked: (e) ->
           if $dropdown.hasClass "js-filter-submit"
             $dropdown.parents('form').submit()
@@ -68,8 +70,6 @@ class @MilestoneSelect
               .closest('.selectbox')
               .find('input[type="hidden"]')
               .val()
-            # need inline-block here instead of show, 
-            # which will default to the element's style in this case inline.
             $loading
               .fadeIn()
             $.ajax(

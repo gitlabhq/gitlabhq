@@ -108,7 +108,7 @@ class Projects::IssuesController < Projects::ApplicationController
         end
       end
       format.json do
-        render json: @issue.to_json(include: :milestone )
+        render json: @issue.to_json(include: [:milestone, :labels])
       end
     end
   end

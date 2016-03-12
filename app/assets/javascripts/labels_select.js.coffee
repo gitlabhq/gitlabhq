@@ -4,6 +4,7 @@ class @LabelsSelect
       $dropdown = $(dropdown)
       projectId = $dropdown.data('project-id')
       labelUrl = $dropdown.data('labels')
+      issueUpdateURL = $dropdown.data('issueUpdate')
       selectedLabel = $dropdown.data('selected')
       if selectedLabel
         selectedLabel = selectedLabel.toString().split(',')
@@ -12,6 +13,23 @@ class @LabelsSelect
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
       defaultLabel = $dropdown.data('default-label')
+      $selectbox = $dropdown.closest('.selectbox')
+      $block = $selectbox.closest('.block')
+      $value = $block.find('.value')
+      $loading = $block.find('.block-loading').fadeOut()
+      issueURLSplit = issueUpdateURL.split('/')
+      labelHTMLTemplate = _.template(
+          '<% _.each(labels, function(label){ %>'+
+          '<a href="'+ 
+          ['',issueURLSplit[1], issueURLSplit[2],''].join('/') +
+          'issues?label_name=<%= label.title %>">'+
+          '<span class="label color-label" '+
+          'style="background-color: <%= label.color %>; '+
+          'color: #FFFFFF">'+
+          '<%= label.title %>'+
+          '</span>'+
+          '</a>'+
+          '<% }); %>');
 
       if newLabelField.length
         $newLabelCreateButton = $('.js-new-label-btn')
@@ -133,6 +151,7 @@ class @LabelsSelect
         search:
           fields: ['title']
         selectable: true
+
         toggleLabel: (selected) ->
           if selected and selected.title isnt 'Any Label'
             selected.title
@@ -142,8 +161,15 @@ class @LabelsSelect
         id: (label) ->
           if label.isAny?
             ''
-          else
+          else if $dropdown.hasClass "js-filter-submit"
             label.title
+          else
+            label.id
+
+        hidden: ->
+          $selectbox.hide()
+          $value.show()
+
         clicked: ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
@@ -153,4 +179,25 @@ class @LabelsSelect
             Issues.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
+          else
+            selected = $dropdown
+              .closest('.selectbox')
+              .find('input[type="hidden"]')
+              .val()
+            # need inline-block here instead of show, 
+            # which will default to the element's style in this case inline.
+            $loading
+              .fadeIn()
+            $.ajax(
+              type: 'PUT'
+              url: issueUpdateURL
+              data:
+                issue: 
+                  label_ids: [selected]
+            ).done (data) ->
+              $loading.fadeOut()
+              $selectbox.hide()
+              href = $value
+                      .show()
+                      .html(labelHTMLTemplate(data))
       )

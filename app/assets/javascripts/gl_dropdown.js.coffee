@@ -185,7 +185,8 @@ class GitLabDropdown
     if @options.filterable
       @dropdown.find(".dropdown-input-field").focus()
 
-  hidden: =>
+  hidden: (e) =>
+
     if @options.filterable
       @dropdown
         .find(".dropdown-input-field")
@@ -195,6 +196,9 @@ class GitLabDropdown
 
     if @dropdown.find(".dropdown-toggle-page").length
       $('.dropdown-menu', @dropdown).removeClass PAGE_TWO_CLASS
+
+    if @options.hidden
+      @options.hidden.call(@,e)
 
 
   # Render the full menu
