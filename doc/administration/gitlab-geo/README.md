@@ -46,7 +46,7 @@ Geo instances. Follow the steps below in the order that they appear:
 
 1. Install GitLab Enterprise Edition on the server that will serve as the
    secondary Geo node
-1. [Setup a database replication](database.md) in `master <-> slave` topology
+1. [Setup a database replication](./database.md) in `master <-> slave` topology
 1. [Configure GitLab](configuration.md) and set the primary and secondary nodes
 
 After you set up the database replication and configure the GitLab Geo nodes,
