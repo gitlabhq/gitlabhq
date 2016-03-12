@@ -32,6 +32,13 @@ module Gitlab
         oauth_client.auth_code.get_token(code, params, opts).token
       end
 
+      def authenticate_with_gitlab(access_token)
+        return false unless access_token
+
+        api = OAuth2::AccessToken.from_hash(oauth_client, access_token: access_token)
+        api.get('/api/v3/user').parsed
+      end
+
       private
 
       def generate_oauth_hmac(salt, return_to)

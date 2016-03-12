@@ -6,6 +6,13 @@ describe Gitlab::Geo::OauthSession do
   let(:oauth_return_to) { 'http://localhost:3000/oath/geo/callback' }
   let(:dummy_state) { 'salt:hmac:return_to' }
   let(:valid_state) { described_class.new(return_to: oauth_return_to).generate_oauth_state }
+  let(:access_token) { FactoryGirl.create(:doorkeeper_access_token).token }
+  let(:user) { FactoryGirl.build(:user) }
+
+  before(:each) do
+    allow(subject).to receive(:oauth_app) { oauth_app }
+    allow(subject).to receive(:primary_node_url) { 'http://localhost:3001/' }
+  end
 
   describe '#is_oauth_state_valid?' do
     it 'returns false when state is not present' do
@@ -56,14 +63,32 @@ describe Gitlab::Geo::OauthSession do
 
   describe '#authorized_url' do
     subject { described_class.new(return_to: oauth_return_to) }
-    before(:each) do
-      allow(subject).to receive(:oauth_app) { oauth_app }
-      allow(subject).to receive(:primary_node_url) { 'http://localhost:3001/' }
-    end
 
     it 'returns a valid url' do
       expect(subject.authorize_url).to be_a String
       expect(subject.authorize_url).to include('http://localhost:3001/')
+    end
+  end
+
+  describe '#authenticate_with_gitlab' do
+    let(:response) { double }
+    before(:each) { allow_any_instance_of(OAuth2::AccessToken).to receive(:get) { response } }
+
+    context 'on success' do
+      it 'returns hashed user data' do
+        allow(response).to receive(:status) { 200 }
+        allow(response).to receive(:parsed) { user.to_json }
+
+        subject.authenticate_with_gitlab(access_token)
+      end
+    end
+
+    context 'on invalid token' do
+      it 'raises exception' do
+        allow(response).to receive(:status) { 401 }
+
+        expect { subject.authenticate_with_gitlab(access_token) }.to raise_error
+      end
     end
   end
 end

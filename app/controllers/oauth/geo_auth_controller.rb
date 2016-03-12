@@ -1,5 +1,4 @@
 class Oauth::GeoAuthController < ActionController::Base
-  rescue_from Gitlab::Geo::RemoteNode::InvalidCredentialsError, with: :invalid_credentials
   rescue_from Gitlab::Geo::OauthApplicationUndefinedError, with: :undefined_oauth_application
   rescue_from OAuth2::Error, with: :auth
 
@@ -21,7 +20,7 @@ class Oauth::GeoAuthController < ActionController::Base
     end
 
     token = oauth.get_token(params[:code], redirect_uri: oauth_geo_callback_url)
-    remote_user = Gitlab::Geo::RemoteNode.new.authenticate(token)
+    remote_user = oauth.authenticate_with_gitlab(token)
 
     user = User.find(remote_user['id'])
 
@@ -34,11 +33,6 @@ class Oauth::GeoAuthController < ActionController::Base
   end
 
   private
-
-  def invalid_credentials
-    @error = 'Cannot authenticate to Primary Geo node with your credentials.'
-    render :error, layout: 'errors'
-  end
 
   def undefined_oauth_application
     @error = 'There is no OAuth application defined for this Geo node.'
