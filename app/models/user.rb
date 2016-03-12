@@ -442,11 +442,6 @@ class User < ActiveRecord::Base
     Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
-  # Returns all the project relations
-  def project_relations
-    [personal_projects, groups_projects, projects]
-  end
-
   def owned_projects
     @owned_projects ||=
       Project.where('namespace_id IN (?) OR namespace_id = ?',
@@ -835,7 +830,9 @@ class User < ActiveRecord::Base
   private
 
   def projects_union
-    Gitlab::SQL::Union.new(project_relations.map { |r| r.select(:id) })
+    Gitlab::SQL::Union.new([personal_projects.select(:id),
+                            groups_projects.select(:id),
+                            projects.select(:id)])
   end
 
   def ci_projects_union
