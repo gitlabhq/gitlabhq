@@ -15,6 +15,7 @@
 .sass-cache/
 .secret
 .vagrant
+.byebug_history
 Vagrantfile
 backups/*
 config/aws.yml
