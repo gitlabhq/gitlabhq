@@ -245,7 +245,7 @@ class IssuableFinder
   end
 
   def upcoming?
-    params[:milestone_title] == '#upcoming' && projects
+    params[:milestone_title] == '#upcoming'
   end
 
   def by_milestone(items)
@@ -253,7 +253,7 @@ class IssuableFinder
       if filter_by_no_milestone?
         items = items.where(milestone_id: [-1, nil])
       elsif upcoming?
-        upcoming = Milestone.upcoming(projects)
+        upcoming = Milestone.where(project_id: projects).upcoming
         items = items.joins(:milestone).where(milestones: { title: upcoming.title })
       else
         items = items.joins(:milestone).where(milestones: { title: params[:milestone_title] })

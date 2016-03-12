@@ -82,9 +82,8 @@ class Milestone < ActiveRecord::Base
     super("milestones", /(?<milestone>\d+)/)
   end
 
-  def self.upcoming(projects)
-    self.where(project_id: projects)
-        .where('due_date > ?', Time.now). order(due_date: :asc).first
+  def self.upcoming
+    self.where('due_date > ?', Time.now).order(due_date: :asc).first
   end
 
   def to_reference(from_project = nil)
