@@ -88,6 +88,7 @@ class GitLabDropdown
     {
       # If no input is passed create a default one
       @filterInput = @$(FILTER_INPUT)
+      @highlight = false
     } = @options
 
     self = @
@@ -252,7 +253,8 @@ class GitLabDropdown
       if selected
         cssClass = "is-active"
 
-      text = @highlightTextMatches(text, @filterInput.val())
+      if @highlight
+        text = @highlightTextMatches(text, @filterInput.val())
 
       html = "<li>"
       html += "<a href='#{url}' class='#{cssClass}'>"
