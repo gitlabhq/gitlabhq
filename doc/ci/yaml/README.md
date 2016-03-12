@@ -116,7 +116,8 @@ Alias for [stages](#stages).
 
 ### variables
 
-_**Note:** Introduced in GitLab Runner v0.5.0._
+>**Note:**
+Introduced in GitLab Runner v0.5.0.
 
 GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in build
 environment. The variables are stored in the git repository and are meant to
@@ -153,7 +154,8 @@ cache:
 
 #### cache:key
 
-_**Note:** Introduced in GitLab Runner v1.0.0._
+>**Note:**
+Introduced in GitLab Runner v1.0.0.
 
 The `key` directive allows you to define the affinity of caching
 between jobs, allowing to have a single cache for all jobs,
@@ -394,12 +396,12 @@ The above script will:
 
 ### artifacts
 
-_**Note:** Introduced in GitLab Runner v0.7.0 for non-Windows platforms._
-
-_**Note:** Limited Windows support was added in GitLab Runner v.1.0.0. 
-Currently not all executors are supported._ 
-
-_**Note:** Build artifacts are only collected for successful builds._
+>**Notes:**
+>
+> - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
+> - Limited Windows support was added in GitLab Runner v.1.0.0.
+> - Currently not all executors are supported.
+> - Build artifacts are only collected for successful builds.
 
 `artifacts` is used to specify list of files and directories which should be
 attached to build after success. Below are some examples.
@@ -456,12 +458,13 @@ be available for download in the GitLab UI.
 
 #### artifacts:name
 
-_**Note:** Introduced in GitLab 8.6 and GitLab Runner v1.1.0._
+>**Note:**
+Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
 
 The `name` directive allows you to define the name of created artifacts archive.
 
-Currently the `artifacts` is used. 
-It may be useful when you will want to download the archive from GitLab. 
+Currently the `artifacts` is used.
+It may be useful when you will want to download the archive from GitLab.
 You could possible have the unique name of every archive.
 
 The `artifacts:name` variable can use any of the [predefined variables](../variables/README.md).
@@ -517,13 +520,14 @@ job:
 
 ### dependencies
 
-_**Note:** Introduced in GitLab 8.6 and GitLab Runner v1.1.1._
+>**Note:**
+Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 This feature should be used with `artifacts` and allows to define artifacts passing between different builds.
 
 `artifacts` from previous stages are passed by default.
 
-To use a feature define `dependencies` in context of the build and pass 
+To use a feature define `dependencies` in context of the build and pass
 a list of all previous builds from which the artifacts should be downloaded.
 You can only define a builds from stages that are executed before this one.
 Error will be shown if you define builds from current stage or next stages.
@@ -537,7 +541,7 @@ build:osx:
   artifacts:
     paths:
     - binaries/
-    
+
 build:linux:
   stage: build
   script: ...
@@ -571,7 +575,8 @@ However, only the `build:osx` and `build:linux` exports artifacts so only these 
 
 ### cache
 
-_**Note:** Introduced in GitLab Runner v0.7.0._
+>**Note:**
+Introduced in GitLab Runner v0.7.0.
 
 `cache` is used to specify list of files and directories which should be cached
 between builds. Below are some examples:
@@ -665,7 +670,7 @@ It will create a two jobs: `test1` and `test2` that will have the parameters of 
     - postgres
     - ruby
 
-.mysql_services: 
+.mysql_services:
   services: &mysql_definition
     - mysql
     - ruby
