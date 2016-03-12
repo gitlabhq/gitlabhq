@@ -26,11 +26,11 @@ module Gitlab
       end
 
       def go_request?(request)
-        return request["go-get"].to_i == 1
+        request["go-get"].to_i == 1
       end
 
       def go_body(request)
-        base_url = Settings.gitlab['url']
+        base_url = Gitlab.config.gitlab.url
         # Go subpackages may be in the form of namespace/project/path1/path2/../pathN
         # We can just ignore the paths and leave the namespace/project
         path_info = request.env["PATH_INFO"]
@@ -43,8 +43,7 @@ module Gitlab
       end
 
       def strip_url(url)
-        url.gsub('http://', '').
-            gsub('https://', '')
+        url.gsub(/\Ahttps?:\/\//, '')
       end
     end
   end
