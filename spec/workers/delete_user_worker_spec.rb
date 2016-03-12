@@ -43,7 +43,7 @@ describe DeleteUserWorker do
 
       before do
         solo_owned.group_members = [member]
-        DeleteUserWorker.new.perform(current_user.id, user.id, "force" => true)
+        DeleteUserWorker.new.perform(current_user.id, user.id, "delete_solo_owned_groups" => true)
       end
 
       it 'deletes solo owned groups' do

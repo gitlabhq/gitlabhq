@@ -6,7 +6,7 @@ class DeleteUserService
   end
 
   def execute(user, options = {})
-    if !options[:force] && user.solo_owned_groups.present?
+    if !options[:delete_solo_owned_groups] && user.solo_owned_groups.present?
       user.errors[:base] << 'You must transfer ownership or delete groups before you can remove user'
       return user
     end

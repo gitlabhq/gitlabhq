@@ -32,13 +32,14 @@ RSpec.describe AbuseReport, type: :model do
 
   describe '#remove_user' do
     it 'blocks the user' do
-      expect { subject.remove_user(user) }.to change { subject.user.blocked? }.to(true)
+      expect { subject.remove_user(deleted_by: user) }.to change { subject.user.blocked? }.to(true)
     end
 
     it 'lets a worker delete the user' do
-      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, subject.user.id, force: true)
+      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, subject.user.id,
+                                                              delete_solo_owned_groups: true)
 
-      subject.remove_user(user)
+      subject.remove_user(deleted_by: user)
     end
   end
 
