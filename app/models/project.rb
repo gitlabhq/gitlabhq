@@ -252,12 +252,6 @@ class Project < ActiveRecord::Base
       where('projects.last_activity_at < ?', 6.months.ago)
     end
 
-    def publicish(user)
-      visibility_levels = [Project::PUBLIC]
-      visibility_levels << Project::INTERNAL if user
-      where(visibility_level: visibility_levels)
-    end
-
     def with_push
       joins(:events).where('events.action = ?', Event::PUSHED)
     end
