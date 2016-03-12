@@ -35,7 +35,7 @@ class Oauth::GeoAuthController < ActionController::Base
   private
 
   def undefined_oauth_application
-    @error = 'There is no OAuth application defined for this Geo node.'
+    @error = 'There are no OAuth application defined for this Geo node. Please ask your administrator to visit "Geo Nodes" on admin screen and click on "Repair authentication".'
     render :error, layout: 'errors'
   end
 end
