@@ -80,6 +80,12 @@ describe MergeRequest, models: true do
     it { is_expected.to respond_to(:merge_when_build_succeeds) }
   end
 
+  describe '.in_projects' do
+    it 'returns the merge requests for a set of projects' do
+      expect(described_class.in_projects(Project.all)).to eq([subject])
+    end
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(subject.to_reference).to eq "!#{subject.iid}"

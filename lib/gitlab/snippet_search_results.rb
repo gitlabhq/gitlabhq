@@ -2,10 +2,10 @@ module Gitlab
   class SnippetSearchResults < SearchResults
     include SnippetsHelper
 
-    attr_reader :limit_snippet_ids
+    attr_reader :limit_snippets
 
-    def initialize(limit_snippet_ids, query)
-      @limit_snippet_ids = limit_snippet_ids
+    def initialize(limit_snippets, query)
+      @limit_snippets = limit_snippets
       @query = query
     end
 
@@ -35,11 +35,11 @@ module Gitlab
     private
 
     def snippet_titles
-      Snippet.where(id: limit_snippet_ids).search(query).order('updated_at DESC')
+      limit_snippets.search(query).order('updated_at DESC')
     end
 
     def snippet_blobs
-      Snippet.where(id: limit_snippet_ids).search_code(query).order('updated_at DESC')
+      limit_snippets.search_code(query).order('updated_at DESC')
     end
 
     def default_scope

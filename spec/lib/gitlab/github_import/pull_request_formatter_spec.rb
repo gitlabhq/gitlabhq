@@ -127,34 +127,6 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
   end
 
-  describe '#cross_project?' do
-    context 'when source, and target repositories are the same' do
-      let(:raw_data) { OpenStruct.new(base_data) }
-
-      it 'returns false' do
-        expect(pull_request.cross_project?).to eq false
-      end
-    end
-
-    context 'when source repo is a fork' do
-      let(:source_repo) { OpenStruct.new(id: 2, fork: true) }
-      let(:raw_data) { OpenStruct.new(base_data) }
-
-      it 'returns true' do
-        expect(pull_request.cross_project?).to eq true
-      end
-    end
-
-    context 'when target repo is a fork' do
-      let(:target_repo) { OpenStruct.new(id: 2, fork: true) }
-      let(:raw_data) { OpenStruct.new(base_data) }
-
-      it 'returns true' do
-        expect(pull_request.cross_project?).to eq true
-      end
-    end
-  end
-
   describe '#number' do
     let(:raw_data) { OpenStruct.new(base_data.merge(number: 1347)) }
 
@@ -166,24 +138,44 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   describe '#valid?' do
     let(:invalid_branch) { OpenStruct.new(ref: 'invalid-branch') }
 
-    context 'when source and target branches exists' do
-      let(:raw_data) { OpenStruct.new(base_data.merge(head: source_branch, base: target_branch)) }
+    context 'when source, and target repositories are the same' do
+      context 'and source and target branches exists' do
+        let(:raw_data) { OpenStruct.new(base_data.merge(head: source_branch, base: target_branch)) }
 
-      it 'returns true' do
-        expect(pull_request.valid?).to eq true
+        it 'returns true' do
+          expect(pull_request.valid?).to eq true
+        end
+      end
+
+      context 'and source branch doesn not exists' do
+        let(:raw_data) { OpenStruct.new(base_data.merge(head: invalid_branch, base: target_branch)) }
+
+        it 'returns false' do
+          expect(pull_request.valid?).to eq false
+        end
+      end
+
+      context 'and target branch doesn not exists' do
+        let(:raw_data) { OpenStruct.new(base_data.merge(head: source_branch, base: invalid_branch)) }
+
+        it 'returns false' do
+          expect(pull_request.valid?).to eq false
+        end
       end
     end
 
-    context 'when source branch doesn not exists' do
-      let(:raw_data) { OpenStruct.new(base_data.merge(head: invalid_branch, base: target_branch)) }
+    context 'when source repo is a fork' do
+      let(:source_repo) { OpenStruct.new(id: 2, fork: true) }
+      let(:raw_data) { OpenStruct.new(base_data) }
 
       it 'returns false' do
         expect(pull_request.valid?).to eq false
       end
     end
 
-    context 'when target branch doesn not exists' do
-      let(:raw_data) { OpenStruct.new(base_data.merge(head: source_branch, base: invalid_branch)) }
+    context 'when target repo is a fork' do
+      let(:target_repo) { OpenStruct.new(id: 2, fork: true) }
+      let(:raw_data) { OpenStruct.new(base_data) }
 
       it 'returns false' do
         expect(pull_request.valid?).to eq false

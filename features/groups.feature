@@ -15,6 +15,10 @@ Feature: Groups
   Scenario: I should see group "Owned" dashboard list
     When I visit group "Owned" page
     Then I should see group "Owned" projects list
+
+  @javascript
+  Scenario: I should see group "Owned" activity feed
+    When I visit group "Owned" activity page
     And I should see projects activity feed
 
   Scenario: I should see group "Owned" issues list

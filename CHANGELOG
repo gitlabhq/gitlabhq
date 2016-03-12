@@ -9,6 +9,7 @@ v 8.6.0 (unreleased)
   - Fix issue when pushing to projects ending in .wiki
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
   - Don't load all of GitLab in mail_room
+  - Update `omniauth-saml` to 1.5.0 to allow for custom response attributes to be set
   - Memoize @group in Admin::GroupsController (Yatish Mehta)
   - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
   - Strip leading and trailing spaces in URL validator (evuez)
@@ -19,6 +20,7 @@ v 8.6.0 (unreleased)
   - Allow to use YAML anchors when parsing the `.gitlab-ci.yml` (Pascal Bach)
   - Ignore jobs that start with `.` (hidden jobs)
   - Allow to pass name of created artifacts archive in `.gitlab-ci.yml`
+  - Refactor and greatly improve search performance
   - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
@@ -30,6 +32,7 @@ v 8.6.0 (unreleased)
   - Show labels in dashboard and group milestone views
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
+  - Move group activity to separate page
 
 v 8.5.5
   - Ensure removing a project removes associated Todo entries
