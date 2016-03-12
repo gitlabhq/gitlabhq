@@ -44,6 +44,7 @@ class Note < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true
 
   before_validation :set_award!
+  before_validation :clear_blank_line_code!
 
   validates :note, :project, presence: true
   validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
@@ -63,7 +64,7 @@ class Note < ActiveRecord::Base
   scope :nonawards, ->{ where(is_award: false) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
-  scope :not_inline, ->{ where(line_code: [nil, '']) }
+  scope :not_inline, ->{ where(line_code: nil) }
   scope :system, ->{ where(system: true) }
   scope :user, ->{ where(system: false) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
@@ -374,6 +375,10 @@ class Note < ActiveRecord::Base
   end
 
   private
+
+  def clear_blank_line_code!
+    self.line_code = nil if self.line_code.blank?
+  end
 
   def awards_supported?
     (for_issue? || for_merge_request?) && !for_diff_line?
