@@ -11,6 +11,9 @@ class @MilestoneSelect
       useId = $dropdown.data('use-id')
       defaultLabel = $dropdown.data('default-label')
       issuableId = $dropdown.data('issuable-id')
+      $selectbox = $dropdown.closest('.selectbox')
+      $block = $selectbox.closest('.block')
+      $value = $block.find('.value')
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -64,7 +67,7 @@ class @MilestoneSelect
               .closest('.selectbox')
               .find('input[type="hidden"]')
               .val()
-
+            console.log 'gonna ajax it with', url: issueUpdateURL, data: issue: milestone_id: selected
             $.ajax(
               type: 'PUT'
               url: issueUpdateURL
@@ -72,5 +75,17 @@ class @MilestoneSelect
                 issue: 
                   milestone_id: selected
             ).done (data) ->
-              console.log 'databack', data
+              $selectbox.hide()
+              href = $value
+                .show()
+                .find('.milestone-title')
+                .text(data.milestone.title)
+                .end()
+                .find('a')
+                .attr('href')
+              splitHref = href.split('/')
+              splitHref[splitHref.length - 1] = data.id
+              $value
+                .find('a')
+                .attr('href',splitHref.join('/'))
       )

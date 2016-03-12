@@ -14,7 +14,10 @@ class @IssuableContext
       block = $(@).parents('.block')
       block.find('.selectbox').show()
       block.find('.value').hide()
-      block.find('.js-select2').select2("open")
+      setTimeout (->
+        block.find('.dropdown-menu-toggle').trigger 'click'
+      ), 0
+      
 
     $(".right-sidebar").niceScroll()
 

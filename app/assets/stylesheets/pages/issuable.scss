@@ -252,6 +252,14 @@
       text-decoration: none;
     }
   }
+  
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
+
+  .open .dropdown-menu {
+    width: 100%;
+  }
 }
 
 .btn-default.gutter-toggle {
