@@ -27,6 +27,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
 
     @project_member = @project.project_members.new
+    @project_group_links = @project.project_group_links
   end
 
   def create
