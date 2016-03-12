@@ -155,6 +155,15 @@ describe GeoNode, type: :model do
     end
   end
 
+
+  describe '#oauth_callback_url' do
+    let(:oauth_callback_url) { 'https://localhost:3000/gitlab/oauth/geo/callback' }
+
+    it 'returns oauth callback url based on node uri' do
+      expect(new_node.oauth_callback_url).to eq(oauth_callback_url)
+    end
+  end
+
   describe '#missing_oauth_application?' do
     context 'on a primary node' do
       it 'returns false' do

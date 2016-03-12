@@ -56,6 +56,10 @@ class GeoNode < ActiveRecord::Base
     URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_projects").to_s
   end
 
+  def oauth_callback_url
+    URI.join(uri, "#{uri.path}/", 'oauth/geo/callback').to_s
+  end
+
   def missing_oauth_application?
     self.primary? ? false : !oauth_application.present?
   end
@@ -93,9 +97,5 @@ class GeoNode < ActiveRecord::Base
       record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
       record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
     end
-  end
-
-  def oauth_callback_url
-    URI.join(uri, "#{uri.path}/", 'oauth', 'geo', 'callback').to_s
   end
 end
