@@ -30,6 +30,7 @@ v 8.6.0 (unreleased)
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
   - Move group activity to separate page
+  - Create external users which are excluded of internal and private projects unless access was explicitly granted
 
 v 8.5.5
   - Ensure removing a project removes associated Todo entries

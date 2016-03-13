@@ -8,10 +8,12 @@ describe "Internal Project Access", feature: true  do
   let(:master) { create(:user) }
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
+  let(:external_team_member) { create(:user, external: true) }
 
   before do
     # full access
     project.team << [master, :master]
+    project.team << [external_team_member, :master]
 
     # readonly
     project.team << [reporter, :reporter]
@@ -35,6 +37,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -47,6 +50,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -59,6 +63,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -71,6 +76,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -83,6 +89,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -95,6 +102,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -108,6 +116,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -120,6 +129,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -132,6 +142,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -144,6 +155,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -157,6 +169,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -169,6 +182,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -181,6 +195,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -193,6 +208,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -205,6 +221,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -222,6 +239,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -239,6 +257,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_allowed_for guest }
     it { is_expected.to be_allowed_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 
@@ -251,6 +270,7 @@ describe "Internal Project Access", feature: true  do
     it { is_expected.to be_denied_for guest }
     it { is_expected.to be_denied_for :user }
     it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_allowed_for external_team_member }
     it { is_expected.to be_denied_for :visitor }
   end
 end

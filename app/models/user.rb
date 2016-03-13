@@ -229,6 +229,7 @@ class User < ActiveRecord::Base
   # Scopes
   scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
+  scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
@@ -284,6 +285,8 @@ class User < ActiveRecord::Base
         self.with_two_factor
       when 'wop'
         self.without_projects
+      when 'external'
+        self.external
       else
         self.active
       end
@@ -855,9 +858,7 @@ class User < ActiveRecord::Base
   def ensure_external_user_rights
     return unless self.external?
 
-    self.can_create_team    = false
     self.can_create_group   = false
     self.projects_limit     = 0
-    self.hide_project_limit = true
   end
 end

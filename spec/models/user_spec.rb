@@ -217,7 +217,6 @@ describe User, models: true do
       it "sets other properties aswell" do
         expect(external_user.can_create_team).to be_falsey
         expect(external_user.can_create_group).to be_falsey
-        expect(external_user.hide_project_limit).to be_truthy
         expect(external_user.projects_limit).to be 0
       end
     end

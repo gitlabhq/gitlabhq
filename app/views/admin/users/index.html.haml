@@ -19,6 +19,10 @@
       = link_to admin_users_path(filter: 'two_factor_disabled') do
         2FA Disabled
         %small.badge= number_with_delimiter(User.without_two_factor.count)
+    %li.filter-external{class: "#{'active' if params[:filter] == 'external'}"}
+      = link_to admin_users_path(filter: 'external') do
+        External
+        %small.badge= number_with_delimiter(User.external.count)
     %li{class: "#{'active' if params[:filter] == "blocked"}"}
       = link_to admin_users_path(filter: "blocked") do
         Blocked

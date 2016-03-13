@@ -40,18 +40,23 @@ class ProjectsFinder
   private
 
   def group_projects(current_user, group)
-    if current_user
+    return [group.projects.public_only] unless current_user
+
+    if current_user.external?
+      [
+        group_projects_for_user(current_user, group),
+        group.projects.public_only
+      ]
+    else
       [
         group_projects_for_user(current_user, group),
         group.projects.public_and_internal_only
       ]
-    else
-      [group.projects.public_only]
     end
   end
 
   def all_projects(current_user)
-    return [Project.public_only] unless current_user
+    return [public_projects] unless current_user
 
     if current_user.external?
       [current_user.authorized_projects, public_projects]
