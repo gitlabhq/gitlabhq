@@ -631,6 +631,24 @@ rspec:
 The cache is provided on best effort basis, so don't expect that cache will be
 always present. For implementation details please check GitLab Runner.
 
+## Hidden jobs
+
+>**Note:**
+Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+
+Jobs that start with a dot (`.`) will be not processed by GitLab CI. You can
+use this feature to ignore jobs, or use the
+[special YAML features](#special-yaml-features) and transform the hidden jobs
+into templates.
+
+In the following example, `.job_name` will be ignored:
+
+```yaml
+.job_name:
+  script:
+    - rake spec
+```
+
 ## Special YAML features
 
 It's possible to use special YAML features like anchors (`&`), aliases (`*`)
