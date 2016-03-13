@@ -461,19 +461,16 @@ be available for download in the GitLab UI.
 >**Note:**
 Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
 
-The `name` directive allows you to define the name of created artifacts archive.
-
-Currently the `artifacts` is used.
-It may be useful when you will want to download the archive from GitLab.
-You could possible have the unique name of every archive.
-
-The `artifacts:name` variable can use any of the [predefined variables](../variables/README.md).
+The `name` directive allows you to define the name of the created artifacts
+archive. That way, you can have a unique name of every archive which could be
+useful when you'd like to download the archive from GitLab. The `artifacts:name`
+variable can make use of any of the [predefined variables](../variables/README.md).
 
 ---
 
 **Example configurations**
 
-To create a archive with a name of current build:
+To create an archive with a name of the current build:
 
 ```yaml
 job:
@@ -481,7 +478,8 @@ job:
     name: "$CI_BUILD_NAME"
 ```
 
-To create a archive with a name of current branch or tag:
+To create an archive with a name of the current branch or tag including only
+the files that are untracked by Git:
 
 ```yaml
 job:
@@ -490,7 +488,8 @@ job:
      untracked: true
 ```
 
-To create a archive with a name of current branch or tag:
+To create an archive with a name of the current build and the current branch or
+tag including only the files that are untracked by Git:
 
 ```yaml
 job:
@@ -499,7 +498,7 @@ job:
     untracked: true
 ```
 
-To create a archive with a name of stage and branch name:
+To create an archive with a name of the current [stage](#stages) and branch name:
 
 ```yaml
 job:
@@ -507,6 +506,8 @@ job:
     name: "${CI_BUILD_STAGE}_${CI_BUILD_REF_NAME}"
     untracked: true
 ```
+
+---
 
 If you use **Windows Batch** to run your shell scripts you need to replace
 `$` with `%`:
