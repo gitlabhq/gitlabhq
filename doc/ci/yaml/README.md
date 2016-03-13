@@ -631,35 +631,78 @@ rspec:
 The cache is provided on best effort basis, so don't expect that cache will be
 always present. For implementation details please check GitLab Runner.
 
-## Special features
+## Special YAML features
 
-It's possible special YAML features like anchors and map merging.
-Thus allowing to greatly reduce the complexity of `.gitlab-ci.yml`.
+It's possible to use special YAML features like anchors (`&`), aliases (`*`)
+and map merging (`<<`), which will allow you to greatly reduce the complexity
+of `.gitlab-ci.yml`.
 
-#### Anchors
+Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).
 
-You can read more about YAML features [here](https://learnxinyminutes.com/docs/yaml/).
+### Anchors
+
+>**Note:**
+Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+
+YAML also has a handy feature called 'anchors', which let you easily duplicate
+content across your document. Anchors can be used to duplicate/inherit
+properties, and is a perfect example to be used with [hidden jobs](#hidden-jobs)
+to provide templates for your jobs.
+
+The following example uses anchors and map merging. It will create two jobs,
+`test1` and `test2`, that will inherit the parameters of `.job_template`, each
+having their own custom `script` defined:
 
 ```yaml
-.job_template: &job_definition
+.job_template: &job_definition  # Hidden job that defines an anchor named 'job_definition'
   image: ruby:2.1
   services:
     - postgres
     - redis
 
 test1:
-  << *job_definition
+  <<: *job_definition           # Merge the contents of the 'job_definition' alias
   script:
-    - test project
+    - test1 project
 
 test2:
-  << *job_definition
+  <<: *job_definition           # Merge the contents of the 'job_definition' alias
   script:
-    - test project
+    - test2 project
 ```
 
-The above example uses anchors and map merging.
-It will create a two jobs: `test1` and `test2` that will have the parameters of `.job_template` and custom `script` defined.
+`&` sets up the name of the anchor (`job_definition`), `<<` means "merge the
+given hash into the current one", and `*` includes the named anchor
+(`job_definition` again). The expanded version looks like this:
+
+```yaml
+.job_template:
+  image: ruby:2.1
+  services:
+    - postgres
+    - redis
+
+test1:
+  image: ruby:2.1
+  services:
+    - postgres
+    - redis
+  script:
+    - test1 project
+
+test2:
+  image: ruby:2.1
+  services:
+    - postgres
+    - redis
+  script:
+    - test2 project
+```
+
+Let's see another one example. This time we will use anchors to define two sets
+of services. This will create two jobs, `test:postgres` and `test:mysql`, that
+will share the `script` directive defined in `.job_template`, and the `services`
+directive defined in `.postgres_services` and `.mysql_services` respectively:
 
 ```yaml
 .job_template: &job_definition
@@ -685,22 +728,39 @@ test:mysql:
   services: *mysql_definition
 ```
 
-The above example uses anchors to define two set of services.
-It will create a two jobs: `test:postgres` and `test:mysql` that will have the script defined in `.job_template`
-and one, the service defined in `.postgres_services` and second the services defined in `.mysql_services`.
+The expanded version looks like this:
 
-### Hidden jobs
-
-The jobs that start with `.` will be not processed by GitLab.
-
-Example of such hidden jobs:
 ```yaml
-.job_name:
+.job_template:
   script:
-    - rake spec
+    - test project
+
+.postgres_services:
+  services:
+    - postgres
+    - ruby
+
+.mysql_services:
+  services:
+    - mysql
+    - ruby
+
+test:postgres:
+  script:
+    - test project
+  services:
+    - postgres
+    - ruby
+
+test:mysql:
+  script:
+    - test project
+  services:
+    - mysql
+    - ruby
 ```
 
-The `.job_name` will be ignored. You can use this feature to ignore jobs, or use them as templates with special YAML features.
+You can see that the hidden jobs are conveniently used as templates.
 
 ## Validate the .gitlab-ci.yml
 
