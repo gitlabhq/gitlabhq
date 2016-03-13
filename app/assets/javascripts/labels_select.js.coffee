@@ -6,8 +6,8 @@ class @LabelsSelect
       labelUrl = $dropdown.data('labels')
       issueUpdateURL = $dropdown.data('issueUpdate')
       selectedLabel = $dropdown.data('selected')
-      if selectedLabel
-        selectedLabel = selectedLabel.toString().split(',')
+      if selectedLabel?
+        selectedLabel = selectedLabel.split(',')
       newLabelField = $('#new_label_name')
       newColorField = $('#new_label_color')
       showNo = $dropdown.data('show-no')
@@ -17,19 +17,6 @@ class @LabelsSelect
       $block = $selectbox.closest('.block')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
-      issueURLSplit = issueUpdateURL.split('/')
-      labelHTMLTemplate = _.template(
-          '<% _.each(labels, function(label){ %>'+
-          '<a href="'+ 
-          ['',issueURLSplit[1], issueURLSplit[2],''].join('/') +
-          'issues?label_name=<%= label.title %>">'+
-          '<span class="label color-label" '+
-          'style="background-color: <%= label.color %>; '+
-          'color: #FFFFFF">'+
-          '<%= label.title %>'+
-          '</span>'+
-          '</a>'+
-          '<% }); %>');
 
       if newLabelField.length
         $newLabelCreateButton = $('.js-new-label-btn')
@@ -39,6 +26,24 @@ class @LabelsSelect
 
         # Suggested colors in the dropdown to chose from pre-chosen colors
         $('.suggest-colors-dropdown a').on 'click', (e) ->
+
+      issueURLSplit = issueURL.split('/') if issueURL?
+      if issueURL
+        labelHTMLTemplate = _.template(
+            '<% _.each(labels, function(label){ %>'+
+            '<a href="'+ 
+            ['',issueURLSplit[1], issueURLSplit[2],''].join('/') +
+            'issues?label_name=<%= label.title %>">'+
+            '<span class="label color-label" '+
+            'style="background-color: <%= label.color %>; '+
+            'color: #FFFFFF">'+
+            '<%= label.title %>'+
+            '</span>'+
+            '</a>'+
+            '<% }); %>');
+
+      if newLabelField.length and $dropdown.hasClass 'js-extra-options'
+        $('.suggest-colors-dropdown a').on "click", (e) ->
           e.preventDefault()
           e.stopPropagation()
           newColorField
@@ -113,22 +118,23 @@ class @LabelsSelect
           $.ajax(
             url: labelUrl
           ).done (data) ->
-            if showNo
-              data.unshift(
-                id: 0
-                title: 'No Label'
-              )
+            if $dropdown.hasClass 'js-extra-options'
+              if showNo
+                data.unshift(
+                  id: 0
+                  title: 'No Label'
+                )
 
-            if showAny
-              data.unshift(
-                isAny: true
-                title: 'Any Label'
-              )
+              if showAny
+                data.unshift(
+                  isAny: true
+                  title: 'Any Label'
+                )
 
-            if data.length > 2
-              data.splice 2, 0, 'divider'
-
+              if data.length > 2
+                data.splice 2, 0, 'divider'
             callback data
+
         renderRow: (label) ->
           if $.isArray(selectedLabel)
             selected = ''
@@ -184,16 +190,19 @@ class @LabelsSelect
               .closest('.selectbox')
               .find('input[type="hidden"]')
               .val()
+            console.log 'selected', selected
             # need inline-block here instead of show, 
             # which will default to the element's style in this case inline.
+            selected = if selected? then [ selected ] else ['']
+            console.log 'selected', selected
             $loading
               .fadeIn()
             $.ajax(
               type: 'PUT'
-              url: issueUpdateURL
+              url: issueURL
               data:
                 issue: 
-                  label_ids: [selected]
+                  label_ids:  selected
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()

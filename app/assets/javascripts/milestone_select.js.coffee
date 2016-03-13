@@ -21,21 +21,21 @@ class @MilestoneSelect
           $.ajax(
             url: milestonesUrl
           ).done (data) ->
-            if showNo
-              data.unshift(
-                id: '0'
-                title: 'No Milestone'
-              )
+            if $dropdown.hasClass "js-extra-options"
+              if showNo
+                data.unshift(
+                  id: '0'
+                  title: 'No Milestone'
+                )
 
-            if showAny
-              data.unshift(
-                isAny: true
-                title: 'Any Milestone'
-              )
+              if showAny
+                data.unshift(
+                  isAny: true
+                  title: 'Any Milestone'
+                )
 
-            if data.length > 2
-              data.splice 2, 0, 'divider'
-
+              if data.length > 2
+                data.splice 2, 0, 'divider'
             callback(data)
         filterable: true
         search:
