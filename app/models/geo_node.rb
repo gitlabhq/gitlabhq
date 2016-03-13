@@ -12,6 +12,7 @@
 
 class GeoNode < ActiveRecord::Base
   belongs_to :geo_node_key, dependent: :destroy
+  belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy
 
   default_values schema: 'http',
                  host: lambda { Gitlab.config.gitlab.host },
@@ -22,14 +23,14 @@ class GeoNode < ActiveRecord::Base
   accepts_nested_attributes_for :geo_node_key
 
   validates :host, host: true, presence: true, uniqueness: { case_sensitive: false, scope: :port }
-  validates :primary, uniqueness: { message: 'primary node already exists' }, if: :primary
+  validates :primary, uniqueness: { message: 'node already exists' }, if: :primary
   validates :schema, inclusion: %w(http https)
   validates :relative_url_root, length: { minimum: 0, allow_nil: false }
 
-  after_initialize :check_geo_node_key
+  after_initialize :build_dependents
   after_save :refresh_bulk_notify_worker_status
   after_destroy :refresh_bulk_notify_worker_status
-  before_validation :change_geo_node_key_title
+  before_validation :update_dependents_attributes
 
   def uri
     if relative_url_root
@@ -55,6 +56,14 @@ class GeoNode < ActiveRecord::Base
     URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_projects").to_s
   end
 
+  def oauth_callback_url
+    URI.join(uri, "#{uri.path}/", 'oauth/geo/callback').to_s
+  end
+
+  def missing_oauth_application?
+    self.primary? ? false : !oauth_application.present?
+  end
+
   private
 
   def refresh_bulk_notify_worker_status
@@ -65,19 +74,27 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
-  def check_geo_node_key
+  def build_dependents
     self.build_geo_node_key if geo_node_key.nil?
   end
 
-  def change_geo_node_key_title
+  def update_dependents_attributes
     self.geo_node_key.title = "Geo node: #{self.url}" if self.geo_node_key
+
+    if self.primary?
+      self.oauth_application = nil
+    else
+      self.build_oauth_application if oauth_application.nil?
+      self.oauth_application.name = "Geo node: #{self.url}"
+      self.oauth_application.redirect_uri = oauth_callback_url
+    end
   end
 
   def validate(record)
     # Prevent locking yourself out
     if record.host == Gitlab.config.gitlab.host &&
-       record.port == Gitlab.config.gitlab.port &&
-       record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
+      record.port == Gitlab.config.gitlab.port &&
+      record.relative_url_root == Gitlab.config.gitlab.relative_url_root && !record.primary
       record.errors[:base] << 'Current node must be the primary node or you will be locking yourself out'
     end
   end

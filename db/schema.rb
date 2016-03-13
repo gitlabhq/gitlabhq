@@ -414,6 +414,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.string  "relative_url_root"
     t.boolean "primary"
     t.integer "geo_node_key_id"
+    t.integer "oauth_application_id"
   end
 
   add_index "geo_nodes", ["geo_node_key_id"], name: "index_geo_nodes_on_geo_node_key_id", using: :btree

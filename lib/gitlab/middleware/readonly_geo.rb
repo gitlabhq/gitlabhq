@@ -2,6 +2,7 @@ module Gitlab
   module Middleware
     class ReadonlyGeo
       DISALLOWED_METHODS = %w(POST PATCH PUT DELETE)
+      WHITELISTED = %w(api/v3/internal api/v3/geo/refresh_projects)
 
       def initialize(app)
         @app = app
@@ -49,8 +50,7 @@ module Gitlab
       end
 
       def whitelisted_routes
-        whitelisted = %w(api/v3/internal api/v3/geo/refresh_projects)
-        logout_route || whitelisted.any? { |path| @request.path.include?(path) }
+        logout_route || WHITELISTED.any? { |path| @request.path.include?(path) }
       end
 
       def logout_route
