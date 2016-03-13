@@ -236,14 +236,14 @@ job_name:
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
 | script        | yes | Defines a shell script which is executed by runner |
-| stage         | no (default: `test`) | Defines a build stage |
+| stage         | no | Defines a build stage (default: `test`) |
 | type          | no | Alias for `stage` |
 | only          | no | Defines a list of git refs for which build is created |
 | except        | no | Defines a list of git refs for which build is not created |
 | tags          | no | Defines a list of tags which are used to select runner |
 | allow_failure | no | Allow build to fail. Failed build doesn't contribute to commit status |
 | when          | no | Define when to run build. Can be `on_success`, `on_failure` or `always` |
-| dependencies  | no | Define a builds that this build depends on |
+| dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
 | artifacts     | no | Define list build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
 
@@ -404,7 +404,10 @@ The above script will:
 > - Build artifacts are only collected for successful builds.
 
 `artifacts` is used to specify list of files and directories which should be
-attached to build after success. Below are some examples.
+attached to build after success. To pass artifacts between different builds,
+see [dependencies](#dependencies).
+
+Below are some examples.
 
 Send all files in `binaries` and `.config`:
 
@@ -524,55 +527,57 @@ job:
 >**Note:**
 Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-This feature should be used with `artifacts` and allows to define artifacts passing between different builds.
+This feature should be used in conjunction with [`artifacts`](#artifacts) and
+allows you to define the artifacts to pass between different builds.
 
-`artifacts` from previous stages are passed by default.
+Note that `artifacts` from previous [stages](#stages) are passed by default.
 
-To use a feature define `dependencies` in context of the build and pass
+To use this feature, define `dependencies` in context of the job and pass
 a list of all previous builds from which the artifacts should be downloaded.
-You can only define a builds from stages that are executed before this one.
-Error will be shown if you define builds from current stage or next stages.
+You can only define builds from stages that are executed before the current one.
+An error will be shown if you define builds from the current stage or next ones.
 
-How to use artifacts passing between stages:
+---
+
+In the following example, we define two jobs with artifacts, `build:osx` and
+`build:linux`. When the `test:osx` is executed, the artifacts from `build:osx`
+will be downloaded and extracted in the context of the build. The same happens
+for `test:linux` and artifacts from `build:linux`.
+
+The job `deploy` will download artifacts from all previous builds because of
+the [stage](#stages) precedence:
 
 ```
 build:osx:
   stage: build
-  script: ...
+  script: make build:osx
   artifacts:
     paths:
     - binaries/
 
 build:linux:
   stage: build
-  script: ...
+  script: make build:linux
   artifacts:
     paths:
     - binaries/
 
 test:osx:
   stage: test
-  script: ...
+  script: make test:osx
   dependencies:
   - build:osx
 
 test:linux:
   stage: test
-  script: ...
+  script: make test:linux
   dependencies:
   - build:linux
 
 deploy:
   stage: deploy
-  script: ...
+  script: make deploy
 ```
-
-The above will create a build artifacts for two jobs: `build:osx` and `build:linux`.
-When executing the `test:osx` the artifacts for `build:osx` will be downloaded and extracted in context of the build.
-The same happens for `test:linux` and artifacts from `build:linux`.
-
-The job `deploy` will download artifacts from all previous builds.
-However, only the `build:osx` and `build:linux` exports artifacts so only these will be downloaded.
 
 ### cache
 
