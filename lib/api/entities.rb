@@ -243,6 +243,10 @@ module API
       end
     end
 
+    class ProjectGroupLink < Grape::Entity
+      expose :id, :project_id, :group_id, :group_access
+    end
+
     class Namespace < Grape::Entity
       expose :id, :path, :kind
     end
