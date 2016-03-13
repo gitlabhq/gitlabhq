@@ -19,7 +19,7 @@ describe Projects::ImportsController do
       end
 
       it 'sets flash.now if params is present' do
-        get :show, namespace_id: project.namespace.to_param, project_id: project.to_param, continue: { notice_now: 'Started' }
+        get :show, namespace_id: project.namespace.to_param, project_id: project.to_param, continue: { to: '/', notice_now: 'Started' }
 
         expect(flash.now[:notice]).to eq 'Started'
       end
@@ -45,7 +45,7 @@ describe Projects::ImportsController do
         end
 
         it 'sets flash.now if params is present' do
-          get :show, namespace_id: project.namespace.to_param, project_id: project.to_param, continue: { notice_now: 'In progress' }
+          get :show, namespace_id: project.namespace.to_param, project_id: project.to_param, continue: { to: '/', notice_now: 'In progress' }
 
           expect(flash.now[:notice]).to eq 'In progress'
         end
