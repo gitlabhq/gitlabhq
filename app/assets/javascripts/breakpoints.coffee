@@ -14,12 +14,11 @@ class @Breakpoints
       return if $(allDeviceSelector.join(",")).length
 
       # Create all the elements
-      $.each BREAKPOINTS, (i, breakpoint) ->
-        $("body").append "<div class='device-#{breakpoint} visible-#{breakpoint}'></div>"
+      els = $.map BREAKPOINTS, (breakpoint) ->
+        "<div class='device-#{breakpoint} visible-#{breakpoint}'></div>"
+      $("body").append els.join('')
 
     getBreakpointSize: ->
-      @setup()
-      
       allDeviceSelector = BREAKPOINTS.map (breakpoint) ->
         ".device-#{breakpoint}"
 
@@ -30,4 +29,5 @@ class @Breakpoints
   @get: ->
     return instance ?= new BreakpointInstance
 
-@bp = Breakpoints.get()
+$ =>
+  @bp = Breakpoints.get()
