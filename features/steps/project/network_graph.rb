@@ -41,17 +41,14 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
 
   When 'I switch ref to "feature"' do
     select 'feature', from: 'ref'
-    sleep 2
   end
 
   When 'I switch ref to "v1.0.0"' do
     select 'v1.0.0', from: 'ref'
-    sleep 2
   end
 
   When 'click "Show only selected branch" checkbox' do
     find('#filter_ref').click
-    sleep 2
   end
 
   step 'page should have content not containing "v1.0.0"' do
@@ -60,7 +57,11 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
     end
   end
 
-  step 'page should not have content not containing "v1.0.0"' do
+  step 'page should have "v1.0.0" in title' do
+    expect(page).to have_css 'title', text: 'Network · v1.0.0', visible: false
+  end
+
+  step 'page should only have content from "v1.0.0"' do
     page.within '.network-graph' do
       expect(page).not_to have_content 'Change some files'
     end
