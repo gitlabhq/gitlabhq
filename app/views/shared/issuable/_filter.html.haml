@@ -15,7 +15,7 @@
         .filter-item.inline
           - if params[:assignee_id]
             = hidden_field_tag(:assignee_id, params[:assignee_id])
-          = dropdown_tag("Assignee", options: { toggle_class: "js-user-search js-filter-submit", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
+          = dropdown_tag("Assignee", options: { toggle_class: "js-user-search js-filter-submit js-assignee-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
             placeholder: "Search assignee", data: { any_user: "Any Author", first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: (@project.id if @project), selected: params[:assignee_id], field_name: "assignee_id" } })
 
         .filter-item.inline.milestone-filter
