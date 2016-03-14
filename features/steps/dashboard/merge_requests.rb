@@ -40,22 +40,16 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click "Authored by me" link' do
-    execute_script('$("#assignee_id").val("")')
-    execute_script('$(".js-user-search").first().click()')
-    sleep 0.5
-    execute_script("$('.dropdown-content li:contains(\"#{current_user.to_reference}\") a').click()")
-    sleep 2
+    find("#assignee_id").set("")
+    find(".js-author-search", match: :first).click
+    find(".dropdown-menu-author li a", match: :first, text: current_user.to_reference).click
   end
 
   step 'I click "All" link' do
-    execute_script('$(".js-user-search").first().click()')
-    sleep 0.5
-    execute_script('$(".js-user-search").first().parent().find("li a").first().click()')
-    sleep 2
-    execute_script('$(".js-user-search").eq(1).click()')
-    sleep 0.5
-    execute_script('$(".js-user-search").eq(1).parent().find("li a").first().click()')
-    sleep 2
+    find(".js-author-search").click
+    find(".dropdown-menu-author li a", match: :first).click
+    find(".js-assignee-search").click
+    find(".dropdown-menu-assignee li a", match: :first).click
   end
 
   def should_see(merge_request)
