@@ -1,4 +1,3 @@
-mobileWidth = 991
 collapsed = 'page-sidebar-collapsed'
 expanded = 'page-sidebar-expanded'
 
@@ -21,8 +20,7 @@ $(document).on("click", '.toggle-nav-collapse', (e) ->
 )
 
 $ ->
-  breakpoints = new Breakpoints()
-  size = breakpoints.getBreakpointSize()
+  size = bp.getBreakpointSize()
 
   if size is "xs" or size is "sm"
     if $('.page-with-sidebar').hasClass(expanded)

@@ -108,8 +108,7 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
-  breakpoints = new Breakpoints()
-  bootstrapBreakpoint = breakpoints.getBreakpointSize()
+  bootstrapBreakpoint = bp.getBreakpointSize()
 
   $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
 
@@ -261,12 +260,12 @@ $ ->
 
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
-    bootstrapBreakpoint = breakpoints.getBreakpointSize()
+    bootstrapBreakpoint = bp.getBreakpointSize()
     if bootstrapBreakpoint != oldBootstrapBreakpoint
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   checkInitialSidebarSize = ->
-    bootstrapBreakpoint = breakpoints.getBreakpointSize()
+    bootstrapBreakpoint = bp.getBreakpointSize()
     if bootstrapBreakpoint is "xs" or "sm"
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 

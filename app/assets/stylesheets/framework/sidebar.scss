@@ -34,7 +34,7 @@
     @media (min-width: $screen-sm-min) {
       padding-right: $gutter_width;
     }
-    
+
   }
 }
 
@@ -205,7 +205,7 @@
 @mixin expanded-sidebar {
   padding-left: $sidebar_collapsed_width;
 
-  @media (min-width: $screen-sm-max) {
+  @media (min-width: $screen-md-min) {
     padding-left: $sidebar_width;
   }
 
