@@ -6,6 +6,7 @@ class @ProjectSelect
       @orderBy = $(select).data('order-by') || 'id'
       @selectId = $(select).data('select-id') || 'web_url'
       @accessLevel = $(select).data('access-level')
+      @withoutId = $(select).data('without-id')
 
       placeholder = "Search for project"
       placeholder += " or group" if @includeGroups
@@ -31,9 +32,11 @@ class @ProjectSelect
     finalCallback = (projects) ->
       options.callback({ results: projects })
 
-    @accessLevelCallbackDecorator(
-      @groupsCallbackDecorator(
-        finalCallback
+    @withoutIdCallbackDecorator(
+      @accessLevelCallbackDecorator(
+        @groupsCallbackDecorator(
+          finalCallback
+        )
       )
     )
 
@@ -52,10 +55,22 @@ class @ProjectSelect
     # Requires ECMAScript >= 5
     #
     (projects) =>
-      data = projects.filter (i) =>
-        max = Math.max(i.permissions.group_access?.access_level ? 0,
-                       i.permissions.project_access?.access_level ? 0)
+      data = projects.filter (p) =>
+        max = Math.max(p.permissions.group_access?.access_level ? 0,
+                       p.permissions.project_access?.access_level ? 0)
 
         max >= @accessLevel
+
+      callback(data)
+
+  withoutIdCallbackDecorator: (callback) =>
+    return callback unless @withoutId
+
+    ##
+    # Requires ECMAScript >= 5
+    #
+    (projects) =>
+      data = projects.filter (p) =>
+        p.id != @withoutId
 
       callback(data)
