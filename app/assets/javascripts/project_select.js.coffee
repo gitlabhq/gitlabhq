@@ -51,9 +51,6 @@ class @ProjectSelect
   accessLevelCallbackDecorator: (callback) =>
     return callback unless @accessLevel
 
-    ##
-    # Requires ECMAScript >= 5
-    #
     (projects) =>
       data = projects.filter (p) =>
         max = Math.max(p.permissions.group_access?.access_level ? 0,
@@ -66,9 +63,6 @@ class @ProjectSelect
   withoutIdCallbackDecorator: (callback) =>
     return callback unless @withoutId
 
-    ##
-    # Requires ECMAScript >= 5
-    #
     (projects) =>
       data = projects.filter (p) =>
         p.id != @withoutId

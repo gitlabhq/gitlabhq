@@ -6,7 +6,7 @@ module Issues
       @issue_old = issue
       @issue_new = issue.dup
       @project_old = @project
-      @project_new = Project.find(new_project_id) if new_project_id
+      @project_new = Project.find(new_project_id)
     end
 
     def execute
@@ -25,9 +25,10 @@ module Issues
         close_old_issue
       end
 
-      # Notifications
+      # Notifications and hooks
       #
-      notify_participants
+      # notify_participants
+      # trigger_hooks_and_events
 
       @issue_new
     end
@@ -44,10 +45,18 @@ module Issues
     end
 
     def create_new_issue
-      @issue_new.iid = nil
       @issue_new.project = @project_new
+
+      # Reset internal ID, will be regenerated before save
+      #
+      @issue_new.iid = nil
+
+      # Reset labels and milestones, as those are not valid in context
+      # of a new project
+      #
       @issue_new.labels = []
       @issue_new.milestone = nil
+
       @issue_new.description = rewrite_references(@issue_old)
       @issue_new.save!
     end
@@ -64,9 +73,6 @@ module Issues
 
     def close_old_issue
       @issue_old.update(state: :closed)
-    end
-
-    def notify_participants
     end
 
     def add_moved_from_note
@@ -94,6 +100,23 @@ module Issues
       else
         raise 'Unexpected noteable while moving an issue'
       end
+    end
+
+    def trigger_hooks_and_events
+      event_service.close_issue(@issue_old, @current_user)
+      event_service.open_issue(@issue_new, @current_user)
+
+      @issue_new.create_cross_references!(@current_user)
+
+      execute_hooks(@issue_old, 'close')
+      execute_hooks(@issue_new, 'open')
+    end
+
+    def notify_participants
+      todo_service.close_issue(@issue_old, @current_user)
+      todo_service.open_issue(@issue_new, @current_user)
+
+      notification_service.issue_moved(@issue_old, @issue_new, @current_user)
     end
   end
 end
