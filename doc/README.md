@@ -13,7 +13,7 @@
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
-- [Web hooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
+- [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 
 ## CI User documentation
@@ -54,7 +54,7 @@ be linked with your base image. Below is a list of examples you may use:
 
 ## Administrator documentation
 
-- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.
+- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
@@ -63,7 +63,7 @@ be linked with your base image. Below is a list of examples you may use:
 - [Log system](logs/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running
-- [Raketasks](raketasks/README.md) Backups, maintenance, automatic web hook setup and the importing of projects.
+- [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.

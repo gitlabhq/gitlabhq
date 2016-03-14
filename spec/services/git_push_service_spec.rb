@@ -155,8 +155,25 @@ describe GitPushService, services: true do
     end
   end
 
-  describe "Web Hooks" do
-    context "execute web hooks" do
+  describe "Updates main language" do
+
+    context "before push" do
+      it { expect(project.main_language).to eq(nil) }
+    end
+
+    context "after push" do
+      before do
+        @service = execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it { expect(@service.update_main_language).to eq(true) }
+      it { expect(project.main_language).to eq("Ruby") }
+    end
+  end
+
+
+  describe "Webhooks" do
+    context "execute webhooks" do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -254,22 +271,24 @@ describe GitPushService, services: true do
 
       allow(project.repository).to receive(:commits_between).
         and_return([closing_commit])
+
+      project.team << [commit_author, :master]
     end
 
     context "to default branches" do
       it "closes issues" do
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
         expect(Issue.find(issue.id)).to be_closed
       end
 
       it "adds a note indicating that the issue is now closed" do
         expect(SystemNoteService).to receive(:change_status).with(issue, project, commit_author, "closed", closing_commit)
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
 
       it "doesn't create additional cross-reference notes" do
         expect(SystemNoteService).not_to receive(:cross_reference)
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
 
       it "doesn't close issues when external issue tracker is in use" do
@@ -277,7 +296,7 @@ describe GitPushService, services: true do
 
         # The push still shouldn't create cross-reference notes.
         expect do
-          execute_service(project, user, @oldrev, @newrev,  'refs/heads/hurf' )
+          execute_service(project, commit_author, @oldrev, @newrev,  'refs/heads/hurf' )
         end.not_to change { Note.where(project_id: project.id, system: true).count }
       end
     end
@@ -299,7 +318,6 @@ describe GitPushService, services: true do
       end
     end
 
-    # EE-only tests
     context "for jira issue tracker" do
       include JiraServiceHelper
 
@@ -349,7 +367,7 @@ describe GitPushService, services: true do
             }
           }.to_json
 
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, commit_author, @oldrev, @newrev, @ref )
           expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
             body: transition_body
           ).once
@@ -360,7 +378,7 @@ describe GitPushService, services: true do
             body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
           }.to_json
 
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, commit_author, @oldrev, @newrev, @ref )
           expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
             body: comment_body
           ).once

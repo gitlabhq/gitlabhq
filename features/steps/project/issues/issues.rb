@@ -27,7 +27,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    click_link "Closed"
+    find('.issues-state-filters a', text: "Closed").click
   end
 
   step 'I click button "Unsubscribe"' do
@@ -63,14 +63,15 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click "author" dropdown' do
-    first('#s2id_author_id').click
+    page.find('.js-author-search').click
+    sleep 1
   end
 
   step 'I see current user as the first user' do
-    expect(page).to have_selector('.user-result', visible: true, count: 3)
-    users = page.all('.user-name')
+    expect(page).to have_selector('.dropdown-content', visible: true)
+    users = page.all('.dropdown-menu-author .dropdown-content li a')
     expect(users[0].text).to eq 'Any Author'
-    expect(users[1].text).to eq current_user.name
+    expect(users[1].text).to eq "#{current_user.name} #{current_user.to_reference}"
   end
 
   step 'I submit new issue "500 error on profile"' do
@@ -267,7 +268,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   step 'I leave a comment with code block' do
     page.within(".js-main-target-form") do
       fill_in "note[note]", with: "```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```"
-      click_button "Add Comment"
+      click_button "Comment"
       sleep 0.05
     end
   end
@@ -353,10 +354,6 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     page.within '#notes' do
       expect(page).to have_content('Yay!')
     end
-  end
-
-  step 'I should see "Release 0.4" at the top' do
-    expect(page.find('ul.content-list.issues-list li.issue:first-child')).to have_content("Release 0.4")
   end
 
   def filter_issue(text)

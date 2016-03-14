@@ -59,7 +59,7 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   end
 
   step 'I should see 3 issues' do
-    expect(page).to have_selector('#tab-issues li.issue-row', count: 4)
+    expect(page).to have_selector('#tab-issues li.issuable-row', count: 4)
   end
 
   step 'I click link to remove milestone' do

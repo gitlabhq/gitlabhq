@@ -7,6 +7,9 @@ class Projects::AvatarsController < Projects::ApplicationController
     @blob = @repository.blob_at_branch('master', @project.avatar_in_git)
     if @blob
       headers['X-Content-Type-Options'] = 'nosniff'
+
+      return if cached_blob?
+
       headers.store(*Gitlab::Workhorse.send_git_blob(@repository, @blob))
       headers['Content-Disposition'] = 'inline'
       headers['Content-Type'] = safe_content_type(@blob)

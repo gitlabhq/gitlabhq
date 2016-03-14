@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Issue filtering by Milestone', feature: true do
-  include Select2Helper
-
   let(:project)   { create(:project, :public) }
   let(:milestone) { create(:milestone, project: project) }
 
@@ -31,6 +29,9 @@ feature 'Issue filtering by Milestone', feature: true do
   end
 
   def filter_by_milestone(title)
-    select2(title, from: '#milestone_title')
+    find(".js-milestone-select").click
+    sleep 0.5
+    find(".milestone-filter a", text: title).click
+    sleep 1
   end
 end

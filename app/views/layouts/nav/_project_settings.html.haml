@@ -19,10 +19,10 @@
         %span
           Deploy Keys
     = nav_link(controller: :hooks) do
-      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web Hooks' do
+      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Webhooks' do
         = icon('link fw')
         %span
-          Web Hooks
+          Webhooks
     = nav_link(controller: :services) do
       = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services' do
         = icon('cogs fw')

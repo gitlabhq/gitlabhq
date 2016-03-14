@@ -29,12 +29,15 @@ module Issuable
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
+    scope :of_milestones, ->(ids) { where(milestone_id: ids) }
     scope :opened, -> { with_state(:opened, :reopened) }
     scope :only_opened, -> { with_state(:opened) }
     scope :only_reopened, -> { with_state(:reopened) }
     scope :closed, -> { with_state(:closed) }
     scope :order_milestone_due_desc, -> { joins(:milestone).reorder('milestones.due_date DESC, milestones.id DESC') }
     scope :order_milestone_due_asc, -> { joins(:milestone).reorder('milestones.due_date ASC, milestones.id ASC') }
+    scope :with_label, ->(title) { joins(:labels).where(labels: { title: title }) }
+    scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
 
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
@@ -58,12 +61,29 @@ module Issuable
   end
 
   module ClassMethods
+    # Searches for records with a matching title.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(title) like :query", query: "%#{query.downcase}%")
+      where(arel_table[:title].matches("%#{query}%"))
     end
 
+    # Searches for records with a matching title or description.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def full_search(query)
-      where("LOWER(title) like :query OR LOWER(description) like :query", query: "%#{query.downcase}%")
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
     def sort(method)

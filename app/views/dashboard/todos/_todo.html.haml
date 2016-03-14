@@ -4,7 +4,10 @@
 
     .todo-title
       %span.author-name
-        = link_to_author todo
+        - if todo.author
+          = link_to_author(todo)
+        - else
+          (removed)
       %span.todo-label
         = todo_action_name(todo)
         = todo_target_link(todo)

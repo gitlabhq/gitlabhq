@@ -151,6 +151,8 @@ Parameters:
   "name": "John Smith",
   "state": "active",
   "created_at": "2012-05-23T08:00:58Z",
+  "confirmed_at": "2012-05-23T08:00:58Z",
+  "last_sign_in_at": "2015-03-23T08:00:58Z",
   "bio": null,
   "skype": "",
   "linkedin": "",

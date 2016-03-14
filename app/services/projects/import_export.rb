@@ -11,13 +11,21 @@ module Projects
     end
 
     def project_tree
-      %i(issues merge_requests labels milestones snippets releases events commit_statuses) + members
+      %i(issues labels milestones snippets releases events) + [members, merge_requests, commit_statuses]
     end
 
     private
 
+    def merge_requests
+      { merge_requests: { include: :merge_request_diff } }
+    end
+
+    def commit_statuses
+      { commit_statuses: { include: :commit } }
+    end
+
     def members
-      [{ project_members: { include: [user: { only: [:id, :email, :username] }] } }]
+      { project_members: { include: [user: { only: [:id, :email, :username] }] } }
     end
 
     def storage_path

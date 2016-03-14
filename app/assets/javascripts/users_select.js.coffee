@@ -3,6 +3,81 @@ class @UsersSelect
     @usersPath = "/autocomplete/users.json"
     @userPath = "/autocomplete/users/:id.json"
 
+    $('.js-user-search').each (i, dropdown) =>
+      @projectId = $(dropdown).data('project-id')
+      @showCurrentUser = $(dropdown).data('current-user')
+      showNullUser = $(dropdown).data('null-user')
+      showAnyUser = $(dropdown).data('any-user')
+      firstUser = $(dropdown).data('first-user')
+      selectedId = $(dropdown).data('selected')
+
+      $(dropdown).glDropdown(
+        data: (term, callback) =>
+          @users term, (users) =>
+            if term.length is 0
+              showDivider = 0
+
+              if firstUser
+                # Move current user to the front of the list
+                for obj, index in users
+                  if obj.username == firstUser
+                    users.splice(index, 1)
+                    users.unshift(obj)
+                    break
+
+              if showNullUser
+                showDivider += 1
+                users.unshift(
+                  name: 'Unassigned',
+                  id: 0
+                )
+
+              if showAnyUser
+                showDivider += 1
+                name = showAnyUser
+                name = 'Any User' if name == true
+                anyUser = {
+                  name: name,
+                  id: null
+                }
+                users.unshift(anyUser)
+
+            if showDivider
+              users.splice(showDivider, 0, "divider")
+
+            # Send the data back
+            callback users
+        filterable: true
+        filterRemote: true
+        search:
+          fields: ['name', 'username']
+        selectable: true
+        fieldName: $(dropdown).data('field-name')
+        clicked: ->
+          if $(dropdown).hasClass "js-filter-submit"
+            $(dropdown).parents('form').submit()
+        renderRow: (user) ->
+          username = if user.username then "@#{user.username}" else ""
+          avatar = if user.avatar_url then user.avatar_url else false
+          selected = if user.id is selectedId then "is-active" else ""
+          img = ""
+
+          if avatar
+            img = "<img src='#{avatar}' class='avatar avatar-inline' width='30' />"
+
+          "<li>
+            <a href='#' class='dropdown-menu-user-link #{selected}'>
+              #{img}
+              <strong class='dropdown-menu-user-full-name'>
+                #{user.name}
+              </strong>
+              <span class='dropdown-menu-user-username'>
+                #{username}
+              </span>
+            </a>
+          </li>"
+      )
+
     $('.ajax-users-select').each (i, select) =>
       @projectId = $(select).data('project-id')
       @groupId = $(select).data('group-id')

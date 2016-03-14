@@ -28,6 +28,9 @@
           = project.name
 
     .controls
+      - if project.main_language
+        %span
+          = project.main_language
       - if ci_commit
         %span
           = render_ci_status(ci_commit)

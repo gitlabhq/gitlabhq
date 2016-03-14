@@ -70,7 +70,7 @@
           .autoscroll-container
             %button.btn.btn-success.btn-sm#autoscroll-button{:type => "button", :data => {:state => 'disabled'}} enable autoscroll
           .clearfix
-      .scroll-controls
+      #js-build-scroll.scroll-controls
         = link_to '#up-build-trace', class: 'btn' do
           %i.fa.fa-angle-up
         = link_to '#down-build-trace', class: 'btn' do

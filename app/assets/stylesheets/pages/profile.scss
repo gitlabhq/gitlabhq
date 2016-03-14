@@ -1,7 +1,6 @@
-.account-page {
-  fieldset {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
+.profile-avatar-form-option {
+  hr {
+    margin: 10px 0;
   }
 }
 
@@ -20,7 +19,7 @@
 
 .account-btn-link,
 .profile-settings-sidebar a {
-  color: $profile-settings-link-color;
+  color: $md-link-color;
 }
 
 .oauth-buttons {
@@ -172,6 +171,47 @@
 
 .profile-settings-content {
   a {
-    color: $profile-settings-link-color;
+    color: $md-link-color;
+  }
+}
+
+.change-username-title {
+  color: $gl-warning;
+}
+
+.remove-account-title {
+  color: $gl-danger;
+}
+
+.provider-btn-group {
+  display: inline-block;
+  margin-right: 10px;
+  border: 1px solid $provider-btn-group-border;
+  border-radius: 3px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.provider-btn-image {
+  display: inline-block;
+  padding: 5px 10px;
+  border-right: 1px solid $provider-btn-group-border;
+
+  > img {
+    width: 20px;
+  }
+}
+
+.provider-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-left: -3px;
+  line-height: 22px;
+  background-color: $gray-light;
+
+  &.not-active {
+    color: $provider-btn-not-active-color;
   }
 }

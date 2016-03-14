@@ -1,9 +1,5 @@
 FactoryGirl.define do
-  factory :project_snippet do
+  factory :project_snippet, parent: :snippet, class: :ProjectSnippet do
     project
-    author
-    title
-    content
-    file_name
   end
 end

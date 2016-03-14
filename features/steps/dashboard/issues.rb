@@ -36,13 +36,22 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
   end
 
   step 'I click "Authored by me" link' do
-    select2(current_user.id, from: "#author_id")
-    select2(nil, from: "#assignee_id")
+    execute_script('$("#assignee_id").val("")')
+    execute_script('$(".js-user-search").first().click()')
+    sleep 1
+    execute_script("$('.dropdown-content li:contains(\"#{current_user.to_reference}\") a').click()")
+    sleep 1
   end
 
   step 'I click "All" link' do
-    select2(nil, from: "#author_id")
-    select2(nil, from: "#assignee_id")
+    execute_script('$(".js-user-search").first().click()')
+    sleep 1
+    execute_script('$(".js-user-search").first().parent().find("li a").first().click()')
+    sleep 1
+    execute_script('$(".js-user-search").eq(1).click()')
+    sleep 1
+    execute_script('$(".js-user-search").eq(1).parent().find("li a").first().click()')
+    sleep 1
   end
 
   def should_see(issue)

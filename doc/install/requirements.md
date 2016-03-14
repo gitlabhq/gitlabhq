@@ -97,6 +97,17 @@ To change the Unicorn workers when you have the Omnibus package please see [the 
 
 If you want to run the database separately expect a size of about 1 MB per user.
 
+### PostgreSQL Requirements
+
+Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
+GitLab database. This extension can be enabled (using a PostgreSQL super user)
+by running the following query for every database:
+
+    CREATE EXTENSION pg_trgm;
+
+On some systems you may need to install an additional package (e.g.
+`postgresql-contrib`) for this extension to become available.
+
 ## Redis and Sidekiq
 
 Redis stores all user sessions and the background task queue.

@@ -47,6 +47,8 @@ describe API::API, api: true  do
         expect(json_response.first.keys).to include 'identities'
         expect(json_response.first.keys).to include 'can_create_project'
         expect(json_response.first.keys).to include 'two_factor_enabled'
+        expect(json_response.first.keys).to include 'last_sign_in_at'
+        expect(json_response.first.keys).to include 'confirmed_at'
       end
     end
   end

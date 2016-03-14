@@ -9,6 +9,7 @@ class Ability
       when CommitStatus then commit_status_abilities(user, subject)
       when Project then project_abilities(user, subject)
       when Issue then issue_abilities(user, subject)
+      when ExternalIssue then external_issue_abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
       when PersonalSnippet then personal_snippet_abilities(user, subject)
@@ -422,6 +423,10 @@ class Ability
         abilities << self
         abilities
       end
+    end
+
+    def external_issue_abilities(user, subject)
+      project_abilities(user, subject.project)
     end
 
     private

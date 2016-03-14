@@ -64,7 +64,7 @@ Save the file and restart GitLab: `sudo service gitlab restart`.
 For Omnibus installations, edit `/etc/gitlab/gitlab.rb` and add the line:
 
 ```
-gitlab-rails['gitlab_default_projects_features_builds'] = false
+gitlab_rails['gitlab_default_projects_features_builds'] = false
 ```
 
 Save the file and reconfigure GitLab: `sudo gitlab-ctl reconfigure`.

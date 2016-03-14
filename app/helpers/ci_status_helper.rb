@@ -42,12 +42,12 @@ module CiStatusHelper
     icon(icon_name + ' fw')
   end
 
-  def render_ci_status(ci_commit)
+  def render_ci_status(ci_commit, tooltip_placement: 'auto left')
     link_to ci_status_icon(ci_commit),
       ci_status_path(ci_commit),
       class: "ci-status-link ci-status-icon-#{ci_commit.status.dasherize}",
       title: "Build #{ci_status_label(ci_commit)}",
-      data: { toggle: 'tooltip', placement: 'left' }
+      data: { toggle: 'tooltip', placement: tooltip_placement }
   end
 
   def no_runners_for_project?(project)

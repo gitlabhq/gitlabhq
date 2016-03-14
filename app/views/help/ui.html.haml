@@ -19,6 +19,8 @@
     %li
       = link_to 'Buttons', '#buttons'
     %li
+      = link_to 'Dropdowns', '#dropdowns'
+    %li
       = link_to 'Panels', '#panels'
     %li
       = link_to 'Alerts', '#alerts'
@@ -180,9 +182,9 @@
       .nav-controls
         = text_field_tag 'sample', nil, class: 'form-control'
         .dropdown
-          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+          %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
             %span Sort by name
-            %b.caret
+            = icon('chevron-down')
           %ul.dropdown-menu
             %li
               %a Sort by date
@@ -211,6 +213,227 @@
     %button.btn.btn-warning{:type => "button"} Warning
     %button.btn.btn-danger{:type => "button"} Danger
     %button.btn.btn-link{:type => "button"} Link
+
+  %h2#dropdowns Dropdowns
+
+  .example
+    .clearfix
+      .dropdown.inline.pull-left
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Dropdown
+          = icon('chevron-down')
+        %ul.dropdown-menu
+          %li
+            %a{href: "#"}
+              Dropdown Option
+      .dropdown.inline.pull-right
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Dropdown
+          = icon('chevron-down')
+        %ul.dropdown-menu.dropdown-menu-align-right
+          %li
+            %a{href: "#"}
+              Dropdown Option
+  .example
+    %div
+      .dropdown.inline
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Dropdown
+          = icon('chevron-down')
+        %ul.dropdown-menu.dropdown-menu-selectable
+          %li
+            %a.is-active{href: "#"}
+              Dropdown Option
+  .example
+    %div
+      .dropdown.inline
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Dropdown
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable
+          .dropdown-title
+            %span Dropdown Title
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            = icon('search')
+          .dropdown-content
+            %ul
+              %li
+                %a.is-active{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li.divider
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+          .dropdown-footer
+            %strong Tip:
+            If an author is not a member of this project, you can still filter by his name while using the search field.
+      .dropdown.inline
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Dropdown loading
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable.is-loading
+          .dropdown-title
+            %span Dropdown Title
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            = icon('search')
+          .dropdown-content
+            %ul
+              %li
+                %a.is-active{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li.divider
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+              %li
+                %a{href: "#"}
+                  Dropdown Option
+          .dropdown-footer
+            %strong Tip:
+            If an author is not a member of this project, you can still filter by his name while using the search field.
+          .dropdown-loading
+            = icon('spinner spin')
+
+  .example
+    %div
+      .dropdown.inline
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Dropdown user
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-user
+          .dropdown-title
+            %span Dropdown Title
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            = icon('search')
+          .dropdown-content
+            %ul
+              %li
+                %a.dropdown-menu-user-link.is-active{href: "#"}
+                  = link_to_member_avatar(current_user, size: 30)
+                  %strong.dropdown-menu-user-full-name
+                    = current_user.name
+                  .dropdown-menu-user-username
+                    = current_user.to_reference
+
+  .example
+    %div
+      .dropdown.inline
+        %button.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Dropdown page 2
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable.dropdown-menu-user.dropdown-menu-paging.is-page-two
+          .dropdown-page-one
+            .dropdown-title
+              %button.dropdown-title-button.dropdown-menu-back{aria: {label: "Go back"}}
+                = icon('arrow-left')
+              %span Dropdown Title
+              %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+                = icon('times')
+            .dropdown-input
+              %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+              = icon('search')
+            .dropdown-content
+              %ul
+                %li
+                  %a.dropdown-menu-user-link.is-active{href: "#"}
+                    = link_to_member_avatar(current_user, size: 30)
+                    %strong.dropdown-menu-user-full-name
+                      = current_user.name
+                    .dropdown-menu-user-username
+                      = current_user.to_reference
+          .dropdown-page-two
+            .dropdown-title
+              %button.dropdown-title-button.dropdown-menu-back{aria: {label: "Go back"}}
+                = icon('arrow-left')
+              %span Create label
+              %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+                = icon('times')
+            .dropdown-input
+              %input.dropdown-input-field{type: "search", placeholder: "Name new label"}
+            .dropdown-content
+              %button.btn.btn-primary
+                Create
+
+  .example
+    %div
+      .dropdown.inline
+        %button#js-project-dropdown.dropdown-menu-toggle{type: 'button', data: {toggle: 'dropdown'}}
+          Projects
+          = icon('chevron-down')
+        .dropdown-menu.dropdown-select.dropdown-menu-selectable
+          .dropdown-title
+            %span Go to project
+            %button.dropdown-title-button.dropdown-menu-close{aria: {label: "Close"}}
+              = icon('times')
+          .dropdown-input
+            %input.dropdown-input-field{type: "search", placeholder: "Filter results"}
+            = icon('search')
+          .dropdown-content
+          .dropdown-loading
+            = icon('spinner spin')
+    :javascript
+      $('#js-project-dropdown').glDropdown({
+        data: function (term, callback) {
+          Api.projects(term, "last_activity_at", function (data) {
+            callback(data);
+          });
+        },
+        text: function (project) {
+          return project.name_with_namespace || project.name;
+        },
+        selectable: true,
+        fieldName: "author_id",
+        filterable: true,
+        search: {
+          fields: ['name_with_namespace']
+        },
+        id: function (data) {
+          return data.id;
+        },
+        isSelected: function (data) {
+          return data.id === 2;
+        }
+      })
+
+  .example
+    %div
+      = dropdown_tag("Projects", options: { title: "Go to project", filter: true, placeholder: "Filter projects" })
 
   %h2#panels Panels
 

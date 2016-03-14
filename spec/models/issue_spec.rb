@@ -105,6 +105,31 @@ describe Issue, models: true do
     end
   end
 
+  describe '#referenced_merge_requests' do
+    it 'returns the referenced merge requests' do
+      project = create(:project, :public)
+
+      mr1 = create(:merge_request,
+                   source_project: project,
+                   source_branch:  'master',
+                   target_branch:  'feature')
+
+      mr2 = create(:merge_request,
+                   source_project: project,
+                   source_branch:  'feature',
+                   target_branch:  'master')
+
+      issue = create(:issue, description: mr1.to_reference, project: project)
+
+      create(:note_on_issue,
+             noteable:   issue,
+             note:       mr2.to_reference,
+             project_id: project.id)
+
+      expect(issue.referenced_merge_requests).to eq([mr1, mr2])
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:issue) }
 
