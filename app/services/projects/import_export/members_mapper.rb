@@ -13,12 +13,6 @@ module Projects
       end
 
       def map
-        @project_member_map ||= project_member_map
-      end
-
-      private
-
-      def project_member_map
         @project_member_map = Hash.new(default_project_member)
         @exported_members.each do |member|
           existing_user = User.where(find_project_user_query(member)).first
@@ -26,6 +20,8 @@ module Projects
         end
         @project_member_map
       end
+
+      private
 
       def assign_member(existing_user, member)
         old_user_id = member['user']['id']

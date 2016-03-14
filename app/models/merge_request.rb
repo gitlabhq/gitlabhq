@@ -125,7 +125,7 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  validates :source_project, presence: true, unless: :allow_broken
+  validates :source_project, presence: true, unless: [:allow_broken, :importing]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true

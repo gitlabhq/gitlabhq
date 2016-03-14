@@ -10,17 +10,18 @@ module Projects
         relation_sym = parse_relation_sym(relation_sym)
         klass = relation_class(relation_sym)
         relation_hash.delete('id') #screw IDs for now
-        #TODO refactor this...
-        if relation_sym == :merge_requests
-          relation_hash['target_project_id'] = relation_hash.delete('project_id')
-          relation_hash['source_project_id'] = -1
-          relation_hash['importing'] = true
-        end
+        handle_merge_requests(relation_hash) if relation_sym == :merge_requests
         update_user_references(relation_hash, members_map)
         klass.new(relation_hash)
       end
 
       private
+
+      def handle_merge_requests(relation_hash)
+        relation_hash['target_project_id'] = relation_hash.delete('project_id')
+        relation_hash['source_project_id'] = -1
+        relation_hash['importing'] = true
+      end
 
       #TODO nice to have, optimize this to only get called for specific models
       def update_user_references(relation_hash, members_map)
