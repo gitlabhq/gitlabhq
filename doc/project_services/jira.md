@@ -219,3 +219,16 @@ You can see from the above image that there are four references to GitLab:
 [JIRA Core]: https://www.atlassian.com/software/jira/core "The JIRA Core website"
 [jira-ce]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2146 "MR - Backport JIRA service"
 [8_3_post]: https://about.gitlab.com/2015/12/22/gitlab-8-3-released/ "GitLab 8.3 release post"
+
+## Troubleshooting
+
+### GitLab is unable to comment on a ticket
+
+Make sure that the user you set up for GitLab to communicate with JIRA has the
+correct access permission to post comments on a ticket and to also transition the
+ticket, if you'd like GitLab to also take care of closing them.
+
+### GitLab is unable to close a ticket
+
+Make sure the the `Transition ID` you set within the JIRA settings matches the
+one your project needs to close a ticket.

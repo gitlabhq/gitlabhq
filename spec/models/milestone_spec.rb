@@ -60,7 +60,7 @@ describe Milestone, models: true do
     end
 
     it "should recover from dividing by zero" do
-      expect(milestone.issues).to receive(:count).and_return(0)
+      expect(milestone.issues).to receive(:size).and_return(0)
       expect(milestone.percent_complete).to eq(0)
     end
   end
@@ -114,7 +114,6 @@ describe Milestone, models: true do
     end
 
     it { expect(milestone.closed_items_count).to eq(1) }
-    it { expect(milestone.open_items_count).to eq(2) }
     it { expect(milestone.total_items_count).to eq(3) }
     it { expect(milestone.is_empty?).to be_falsey }
   end
@@ -180,6 +179,36 @@ describe Milestone, models: true do
       issue4.reload
 
       expect(issue4.position).to eq(42)
+    end
+  end
+
+  describe '.search' do
+    let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
+
+    it 'returns milestones with a matching title' do
+      expect(described_class.search(milestone.title)).to eq([milestone])
+    end
+
+    it 'returns milestones with a partially matching title' do
+      expect(described_class.search(milestone.title[0..2])).to eq([milestone])
+    end
+
+    it 'returns milestones with a matching title regardless of the casing' do
+      expect(described_class.search(milestone.title.upcase)).to eq([milestone])
+    end
+
+    it 'returns milestones with a matching description' do
+      expect(described_class.search(milestone.description)).to eq([milestone])
+    end
+
+    it 'returns milestones with a partially matching description' do
+      expect(described_class.search(milestone.description[0..2])).
+        to eq([milestone])
+    end
+
+    it 'returns milestones with a matching description regardless of the casing' do
+      expect(described_class.search(milestone.description.upcase)).
+        to eq([milestone])
     end
   end
 end

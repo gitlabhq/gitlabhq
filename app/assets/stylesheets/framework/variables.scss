@@ -34,12 +34,14 @@ $error-exclamation-point: #E62958;
 $border-radius-default: 3px;
 $list-title-color: #333333;
 $list-text-color: #555555;
-$profile-settings-link-color: $md-link-color;
 
 $btn-transparent-color: #8F8F8F;
 
 $ssh-key-icon-color: #8F8F8F;
 $ssh-key-icon-size: 18px;
+
+$provider-btn-group-border: #E5E5E5;
+$provider-btn-not-active-color: #4688F1;
 
 /*
  * Color schema
@@ -70,7 +72,7 @@ $orange-light: rgba(252, 109, 38, 0.80);
 $orange-normal: #E75E40;
 $orange-dark: #CE5237;
 
-$red-light: #F43263;
+$red-light: #F06559;
 $red-normal: #E52C5A;
 $red-dark: #D22852;
 
@@ -94,7 +96,7 @@ $border-orange-light: #fc6d26;
 $border-orange-normal: #CE5237;
 $border-orange-dark: #C14E35;
 
-$border-red-light: #E52C5A;
+$border-red-light: #F24F41;
 $border-red-normal: #D22852;
 $border-red-dark: #CA264F;
 
@@ -138,3 +140,22 @@ $dropdown-shadow-color: rgba(#000, .1);
 $dropdown-divider-color: rgba(#000, .1);
 $dropdown-header-color: #959494;
 $dropdown-caret-color: #54565B;
+$dropdown-title-btn-color: #BFBFBF;
+$dropdown-input-color: #C7C7C7;
+$dropdown-input-focus-border: rgb(58, 171, 240);
+$dropdown-input-focus-shadow: rgba(#000, .2);
+$dropdown-loading-bg: rgba(#fff, .6);
+
+$dropdown-toggle-bg: #fff;
+$dropdown-toggle-color: #626262;
+$dropdown-toggle-border-color: #EAEAEA;
+$dropdown-toggle-hover-border-color: darken($dropdown-toggle-border-color, 15%);
+$dropdown-toggle-icon-color: #C4C4C4;
+$dropdown-toggle-hover-icon-color: $dropdown-toggle-hover-border-color;
+
+/*
+ *  Award emoji
+ */
+$award-emoji-menu-bg: #FFF;
+$award-emoji-menu-border: #F1F2F4;
+$award-emoji-new-btn-icon-color: #DCDCDC;

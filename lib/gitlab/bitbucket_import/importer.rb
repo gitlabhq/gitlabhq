@@ -76,7 +76,7 @@ module Gitlab
           project.issues.create!(
             description: body,
             title: issue["title"],
-            state: %w(resolved invalid duplicate wontfix).include?(issue["status"]) ? 'closed' : 'opened',
+            state: %w(resolved invalid duplicate wontfix closed).include?(issue["status"]) ? 'closed' : 'opened',
             author_id: gl_user_id(project, reporter)
           )
         end

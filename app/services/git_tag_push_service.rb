@@ -2,7 +2,7 @@ class GitTagPushService
   attr_accessor :project, :user, :push_data
 
   def execute(project, user, oldrev, newrev, ref)
-    project.repository.before_create_tag
+    project.repository.before_push_tag
 
     @project, @user = project, user
     @push_data = build_push_data(oldrev, newrev, ref)

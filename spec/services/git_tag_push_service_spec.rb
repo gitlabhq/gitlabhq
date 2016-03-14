@@ -78,8 +78,8 @@ describe GitTagPushService, services: true do
     end
   end
 
-  describe "Web Hooks" do
-    context "execute web hooks" do
+  describe "Webhooks" do
+    context "execute webhooks" do
       it "when pushing tags" do
         expect(project).to receive(:execute_hooks)
         service.execute(project, user, 'oldrev', 'newrev', 'refs/tags/v1.0.0')

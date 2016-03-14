@@ -1,7 +1,9 @@
 - unless defined?(project)
   - project = @project
 
-- @commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
+- commits, hidden = limited_commits(@commits)
+
+- commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
   .row.commits-row
     .col-md-2.hidden-xs.hidden-sm
       %h5.commits-row-date
@@ -13,3 +15,7 @@
       %ul.bordered-list
         = render commits, project: project
   %hr.lists-separator
+
+- if hidden > 0
+  .alert.alert-warning
+    #{number_with_delimiter(hidden)} additional commits have been omitted to prevent performance issues.

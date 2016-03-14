@@ -1,5 +1,8 @@
 # Blob is a Rails-specific wrapper around Gitlab::Git::Blob objects
 class Blob < SimpleDelegator
+  CACHE_TIME = 60 # Cache raw blobs referred to by a (mutable) ref for 1 minute
+  CACHE_TIME_IMMUTABLE = 3600 # Cache blobs referred to by an immutable reference for 1 hour
+
   # Wrap a Gitlab::Git::Blob object, or return nil when given nil
   #
   # This method prevents the decorated object from evaluating to "truthy" when

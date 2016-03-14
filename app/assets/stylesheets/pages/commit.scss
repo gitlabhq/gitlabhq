@@ -90,6 +90,7 @@
   position: relative;
   font-family: $monospace_font;
   $left: 12px;
+  overflow: hidden; // See https://gitlab.com/gitlab-org/gitlab-ce/issues/13987
   .max-width-marker {
     width: 72ch;
     color: rgba(0, 0, 0, 0.0);

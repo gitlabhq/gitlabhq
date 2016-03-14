@@ -52,7 +52,7 @@ describe WebHook, models: true do
       WebMock.stub_request(:post, @project_hook.url)
     end
 
-    it "POSTs to the web hook URL" do
+    it "POSTs to the webhook URL" do
       @project_hook.execute(@data, 'push_hooks')
       expect(WebMock).to have_requested(:post, @project_hook.url).with(
         headers: { 'Content-Type'=>'application/json', 'X-Gitlab-Event'=>'Push Hook' }

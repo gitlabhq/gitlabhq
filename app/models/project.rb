@@ -151,6 +151,7 @@ class Project < ActiveRecord::Base
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
+  has_many :todos, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
@@ -215,6 +216,7 @@ class Project < ActiveRecord::Base
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
+  scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -264,13 +266,31 @@ class Project < ActiveRecord::Base
       joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC')
     end
 
+    # Searches for a list of projects based on the query given in `query`.
+    #
+    # On PostgreSQL this method uses "ILIKE" to perform a case-insensitive
+    # search. On MySQL a regular "LIKE" is used as it's already
+    # case-insensitive.
+    #
+    # query - The search query as a String.
     def search(query)
-      joins(:namespace).
-        where('LOWER(projects.name) LIKE :query OR
-              LOWER(projects.path) LIKE :query OR
-              LOWER(namespaces.name) LIKE :query OR
-              LOWER(projects.description) LIKE :query',
-              query: "%#{query.try(:downcase)}%")
+      ptable  = arel_table
+      ntable  = Namespace.arel_table
+      pattern = "%#{query}%"
+
+      projects = select(:id).where(
+        ptable[:path].matches(pattern).
+          or(ptable[:name].matches(pattern)).
+          or(ptable[:description].matches(pattern))
+      )
+
+      namespaces = select(:id).
+        joins(:namespace).
+        where(ntable[:name].matches(pattern))
+
+      union = Gitlab::SQL::Union.new([projects, namespaces])
+
+      where("projects.id IN (#{union.to_sql})")
     end
 
     def search_by_visibility(level)
@@ -278,7 +298,10 @@ class Project < ActiveRecord::Base
     end
 
     def search_by_title(query)
-      non_archived.where('LOWER(projects.name) LIKE :query', query: "%#{query.downcase}%")
+      pattern = "%#{query}%"
+      table   = Project.arel_table
+
+      non_archived.where(table[:name].matches(pattern))
     end
 
     def find_with_namespace(id)
@@ -526,11 +549,11 @@ class Project < ActiveRecord::Base
   end
 
   def ci_services
-    services.select { |service| service.category == :ci }
+    services.where(category: :ci)
   end
 
   def ci_service
-    @ci_service ||= ci_services.find(&:activated?)
+    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
@@ -907,13 +930,13 @@ class Project < ActiveRecord::Base
   end
 
   def valid_runners_token? token
-    self.runners_token && self.runners_token == token
+    self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
   # TODO (ayufan): For now we use runners_token (backward compatibility)
   # In 8.4 every build will have its own individual token valid for time of build
   def valid_build_token? token
-    self.builds_enabled? && self.runners_token && self.runners_token == token
+    self.builds_enabled? && self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
   def build_coverage_enabled?

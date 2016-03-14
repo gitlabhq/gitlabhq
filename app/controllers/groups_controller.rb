@@ -1,4 +1,5 @@
 class GroupsController < Groups::ApplicationController
+  include FilterProjects
   include IssuesAction
   include MergeRequestsAction
 
@@ -14,7 +15,7 @@ class GroupsController < Groups::ApplicationController
 
   # Load group projects
   before_action :load_projects, except: [:index, :new, :create, :projects, :edit, :update, :autocomplete]
-  before_action :event_filter, only: [:show, :events]
+  before_action :event_filter, only: [:activity]
 
   layout :determine_layout
 
@@ -41,7 +42,8 @@ class GroupsController < Groups::ApplicationController
   def show
     @last_push = current_user.recent_push if current_user
     @projects = @projects.includes(:namespace)
-    @projects = @projects.search(params[:filter_projects]) if params[:filter_projects].present?
+    @projects = filter_projects(@projects)
+    @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
 
     respond_to do |format|
@@ -60,8 +62,10 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
-  def events
+  def activity
     respond_to do |format|
+      format.html
+
       format.json do
         load_events
         pager_json("events/_events", @events.count)
@@ -98,7 +102,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_projects
-    @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity.non_archived
+    @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity
   end
 
   # Dont allow unauthorized access to group

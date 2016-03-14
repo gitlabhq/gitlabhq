@@ -1,5 +1,0 @@
-!!! 5
-%html
-  %head
-    - web_url = [Gitlab.config.gitlab.url, @namespace, @id].join('/')
-    %meta{name: "go-import", content: "#{web_url.split('://')[1]} git #{web_url}.git"}

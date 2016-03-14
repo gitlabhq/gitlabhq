@@ -7,7 +7,7 @@ module Search
     end
 
     def execute
-      Gitlab::ProjectSearchResults.new(project.id,
+      Gitlab::ProjectSearchResults.new(project,
                                        params[:search],
                                        params[:repository_ref])
     end

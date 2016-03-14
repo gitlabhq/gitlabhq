@@ -30,8 +30,11 @@ class @Notes
     $(document).on "ajax:success", ".js-main-target-form", @addNote
     $(document).on "ajax:success", ".js-discussion-note-form", @addDiscussionNote
 
+    # catch note ajax errors
+    $(document).on "ajax:error", ".js-main-target-form", @addNoteError
+
     # change note in UI after update
-    $(document).on "ajax:success", "form.edit_note", @updateNote
+    $(document).on "ajax:success", "form.edit-note", @updateNote
 
     # Edit note link
     $(document).on "click", ".js-note-edit", @showEditForm
@@ -50,6 +53,9 @@ class @Notes
     # reset main target form after submit
     $(document).on "ajax:complete", ".js-main-target-form", @reenableTargetFormSubmitButton
     $(document).on "ajax:success", ".js-main-target-form", @resetMainTargetForm
+
+    # reset main target form when clicking discard
+    $(document).on "click", ".js-note-discard", @resetMainTargetForm
 
     # update the file name when an attachment is selected
     $(document).on "change", ".js-note-attachment-input", @updateFormAttachment
@@ -72,7 +78,7 @@ class @Notes
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
-    $(document).off "ajax:success", "form.edit_note"
+    $(document).off "ajax:success", "form.edit-note"
     $(document).off "click", ".js-note-edit"
     $(document).off "click", ".note-edit-cancel"
     $(document).off "click", ".js-note-delete"
@@ -85,6 +91,7 @@ class @Notes
     $(document).off "keyup", ".js-note-text"
     $(document).off "click", ".js-note-target-reopen"
     $(document).off "click", ".js-note-target-close"
+    $(document).off "click", ".js-note-discard"
 
     $('.note .js-task-list-container').taskList('disable')
     $(document).off 'tasklist:changed', '.note .js-task-list-container'
@@ -219,7 +226,7 @@ class @Notes
   Resets text and preview.
   Resets buttons.
   ###
-  resetMainTargetForm: ->
+  resetMainTargetForm: (e) =>
     form = $(".js-main-target-form")
 
     # remove validation errors
@@ -230,6 +237,8 @@ class @Notes
     form.find(".js-note-text").val("").trigger "input"
 
     form.find(".js-note-text").data("autosave").reset()
+
+    @updateTargetButtons(e)
 
   reenableTargetFormSubmitButton: ->
     form = $(".js-main-target-form")
@@ -274,8 +283,10 @@ class @Notes
     form.removeClass "js-new-note-form"
     form.find('.div-dropzone').remove()
 
+    # hide discard button
+    form.find('.js-note-discard').hide()
+
     # setup preview buttons
-    form.find(".js-md-write-button, .js-md-preview-button").tooltip placement: "left"
     previewButton = form.find(".js-md-preview-button")
 
     textarea = form.find(".js-note-text")
@@ -308,6 +319,10 @@ class @Notes
   ###
   addNote: (xhr, note, status) =>
     @renderNote(note)
+
+  addNoteError: (xhr, note, status) =>
+    flash = new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert')
+    flash.pinTo('.md-area')
 
   ###
   Called in response to the new note form being submitted
@@ -347,22 +362,26 @@ class @Notes
     note = $(this).closest(".note")
     note.find(".note-body > .note-text").hide()
     note.find(".note-header").hide()
-    base_form = note.find(".note-edit-form")
-    form = base_form.clone().insertAfter(base_form)
-    form.addClass('current-note-edit-form gfm-form')
-    form.find('.div-dropzone').remove()
+    form = note.find(".note-edit-form")
+    isNewForm = form.is(':not(.gfm-form)')
+    if isNewForm
+      form.addClass('gfm-form')
+    form.addClass('current-note-edit-form')
+    form.show()
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
 
     # Setup markdown form
-    GitLab.GfmAutoComplete.setup()
-    new DropzoneInput(form)
+    if isNewForm
+      GitLab.GfmAutoComplete.setup()
+      new DropzoneInput(form)
 
-    form.show()
     textarea = form.find("textarea")
     textarea.focus()
-    autosize(textarea)
+
+    if isNewForm
+      autosize(textarea)
 
     # HACK (rspeicher/DouweM): Work around a Chrome 43 bug(?).
     # The textarea has the correct value, Chrome just won't show it unless we
@@ -371,7 +390,8 @@ class @Notes
     textarea.val ""
     textarea.val value
 
-    disableButtonIfEmptyField textarea, form.find(".js-comment-button")
+    if isNewForm
+      disableButtonIfEmptyField textarea, form.find(".js-comment-button")
 
   ###
   Called in response to clicking the edit note link
@@ -383,7 +403,9 @@ class @Notes
     note = $(this).closest(".note")
     note.find(".note-body > .note-text").show()
     note.find(".note-header").show()
-    note.find(".current-note-edit-form").remove()
+    note.find(".current-note-edit-form")
+      .removeClass("current-note-edit-form")
+      .hide()
 
   ###
   Called in response to deleting a note of any kind.
@@ -462,6 +484,11 @@ class @Notes
     form.find("#note_line_code").val dataHolder.data("lineCode")
     form.find("#note_noteable_type").val dataHolder.data("noteableType")
     form.find("#note_noteable_id").val dataHolder.data("noteableId")
+    form.find('.js-note-discard')
+        .show()
+        .removeClass('js-note-discard')
+        .addClass('js-close-discussion-note-form')
+        .text(form.find('.js-close-discussion-note-form').data('cancel-text'))
     @setupNoteForm form
     form.find(".js-note-text").focus()
     form.addClass "js-discussion-note-form"
@@ -561,21 +588,52 @@ class @Notes
   updateCloseButton: (e) =>
     textarea = $(e.target)
     form = textarea.parents('form')
-    form.find('.js-note-target-close').text('Close')
+    closebtn = form.find('.js-note-target-close')
+    closebtn.text(closebtn.data('original-text'))
 
   updateTargetButtons: (e) =>
     textarea = $(e.target)
     form = textarea.parents('form')
+    reopenbtn = form.find('.js-note-target-reopen')
+    closebtn = form.find('.js-note-target-close')
+    discardbtn = form.find('.js-note-discard')
+
     if textarea.val().trim().length > 0
-      form.find('.js-note-target-reopen').text('Comment & reopen')
-      form.find('.js-note-target-close').text('Comment & close')
-      form.find('.js-note-target-reopen').addClass('btn-comment-and-reopen')
-      form.find('.js-note-target-close').addClass('btn-comment-and-close')
+      reopentext = reopenbtn.data('alternative-text')
+      closetext = closebtn.data('alternative-text')
+
+      if reopenbtn.text() isnt reopentext
+        reopenbtn.text(reopentext)
+
+      if closebtn.text() isnt closetext
+        closebtn.text(closetext)
+
+      if reopenbtn.is(':not(.btn-comment-and-reopen)')
+        reopenbtn.addClass('btn-comment-and-reopen')
+
+      if closebtn.is(':not(.btn-comment-and-close)')
+        closebtn.addClass('btn-comment-and-close')
+
+      if discardbtn.is(':hidden')
+        discardbtn.show()
     else
-      form.find('.js-note-target-reopen').text('Reopen')
-      form.find('.js-note-target-close').text('Close')
-      form.find('.js-note-target-reopen').removeClass('btn-comment-and-reopen')
-      form.find('.js-note-target-close').removeClass('btn-comment-and-close')
+      reopentext = reopenbtn.data('original-text')
+      closetext = closebtn.data('original-text')
+
+      if reopenbtn.text() isnt reopentext
+        reopenbtn.text(reopentext)
+
+      if closebtn.text() isnt closetext
+        closebtn.text(closetext)
+
+      if reopenbtn.is(':not(.btn-comment-and-reopen)')
+        reopenbtn.removeClass('btn-comment-and-reopen')
+
+      if closebtn.is(':not(.btn-comment-and-close)')
+        closebtn.removeClass('btn-comment-and-close')
+
+      if discardbtn.is(':visible')
+        discardbtn.hide()
 
   initTaskList: ->
     @enableTaskList()

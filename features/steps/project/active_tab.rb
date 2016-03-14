@@ -26,7 +26,7 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'I click the "Hooks" tab' do
-    click_link('Web Hooks')
+    click_link('Webhooks')
   end
 
   step 'I click the "Deploy Keys" tab' do
@@ -42,7 +42,7 @@ class Spinach::Features::ProjectActiveTab < Spinach::FeatureSteps
   end
 
   step 'the active sub nav should be Hooks' do
-    ensure_active_sub_nav('Web Hooks')
+    ensure_active_sub_nav('Webhooks')
   end
 
   step 'the active sub nav should be Deploy Keys' do

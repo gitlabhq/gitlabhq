@@ -24,7 +24,7 @@ require 'spec_helper'
 describe Note, models: true do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to belong_to(:noteable) }
+    it { is_expected.to belong_to(:noteable).touch(true) }
     it { is_expected.to belong_to(:author).class_name('User') }
 
     it { is_expected.to have_many(:todos).dependent(:destroy) }
@@ -140,10 +140,16 @@ describe Note, models: true do
     end
   end
 
-  describe :search do
-    let!(:note) { create(:note, note: "WoW") }
+  describe '.search' do
+    let(:note) { create(:note, note: 'WoW') }
 
-    it { expect(Note.search('wow')).to include(note) }
+    it 'returns notes with matching content' do
+      expect(described_class.search(note.note)).to eq([note])
+    end
+
+    it 'returns notes with matching content regardless of the casing' do
+      expect(described_class.search('WOW')).to eq([note])
+    end
   end
 
   describe :grouped_awards do
@@ -218,6 +224,14 @@ describe Note, models: true do
 
       expect(note.note).to eq(":blowfish:")
       expect(note.is_award?).to be_falsy
+    end
+  end
+
+  describe 'clear_blank_line_code!' do
+    it 'clears a blank line code before validation' do
+      note = build(:note, line_code: ' ')
+
+      expect { note.valid? }.to change(note, :line_code).to(nil)
     end
   end
 end

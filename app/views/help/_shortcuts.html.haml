@@ -22,6 +22,14 @@
                 %td.shortcut
                   .key ?
                 %td Show this dialog
+              %tr
+                %td.shortcut
+                  - if browser.mac?
+                    .key &#8984; shift p
+                  - else
+                    .key ctrl shift p
+
+                %td Toggle Markdown preview
             %tbody
               %tr
                 %th

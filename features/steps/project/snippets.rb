@@ -77,7 +77,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   step 'I leave a comment like "Good snippet!"' do
     page.within('.js-main-target-form') do
       fill_in "note_note", with: "Good snippet!"
-      click_button "Add Comment"
+      click_button "Comment"
     end
   end
 

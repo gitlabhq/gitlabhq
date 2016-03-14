@@ -189,7 +189,7 @@ class @MergeRequestTabs
     $('.container-fluid').removeClass('container-limited')
 
   shrinkView: ->
-    $gutterIcon = $('.gutter-toggle i')
+    $gutterIcon = $('.js-sidebar-toggle i')
 
     # Wait until listeners are set
     setTimeout( ->
@@ -197,4 +197,3 @@ class @MergeRequestTabs
       if $gutterIcon.is('.fa-angle-double-right')
         $gutterIcon.closest('a').trigger('click',[true])
     , 0)
-
