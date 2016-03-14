@@ -22,8 +22,7 @@
       = icon('angle-double-left')
 
     .issue-meta
-      - if @issue.confidential
-        = icon('eye-slash')
+      = confidential_icon(@issue)
       %strong.identifier
         Issue ##{@issue.iid}
       %span.creator
