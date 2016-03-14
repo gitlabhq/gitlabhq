@@ -4,7 +4,7 @@ describe Projects::HousekeepingService do
   subject { Projects::HousekeepingService.new(project) }
   let(:project) { create :project }
 
-  describe :execute do
+  describe 'execute' do
     before do
       project.pushes_since_gc = 3
       project.save!
@@ -27,7 +27,7 @@ describe Projects::HousekeepingService do
     end
   end
 
-  describe :needed? do
+  describe 'needed?' do
     it 'when the count is low enough' do
       expect(subject.needed?).to eq(false)
     end
@@ -38,7 +38,7 @@ describe Projects::HousekeepingService do
     end
   end
 
-  describe :increment! do
+  describe 'increment!' do
     it 'increments the pushes_since_gc counter' do
       expect(project.pushes_since_gc).to eq(0)
       subject.increment!
