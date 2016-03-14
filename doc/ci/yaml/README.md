@@ -134,6 +134,9 @@ thus allowing to fine tune them.
 
 ### cache
 
+>**Note:**
+Introduced in GitLab Runner v0.7.0.
+
 `cache` is used to specify a list of files and directories which should be
 cached between builds.
 
@@ -142,18 +145,59 @@ cached between builds.
 If `cache` is defined outside the scope of the jobs, it means it is set
 globally and all jobs will use its definition.
 
-To cache all git untracked files and files in `binaries`:
+Cache all files in `binaries` and `.config`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
+    - .config
+```
+
+Cache all Git untracked files:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+```
+
+Cache all Git untracked files and files in `binaries`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+    paths:
+    - binaries/
+```
+
+Locally defined cache overwrites globally defined options. This will cache only
+`binaries/`:
 
 ```yaml
 cache:
-  untracked: true
   paths:
-  - binaries/
+  - my/files
+
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
 ```
+
+The cache is provided on best effort basis, so don't expect that cache will be
+always present. For implementation details please check GitLab Runner.
 
 #### cache:key
 
-_**Note:** Introduced in GitLab Runner v1.0.0._
+>**Note:**
+Introduced in GitLab Runner v1.0.0.
 
 The `key` directive allows you to define the affinity of caching
 between jobs, allowing to have a single cache for all jobs,
@@ -452,62 +496,6 @@ release-job:
 
 The artifacts will be sent to GitLab after a successful build and will
 be available for download in the GitLab UI.
-
-### cache
-
-_**Note:** Introduced in GitLab Runner v0.7.0._
-
-`cache` is used to specify list of files and directories which should be cached
-between builds. Below are some examples:
-
-Cache all files in `binaries` and `.config`:
-
-```yaml
-rspec:
-  script: test
-  cache:
-    paths:
-    - binaries/
-    - .config
-```
-
-Cache all git untracked files:
-
-```yaml
-rspec:
-  script: test
-  cache:
-    untracked: true
-```
-
-Cache all git untracked files and files in `binaries`:
-
-```yaml
-rspec:
-  script: test
-  cache:
-    untracked: true
-    paths:
-    - binaries/
-```
-
-Locally defined cache overwrites globally defined options. This will cache only
-`binaries/`:
-
-```yaml
-cache:
-  paths:
-  - my/files
-
-rspec:
-  script: test
-  cache:
-    paths:
-    - binaries/
-```
-
-The cache is provided on best effort basis, so don't expect that cache will be
-always present. For implementation details please check GitLab Runner.
 
 ## Validate the .gitlab-ci.yml
 
