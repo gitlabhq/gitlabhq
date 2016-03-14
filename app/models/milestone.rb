@@ -122,8 +122,8 @@ class Milestone < ActiveRecord::Base
     active? && issues.opened.count.zero?
   end
 
-  def is_empty?
-    total_items_count.zero?
+  def is_empty?(user = nil)
+    total_items_count(user).zero?
   end
 
   def author_id
