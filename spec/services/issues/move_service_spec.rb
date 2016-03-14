@@ -74,13 +74,13 @@ describe Issues::MoveService, services: true do
           expect(new_issue.persisted?).to be true
         end
 
-        it 'persist all changes' do
+        it 'persists all changes' do
           expect(old_issue.changed?).to be false
-          expect(new_issue.changed?).to be false
+          expect(new_issue.persisted?).to be true
         end
 
-        it 'changes author' do
-          expect(new_issue.author).to eq user
+        it 'preserves author' do
+          expect(new_issue.author).to eq author
         end
 
         it 'removes data that is invalid in new context' do

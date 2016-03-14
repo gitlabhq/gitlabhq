@@ -4,7 +4,7 @@ module Issues
       super(project, current_user, params)
 
       @issue_old = issue
-      @issue_new = nil
+      @issue_new = issue.dup
       @project_old = @project
       @project_new = Project.find(new_project_id) if new_project_id
     end
@@ -12,16 +12,18 @@ module Issues
     def execute
       return unless move?
 
-      # New issue tasks
-      #
-      open_new_issue
-      rewrite_notes
-      add_moved_from_note
+      ActiveRecord::Base.transaction do
+        # New issue tasks
+        #
+        open_new_issue
+        rewrite_notes
+        add_moved_from_note
 
-      # Old issue tasks
-      #
-      add_moved_to_note
-      close_old_issue
+        # Old issue tasks
+        #
+        add_moved_to_note
+        close_old_issue
+      end
 
       # Notifications
       #
@@ -42,16 +44,12 @@ module Issues
     end
 
     def open_new_issue
-      create_service = CreateService.new(@project_new, current_user, new_issue_params)
-      @issue_new = create_service.execute
-    end
-
-    def new_issue_params
-      new_params = { id: nil, iid: nil, milestone_id: nil, label_ids: [],
-                     project_id: @project_new.id,
-                     description: rewrite_references(@issue_old) }
-
-      params.merge(new_params)
+      @issue_new.iid = nil
+      @issue_new.project = @project_new
+      @issue_new.labels = []
+      @issue_new.milestone = nil
+      @issue_new.description = rewrite_references(@issue_old)
+      @issue_new.save!
     end
 
     def rewrite_notes
