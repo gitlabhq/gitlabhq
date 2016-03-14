@@ -228,6 +228,18 @@ production: &base
   ldap:
     enabled: false
 
+    # This setting controls the number of seconds between LDAP permission checks
+    # for each user. After this time has expired for a given user, their next
+    # interaction with GitLab (a click in the web UI, a git pull, etc.) will be
+    # slower because the LDAP permission check is being performed. How much
+    # slower depends on your LDAP setup, but it is not uncommon for this check
+    # to add seconds of waiting time. The default value is to have a "slow
+    # click" once every 3600 seconds (i.e., once per hour).
+    #
+    # Warning: if you set this value too low, every click in GitLab will be a
+    # "slow click" for all of your LDAP users.
+    # sync_time: 3600
+
     servers:
       ##########################################################################
       #
@@ -294,14 +306,6 @@ production: &base
         #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
         #
         user_filter: ''
-
-        # This setting controls the amount of time between LDAP permission checks for each user.
-        # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
-        # How much slower depends on your LDAP setup, but it is not uncommon for this check to add seconds of waiting time.
-        # The default value is to have a 'slow click' once every 3600 seconds, i.e. once per hour.
-        #
-        # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
-        # sync_time: 3600
 
         # Base where we can search for groups
         #
