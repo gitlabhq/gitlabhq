@@ -171,7 +171,7 @@ module EventsHelper
           "#{event.note_target_type} #{truncate event.note_target.to_reference}"
         end
       else
-        link_to event_note_target_path(event), title: h(event.note_target.to_reference) do
+        link_to event_note_target_path(event) do
           "#{event.note_target_type} #{truncate event.note_target.to_reference}"
         end
       end
