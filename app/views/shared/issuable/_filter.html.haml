@@ -94,7 +94,7 @@
                   %a{href: "#", data: {id: "close"}} Closed
           .filter-item.inline
             = dropdown_tag("Assignee", options: { toggle_class: "js-user-search", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
-              placeholder: "Search authors", data: { first_user: (current_user.username if current_user), current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
+              placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]" } })
           .filter-item.inline
             = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable",
               placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :js), use_id: true } })
