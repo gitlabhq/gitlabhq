@@ -4,6 +4,7 @@ class GitLabDropdownFilter
   constructor: (@dropdown, @options) ->
     {
       @input
+      @filterInputBlur = true
     } = @options
 
     # Key events
@@ -19,7 +20,7 @@ class GitLabDropdownFilter
         blur_field = @shouldBlur e.keyCode
         search_text = @input.val()
 
-        if blur_field
+        if blur_field && @filterInputBlur
           @input.blur()
 
         if @options.remote
@@ -89,6 +90,7 @@ class GitLabDropdown
       # If no input is passed create a default one
       @filterInput = @$(FILTER_INPUT)
       @highlight = false
+      @filterInputBlur = true
     } = @options
 
     self = @
@@ -119,6 +121,7 @@ class GitLabDropdown
     # Init filiterable
     if @options.filterable
       @filter = new GitLabDropdownFilter @dropdown,
+        filterInputBlur: @filterInputBlur
         input: @filterInput
         remote: @options.filterRemote
         query: @options.data
