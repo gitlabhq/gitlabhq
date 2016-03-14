@@ -71,3 +71,20 @@ Any user can remove themselves from a group, unless they are the last Owner of t
 | Create project in group |       |          |           | ✓      | ✓     |
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
+
+## External Users
+
+In cases where it is desired that a user has access to some internal or private projects, but others
+should remain hidden from this user, there is the option of creating `External Users`.
+An administrator can flag a user as external through the API or by checking the checkbox on the admin panel.
+
+In the case of a new user: navigate to the **Admin** area and click the **New User** button. If you would like to
+edit a user, go to the user list on the **Admin** area and click the **Edit** button.
+
+External users can only access projects to which they are explicitly granted access, thus hiding all internal projects.
+Access can be granted by adding the users as member to the project or by including this user in a group. External users will, like usual users, receive
+a role in the project or group with all the abilities that are mentioned in the table above.
+
+External users cannot create groups or projects, and have the same access as logged out users in all other cases. This feature may be
+useful when for example a contractor is working on a given project and should only access the given project and public
+projects.

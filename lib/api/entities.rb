@@ -31,6 +31,7 @@ module API
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled
+      expose :external
     end
 
     class UserLogin < UserFull
