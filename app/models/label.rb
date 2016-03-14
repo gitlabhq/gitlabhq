@@ -27,10 +27,27 @@ class Label < ActiveRecord::Base
             format: { with: /\A[^&\?,]+\z/ },
             uniqueness: { scope: :project_id }
 
+  before_save :nillify_priority
+
   default_scope { order(title: :asc) }
 
   scope :templates, ->  { where(template: true) }
   scope :prioritized, ->(value = true) { where(priority: value) }
+
+  def self.high_priority(name, table_name, labels)
+    unfiltered = unscoped
+      .select("MIN(labels.priority)")
+      .joins("INNER JOIN label_links ON label_links.label_id = labels.id")
+      .where("label_links.target_type = '#{name}'")
+      .where("label_links.target_id = #{table_name}.id")
+      .where("labels.project_id = #{table_name}.project_id")
+
+    if labels.empty?
+      unfiltered
+    else
+      unfiltered.where("labels.title NOT IN (?)", labels)
+    end
+  end
 
   alias_attribute :name, :title
 
@@ -118,6 +135,12 @@ class Label < ActiveRecord::Base
       %("#{name}")
     else
       id
+    end
+  end
+
+  def nillify_priority
+    unless self.priority.present?
+      self.priority = nil
     end
   end
 end

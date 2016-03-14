@@ -496,8 +496,10 @@ ActiveRecord::Schema.define(version: 20160530150109) do
     t.datetime "updated_at"
     t.boolean  "template",    default: false
     t.string   "description"
+    t.integer  "priority"
   end
 
+  add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|

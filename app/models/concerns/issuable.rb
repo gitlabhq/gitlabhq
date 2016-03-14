@@ -48,6 +48,12 @@ module Issuable
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
 
 
+    def self.order_priority(labels)
+      select("#{table_name}.*, (#{Label.high_priority(name, table_name, labels).to_sql}) AS highest_priority")
+        .group("#{table_name}.id")
+        .reorder(nulls_last('highest_priority', 'ASC'))
+    end
+
     delegate :name,
              :email,
              to: :author,
@@ -105,12 +111,13 @@ module Issuable
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
-    def sort(method)
+    def sort(method, labels = [])
       case method.to_s
       when 'milestone_due_asc' then order_milestone_due_asc
       when 'milestone_due_desc' then order_milestone_due_desc
       when 'downvotes_desc' then order_downvotes_desc
       when 'upvotes_desc' then order_upvotes_desc
+      when 'priority' then order_priority(labels)
       else
         order_by(method)
       end
