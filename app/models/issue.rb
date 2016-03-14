@@ -68,20 +68,7 @@ class Issue < ActiveRecord::Base
     return where(confidential: false) if user.blank?
     return all if user.admin?
 
-    issues_table = self.arel_table
-    project_ids  = user.authorized_projects.pluck(:id)
-
-    where(
-      issues_table[:confidential].eq(false).or(
-        issues_table[:confidential].eq(true).and(
-          issues_table[:author_id].eq(user.id).or(
-            issues_table[:assignee_id].eq(user.id).or(
-              issues_table[:project_id].in(project_ids)
-            )
-          )
-        )
-      )
-    )
+    where('issues.confidential = false OR (issues.confidential = true AND (issues.author_id = :user_id OR issues.assignee_id = :user_id OR issues.project_id IN(:project_ids)))', user_id: user.id, project_ids: user.authorized_projects.select(:id))
   end
 
   def self.reference_prefix
