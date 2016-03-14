@@ -170,10 +170,10 @@ class ProjectsController < ApplicationController
   end
 
   def housekeeping
-    ::Projects::HousekeepingService.new(@project).execute
+    message = ::Projects::HousekeepingService.new(@project).execute
 
     respond_to do |format|
-      flash[:notice] = "Housekeeping successfully started."
+      flash[:notice] = message
       format.html { redirect_to project_path(@project) }
     end
   end
