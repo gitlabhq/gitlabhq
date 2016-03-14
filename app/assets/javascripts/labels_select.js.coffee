@@ -41,6 +41,7 @@ class @LabelsSelect
             '</span>'+
             '</a>'+
             '<% }); %>');
+        labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
 
       if newLabelField.length and $dropdown.hasClass 'js-extra-options'
         $('.suggest-colors-dropdown a').on "click", (e) ->
@@ -176,6 +177,8 @@ class @LabelsSelect
           $selectbox.hide()
           $value.show()
 
+        multiSelect: $dropdown.hasClass 'js-multiselect'
+
         clicked: ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
@@ -190,11 +193,9 @@ class @LabelsSelect
               .closest('.selectbox')
               .find('input[type="hidden"]')
               .val()
-            console.log 'selected', selected
             # need inline-block here instead of show, 
             # which will default to the element's style in this case inline.
-            selected = if selected? then [ selected ] else ['']
-            console.log 'selected', selected
+            selected = if selected? then selected.split(',') else ['']
             $loading
               .fadeIn()
             $.ajax(
@@ -206,7 +207,11 @@ class @LabelsSelect
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()
+              if not data.labels.length
+                template = labelNoneHTMLTemplate()
+              else
+                template = labelHTMLTemplate(data)
               href = $value
                       .show()
-                      .html(labelHTMLTemplate(data))
+                      .html(template)
       )
