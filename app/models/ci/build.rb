@@ -37,8 +37,6 @@
 
 module Ci
   class Build < CommitStatus
-    include Gitlab::Application.routes.url_helpers
-
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :runner, class_name: 'Ci::Runner'

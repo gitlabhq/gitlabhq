@@ -2,8 +2,7 @@
   %td.status
     - if can?(current_user, :read_build, build)
       = link_to namespace_project_build_url(build.project.namespace, build.project, build), class: "ci-status ci-#{build.status}" do
-        = ci_icon_for_status(build.status)
-        = build.status
+        = ci_status_with_icon(build.status)
     - else
       = ci_status_with_icon(build.status)
 

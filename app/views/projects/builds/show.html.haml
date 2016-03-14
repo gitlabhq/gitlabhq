@@ -13,7 +13,7 @@
       = link_to "merge request ##{merge_request.iid}", merge_request_path(merge_request)
 
   #up-build-trace
-  - builds = @build.commit.builds.similar(@build).latest.ordered.to_a
+  - builds = @build.commit.matrix_builds(@build)
   - if builds.size > 1
     %ul.nav-links.no-top.no-bottom
       - builds.each do |build|

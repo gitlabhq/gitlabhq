@@ -113,6 +113,12 @@ module Ci
       latest_statuses.select { |status| status.ref == ref }
     end
 
+    def matrix_builds(build = nil)
+      matrix_builds = builds.latest.ordered
+      matrix_builds = matrix_builds.similar(build) if build
+      matrix_builds.to_a
+    end
+
     def retried
       @retried ||= (statuses.order(id: :desc) - statuses.latest)
     end
