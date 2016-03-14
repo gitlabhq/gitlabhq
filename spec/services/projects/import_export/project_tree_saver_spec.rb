@@ -85,6 +85,14 @@ describe Projects::ImportExport::ProjectTreeSaver, services: true do
       it 'has project members' do
         expect(saved_project_json['project_members']).not_to be_empty
       end
+
+      it 'has merge requests diffs' do
+        expect(saved_project_json['merge_requests'].first['merge_request_diff']).not_to be_empty
+      end
+
+      it 'has ci commits' do
+        expect(saved_project_json['commit_statuses'].first['commit']).not_to be_empty
+      end
     end
   end
 
