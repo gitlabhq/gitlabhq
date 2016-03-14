@@ -547,7 +547,7 @@ for `test:linux` and artifacts from `build:linux`.
 The job `deploy` will download artifacts from all previous builds because of
 the [stage](#stages) precedence:
 
-```
+```yaml
 build:osx:
   stage: build
   script: make build:osx
