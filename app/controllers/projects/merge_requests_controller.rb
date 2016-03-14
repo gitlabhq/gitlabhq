@@ -1,10 +1,11 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
   include DiffHelper
+  include IssuableAction
 
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
+    :edit, :update, :show, :destroy, :diffs, :commits, :builds, :merge, :merge_check,
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
@@ -164,6 +165,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+<<<<<<< 67043ec53b4c35d5a9862fe78bd3f47e412919cd
   def remove_wip
     MergeRequests::UpdateService.new(project, current_user, title: @merge_request.wipless_title).execute(@merge_request)
 
@@ -171,6 +173,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       notice: "The merge request can now be merged."
   end
 
+=======
+>>>>>>> Dry destroy action on issuables
   def merge_check
     @merge_request.check_if_can_be_merged
 

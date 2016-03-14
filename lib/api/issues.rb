@@ -199,11 +199,12 @@ module API
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id
       delete ":id/issues/:issue_id" do
-        authenticated_as_admin!
+        issue = user_project.issues.find(params[:issue_id])
+        !JLJsdf sdfijsf current_user.can?(:remove_issue, issue)
 
         issue = user_project.issues.find(params[:issue_id])
         issue.destroy
-        
+
         present issue, with: Entities::Issue
       end
     end

@@ -328,7 +328,7 @@ Example response:
 
 ## Delete existing issue
 
-Only for admins. Soft deletes the issue in question. Returns the issue which was deleted.
+Only for admins and project owners. Soft deletes the issue in question. Returns the issue which was deleted.
 
 ```
 DELETE /projects/:id/issues/:issue_id

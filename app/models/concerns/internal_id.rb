@@ -7,11 +7,10 @@ module InternalId
   end
 
   def set_iid
-    max_iid = if self.paranoid?
-                project.send(self.class.name.tableize).with_deleted.maximum(:iid)
-              else
-                project.send(self.class.name.tableize).maximum(:iid)
-              end
+    records = project.send(self.class.name.tableize)
+    records = records.with_deleted if self.paranoid?
+    max_iid = records.maximum(:iid)
+
     self.iid = max_iid.to_i + 1
   end
 

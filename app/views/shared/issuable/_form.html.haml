@@ -106,10 +106,6 @@
     = f.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
     = f.submit 'Save changes', class: 'btn btn-save'
-    - if current_user.admin? || current_user.owner?(@project)
-      = link_to namespace_project_issue_path(@project.namespace, @project, issuable), method: :delete, class: 'btn' do
-        = icon('trash-o')
-        Delete
 
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
     .inline.prepend-left-10
@@ -118,7 +114,13 @@
       for this project.
 
   - if issuable.new_record?
-    - cancel_project = issuable.source_project
+    = link_to namespace_project_issues_path(@project.namespace, @project), class: 'btn btn-cancel' do
+      Cancel
   - else
-    - cancel_project = issuable.project
-  = link_to 'Cancel', [cancel_project.namespace.becomes(Namespace), cancel_project, issuable], class: 'btn btn-cancel'
+    - if current_user.can?(:"remove_#{issuable.to_ability_name}", @project)
+      .pull-right
+        = link_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), method: :delete, class: 'btn' do
+          = icon('trash-o')
+          Delete
+    = link_to namespace_project_issue_path(@project.namespace, @project, issuable), class: 'btn btn-cancel' do
+      Cancel

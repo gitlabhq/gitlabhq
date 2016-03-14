@@ -382,7 +382,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 
 ## Delete a MR
 
-Soft deletes a merge request. For admins only.
+Soft deletes a merge request. For admins and owners only.
 
 ```
 DELETE /projects/:id/merge_requests/:merge_request_id

@@ -1,8 +1,9 @@
 class Projects::IssuesController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include IssuableAction
 
   before_action :module_enabled
-  before_action :issue, only: [:edit, :update, :show]
+  before_action :issue, only: [:edit, :update, :show, :destroy]
 
   # Allow read any issue
   before_action :authorize_read_issue!, only: [:show]
@@ -105,17 +106,6 @@ class Projects::IssuesController < Projects::ApplicationController
           assignee_avatar_url: @issue.assignee.try(:avatar_url)
         }
       end
-    end
-  end
-
-  def destroy
-    return access_denied! unless current_user.admin?
-
-    issue.destroy
-
-    respond_to do |format|
-      format.html { redirect_to namespace_project_issues_path(@project.namespace, @project), notice: "The issues was deleted." }
-      format.json { head :ok }
     end
   end
 

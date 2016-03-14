@@ -235,7 +235,9 @@ class Ability
         :rename_project,
         :remove_project,
         :archive_project,
-        :remove_fork_project
+        :remove_fork_project,
+        :remove_merge_request,
+        :remove_issue
       ]
     end
 

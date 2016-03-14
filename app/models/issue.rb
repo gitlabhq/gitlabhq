@@ -54,8 +54,6 @@ class Issue < ActiveRecord::Base
     state :closed
   end
 
-  acts_as_paranoid
-
   def hook_attrs
     attributes
   end

@@ -440,10 +440,6 @@ class User < ActiveRecord::Base
     Project.where("projects.id IN (#{projects_union.to_sql})")
   end
 
-  def owner?(project)
-    owned_projects.include?(project)
-  end
-
   def owned_projects
     @owned_projects ||=
       Project.where('namespace_id IN (?) OR namespace_id = ?',

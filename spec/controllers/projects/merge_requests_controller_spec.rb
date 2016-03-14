@@ -123,7 +123,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'GET #index' do
+  describe '#index' do
     def get_merge_requests
       get :index,
           namespace_id: project.namespace.to_param,
@@ -157,8 +157,8 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe "DELETE #destroy" do
-    it "lets mere mortals not acces this endpoint" do
+  describe "#destroy" do
+    it "lets mere mortals not access this endpoint" do
       delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
       expect(response.status).to eq 404
@@ -170,7 +170,7 @@ describe Projects::MergeRequestsController do
         user.save
       end
 
-      it "lets an admin delete an issue" do
+      it "lets an admin or owner delete an issue" do
         delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
         expect(response.status).to be 302
