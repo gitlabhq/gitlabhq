@@ -1,9 +1,9 @@
-- page_title "Web Hooks"
+- page_title "Webhooks"
 %h3.page-title
-  Web hooks
+  Webhooks
 
 %p.light
-  #{link_to "Web hooks ", help_page_path("web_hooks", "web_hooks"), class: "vlink"} can be
+  #{link_to "Webhooks ", help_page_path("web_hooks", "web_hooks"), class: "vlink"} can be
   used for binding events when something is happening within the project.
 
 %hr.clearfix
@@ -70,12 +70,12 @@
           = f.check_box :enable_ssl_verification
           %strong Enable SSL verification
   .form-actions
-    = f.submit "Add Web Hook", class: "btn btn-create"
+    = f.submit "Add Webhook", class: "btn btn-create"
 
 -if @hooks.any?
   .panel.panel-default
     .panel-heading
-      Web hooks (#{@hooks.count})
+      Webhooks (#{@hooks.count})
     %ul.well-list
       - @hooks.each do |hook|
         %li

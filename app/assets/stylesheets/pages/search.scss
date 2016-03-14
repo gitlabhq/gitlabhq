@@ -1,8 +1,12 @@
 .search-results {
   .search-result-row {
-    border-bottom: 1px solid #DDD;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: $gl-padding;
+    margin-bottom: $gl-padding;
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 }
 

@@ -143,6 +143,19 @@
   }
 }
 
+.btn-transparent {
+  color: $btn-transparent-color;
+  background-color: transparent;
+  border: 0;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
 .btn-block {
   width: 100%;
   margin: 0;

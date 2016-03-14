@@ -19,18 +19,20 @@ class Milestone < ActiveRecord::Base
   MilestoneStruct = Struct.new(:title, :name, :id)
   None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
   Any = MilestoneStruct.new('Any Milestone', '', -1)
+  Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
 
   include InternalId
   include Sortable
   include Referable
   include StripAttribute
   include Elastic::MilestonesSearch
+  include Milestoneish
 
   belongs_to :project
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
-  has_many :participants, through: :issues, source: :assignee
+  has_many :participants, -> { distinct.reorder('users.name') }, through: :issues, source: :assignee
 
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
@@ -58,9 +60,18 @@ class Milestone < ActiveRecord::Base
   alias_attribute :name, :title
 
   class << self
+    # Searches for milestones matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      query = "%#{query}%"
-      where("title like ? or description like ?", query, query)
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
   end
 
@@ -70,6 +81,10 @@ class Milestone < ActiveRecord::Base
 
   def self.link_reference_pattern
     super("milestones", /(?<milestone>\d+)/)
+  end
+
+  def self.upcoming
+    self.where('due_date > ?', Time.now).order(due_date: :asc).first
   end
 
   def to_reference(from_project = nil)
@@ -91,37 +106,6 @@ class Milestone < ActiveRecord::Base
     else
       false
     end
-  end
-
-  def open_items_count
-    self.issues.opened.count + self.merge_requests.opened.count
-  end
-
-  def closed_items_count
-    self.issues.closed.count + self.merge_requests.closed_and_merged.count
-  end
-
-  def total_items_count
-    self.issues.count + self.merge_requests.count
-  end
-
-  def percent_complete
-    ((closed_items_count * 100) / total_items_count).abs
-  rescue ZeroDivisionError
-    0
-  end
-
-  # Returns the elapsed time (in percent) since the Milestone creation date until today.
-  # If the Milestone doesn't have a due_date then returns 0 since we can't calculate the elapsed time.
-  # If the Milestone is overdue then it returns 100%.
-  def percent_time_used
-    return 0 unless due_date
-    return 100 if expired?
-
-    duration = ((created_at - due_date.to_datetime) / 1.day)
-    days_elapsed = ((created_at - Time.now) / 1.day)
-
-    ((days_elapsed.to_f / duration) * 100).floor
   end
 
   def expires_at

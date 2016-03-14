@@ -13,7 +13,7 @@
     transition-duration: .3s;
   }
 
-  .home {
+  .gitlab-text-container-link {
     z-index: 1;
     position: absolute;
     left: 0px;
@@ -27,7 +27,14 @@
   }
 
   &.right-sidebar-expanded {
-    padding-right: $gutter_width;
+    /* Extra small devices (phones, less than 768px) */
+    /* No media query since this is the default in Bootstrap */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
+    @media (min-width: $screen-sm-min) {
+      padding-right: $gutter_width;
+    }
+    
   }
 }
 
@@ -199,7 +206,12 @@
   padding-left: $sidebar_width;
 
   &.right-sidebar-collapsed {
-    padding-right: $sidebar_collapsed_width;
+    /* Extra small devices (phones, less than 768px) */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
+    @media (min-width: $screen-sm-min) {
+      padding-right: $sidebar_collapsed_width;
+    }
   }
 
   .sidebar-wrapper {
@@ -225,7 +237,12 @@
   padding-left: $sidebar_collapsed_width;
 
   &.right-sidebar-collapsed {
-    padding-right: $sidebar_collapsed_width;
+    /* Extra small devices (phones, less than 768px) */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
+    @media (min-width: $screen-sm-min) {
+      padding-right: $sidebar_collapsed_width;
+    }
   }
 
   .sidebar-wrapper {
@@ -292,7 +309,13 @@
 }
 
 .page-sidebar-collapsed {
+  /* Extra small devices (phones, less than 768px) */
   @include collapsed-sidebar;
+  padding-right: 0;
+  /* Small devices (tablets, 768px and up) */
+  @media (min-width: $screen-sm-min) {
+    @include collapsed-sidebar;
+  }
 }
 
 .page-sidebar-expanded {

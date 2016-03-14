@@ -509,6 +509,35 @@ rspec:
 The cache is provided on best effort basis, so don't expect that cache will be
 always present. For implementation details please check GitLab Runner.
 
+### pages
+
+`pages` is a special job that is used to upload static content to GitLab that
+can be used to serve your website. It has a special syntax, so the two
+requirements below must be met:
+
+1. Any static content must be placed under a `public/` directory
+1. `artifacts` with a path to the `public/` directory must be defined
+
+The example below simply moves all files from the root of the project to the
+`public/` directory. The `.public` workaround is so `cp` doesn't also copy
+`public/` to itself in an infinite loop:
+
+```
+pages:
+  stage: deploy
+  script:
+  - mkdir .public
+  - cp -r * .public
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+```
+
+Read more on [GitLab Pages user documentation](../../pages/README.md).
+
 ## Validate the .gitlab-ci.yml
 
 Each instance of GitLab CI has an embedded debug tool called Lint.

@@ -14,7 +14,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
-require 'benchmark/ips'
+require 'rspec/retry'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -25,6 +25,9 @@ RSpec.configure do |config|
   config.use_instantiated_fixtures  = false
   config.mock_with :rspec
 
+  config.verbose_retry = true
+  config.display_try_failure_messages = true
+
   config.include Devise::TestHelpers, type: :controller
   config.include LoginHelpers,        type: :feature
   config.include LoginHelpers,        type: :request
@@ -34,7 +37,6 @@ RSpec.configure do |config|
   config.include ActiveJob::TestHelper
   config.include StubGitlabCalls
   config.include StubGitlabData
-  config.include BenchmarkMatchers, benchmark: true
 
   config.infer_spec_type_from_file_location!
   config.raise_errors_for_deprecations!

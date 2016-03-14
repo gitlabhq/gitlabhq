@@ -63,7 +63,7 @@
     border-bottom: none;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-sm-max) {
       width: 100%;
     }
   }
@@ -79,6 +79,10 @@
     > .dropdown {
       margin-right: $gl-padding-top;
       display: inline-block;
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
 
     > .btn {

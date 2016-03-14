@@ -125,6 +125,17 @@ describe Gitlab::GitAccess, lib: true do
         it { expect(subject.allowed?).to be_truthy }
       end
     end
+
+    describe 'geo node key permissions' do
+      let(:key) { build(:geo_node_key) }
+      let(:actor) { key }
+
+      context 'pull code' do
+        subject { access.download_access_check }
+
+        it { expect(subject.allowed?).to be_truthy }
+      end
+    end
   end
 
   describe 'push_access_check' do
@@ -249,8 +260,40 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
+    context "when in a secondary gitlab geo node" do
+      before do
+        allow(Gitlab::Geo).to receive(:enabled?) { true }
+        allow(Gitlab::Geo).to receive(:secondary?) { true }
+      end
+
+      permissions_matrix.keys.each do |role|
+        describe "#{role} access" do
+          before { protect_feature_branch }
+          before { project.team << [user, role] }
+
+          permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.push_access_check(changes[action]) }
+
+              it { expect(subject.allowed?).to be_falsey }
+            end
+          end
+        end
+      end
+    end
+
     context "when using git annex" do
       before { project.team << [user, :master] }
+
+      describe 'and gitlab geo is enabled in a secondary node' do
+        before do
+          allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true)
+          allow(Gitlab::Geo).to receive(:enabled?) { true }
+          allow(Gitlab::Geo).to receive(:secondary?) { true }
+        end
+
+        it { expect(access.push_access_check(git_annex_changes)).not_to be_allowed }
+      end
 
       describe 'and git hooks unset' do
         describe 'git annex enabled' do

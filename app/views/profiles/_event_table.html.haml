@@ -1,17 +1,15 @@
-.table-holder
-  %table.table#audits
-    %thead
-      %tr
-        %th Action
-        %th When
+%h5.prepend-top-0
+  History of authentications
 
-    %tbody
-      - events.each do |event|
-        %tr
-          %td
-            %span
-              Signed in with 
-              %b= event.details[:with]
-              authentication
-          %td #{time_ago_in_words event.created_at} ago
+%ul.well-list
+  - events.each do |event|
+    %li
+      %span.description
+        = audit_icon(event.details[:with], class: "append-right-5")
+        Signed in with
+        = event.details[:with]
+        authentication
+      %span.pull-right
+        #{time_ago_in_words event.created_at} ago
+
 = paginate events, theme: "gitlab"

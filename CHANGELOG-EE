@@ -7,6 +7,21 @@ v 8.6.0 (unreleased)
   - [Elastic] Removing repository and wiki index after removing project
   - [Elastic] Update index on push to wiki
   - [Elastic] Use subprocesses for ElasticSearch index jobs
+  - [Elastic] More accurate as_indexed_json (More stable database indexer)
+  - [Elastic] Fix: Don't index newly created system messages and awards
+  - [Elastic] Fixed exception on branch removing
+
+v 8.5.5
+  - GitLab Geo: Repository synchronization between primary and secondary nodes
+  - Add documentation for GitLab Pages
+  - Fix importing projects from GitHub Enterprise Edition
+  - Fix syntax error in init file
+  - Only show group member roles if explicitly requested
+  - GitLab Geo: Improve GeoNodes Admin screen
+  - GitLab Geo: Avoid locking yourself out when adding a GeoNode
+
+v 8.5.4
+  - [Elastic][Security] Notes exposure
 
 v 8.5.3
   - Prevent LDAP from downgrading a group's last owner
@@ -15,6 +30,8 @@ v 8.5.3
 v 8.5.2
   - Update LDAP groups asynchronously
   - Fix an issue when weight text was displayed in Issuable collapsed sidebar
+v 8.5.2
+  - Fix importing projects from GitHub Enterprise Edition.
 
 v 8.5.1
   - Fix adding pages domain to projects in groups

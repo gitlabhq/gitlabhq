@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def execute
-        project_identifier = CGI.escape(project.import_source, '/')
+        project_identifier = CGI.escape(project.import_source)
 
         #Issues && Comments
         issues = client.issues(project_identifier)

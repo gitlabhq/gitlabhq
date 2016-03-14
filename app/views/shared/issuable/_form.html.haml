@@ -9,7 +9,7 @@
   = f.label :title, class: 'control-label'
   .col-sm-10
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
-        class: 'form-control pad js-gfm-input js-quick-submit', required: true
+        class: 'form-control pad js-gfm-input', required: true
 
     - if issuable.is_a?(MergeRequest)
       %p.help-block
@@ -25,7 +25,7 @@
 
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
-                               classes: 'description form-control js-quick-submit'
+                               classes: 'description form-control'
       = render 'projects/notes/hints'
       .clearfix
       .error-alert

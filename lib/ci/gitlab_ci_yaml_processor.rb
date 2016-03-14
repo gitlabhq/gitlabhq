@@ -10,7 +10,7 @@ module Ci
     attr_reader :before_script, :image, :services, :variables, :path, :cache
 
     def initialize(config, path = nil)
-      @config = YAML.safe_load(config, [Symbol])
+      @config = YAML.safe_load(config, [Symbol], [], true)
       @path = path
 
       unless @config.is_a? Hash

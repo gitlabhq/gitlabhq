@@ -12,8 +12,8 @@ describe API::API, api: true  do
   let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:project3) { create(:project, path: 'project3', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
-  let(:project_member) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
-  let(:project_member2) { create(:project_member, user: user3, project: project, access_level: ProjectMember::DEVELOPER) }
+  let(:project_member) { create(:project_member, :master, user: user, project: project) }
+  let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
     create(:project,

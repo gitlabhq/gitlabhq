@@ -4,12 +4,13 @@ class @Profile
     $('.js-preferences-form').on 'change.preference', 'input[type=radio]', ->
       $(this).parents('form').submit()
 
-    $('.update-username form').on 'ajax:before', ->
-      $('.loading-gif').show()
+    $('.update-username').on 'ajax:before', ->
+      $('.loading-username').show()
       $(this).find('.update-success').hide()
       $(this).find('.update-failed').hide()
 
-    $('.update-username form').on 'ajax:complete', ->
+    $('.update-username').on 'ajax:complete', ->
+      $('.loading-username').hide()
       $(this).find('.btn-save').enable()
       $(this).find('.loading-gif').hide()
 
@@ -48,7 +49,7 @@ class @Profile
       $filename.text($filename.data('label'))
 
     $('.js-upload-user-avatar').on 'click', ->
-      $('.edit_user').submit()
+      $('.edit-user').submit()
 
     $avatarInput.on "change", ->
       form = $(this).closest("form")
@@ -63,3 +64,11 @@ class @Profile
 
       fileData = reader.readAsDataURL(this.files[0])
 
+$ ->
+  # Extract the SSH Key title from its comment
+  $(document).on 'focusout.ssh_key', '#key_key', ->
+    $title  = $('#key_title')
+    comment = $(@).val().match(/^\S+ \S+ (.+)\n?$/)
+
+    if comment && comment.length > 1 && $title.val() == ''
+      $title.val(comment[1]).change()

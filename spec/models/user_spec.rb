@@ -176,7 +176,7 @@ describe User, models: true do
     end
 
     describe 'avatar' do
-      it 'only validates when avatar is present' do
+      it 'only validates when avatar is present and changed' do
         user = build(:user, :with_avatar)
 
         user.avatar_crop_x    = nil
@@ -184,6 +184,20 @@ describe User, models: true do
         user.avatar_crop_size = nil
 
         expect(user).not_to be_valid
+        expect(user.errors.keys).
+          to match_array %i(avatar_crop_x avatar_crop_y avatar_crop_size)
+      end
+
+      it 'does not validate when avatar has not changed' do
+        user = create(:user, :with_avatar)
+
+        expect { user.avatar_crop_x = nil }.not_to change(user, :valid?)
+      end
+
+      it 'does not validate when avatar is not present' do
+        user = create(:user)
+
+        expect { user.avatar_crop_y = nil }.not_to change(user, :valid?)
       end
     end
   end
@@ -462,17 +476,43 @@ describe User, models: true do
     end
   end
 
-  describe 'search' do
-    let(:user1) { create(:user, username: 'James', email: 'james@testing.com') }
-    let(:user2) { create(:user, username: 'jameson', email: 'jameson@example.com') }
+  describe '.search' do
+    let(:user) { create(:user) }
 
-    it "should be case insensitive" do
-      expect(User.search(user1.username.upcase).to_a).to eq([user1])
-      expect(User.search(user1.username.downcase).to_a).to eq([user1])
-      expect(User.search(user2.username.upcase).to_a).to eq([user2])
-      expect(User.search(user2.username.downcase).to_a).to eq([user2])
-      expect(User.search(user1.username.downcase).to_a.size).to eq(2)
-      expect(User.search(user2.username.downcase).to_a.size).to eq(1)
+    it 'returns users with a matching name' do
+      expect(described_class.search(user.name)).to eq([user])
+    end
+
+    it 'returns users with a partially matching name' do
+      expect(described_class.search(user.name[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching name regardless of the casing' do
+      expect(described_class.search(user.name.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching Email' do
+      expect(described_class.search(user.email)).to eq([user])
+    end
+
+    it 'returns users with a partially matching Email' do
+      expect(described_class.search(user.email[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching Email regardless of the casing' do
+      expect(described_class.search(user.email.upcase)).to eq([user])
+    end
+
+    it 'returns users with a matching username' do
+      expect(described_class.search(user.username)).to eq([user])
+    end
+
+    it 'returns users with a partially matching username' do
+      expect(described_class.search(user.username[0..2])).to eq([user])
+    end
+
+    it 'returns users with a matching username regardless of the casing' do
+      expect(described_class.search(user.username.upcase)).to eq([user])
     end
   end
 

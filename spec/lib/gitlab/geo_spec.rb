@@ -44,8 +44,8 @@ describe Gitlab::Geo, lib: true do
       before(:each) { secondary_node }
 
       it 'returns true' do
-        expect(described_class).to receive(:current_node) { secondary_node }
-        expect(described_class.readonly?).to be_truthy
+        allow(described_class).to receive(:current_node) { secondary_node }
+        expect(described_class.secondary?).to be_truthy
       end
     end
 
@@ -53,8 +53,8 @@ describe Gitlab::Geo, lib: true do
       before(:each) { primary_node }
 
       it 'returns false when ' do
-        expect(described_class).to receive(:current_node) { primary_node }
-        expect(described_class.readonly?).to be_falsey
+        allow(described_class).to receive(:current_node) { primary_node }
+        expect(described_class.secondary?).to be_falsey
       end
     end
   end
@@ -66,6 +66,17 @@ describe Gitlab::Geo, lib: true do
 
     it 'returns false if specified host and port doesnt match any existing node' do
       expect(described_class.geo_node?(host: 'inexistent', port: 1234)).to be_falsey
+    end
+  end
+
+  describe 'notify_update' do
+    let(:project) { FactoryGirl.build(:project) }
+
+    it 'delegates to NotifyService' do
+      expect(Geo::EnqueueUpdateService).to receive(:new).with(project).and_call_original
+      expect_any_instance_of(Geo::EnqueueUpdateService).to receive(:execute)
+
+      described_class.notify_update(project)
     end
   end
 end

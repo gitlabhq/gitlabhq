@@ -12,40 +12,20 @@ module DiffHelper
     params[:view] == 'parallel' ? 'parallel' : 'inline'
   end
 
-  def allowed_diff_size
-    if diff_hard_limit_enabled?
-      Commit::DIFF_HARD_LIMIT_FILES
-    else
-      Commit::DIFF_SAFE_FILES
-    end
+  def diff_hard_limit_enabled?
+    params[:force_show_diff].present?
   end
 
-  def allowed_diff_lines
+  def diff_options
+    options = { ignore_whitespace_change: params[:w] == '1' }
     if diff_hard_limit_enabled?
-      Commit::DIFF_HARD_LIMIT_LINES
-    else
-      Commit::DIFF_SAFE_LINES
+      options.merge!(Commit.max_diff_options)
     end
+    options
   end
 
   def safe_diff_files(diffs, diff_refs)
-    lines = 0
-    safe_files = []
-    diffs.first(allowed_diff_size).each do |diff|
-      lines += diff.diff.lines.count
-      break if lines > allowed_diff_lines
-      safe_files << Gitlab::Diff::File.new(diff, diff_refs)
-    end
-    safe_files
-  end
-
-  def diff_hard_limit_enabled?
-    # Enabling hard limit allows user to see more diff information
-    if params[:force_show_diff].present?
-      true
-    else
-      false
-    end
+    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs) }
   end
 
   def generate_line_code(file_path, line)

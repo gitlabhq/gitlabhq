@@ -63,19 +63,15 @@ module Gitlab
 
       def issues
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids
         }
 
-        if query =~ /#(\d+)\z/
-          Issue.in_projects(limit_project_ids).where(iid: $1)
-        else
-          Issue.elastic_search(query, options: opt)
-        end
+        Issue.elastic_search(query, options: opt)
       end
 
       def milestones
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids
         }
 
         Milestone.elastic_search(query, options: opt)
@@ -83,14 +79,10 @@ module Gitlab
 
       def merge_requests
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids
         }
 
-        if query =~ /[#!](\d+)\z/
-          MergeRequest.in_projects(limit_project_ids).where(iid: $1)
-        else
-          MergeRequest.elastic_search(query, options: opt)
-        end
+        MergeRequest.elastic_search(query, options: opt)
       end
 
       def default_scope

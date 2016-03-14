@@ -4,6 +4,7 @@ class SessionsController < Devise::SessionsController
 
   skip_before_action :check_2fa_requirement, only: [:destroy]
 
+  prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
   before_action :gitlab_geo_login, only: [:new]
@@ -33,6 +34,22 @@ class SessionsController < Devise::SessionsController
   end
 
   private
+
+  # Handle an "initial setup" state, where there's only one user, it's an admin,
+  # and they require a password change.
+  def check_initial_setup
+    return unless User.count == 1
+
+    user = User.admins.last
+
+    return unless user && user.require_password?
+
+    token = user.generate_reset_token
+    user.save
+
+    redirect_to edit_user_password_path(reset_password_token: token),
+      notice: "Please create a password for your new account."
+  end
 
   def user_params
     params.require(:user).permit(:login, :password, :remember_me, :otp_attempt)
@@ -91,13 +108,14 @@ class SessionsController < Devise::SessionsController
   end
 
   def gitlab_geo_login
-    if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.readonly?
-      # share full url with primary node by shared session
-      user_return_to = URI.join(root_url, session[:user_return_to]).to_s
-      session[:geo_node_return_to] = @redirect_to || user_return_to
+    if !signed_in? && Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
+      oauth = Gitlab::Geo::OauthSession.new
 
-      login_uri =  URI.join(Gitlab::Geo.primary_node.url, new_session_path(:user)).to_s
-      redirect_to login_uri
+      # share full url with primary node by shared session
+      user_return_to = URI.join(root_url, session[:user_return_to].to_s).to_s
+      oauth.return_to = @redirect_to || user_return_to
+
+      redirect_to oauth_geo_auth_url(state: oauth.generate_oauth_state)
     end
   end
 

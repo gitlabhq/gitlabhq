@@ -13,6 +13,8 @@ class Projects::RawController < Projects::ApplicationController
     if @blob
       headers['X-Content-Type-Options'] = 'nosniff'
 
+      return if cached_blob?
+
       if @blob.lfs_pointer?
         send_lfs_object
       else

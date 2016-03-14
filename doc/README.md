@@ -14,7 +14,7 @@
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [Analytics](analytics/README.md)
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
-- [Web hooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
+- [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [GitLab Pages](pages/README.md) Using GitLab Pages.
 - [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
@@ -59,7 +59,7 @@ be linked with your base image. Below is a list of examples you may use:
 
 - [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
 - [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
-- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.
+- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
 - [Email](tools/email.md) Email GitLab users from GitLab
 - [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
 - [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
@@ -72,7 +72,7 @@ be linked with your base image. Below is a list of examples you may use:
 - [Log system](logs/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running
-- [Raketasks](raketasks/README.md) Backups, maintenance, automatic web hook setup and the importing of projects.
+- [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.

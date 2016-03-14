@@ -1,0 +1,58 @@
+- page_title milestone.title, "Milestones"
+
+- group = local_assigns[:group]
+
+.detail-page-header
+  .status-box{ class: "status-box-#{milestone.closed? ? 'closed' : 'open'}" }
+    - if milestone.closed?
+      Closed
+    - elsif milestone.expired?
+      Expired
+    - else
+      Open
+  %span.identifier
+    Milestone #{milestone.title}
+  - if milestone.expires_at
+    %span.creator
+      &middot;
+      = milestone.expires_at
+  - if group
+    .pull-right
+      - if can?(current_user, :admin_milestones, group)
+        - if milestone.active?
+          = link_to 'Close Milestone', group_milestone_path(group, milestone.safe_title, title: milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close"
+        - else
+          = link_to 'Reopen Milestone', group_milestone_path(group, milestone.safe_title, title: milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
+
+.detail-page-description.gray-content-block.second-block
+  %h2.title
+    = markdown escape_once(milestone.title), pipeline: :single_line
+
+- if milestone.complete? && milestone.active?
+  .alert.alert-success.prepend-top-default
+    - close_msg = group ? 'You may close the milestone now.' : 'Navigate to the project to close the milestone.'
+    %span All issues for this milestone are closed. #{close_msg}
+
+.table-holder
+  %table.table
+    %thead
+      %tr
+        %th Project
+        %th Open issues
+        %th State
+        %th Due date
+    - milestone.milestones.each do |ms|
+      %tr
+        %td
+          - project_name = group ? ms.project.name : ms.project.name_with_namespace
+          = link_to project_name, namespace_project_milestone_path(ms.project.namespace, ms.project, ms)
+        %td
+          = ms.issues.opened.count
+        %td
+          - if ms.closed?
+            Closed
+          - else
+            Open
+        %td
+          = ms.expires_at
+

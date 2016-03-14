@@ -6,6 +6,7 @@ class Repository
   class CommitError < StandardError; end
 
   MIRROR_REMOTE = "upstream"
+  MIRROR_GEO = "geo"
 
   include Gitlab::ShellAdapter
 
@@ -143,18 +144,18 @@ class Repository
       rugged.branches.create(branch_name, target)
     end
 
-    expire_branches_cache
+    after_create_branch
     find_branch(branch_name)
   end
 
   def add_tag(tag_name, ref, message = nil)
-    expire_tags_cache
+    before_push_tag
 
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(user, branch_name)
-    expire_branches_cache
+    before_remove_branch
 
     branch = find_branch(branch_name)
     oldrev = branch.try(:target)
@@ -165,12 +166,12 @@ class Repository
       rugged.branches.delete(branch_name)
     end
 
-    expire_branches_cache
+    after_remove_branch
     true
   end
 
   def rm_tag(tag_name)
-    expire_tags_cache
+    before_remove_tag
 
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
@@ -181,8 +182,21 @@ class Repository
     raw_repository.remote_update(name, url: url)
   end
 
+  def set_remote_as_mirror(name)
+    remote_config = raw_repository.rugged.config
+
+    # This is used by Gitlab Geo to define repository as equivalent as "git clone --mirror"
+    remote_config["remote.#{name}.fetch"] = 'refs/*:refs/*'
+    remote_config["remote.#{name}.mirror"] = true
+    remote_config["remote.#{name}.prune"] = true
+  end
+
   def fetch_remote(remote)
     gitlab_shell.fetch_remote(path_with_namespace, remote)
+  end
+
+  def fetch_remote_forced!(remote)
+    gitlab_shell.fetch_remote(path_with_namespace, remote, true)
   end
 
   def branch_names
@@ -205,6 +219,14 @@ class Repository
         0
       end
     end
+  end
+
+  def branch_count
+    @branch_count ||= cache.fetch(:branch_count) { raw_repository.branch_count }
+  end
+
+  def tag_count
+    @tag_count ||= cache.fetch(:tag_count) { raw_repository.rugged.tags.count }
   end
 
   # Return repo size in megabytes
@@ -302,6 +324,16 @@ class Repository
     @has_visible_content = nil
   end
 
+  def expire_branch_count_cache
+    cache.expire(:branch_count)
+    @branch_count = nil
+  end
+
+  def expire_tag_count_cache
+    cache.expire(:tag_count)
+    @tag_count = nil
+  end
+
   def rebuild_cache
     cache_keys.each do |key|
       cache.expire(key)
@@ -337,9 +369,17 @@ class Repository
     expire_root_ref_cache
   end
 
-  # Runs code before creating a new tag.
-  def before_create_tag
+  # Runs code before pushing (= creating or removing) a tag.
+  def before_push_tag
     expire_cache
+    expire_tags_cache
+    expire_tag_count_cache
+  end
+
+  # Runs code before removing a tag.
+  def before_remove_tag
+    expire_tags_cache
+    expire_tag_count_cache
   end
 
   # Runs code after a repository has been forked/imported.
@@ -354,12 +394,21 @@ class Repository
 
   # Runs code after a new branch has been created.
   def after_create_branch
+    expire_branches_cache
     expire_has_visible_content_cache
+    expire_branch_count_cache
+  end
+
+  # Runs code before removing an existing branch.
+  def before_remove_branch
+    expire_branches_cache
   end
 
   # Runs code after an existing branch has been removed.
   def after_remove_branch
     expire_has_visible_content_cache
+    expire_branch_count_cache
+    expire_branches_cache
   end
 
   def method_missing(m, *args, &block)
@@ -690,11 +739,28 @@ class Repository
     end
   end
 
-  def revert(user, commit, base_branch, target_branch = nil)
-    source_sha    = find_branch(base_branch).target
-    target_branch ||= base_branch
-    args          = [commit.id, source_sha]
-    args          << { mainline: 1 } if commit.merge_commit?
+  def revert(user, commit, base_branch, revert_tree_id = nil)
+    source_sha = find_branch(base_branch).target
+    revert_tree_id ||= check_revert_content(commit, base_branch)
+
+    return false unless revert_tree_id
+
+    commit_with_hooks(user, base_branch) do |ref|
+      committer = user_to_committer(user)
+      source_sha = Rugged::Commit.create(rugged,
+        message: commit.revert_message,
+        author: committer,
+        committer: committer,
+        tree: revert_tree_id,
+        parents: [rugged.lookup(source_sha)],
+        update_ref: ref)
+    end
+  end
+
+  def check_revert_content(commit, base_branch)
+    source_sha = find_branch(base_branch).target
+    args       = [commit.id, source_sha]
+    args       << { mainline: 1 } if commit.merge_commit?
 
     revert_index = rugged.revert_commit(*args)
     return false if revert_index.conflicts?
@@ -702,16 +768,7 @@ class Repository
     tree_id = revert_index.write_tree(rugged)
     return false unless diff_exists?(source_sha, tree_id)
 
-    commit_with_hooks(user, target_branch) do |ref|
-      committer = user_to_committer(user)
-      source_sha = Rugged::Commit.create(rugged,
-        message: commit.revert_message,
-        author: committer,
-        committer: committer,
-        tree: tree_id,
-        parents: [rugged.lookup(source_sha)],
-        update_ref: ref)
-    end
+    tree_id
   end
 
   def diff_exists?(sha1, sha2)
@@ -732,6 +789,12 @@ class Repository
   def fetch_upstream(url)
     add_remote(Repository::MIRROR_REMOTE, url)
     fetch_remote(Repository::MIRROR_REMOTE)
+  end
+
+  def fetch_geo_mirror(url)
+    add_remote(Repository::MIRROR_GEO, url)
+    set_remote_as_mirror(Repository::MIRROR_GEO)
+    fetch_remote_forced!(Repository::MIRROR_GEO)
   end
 
   def upstream_branches
@@ -923,6 +986,12 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
+  end
+
+  def main_language
+    unless empty?
+      Linguist::Repository.new(rugged, rugged.head.target_id).language
+    end
   end
 
   private

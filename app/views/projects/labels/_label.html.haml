@@ -3,6 +3,10 @@
 
   .pull-right
     %strong.append-right-20
+      = link_to_label(label, type: :merge_request) do
+        = pluralize label.open_merge_requests_count, 'open merge request'
+
+    %strong.append-right-20
       = link_to_label(label) do
         = pluralize label.open_issues_count, 'open issue'
 

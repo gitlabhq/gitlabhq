@@ -148,6 +148,12 @@ describe Repository, models: true do
 
         expect(branch.name).to eq('new_feature')
       end
+
+      it 'calls the after_create_branch hook' do
+        expect(repository).to receive(:after_create_branch)
+
+        repository.add_branch(user, 'new_feature', 'master')
+      end
     end
 
     context 'when pre hooks failed' do
@@ -405,7 +411,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#expire_branch_ache' do
+  describe '#expire_branch_cache' do
     # This method is private but we need it for testing purposes. Sadly there's
     # no other proper way of testing caching operations.
     let(:cache) { repository.send(:cache) }
@@ -457,11 +463,38 @@ describe Repository, models: true do
     end
   end
 
-  describe '#revert_merge' do
-    it 'should revert the changes' do
-      repository.revert(user, merge_commit, 'master')
+  describe '#revert' do
+    let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
+    let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
 
-      expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+    context 'when there is a conflict' do
+      it 'should abort the operation' do
+        expect(repository.revert(user, new_image_commit, 'master')).to eq(false)
+      end
+    end
+
+    context 'when commit was already reverted' do
+      it 'should abort the operation' do
+        repository.revert(user, update_image_commit, 'master')
+
+        expect(repository.revert(user, update_image_commit, 'master')).to eq(false)
+      end
+    end
+
+    context 'when commit can be reverted' do
+      it 'should revert the changes' do
+        expect(repository.revert(user, update_image_commit, 'master')).to be_truthy
+      end
+    end
+
+    context 'reverting a merge commit' do
+      it 'should revert the changes' do
+        merge_commit
+        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
+
+        repository.revert(user, merge_commit, 'master')
+        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+      end
     end
   end
 
@@ -529,11 +562,12 @@ describe Repository, models: true do
     end
   end
 
-  describe '#before_create_tag' do
+  describe '#before_push_tag' do
     it 'flushes the cache' do
       expect(repository).to receive(:expire_cache)
+      expect(repository).to receive(:expire_tag_count_cache)
 
-      repository.before_create_tag
+      repository.before_push_tag
     end
   end
 
@@ -612,6 +646,91 @@ describe Repository, models: true do
         expect(parsed_result.startline).to eq(2)
         expect(parsed_result.data).to include("Popen")
       end
+    end
+  end
+
+  describe "#main_language" do
+    it 'shows the main language of the project' do
+      expect(repository.main_language).to eq("Ruby")
+    end
+
+    it 'returns nil when the repository is empty' do
+      allow(repository).to receive(:empty?).and_return(true)
+
+      expect(repository.main_language).to be_nil
+    end
+  end
+
+  describe '#before_remove_tag' do
+    it 'flushes the tag cache' do
+      expect(repository).to receive(:expire_tag_count_cache)
+
+      repository.before_remove_tag
+    end
+  end
+
+  describe '#branch_count' do
+    it 'returns the number of branches' do
+      expect(repository.branch_count).to be_an_instance_of(Fixnum)
+    end
+  end
+
+  describe '#tag_count' do
+    it 'returns the number of tags' do
+      expect(repository.tag_count).to be_an_instance_of(Fixnum)
+    end
+  end
+
+  describe '#expire_branch_count_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache' do
+      expect(cache).to receive(:expire).with(:branch_count)
+
+      repository.expire_branch_count_cache
+    end
+  end
+
+  describe '#expire_tag_count_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache' do
+      expect(cache).to receive(:expire).with(:tag_count)
+
+      repository.expire_tag_count_cache
+    end
+  end
+
+  describe '#add_tag' do
+    it 'adds a tag' do
+      expect(repository).to receive(:before_push_tag)
+
+      expect_any_instance_of(Gitlab::Shell).to receive(:add_tag).
+        with(repository.path_with_namespace, '8.5', 'master', 'foo')
+
+      repository.add_tag('8.5', 'master', 'foo')
+    end
+  end
+
+  describe '#rm_branch' do
+    let(:user) { create(:user) }
+
+    it 'removes a branch' do
+      expect(repository).to receive(:before_remove_branch)
+      expect(repository).to receive(:after_remove_branch)
+
+      repository.rm_branch(user, 'feature')
+    end
+  end
+
+  describe '#rm_tag' do
+    it 'removes a tag' do
+      expect(repository).to receive(:before_remove_tag)
+
+      expect_any_instance_of(Gitlab::Shell).to receive(:rm_tag).
+        with(repository.path_with_namespace, '8.5')
+
+      repository.rm_tag('8.5')
     end
   end
 end

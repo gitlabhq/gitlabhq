@@ -171,7 +171,7 @@ class User < ActiveRecord::Base
   validates :avatar_crop_x, :avatar_crop_y, :avatar_crop_size,
     numericality: { only_integer: true },
     presence: true,
-    if: ->(user) { user.avatar? }
+    if: ->(user) { user.avatar? && user.avatar_changed? }
 
   before_validation :generate_password, on: :create
   before_validation :restricted_signup_domains, on: :create
@@ -294,8 +294,22 @@ class User < ActiveRecord::Base
       end
     end
 
+    # Searches users matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
+      table   = arel_table
+      pattern = "%#{query}%"
+
+      where(
+        table[:name].matches(pattern).
+          or(table[:email].matches(pattern)).
+          or(table[:username].matches(pattern))
+      )
     end
 
     def by_login(login)
@@ -402,7 +416,8 @@ class User < ActiveRecord::Base
 
   def namespace_uniq
     # Return early if username already failed the first uniqueness validation
-    return if self.errors[:username].include?('has already been taken')
+    return if self.errors.key?(:username) &&
+      self.errors[:username].include?('has already been taken')
 
     namespace_name = self.username
     existing_namespace = Namespace.by_path(namespace_name)
@@ -638,6 +653,13 @@ class User < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def try_obtain_ldap_lease
+    # After obtaining this lease LDAP checks will be blocked for 600 seconds
+    # (10 minutes) for this user.
+    lease = Gitlab::ExclusiveLease.new("user_ldap_check:#{id}", timeout: 600)
+    lease.try_obtain
   end
 
   def solo_owned_groups

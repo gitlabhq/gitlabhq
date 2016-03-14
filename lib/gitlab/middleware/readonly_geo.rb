@@ -2,6 +2,7 @@ module Gitlab
   module Middleware
     class ReadonlyGeo
       DISALLOWED_METHODS = %w(POST PATCH PUT DELETE)
+      WHITELISTED = %w(api/v3/internal api/v3/geo/refresh_projects)
 
       def initialize(app)
         @app = app
@@ -10,10 +11,10 @@ module Gitlab
       def call(env)
         @env = env
 
-        if disallowed_request? && Gitlab::Geo.readonly?
+        if disallowed_request? && Gitlab::Geo.secondary?
           Rails.logger.debug('Gitlab Geo: preventing possible non readonly operation')
 
-          rack_flash.alert = 'You cannot do writing operations on a readonly Gitlab Geo instance'
+          rack_flash.alert = 'You cannot do writing operations on a secondary Gitlab Geo instance'
           rack_session['flash'] = rack_flash.to_session_value
 
           return [301, { 'Location' => last_visited_url }, []]
@@ -25,7 +26,7 @@ module Gitlab
       private
 
       def disallowed_request?
-        DISALLOWED_METHODS.include?(@env['REQUEST_METHOD']) && !logout_route
+        DISALLOWED_METHODS.include?(@env['REQUEST_METHOD']) && !whitelisted_routes
       end
 
       def rack_flash
@@ -46,6 +47,10 @@ module Gitlab
 
       def route_hash
         @route_hash ||= Rails.application.routes.recognize_path(request.url, { method: request.request_method }) rescue {}
+      end
+
+      def whitelisted_routes
+        logout_route || WHITELISTED.any? { |path| @request.path.include?(path) }
       end
 
       def logout_route

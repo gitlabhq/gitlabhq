@@ -12,7 +12,7 @@ module Search
                                          params[:search],
                                          params[:repository_ref])
       else
-        Gitlab::ProjectSearchResults.new(project.id,
+        Gitlab::ProjectSearchResults.new(project,
                                          params[:search],
                                          params[:repository_ref])
       end
