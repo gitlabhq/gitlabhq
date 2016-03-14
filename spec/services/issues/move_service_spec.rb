@@ -24,8 +24,8 @@ describe Issues::MoveService, services: true do
 
   shared_context 'user can move issue' do
     before do
-      old_project.team << [user, :master]
-      new_project.team << [user, :master]
+      old_project.team << [user, :reporter]
+      new_project.team << [user, :reporter]
     end
   end
     
@@ -186,25 +186,25 @@ describe Issues::MoveService, services: true do
     describe '#move?' do
       subject { move_service.move? }
 
-      context 'user is master in both projects' do
+      context 'user is reporter in both projects' do
         include_context 'user can move issue'
         it { is_expected.to be_truthy }
       end
 
-      context 'user is master only in new project' do
-        before { new_project.team << [user, :master] }
+      context 'user is reporter only in new project' do
+        before { new_project.team << [user, :reporter] }
         it { is_expected.to be_falsey }
       end
 
-      context 'user is master only in old project' do
-        before { old_project.team << [user, :master] }
+      context 'user is reporter only in old project' do
+        before { old_project.team << [user, :reporter] }
         it { is_expected.to be_falsey }
       end
 
-      context 'user is master in one project and developer in another' do
+      context 'user is reporter in one project and guest in another' do
         before do
-          new_project.team << [user, :developer]
-          old_project.team << [user, :master]
+          new_project.team << [user, :guest]
+          old_project.team << [user, :reporter]
         end
 
         it { is_expected.to be_falsey }

@@ -39,8 +39,8 @@ module Issues
     private
 
     def can_move?
-      can?(@current_user, :move_issue, @project_old) &&
-        can?(@current_user, :move_issue, @project_new)
+      can?(@current_user, :admin_issue, @project_old) &&
+        can?(@current_user, :admin_issue, @project_new)
     end
 
     def open_new_issue

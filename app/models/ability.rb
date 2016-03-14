@@ -223,7 +223,6 @@ class Ability
         :admin_project,
         :admin_commit_status,
         :admin_build,
-        :move_issue
       ]
     end
 
