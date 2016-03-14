@@ -7,19 +7,14 @@ module Search
     end
 
     def execute
-<<<<<<< HEAD
-      snippet_ids = Snippet.accessible_to(current_user).pluck(:id)
-
-      if Gitlab.config.elasticsearch.enabled
-        Gitlab::Elastic::SnippetSearchResults.new(snippet_ids, params[:search])
-      else  
-        Gitlab::SnippetSearchResults.new(snippet_ids, params[:search])
-      end
-=======
       snippets = Snippet.accessible_to(current_user)
 
-      Gitlab::SnippetSearchResults.new(snippets, params[:search])
->>>>>>> ce/master
+      if Gitlab.config.elasticsearch.enabled
+        Gitlab::Elastic::SnippetSearchResults.new(snippets.pluck(:id),
+                                                  params[:search])
+      else
+        Gitlab::SnippetSearchResults.new(snippets, params[:search])
+      end
     end
   end
 end

@@ -7,21 +7,15 @@ module Search
     end
 
     def execute
-<<<<<<< HEAD
       if Gitlab.config.elasticsearch.enabled
         Gitlab::Elastic::ProjectSearchResults.new(project.id,
                                          params[:search],
                                          params[:repository_ref])
       else
-        Gitlab::ProjectSearchResults.new(project.id,
+        Gitlab::ProjectSearchResults.new(project,
                                          params[:search],
                                          params[:repository_ref])
       end
-=======
-      Gitlab::ProjectSearchResults.new(project,
-                                       params[:search],
-                                       params[:repository_ref])
->>>>>>> ce/master
     end
   end
 end
