@@ -1,7 +1,6 @@
 class ProjectsController < ApplicationController
   include ExtractsPath
 
-  prepend_before_action :render_go_import, only: [:show]
   skip_before_action :authenticate_user!, only: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
@@ -240,16 +239,6 @@ class ProjectsController < ApplicationController
         }
       end
     end
-  end
-
-  def render_go_import
-    return unless params["go-get"] == "1"
-
-    @namespace = params[:namespace_id]
-    @id = params[:project_id] || params[:id]
-    @id = @id.gsub(/\.git\Z/, "")
-
-    render "go_import", layout: false
   end
 
   def repo_exists?

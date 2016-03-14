@@ -238,13 +238,15 @@ class GitLabDropdown
         selectedObject = @renderedData[selectedIndex]
       value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
 
+      if !value?
+        field.remove()
+
       if @options.multiSelect
         oldValue = field.val()
         if oldValue
           value = "#{oldValue},#{value}"
       else
         @dropdown.find(ACTIVE_CLASS).removeClass ACTIVE_CLASS
-        field.remove()
 
       # Toggle active class for the tick mark
       el.toggleClass "is-active"

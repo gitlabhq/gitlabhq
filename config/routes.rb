@@ -382,7 +382,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
-      get :events
+      get :activity
     end
 
     scope module: :groups do
@@ -700,6 +700,8 @@ Rails.application.routes.draw do
             post :resend_invite
           end
         end
+
+        resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do

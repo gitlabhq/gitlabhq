@@ -144,6 +144,9 @@ module API
       expose :id, :title, :file_name
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
+
+      # TODO (rspeicher): Deprecated; remove in 9.0
+      expose(:expires_at) { |snippet| nil }
     end
 
     class ProjectEntity < Grape::Entity
@@ -241,6 +244,10 @@ module API
           event.author.username
         end
       end
+    end
+
+    class ProjectGroupLink < Grape::Entity
+      expose :id, :project_id, :group_id, :group_access
     end
 
     class Namespace < Grape::Entity

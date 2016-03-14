@@ -145,6 +145,7 @@ Parameters:
     "state": "active",
     "created_at": "2013-09-30T13:46:01Z"
   },
+  "expires_at": null,
   "updated_at": "2013-10-02T07:34:20Z",
   "created_at": "2013-10-02T07:34:20Z"
 }

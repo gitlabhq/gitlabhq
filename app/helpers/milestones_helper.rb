@@ -59,6 +59,7 @@ module MilestonesHelper
     grouped_milestones = grouped_milestones.sort_by { |x| x.due_date.nil? ? epoch : x.due_date }
     grouped_milestones.unshift(Milestone::None)
     grouped_milestones.unshift(Milestone::Any)
+    grouped_milestones.unshift(Milestone::Upcoming)
 
     options_from_collection_for_select(grouped_milestones, 'name', 'title', params[:milestone_title])
   end

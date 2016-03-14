@@ -63,7 +63,7 @@
     border-bottom: none;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-min) {
+    @media (max-width: $screen-sm-max) {
       width: 100%;
     }
   }
