@@ -401,6 +401,33 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "housekeeping" do
+    let(:housekeeping) { instance_double('Projects::HousekeepingService', increment!: nil, needed?: false) }
+
+    before do
+      allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    it 'does not perform housekeeping when not needed' do
+      expect(housekeeping).not_to receive(:execute)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+
+    it 'performs housekeeping when needed' do
+      expect(housekeeping).to receive(:needed?).and_return(true)
+      expect(housekeeping).to receive(:execute)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+
+    it 'increments the push counter' do
+      expect(housekeeping).to receive(:increment!)
+ 
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+  end
+
   def execute_service(project, user, oldrev, newrev, ref)
     service = described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref )
     service.execute

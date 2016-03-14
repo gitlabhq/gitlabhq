@@ -37,4 +37,12 @@ describe Projects::HousekeepingService do
       expect(subject.needed?).to eq(true)
     end
   end
+
+  describe :increment! do
+    it 'increments the pushes_since_gc counter' do
+      expect(project.pushes_since_gc).to eq(0)
+      subject.increment!
+      expect(project.pushes_since_gc).to eq(1)
+    end
+  end
 end
