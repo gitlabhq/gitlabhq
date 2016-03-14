@@ -151,6 +151,8 @@ class Project < ActiveRecord::Base
   has_many :releases, dependent: :destroy
   has_many :lfs_objects_projects, dependent: :destroy
   has_many :lfs_objects, through: :lfs_objects_projects
+  has_many :project_group_links, dependent: :destroy
+  has_many :invited_groups, through: :project_group_links, source: :group
   has_many :todos, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
@@ -897,6 +899,10 @@ class Project < ActiveRecord::Base
 
   def jira_tracker_active?
     jira_tracker? && jira_service.active
+  end
+
+  def allowed_to_share_with_group?
+    !namespace.share_with_group_lock
   end
 
   def ci_commit(sha)

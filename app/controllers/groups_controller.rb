@@ -46,6 +46,8 @@ class GroupsController < Groups::ApplicationController
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
 
+    @shared_projects = @group.shared_projects
+
     respond_to do |format|
       format.html
 
@@ -133,7 +135,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar, :public)
+    params.require(:group).permit(:name, :description, :path, :avatar, :public, :share_with_group_lock)
   end
 
   def load_events
