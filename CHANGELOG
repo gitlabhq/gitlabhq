@@ -31,12 +31,14 @@ v 8.6.0 (unreleased)
   - Add ability to show archived projects on dashboard, explore and group pages
   - Move group activity to separate page
   - Create external users which are excluded of internal and private projects unless access was explicitly granted
+  - Continue parameters are checked to ensure redirection goes to the same instance
 
 v 8.5.5
   - Ensure removing a project removes associated Todo entries
   - Prevent a 500 error in Todos when author was removed
   - Fix pagination for filtered dashboard and explore pages
   - Fix "Show all" link behavior
+  - Add #upcoming filter to Milestone filter (Tiago Botelho)
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
