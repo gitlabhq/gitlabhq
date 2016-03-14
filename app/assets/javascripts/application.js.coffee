@@ -224,17 +224,17 @@ $ ->
     .off 'breakpoint:change'
     .on 'breakpoint:change', (e, breakpoint) ->
       if breakpoint is 'sm' or breakpoint is 'xs'
-        $gutterIcon = $('aside .gutter-toggle').find('i')
+        $gutterIcon = $('.js-sidebar-toggle').find('i')
         if $gutterIcon.hasClass('fa-angle-double-right')
           $gutterIcon.closest('a').trigger('click')
 
   $(document)
-    .off 'click', 'aside .gutter-toggle'
-    .on 'click', 'aside .gutter-toggle', (e, triggered) ->
+    .off 'click', '.js-sidebar-toggle'
+    .on 'click', '.js-sidebar-toggle', (e, triggered) ->
       e.preventDefault()
       $this = $(this)
       $thisIcon = $this.find 'i'
-      $allGutterToggleIcons = $('.gutter-toggle i')
+      $allGutterToggleIcons = $('.js-sidebar-toggle i')
       if $thisIcon.hasClass('fa-angle-double-right')
         $allGutterToggleIcons
           .removeClass('fa-angle-double-right')

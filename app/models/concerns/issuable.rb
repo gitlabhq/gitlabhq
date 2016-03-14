@@ -61,12 +61,29 @@ module Issuable
   end
 
   module ClassMethods
+    # Searches for records with a matching title.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(title) like :query", query: "%#{query.downcase}%")
+      where(arel_table[:title].matches("%#{query}%"))
     end
 
+    # Searches for records with a matching title or description.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def full_search(query)
-      where("LOWER(title) like :query OR LOWER(description) like :query", query: "%#{query.downcase}%")
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
     def sort(method)

@@ -13,6 +13,7 @@
     .error-alert
 
   .note-form-actions.clearfix
-    = f.submit 'Add Comment', class: "btn btn-nr btn-create comment-btn btn-grouped js-comment-button"
+    = f.submit 'Comment', class: "btn btn-nr btn-create comment-btn btn-grouped js-comment-button"
     = yield(:note_actions)
-    %a.btn.btn-nr.btn-cancel.js-close-discussion-note-form Cancel
+    %a.btn.btn-cancel.js-note-discard{role: "button", data: {cancel_text: "Cancel"}}
+      Discard draft

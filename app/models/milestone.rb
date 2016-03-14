@@ -19,6 +19,7 @@ class Milestone < ActiveRecord::Base
   MilestoneStruct = Struct.new(:title, :name, :id)
   None = MilestoneStruct.new('No Milestone', 'No Milestone', 0)
   Any = MilestoneStruct.new('Any Milestone', '', -1)
+  Upcoming = MilestoneStruct.new('Upcoming', '#upcoming', -2)
 
   include InternalId
   include Sortable
@@ -59,9 +60,18 @@ class Milestone < ActiveRecord::Base
   alias_attribute :name, :title
 
   class << self
+    # Searches for milestones matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      query = "%#{query}%"
-      where("title like ? or description like ?", query, query)
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
   end
 
@@ -71,6 +81,10 @@ class Milestone < ActiveRecord::Base
 
   def self.link_reference_pattern
     super("milestones", /(?<milestone>\d+)/)
+  end
+
+  def self.upcoming
+    self.where('due_date > ?', Time.now).order(due_date: :asc).first
   end
 
   def to_reference(from_project = nil)

@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
+  - Support Golang subpackage fetching (Stan Hu)
   - Contributions to forked projects are included in calendar
   - Improve the formatting for the user page bio (Connor Shea)
   - Removed the default password from the initial admin account created during
@@ -9,6 +10,7 @@ v 8.6.0 (unreleased)
   - Fix issue when pushing to projects ending in .wiki
   - Fix avatar stretching by providing a cropping feature (Johann Pardanaud)
   - Don't load all of GitLab in mail_room
+  - Update `omniauth-saml` to 1.5.0 to allow for custom response attributes to be set
   - Memoize @group in Admin::GroupsController (Yatish Mehta)
   - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
   - Strip leading and trailing spaces in URL validator (evuez)
@@ -16,6 +18,7 @@ v 8.6.0 (unreleased)
   - Return empty array instead of 404 when commit has no statuses in commit status API
   - Decrease the font size and the padding of the `.anchor` icons used in the README (Roberto Dip)
   - Rewrite logo to simplify SVG code (Sean Lang)
+  - Refactor and greatly improve search performance
   - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
@@ -27,12 +30,14 @@ v 8.6.0 (unreleased)
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
   - Allow SSL verification to be configurable when importing GitHub projects
+  - Move group activity to separate page
 
 v 8.5.5
   - Ensure removing a project removes associated Todo entries
   - Prevent a 500 error in Todos when author was removed
   - Fix pagination for filtered dashboard and explore pages
   - Fix "Show all" link behavior
+  - Add #upcoming filter to Milestone filter (Tiago Botelho)
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
@@ -42,6 +47,7 @@ v 8.5.3
   - Sort starred projects on dashboard based on last activity by default
   - Show commit message in JIRA mention comment
   - Makes issue page and merge request page usable on mobile browsers.
+  - Improved UI for profile settings
 
 v 8.5.2
   - Fix sidebar overlapping content when screen width was below 1200px

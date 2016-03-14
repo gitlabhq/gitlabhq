@@ -666,6 +666,58 @@ describe Project, models: true do
     end
   end
 
+  describe '.search' do
+    let(:project) { create(:project, description: 'kitten mittens') }
+
+    it 'returns projects with a matching name' do
+      expect(described_class.search(project.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching name' do
+      expect(described_class.search(project.name[0..2])).to eq([project])
+    end
+
+    it 'returns projects with a matching name regardless of the casing' do
+      expect(described_class.search(project.name.upcase)).to eq([project])
+    end
+
+    it 'returns projects with a matching description' do
+      expect(described_class.search(project.description)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching description' do
+      expect(described_class.search('kitten')).to eq([project])
+    end
+
+    it 'returns projects with a matching description regardless of the casing' do
+      expect(described_class.search('KITTEN')).to eq([project])
+    end
+
+    it 'returns projects with a matching path' do
+      expect(described_class.search(project.path)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching path' do
+      expect(described_class.search(project.path[0..2])).to eq([project])
+    end
+
+    it 'returns projects with a matching path regardless of the casing' do
+      expect(described_class.search(project.path.upcase)).to eq([project])
+    end
+
+    it 'returns projects with a matching namespace name' do
+      expect(described_class.search(project.namespace.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching namespace name' do
+      expect(described_class.search(project.namespace.name[0..2])).to eq([project])
+    end
+
+    it 'returns projects with a matching namespace name regardless of the casing' do
+      expect(described_class.search(project.namespace.name.upcase)).to eq([project])
+    end
+  end
+
   describe '#rename_repo' do
     let(:project) { create(:project) }
     let(:gitlab_shell) { Gitlab::Shell.new }
@@ -726,6 +778,22 @@ describe Project, models: true do
       expect(wiki).to receive(:expire_emptiness_caches)
 
       project.expire_caches_before_rename('foo')
+    end
+  end
+
+  describe '.search_by_title' do
+    let(:project) { create(:project, name: 'kittens') }
+
+    it 'returns projects with a matching name' do
+      expect(described_class.search_by_title(project.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching name' do
+      expect(described_class.search_by_title('kitten')).to eq([project])
+    end
+
+    it 'returns projects with a matching name regardless of the casing' do
+      expect(described_class.search_by_title('KITTENS')).to eq([project])
     end
   end
 end

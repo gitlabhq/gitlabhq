@@ -138,7 +138,6 @@ class MergeRequest < ActiveRecord::Base
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
-  scope :in_projects, ->(project_ids) { where("source_project_id in (:project_ids) OR target_project_id in (:project_ids)", project_ids: project_ids) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
@@ -163,6 +162,24 @@ class MergeRequest < ActiveRecord::Base
 
   def self.link_reference_pattern
     super("merge_requests", /(?<merge_request>\d+)/)
+  end
+
+  # Returns all the merge requests from an ActiveRecord:Relation.
+  #
+  # This method uses a UNION as it usually operates on the result of
+  # ProjectsFinder#execute. PostgreSQL in particular doesn't always like queries
+  # using multiple sub-queries especially when combined with an OR statement.
+  # UNIONs on the other hand perform much better in these cases.
+  #
+  # relation - An ActiveRecord::Relation that returns a list of Projects.
+  #
+  # Returns an ActiveRecord::Relation.
+  def self.in_projects(relation)
+    source = where(source_project_id: relation).select(:id)
+    target = where(target_project_id: relation).select(:id)
+    union  = Gitlab::SQL::Union.new([source, target])
+
+    where("merge_requests.id IN (#{union.to_sql})")
   end
 
   def to_reference(from_project = nil)

@@ -182,7 +182,7 @@ module SharedIssuable
 
     page.within('.js-main-target-form') do
       fill_in 'note[note]', with: "##{issuable.to_reference(project)}"
-      click_button 'Add Comment'
+      click_button 'Comment'
     end
   end
 

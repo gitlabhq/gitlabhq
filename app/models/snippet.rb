@@ -114,12 +114,32 @@ class Snippet < ActiveRecord::Base
   end
 
   class << self
+    # Searches for snippets with a matching title or file name.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String.
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where('(title LIKE :query OR file_name LIKE :query)', query: "%#{query}%")
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:file_name].matches(pattern)))
     end
 
+    # Searches for snippets with matching content.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String.
+    #
+    # Returns an ActiveRecord::Relation.
     def search_code(query)
-      where('(content LIKE :query)', query: "%#{query}%")
+      table   = Snippet.arel_table
+      pattern = "%#{query}%"
+
+      where(table[:content].matches(pattern))
     end
 
     def accessible_to(user)
