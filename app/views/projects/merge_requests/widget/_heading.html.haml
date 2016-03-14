@@ -1,15 +1,27 @@
 - if @ci_commit
   .mr-widget-heading
     .ci_widget{class: "ci-#{@ci_commit.status}"}
-      = ci_status_icon(@ci_commit)
-      %span
-        Build
-        = ci_status_label(@ci_commit)
-      for
+      = ci_icon_for_status(@ci_commit.status)
+      = ci_widget_summary(@ci_commit)
+      = link_to "Show defails", '#'
+  .mr-widget-ci-details
+    .ci_widget{class: "ci-#{@ci_commit.ci_status}"}
+      = ci_icon_for_status(@ci_commit.ci_status)
+      %span CI Build #{@ci_commit.ci_status}
       = succeed "." do
         = link_to @ci_commit.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @ci_commit.sha), class: "monospace"
       %span.ci-coverage
-      = link_to "View details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
+      = link_to "View build details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
+    - @ci_commit.latest_generic_statuses.each do |status|
+      .ci_widget{class: "ci-#{status.status}"}
+        = ci_icon_for_status(status.status)
+        %span
+          - if status.description.present?
+            #{status.name} #{status.status}: #{status.description}.
+          - else
+            #{status.name} #{status.status}.
+          - if status.target_url.present?
+            = link_to "View details", status.target_url, target: '_blank'
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX

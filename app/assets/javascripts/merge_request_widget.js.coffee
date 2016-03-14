@@ -9,6 +9,7 @@ class @MergeRequestWidget
   #
   constructor: (@opts) ->
     modal = $('#modal_merge_info').modal(show: false)
+    $('.mr-state-widget .mr-widget-heading a').click @toggleCiDetails
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
@@ -58,3 +59,12 @@ class @MergeRequestWidget
 
   setMergeButtonClass: (css_class) ->
     $('.accept_merge_request').removeClass("btn-create").addClass(css_class)
+
+  toggleCiDetails: (e) ->
+    e.preventDefault()
+    if $('.mr-widget-ci-details').is(':visible')
+      $('.mr-widget-ci-details').slideUp(250)
+      $(e.currentTarget).text('Show details')
+    else
+      $('.mr-widget-ci-details').slideDown(250)
+      $(e.currentTarget).text('Hide details')
