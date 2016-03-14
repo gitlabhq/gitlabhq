@@ -9,6 +9,7 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 - [Testing a PHP application](php.md)
 - [Test and deploy a Ruby application to Heroku](test-and-deploy-ruby-application-to-heroku.md)
 - [Test and deploy a Python application to Heroku](test-and-deploy-python-application-to-heroku.md)
+- [Test and deploy a Scala/Play application to Heroku](test-and-deploy-scala-play-application-to-heroku.md)
 - [Test a Clojure application](test-clojure-application.md)
 - [Test a Scala application](test-scala-application.md)
 - [Test a Phoenix application](test-phoenix-application.md)
