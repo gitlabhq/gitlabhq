@@ -154,6 +154,9 @@ module API
       expose :id, :title, :file_name
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
+
+      # TODO (rspeicher): Deprecated; remove in 9.0
+      expose(:expires_at) { |snippet| nil }
     end
 
     class ProjectEntity < Grape::Entity
