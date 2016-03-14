@@ -51,6 +51,7 @@ Parameters:
     "state": "active",
     "created_at": "2012-05-23T08:00:58Z"
   },
+  "expires_at": null,
   "updated_at": "2012-06-28T10:52:04Z",
   "created_at": "2012-06-28T10:52:04Z"
 }
