@@ -56,41 +56,6 @@
     .col-lg-9
       %label.label-light
         Connected Accounts
-<<<<<<< HEAD
-      .panel-body
-        .oauth-buttons.append-bottom-10
-          %p Click on icon to activate signin with one of the following services
-          - button_based_providers.each do |provider|
-            .btn-group
-              = link_to provider_image_tag(provider), user_omniauth_authorize_path(provider), method: :post, class: "btn btn-lg #{'active' if auth_active?(provider)}", "data-no-turbolink" => "true"
-
-              - if auth_active?(provider)
-                = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'btn btn-lg' do
-                  = icon('close')
-
-  - if current_user.can_change_username?
-    .panel.panel-warning.update-username
-      .panel-heading
-        Change Username
-      .panel-body
-        = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
-          %p
-            Changing your username will change path to all personal projects!
-          %div
-            .input-group
-              .input-group-addon
-                = "#{root_url}u/"
-              = f.text_field :username, required: true, class: 'form-control'
-            &nbsp;
-          .loading-gif.hide
-            %p
-              = icon('spinner spin')
-              Saving new username
-          %p.light
-            = user_url(@user)
-          .form-actions
-            = f.submit 'Save username', class: "btn btn-warning"
-=======
       %p Click on icon to activate signin with one of the following services
       - button_based_providers.each do |provider|
         .provider-btn-group
@@ -126,7 +91,6 @@
             = icon "spinner spin", class: "hidden loading-username"
             Update username
   %hr
->>>>>>> ce/master
 
 - if signup_enabled?
   .row.prepend-top-default
