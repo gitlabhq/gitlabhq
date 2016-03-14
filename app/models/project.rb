@@ -901,6 +901,7 @@ class Project < ActiveRecord::Base
     repository.rugged.references.create('HEAD',
                                         "refs/heads/#{branch}",
                                         force: true)
+    repository.copy_gitattributes(branch)
     reload_default_branch
   end
 
