@@ -16,7 +16,7 @@ module Gitlab
 
       def snippet_titles
         opt = {
-          ids: limit_snippet_ids
+          ids: limit_snippets
         }
 
         Snippet.elastic_search(query, options: opt)
@@ -24,7 +24,7 @@ module Gitlab
 
       def snippet_blobs
         opt = {
-          ids: limit_snippet_ids
+          ids: limit_snippets
         }
 
         Snippet.elastic_search_code(query, options: opt)
