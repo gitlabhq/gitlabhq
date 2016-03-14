@@ -11,10 +11,14 @@ module Projects
     end
 
     def project_tree
-      %i(issues labels milestones snippets releases events) + [members, merge_requests, commit_statuses]
+      %i(issues labels milestones releases events) + [snippets, members, merge_requests, commit_statuses]
     end
 
     private
+
+    def snippets
+      { snippets: { except: :expired_at } }
+    end
 
     def merge_requests
       { merge_requests: { include: :merge_request_diff } }
