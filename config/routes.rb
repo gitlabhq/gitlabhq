@@ -399,7 +399,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
-      get :events
+      get :activity
     end
 
     collection do

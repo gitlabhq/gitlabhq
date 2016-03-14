@@ -268,7 +268,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   step 'I leave a comment with code block' do
     page.within(".js-main-target-form") do
       fill_in "note[note]", with: "```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```"
-      click_button "Add Comment"
+      click_button "Comment"
       sleep 0.05
     end
   end

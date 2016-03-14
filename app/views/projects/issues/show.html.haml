@@ -18,7 +18,7 @@
         %span.hidden-sm.hidden-md.hidden-lg
           = icon('circle-o')
 
-    %a.btn.btn-default.pull-right.hidden-sm.hidden-md.hidden-lg.gutter-toggle{ href: "#" }
+    %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.js-sidebar-toggle{ href: "#" }
       = icon('angle-double-left')
 
     .issue-meta
@@ -71,7 +71,7 @@
       .merge-requests
         = render 'merge_requests'
 
-    .content-block
+    .content-block.content-block-small
       = render 'votes/votes_block', votable: @issue
 
     .row

@@ -1,14 +1,17 @@
 .awards.votes-block
   - awards_sort(votable.notes.awards.grouped_awards).each do |emoji, notes|
-    .award{class: (note_active_class(notes, current_user)), title: emoji_author_list(notes, current_user)}
+    %button.btn.award-control.js-emoji-btn.has_tooltip{class: (note_active_class(notes, current_user)), title: emoji_author_list(notes, current_user), data: {placement: "top"}}
       = emoji_icon(emoji)
-      .counter
+      %span.award-control-text.js-counter
         = notes.count
 
   - if current_user
-    .awards-controls
-      %a.add-award{"href" => "#"}
-        = icon('smile-o')
+    %div.award-menu-holder.js-award-holder
+      %a.btn.award-control.js-add-award{"href" => "#"}
+        = icon('smile-o', {class: "award-control-icon"})
+        = icon('spinner spin', {class: "award-control-icon award-control-icon-loading"})
+        %span.award-control-text
+          Add
 
 - if current_user
   :javascript
@@ -23,17 +26,3 @@
       noteable_id,
       aliases
     );
-
-    $(".awards").on("click", ".emoji-menu-content li", function(e) {
-      var emoji = $(this).find(".emoji-icon").data("emoji");
-      awards_handler.addAward(emoji);
-    });
-
-    $(".awards").on("click", ".award", function(e) {
-      var emoji = $(this).find(".icon").data("emoji");
-      awards_handler.addAward(emoji);
-    });
-
-    $(".award").tooltip();
-
-    $(".emoji-menu-content").niceScroll({cursorwidth: "7px", autohidemode: false});

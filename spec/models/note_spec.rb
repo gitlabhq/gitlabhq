@@ -140,10 +140,16 @@ describe Note, models: true do
     end
   end
 
-  describe :search do
-    let!(:note) { create(:note, note: "WoW") }
+  describe '.search' do
+    let(:note) { create(:note, note: 'WoW') }
 
-    it { expect(Note.search('wow')).to include(note) }
+    it 'returns notes with matching content' do
+      expect(described_class.search(note.note)).to eq([note])
+    end
+
+    it 'returns notes with matching content regardless of the casing' do
+      expect(described_class.search('WOW')).to eq([note])
+    end
   end
 
   describe :grouped_awards do
@@ -218,6 +224,14 @@ describe Note, models: true do
 
       expect(note.note).to eq(":blowfish:")
       expect(note.is_award?).to be_falsy
+    end
+  end
+
+  describe 'clear_blank_line_code!' do
+    it 'clears a blank line code before validation' do
+      note = build(:note, line_code: ' ')
+
+      expect { note.valid? }.to change(note, :line_code).to(nil)
     end
   end
 end

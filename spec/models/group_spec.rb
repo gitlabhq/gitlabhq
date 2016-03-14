@@ -103,4 +103,30 @@ describe Group, models: true do
       expect(group.avatar_type).to eq(["only images allowed"])
     end
   end
+
+  describe '.search' do
+    it 'returns groups with a matching name' do
+      expect(described_class.search(group.name)).to eq([group])
+    end
+
+    it 'returns groups with a partially matching name' do
+      expect(described_class.search(group.name[0..2])).to eq([group])
+    end
+
+    it 'returns groups with a matching name regardless of the casing' do
+      expect(described_class.search(group.name.upcase)).to eq([group])
+    end
+
+    it 'returns groups with a matching path' do
+      expect(described_class.search(group.path)).to eq([group])
+    end
+
+    it 'returns groups with a partially matching path' do
+      expect(described_class.search(group.path[0..2])).to eq([group])
+    end
+
+    it 'returns groups with a matching path regardless of the casing' do
+      expect(described_class.search(group.path.upcase)).to eq([group])
+    end
+  end
 end

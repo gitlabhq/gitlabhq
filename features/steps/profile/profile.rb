@@ -99,9 +99,9 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I reset my token' do
-    page.within '.update-token' do
+    page.within '.private-token' do
       @old_token = @user.private_token
-      click_button "Reset"
+      click_button "Reset private token"
     end
   end
 

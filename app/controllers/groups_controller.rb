@@ -15,7 +15,7 @@ class GroupsController < Groups::ApplicationController
 
   # Load group projects
   before_action :load_projects, except: [:index, :new, :create, :projects, :edit, :update, :autocomplete]
-  before_action :event_filter, only: [:show, :events]
+  before_action :event_filter, only: [:activity]
 
   layout :determine_layout
 
@@ -64,8 +64,10 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
-  def events
+  def activity
     respond_to do |format|
+      format.html
+
       format.json do
         load_events
         pager_json("events/_events", @events.count)

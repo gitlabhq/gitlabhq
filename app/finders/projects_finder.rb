@@ -53,7 +53,10 @@ class ProjectsFinder
 
   def all_projects(current_user)
     if current_user
-      [current_user.authorized_projects, public_and_internal_projects]
+      [
+        current_user.authorized_projects,
+        public_and_internal_projects
+      ]
     else
       [Project.public_only]
     end

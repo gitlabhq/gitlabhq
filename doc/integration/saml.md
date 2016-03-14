@@ -131,6 +131,58 @@ On the sign in page there should now be a SAML button below the regular sign in 
 Click the icon to begin the authentication process. If everything goes well the user
 will be returned to GitLab and will be signed in.
 
+## Customization
+
+### `attribute_statements`
+
+>**Note:**
+This setting is only available on GitLab 8.6 and above.
+This setting should only be used to map attributes that are part of the
+OmniAuth info hash schema.
+
+`attribute_statements` is used to map Attribute Names in a SAMLResponse to entries
+in the OmniAuth [info hash](https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
+
+For example, if your SAMLResponse contains an Attribute called 'EmailAddress',
+specify `{ email: ['EmailAddress'] }` to map the Attribute to the
+corresponding key in the info hash.  URI-named Attributes are also supported, e.g.
+`{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
+
+This setting allows you tell GitLab where to look for certain attributes required
+to create an account. Like mentioned above, if your IdP sends the user's email
+address as `EmailAddress` instead of `email`, let GitLab know by setting it on
+your configuration:
+
+```yaml
+args: {
+        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+        idp_sso_target_url: 'https://login.example.com/idp',
+        issuer: 'https://gitlab.example.com',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        attribute_statements: { email: ['EmailAddress'] }
+}
+```
+
+### `allowed_clock_drift`
+
+The clock of the Identity Provider may drift slightly ahead of your system clocks.
+To allow for a small amount of clock drift you can use `allowed_clock_drift` within
+your settings. Its value must be given in a number (and/or fraction) of seconds.
+The value given is added to the current time at which the response is validated.
+
+```yaml
+args: {
+        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+        idp_sso_target_url: 'https://login.example.com/idp',
+        issuer: 'https://gitlab.example.com',
+        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+        attribute_statements: { email: ['EmailAddress'] },
+        allowed_clock_drift: 1 # for one second clock drift
+}
+```
+
 ## Troubleshooting
 
 ### 500 error after login

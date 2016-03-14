@@ -74,15 +74,6 @@ spec:services:
     - ruby
     - mysql
 
-spec:benchmark:
-  stage: test
-  script:
-    - RAILS_ENV=test bundle exec rake spec:benchmark
-  tags:
-    - ruby
-    - mysql
-  allow_failure: true
-
 spec:other:
   stage: test
   script:
@@ -245,22 +236,6 @@ spec:services:ruby22:
   tags:
     - ruby
     - mysql
-
-spec:benchmark:ruby22:
-  stage: test
-  image: ruby:2.2
-  only:
-  - master
-  script:
-    - RAILS_ENV=test bundle exec rake spec:benchmark
-  cache:
-    key: "ruby22"
-    paths:
-    - vendor
-  tags:
-    - ruby
-    - mysql
-  allow_failure: true
 
 spec:other:ruby22:
   stage: test
