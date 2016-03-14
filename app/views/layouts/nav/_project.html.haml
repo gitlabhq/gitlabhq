@@ -8,6 +8,19 @@
         = icon('caret-down')
       %ul.dropdown-menu.dropdown-menu-align-right
         = render 'layouts/nav/project_settings'
+
+          - if access
+            %li
+              = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
+                data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
+                Leave Project
+    - else
+      = link_to request_access_namespace_project_project_members_path(@project.namespace, @project),
+        class: 'btn btn-gray', style: 'margin-left: 10px', method: :post, title: 'Request access' do
+        Request Access
+
+
+
         %li.divider
         - if can_edit
           %li
@@ -18,6 +31,11 @@
             = link_to leave_namespace_project_project_members_path(@project.namespace, @project),
               data: { confirm: leave_project_message(@project) }, method: :delete, title: 'Leave project' do
               Leave Project
+        - else
+          %li
+            = link_to request_access_namespace_project_project_members_path(@project.namespace, @project),
+              class: 'btn btn-gray', style: 'margin-left: 10px', method: :post, title: 'Request access' do
+              Request Access
 
 %div{ class: nav_control_class }
   %ul.nav-links.scrolling-tabs

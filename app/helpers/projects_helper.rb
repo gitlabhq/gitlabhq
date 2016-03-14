@@ -1,10 +1,16 @@
 module ProjectsHelper
   def remove_from_project_team_message(project, member)
-    if member.user
-      "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
-    else
+    if !member.user
       "You are going to revoke the invitation for #{member.invite_email} to join #{project.name} project team. Are you sure?"
+    elsif member.request?
+      "You are going to deny #{member.user.name}'s request to join #{project.name} project team. Are you sure?"
+    else
+      "You are going to remove #{member.user.name} from #{project.name} project team. Are you sure?"
     end
+  end
+
+  def approve_for_project_team_message(project, member)
+    "You are going to approve #{member.user.name}'s request for #{member.human_access} access to the #{project.name} project team. Are you sure?"
   end
 
   def link_to_project(project)

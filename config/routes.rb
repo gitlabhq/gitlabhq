@@ -768,6 +768,7 @@ Rails.application.routes.draw do
         resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
           collection do
             delete :leave
+            post :request_access
 
             # Used for import team
             # from another project
@@ -777,6 +778,7 @@ Rails.application.routes.draw do
 
           member do
             post :resend_invite
+            post :approval
           end
         end
 

@@ -153,7 +153,7 @@ class Ability
 
       RequestStore.store[key] ||= begin
         # Push abilities on the users team role
-        rules.push(*project_team_rules(project.team, user))
+        rules.push(*project_team_rules(project.team, user)) unless project.team.pending?(user)
 
         if project.owner == user ||
           (project.group && project.group.has_owner?(user)) ||

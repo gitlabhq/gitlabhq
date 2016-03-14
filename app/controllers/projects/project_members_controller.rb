@@ -1,10 +1,10 @@
 class Projects::ProjectMembersController < Projects::ApplicationController
   # Authorize
-  before_action :authorize_admin_project_member!, except: [:leave, :index]
+  before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
     @project_members = @project.project_members
-    @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
+    @project_members = @project_members.non_pending unless can?(current_user, :admin_project, @project)
 
     if params[:search].present?
       users = @project.users.search(params[:search]).to_a
@@ -90,6 +90,33 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       else
         render_403
       end
+    end
+  end
+
+  def request_access
+    redirect_path = namespace_project_path(@project.namespace, @project)
+    # current_user
+    # @project
+    @project_member = ProjectMember.new(source: @project, access_level: ProjectMember::DEVELOPER, user_id: current_user.id, created_by_id: current_user.id, requested: true)
+    @project_member.save!
+
+
+    redirect_to redirect_path, notice: 'Your request for access has been queued for review.'
+  end
+
+  def approval
+    @project_member = @project.project_members.find(params[:id])
+
+    return render_403 unless can?(current_user, :update_project_member, @project_member)
+
+    @project_member.requested = nil
+    @project_member.save!
+
+    respond_to do |format|
+      format.html do
+        redirect_to namespace_project_project_members_path(@project.namespace, @project)
+      end
+      format.js { render nothing: true }
     end
   end
 

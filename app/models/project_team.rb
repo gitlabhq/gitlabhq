@@ -115,6 +115,12 @@ class ProjectTeam
     false
   end
 
+  def pending?(user)
+    project.project_members.each do |member|
+      return member.pending? if member.user_id == user.id
+    end
+  end
+
   def guest?(user)
     max_member_access(user.id) == Gitlab::Access::GUEST
   end

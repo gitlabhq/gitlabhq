@@ -12,8 +12,9 @@
         %p.light
           Users with access to this project are listed below.
         = render "new_project_member"
+    = render "pending", members: @project_members.request
 
-  = render "team", members: @project_members
+  = render "team", members: @project_members.non_request
 
   - if @group
     = render "group_members", members: @group_members

@@ -173,6 +173,18 @@ class NotificationService
     end
   end
 
+  def request_access_project_member(project_member)
+    mailer.project_member_requested_access(project_member.id).deliver_later
+  end
+
+  def accept_project_request_access(project_member)
+    mailer.project_request_access_accepted_email(project_member.id).deliver_later
+  end
+
+  def decline_project_request_access(project_member)
+    mailer.project_request_access_declined_email(project_member.id).deliver_later
+  end
+
   def invite_project_member(project_member, token)
     mailer.project_member_invited_email(project_member.id, token).deliver_later
   end
