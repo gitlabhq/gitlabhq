@@ -4,7 +4,11 @@
       .search-location-badge
         = render 'shared/location_badge'
       .search-input-wrap
-        = search_field_tag "search", nil, placeholder: 'Search', class: "search-input", spellcheck: false, tabindex: "1", autocomplete: 'off'
+        .dropdown{ data: {url: search_autocomplete_path } }
+          = search_field_tag "search", nil, placeholder: 'Search', class: "search-input dropdown-menu-toggle", spellcheck: false, tabindex: "1", autocomplete: 'off',  data: { toggle: 'dropdown' }
+          .dropdown-menu.dropdown-select
+            = dropdown_content
+            = dropdown_loading
         %i.search-icon
 
     = hidden_field_tag :group_id, @group.try(:id)

@@ -1,21 +1,28 @@
 class @SearchAutocomplete
+
+  KEYCODE =
+    ESCAPE: 27
+    BACKSPACE: 8
+    TAB: 9
+    ENTER: 13
+
   constructor: (opts = {}) ->
     {
       @wrap = $('.search')
+
       @optsEl = @wrap.find('.search-autocomplete-opts')
       @autocompletePath = @optsEl.data('autocomplete-path')
       @projectId = @optsEl.data('autocomplete-project-id') || ''
       @projectRef = @optsEl.data('autocomplete-project-ref') || ''
+
     } = opts
 
-    @keyCode =
-      ESCAPE: 27
-      BACKSPACE: 8
-      TAB: 9
-      ENTER: 13
+    # Dropdown Element
+    @dropdown = @wrap.find('.dropdown')
 
     @locationBadgeEl = @$('.search-location-badge')
     @locationText = @$('.location-text')
+    @scopeInputEl = @$('#scope')
     @searchInput = @$('.search-input')
     @projectInputEl = @$('#search_project_id')
     @groupInputEl = @$('#group_id')
@@ -25,9 +32,7 @@ class @SearchAutocomplete
 
     @saveOriginalState()
 
-    # If there's no location badge
-    if !@locationBadgeEl.children().length
-      @createAutocomplete()
+    @searchInput.addClass('disabled')
 
     @bindEvents()
 
@@ -36,6 +41,118 @@ class @SearchAutocomplete
 
   saveOriginalState: ->
     @originalState = @serializeState()
+
+  serializeState: ->
+    {
+      # Search Criteria
+      project_id: @projectInputEl.val()
+      group_id: @groupInputEl.val()
+      search_code: @searchCodeInputEl.val()
+      repository_ref: @repositoryInputEl.val()
+
+      # Location badge
+      _location: $.trim(@locationText.text())
+    }
+
+  bindEvents: ->
+    @searchInput.on 'keydown', @onSearchInputKeyDown
+    @searchInput.on 'focus', @onSearchInputFocus
+    @searchInput.on 'blur', @onSearchInputBlur
+
+  enableAutocomplete: ->
+    self = @
+    @query = "?project_id=" + @projectId + "&project_ref=" + @projectRef
+    dropdownMenu = self.dropdown.find('.dropdown-menu')
+
+    @searchInput.glDropdown(
+        filterInputBlur: false
+        filterable: true
+        filterRemote: true
+        highlight: true
+        filterInput: 'input#search'
+        search:
+          fields: ['text']
+        data: (term, callback) ->
+          $.ajax
+            url: self.autocompletePath + self.query
+            data:
+              term: term
+            beforeSend: ->
+              # dropdownMenu.addClass 'is-loading'
+            success: (response) ->
+              data = []
+
+              # Save groups ordering according to server response
+              groupNames =  _.unique(_.pluck(response, 'category'))
+
+              # Group results by category name
+              groups = _.groupBy response, (item) ->
+                item.category
+
+              # List results
+              for groupName in groupNames
+
+                # Add group header before list each group
+                data.push
+                  header: groupName
+
+                # List group
+                for item in groups[groupName]
+                  data.push
+                    text: item.label
+                    url: item.url
+
+              callback(data)
+            complete: ->
+              # dropdownMenu.removeClass 'is-loading'
+
+          )
+
+    @dropdown.addClass('open')
+    @searchInput.removeClass('disabled')
+    @autocomplete = true;
+
+  onDropdownOpen: (e) =>
+    @dropdown.dropdown('toggle')
+
+  onSearchInputKeyDown: (e) =>
+    # Remove tag when pressing backspace and input search is empty
+    if e.keyCode is KEYCODE.BACKSPACE and e.currentTarget.value is ''
+      @removeLocationBadge()
+      @searchInput.focus()
+
+    else if e.keyCode is KEYCODE.ESCAPE
+      @searchInput.val('')
+      @restoreOriginalState()
+    else
+      # Create new autocomplete if it hasn't been created yet and there's no badge
+      if @autocomplete is undefined
+        if !@badgePresent()
+          @enableAutocomplete()
+      else
+        # There's a badge
+        if @badgePresent()
+          @disableAutocomplete()
+
+  onSearchInputFocus: =>
+    @wrap.addClass('search-active')
+
+  onSearchInputBlur: =>
+    @wrap.removeClass('search-active')
+
+    # If input is blank then restore state
+    if @searchInput.val() is ''
+      @restoreOriginalState()
+
+  addLocationBadge: (item) ->
+    category = if item.category? then "#{item.category}: " else ''
+    value = if item.value? then item.value else ''
+
+    html = "<span class='location-badge'>
+              <i class='location-text'>#{category}#{value}</i>
+              <a class='remove-badge' href='#'>x</a>
+            </span>"
+    @locationBadgeEl.html(html)
 
   restoreOriginalState: ->
     inputs = Object.keys @originalState
@@ -51,122 +168,14 @@ class @SearchAutocomplete
         value: @originalState._location
       )
 
-  serializeState: ->
-    {
-      # Search Criteria
-      project_id: @projectInputEl.val()
-      group_id: @groupInputEl.val()
-      search_code: @searchCodeInputEl.val()
-      repository_ref: @repositoryInputEl.val()
+    @dropdown.removeClass 'open'
 
-      # Location badge
-      _location: $.trim(@locationText.text())
-    }
+    # Only add class if there's a badge
+    if @badgePresent()
+      @searchInput.addClass 'disabled'
 
-  createAutocomplete: ->
-    @query = "?project_id=" + @projectId + "&project_ref=" + @projectRef
-
-    @searchInput.catcomplete
-      appendTo: 'form.navbar-form'
-      source: @autocompletePath + @query
-      minLength: 1
-      maxShowItems: 15
-      position:
-        # { my: "left top", at: "left bottom", collision: "none" }
-        my: "left-10 top+9"
-        at: "left bottom"
-        collision: "none"
-      close: (e) ->
-        e.preventDefault()
-
-      select: (event, ui) =>
-        # Pressing enter choses an alternative
-        if event.keyCode is @keyCode.ENTER
-          @goToResult(ui.item)
-        else
-          # Pressing tab sets the location
-          if event.keyCode is @keyCode.TAB and ui.item.location?
-            @setLocationBadge(ui.item)
-            @searchInput
-              .val('') # remove selected value from input
-              .focus()
-          else
-            # If option is not a location go to page
-            @goToResult(ui.item)
-
-          # Return false to avoid focus on the next element
-          return false
-
-    @autocomplete = @searchInput.data 'customCatcomplete'
-
-  bindEvents: ->
-    @searchInput.on 'keydown', @onSearchInputKeyDown
-    @searchInput.on 'focus', @onSearchInputFocus
-    @searchInput.on 'blur', @onSearchInputBlur
-    @wrap.on 'click', '.remove-badge', @onRemoveLocationBadgeClick
-
-  onRemoveLocationBadgeClick: (e) =>
-    e.preventDefault()
-    @removeLocationBadge()
-    @searchInput.focus()
-
-  onSearchInputKeyDown: (e) =>
-    # Remove tag when pressing backspace and input search is empty
-    if e.keyCode is @keyCode.BACKSPACE and e.currentTarget.value is ''
-      @removeLocationBadge()
-      # @destroyAutocomplete()
-      @searchInput.focus()
-    else if e.keyCode is @keyCode.ESCAPE
-      @restoreOriginalState()
-    else
-      # Create new autocomplete if hasn't been created yet and there's no badge
-      if @autocomplete is undefined
-        if !@locationBadgeEl.children().length
-          @createAutocomplete()
-      else
-        # There's a badge
-        if @locationBadgeEl.children().length
-          @destroyAutocomplete()
-
-  onSearchInputFocus: =>
-    @wrap.addClass('search-active')
-
-  onSearchInputBlur: =>
-    @wrap.removeClass('search-active')
-
-    # If input is blank then restore state
-    @restoreOriginalState() if @searchInput.val() is ''
-
-  addLocationBadge: (item) ->
-    category = if item.category? then "#{item.category}: " else ''
-    value = if item.value? then item.value else ''
-
-    html = "<span class='location-badge'>
-              <i class='location-text'>#{category}#{value}</i>
-              <a class='remove-badge' href='#'>x</a>
-            </span>"
-    @locationBadgeEl.html(html)
-
-  setLocationBadge: (item) ->
-    @addLocationBadge(item)
-
-    # Reset input states
-    @resetSearchState()
-
-    switch item.location
-      when 'projects'
-        @projectInputEl.val(item.id)
-        # @searchCodeInputEl.val('true') # TODO: always true for projects?
-        # @repositoryInputEl.val('master') # TODO: always master?
-
-      when 'groups'
-        @groupInputEl.val(item.id)
-
-  removeLocationBadge: ->
-    @locationBadgeEl.empty()
-
-    # Reset state
-    @resetSearchState()
+  badgePresent: ->
+    @locationBadgeEl.children().length
 
   resetSearchState: ->
     # Remove scope
@@ -184,10 +193,13 @@ class @SearchAutocomplete
     # Remove repository ref
     @repositoryInputEl.val('')
 
-  goToResult: (result) ->
-    location.href = result.url
+  removeLocationBadge: ->
+    @locationBadgeEl.empty()
 
-  destroyAutocomplete: ->
-    @autocomplete.destroy() if @autocomplete isnt undefined
-    @searchInput.attr('autocomplete', 'off')
+    # Reset state
+    @resetSearchState()
+
+  disableAutocomplete: ->
+    if @autocomplete isnt undefined
+      @searchInput.addClass('disabled')
     @autocomplete = undefined
