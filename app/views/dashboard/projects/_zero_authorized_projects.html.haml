@@ -18,7 +18,7 @@
     - if current_user.can_create_project?
       .link_holder
         = link_to new_project_path, class: "btn btn-new" do
-          =icon('plus')
+          = icon('plus')
           New Project
 
 - if current_user.can_create_group?

@@ -47,9 +47,9 @@ class ProjectsFinder
        group.shared_projects.visible_to_user(current_user)
     ]
     if current_user.external?
-      user_group_projects.push(group.projects.public_only)
+      user_group_projects << group.projects.public_only
     else
-      user_group_projects.push(group.projects.public_and_internal_only)
+      user_group_projects << group.projects.public_and_internal_only
     end
   end
 

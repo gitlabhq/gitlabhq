@@ -74,12 +74,14 @@
       %li
         .list-item-name
           - if user.blocked?
-            %i.fa.fa-lock.cred
+            = icon("lock", class: "cred")
           - else
-            %i.fa.fa-user.cgreen
+            = icon("user", class: "cgreen")
           = link_to user.name, [:admin, user]
           - if user.admin?
             %strong.cred (Admin)
+          - if user.external?
+            %strong.cred (External)
           - if user == current_user
             %span.cred It's you!
         .pull-right
