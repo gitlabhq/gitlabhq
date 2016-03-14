@@ -10,6 +10,10 @@ module Projects
       %i(name path description issues_enabled wall_enabled merge_requests_enabled wiki_enabled snippets_enabled visibility_level archived)
     end
 
+    def project_tree_list
+      project_tree.map {|r| r.is_a?(Hash) ? r.keys.first : r }
+    end
+
     def project_tree
       %i(issues labels milestones snippets releases events) + [members, merge_requests, commit_statuses]
     end
