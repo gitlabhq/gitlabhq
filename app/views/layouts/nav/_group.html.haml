@@ -30,7 +30,7 @@
         %span
           Issues
           - if current_user
-            %span.count= number_with_delimiter(Issue.opened.of_group(@group).count)
+            %span.count= number_with_delimiter(Issue.visible_to_user(current_user).opened.of_group(@group).count)
     = nav_link(path: 'groups#merge_requests') do
       = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
         = icon('tasks fw')

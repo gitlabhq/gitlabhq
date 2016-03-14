@@ -23,6 +23,6 @@ class IssuesFinder < IssuableFinder
   private
 
   def init_collection
-    Issue.available_for(current_user)
+    Issue.visible_to_user(current_user)
   end
 end

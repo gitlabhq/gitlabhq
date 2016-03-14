@@ -64,7 +64,7 @@ class Issue < ActiveRecord::Base
     attributes
   end
 
-  def self.available_for(user)
+  def self.visible_to_user(user)
     return where(confidential: false) if user.blank?
     return all if user.admin?
 

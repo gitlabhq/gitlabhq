@@ -1,7 +1,7 @@
 module Projects
   class AutocompleteService < BaseService
     def issues
-      @project.issues.available_for(current_user).opened.select([:iid, :title])
+      @project.issues.visible_to_user(current_user).opened.select([:iid, :title])
     end
 
     def merge_requests

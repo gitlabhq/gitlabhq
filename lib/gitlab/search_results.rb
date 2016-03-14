@@ -59,7 +59,7 @@ module Gitlab
     end
 
     def issues
-      issues = Issue.available_for(user).where(project_id: project_ids_relation)
+      issues = Issue.visible_to_user(user).where(project_id: project_ids_relation)
 
       if query =~ /#(\d+)\z/
         issues = issues.where(iid: $1)
