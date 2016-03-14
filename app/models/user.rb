@@ -429,7 +429,7 @@ class User < ActiveRecord::Base
     Group.where("namespaces.id IN (#{union.to_sql})")
   end
 
-  # Returns the groups a user is authorized to access.
+  # Returns projects user is authorized to access.
   def authorized_projects
     Project.where("projects.id IN (#{projects_union.to_sql})")
   end

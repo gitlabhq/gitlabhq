@@ -15,7 +15,7 @@ module Issues
       ActiveRecord::Base.transaction do
         # New issue tasks
         #
-        open_new_issue
+        create_new_issue
         rewrite_notes
         add_moved_from_note
 
@@ -43,7 +43,7 @@ module Issues
         can?(@current_user, :admin_issue, @project_new)
     end
 
-    def open_new_issue
+    def create_new_issue
       @issue_new.iid = nil
       @issue_new.project = @project_new
       @issue_new.labels = []
