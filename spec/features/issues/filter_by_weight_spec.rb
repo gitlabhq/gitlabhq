@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Issue filtering by Weight', feature: true do
-  include Select2Helper
-
   let(:project) { create(:project, :public) }
   let(:weight_num) { random_weight }
 
@@ -45,7 +43,8 @@ feature 'Issue filtering by Weight', feature: true do
   end
 
   def filter_by_weight(title)
-    select2(title, from: '#weight')
+    find('.js-weight-select').click
+    find('.weight-filter .dropdown-content a', text: title, match: :first).click
   end
 
   def random_weight
