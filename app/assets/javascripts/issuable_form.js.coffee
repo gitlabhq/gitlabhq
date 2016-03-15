@@ -1,4 +1,6 @@
 class @IssuableForm
+  ISSUE_MOVE_CONFIRM_MSG = 'Are you sure you want to move this issue to another project?'
+
   constructor: (@form) ->
     GitLab.GfmAutoComplete.setup()
     new UsersSelect()
@@ -6,12 +8,13 @@ class @IssuableForm
 
     @titleField       = @form.find("input[name*='[title]']")
     @descriptionField = @form.find("textarea[name*='[description]']")
+    @issueMoveField   = @form.find("#move_to_project_id")
 
     return unless @titleField.length && @descriptionField.length
 
     @initAutosave()
 
-    @form.on "submit", @resetAutosave
+    @form.on "submit", @handleSubmit
     @form.on "click", ".btn-cancel", @resetAutosave
 
   initAutosave: ->
@@ -26,6 +29,12 @@ class @IssuableForm
       document.location.search,
       "description"
     ]
+
+  handleSubmit: (e) =>
+    @resetAutosave
+
+    if (parseInt(@issueMoveField?.val()) ? 0) > 0
+      e.preventDefault() unless confirm(ISSUE_MOVE_CONFIRM_MSG)
 
   resetAutosave: =>
     @titleField.data("autosave").reset()

@@ -72,9 +72,9 @@
     .form-group
       = f.label :move_to_project_id, 'Move', class: 'control-label'
       .col-sm-10
-        = project_select_tag(:move_to_project_id, placeholder: 'Select project',
-          class: 'custom-form-control', data: { 'select-id' => 'id',
-          'access-level' => Gitlab::Access::REPORTER, 'without-id' => issuable.project.id })
+        - projects = project_options(issuable, current_user, ability: :admin_issue)
+        = select_tag(:move_to_project_id, projects, include_blank: true,
+                     class: 'select2', data: { placeholder: 'Select project' })
 
 - if issuable.is_a?(MergeRequest)
   %hr

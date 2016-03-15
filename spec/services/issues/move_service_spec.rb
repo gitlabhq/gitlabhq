@@ -28,7 +28,7 @@ describe Issues::MoveService, services: true do
       new_project.team << [user, :reporter]
     end
   end
-    
+
   context 'issue movable' do
     include_context 'issue move requested'
     include_context 'user can move issue'
@@ -162,6 +162,18 @@ describe Issues::MoveService, services: true do
     end
   end
 
+  context 'moving to same project' do
+    let(:new_project) { old_project }
+
+    include_context 'issue move requested'
+    include_context 'user can move issue'
+
+    it 'raises error' do
+      expect { move_service }
+        .to raise_error(StandardError, /Cannot move issue/)
+    end
+  end
+
   context 'issue move not requested' do
     let(:new_project_id) { nil }
 
@@ -178,7 +190,6 @@ describe Issues::MoveService, services: true do
       end
     end
   end
-
 
   describe 'move permissions' do
     include_context 'issue move requested'
