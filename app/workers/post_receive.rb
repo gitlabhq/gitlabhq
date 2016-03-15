@@ -38,7 +38,7 @@ class PostReceive
       end
 
       # Triggers repository update on secondary nodes when Geo is enabled
-      Gitlab::Geo.notify_update(project) if Gitlab::Geo.enabled?
+      Gitlab::Geo.notify_project_update(project) if Gitlab::Geo.enabled?
 
       if Gitlab::Git.tag_ref?(ref)
         GitTagPushService.new.execute(project, @user, oldrev, newrev, ref)

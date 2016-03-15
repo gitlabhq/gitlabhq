@@ -34,7 +34,7 @@ module Gitlab
       GeoNode.where(host: host, port: port).exists?
     end
 
-    def self.notify_update(project)
+    def self.notify_project_update(project)
       ::Geo::EnqueueProjectUpdateService.new(project).execute
     end
 
