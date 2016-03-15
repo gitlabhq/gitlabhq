@@ -508,6 +508,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
+    return @external_issue_tracker if defined?(@external_issue_tracker)
     @external_issue_tracker ||=
       services.issue_trackers.active.without_defaults.first
   end
