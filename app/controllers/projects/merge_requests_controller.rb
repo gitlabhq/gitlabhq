@@ -253,12 +253,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return render_404
     end
 
-    @approval = @merge_request.approvals.new
-    @approval.user = current_user
-
-    if @approval.save
-      SystemNoteService.approve_mr(@merge_request, current_user)
-    end
+    MergeRequests::ApprovalService.
+      new(project, current_user).
+      execute(@merge_request)
 
     redirect_to merge_request_path(@merge_request)
   end
