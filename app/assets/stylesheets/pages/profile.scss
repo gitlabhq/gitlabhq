@@ -215,3 +215,21 @@
     color: $provider-btn-not-active-color;
   }
 }
+
+.profile-settings-message {
+  line-height: 32px;
+  color: $warning-message-color;
+  background-color: $warning-message-bg;
+  border: 1px solid $warning-message-border;
+  border-radius: $border-radius-base;
+}
+
+.oauth-applications {
+  form {
+    display: inline-block;
+  }
+
+  .last-heading {
+    width: 105px;
+  }
+}
