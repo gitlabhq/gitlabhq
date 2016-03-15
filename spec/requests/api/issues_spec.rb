@@ -39,7 +39,7 @@ describe API::API, api: true  do
   let!(:empty_milestone) do
     create(:milestone, title: '2.0.0', project: project)
   end
-  let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
+  let!(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   before { project.team << [user, :reporter] }
 
@@ -128,13 +128,6 @@ describe API::API, api: true  do
         expect(response.status).to eq(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
-      end
-
-      it 'should return an count notes in issue' do
-        get api("/issues", user)
-        expect(response.status).to eq(200)
-        expect(json_response).to be_an Array
-        expect(json_response.first['user_notes_count']).to eq(1)
       end
     end
   end
@@ -237,18 +230,31 @@ describe API::API, api: true  do
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_issue.id)
     end
-
-    it 'should return an count notes in issue' do
-      get api("#{base_url}/issues", user)
-      expect(response.status).to eq(200)
-      expect(json_response).to be_an Array
-      expect(json_response.first['user_notes_count']).to eq(1)
-    end
   end
 
   describe "GET /projects/:id/issues/:issue_id" do
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/issues/#{issue.id}", user)
+
+      expect(response.status).to eq(200)
+      expect(json_response['id']).to eq(issue.id)
+      expect(json_response['iid']).to eq(issue.iid)
+      expect(json_response['project_id']).to eq(issue.project.id)
+      expect(json_response['title']).to eq(issue.title)
+      expect(json_response['description']).to eq(issue.description)
+      expect(json_response['state']).to eq(issue.state)
+      expect(json_response['created_at']).to be_present
+      expect(json_response['updated_at']).to be_present
+      expect(json_response['labels']).to eq(issue.label_names)
+      expect(json_response['milestone']).to be_a Hash
+      expect(json_response['assignee']).to be_a Hash
+      expect(json_response['author']).to be_a Hash
+      expect(json_response['user_notes_count']).to be(1)
+    end
+
     it "should return a project issue by id" do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
+
       expect(response.status).to eq(200)
       expect(json_response['title']).to eq(issue.title)
       expect(json_response['iid']).to eq(issue.iid)

@@ -187,10 +187,10 @@ module API
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
       expose :merge_status
-
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user])
       end
+      expose :user_notes_count
     end
 
     class MergeRequestChanges < MergeRequest
