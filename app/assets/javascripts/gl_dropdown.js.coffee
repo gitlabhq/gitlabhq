@@ -231,6 +231,13 @@ class GitLabDropdown
       html = @options.renderRow(data)
     else
       selected = if @options.isSelected then @options.isSelected(data) else false
+      if not selected
+        value = if @options.id then @options.id(data) else data.id
+        fieldName = @options.fieldName
+        field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
+        if field.length
+          selected = true
+
       url = if @options.url then @options.url(data) else "#"
       text = if @options.text then @options.text(data) else ""
       cssClass = "";
@@ -263,7 +270,7 @@ class GitLabDropdown
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
-    field = @dropdown.parent().find("input[name='#{fieldName}']")     
+    field = @dropdown.parent().find("input[name='#{fieldName}']")
     selectedIndex = el.parent().index()
     if @renderedData
       selectedObject = @renderedData[selectedIndex]
@@ -271,10 +278,11 @@ class GitLabDropdown
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
 
     if el.hasClass(ACTIVE_CLASS)
-      if @options.multiSelect
-        console.log field.val(), value
-      else
-        field.remove()
+      console.log 'has ACTIVE_CLASS'
+      # if @options.multiSelect
+      #   console.log field.val(), value
+      # else
+      field.remove()
     else
       fieldName = @options.fieldName
       selectedIndex = el.parent().index()
@@ -286,11 +294,7 @@ class GitLabDropdown
       if !value?
         field.remove()
 
-      if @options.multiSelect
-        oldValue = field.val()
-        if oldValue
-          value = "#{oldValue},#{value}"
-      else
+      if not @options.multiSelect
         @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
 
       # Toggle active class for the tick mark
@@ -299,14 +303,13 @@ class GitLabDropdown
       # Toggle the dropdown label
       if @options.toggleLabel
         $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject)
-
       if value?
         if !field.length
           # Create hidden input for form
-          input = "<input type='hidden' name='#{fieldName}' />"
+          input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
           @dropdown.before input
-
-        @dropdown.parent().find("input[name='#{fieldName}']").val value
+        else
+          console.log 'has field???'
 
   selectFirstRow: ->
     selector = '.dropdown-content li:first-child a'

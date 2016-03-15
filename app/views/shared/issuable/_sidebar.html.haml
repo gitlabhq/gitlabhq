@@ -65,7 +65,8 @@
             .light None
 
         .selectbox.hide-collapsed
-          = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search milestones", data: { show_no: true, field_name: "milestone_id", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), issue_update: namespace_project_issue_path(@project.namespace, @project, issuable.id, :json), use_id: true }})
+          = f.hidden_field 'milestone_id', value: issuable.milestone.id, id: nil
+          = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select', filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search milestones", data: { show_no: true, field_name: "issue[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), issue_update: namespace_project_issue_path(@project.namespace, @project, issuable.id, :json), use_id: true }})
 
       - if issuable.project.labels.any?
         .block.labels
@@ -85,7 +86,8 @@
             - else
               .light None
           .selectbox.hide-collapsed
-            = f.hidden_field 'label_name', value: issuable.labels.map(&:id).join(',')
+            - issuable.labels.each do |label|
+              = f.hidden_field 'label_name', value: label.id, id: nil
             .dropdown
               %button.dropdown-menu-toggle.js-label-select.js-multiselect{type: "button", data: {toggle: "dropdown", field_name: "issue[label_name]", show_no: "true", show_any: "true", selected: issuable.label_names.join(","), project_id: (@project.id if @project), issue_update: namespace_project_issue_path(@project.namespace, @project, issuable.id, :json), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project)}}
                 %span.dropdown-toggle-text
