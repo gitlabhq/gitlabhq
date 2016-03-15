@@ -140,7 +140,7 @@
           left: 1px;
           margin-top: -9px;
           border-width: 10px 7px 10px 0;
-          border-right-color: #FFF;
+          border-right-color: #fff;
         }
       }
       .count {
@@ -165,7 +165,7 @@
         margin: 0 11px 0px 4px;
 
         &:hover {
-          background: #FFF;
+          background: #fff;
         }
       }
     }
@@ -462,7 +462,7 @@ pre.light-well {
 
   .form-control {
     @extend .monospace;
-    background: #FFF;
+    background: #fff;
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;
@@ -472,16 +472,16 @@ pre.light-well {
 
 .cannot-be-merged,
 .cannot-be-merged:hover {
-  color: #E62958;
+  color: #e62958;
   margin-top: 2px;
 }
 
 .private-forks-notice .private-fork-icon {
   i:nth-child(1) {
-    color: #2AA056;
+    color: #2aa056;
   }
 
   i:nth-child(2) {
-    color: #FFFFFF;
+    color: #fff;
   }
 }
