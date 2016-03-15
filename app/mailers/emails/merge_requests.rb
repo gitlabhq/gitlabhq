@@ -14,7 +14,7 @@ module Emails
     end
 
     def relabeled_merge_request_email(recipient_id, merge_request_id, label_names, updated_by_user_id)
-      setup_merge_request_mail(merge_request_id, recipient_id, sent_notification: false)
+      setup_merge_request_mail(merge_request_id, recipient_id)
 
       @label_names = label_names
       @labels_url = namespace_project_labels_url(@project.namespace, @project)
@@ -44,14 +44,12 @@ module Emails
 
     private
 
-    def setup_merge_request_mail(merge_request_id, recipient_id, sent_notification: true)
+    def setup_merge_request_mail(merge_request_id, recipient_id)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
       @target_url = namespace_project_merge_request_url(@project.namespace, @project, @merge_request)
 
-      if sent_notification
-        @sent_notification = SentNotification.record(@merge_request, recipient_id, reply_key)
-      end
+      @sent_notification = SentNotification.record(@merge_request, recipient_id, reply_key)
     end
 
     def merge_request_thread_options(sender_id, recipient_id)

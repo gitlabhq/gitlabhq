@@ -21,7 +21,7 @@ module Emails
     end
 
     def relabeled_issue_email(recipient_id, issue_id, label_names, updated_by_user_id)
-      setup_issue_mail(issue_id, recipient_id, sent_notification: false)
+      setup_issue_mail(issue_id, recipient_id)
 
       @label_names = label_names
       @labels_url = namespace_project_labels_url(@project.namespace, @project)
@@ -38,14 +38,12 @@ module Emails
 
     private
 
-    def setup_issue_mail(issue_id, recipient_id, sent_notification: true)
+    def setup_issue_mail(issue_id, recipient_id)
       @issue = Issue.find(issue_id)
       @project = @issue.project
       @target_url = namespace_project_issue_url(@project.namespace, @project, @issue)
 
-      if sent_notification
-        @sent_notification = SentNotification.record(@issue, recipient_id, reply_key)
-      end
+      @sent_notification = SentNotification.record(@issue, recipient_id, reply_key)
     end
 
     def issue_thread_options(sender_id, recipient_id)
