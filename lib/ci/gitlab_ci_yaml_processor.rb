@@ -289,7 +289,7 @@ module Ci
       return false if path && path != self.path
       return true if tag && pattern == 'tags'
       return true if !tag && pattern == 'branches'
-      return true if trigger_request != nil && pattern == 'triggers'
+      return true if !trigger_request.nil? && pattern == 'triggers'
 
       if pattern.first == "/" && pattern.last == "/"
         Regexp.new(pattern[1...-1]) =~ ref
