@@ -408,13 +408,6 @@ module API
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
       expose :user, with: User
-      # TODO: download_url in Ci:Build model is an GitLab Web Interface URL, not API URL. We should think on some API
-      #       for downloading of artifacts (see: https://gitlab.com/gitlab-org/gitlab-ce/issues/4255)
-      expose :download_url do |repo_obj, options|
-        if options[:user_can_download_artifacts]
-          repo_obj.artifacts_download_url
-        end
-      end
       expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
       expose :commit, with: RepoCommit do |repo_obj, _options|
         if repo_obj.respond_to?(:commit)

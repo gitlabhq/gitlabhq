@@ -13,9 +13,10 @@
       = link_to "merge request ##{merge_request.iid}", merge_request_path(merge_request)
 
   #up-build-trace
-  - if @commit.matrix_for_ref?(@build.ref)
+  - builds = @build.commit.matrix_builds(@build)
+  - if builds.size > 1
     %ul.nav-links.no-top.no-bottom
-      - @commit.latest_builds_for_ref(@build.ref).each do |build|
+      - builds.each do |build|
         %li{class: ('active' if build == @build) }
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
             = ci_icon_for_status(build.status)
@@ -44,7 +45,7 @@
         .pull-right
           #{time_ago_with_tooltip(@build.finished_at) if @build.finished_at}
 
-  - if @build.show_warning?
+  - if @build.stuck?
     - unless @build.any_runners_online?
       .bs-callout.bs-callout-warning
         %p
@@ -100,12 +101,12 @@
           %h4.title Build artifacts
           .center
             .btn-group{ role: :group }
-              = link_to @build.artifacts_download_url, class: 'btn btn-sm btn-primary' do
+              = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary' do
                 = icon('download')
                 Download
 
               - if @build.artifacts_metadata?
-                = link_to @build.artifacts_browse_url, class: 'btn btn-sm btn-primary' do
+                = link_to browse_namespace_project_build_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary' do
                   = icon('folder-open')
                   Browse
 
@@ -115,10 +116,10 @@
           - if can?(current_user, :update_build, @project)
             .center
               .btn-group{ role: :group }
-                - if @build.cancel_url
-                  = link_to "Cancel", @build.cancel_url, class: 'btn btn-sm btn-danger', method: :post
-                - elsif @build.retry_url
-                  = link_to "Retry", @build.retry_url, class: 'btn btn-sm btn-primary', method: :post
+                - if @build.active?
+                  = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-danger', method: :post
+                - elsif @build.retryable?
+                  = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-primary', method: :post
 
                 - if @build.erasable?
                   = link_to erase_namespace_project_build_path(@project.namespace, @project, @build),
