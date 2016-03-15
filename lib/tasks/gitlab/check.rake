@@ -911,7 +911,7 @@ namespace :gitlab do
   end
 
   def check_git_version
-    required_version = Gitlab::VersionInfo.new(1, 7, 10)
+    required_version = Gitlab::VersionInfo.new(2, 7, 3)
     current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
