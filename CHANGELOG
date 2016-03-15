@@ -1,7 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
+  - Bump gitlab_git to 9.0.3 (Stan Hu)
   - Support Golang subpackage fetching (Stan Hu)
+  - Bump Capybara gem to 2.6.2 (Stan Hu)
   - Contributions to forked projects are included in calendar
   - Improve the formatting for the user page bio (Connor Shea)
   - Removed the default password from the initial admin account created during
@@ -18,10 +20,14 @@ v 8.6.0 (unreleased)
   - Return empty array instead of 404 when commit has no statuses in commit status API
   - Decrease the font size and the padding of the `.anchor` icons used in the README (Roberto Dip)
   - Rewrite logo to simplify SVG code (Sean Lang)
+  - Allow to use YAML anchors when parsing the `.gitlab-ci.yml` (Pascal Bach)
+  - Ignore jobs that start with `.` (hidden jobs)
+  - Allow to pass name of created artifacts archive in `.gitlab-ci.yml`
   - Refactor and greatly improve search performance
   - Add support for cross-project label references
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
+  - Allow to define on which builds the current one depends on
   - Fix bug where Bitbucket `closed` issues were imported as `opened` (Iuri de Silvio)
   - Don't show Issues/MRs from archived projects in Groups view
   - Increase the notes polling timeout over time (Roberto Dip)

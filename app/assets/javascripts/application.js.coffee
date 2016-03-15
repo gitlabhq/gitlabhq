@@ -111,6 +111,8 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
+  bootstrapBreakpoint = bp.getBreakpointSize()
+
   $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
 
   # Click a .js-select-on-focus field, select the contents
@@ -260,35 +262,14 @@ $ ->
           $('.right-sidebar')
             .hasClass('right-sidebar-collapsed'), { path: '/' })
 
-  bootstrapBreakpoint = undefined;
-  checkBootstrapBreakpoints = ->
-    if $('.device-xs').is(':visible')
-      bootstrapBreakpoint = "xs"
-    else if $('.device-sm').is(':visible')
-      bootstrapBreakpoint = "sm"
-    else if $('.device-md').is(':visible')
-      bootstrapBreakpoint = "md"
-    else if $('.device-lg').is(':visible')
-      bootstrapBreakpoint = "lg"
-
-  setBootstrapBreakpoints = ->
-    if $('.device-xs').length
-      return
-
-    $("body")
-      .append('<div class="device-xs visible-xs"></div>'+
-        '<div class="device-sm visible-sm"></div>'+
-        '<div class="device-md visible-md"></div>'+
-        '<div class="device-lg visible-lg"></div>')
-    checkBootstrapBreakpoints()
-
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
-    checkBootstrapBreakpoints()
+    bootstrapBreakpoint = bp.getBreakpointSize()
     if bootstrapBreakpoint != oldBootstrapBreakpoint
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   checkInitialSidebarSize = ->
+    bootstrapBreakpoint = bp.getBreakpointSize()
     if bootstrapBreakpoint is "xs" or "sm"
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
@@ -297,6 +278,5 @@ $ ->
     .on "resize", (e) ->
       fitSidebarForSize()
 
-  setBootstrapBreakpoints()
   checkInitialSidebarSize()
   new Aside()

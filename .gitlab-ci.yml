@@ -153,11 +153,10 @@ bundler:audit:
   stage: test
   script:
     - "bundle exec bundle-audit update"
-    - "bundle exec bundle-audit check"
+    - "bundle exec bundle-audit check --ignore OSVDB-115941"
   tags:
     - ruby
     - mysql
-  allow_failure: true
 
 # Ruby 2.2 jobs
 

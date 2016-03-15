@@ -1,24 +1,24 @@
-- project = build.project
 %tr.build
   %td.status
-    = ci_status_with_icon(build.status)
+    - if can?(current_user, :read_build, build)
+      = link_to namespace_project_build_url(build.project.namespace, build.project, build), class: "ci-status ci-#{build.status}" do
+        = ci_status_with_icon(build.status)
+    - else
+      = ci_status_with_icon(build.status)
 
   %td.build-link
-    - if can?(current_user, :read_build, build.project)
+    - if can?(current_user, :read_build, build)
       = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
-        %strong Build ##{build.id}
+        %strong ##{build.id}
     - else
-      %strong Build ##{build.id}
+      %strong ##{build.id}
 
     - if build.stuck?
       %i.fa.fa-warning.text-warning
 
-  %td
-    - if project
-      = link_to project.name_with_namespace, admin_namespace_project_path(project.namespace, project), class: "monospace"
-
-  %td
-    = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace"
+  - if defined?(commit_sha) && commit_sha
+    %td
+      = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace"
 
   %td
     - if build.ref
@@ -26,14 +26,19 @@
     - else
       .light none
 
-  %td
-    - if build.try(:runner)
-      = runner_link(build.runner)
-    - else
-      .light none
+  - if defined?(runner) && runner
+    %td
+      - if build.try(:runner)
+        = runner_link(build.runner)
+      - else
+        .light none
+
+  - if defined?(stage) && stage
+    %td
+      = build.stage
 
   %td
-    #{build.stage} / #{build.name}
+    = build.name
 
     .pull-right
       - if build.tags.any?
@@ -60,10 +65,10 @@
 
   %td
     .pull-right
-      - if can?(current_user, :read_build, project) && build.artifacts?
+      - if can?(current_user, :read_build, build) && build.artifacts?
         = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts' do
           %i.fa.fa-download
-      - if can?(current_user, :update_build, build.project)
+      - if can?(current_user, :update_build, build)
         - if build.active?
           = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel' do
             %i.fa.fa-remove.cred
