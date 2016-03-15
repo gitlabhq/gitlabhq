@@ -1,11 +1,10 @@
 # Webhooks
 
-_**Note:**
-Starting from GitLab 8.5:_
-
-- _the `repository` key is deprecated in favor of the `project` key_
-- _the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key_
-- _the `project.http_url` key is deprecated in favor of the `project.git_http_url` key_
+> **Note:** As of GitLab 8.5:
+>
+> - the `repository` key is deprecated in favor of the `project` key
+> - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
+> - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
 
 Project webhooks allow you to trigger an URL if new code is pushed or a new issue is created.
 
