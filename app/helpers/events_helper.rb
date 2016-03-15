@@ -194,7 +194,7 @@ module EventsHelper
   end
 
   def event_to_atom(xml, event)
-    if event.proper?
+    if event.proper?(current_user)
       xml.entry do
         event_link = event_feed_url(event)
         event_title = event_feed_title(event)

@@ -79,15 +79,17 @@ class Event < ActiveRecord::Base
     end
   end
 
-  def proper?
+  def proper?(user = nil)
     if push?
       true
     elsif membership_changed?
       true
     elsif created_project?
       true
+    elsif issue?
+      Ability.abilities.allowed?(user, :read_issue, issue)
     else
-      ((issue? || merge_request? || note?) && target) || milestone?
+      ((merge_request? || note?) && target) || milestone?
     end
   end
 
