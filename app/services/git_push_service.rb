@@ -49,6 +49,8 @@ class GitPushService < BaseService
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     update_merge_requests
+
+    perform_housekeeping
   end
 
   def update_main_language
@@ -71,6 +73,13 @@ class GitPushService < BaseService
     @project.execute_services(build_push_data.dup, :push_hooks)
     CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
     ProjectCacheWorker.perform_async(@project.id)
+  end
+
+  def perform_housekeeping
+    housekeeping = Projects::HousekeepingService.new(@project)
+    housekeeping.increment!
+    housekeeping.execute if housekeeping.needed?
+  rescue Projects::HousekeepingService::LeaseTaken
   end
 
   def process_default_branch
