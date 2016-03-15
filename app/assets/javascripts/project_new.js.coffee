@@ -18,7 +18,13 @@ class @ProjectNew
       $('.issues-feature').show()
     else
       $('.issues-feature').hide()
+    checked = $("#project_builds_enabled").prop("checked")
+    if checked
+      $('.builds-feature').show()
+    else
+      $('.builds-feature').hide()
 
   toggleSettingsOnclick: ->
     $("#project_merge_requests_enabled").on 'click', @toggleSettings
     $("#project_issues_enabled").on 'click', @toggleSettings
+    $("#project_builds_enabled").on 'click', @toggleSettings

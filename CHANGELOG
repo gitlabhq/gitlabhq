@@ -22,6 +22,7 @@ v 8.6.0 (unreleased)
   - Rewrite logo to simplify SVG code (Sean Lang)
   - Allow to use YAML anchors when parsing the `.gitlab-ci.yml` (Pascal Bach)
   - Ignore jobs that start with `.` (hidden jobs)
+  - Hide builds from project's settings when the feature is disabled
   - Allow to pass name of created artifacts archive in `.gitlab-ci.yml`
   - Refactor and greatly improve search performance
   - Add support for cross-project label references
