@@ -14,6 +14,8 @@
 
 class Label < ActiveRecord::Base
   include Referable
+  include Subscribable
+
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.
   LabelStruct = Struct.new(:title, :name)

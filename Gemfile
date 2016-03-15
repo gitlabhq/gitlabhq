@@ -82,9 +82,6 @@ gem "haml-rails", '~> 0.9.0'
 # Files attachments
 gem "carrierwave", '~> 0.10.0'
 
-# Image editing
-gem "mini_magick", '~> 4.4.0'
-
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
 
@@ -296,6 +293,7 @@ group :development, :test do
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
   gem 'rubocop', '~> 0.35.0', require: false
+  gem 'scss_lint', '~> 0.47.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
   gem 'flog', require: false
