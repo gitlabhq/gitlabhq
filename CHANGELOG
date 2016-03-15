@@ -25,6 +25,7 @@ v 8.6.0 (unreleased)
   - Allow to pass name of created artifacts archive in `.gitlab-ci.yml`
   - Refactor and greatly improve search performance
   - Add support for cross-project label references
+  - Ensure "new SSH key" email do not ends up as dead Sidekiq jobs
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
   - Allow to define on which builds the current one depends on
