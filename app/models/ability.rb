@@ -469,6 +469,7 @@ class Ability
       return rules if user.admin? || !issue.confidential?
 
       unless issue.author == user || issue.assignee == user || issue.project.team.member?(user.id)
+        rules.delete(:admin_issue)
         rules.delete(:read_issue)
         rules.delete(:update_issue)
       end
