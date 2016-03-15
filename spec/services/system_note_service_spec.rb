@@ -287,7 +287,7 @@ describe SystemNoteService, services: true do
 
     context 'when a branch is created from the new branch button' do
       it 'sets the note text' do
-        expect(subject.note).to eq 'Started branch 1-mepmep'
+        expect(subject.note).to match /\AStarted branch [`1-mepmep`]/
       end
     end
   end

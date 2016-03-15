@@ -87,20 +87,20 @@ class Issue < ActiveRecord::Base
   end
 
   def referenced_merge_requests(current_user = nil)
-    if defined?(@referenced_merge_requests)
-      @referenced_merge_requests[current_user] ||=  Gitlab::ReferenceExtractor.lazily do
-                                                      [self, *notes].flat_map do |note|
-                                                        note.all_references(current_user).merge_requests
-                                                      end
-                                                    end.sort_by(&:iid).uniq
-    else
-      @referenced_merge_requests = {}
-      referenced_merge_requests(current_user)
+    @referenced_merge_requests ||= {}
+    @referenced_merge_requests[current_user] ||= begin
+      Gitlab::ReferenceExtractor.lazily do
+        [self, *notes].flat_map do |note|
+          note.all_references(current_user).merge_requests
+        end
+      end.sort_by(&:iid).uniq
     end
   end
 
   def related_branches
-    self.project.repository.branch_names.select { |branch| branch.start_with? "#{iid}-" }
+    self.project.repository.branch_names.select do |branch|
+      branch =~ /\A#{iid}-(?!\d+-stable)/i
+    end
   end
 
   # Reset issue events cache
@@ -138,6 +138,6 @@ class Issue < ActiveRecord::Base
     !self.closed? &&
       !self.project.forked? &&
       self.related_branches.empty? &&
-      self.referenced_merge_requests(current_user).empty?
+      self.closed_by_merge_requests(current_user).empty?
   end
 end
