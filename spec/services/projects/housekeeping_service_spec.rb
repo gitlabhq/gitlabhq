@@ -14,7 +14,7 @@ describe Projects::HousekeepingService do
       expect(subject).to receive(:try_obtain_lease).and_return(true)
       expect(GitlabShellWorker).to receive(:perform_async).with(:gc, project.path_with_namespace)
 
-      expect(subject.execute).to include('successfully started')
+      subject.execute
       expect(project.pushes_since_gc).to eq(0)
     end
 
@@ -22,8 +22,8 @@ describe Projects::HousekeepingService do
       expect(subject).to receive(:try_obtain_lease).and_return(false)
       expect(GitlabShellWorker).not_to receive(:perform_async)
 
-      expect(subject.execute).to include('already triggered')
-      expect(project.pushes_since_gc).to eq(3)
+      expect { subject.execute }.to raise_error(Projects::HousekeepingService::LeaseTaken)
+      expect(project.pushes_since_gc).to eq(0)
     end
   end
 

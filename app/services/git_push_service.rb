@@ -79,6 +79,7 @@ class GitPushService < BaseService
     housekeeping = Projects::HousekeepingService.new(@project)
     housekeeping.increment!
     housekeeping.execute if housekeeping.needed?
+  rescue Projects::HousekeepingService::LeaseTaken
   end
 
   def process_default_branch

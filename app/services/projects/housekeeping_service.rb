@@ -11,20 +11,22 @@ module Projects
 
     LEASE_TIMEOUT = 3600
 
+    class LeaseTaken < StandardError
+      def to_s
+        "Somebody already triggered housekeeping for this project in the past #{LEASE_TIMEOUT / 60} minutes"
+      end
+    end
+
     def initialize(project)
       @project = project
     end
 
     def execute
-      if !try_obtain_lease
-        return "Housekeeping was already triggered in the past #{LEASE_TIMEOUT / 60} minutes"
-      end
+      raise LeaseTaken if !try_obtain_lease
 
       GitlabShellWorker.perform_async(:gc, @project.path_with_namespace)
-      @project.pushes_since_gc = 0
-      @project.save!
-
-      "Housekeeping successfully started"
+    ensure
+      @project.update_column(:pushes_since_gc, 0)
     end
 
     def needed?
@@ -32,8 +34,7 @@ module Projects
     end
 
     def increment!
-      @project.pushes_since_gc += 1
-      @project.save!
+      @project.increment!(:pushes_since_gc)
     end
 
     private
