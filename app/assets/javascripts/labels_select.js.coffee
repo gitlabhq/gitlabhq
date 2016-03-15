@@ -191,11 +191,13 @@ class @LabelsSelect
           else
             selected = $dropdown
               .closest('.selectbox')
-              .find('input[type="hidden"]')
-              .val()
+              .find("input[name='#{$dropdown.data('field-name')}']")
+              .map(->
+                @value
+              ).get()
             # need inline-block here instead of show, 
             # which will default to the element's style in this case inline.
-            selected = if selected? then selected.split(',') else ['']
+            selected = if selected.length then selected else ['']
             $loading
               .fadeIn()
             $.ajax(

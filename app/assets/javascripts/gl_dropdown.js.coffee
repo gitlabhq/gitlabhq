@@ -270,7 +270,6 @@ class GitLabDropdown
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
-    field = @dropdown.parent().find("input[name='#{fieldName}']")
     selectedIndex = el.parent().index()
     if @renderedData
       selectedObject = @renderedData[selectedIndex]
@@ -278,10 +277,6 @@ class GitLabDropdown
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
 
     if el.hasClass(ACTIVE_CLASS)
-      console.log 'has ACTIVE_CLASS'
-      # if @options.multiSelect
-      #   console.log field.val(), value
-      # else
       field.remove()
     else
       fieldName = @options.fieldName
@@ -296,6 +291,7 @@ class GitLabDropdown
 
       if not @options.multiSelect
         @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
+        @dropdown.parent().find("input[name='#{fieldName}']").remove()
 
       # Toggle active class for the tick mark
       el.toggleClass "is-active"
@@ -308,8 +304,6 @@ class GitLabDropdown
           # Create hidden input for form
           input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
           @dropdown.before input
-        else
-          console.log 'has field???'
 
   selectFirstRow: ->
     selector = '.dropdown-content li:first-child a'
