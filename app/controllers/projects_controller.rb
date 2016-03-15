@@ -172,10 +172,15 @@ class ProjectsController < ApplicationController
   def housekeeping
     ::Projects::HousekeepingService.new(@project).execute
 
-    respond_to do |format|
-      flash[:notice] = "Housekeeping successfully started."
-      format.html { redirect_to project_path(@project) }
-    end
+    redirect_to(
+      project_path(@project),
+      notice: "Housekeeping successfully started"
+    )
+  rescue ::Projects::HousekeepingService::LeaseTaken => ex
+    redirect_to(
+      edit_project_path(@project),
+      alert: ex.to_s
+    )
   end
 
   def toggle_star

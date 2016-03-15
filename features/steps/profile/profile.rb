@@ -27,7 +27,9 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I change my avatar' do
-    attach_avatar
+    attach_file(:user_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
+    click_button "Update profile settings"
+    @user.reload
   end
 
   step 'I should see new avatar' do
@@ -40,7 +42,9 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I have an avatar' do
-    attach_avatar
+    attach_file(:user_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
+    click_button "Update profile settings"
+    @user.reload
   end
 
   step 'I remove my avatar' do
@@ -180,18 +184,14 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     end
   end
 
-  step 'I click on new application button' do
-    click_on 'New Application'
-  end
-
   step 'I should see application form' do
-    expect(page).to have_content "New Application"
+    expect(page).to have_content "Add new application"
   end
 
   step 'I fill application form out and submit' do
     fill_in :doorkeeper_application_name, with: 'test'
     fill_in :doorkeeper_application_redirect_uri, with: 'https://test.com'
-    click_on "Submit"
+    click_on "Save application"
   end
 
   step 'I see application' do
@@ -211,7 +211,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I change name of application and submit' do
     expect(page).to have_content "Edit application"
     fill_in :doorkeeper_application_name, with: 'test_changed'
-    click_on "Submit"
+    click_on "Save application"
   end
 
   step 'I see that application was changed' do
@@ -228,17 +228,5 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step "I see that application is removed" do
     expect(page.find(".oauth-applications")).not_to have_content "test_changed"
-  end
-
-  def attach_avatar
-    attach_file :user_avatar, Rails.root.join(*%w(spec fixtures banana_sample.gif))
-
-    page.find('#user_avatar_crop_x',    visible: false).set('0')
-    page.find('#user_avatar_crop_y',    visible: false).set('0')
-    page.find('#user_avatar_crop_size', visible: false).set('256')
-
-    click_button "Update profile settings"
-
-    @user.reload
   end
 end

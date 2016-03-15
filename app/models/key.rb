@@ -16,6 +16,7 @@
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
+  include AfterCommitQueue
   include Sortable
 
   belongs_to :user
@@ -62,7 +63,7 @@ class Key < ActiveRecord::Base
   end
 
   def notify_user
-    NotificationService.new.new_key(self)
+    run_after_commit { NotificationService.new.new_key(self) }
   end
 
   def post_create_hook

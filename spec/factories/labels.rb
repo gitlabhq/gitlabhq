@@ -13,7 +13,7 @@
 
 FactoryGirl.define do
   factory :label do
-    title "Bug"
+    sequence(:title) { |n| "label#{n}" }
     color "#990000"
     project
   end

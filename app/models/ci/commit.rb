@@ -25,8 +25,6 @@ module Ci
     has_many :builds, class_name: 'Ci::Build'
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest'
 
-    scope :ordered, -> { order('CASE WHEN ci_commits.committed_at IS NULL THEN 0 ELSE 1 END', :committed_at, :id) }
-
     validates_presence_of :sha
     validate :valid_commit_sha
 
@@ -40,16 +38,6 @@ module Ci
 
     def project_id
       project.id
-    end
-
-    def last_build
-      builds.order(:id).last
-    end
-
-    def retry
-      latest_builds.each do |build|
-        Ci::Build.retry(build)
-      end
     end
 
     def valid_commit_sha
@@ -121,12 +109,14 @@ module Ci
       @latest_statuses ||= statuses.latest.to_a
     end
 
-    def latest_builds
-      @latest_builds ||= builds.latest.to_a
+    def latest_statuses_for_ref(ref)
+      latest_statuses.select { |status| status.ref == ref }
     end
 
-    def latest_builds_for_ref(ref)
-      latest_builds.select { |build| build.ref == ref }
+    def matrix_builds(build = nil)
+      matrix_builds = builds.latest.ordered
+      matrix_builds = matrix_builds.similar(build) if build
+      matrix_builds.to_a
     end
 
     def retried
@@ -170,7 +160,7 @@ module Ci
     end
 
     def duration
-      duration_array = latest_statuses.map(&:duration).compact
+      duration_array = statuses.map(&:duration).compact
       duration_array.reduce(:+).to_i
     end
 
@@ -183,14 +173,10 @@ module Ci
     end
 
     def coverage
-      coverage_array = latest_builds.map(&:coverage).compact
+      coverage_array = latest_statuses.map(&:coverage).compact
       if coverage_array.size >= 1
         '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
       end
-    end
-
-    def matrix_for_ref?(ref)
-      latest_builds_for_ref(ref).size > 1
     end
 
     def config_processor
@@ -216,10 +202,6 @@ module Ci
 
     def skip_ci?
       git_commit_message =~ /(\[ci skip\])/ if git_commit_message
-    end
-
-    def update_committed!
-      update!(committed_at: DateTime.now)
     end
 
     private

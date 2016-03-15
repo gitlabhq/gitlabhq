@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160309140734) do
+ActiveRecord::Schema.define(version: 20160314143402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -720,6 +720,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.boolean  "pending_delete",         default: false
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
+    t.integer  "pushes_since_gc",        default: 0
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

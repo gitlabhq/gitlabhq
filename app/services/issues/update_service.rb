@@ -4,8 +4,8 @@ module Issues
       update(issue)
     end
 
-    def handle_changes(issue, options = {})
-      if has_changes?(issue, options)
+    def handle_changes(issue, old_labels: [])
+      if has_changes?(issue, old_labels: old_labels)
         todo_service.mark_pending_todos_as_done(issue, current_user)
       end
 
@@ -22,6 +22,11 @@ module Issues
         create_assignee_note(issue)
         notification_service.reassigned_issue(issue, current_user)
         todo_service.reassigned_issue(issue, current_user)
+      end
+
+      added_labels = issue.labels - old_labels
+      if added_labels.present?
+        notification_service.relabeled_issue(issue, added_labels, current_user)
       end
     end
 

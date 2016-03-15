@@ -98,7 +98,7 @@
       %hr
       - if current_user
         - subscribed = issuable.subscribed?(current_user)
-        .block.light
+        .block.light.subscription{data: {url: toggle_subscription_path(issuable)}}
           .sidebar-collapsed-icon
             = icon('rss')
           .title.hide-collapsed
@@ -124,5 +124,5 @@
           = clipboard_button(clipboard_text: project_ref)
 
     :javascript
-      new Subscription("#{toggle_subscription_path(issuable)}");
+      new Subscription('.subscription');
       new IssuableContext();

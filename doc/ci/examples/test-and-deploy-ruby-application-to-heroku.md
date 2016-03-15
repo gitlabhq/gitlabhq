@@ -1,5 +1,5 @@
 ## Test and Deploy a ruby application
-This example will guide you how to run tests in your Ruby application and deploy it automatiacally as Heroku application.
+This example will guide you how to run tests in your Ruby application and deploy it automatically as Heroku application.
 
 You can checkout the example [source](https://gitlab.com/ayufan/ruby-getting-started) and check [CI status](https://gitlab.com/ayufan/ruby-getting-started/builds?scope=all).
 
