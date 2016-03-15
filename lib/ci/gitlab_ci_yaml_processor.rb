@@ -284,7 +284,7 @@ module Ci
       end
     end
 
-    def match_ref?(pattern, ref, tag)
+    def match_ref?(pattern, ref, tag, trigger_request)
       pattern, path = pattern.split('@', 2)
       return false if path && path != self.path
       return true if tag && pattern == 'tags'
