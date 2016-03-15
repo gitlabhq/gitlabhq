@@ -28,7 +28,7 @@ module CommitsHelper
 
   def commit_to_html(commit, project, inline = true)
     template = inline ? "inline_commit" : "commit"
-    escape_javascript(render "projects/commits/#{template}", commit: commit, project: project) unless commit.nil?
+    render "projects/commits/#{template}", commit: commit, project: project unless commit.nil?
   end
 
   # Breadcrumb links for a Project and, if applicable, a tree path
@@ -117,7 +117,7 @@ module CommitsHelper
       end
     end
     link_to(
-      "Browse Files »",
+      "Browse Files",
       namespace_project_tree_path(project.namespace, project, commit),
       class: "pull-right"
     )

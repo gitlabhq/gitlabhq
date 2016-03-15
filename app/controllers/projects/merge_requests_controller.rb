@@ -207,11 +207,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     #This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
     @commit = @repository.commit(params[:ref]) if params[:ref].present?
+    render layout: false
   end
 
   def branch_to
     @target_project = selected_target_project
     @commit = @target_project.commit(params[:ref]) if params[:ref].present?
+    render layout: false
   end
 
   def update_branches

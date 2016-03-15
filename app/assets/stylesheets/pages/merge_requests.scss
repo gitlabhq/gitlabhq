@@ -123,6 +123,8 @@
 
 .mr_source_commit,
 .mr_target_commit {
+  margin-bottom: 0;
+
   .commit {
     margin: 0;
     padding: 2px 0;
@@ -174,10 +176,6 @@
   display: none;
 }
 
-.merge-request-form .select2-container {
-  width: 250px !important;
-}
-
 #modal_merge_info .modal-dialog {
   width: 600px;
 
@@ -199,4 +197,49 @@
   .table-holder {
     overflow-x: scroll;
   }
+}
+
+.panel-new-merge-request {
+  .panel-heading {
+    padding: 5px 10px;
+    font-weight: 600;
+    line-height: 25px;
+  }
+
+  .panel-body {
+    padding: 10px 5px;
+  }
+
+  .panel-footer {
+    padding: 10px 10px;
+  }
+
+  .commit {
+    .commit-row-title {
+      margin-bottom: 4px;
+    }
+
+    .avatar {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
+
+    .commit-row-info {
+      line-height: 20px;
+    }
+  }
+
+  .btn-clipboard {
+    margin-right: 5px;
+    padding: 0;
+    background: transparent;
+  }
+}
+
+.merge-request-select {
+  float: left;
+  width: 50%;
+  padding-left: 5px;
+  padding-right: 5px;
 }
