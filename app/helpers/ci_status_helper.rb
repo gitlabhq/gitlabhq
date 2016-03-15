@@ -12,9 +12,13 @@ module CiStatusHelper
     ci_label_for_status(ci_commit.status)
   end
 
-  def ci_status_with_icon(status)
-    content_tag :span, class: "ci-status ci-#{status}" do
-      ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
+  def ci_status_with_icon(status, target = nil)
+    content = ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
+    clazz = "ci-status ci-#{status}"
+    if target
+      link_to content, target, class: clazz
+    else
+      content_tag :span, content, class: clazz
     end
   end
 
