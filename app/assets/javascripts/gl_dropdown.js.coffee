@@ -237,13 +237,12 @@ class GitLabDropdown
       html = @options.renderRow(data)
     else
       selected = if @options.isSelected then @options.isSelected(data) else false
-      url = if @options.url then @options.url(data) else "#"
 
       # Set URL
       if @options.url?
         url = @options.url(data)
       else
-        url = if data.url? then data.url else ''
+        url = if data.url? then data.url else '#'
 
       # Set Text
       if @options.text?
