@@ -28,6 +28,7 @@ v 8.6.0 (unreleased)
   - Update documentation to reflect Guest role not being enforced on internal projects
   - Allow search for logged out users
   - Allow to define on which builds the current one depends on
+  - Allow user subscription to a label: get notified for issues/merge requests related to that label (Timothy Andrew)
   - Fix bug where Bitbucket `closed` issues were imported as `opened` (Iuri de Silvio)
   - Don't show Issues/MRs from archived projects in Groups view
   - Fix wrong "iid of max iid" in Issuable sidebar for some merged MRs

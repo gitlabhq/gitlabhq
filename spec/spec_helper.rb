@@ -32,6 +32,7 @@ RSpec.configure do |config|
   config.include LoginHelpers,        type: :feature
   config.include LoginHelpers,        type: :request
   config.include StubConfiguration
+  config.include EmailHelpers
   config.include RelativeUrl,         type: feature
   config.include TestEnv
   config.include ActiveJob::TestHelper
