@@ -37,6 +37,7 @@ RSpec.configure do |config|
   config.include ActiveJob::TestHelper
   config.include StubGitlabCalls
   config.include StubGitlabData
+  config.include Rails.application.routes.url_helpers, type: :routing
 
   config.infer_spec_type_from_file_location!
   config.raise_errors_for_deprecations!
