@@ -87,13 +87,14 @@ class @Issue
       data: patchData
 
   initParticipants: ->
+    _this = @
     $(document).on "click", ".js-participants-more", @toggleHiddenParticipants
 
-    # hide any participants from number 6
     $(".js-participants-author").each (i) ->
-      if i >= PARTICIPANTS_ROW
+      if i >= _this.PARTICIPANTS_ROW_COUNT
         $(@)
-          .addClass "js-participants-hidden hidden"
+          .addClass "js-participants-hidden"
+          .hide()
 
   toggleHiddenParticipants: (e) ->
     e.preventDefault()
@@ -107,4 +108,4 @@ class @Issue
     else
       $(this).text(originalText)
 
-    $(".js-participants-hidden").toggleClass "hidden"
+    $(".js-participants-hidden").toggle()
