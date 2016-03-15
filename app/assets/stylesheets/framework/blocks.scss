@@ -120,6 +120,10 @@
   .cover-desc {
     padding: 0 $gl-padding 3px;
     color: $gl-text-color;
+
+    &.username:last-child {
+      padding-bottom: $gl-padding;
+    }
   }
 
   .cover-controls {
