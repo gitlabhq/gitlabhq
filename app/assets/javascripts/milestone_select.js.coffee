@@ -46,7 +46,7 @@ class @MilestoneSelect
           milestone.title
         id: (milestone) ->
           if !useId
-            if milestone.title isnt "Any milestone"
+            if milestone.title isnt "Any Milestone"
               milestone.title
             else
               ""
