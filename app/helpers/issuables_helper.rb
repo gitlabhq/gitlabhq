@@ -20,6 +20,34 @@ module IssuablesHelper
     base_issuable_scope(issuable).where('iid < ?', issuable.iid).first
   end
 
+  def user_dropdown_label(user_id, default_label)
+    return "Unassigned" if user_id == "0"
+
+    user = @project.team.users.find_by(id: user_id)
+
+    if user
+      user.name
+    else
+      default_label
+    end
+  end
+
+  def labels_dropdown_label(label_name)
+    if !label_name
+      "Label"
+    else
+      label_name
+    end
+  end
+
+  def milestone_dropdown_label(milestone_name)
+    if !milestone_name
+      "Milestone"
+    else
+      milestone_name
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?
