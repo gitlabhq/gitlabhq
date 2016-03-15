@@ -594,7 +594,11 @@ X-Gitlab-Event: Note Hook
 
 ## Merge request events
 
-Triggered when a new merge request is created, an existing merge request was updated/merged/closed or a commit is added in the source branch.
+Triggered when a new merge request is created, an existing merge request was
+updated/merged/closed/approved, or a commit is added in the source branch.
+
+> **Note:** A webhook for the `approved` action is only fired once the total
+> number of required approvals is met, _not_ after each individual approval.
 
 **Request header**:
 
