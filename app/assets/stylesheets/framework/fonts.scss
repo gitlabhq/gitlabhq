@@ -39,3 +39,45 @@
     font-url('SourceSansPro-Bold.ttf.woff2') format('woff2'),
     font-url('SourceSansPro-Bold.ttf.woff') format('woff');
 }
+
+/* Fonts Source Code Pro*/
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 300;
+  src:
+    local('Source Code Pro Light'),
+    local('SourceCodePro-Light'),
+    font-url('SourceCodePro-Light.ttf.woff2') format('woff2'),
+    font-url('SourceCodePro-Light.ttf.woff') format('woff');
+}
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local('Source Code Pro'),
+    local('SourceCodePro-Regular'),
+    font-url('SourceCodePro-Regular.ttf.woff2') format('woff2'),
+    font-url('SourceCodePro-Regular.ttf.woff') format('woff');
+}
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 600;
+  src:
+    local('Source Code Pro Semibold'),
+    local('SourceCodePro-Semibold'),
+    font-url('SourceCodePro-Semibold.ttf.woff2') format('woff2'),
+    font-url('SourceCodePro-Semibold.ttf.woff') format('woff');
+}
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 700;
+  src:
+    local('Source Code Pro Bold'),
+    local('SourceCodePro-Bold'),
+    font-url('SourceCodePro-Bold.ttf.woff2') format('woff2'),
+    font-url('SourceCodePro-Bold.ttf.woff') format('woff');
+}
