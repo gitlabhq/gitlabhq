@@ -1,6 +1,8 @@
 class Projects::IssuesController < Projects::ApplicationController
+  include ToggleSubscriptionAction
+
   before_action :module_enabled
-  before_action :issue, only: [:edit, :update, :show, :toggle_subscription]
+  before_action :issue, only: [:edit, :update, :show]
 
   # Allow read any issue
   before_action :authorize_read_issue!
@@ -110,12 +112,6 @@ class Projects::IssuesController < Projects::ApplicationController
     redirect_back_or_default(default: { action: 'index' }, options: { notice: "#{result[:count]} issues updated" })
   end
 
-  def toggle_subscription
-    @issue.toggle_subscription(current_user)
-
-    render nothing: true
-  end
-
   def closed_by_merge_requests
     @closed_by_merge_requests ||= @issue.closed_by_merge_requests(current_user)
   end
@@ -129,6 +125,7 @@ class Projects::IssuesController < Projects::ApplicationController
                  redirect_old
                end
   end
+  alias_method :subscribable_resource, :issue
 
   def authorize_update_issue!
     return render_404 unless can?(current_user, :update_issue, @issue)

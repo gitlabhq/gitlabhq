@@ -251,7 +251,7 @@ class GitLabDropdown
       # Toggle active class for the tick mark
       el.toggleClass "is-active"
 
-      if value
+      if value?
         if !field.length
           # Create hidden input for form
           input = "<input type='hidden' name='#{fieldName}' />"
