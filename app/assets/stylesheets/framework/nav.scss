@@ -128,15 +128,23 @@
       }
     }
 
-    @media (max-width: 600px) {
-      .btn, form {
+    @media (max-width: $screen-xs-max) {
+      padding-bottom: 0;
+
+      .btn, form, .dropdown, .dropdown-menu-toggle, .form-control {
         margin: 0 0 10px 0;
         display: block;
+        width: 100%;
       }
 
       form {
         display: block;
         height: auto;
+
+        input {
+          width: 100%;
+          margin: 0  0 10px 0;
+        }
       }
 
       input.input-short {
@@ -145,6 +153,12 @@
 
       .icon-label {
         display: inline-block;
+      }
+
+      // Applies on /dashboard/issues
+      .project-item-select-holder {
+        display: block;
+        margin: 0;
       }
     }
 
