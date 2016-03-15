@@ -90,6 +90,17 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
         expect(doc.css('a').length).to eq 1
       end
+
+      it 'allows references for admin' do
+        admin = create(:admin)
+        project = create(:empty_project, :public)
+        issue = create(:issue, :confidential, project: project)
+
+        link = reference_link(project: project.id, issue: issue.id, reference_filter: 'IssueReferenceFilter')
+        doc = filter(link, current_user: admin)
+
+        expect(doc.css('a').length).to eq 1
+      end
     end
 
     it 'allows references for non confidential issues' do
