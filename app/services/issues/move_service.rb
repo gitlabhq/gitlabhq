@@ -10,13 +10,17 @@ module Issues
       if new_project_id
         @project_new = Project.find(new_project_id)
       end
+
+      if @project_new == @project_old
+        raise StandardError, 'Cannot move issue to project it originates from!'
+      end
     end
 
     def execute
       return unless move?
 
-      # Using trasaction because of a high footprint on
-      # rewriting notes (unfolding references)
+      # Using trasaction because of a high resources footprint
+      # on rewriting notes (unfolding references)
       #
       ActiveRecord::Base.transaction do
         # New issue tasks
@@ -99,6 +103,7 @@ module Issues
     end
 
     def notify_participants
+      notification_service.issue_moved(@issue_old, @issue_new, @current_user)
     end
   end
 end

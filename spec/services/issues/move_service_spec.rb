@@ -55,7 +55,7 @@ describe Issues::MoveService, services: true do
         end
 
         it 'rewrites issue description' do
-          expect(new_issue.description).to include description
+          expect(new_issue.description).to eq description
         end
 
         it 'adds system note to old issue at the end' do
