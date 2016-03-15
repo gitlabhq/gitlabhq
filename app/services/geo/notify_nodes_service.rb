@@ -1,9 +1,13 @@
 module Geo
-  class NotifyNodesService < Geo::BaseService
+  class NotifyNodesService
     include HTTParty
 
     # HTTParty timeout
     default_timeout Gitlab.config.gitlab.webhook_timeout
+
+    def initialize
+      @queue = Gitlab::Geo::UpdateQueue.new('updated_projects')
+    end
 
     def execute
       return if @queue.empty?

@@ -35,7 +35,7 @@ module Gitlab
     end
 
     def self.notify_update(project)
-      ::Geo::EnqueueUpdateService.new(project).execute
+      ::Geo::EnqueueProjectUpdateService.new(project).execute
     end
 
     def self.bulk_notify_job
