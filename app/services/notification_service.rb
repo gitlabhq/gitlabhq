@@ -24,16 +24,17 @@ class NotificationService
     end
   end
 
-  # When create an issue we should send next emails:
+  # When create an issue we should send an email to:
   #
   #  * issue assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
+  #  * watchers of the issue's labels
   #
   def new_issue(issue, current_user)
     new_resource_email(issue, issue.project, 'new_issue_email')
   end
 
-  # When we close an issue we should send next emails:
+  # When we close an issue we should send an email to:
   #
   #  * issue author if their notification level is not Disabled
   #  * issue assignee if their notification level is not Disabled
@@ -43,7 +44,7 @@ class NotificationService
     close_resource_email(issue, issue.project, current_user, 'closed_issue_email')
   end
 
-  # When we reassign an issue we should send next emails:
+  # When we reassign an issue we should send an email to:
   #
   #  * issue old assignee if their notification level is not Disabled
   #  * issue new assignee if their notification level is not Disabled
@@ -52,22 +53,39 @@ class NotificationService
     reassign_resource_email(issue, issue.project, current_user, 'reassigned_issue_email')
   end
 
+  # When we add labels to an issue we should send an email to:
+  #
+  #  * watchers of the issue's labels
+  #
+  def relabeled_issue(issue, added_labels, current_user)
+    relabeled_resource_email(issue, added_labels, current_user, 'relabeled_issue_email')
+  end
 
-  # When create a merge request we should send next emails:
+  # When create a merge request we should send an email to:
   #
   #  * mr assignee if their notification level is not Disabled
+  #  * project team members with notification level higher then Participating
+  #  * watchers of the mr's labels
   #
   def new_merge_request(merge_request, current_user)
     new_resource_email(merge_request, merge_request.target_project, 'new_merge_request_email')
   end
 
-  # When we reassign a merge_request we should send next emails:
+  # When we reassign a merge_request we should send an email to:
   #
   #  * merge_request old assignee if their notification level is not Disabled
   #  * merge_request assignee if their notification level is not Disabled
   #
   def reassigned_merge_request(merge_request, current_user)
     reassign_resource_email(merge_request, merge_request.target_project, current_user, 'reassigned_merge_request_email')
+  end
+
+  # When we add labels to a merge request we should send an email to:
+  #
+  #  * watchers of the mr's labels
+  #
+  def relabeled_merge_request(merge_request, added_labels, current_user)
+    relabeled_resource_email(merge_request, added_labels, current_user, 'relabeled_merge_request_email')
   end
 
   def close_mr(merge_request, current_user)
@@ -91,7 +109,8 @@ class NotificationService
     reopen_resource_email(
       merge_request,
       merge_request.target_project,
-      current_user, 'merge_request_status_email',
+      current_user,
+      'merge_request_status_email',
       'reopened'
     )
   end
@@ -348,19 +367,23 @@ class NotificationService
   end
 
   def add_subscribed_users(recipients, target)
-    return recipients unless target.respond_to? :subscriptions
+    return recipients unless target.respond_to? :subscribers
 
-    subscriptions = target.subscriptions
+    recipients + target.subscribers
+  end
 
-    if subscriptions.any?
-      recipients + subscriptions.where(subscribed: true).map(&:user)
-    else
-      recipients
+  def add_labels_subscribers(recipients, target, labels: nil)
+    return recipients unless target.respond_to? :labels
+
+    (labels || target.labels).each do |label|
+      recipients += label.subscribers
     end
+
+    recipients
   end
 
   def new_resource_email(target, project, method)
-    recipients = build_recipients(target, project, target.author)
+    recipients = build_recipients(target, project, target.author, action: :new)
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id).deliver_later
@@ -392,6 +415,15 @@ class NotificationService
     end
   end
 
+  def relabeled_resource_email(target, labels, current_user, method)
+    recipients = build_relabeled_recipients(target, current_user, labels: labels)
+    label_names = labels.map(&:name)
+
+    recipients.each do |recipient|
+      mailer.send(method, recipient.id, target.id, label_names, current_user.id).deliver_later
+    end
+  end
+
   def reopen_resource_email(target, project, current_user, method, status)
     recipients = build_recipients(target, project, current_user)
 
@@ -416,10 +448,22 @@ class NotificationService
 
     recipients = reject_muted_users(recipients, project)
     recipients = add_subscribed_users(recipients, target)
+
+    if action == :new
+      recipients = add_labels_subscribers(recipients, target)
+    end
+
     recipients = reject_unsubscribed_users(recipients, target)
 
     recipients.delete(current_user)
 
+    recipients.uniq
+  end
+
+  def build_relabeled_recipients(target, current_user, labels:)
+    recipients = add_labels_subscribers([], target, labels: labels)
+    recipients = reject_unsubscribed_users(recipients, target)
+    recipients.delete(current_user)
     recipients.uniq
   end
 

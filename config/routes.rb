@@ -675,6 +675,10 @@ Rails.application.routes.draw do
           collection do
             post :generate
           end
+
+          member do
+            post :toggle_subscription
+          end
         end
 
         resources :issues, constraints: { id: /\d+/ }, except: [:destroy] do
