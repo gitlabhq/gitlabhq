@@ -10,6 +10,7 @@ class @UsersSelect
       showAnyUser = $(dropdown).data('any-user')
       firstUser = $(dropdown).data('first-user')
       selectedId = $(dropdown).data('selected')
+      defaultLabel = $(dropdown).text().trim()
 
       $(dropdown).glDropdown(
         data: (term, callback) =>
@@ -53,9 +54,14 @@ class @UsersSelect
           fields: ['name', 'username']
         selectable: true
         fieldName: $(dropdown).data('field-name')
+        toggleLabel: (selected) ->
+          if selected && selected.id?
+            selected.name
+          else
+            defaultLabel
         clicked: ->
           if $(dropdown).hasClass "js-filter-submit"
-            $(dropdown).parents('form').submit()
+            Issues.filterResults $(dropdown).parents("form")
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false

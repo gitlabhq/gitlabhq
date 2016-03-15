@@ -7,6 +7,7 @@ class @MilestoneSelect
       showNo = $(dropdown).data('show-no')
       showAny = $(dropdown).data('show-any')
       useId = $(dropdown).data('use-id')
+      defaultLabel = $(dropdown).text().trim()
 
       $(dropdown).glDropdown(
         data: (term, callback) ->
@@ -42,6 +43,11 @@ class @MilestoneSelect
         search:
           fields: ['title']
         selectable: true
+        toggleLabel: (selected) ->
+          if selected && selected.id
+            selected.title
+          else
+            defaultLabel
         fieldName: $(dropdown).data('field-name')
         text: (milestone) ->
           milestone.title
@@ -57,5 +63,5 @@ class @MilestoneSelect
           milestone.title is selectedMilestone
         clicked: ->
           if $(dropdown).hasClass "js-filter-submit"
-            $(dropdown).parents('form').submit()
+            Issues.filterResults $(dropdown).parents("form")
       )

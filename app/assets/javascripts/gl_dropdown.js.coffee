@@ -246,10 +246,14 @@ class GitLabDropdown
         if oldValue
           value = "#{oldValue},#{value}"
       else
-        @dropdown.find(ACTIVE_CLASS).removeClass ACTIVE_CLASS
+        @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
 
       # Toggle active class for the tick mark
       el.toggleClass "is-active"
+
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject)
 
       if value?
         if !field.length

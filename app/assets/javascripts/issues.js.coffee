@@ -41,18 +41,20 @@
     @timer = null
     $("#issue_search").keyup ->
       clearTimeout(@timer)
-      @timer = setTimeout(Issues.filterResults, 500)
+      @timer = setTimeout( ->
+        Issues.filterResults $("#issue_search_form")
+      , 500)
 
-  filterResults: =>
-    form = $("#issue_search_form")
-    search = $("#issue_search").val()
+  filterResults: (form) =>
     $('.issues-holder').css("opacity", '0.5')
-    issues_url = form.attr('action') + '?' + form.serialize()
+    form_action = form.attr('action')
+    form_data = form.serialize()
+    issues_url = form_action + ("#{if form_action.indexOf("?") < 0 then '?' else '&'}") + form_data
 
     $.ajax
       type: "GET"
-      url: form.attr('action')
-      data: form.serialize()
+      url: form_action
+      data: form_data
       complete: ->
         $('.issues-holder').css("opacity", '1.0')
       success: (data) ->

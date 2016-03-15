@@ -10,6 +10,7 @@ class @LabelsSelect
       newColorField = $('#new_label_color')
       showNo = $(dropdown).data('show-no')
       showAny = $(dropdown).data('show-any')
+      defaultLabel = $(dropdown).text().trim()
 
       if newLabelField.length
         $('.suggest-colors-dropdown a').on "click", (e) ->
@@ -51,13 +52,13 @@ class @LabelsSelect
 
             if showNo
               data.unshift(
-                id: "0"
-                title: 'No label'
+                id: 0
+                title: 'No Label'
               )
 
             if showAny
               data.unshift(
-                title: 'Any label'
+                title: 'Any Label'
               )
 
             if data.length > 2
@@ -83,10 +84,18 @@ class @LabelsSelect
         search:
           fields: ['title']
         selectable: true
+        toggleLabel: (selected) ->
+          if selected && selected.title isnt "Any Label"
+            selected.title
+          else
+            defaultLabel
         fieldName: $(dropdown).data('field-name')
         id: (label) ->
-          label.title
+          if label.title is "Any Label"
+            ""
+          else
+            label.title
         clicked: ->
           if $(dropdown).hasClass "js-filter-submit"
-            $(dropdown).parents('form').submit()
+            Issues.filterResults $(dropdown).parents("form")
       )
