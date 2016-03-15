@@ -427,6 +427,7 @@ merge request:
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style/testing)
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
+1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
 1.  [Database Migrations](doc/development/migration_style_guide.md)
@@ -494,6 +495,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
+[scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
 [`gitlab1.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/gitlab1.atype/

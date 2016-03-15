@@ -283,6 +283,7 @@ group :development, :test do
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
   gem 'rubocop', '~> 0.35.0', require: false
+  gem 'scss_lint', '~> 0.47.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
   gem 'flog', require: false
