@@ -14,11 +14,11 @@ module CiStatusHelper
 
   def ci_status_with_icon(status, target = nil)
     content = ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
-    clazz = "ci-status ci-#{status}"
+    klass = "ci-status ci-#{status}"
     if target
-      link_to content, target, class: clazz
+      link_to content, target, class: klass
     else
-      content_tag :span, content, class: clazz
+      content_tag :span, content, class: klass
     end
   end
 
