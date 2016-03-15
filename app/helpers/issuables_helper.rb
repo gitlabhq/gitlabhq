@@ -23,7 +23,8 @@ module IssuablesHelper
   def user_dropdown_label(user_id, default_label)
     return "Unassigned" if user_id == "0"
 
-    user = @project.team.users.find_by(id: user_id)
+    user = @project.team.users.find_by(id: user_id) if @project
+    user = User.find_by_id(user_id) if !@project
 
     if user
       user.name
