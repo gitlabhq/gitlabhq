@@ -23,6 +23,7 @@ module Projects
       end
 
       #TODO Definitely refactor this method!
+      #TODO Think about having a yaml file to describe the tree instead of just hashes?
       def create_relations(relation_list = default_relation_list, tree_hash = @tree_hash)
         relation_list.each do |relation|
           relation_hash = nil
