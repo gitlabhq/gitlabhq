@@ -399,7 +399,7 @@ The above script will:
 >**Notes:**
 >
 > - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
-> - Limited Windows support was added in GitLab Runner v.1.0.0.
+> - Windows support was added in GitLab Runner v.1.0.0.
 > - Currently not all executors are supported.
 > - Build artifacts are only collected for successful builds.
 
