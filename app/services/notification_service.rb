@@ -236,14 +236,6 @@ class NotificationService
     end
   end
 
-  def issue_moved(issue, old_project, new_project, current_user)
-    recipients = build_recipients(issue, old_project, current_user)
-
-    recipients.each do |recipient|
-      mailer.send('issue_moved', recipient.id, issue.id, current_user.id).deliver_later
-    end
-  end
-
   protected
 
   # Get project users with WATCH notification level

@@ -4,14 +4,20 @@ module Issues
       super(project, current_user, params)
 
       @issue_old = issue
-      @issue_new = issue.dup
+      @issue_new = nil
       @project_old = @project
-      @project_new = Project.find(new_project_id)
+
+      if new_project_id
+        @project_new = Project.find(new_project_id)
+      end
     end
 
     def execute
       return unless move?
 
+      # Using trasaction because of a high footprint on
+      # rewriting notes (unfolding references)
+      #
       ActiveRecord::Base.transaction do
         # New issue tasks
         #
@@ -25,10 +31,7 @@ module Issues
         close_old_issue
       end
 
-      # Notifications and hooks
-      #
-      # notify_participants
-      # trigger_hooks_and_events
+      notify_participants
 
       @issue_new
     end
@@ -45,20 +48,14 @@ module Issues
     end
 
     def create_new_issue
-      @issue_new.project = @project_new
+      new_params = { id: nil, iid: nil, milestone: nil, label_ids: [],
+                     project: @project_new, author: @issue_old.author,
+                     description: rewrite_references(@issue_old) }
 
-      # Reset internal ID, will be regenerated before save
-      #
-      @issue_new.iid = nil
+      create_service = CreateService.new(@project_new, @current_user,
+                                         params.merge(new_params))
 
-      # Reset labels and milestones, as those are not valid in context
-      # of a new project
-      #
-      @issue_new.labels = []
-      @issue_new.milestone = nil
-
-      @issue_new.description = rewrite_references(@issue_old)
-      @issue_new.save!
+      @issue_new = create_service.execute(set_author: false)
     end
 
     def rewrite_notes
@@ -72,7 +69,8 @@ module Issues
     end
 
     def close_old_issue
-      @issue_old.update(state: :closed)
+      close_service = CloseService.new(@project_new, @current_user)
+      close_service.execute(@issue_old, notifications: false, system_note: false)
     end
 
     def add_moved_from_note
@@ -93,30 +91,14 @@ module Issues
 
     def noteable_content(noteable)
       case noteable
-      when Issue
-        noteable.description
-      when Note
-        noteable.note
+      when Issue then noteable.description
+      when Note then noteable.note
       else
-        raise 'Unexpected noteable while moving an issue'
+        raise 'Unexpected noteable while moving an issue!'
       end
     end
 
-    def trigger_hooks_and_events
-      event_service.close_issue(@issue_old, @current_user)
-      event_service.open_issue(@issue_new, @current_user)
-
-      @issue_new.create_cross_references!(@current_user)
-
-      execute_hooks(@issue_old, 'close')
-      execute_hooks(@issue_new, 'open')
-    end
-
     def notify_participants
-      todo_service.close_issue(@issue_old, @current_user)
-      todo_service.open_issue(@issue_new, @current_user)
-
-      notification_service.issue_moved(@issue_old, @issue_new, @current_user)
     end
   end
 end

@@ -76,7 +76,7 @@ describe Issues::MoveService, services: true do
 
         it 'persists all changes' do
           expect(old_issue.changed?).to be false
-          expect(new_issue.persisted?).to be true
+          expect(new_issue.changed?).to be false
         end
 
         it 'preserves author' do
