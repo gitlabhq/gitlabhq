@@ -71,6 +71,8 @@ class @UsersSelect
             Issues.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
+          else
+            console.log 'else'
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false
