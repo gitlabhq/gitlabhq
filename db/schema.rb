@@ -875,9 +875,11 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "note_id"
+    t.string   "commit_id"
   end
 
   add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
+  add_index "todos", ["commit_id"], name: "index_todos_on_commit_id", using: :btree
   add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
   add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
   add_index "todos", ["state"], name: "index_todos_on_state", using: :btree
