@@ -222,7 +222,7 @@ class Ability
         :admin_wiki,
         :admin_project,
         :admin_commit_status,
-        :admin_build,
+        :admin_build
       ]
     end
 
