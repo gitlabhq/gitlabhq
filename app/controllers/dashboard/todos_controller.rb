@@ -10,7 +10,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'Todo was successfully marked as done.' }
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 
@@ -19,7 +19,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
-      format.js { render nothing: true }
+      format.js { head :ok }
     end
   end
 
