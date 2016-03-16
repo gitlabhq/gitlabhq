@@ -27,7 +27,9 @@ class Todo < ActiveRecord::Base
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
-  validates :action, :project, :target, :user, presence: true
+  validates :action, :project, :target_type, :user, presence: true
+  validates :target_id, presence: true, if: ->(t) { t.target_type.present? && t.target_type != 'Commit' }
+  validates :commit_id, presence: true, if: ->(t) { t.target_type.present? && t.target_type == 'Commit' }
 
   default_scope { reorder(id: :desc) }
 
@@ -48,6 +50,31 @@ class Todo < ActiveRecord::Base
       note.note
     else
       target.title
+    end
+  end
+
+  def for_commit?
+    target_type == "Commit"
+  end
+
+  # override to return commits, which are not active record
+  def target
+    if for_commit?
+      project.commit(commit_id)
+    else
+      super
+    end
+  # Temp fix to prevent app crash
+  # if note commit id doesn't exist
+  rescue
+    nil
+  end
+
+  def to_reference
+    if for_commit?
+      Commit.truncate_sha(commit_id)
+    else
+      target.to_reference
     end
   end
 end

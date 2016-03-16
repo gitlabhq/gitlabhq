@@ -30,5 +30,10 @@ FactoryGirl.define do
     trait :mentioned do
       action { Todo::MENTIONED }
     end
+
+    trait :on_commit do
+      commit_id RepoHelpers.sample_commit.id
+      target_type "Commit"
+    end
   end
 end
