@@ -83,10 +83,10 @@
   .event_icon {
     position: relative;
     float: right;
-    border: 1px solid #EEE;
+    border: 1px solid #eee;
     padding: 5px;
     @include border-radius(5px);
-    background: #F9F9F9;
+    background: #f9f9f9;
     margin-left: 10px;
     top: -6px;
     img {
@@ -160,7 +160,7 @@
 
     .event-body {
       margin: 0;
-      border-left: 2px solid #DDD;
+      border-left: 2px solid #ddd;
       padding-left: 10px;
     }
 

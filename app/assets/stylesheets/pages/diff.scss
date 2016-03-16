@@ -29,7 +29,7 @@
   .diff-content {
     overflow: auto;
     overflow-y: hidden;
-    background: #FFF;
+    background: #fff;
     color: #333;
 
     .unfold {
@@ -118,7 +118,7 @@
       background-color: #fff;
       line-height: 0;
       img {
-        border: 1px solid #FFF;
+        border: 1px solid #fff;
         background: image-url('trans_bg.gif');
         max-width: 100%;
       }
@@ -265,7 +265,7 @@
   .view-modes {
     padding: 10px;
     text-align: center;
-    background: #EEE;
+    background: #eee;
 
     ul, li {
       list-style: none;
