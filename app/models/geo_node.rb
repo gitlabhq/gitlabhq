@@ -52,8 +52,12 @@ class GeoNode < ActiveRecord::Base
     self.relative_url_root = new_uri.path != '/' ? new_uri.path : ''
   end
 
-  def notify_url
+  def notify_projects_url
     URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_projects").to_s
+  end
+
+  def notify_wikis_url
+    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_wikis").to_s
   end
 
   def oauth_callback_url
