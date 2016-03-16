@@ -196,7 +196,7 @@ class Repository
   end
 
   def fetch_remote_forced!(remote)
-    gitlab_shell.fetch_remote(path_with_namespace, remote, true)
+    gitlab_shell.fetch_remote(path_with_namespace, remote, forced: true)
   end
 
   def branch_names
