@@ -7,9 +7,10 @@ class @MergeRequestWidget
   #
 
   constructor: (@opts) ->
-    @first = true
+    @firstCICheck = true
     modal = $('#modal_merge_info').modal(show: false)
-    @getBuildStatus()
+    @getCIStatus()
+    notifyPermissions()
     @readyForCICheck = true
     # clear the build poller
 
@@ -39,31 +40,34 @@ class @MergeRequestWidget
     else
       status
 
-  getBuildStatus: ->
-    urlToCiCheck = @opts.url_to_ci_check
-    _this = @
-    @fetchBuildStatusInterval = setInterval (->
-      if not _this.readyForCICheck
-        return;
-      $.getJSON urlToCiCheck, (data) ->
-        _this.readyForCICheck = true
-        if _this.first
-          _this.first = false
-          _this.opts.current_status = data.status
-        if data.status isnt _this.opts.current_status
-          notify("Build #{_this.ciLabelForStatus(data.status)}",
-            _this.opts.ci_message.replace('{{status}}',
-              _this.ciLabelForStatus(data.status)), 
-            _this.opts.gitlab_icon)
-          setTimeout (->
-            Turbolinks.visit(location.href)
-            return
-          ), 2000
-          _this.opts.current_status = data.status
-        return
-      _this.readyForCICheck = false
-      return
+  getCIStatus: ->
+    urlToCICheck = @opts.url_to_ci_check
+    @fetchBuildStatusInterval = setInterval ( =>
+      return if not @readyForCICheck
 
+      $.getJSON urlToCICheck, (data) =>
+        @readyForCICheck = true
+
+        if @firstCICheck
+          @firstCICheck = false
+          @opts.current_status = data.status
+
+        if data.status isnt @opts.current_status
+          message = @opts.ci_message.replace('{{status}}', @ciLabelForStatus(data.status))
+          message = message.replace('{{sha}}', data.sha)
+
+          notify(
+            "Build #{_this.ciLabelForStatus(data.status)}",
+            message,
+            @opts.gitlab_icon,
+            ->
+              @close()
+              Turbolinks.visit "#{window.location.pathname}/builds"
+          )
+
+          @opts.current_status = data.status
+
+      @readyForCICheck = false
     ), 5000
 
   getCiStatus: ->

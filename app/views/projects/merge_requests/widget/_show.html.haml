@@ -14,17 +14,10 @@
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
     url_to_ci_check: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     gitlab_icon: "#{asset_path 'gitlab_logo.png'}",
-    current_status: ""
+    current_status: "",
+    ci_message: "Build {{status}} for {{sha}}"
   };
-
-- if @merge_request.ci_commit
-  :javascript
-    opts.ci_message = "Build {{status}} for #{@merge_request.ci_commit.sha}";
-- else
-  :javascript
-    opts.ci_message = "Build {{status}} for #{@merge_request.last_commit.sha}";
-
-:javascript
+  
   if(typeof merge_request_widget === 'undefined') {
     merge_request_widget = new MergeRequestWidget(opts);
   }
