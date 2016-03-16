@@ -108,6 +108,12 @@ ul.notes {
         word-wrap: break-word;
         @include md-typography;
 
+        pre {
+          code {
+            white-space: pre-wrap;
+          }
+        }
+
         // Reset ul style types since we're nested inside a ul already
         & > ul {
           list-style-type: disc;
