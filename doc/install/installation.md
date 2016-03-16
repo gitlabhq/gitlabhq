@@ -89,8 +89,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.4.3.tar.gz | tar xz
-    cd git-2.4.3/
+    curl -O --progress https://www.kernel.org/pub/software/scm/git/git-2.7.3.tar.gz
+    echo '30d067499b61caddedaf1a407b4947244f14d10842d100f7c7c6ea1c288280cd  git-2.7.3.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.3.tar.gz
+    cd git-2.7.3/
     ./configure
     make prefix=/usr/local all
 
