@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160314143402) do
+ActiveRecord::Schema.define(version: 20160316124047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -439,6 +439,8 @@ ActiveRecord::Schema.define(version: 20160314143402) do
     t.boolean  "is_sample",            default: false
     t.integer  "max_file_size",        default: 0,     null: false
   end
+
+  add_index "git_hooks", ["project_id"], name: "index_git_hooks_on_project_id", using: :btree
 
   create_table "historical_data", force: :cascade do |t|
     t.date     "date",              null: false
