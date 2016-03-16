@@ -60,12 +60,14 @@ module IssuesHelper
   def project_options(issuable, current_user, ability: :read_project)
     projects = current_user.authorized_projects
     projects = projects.select do |project|
-      current_user.can?(ability, project) && project != issuable.project
+      current_user.can?(ability, project)
     end
 
-    projects.unshift(OpenStruct.new(id: 0, name_with_namespace: 'No project'))
+    no_project = OpenStruct.new(id: 0, name_with_namespace: 'No project')
+    projects.unshift(no_project)
+    projects.delete(issuable.project)
 
-    options_from_collection_for_select(projects, :id, :name_with_namespace, 0)
+    options_from_collection_for_select(projects, :id, :name_with_namespace)
   end
 
   def status_box_class(item)

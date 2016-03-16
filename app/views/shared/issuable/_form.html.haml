@@ -70,7 +70,7 @@
 - if issuable.is_a?(Issue) && can?(current_user, :admin_issue, issuable.project)
   %hr
     .form-group
-      = f.label :move_to_project_id, 'Move', class: 'control-label'
+      = label_tag :move_to_project_id, 'Move', class: 'control-label'
       .col-sm-10
         - projects = project_options(issuable, current_user, ability: :admin_issue)
         = select_tag(:move_to_project_id, projects, include_blank: true,

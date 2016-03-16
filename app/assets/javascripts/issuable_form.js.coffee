@@ -30,11 +30,11 @@ class @IssuableForm
       "description"
     ]
 
-  handleSubmit: (e) =>
-    @resetAutosave
-
+  handleSubmit: =>
     if (parseInt(@issueMoveField?.val()) ? 0) > 0
-      e.preventDefault() unless confirm(ISSUE_MOVE_CONFIRM_MSG)
+      return false unless confirm(ISSUE_MOVE_CONFIRM_MSG)
+
+    @resetAutosave()
 
   resetAutosave: =>
     @titleField.data("autosave").reset()

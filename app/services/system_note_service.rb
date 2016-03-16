@@ -3,7 +3,6 @@
 # Used for creating system notes (e.g., when a user references a merge request
 # from an issue, an issue's assignee changes, an issue is closed, etc.)
 class SystemNoteService
-  extend GitlabMarkdownHelper
   # Called when commits are added to a Merge Request
   #
   # noteable         - Noteable object
@@ -398,16 +397,15 @@ class SystemNoteService
   #
   # Example Note text:
   #
-  #   "Moved to project_new/#11"
+  #   "Moved to some_namespace/project_new#11"
   #
   # Returns the created Note object
-  def self.noteable_moved(direction, noteable, project, noteable_ref, author)
+  def self.noteable_moved(noteable, project, noteable_ref, author, direction:)
     unless [:to, :from].include?(direction)
-      raise StandardError, "Invalid direction `#{direction}`"
+      raise ArgumentError, "Invalid direction `#{direction}`"
     end
 
-    cross_reference = cross_project_reference(noteable_ref.project, noteable_ref)
-
+    cross_reference = noteable_ref.to_reference(project)
     body = "Moved #{direction} #{cross_reference}"
     create_note(noteable: noteable, project: project, author: author, note: body)
   end

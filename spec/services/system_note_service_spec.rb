@@ -446,7 +446,7 @@ describe SystemNoteService, services: true do
     let(:new_noteable) { create(:issue, project: new_project) }
 
     subject do
-      described_class.noteable_moved(direction, noteable, project, new_noteable, author)
+      described_class.noteable_moved(noteable, project, new_noteable, author, direction: direction)
     end
 
     shared_examples 'cross project mentionable' do

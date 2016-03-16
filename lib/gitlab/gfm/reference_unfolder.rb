@@ -1,8 +1,30 @@
 module Gitlab
   module Gfm
     ##
-    # Class than unfolds local references in text.
+    # Class that unfolds local references in text.
     #
+    # The initializer takes text in Markdown and project this text is valid
+    # in context of.
+    #
+    # `unfold` method tries to find all local references and unfold each of
+    # those local references to cross reference format.
+    #
+    # Examples:
+    #
+    # 'Hello, this issue is related to #123 and
+    #  other issues labeled with ~"label"', will be converted to:
+    #
+    # 'Hello, this issue is related to gitlab-org/gitlab-ce#123 and
+    #  other issue labeled with gitlab-org/gitlab-ce~"label"'.
+    #
+    # It does respect markdown lexical rules, so text in code block will not be
+    # replaced, see another example:
+    #
+    # 'Merge request for issue #1234, see also link:
+    #  http://gitlab.com/some/link/#1234, and code `puts #1234`' =>
+    #
+    # 'Merge request for issue gitlab-org/gitlab-ce#1234, se also link:
+    #  http://gitlab.com/some/link/#1234, and code `puts #1234`'
     #
     class ReferenceUnfolder
       def initialize(text, project)
@@ -66,8 +88,7 @@ module Gitlab
       end
 
       def markdown(text)
-        helper = Class.new.extend(GitlabMarkdownHelper)
-        helper.markdown(text, project: @project, no_original_data: true)
+        Banzai.render(text, project: @project, no_original_data: true)
       end
     end
   end

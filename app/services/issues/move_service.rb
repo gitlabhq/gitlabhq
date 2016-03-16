@@ -7,7 +7,7 @@ module Issues
       @issue_new = nil
       @project_old = @project
 
-      if new_project_id
+      if new_project_id.to_i > 0
         @project_new = Project.find(new_project_id)
       end
 
@@ -19,7 +19,7 @@ module Issues
     def execute
       return unless move?
 
-      # Using trasaction because of a high resources footprint
+      # Using transaction because of a high resources footprint
       # on rewriting notes (unfolding references)
       #
       ActiveRecord::Base.transaction do
@@ -54,10 +54,11 @@ module Issues
     def create_new_issue
       new_params = { id: nil, iid: nil, milestone: nil, label_ids: [],
                      project: @project_new, author: @issue_old.author,
-                     description: rewrite_references(@issue_old) }
+                     description: unfold_references(@issue_old.description) }
 
+      new_params = @issue_old.serializable_hash.merge(new_params)
       create_service = CreateService.new(@project_new, @current_user,
-                                         params.merge(new_params))
+                                         new_params)
 
       @issue_new = create_service.execute(set_author: false)
     end
@@ -66,7 +67,7 @@ module Issues
       @issue_old.notes.find_each do |note|
         new_note = note.dup
         new_params = { project: @project_new, noteable: @issue_new,
-                       note: rewrite_references(new_note) }
+                       note: unfold_references(new_note.note) }
 
         new_note.update(new_params)
       end
@@ -78,28 +79,18 @@ module Issues
     end
 
     def add_moved_from_note
-      SystemNoteService.noteable_moved(:from, @issue_new, @project_new,
-                                       @issue_old, @current_user)
+      SystemNoteService.noteable_moved(@issue_new, @project_new,
+                                       @issue_old, @current_user, direction: :from)
     end
 
     def add_moved_to_note
-      SystemNoteService.noteable_moved(:to, @issue_old, @project_old,
-                                       @issue_new, @current_user)
+      SystemNoteService.noteable_moved(@issue_old, @project_old,
+                                       @issue_new, @current_user, direction: :to)
     end
 
-    def rewrite_references(noteable)
-      content = noteable_content(noteable).dup
+    def unfold_references(content)
       unfolder = Gitlab::Gfm::ReferenceUnfolder.new(content, @project_old)
       unfolder.unfold(@project_new)
-    end
-
-    def noteable_content(noteable)
-      case noteable
-      when Issue then noteable.description
-      when Note then noteable.note
-      else
-        raise 'Unexpected noteable while moving an issue!'
-      end
     end
 
     def notify_participants
