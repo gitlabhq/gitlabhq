@@ -73,15 +73,15 @@ describe Todo, models: true do
     end
   end
 
-  describe '#done!' do
+  describe '#done' do
     it 'changes state to done' do
       todo = create(:todo, state: :pending)
-      expect { todo.done! }.to change(todo, :state).from('pending').to('done')
+      expect { todo.done }.to change(todo, :state).from('pending').to('done')
     end
 
     it 'does not raise error when is already done' do
       todo = create(:todo, state: :done)
-      expect { todo.done! }.not_to raise_error
+      expect { todo.done }.not_to raise_error
     end
   end
 
