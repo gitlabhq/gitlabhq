@@ -33,6 +33,13 @@
     .project-settings-dropdown {
       margin-left: 10px;
       display: inline-block;
+
+      .dropdown-menu {
+        left: auto;
+        width: auto;
+        right: 0px;
+        max-width: 240px;
+      }
     }
   }
 
