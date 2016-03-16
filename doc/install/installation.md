@@ -144,7 +144,7 @@ use 64-bit Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
     curl -O --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
-    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -c - && \
+    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
       sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
     rm go1.5.3.linux-amd64.tar.gz
