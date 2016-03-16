@@ -15,6 +15,7 @@ v 8.6.0 (unreleased)
   - Update `omniauth-saml` to 1.5.0 to allow for custom response attributes to be set
   - Memoize @group in Admin::GroupsController (Yatish Mehta)
   - Indicate how much an MR diverged from the target branch (Pierre de La Morinerie)
+  - Added omniauth-auth0 Gem (Daniel Carraro)
   - Strip leading and trailing spaces in URL validator (evuez)
   - Add "last_sign_in_at" and "confirmed_at" to GET /users/* API endpoints for admins (evuez)
   - Return empty array instead of 404 when commit has no statuses in commit status API
