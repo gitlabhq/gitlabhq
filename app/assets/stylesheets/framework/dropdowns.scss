@@ -161,9 +161,8 @@
 
 .dropdown-menu-user-full-name {
   display: block;
-  margin-bottom: 2px;
   font-weight: 600;
-  line-height: 1;
+  line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -171,7 +170,7 @@
 
 .dropdown-menu-user-username {
   display: block;
-  line-height: 1;
+  line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
