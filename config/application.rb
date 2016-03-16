@@ -4,7 +4,7 @@ require 'rails/all'
 require 'devise'
 I18n.config.enforce_available_locales = false
 Bundler.require(:default, Rails.env)
-require_relative '../lib/gitlab/redis_config'
+require_relative '../lib/gitlab/redis'
 
 module Gitlab
   REDIS_CACHE_NAMESPACE = 'cache:gitlab'
@@ -69,7 +69,7 @@ module Gitlab
       end
     end
 
-    redis_config_hash = Gitlab::RedisConfig.redis_store_options
+    redis_config_hash = Gitlab::Redis.redis_store_options
     redis_config_hash[:namespace] = REDIS_CACHE_NAMESPACE
     redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     config.cache_store = :redis_store, redis_config_hash

@@ -1,14 +1,19 @@
 module Gitlab
-  class RedisConfig
+  class Redis
     attr_reader :url
 
     def self.url
-      new.url
+      @url ||= new.url
+    end
+
+    def self.with
+      @pool ||= ConnectionPool.new { ::Redis.new(url: url) }
+      @pool.with { |redis| yield redis }
     end
     
     def self.redis_store_options
       url = new.url
-      redis_config_hash = Redis::Store::Factory.extract_host_options_from_uri(url)
+      redis_config_hash = ::Redis::Store::Factory.extract_host_options_from_uri(url)
       # Redis::Store does not handle Unix sockets well, so let's do it for them
       redis_uri = URI.parse(url)
       if redis_uri.scheme == 'unix'
