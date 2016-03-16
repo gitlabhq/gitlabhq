@@ -213,7 +213,7 @@ module Gitlab
           end
 
         commits.each do |commit|
-          next if commit_from_annex_sync?(commit, ref)
+          next if commit_from_annex_sync?(commit.id, ref)
           if status_object = check_commit(commit, git_hook)
             return status_object
           end
