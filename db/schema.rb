@@ -867,7 +867,7 @@ ActiveRecord::Schema.define(version: 20160316204731) do
   create_table "todos", force: :cascade do |t|
     t.integer  "user_id",     null: false
     t.integer  "project_id",  null: false
-    t.integer  "target_id",   null: false
+    t.integer  "target_id"
     t.string   "target_type", null: false
     t.integer  "author_id"
     t.integer  "action",      null: false
