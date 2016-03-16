@@ -151,7 +151,7 @@
   padding: 2px 25px 2px 5px;
   background: #fff image-url('select2.png');
   background-repeat: no-repeat;
-  background-position: right 0px bottom 6px;
+  background-position: right 0 bottom 6px;
   border: 1px solid $input-border;
   @include border-radius($border-radius-default);
   @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);

@@ -85,7 +85,7 @@
 
   .project-repo-buttons {
     margin-top: 20px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 
     .count-buttons {
       display: block;
@@ -162,7 +162,7 @@
         cursor: pointer;
         background-image: none;
         white-space: nowrap;
-        margin: 0 11px 0px 4px;
+        margin: 0 11px 0 4px;
 
         &:hover {
           background: #fff;
@@ -210,7 +210,7 @@
 }
 
 .project_member_row form {
-  margin: 0px;
+  margin: 0;
 }
 
 .transfer-project .select2-container {

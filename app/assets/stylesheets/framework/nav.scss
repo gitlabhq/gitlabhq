@@ -59,7 +59,7 @@
   .nav-links {
     display: inline-block;
     width: 50%;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     border-bottom: none;
 
     /* Small devices (phones, tablets, 768px and lower) */
@@ -74,7 +74,7 @@
     float: right;
     text-align: right;
     padding: 11px 0;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 
     > .dropdown {
       margin-right: $gl-padding-top;
