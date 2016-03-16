@@ -60,8 +60,12 @@ class @UsersSelect
           else
             defaultLabel
         clicked: ->
-          if $(dropdown).hasClass "js-filter-submit"
+          page = $("body").data "page"
+
+          if $(dropdown).hasClass("js-filter-submit") && page is "projects:issues:index"
             Issues.filterResults $(dropdown).parents("form")
+          else if $(dropdown).hasClass "js-filter-submit"
+            $(dropdown).parents("form").submit()
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false

@@ -58,6 +58,7 @@ class @LabelsSelect
 
             if showAny
               data.unshift(
+                any: true
                 title: 'Any Label'
               )
 
@@ -91,11 +92,15 @@ class @LabelsSelect
             defaultLabel
         fieldName: $(dropdown).data('field-name')
         id: (label) ->
-          if label.title is "Any Label"
+          if label.any?
             ""
           else
             label.title
         clicked: ->
-          if $(dropdown).hasClass "js-filter-submit"
+          page = $("body").data "page"
+          
+          if $(dropdown).hasClass("js-filter-submit") && page is "projects:issues:index"
             Issues.filterResults $(dropdown).parents("form")
+          else if $(dropdown).hasClass "js-filter-submit"
+            $(dropdown).parents("form").submit()
       )

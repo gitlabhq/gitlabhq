@@ -62,6 +62,10 @@ class @MilestoneSelect
         isSelected: (milestone) ->
           milestone.title is selectedMilestone
         clicked: ->
-          if $(dropdown).hasClass "js-filter-submit"
+          page = $("body").data "page"
+
+          if $(dropdown).hasClass("js-filter-submit") && page is "projects:issues:index"
             Issues.filterResults $(dropdown).parents("form")
+          else if $(dropdown).hasClass "js-filter-submit"
+            $(dropdown).parents("form").submit()
       )
