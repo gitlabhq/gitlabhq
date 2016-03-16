@@ -10,7 +10,7 @@ Capybara.register_driver :poltergeist do |app|
   Capybara::Poltergeist::Driver.new(app, js_errors: true, timeout: timeout, window_size: [1366, 768])
 end
 
-Capybara.default_wait_time = timeout
+Capybara.default_max_wait_time = timeout
 Capybara.ignore_hidden_elements = true
 
 unless ENV['CI'] || ENV['CI_SERVER']
