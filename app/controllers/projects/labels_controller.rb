@@ -16,7 +16,7 @@ class Projects::LabelsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @labels.to_json
+        render json: @project.labels
       end
     end
   end
