@@ -3,13 +3,6 @@ class UsersController < ApplicationController
   before_action :set_user
 
   def show
-    @contributed_projects = contributed_projects.joined(@user).reject(&:forked?)
-
-    @projects = PersonalProjectsFinder.new(@user).execute(current_user)
-    @projects = @projects.page(params[:page]).per(PER_PAGE)
-
-    @groups =  JoinedGroupsFinder.new(@user).execute(current_user)
-
     respond_to do |format|
       format.html
 
@@ -115,7 +108,7 @@ class UsersController < ApplicationController
   end
 
   def load_groups
-    @groups = @user.groups.order_id_desc
+    @groups = JoinedGroupsFinder.new(@user).execute(current_user)
   end
 
   def projects_for_current_user

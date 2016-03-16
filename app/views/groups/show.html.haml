@@ -14,11 +14,11 @@
   .avatar-holder
     = link_to group_icon(@group), target: '_blank' do
       = image_tag group_icon(@group), class: "avatar group-avatar s90"
-  .group-projects-show-title
+  .cover-title
     %h1
       = @group.name
 
-      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: "#{visibility_level_label(@group.visibility_level)} - #{project_visibility_level_description(@group.visibility_level)}"}
+      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: "#{visibility_level_label(@group.visibility_level)} - #{group_visibility_description(@group)}"}
         = visibility_level_icon(@group.visibility_level, fw: false)
 
   .cover-desc.username

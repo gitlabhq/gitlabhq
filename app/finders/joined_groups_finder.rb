@@ -1,6 +1,6 @@
 #Shows only authorized groups of a user
 class JoinedGroupsFinder
-  def initialize(user = nil)
+  def initialize(user)
     @user = user
   end
 

@@ -29,10 +29,8 @@ class GroupsController < Groups::ApplicationController
 
   def create
     @group = Group.new(group_params)
-    @group.name = @group.path.dup unless @group.name
 
-    if @group.save
-      @group.add_owner(current_user)
+    if Groups::CreateService.new(@group, current_user, group_params).execute
       redirect_to @group, notice: "Group '#{@group.name}' was successfully created."
     else
       render action: "new"

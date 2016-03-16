@@ -4,8 +4,6 @@ describe 'Internal group access', feature: true do
   include AccessMatchers
   include GroupAccessHelper
 
-
-
   describe 'GET /groups/:path' do
     subject { group_path(group(Gitlab::VisibilityLevel::INTERNAL)) }
 
