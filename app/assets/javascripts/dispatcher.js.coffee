@@ -74,8 +74,9 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
 
         new TreeView() if $('#tree-slider').length
-      when 'groups:show'
+      when 'groups:activity'
         new Activities()
+      when 'groups:show'
         shortcut_handler = new ShortcutsNavigation()
       when 'groups:group_members:index'
         new GroupMembers()
@@ -103,6 +104,8 @@ class Dispatcher
         new ProjectFork()
       when 'projects:artifacts:browse'
         new BuildArtifacts()
+      when 'projects:group_links:index'
+        new GroupsSelect()
 
     switch path.first()
       when 'admin'

@@ -1,10 +1,11 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
+  include ToggleSubscriptionAction
   include DiffHelper
 
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds
+    :ci_status, :cancel_merge_when_build_succeeds
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -233,12 +234,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render json: response
   end
 
-  def toggle_subscription
-    @merge_request.toggle_subscription(current_user)
-
-    render nothing: true
-  end
-
   protected
 
   def selected_target_project
@@ -252,6 +247,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_request
     @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
+  alias_method :subscribable_resource, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues

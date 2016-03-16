@@ -582,21 +582,63 @@ describe Project, models: true do
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
+  end
 
-    context 'when checking projects from groups' do
-      let(:private_group)    { create(:group, visibility_level: 0)  }
-      let(:internal_group)   { create(:group, visibility_level: 10) }
+  describe '.search' do
+    let(:project) { create(:project, description: 'kitten mittens') }
 
-      let(:private_project)  { create :project, group: private_group, visibility_level: Gitlab::VisibilityLevel::PRIVATE   }
-      let(:internal_project) { create :project, group: internal_group, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+    it 'returns projects with a matching name' do
+      expect(described_class.search(project.name)).to eq([project])
+    end
 
-      context 'when group is private project can not be internal' do
-        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
-      end
+    it 'returns projects with a partially matching name' do
+      expect(described_class.search(project.name[0..2])).to eq([project])
+    end
 
-      context 'when group is internal project can not be public' do
-        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
-      end
+    it 'returns projects with a matching name regardless of the casing' do
+      expect(described_class.search(project.name.upcase)).to eq([project])
+    end
+
+    it 'returns projects with a matching description' do
+      expect(described_class.search(project.description)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching description' do
+      expect(described_class.search('kitten')).to eq([project])
+    end
+
+    it 'returns projects with a matching description regardless of the casing' do
+      expect(described_class.search('KITTEN')).to eq([project])
+    end
+
+    it 'returns projects with a matching path' do
+      expect(described_class.search(project.path)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching path' do
+      expect(described_class.search(project.path[0..2])).to eq([project])
+    end
+
+    it 'returns projects with a matching path regardless of the casing' do
+      expect(described_class.search(project.path.upcase)).to eq([project])
+    end
+
+    it 'returns projects with a matching namespace name' do
+      expect(described_class.search(project.namespace.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching namespace name' do
+      expect(described_class.search(project.namespace.name[0..2])).to eq([project])
+    end
+
+    it 'returns projects with a matching namespace name regardless of the casing' do
+      expect(described_class.search(project.namespace.name.upcase)).to eq([project])
+    end
+
+    it 'returns projects when eager loading namespaces' do
+      relation = described_class.all.includes(:namespace)
+
+      expect(relation.search(project.namespace.name)).to eq([project])
     end
   end
 
@@ -660,6 +702,38 @@ describe Project, models: true do
       expect(wiki).to receive(:expire_emptiness_caches)
 
       project.expire_caches_before_rename('foo')
+    end
+  end
+
+  describe '.search_by_title' do
+    let(:project) { create(:project, name: 'kittens') }
+
+    it 'returns projects with a matching name' do
+      expect(described_class.search_by_title(project.name)).to eq([project])
+    end
+
+    it 'returns projects with a partially matching name' do
+      expect(described_class.search_by_title('kitten')).to eq([project])
+    end
+
+    it 'returns projects with a matching name regardless of the casing' do
+      expect(described_class.search_by_title('KITTENS')).to eq([project])
+    end
+  end
+
+  context 'when checking projects from groups' do
+    let(:private_group)    { create(:group, visibility_level: 0)  }
+    let(:internal_group)   { create(:group, visibility_level: 10) }
+
+    let(:private_project)  { create :project, group: private_group, visibility_level: Gitlab::VisibilityLevel::PRIVATE   }
+    let(:internal_project) { create :project, group: internal_group, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+
+    context 'when group is private project can not be internal' do
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
+    end
+
+    context 'when group is internal project can not be public' do
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
   end
 end

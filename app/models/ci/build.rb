@@ -37,8 +37,6 @@
 
 module Ci
   class Build < CommitStatus
-    include Gitlab::Application.routes.url_helpers
-
     LAZY_ATTRIBUTES = ['trace']
 
     belongs_to :runner, class_name: 'Ci::Runner'
@@ -128,7 +126,7 @@ module Ci
     end
 
     def retried?
-      !self.commit.latest_builds_for_ref(self.ref).include?(self)
+      !self.commit.latest_statuses_for_ref(self.ref).include?(self)
     end
 
     def depends_on_builds
@@ -309,22 +307,6 @@ module Ci
       project.valid_runners_token? token
     end
 
-    def target_url
-      namespace_project_build_url(project.namespace, project, self)
-    end
-
-    def cancel_url
-      if active?
-        cancel_namespace_project_build_path(project.namespace, project, self)
-      end
-    end
-
-    def retry_url
-      if retryable?
-        retry_namespace_project_build_path(project.namespace, project, self)
-      end
-    end
-
     def can_be_served?(runner)
       (tag_list - runner.tag_list).empty?
     end
@@ -333,7 +315,7 @@ module Ci
       project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
     end
 
-    def show_warning?
+    def stuck?
       pending? && !any_runners_online?
     end
 
@@ -346,18 +328,6 @@ module Ci
 
     def artifacts?
       artifacts_file.exists?
-    end
-
-    def artifacts_download_url
-      if artifacts?
-        download_namespace_project_build_artifacts_path(project.namespace, project, self)
-      end
-    end
-
-    def artifacts_browse_url
-      if artifacts_metadata?
-        browse_namespace_project_build_artifacts_path(project.namespace, project, self)
-      end
     end
 
     def artifacts_metadata?

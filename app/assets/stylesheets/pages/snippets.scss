@@ -28,3 +28,11 @@
   border: 1px solid;
   line-height: 32px;
 }
+
+.markdown-snippet-copy {
+  position: fixed;
+  top: -10px;
+  left: -10px;
+  max-height: 0;
+  max-width: 0;
+}

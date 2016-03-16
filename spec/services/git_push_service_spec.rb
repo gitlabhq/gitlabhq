@@ -172,8 +172,8 @@ describe GitPushService, services: true do
   end
 
 
-  describe "Web Hooks" do
-    context "execute web hooks" do
+  describe "Webhooks" do
+    context "execute webhooks" do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -398,6 +398,45 @@ describe GitPushService, services: true do
 
     it 'push to first branch updates HEAD' do
       execute_service(project, user, @blankrev, @newrev, new_ref )
+    end
+  end
+
+  describe "housekeeping" do
+    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+
+    before do
+      allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    it 'does not perform housekeeping when not needed' do
+      expect(housekeeping).not_to receive(:execute)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+
+    context 'when housekeeping is needed' do
+      before do
+        allow(housekeeping).to receive(:needed?).and_return(true)
+      end
+
+      it 'performs housekeeping' do
+        expect(housekeeping).to receive(:execute)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it 'does not raise an exception' do
+        allow(housekeeping).to receive(:try_obtain_lease).and_return(false)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+    end
+
+
+    it 'increments the push counter' do
+      expect(housekeeping).to receive(:increment!)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
     end
   end
 

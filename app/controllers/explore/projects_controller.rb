@@ -8,7 +8,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
     @projects = filter_projects(@projects)
     @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.includes(:namespace).page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
+    @projects = @projects.includes(:namespace).page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html
@@ -23,7 +23,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   def trending
     @projects = TrendingProjectsFinder.new.execute(current_user)
     @projects = filter_projects(@projects)
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html
@@ -39,7 +39,7 @@ class Explore::ProjectsController < Explore::ApplicationController
     @projects = ProjectsFinder.new.execute(current_user)
     @projects = filter_projects(@projects)
     @projects = @projects.reorder('star_count DESC')
-    @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
       format.html

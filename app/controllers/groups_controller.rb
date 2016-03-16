@@ -15,7 +15,7 @@ class GroupsController < Groups::ApplicationController
 
   # Load group projects
   before_action :load_projects, except: [:index, :new, :create, :projects, :edit, :update, :autocomplete]
-  before_action :event_filter, only: [:show, :events]
+  before_action :event_filter, only: [:activity]
 
   layout :determine_layout
 
@@ -44,6 +44,8 @@ class GroupsController < Groups::ApplicationController
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
 
+    @shared_projects = @group.shared_projects
+
     respond_to do |format|
       format.html
 
@@ -60,8 +62,10 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
-  def events
+  def activity
     respond_to do |format|
+      format.html
+
       format.json do
         load_events
         pager_json("events/_events", @events.count)
@@ -129,7 +133,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar, :public, :visibility_level)
+    params.require(:group).permit(:name, :description, :path, :avatar, :public, :visibility_level, :share_with_group_lock)
   end
 
   def load_events

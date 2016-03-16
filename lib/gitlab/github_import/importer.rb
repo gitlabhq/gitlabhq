@@ -45,10 +45,13 @@ module Gitlab
                                                     direction: :asc).each do |raw_data|
           pull_request = PullRequestFormatter.new(project, raw_data)
 
-          if !pull_request.cross_project? && pull_request.valid?
-            merge_request = MergeRequest.create!(pull_request.attributes)
-            import_comments(pull_request.number, merge_request)
-            import_comments_on_diff(pull_request.number, merge_request)
+          if pull_request.valid?
+            merge_request = MergeRequest.new(pull_request.attributes)
+
+            if merge_request.save
+              import_comments(pull_request.number, merge_request)
+              import_comments_on_diff(pull_request.number, merge_request)
+            end
           end
         end
 

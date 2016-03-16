@@ -100,6 +100,34 @@ describe Notify do
           end
         end
 
+        describe 'that have been relabeled' do
+          subject { Notify.relabeled_issue_email(recipient.id, issue.id, %w[foo bar baz], current_user.id) }
+
+          it_behaves_like 'a multiple recipients email'
+          it_behaves_like 'an answer to an existing thread', 'issue'
+          it_behaves_like 'it should show Gmail Actions View Issue link'
+          it_behaves_like 'a user cannot unsubscribe through footer link'
+          it_behaves_like 'an email with a labels subscriptions link in its footer'
+
+          it 'is sent as the author' do
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq(current_user.name)
+            expect(sender.address).to eq(gitlab_sender)
+          end
+
+          it 'has the correct subject' do
+            is_expected.to have_subject /#{issue.title} \(##{issue.iid}\)/
+          end
+
+          it 'contains the names of the added labels' do
+            is_expected.to have_body_text /foo, bar, and baz/
+          end
+
+          it 'contains a link to the issue' do
+            is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
+          end
+        end
+
         describe 'status changed' do
           let(:status) { 'closed' }
           subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user.id) }
@@ -212,6 +240,34 @@ describe Notify do
 
           it 'contains the name of the new assignee' do
             is_expected.to have_body_text /#{assignee.name}/
+          end
+
+          it 'contains a link to the merge request' do
+            is_expected.to have_body_text /#{namespace_project_merge_request_path project.namespace, project, merge_request}/
+          end
+        end
+
+        describe 'that have been relabeled' do
+          subject { Notify.relabeled_merge_request_email(recipient.id, merge_request.id, %w[foo bar baz], current_user.id) }
+
+          it_behaves_like 'a multiple recipients email'
+          it_behaves_like 'an answer to an existing thread', 'merge_request'
+          it_behaves_like 'it should show Gmail Actions View Merge request link'
+          it_behaves_like 'a user cannot unsubscribe through footer link'
+          it_behaves_like 'an email with a labels subscriptions link in its footer'
+
+          it 'is sent as the author' do
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq(current_user.name)
+            expect(sender.address).to eq(gitlab_sender)
+          end
+
+          it 'has the correct subject' do
+            is_expected.to have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
+          end
+
+          it 'contains the names of the added labels' do
+            is_expected.to have_body_text /foo, bar, and baz/
           end
 
           it 'contains a link to the merge request' do

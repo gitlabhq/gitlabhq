@@ -25,6 +25,8 @@ class Group < Namespace
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
   has_many :users, through: :group_members
+  has_many :project_group_links, dependent: :destroy
+  has_many :shared_projects, through: :project_group_links, source: :project
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -35,8 +37,18 @@ class Group < Namespace
   after_destroy :post_destroy_hook
 
   class << self
+    # Searches for groups matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(namespaces.name) LIKE :query or LOWER(namespaces.path) LIKE :query", query: "%#{query.downcase}%")
+      table   = Namespace.arel_table
+      pattern = "%#{query}%"
+
+      where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
     end
 
     def sort(method)

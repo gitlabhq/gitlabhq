@@ -8,6 +8,7 @@ module Issuable
   extend ActiveSupport::Concern
   include Participable
   include Mentionable
+  include Subscribable
   include StripAttribute
 
   included do
@@ -18,7 +19,6 @@ module Issuable
     has_many :notes, as: :noteable, dependent: :destroy
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
-    has_many :subscriptions, dependent: :destroy, as: :subscribable
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -61,12 +61,29 @@ module Issuable
   end
 
   module ClassMethods
+    # Searches for records with a matching title.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(title) like :query", query: "%#{query.downcase}%")
+      where(arel_table[:title].matches("%#{query}%"))
     end
 
+    # Searches for records with a matching title or description.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def full_search(query)
-      where("LOWER(title) like :query OR LOWER(description) like :query", query: "%#{query.downcase}%")
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
     end
 
     def sort(method)
@@ -132,26 +149,8 @@ module Issuable
     notes.awards.where(note: "thumbsup").count
   end
 
-  def subscribed?(user)
-    subscription = subscriptions.find_by_user_id(user.id)
-
-    if subscription
-      return subscription.subscribed
-    end
-
+  def subscribed_without_subscriptions?(user)
     participants(user).include?(user)
-  end
-
-  def toggle_subscription(user)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id).
-      update(subscribed: !subscribed?(user))
-  end
-
-  def unsubscribe(user)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id).
-      update(subscribed: false)
   end
 
   def to_hook_data(user)

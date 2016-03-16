@@ -1,8 +1,12 @@
 class Projects::LabelsController < Projects::ApplicationController
+  include ToggleSubscriptionAction
+
   before_action :module_enabled
   before_action :label, only: [:edit, :update, :destroy]
   before_action :authorize_read_label!
-  before_action :authorize_admin_labels!, except: [:index]
+  before_action :authorize_admin_labels!, only: [
+    :new, :create, :edit, :update, :generate, :destroy
+  ]
 
   respond_to :js, :html
 
@@ -73,8 +77,9 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def label
-    @label = @project.labels.find(params[:id])
+    @label ||= @project.labels.find(params[:id])
   end
+  alias_method :subscribable_resource, :label
 
   def authorize_admin_labels!
     return render_404 unless can?(current_user, :admin_label, @project)
