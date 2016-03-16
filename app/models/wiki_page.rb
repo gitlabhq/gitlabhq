@@ -62,7 +62,7 @@ class WikiPage
   # The raw content of this page.
   def content
     @attributes[:content] ||= if @page
-                                @page.raw_data
+                                @page.text_data
                               end
   end
 
