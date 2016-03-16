@@ -12,6 +12,11 @@ class @UsersSelect
       firstUser = $dropdown.data('first-user')
       selectedId = $dropdown.data('selected')
       defaultLabel = $dropdown.data('default-label')
+      issueURL = $dropdown.data('issueUpdate')
+      $selectbox = $dropdown.closest('.selectbox')
+      $block = $selectbox.closest('.block')
+      $value = $block.find('.value')
+      $loading = $block.find('.block-loading').fadeOut()
 
       $dropdown.glDropdown(
         data: (term, callback) =>
@@ -57,11 +62,17 @@ class @UsersSelect
           fields: ['name', 'username']
         selectable: true
         fieldName: $dropdown.data('field-name')
+
         toggleLabel: (selected) ->
           if selected && 'id' of selected
             selected.name
           else
             defaultLabel
+
+        hidden: ->
+          $selectbox.hide()
+          $value.show()
+
         clicked: ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
@@ -72,7 +83,32 @@ class @UsersSelect
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
           else
-            console.log 'else'
+            selected = $dropdown
+              .closest('.selectbox')
+              .find("input[name='#{$dropdown.data('field-name')}']").val()
+            $loading
+              .fadeIn()
+            $.ajax(
+              type: 'PUT'
+              url: issueURL
+              data:
+                issue: 
+                  assignee_id:  selected
+            ).done (data) ->
+              $loading.fadeOut()
+              $selectbox.hide()
+              href = $value
+                      .show()
+                      .find('.author')
+                      .text(data.assignee.name)
+                      .end()
+                      .find('a')
+                      .attr('href')
+              splitHref = href.split('/')
+              splitHref[splitHref.length - 1] = data.assignee.username
+              $value
+                .find('a')
+                .attr('href',splitHref.join('/'))
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false

@@ -28,6 +28,7 @@
             = icon('user')
         .title.hide-collapsed
           Assignee
+          =icon('spinner spin', class: 'block-loading')
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
             = link_to 'Edit', '#', class: 'edit-link pull-right'
         .value.bold.hide-collapsed
@@ -42,7 +43,8 @@
             .light None
 
         .selectbox.hide-collapsed
-          = dropdown_tag("Select assignee", options: { toggle_class: "js-user-search js-author-search", title: "Filter by user", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-author", placeholder: "Search users", data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: "author_id" } })
+          = f.hidden_field 'assignee_id', value: issuable.assignee.id, id: nil
+          = dropdown_tag("Select assignee", options: { toggle_class: "js-user-search js-author-search", title: "Filter by user", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-author", placeholder: "Search users", data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), field_name: "issue[assignee_id]", issue_update: namespace_project_issue_path(@project.namespace, @project, issuable.id, :json) } })
 
       .block.milestone
         .sidebar-collapsed-icon

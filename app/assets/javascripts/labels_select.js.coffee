@@ -198,14 +198,13 @@ class @LabelsSelect
             # need inline-block here instead of show, 
             # which will default to the element's style in this case inline.
             selected = if selected.length then selected else ['']
-            $loading
-              .fadeIn()
+            $loading.fadeIn()
             $.ajax(
               type: 'PUT'
               url: issueURL
               data:
                 issue: 
-                  label_ids:  selected
+                  assignee_id:  selected
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()
