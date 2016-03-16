@@ -42,6 +42,8 @@ class @MergeRequestWidget
 
   getCIStatus: ->
     urlToCICheck = @opts.url_to_ci_check
+    _this = @
+
     @fetchBuildStatusInterval = setInterval ( =>
       return if not @readyForCICheck
 
@@ -55,6 +57,7 @@ class @MergeRequestWidget
         if data.status isnt @opts.current_status
           message = @opts.ci_message.replace('{{status}}', @ciLabelForStatus(data.status))
           message = message.replace('{{sha}}', data.sha)
+          message = message.replace('{{title}}', data.title)
 
           notify(
             "Build #{_this.ciLabelForStatus(data.status)}",
@@ -62,7 +65,7 @@ class @MergeRequestWidget
             @opts.gitlab_icon,
             ->
               @close()
-              Turbolinks.visit "#{window.location.pathname}/builds"
+              Turbolinks.visit _this.opts.builds_path
           )
 
           @opts.current_status = data.status

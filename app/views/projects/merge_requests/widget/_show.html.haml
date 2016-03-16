@@ -15,9 +15,10 @@
     url_to_ci_check: "#{ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
     gitlab_icon: "#{asset_path 'gitlab_logo.png'}",
     current_status: "",
-    ci_message: "Build {{status}} for {{sha}}"
+    ci_message: "Build {{status}} for {{title}}\n{{sha}}",
+    builds_path: "#{builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}"
   };
-  
+
   if(typeof merge_request_widget === 'undefined') {
     merge_request_widget = new MergeRequestWidget(opts);
   }

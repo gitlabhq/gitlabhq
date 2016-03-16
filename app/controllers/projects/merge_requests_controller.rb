@@ -233,7 +233,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     response = {
-      sha: merge_request.last_commit.sha,
+      title: merge_request.title,
+      sha: merge_request.last_commit_short_sha,
       status: status,
       coverage: coverage
     }
