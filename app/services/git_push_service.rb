@@ -49,6 +49,8 @@ class GitPushService < BaseService
     # Update merge requests that may be affected by this push. A new branch
     # could cause the last commit of a merge request to change.
     update_merge_requests
+
+    perform_housekeeping
   end
 
   def update_main_language
@@ -87,6 +89,13 @@ class GitPushService < BaseService
     )
   end
 
+  def perform_housekeeping
+    housekeeping = Projects::HousekeepingService.new(@project)
+    housekeeping.increment!
+    housekeeping.execute if housekeeping.needed?
+  rescue Projects::HousekeepingService::LeaseTaken
+  end
+
   def process_default_branch
     @push_commits = project.repository.commits(params[:newrev])
 
@@ -94,7 +103,7 @@ class GitPushService < BaseService
     project.change_head(branch_name)
 
     # Set protection on the default branch if configured
-    if (current_application_settings.default_branch_protection != PROTECTION_NONE)
+    if current_application_settings.default_branch_protection != PROTECTION_NONE
       developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
       @project.protected_branches.create({ name: @project.default_branch, developers_can_push: developers_can_push })
     end

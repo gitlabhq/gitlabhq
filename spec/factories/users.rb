@@ -23,13 +23,6 @@ FactoryGirl.define do
       end
     end
 
-    trait :with_avatar do
-      avatar { fixture_file_upload(Rails.root.join(*%w(spec fixtures dk.png)), 'image/png') }
-      avatar_crop_x 0
-      avatar_crop_y 0
-      avatar_crop_size 256
-    end
-
     factory :omniauth_user do
       transient do
         extern_uid '123456'

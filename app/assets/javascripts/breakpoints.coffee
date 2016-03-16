@@ -10,7 +10,6 @@ class @Breakpoints
     setup: ->
       allDeviceSelector = BREAKPOINTS.map (breakpoint) ->
         ".device-#{breakpoint}"
-
       return if $(allDeviceSelector.join(",")).length
 
       # Create all the elements
@@ -18,12 +17,17 @@ class @Breakpoints
         "<div class='device-#{breakpoint} visible-#{breakpoint}'></div>"
       $("body").append els.join('')
 
-    getBreakpointSize: ->
+    visibleDevice: ->
       allDeviceSelector = BREAKPOINTS.map (breakpoint) ->
         ".device-#{breakpoint}"
+      $(allDeviceSelector.join(",")).filter(":visible")
 
-      $visibleDevice = $(allDeviceSelector.join(",")).filter(":visible")
-
+    getBreakpointSize: ->
+      $visibleDevice = @visibleDevice
+      # the page refreshed via turbolinks
+      if not $visibleDevice().length
+        @setup()
+      $visibleDevice = @visibleDevice()
       return $visibleDevice.attr("class").split("visible-")[1]
 
   @get: ->

@@ -32,11 +32,13 @@ RSpec.configure do |config|
   config.include LoginHelpers,        type: :feature
   config.include LoginHelpers,        type: :request
   config.include StubConfiguration
+  config.include EmailHelpers
   config.include RelativeUrl,         type: feature
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include StubGitlabCalls
   config.include StubGitlabData
+  config.include Rails.application.routes.url_helpers, type: :routing
 
   config.infer_spec_type_from_file_location!
   config.raise_errors_for_deprecations!

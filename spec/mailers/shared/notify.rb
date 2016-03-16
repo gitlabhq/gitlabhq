@@ -112,6 +112,10 @@ shared_examples 'an unsubscribeable thread' do
   it { is_expected.to have_body_text /unsubscribe/ }
 end
 
-shared_examples "a user cannot unsubscribe through footer link" do
+shared_examples 'a user cannot unsubscribe through footer link' do
   it { is_expected.not_to have_body_text /unsubscribe/ }
+end
+
+shared_examples 'an email with a labels subscriptions link in its footer' do
+  it { is_expected.to have_body_text /label subscriptions/ }
 end

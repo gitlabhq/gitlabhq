@@ -124,6 +124,14 @@ module LabelsHelper
     options_from_collection_for_select(grouped_labels, 'name', 'title', params[:label_name])
   end
 
+  def label_subscription_status(label)
+    label.subscribed?(current_user) ? 'subscribed' : 'unsubscribed'
+  end
+
+  def label_subscription_toggle_button_text(label)
+    label.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
+  end
+
   # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :render_colored_cross_project_label,
                   :text_color_for_bg, :escape_once
