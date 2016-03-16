@@ -168,6 +168,7 @@ module ApplicationHelper
   # time       - Time object
   # placement  - Tooltip placement String (default: "top")
   # html_class - Custom class for `time` element (default: "time_ago")
+  # skip_js    - When true, exclude the `script` tag (default: false)
   #
   # By default also includes a `script` element with Javascript necessary to
   # initialize the `timeago` jQuery extension. If this method is called many
