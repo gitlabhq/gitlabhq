@@ -45,6 +45,9 @@ class Projects::WikisController < Projects::ApplicationController
     return render('empty') unless can?(current_user, :create_wiki, @project)
 
     if @page.update(content, format, message)
+      # Triggers repository update on secondary nodes when Geo is enabled
+      Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
+
       redirect_to(
         namespace_project_wiki_path(@project.namespace, @project, @page),
         notice: 'Wiki was successfully updated.'
@@ -58,6 +61,9 @@ class Projects::WikisController < Projects::ApplicationController
     @page = WikiPage.new(@project_wiki)
 
     if @page.create(wiki_params)
+      # Triggers repository update on secondary nodes when Geo is enabled
+      Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
+
       redirect_to(
         namespace_project_wiki_path(@project.namespace, @project, @page),
         notice: 'Wiki was successfully updated.'
@@ -80,8 +86,13 @@ class Projects::WikisController < Projects::ApplicationController
 
   def destroy
     @page = @project_wiki.find_page(params[:id])
-    @page.delete if @page
+    if @page
+      @page.delete
 
+      # Triggers repository update on secondary nodes when Geo is enabled
+      Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
+    end
+    
     redirect_to(
       namespace_project_wiki_path(@project.namespace, @project, :home),
       notice: "Page was successfully deleted"
