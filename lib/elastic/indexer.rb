@@ -21,7 +21,9 @@ module Elastic
 
       vars = @vars.merge({ 'FROM_SHA' => from_sha, 'TO_SHA' => to_sha })
 
-      command = ['bin/elastic_repo_indexer', project_id.to_s, repo_path]
+      path_to_indexer = File.join(Rails.root, 'bin/elastic_repo_indexer')
+
+      command = [path_to_indexer, project_id.to_s, repo_path]
 
       output, status = Gitlab::Popen.popen(command, nil, vars)
 
