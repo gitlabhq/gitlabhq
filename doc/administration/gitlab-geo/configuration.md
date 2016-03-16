@@ -48,8 +48,8 @@ GitLab instance runs on (unless changed, should be the user `git`). This user
 will act as a "normal user" who fetches from the primary Geo node.
 
 Run the command below on each server that will be a Geo node (primary or
-secondary), and paste the contents of `id_rsa.pub` to the admin area
-(**Admin Area > Geo Nodes**) when adding a new node:
+secondary), and paste the contents of `id_rsa.pub` to the admin area of the
+primary node (**Admin Area > Geo Nodes**) when adding a new one:
 
 ```bash
 sudo -u git -H ssh-keygen
@@ -57,6 +57,26 @@ sudo -u git -H ssh-keygen
 
 The public key for Omnibus installations will be at `/var/opt/gitlab/.ssh/id_rsa.pub`,
 whereas for installation from source it will be at `/home/git/.ssh/id_rsa.pub`.
+
+If for any reason you generate the key using a different name from the default
+`id_rsa`, or you want to generate an extra key only for the repository
+synchronization feature, you can do so, but you have to create/modify your
+`~/.ssh/config` (for the `git` user).
+
+This is an example on how to change the default key for all remote hosts:
+
+```bash
+Host *                              # Match all remote hosts
+  IdentityFile ~/.ssh/mycustom.key  # The location of your private key
+```
+
+This is how to change it for an specific host:
+
+```bash
+Host example.com                    # The FQDN of the primary Geo node
+  HostName example.com              # The FQDN of the primary Geo node
+  IdentityFile ~/.ssh/mycustom.key  # The location of your private key
+```
 
 ## Primary Node GitLab setup
 
@@ -67,17 +87,10 @@ instance. If you haven't done that already, read [database replication](./databa
 
 Go to the server that you chose to be your primary, and visit
 **Admin Area > Geo Nodes** (`/admin/geo_nodes`) in order to add the Geo nodes.
-Although we are looking at the primary Geo node setup, this is where you also
-add any secondary servers as well.
+Although we are looking at the primary Geo node setup, **this is where you also
+add any secondary servers as well**.
 
-The very first node you add must be your primary, and the rest are the secondary
-ones. Make sure to check the box 'This is a primary node' when adding it.
-
-![Geo Nodes Screen](img/geo-nodes-screen.png)
-
----
-
-In the following table you can see what all these settings mean.
+In the following table you can see what all these settings mean:
 
 | Setting | Description |
 | ------- | ----------- |
@@ -85,7 +98,19 @@ In the following table you can see what all these settings mean.
 | URL | Your instance's full URL, in the same way it is configured in `gitlab.yml` (source based installations) or `/etc/gitlab/gitlab.rb` (omnibus installations). |
 |Public Key | The SSH public key of the user that your GitLab instance runs on (unless changed, should be the user `git`). That means that you have to go in each Geo Node separately and create an SSH key pair. See the [SSH key creation](#create-ssh-key-pairs-for-geo-nodes) section.
 
+First, add your primary node by providing its full URL and the public SSH key
+you created previously. Make sure to check the box 'This is a primary node'
+when adding it. Continue with all secondaries.
+
+![Geo Nodes Screen](img/geo-nodes-screen.png)
+
+---
+
 ## Secondary Node GitLab setup
+
+>**Note:**
+The Geo nodes admin area (**Admin Area > Geo Nodes**) is not used when setting
+up the secondary servers. This is handled by the primary server setup.
 
 To install a secondary node, you must follow the normal GitLab Enterprise
 Edition installation, with some extra requirements:
