@@ -15,15 +15,6 @@ class @MilestoneSelect
           $.ajax(
             url: milestonesUrl
           ).done (data) ->
-            html = $(data)
-            data = []
-            html.find('.milestone strong a').each ->
-              link = $(@).attr('href').split('/')
-              data.push(
-                id: link[link.length - 1]
-                title: $(@).text().trim()
-              )
-
             if showNo
               data.unshift(
                 id: '0'
