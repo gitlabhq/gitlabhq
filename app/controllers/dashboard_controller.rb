@@ -20,6 +20,24 @@ class DashboardController < Dashboard::ApplicationController
     end
   end
 
+  def labels
+    respond_to do |format|
+      format.json do
+        projects
+        render json: view_context.projects_labels_options
+      end
+    end
+  end
+
+  def milestones
+    respond_to do |format|
+      format.json do
+        projects
+        render json: view_context.projects_milestones_options
+      end
+    end
+  end
+
   protected
 
   def load_events
