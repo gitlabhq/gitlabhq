@@ -6,9 +6,9 @@ describe API::CommitStatus, api: true do
   let!(:project) { create(:project) }
   let(:commit) { project.repository.commit }
   let(:commit_status) { create(:commit_status, commit: ci_commit) }
-  let(:guest) { create_user(ProjectMember::GUEST) }
-  let(:reporter) { create_user(ProjectMember::REPORTER) }
-  let(:developer) { create_user(ProjectMember::DEVELOPER) }
+  let(:guest) { create_user(:guest) }
+  let(:reporter) { create_user(:reporter) }
+  let(:developer) { create_user(:developer) }
   let(:sha) { commit.id }
 
 
@@ -201,9 +201,9 @@ describe API::CommitStatus, api: true do
     end
   end
 
-  def create_user(access_level)
+  def create_user(access_level_trait)
     user = create(:user)
-    create(:project_member, user: user, project: project, access_level: access_level)
+    create(:project_member, access_level_trait, user: user, project: project)
     user
   end
 end

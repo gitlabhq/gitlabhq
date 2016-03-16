@@ -1,13 +1,13 @@
 namespace :gitlab do
   namespace :web_hook do
-    desc "GitLab | Adds a web hook to the projects"
+    desc "GitLab | Adds a webhook to the projects"
     task :add => :environment do
       web_hook_url = ENV['URL']
       namespace_path = ENV['NAMESPACE']
 
       projects = find_projects(namespace_path)
 
-      puts "Adding web hook '#{web_hook_url}' to:"
+      puts "Adding webhook '#{web_hook_url}' to:"
       projects.find_each(batch_size: 1000) do |project|
         print "- #{project.name} ... "
         web_hook = project.hooks.new(url: web_hook_url)
@@ -20,7 +20,7 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Remove a web hook from the projects"
+    desc "GitLab | Remove a webhook from the projects"
     task :rm => :environment do
       web_hook_url = ENV['URL']
       namespace_path = ENV['NAMESPACE']
@@ -28,12 +28,12 @@ namespace :gitlab do
       projects = find_projects(namespace_path)
       projects_ids = projects.pluck(:id)
 
-      puts "Removing web hooks with the url '#{web_hook_url}' ... "
+      puts "Removing webhooks with the url '#{web_hook_url}' ... "
       count = WebHook.where(url: web_hook_url, project_id: projects_ids, type: 'ProjectHook').delete_all
-      puts "#{count} web hooks were removed."
+      puts "#{count} webhooks were removed."
     end
 
-    desc "GitLab | List web hooks"
+    desc "GitLab | List webhooks"
     task :list => :environment do
       namespace_path = ENV['NAMESPACE']
 
@@ -43,7 +43,7 @@ namespace :gitlab do
         puts "#{hook.project.name.truncate(20).ljust(20)} -> #{hook.url}"
       end
 
-      puts "\n#{web_hooks.size} web hooks found."
+      puts "\n#{web_hooks.size} webhooks found."
     end
   end
 

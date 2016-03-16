@@ -1,4 +1,6 @@
 class GlobalMilestone
+  include Milestoneish
+
   attr_accessor :title, :milestones
   alias_attribute :name, :title
 
@@ -28,33 +30,7 @@ class GlobalMilestone
   end
 
   def projects
-    milestones.map { |milestone| milestone.project }
-  end
-
-  def issue_count
-    milestones.map { |milestone| milestone.issues.count }.sum
-  end
-
-  def merge_requests_count
-    milestones.map { |milestone| milestone.merge_requests.count }.sum
-  end
-
-  def open_items_count
-    milestones.map { |milestone| milestone.open_items_count }.sum
-  end
-
-  def closed_items_count
-    milestones.map { |milestone| milestone.closed_items_count }.sum
-  end
-
-  def total_items_count
-    milestones.map { |milestone| milestone.total_items_count }.sum
-  end
-
-  def percent_complete
-    ((closed_items_count * 100) / total_items_count).abs
-  rescue ZeroDivisionError
-    0
+    @projects ||= Project.for_milestones(milestones.map(&:id))
   end
 
   def state
@@ -76,35 +52,20 @@ class GlobalMilestone
   end
 
   def issues
-    @issues ||= milestones.map(&:issues).flatten.group_by(&:state)
+    @issues ||= Issue.of_milestones(milestones.map(&:id)).includes(:project)
   end
 
   def merge_requests
-    @merge_requests ||= milestones.map(&:merge_requests).flatten.group_by(&:state)
+    @merge_requests ||= MergeRequest.of_milestones(milestones.map(&:id)).includes(:target_project)
   end
 
   def participants
     @participants ||= milestones.map(&:participants).flatten.compact.uniq
   end
 
-  def opened_issues
-    issues.values_at("opened", "reopened").compact.flatten
-  end
-
-  def closed_issues
-    issues['closed']
-  end
-
-  def opened_merge_requests
-    merge_requests.values_at("opened", "reopened").compact.flatten
-  end
-
-  def closed_merge_requests
-    merge_requests.values_at("closed", "merged", "locked").compact.flatten
-  end
-
-  def complete?
-    total_items_count == closed_items_count
+  def labels
+    @labels ||= GlobalLabel.build_collection(milestones.map(&:labels).flatten)
+                           .sort_by!(&:title)
   end
 
   def due_date

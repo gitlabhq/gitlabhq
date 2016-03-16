@@ -102,7 +102,7 @@ class ApplicationController < ActionController::Base
       flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
       new_user_session_path
     else
-      stored_location_for(:geo_node) || stored_location_for(:redirect) || stored_location_for(resource) || root_path
+      stored_location_for(:redirect) || stored_location_for(resource) || root_path
     end
   end
 
@@ -250,6 +250,8 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
+      return unless current_user.try_obtain_ldap_lease
+
       unless Gitlab::LDAP::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = "Access denied for your LDAP account."

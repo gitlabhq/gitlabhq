@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe UploadsController do
-  let!(:user) { create(:user, :with_avatar) }
+  let!(:user) { create(:user, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
 
   describe "GET show" do
     context "when viewing a user avatar" do

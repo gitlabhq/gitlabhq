@@ -31,21 +31,26 @@ module Elastic
         }
 
       after_commit on: :create do
-        if Gitlab.config.elasticsearch.enabled
+        if Gitlab.config.elasticsearch.enabled && self.searchable?
           ElasticIndexerWorker.perform_async(:index, self.class.to_s, self.id)
         end
       end
 
       after_commit on: :update do
-        if Gitlab.config.elasticsearch.enabled
+        if Gitlab.config.elasticsearch.enabled && self.searchable?
           ElasticIndexerWorker.perform_async(:update, self.class.to_s, self.id)
         end
       end
 
       after_commit on: :destroy do
-        if Gitlab.config.elasticsearch.enabled
+        if Gitlab.config.elasticsearch.enabled && self.searchable?
           ElasticIndexerWorker.perform_async(:delete, self.class.to_s, self.id)
         end
+      end
+
+      # Should be overridden in the models where not eveything should be indexed
+      def searchable?
+        true
       end
     end
 

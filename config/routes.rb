@@ -39,6 +39,11 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  namespace :oauth do
+    get 'geo/auth' => 'geo_auth#auth'
+    get 'geo/callback' => 'geo_auth#callback'
+  end
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
@@ -277,7 +282,11 @@ Rails.application.routes.draw do
       get :download, on: :member
     end
 
-    resources :geo_nodes, only: [:index, :create, :destroy]
+    resources :geo_nodes, only: [:index, :create, :destroy] do
+      member do
+        post :repair
+      end
+    end
 
     resources :labels
 
@@ -303,7 +312,7 @@ Rails.application.routes.draw do
   resource :profile, only: [:show, :update] do
     member do
       get :audit_log
-      get :applications
+      get :applications, to: 'oauth/applications#index'
 
       put :reset_private_token
       put :update_username
@@ -322,7 +331,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys
+      resources :keys, except: [:new]
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
       resource :two_factor_auth, only: [:new, :create, :destroy] do
@@ -390,7 +399,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
-      get :events
+      get :activity
     end
 
     collection do
@@ -717,6 +726,10 @@ Rails.application.routes.draw do
         resources :labels, constraints: { id: /\d+/ } do
           collection do
             post :generate
+          end
+
+          member do
+            post :toggle_subscription
           end
         end
 

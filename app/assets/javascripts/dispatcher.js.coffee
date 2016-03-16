@@ -23,7 +23,7 @@ class Dispatcher
         new Issue()
         shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
-      when 'projects:milestones:show'
+      when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
         new Milestone()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
@@ -74,8 +74,9 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
 
         new TreeView() if $('#tree-slider').length
-      when 'groups:show'
+      when 'groups:activity'
         new Activities()
+      when 'groups:show'
         shortcut_handler = new ShortcutsNavigation()
       when 'groups:group_members:index'
         new GroupMembers()

@@ -1,0 +1,18 @@
+%ul.bordered-list.manage-labels-list
+  - labels.each do |label|
+    - options = { milestone_title: @milestone.title, label_name: label.title }
+
+    %li
+      %span.label-row
+        = link_to milestones_label_path(options) do
+          - render_colored_label(label)
+        %span.prepend-left-10
+          = markdown(label.description, pipeline: :single_line)
+
+      .pull-right
+        %strong.issues-count
+          = link_to milestones_label_path(options.merge(state: 'opened')) do
+            - pluralize milestone_issues_by_label_count(@milestone, label, state: :opened), 'open issue'
+        %strong.issues-count
+          = link_to milestones_label_path(options.merge(state: 'closed')) do
+            - pluralize milestone_issues_by_label_count(@milestone, label, state: :closed), 'closed issue'

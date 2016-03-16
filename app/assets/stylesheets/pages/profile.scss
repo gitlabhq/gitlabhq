@@ -1,13 +1,6 @@
-.account-page {
-  fieldset {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-  }
-}
-
-.profile-settings-sidebar {
-  a {
-    color: $profile-settings-link-color;
+.profile-avatar-form-option {
+  hr {
+    margin: 10px 0;
   }
 }
 
@@ -22,6 +15,11 @@
   position: relative;
   top: 2px;
   display: inline-block;
+}
+
+.account-btn-link,
+.profile-settings-sidebar a {
+  color: $md-link-color;
 }
 
 .oauth-buttons {
@@ -52,6 +50,18 @@
     dl {
       font-size: 1.1em;
     }
+  }
+}
+
+.account-well {
+  padding: 10px 10px;
+  background-color: $help-well-bg;
+  border: 1px solid $help-well-border;
+  border-radius: $border-radius-base;
+
+  ul {
+    padding-left: 20px;
+    margin-bottom: 0;
   }
 }
 
@@ -99,38 +109,91 @@
   }
 }
 
-.modal-profile-crop {
-  .modal-dialog {
-    width: 500px;
+.key-list-item {
+  .key-list-item-info {
+    @media (min-width: $screen-sm-min) {
+      float: left;
+    }
   }
 
-  .modal-body {
-    p {
-      display: table;
-      margin: auto;
-      overflow: hidden;
-    }
-
-    img {
-      display: block;
-      max-width: 400px;
-      max-height: 400px;
-    }
-
-    .cropper-bg {
-      background: none;
-    }
-
-    .cropper-crop-box {
-      box-sizing: content-box;
-      border: 999px solid transparentize(#ccc, 0.5);
-      @include transform(translate(-999px, -999px));
-    }
+  .description {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 }
 
-@media (max-width: 520px) {
-  .modal-profile-crop .modal-dialog {
-    width: auto;
+.key-icon {
+  color: $ssh-key-icon-color;
+  font-size: $ssh-key-icon-size;
+  line-height: 42px;
+}
+
+.key-created-at {
+  line-height: 42px;
+}
+
+.profile-settings-content {
+  a {
+    color: $md-link-color;
+  }
+}
+
+.change-username-title {
+  color: $gl-warning;
+}
+
+.remove-account-title {
+  color: $gl-danger;
+}
+
+.provider-btn-group {
+  display: inline-block;
+  margin-right: 10px;
+  border: 1px solid $provider-btn-group-border;
+  border-radius: 3px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.provider-btn-image {
+  display: inline-block;
+  padding: 5px 10px;
+  border-right: 1px solid $provider-btn-group-border;
+
+  > img {
+    width: 20px;
+  }
+}
+
+.provider-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-left: -3px;
+  line-height: 22px;
+  background-color: $gray-light;
+
+  &.not-active {
+    color: $provider-btn-not-active-color;
+  }
+}
+
+.profile-settings-message {
+  line-height: 32px;
+  color: $warning-message-color;
+  background-color: $warning-message-bg;
+  border: 1px solid $warning-message-border;
+  border-radius: $border-radius-base;
+}
+
+.oauth-applications {
+  form {
+    display: inline-block;
+  }
+
+  .last-heading {
+    width: 105px;
   }
 }

@@ -2,12 +2,30 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
   - Improve weight filter for issues
+  - Clear "stuck" mirror updates before periodically updating all mirrors.
   - [Elastic] Add elastic checker to gitlab:check
   - [Elastic] Added UPDATE_INDEX option to rake task
   - [Elastic] Removing repository and wiki index after removing project
   - [Elastic] Update index on push to wiki
   - [Elastic] Use subprocesses for ElasticSearch index jobs
   - [Elastic] More accurate as_indexed_json (More stable database indexer)
+  - [Elastic] Fix: Don't index newly created system messages and awards
+  - [Elastic] Fixed exception on branch removing
+
+v 8.5.7
+  - No EE-specific changes
+
+v 8.5.6
+  - No changes
+
+v 8.5.5
+  - GitLab Geo: Repository synchronization between primary and secondary nodes
+  - Add documentation for GitLab Pages
+  - Fix importing projects from GitHub Enterprise Edition
+  - Fix syntax error in init file
+  - Only show group member roles if explicitly requested
+  - GitLab Geo: Improve GeoNodes Admin screen
+  - GitLab Geo: Avoid locking yourself out when adding a GeoNode
 
 v 8.5.4
   - [Elastic][Security] Notes exposure

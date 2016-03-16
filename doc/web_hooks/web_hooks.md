@@ -1,17 +1,16 @@
-# Web hooks
+# Webhooks
 
-_**Note:**
-Starting from GitLab 8.5:_
+> **Note:** As of GitLab 8.5:
+>
+> - the `repository` key is deprecated in favor of the `project` key
+> - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
+> - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
 
-- _the `repository` key is deprecated in favor of the `project` key_
-- _the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key_
-- _the `project.http_url` key is deprecated in favor of the `project.git_http_url` key_
+Project webhooks allow you to trigger an URL if new code is pushed or a new issue is created.
 
-Project web hooks allow you to trigger an URL if new code is pushed or a new issue is created.
+You can configure webhooks to listen for specific events like pushes, issues or merge requests. GitLab will send a POST request with data to the webhook URL.
 
-You can configure web hooks to listen for specific events like pushes, issues or merge requests. GitLab will send a POST request with data to the web hook URL.
-
-Web hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
+Webhooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
 In GitLab Enterprise Edition you can configure web hooks globally for the whole
 group. You can add the group level web hooks on the group settings page
@@ -23,7 +22,7 @@ By default, the SSL certificate of the webhook endpoint is verified based on
 an internal list of Certificate Authorities,
 which means the certificate cannot be self-signed.
 
-You can turn this off in the web hook settings in your GitLab projects.
+You can turn this off in the webhook settings in your GitLab projects.
 
 ![SSL Verification](ssl.png)
 
@@ -595,7 +594,11 @@ X-Gitlab-Event: Note Hook
 
 ## Merge request events
 
-Triggered when a new merge request is created, an existing merge request was updated/merged/closed or a commit is added in the source branch.
+Triggered when a new merge request is created, an existing merge request was
+updated/merged/closed/approved, or a commit is added in the source branch.
+
+> **Note:** A webhook for the `approved` action is only fired once the total
+> number of required approvals is met, _not_ after each individual approval.
 
 **Request header**:
 

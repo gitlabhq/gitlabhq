@@ -10,6 +10,7 @@ class Ability
         when CommitStatus then commit_status_abilities(user, subject)
         when Project then project_abilities(user, subject)
         when Issue then issue_abilities(user, subject)
+        when ExternalIssue then external_issue_abilities(user, subject)
         when Note then note_abilities(user, subject)
         when ProjectSnippet then project_snippet_abilities(user, subject)
         when PersonalSnippet then personal_snippet_abilities(user, subject)
@@ -202,6 +203,7 @@ class Ability
     def project_dev_rules
       @project_dev_rules ||= project_report_rules + [
         :admin_merge_request,
+        :update_merge_request,
         :create_commit_status,
         :update_commit_status,
         :create_build,
@@ -227,7 +229,6 @@ class Ability
         :read_pages,
         :push_code_to_protected_branches,
         :update_project_snippet,
-        :update_merge_request,
         :update_pages,
         :admin_milestone,
         :admin_project_snippet,
@@ -444,6 +445,10 @@ class Ability
                        abilities << self
                        abilities
                      end
+    end
+
+    def external_issue_abilities(user, subject)
+      project_abilities(user, subject.project)
     end
 
     private

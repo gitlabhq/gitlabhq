@@ -224,6 +224,15 @@ describe NotificationService, services: true do
 
         should_not_email(issue.assignee)
       end
+
+      it "emails subscribers of the issue's labels" do
+        subscriber = create(:user)
+        label = create(:label, issues: [issue])
+        label.toggle_subscription(subscriber)
+        notification.new_issue(issue, @u_disabled)
+
+        should_email(subscriber)
+      end
     end
 
     describe :reassigned_issue do
@@ -296,6 +305,35 @@ describe NotificationService, services: true do
       end
     end
 
+    describe '#relabeled_issue' do
+      let(:label) { create(:label, issues: [issue]) }
+      let(:label2) { create(:label) }
+      let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber_to_label2) { create(:user).tap { |u| label2.toggle_subscription(u) } }
+
+      it "emails subscribers of the issue's added labels only" do
+        notification.relabeled_issue(issue, [label2], @u_disabled)
+
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
+      end
+
+      it "doesn't send email to anyone but subscribers of the given labels" do
+        notification.relabeled_issue(issue, [label2], @u_disabled)
+
+        should_not_email(issue.assignee)
+        should_not_email(issue.author)
+        should_not_email(@u_watcher)
+        should_not_email(@u_participant_mentioned)
+        should_not_email(@subscriber)
+        should_not_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
+      end
+    end
+
     describe :close_issue do
       it 'should sent email to issue assignee and issue author' do
         notification.close_issue(issue, @u_disabled)
@@ -349,6 +387,15 @@ describe NotificationService, services: true do
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
       end
+
+      it "emails subscribers of the merge request's labels" do
+        subscriber = create(:user)
+        label = create(:label, merge_requests: [merge_request])
+        label.toggle_subscription(subscriber)
+        notification.new_merge_request(merge_request, @u_disabled)
+
+        should_email(subscriber)
+      end
     end
 
     describe :reassigned_merge_request do
@@ -363,6 +410,35 @@ describe NotificationService, services: true do
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
+      end
+    end
+
+    describe :relabel_merge_request do
+      let(:label) { create(:label, merge_requests: [merge_request]) }
+      let(:label2) { create(:label) }
+      let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber_to_label2) { create(:user).tap { |u| label2.toggle_subscription(u) } }
+
+      it "emails subscribers of the merge request's added labels only" do
+        notification.relabeled_merge_request(merge_request, [label2], @u_disabled)
+
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
+      end
+
+      it "doesn't send email to anyone but subscribers of the given labels" do
+        notification.relabeled_merge_request(merge_request, [label2], @u_disabled)
+
+        should_not_email(merge_request.assignee)
+        should_not_email(merge_request.author)
+        should_not_email(@u_watcher)
+        should_not_email(@u_participant_mentioned)
+        should_not_email(@subscriber)
+        should_not_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
       end
     end
 
@@ -466,17 +542,5 @@ describe NotificationService, services: true do
     issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
     # Make the watcher a subscriber to detect dupes
     issuable.subscriptions.create(user: @watcher_and_subscriber, subscribed: true)
-  end
-
-  def sent_to_user?(user)
-    ActionMailer::Base.deliveries.map(&:to).flatten.count(user.email) == 1
-  end
-
-  def should_email(user)
-    expect(sent_to_user?(user)).to be_truthy
-  end
-
-  def should_not_email(user)
-    expect(sent_to_user?(user)).to be_falsey
   end
 end

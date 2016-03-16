@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Gitlab::Geo::UpdateQueue do
   subject { described_class.new }
   let(:dummy_data) { { 'id' => 1, 'clone_url' => 'git@localhost:repo/path.git' } }

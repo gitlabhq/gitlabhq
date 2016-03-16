@@ -5,7 +5,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
   let(:query) { 'hello world' }
 
   describe 'initialize with empty ref' do
-    let(:results) { Gitlab::ProjectSearchResults.new(project.id, query, '') }
+    let(:results) { Gitlab::ProjectSearchResults.new(project, query, '') }
 
     it { expect(results.project).to eq(project) }
     it { expect(results.repository_ref).to be_nil }
@@ -14,7 +14,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
 
   describe 'initialize with ref' do
     let(:ref) { 'refs/heads/test' }
-    let(:results) { Gitlab::ProjectSearchResults.new(project.id, query, ref) }
+    let(:results) { Gitlab::ProjectSearchResults.new(project, query, ref) }
 
     it { expect(results.project).to eq(project) }
     it { expect(results.repository_ref).to eq(ref) }

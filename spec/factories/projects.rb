@@ -61,6 +61,23 @@ FactoryGirl.define do
     trait :private do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
+
+    trait :import_started do
+      import_url FFaker::Internet.uri('http')
+      import_status :started
+    end
+
+    trait :import_finished do
+      import_started
+      import_status :finished
+    end
+
+    trait :mirror do
+      import_started
+
+      mirror true
+      mirror_user_id { creator_id }
+    end
   end
 
   # Project with empty repository

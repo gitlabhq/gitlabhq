@@ -1,0 +1,25 @@
+-# @project is present when viewing Project's milestone
+- project = @project || issuable.project
+- assignee = issuable.assignee
+- issuable_type = issuable.class.table_name
+- base_url_args = [project.namespace.becomes(Namespace), project, issuable_type]
+
+%li{ id: dom_id(issuable, 'sortable'),  class: "issuable-row", 'data-iid' => issuable.iid, 'data-url' => polymorphic_path(issuable) }
+  %span
+    - if show_project_name
+      %strong #{project.name} &middot;
+    - elsif show_full_project_name
+      %strong #{project.name_with_namespace} &middot;
+    = link_to_gfm issuable.title, [project.namespace.becomes(Namespace), project, issuable], title: issuable.title
+  %div{class: 'issuable-detail'}
+    = link_to [project.namespace.becomes(Namespace), project, issuable] do
+      %span{ class: 'issuable-number' }>= issuable.to_reference
+
+    - issuable.labels.each do |label|
+      = link_to polymorphic_path(base_url_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }) do
+        - render_colored_label(label)
+
+    - if assignee
+      = link_to polymorphic_path(base_url_args, { milestone_title: @milestone.title, assignee_id: issuable.assignee_id, state: 'all' }),
+                class: 'has_tooltip', data: { 'original-title' => "Assigned to #{sanitize(assignee.name)}", container: 'body' } do
+        - image_tag(avatar_icon(issuable.assignee, 16), class: "avatar s16", alt: '')

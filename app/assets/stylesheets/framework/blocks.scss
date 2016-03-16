@@ -28,6 +28,10 @@
   border-bottom: 1px solid $border-color;
   color: $gl-gray;
 
+  a {
+    color: $md-link-color;
+  }
+
   &.oneline-block {
     line-height: 42px;
   }
@@ -116,6 +120,10 @@
   .cover-desc {
     padding: 0 $gl-padding 3px;
     color: $gl-text-color;
+
+    &.username:last-child {
+      padding-bottom: $gl-padding;
+    }
   }
 
   .cover-controls {
@@ -152,4 +160,8 @@
   > .controls {
     float: right;
   }
+}
+
+.content-block-small {
+  padding: 10px 0;
 }

@@ -16,6 +16,17 @@ describe Gitlab::GithubImport::Client, lib: true do
     end
   end
 
+
+  context 'allow SSL verification to be configurable on API' do
+    before do
+      github_provider['verify_ssl'] = false
+    end
+
+    it 'uses supplied value' do
+      expect(client.api.connection_options[:ssl]).to eq({ verify: false })
+    end
+  end
+
   context 'when provider does not specity an API endpoint' do
     it 'uses GitHub root API endpoint' do
       expect(client.api.api_endpoint).to eq 'https://api.github.com/'

@@ -12,11 +12,13 @@
 .prepend-top-default { margin-top: $gl-padding !important; }
 .prepend-top-20 { margin-top:20px }
 .prepend-left-10 { margin-left:10px }
-.prepend-left-default { margin-left:$gl-padding }
+.prepend-left-default { margin-left: $gl-padding; }
 .prepend-left-20 { margin-left:20px }
 .append-right-5 { margin-right: 5px }
 .append-right-10 { margin-right:10px }
+.append-right-default { margin-right: $gl-padding; }
 .append-right-20 { margin-right:20px }
+.append-bottom-0 { margin-bottom:0 }
 .append-bottom-10 { margin-bottom:10px }
 .append-bottom-15 { margin-bottom:15px }
 .append-bottom-20 { margin-bottom:20px }
@@ -58,25 +60,6 @@ pre {
 
 hr {
   margin: $gl-padding 0;
-}
-
-.dropdown-menu {
-  margin: 6px 0 0;
-}
-
-.dropdown-menu > li > a {
-  text-shadow: none;
-}
-
-.dropdown-menu-align-right {
-  left: auto;
-  right: 0px;
-}
-
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
-  background: $gl-primary;
-  color: #FFF;
 }
 
 .str-truncated {
