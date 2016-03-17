@@ -17,7 +17,7 @@ class GitPushService < BaseService
   #  6. Checks if the project's main language has changed
   #
   def execute
-    @project.repository.after_push_commit(branch_name)
+    @project.repository.after_push_commit(branch_name, params[:newrev])
 
     if push_remove_branch?
       @project.repository.after_remove_branch

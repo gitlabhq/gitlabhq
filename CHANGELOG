@@ -25,6 +25,7 @@ v 8.6.0 (unreleased)
   - Rewrite logo to simplify SVG code (Sean Lang)
   - Allow to use YAML anchors when parsing the `.gitlab-ci.yml` (Pascal Bach)
   - Ignore jobs that start with `.` (hidden jobs)
+  - Hide builds from project's settings when the feature is disabled
   - Allow to pass name of created artifacts archive in `.gitlab-ci.yml`
   - Refactor and greatly improve search performance
   - Add support for cross-project label references
@@ -59,6 +60,7 @@ v 8.5.5
   - Fix pagination for filtered dashboard and explore pages
   - Fix "Show all" link behavior
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
+  - HTTP error pages work independently from location and config (Artem Sidorenko)
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
