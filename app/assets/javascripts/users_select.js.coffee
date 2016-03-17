@@ -90,7 +90,6 @@ class @UsersSelect
             data = {}
             data[abilityName] = {}
             data[abilityName].assignee_id = selected
-            console.log 'data',data
             $loading
               .fadeIn()
             $.ajax(

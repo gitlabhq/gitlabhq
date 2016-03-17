@@ -82,6 +82,23 @@ class @LabelsSelect
         # This allows us to enable the button when ready
         enableLabelCreateButton = ->
           if newLabelField.val() isnt '' and newColorField.val() isnt ''
+            $newLabelError.hide()
+            $('.js-new-label-btn').disable()
+
+            # Create new label with API
+            Api.newLabel projectId, {
+              name: newLabelField.val()
+              color: newColorField.val()
+            }, (label) ->
+              $('.js-new-label-btn').enable()
+
+              if label.message?
+                $newLabelError
+                  .text label.message
+                  .show()
+              else
+                $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
+
             $newLabelCreateButton.enable()
           else
             $newLabelCreateButton.disable()
@@ -114,6 +131,35 @@ class @LabelsSelect
                     .show()
                 else
                   $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
+
+      saveLabelData = ->
+        selected = $dropdown
+          .closest('.selectbox')
+          .find("input[name='#{$dropdown.data('field-name')}']")
+          .map(->
+            @value
+          ).get()
+        data = {}
+        data[abilityName] = {}
+        data[abilityName].label_ids = selected
+        if not selected.length
+          data[abilityName].label_ids = ['']
+        $loading.fadeIn()
+        $.ajax(
+          type: 'PUT'
+          url: issueURL
+          data: data
+        ).done (data) ->
+          $loading.fadeOut()
+          $selectbox.hide()
+          if not data.labels.length
+            template = labelNoneHTMLTemplate()
+          else
+            template = labelHTMLTemplate(data)
+          href = $value
+                  .show()
+                  .html(template)
+>>>>>>> Add multi select stay open functionality
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -190,31 +236,8 @@ class @LabelsSelect
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
           else
-            selected = $dropdown
-              .closest('.selectbox')
-              .find("input[name='#{$dropdown.data('field-name')}']")
-              .map(->
-                @value
-              ).get()
-            console.log 'selected', selected
-            data = {}
-            data[abilityName] = {}
-            data[abilityName].label_ids = selected
-            if not selected.length
-              data[abilityName].label_ids = ['']
-            $loading.fadeIn()
-            $.ajax(
-              type: 'PUT'
-              url: issueURL
-              data: data
-            ).done (data) ->
-              $loading.fadeOut()
-              $selectbox.hide()
-              if not data.labels.length
-                template = labelNoneHTMLTemplate()
-              else
-                template = labelHTMLTemplate(data)
-              href = $value
-                      .show()
-                      .html(template)
+            if $dropdown.hasClass 'js-multiselect'
+              return
+            else
+              saveLabelData()
       )

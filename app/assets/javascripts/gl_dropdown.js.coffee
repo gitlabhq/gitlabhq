@@ -129,7 +129,7 @@ class GitLabDropdown
 
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
-    @dropdown.on "click", ".dropdown-menu", @shouldPropagate
+    @dropdown.on "click", ".dropdown-menu, .dropdown-menu-close", @shouldPropagate
 
     if @dropdown.find(".dropdown-toggle-page").length
       @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>
@@ -181,7 +181,12 @@ class GitLabDropdown
 
   shouldPropagate: (e) =>
     if @options.multiSelect
-      e.stopPropagation()
+      $target = $(e.target)
+      if not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon')
+        e.stopPropagation()
+        return false
+      else
+        return true
 
   opened: =>
     contentHtml = $('.dropdown-content', @dropdown).html()
