@@ -6,12 +6,12 @@ class DestroyGroupService
   end
 
   def execute
-    @group.projects.each do |project|
+    group.projects.each do |project|
       # Skip repository removal because we remove directory with namespace
       # that contain all this repositories
       ::Projects::DestroyService.new(project, current_user, skip_repo: true).pending_delete!
     end
 
-    @group.destroy
+    group.destroy
   end
 end

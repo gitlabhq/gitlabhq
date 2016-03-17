@@ -22,6 +22,7 @@ gem 'devise',                 '~> 3.5.4'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.3.1'
+gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
@@ -58,7 +59,9 @@ gem "gitlab_git", '~> 9.0'
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 
 # Git Wiki
-gem 'gollum-lib', '~> 4.1.0'
+# Required manually in config/initializers/gollum.rb to control load order
+gem 'gollum-lib', '~> 4.1.0', require: false
+gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 
 # Language detection
 gem "github-linguist", "~> 4.7.0", require: "linguist"

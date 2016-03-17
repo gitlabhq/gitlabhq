@@ -22,7 +22,7 @@ For the installations options please see [the installation page on the GitLab we
 - FreeBSD
 
 On the above unsupported distributions is still possible to install GitLab yourself.
-Please see the [installation from source guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md) and the [unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) on the public wiki for more information.
+Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/installation/) for more information.
 
 ### Non-Unix operating systems such as Windows
 

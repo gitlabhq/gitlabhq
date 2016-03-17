@@ -1,6 +1,6 @@
 /** COLORS **/
 .cgray { color: $gl-gray; }
-.clgray { color: #BBB }
+.clgray { color: #bbb }
 .cred { color: $gl-text-red; }
 .cgreen { color: $gl-text-green; }
 .cdark { color: #444 }
@@ -51,7 +51,7 @@ pre {
   }
 
   &.well-pre {
-    border: 1px solid #EEE;
+    border: 1px solid #eee;
     background: #f9f9f9;
     border-radius: 0;
     color: #555;
@@ -103,7 +103,7 @@ span.update-author {
 }
 
 .user-mention {
-  color: #2FA0BB;
+  color: #2fa0bb;
   font-weight: bold;
 }
 
@@ -187,9 +187,9 @@ li.note {
 
 .error-message {
   padding: 10px;
-  background: #C67;
+  background: #c67;
   margin: 0;
-  color: #FFF;
+  color: #fff;
 
   a {
     color: #fff;
@@ -200,7 +200,7 @@ li.note {
 .browser-alert {
   padding: 10px;
   text-align: center;
-  background: #C67;
+  background: #c67;
   color: #fff;
   font-weight: bold;
   a {
@@ -271,7 +271,7 @@ img.emoji {
 
 table {
   td.permission-x {
-    background: #D9EDF7 !important;
+    background: #d9edf7 !important;
     text-align: center;
   }
 }
@@ -280,7 +280,7 @@ table {
   float: left;
   text-align: center;
   font-size: 32px;
-  color: #AAA;
+  color: #aaa;
   width: 60px;
 }
 
@@ -347,7 +347,7 @@ table {
 
   .profiler-button,
   .profiler-controls {
-    border-color: #EEE !important;
+    border-color: #eee !important;
   }
 }
 

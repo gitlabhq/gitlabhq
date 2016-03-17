@@ -29,7 +29,7 @@
   .diff-content {
     overflow: auto;
     overflow-y: hidden;
-    background: #FFF;
+    background: #fff;
     color: #333;
 
     .unfold {
@@ -57,8 +57,8 @@
       font-family: $monospace_font;
       border: none;
       border-collapse: separate;
-      margin: 0px;
-      padding: 0px;
+      margin: 0;
+      padding: 0;
       .line_holder td {
         line-height: $code_line_height;
         font-size: $code_font_size;
@@ -76,10 +76,10 @@
     }
 
     .old_line, .new_line {
-      margin: 0px;
-      padding: 0px;
+      margin: 0;
+      padding: 0;
       border: none;
-      padding: 0px 5px;
+      padding: 0 5px;
       border-right: 1px solid;
       text-align: right;
       min-width: 35px;
@@ -97,8 +97,8 @@
     }
     .line_content {
       display: block;
-      margin: 0px;
-      padding: 0px 0.5em;
+      margin: 0;
+      padding: 0 0.5em;
       border: none;
       &.parallel {
         display: table-cell;
@@ -118,7 +118,7 @@
       background-color: #fff;
       line-height: 0;
       img {
-        border: 1px solid #FFF;
+        border: 1px solid #fff;
         background: image-url('trans_bg.gif');
         max-width: 100%;
       }
@@ -183,7 +183,7 @@
           height: 14px;
           width: 15px;
           position: absolute;
-          top: 0px;
+          top: 0;
           background: image-url('swipemode_sprites.gif') 0 3px no-repeat;
         }
         .bottom-handle {
@@ -191,7 +191,7 @@
           height: 14px;
           width: 15px;
           position: absolute;
-          bottom: 0px;
+          bottom: 0;
           background: image-url('swipemode_sprites.gif') 0 -11px no-repeat;
         }
       }
@@ -206,8 +206,8 @@
       .frame.added, .frame.deleted {
         position: absolute;
         display: block;
-        top: 0px;
-        left: 0px;
+        top: 0;
+        left: 0;
       }
       .controls {
         display: block;
@@ -215,7 +215,7 @@
         width: 300px;
         z-index: 100;
         position: absolute;
-        bottom: 0px;
+        bottom: 0;
         left: 50%;
         margin-left: -150px;
 
@@ -231,11 +231,11 @@
         .dragger {
           display: block;
           position: absolute;
-          left: 0px;
-          top: 0px;
+          left: 0;
+          top: 0;
           height: 14px;
           width: 14px;
-          background: image-url('onion_skin_sprites.gif') 0px -34px repeat-x;
+          background: image-url('onion_skin_sprites.gif') 0 -34px repeat-x;
           cursor: pointer;
         }
 
@@ -243,17 +243,17 @@
           display: block;
           position: absolute;
           top: 2px;
-          right: 0px;
+          right: 0;
           height: 10px;
           width: 10px;
-          background: image-url('onion_skin_sprites.gif') -2px 0px no-repeat;
+          background: image-url('onion_skin_sprites.gif') -2px 0 no-repeat;
         }
 
         .opaque {
           display: block;
           position: absolute;
           top: 2px;
-          left: 0px;
+          left: 0;
           height: 10px;
           width: 10px;
           background: image-url('onion_skin_sprites.gif') -2px -10px no-repeat;
@@ -265,7 +265,7 @@
   .view-modes {
     padding: 10px;
     text-align: center;
-    background: #EEE;
+    background: #eee;
 
     ul, li {
       list-style: none;

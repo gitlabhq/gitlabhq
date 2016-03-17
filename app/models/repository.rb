@@ -758,12 +758,15 @@ class Repository
   def parse_search_result(result)
     ref = nil
     filename = nil
+    basename = nil
     startline = 0
 
     result.each_line.each_with_index do |line, index|
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
         startline = startline.to_i - index
+        extname = File.extname(filename)
+        basename = filename.sub(/#{extname}$/, '')
         break
       end
     end
@@ -776,6 +779,7 @@ class Repository
 
     OpenStruct.new(
       filename: filename,
+      basename: basename,
       ref: ref,
       startline: startline,
       data: data
