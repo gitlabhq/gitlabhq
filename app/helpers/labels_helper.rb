@@ -110,12 +110,11 @@ module LabelsHelper
   end
 
   def projects_labels_options
-    labels =
-      if @project
-        @project.labels
-      else
-        Label.where(project_id: @projects)
-      end
+    if @project
+      @project.labels
+    else
+      Label.where(project_id: @projects)
+    end
   end
 
   def labels_filter_path
