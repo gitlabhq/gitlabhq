@@ -48,7 +48,7 @@
 
         .selectbox.hide-collapsed
           = f.hidden_field 'assignee_id', value: issuable.assignee_id, id: nil
-          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Filter by user', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_url, ability_name: issuable.to_ability_name } })
+          = dropdown_tag('Select assignee', options: { toggle_class: 'js-user-search js-author-search', title: 'Assign user', filter: true, dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author', placeholder: 'Search users', data: { first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), field_name: "#{issuable.to_ability_name}[assignee_id]", issue_update: issuable_url, ability_name: issuable.to_ability_name } })
 
       .block.milestone
         .sidebar-collapsed-icon
@@ -101,7 +101,7 @@
                 = icon('chevron-down')
               .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
                 .dropdown-page-one
-                  = dropdown_title("Filter by label")
+                  = dropdown_title("Assign labels")
                   = dropdown_filter("Search labels")
                   = dropdown_content
                   - if @project
