@@ -16,7 +16,7 @@
   .gitlab-text-container-link {
     z-index: 1;
     position: absolute;
-    left: 0px;
+    left: 0;
   }
 
   #logo {
@@ -143,7 +143,7 @@
   overflow: hidden;
 
   &.navbar-collapse {
-    padding: 0px !important;
+    padding: 0 !important;
   }
 
   li {
@@ -182,7 +182,7 @@
       .count {
         float: right;
         background: #eee;
-        padding: 0px 8px;
+        padding: 0 8px;
         @include border-radius(6px);
       }
 
@@ -194,8 +194,8 @@
 }
 
 .sidebar-subnav {
-  margin-left: 0px;
-  padding-left: 0px;
+  margin-left: 0;
+  padding-left: 0;
 
   li {
     list-style: none;
