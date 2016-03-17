@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.3.5
+  - Bump Git version requirement to 2.7.4
+
 v 8.3.4
   - Use gitlab-workhorse 0.5.4 (fixes API routing bug)
 
