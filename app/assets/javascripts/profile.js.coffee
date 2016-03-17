@@ -23,7 +23,15 @@ class @Profile
 
     @bindEvents()
 
-    @avatarGlCrop = $('.js-user-avatar-input').glCrop().data 'glcrop'
+    cropOpts =
+      filename: '.js-avatar-filename'
+      previewImage: '.avatar-image .avatar'
+      modalCrop: '.modal-profile-crop'
+      pickImageEl: '.js-choose-user-avatar-button'
+      uploadImageBtn: '.js-upload-user-avatar'
+      modalCropImg: '.modal-profile-crop-image'
+
+    @avatarGlCrop = $('.js-user-avatar-input').glCrop(cropOpts).data 'glcrop'
 
   bindEvents: ->
     @form.on 'submit', @onSubmitForm

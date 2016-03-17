@@ -10,28 +10,32 @@ class GitLabCrop
 
     # Set defaults
     {
-      @form = @fileInput.parents('form')
-      @filename = '.js-avatar-filename'
-      @previewImage = $('.avatar-image .avatar')
-      @modalCrop = '.modal-profile-crop'
       @exportWidth = 200
       @exportHeight = 200
       @cropBoxWidth = 200
       @cropBoxHeight = 200
+      @form = @fileInput.parents('form')
 
-      # Button where user clicks to open file dialog
-      # If not passed as argument let's pick a default one
-      @pickImageEl = @fileInput.parent().find('.js-choose-user-avatar-button')
-      @uploadImageBtn = $('.js-upload-user-avatar')
+      # Required params
+      @filename
+      @previewImage
+      @modalCrop
+      @pickImageEl
+      @uploadImageBtn
+      @modalCropImg
     } = opts
 
     # Ensure needed elements are jquery objects
-    @filename = if _.isString(@filename) then @$(@filename) else @filename
+    # If selector is provided we will convert them to a jQuery Object
+    @filename = @$(@filename)
+    @previewImage = @$(@previewImage)
+    @pickImageEl = @$(@pickImageEl)
 
-    # Modal usually is outside the wrapper element
+    # Modal elements usually are outside the @form element
     @modalCrop = if _.isString(@modalCrop) then $(@modalCrop) else @modalCrop
+    @uploadImageBtn = if _.isString(@uploadImageBtn) then $(@uploadImageBtn) else @uploadImageBtn
+    @modalCropImg = if _.isString(@modalCropImg) then $(@modalCropImg) else @modalCropImg
 
-    @modalCropImg = $('.modal-profile-crop-image')
     @cropActionsBtn = @modalCrop.find('[data-method]')
 
     @bindEvents()
