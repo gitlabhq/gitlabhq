@@ -5,9 +5,9 @@ class GitLabCrop
 
     # Set defaults
     {
-      @filename
-      @previewImage = $('.avatar-image .avatar')
       @form = @fileInput.parents('form')
+      @filename = '.js-avatar-filename'
+      @previewImage = $('.avatar-image .avatar')
       @modalCrop = '.modal-profile-crop'
       @exportWidth = 200
       @exportHeight = 200
@@ -20,12 +20,19 @@ class GitLabCrop
       @uploadImageBtn = $('.js-upload-user-avatar')
     } = opts
 
-    # Ensure @modalCrop is a jQuery Object
-    @modalCrop = $(@modalCrop)
+    # Ensure needed elements are jquery objects
+    @filename = if _.isString(@filename) then @$(@filename) else @filename
+
+    # Modal usually is outside the wrapper element
+    @modalCrop = if _.isString(@modalCrop) then $(@modalCrop) else @modalCrop
+
     @modalCropImg = $('.modal-profile-crop-image')
     @cropActionsBtn = @modalCrop.find('[data-method]')
 
     @bindEvents()
+
+  $: (selector) ->
+    $(selector, @form)
 
   bindEvents: ->
     self = @
@@ -114,6 +121,8 @@ class GitLabCrop
 
   setPreview: ->
     @previewImage.attr('src', @dataURL)
+    filename = @fileInput.val().replace(/^.*[\\\/]/, '')
+    @filename.text(filename)
 
   setBlob: ->
     @dataURL = @modalCropImg.cropper('getCroppedCanvas',
