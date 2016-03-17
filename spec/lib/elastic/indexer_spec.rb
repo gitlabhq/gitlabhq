@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Indexer" do
   it "runs commands" do
     expect(Gitlab::Popen).to receive(:popen).with(
-      array_including('bin/elastic_repo_indexer', '1', 'full_repo_path'),
+      [File.join(Rails.root, 'bin/elastic_repo_indexer'), '1', 'full_repo_path'],
       nil,
       hash_including(
         'ELASTIC_CONNECTION_INFO' => {
