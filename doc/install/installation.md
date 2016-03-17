@@ -76,7 +76,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.7.3 or higher
+    # Make sure Git is version 2.7.4 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -89,9 +89,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -O --progress https://www.kernel.org/pub/software/scm/git/git-2.7.3.tar.gz
-    echo '30d067499b61caddedaf1a407b4947244f14d10842d100f7c7c6ea1c288280cd  git-2.7.3.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.3.tar.gz
-    cd git-2.7.3/
+    curl -O --progress https://www.kernel.org/pub/software/scm/git/git-2.7.4.tar.gz
+    echo '7104c4f5d948a75b499a954524cb281fe30c6649d8abe20982936f75ec1f275b  git-2.7.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.4.tar.gz
+    cd git-2.7.4/
     ./configure
     make prefix=/usr/local all
 
@@ -161,7 +161,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Install the database packages
     sudo apt-get install -y postgresql postgresql-client libpq-dev
-    
+
     # Create a user for GitLab
     sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
 
