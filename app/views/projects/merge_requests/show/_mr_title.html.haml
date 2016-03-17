@@ -8,18 +8,21 @@
     = icon('angle-double-left')
   .issue-meta
     %strong.identifier
-      Merge Request ##{@merge_request.iid}
+      %span.hidden-sm.hidden-md.hidden-lg
+        MR
+      %span.hidden-xs
+        Merge Request
+      !#{@merge_request.iid}
     %span.creator
-      by
+      opened
       .editor-details
-        %strong
-          = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
-        %span.hidden-xs
-          = '@' + @merge_request.author.username
-        %strong
-          = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
-            by_username: true, avatar: false)
         = time_ago_with_tooltip(@merge_request.created_at)
+        by
+        %strong
+          = link_to_member(@project, @merge_request.author,  avatar: false, size: 24, mobile_classes: "hidden-xs")
+        %strong
+          = link_to_member(@project, @merge_request.author,  avatar: false, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
+            by_username: true, avatar: false)
 
   .issue-btn-group.pull-right
     - if can?(current_user, :update_merge_request, @merge_request)
