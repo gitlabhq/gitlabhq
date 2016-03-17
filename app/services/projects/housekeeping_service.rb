@@ -24,7 +24,7 @@ module Projects
     def execute
       raise LeaseTaken if !try_obtain_lease
 
-      GitlabShellWorker.perform_async(:gc, @project.path_with_namespace)
+      GitlabShellOneShotWorker.perform_async(:gc, @project.path_with_namespace)
     ensure
       @project.update_column(:pushes_since_gc, 0)
     end
