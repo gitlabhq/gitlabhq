@@ -214,6 +214,7 @@ module Gitlab
 
         commits.each do |commit|
           next if commit_from_annex_sync?(commit.id, ref)
+
           if status_object = check_commit(commit, git_hook)
             return status_object
           end
@@ -370,7 +371,7 @@ module Gitlab
       return false unless Gitlab.config.gitlab_shell.git_annex_enabled
 
       # Commit present in synced/current_branch, so avoid checking git hooks on this
-      project.repository.branch_names_contains(rev).contains? "synced/#{ref}"
+      project.repository.branch_names_contains(rev).include? "synced/#{ref.split("/").last}"
     end
   end
 end
