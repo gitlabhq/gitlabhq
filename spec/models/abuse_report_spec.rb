@@ -13,7 +13,8 @@
 require 'rails_helper'
 
 RSpec.describe AbuseReport, type: :model do
-  subject { create(:abuse_report) }
+  subject     { create(:abuse_report) }
+  let(:user)  { create(:user) }
 
   it { expect(subject).to be_valid }
 
@@ -31,17 +32,14 @@ RSpec.describe AbuseReport, type: :model do
 
   describe '#remove_user' do
     it 'blocks the user' do
-      report = build(:abuse_report)
-
-      allow(report.user).to receive(:destroy)
-
-      expect { report.remove_user }.to change { report.user.blocked? }.to(true)
+      expect { subject.remove_user(deleted_by: user) }.to change { subject.user.blocked? }.to(true)
     end
 
-    it 'removes the user' do
-      report = build(:abuse_report)
+    it 'lets a worker delete the user' do
+      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, subject.user.id,
+                                                              delete_solo_owned_groups: true)
 
-      expect { report.remove_user }.to change { User.count }.by(-1)
+      subject.remove_user(deleted_by: user)
     end
   end
 

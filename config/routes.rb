@@ -295,7 +295,7 @@ Rails.application.routes.draw do
   resource :profile, only: [:show, :update] do
     member do
       get :audit_log
-      get :applications
+      get :applications, to: 'oauth/applications#index'
 
       put :reset_private_token
       put :update_username
@@ -674,6 +674,10 @@ Rails.application.routes.draw do
         resources :labels, constraints: { id: /\d+/ } do
           collection do
             post :generate
+          end
+
+          member do
+            post :toggle_subscription
           end
         end
 

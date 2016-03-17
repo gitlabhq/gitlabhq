@@ -37,23 +37,23 @@
 }
 
 @mixin btn-green {
-  @include btn-color($green-light, $border-green-light, $green-normal, $border-green-normal, $green-dark, $border-green-dark, #FFFFFF);
+  @include btn-color($green-light, $border-green-light, $green-normal, $border-green-normal, $green-dark, $border-green-dark, #fff);
 }
 
 @mixin btn-blue {
-  @include btn-color($blue-light, $border-blue-light, $blue-normal, $border-blue-normal, $blue-dark, $border-blue-dark, #FFFFFF);
+  @include btn-color($blue-light, $border-blue-light, $blue-normal, $border-blue-normal, $blue-dark, $border-blue-dark, #fff);
 }
 
 @mixin btn-blue-medium {
-  @include btn-color($blue-medium-light, $border-blue-light, $blue-medium, $border-blue-normal, $blue-medium-dark, $border-blue-dark, #FFFFFF);
+  @include btn-color($blue-medium-light, $border-blue-light, $blue-medium, $border-blue-normal, $blue-medium-dark, $border-blue-dark, #fff);
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-light, $border-orange-light, $orange-normal, $border-orange-normal, $orange-dark, $border-orange-dark, #FFFFFF);
+  @include btn-color($orange-light, $border-orange-light, $orange-normal, $border-orange-normal, $orange-dark, $border-orange-dark, #fff);
 }
 
 @mixin btn-red {
-  @include btn-color($red-light, $border-red-light, $red-normal, $border-red-normal, $red-dark, $border-red-dark, #FFFFFF);
+  @include btn-color($red-light, $border-red-light, $red-normal, $border-red-normal, $red-dark, $border-red-dark, #fff);
 }
 
 @mixin btn-gray {
@@ -127,7 +127,7 @@
     margin-right: 7px;
     float: left;
     &:last-child {
-      margin-right: 0px;
+      margin-right: 0;
     }
     &.btn-xs {
       margin-right: 3px;
@@ -139,7 +139,6 @@
 
   .caret {
     margin-left: 5px;
-    color: $gray-darkest;
   }
 }
 
@@ -170,7 +169,7 @@
     margin-right: 7px;
     float: left;
     &:last-child {
-      margin-right: 0px;
+      margin-right: 0;
     }
   }
 }

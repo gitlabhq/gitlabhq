@@ -61,7 +61,7 @@
 
       .note-image-attach {
         margin-top: 4px;
-        margin-left: 0px;
+        margin-left: 0;
         max-width: 200px;
         float: none;
       }
@@ -89,7 +89,7 @@
 
     .todo-body {
       margin: 0;
-      border-left: 2px solid #DDD;
+      border-left: 2px solid #ddd;
       padding-left: 10px;
     }
   }

@@ -286,7 +286,14 @@ class Project < ActiveRecord::Base
           or(ptable[:description].matches(pattern))
       )
 
+      # We explicitly remove any eager loading clauses as they're:
+      #
+      # 1. Not needed by this query
+      # 2. Combined with .joins(:namespace) lead to all columns from the
+      #    projects & namespaces tables being selected, leading to a SQL error
+      #    due to the columns of all UNION'd queries no longer being the same.
       namespaces = select(:id).
+        except(:includes).
         joins(:namespace).
         where(ntable[:name].matches(pattern))
 
@@ -508,6 +515,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
+    return @external_issue_tracker if defined?(@external_issue_tracker)
     @external_issue_tracker ||=
       services.issue_trackers.active.without_defaults.first
   end

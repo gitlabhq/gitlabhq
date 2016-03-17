@@ -634,6 +634,12 @@ describe Project, models: true do
     it 'returns projects with a matching namespace name regardless of the casing' do
       expect(described_class.search(project.namespace.name.upcase)).to eq([project])
     end
+
+    it 'returns projects when eager loading namespaces' do
+      relation = described_class.all.includes(:namespace)
+
+      expect(relation.search(project.namespace.name)).to eq([project])
+    end
   end
 
   describe '#rename_repo' do

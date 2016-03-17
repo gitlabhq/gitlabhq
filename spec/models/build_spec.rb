@@ -9,7 +9,7 @@ describe Ci::Build, models: true do
 
   it { is_expected.to respond_to :trace_html }
 
-  describe :first_pending do
+  describe '#first_pending' do
     let(:first) { FactoryGirl.create :ci_build, commit: commit, status: 'pending', created_at: Date.yesterday }
     let(:second) { FactoryGirl.create :ci_build, commit: commit, status: 'pending' }
     before { first; second }
@@ -19,7 +19,7 @@ describe Ci::Build, models: true do
     it('returns with the first pending build') { is_expected.to eq(first) }
   end
 
-  describe :create_from do
+  describe '#create_from' do
     before do
       build.status = 'success'
       build.save
@@ -33,7 +33,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :ignored? do
+  describe '#ignored?' do
     subject { build.ignored? }
 
     context 'if build is not allowed to fail' do
@@ -69,7 +69,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :trace do
+  describe '#trace' do
     subject { build.trace_html }
 
     it { is_expected.to be_empty }
@@ -101,7 +101,7 @@ describe Ci::Build, models: true do
   #   it { is_expected.to eq(commit.project.timeout) }
   # end
 
-  describe :options do
+  describe '#options' do
     let(:options) do
       {
         image: "ruby:2.1",
@@ -122,25 +122,25 @@ describe Ci::Build, models: true do
   #   it { is_expected.to eq(project.allow_git_fetch) }
   # end
 
-  describe :project do
+  describe '#project' do
     subject { build.project }
 
     it { is_expected.to eq(commit.project) }
   end
 
-  describe :project_id do
+  describe '#project_id' do
     subject { build.project_id }
 
     it { is_expected.to eq(commit.project_id) }
   end
 
-  describe :project_name do
+  describe '#project_name' do
     subject { build.project_name }
 
     it { is_expected.to eq(project.name) }
   end
 
-  describe :extract_coverage do
+  describe '#extract_coverage' do
     context 'valid content & regex' do
       subject { build.extract_coverage('Coverage 1033 / 1051 LOC (98.29%) covered', '\(\d+.\d+\%\) covered') }
 
@@ -172,7 +172,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :variables do
+  describe '#variables' do
     context 'returns variables' do
       subject { build.variables }
 
@@ -242,7 +242,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :can_be_served? do
+  describe '#can_be_served?' do
     let(:runner) { FactoryGirl.create :ci_runner }
 
     before { build.project.runners << runner }
@@ -277,7 +277,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :any_runners_online? do
+  describe '#any_runners_online?' do
     subject { build.any_runners_online? }
 
     context 'when no runners' do
@@ -312,8 +312,8 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :show_warning? do
-    subject { build.show_warning? }
+  describe '#stuck?' do
+    subject { build.stuck? }
 
     %w(pending).each do |state|
       context "if commit_status.status is #{state}" do
@@ -343,35 +343,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :artifacts_download_url do
-    subject { build.artifacts_download_url }
-
-    context 'artifacts file does not exist' do
-      before { build.update_attributes(artifacts_file: nil) }
-      it { is_expected.to be_nil }
-    end
-
-    context 'artifacts file exists' do
-      let(:build) { create(:ci_build, :artifacts) }
-      it { is_expected.to_not be_nil }
-    end
-  end
-
-  describe :artifacts_browse_url do
-    subject { build.artifacts_browse_url }
-
-    it "should be nil if artifacts browser is unsupported" do
-      allow(build).to receive(:artifacts_metadata?).and_return(false)
-      is_expected.to be_nil
-    end
-
-    it 'should not be nil if artifacts browser is supported' do
-      allow(build).to receive(:artifacts_metadata?).and_return(true)
-      is_expected.to_not be_nil
-    end
-  end
-
-  describe :artifacts? do
+  describe '#artifacts?' do
     subject { build.artifacts? }
 
     context 'artifacts archive does not exist' do
@@ -386,7 +358,7 @@ describe Ci::Build, models: true do
   end
 
 
-  describe :artifacts_metadata? do
+  describe '#artifacts_metadata?' do
     subject { build.artifacts_metadata? }
     context 'artifacts metadata does not exist' do
       it { is_expected.to be_falsy }
@@ -398,7 +370,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe :repo_url do
+  describe '#repo_url' do
     let(:build) { FactoryGirl.create :ci_build }
     let(:project) { build.project }
 
@@ -412,7 +384,7 @@ describe Ci::Build, models: true do
     it { is_expected.to include(project.web_url[7..-1]) }
   end
 
-  describe :depends_on_builds do
+  describe '#depends_on_builds' do
     let!(:build) { FactoryGirl.create :ci_build, commit: commit, name: 'build', stage_idx: 0, stage: 'build' }
     let!(:rspec_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rspec', stage_idx: 1, stage: 'test' }
     let!(:rubocop_test) { FactoryGirl.create :ci_build, commit: commit, name: 'rubocop', stage_idx: 1, stage: 'test' }
@@ -444,7 +416,7 @@ describe Ci::Build, models: true do
                        created_at: created_at)
   end
 
-  describe :merge_request do
+  describe '#merge_request' do
     context 'when a MR has a reference to the commit' do
       before do
         @merge_request = create_mr(build, commit, factory: :merge_request)

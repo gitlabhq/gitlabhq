@@ -11,7 +11,10 @@ class IssuableBaseService < BaseService
       issuable, issuable.project, current_user, issuable.milestone)
   end
 
-  def create_labels_note(issuable, added_labels, removed_labels)
+  def create_labels_note(issuable, old_labels)
+    added_labels = issuable.labels - old_labels
+    removed_labels = old_labels - issuable.labels
+
     SystemNoteService.change_label(
       issuable, issuable.project, current_user, added_labels, removed_labels)
   end
@@ -71,20 +74,19 @@ class IssuableBaseService < BaseService
     end
   end
 
-  def has_changes?(issuable, options = {})
+  def has_changes?(issuable, old_labels: [])
     valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
 
     attrs_changed = valid_attrs.any? do |attr|
       issuable.previous_changes.include?(attr.to_s)
     end
 
-    old_labels = options[:old_labels]
-    labels_changed = old_labels && issuable.labels != old_labels
+    labels_changed = issuable.labels != old_labels
 
     attrs_changed || labels_changed
   end
 
-  def handle_common_system_notes(issuable, options = {})
+  def handle_common_system_notes(issuable, old_labels: [])
     if issuable.previous_changes.include?('title')
       create_title_change_note(issuable, issuable.previous_changes['title'].first)
     end
@@ -93,9 +95,6 @@ class IssuableBaseService < BaseService
       create_task_status_note(issuable)
     end
 
-    old_labels = options[:old_labels]
-    if old_labels && (issuable.labels != old_labels)
-      create_labels_note(issuable, issuable.labels - old_labels, old_labels - issuable.labels)
-    end
+    create_labels_note(issuable, old_labels) if issuable.labels != old_labels
   end
 end

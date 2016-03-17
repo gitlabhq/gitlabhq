@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160309140734) do
+ActiveRecord::Schema.define(version: 20160316123110) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -260,6 +260,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token_trigram", using: :gin, opclasses: {"token"=>"gin_trgm_ops"}
 
   create_table "ci_services", force: :cascade do |t|
@@ -720,6 +721,7 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.boolean  "pending_delete",         default: false
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
+    t.integer  "pushes_since_gc",        default: 0
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -774,9 +776,9 @@ ActiveRecord::Schema.define(version: 20160309140734) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",                default: false,    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",                                   null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true

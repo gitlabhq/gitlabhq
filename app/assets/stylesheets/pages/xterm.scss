@@ -2,23 +2,23 @@
   // color codes are based on http://en.wikipedia.org/wiki/File:Xterm_256color_chart.svg
   // see also: https://gist.github.com/jasonm23/2868981
 
-  $black: #000000;
+  $black: #000;
   $red: #cd0000;
   $green: #00cd00;
   $yellow: #cdcd00;
-  $blue: #0000ee;   // according to wikipedia, this is the xterm standard
+  $blue: #00e;   // according to wikipedia, this is the xterm standard
   //$blue: #1e90ff; // this is used by all the terminals I tried (when configured with the xterm color profile)
   $magenta: #cd00cd;
   $cyan: #00cdcd;
   $white: #e5e5e5;
   $l-black: #7f7f7f;
-  $l-red: #ff0000;
-  $l-green: #00ff00;
-  $l-yellow: #ffff00;
+  $l-red: #f00;
+  $l-green: #0f0;
+  $l-yellow: #ff0;
   $l-blue: #5c5cff;
-  $l-magenta: #ff00ff;
-  $l-cyan: #00ffff;
-  $l-white: #ffffff;
+  $l-magenta: #f0f;
+  $l-cyan: #0ff;
+  $l-white: #fff;
 
   .term-bold {
       font-weight: bold;
@@ -136,7 +136,7 @@
 
 
   .xterm-fg-0 {
-    color: #000000;
+    color: #000;
   }
   .xterm-fg-1 {
     color: #800000;
@@ -163,28 +163,28 @@
     color: #808080;
   }
   .xterm-fg-9 {
-    color: #ff0000;
+    color: #f00;
   }
   .xterm-fg-10 {
-    color: #00ff00;
+    color: #0f0;
   }
   .xterm-fg-11 {
-    color: #ffff00;
+    color: #ff0;
   }
   .xterm-fg-12 {
-    color: #0000ff;
+    color: #00f;
   }
   .xterm-fg-13 {
-    color: #ff00ff;
+    color: #f0f;
   }
   .xterm-fg-14 {
-    color: #00ffff;
+    color: #0ff;
   }
   .xterm-fg-15 {
-    color: #ffffff;
+    color: #fff;
   }
   .xterm-fg-16 {
-    color: #000000;
+    color: #000;
   }
   .xterm-fg-17 {
     color: #00005f;
@@ -199,7 +199,7 @@
     color: #0000d7;
   }
   .xterm-fg-21 {
-    color: #0000ff;
+    color: #00f;
   }
   .xterm-fg-22 {
     color: #005f00;
@@ -274,7 +274,7 @@
     color: #00d7ff;
   }
   .xterm-fg-46 {
-    color: #00ff00;
+    color: #0f0;
   }
   .xterm-fg-47 {
     color: #00ff5f;
@@ -289,7 +289,7 @@
     color: #00ffd7;
   }
   .xterm-fg-51 {
-    color: #00ffff;
+    color: #0ff;
   }
   .xterm-fg-52 {
     color: #5f0000;
@@ -724,7 +724,7 @@
     color: #d7ffff;
   }
   .xterm-fg-196 {
-    color: #ff0000;
+    color: #f00;
   }
   .xterm-fg-197 {
     color: #ff005f;
@@ -739,7 +739,7 @@
     color: #ff00d7;
   }
   .xterm-fg-201 {
-    color: #ff00ff;
+    color: #f0f;
   }
   .xterm-fg-202 {
     color: #ff5f00;
@@ -814,7 +814,7 @@
     color: #ffd7ff;
   }
   .xterm-fg-226 {
-    color: #ffff00;
+    color: #ff0;
   }
   .xterm-fg-227 {
     color: #ffff5f;
@@ -829,7 +829,7 @@
     color: #ffffd7;
   }
   .xterm-fg-231 {
-    color: #ffffff;
+    color: #fff;
   }
   .xterm-fg-232 {
     color: #080808;
@@ -850,7 +850,7 @@
     color: #3a3a3a;
   }
   .xterm-fg-238 {
-    color: #444444;
+    color: #444;
   }
   .xterm-fg-239 {
     color: #4e4e4e;
@@ -901,6 +901,6 @@
     color: #e4e4e4;
   }
   .xterm-fg-255 {
-    color: #eeeeee;
+    color: #eee;
   }
 }
