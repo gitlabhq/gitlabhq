@@ -16,6 +16,7 @@
 #  state         :string(255)
 #  iid           :integer
 #  updated_by_id :integer
+#  moved_to_id   :integer
 #
 
 require 'carrierwave/orm/activerecord'
@@ -31,6 +32,8 @@ class Issue < ActiveRecord::Base
   ActsAsTaggableOn.strict_case_match = true
 
   belongs_to :project
+  belongs_to :moved_to, class_name: 'Issue'
+
   validates :project, presence: true
 
   scope :of_group,
