@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
+  - Handle duplicate appearances table creation issue with upgrade from CE to EE
   - Improve weight filter for issues
   - Clear "stuck" mirror updates before periodically updating all mirrors.
   - [Elastic] Add elastic checker to gitlab:check
