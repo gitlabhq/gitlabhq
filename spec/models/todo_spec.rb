@@ -5,14 +5,15 @@
 #  id          :integer          not null, primary key
 #  user_id     :integer          not null
 #  project_id  :integer          not null
-#  target_id   :integer          not null
+#  target_id   :integer
 #  target_type :string           not null
 #  author_id   :integer
-#  note_id     :integer
 #  action      :integer          not null
 #  state       :string           not null
 #  created_at  :datetime
 #  updated_at  :datetime
+#  note_id     :integer
+#  commit_id   :string
 #
 
 require 'spec_helper'
