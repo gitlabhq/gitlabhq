@@ -76,7 +76,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 1.7.10 or higher, for example 1.7.12 or 2.0.0
+    # Make sure Git is version 2.7.4 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -89,8 +89,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.4.3.tar.gz | tar xz
-    cd git-2.4.3/
+    curl -O --progress https://www.kernel.org/pub/software/scm/git/git-2.7.4.tar.gz
+    echo '7104c4f5d948a75b499a954524cb281fe30c6649d8abe20982936f75ec1f275b  git-2.7.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.4.tar.gz
+    cd git-2.7.4/
     ./configure
     make prefix=/usr/local all
 
