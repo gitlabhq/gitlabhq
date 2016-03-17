@@ -1,5 +1,5 @@
-describe Geo::EnqueueUpdateService, service: true do
-  subject { Geo::EnqueueUpdateService.new(project) }
+describe Geo::EnqueueWikiUpdateService, service: true do
+  subject { Geo::EnqueueWikiUpdateService.new(project) }
   let(:project) { double(:project) }
   let(:fake_url) { 'git@localhost:repo/path.git' }
   let(:fake_id) { 999 }
@@ -7,7 +7,7 @@ describe Geo::EnqueueUpdateService, service: true do
 
   before(:each) do
     queue.empty!
-    expect(project).to receive(:url_to_repo) { fake_url }
+    expect(project).to receive_message_chain(:wiki, :url_to_repo) { fake_url }
     expect(project).to receive(:id) { fake_id }
   end
 

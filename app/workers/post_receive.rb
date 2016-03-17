@@ -1,6 +1,5 @@
 class PostReceive
   include Sidekiq::Worker
-  include Gitlab::Identifier
 
   sidekiq_options queue: :post_receive
 
@@ -11,67 +10,57 @@ class PostReceive
       log("Check gitlab.yml config for correct gitlab_shell.repos_path variable. \"#{Gitlab.config.gitlab_shell.repos_path}\" does not match \"#{repo_path}\"")
     end
 
-    repo_path.gsub!(/\.git\z/, "")
-    repo_path.gsub!(/\A\//, "")
+    post_received = Gitlab::GitPostReceive.new(repo_path, identifier, changes)
 
-    update_wiki_es_indexes(repo_path)
-
-    project = Project.find_with_namespace(repo_path)
-
-    if project.nil?
+    if post_received.project.nil?
       log("Triggered hook for non-existing project with full path \"#{repo_path} \"")
       return false
     end
 
-    changes = Base64.decode64(changes) unless changes.include?(" ")
-    changes = utf8_encode_changes(changes)
-    changes = changes.lines
+    if post_received.wiki?
+      update_wiki_es_indexes(post_received)
 
-    changes.each do |change|
+      # Triggers repository update on secondary nodes when Geo is enabled
+      Gitlab::Geo.notify_wiki_update(post_received.project) if Gitlab::Geo.enabled?
+    elsif post_received.regular_project?
+      # Triggers repository update on secondary nodes when Geo is enabled
+      Gitlab::Geo.notify_project_update(post_received.project) if Gitlab::Geo.enabled?
+
+      process_project_changes(post_received)
+    else
+      log("Triggered hook for unidentifiable repository type with full path \"#{repo_path} \"")
+      false
+    end
+  end
+
+  def process_project_changes(post_received)
+    post_received.changes.each do |change|
       oldrev, newrev, ref = change.strip.split(' ')
 
-      @user ||= identify(identifier, project, newrev)
+      @user ||= post_received.identify(newrev)
 
       unless @user
-        log("Triggered hook for non-existing user \"#{identifier} \"")
+        log("Triggered hook for non-existing user \"#{post_received.identifier} \"")
         return false
       end
 
-      # Triggers repository update on secondary nodes when Geo is enabled
-      Gitlab::Geo.notify_update(project) if Gitlab::Geo.enabled?
-
       if Gitlab::Git.tag_ref?(ref)
-        GitTagPushService.new.execute(project, @user, oldrev, newrev, ref)
+        GitTagPushService.new.execute(post_received.project, @user, oldrev, newrev, ref)
       else
-        GitPushService.new(project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
+        GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       end
     end
   end
 
-  def utf8_encode_changes(changes)
-    changes = changes.dup
+  def update_wiki_es_indexes(post_received)
+    return unless Gitlab.config.elasticsearch.enabled
 
-    changes.force_encoding("UTF-8")
-    return changes if changes.valid_encoding?
-
-    # Convert non-UTF-8 branch/tag names to UTF-8 so they can be dumped as JSON.
-    detection = CharlockHolmes::EncodingDetector.detect(changes)
-    return changes unless detection && detection[:encoding]
-
-    CharlockHolmes::Converter.convert(changes, detection[:encoding], 'UTF-8')
+    post_received.project.wiki.index_blobs
   end
+
+  private
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
-  end
-
-  def update_wiki_es_indexes(repo_path)
-    return unless repo_path =~ /wiki\z/ && Gitlab.config.elasticsearch.enabled
-
-    project = Project.find_with_namespace(repo_path.gsub(/\.wiki\z/, ""))
-
-    if project
-      project.wiki.index_blobs
-    end
   end
 end

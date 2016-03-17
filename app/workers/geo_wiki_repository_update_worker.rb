@@ -1,4 +1,4 @@
-class GeoRepositoryUpdateWorker
+class GeoWikiRepositoryUpdateWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
@@ -15,7 +15,9 @@ class GeoRepositoryUpdateWorker
   private
 
   def fetch_repository(remote_url)
-    @project.create_repository unless @project.repository_exists?
-    @project.repository.fetch_geo_mirror(remote_url)
+    # Second .wiki call returns a Gollum::Wiki, and it will always create the physical repository when not found
+    if @project.wiki.wiki.exist?
+      @project.wiki.repository.fetch_geo_mirror(remote_url)
+    end
   end
 end

@@ -1,27 +1,38 @@
 module Geo
-  class NotifyNodesService < Geo::BaseService
+  class NotifyNodesService
     include HTTParty
 
     # HTTParty timeout
     default_timeout Gitlab.config.gitlab.webhook_timeout
 
-    def execute
-      return if @queue.empty?
-      projects = @queue.fetch_batched_data
+    def initialize
+      @proj_queue = Gitlab::Geo::UpdateQueue.new('updated_projects')
+      @wiki_queue = Gitlab::Geo::UpdateQueue.new('updated_wikis')
+    end
 
-      ::Gitlab::Geo.secondary_nodes.each do |node|
-        success, message = notify_updated_projects(node, projects)
-        unless success
-          Rails.logger.error("GitLab failed to notify #{node.url} : #{message}")
-          @queue.store_batched_data(projects)
-        end
-      end
+    def execute
+      process(@proj_queue, :notify_projects_url)
+      process(@wiki_queue, :notify_wikis_url)
     end
 
     private
 
-    def notify_updated_projects(node, projects)
-      response = self.class.post(node.notify_url,
+    def process(queue, notify_url_method)
+      return if queue.empty?
+      projects = queue.fetch_batched_data
+
+      ::Gitlab::Geo.secondary_nodes.each do |node|
+        notify_url = node.send(notify_url_method.to_sym)
+        success, message = notify(notify_url, projects)
+        unless success
+          Rails.logger.error("GitLab failed to notify #{node.url} to #{notify_url} : #{message}")
+          queue.store_batched_data(projects)
+        end
+      end
+    end
+
+    def notify(notify_url, projects)
+      response = self.class.post(notify_url,
                                  body: { projects: projects }.to_json,
                                  headers: {
                                    'Content-Type' => 'application/json',

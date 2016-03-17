@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Geo::UpdateQueue do
-  subject { described_class.new }
+  subject { described_class.new('test_queue') }
   let(:dummy_data) { { 'id' => 1, 'clone_url' => 'git@localhost:repo/path.git' } }
   let(:dummy_data2) { { 'id' => 99, 'clone_url' => 'git@localhost:other_repo/path.git' } }
   let(:multiple_dummy_data) { [dummy_data, dummy_data2] * 10 }

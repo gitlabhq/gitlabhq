@@ -1,9 +1,9 @@
 module Geo
-  class EnqueueUpdateService < Geo::BaseService
+  class EnqueueProjectUpdateService
     attr_reader :project
 
     def initialize(project)
-      super()
+      @queue = Gitlab::Geo::UpdateQueue.new('updated_projects')
       @project = project
     end
 

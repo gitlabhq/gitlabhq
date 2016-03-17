@@ -69,14 +69,14 @@ describe Gitlab::Geo, lib: true do
     end
   end
 
-  describe 'notify_update' do
+  describe 'notify_project_update' do
     let(:project) { FactoryGirl.build(:project) }
 
     it 'delegates to NotifyService' do
-      expect(Geo::EnqueueUpdateService).to receive(:new).with(project).and_call_original
-      expect_any_instance_of(Geo::EnqueueUpdateService).to receive(:execute)
+      expect(Geo::EnqueueProjectUpdateService).to receive(:new).with(project).and_call_original
+      expect_any_instance_of(Geo::EnqueueProjectUpdateService).to receive(:execute)
 
-      described_class.notify_update(project)
+      described_class.notify_project_update(project)
     end
   end
 end
