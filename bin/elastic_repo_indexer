@@ -14,9 +14,8 @@ TO_SHA = ENV['TO_SHA']
 RAILS_ENV = ENV['RAILS_ENV']
 
 elastic_connection_info = JSON.parse ENV['ELASTIC_CONNECTION_INFO']
-ELASTIC_HOST = elastic_connection_info[:host]
-ELASTIC_PORT = elastic_connection_info[:port]
-
+ELASTIC_HOST = elastic_connection_info['host']
+ELASTIC_PORT = elastic_connection_info['port']
 
 class Repository
   include Elasticsearch::Git::Repository
@@ -27,6 +26,10 @@ class Repository
     host: ELASTIC_HOST,
     port: ELASTIC_PORT
   )
+
+  def client_for_indexing
+    self.__elasticsearch__.client
+  end
 
   def repository_id
     PROJECT_ID
