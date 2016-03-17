@@ -25,11 +25,9 @@ module IssuablesHelper
 
     if @project
       member = @project.team.find_member(user_id)
-      if member
-        user = member.user
-      end
+      user = member.user if member
     else
-      user = User.find(user_id)
+      user = User.find_by(id: user_id)
     end
 
     if user
