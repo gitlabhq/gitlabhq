@@ -108,6 +108,7 @@ ul.notes {
         word-wrap: break-word;
         @include md-typography;
 
+        // On diffs code should wrap nicely and not overflow
         pre {
           code {
             white-space: pre-wrap;
