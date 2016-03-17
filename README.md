@@ -68,7 +68,7 @@ GitLab is a Ruby on Rails application that runs on the following software:
 
 - Ubuntu/Debian/CentOS/RHEL
 - Ruby (MRI) 2.1
-- Git 2.7.3+
+- Git 2.7.4+
 - Redis 2.8+
 - MySQL or PostgreSQL
 

@@ -17,6 +17,9 @@ v 8.6.0 (unreleased)
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
 
+v 8.5.8
+  - Bump Git version requirement to 2.7.4
+
 v 8.5.7
   - Bump Git version requirement to 2.7.3
 
