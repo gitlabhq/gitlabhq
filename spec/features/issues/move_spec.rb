@@ -60,6 +60,17 @@ feature 'issue move to another project' do
         expect(page).to have_select('move_to_project_id', options: options)
       end
     end
+
+    context 'issue has been already moved' do
+      let(:new_issue) { create(:issue, project: new_project) }
+      let(:issue) do
+        create(:issue, project: old_project, author: user, moved_to: new_issue)
+      end
+
+      scenario 'user wants to move issue that has already been moved' do
+        expect(page).to have_no_select('move_to_project_id')
+      end
+    end
   end
 
   def edit_issue(issue)

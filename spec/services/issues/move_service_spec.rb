@@ -91,6 +91,11 @@ describe Issues::MoveService, services: true do
         it 'creates a new internal id for issue' do
           expect(new_issue.iid).to be 1
         end
+
+        it 'marks issue as moved' do
+          expect(old_issue.moved?).to eq true
+          expect(old_issue.moved_to).to eq new_issue
+        end
       end
 
       context 'issue with notes' do
@@ -216,6 +221,19 @@ describe Issues::MoveService, services: true do
         before do
           new_project.team << [user, :guest]
           old_project.team << [user, :reporter]
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'issue has already been moved' do
+        include_context 'user can move issue'
+
+        let(:moved_to_issue) { create(:issue) }
+
+        let(:old_issue) do
+          create(:issue, project: old_project, author: author,
+                         moved_to: moved_to_issue)
         end
 
         it { is_expected.to be_falsey }

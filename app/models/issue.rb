@@ -123,4 +123,16 @@ class Issue < ActiveRecord::Base
       note.all_references(current_user).merge_requests
     end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
   end
+
+  def moved?
+    !moved_to.nil?
+  end
+
+  def can_move?(user, to_project = nil)
+    if to_project
+      return false unless user.can?(:admin_issue, to_project)
+    end
+
+    !moved? && user.can?(:admin_issue, self.project)
+  end
 end

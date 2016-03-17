@@ -33,6 +33,7 @@ module Issues
         #
         add_moved_to_note
         close_old_issue
+        mark_as_moved
       end
 
       notify_participants
@@ -47,8 +48,8 @@ module Issues
     private
 
     def can_move?
-      can?(@current_user, :admin_issue, @project_old) &&
-        can?(@current_user, :admin_issue, @project_new)
+      @issue_old.can_move?(@current_user) &&
+        @issue_old.can_move?(@current_user, @project_new)
     end
 
     def create_new_issue
@@ -95,6 +96,10 @@ module Issues
 
     def notify_participants
       notification_service.issue_moved(@issue_old, @issue_new, @current_user)
+    end
+
+    def mark_as_moved
+      @issue_old.update(moved_to: @issue_new)
     end
   end
 end
