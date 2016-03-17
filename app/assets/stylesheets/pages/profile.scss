@@ -201,11 +201,15 @@
 .modal-profile-crop {
   .modal-dialog {
     width: 380px;
+
+    @media (max-width: $screen-sm-min) {
+      width: auto;
+    }
+
   }
 
   .profile-crop-image-container {
-    width: 350px;
-    height: 350px;
+    height: 300px;
     margin: 0 auto;
   }
 
