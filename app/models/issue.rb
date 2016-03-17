@@ -87,11 +87,21 @@ class Issue < ActiveRecord::Base
   end
 
   def referenced_merge_requests(current_user = nil)
-    Gitlab::ReferenceExtractor.lazily do
-      [self, *notes].flat_map do |note|
-        note.all_references(current_user).merge_requests
-      end
-    end.sort_by(&:iid)
+    @referenced_merge_requests ||= {}
+    @referenced_merge_requests[current_user] ||= begin
+      Gitlab::ReferenceExtractor.lazily do
+        [self, *notes].flat_map do |note|
+          note.all_references(current_user).merge_requests
+        end
+      end.sort_by(&:iid).uniq
+    end
+  end
+
+  def related_branches
+    return [] if self.project.empty_repo?
+    self.project.repository.branch_names.select do |branch|
+      branch =~ /\A#{iid}-(?!\d+-stable)/i
+    end
   end
 
   # Reset issue events cache
@@ -119,5 +129,16 @@ class Issue < ActiveRecord::Base
     notes.system.flat_map do |note|
       note.all_references(current_user).merge_requests
     end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
+
+  def to_branch_name
+    "#{iid}-#{title.parameterize}"
+  end
+
+  def can_be_worked_on?(current_user)
+    !self.closed? &&
+      !self.project.forked? &&
+      self.related_branches.empty? &&
+      self.closed_by_merge_requests(current_user).empty?
   end
 end
