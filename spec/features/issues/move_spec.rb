@@ -36,9 +36,8 @@ feature 'issue move to another project' do
       edit_issue(issue)
     end
 
-    scenario 'moving issue to another project', js: true do
-      find('#s2id_move_to_project_id').click
-      find('.select2-drop li', text: new_project.name_with_namespace).click
+    scenario 'moving issue to another project' do
+      select(new_project.name_with_namespace, from: 'move_to_project_id')
       click_button('Save changes')
 
       expect(current_url).to include project_path(new_project)
