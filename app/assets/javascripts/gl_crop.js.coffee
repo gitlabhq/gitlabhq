@@ -6,8 +6,13 @@ class GitLabCrop
     # Set defaults
     {
       @filename
+      @previewImage = $('.avatar-image .avatar')
       @form = @fileInput.parents('form')
       @modalCrop = '.modal-profile-crop'
+      @exportWidth = 200
+      @exportHeight = 200
+      @cropBoxWidth = 200
+      @cropBoxHeight = 200
 
       # Button where user clicks to open file dialog
       # If not passed as argument let's pick a default one
@@ -40,6 +45,7 @@ class GitLabCrop
     @fileInput.trigger('click')
 
   onModalShow: =>
+    self = @
     @modalCropImg.cropper(
       viewMode: 1
       center: false
@@ -57,8 +63,8 @@ class GitLabCrop
       toggleDragModeOnDblclick: false
       built: ->
         container = $(@).cropper 'getContainerData'
-        cropBoxWidth = 200;
-        cropBoxHeight = 200;
+        cropBoxWidth = self.cropBoxWidth;
+        cropBoxHeight = self.cropBoxHeight;
 
         $(@).cropper('setCropBoxData',
           width: cropBoxWidth,
@@ -77,8 +83,8 @@ class GitLabCrop
   onUploadImageBtnClick: (e) =>
     e.preventDefault()
     @setBlob()
+    @setPreview()
     @modalCrop.modal('hide')
-    # @form.submit();
 
   onActionBtnClick: (btn) ->
     data = $(btn).data()
@@ -106,9 +112,15 @@ class GitLabCrop
       array.push(binary.charCodeAt(k))
     new Blob([new Uint8Array(array)], type: 'image/png')
 
+  setPreview: ->
+    @previewImage.attr('src', @dataURL)
+
   setBlob: ->
-    dataURL = @modalCropImg.cropper('getCroppedCanvas').toDataURL('image/png')
-    @croppedImageBlob = @dataURLtoBlob(dataURL)
+    @dataURL = @modalCropImg.cropper('getCroppedCanvas',
+        width: 200
+        height: 200
+      ).toDataURL('image/png')
+    @croppedImageBlob = @dataURLtoBlob(@dataURL)
 
   getBlob: ->
     @croppedImageBlob
