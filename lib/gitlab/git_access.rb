@@ -371,7 +371,8 @@ module Gitlab
       return false unless Gitlab.config.gitlab_shell.git_annex_enabled
 
       # Commit present in synced/current_branch, so avoid checking git hooks on this
-      project.repository.branch_names_contains(rev).include? "synced/#{ref.split("/").last}"
+      branch_name = "synced/#{Gitlab::Git::Ref.extract_branch_name(ref)}"
+      project.repository.branch_names_contains(rev).include? branch_name
     end
   end
 end
