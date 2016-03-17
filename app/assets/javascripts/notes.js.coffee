@@ -343,6 +343,7 @@ class @Notes
   updateNote: (_xhr, note, _status) =>
     # Convert returned HTML to a jQuery object so we can modify it further
     $html = $(note.html)
+    $('.js-timeago', $html).timeago()
     $html.syntaxHighlight()
     $html.find('.js-task-list-container').taskList('enable')
 
