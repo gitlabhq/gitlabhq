@@ -67,17 +67,17 @@
  * Base mixin for lists in GitLab
  */
 @mixin basic-list {
-  margin: 5px 0px;
-  padding: 0px;
+  margin: 5px 0;
+  padding: 0;
   list-style: none;
 
   > li {
     @include clearfix;
 
     padding: 10px 0;
-    border-bottom: 1px solid #EEE;
+    border-bottom: 1px solid #eee;
     display: block;
-    margin: 0px;
+    margin: 0;
 
     &:last-child {
       border-bottom: none;

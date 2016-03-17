@@ -63,7 +63,7 @@
 
       .note-image-attach {
         margin-top: 4px;
-        margin-left: 0px;
+        margin-left: 0;
         max-width: 200px;
         float: none;
       }
@@ -83,10 +83,10 @@
   .event_icon {
     position: relative;
     float: right;
-    border: 1px solid #EEE;
+    border: 1px solid #eee;
     padding: 5px;
     @include border-radius(5px);
-    background: #F9F9F9;
+    background: #f9f9f9;
     margin-left: 10px;
     top: -6px;
     img {
@@ -94,7 +94,7 @@
     }
   }
 
-  &:last-child { border:none }
+  &:last-child { border: none }
 
   .event_commits {
     li {
@@ -138,7 +138,7 @@
     @include str-truncated(100%);
     padding: 5px 0;
     font-size: 13px;
-    float:left;
+    float: left;
     margin-right: -150px;
     padding-right: 150px;
     line-height: 20px;
@@ -160,7 +160,7 @@
 
     .event-body {
       margin: 0;
-      border-left: 2px solid #DDD;
+      border-left: 2px solid #ddd;
       padding-left: 10px;
     }
 

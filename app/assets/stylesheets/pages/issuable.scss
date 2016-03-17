@@ -59,7 +59,7 @@
 .issuable-sidebar {
   .block {
     @include clearfix;
-    padding:  $gl-padding 0;
+    padding: $gl-padding 0;
     border-bottom: 1px solid $border-gray-light;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
@@ -222,7 +222,7 @@
       width: 100%;
       text-align: center;
       padding-bottom: 10px;
-      color: #999999;
+      color: #999;
 
       span {
         display: block;
@@ -237,7 +237,7 @@
         }
 
         i {
-          color: #999999;
+          color: #999;
         }
       }
     }

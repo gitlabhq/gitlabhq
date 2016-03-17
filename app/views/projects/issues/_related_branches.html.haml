@@ -1,0 +1,15 @@
+- if @related_branches.any?
+  %h2.related-branches-title
+    = pluralize(@related_branches.count, 'Related Branch')
+  %ul.unstyled-list
+    - @related_branches.each do |branch|
+      %li
+        - sha = @project.repository.find_branch(branch).target
+        - ci_commit = @project.ci_commit(sha) if sha
+        - if ci_commit
+          %span.related-branch-ci-status
+            = render_ci_status(ci_commit)
+        %span.related-branch-info
+          %strong
+            = link_to namespace_project_compare_path(@project.namespace, @project, from: @project.default_branch, to: branch), class: "label-branch" do
+              = branch

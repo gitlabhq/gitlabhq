@@ -70,8 +70,10 @@
 
       .merge-requests
         = render 'merge_requests'
+        = render 'related_branches'
 
     .content-block.content-block-small
+      = render 'new_branch'
       = render 'votes/votes_block', votable: @issue
 
     .row

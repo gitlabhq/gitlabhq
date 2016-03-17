@@ -22,7 +22,7 @@ If the highest number stable branch is unclear please check the [GitLab Blog](ht
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [requirements.md](requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
 
 This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
@@ -89,8 +89,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.4.3.tar.gz | tar xz
-    cd git-2.4.3/
+    curl -O --progress https://www.kernel.org/pub/software/scm/git/git-2.7.3.tar.gz
+    echo '30d067499b61caddedaf1a407b4947244f14d10842d100f7c7c6ea1c288280cd  git-2.7.3.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.3.tar.gz
+    cd git-2.7.3/
     ./configure
     make prefix=/usr/local all
 
@@ -143,7 +144,7 @@ use 64-bit Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
     curl -O --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
-    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -c - && \
+    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
       sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
     rm go1.5.3.linux-amd64.tar.gz
@@ -160,19 +161,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Install the database packages
     sudo apt-get install -y postgresql postgresql-client libpq-dev
-
-    # Login to PostgreSQL
-    sudo -u postgres psql -d template1
-
+    
     # Create a user for GitLab
-    # Do not type the 'template1=#', this is part of the prompt
-    template1=# CREATE USER git CREATEDB;
+    sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
 
     # Create the GitLab production database & grant all privileges on database
-    template1=# CREATE DATABASE gitlabhq_production OWNER git;
-
-    # Quit the database session
-    template1=# \q
+    sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
 
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production

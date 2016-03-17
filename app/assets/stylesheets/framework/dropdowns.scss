@@ -4,7 +4,7 @@
   height: 0;
   margin-left: 2px;
   vertical-align: middle;
-  border-top: $caret-width-base dashed $dropdown-caret-color;
+  border-top: $caret-width-base dashed;
   border-right: $caret-width-base solid transparent;
   border-left: $caret-width-base solid transparent;
 }
@@ -260,7 +260,7 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    color: #C7C7C7;
+    color: #c7c7c7;
     font-size: 12px;
     pointer-events: none;
   }

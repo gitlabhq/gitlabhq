@@ -1,8 +1,8 @@
 $row-hover: #f4f8fe;
-$gl-text-color: #54565B;
-$gl-text-green: #4A2;
-$gl-text-red: #D12F19;
-$gl-text-orange: #D90;
+$gl-text-color: #54565b;
+$gl-text-green: #4a2;
+$gl-text-red: #d12f19;
+$gl-text-orange: #d90;
 $gl-header-color: #323232;
 $gl-link-color: #333c48;
 $md-text-color: #444;
@@ -27,27 +27,27 @@ $gl-gray: #5a5a5a;
 $gl-padding: 16px;
 $gl-btn-padding: 10px;
 $gl-vert-padding: 6px;
-$gl-padding-top:10px;
+$gl-padding-top: 10px;
 $gl-avatar-size: 40px;
 $secondary-text: #7f8fa4;
-$error-exclamation-point: #E62958;
+$error-exclamation-point: #e62958;
 $border-radius-default: 3px;
-$list-title-color: #333333;
-$list-text-color: #555555;
+$list-title-color: #333;
+$list-text-color: #555;
 
-$btn-transparent-color: #8F8F8F;
+$btn-transparent-color: #8f8f8f;
 
-$ssh-key-icon-color: #8F8F8F;
+$ssh-key-icon-color: #8f8f8f;
 $ssh-key-icon-size: 18px;
 
-$provider-btn-group-border: #E5E5E5;
-$provider-btn-not-active-color: #4688F1;
+$provider-btn-group-border: #e5e5e5;
+$provider-btn-not-active-color: #4688f1;
 
 /*
  * Color schema
  */
 
-$white-light: #FFFFFF;
+$white-light: #fff;
 $white-normal: #ededed;
 $white-dark: #ededed;
 
@@ -57,55 +57,55 @@ $gray-dark: #ededed;
 $gray-darkest: #c9c9c9;
 
 $green-light: #38ae67;
-$green-normal: #2FAA60;
-$green-dark: #2CA05B;
+$green-normal: #2faa60;
+$green-dark: #2ca05b;
 
-$blue-light: #2EA8E5;
-$blue-normal: #2D9FD8;
-$blue-dark: #2897CE;
+$blue-light: #2ea8e5;
+$blue-normal: #2d9fd8;
+$blue-dark: #2897ce;
 
-$blue-medium-light: #3498CB;
-$blue-medium: #2F8EBF;
-$blue-medium-dark: #2D86B4;
+$blue-medium-light: #3498cb;
+$blue-medium: #2f8ebf;
+$blue-medium-dark: #2d86b4;
 
 $orange-light: rgba(252, 109, 38, 0.80);
-$orange-normal: #E75E40;
-$orange-dark: #CE5237;
+$orange-normal: #e75e40;
+$orange-dark: #ce5237;
 
-$red-light: #F06559;
-$red-normal: #E52C5A;
-$red-dark: #D22852;
+$red-light: #f06559;
+$red-normal: #e52c5a;
+$red-dark: #d22852;
 
-$border-white-light: #F1F2F4;
-$border-white-normal: #D6DAE2;
-$border-white-dark: #C6CACF;
+$border-white-light: #f1f2f4;
+$border-white-normal: #d6dae2;
+$border-white-dark: #c6cacf;
 
 $border-gray-light: rgba(0, 0, 0, 0.06);
 $border-gray-normal: rgba(0, 0, 0, 0.10);;
-$border-gray-dark: #C6CACF;
+$border-gray-dark: #c6cacf;
 
-$border-green-light: #2FAA60;
-$border-green-normal: #2CA05B;
+$border-green-light: #2faa60;
+$border-green-normal: #2ca05b;
 $border-green-dark: #279654;
 
-$border-blue-light: #2D9FD8;
-$border-blue-normal: #2897CE;
-$border-blue-dark: #258DC1;
+$border-blue-light: #2d9fd8;
+$border-blue-normal: #2897ce;
+$border-blue-dark: #258dc1;
 
 $border-orange-light: #fc6d26;
-$border-orange-normal: #CE5237;
-$border-orange-dark: #C14E35;
+$border-orange-normal: #ce5237;
+$border-orange-dark: #c14e35;
 
-$border-red-light: #F24F41;
-$border-red-normal: #D22852;
-$border-red-dark: #CA264F;
+$border-red-light: #f24f41;
+$border-red-normal: #d22852;
+$border-red-dark: #ca264f;
 
-$help-well-bg: #FAFAFA;
-$help-well-border: #E5E5E5;
+$help-well-bg: #fafafa;
+$help-well-border: #e5e5e5;
 
-$warning-message-bg: #FBF2D9;
-$warning-message-color: #9E8E60;
-$warning-message-border: #F0E2BB;
+$warning-message-bg: #fbf2d9;
+$warning-message-color: #9e8e60;
+$warning-message-border: #f0e2bb;
 
 /* header */
 $light-grey-header: #faf9f9;
@@ -143,23 +143,22 @@ $dropdown-border-color: rgba(#000, .1);
 $dropdown-shadow-color: rgba(#000, .1);
 $dropdown-divider-color: rgba(#000, .1);
 $dropdown-header-color: #959494;
-$dropdown-caret-color: #54565B;
-$dropdown-title-btn-color: #BFBFBF;
-$dropdown-input-color: #C7C7C7;
+$dropdown-title-btn-color: #bfbfbf;
+$dropdown-input-color: #c7c7c7;
 $dropdown-input-focus-border: rgb(58, 171, 240);
 $dropdown-input-focus-shadow: rgba(#000, .2);
 $dropdown-loading-bg: rgba(#fff, .6);
 
 $dropdown-toggle-bg: #fff;
 $dropdown-toggle-color: #626262;
-$dropdown-toggle-border-color: #EAEAEA;
+$dropdown-toggle-border-color: #eaeaea;
 $dropdown-toggle-hover-border-color: darken($dropdown-toggle-border-color, 15%);
-$dropdown-toggle-icon-color: #C4C4C4;
+$dropdown-toggle-icon-color: #c4c4c4;
 $dropdown-toggle-hover-icon-color: $dropdown-toggle-hover-border-color;
 
 /*
  *  Award emoji
  */
-$award-emoji-menu-bg: #FFF;
-$award-emoji-menu-border: #F1F2F4;
-$award-emoji-new-btn-icon-color: #DCDCDC;
+$award-emoji-menu-bg: #fff;
+$award-emoji-menu-border: #f1f2f4;
+$award-emoji-new-btn-icon-color: #dcdcdc;

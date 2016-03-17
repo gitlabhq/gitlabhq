@@ -9,7 +9,7 @@ class Projects::BranchesController < Projects::ApplicationController
     @sort = params[:sort] || 'name'
     @branches = @repository.branches_sorted_by(@sort)
     @branches = Kaminari.paginate_array(@branches).page(params[:page]).per(PER_PAGE)
-    
+
     @max_commits = @branches.reduce(0) do |memo, branch|
       diverging_commit_counts = repository.diverging_commit_counts(branch)
       [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
@@ -23,10 +23,14 @@ class Projects::BranchesController < Projects::ApplicationController
   def create
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
-    ref = sanitize(strip_tags(params[:ref]))
-    ref = Addressable::URI.unescape(ref)
+
     result = CreateBranchService.new(project, current_user).
         execute(branch_name, ref)
+
+    if params[:issue_iid]
+      issue = @project.issues.find_by(iid: params[:issue_iid])
+      SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
+    end
 
     if result[:status] == :success
       @branch = result[:branch]
@@ -47,6 +51,17 @@ class Projects::BranchesController < Projects::ApplicationController
                                                     @project)
       end
       format.js { render status: status[:return_code] }
+    end
+  end
+
+  private
+
+  def ref
+    if params[:ref]
+      ref_escaped = sanitize(strip_tags(params[:ref]))
+      Addressable::URI.unescape(ref_escaped)
+    else
+      @project.default_branch
     end
   end
 end

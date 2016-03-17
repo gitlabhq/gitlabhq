@@ -49,7 +49,7 @@ form.edit-issue {
   margin: 0;
 }
 
-.merge-requests-title {
+.merge-requests-title, .related-branches-title {
   font-size: 16px;
   font-weight: 600;
 }
@@ -68,18 +68,18 @@ form.edit-issue {
 .merge-request,
 .issue {
   &.today {
-    background: #EFE;
-    border-color: #CEC;
+    background: #efe;
+    border-color: #cec;
   }
 
   &.closed {
-    background: #F9F9F9;
-    border-color: #E5E5E5;
+    background: #f9f9f9;
+    border-color: #e5e5e5;
   }
 
   &.merged {
-    background: #F9F9F9;
-    border-color: #E5E5E5;
+    background: #f9f9f9;
+    border-color: #e5e5e5;
   }
 }
 
