@@ -59,6 +59,7 @@ v 8.5.5
   - Fix pagination for filtered dashboard and explore pages
   - Fix "Show all" link behavior
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
+  - HTTP error pages work independently from location and config (Artem Sidorenko)
 
 v 8.5.4
   - Do not cache requests for badges (including builds badge)
