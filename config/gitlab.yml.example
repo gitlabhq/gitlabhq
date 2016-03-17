@@ -106,7 +106,7 @@ production: &base
     enabled: false
 
     # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The `%{key}` placeholder is added after the user part, after a `+` character, before the `@`.
+    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
     address: "gitlab-incoming+%{key}@gmail.com"
 
     # Email account username

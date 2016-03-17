@@ -63,10 +63,10 @@ module Gitlab
       end
 
       def reply_key
-        key_from_to_address || key_from_in_reply_to_header
+        key_from_to_header || key_from_additional_headers
       end
 
-      def key_from_to_address
+      def key_from_to_header
         key = nil
         message.to.each do |address|
           key = Gitlab::IncomingEmail.key_from_address(address)
@@ -76,11 +76,11 @@ module Gitlab
         key
       end
 
-      def key_from_in_reply_to_header
+      def key_from_additional_headers
         reply_key = nil
 
-        message[:in_reply_to].message_ids.each do |message_id|
-          reply_key = Gitlab::IncomingEmail.key_from_address(message_id)
+        Array(message.references).each do |message_id|
+          reply_key = Gitlab::IncomingEmail.key_from_fallback_reply_message_id(message_id)
           break if reply_key
         end
 
