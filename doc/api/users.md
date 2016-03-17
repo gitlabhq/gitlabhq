@@ -220,6 +220,7 @@ Parameters:
 - `bio`                         - User's biography
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `external` (optional)         - Flags the user as external - true or false(default)
 
 Note, at the moment this method does only return a 404 error,
 even in cases where a 409 (Conflict) would be more appropriate,

@@ -61,7 +61,7 @@ module API
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
       #   confirm                           - Require user confirmation - true (default) or false
-      #   external                          - Is user an external user - true or false(default)
+      #   external                          - Flags the user as external - true or false(default)
       # Example Request:
       #   POST /users
       post do
@@ -108,7 +108,7 @@ module API
       #   bio                               - Bio
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
-      #   external                          - Is user an external user - true or false(default)
+      #   external                          - Flags the user as external - true or false(default)
       # Example Request:
       #   PUT /users/:id
       put ":id" do
