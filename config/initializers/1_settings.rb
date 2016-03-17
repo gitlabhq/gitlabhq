@@ -156,7 +156,6 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['active_directory'] = true if server['active_directory'].nil?
     server['attributes'] = {} if server['attributes'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
-    server['sync_time'] = 3600 if server['sync_time'].nil?
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
     Settings.ldap['servers'][key] = server
   end
