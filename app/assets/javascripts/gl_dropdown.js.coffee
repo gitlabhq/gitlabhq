@@ -126,8 +126,10 @@ class GitLabDropdown
           @selectFirstRow()
 
     # Event listeners
+
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
+    @dropdown.on "click", ".dropdown-menu", @shouldPropagate
 
     if @dropdown.find(".dropdown-toggle-page").length
       @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>
@@ -176,6 +178,10 @@ class GitLabDropdown
     full_html = @renderMenu(html.join(""))
 
     @appendMenu(full_html)
+
+  shouldPropagate: (e) =>
+    if @options.multiSelect
+      e.stopPropagation()
 
   opened: =>
     contentHtml = $('.dropdown-content', @dropdown).html()

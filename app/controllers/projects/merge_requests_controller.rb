@@ -154,10 +154,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                        @merge_request.target_project, @merge_request])
         end
         format.json do
-          render json: {
-            saved: @merge_request.valid?,
-            assignee_avatar_url: @merge_request.assignee.try(:avatar_url)
-          }
+          render json: @merge_request.to_json(include: [:milestone, :labels, :assignee])
         end
       end
     else

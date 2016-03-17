@@ -15,6 +15,7 @@ class @UsersSelect
       issueURL = $dropdown.data('issueUpdate')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
+      abilityName = $dropdown.data('ability-name')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
 
@@ -86,14 +87,16 @@ class @UsersSelect
             selected = $dropdown
               .closest('.selectbox')
               .find("input[name='#{$dropdown.data('field-name')}']").val()
+            data = {}
+            data[abilityName] = {}
+            data[abilityName].assignee_id = selected
+            console.log 'data',data
             $loading
               .fadeIn()
             $.ajax(
               type: 'PUT'
               url: issueURL
-              data:
-                issue: 
-                  assignee_id:  selected
+              data: data
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()

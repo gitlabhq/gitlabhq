@@ -13,6 +13,7 @@ class @LabelsSelect
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
       defaultLabel = $dropdown.data('default-label')
+      abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
       $value = $block.find('.value')
@@ -195,16 +196,17 @@ class @LabelsSelect
               .map(->
                 @value
               ).get()
-            # need inline-block here instead of show, 
-            # which will default to the element's style in this case inline.
-            selected = if selected.length then selected else ['']
+            console.log 'selected', selected
+            data = {}
+            data[abilityName] = {}
+            data[abilityName].label_ids = selected
+            if not selected.length
+              data[abilityName].label_ids = ['']
             $loading.fadeIn()
             $.ajax(
               type: 'PUT'
               url: issueURL
-              data:
-                issue: 
-                  assignee_id:  selected
+              data: data
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()

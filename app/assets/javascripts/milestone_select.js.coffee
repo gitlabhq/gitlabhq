@@ -11,6 +11,7 @@ class @MilestoneSelect
       useId = $dropdown.data('use-id')
       defaultLabel = $dropdown.data('default-label')
       issuableId = $dropdown.data('issuable-id')
+      abilityName = $dropdown.data('ability-name')
       $selectbox = $dropdown.closest('.selectbox')
       $block = $selectbox.closest('.block')
       $value = $block.find('.value')
@@ -70,14 +71,15 @@ class @MilestoneSelect
               .closest('.selectbox')
               .find('input[type="hidden"]')
               .val()
+            data = {}
+            data[abilityName] = {}
+            data[abilityName].milestone_id = selected
             $loading
               .fadeIn()
             $.ajax(
               type: 'PUT'
               url: issueUpdateURL
-              data:
-                issue: 
-                  milestone_id: selected
+              data: data
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()
