@@ -24,7 +24,7 @@ feature 'Start new branch from an issue', feature: true do
       end
       let(:referenced_mr) do
         create(:merge_request, :simple, source_project: project, target_project: project,
-                                        description: "Fixes ##{issue.iid}")
+                                        description: "Fixes ##{issue.iid}", author: user)
       end
 
       before do
