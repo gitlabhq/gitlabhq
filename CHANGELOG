@@ -48,6 +48,9 @@ v 8.6.0 (unreleased)
   - User deletion is now done in the background so the request can not time out
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
 
+v 8.5.8
+  - Bump Git version requirement to 2.7.4
+
 v 8.5.7
   - Bump Git version requirement to 2.7.3
 
