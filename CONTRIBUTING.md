@@ -16,6 +16,7 @@
         - [Issue tracker guidelines](#issue-tracker-guidelines)
         - [Issue weight](#issue-weight)
         - [Regression issues](#regression-issues)
+        - [Technical debt](#technical-debt)
     - [Merge requests](#merge-requests)
         - [Merge request guidelines](#merge-request-guidelines)
         - [Merge request description format](#merge-request-description-format)
@@ -241,6 +242,25 @@ addressed.
 
 [8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
 [update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
+
+### Technical debt
+
+In order to track things that can be improved in GitLab codebase, we created a
+*technical debt* label in [issue tracker of CE][ce-tracker].
+
+This label should be added to issues that describe things that can be improved,
+shortcuts that has been taken, code that needs refactoring, features that need
+additional attention, and all other things that have been left behind due to
+high velocity of development.
+
+Everyone can create an issue (though you may need to ask for adding a specific
+label, if you do not have permissions to do it by yourself), additional labels
+can be combined with *technical debt* label, to make it easier to schedule the
+improvements for a release.
+
+Issues with *technical debt* label have a same priority like issues that
+describe a new features that can be introduced in GitLab, and should be
+scheduled for a release by appropriate person.
 
 ## Merge requests
 
