@@ -301,18 +301,6 @@ class Repository
     @tag_count = nil
   end
 
-  def rebuild_cache
-    cache_keys.each do |key|
-      cache.expire(key)
-      send(key)
-    end
-
-    branches.each do |branch|
-      cache.expire(:"diverging_commit_counts_#{branch.name}")
-      diverging_commit_counts(branch)
-    end
-  end
-
   def lookup_cache
     @lookup_cache ||= {}
   end
