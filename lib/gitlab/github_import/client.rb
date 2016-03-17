@@ -17,7 +17,7 @@ module Gitlab
             access_token: access_token,
             api_endpoint: github_options[:site],
             connection_options: {
-              ssl: { verify: config.verify_ssl }
+              ssl: { verify: config['verify_ssl'] }
             }
           )
         end

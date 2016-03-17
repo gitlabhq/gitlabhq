@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GithubImport::Client, lib: true do
   let(:token) { '123456' }
-  let(:github_provider) { OpenStruct.new(app_id: 'asd123', app_secret: 'asd123', name: 'github', args: { 'client_options' => {} }) }
+  let(:github_provider) { Settingslogic.new('app_id' => 'asd123', 'app_secret' => 'asd123', 'name' => 'github', 'args' => { 'client_options' => {} }) }
 
   subject(:client) { described_class.new(token) }
 
@@ -16,6 +16,9 @@ describe Gitlab::GithubImport::Client, lib: true do
     end
   end
 
+  it 'does not crash (e.g. Settingslogic::MissingSetting) when verify_ssl config is not present' do
+    expect { client.api }.not_to raise_error
+  end
 
   context 'allow SSL verification to be configurable on API' do
     before do
