@@ -108,12 +108,13 @@ module API
       #   bio                               - Bio
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
+      #   external                          - Is user an external user - true or false(default)
       # Example Request:
       #   PUT /users/:id
       put ":id" do
         authenticated_as_admin!
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :bio, :can_create_group, :admin]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :bio, :can_create_group, :admin, :external]
         user = User.find(params[:id])
         not_found!('User') unless user
 

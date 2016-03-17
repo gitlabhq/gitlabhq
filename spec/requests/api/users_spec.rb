@@ -282,6 +282,13 @@ describe API::API, api: true  do
       expect(user.reload.admin).to eq(true)
     end
 
+    it "should update external status" do
+      put api("/users/#{user.id}", admin), { external: true }
+      expect(response.status).to eq 200
+      expect(json_response['external']).to eq(true)
+      expect(user.reload.external?).to be_truthy
+    end
+
     it "should not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
       expect(response.status).to eq(200)
