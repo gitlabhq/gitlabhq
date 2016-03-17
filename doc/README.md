@@ -86,6 +86,8 @@ be linked with your base image. Below is a list of examples you may use:
 - [GitLab Pages configuration](pages/administration.md)
 - [Elasticsearch](integration/elasticsearch.md) Enable Elasticsearch
 - [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
+- [GitLab GEO](administration/gitlab-geo/README.md) Configure GitLab GEO, a
+  secondary read-only GitLab instance
 
 ## Contributor documentation
 
