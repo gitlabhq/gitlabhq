@@ -3,9 +3,9 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background:#fffff0; }
-  50% { background:#ffffd3; }
-  to { background:#fffff0; }
+  from { background: #fffff0; }
+  50% { background: #ffffd3; }
+  to { background: #fffff0; }
 }
 
 ul.notes {
@@ -93,12 +93,12 @@ ul.notes {
   .discussion {
     overflow: hidden;
     display: block;
-    position:relative;
+    position: relative;
   }
 
   .note {
     display: block;
-    position:relative;
+    position: relative;
 
     .note-body {
       overflow: auto;
