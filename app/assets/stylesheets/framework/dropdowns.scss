@@ -9,6 +9,12 @@
   border-left: $caret-width-base solid transparent;
 }
 
+.btn-group {
+  .caret {
+    margin-left: 0;
+  }
+}
+
 .dropdown {
   position: relative;
 }
