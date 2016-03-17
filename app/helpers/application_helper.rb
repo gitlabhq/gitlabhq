@@ -301,7 +301,7 @@ module ApplicationHelper
       if project.nil?
         nil
       elsif current_controller?(:issues)
-        project.issues.send(entity).count
+        project.issues.visible_to_user(current_user).send(entity).count
       elsif current_controller?(:merge_requests)
         project.merge_requests.send(entity).count
       end
