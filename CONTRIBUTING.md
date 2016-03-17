@@ -245,22 +245,25 @@ addressed.
 
 ### Technical debt
 
-In order to track things that can be improved in GitLab codebase, we created a
-*technical debt* label in [issue tracker of CE][ce-tracker].
+In order to track things that can be improved in GitLab's codebase, we created
+the ~"Technical debt" label in [GitLab's issue tracker][ce-tracker].
 
 This label should be added to issues that describe things that can be improved,
-shortcuts that has been taken, code that needs refactoring, features that need
+shortcuts that have been taken, code that needs refactoring, features that need
 additional attention, and all other things that have been left behind due to
 high velocity of development.
 
-Everyone can create an issue (though you may need to ask for adding a specific
-label, if you do not have permissions to do it by yourself), additional labels
-can be combined with *technical debt* label, to make it easier to schedule the
-improvements for a release.
+Everyone can create an issue, though you may need to ask for adding a specific
+label, if you do not have permissions to do it by yourself. Additional labels
+can be combined with the `Technical debt` label, to make it easier to schedule
+the improvements for a release.
 
-Issues with *technical debt* label have a same priority like issues that
-describe a new features that can be introduced in GitLab, and should be
-scheduled for a release by appropriate person.
+Issues tagged with the `Technical debt` label have the same priority like issues
+that describe a new feature to be introduced in GitLab, and should be scheduled
+for a release by the appropriate person.
+
+Make sure to mention the merge request that the `Technical debt` issue is
+associated with in the description of the issue.
 
 ## Merge requests
 
