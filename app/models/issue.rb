@@ -98,6 +98,7 @@ class Issue < ActiveRecord::Base
   end
 
   def related_branches
+    return [] if self.project.empty_repo?
     self.project.repository.branch_names.select do |branch|
       branch =~ /\A#{iid}-(?!\d+-stable)/i
     end
