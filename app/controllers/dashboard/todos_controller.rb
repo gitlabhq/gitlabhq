@@ -1,5 +1,5 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
-  before_action :find_todos, only: [:index, :destroy_all]
+  before_action :find_todos, only: [:index, :destroy, :destroy_all]
 
   def index
     @todos = @todos.page(params[:page]).per(PER_PAGE)
@@ -14,7 +14,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
       format.html { redirect_to dashboard_todos_path, notice: todo_notice }
       format.js { render nothing: true }
       format.json do
-        render json: { status: 'OK', notice: todo_notice }
+        render json: { count: @todos.size, done_count: current_user.todos.done.count }
       end
     end
   end
