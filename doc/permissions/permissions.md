@@ -74,17 +74,21 @@ Any user can remove themselves from a group, unless they are the last Owner of t
 
 ## External Users
 
-In cases where it is desired that a user has access to some internal or private projects, but others
-should remain hidden from this user, there is the option of creating `External Users`.
-An administrator can flag a user as external through the API or by checking the checkbox on the admin panel.
+In cases where it is desired that a user has access only to some internal or
+private projects, there is the option of creating **External Users**. This
+feature may be useful when for example a contractor is working on a given
+project and should only have access to that project.
 
-In the case of a new user: navigate to the **Admin** area and click the **New User** button. If you would like to
-edit a user, go to the user list on the **Admin** area and click the **Edit** button.
+External users can only access projects to which they are explicitly granted
+access, thus hiding all other internal or private ones from them. Access can be
+granted by adding the user as member to the project or group.
 
-External users can only access projects to which they are explicitly granted access, thus hiding all internal projects.
-Access can be granted by adding the users as member to the project or by including this user in a group. External users will, like usual users, receive
-a role in the project or group with all the abilities that are mentioned in the table above.
+They will, like usual users, receive a role in the project or group with all
+the abilities that are mentioned in the table above. They cannot however create
+groups or projects, and they have the same access as logged out users in all
+other cases.
 
-External users cannot create groups or projects, and have the same access as logged out users in all other cases. This feature may be
-useful when for example a contractor is working on a given project and should only access the given project and public
-projects.
+An administrator can flag a user as external [through the API](../api/users.md)
+or by checking the checkbox on the admin panel. As an administrator, navigate
+to **Admin > Users** to create a new user or edit an existing one. There, you
+will find the option to flag the user as external.
