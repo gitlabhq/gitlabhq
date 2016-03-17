@@ -19,13 +19,13 @@ class Projects::MilestonesController < Projects::ApplicationController
       end
 
     @milestones = @milestones.includes(:project)
-    @milestones_all = @milestones
-    @milestones = @milestones.page(params[:page]).per(PER_PAGE)
 
     respond_to do |format|
-      format.html
+      format.html do
+        @milestones = @milestones.page(params[:page]).per(PER_PAGE)
+      end
       format.json do
-        render json: @milestones_all.to_json
+        render json: @milestones_all
       end
     end
   end

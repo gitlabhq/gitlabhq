@@ -24,7 +24,7 @@ module DropdownsHelper
           capture(&block) if block && !options.has_key?(:footer_content)
         end
 
-        if block && options.has_key?(:footer_content)
+        if block && options[:footer_content]
           output << content_tag(:div, class: "dropdown-footer") do
             capture(&block)
           end

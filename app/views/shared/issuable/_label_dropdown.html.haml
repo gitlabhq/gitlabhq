@@ -1,7 +1,7 @@
 - if params[:label_name]
   = hidden_field_tag(:label_name, params[:label_name])
 .dropdown
-  %button.dropdown-menu-toggle.js-label-select.js-filter-submit{type: "button", data: {toggle: "dropdown", field_name: "label_name", show_no: "true", show_any: "true", selected: params[:label_name], project_id: (@project.id if @project), labels: labels_filter_path}}
+  %button.dropdown-menu-toggle.js-label-select.js-filter-submit{type: "button", data: {toggle: "dropdown", field_name: "label_name", show_no: "true", show_any: "true", selected: params[:label_name], project_id: @project.try(:id), labels: labels_filter_path}}
     %span.dropdown-toggle-text
       = h(params[:label_name] || "Label")
     = icon('chevron-down')
