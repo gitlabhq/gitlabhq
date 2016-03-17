@@ -777,9 +777,9 @@ ActiveRecord::Schema.define(version: 20160314143402) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",                default: false,    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",                                   null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true

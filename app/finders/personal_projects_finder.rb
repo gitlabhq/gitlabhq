@@ -11,7 +11,7 @@ class PersonalProjectsFinder
   #
   # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
-    if current_user
+    if current_user && !current_user.external?
       relation = projects_visible_to_user(current_user)
     else
       relation = public_projects
