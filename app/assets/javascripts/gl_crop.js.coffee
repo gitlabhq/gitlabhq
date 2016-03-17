@@ -1,7 +1,12 @@
 class GitLabCrop
-  constructor: (el, opts = {}) ->
-    # Input file
-    @fileInput = $(el)
+  constructor: (input, opts = {}) ->
+    @fileInput = $(input)
+
+    # We should rename to avoid spec to fail
+    # Form will submit the proper input filed with a file using FormData
+    @fileInput
+      .attr('name', "#{@fileInput.attr('name')}-trigger")
+      .attr('id', "#{@fileInput.attr('id')}-trigger")
 
     # Set defaults
     {

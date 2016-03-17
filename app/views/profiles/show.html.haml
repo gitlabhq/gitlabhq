@@ -26,7 +26,7 @@
         %a.btn.js-choose-user-avatar-button
           Browse file...
         %span.avatar-file-name.prepend-left-default.js-avatar-filename No file chosen
-        = f.file_field :avatar_dialog_trigger, class: "js-user-avatar-input hidden", accept: "image/*"
+        = f.file_field :avatar, class: "js-user-avatar-input hidden", accept: "image/*"
       .help-block
         The maximum file size allowed is 200KB.
       - if @user.avatar?
