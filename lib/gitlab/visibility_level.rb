@@ -6,19 +6,18 @@
 module Gitlab
   module VisibilityLevel
     extend CurrentSettings
+    extend ActiveSupport::Concern
+
+    included do
+      scope :public_only, -> { where(visibility_level: PUBLIC) }
+      scope :public_and_internal_only, -> { where(visibility_level: [PUBLIC, INTERNAL] ) }
+    end
 
     PRIVATE  = 0 unless const_defined?(:PRIVATE)
     INTERNAL = 10 unless const_defined?(:INTERNAL)
     PUBLIC   = 20 unless const_defined?(:PUBLIC)
 
     class << self
-      def included(base)
-        base.class_eval do
-          scope :public_only, -> { where(visibility_level: PUBLIC) }
-          scope :public_and_internal_only, -> { where(visibility_level: [PUBLIC, INTERNAL] ) }
-        end
-      end
-
       def values
         options.values
       end

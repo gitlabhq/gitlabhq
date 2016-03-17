@@ -13,15 +13,9 @@ class AddDefaultGroupVisibilityToApplicationSettings < ActiveRecord::Migration
   end
 
   private
-  def allowed_visibility_level
-    default_visibility = Settings.gitlab.default_groups_features['visibility_level']
-    restricted_levels  = current_application_settings.restricted_visibility_levels
-    return default_visibility unless restricted_levels.present?
 
-    if restricted_levels.include?(default_visibility)
-      Gitlab::VisibilityLevel.values.select{ |vis_level| vis_level unless restricted_levels.include?(vis_level) }.last
-    else
-      default_visibility
-    end
+  def allowed_visibility_level
+    allowed_levels = Gitlab::VisibilityLevel.values - current_application_settings.restricted_visibility_levels
+    allowed_levels.max
   end
 end

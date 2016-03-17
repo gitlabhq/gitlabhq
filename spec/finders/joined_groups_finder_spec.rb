@@ -46,6 +46,25 @@ describe JoinedGroupsFinder do
 
         it { is_expected.to eq([public_group, private_group]) }
       end
+
+      context 'external users' do
+        before do
+          profile_visitor.update_attributes(external: true)
+          public_group.add_user(profile_owner, Gitlab::Access::MASTER)
+          internal_group.add_user(profile_owner, Gitlab::Access::MASTER)
+        end
+
+        subject { finder.execute(profile_visitor) }
+
+        it "doest not show internal groups if not member" do
+          expect(subject).to eq([public_group])
+        end
+
+        it "shows internal groups if authorized" do
+          internal_group.add_user(profile_visitor, Gitlab::Access::MASTER)
+          expect(subject).to eq([public_group, internal_group])
+        end
+      end
     end
   end
 end

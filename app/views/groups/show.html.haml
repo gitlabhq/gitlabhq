@@ -18,7 +18,7 @@
     %h1
       = @group.name
 
-      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: "#{visibility_level_label(@group.visibility_level)} - #{group_visibility_description(@group)}"}
+      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: "#{group_visibility_description(@group)}"}
         = visibility_level_icon(@group.visibility_level, fw: false)
 
   .cover-desc.username
@@ -27,14 +27,6 @@
   - if @group.description.present?
     .cover-desc.description
       = markdown(@group.description, pipeline: :description)
-
-  %ul.nav-links
-    %li.active
-      = link_to "#activity", 'data-toggle' => 'tab' do
-        Activity
-    %li
-      = link_to "#projects", 'data-toggle' => 'tab' do
-        Projects
 
 - if can?(current_user, :read_group, @group)
   %div{ class: container_class }

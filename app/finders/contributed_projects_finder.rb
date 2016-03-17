@@ -10,8 +10,9 @@ class ContributedProjectsFinder
   #                visible by this user.
   #
   # Returns an ActiveRecord::Relation.
+
   def execute(current_user = nil)
-    if current_user && !current_user.external?
+    if current_user
       relation = projects_visible_to_user(current_user)
     else
       relation = public_projects
@@ -24,9 +25,7 @@ class ContributedProjectsFinder
 
   def projects_visible_to_user(current_user)
     authorized = @user.contributed_projects.visible_to_user(current_user)
-
-    union = Gitlab::SQL::Union.
-      new([authorized.select(:id), public_projects.select(:id)])
+    union = Gitlab::SQL::Union.new([authorized.select(:id), public_projects.select(:id)])
 
     Project.where("projects.id IN (#{union.to_sql})")
   end

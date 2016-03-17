@@ -16,6 +16,11 @@ describe PersonalProjectsFinder do
                                path: 'B')
   end
 
+  let!(:internal_project) do
+    create(:project, :internal, namespace: source_user.namespace, name: 'c',
+                               path: 'C')
+  end
+
   before do
     private_project.team << [current_user, Gitlab::Access::DEVELOPER]
   end
@@ -29,6 +34,14 @@ describe PersonalProjectsFinder do
   describe 'with a current user' do
     subject { finder.execute(current_user) }
 
-    it { is_expected.to eq([private_project, public_project]) }
+    context 'normal user' do
+      it { is_expected.to eq([internal_project, private_project, public_project]) }
+    end
+
+    context 'external' do
+      before { current_user.update_attributes(external: true) }
+
+      it { is_expected.to eq([private_project, public_project]) }
+    end
   end
 end

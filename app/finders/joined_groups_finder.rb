@@ -12,7 +12,7 @@ class JoinedGroupsFinder
   #
   # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
-    if current_user && !current_user.external?
+    if current_user
       relation = groups_visible_to_user(current_user)
     else
       relation = public_groups
@@ -29,7 +29,7 @@ class JoinedGroupsFinder
   # "@user" that "current_user" also has access to.
   def groups_visible_to_user(current_user)
     base  = @user.authorized_groups.visible_to_user(current_user)
-    extra = public_and_internal_groups
+    extra = current_user.external? ? public_groups : public_and_internal_groups
     union = Gitlab::SQL::Union.new([base.select(:id), extra.select(:id)])
 
     Group.where("namespaces.id IN (#{union.to_sql})")

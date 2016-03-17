@@ -14,4 +14,8 @@ module GroupAccessHelper
 
     create(:user).tap { |user| grp.add_user(user, level) }
   end
+
+  def external_guest(grp=group())
+    create(:user, external: true).tap { |user| grp.add_user(user, Gitlab::Access::GUEST) }
+  end
 end

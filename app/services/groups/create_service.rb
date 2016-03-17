@@ -1,17 +1,16 @@
 module Groups
   class CreateService < Groups::BaseService
-    def execute
-      return false unless visibility_level_allowed?(params[:visibility_level])
-      @group.name = @group.path.dup unless @group.name
-      @group.save(params) && @group.add_owner(current_user)
+    def initialize(user, params = {})
+      @current_user, @params = user, params.dup
+      @group = Group.new(@params)
     end
 
-    private
-
-    def visibility_level_allowed?(level)
-      allowed = Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
-      add_error_message("Visibility level restricted by admin.") unless allowed
-      allowed
+    def execute
+      return @group unless visibility_allowed_for_user?(@params[:visibility_level])
+      @group.name = @group.path.dup unless @group.name
+      @group.save
+      @group.add_owner(@current_user)
+      @group
     end
   end
 end

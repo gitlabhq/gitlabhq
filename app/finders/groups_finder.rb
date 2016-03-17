@@ -14,9 +14,17 @@ class GroupsFinder
 
   def all_groups(current_user)
     if current_user
-      [current_user.authorized_groups, Group.unscoped.public_and_internal_only]
+      user_groups(current_user)
     else
       [Group.unscoped.public_only]
+    end
+  end
+
+  def user_groups(current_user)
+    if current_user.external?
+      [current_user.authorized_groups, Group.unscoped.public_only]
+    else
+      [current_user.authorized_groups, Group.unscoped.public_and_internal_only]
     end
   end
 end

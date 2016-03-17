@@ -18,7 +18,14 @@ describe GroupsFinder do
       describe 'with a user' do
         subject { finder.execute(user) }
 
-        it { is_expected.to eq([public_group, internal_group]) }
+        context 'normal user' do
+          it { is_expected.to eq([public_group, internal_group]) }
+        end
+
+        context 'external user' do
+          before { user.update_attribute(external: true) }
+          it { is_expected.to eq([public_group]) }
+        end
       end
     end
   end

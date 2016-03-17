@@ -11,7 +11,7 @@ class PersonalProjectsFinder
   #
   # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
-    if current_user && !current_user.external?
+    if current_user
       relation = projects_visible_to_user(current_user)
     else
       relation = public_projects
@@ -23,10 +23,7 @@ class PersonalProjectsFinder
   private
 
   def projects_visible_to_user(current_user)
-    authorized = @user.personal_projects.visible_to_user(current_user)
-
-    union = Gitlab::SQL::Union.
-      new([authorized.select(:id), public_and_internal_projects.select(:id)])
+    union = Gitlab::SQL::Union.new(projects_for_user_ids(current_user))
 
     Project.where("projects.id IN (#{union.to_sql})")
   end
@@ -37,5 +34,15 @@ class PersonalProjectsFinder
 
   def public_and_internal_projects
     @user.personal_projects.public_and_internal_only
+  end
+
+  def projects_for_user_ids(current_user)
+    authorized = @user.personal_projects.visible_to_user(current_user)
+
+    if current_user.external?
+      [authorized.select(:id), public_projects.select(:id)]
+    else
+      [authorized.select(:id), public_and_internal_projects.select(:id)]
+    end
   end
 end
