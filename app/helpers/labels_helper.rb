@@ -109,14 +109,6 @@ module LabelsHelper
     end
   end
 
-  def projects_labels_options
-    if @project
-      @project.labels
-    else
-      Label.where(project_id: @projects)
-    end
-  end
-
   def labels_filter_path
     if @project
       namespace_project_labels_path(@project.namespace, @project, :json)
