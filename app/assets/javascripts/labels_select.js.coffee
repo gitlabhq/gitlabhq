@@ -148,6 +148,7 @@ class @LabelsSelect
         $.ajax(
           type: 'PUT'
           url: issueURL
+          dataType: 'JSON'
           data: data
         ).done (data) ->
           $loading.fadeOut()

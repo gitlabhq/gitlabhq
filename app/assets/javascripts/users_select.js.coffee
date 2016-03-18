@@ -94,6 +94,7 @@ class @UsersSelect
               .fadeIn()
             $.ajax(
               type: 'PUT'
+              dataType: 'json'
               url: issueURL
               data: data
             ).done (data) ->
