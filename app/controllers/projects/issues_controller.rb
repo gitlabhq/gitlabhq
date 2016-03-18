@@ -58,7 +58,6 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def edit
-    puts params
     respond_with(@issue)
   end
 
