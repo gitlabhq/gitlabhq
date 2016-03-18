@@ -32,9 +32,9 @@
             = time_ago_with_tooltip(@issue.created_at)
             by
             %strong
-              = link_to_member(@project, @issue.author, avatar: false, size: 24, mobile_classes: "hidden-xs")
+              = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-xs")
             %strong
-              = link_to_member(@project, @issue.author, avatar: false, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
+              = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
                 by_username: true, avatar: false)
 
     .pull-right.issue-btn-group
