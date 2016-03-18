@@ -3,12 +3,11 @@ module API
     before { authenticated_as_admin! }
 
     resource :geo do
-
       # Enqueue a batch of IDs of modified projects to have their
       # repositories updated
       #
       # Example request:
-      #   POST /refresh_projects
+      #   POST /geo/refresh_projects
       post 'refresh_projects' do
         required_attributes! [:projects]
         ::Geo::ScheduleRepoUpdateService.new(params[:projects]).execute
@@ -18,10 +17,19 @@ module API
       # wiki repositories updated
       #
       # Example request:
-      #   POST /refresh_wikis
+      #   POST /geo/refresh_wikis
       post 'refresh_wikis' do
         required_attributes! [:projects]
         ::Geo::ScheduleWikiRepoUpdateService.new(params[:projects]).execute
+      end
+
+      # Enqueue a change operation for specific key ID
+      #
+      # Example request:
+      #   POST /geo/refresh_key
+      post 'refresh_key' do
+        required_attributes! [:key_change]
+        ::Geo::ScheduleKeyChangeService.new(params[:key_change]).execute
       end
     end
   end
