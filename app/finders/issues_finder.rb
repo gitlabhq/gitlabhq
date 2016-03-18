@@ -19,4 +19,10 @@ class IssuesFinder < IssuableFinder
   def klass
     Issue
   end
+
+  private
+
+  def init_collection
+    Issue.visible_to_user(current_user)
+  end
 end

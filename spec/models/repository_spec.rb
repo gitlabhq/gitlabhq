@@ -101,13 +101,29 @@ describe Repository, models: true do
     end
 
     describe 'parsing result' do
-      subject { repository.parse_search_result(results.first) }
+      subject { repository.parse_search_result(search_result) }
+      let(:search_result) { results.first }
 
       it { is_expected.to be_an OpenStruct }
       it { expect(subject.filename).to eq('CHANGELOG') }
+      it { expect(subject.basename).to eq('CHANGELOG') }
       it { expect(subject.ref).to eq('master') }
       it { expect(subject.startline).to eq(186) }
       it { expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n") }
+
+      context "when filename has extension" do
+        let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
+
+        it { expect(subject.filename).to eq('CONTRIBUTE.md') }
+        it { expect(subject.basename).to eq('CONTRIBUTE') }
+      end
+
+      context "when file under directory" do
+        let(:search_result) { "master:a/b/c.md:5:a b c\n" }
+
+        it { expect(subject.filename).to eq('a/b/c.md') }
+        it { expect(subject.basename).to eq('a/b/c') }
+      end
     end
 
   end
@@ -581,9 +597,9 @@ describe Repository, models: true do
 
   describe '#after_push_commit' do
     it 'flushes the cache' do
-      expect(repository).to receive(:expire_cache).with('master')
+      expect(repository).to receive(:expire_cache).with('master', '123')
 
-      repository.after_push_commit('master')
+      repository.after_push_commit('master', '123')
     end
   end
 
@@ -685,6 +701,113 @@ describe Repository, models: true do
         with(repository.path_with_namespace, '8.5')
 
       repository.rm_tag('8.5')
+    end
+  end
+
+  describe '#avatar' do
+    it 'returns the first avatar file found in the repository' do
+      expect(repository).to receive(:blob_at_branch).
+        with('master', 'logo.png').
+        and_return(true)
+
+      expect(repository.avatar).to eq('logo.png')
+    end
+
+    it 'caches the output' do
+      allow(repository).to receive(:blob_at_branch).
+        with('master', 'logo.png').
+        and_return(true)
+
+      expect(repository.avatar).to eq('logo.png')
+
+      expect(repository).to_not receive(:blob_at_branch)
+      expect(repository.avatar).to eq('logo.png')
+    end
+  end
+
+  describe '#expire_avatar_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    before do
+      allow(repository).to receive(:cache).and_return(cache)
+    end
+
+    context 'without a branch or revision' do
+      it 'flushes the cache' do
+        expect(cache).to receive(:expire).with(:avatar)
+
+        repository.expire_avatar_cache
+      end
+    end
+
+    context 'with a branch' do
+      it 'does not flush the cache if the branch is not the default branch' do
+        expect(cache).not_to receive(:expire)
+
+        repository.expire_avatar_cache('cats')
+      end
+
+      it 'flushes the cache if the branch equals the default branch' do
+        expect(cache).to receive(:expire).with(:avatar)
+
+        repository.expire_avatar_cache(repository.root_ref)
+      end
+    end
+
+    context 'with a branch and revision' do
+      let(:commit) { double(:commit) }
+
+      before do
+        allow(repository).to receive(:commit).and_return(commit)
+      end
+
+      it 'does not flush the cache if the commit does not change any logos' do
+        diff = double(:diff, new_path: 'test.txt')
+
+        expect(commit).to receive(:diffs).and_return([diff])
+        expect(cache).not_to receive(:expire)
+
+        repository.expire_avatar_cache(repository.root_ref, '123')
+      end
+
+      it 'flushes the cache if the commit changes any of the logos' do
+        diff = double(:diff, new_path: Repository::AVATAR_FILES[0])
+
+        expect(commit).to receive(:diffs).and_return([diff])
+        expect(cache).to receive(:expire).with(:avatar)
+
+        repository.expire_avatar_cache(repository.root_ref, '123')
+      end
+    end
+  end
+
+  describe '#build_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'builds the caches if they do not already exist' do
+      expect(cache).to receive(:exist?).
+        exactly(repository.cache_keys.length).
+        times.
+        and_return(false)
+
+      repository.cache_keys.each do |key|
+        expect(repository).to receive(key)
+      end
+
+      repository.build_cache
+    end
+
+    it 'does not build any caches that already exist' do
+      expect(cache).to receive(:exist?).
+        exactly(repository.cache_keys.length).
+        times.
+        and_return(true)
+
+      repository.cache_keys.each do |key|
+        expect(repository).to_not receive(key)
+      end
+
+      repository.build_cache
     end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160314143402) do
+ActiveRecord::Schema.define(version: 20160316204731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -260,6 +260,7 @@ ActiveRecord::Schema.define(version: 20160314143402) do
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+  add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token_trigram", using: :gin, opclasses: {"token"=>"gin_trgm_ops"}
 
   create_table "ci_services", force: :cascade do |t|
@@ -415,10 +416,12 @@ ActiveRecord::Schema.define(version: 20160314143402) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
+    t.boolean  "confidential",              default: false
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
+  add_index "issues", ["confidential"], name: "index_issues_on_confidential", using: :btree
   add_index "issues", ["created_at", "id"], name: "index_issues_on_created_at_and_id", using: :btree
   add_index "issues", ["created_at"], name: "index_issues_on_created_at", using: :btree
   add_index "issues", ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
@@ -775,9 +778,9 @@ ActiveRecord::Schema.define(version: 20160314143402) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",                default: false,    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",                                   null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
@@ -864,7 +867,7 @@ ActiveRecord::Schema.define(version: 20160314143402) do
   create_table "todos", force: :cascade do |t|
     t.integer  "user_id",     null: false
     t.integer  "project_id",  null: false
-    t.integer  "target_id",   null: false
+    t.integer  "target_id"
     t.string   "target_type", null: false
     t.integer  "author_id"
     t.integer  "action",      null: false
@@ -872,9 +875,11 @@ ActiveRecord::Schema.define(version: 20160314143402) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "note_id"
+    t.string   "commit_id"
   end
 
   add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
+  add_index "todos", ["commit_id"], name: "index_todos_on_commit_id", using: :btree
   add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
   add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
   add_index "todos", ["state"], name: "index_todos_on_state", using: :btree
@@ -939,6 +944,7 @@ ActiveRecord::Schema.define(version: 20160314143402) do
     t.string   "unlock_token"
     t.datetime "otp_grace_period_started_at"
     t.boolean  "ldap_email",                  default: false, null: false
+    t.boolean  "external",                    default: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

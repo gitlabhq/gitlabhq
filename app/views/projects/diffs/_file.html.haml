@@ -42,13 +42,17 @@
   .diff-content.diff-wrap-lines
     -# Skipp all non non-supported blobs
     - return unless blob.respond_to?('text?')
-    - if blob_text_viewable?(blob)
-      - if diff_view == 'parallel'
-        = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
-      - else
-        = render "projects/diffs/text_file", diff_file: diff_file, index: i
-    - elsif blob.image?
-      - old_file = project.repository.prev_blob_for_diff(diff_commit, diff_file)
-      = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, file: blob, index: i
+    - if diff_file.too_large?
+      .nothing-here-block
+        This diff could not be displayed because it is too large.
     - else
-      .nothing-here-block No preview for this file type
+      - if blob_text_viewable?(blob)
+        - if diff_view == 'parallel'
+          = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
+        - else
+          = render "projects/diffs/text_file", diff_file: diff_file, index: i
+      - elsif blob.image?
+        - old_file = project.repository.prev_blob_for_diff(diff_commit, diff_file)
+        = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, file: blob, index: i
+      - else
+        .nothing-here-block No preview for this file type

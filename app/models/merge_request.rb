@@ -520,7 +520,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def source_sha
-    last_commit.try(:sha)
+    last_commit.try(:sha) || source_tip.try(:sha)
+  end
+
+  def source_tip
+    source_branch && source_project.repository.commit(source_branch)
   end
 
   def fetch_ref

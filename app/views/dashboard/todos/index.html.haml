@@ -3,13 +3,15 @@
 
 .top-area
   %ul.nav-links
-    %li{class: ('active' if params[:state].blank? || params[:state] == 'pending')}
+    - todo_pending_active = ('active' if params[:state].blank? || params[:state] == 'pending')
+    %li{class: "todos-pending #{todo_pending_active}"}
       = link_to todos_filter_path(state: 'pending') do
         %span
           To do
         %span{class: 'badge'}
           = todos_pending_count
-    %li{class: ('active' if params[:state] == 'done')}
+    - todo_done_active = ('active' if params[:state] == 'done')
+    %li{class: "todos-done #{todo_done_active}"}
       = link_to todos_filter_path(state: 'done') do
         %span
           Done
@@ -18,7 +20,9 @@
 
   .nav-controls
     - if @todos.any?(&:pending?)
-      = link_to 'Mark all as done', destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn', method: :delete
+      = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete do
+        Mark all as done
+        = icon('spinner spin')
 
 .todos-filters
   .gray-content-block.second-block
@@ -42,7 +46,7 @@
 .prepend-top-default
   - if @todos.any?
     - @todos.group_by(&:project).each do |group|
-      .panel.panel-default.panel-small
+      .panel.panel-default.panel-small.js-todos-list
         - project = group[0]
         .panel-heading
           = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
