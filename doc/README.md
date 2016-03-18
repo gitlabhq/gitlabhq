@@ -3,6 +3,7 @@
 ## User documentation
 
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
+- [CI](ci/README.md)
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
@@ -15,42 +16,6 @@
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
-
-## CI User documentation
-
-- [Get started with GitLab CI](ci/quick_start/README.md)
-- [Learn how to enable or disable GitLab CI](ci/enable_or_disable_ci.md)
-- [Learn how `.gitlab-ci.yml` works](ci/yaml/README.md)
-- [Configure a Runner, the application that runs your builds](ci/runners/README.md)
-- [Use Docker images with GitLab Runner](ci/docker/using_docker_images.md)
-- [Use CI to build Docker images](ci/docker/using_docker_build.md)
-- [Use variables in your `.gitlab-ci.yml`](ci/variables/README.md)
-- [Use SSH keys in your build environment](ci/ssh_keys/README.md)
-- [Trigger builds through the API](ci/triggers/README.md)
-- [Build artifacts](ci/build_artifacts/README.md)
-- [User permissions](ci/permissions/README.md)
-- [API](ci/api/README.md)
-
-### CI Examples
-
-- [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
-- [Test your PHP applications](ci/examples/php.md)
-- [Test and deploy Ruby applications to Heroku](ci/examples/test-and-deploy-ruby-application-to-heroku.md)
-- [Test and deploy Python applications to Heroku](ci/examples/test-and-deploy-python-application-to-heroku.md)
-- [Test Clojure applications](ci/examples/test-clojure-application.md)
-- [Using `dpl` as deployment tool](ci/deployment/README.md)
-- Help your favorite programming language and GitLab by sending a merge request
-  with a guide for that language.
-
-### CI Services
-
-GitLab CI uses the `services` keyword to define what docker containers should
-be linked with your base image. Below is a list of examples you may use:
-
-- [Using MySQL](ci/services/mysql.md)
-- [Using PostgreSQL](ci/services/postgres.md)
-- [Using Redis](ci/services/redis.md)
-- [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
 
 ## Administrator documentation
 
