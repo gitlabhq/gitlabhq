@@ -11,7 +11,7 @@ class @UsersSelect
       showAnyUser = $dropdown.data('any-user')
       firstUser = $dropdown.data('first-user')
       selectedId = $dropdown.data('selected')
-      defaultLabel = $dropdown.text().trim()
+      defaultLabel = $dropdown.data('default-label')
 
       $dropdown.glDropdown(
         data: (term, callback) =>
