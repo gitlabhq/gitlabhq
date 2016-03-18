@@ -4,13 +4,7 @@
     position: relative;
 
     .issue-title {
-      margin-bottom: 5px;
-      font-size: $list-font-size;
-      font-weight: 600;
-    }
-
-    .issue-info {
-      color: $gl-gray;
+      margin-bottom: 2px;
     }
 
     .issue-check {
@@ -105,18 +99,17 @@ form.edit-issue {
 
     .btn {
       width: 100%;
-      margin-top: -1px;
 
       &:first-child:not(:last-child) {
-        border-radius: 4px 4px 0 0;
+
       }
 
       &:not(:first-child):not(:last-child) {
-        border-radius: 0;
+        margin-top: 10px;
       }
 
       &:last-child:not(:first-child) {
-        border-radius: 0 0 4px 4px;
+        margin-top: 10px;
       }
     }
   }
@@ -139,4 +132,12 @@ form.edit-issue {
 .issue-closed-by-widget {
   color: $secondary-text;
   margin-left: 52px;
+}
+
+.editor-details {
+  display: block;
+  
+  @media (min-width: $screen-sm-min) {
+    display: inline-block;
+  }
 }

@@ -19,4 +19,8 @@ class Spinach::Features::DashboardArchivedProjects < Spinach::FeatureSteps
   step 'I should see "Forum" project link' do
     expect(page).to have_link "Forum"
   end
+
+  step 'I click "Show archived projects" link' do
+    click_link "Show archived projects"
+  end
 end

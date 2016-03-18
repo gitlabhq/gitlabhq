@@ -1,13 +1,14 @@
 module Gitlab
   module Elastic
     class SearchResults
-      attr_reader :query
+      attr_reader :current_user, :query
 
       # Limit search results by passed project ids
       # It allows us to search only for projects user has access to
       attr_reader :limit_project_ids
 
-      def initialize(limit_project_ids, query)
+      def initialize(current_user, limit_project_ids, query)
+        @current_user = current_user
         @limit_project_ids = limit_project_ids || Project.all
         @query = Shellwords.shellescape(query) if query.present?
       end
@@ -63,19 +64,16 @@ module Gitlab
 
       def issues
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids,
+          current_user: current_user
         }
 
-        if query =~ /#(\d+)\z/
-          Issue.in_projects(limit_project_ids).where(iid: $1)
-        else
-          Issue.elastic_search(query, options: opt)
-        end
+        Issue.elastic_search(query, options: opt)
       end
 
       def milestones
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids
         }
 
         Milestone.elastic_search(query, options: opt)
@@ -83,14 +81,10 @@ module Gitlab
 
       def merge_requests
         opt = {
-          projects_ids: limit_project_ids
+          project_ids: limit_project_ids
         }
 
-        if query =~ /[#!](\d+)\z/
-          MergeRequest.in_projects(limit_project_ids).where(iid: $1)
-        else
-          MergeRequest.elastic_search(query, options: opt)
-        end
+        MergeRequest.elastic_search(query, options: opt)
       end
 
       def default_scope

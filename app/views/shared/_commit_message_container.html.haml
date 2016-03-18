@@ -7,7 +7,7 @@
       .max-width-marker
       = text_area_tag 'commit_message',
           (params[:commit_message] || local_assigns[:text]),
-          class: 'form-control js-commit-message js-quick-submit', placeholder: local_assigns[:placeholder],
+          class: 'form-control js-commit-message', placeholder: local_assigns[:placeholder],
           required: true, rows: (local_assigns[:rows] || 3),
           id: "commit_message-#{nonce}"
     - if local_assigns[:hint]

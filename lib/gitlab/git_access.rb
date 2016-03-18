@@ -20,6 +20,8 @@ module Gitlab
           actor
         when DeployKey
           nil
+        when GeoNodeKey
+          nil
         when Key
           actor.user
         end
@@ -27,6 +29,10 @@ module Gitlab
 
     def deploy_key
       actor if actor.is_a?(DeployKey)
+    end
+
+    def geo_node_key
+      actor if actor.is_a?(GeoNodeKey)
     end
 
     def can_push_to_branch?(ref)
@@ -44,6 +50,8 @@ module Gitlab
         user.can?(:read_project, project)
       elsif deploy_key
         deploy_key.projects.include?(project)
+      elsif geo_node_key
+        true
       else
         false
       end
@@ -77,7 +85,7 @@ module Gitlab
     def download_access_check
       if user
         user_download_access_check
-      elsif deploy_key
+      elsif deploy_key || geo_node_key
         build_status_object(true)
       else
         raise 'Wrong actor'
@@ -85,6 +93,11 @@ module Gitlab
     end
 
     def push_access_check(changes)
+
+      if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
+        return build_status_object(false, "You can't push code on a secondary GitLab Geo node.")
+      end
+
       return build_status_object(true) if git_annex_branch_sync?(changes)
 
       if user
@@ -200,6 +213,8 @@ module Gitlab
           end
 
         commits.each do |commit|
+          next if commit_from_annex_sync?(commit.safe_message)
+
           if status_object = check_commit(commit, git_hook)
             return status_object
           end
@@ -323,6 +338,10 @@ module Gitlab
         return build_status_object(false, "Repository does not exist")
       end
 
+      if Gitlab::Geo.enabled? && Gitlab::Geo.secondary?
+        return build_status_object(false, "You can't use git-annex with a secondary GitLab Geo node.")
+      end
+
       if user.can?(:push_code, project)
         build_status_object(true)
       else
@@ -346,6 +365,13 @@ module Gitlab
       end
 
       true
+    end
+
+    def commit_from_annex_sync?(commit_message)
+      return false unless Gitlab.config.gitlab_shell.git_annex_enabled
+
+      # Commit message starting with <git-annex in > so avoid git hooks on this
+      commit_message.start_with?('git-annex in')
     end
   end
 end

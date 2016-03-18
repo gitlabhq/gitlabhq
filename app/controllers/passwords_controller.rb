@@ -23,6 +23,14 @@ class PasswordsController < Devise::PasswordsController
     end
   end
 
+  def update
+    super do |resource|
+      if resource.valid? && resource.require_password?
+        resource.update_attribute(:password_automatically_set, false)
+      end
+    end
+  end
+
   protected
 
   def resource_from_email

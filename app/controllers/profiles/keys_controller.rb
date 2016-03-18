@@ -3,14 +3,11 @@ class Profiles::KeysController < Profiles::ApplicationController
 
   def index
     @keys = current_user.keys
+    @key = Key.new
   end
 
   def show
     @key = current_user.keys.find(params[:id])
-  end
-
-  def new
-    @key = current_user.keys.new
   end
 
   def create
@@ -19,7 +16,8 @@ class Profiles::KeysController < Profiles::ApplicationController
     if @key.save
       redirect_to profile_key_path(@key)
     else
-      render 'new'
+      @keys = current_user.keys.select(&:persisted?)
+      render :index
     end
   end
 

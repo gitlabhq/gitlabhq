@@ -9,6 +9,7 @@ describe Gitlab::GitAccess, lib: true do
     ["6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/synced/git-annex",
      "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/synced/named-branch"]
   end
+  let(:git_annex_master_changes) { "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master" }
 
   describe 'can_push_to_branch?' do
     describe 'push to none protected branch' do
@@ -120,6 +121,17 @@ describe Gitlab::GitAccess, lib: true do
 
       context 'pull code' do
         before { key.projects << project }
+        subject { access.download_access_check }
+
+        it { expect(subject.allowed?).to be_truthy }
+      end
+    end
+
+    describe 'geo node key permissions' do
+      let(:key) { build(:geo_node_key) }
+      let(:actor) { key }
+
+      context 'pull code' do
         subject { access.download_access_check }
 
         it { expect(subject.allowed?).to be_truthy }
@@ -249,8 +261,40 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
 
+    context "when in a secondary gitlab geo node" do
+      before do
+        allow(Gitlab::Geo).to receive(:enabled?) { true }
+        allow(Gitlab::Geo).to receive(:secondary?) { true }
+      end
+
+      permissions_matrix.keys.each do |role|
+        describe "#{role} access" do
+          before { protect_feature_branch }
+          before { project.team << [user, role] }
+
+          permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.push_access_check(changes[action]) }
+
+              it { expect(subject.allowed?).to be_falsey }
+            end
+          end
+        end
+      end
+    end
+
     context "when using git annex" do
       before { project.team << [user, :master] }
+
+      describe 'and gitlab geo is enabled in a secondary node' do
+        before do
+          allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true)
+          allow(Gitlab::Geo).to receive(:enabled?) { true }
+          allow(Gitlab::Geo).to receive(:secondary?) { true }
+        end
+
+        it { expect(access.push_access_check(git_annex_changes)).not_to be_allowed }
+      end
 
       describe 'and git hooks unset' do
         describe 'git annex enabled' do
@@ -280,6 +324,15 @@ describe Gitlab::GitAccess, lib: true do
             it { expect(access.push_access_check(git_annex_changes)).to be_allowed }
           end
 
+          describe 'git annex enabled, push to master branch' do
+            before do
+              allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true)
+              allow_any_instance_of(Commit).to receive(:safe_message) { 'git-annex in me@host:~/repo' }
+            end
+
+            it { expect(access.push_access_check(git_annex_master_changes)).to be_allowed }
+          end
+
           describe 'git annex disabled' do
             before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false) }
 
@@ -287,7 +340,7 @@ describe Gitlab::GitAccess, lib: true do
           end
         end
 
-        describe 'check commit author email' do
+        describe 'check max file size' do
           before do
             allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(5.megabytes.to_i)
             project.git_hook.update(max_file_size: 2)

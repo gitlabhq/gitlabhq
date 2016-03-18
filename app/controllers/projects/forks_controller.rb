@@ -1,14 +1,30 @@
 class Projects::ForksController < Projects::ApplicationController
+  include ContinueParams
+
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
 
   def index
-    @sort = params[:sort] || 'id_desc'
-    @all_forks = project.forks.includes(:creator).order_by(@sort)
+    base_query = project.forks.includes(:creator)
 
-    @public_forks, @protected_forks = @all_forks.partition do |project|
-      can?(current_user, :read_project, project)
+    @forks               = base_query.merge(ProjectsFinder.new.execute(current_user))
+    @total_forks_count   = base_query.size
+    @private_forks_count = @total_forks_count - @forks.size
+    @public_forks_count  = @total_forks_count - @private_forks_count
+
+    @sort  = params[:sort] || 'id_desc'
+    @forks = @forks.search(params[:filter_projects]) if params[:filter_projects].present?
+    @forks = @forks.order_by(@sort).page(params[:page]).per(PER_PAGE)
+
+    respond_to do |format|
+      format.html
+
+      format.json do
+        render json: {
+          html: view_to_html_string("projects/forks/_projects", projects: @forks)
+        }
+      end
     end
   end
 
@@ -37,17 +53,6 @@ class Projects::ForksController < Projects::ApplicationController
       end
     else
       render :error
-    end
-  end
-
-  private
-
-  def continue_params
-    continue_params = params[:continue]
-    if continue_params
-      continue_params.permit(:to, :notice, :notice_now)
-    else
-      nil
     end
   end
 end

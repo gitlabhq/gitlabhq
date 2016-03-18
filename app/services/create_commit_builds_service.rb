@@ -35,7 +35,6 @@ class CreateCommitBuildsService
     unless commit.skip_ci?
       # Create builds for commit
       tag = Gitlab::Git.tag_ref?(origin_ref)
-      commit.update_committed!
       commit.create_builds(ref, tag, user)
     end
 

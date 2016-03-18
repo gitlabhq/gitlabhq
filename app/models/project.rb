@@ -163,6 +163,7 @@ class Project < ActiveRecord::Base
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
   has_many :pages_domains, dependent: :destroy
+  has_many :todos, dependent: :destroy
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
 
@@ -231,6 +232,7 @@ class Project < ActiveRecord::Base
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
   scope :mirror, -> { where(mirror: true) }
+  scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -300,13 +302,38 @@ class Project < ActiveRecord::Base
       joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC')
     end
 
+    # Searches for a list of projects based on the query given in `query`.
+    #
+    # On PostgreSQL this method uses "ILIKE" to perform a case-insensitive
+    # search. On MySQL a regular "LIKE" is used as it's already
+    # case-insensitive.
+    #
+    # query - The search query as a String.
     def search(query)
-      joins(:namespace).
-        where('LOWER(projects.name) LIKE :query OR
-              LOWER(projects.path) LIKE :query OR
-              LOWER(namespaces.name) LIKE :query OR
-              LOWER(projects.description) LIKE :query',
-              query: "%#{query.try(:downcase)}%")
+      ptable  = arel_table
+      ntable  = Namespace.arel_table
+      pattern = "%#{query}%"
+
+      projects = select(:id).where(
+        ptable[:path].matches(pattern).
+          or(ptable[:name].matches(pattern)).
+          or(ptable[:description].matches(pattern))
+      )
+
+      # We explicitly remove any eager loading clauses as they're:
+      #
+      # 1. Not needed by this query
+      # 2. Combined with .joins(:namespace) lead to all columns from the
+      #    projects & namespaces tables being selected, leading to a SQL error
+      #    due to the columns of all UNION'd queries no longer being the same.
+      namespaces = select(:id).
+        except(:includes).
+        joins(:namespace).
+        where(ntable[:name].matches(pattern))
+
+      union = Gitlab::SQL::Union.new([projects, namespaces])
+
+      where("projects.id IN (#{union.to_sql})")
     end
 
     def search_by_visibility(level)
@@ -314,7 +341,10 @@ class Project < ActiveRecord::Base
     end
 
     def search_by_title(query)
-      where('projects.archived = ?', false).where('LOWER(projects.name) LIKE :query', query: "%#{query.downcase}%")
+      pattern = "%#{query}%"
+      table   = Project.arel_table
+
+      non_archived.where(table[:name].matches(pattern))
     end
 
     def find_with_namespace(id)
@@ -575,6 +605,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
+    return @external_issue_tracker if defined?(@external_issue_tracker)
     @external_issue_tracker ||=
       services.issue_trackers.active.without_defaults.first
   end
@@ -618,11 +649,11 @@ class Project < ActiveRecord::Base
   end
 
   def ci_services
-    services.select { |service| service.category == :ci }
+    services.where(category: :ci)
   end
 
   def ci_service
-    @ci_service ||= ci_services.find(&:activated?)
+    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
@@ -817,6 +848,8 @@ class Project < ActiveRecord::Base
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
 
+    expire_caches_before_rename(old_path_with_namespace)
+
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
       # However we cannot allow rollback since we moved repository
@@ -844,6 +877,22 @@ class Project < ActiveRecord::Base
 
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
     Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.path)
+  end
+
+  # Expires various caches before a project is renamed.
+  def expire_caches_before_rename(old_path)
+    repo = Repository.new(old_path, self)
+    wiki = Repository.new("#{old_path}.wiki", self)
+
+    if repo.exists?
+      repo.expire_cache
+      repo.expire_emptiness_caches
+    end
+
+    if wiki.exists?
+      wiki.expire_cache
+      wiki.expire_emptiness_caches
+    end
   end
 
   def hook_attrs
@@ -908,10 +957,7 @@ class Project < ActiveRecord::Base
   end
 
   def change_head(branch)
-    # Cached divergent commit counts are based on repository head
-    repository.expire_branch_cache
-    repository.expire_root_ref_cache
-
+    repository.before_change_head
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
@@ -1025,13 +1071,13 @@ class Project < ActiveRecord::Base
   end
 
   def valid_runners_token? token
-    self.runners_token && self.runners_token == token
+    self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
   # TODO (ayufan): For now we use runners_token (backward compatibility)
   # In 8.4 every build will have its own individual token valid for time of build
   def valid_build_token? token
-    self.builds_enabled? && self.runners_token && self.runners_token == token
+    self.builds_enabled? && self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
   def build_coverage_enabled?

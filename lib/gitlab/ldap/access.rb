@@ -175,7 +175,14 @@ module Gitlab
           active_group_links = group.ldap_group_links.where(cn: cns_with_access)
 
           if active_group_links.any?
-            group.add_users([user.id], active_group_links.maximum(:group_access), skip_notification: true)
+            max_access = active_group_links.maximum(:group_access)
+
+            # Ensure we don't leave a group without an owner
+            if max_access < Gitlab::Access::OWNER && group.last_owner?(user)
+              logger.warn "#{self.class.name}: LDAP group sync cannot demote #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
+            else
+              group.add_users([user.id], max_access, skip_notification: true)
+            end
           elsif group.last_owner?(user)
             logger.warn "#{self.class.name}: LDAP group sync cannot remove #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
           else

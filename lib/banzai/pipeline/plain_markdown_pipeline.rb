@@ -2,7 +2,7 @@ module Banzai
   module Pipeline
     class PlainMarkdownPipeline < BasePipeline
       def self.filters
-        [
+        FilterArray[
           Filter::MarkdownFilter
         ]
       end

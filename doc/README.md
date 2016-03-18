@@ -14,50 +14,52 @@
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [Analytics](analytics/README.md)
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
-- [Web hooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
+- [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [GitLab Pages](pages/README.md) Using GitLab Pages.
 - [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
 
-## CI Documentation
+## CI User documentation
 
-- [Quick Start](ci/quick_start/README.md)
-- [Enable or disable GitLab CI](ci/enable_or_disable_ci.md)
-- [Configuring project (.gitlab-ci.yml)](ci/yaml/README.md)
-- [Configuring runner](ci/runners/README.md)
-- [Configuring deployment](ci/deployment/README.md)
-- [Using Docker Images](ci/docker/using_docker_images.md)
-- [Using Docker Build](ci/docker/using_docker_build.md)
-- [Using Variables](ci/variables/README.md)
-- [Using SSH keys](ci/ssh_keys/README.md)
+- [Get started with GitLab CI](ci/quick_start/README.md)
+- [Learn how to enable or disable GitLab CI](ci/enable_or_disable_ci.md)
+- [Learn how `.gitlab-ci.yml` works](ci/yaml/README.md)
+- [Configure a Runner, the application that runs your builds](ci/runners/README.md)
+- [Use Docker images with GitLab Runner](ci/docker/using_docker_images.md)
+- [Use CI to build Docker images](ci/docker/using_docker_build.md)
+- [Use variables in your `.gitlab-ci.yml`](ci/variables/README.md)
+- [Use SSH keys in your build environment](ci/ssh_keys/README.md)
+- [Trigger builds through the API](ci/triggers/README.md)
+- [Build artifacts](ci/build_artifacts/README.md)
 - [User permissions](ci/permissions/README.md)
 - [API](ci/api/README.md)
-- [Triggering builds through the API](ci/triggers/README.md)
-- [Build artifacts](ci/build_artifacts/README.md)
 
-### CI Languages
+### CI Examples
 
-- [Testing PHP](ci/languages/php.md)
+- [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
+- [Test your PHP applications](ci/examples/php.md)
+- [Test and deploy Ruby applications to Heroku](ci/examples/test-and-deploy-ruby-application-to-heroku.md)
+- [Test and deploy Python applications to Heroku](ci/examples/test-and-deploy-python-application-to-heroku.md)
+- [Test Clojure applications](ci/examples/test-clojure-application.md)
+- [Using `dpl` as deployment tool](ci/deployment/README.md)
+- Help your favorite programming language and GitLab by sending a merge request
+  with a guide for that language.
 
 ### CI Services
+
+GitLab CI uses the `services` keyword to define what docker containers should
+be linked with your base image. Below is a list of examples you may use:
 
 - [Using MySQL](ci/services/mysql.md)
 - [Using PostgreSQL](ci/services/postgres.md)
 - [Using Redis](ci/services/redis.md)
 - [Using Other Services](ci/docker/using_docker_images.md#how-to-use-other-images-as-services)
 
-### CI Examples
-
-- [Test and deploy Ruby applications to Heroku](ci/examples/test-and-deploy-ruby-application-to-heroku.md)
-- [Test and deploy Python applications to Heroku](ci/examples/test-and-deploy-python-application-to-heroku.md)
-- [Test Clojure applications](ci/examples/test-clojure-application.md)
-- Help your favorite programming language and GitLab by sending a merge request with a guide for that language.
-
 ## Administrator documentation
 
 - [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
 - [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
-- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.
+- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
 - [Email](tools/email.md) Email GitLab users from GitLab
 - [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
 - [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
@@ -70,7 +72,7 @@
 - [Log system](logs/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
 - [Operations](operations/README.md) Keeping GitLab up and running
-- [Raketasks](raketasks/README.md) Backups, maintenance, automatic web hook setup and the importing of projects.
+- [Raketasks](raketasks/README.md) Backups, maintenance, automatic webhook setup and the importing of projects.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Update](update/README.md) Update guides to upgrade your installation.
@@ -84,6 +86,8 @@
 - [GitLab Pages configuration](pages/administration.md)
 - [Elasticsearch](integration/elasticsearch.md) Enable Elasticsearch
 - [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics
+- [GitLab GEO](administration/gitlab-geo/README.md) Configure GitLab GEO, a
+  secondary read-only GitLab instance
 
 ## Contributor documentation
 

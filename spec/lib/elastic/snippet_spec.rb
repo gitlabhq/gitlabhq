@@ -44,4 +44,25 @@ describe "Snippet", elastic: true do
     expect(Snippet.elastic_search('home', options: options).total_count).to eq(1)
     expect(Snippet.elastic_search('index.php', options:  options).total_count).to eq(1)
   end
+
+  it "returns json with all needed elements" do
+    snippet = create :project_snippet
+
+    expected_hash =  snippet.attributes.extract!(
+      'id',
+      'title',
+      'file_name',
+      'content',
+      'created_at',
+      'updated_at',
+      'state',
+      'project_id',
+      'author_id',
+    )
+
+    expected_hash['project'] = { 'id' => snippet.project.id }
+    expected_hash['author'] = { 'id' => snippet.author.id }
+
+    expect(snippet.as_indexed_json).to eq(expected_hash)
+  end
 end

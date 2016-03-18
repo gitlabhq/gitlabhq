@@ -19,6 +19,10 @@
 #
 
 class ProjectHook < WebHook
+  include CustomModelNaming
+
+  self.singular_route_key = :hook
+
   belongs_to :project
 
   scope :push_hooks, -> { where(push_events: true) }

@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @label], html: { class: 'form-horizontal label-form js-requires-input' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @label], html: { class: 'form-horizontal label-form js-quick-submit js-requires-input' } do |f|
   -if @label.errors.any?
     .row
       .col-sm-offset-2.col-sm-10
@@ -10,7 +10,7 @@
   .form-group
     = f.label :title, class: 'control-label'
     .col-sm-10
-      = f.text_field :title, class: "form-control js-quick-submit", required: true, autofocus: true
+      = f.text_field :title, class: "form-control", required: true, autofocus: true
   .form-group
     = f.label :description, class: 'control-label'
     .col-sm-10

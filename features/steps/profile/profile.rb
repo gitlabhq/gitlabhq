@@ -13,7 +13,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     fill_in 'user_website_url', with: 'testurl'
     fill_in 'user_location', with: 'Ukraine'
     fill_in 'user_bio', with: 'I <3 GitLab'
-    click_button 'Save changes'
+    click_button 'Update profile settings'
     @user.reload
   end
 
@@ -28,7 +28,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I change my avatar' do
     attach_file(:user_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
-    click_button "Save changes"
+    click_button "Update profile settings"
     @user.reload
   end
 
@@ -43,7 +43,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I have an avatar' do
     attach_file(:user_avatar, File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif'))
-    click_button "Save changes"
+    click_button "Update profile settings"
     @user.reload
   end
 
@@ -68,7 +68,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     page.within '.update-password' do
       fill_in "user_password", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
-      click_button "Save"
+      click_button "Save password"
     end
   end
 
@@ -77,7 +77,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
       fill_in "user_current_password", with: "12345678"
       fill_in "user_password", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
-      click_button "Save"
+      click_button "Save password"
     end
   end
 
@@ -86,7 +86,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
       fill_in "user_current_password", with: "12345678"
       fill_in "user_password", with: "password"
       fill_in "user_password_confirmation", with: "confirmation"
-      click_button "Save"
+      click_button "Save password"
     end
   end
 
@@ -103,9 +103,9 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I reset my token' do
-    page.within '.update-token' do
+    page.within '.private-token' do
       @old_token = @user.private_token
-      click_button "Reset"
+      click_button "Reset private token"
     end
   end
 
@@ -184,18 +184,14 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
     end
   end
 
-  step 'I click on new application button' do
-    click_on 'New Application'
-  end
-
   step 'I should see application form' do
-    expect(page).to have_content "New Application"
+    expect(page).to have_content "Add new application"
   end
 
   step 'I fill application form out and submit' do
     fill_in :doorkeeper_application_name, with: 'test'
     fill_in :doorkeeper_application_redirect_uri, with: 'https://test.com'
-    click_on "Submit"
+    click_on "Save application"
   end
 
   step 'I see application' do
@@ -215,7 +211,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I change name of application and submit' do
     expect(page).to have_content "Edit application"
     fill_in :doorkeeper_application_name, with: 'test_changed'
-    click_on "Submit"
+    click_on "Save application"
   end
 
   step 'I see that application was changed' do

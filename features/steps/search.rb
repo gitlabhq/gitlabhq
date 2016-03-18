@@ -18,6 +18,11 @@ class Spinach::Features::Search < Spinach::FeatureSteps
     click_button "Search"
   end
 
+  step 'I search for "rspec" on project page' do
+    fill_in "search", with: "rspec"
+    click_button "Go"
+  end
+
   step 'I search for "Wiki content"' do
     fill_in "dashboard_search", with: "content"
     click_button "Search"
@@ -102,5 +107,9 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   step 'project has Wiki content' do
     @wiki = ::ProjectWiki.new(project, current_user)
     @wiki.create_page("test_wiki", "Some Wiki content", :markdown, "first commit")
+  end
+
+  step 'project "Shop" is public' do
+    project.update_attributes(visibility_level: Project::PUBLIC)
   end
 end

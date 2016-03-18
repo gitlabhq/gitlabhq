@@ -26,20 +26,18 @@ class Admin::AppearancesController < Admin::ApplicationController
   end
 
   def logo
-    appearance = Appearance.last
-    appearance.remove_logo!
+    @appearance.remove_logo!
 
-    appearance.save
+    @appearance.save
 
     redirect_to admin_appearances_path, notice: 'Logo was succesfully removed.'
   end
 
   def header_logos
-    appearance = Appearance.last
-    appearance.remove_light_logo!
-    appearance.save
+    @appearance.remove_header_logo!
+    @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Header logo were succesfully removed.'
+    redirect_to admin_appearances_path, notice: 'Header logo was succesfully removed.'
   end
 
   private
@@ -52,7 +50,7 @@ class Admin::AppearancesController < Admin::ApplicationController
   # Only allow a trusted parameter "white list" through.
   def appearance_params
     params.require(:appearance).permit(
-      :title, :description, :logo, :logo_cache, :light_logo, :light_logo_cache,
+      :title, :description, :logo, :logo_cache, :header_logo, :header_logo_cache,
       :updated_by
     )
   end

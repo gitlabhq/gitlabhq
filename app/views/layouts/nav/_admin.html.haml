@@ -62,8 +62,8 @@
       %span
         Background Jobs
   = nav_link(controller: :appearances) do
-    = link_to admin_appearances_path do
-      %i.fa.fa-image
+    = link_to admin_appearances_path, title: 'Appearances' do
+      = icon('image')
       %span
         Appearance
 
@@ -84,6 +84,12 @@
       = icon('tags fw')
       %span
         Labels
+
+  = nav_link(controller: :geo_nodes) do
+    = link_to admin_geo_nodes_path, title: 'Geo Nodes' do
+      = icon('globe fw')
+      %span
+        Geo Nodes
 
   = nav_link(controller: :abuse_reports) do
     = link_to admin_abuse_reports_path, title: "Abuse Reports" do

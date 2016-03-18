@@ -14,6 +14,18 @@ ul.notes {
   margin: 0px;
   padding: 0px;
 
+  .timeline-icon {
+    float: left;
+  }
+
+  .timeline-content {
+    margin-left: 55px;
+  }
+
+  .note_created_ago, .note-updated-at {
+    white-space: nowrap;
+  }
+
   .system-note {
     font-size: 14px;
     padding-top: 10px;
@@ -151,6 +163,7 @@ ul.notes {
     border-left: none;
 
     &.notes_line {
+      vertical-align: middle;
       text-align: center;
       padding: 10px 0;
       background: #FFF;

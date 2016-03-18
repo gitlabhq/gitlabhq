@@ -34,39 +34,48 @@ module Elastic
       end
 
       def as_indexed_json(options = {})
-        as_json({
-          only: [
-            :id,
-            :iid,
-            :target_branch,
-            :source_branch,
-            :title,
-            :description,
-            :created_at,
-            :updated_at,
-            :state,
-            :merge_status,
-            :source_project_id,
-            :target_project_id,
-            :author_id
-          ],
-          include: {
-            source_project: { only: :id },
-            target_project: { only: :id },
-            author:         { only: :id }
-          }
-        }).merge({ updated_at_sort: updated_at })
+        # We don't use as_json(only: ...) because it calls all virtual and serialized attributtes
+        # https://gitlab.com/gitlab-org/gitlab-ee/issues/349
+        data = {}
+
+        [
+          :id,
+          :iid,
+          :target_branch,
+          :source_branch,
+          :title,
+          :description,
+          :created_at,
+          :updated_at,
+          :state,
+          :merge_status,
+          :source_project_id,
+          :target_project_id,
+          :author_id
+        ].each do |attr|
+          data[attr.to_s] = self.send(attr)
+        end
+
+        data['source_project'] = { 'id' => source_project_id }
+        data['target_project'] = { 'id' => target_project_id }
+        data['author'] = { 'id' => author.id }
+        data['updated_at_sort'] = updated_at
+        data
       end
 
       def self.elastic_search(query, options: {})
-        query_hash = basic_query_hash(%w(title^2 description), query)
+        if query =~ /#(\d+)\z/
+          query_hash = iid_query_hash(query_hash, $1)
+        else
+          query_hash = basic_query_hash(%w(title^2 description), query)
+        end
 
-        if options[:projects_ids]
+        if options[:project_ids]
           query_hash[:query][:filtered][:filter] = {
             and: [
               {
                 terms: {
-                  target_project_id: [options[:projects_ids]].flatten
+                  target_project_id: [options[:project_ids]].flatten
                 }
               }
             ]

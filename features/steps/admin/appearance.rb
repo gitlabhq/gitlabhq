@@ -38,7 +38,7 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
   end
 
   step 'I attach header logos' do
-    attach_file(:appearance_light_logo, Rails.root.join('spec', 'fixtures', 'dk.png'))
+    attach_file(:appearance_header_logo, Rails.root.join('spec', 'fixtures', 'dk.png'))
     click_button 'Save'
   end
 
@@ -47,7 +47,7 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
   end
 
   step 'I should see header logos' do
-    expect(page).to have_xpath('//img[@src="/uploads/appearance/light_logo/1/dk.png"]')
+    expect(page).to have_xpath('//img[@src="/uploads/appearance/header_logo/1/dk.png"]')
   end
 
   step 'I remove the logo' do
@@ -63,7 +63,7 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
   end
 
   step 'I should see header logos removed' do
-    expect(page).not_to have_xpath('//img[@src="/uploads/appearance/light_logo/1/header_logo_light.png"]')
+    expect(page).not_to have_xpath('//img[@src="/uploads/appearance/header_logo/1/header_logo_light.png"]')
   end
 
   def appearance

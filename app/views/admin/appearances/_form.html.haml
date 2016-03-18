@@ -29,24 +29,24 @@
       = f.hidden_field :logo_cache
       = f.file_field :logo, class: ""
       .hint
-        Maximum logo size is 1MB, page optimized for logo size 640x360px
+        Maximum file size is 1MB. Pages are optimized for a 640x360 px logo.
 
   %fieldset.app_logo
     %legend
       Navigation bar:
   .form-group
-    = f.label :light_logo, 'Header logo', class: 'control-label'
+    = f.label :header_logo, 'Header logo', class: 'control-label'
     .col-sm-10
-      - if @appearance.light_logo?
-        = image_tag @appearance.light_logo_url, class: 'appearance-light-logo-preview'
+      - if @appearance.header_logo?
+        = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
           = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
         %hr
-      = f.hidden_field :light_logo_cache
-      = f.file_field :light_logo, class: ""
+      = f.hidden_field :header_logo_cache
+      = f.file_field :header_logo, class: ""
       .hint
-        Maximum size is 1MB, page optimized for logo size 72x72px
+        Maximum file size is 1MB. Pages are optimized for a 72x72 px header logo
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'

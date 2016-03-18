@@ -515,7 +515,7 @@ Parameters:
 }
 ```
 
-## Comments on merge requets
+## Comments on merge requests
 
 Comments are done via the [notes](notes.md) resource.
 

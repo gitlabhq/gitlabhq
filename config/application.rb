@@ -4,6 +4,7 @@ require 'rails/all'
 require 'devise'
 I18n.config.enforce_available_locales = false
 Bundler.require(:default, Rails.env)
+require_relative '../lib/gitlab/redis_config'
 
 module Gitlab
   REDIS_CACHE_NAMESPACE = 'cache:gitlab'
@@ -33,7 +34,7 @@ module Gitlab
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters.push(:password, :password_confirmation, :private_token, :otp_attempt, :variables)
+    config.filter_parameters.push(:password, :password_confirmation, :private_token, :otp_attempt, :variables, :import_url)
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
@@ -56,14 +57,6 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    # Relative URL support
-    # WARNING: We recommend using an FQDN to host GitLab in a root path instead
-    # of using a relative URL.
-    # Documentation: http://doc.gitlab.com/ce/install/relative_url.html
-    # Uncomment and customize the following line to run in a non-root path
-    #
-    # config.relative_url_root = "/gitlab"
-
     config.middleware.use Rack::Attack
 
     # Allow access to GitLab API from other domains
@@ -77,22 +70,7 @@ module Gitlab
       end
     end
 
-    # Use Redis caching across all environments
-    redis_config_file = Rails.root.join('config', 'resque.yml')
-
-    redis_url_string = if File.exists?(redis_config_file)
-                         YAML.load_file(redis_config_file)[Rails.env]
-                       else
-                         "redis://localhost:6379"
-                       end
-
-    # Redis::Store does not handle Unix sockets well, so let's do it for them
-    redis_config_hash = Redis::Store::Factory.extract_host_options_from_uri(redis_url_string)
-    redis_uri = URI.parse(redis_url_string)
-    if redis_uri.scheme == 'unix'
-      redis_config_hash[:path] = redis_uri.path
-    end
-
+    redis_config_hash = Gitlab::RedisConfig.redis_store_options
     redis_config_hash[:namespace] = REDIS_CACHE_NAMESPACE
     redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     config.cache_store = :redis_store, redis_config_hash
@@ -105,6 +83,10 @@ module Gitlab
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
 
     # Gitlab Geo Middleware support
-    config.middleware.use 'Gitlab::Middleware::ReadonlyGeo'
+    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadonlyGeo'
+
+    config.generators do |g|
+      g.factory_girl false
+    end
   end
 end

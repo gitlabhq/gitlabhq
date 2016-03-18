@@ -12,12 +12,7 @@ class Commit
 
   attr_accessor :project
 
-  # Safe amount of changes (files and lines) in one commit to render
-  # Used to prevent 500 error on huge commits by suppressing diff
-  #
-  # User can force display of diff above this size
-  DIFF_SAFE_FILES  = 100 unless defined?(DIFF_SAFE_FILES)
-  DIFF_SAFE_LINES  = 5000 unless defined?(DIFF_SAFE_LINES)
+  DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
   # Commits above this size will not be rendered in HTML
   DIFF_HARD_LIMIT_FILES = 1000 unless defined?(DIFF_HARD_LIMIT_FILES)
@@ -36,12 +31,19 @@ class Commit
 
     # Calculate number of lines to render for diffs
     def diff_line_count(diffs)
-      diffs.reduce(0) { |sum, d| sum + d.diff.lines.count }
+      diffs.reduce(0) { |sum, d| sum + Gitlab::Git::Util.count_lines(d.diff) }
     end
 
     # Truncate sha to 8 characters
     def truncate_sha(sha)
       sha[0..7]
+    end
+
+    def max_diff_options
+      {
+        max_files: DIFF_HARD_LIMIT_FILES,
+        max_lines: DIFF_HARD_LIMIT_LINES,
+      }
     end
   end
 

@@ -10,6 +10,7 @@ class Ability
         when CommitStatus then commit_status_abilities(user, subject)
         when Project then project_abilities(user, subject)
         when Issue then issue_abilities(user, subject)
+        when ExternalIssue then external_issue_abilities(user, subject)
         when Note then note_abilities(user, subject)
         when ProjectSnippet then project_snippet_abilities(user, subject)
         when PersonalSnippet then personal_snippet_abilities(user, subject)
@@ -62,7 +63,6 @@ class Ability
         rules = [
           :read_project,
           :read_wiki,
-          :read_issue,
           :read_label,
           :read_milestone,
           :read_project_snippet,
@@ -75,6 +75,9 @@ class Ability
 
         # Allow to read builds by anonymous user if guests are allowed
         rules << :read_build if project.public_builds?
+
+        # Allow to read issues by anonymous user if issue is not confidential
+        rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
 
         rules - project_disabled_features_rules(project)
       else
@@ -202,6 +205,7 @@ class Ability
     def project_dev_rules
       @project_dev_rules ||= project_report_rules + [
         :admin_merge_request,
+        :update_merge_request,
         :create_commit_status,
         :update_commit_status,
         :create_build,
@@ -227,7 +231,6 @@ class Ability
         :read_pages,
         :push_code_to_protected_branches,
         :update_project_snippet,
-        :update_merge_request,
         :update_pages,
         :admin_milestone,
         :admin_project_snippet,
@@ -342,6 +345,7 @@ class Ability
         end
 
         rules += project_abilities(user, subject.project)
+        rules = filter_confidential_issues_abilities(user, subject, rules) if subject.is_a?(Issue)
         rules
       end
     end
@@ -446,6 +450,10 @@ class Ability
                      end
     end
 
+    def external_issue_abilities(user, subject)
+      project_abilities(user, subject.project)
+    end
+
     private
 
     def named_abilities(name)
@@ -455,6 +463,18 @@ class Ability
         :"update_#{name}",
         :"admin_#{name}"
       ]
+    end
+
+    def filter_confidential_issues_abilities(user, issue, rules)
+      return rules if user.admin? || !issue.confidential?
+
+      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user.id)
+        rules.delete(:admin_issue)
+        rules.delete(:read_issue)
+        rules.delete(:update_issue)
+      end
+
+      rules
     end
   end
 end

@@ -1,14 +1,14 @@
 source "https://rubygems.org"
 
-gem 'rails', '4.2.5.1'
+gem 'rails', '4.2.5.2'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
 
-# Specify a sprockets version due to security issue
-# See https://groups.google.com/forum/#!topic/rubyonrails-security/doAVp0YaTqY
-gem 'sprockets', '~> 2.12.3'
+# Specify a sprockets version due to increased performance
+# See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
+gem 'sprockets', '~> 3.3.5'
 
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
@@ -30,7 +30,7 @@ gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.0'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
-gem 'omniauth-saml',          '~> 1.4.2'
+gem 'omniauth-saml',          '~> 1.5.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
@@ -54,7 +54,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 8.2'
+gem "gitlab_git", '~> 9.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -80,7 +80,7 @@ gem "kaminari", "~> 0.16.3"
 gem "haml-rails", '~> 0.9.0'
 
 # Files attachments
-gem "carrierwave", '~> 0.9.0'
+gem "carrierwave", '~> 0.10.0'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -98,7 +98,7 @@ gem "seed-fu", '~> 2.3.5'
 # Search
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
-gem 'gitlab-elasticsearch-git', '~> 0.0.10', require: "elasticsearch/git"
+gem 'gitlab-elasticsearch-git', '~> 0.0.11', require: "elasticsearch/git"
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
@@ -220,7 +220,6 @@ gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.0.0'
 gem 'jquery-scrollto-rails', '~> 1.4.3'
 gem 'jquery-ui-rails',    '~> 5.0.0'
-gem 'nprogress-rails',    '~> 0.1.6.7'
 gem 'raphael-rails',      '~> 2.1.2'
 gem 'request_store',      '~> 1.2.0'
 gem 'select2-rails',      '~> 3.5.9'
@@ -270,10 +269,12 @@ group :development, :test do
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
-  gem 'database_cleaner', '~> 1.4.0'
-  gem 'factory_girl_rails', '~> 4.3.0'
-  gem 'rspec-rails',      '~> 3.3.0'
-  gem 'spinach-rails', '~> 0.2.1'
+  gem 'database_cleaner',   '~> 1.4.0'
+  gem 'factory_girl_rails', '~> 4.6.0'
+  gem 'rspec-rails',        '~> 3.3.0'
+  gem 'rspec-retry'
+  gem 'spinach-rails',      '~> 0.2.1'
+  gem 'spinach-rerun-reporter', '~> 0.0.2'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -281,19 +282,20 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.0.0'
 
-  gem 'capybara',            '~> 2.4.0'
+  gem 'capybara',            '~> 2.6.2'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist',         '~> 1.8.1'
+  gem 'poltergeist',         '~> 1.9.0'
 
   gem 'teaspoon', '~> 1.0.0'
   gem 'teaspoon-jasmine', '~> 2.2.0'
 
-  gem 'spring', '~> 1.3.6'
+  gem 'spring', '~> 1.6.4'
   gem 'spring-commands-rspec',    '~> 1.0.4'
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
   gem 'rubocop', '~> 0.35.0', require: false
+  gem 'scss_lint', '~> 0.47.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false
   gem 'flog', require: false

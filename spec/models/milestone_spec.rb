@@ -32,6 +32,7 @@ describe Milestone, models: true do
 
   let(:milestone) { create(:milestone) }
   let(:issue) { create(:issue) }
+  let(:user) { create(:user) }
 
   describe "unique milestone title per project" do
     it "shouldn't accept the same title in a project twice" do
@@ -50,18 +51,17 @@ describe Milestone, models: true do
   describe "#percent_complete" do
     it "should not count open issues" do
       milestone.issues << issue
-      expect(milestone.percent_complete).to eq(0)
+      expect(milestone.percent_complete(user)).to eq(0)
     end
 
     it "should count closed issues" do
       issue.close
       milestone.issues << issue
-      expect(milestone.percent_complete).to eq(100)
+      expect(milestone.percent_complete(user)).to eq(100)
     end
 
     it "should recover from dividing by zero" do
-      expect(milestone.issues).to receive(:count).and_return(0)
-      expect(milestone.percent_complete).to eq(0)
+      expect(milestone.percent_complete(user)).to eq(0)
     end
   end
 
@@ -103,7 +103,7 @@ describe Milestone, models: true do
       )
     end
 
-    it { expect(milestone.percent_complete).to eq(75) }
+    it { expect(milestone.percent_complete(user)).to eq(75) }
   end
 
   describe :items_count do
@@ -113,24 +113,23 @@ describe Milestone, models: true do
       milestone.merge_requests << create(:merge_request)
     end
 
-    it { expect(milestone.closed_items_count).to eq(1) }
-    it { expect(milestone.open_items_count).to eq(2) }
-    it { expect(milestone.total_items_count).to eq(3) }
-    it { expect(milestone.is_empty?).to be_falsey }
+    it { expect(milestone.closed_items_count(user)).to eq(1) }
+    it { expect(milestone.total_items_count(user)).to eq(3) }
+    it { expect(milestone.is_empty?(user)).to be_falsey }
   end
 
   describe :can_be_closed? do
     it { expect(milestone.can_be_closed?).to be_truthy }
   end
 
-  describe :is_empty? do
+  describe :total_items_count do
     before do
       create :closed_issue, milestone: milestone
       create :merge_request, milestone: milestone
     end
 
     it 'Should return total count of issues and merge requests assigned to milestone' do
-      expect(milestone.total_items_count).to eq 2
+      expect(milestone.total_items_count(user)).to eq 2
     end
   end
 
@@ -180,6 +179,36 @@ describe Milestone, models: true do
       issue4.reload
 
       expect(issue4.position).to eq(42)
+    end
+  end
+
+  describe '.search' do
+    let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
+
+    it 'returns milestones with a matching title' do
+      expect(described_class.search(milestone.title)).to eq([milestone])
+    end
+
+    it 'returns milestones with a partially matching title' do
+      expect(described_class.search(milestone.title[0..2])).to eq([milestone])
+    end
+
+    it 'returns milestones with a matching title regardless of the casing' do
+      expect(described_class.search(milestone.title.upcase)).to eq([milestone])
+    end
+
+    it 'returns milestones with a matching description' do
+      expect(described_class.search(milestone.description)).to eq([milestone])
+    end
+
+    it 'returns milestones with a partially matching description' do
+      expect(described_class.search(milestone.description[0..2])).
+        to eq([milestone])
+    end
+
+    it 'returns milestones with a matching description regardless of the casing' do
+      expect(described_class.search(milestone.description.upcase)).
+        to eq([milestone])
     end
   end
 end

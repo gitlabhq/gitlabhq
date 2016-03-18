@@ -14,7 +14,10 @@ module Emails
     end
 
     def new_ssh_key_email(key_id)
-      @key = Key.find(key_id)
+      @key = Key.find_by_id(key_id)
+
+      return unless @key
+
       @current_user = @user = @key.user
       @target_url = user_url(@user)
       mail(to: @user.notification_email, subject: subject("SSH key was added to your account"))

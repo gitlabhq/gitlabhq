@@ -1,8 +1,11 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
+  include ToggleSubscriptionAction
+  include DiffHelper
+
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :approve, :rebase, :cancel_merge_when_build_succeeds
+    :ci_status, :approve, :rebase, :cancel_merge_when_build_succeeds
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -111,7 +114,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.last_commit
     @base_commit = @merge_request.diff_base_commit
-    @diffs = @merge_request.compare_diffs
+    @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
 
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit
@@ -245,23 +248,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render json: response
   end
 
-  def toggle_subscription
-    @merge_request.toggle_subscription(current_user)
-
-    render nothing: true
-  end
-
   def approve
     unless @merge_request.can_approve?(current_user)
       return render_404
     end
 
-    @approval = @merge_request.approvals.new
-    @approval.user = current_user
-
-    if @approval.save
-      SystemNoteService.approve_mr(@merge_request, current_user)
-    end
+    MergeRequests::ApprovalService.
+      new(project, current_user).
+      execute(@merge_request)
 
     redirect_to merge_request_path(@merge_request)
   end
@@ -279,6 +273,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_request
     @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
+  alias_method :subscribable_resource, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues

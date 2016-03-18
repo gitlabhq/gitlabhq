@@ -12,9 +12,13 @@ module CiStatusHelper
     ci_label_for_status(ci_commit.status)
   end
 
-  def ci_status_with_icon(status)
-    content_tag :span, class: "ci-status ci-#{status}" do
-      ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
+  def ci_status_with_icon(status, target = nil)
+    content = ci_icon_for_status(status) + '&nbsp;'.html_safe + ci_label_for_status(status)
+    klass = "ci-status ci-#{status}"
+    if target
+      link_to content, target, class: klass
+    else
+      content_tag :span, content, class: klass
     end
   end
 
@@ -42,12 +46,12 @@ module CiStatusHelper
     icon(icon_name + ' fw')
   end
 
-  def render_ci_status(ci_commit)
+  def render_ci_status(ci_commit, tooltip_placement: 'auto left')
     link_to ci_status_icon(ci_commit),
       ci_status_path(ci_commit),
       class: "ci-status-link ci-status-icon-#{ci_commit.status.dasherize}",
       title: "Build #{ci_status_label(ci_commit)}",
-      data: { toggle: 'tooltip', placement: 'left' }
+      data: { toggle: 'tooltip', placement: tooltip_placement }
   end
 
   def no_runners_for_project?(project)

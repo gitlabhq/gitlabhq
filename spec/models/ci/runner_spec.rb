@@ -132,4 +132,32 @@ describe Ci::Runner, models: true do
       expect(runner.belongs_to_one_project?).to be_truthy
     end
   end
+
+  describe '#search' do
+    let(:runner) { create(:ci_runner, token: '123abc') }
+
+    it 'returns runners with a matching token' do
+      expect(described_class.search(runner.token)).to eq([runner])
+    end
+
+    it 'returns runners with a partially matching token' do
+      expect(described_class.search(runner.token[0..2])).to eq([runner])
+    end
+
+    it 'returns runners with a matching token regardless of the casing' do
+      expect(described_class.search(runner.token.upcase)).to eq([runner])
+    end
+
+    it 'returns runners with a matching description' do
+      expect(described_class.search(runner.description)).to eq([runner])
+    end
+
+    it 'returns runners with a partially matching description' do
+      expect(described_class.search(runner.description[0..2])).to eq([runner])
+    end
+
+    it 'returns runners with a matching description regardless of the casing' do
+      expect(described_class.search(runner.description.upcase)).to eq([runner])
+    end
+  end
 end

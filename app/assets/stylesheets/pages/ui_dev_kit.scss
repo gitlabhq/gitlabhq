@@ -3,4 +3,15 @@
     margin: 35px 0 20px;
     font-weight: bold;
   }
+
+  .example {
+    &:before {
+      content: "Example";
+      color: #BBB;
+    }
+
+    padding: 15px;
+    border: 1px dashed #ddd;
+    margin-bottom: 15px;
+  }
 }

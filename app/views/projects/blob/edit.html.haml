@@ -13,7 +13,7 @@
         = icon('eye')
         = editing_preview_title(@blob.name)
 
-  = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-requires-input js-edit-blob-form') do
+  = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-quick-submit js-requires-input js-edit-blob-form') do
     = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
     = render 'shared/new_commit_form', placeholder: "Update #{@blob.name}"
 

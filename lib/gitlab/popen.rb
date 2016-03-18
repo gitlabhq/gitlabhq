@@ -5,13 +5,13 @@ module Gitlab
   module Popen
     extend self
 
-    def popen(cmd, path=nil)
+    def popen(cmd, path = nil, vars = {})
       unless cmd.is_a?(Array)
         raise "System commands must be given as an array of strings"
       end
 
       path ||= Dir.pwd
-      vars = { "PWD" => path }
+      vars['PWD'] = path
       options = { chdir: path }
 
       unless File.directory?(path)
@@ -20,6 +20,7 @@ module Gitlab
 
       @cmd_output = ""
       @cmd_status = 0
+
       Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
         # We are not using stdin so we should close it, in case the command we
         # are running waits for input.

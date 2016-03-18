@@ -94,6 +94,8 @@ module Banzai
             object_link_filter(link, object_class.link_reference_pattern, link_text: text)
           end
         end
+
+        doc
       end
 
       # Replace references (like `!123` for merge requests) in text with links

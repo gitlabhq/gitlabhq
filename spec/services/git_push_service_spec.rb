@@ -134,6 +134,22 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "ES indexing" do
+    before do
+      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
+    end
+
+    after do
+      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(false)
+    end
+
+    it "triggers indexer" do
+      expect_any_instance_of(Elastic::Indexer).to receive(:run)
+
+      execute_service(project, user, @oldrev, @newrev, @ref )
+    end
+  end
+
   describe "Push Event" do
     before do
       service = execute_service(project, user, @oldrev, @newrev, @ref )
@@ -155,8 +171,25 @@ describe GitPushService, services: true do
     end
   end
 
-  describe "Web Hooks" do
-    context "execute web hooks" do
+  describe "Updates main language" do
+
+    context "before push" do
+      it { expect(project.main_language).to eq(nil) }
+    end
+
+    context "after push" do
+      before do
+        @service = execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it { expect(@service.update_main_language).to eq(true) }
+      it { expect(project.main_language).to eq("Ruby") }
+    end
+  end
+
+
+  describe "Webhooks" do
+    context "execute webhooks" do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -195,12 +228,16 @@ describe GitPushService, services: true do
     let(:commit) { project.commit }
 
     before do
+      project.team << [commit_author, :developer]
+      project.team << [user, :developer]
+
       allow(commit).to receive_messages(
         safe_message: "this commit \n mentions #{issue.to_reference}",
         references: [issue],
         author_name: commit_author.name,
         author_email: commit_author.email
       )
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -254,22 +291,24 @@ describe GitPushService, services: true do
 
       allow(project.repository).to receive(:commits_between).
         and_return([closing_commit])
+
+      project.team << [commit_author, :master]
     end
 
     context "to default branches" do
       it "closes issues" do
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
         expect(Issue.find(issue.id)).to be_closed
       end
 
       it "adds a note indicating that the issue is now closed" do
         expect(SystemNoteService).to receive(:change_status).with(issue, project, commit_author, "closed", closing_commit)
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
 
       it "doesn't create additional cross-reference notes" do
         expect(SystemNoteService).not_to receive(:cross_reference)
-        execute_service(project, user, @oldrev, @newrev, @ref )
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
 
       it "doesn't close issues when external issue tracker is in use" do
@@ -277,7 +316,7 @@ describe GitPushService, services: true do
 
         # The push still shouldn't create cross-reference notes.
         expect do
-          execute_service(project, user, @oldrev, @newrev,  'refs/heads/hurf' )
+          execute_service(project, commit_author, @oldrev, @newrev,  'refs/heads/hurf' )
         end.not_to change { Note.where(project_id: project.id, system: true).count }
       end
     end
@@ -299,7 +338,6 @@ describe GitPushService, services: true do
       end
     end
 
-    # EE-only tests
     context "for jira issue tracker" do
       include JiraServiceHelper
 
@@ -349,7 +387,7 @@ describe GitPushService, services: true do
             }
           }.to_json
 
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, commit_author, @oldrev, @newrev, @ref )
           expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
             body: transition_body
           ).once
@@ -360,7 +398,7 @@ describe GitPushService, services: true do
             body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
           }.to_json
 
-          execute_service(project, user, @oldrev, @newrev, @ref )
+          execute_service(project, commit_author, @oldrev, @newrev, @ref )
           expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
             body: comment_body
           ).once
@@ -380,6 +418,45 @@ describe GitPushService, services: true do
 
     it 'push to first branch updates HEAD' do
       execute_service(project, user, @blankrev, @newrev, new_ref )
+    end
+  end
+
+  describe "housekeeping" do
+    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+
+    before do
+      allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    it 'does not perform housekeeping when not needed' do
+      expect(housekeeping).not_to receive(:execute)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+
+    context 'when housekeeping is needed' do
+      before do
+        allow(housekeeping).to receive(:needed?).and_return(true)
+      end
+
+      it 'performs housekeeping' do
+        expect(housekeeping).to receive(:execute)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it 'does not raise an exception' do
+        allow(housekeeping).to receive(:try_obtain_lease).and_return(false)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+    end
+
+
+    it 'increments the push counter' do
+      expect(housekeeping).to receive(:increment!)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
     end
   end
 

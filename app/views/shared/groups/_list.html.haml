@@ -1,0 +1,6 @@
+- if groups.any?
+  %ul.content-list
+    - groups.each_with_index do |group, i|
+      = render "shared/groups/group", group: group
+- else
+  %h3 No groups found

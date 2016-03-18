@@ -65,3 +65,27 @@ Feature: Search
     And I search for "Wiki content"
     And I click "Wiki" link
     Then I should see "test_wiki" link in the search results
+
+  Scenario: I logout and should see project I am looking for
+    Given project "Shop" is public
+    And I logout
+    And I visit dashboard search page
+    And I search for "Sho"
+    Then I should see "Shop" project link
+
+  Scenario: I logout and should see issues I am looking for
+    Given project "Shop" is public
+    And I logout
+    And project has issues
+    And I visit dashboard search page
+    When I search for "Foo"
+    And I click "Issues" link
+    Then I should see "Foo" link in the search results
+    And I should not see "Bar" link in the search results
+
+  Scenario: I logout and should see project code I am looking for
+    Given project "Shop" is public
+    And I logout
+    When I visit project "Shop" page
+    And I search for "rspec" on project page
+    Then I should see code results for project "Shop"

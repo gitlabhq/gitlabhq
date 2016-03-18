@@ -24,8 +24,8 @@ module AppearancesHelper
   end
 
   def brand_header_logo
-    if brand_item && brand_item.light_logo?
-      image_tag brand_item.light_logo
+    if brand_item && brand_item.header_logo?
+      image_tag brand_item.header_logo
     else
       render 'shared/logo.svg'
     end

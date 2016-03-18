@@ -39,6 +39,11 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+  namespace :oauth do
+    get 'geo/auth' => 'geo_auth#auth'
+    get 'geo/callback' => 'geo_auth#callback'
+  end
+
   # Autocomplete
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
@@ -159,7 +164,7 @@ Rails.application.routes.draw do
     # Appearance
     get ":model/:mounted_as/:id/:filename",
         to:           "uploads#show",
-        constraints:  { model: /appearance/, mounted_as: /logo|dark_logo|light_logo/, filename: /.+/ }
+        constraints:  { model: /appearance/, mounted_as: /logo|header_logo/, filename: /.+/ }
 
     # Project markdown uploads
     get ":namespace_id/:project_id/:secret/:filename",
@@ -277,6 +282,12 @@ Rails.application.routes.draw do
       get :download, on: :member
     end
 
+    resources :geo_nodes, only: [:index, :create, :destroy] do
+      member do
+        post :repair
+      end
+    end
+
     resources :labels
 
     resources :runners, only: [:index, :show, :update, :destroy] do
@@ -301,7 +312,7 @@ Rails.application.routes.draw do
   resource :profile, only: [:show, :update] do
     member do
       get :audit_log
-      get :applications
+      get :applications, to: 'oauth/applications#index'
 
       put :reset_private_token
       put :update_username
@@ -320,7 +331,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys
+      resources :keys, except: [:new]
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
       resource :two_factor_auth, only: [:new, :create, :destroy] do
@@ -336,6 +347,15 @@ Rails.application.routes.draw do
       constraints: { username: /.*/ }
 
   get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/groups' => 'users#groups', as: :user_groups,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/projects' => 'users#projects', as: :user_projects,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
       constraints: { username: /.*/ }
 
   get '/u/:username' => 'users#show', as: :user,
@@ -379,7 +399,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
-      get :events
+      get :activity
     end
 
     collection do
@@ -706,6 +726,10 @@ Rails.application.routes.draw do
         resources :labels, constraints: { id: /\d+/ } do
           collection do
             post :generate
+          end
+
+          member do
+            post :toggle_subscription
           end
         end
 

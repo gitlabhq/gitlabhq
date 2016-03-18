@@ -21,7 +21,7 @@ module Gitlab
 
       # Array of Gitlab::DIff::Line objects
       def diff_lines
-        @lines ||= parser.parse(raw_diff.lines)
+        @lines ||= parser.parse(raw_diff.each_line).to_a
       end
 
       def highlighted_diff_lines

@@ -29,23 +29,28 @@ module Elastic
             }
           }
         }
-      
+
       after_commit on: :create do
-        if Gitlab.config.elasticsearch.enabled
+        if Gitlab.config.elasticsearch.enabled && self.searchable?
           ElasticIndexerWorker.perform_async(:index, self.class.to_s, self.id)
         end
       end
 
       after_commit on: :update do
-        if Gitlab.config.elasticsearch.enabled
+        if Gitlab.config.elasticsearch.enabled && self.searchable?
           ElasticIndexerWorker.perform_async(:update, self.class.to_s, self.id)
         end
       end
 
       after_commit on: :destroy do
-        if Gitlab.config.elasticsearch.enabled
+        if Gitlab.config.elasticsearch.enabled && self.searchable?
           ElasticIndexerWorker.perform_async(:delete, self.class.to_s, self.id)
         end
+      end
+
+      # Should be overridden in the models where not eveything should be indexed
+      def searchable?
+        true
       end
     end
 
@@ -95,10 +100,22 @@ module Elastic
         query_hash
       end
 
+      def iid_query_hash(query_hash, iid)
+        {
+          query: {
+            filtered: {
+               query: { match: { iid: iid } }
+            }
+          }
+        }
+      end
+
       def project_ids_filter(query_hash, project_ids)
         if project_ids
           query_hash[:query][:filtered][:filter] = {
-            and: [ { terms: { project_id: project_ids } } ]
+            bool: {
+              must: [ { terms: { project_id: project_ids } } ]
+            }
           }
         end
 

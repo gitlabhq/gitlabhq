@@ -10,8 +10,6 @@
 #  updated_at  :datetime
 #
 
-# Read about factories at https://github.com/thoughtbot/factory_girl
-
 FactoryGirl.define do
   factory :abuse_report do
     reporter factory: :user

@@ -1,5 +1,7 @@
 module Gitlab
   module Geo
+    class OauthApplicationUndefinedError < StandardError; end
+
     def self.current_node
       RequestStore.store[:geo_node_current] ||= begin
         GeoNode.find_by(host: Gitlab.config.gitlab.host,
@@ -9,19 +11,46 @@ module Gitlab
     end
 
     def self.primary_node
-      RequestStore.store[:geo_node_primary] ||= GeoNode.find_by(primary: true)
+      RequestStore.store[:geo_primary_node] ||= GeoNode.find_by(primary: true)
+    end
+
+    def self.secondary_nodes
+      RequestStore.store[:geo_secondary_nodes] ||= GeoNode.where(primary: false)
     end
 
     def self.enabled?
       RequestStore.store[:geo_node_enabled] ||= GeoNode.exists?
     end
 
-    def self.readonly?
-      RequestStore.store[:geo_node_readonly] ||= self.enabled? && !self.current_node.primary?
+    def self.primary?
+      RequestStore.store[:geo_node_primary?] ||= self.enabled? && self.current_node && self.current_node.primary?
+    end
+
+    def self.secondary?
+      RequestStore.store[:geo_node_secondary] ||= self.enabled? && self.current_node && !self.current_node.primary?
     end
 
     def self.geo_node?(host:, port:)
       GeoNode.where(host: host, port: port).exists?
+    end
+
+    def self.notify_project_update(project)
+      ::Geo::EnqueueProjectUpdateService.new(project).execute
+    end
+
+    def self.notify_wiki_update(project)
+      ::Geo::EnqueueWikiUpdateService.new(project).execute
+    end
+
+    def self.bulk_notify_job
+      Sidekiq::Cron::Job.find('geo_bulk_notify_worker')
+    end
+
+    def self.oauth_authentication
+      return false unless Gitlab::Geo.secondary?
+
+      RequestStore.store[:geo_oauth_application] ||= Gitlab::Geo.current_node.oauth_application or
+                                                     raise OauthApplicationUndefinedError
     end
   end
 end

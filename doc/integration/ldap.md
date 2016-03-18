@@ -404,40 +404,27 @@ LDAP membership is checked for a GitLab user:
 
 - when they sign in to the GitLab instance
 - on a daily basis
-- on any request that they do, once the LDAP cache has expired (default 1 hour, configurable, cache is per user)
+- on any request once the LDAP cache has expired (configurable; default is 60
+  minutes; cache is per-user)
 
-If you want a shorter or longer LDAP sync time, you can easily set this with the `sync_time` attribute in your config.
+If you want a shorter or longer LDAP sync time, you can set this with the
+`sync_time` attribute in your config.
 
-For Omnibus package installations, simply add `"sync_time"` in `/etc/gitlab/gitlab.rb` to your LDAP config.
-A typical LDAP configuration for GitLab installed with an Omnibus package might look like this:
+For Omnibus package installations, provide an `ldap_sync_time` value in
+`/etc/gitlab/gitlab.rb`:
 
 ```ruby
-gitlab_rails['ldap_servers'] = YAML.load <<-EOS
-main:
-  label: 'LDAP'
-  host: '_your_ldap_server'
-  port: 636
-  uid: 'sAMAccountName'
-  method: 'ssl' # "tls" or "ssl" or "plain"
-  bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
-  password: '_the_password_of_the_bind_user'
-  active_directory: true
-  allow_username_or_email_login: false
-  base: ''
-  user_filter: ''
-  sync_time: 1800
-  ## EE only
-  group_base: ''
-  admin_group: ''
-  sync_ssh_keys: false
-EOS
+gitlab_rails['ldap_sync_time'] = 1800
 ```
 
-Here, `sync_time` is set to `1800` seconds, meaning the LDAP cache will expire every 30 minutes.
+Here, `ldap_sync_time` is set to `1800` seconds, meaning the LDAP cache will
+expire every 30 minutes, rather than the default of 60 minutes.
 
-For manual GitLab installations, simply uncomment the `sync_time` entry in your `gitlab.yml` and set it to the value you desire.
+For manual GitLab installations, simply uncomment the `sync_time` entry in your
+`gitlab.yml` and set it to the value you desire.
 
-Please note that changing the LDAP sync time can influence the performance of your GitLab instance.
+Please note that changing the LDAP sync time can influence the performance of
+your GitLab instance.
 
 ## What sort of queries can my LDAP server expect from GitLab EE?
 
@@ -479,3 +466,25 @@ When setting `method: ssl`, the underlying authentication method used by
 `omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with
 the LDAP server before any LDAP-protocol data is exchanged but no validation of
 the LDAP server's SSL certificate is performed.
+
+## Troubleshooting
+
+### Invalid credentials when logging in
+
+Make sure the user you are binding with has enough permissions to read the user's
+tree and traverse it.
+
+Also make sure that the `user_filter` is not blocking otherwise valid users.
+
+To make sure that the LDAP settings are correct and GitLab can see your users,
+execute the following command:
+
+
+```bash
+# For Omnibus installations
+sudo gitlab-rake gitlab:ldap:check
+
+# For installations from source
+sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
+```
+

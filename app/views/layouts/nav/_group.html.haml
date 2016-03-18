@@ -9,10 +9,15 @@
 
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
     = link_to group_path(@group), title: 'Home' do
-      = icon('dashboard fw')
+      = icon('group fw')
       %span
         Group
   - if can?(current_user, :read_group, @group)
+    = nav_link(path: 'groups#activity') do
+      = link_to activity_group_path(@group), title: 'Activity' do
+        = icon('dashboard fw')
+        %span
+          Activity
     - if current_user
       = nav_link(controller: [:group, :milestones]) do
         = link_to group_milestones_path(@group), title: 'Milestones' do
@@ -25,7 +30,7 @@
         %span
           Issues
           - if current_user
-            %span.count= number_with_delimiter(Issue.opened.of_group(@group).count)
+            %span.count= number_with_delimiter(Issue.visible_to_user(current_user).opened.of_group(@group).count)
     = nav_link(path: 'groups#merge_requests') do
       = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
         = icon('tasks fw')

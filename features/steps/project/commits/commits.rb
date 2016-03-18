@@ -126,8 +126,11 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I visit big commit page' do
-    stub_const('Commit::DIFF_SAFE_FILES', 20)
-    visit namespace_project_commit_path(@project.namespace, @project, sample_big_commit.id)
+    # Create a temporary scope to ensure that the stub_const is removed after user
+    RSpec::Mocks.with_temporary_scope do
+      stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_lines: 1, max_files: 1 })
+      visit namespace_project_commit_path(@project.namespace, @project, sample_big_commit.id)
+    end
   end
 
   step 'I see big commit warning' do

@@ -11,7 +11,7 @@ describe PostReceive do
     end
   end
 
-  context "web hook" do
+  context "webhook" do
     let(:project) { create(:project) }
     let(:key) { create(:key, user: project.owner) }
     let(:key_id) { key.shell_id }
@@ -22,9 +22,9 @@ describe PostReceive do
     end
 
     it "triggers wiki index update" do
-      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
-      expect(Project).to receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
       expect(Project).to receive(:find_with_namespace).with("#{project.path_with_namespace}.wiki").and_return(nil)
+      expect(Project).to receive(:find_with_namespace).with(project.path_with_namespace).and_return(project)
+      allow(Gitlab.config.elasticsearch).to receive(:enabled).and_return(true)
       expect_any_instance_of(ProjectWiki).to receive(:index_blobs)
 
       repo_path = "#{pwd(project)}.wiki"

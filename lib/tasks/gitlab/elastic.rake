@@ -1,6 +1,13 @@
 namespace :gitlab do
   namespace :elastic do
-    desc "Indexing repositories"
+    desc "GitLab | Update Elasticsearch indexes"
+    task :index do
+      Rake::Task["gitlab:elastic:index_repositories"].invoke
+      Rake::Task["gitlab:elastic:index_wikis"].invoke
+      Rake::Task["gitlab:elastic:index_database"].invoke
+    end
+
+    desc "GitLab | Update Elasticsearch indexes for project repositories"
     task index_repositories: :environment  do
       Repository.__elasticsearch__.create_index!
 
@@ -13,6 +20,8 @@ namespace :gitlab do
                  end
 
       projects = apply_project_filters(projects)
+
+      indexer = Elastic::Indexer.new
 
       projects.find_each do |project|
         if project.repository.exists? && !project.repository.empty?
@@ -28,8 +37,11 @@ namespace :gitlab do
               next
             end
 
-            project.repository.index_commits(from_rev: project.index_status.last_commit)
-            project.repository.index_blobs(from_rev: project.index_status.last_commit)
+            indexer.run(
+              project.id,
+              project.repository.path_to_repo,
+              project.index_status.last_commit
+            )
 
             # During indexing the new commits can be pushed,
             # the last_commit parameter only indicates that at least this commit is in index
@@ -42,7 +54,7 @@ namespace :gitlab do
       end
     end
 
-    desc "Indexing all wikis"
+    desc "GitLab | Update Elasticsearch indexes for wiki repositories"
     task index_wikis: :environment  do
       ProjectWiki.__elasticsearch__.create_index!
 
@@ -61,7 +73,7 @@ namespace :gitlab do
       end
     end
 
-    desc "Create indexes in the Elasticsearch from database records"
+    desc "GitLab | Update Elasticsearch indexes for all database objects"
     task index_database: :environment do
       [Project, Issue, MergeRequest, Snippet, Note, Milestone].each do |klass|
         klass.__elasticsearch__.create_index!
@@ -74,7 +86,25 @@ namespace :gitlab do
       end
     end
 
-    desc "Create empty indexes"
+    desc "GitLab | Recreate Elasticsearch indexes for particular model"
+    task reindex_model: :environment do
+      model_name = ENV['MODEL']
+
+      unless %w(Project Issue MergeRequest Snippet Note Milestone).include?(model_name)
+        raise "Please pass MODEL variable"
+      end
+
+      klass = model_name.constantize
+      klass.__elasticsearch__.create_index! force: true
+
+      if klass == Note
+        Note.searchable.import
+      else
+        klass.import
+      end
+    end
+
+    desc "GitLab | Create empty Elasticsearch indexes"
     task create_empty_indexes: :environment do
       [
         Project,
