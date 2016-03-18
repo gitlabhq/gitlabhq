@@ -1,10 +1,15 @@
 ((w) ->
+  notificationGranted = (message, opts, onclick) ->
+    notification = new Notification(message, opts)
+
+    if onclick
+      notification.onclick = onclick
+
   notifyPermissions = ->
     if 'Notification' of window
       Notification.requestPermission()
 
   notifyMe = (message, body, icon, onclick) ->
-    notification = undefined
     opts =
       body: body
       icon: icon
@@ -13,22 +18,13 @@
       # do nothing
     else if Notification.permission == 'granted'
       # If it's okay let's create a notification
-      notification = new Notification(message, opts)
-
-      if onclick
-        notification.onclick = onclick
+      notificationGranted message, opts, onclick
     else if Notification.permission != 'denied'
       Notification.requestPermission (permission) ->
         # If the user accepts, let's create a notification
         if permission == 'granted'
-          notification = new Notification(message, opts)
-
-          if onclick
-            notification.onclick = onclick
-        return
-    return
+          notificationGranted message, opts, onclick
 
   w.notify = notifyMe
   w.notifyPermissions = notifyPermissions
-  return
 ) window

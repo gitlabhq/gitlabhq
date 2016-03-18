@@ -2,8 +2,8 @@ class @MergeRequestWidget
   # Initialize MergeRequestWidget behavior
   #
   #   check_enable           - Boolean, whether to check automerge status
-  #   url_to_automerge_check - String, URL to use to check automerge status
-  #   url_to_ci_check        - String, URL to use to check CI status
+  #   merge_check_url - String, URL to use to check automerge status
+  #   ci_status_url        - String, URL to use to check CI status
   #
 
   constructor: (@opts) ->
@@ -31,7 +31,7 @@ class @MergeRequestWidget
       dataType: 'json'
 
   getMergeStatus: ->
-    $.get @opts.url_to_automerge_check, (data) ->
+    $.get @opts.merge_check_url, (data) ->
       $('.mr-state-widget').replaceWith(data)
 
   ciLabelForStatus: (status) ->
@@ -41,26 +41,28 @@ class @MergeRequestWidget
       status
 
   getCIStatus: ->
-    urlToCICheck = @opts.url_to_ci_check
     _this = @
-
     @fetchBuildStatusInterval = setInterval ( =>
       return if not @readyForCICheck
 
-      $.getJSON urlToCICheck, (data) =>
+      $.getJSON @opts.ci_status_url, (data) =>
         @readyForCICheck = true
 
         if @firstCICheck
           @firstCICheck = false
-          @opts.current_status = data.status
+          @opts.ci_status = data.status
 
-        if data.status isnt @opts.current_status
+        if data.status isnt @opts.ci_status
+          @showCIState data.status
+          if data.coverage
+            @showCICoverage data.coverage
+
           message = @opts.ci_message.replace('{{status}}', @ciLabelForStatus(data.status))
           message = message.replace('{{sha}}', data.sha)
           message = message.replace('{{title}}', data.title)
 
           notify(
-            "Build #{_this.ciLabelForStatus(data.status)}",
+            "Build #{@ciLabelForStatus(data.status)}",
             message,
             @opts.gitlab_icon,
             ->
@@ -68,19 +70,19 @@ class @MergeRequestWidget
               Turbolinks.visit _this.opts.builds_path
           )
 
-          @opts.current_status = data.status
+          @opts.ci_status = data.status
 
       @readyForCICheck = false
     ), 5000
 
-  getCiStatus: ->
-    $.get @opts.url_to_ci_check, (data) =>
-      this.showCiState data.status
+  getCIState: ->
+    $('.ci-widget-fetching').show()
+    $.getJSON @opts.ci_status_url, (data) =>
+      @showCIState data.status
       if data.coverage
-        this.showCiCoverage data.coverage
-    , 'json'
+        @showCICoverage data.coverage
 
-  showCiState: (state) ->
+  showCIState: (state) ->
     $('.ci_widget').hide()
     allowed_states = ["failed", "canceled", "running", "pending", "success", "skipped", "not_found"]
     if state in allowed_states
@@ -94,7 +96,7 @@ class @MergeRequestWidget
       $('.ci_widget.ci-error').show()
       @setMergeButtonClass('btn-danger')
 
-  showCiCoverage: (coverage) ->
+  showCICoverage: (coverage) ->
     text = 'Coverage ' + coverage + '%'
     $('.ci_widget:visible .ci-coverage').text(text)
 
