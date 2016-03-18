@@ -16,7 +16,7 @@ module TodosHelper
 
   def todo_target_link(todo)
     target = todo.target_type.titleize.downcase
-    link_to "#{target} #{todo.to_reference}", todo_target_path(todo), { title: h(todo.target.title) }
+    link_to "#{target} #{todo.target_reference}", todo_target_path(todo), { title: todo.target.title }
   end
 
   def todo_target_path(todo)

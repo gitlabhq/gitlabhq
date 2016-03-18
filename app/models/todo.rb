@@ -71,7 +71,7 @@ class Todo < ActiveRecord::Base
     nil
   end
 
-  def to_reference
+  def target_reference
     if for_commit?
       target.short_id
     else

@@ -115,18 +115,18 @@ describe Todo, models: true do
     end
   end
 
-  describe '#to_reference' do
+  describe '#target_reference' do
     it 'returns the short commit id for commits' do
       subject.project = project
       subject.target_type = 'Commit'
       subject.commit_id = commit.id
 
-      expect(subject.to_reference).to eq commit.short_id
+      expect(subject.target_reference).to eq commit.short_id
     end
 
     it 'returns reference for issuables' do
       subject.target = issue
-      expect(subject.to_reference).to eq issue.to_reference
+      expect(subject.target_reference).to eq issue.to_reference
     end
   end
 end
