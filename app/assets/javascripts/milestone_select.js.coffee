@@ -30,7 +30,7 @@ class @MilestoneSelect
 
             if showAny
               data.unshift(
-                any: true
+                isAny: true
                 title: 'Any Milestone'
               )
 
@@ -47,7 +47,7 @@ class @MilestoneSelect
           milestone.title
         id: (milestone) ->
           if !useId
-            if !milestone.any?
+            if !milestone.isAny?
               milestone.title
             else
               ""
