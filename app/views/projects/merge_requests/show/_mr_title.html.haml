@@ -19,9 +19,9 @@
         = time_ago_with_tooltip(@merge_request.created_at)
         by
         %strong
-          = link_to_member(@project, @merge_request.author,  avatar: false, size: 24, mobile_classes: "hidden-xs")
+          = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-xs")
         %strong
-          = link_to_member(@project, @merge_request.author,  avatar: false, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
+          = link_to_member(@project, @merge_request.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
             by_username: true, avatar: false)
 
   .issue-btn-group.pull-right
