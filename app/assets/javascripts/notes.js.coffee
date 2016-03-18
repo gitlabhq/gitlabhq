@@ -627,10 +627,10 @@ class @Notes
       if closebtn.text() isnt closetext
         closebtn.text(closetext)
 
-      if reopenbtn.is(':not(.btn-comment-and-reopen)')
+      if reopenbtn.is('.btn-comment-and-reopen')
         reopenbtn.removeClass('btn-comment-and-reopen')
 
-      if closebtn.is(':not(.btn-comment-and-close)')
+      if closebtn.is('.btn-comment-and-close')
         closebtn.removeClass('btn-comment-and-close')
 
       if discardbtn.is(':visible')
