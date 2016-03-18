@@ -213,6 +213,8 @@ module Gitlab
           end
 
         commits.each do |commit|
+          next if commit_from_annex_sync?(commit.safe_message)
+
           if status_object = check_commit(commit, git_hook)
             return status_object
           end
@@ -363,6 +365,13 @@ module Gitlab
       end
 
       true
+    end
+
+    def commit_from_annex_sync?(commit_message)
+      return false unless Gitlab.config.gitlab_shell.git_annex_enabled
+
+      # Commit message starting with <git-annex in > so avoid git hooks on this
+      commit_message.start_with?('git-annex in')
     end
   end
 end
