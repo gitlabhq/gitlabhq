@@ -37,6 +37,16 @@ module Gitlab
       @references.values.flatten
     end
 
+    def self.references_pattern
+      return @pattern if @pattern
+
+      patterns = REFERABLES.map do |ref|
+        ref.to_s.classify.constantize.try(:reference_pattern)
+      end
+
+      @pattern = Regexp.union(patterns.compact)
+    end
+
     private
 
     def reference_context

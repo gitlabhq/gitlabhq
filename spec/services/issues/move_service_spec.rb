@@ -15,11 +15,7 @@ describe Issues::MoveService, services: true do
   end
 
   let(:move_service) do
-    described_class.new(old_project, user, issue_params, old_issue, new_project_id)
-  end
-
-  shared_context 'issue move requested' do
-    let(:new_project_id) { new_project.id }
+    described_class.new(old_project, user, issue_params)
   end
 
   shared_context 'user can move issue' do
@@ -29,19 +25,13 @@ describe Issues::MoveService, services: true do
     end
   end
 
-  context 'issue movable' do
-    include_context 'issue move requested'
-    include_context 'user can move issue'
-
-    describe '#move?' do
-      subject { move_service.move? }
-      it { is_expected.to be_truthy }
+  describe '#execute' do
+    shared_context 'issue move executed' do
+      let!(:new_issue) { move_service.execute(old_issue, new_project) }
     end
 
-    describe '#execute' do
-      shared_context 'issue move executed' do
-        let!(:new_issue) { move_service.execute }
-      end
+    context 'issue movable' do
+      include_context 'user can move issue'
 
       context 'generic issue' do
         include_context 'issue move executed'
@@ -164,57 +154,33 @@ describe Issues::MoveService, services: true do
           end
         end
       end
-    end
-  end
 
-  context 'moving to same project' do
-    let(:new_project) { old_project }
+      context 'moving to same project' do
+        let(:new_project) { old_project }
 
-    include_context 'issue move requested'
-    include_context 'user can move issue'
-
-    it 'raises error' do
-      expect { move_service }
-        .to raise_error(StandardError, /Cannot move issue/)
-    end
-  end
-
-  context 'issue move not requested' do
-    let(:new_project_id) { nil }
-
-    describe '#move?' do
-      subject { move_service.move? }
-
-      context 'user do not have permissions to move issue' do
-        it { is_expected.to be_falsey }
-      end
-
-      context 'user has permissions to move issue' do
-        include_context 'user can move issue'
-        it { is_expected.to be_falsey }
+        it 'raises error' do
+          expect { move_service.execute(old_issue, new_project) }
+            .to raise_error(StandardError, /Cannot move issue/)
+        end
       end
     end
-  end
 
-  describe 'move permissions' do
-    include_context 'issue move requested'
-
-    describe '#move?' do
-      subject { move_service.move? }
+    describe 'move permissions' do
+      let(:move) { move_service.execute(old_issue, new_project) }
 
       context 'user is reporter in both projects' do
         include_context 'user can move issue'
-        it { is_expected.to be_truthy }
+        it { expect { move }.to_not raise_error }
       end
 
       context 'user is reporter only in new project' do
         before { new_project.team << [user, :reporter] }
-        it { is_expected.to be_falsey }
+        it { expect { move }.to raise_error(StandardError, /permissions/) }
       end
 
       context 'user is reporter only in old project' do
         before { old_project.team << [user, :reporter] }
-        it { is_expected.to be_falsey }
+        it { expect { move }.to raise_error(StandardError, /permissions/) }
       end
 
       context 'user is reporter in one project and guest in another' do
@@ -223,7 +189,7 @@ describe Issues::MoveService, services: true do
           old_project.team << [user, :reporter]
         end
 
-        it { is_expected.to be_falsey }
+        it { expect { move }.to raise_error(StandardError, /permissions/) }
       end
 
       context 'issue has already been moved' do
@@ -236,7 +202,7 @@ describe Issues::MoveService, services: true do
                          moved_to: moved_to_issue)
         end
 
-        it { is_expected.to be_falsey }
+        it { expect { move }.to raise_error(StandardError, /permissions/) }
       end
     end
   end

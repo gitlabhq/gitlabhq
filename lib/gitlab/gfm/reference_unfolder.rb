@@ -7,7 +7,9 @@ module Gitlab
     # in context of.
     #
     # `unfold` method tries to find all local references and unfold each of
-    # those local references to cross reference format.
+    # those local references to cross reference format, assuming that the
+    # argument passed to this method is a project that references will be
+    # viewed from (see `Referable#to_reference method).
     #
     # Examples:
     #
@@ -34,17 +36,12 @@ module Gitlab
       end
 
       def unfold(from_project)
-        return @text unless @text =~ references_pattern
+        pattern = Gitlab::ReferenceExtractor.references_pattern
+        return @text unless @text =~ pattern
 
-        unfolded = @text.gsub(references_pattern) do |reference|
+        @text.gsub(pattern) do |reference|
           unfold_reference(reference, Regexp.last_match, from_project)
         end
-
-        unless substitution_valid?(unfolded)
-          raise StandardError, 'Invalid references unfolding!'
-        end
-
-        unfolded
       end
 
       private
@@ -59,16 +56,6 @@ module Gitlab
         new_text = before + cross_reference + after
 
         substitution_valid?(new_text) ? cross_reference : reference
-      end
-
-      def references_pattern
-        return @pattern if @pattern
-
-        patterns = Gitlab::ReferenceExtractor::REFERABLES.map do |ref|
-          ref.to_s.classify.constantize.try(:reference_pattern)
-        end
-
-        @pattern = Regexp.union(patterns.compact)
       end
 
       def referables

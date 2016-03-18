@@ -88,11 +88,11 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def update
     @issue = Issues::UpdateService.new(project, current_user, issue_params).execute(issue)
-    move_service = Issues::MoveService.new(project, current_user, issue_params,
-                                           @issue, params['move_to_project_id'])
 
-    if move_service.move?
-      @issue = move_service.execute
+    if params[:move_to_project_id].to_i > 0
+      new_project = Project.find(params[:move_to_project_id])
+      move_service = Issues::MoveService.new(project, current_user, issue_params)
+      @issue = move_service.execute(@issue, new_project)
     end
 
     respond_to do |format|

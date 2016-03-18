@@ -1,23 +1,19 @@
 module Issues
   class MoveService < Issues::BaseService
-    def initialize(project, current_user, params, issue, new_project_id)
-      super(project, current_user, params)
+    class MoveError < StandardError; end
 
-      @issue_old = issue
-      @issue_new = nil
-      @project_old = @project
+    def execute(issue, new_project)
+      @old_issue = issue
+      @old_project = @project
+      @new_project = new_project
 
-      if new_project_id.to_i > 0
-        @project_new = Project.find(new_project_id)
+      unless issue.can_move?(current_user, new_project)
+        raise MoveError, 'Cannot move issue due to insufficient permissions!'
       end
 
-      if @project_new == @project_old
-        raise StandardError, 'Cannot move issue to project it originates from!'
+      if @project == new_project
+        raise MoveError, 'Cannot move issue to project it originates from!'
       end
-    end
-
-    def execute
-      return unless move?
 
       # Using transaction because of a high resources footprint
       # on rewriting notes (unfolding references)
@@ -25,81 +21,72 @@ module Issues
       ActiveRecord::Base.transaction do
         # New issue tasks
         #
-        create_new_issue
+        @new_issue = create_new_issue
+
         rewrite_notes
-        add_moved_from_note
+        add_note_moved_from
 
         # Old issue tasks
         #
-        add_moved_to_note
-        close_old_issue
+        add_note_moved_to
+        close_issue
         mark_as_moved
       end
 
       notify_participants
 
-      @issue_new
-    end
-
-    def move?
-      @project_new && can_move?
+      @new_issue
     end
 
     private
 
-    def can_move?
-      @issue_old.can_move?(@current_user) &&
-        @issue_old.can_move?(@current_user, @project_new)
-    end
-
     def create_new_issue
-      new_params = { id: nil, iid: nil, milestone: nil, label_ids: [],
-                     project: @project_new, author: @issue_old.author,
-                     description: unfold_references(@issue_old.description) }
+      new_params = { id: nil, iid: nil, label_ids: [], milestone: nil,
+                     project: @new_project, author: @old_issue.author,
+                     description: unfold_references(@old_issue.description) }
 
-      new_params = @issue_old.serializable_hash.merge(new_params)
-      create_service = CreateService.new(@project_new, @current_user,
-                                         new_params)
-
-      @issue_new = create_service.execute(set_author: false)
+      new_params = @old_issue.serializable_hash.merge(new_params)
+      CreateService.new(@new_project, @current_user, new_params).execute
     end
 
     def rewrite_notes
-      @issue_old.notes.find_each do |note|
+      @old_issue.notes.find_each do |note|
         new_note = note.dup
-        new_params = { project: @project_new, noteable: @issue_new,
+        new_params = { project: @new_project, noteable: @new_issue,
                        note: unfold_references(new_note.note) }
 
         new_note.update(new_params)
       end
     end
 
-    def close_old_issue
-      close_service = CloseService.new(@project_new, @current_user)
-      close_service.execute(@issue_old, notifications: false, system_note: false)
+    def close_issue
+      close_service = CloseService.new(@old_project, @current_user)
+      close_service.execute(@old_issue, notifications: false, system_note: false)
     end
 
-    def add_moved_from_note
-      SystemNoteService.noteable_moved(@issue_new, @project_new,
-                                       @issue_old, @current_user, direction: :from)
+    def add_note_moved_from
+      SystemNoteService.noteable_moved(@new_issue, @new_project,
+                                       @old_issue, @current_user,
+                                       direction: :from)
     end
 
-    def add_moved_to_note
-      SystemNoteService.noteable_moved(@issue_old, @project_old,
-                                       @issue_new, @current_user, direction: :to)
+    def add_note_moved_to
+      SystemNoteService.noteable_moved(@old_issue, @old_project,
+                                       @new_issue, @current_user,
+                                       direction: :to)
     end
 
     def unfold_references(content)
-      unfolder = Gitlab::Gfm::ReferenceUnfolder.new(content, @project_old)
-      unfolder.unfold(@project_new)
+      unfolder = Gitlab::Gfm::ReferenceUnfolder.new(content, @old_project)
+      unfolder.unfold(@new_project)
     end
 
     def notify_participants
-      notification_service.issue_moved(@issue_old, @issue_new, @current_user)
+      notification_service.issue_moved(@old_issue, @new_issue, @current_user)
     end
 
     def mark_as_moved
-      @issue_old.update(moved_to: @issue_new)
+      @old_issue.update(moved_to: @new_issue)
     end
   end
 end

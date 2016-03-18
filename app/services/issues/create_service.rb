@@ -1,10 +1,10 @@
 module Issues
   class CreateService < Issues::BaseService
-    def execute(set_author: true)
+    def execute
       filter_params
       label_params = params[:label_ids]
       issue = project.issues.new(params.except(:label_ids))
-      issue.author = current_user if set_author
+      issue.author = params[:author] || current_user
 
       if issue.save
         issue.update_attributes(label_ids: label_params)

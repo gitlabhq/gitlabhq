@@ -134,4 +134,9 @@ describe Gitlab::ReferenceExtractor, lib: true do
       expect(subject.all).to match_array([issue, label])
     end
   end
+
+  describe '.references_pattern' do
+    subject { described_class.references_pattern }
+    it { is_expected.to be_kind_of Regexp }
+  end
 end
