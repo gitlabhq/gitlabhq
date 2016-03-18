@@ -22,6 +22,7 @@ Please report suspected security vulnerabilities in private to <support@gitlab.c
 1. [Create new AMIs](https://dev.gitlab.org/gitlab/AMI/blob/master/README.md)
 1. Create feature branches for the blog post on GitLab.com and link them from the code branch
 1. Merge and publish the blog posts
+1. Notify Marketing via chat so they can email members of the security mailing list
 1. Send tweets about the release from `@gitlabhq`
 1. Send out an email to [the community google mailing list](https://groups.google.com/forum/#!forum/gitlabhq)
 1. Post a signed copy of our complete announcement to [oss-security](http://www.openwall.com/lists/oss-security/) and request a CVE number. CVE is only needed for bugs that allow someone to own the server (Remote Code Execution) or access to code of projects they are not a member of.
