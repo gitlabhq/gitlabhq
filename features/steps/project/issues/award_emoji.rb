@@ -92,6 +92,10 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     end
   end
 
+  step 'The emoji menu is visible' do
+    page.find(".emoji-menu.is-visible")
+  end
+
   step 'The search field is focused' do
     expect(page).to have_selector('#emoji_search')
     expect(page.evaluate_script('document.activeElement.id')).to eq('emoji_search')
