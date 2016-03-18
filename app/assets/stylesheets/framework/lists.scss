@@ -141,6 +141,10 @@ ul.content-list {
   }
 }
 
+.panel > .content-list > li {
+  padding: $gl-padding-top $gl-padding;
+}
+
 ul.controls {
   padding-top: 1px;
   float: right;
