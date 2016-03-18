@@ -123,7 +123,7 @@ class TodoService
 
   def handle_note(note, author)
     # Skip system notes, and notes on project snippet
-    return if note.system? || ['Snippet'].include?(note.noteable_type)
+    return if note.system? || note.for_project_snippet?
 
     project = note.project
     target  = note.noteable
