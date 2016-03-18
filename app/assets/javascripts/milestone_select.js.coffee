@@ -8,7 +8,7 @@ class @MilestoneSelect
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
       useId = $dropdown.data('use-id')
-      defaultLabel = $dropdown.text().trim()
+      defaultLabel = $dropdown.data('default-label')
 
       $dropdown.glDropdown(
         data: (term, callback) ->
