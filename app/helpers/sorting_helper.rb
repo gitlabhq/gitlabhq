@@ -53,11 +53,11 @@ module SortingHelper
   end
 
   def sort_title_due_date_soon
-    'Due date soon'
+    'Due soon'
   end
 
   def sort_title_due_date_later
-    'Due date due later'
+    'Due later'
   end
 
   def sort_title_name

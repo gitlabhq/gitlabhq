@@ -18,8 +18,8 @@ module Sortable
     scope :order_updated_asc, -> { reorder(updated_at: :asc) }
     scope :order_name_asc, -> { reorder(name: :asc) }
     scope :order_name_desc, -> { reorder(name: :desc) }
-    scope :due_date_asc, -> { reorder("due_date IS NULL, due_date ASC") }
-    scope :due_date_desc, -> { reorder("due_date IS NULL, due_date DESC") }
+    scope :order_due_date_asc, -> { reorder("issues.due_date IS NULL, issues.due_date ASC") }
+    scope :order_due_date_desc, -> { reorder("issues.due_date IS NULL, issues.due_date DESC") }
   end
 
   module ClassMethods
@@ -33,8 +33,8 @@ module Sortable
       when 'created_desc' then order_created_desc
       when 'id_desc' then order_id_desc
       when 'id_asc' then order_id_asc
-      when 'due_date_asc' then due_date_asc
-      when 'due_date_desc' then due_date_desc
+      when 'due_date_asc' then order_due_date_asc
+      when 'due_date_desc' then order_due_date_desc
       else
         all
       end

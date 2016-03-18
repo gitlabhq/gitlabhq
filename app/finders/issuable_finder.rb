@@ -118,7 +118,19 @@ class IssuableFinder
   end
 
   def filter_by_no_due_date?
-    due_date? && params[:due_date] == Issue::NO_DUE_DATE[1]
+    due_date? && params[:due_date] == Issue::NoDueDate.name
+  end
+
+  def filter_by_overdue?
+    due_date? && params[:due_date] == Issue::OverDue.name
+  end
+
+  def filter_by_due_this_week?
+    due_date? && params[:due_date] == Issue::DueThisWeek.name
+  end
+
+  def filter_by_due_this_month?
+    due_date? && params[:due_date] == Issue::DueThisMonth.name
   end
 
   def labels?
@@ -295,11 +307,13 @@ class IssuableFinder
   def by_due_date(items)
     if due_date?
       if filter_by_no_due_date?
-        items = items.no_due_date
-      else
-        items = items.has_due_date
-        # Must use issues prefix to avoid ambiguous match with Milestone#due_date
-        items = items.where("issues.due_date > ? AND issues.due_date <= ?", Date.today, params[:due_date])
+        items = items.without_due_date
+      elsif filter_by_overdue?
+        items = items.overdue
+      elsif filter_by_due_this_week?
+        items = items.due_between(Date.today.beginning_of_week, Date.today.end_of_week + 1.day)
+      elsif filter_by_due_this_month?
+        items = items.due_between(Date.today.beginning_of_month, Date.today.end_of_month + 1.day)
       end
     end
     items

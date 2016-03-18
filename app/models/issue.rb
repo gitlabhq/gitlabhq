@@ -28,8 +28,12 @@ class Issue < ActiveRecord::Base
   include Sortable
   include Taskable
 
-  NO_DUE_DATE = ['No Due Date', '0']
-  ANY_DUE_DATE = ['Any Due Date', '']
+  DueDateStruct = Struct.new(:title, :name)
+  NoDueDate = DueDateStruct.new('No Due Date', '0')
+  AnyDueDate = DueDateStruct.new('Any Due Date', '')
+  OverDue = DueDateStruct.new('Overdue', 'overdue')
+  DueThisWeek = DueDateStruct.new('Due This Week', 'week')
+  DueThisMonth = DueDateStruct.new('Due This Month', 'month')
 
   ActsAsTaggableOn.strict_case_match = true
 

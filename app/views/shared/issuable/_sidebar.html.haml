@@ -80,7 +80,6 @@
             = icon('calendar')
             %span
               - if issuable.due_date
-                = icon('calendar')
                 = issuable.due_date.to_s(:medium)
               - else
                 .light None

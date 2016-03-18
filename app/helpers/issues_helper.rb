@@ -174,12 +174,14 @@ module IssuesHelper
 
   def due_date_options
     options = [
-      ["Due to tomorrow", 1.day.from_now.to_date],
-      ["Due in this week", 1.week.from_now.to_date]
+        Issue::AnyDueDate,
+        Issue::NoDueDate,
+        Issue::DueThisWeek,
+        Issue::DueThisMonth,
+        Issue::OverDue
     ]
-    options.unshift(Issue::ANY_DUE_DATE)
-    options.unshift(Issue::NO_DUE_DATE)
-    options_for_select(options, params[:due_date])
+
+    options_from_collection_for_select(options, 'name', 'title', params[:due_date])
   end
 
 

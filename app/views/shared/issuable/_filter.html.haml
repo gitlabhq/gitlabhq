@@ -24,7 +24,7 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown"
 
-        - if controller.controller_name == 'issues'
+        - if @issues
           .filter-item.inline.due_date-filter
             = select_tag('due_date', due_date_options,
               class: 'select2 trigger-submit', include_blank: true,

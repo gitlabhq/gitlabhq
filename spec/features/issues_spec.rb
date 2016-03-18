@@ -187,31 +187,47 @@ describe 'Issues', feature: true do
       end
 
       it 'filters by none' do
-        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::NO_DUE_DATE[1])
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::NoDueDate.name)
         expect(page).not_to have_content("foo")
         expect(page).not_to have_content("bar")
         expect(page).to have_content("baz")
       end
 
       it 'filters by any' do
-        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::ANY_DUE_DATE[1])
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::AnyDueDate.name)
         expect(page).to have_content("foo")
         expect(page).to have_content("bar")
         expect(page).to have_content("baz")
       end
 
-      it 'filters by due to tomorrow' do
-        visit namespace_project_issues_path(project.namespace, project, due_date: Date.tomorrow.to_s)
-        expect(page).to have_content("foo")
-        expect(page).not_to have_content("bar")
-        expect(page).not_to have_content("baz")
-      end
-
-      it 'filters by due in this week' do
-        visit namespace_project_issues_path(project.namespace, project, due_date: 7.days.from_now.to_date.to_s)
+      it 'filters by due this week' do
+        foo.update(due_date: Date.today.beginning_of_week + 2.days)
+        bar.update(due_date: Date.today.end_of_week)
+        baz.update(due_date: Date.today - 8.days)
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::DueThisWeek.name)
         expect(page).to have_content("foo")
         expect(page).to have_content("bar")
         expect(page).not_to have_content("baz")
+      end
+
+      it 'filters by due this month' do
+        foo.update(due_date: Date.today.beginning_of_month + 2.days)
+        bar.update(due_date: Date.today.end_of_month)
+        baz.update(due_date: Date.today - 50.days)
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::DueThisMonth.name)
+        expect(page).to have_content("foo")
+        expect(page).to have_content("bar")
+        expect(page).not_to have_content("baz")
+      end
+
+      it 'filters by overdue' do
+        foo.update(due_date: Date.today + 2.days)
+        bar.update(due_date: Date.today + 20.days)
+        baz.update(due_date: Date.yesterday)
+        visit namespace_project_issues_path(project.namespace, project, due_date: Issue::OverDue.name)
+        expect(page).not_to have_content("foo")
+        expect(page).not_to have_content("bar")
+        expect(page).to have_content("baz")
       end
 
     end

@@ -21,9 +21,9 @@
       = link_to page_filter_path(sort: sort_value_milestone_later) do
         = sort_title_milestone_later
       = link_to page_filter_path(sort: sort_value_due_date_soon) do
-        = sort_title_due_date_soon if controller_name == "issues"
+        = sort_title_due_date_soon if @issues
       = link_to page_filter_path(sort: sort_value_due_date_later) do
-        = sort_title_due_date_later if controller_name == "issues"
+        = sort_title_due_date_later if @issues
       = link_to page_filter_path(sort: sort_value_upvotes) do
         = sort_title_upvotes
       = link_to page_filter_path(sort: sort_value_downvotes) do
