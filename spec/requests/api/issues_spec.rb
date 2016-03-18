@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
-  let(:user) { create(:user) }
-  let(:non_member) { create(:user) }
-  let(:author) { create(:author) }
-  let(:assignee) { create(:assignee) }
-  let(:admin) { create(:admin) }
-  let!(:project) { create(:project, :public, namespace: user.namespace ) }
+  let(:user)        { create(:user) }
+  let(:non_member)  { create(:user) }
+  let(:author)      { create(:author) }
+  let(:assignee)    { create(:assignee) }
+  let(:admin)       { create(:user, :admin) }
+  let!(:project)    { create(:project, :public, namespace: user.namespace ) }
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
@@ -469,16 +469,18 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/issues/:issue_id" do
-    it "should reject non admins form deleting an issue" do
-      delete api("/projects/#{project.id}/issues/#{issue.id}", user)
-      expect(response.status).to eq(403)
+    it "should reject a non member from deleting an issue" do
+      delete api("/projects/#{project.id}/issues/#{issue.id}", non_member)
+      expect(response.status).to be(403)
+    end
+
+    it "should reject a developer from deleting an issue" do
+      delete api("/projects/#{project.id}/issues/#{issue.id}", author)
+      expect(response.status).to be(403)
     end
 
     it "deletes the issue if an admin requests it" do
-      user.admin = true
-      user.save
-
-      delete api("/projects/#{project.id}/issues/#{issue.id}", user)
+      delete api("/projects/#{project.id}/issues/#{issue.id}", admin)
       expect(response.status).to eq(200)
       expect(json_response['state']).to eq 'opened'
     end

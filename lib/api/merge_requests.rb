@@ -106,9 +106,9 @@ module API
       # id (required)               - The ID of the project
       # merge_request_id (required) - The MR id
       delete ":id/merge_requests/:merge_request_id" do
-        authenticated_as_admin!
-
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+        authorize!(:remove_merge_request, merge_request)
         merge_request.destroy
 
         present merge_request, with: Entities::MergeRequest

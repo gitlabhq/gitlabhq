@@ -3,8 +3,10 @@ require "spec_helper"
 describe API::API, api: true  do
   include ApiHelpers
   let(:base_time) { Time.now }
-  let(:user) { create(:user) }
-  let!(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:user)      { create(:user) }
+  let(:admin)     { create(:user, :admin) }
+  let(:non_member)  { create(:user) }
+  let!(:project)  { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds) }
@@ -316,20 +318,22 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/merge_request/:merge_request_id" do
-    it "rejects non admin users from deletions" do
-      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
-
-      expect(response.status).to eq(403)
-    end
-
-    it "let's Admins delete a merge request" do
-      user.admin = true
-      user.save
-
+    it "owners can destroy" do
       delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
 
       expect(response.status).to eq(200)
+    end
+
+    it "let's Admins and owners delete a merge request" do
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", admin)
+
+      expect(response.status).to eq(200)
       expect(json_response['id']).to eq merge_request.id
+    end
+
+    it "rejects removal from other users" do
+      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", non_member)
+      expect(response.status).to eq(404)
     end
   end
 

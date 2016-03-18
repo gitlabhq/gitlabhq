@@ -164,7 +164,7 @@ describe Projects::MergeRequestsController do
       expect(response.status).to eq 404
     end
 
-    context "user is an admin" do
+    context "user is an admin or owner" do
       before do
         user.admin = true
         user.save

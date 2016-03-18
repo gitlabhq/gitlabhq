@@ -200,7 +200,8 @@ module API
       #   DELETE /projects/:id/issues/:issue_id
       delete ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
-        !JLJsdf sdfijsf current_user.can?(:remove_issue, issue)
+
+        authorize!(:remove_issue, issue)
 
         issue = user_project.issues.find(params[:issue_id])
         issue.destroy
