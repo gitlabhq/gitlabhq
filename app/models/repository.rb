@@ -227,12 +227,6 @@ class Repository
         send(key)
       end
     end
-
-    branches.each do |branch|
-      unless cache.exist?(:"diverging_commit_counts_#{branch.name}")
-        send(:diverging_commit_counts, branch)
-      end
-    end
   end
 
   def expire_tags_cache
@@ -299,18 +293,6 @@ class Repository
   def expire_tag_count_cache
     cache.expire(:tag_count)
     @tag_count = nil
-  end
-
-  def rebuild_cache
-    cache_keys.each do |key|
-      cache.expire(key)
-      send(key)
-    end
-
-    branches.each do |branch|
-      cache.expire(:"diverging_commit_counts_#{branch.name}")
-      diverging_commit_counts(branch)
-    end
   end
 
   def lookup_cache
