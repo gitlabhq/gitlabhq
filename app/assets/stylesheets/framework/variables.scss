@@ -17,25 +17,29 @@ $background-color: #faf9f9;
 /*
  * Text
  */
-$secondary-text: #555;
-$placeholder-color: #8f8f8f;
-$gl-text-color: #54565b;
+$gl-font-size: 15px;
+$gl-title-color: #333;
+$gl-text-color: #555;
+$gl-placeholder-color: #8f8f8f;
 $gl-text-green: #4a2;
 $gl-text-red: #d12f19;
 $gl-text-orange: #d90;
-$gl-header-color: #323232;
+$gl-header-color: $gl-title-color;
 $gl-link-color: #333c48;
-$gl-gray: #5a5a5a;
-$md-text-color: #444;
-$md-link-color: #3084bb;
+$gl-gray: $gl-text-color;
 
 /*
  * Lists
  */
-$list-title-color: #333;
-$list-text-color: #555;
-$list-font-size: 15px;
+$list-font-size: $gl-font-size;
+$list-title-color: $gl-title-color;
+$list-text-color: $gl-text-color;
 
+/*
+ * Markdown
+ */
+$md-text-color: #444;
+$md-link-color: #3084bb;
 
 /*
  * Code
@@ -56,7 +60,6 @@ $gl-padding-top: 10px;
  */
 $row-hover: #f4f8fe;
 $progress-color: #c0392b;
-$gl-font-size: 15px;
 $avatar_radius: 50%;
 $header-height: 58px;
 $fixed-layout-width: 1280px;

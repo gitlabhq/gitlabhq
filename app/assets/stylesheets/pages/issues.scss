@@ -130,13 +130,13 @@ form.edit-issue {
 }
 
 .issue-closed-by-widget {
-  color: $secondary-text;
+  color: $gl-text-color;
   margin-left: 52px;
 }
 
 .editor-details {
   display: block;
-  
+
   @media (min-width: $screen-sm-min) {
     display: inline-block;
   }
