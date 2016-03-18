@@ -86,6 +86,24 @@ namespace :gitlab do
       end
     end
 
+    desc "GitLab | Recreate Elasticsearch indexes for particular model"
+    task reindex_model: :environment do
+      model_name = ENV['MODEL']
+
+      unless %w(Project Issue MergeRequest Snippet Note Milestone).include?(model_name)
+        raise "Please pass MODEL variable"
+      end
+
+      klass = model_name.constantize
+      klass.__elasticsearch__.create_index! force: true
+
+      if klass == Note
+        Note.searchable.import
+      else
+        klass.import
+      end
+    end
+
     desc "GitLab | Create empty Elasticsearch indexes"
     task create_empty_indexes: :environment do
       [
