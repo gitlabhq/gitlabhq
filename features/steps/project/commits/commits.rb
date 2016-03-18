@@ -33,6 +33,13 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     expect(page).to have_content "Showing #{sample_commit.files_changed_count} changed files"
   end
 
+  step 'I fill compare fields with branches' do
+    fill_in 'from', with: 'feature'
+    fill_in 'to',   with: 'master'
+
+    click_button 'Compare'
+  end
+
   step 'I fill compare fields with refs' do
     fill_in "from", with: sample_commit.parent_id
     fill_in "to",   with: sample_commit.id
@@ -56,6 +63,56 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     expect(page).to have_content "Showing 2 changed files"
   end
 
+  step 'I visit commits list page for feature branch' do
+    visit namespace_project_commits_path(@project.namespace, @project, 'feature', { limit: 5 })
+  end
+
+  step 'I see feature branch commits' do
+    commit = @project.repository.commit('0b4bc9a')
+    expect(page).to have_content(@project.name)
+    expect(page).to have_content(commit.message[0..12])
+    expect(page).to have_content(commit.short_id)
+  end
+
+  step 'project have an open merge request' do
+    create(:merge_request,
+           title: 'Feature',
+           source_project: @project,
+           source_branch: 'feature',
+           target_branch: 'master',
+           author: @project.users.first
+          )
+  end
+
+  step 'I click the "Compare" tab' do
+    click_link('Compare')
+  end
+
+  step 'I fill compare fields with branches' do
+    fill_in 'from', with: 'master'
+    fill_in 'to',   with: 'feature'
+
+    click_button 'Compare'
+  end
+
+  step 'I see compared branches' do
+    expect(page).to have_content 'Commits (1)'
+    expect(page).to have_content 'Showing 1 changed file with 5 additions and 0 deletions'
+  end
+
+  step 'I see button to create a new merge request' do
+    expect(page).to have_link 'Create Merge Request'
+  end
+
+  step 'I should not see button to create a new merge request' do
+    expect(page).to_not have_link 'Create Merge Request'
+  end
+
+  step 'I should see button to the merge request' do
+    merge_request = MergeRequest.find_by(title: 'Feature')
+    expect(page).to have_link "View Open Merge Request", href: namespace_project_merge_request_path(@project.namespace, @project, merge_request)
+  end
+
   step 'I see breadcrumb links' do
     expect(page).to have_selector('ul.breadcrumb')
     expect(page).to have_selector('ul.breadcrumb a', count: 4)
@@ -69,8 +126,11 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I visit big commit page' do
-    stub_const('Commit::DIFF_SAFE_FILES', 20)
-    visit namespace_project_commit_path(@project.namespace, @project, sample_big_commit.id)
+    # Create a temporary scope to ensure that the stub_const is removed after user
+    RSpec::Mocks.with_temporary_scope do
+      stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_lines: 1, max_files: 1 })
+      visit namespace_project_commit_path(@project.namespace, @project, sample_big_commit.id)
+    end
   end
 
   step 'I see big commit warning' do
@@ -123,5 +183,14 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   step 'I see builds list' do
     expect(page).to have_content "build: pending"
     expect(page).to have_content "1 build"
+  end
+
+  step 'I search "submodules" commits' do
+    fill_in 'commits-search', with: 'submodules'
+  end
+
+  step 'I should see only "submodules" commits' do
+    expect(page).to have_content "More submodules"
+    expect(page).not_to have_content "Change some files"
   end
 end

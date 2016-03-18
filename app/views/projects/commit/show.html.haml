@@ -1,9 +1,16 @@
-- page_title "#{@commit.title} (#{@commit.short_id})", "Commits"
+- page_title        "#{@commit.title} (#{@commit.short_id})", "Commits"
+- page_description  @commit.description
+
 = render "projects/commits/header_title"
-= render "commit_box"
+
+.prepend-top-default
+  = render "commit_box"
 - if @ci_commit
   = render "ci_menu"
 - else
   %div.block-connector
-= render "projects/diffs/diffs", diffs: @diffs, project: @project
+= render "projects/diffs/diffs", diffs: @diffs, project: @project,
+         diff_refs: @diff_refs
 = render "projects/notes/notes_with_form"
+- if can_collaborate_with_project?
+  = render "projects/commit/revert", commit: @commit, title: @commit.title

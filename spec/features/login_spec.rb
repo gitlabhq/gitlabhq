@@ -1,6 +1,32 @@
 require 'spec_helper'
 
 feature 'Login', feature: true do
+  describe 'initial login after setup' do
+    it 'allows the initial admin to create a password' do
+      # This behavior is dependent on there only being one user
+      User.delete_all
+
+      user = create(:admin, password_automatically_set: true)
+
+      visit root_path
+      expect(current_path).to eq edit_user_password_path
+      expect(page).to have_content('Please create a password for your new account.')
+
+      fill_in 'user_password',              with: 'password'
+      fill_in 'user_password_confirmation', with: 'password'
+      click_button 'Change your password'
+
+      expect(current_path).to eq new_user_session_path
+      expect(page).to have_content(I18n.t('devise.passwords.updated_not_active'))
+
+      fill_in 'user_login',    with: user.username
+      fill_in 'user_password', with: 'password'
+      click_button 'Sign in'
+
+      expect(current_path).to eq root_path
+    end
+  end
+
   describe 'with two-factor authentication' do
     context 'with valid username/password' do
       let(:user) { create(:user, :two_factor) }
@@ -112,10 +138,10 @@ feature 'Login', feature: true do
       context 'within the grace period' do
         it 'redirects to two-factor configuration page' do
           expect(current_path).to eq new_profile_two_factor_auth_path
-          expect(page).to have_content('You must configure Two-Factor Authentication in your account until')
+          expect(page).to have_content('You must enable Two-factor Authentication for your account before')
         end
 
-        it 'two-factor configuration is skippable' do
+        it 'disallows skipping two-factor configuration' do
           expect(current_path).to eq new_profile_two_factor_auth_path
 
           click_link 'Configure it later'
@@ -128,10 +154,10 @@ feature 'Login', feature: true do
 
         it 'redirects to two-factor configuration page' do
           expect(current_path).to eq new_profile_two_factor_auth_path
-          expect(page).to have_content('You must configure Two-Factor Authentication in your account.')
+          expect(page).to have_content('You must enable Two-factor Authentication for your account.')
         end
 
-        it 'two-factor configuration is not skippable' do
+        it 'disallows skipping two-factor configuration' do
           expect(current_path).to eq new_profile_two_factor_auth_path
           expect(page).not_to have_link('Configure it later')
         end
@@ -146,7 +172,7 @@ feature 'Login', feature: true do
 
       it 'redirects to two-factor configuration page' do
         expect(current_path).to eq new_profile_two_factor_auth_path
-        expect(page).to have_content('You must configure Two-Factor Authentication in your account.')
+        expect(page).to have_content('You must enable Two-factor Authentication for your account.')
       end
     end
   end

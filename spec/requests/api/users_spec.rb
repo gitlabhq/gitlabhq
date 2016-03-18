@@ -8,6 +8,8 @@ describe API::API, api: true  do
   let(:key)   { create(:key, user: user) }
   let(:email)   { create(:email, user: user) }
   let(:omniauth_user) { create(:omniauth_user) }
+  let(:ldap_user) { create(:omniauth_user, provider: 'ldapmain') }
+  let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
 
   describe "GET /users" do
     context "when unauthenticated" do
@@ -45,6 +47,8 @@ describe API::API, api: true  do
         expect(json_response.first.keys).to include 'identities'
         expect(json_response.first.keys).to include 'can_create_project'
         expect(json_response.first.keys).to include 'two_factor_enabled'
+        expect(json_response.first.keys).to include 'last_sign_in_at'
+        expect(json_response.first.keys).to include 'confirmed_at'
       end
     end
   end
@@ -114,6 +118,26 @@ describe API::API, api: true  do
     it "should return 201 Created on success" do
       post api("/users", admin), attributes_for(:user, projects_limit: 3)
       expect(response.status).to eq(201)
+    end
+
+    it 'creates non-external users by default' do
+      post api("/users", admin), attributes_for(:user)
+      expect(response.status).to eq(201)
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      expect(new_user).not_to eq nil
+      expect(new_user.external).to be_falsy
+    end
+
+    it 'should allow an external user to be created' do
+      post api("/users", admin), attributes_for(:user, external: true)
+      expect(response.status).to eq(201)
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      expect(new_user).not_to eq nil
+      expect(new_user.external).to be_truthy
     end
 
     it "should not create user with invalid email" do
@@ -256,6 +280,13 @@ describe API::API, api: true  do
       expect(response.status).to eq(200)
       expect(json_response['is_admin']).to eq(true)
       expect(user.reload.admin).to eq(true)
+    end
+
+    it "should update external status" do
+      put api("/users/#{user.id}", admin), { external: true }
+      expect(response.status).to eq 200
+      expect(json_response['external']).to eq(true)
+      expect(user.reload.external?).to be_truthy
     end
 
     it "should not update admin status" do
@@ -783,6 +814,12 @@ describe API::API, api: true  do
       expect(user.reload.state).to eq('blocked')
     end
 
+    it 'should not re-block ldap blocked users' do
+      put api("/users/#{ldap_blocked_user.id}/block", admin)
+      expect(response.status).to eq(403)
+      expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
+    end
+
     it 'should not be available for non admin users' do
       put api("/users/#{user.id}/block", user)
       expect(response.status).to eq(403)
@@ -797,7 +834,9 @@ describe API::API, api: true  do
   end
 
   describe 'PUT /user/:id/unblock' do
+    let(:blocked_user)  { create(:user, state: 'blocked') }
     before { admin }
+
     it 'should unblock existing user' do
       put api("/users/#{user.id}/unblock", admin)
       expect(response.status).to eq(200)
@@ -805,12 +844,15 @@ describe API::API, api: true  do
     end
 
     it 'should unblock a blocked user' do
-      put api("/users/#{user.id}/block", admin)
+      put api("/users/#{blocked_user.id}/unblock", admin)
       expect(response.status).to eq(200)
-      expect(user.reload.state).to eq('blocked')
-      put api("/users/#{user.id}/unblock", admin)
-      expect(response.status).to eq(200)
-      expect(user.reload.state).to eq('active')
+      expect(blocked_user.reload.state).to eq('active')
+    end
+
+    it 'should not unblock ldap blocked users' do
+      put api("/users/#{ldap_blocked_user.id}/unblock", admin)
+      expect(response.status).to eq(403)
+      expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
     it 'should not be available for non admin users' do

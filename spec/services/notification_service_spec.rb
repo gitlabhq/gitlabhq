@@ -52,6 +52,9 @@ describe NotificationService, services: true do
         it do
           add_users_with_subscription(note.project, issue)
 
+          # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(7).times
+
           ActionMailer::Base.deliveries.clear
 
           notification.new_note(note)
@@ -61,6 +64,7 @@ describe NotificationService, services: true do
           should_email(note.noteable.assignee)
           should_email(@u_mentioned)
           should_email(@subscriber)
+          should_email(@watcher_and_subscriber)
           should_email(@subscribed_participant)
           should_not_email(note.author)
           should_not_email(@u_participating)
@@ -220,10 +224,19 @@ describe NotificationService, services: true do
 
         should_not_email(issue.assignee)
       end
+
+      it "emails subscribers of the issue's labels" do
+        subscriber = create(:user)
+        label = create(:label, issues: [issue])
+        label.toggle_subscription(subscriber)
+        notification.new_issue(issue, @u_disabled)
+
+        should_email(subscriber)
+      end
     end
 
     describe :reassigned_issue do
-      it 'should email new assignee' do
+      it 'emails new assignee' do
         notification.reassigned_issue(issue, @u_disabled)
 
         should_email(issue.assignee)
@@ -233,6 +246,91 @@ describe NotificationService, services: true do
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
+      end
+
+      it 'emails previous assignee even if he has the "on mention" notif level' do
+        issue.update_attribute(:assignee, @u_mentioned)
+        issue.update_attributes(assignee: @u_watcher)
+        notification.reassigned_issue(issue, @u_disabled)
+
+        should_email(@u_mentioned)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'emails new assignee even if he has the "on mention" notif level' do
+        issue.update_attributes(assignee: @u_mentioned)
+        notification.reassigned_issue(issue, @u_disabled)
+
+        expect(issue.assignee).to be @u_mentioned
+        should_email(issue.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'emails new assignee' do
+        issue.update_attribute(:assignee, @u_mentioned)
+        notification.reassigned_issue(issue, @u_disabled)
+
+        expect(issue.assignee).to be @u_mentioned
+        should_email(issue.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+
+      it 'does not email new assignee if they are the current user' do
+        issue.update_attribute(:assignee, @u_mentioned)
+        notification.reassigned_issue(issue, @u_mentioned)
+
+        expect(issue.assignee).to be @u_mentioned
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_not_email(issue.assignee)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+      end
+    end
+
+    describe '#relabeled_issue' do
+      let(:label) { create(:label, issues: [issue]) }
+      let(:label2) { create(:label) }
+      let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber_to_label2) { create(:user).tap { |u| label2.toggle_subscription(u) } }
+
+      it "emails subscribers of the issue's added labels only" do
+        notification.relabeled_issue(issue, [label2], @u_disabled)
+
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
+      end
+
+      it "doesn't send email to anyone but subscribers of the given labels" do
+        notification.relabeled_issue(issue, [label2], @u_disabled)
+
+        should_not_email(issue.assignee)
+        should_not_email(issue.author)
+        should_not_email(@u_watcher)
+        should_not_email(@u_participant_mentioned)
+        should_not_email(@subscriber)
+        should_not_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
       end
     end
 
@@ -245,6 +343,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -260,6 +359,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
       end
@@ -282,9 +382,19 @@ describe NotificationService, services: true do
 
         should_email(merge_request.assignee)
         should_email(@u_watcher)
+        should_email(@watcher_and_subscriber)
         should_email(@u_participant_mentioned)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
+      end
+
+      it "emails subscribers of the merge request's labels" do
+        subscriber = create(:user)
+        label = create(:label, merge_requests: [merge_request])
+        label.toggle_subscription(subscriber)
+        notification.new_merge_request(merge_request, @u_disabled)
+
+        should_email(subscriber)
       end
     end
 
@@ -296,9 +406,39 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
+      end
+    end
+
+    describe :relabel_merge_request do
+      let(:label) { create(:label, merge_requests: [merge_request]) }
+      let(:label2) { create(:label) }
+      let!(:subscriber_to_label) { create(:user).tap { |u| label.toggle_subscription(u) } }
+      let!(:subscriber_to_label2) { create(:user).tap { |u| label2.toggle_subscription(u) } }
+
+      it "emails subscribers of the merge request's added labels only" do
+        notification.relabeled_merge_request(merge_request, [label2], @u_disabled)
+
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
+      end
+
+      it "doesn't send email to anyone but subscribers of the given labels" do
+        notification.relabeled_merge_request(merge_request, [label2], @u_disabled)
+
+        should_not_email(merge_request.assignee)
+        should_not_email(merge_request.author)
+        should_not_email(@u_watcher)
+        should_not_email(@u_participant_mentioned)
+        should_not_email(@subscriber)
+        should_not_email(@watcher_and_subscriber)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(subscriber_to_label)
+        should_email(subscriber_to_label2)
       end
     end
 
@@ -310,6 +450,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -324,6 +465,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -338,6 +480,7 @@ describe NotificationService, services: true do
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -387,25 +530,17 @@ describe NotificationService, services: true do
     @subscriber = create :user
     @unsubscriber = create :user
     @subscribed_participant = create(:user, username: 'subscribed_participant', notification_level: Notification::N_PARTICIPATING)
+    @watcher_and_subscriber = create(:user, notification_level: Notification::N_WATCH)
 
     project.team << [@subscribed_participant, :master]
     project.team << [@subscriber, :master]
     project.team << [@unsubscriber, :master]
+    project.team << [@watcher_and_subscriber, :master]
 
     issuable.subscriptions.create(user: @subscriber, subscribed: true)
     issuable.subscriptions.create(user: @subscribed_participant, subscribed: true)
     issuable.subscriptions.create(user: @unsubscriber, subscribed: false)
-  end
-
-  def sent_to_user?(user)
-    ActionMailer::Base.deliveries.map(&:to).flatten.count(user.email) == 1
-  end
-
-  def should_email(user)
-    expect(sent_to_user?(user)).to be_truthy
-  end
-
-  def should_not_email(user)
-    expect(sent_to_user?(user)).to be_falsey
+    # Make the watcher a subscriber to detect dupes
+    issuable.subscriptions.create(user: @watcher_and_subscriber, subscribed: true)
   end
 end

@@ -1,10 +1,8 @@
-require 'banzai'
-
 module Banzai
   module Pipeline
     class GfmPipeline < BasePipeline
       def self.filters
-        @filters ||= [
+        @filters ||= FilterArray[
           Filter::SyntaxHighlightFilter,
           Filter::SanitizationFilter,
 
@@ -22,6 +20,7 @@ module Banzai
           Filter::CommitRangeReferenceFilter,
           Filter::CommitReferenceFilter,
           Filter::LabelReferenceFilter,
+          Filter::MilestoneReferenceFilter,
 
           Filter::TaskListFilter
         ]

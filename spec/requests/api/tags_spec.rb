@@ -8,8 +8,8 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
-  let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
-  let!(:guest) { create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST) }
+  let!(:master) { create(:project_member, :master, user: user, project: project) }
+  let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
 
   describe "GET /projects/:id/repository/tags" do
     let(:tag_name) { project.repository.tag_names.sort.reverse.first }
@@ -62,6 +62,27 @@ describe API::API, api: true  do
         expect(response.status).to eq(201)
         expect(json_response['name']).to eq('v7.0.1')
         expect(json_response['release']['description']).to eq('Wow')
+      end
+    end
+
+    describe 'DELETE /projects/:id/repository/tags/:tag_name' do
+      let(:tag_name) { project.repository.tag_names.sort.reverse.first }
+
+      before do
+        allow_any_instance_of(Repository).to receive(:rm_tag).and_return(true)
+      end
+
+      context 'delete tag' do
+        it 'should delete an existing tag' do
+          delete api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
+          expect(response.status).to eq(200)
+          expect(json_response['tag_name']).to eq(tag_name)
+        end
+
+        it 'should raise 404 if the tag does not exist' do
+          delete api("/projects/#{project.id}/repository/tags/foobar", user)
+          expect(response.status).to eq(404)
+        end
       end
     end
 

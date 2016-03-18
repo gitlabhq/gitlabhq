@@ -6,8 +6,8 @@ describe API::API, api: true  do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let(:project_member) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
-  let(:project_member2) { create(:project_member, user: user3, project: project, access_level: ProjectMember::DEVELOPER) }
+  let(:project_member) { create(:project_member, :master, user: user, project: project) }
+  let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
 
   describe "GET /projects/:id/members" do
     before { project_member }

@@ -20,8 +20,7 @@
       = render "projects/notes/discussions/diff", discussion_notes: discussion_notes, note: note
     - else
       .panel.panel-default
-        .notes{ rel: discussion_notes.first.discussion_id }
+        .notes{ data: { discussion_id: discussion_notes.first.discussion_id } }
           = render discussion_notes
         .discussion-reply-holder
           = link_to_reply_diff(discussion_notes.first)
-

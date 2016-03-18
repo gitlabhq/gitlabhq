@@ -9,19 +9,6 @@ describe ProjectsController do
 
   describe "GET show" do
 
-    context "when requested by `go get`" do
-      render_views
-
-      it "renders the go-import meta tag" do
-        get :show, "go-get" => "1", namespace_id: "bogus_namespace", id: "bogus_project"
-
-        expect(response.body).to include("name='go-import'")
-
-        content = "localhost/bogus_namespace/bogus_project git http://localhost/bogus_namespace/bogus_project.git"
-        expect(response.body).to include("content='#{content}'")
-      end
-    end
-
     context "rendering default project view" do
       render_views
 
@@ -84,6 +71,14 @@ describe ProjectsController do
             end
           end
         end
+      end
+    end
+
+    context "when the url contains .atom" do
+      let(:public_project_with_dot_atom) { build(:project, :public, name: 'my.atom', path: 'my.atom') }
+
+      it 'expect an error creating the project' do
+        expect(public_project_with_dot_atom).not_to be_valid
       end
     end
   end

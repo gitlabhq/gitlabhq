@@ -14,7 +14,7 @@ To enable the Twitter OmniAuth provider you must register your application with 
     - Callback URL: 'https://gitlab.example.com/users/auth/twitter/callback'
     - Agree to the "Developer Agreement".
 
-    ![Twitter App Details](twitter_app_details.png)
+    ![Twitter App Details](img/twitter_app_details.png)
 1.  Select "Create your Twitter application."
 
 1.  Select the "Settings" tab.
@@ -27,7 +27,7 @@ To enable the Twitter OmniAuth provider you must register your application with 
 
 1.  You should now see an API key and API secret (see screenshot). Keep this page open as you continue configuration.
 
-    ![Twitter app](twitter_app_api_keys.png)
+    ![Twitter app](img/twitter_app_api_keys.png)
 
 1.  On your GitLab server, open the configuration file.
 

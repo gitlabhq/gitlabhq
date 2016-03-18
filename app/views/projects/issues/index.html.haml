@@ -5,22 +5,19 @@
   - if current_user
     = auto_discovery_link_tag(:atom, namespace_project_issues_url(@project.namespace, @project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
 
-.project-issuable-filter
-  .controls
-    .pull-left
-      - if current_user
-        .hidden-xs.pull-left
-          = link_to namespace_project_issues_path(@project.namespace, @project, :atom, { private_token: current_user.private_token }), class: 'btn append-right-10' do
-            %i.fa.fa-rss
-
+.top-area
+  = render 'shared/issuable/nav', type: :issues
+  .nav-controls
+    - if current_user
+      = link_to namespace_project_issues_path(@project.namespace, @project, :atom, { private_token: current_user.private_token }), class: 'btn append-right-10' do
+        = icon('rss')
       = render 'shared/issuable/search_form', path: namespace_project_issues_path(@project.namespace, @project)
-
     - if can? current_user, :create_issue, @project
-      = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { assignee_id: @issuable_finder.assignee.try(:id), milestone_id: @issuable_finder.milestones.try(:first).try(:id) }), class: "btn btn-new pull-left", title: "New Issue", id: "new_issue_link" do
-        %i.fa.fa-plus
+      = link_to new_namespace_project_issue_path(@project.namespace, @project, issue: { assignee_id: @issuable_finder.assignee.try(:id), milestone_id: @issuable_finder.milestones.try(:first).try(:id) }), class: "btn btn-new", title: "New Issue", id: "new_issue_link" do
+        = icon('plus')
         New Issue
 
-  = render 'shared/issuable/filter', type: :issues
+= render 'shared/issuable/filter', type: :issues
 
 .issues-holder
   = render "issues"

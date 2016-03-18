@@ -45,11 +45,11 @@ module Gitlab
     end
 
     def starting_year
-      (Time.now - 1.year).strftime("%Y")
+      1.year.ago.year
     end
 
     def starting_month
-      Date.today.strftime("%m").to_i
+      Date.today.month
     end
   end
 end

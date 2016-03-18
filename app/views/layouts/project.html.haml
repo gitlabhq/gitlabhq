@@ -1,6 +1,7 @@
-- page_title    @project.name_with_namespace
-- header_title  project_title(@project) unless header_title
-- sidebar       "project"               unless sidebar
+- page_title       @project.name_with_namespace
+- page_description @project.description    unless page_description
+- header_title     project_title(@project) unless header_title
+- sidebar          "project"               unless sidebar
 
 - content_for :scripts_body_top do
   - project = @target_project || @project

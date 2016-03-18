@@ -36,6 +36,13 @@ describe ProjectWiki, models: true do
     end
   end
 
+  describe "#wiki_base_path" do
+    it "returns the wiki base path" do
+      wiki_base_path = "/#{project.path_with_namespace}/wikis"
+      expect(subject.wiki_base_path).to eq(wiki_base_path)
+    end
+  end
+
   describe "#wiki" do
     it "contains a Gollum::Wiki instance" do
       expect(subject.wiki).to be_a Gollum::Wiki

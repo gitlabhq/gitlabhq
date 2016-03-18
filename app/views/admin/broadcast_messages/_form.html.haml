@@ -1,0 +1,40 @@
+.broadcast-message-preview{ style: broadcast_message_style(@broadcast_message) }
+  = icon('bullhorn')
+  .js-broadcast-message-preview
+    = render_broadcast_message(@broadcast_message.message.presence || "Your message here")
+
+= form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal js-quick-submit js-requires-input'} do |f|
+  -if @broadcast_message.errors.any?
+    .alert.alert-danger
+      - @broadcast_message.errors.full_messages.each do |msg|
+        %p= msg
+  .form-group
+    = f.label :message, class: 'control-label'
+    .col-sm-10
+      = f.text_area :message, class: "form-control js-autosize",
+        required: true,
+        data: { preview_path: preview_admin_broadcast_messages_path }
+  .form-group.js-toggle-colors-container
+    .col-sm-10.col-sm-offset-2
+      = link_to 'Customize colors', '#', class: 'js-toggle-colors-link'
+  .form-group.js-toggle-colors-container.hide
+    = f.label :color, "Background Color", class: 'control-label'
+    .col-sm-10
+      = f.color_field :color, class: "form-control"
+  .form-group.js-toggle-colors-container.hide
+    = f.label :font, "Font Color", class: 'control-label'
+    .col-sm-10
+      = f.color_field :font, class: "form-control"
+  .form-group
+    = f.label :starts_at, class: 'control-label'
+    .col-sm-10.datetime-controls
+      = f.datetime_select :starts_at, {}, class: 'form-control form-control-inline'
+  .form-group
+    = f.label :ends_at, class: 'control-label'
+    .col-sm-10.datetime-controls
+      = f.datetime_select :ends_at, {}, class: 'form-control form-control-inline'
+  .form-actions
+    - if @broadcast_message.persisted?
+      = f.submit "Update broadcast message", class: "btn btn-create"
+    - else
+      = f.submit "Add broadcast message", class: "btn btn-create"

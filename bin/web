@@ -5,6 +5,7 @@ app_root=$(pwd)
 
 unicorn_pidfile="$app_root/tmp/pids/unicorn.pid"
 unicorn_config="$app_root/config/unicorn.rb"
+unicorn_cmd="bundle exec unicorn_rails -c $unicorn_config -E $RAILS_ENV"
 
 get_unicorn_pid()
 {
@@ -18,7 +19,12 @@ get_unicorn_pid()
 
 start()
 {
-  bundle exec unicorn_rails -D -c $unicorn_config -E $RAILS_ENV
+  $unicorn_cmd -D
+}
+
+start_foreground()
+{
+  $unicorn_cmd
 }
 
 stop()
@@ -36,6 +42,9 @@ reload()
 case "$1" in
   start)
     start
+    ;;
+  start_foreground)
+    start_foreground
     ;;
   stop)
     stop

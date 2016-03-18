@@ -7,9 +7,31 @@
     display: inline-block;
     margin-right: 10px;
   }
+
+  &.suggest-colors-dropdown {
+    margin-bottom: 5px;
+
+    a {
+      @include border-radius(0);
+      width: 36.7px;
+      margin-right: 0;
+      margin-bottom: -5px;
+    }
+  }
 }
 
-.manage-labels-list {
+.dropdown-label-color-preview {
+  display: none;
+  margin-top: 5px;
+  width: 100%;
+  height: 25px;
+
+  &.is-active {
+    display: block;
+  }
+}
+
+.label-row {
   .label {
     padding: 9px;
     font-size: 14px;
@@ -18,4 +40,8 @@
 
 .color-label {
   padding: 3px 4px;
+}
+
+.label-subscription {
+  display: inline-block;
 }

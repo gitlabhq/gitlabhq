@@ -33,9 +33,12 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   validates :project, presence: true
 
-  scope :of_group, ->(group) { where(project_id: group.project_ids) }
+  scope :of_group,
+    ->(group) { where(project_id: group.projects.select(:id).reorder(nil)) }
+
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
+  scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
   state_machine :state, initial: :opened do
     event :close do
@@ -53,6 +56,13 @@ class Issue < ActiveRecord::Base
 
   def hook_attrs
     attributes
+  end
+
+  def self.visible_to_user(user)
+    return where(confidential: false) if user.blank?
+    return all if user.admin?
+
+    where('issues.confidential = false OR (issues.confidential = true AND (issues.author_id = :user_id OR issues.assignee_id = :user_id OR issues.project_id IN(:project_ids)))', user_id: user.id, project_ids: user.authorized_projects.select(:id))
   end
 
   def self.reference_prefix
@@ -83,12 +93,22 @@ class Issue < ActiveRecord::Base
     reference
   end
 
-  def referenced_merge_requests
-    Gitlab::ReferenceExtractor.lazily do
-      [self, *notes].flat_map do |note|
-        note.all_references.merge_requests
-      end
-    end.sort_by(&:iid)
+  def referenced_merge_requests(current_user = nil)
+    @referenced_merge_requests ||= {}
+    @referenced_merge_requests[current_user] ||= begin
+      Gitlab::ReferenceExtractor.lazily do
+        [self, *notes].flat_map do |note|
+          note.all_references(current_user).merge_requests
+        end
+      end.sort_by(&:iid).uniq
+    end
+  end
+
+  def related_branches
+    return [] if self.project.empty_repo?
+    self.project.repository.branch_names.select do |branch|
+      branch =~ /\A#{iid}-(?!\d+-stable)/i
+    end
   end
 
   # Reset issue events cache
@@ -116,5 +136,16 @@ class Issue < ActiveRecord::Base
     notes.system.flat_map do |note|
       note.all_references(current_user).merge_requests
     end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
+
+  def to_branch_name
+    "#{iid}-#{title.parameterize}"
+  end
+
+  def can_be_worked_on?(current_user)
+    !self.closed? &&
+      !self.project.forked? &&
+      self.related_branches.empty? &&
+      self.closed_by_merge_requests(current_user).empty?
   end
 end

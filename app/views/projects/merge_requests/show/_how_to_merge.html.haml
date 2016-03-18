@@ -45,6 +45,10 @@
         - unless @merge_request.can_be_merged_by?(current_user)
           %p
             Note that pushing to GitLab requires write access to this repository.
+        %p
+          %strong Tip:
+          You can also checkout merge requests locally by
+          %a{href: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/workflow/merge_requests.md#checkout-merge-requests-locally', target: '_blank'} following these guidelines
 
 :javascript
   $(function(){

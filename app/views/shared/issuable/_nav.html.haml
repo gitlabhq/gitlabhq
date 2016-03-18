@@ -1,0 +1,25 @@
+%ul.nav-links.issues-state-filters
+  - if defined?(type) && type == :merge_requests
+    - page_context_word = 'merge requests'
+  - else
+    - page_context_word = 'issues'
+  %li{class: ("active" if params[:state] == 'opened')}
+    = link_to page_filter_path(state: 'opened'), title: "Filter by #{page_context_word} that are currently opened." do
+      #{state_filters_text_for(:opened, @project)}
+
+  - if defined?(type) && type == :merge_requests
+    %li{class: ("active" if params[:state] == 'merged')}
+      = link_to page_filter_path(state: 'merged'), title: 'Filter by merge requests that are currently merged.' do
+        #{state_filters_text_for(:merged, @project)}
+
+    %li{class: ("active" if params[:state] == 'closed')}
+      = link_to page_filter_path(state: 'closed'), title: 'Filter by merge requests that are currently closed and unmerged.' do
+        #{state_filters_text_for(:closed, @project)}
+  - else
+    %li{class: ("active" if params[:state] == 'closed')}
+      = link_to page_filter_path(state: 'closed'), title: 'Filter by issues that are currently closed.' do
+        #{state_filters_text_for(:closed, @project)}
+
+  %li{class: ("active" if params[:state] == 'all')}
+    = link_to page_filter_path(state: 'all'), title: "Show all #{page_context_word}." do
+      #{state_filters_text_for(:all, @project)}

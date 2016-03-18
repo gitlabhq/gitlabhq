@@ -8,12 +8,14 @@ In addition, having to take a server offline for a an upgrade small or big is
 a big burden for most organizations. For this reason it is important that your
 migrations are written carefully, can be applied online and adhere to the style guide below.
 
+It's advised to have offline migrations only in major GitLab releases.
+
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as little assumptions as possible
 about the state of the database.
 
 Please don't depend on GitLab specific code since it can change in future versions.
-If needed copy-paste GitLab code into the migration to make make it forward compatible.
+If needed copy-paste GitLab code into the migration to make it forward compatible.
 
 ## Comments in the migration
 
@@ -32,6 +34,8 @@ First, you need to provide information on whether the migration can be applied:
 It is always preferable to have a migration run online. If you expect the migration
 to take particularly long (for instance, if it loops through all notes),
 this is valuable information to add.
+
+If you don't provide the information it means that a migration is safe to run online.
 
 ### Reversibility
 

@@ -40,7 +40,7 @@
                 - continue_params = { to:         namespace_project_new_blob_path(@project.namespace, @project, @id),
                                       notice:     edit_in_new_fork_notice,
                                       notice_now: edit_in_new_fork_notice_now }
-                - fork_path = namespace_project_fork_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
                   = icon('pencil fw')
@@ -49,7 +49,7 @@
                 - continue_params = { to:         request.fullpath,
                                       notice:     edit_in_new_fork_notice + " Try to upload a file again.",
                                       notice_now: edit_in_new_fork_notice_now }
-                - fork_path = namespace_project_fork_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
                   = icon('file fw')
@@ -58,7 +58,7 @@
                 - continue_params = { to:         request.fullpath,
                                       notice:     edit_in_new_fork_notice + " Try to create a new directory again.",
                                       notice_now: edit_in_new_fork_notice_now }
-                - fork_path = namespace_project_fork_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
                                                                                         continue:       continue_params)
                 = link_to fork_path, method: :post do
                   = icon('folder fw')

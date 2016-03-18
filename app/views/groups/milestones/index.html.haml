@@ -1,16 +1,14 @@
 - page_title "Milestones"
 - header_title group_title(@group, "Milestones", group_milestones_path(@group))
 
-.project-issuable-filter
-  .controls
-    - if can?(current_user, :admin_milestones, @group)
-      .pull-right
-        %span.pull-right.hidden-xs
-          = link_to new_group_milestone_path(@group), class: "btn btn-new" do
-            = icon('plus')
-            New Milestone
-
+.top-area
   = render 'shared/milestones_filter'
+
+  .nav-controls
+    - if can?(current_user, :admin_milestones, @group)
+      = link_to new_group_milestone_path(@group), class: "btn btn-new" do
+        = icon('plus')
+        New Milestone
 
 .gray-content-block
   Only milestones from

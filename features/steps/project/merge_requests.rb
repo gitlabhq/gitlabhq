@@ -16,8 +16,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     click_link "Bug NS-04"
   end
 
+  step 'I click link "Feature NS-05"' do
+    click_link "Feature NS-05"
+  end
+
   step 'I click link "All"' do
     click_link "All"
+  end
+
+  step 'I click link "Merged"' do
+    click_link "Merged"
   end
 
   step 'I click link "Closed"' do
@@ -40,8 +48,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content "Bug NS-04"
   end
 
+  step 'I should see merge request "Feature NS-05"' do
+    expect(page).to have_content "Feature NS-05"
+  end
+
   step 'I should not see "master" branch' do
-    expect(page).not_to have_content "master"
+    expect(find('.merge-request-info')).not_to have_content "master"
   end
 
   step 'I should see "other_branch" branch' do
@@ -59,7 +71,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should not see "Feature NS-03" in merge requests' do
     expect(page).not_to have_content "Feature NS-03"
   end
-
 
   step 'I should not see "Bug NS-04" in merge requests' do
     expect(page).not_to have_content "Bug NS-04"
@@ -121,6 +132,30 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            author: project.users.first)
   end
 
+  step 'project "Shop" have "Feature NS-05" merged merge request' do
+    create(:merged_merge_request,
+           title: "Feature NS-05",
+           source_project: project,
+           target_project: project,
+           author: project.users.first)
+  end
+
+  step 'project "Shop" have "Bug NS-07" open merge request with rebased branch' do
+    create(:merge_request, :rebased,
+      title: "Bug NS-07",
+      source_project: project,
+      target_project: project,
+      author: project.users.first)
+  end
+
+  step 'project "Shop" have "Bug NS-08" open merge request with diverged branch' do
+    create(:merge_request, :diverged,
+      title: "Bug NS-08",
+      source_project: project,
+      target_project: project,
+      author: project.users.first)
+  end
+
   step 'project "Shop" have "Feature NS-03" closed merge request' do
     create(:closed_merge_request,
            title: "Feature NS-03",
@@ -136,6 +171,56 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            source_project: project,
            target_project: project,
            author: project.users.first)
+  end
+
+  step 'merge request "Bug NS-04" have 2 upvotes and 1 downvote' do
+    merge_request = MergeRequest.find_by(title: 'Bug NS-04')
+    create_list(:upvote_note, 2, project: project, noteable: merge_request)
+    create(:downvote_note, project: project, noteable: merge_request)
+  end
+
+  step 'merge request "Bug NS-06" have 1 upvote and 2 downvotes' do
+    merge_request = MergeRequest.find_by(title: 'Bug NS-06')
+    create(:upvote_note, project: project, noteable: merge_request)
+    create_list(:downvote_note, 2, project: project, noteable: merge_request)
+  end
+
+  step 'The list should be sorted by "Least popular"' do
+    page.within '.mr-list' do
+      page.within 'li.merge-request:nth-child(1)' do
+        expect(page).to have_content 'Bug NS-06'
+        expect(page).to have_content '1 2'
+      end
+
+      page.within 'li.merge-request:nth-child(2)' do
+        expect(page).to have_content 'Bug NS-04'
+        expect(page).to have_content '2 1'
+      end
+
+      page.within 'li.merge-request:nth-child(3)' do
+        expect(page).to have_content 'Bug NS-05'
+        expect(page).to_not have_content '0 0'
+      end
+    end
+  end
+
+  step 'The list should be sorted by "Most popular"' do
+    page.within '.mr-list' do
+      page.within 'li.merge-request:nth-child(1)' do
+        expect(page).to have_content 'Bug NS-04'
+        expect(page).to have_content '2 1'
+      end
+
+      page.within 'li.merge-request:nth-child(2)' do
+        expect(page).to have_content 'Bug NS-06'
+        expect(page).to have_content '1 2'
+      end
+
+      page.within 'li.merge-request:nth-child(3)' do
+        expect(page).to have_content 'Bug NS-05'
+        expect(page).to_not have_content '0 0'
+      end
+    end
   end
 
   step 'I click on the Changes tab' do
@@ -179,6 +264,15 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I leave a comment like "Line is wrong" on diff' do
     init_diff_note
     leave_comment "Line is wrong"
+  end
+
+  step 'user "John Doe" leaves a comment like "Line is wrong" on diff' do
+    mr = MergeRequest.find_by(title: "Bug NS-05")
+    create(:note_on_merge_request_diff, project: project,
+                                        noteable_id: mr.id,
+                                        author: user_exists("John Doe"),
+                                        line_code: sample_commit.line_code,
+                                        note: 'Line is wrong')
   end
 
   step 'I leave a comment like "Line is wrong" on diff in commit' do
@@ -236,6 +330,22 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
     end
+  end
+
+  step 'I should see a discussion by user "John Doe" has started on diff' do
+    page.within(".notes .discussion") do
+      page.should have_content "#{user_exists("John Doe").name} started a discussion"
+      page.should have_content sample_commit.line_code_path
+      page.should have_content "Line is wrong"
+    end
+  end
+
+  step 'I should see a badge of "1" next to the discussion link' do
+    expect_discussion_badge_to_have_counter("1")
+  end
+
+  step 'I should see a badge of "0" next to the discussion link' do
+    expect_discussion_badge_to_have_counter("0")
   end
 
   step 'I should see a discussion has started on commit diff' do
@@ -329,7 +439,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is correct"
-      click_button "Add Comment"
+      click_button "Comment"
     end
 
     page.within ".files [id^=diff]:nth-child(2) .note-body > .note-text" do
@@ -342,7 +452,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
     page.within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is wrong on here"
-      click_button "Add Comment"
+      click_button "Comment"
     end
   end
 
@@ -415,6 +525,18 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see the diverged commits count' do
+    page.within ".mr-source-target" do
+      expect(page).to have_content /([0-9]+ commits behind)/
+    end
+  end
+
+  step 'I should not see the diverged commits count' do
+    page.within ".mr-source-target" do
+      expect(page).not_to have_content /([0-9]+ commit[s]? behind)/
+    end
+  end
+
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end
@@ -426,7 +548,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   def leave_comment(message)
     page.within(".js-discussion-note-form", visible: true) do
       fill_in "note_note", with: message
-      click_button "Add Comment"
+      click_button "Comment"
     end
     page.within(".notes_holder", visible: true) do
       expect(page).to have_content message
@@ -443,5 +565,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   def have_visible_content (text)
     have_css("*", text: text, visible: true)
+  end
+
+  def expect_discussion_badge_to_have_counter(value)
+    page.within(".notes-tab .badge") do
+      page.should have_content value
+    end
   end
 end

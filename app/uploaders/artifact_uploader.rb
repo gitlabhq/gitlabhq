@@ -32,6 +32,10 @@ class ArtifactUploader < CarrierWave::Uploader::Base
     self.class.storage == CarrierWave::Storage::File
   end
 
+  def filename
+    file.try(:filename)
+  end
+
   def exists?
     file.try(:exists?)
   end

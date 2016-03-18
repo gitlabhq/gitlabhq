@@ -7,7 +7,7 @@
       %h3 Sign in
   .login-body
     - if form_based_providers.any?
-      %ul.nav.nav-tabs
+      %ul.nav-links
         - if crowd_enabled?
           %li.active
             = link_to "Crowd", "#tab-crowd", 'data-toggle' => 'tab'

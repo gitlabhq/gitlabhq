@@ -29,6 +29,10 @@
 #  target_url         :string(255)
 #  description        :string(255)
 #  artifacts_file     :text
+#  gl_project_id      :integer
+#  artifacts_metadata :text
+#  erased_by_id       :integer
+#  erased_at          :datetime
 #
 
 module Ci
@@ -37,6 +41,7 @@ module Ci
 
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
+    belongs_to :erased_by, class_name: 'User'
 
     serialize :options
 
@@ -48,11 +53,14 @@ module Ci
     scope :similar, ->(build) { where(ref: build.ref, tag: build.tag, trigger_request_id: build.trigger_request_id) }
 
     mount_uploader :artifacts_file, ArtifactUploader
+    mount_uploader :artifacts_metadata, ArtifactUploader
 
     acts_as_taggable
 
     # To prevent db load megabytes of data from trace
     default_scope -> { select(Ci::Build.columns_without_lazy) }
+
+    before_destroy { project }
 
     class << self
       def columns_without_lazy
@@ -97,21 +105,20 @@ module Ci
     end
 
     state_machine :status, initial: :pending do
-      after_transition pending: :running do |build, transition|
+      after_transition pending: :running do |build|
         build.execute_hooks
       end
 
-      after_transition any => [:success, :failed, :canceled] do |build, transition|
-        return unless build.project
+      # We use around_transition to create builds for next stage as soon as possible, before the `after_*` is executed
+      around_transition any => [:success, :failed, :canceled] do |build, block|
+        block.call
+        build.commit.create_next_builds(build) if build.commit
+      end
 
+      after_transition any => [:success, :failed, :canceled] do |build|
         build.update_coverage
-        build.commit.create_next_builds(build)
         build.execute_hooks
       end
-    end
-
-    def ignored?
-      failed? && allow_failure?
     end
 
     def retryable?
@@ -119,7 +126,15 @@ module Ci
     end
 
     def retried?
-      !self.commit.latest_builds_for_ref(self.ref).include?(self)
+      !self.commit.latest_statuses_for_ref(self.ref).include?(self)
+    end
+
+    def depends_on_builds
+      # Get builds of the same type
+      latest_builds = self.commit.builds.similar(self).latest
+
+      # Return builds from previous stages
+      latest_builds.where('stage_idx < ?', stage_idx)
     end
 
     def trace_html
@@ -145,10 +160,6 @@ module Ci
       end
     end
 
-    def project
-      commit.project
-    end
-
     def project_id
       commit.project.id
     end
@@ -169,6 +180,7 @@ module Ci
     end
 
     def update_coverage
+      return unless project
       coverage_regex = project.build_coverage_regex
       return unless coverage_regex
       coverage = extract_coverage(trace, coverage_regex)
@@ -193,6 +205,10 @@ module Ci
       end
     end
 
+    def has_trace?
+      raw_trace.present?
+    end
+
     def raw_trace
       if File.file?(path_to_trace)
         File.read(path_to_trace)
@@ -207,7 +223,7 @@ module Ci
 
     def trace
       trace = raw_trace
-      if project && trace.present?
+      if project && trace.present? && project.runners_token.present?
         trace.gsub(project.runners_token, 'xxxxxx')
       else
         trace
@@ -291,25 +307,6 @@ module Ci
       project.valid_runners_token? token
     end
 
-    def target_url
-      Gitlab::Application.routes.url_helpers.
-        namespace_project_build_url(project.namespace, project, self)
-    end
-
-    def cancel_url
-      if active?
-        Gitlab::Application.routes.url_helpers.
-          cancel_namespace_project_build_path(project.namespace, project, self)
-      end
-    end
-
-    def retry_url
-      if retryable?
-        Gitlab::Application.routes.url_helpers.
-          retry_namespace_project_build_path(project.namespace, project, self)
-      end
-    end
-
     def can_be_served?(runner)
       (tag_list - runner.tag_list).empty?
     end
@@ -318,24 +315,55 @@ module Ci
       project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
     end
 
-    def show_warning?
+    def stuck?
       pending? && !any_runners_online?
     end
 
-    def download_url
-      if artifacts_file.exists?
-        Gitlab::Application.routes.url_helpers.
-          download_namespace_project_build_path(project.namespace, project, self)
-      end
-    end
-
     def execute_hooks
+      return unless project
       build_data = Gitlab::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
     end
 
+    def artifacts?
+      artifacts_file.exists?
+    end
 
+    def artifacts_metadata?
+      artifacts? && artifacts_metadata.exists?
+    end
+
+    def artifacts_metadata_entry(path, **options)
+      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
+    end
+
+    def erase(opts = {})
+      return false unless erasable?
+
+      remove_artifacts_file!
+      remove_artifacts_metadata!
+      erase_trace!
+      update_erased!(opts[:erased_by])
+    end
+
+    def erasable?
+      complete? && (artifacts? || has_trace?)
+    end
+
+    def erased?
+      !self.erased_at.nil?
+    end
+
+    private
+
+    def erase_trace!
+      self.trace = nil
+    end
+
+    def update_erased!(user = nil)
+      self.update(erased_by: user, erased_at: Time.now)
+    end
 
     private
 

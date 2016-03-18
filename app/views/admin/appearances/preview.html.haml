@@ -1,0 +1,29 @@
+- page_title "Preview | Appearance"
+%h3.page-title
+  Appearance settings - Preview
+%hr
+
+.ui-box
+  .title
+    Sign-in page
+  %div
+    .login-page
+      .container
+        .content
+          .login-title
+            %h1= brand_title
+      %hr
+      .container
+        .content
+          .row
+            .col-sm-7
+              .brand-image
+                = brand_image
+              .brand_text
+                = brand_text
+            .col-sm-4
+              .login-box
+                %h3.page-title Sign in
+                = text_field_tag :login, nil, class: "form-control top", placeholder: "Username or Email"
+                = password_field_tag :password, nil, class: "form-control bottom", placeholder: "Password"
+                = button_tag "Sign in", class: "btn-create btn"

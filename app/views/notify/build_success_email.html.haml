@@ -4,7 +4,7 @@
 
 %h3
   Project:
-  = link_to ci_project_url(@project) do
+  = link_to namespace_project_url(@project.namespace, @project) do
     = @project.name
 
 %p

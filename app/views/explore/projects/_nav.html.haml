@@ -1,0 +1,10 @@
+%ul.nav-links
+  = nav_link(page: [trending_explore_projects_path, explore_root_path]) do
+    = link_to trending_explore_projects_path do
+      Trending
+  = nav_link(page: starred_explore_projects_path) do
+    = link_to starred_explore_projects_path do
+      Most stars
+  = nav_link(page: explore_projects_path) do
+    = link_to explore_projects_path do
+      All

@@ -32,8 +32,53 @@ describe Issue, "Issuable" do
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
-    it "matches by title" do
+    it 'returns notes with a matching title' do
+      expect(described_class.search(searchable_issue.title)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching title' do
       expect(described_class.search('able')).to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching title regardless of the casing' do
+      expect(described_class.search(searchable_issue.title.upcase)).
+        to eq([searchable_issue])
+    end
+  end
+
+  describe ".full_search" do
+    let!(:searchable_issue) do
+      create(:issue, title: "Searchable issue", description: 'kittens')
+    end
+
+    it 'returns notes with a matching title' do
+      expect(described_class.full_search(searchable_issue.title)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching title' do
+      expect(described_class.full_search('able')).to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching title regardless of the casing' do
+      expect(described_class.full_search(searchable_issue.title.upcase)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching description' do
+      expect(described_class.full_search(searchable_issue.description)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching description' do
+      expect(described_class.full_search(searchable_issue.description)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching description regardless of the casing' do
+      expect(described_class.full_search(searchable_issue.description.upcase)).
+        to eq([searchable_issue])
     end
   end
 
@@ -68,18 +113,71 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe '#subscribed?' do
+    context 'user is not a participant in the issue' do
+      before { allow(issue).to receive(:participants).with(user).and_return([]) }
+
+      it 'returns false when no subcription exists' do
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+
+      it 'returns true when a subcription exists and subscribed is true' do
+        issue.subscriptions.create(user: user, subscribed: true)
+
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns false when a subcription exists and subscribed is false' do
+        issue.subscriptions.create(user: user, subscribed: false)
+
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+    end
+
+    context 'user is a participant in the issue' do
+      before { allow(issue).to receive(:participants).with(user).and_return([user]) }
+
+      it 'returns false when no subcription exists' do
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns true when a subcription exists and subscribed is true' do
+        issue.subscriptions.create(user: user, subscribed: true)
+
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns false when a subcription exists and subscribed is false' do
+        issue.subscriptions.create(user: user, subscribed: false)
+
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+    end
+  end
+
   describe "#to_hook_data" do
-    let(:hook_data) { issue.to_hook_data(user) }
+    let(:data) { issue.to_hook_data(user) }
+    let(:project) { issue.project }
+
 
     it "returns correct hook data" do
-      expect(hook_data[:object_kind]).to eq("issue")
-      expect(hook_data[:user]).to eq(user.hook_attrs)
-      expect(hook_data[:repository][:name]).to eq(issue.project.name)
-      expect(hook_data[:repository][:url]).to eq(issue.project.url_to_repo)
-      expect(hook_data[:repository][:description]).to eq(issue.project.description)
-      expect(hook_data[:repository][:homepage]).to eq(issue.project.web_url)
-      expect(hook_data[:object_attributes]).to eq(issue.hook_attrs)
+      expect(data[:object_kind]).to eq("issue")
+      expect(data[:user]).to eq(user.hook_attrs)
+      expect(data[:object_attributes]).to eq(issue.hook_attrs)
+      expect(data).to_not have_key(:assignee)
     end
+
+    context "issue is assigned" do
+      before { issue.update_attribute(:assignee, user) }
+
+      it "returns correct hook data" do
+        expect(data[:object_attributes]['assignee_id']).to eq(user.id)
+        expect(data[:assignee]).to eq(user.hook_attrs)
+      end
+    end
+
+    include_examples 'project hook data'
+    include_examples 'deprecated repository hook data'
   end
 
   describe '#card_attributes' do

@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Banzai
   # Common methods for ReferenceFilters that support an optional cross-project
   # reference.

@@ -22,7 +22,7 @@ If the highest number stable branch is unclear please check the [GitLab Blog](ht
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [requirements.md](requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
 
 This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
@@ -76,7 +76,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 1.7.10 or higher, for example 1.7.12 or 2.0.0
+    # Make sure Git is version 2.7.4 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -89,8 +89,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.4.3.tar.gz | tar xz
-    cd git-2.4.3/
+    curl -O --progress https://www.kernel.org/pub/software/scm/git/git-2.7.4.tar.gz
+    echo '7104c4f5d948a75b499a954524cb281fe30c6649d8abe20982936f75ec1f275b  git-2.7.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.4.tar.gz
+    cd git-2.7.4/
     ./configure
     make prefix=/usr/local all
 
@@ -107,18 +108,25 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-The use of Ruby version managers such as [RVM](https://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system Ruby.
+_**Note:** The current supported Ruby version is 2.1.x. Ruby 2.2 and 2.3 are
+currently not supported._
 
-Remove the old Ruby 1.8 if present
+The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
+in production, frequently leads to hard to diagnose problems. For example,
+GitLab Shell is called from OpenSSH, and having a version manager can prevent
+pushing and pulling over SSH. Version managers are not supported and we strongly
+advise everyone to follow the instructions below to use a system Ruby.
+
+Remove the old Ruby 1.8 if present:
 
     sudo apt-get remove ruby1.8
 
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.7.tar.gz
-    echo 'e2e195a4a58133e3ad33b955c829bb536fa3c075  ruby-2.1.7.tar.gz' | shasum -c - && tar xzf ruby-2.1.7.tar.gz
-    cd ruby-2.1.7
+    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.8.tar.gz
+    echo 'c7e50159357afd87b13dc5eaf4ac486a70011149  ruby-2.1.8.tar.gz' | shasum -c - && tar xzf ruby-2.1.8.tar.gz
+    cd ruby-2.1.8
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -135,11 +143,11 @@ gitlab-workhorse we need a Go compiler. The instructions below assume you
 use 64-bit Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
-    curl -O --progress https://storage.googleapis.com/golang/go1.5.1.linux-amd64.tar.gz
-    echo '46eecd290d8803887dec718c691cc243f2175fe0  go1.5.1.linux-amd64.tar.gz' | shasum -c - && \
-      sudo tar -C /usr/local -xzf go1.5.1.linux-amd64.tar.gz
+    curl -O --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
+    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
+      sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.1.linux-amd64.tar.gz
+    rm go1.5.3.linux-amd64.tar.gz
 
 ## 4. System Users
 
@@ -154,18 +162,11 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Install the database packages
     sudo apt-get install -y postgresql postgresql-client libpq-dev
 
-    # Login to PostgreSQL
-    sudo -u postgres psql -d template1
-
     # Create a user for GitLab
-    # Do not type the 'template1=#', this is part of the prompt
-    template1=# CREATE USER git CREATEDB;
+    sudo -u postgres psql -d template1 -c "CREATE USER git CREATEDB;"
 
     # Create the GitLab production database & grant all privileges on database
-    template1=# CREATE DATABASE gitlabhq_production OWNER git;
-
-    # Quit the database session
-    template1=# \q
+    sudo -u postgres psql -d template1 -c "CREATE DATABASE gitlabhq_production OWNER git;"
 
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
@@ -175,25 +176,20 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 ## 6. Redis
 
-As of this writing, most Debian/Ubuntu distributions ship with Redis 2.2 or
-2.4. GitLab requires at least Redis 2.8.
+GitLab requires at least Redis 2.8.
 
-Ubuntu users [can use a PPA](https://launchpad.net/~chris-lea/+archive/ubuntu/redis-server)
-to install a recent version of Redis.
-
-The following instructions cover building and installing Redis from scratch:
+If you are using Debian 8 or Ubuntu 14.04 and up, then you can simply install
+Redis 2.8 with:
 
 ```sh
-# Build Redis
-wget http://download.redis.io/releases/redis-2.8.23.tar.gz
-tar xzf redis-2.8.23.tar.gz
-cd redis-2.8.23
-make
+sudo apt-get install redis-server
+```
 
-# Install Redis
-cd utils
-sudo ./install_server.sh
+If you are using Debian 7 or Ubuntu 12.04, follow the special documentation
+on [an alternate Redis installation](redis.md). Once done, follow the rest of
+the guide here.
 
+```
 # Configure redis to use sockets
 sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
 
@@ -217,7 +213,7 @@ if [ -d /etc/tmpfiles.d ]; then
 fi
 
 # Activate the changes to redis.conf
-sudo service redis_6379 start
+sudo service redis-server restart
 
 # Add git to the redis group
 sudo usermod -aG redis git
@@ -231,9 +227,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-3-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-6-stable gitlab
 
-**Note:** You can change `8-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-6-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -260,8 +256,12 @@ sudo usermod -aG redis git
     sudo chmod -R u+rwX tmp/pids/
     sudo chmod -R u+rwX tmp/sockets/
 
-    # Make sure GitLab can write to the public/uploads/ directory
-    sudo chmod -R u+rwX  public/uploads
+    # Create the public/uploads/ directory
+    sudo -u git -H mkdir public/uploads/
+
+    # Make sure only the GitLab user has access to the public/uploads/ directory
+    # now that files in public/uploads are served by gitlab-workhorse
+    sudo chmod 0700 public/uploads
 
     # Change the permissions of the directory where CI build traces are stored
     sudo chmod -R u+rwX builds/
@@ -348,7 +348,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout 0.5.1
+    sudo -u git -H git checkout 0.6.5
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
@@ -363,9 +363,9 @@ GitLab Shell is an SSH access and repository management software developed speci
 
     # When done you see 'Administrator account created:'
 
-**Note:** You can set the Administrator/root password by supplying it in environmental variable `GITLAB_ROOT_PASSWORD` as seen below. If you don't set the password (and it is set to the default one) please wait with exposing GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login you'll be forced to change the default password.
+**Note:** You can set the Administrator/root password and e-mail by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL` respectively, as seen below. If you don't set the password (and it is set to the default one) please wait with exposing GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login you'll be forced to change the default password.
 
-    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail
 
 ### Secure secrets.yml
 
@@ -461,18 +461,26 @@ NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit proj
 
 ### Initial Login
 
-Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created a default admin account for you. You can use it to log in:
+Visit YOUR_SERVER in your web browser for your first GitLab login.
 
-    root
-    5iveL!fe
+If you didn't [provide a root password during setup](#initialize-database-and-activate-advanced-features),
+you'll be redirected to a password reset screen to provide the password for the
+initial administrator account. Enter your desired password and you'll be
+redirected back to the login screen.
 
-**Important Note:** On login you'll be prompted to change the password.
+The default account's username is **root**. Provide the password you created
+earlier and login. After login you can change the username if you wish.
 
 **Enjoy!**
 
 You can use `sudo service gitlab start` and `sudo service gitlab stop` to start and stop GitLab.
 
 ## Advanced Setup Tips
+
+### Relative URL support
+
+See the [Relative URL documentation](relative_url.md) for more information on
+how to configure GitLab with a relative URL.
 
 ### Using HTTPS
 
@@ -552,6 +560,10 @@ Apart from the always supported markdown style there are other rich text files t
 
 If you see this message when attempting to clone a repository hosted by GitLab,
 this is likely due to an outdated Nginx or Apache configuration, or a missing or
-misconfigured `gitlab-git-http-server` instance. Double-check that you've
-[installed Go](#3-go), [installed gitlab-git-http-server](#install-gitlab-git-http-server),
+misconfigured gitlab-workhorse instance. Double-check that you've
+[installed Go](#3-go), [installed gitlab-workhorse](#install-gitlab-workhorse),
 and correctly [configured Nginx](#site-configuration).
+
+[RVM]: https://rvm.io/ "RVM Homepage"
+[rbenv]: https://github.com/sstephenson/rbenv "rbenv on GitHub"
+[chruby]: https://github.com/postmodern/chruby "chruby on GitHub"

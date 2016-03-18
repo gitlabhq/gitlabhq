@@ -11,7 +11,9 @@ class Projects::RepositoriesController < Projects::ApplicationController
   end
 
   def archive
-    render json: ArchiveRepositoryService.new(@project, params[:ref], params[:format]).execute
+    RepositoryArchiveCacheWorker.perform_async
+    headers.store(*Gitlab::Workhorse.send_git_archive(@project, params[:ref], params[:format]))
+    head :ok
   rescue => ex
     logger.error("#{self.class.name}: #{ex}")
     return git_not_found!

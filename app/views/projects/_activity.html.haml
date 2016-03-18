@@ -1,6 +1,6 @@
-.gray-content-block.activity-filter-block
+.nav-block.activity-filter-block
   - if current_user
-    .pull-right
+    .controls
       = link_to namespace_project_path(@project.namespace, @project, format: :atom, private_token: current_user.private_token), title: "Feed", class: 'btn rss-btn' do
         %i.fa.fa-rss
 

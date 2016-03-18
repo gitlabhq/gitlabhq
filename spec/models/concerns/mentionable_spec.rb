@@ -48,7 +48,8 @@ describe Issue, "Mentionable" do
 
   describe '#create_new_cross_references!' do
     let(:project) { create(:project) }
-    let(:issues)  { create_list(:issue, 2, project: project) }
+    let(:author)  { create(:author) }
+    let(:issues)  { create_list(:issue, 2, project: project, author: author) }
 
     context 'before changes are persisted' do
       it 'ignores pre-existing references' do
@@ -91,7 +92,7 @@ describe Issue, "Mentionable" do
     end
 
     def create_issue(description:)
-      create(:issue, project: project, description: description)
+      create(:issue, project: project, description: description, author: author)
     end
   end
 end

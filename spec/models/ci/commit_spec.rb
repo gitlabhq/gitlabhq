@@ -13,7 +13,7 @@
 #  tag           :boolean          default(FALSE)
 #  yaml_errors   :text
 #  committed_at  :datetime
-#  project_id :integer
+#  gl_project_id :integer
 #
 
 require 'spec_helper'
@@ -31,50 +31,6 @@ describe Ci::Commit, models: true do
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
-
-  describe :ordered do
-    let(:project) { FactoryGirl.create :empty_project }
-
-    it 'returns ordered list of commits' do
-      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: 2.hours.ago, project: project
-      expect(project.ci_commits.ordered).to eq([commit2, commit1])
-    end
-
-    it 'returns commits ordered by committed_at and id, with nulls last' do
-      commit1 = FactoryGirl.create :ci_commit, committed_at: 1.hour.ago, project: project
-      commit2 = FactoryGirl.create :ci_commit, committed_at: nil, project: project
-      commit3 = FactoryGirl.create :ci_commit, committed_at: 2.hours.ago, project: project
-      commit4 = FactoryGirl.create :ci_commit, committed_at: nil, project: project
-      expect(project.ci_commits.ordered).to eq([commit2, commit4, commit3, commit1])
-    end
-  end
-
-  describe :last_build do
-    subject { commit.last_build }
-    before do
-      @first = FactoryGirl.create :ci_build, commit: commit, created_at: Date.yesterday
-      @second = FactoryGirl.create :ci_build, commit: commit
-    end
-
-    it { is_expected.to be_a(Ci::Build) }
-    it('returns with the most recently created build') { is_expected.to eq(@second) }
-  end
-
-  describe :retry do
-    before do
-      @first = FactoryGirl.create :ci_build, commit: commit, created_at: Date.yesterday
-      @second = FactoryGirl.create :ci_build, commit: commit
-    end
-
-    it "creates only a new build" do
-      expect(commit.builds.count(:all)).to eq 2
-      expect(commit.statuses.count(:all)).to eq 2
-      commit.retry
-      expect(commit.builds.count(:all)).to eq 3
-      expect(commit.statuses.count(:all)).to eq 3
-    end
-  end
 
   describe :valid_commit_sha do
     context 'commit.sha can not start with 00000000' do
@@ -244,6 +200,35 @@ describe Ci::Commit, models: true do
           new_commit = Ci::Commit.find_by_id(commit.id)
           expect(new_commit.status).to eq('pending')
         end
+      end
+    end
+
+
+    context 'custom stage with first job allowed to fail' do
+      let(:yaml) do
+        {
+          stages: ['clean', 'test'],
+          clean_job: {
+            stage: 'clean',
+            allow_failure: true,
+            script: 'BUILD',
+          },
+          test_job: {
+            stage: 'test',
+            script: 'TEST',
+          },
+        }
+      end
+
+      before do
+        stub_ci_commit_yaml_file(YAML.dump(yaml))
+        create_builds
+      end
+
+      it 'properly schedules builds' do
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending')
+        commit.builds.running_or_pending.each(&:drop)
+        expect(commit.builds.pluck(:status)).to contain_exactly('pending', 'failed')
       end
     end
 

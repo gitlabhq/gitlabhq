@@ -1,7 +1,7 @@
 - if @search_results.empty?
   = render partial: "search/results/empty"
 - else
-  %p.light
+  .gray-content-block
     Search results for
     %code
       = @search_term
@@ -18,6 +18,8 @@
           = render 'shared/projects/list', projects: @objects
       - else
         = render partial: "search/results/#{@scope.singularize}", collection: @objects
+
+    - if @scope != 'projects'
       = paginate @objects, theme: 'gitlab'
 
 :javascript

@@ -2,17 +2,14 @@
 = render "header_title"
 
 
-.project-issuable-filter
-  .controls
-    - if can?(current_user, :admin_milestone, @project)
-      = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: "pull-right btn btn-new", title: "New Milestone" do
-        %i.fa.fa-plus
-        New Milestone
-
+.top-area
   = render 'shared/milestones_filter'
 
-.gray-content-block
-  Milestone allows you to group issues and set due date for it
+  .nav-controls
+    - if can?(current_user, :admin_milestone, @project)
+      = link_to new_namespace_project_milestone_path(@project.namespace, @project), class: "btn btn-new", title: "New Milestone" do
+        = icon('plus')
+        New Milestone
 
 .milestones
   %ul.content-list

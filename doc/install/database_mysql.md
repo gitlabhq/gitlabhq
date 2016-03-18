@@ -8,7 +8,7 @@ We do not recommend using MySQL due to various issues. For example, case [(in)se
 
     # Install the database packages
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
-    
+
     # Ensure you have MySQL version 5.5.14 or later
     mysql --version
 
@@ -31,7 +31,7 @@ We do not recommend using MySQL due to various issues. For example, case [(in)se
     # Ensure you can use the InnoDB engine which is necessary to support long indexes
     # If this fails, check your MySQL config files (e.g. `/etc/mysql/*.cnf`, `/etc/mysql/conf.d/*`) for the setting "innodb = off"
     mysql> SET storage_engine=INNODB;
-    
+
     # Create the GitLab production database
     mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
@@ -52,3 +52,25 @@ We do not recommend using MySQL due to various issues. For example, case [(in)se
     mysql> \q
 
     # You are done installing the database and can go back to the rest of the installation.
+
+## MySQL strings limits
+
+After installation or upgrade, remember to run the `add_limits_mysql` Rake task:
+
+```
+bundle exec rake add_limits_mysql
+```
+
+The `text` type in MySQL has a different size limit than the `text` type in
+PostgreSQL. In MySQL `text` columns are limited to ~65kB, whereas in PostgreSQL
+`text` columns are limited up to ~1GB!
+
+The `add_limits_mysql` Rake task converts some important `text` columns in the
+GitLab database to `longtext` columns, which can persist values of up to 4GB
+(sometimes less if the value contains multibyte characters).
+
+Details can be found in the [PostgreSQL][postgres-text-type] and
+[MySQL][mysql-text-types] manuals.
+
+[postgres-text-type]: http://www.postgresql.org/docs/9.1/static/datatype-character.html
+[mysql-text-types]: http://dev.mysql.com/doc/refman/5.7/en/string-type-overview.html

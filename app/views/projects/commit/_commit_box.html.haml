@@ -16,6 +16,8 @@
     = link_to namespace_project_tree_path(@project.namespace, @project, @commit), class: "btn btn-grouped" do
       = icon('files-o')
       Browse Files
+    - unless @commit.has_been_reverted?(current_user)
+      = revert_commit_link(@commit, namespace_project_commit_path(@project.namespace, @project, @commit.id))
   %div
 
 %p
@@ -50,7 +52,7 @@
 .commit-info-row.branches
   %i.fa.fa-spinner.fa-spin
 
-.commit-box.gray-content-block.middle-block
+.commit-box.content-block
   %h3.commit-title
     = markdown escape_once(@commit.title), pipeline: :single_line
   - if @commit.description.present?

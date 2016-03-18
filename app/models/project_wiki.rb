@@ -2,7 +2,7 @@ class ProjectWiki
   include Gitlab::ShellAdapter
 
   MARKUPS = {
-    'Markdown' => :md,
+    'Markdown' => :markdown,
     'RDoc'     => :rdoc,
     'AsciiDoc' => :asciidoc
   } unless defined?(MARKUPS)
@@ -12,6 +12,7 @@ class ProjectWiki
   # Returns a string describing what went wrong after
   # an operation fails.
   attr_reader :error_message
+  attr_reader :project
 
   def initialize(project, user = nil)
     @project = project
@@ -38,11 +39,15 @@ class ProjectWiki
     [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
+  def wiki_base_path
+    ["/", @project.path_with_namespace, "/wikis"].join('')
+  end
+
   # Returns the Gollum::Wiki object.
   def wiki
     @wiki ||= begin
       Gollum::Wiki.new(path_to_repo)
-    rescue Gollum::NoSuchPathError
+    rescue Rugged::OSError
       create_repo!
     end
   end
@@ -85,7 +90,7 @@ class ProjectWiki
   def create_page(title, content, format = :markdown, message = nil)
     commit = commit_details(:created, message, title)
 
-    wiki.write_page(title, format, content, commit)
+    wiki.write_page(title, format.to_sym, content, commit)
 
     update_project_activity
   rescue Gollum::DuplicatePageError => e
@@ -96,7 +101,7 @@ class ProjectWiki
   def update_page(page, content, format = :markdown, message = nil)
     commit = commit_details(:updated, message, page.title)
 
-    wiki.update_page(page, page.name, format, content, commit)
+    wiki.update_page(page, page.name, format.to_sym, content, commit)
 
     update_project_activity
   end
@@ -118,7 +123,7 @@ class ProjectWiki
   end
 
   def repository
-    Repository.new(path_with_namespace, default_branch, @project)
+    Repository.new(path_with_namespace, @project)
   end
 
   def default_branch

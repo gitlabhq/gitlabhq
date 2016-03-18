@@ -12,20 +12,43 @@
     height: 100%;
     transition-duration: .3s;
   }
+
+  .gitlab-text-container-link {
+    z-index: 1;
+    position: absolute;
+    left: 0;
+  }
+
+  #logo {
+    z-index: 2;
+    position: absolute;
+    width: 58px;
+    cursor: pointer;
+  }
+
+  &.right-sidebar-expanded {
+    /* Extra small devices (phones, less than 768px) */
+    /* No media query since this is the default in Bootstrap */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
+    @media (min-width: $screen-sm-min) {
+      padding-right: $gutter_width;
+    }
+
+  }
 }
 
 .sidebar-wrapper {
-  z-index: 99;
+  z-index: 999;
   background: $background-color;
 }
 
 .content-wrapper {
   width: 100%;
-  padding: 20px;
 
   .container-fluid {
-    background: #FFF;
-    padding: $gl-padding;
+    background: #fff;
+    padding: 0 $gl-padding;
 
     &.container-blank {
       background: none;
@@ -71,7 +94,7 @@
           width: 158px;
           float: left;
           margin: 0;
-          margin-left: 14px;
+          margin-left: 50px;
           font-size: 19px;
           line-height: 41px;
           font-weight: normal;
@@ -80,7 +103,7 @@
     }
 
     &:hover {
-      background-color: #EEE;
+      background-color: #eee;
     }
   }
 
@@ -105,7 +128,7 @@
 .tanuki-shape {
   transition: all 0.8s;
 
-  &:hover {
+  &:hover, &.highlight {
     fill: rgb(255, 255, 255);
     transition: all 0.1s;
   }
@@ -120,7 +143,7 @@
   overflow: hidden;
 
   &.navbar-collapse {
-    padding: 0px !important;
+    padding: 0 !important;
   }
 
   li {
@@ -159,7 +182,7 @@
       .count {
         float: right;
         background: #eee;
-        padding: 0px 8px;
+        padding: 0 8px;
         @include border-radius(6px);
       }
 
@@ -171,8 +194,8 @@
 }
 
 .sidebar-subnav {
-  margin-left: 0px;
-  padding-left: 0px;
+  margin-left: 0;
+  padding-left: 0;
 
   li {
     list-style: none;
@@ -180,7 +203,20 @@
 }
 
 @mixin expanded-sidebar {
-  padding-left: $sidebar_width;
+  padding-left: $sidebar_collapsed_width;
+
+  @media (min-width: $screen-md-min) {
+    padding-left: $sidebar_width;
+  }
+
+  &.right-sidebar-collapsed {
+    /* Extra small devices (phones, less than 768px) */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
+    @media (min-width: $screen-sm-min) {
+      padding-right: $sidebar_collapsed_width;
+    }
+  }
 
   .sidebar-wrapper {
     width: $sidebar_width;
@@ -203,6 +239,15 @@
 
 @mixin collapsed-sidebar {
   padding-left: $sidebar_collapsed_width;
+
+  &.right-sidebar-collapsed {
+    /* Extra small devices (phones, less than 768px) */
+    padding-right: 0;
+    /* Small devices (tablets, 768px and up) */
+    @media (min-width: $screen-sm-min) {
+      padding-right: $sidebar_collapsed_width;
+    }
+  }
 
   .sidebar-wrapper {
     width: $sidebar_collapsed_width;
@@ -267,26 +312,16 @@
   background: #f2f6f7;
 }
 
-@media (max-width: $screen-md-max) {
-  .page-sidebar-collapsed {
+.page-sidebar-collapsed {
+  /* Extra small devices (phones, less than 768px) */
+  @include collapsed-sidebar;
+  padding-right: 0;
+  /* Small devices (tablets, 768px and up) */
+  @media (min-width: $screen-sm-min) {
     @include collapsed-sidebar;
-  }
-
-  .page-sidebar-expanded {
-    @include collapsed-sidebar;
-  }
-
-  .collapse-nav {
-    display: none;
   }
 }
 
-@media(min-width: $screen-md-max) {
-  .page-sidebar-collapsed {
-    @include collapsed-sidebar;
-  }
-
-  .page-sidebar-expanded {
-    @include expanded-sidebar;
-  }
+.page-sidebar-expanded {
+  @include expanded-sidebar;
 }

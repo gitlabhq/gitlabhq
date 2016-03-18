@@ -1,21 +1,10 @@
 module BlobHelper
-  def highlight(blob_name, blob_content, nowrap: false, continue: false)
-    @formatter ||= Rouge::Formatters::HTMLGitlab.new(
-      nowrap: nowrap,
-      cssclass: 'code highlight',
-      lineanchors: true,
-      lineanchorsid: 'LC'
-    )
+  def highlighter(blob_name, blob_content, nowrap: false)
+    Gitlab::Highlight.new(blob_name, blob_content, nowrap: nowrap)
+  end
 
-    begin
-      @lexer ||= Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
-      result = @formatter.format(@lexer.lex(blob_content, continue: continue)).html_safe
-    rescue
-      @lexer = Rouge::Lexers::PlainText
-      result = @formatter.format(@lexer.lex(blob_content)).html_safe
-    end
-
-    result
+  def highlight(blob_name, blob_content, nowrap: false)
+    Gitlab::Highlight.highlight(blob_name, blob_content, nowrap: nowrap)
   end
 
   def no_highlight_files
@@ -37,20 +26,19 @@ module BlobHelper
                                      tree_join(ref, path),
                                      link_opts)
 
-    if !on_top_of_branch?
+    if !on_top_of_branch?(project, ref)
       button_tag "Edit", class: "btn btn-default disabled has_tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
-    elsif can_edit_blob?(blob)
-      link_to "Edit", edit_path, class: 'btn btn-small'
+    elsif can_edit_blob?(blob, project, ref)
+      link_to "Edit", edit_path, class: 'btn'
     elsif can?(current_user, :fork_project, project)
       continue_params = {
         to:     edit_path,
         notice: edit_in_new_fork_notice,
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_fork_path(project.namespace, project, namespace_key:  current_user.namespace.id,
-                                                                          continue:       continue_params)
+      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
 
-      link_to "Edit", fork_path, class: 'btn btn-small', method: :post
+      link_to "Edit", fork_path, class: 'btn', method: :post
     end
   end
 
@@ -61,11 +49,11 @@ module BlobHelper
 
     return unless blob
 
-    if !on_top_of_branch?
+    if !on_top_of_branch?(project, ref)
       button_tag label, class: "btn btn-#{btn_class} disabled has_tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
     elsif blob.lfs_pointer?
       button_tag label, class: "btn btn-#{btn_class} disabled has_tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
-    elsif can_edit_blob?(blob)
+    elsif can_edit_blob?(blob, project, ref)
       button_tag label, class: "btn btn-#{btn_class}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
       continue_params = {
@@ -73,8 +61,7 @@ module BlobHelper
         notice: edit_in_new_fork_notice + " Try to #{action} this file again.",
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_fork_path(project.namespace, project, namespace_key:  current_user.namespace.id,
-                                                                          continue:       continue_params)
+      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
 
       link_to label, fork_path, class: "btn btn-#{btn_class}", method: :post
     end
@@ -138,5 +125,52 @@ module BlobHelper
     else
       blob.size
     end
+  end
+
+  # SVGs can contain malicious JavaScript; only include whitelisted
+  # elements and attributes. Note that this whitelist is by no means complete
+  # and may omit some elements.
+  def sanitize_svg(blob)
+    blob.data = Loofah.scrub_fragment(blob.data, :strip).to_xml
+    blob
+  end
+
+  # If we blindly set the 'real' content type when serving a Git blob we
+  # are enabling XSS attacks. An attacker could upload e.g. a Javascript
+  # file to a Git repository, trick the browser of a victim into
+  # downloading the blob, and then the 'application/javascript' content
+  # type would tell the browser to execute the attacker's Javascript. By
+  # overriding the content type and setting it to 'text/plain' (in the
+  # example of Javascript) we tell the browser of the victim not to
+  # execute untrusted data.
+  def safe_content_type(blob)
+    if blob.text?
+      'text/plain; charset=utf-8'
+    elsif blob.image?
+      blob.content_type
+    else
+      'application/octet-stream'
+    end
+  end
+
+  def cached_blob?
+    stale = stale?(etag: @blob.id) # The #stale? method sets cache headers.
+
+    # Because we are opionated we set the cache headers ourselves.
+    response.cache_control[:public] = @project.public?
+
+    if @ref && @commit && @ref == @commit.id
+      # This is a link to a commit by its commit SHA. That means that the blob
+      # is immutable. The only reason to invalidate the cache is if the commit
+      # was deleted or if the user lost access to the repository.
+      response.cache_control[:max_age] = Blob::CACHE_TIME_IMMUTABLE
+    else
+      # A branch or tag points at this blob. That means that the expected blob
+      # value may change over time.
+      response.cache_control[:max_age] = Blob::CACHE_TIME
+    end
+
+    response.etag = @blob.id
+    !stale
   end
 end

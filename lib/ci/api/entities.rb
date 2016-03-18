@@ -16,10 +16,19 @@ module Ci
       end
 
       class Build < Grape::Entity
-        expose :id, :commands, :ref, :sha, :status, :project_id, :repo_url,
-          :before_sha, :allow_git_fetch, :project_name
-
+        expose :id, :ref, :tag, :sha, :status
         expose :name, :token, :stage
+        expose :project_id
+        expose :project_name
+        expose :artifacts_file, using: ArtifactFile, if: lambda { |build, opts| build.artifacts? }
+      end
+
+      class BuildDetails < Build
+        expose :commands
+        expose :repo_url
+        expose :before_sha
+        expose :allow_git_fetch
+        expose :token
 
         expose :options do |model|
           model.options
@@ -30,7 +39,7 @@ module Ci
         end
 
         expose :variables
-        expose :artifacts_file, using: ArtifactFile
+        expose :depends_on_builds, using: Build
       end
 
       class Runner < Grape::Entity

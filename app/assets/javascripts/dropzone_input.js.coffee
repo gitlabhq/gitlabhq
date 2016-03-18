@@ -65,8 +65,7 @@ class @DropzoneInput
         return
 
       success: (header, response) ->
-        child = $(dropzone[0]).children("textarea")
-        $(child).val $(child).val() + formatLink(response.link) + "\n"
+        pasteText response.link.markdown
         return
 
       error: (temp, errorMessage) ->
@@ -99,11 +98,6 @@ class @DropzoneInput
 
     child = $(dropzone[0]).children("textarea")
 
-    formatLink = (link) ->
-      text = "[#{link.alt}](#{link.url})"
-      text = "!#{text}" if link.is_image
-      text
-
     handlePaste = (event) ->
       pasteEvent = event.originalEvent
       if pasteEvent.clipboardData and pasteEvent.clipboardData.items
@@ -133,6 +127,7 @@ class @DropzoneInput
       beforeSelection = $(child).val().substring 0, caretStart
       afterSelection = $(child).val().substring caretEnd, textEnd
       $(child).val beforeSelection + text + afterSelection
+      child.get(0).setSelectionRange caretStart + text.length, caretEnd + text.length
       form_textarea.trigger "input"
 
     getFilename = (e) ->
@@ -162,7 +157,7 @@ class @DropzoneInput
           closeAlertMessage()
 
         success: (e, textStatus, response) ->
-          insertToTextArea(filename, formatLink(response.responseJSON.link))
+          insertToTextArea(filename, response.responseJSON.link.markdown)
 
         error: (response) ->
           showError(response.responseJSON.message)
@@ -202,8 +197,3 @@ class @DropzoneInput
       e.preventDefault()
       $(@).closest('.gfm-form').find('.div-dropzone').click()
       return
-
-  formatLink: (link) ->
-    text = "[#{link.alt}](#{link.url})"
-    text = "!#{text}" if link.is_image
-    text

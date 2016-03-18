@@ -41,7 +41,20 @@ describe Gitlab::OAuth::User, lib: true do
 
     describe 'signup' do
       shared_examples "to verify compliance with allow_single_sign_on" do
-        context "with allow_single_sign_on enabled" do
+        context "with new allow_single_sign_on enabled syntax" do
+          before { stub_omniauth_config(allow_single_sign_on: ['twitter']) }
+
+          it "creates a user from Omniauth" do
+            oauth_user.save
+
+            expect(gl_user).to be_valid
+            identity = gl_user.identities.first
+            expect(identity.extern_uid).to eql uid
+            expect(identity.provider).to eql 'twitter'
+          end
+        end
+
+        context "with old allow_single_sign_on enabled syntax" do
           before { stub_omniauth_config(allow_single_sign_on: true) }
 
           it "creates a user from Omniauth" do
@@ -54,7 +67,14 @@ describe Gitlab::OAuth::User, lib: true do
           end
         end
 
-        context "with allow_single_sign_on disabled (Default)" do
+        context "with new allow_single_sign_on disabled syntax" do
+          before { stub_omniauth_config(allow_single_sign_on: []) }
+          it "throws an error" do
+            expect{ oauth_user.save }.to raise_error StandardError
+          end
+        end
+
+        context "with old allow_single_sign_on disabled (Default)" do
           before { stub_omniauth_config(allow_single_sign_on: false) }
           it "throws an error" do
             expect{ oauth_user.save }.to raise_error StandardError
@@ -135,7 +155,7 @@ describe Gitlab::OAuth::User, lib: true do
 
     describe 'blocking' do
       let(:provider) { 'twitter' }
-      before { stub_omniauth_config(allow_single_sign_on: true) }
+      before { stub_omniauth_config(allow_single_sign_on: ['twitter']) }
 
       context 'signup with omniauth only' do
         context 'dont block on create' do

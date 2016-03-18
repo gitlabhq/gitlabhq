@@ -1,7 +1,7 @@
 - page_title @project.name_with_namespace, "Projects"
 %h3.page-title
   Project: #{@project.name_with_namespace}
-  = link_to edit_project_path(@project), class: "btn pull-right" do
+  = link_to edit_project_path(@project), class: "btn btn-nr pull-right" do
     %i.fa.fa-pencil-square-o
     Edit
 %hr
@@ -38,7 +38,7 @@
         %li
           %span.light Created on:
           %strong
-            = @project.created_at.stamp("March 1, 1999")
+            = @project.created_at.to_s(:medium)
 
         %li
           %span.light http:

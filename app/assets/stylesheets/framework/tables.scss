@@ -1,13 +1,11 @@
 .table-holder {
-  margin: -$gl-padding;
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 table {
   &.table {
     margin-bottom: $gl-padding;
-    
+
     .dropdown-menu a {
       text-decoration: none;
     }
@@ -32,14 +30,15 @@ table {
       }
 
       th {
+        background-color: $background-color;
         font-weight: normal;
         font-size: 15px;
-        border-bottom: 1px solid $border-color !important;
+        border-bottom: 1px solid $border-color;
       }
 
       td {
-        border-color: $table-border-color !important;
-        border-bottom: 1px solid;
+        border-color: $table-border-color;
+        border-bottom: 1px solid $border-color;
       }
     }
   }

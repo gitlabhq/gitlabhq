@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Banzai
   module Pipeline
     module CombinedPipeline
@@ -12,7 +10,7 @@ module Banzai
           end
 
           def self.filters
-            pipelines.flat_map(&:filters)
+            FilterArray.new(pipelines.flat_map(&:filters))
           end
 
           def self.transform_context(context)

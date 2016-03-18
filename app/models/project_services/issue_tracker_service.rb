@@ -16,18 +16,17 @@
 #  merge_requests_events :boolean          default(TRUE)
 #  tag_push_events       :boolean          default(TRUE)
 #  note_events           :boolean          default(TRUE), not null
+#  build_events          :boolean          default(FALSE), not null
 #
 
 class IssueTrackerService < Service
 
   validates :project_url, :issues_url, :new_issue_url, presence: true, if: :activated?
 
-  def category
-    :issue_tracker
-  end
+  default_value_for :category, 'issue_tracker'
 
   def default?
-    false
+    default
   end
 
   def issue_url(iid)

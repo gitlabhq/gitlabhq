@@ -1,40 +1,71 @@
 # System hooks
 
-All methods require admin authorization.
+All methods require administrator authorization.
 
-The URL endpoint of the system hooks can be configured in [the admin area under hooks](/admin/hooks).
+The URL endpoint of the system hooks can also be configured using the UI in
+the admin area under **Hooks** (`/admin/hooks`).
+
+Read more about [system hooks](../system_hooks/system_hooks.md).
 
 ## List system hooks
 
-Get list of system hooks
+Get a list of all system hooks.
+
+---
 
 ```
 GET /hooks
 ```
 
-Parameters:
+Example request:
 
-- **none**
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks
+```
+
+Example response:
 
 ```json
 [
-  {
-    "id": 3,
-    "url": "http://example.com/hook",
-    "created_at": "2013-10-02T10:15:31Z"
-  }
+   {
+      "id" : 1,
+      "url" : "https://gitlab.example.com/hook",
+      "created_at" : "2015-11-04T20:07:35.874Z"
+   }
 ]
 ```
 
-## Add new system hook hook
+## Add new system hook
+
+Add a new system hook.
+
+---
 
 ```
 POST /hooks
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `url` | string | yes | The hook URL |
 
-- `url` (required) - The hook URL
+Example request:
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/hooks?url=https://gitlab.example.com/hook"
+```
+
+Example response:
+
+```json
+[
+   {
+      "id" : 2,
+      "url" : "https://gitlab.example.com/hook",
+      "created_at" : "2015-11-04T20:07:35.874Z"
+   }
+]
+```
 
 ## Test system hook
 
@@ -42,29 +73,68 @@ Parameters:
 GET /hooks/:id
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of the hook |
 
-- `id` (required) - The ID of hook
+Example request:
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
+```
+
+Example response:
 
 ```json
 {
-  "event_name": "project_create",
-  "name": "Ruby",
-  "path": "ruby",
-  "project_id": 1,
-  "owner_name": "Someone",
-  "owner_email": "example@gitlabhq.com"
+   "project_id" : 1,
+   "owner_email" : "example@gitlabhq.com",
+   "owner_name" : "Someone",
+   "name" : "Ruby",
+   "path" : "ruby",
+   "event_name" : "project_create"
 }
 ```
 
 ## Delete system hook
 
-Deletes a system hook. This is an idempotent API function and returns `200 OK` even if the hook is not available. If the hook is deleted it is also returned as JSON.
+Deletes a system hook. This is an idempotent API function and returns `200 OK`
+even if the hook is not available.
+
+If the hook is deleted, a JSON object is returned. An error is raised if the
+hook is not found.
+
+---
 
 ```
 DELETE /hooks/:id
 ```
 
-Parameters:
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of the hook |
 
-- `id` (required) - The ID of hook
+Example request:
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/hooks/2
+```
+
+Example response:
+
+```json
+{
+   "note_events" : false,
+   "project_id" : null,
+   "enable_ssl_verification" : true,
+   "url" : "https://gitlab.example.com/hook",
+   "updated_at" : "2015-11-04T20:12:15.931Z",
+   "issues_events" : false,
+   "merge_requests_events" : false,
+   "created_at" : "2015-11-04T20:12:15.931Z",
+   "service_id" : null,
+   "id" : 2,
+   "push_events" : true,
+   "tag_push_events" : false
+}
+```

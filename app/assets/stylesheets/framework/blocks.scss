@@ -18,12 +18,12 @@
   line-height: 36px;
 }
 
-.content-block,
 .gray-content-block {
-  margin: -$gl-padding;
+  margin-top: 0;
+  margin-bottom: -$gl-padding;
   background-color: $background-color;
   padding: $gl-padding;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   border-top: 1px solid $border-color;
   border-bottom: 1px solid $border-color;
   color: $gl-gray;
@@ -66,21 +66,27 @@
   }
 
   .oneline {
-    line-height: 42px;
+    line-height: 35px;
   }
 
   > p:last-child {
     margin-bottom: 0;
+  }
+
+  .block-controls {
+    float: right;
+
+    .control {
+      float: left;
+      margin-left: 10px;
+    }
   }
 }
 
 .cover-block {
   text-align: center;
   background: $background-color;
-  margin: -$gl-padding;
-  margin-bottom: 0;
-  padding: 44px $gl-padding;
-  border-bottom: 1px solid $border-color;
+  padding-top: 44px;
   position: relative;
 
   .avatar-holder {
@@ -110,6 +116,10 @@
   .cover-desc {
     padding: 0 $gl-padding 3px;
     color: $gl-text-color;
+
+    &.username:last-child {
+      padding-bottom: $gl-padding;
+    }
   }
 
   .cover-controls {
@@ -126,4 +136,28 @@
 
 .block-connector {
   margin-top: -1px;
+}
+
+.nav-block {
+  .controls {
+    float: right;
+    margin-top: 11px;
+  }
+}
+
+.content-block {
+  padding: $gl-padding 0;
+  border-bottom: 1px solid $border-color;
+
+  &.oneline-block {
+    line-height: 36px;
+  }
+
+  > .controls {
+    float: right;
+  }
+}
+
+.content-block-small {
+  padding: 10px 0;
 }

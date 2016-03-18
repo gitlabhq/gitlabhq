@@ -5,32 +5,32 @@
 # the compiled file.
 #
 #= require jquery
-#= require jquery-ui
+#= require jquery-ui/autocomplete
+#= require jquery-ui/datepicker
+#= require jquery-ui/effect-highlight
+#= require jquery-ui/sortable
 #= require jquery_ujs
 #= require jquery.cookie
 #= require jquery.endless-scroll
 #= require jquery.highlight
-#= require jquery.history
 #= require jquery.waitforimages
 #= require jquery.atwho
 #= require jquery.scrollTo
-#= require jquery.blockUI
 #= require jquery.turbolinks
+#= require d3
+#= require cal-heatmap
 #= require turbolinks
 #= require autosave
 #= require bootstrap
 #= require select2
 #= require raphael
-#= require g.raphael-min
-#= require g.bar-min
-#= require chart-lib.min
+#= require g.raphael
+#= require g.bar
+#= require Chart
 #= require branch-graph
 #= require ace/ace
 #= require ace/ext-searchbox
-#= require d3
 #= require underscore
-#= require nprogress
-#= require nprogress-turbolinks
 #= require dropzone
 #= require mousetrap
 #= require mousetrap/pause
@@ -39,9 +39,9 @@
 #= require shortcuts_dashboard_navigation
 #= require shortcuts_issuable
 #= require shortcuts_network
-#= require cal-heatmap
-#= require jquery.nicescroll.min
+#= require jquery.nicescroll
 #= require_tree .
+#= require fuzzaldrin-plus
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
@@ -107,6 +107,8 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
+  bootstrapBreakpoint = bp.getBreakpointSize()
+
   $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
 
   # Click a .js-select-on-focus field, select the contents
@@ -204,4 +206,72 @@ $ ->
     form = btn.closest("form")
     new ConfirmDangerModal(form, text)
 
+  $('input[type="search"]').each ->
+    $this = $(this)
+    $this.attr 'value', $this.val()
+    return
+
+  $(document)
+    .off 'keyup', 'input[type="search"]'
+    .on 'keyup', 'input[type="search"]' , (e) ->
+      $this = $(this)
+      $this.attr 'value', $this.val()
+
+  $(document)
+    .off 'breakpoint:change'
+    .on 'breakpoint:change', (e, breakpoint) ->
+      if breakpoint is 'sm' or breakpoint is 'xs'
+        $gutterIcon = $('.js-sidebar-toggle').find('i')
+        if $gutterIcon.hasClass('fa-angle-double-right')
+          $gutterIcon.closest('a').trigger('click')
+
+  $(document)
+    .off 'click', '.js-sidebar-toggle'
+    .on 'click', '.js-sidebar-toggle', (e, triggered) ->
+      e.preventDefault()
+      $this = $(this)
+      $thisIcon = $this.find 'i'
+      $allGutterToggleIcons = $('.js-sidebar-toggle i')
+      if $thisIcon.hasClass('fa-angle-double-right')
+        $allGutterToggleIcons
+          .removeClass('fa-angle-double-right')
+          .addClass('fa-angle-double-left')
+        $('aside.right-sidebar')
+          .removeClass('right-sidebar-expanded')
+          .addClass('right-sidebar-collapsed')
+        $('.page-with-sidebar')
+          .removeClass('right-sidebar-expanded')
+          .addClass('right-sidebar-collapsed')
+      else
+        $allGutterToggleIcons
+          .removeClass('fa-angle-double-left')
+          .addClass('fa-angle-double-right')
+        $('aside.right-sidebar')
+          .removeClass('right-sidebar-collapsed')
+          .addClass('right-sidebar-expanded')
+        $('.page-with-sidebar')
+          .removeClass('right-sidebar-collapsed')
+          .addClass('right-sidebar-expanded')
+      if not triggered
+        $.cookie("collapsed_gutter",
+          $('.right-sidebar')
+            .hasClass('right-sidebar-collapsed'), { path: '/' })
+
+  fitSidebarForSize = ->
+    oldBootstrapBreakpoint = bootstrapBreakpoint
+    bootstrapBreakpoint = bp.getBreakpointSize()
+    if bootstrapBreakpoint != oldBootstrapBreakpoint
+      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+
+  checkInitialSidebarSize = ->
+    bootstrapBreakpoint = bp.getBreakpointSize()
+    if bootstrapBreakpoint is "xs" or "sm"
+      $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
+
+  $(window)
+    .off "resize"
+    .on "resize", (e) ->
+      fitSidebarForSize()
+
+  checkInitialSidebarSize()
   new Aside()

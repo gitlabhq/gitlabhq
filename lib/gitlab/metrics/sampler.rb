@@ -7,9 +7,14 @@ module Gitlab
     # statistics, etc.
     class Sampler
       # interval - The sampling interval in seconds.
-      def initialize(interval = 15)
-        @interval = interval
-        @metrics  = []
+      def initialize(interval = Metrics.settings[:sample_interval])
+        interval_half = interval.to_f / 2
+
+        @interval       = interval
+        @interval_steps = (-interval_half..interval_half).step(0.1).to_a
+        @last_step      = nil
+
+        @metrics = []
 
         @last_minor_gc = Delta.new(GC.stat[:minor_gc_count])
         @last_major_gc = Delta.new(GC.stat[:major_gc_count])
@@ -26,7 +31,7 @@ module Gitlab
           Thread.current.abort_on_exception = true
 
           loop do
-            sleep(@interval)
+            sleep(sleep_interval)
 
             sample
           end
@@ -50,12 +55,11 @@ module Gitlab
       end
 
       def sample_memory_usage
-        @metrics << Metric.new('memory_usage', value: System.memory_usage)
+        add_metric('memory_usage', value: System.memory_usage)
       end
 
       def sample_file_descriptors
-        @metrics << Metric.
-          new('file_descriptors', value: System.file_descriptor_count)
+        add_metric('file_descriptors', value: System.file_descriptor_count)
       end
 
       if Metrics.mri?
@@ -69,7 +73,7 @@ module Gitlab
           counts['Symbol'] = Symbol.all_symbols.length
 
           counts.each do |name, count|
-            @metrics << Metric.new('object_counts', { count: count }, type: name)
+            add_metric('object_counts', { count: count }, type: name)
           end
         end
       else
@@ -91,7 +95,34 @@ module Gitlab
 
         stats[:count] = stats[:minor_gc_count] + stats[:major_gc_count]
 
-        @metrics << Metric.new('gc_statistics', stats)
+        add_metric('gc_statistics', stats)
+      end
+
+      def add_metric(series, values, tags = {})
+        prefix = sidekiq? ? 'sidekiq_' : 'rails_'
+
+        @metrics << Metric.new("#{prefix}#{series}", values, tags)
+      end
+
+      def sidekiq?
+        Sidekiq.server?
+      end
+
+      # Returns the sleep interval with a random adjustment.
+      #
+      # The random adjustment is put in place to ensure we:
+      #
+      # 1. Don't generate samples at the exact same interval every time (thus
+      #    potentially missing anything that happens in between samples).
+      # 2. Don't sample data at the same interval two times in a row.
+      def sleep_interval
+        while step = @interval_steps.sample
+          if step != @last_step
+            @last_step = step
+
+            return @interval + @last_step
+          end
+        end
       end
     end
   end

@@ -40,9 +40,9 @@ describe Gitlab::Metrics::RackMiddleware do
       expect(transaction).to be_an_instance_of(Gitlab::Metrics::Transaction)
     end
 
-    it 'tags the transaction with the request method and URI' do
-      expect(transaction.tags[:request_method]).to eq('GET')
-      expect(transaction.tags[:request_uri]).to eq('/foo')
+    it 'stores the request method and URI in the transaction as values' do
+      expect(transaction.values[:request_method]).to eq('GET')
+      expect(transaction.values[:request_uri]).to eq('/foo')
     end
   end
 
@@ -57,7 +57,7 @@ describe Gitlab::Metrics::RackMiddleware do
 
       middleware.tag_controller(transaction, env)
 
-      expect(transaction.tags[:action]).to eq('TestController#show')
+      expect(transaction.action).to eq('TestController#show')
     end
   end
 end

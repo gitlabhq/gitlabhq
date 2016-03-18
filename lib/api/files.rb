@@ -58,9 +58,11 @@ module API
         commit = user_project.commit(ref)
         not_found! 'Commit' unless commit
 
-        blob = user_project.repository.blob_at(commit.sha, file_path)
+        repo = user_project.repository
+        blob = repo.blob_at(commit.sha, file_path)
 
         if blob
+          blob.load_all_data!(repo)
           status(200)
 
           {
@@ -72,7 +74,7 @@ module API
             ref: ref,
             blob_id: blob.id,
             commit_id: commit.id,
-            last_commit_id: user_project.repository.last_commit_for_path(commit.sha, file_path).id
+            last_commit_id: repo.last_commit_for_path(commit.sha, file_path).id
           }
         else
           not_found! 'File'

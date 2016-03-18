@@ -26,7 +26,7 @@ We use [these build scripts](https://gitlab.com/gitlab-org/gitlab-ci/blob/master
 # Build configuration on [Semaphore](https://semaphoreapp.com/gitlabhq/gitlabhq/) for testing the [GitHub.com repo](https://github.com/gitlabhq/gitlabhq)
 
 - Language: Ruby
-- Ruby version: 2.1.2
+- Ruby version: 2.1.8
 - database.yml: pg
 
 Build commands

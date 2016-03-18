@@ -20,6 +20,8 @@ class Projects::RefsController < Projects::ApplicationController
             namespace_project_network_path(@project.namespace, @project, @id, @options)
           when "graphs"
             namespace_project_graph_path(@project.namespace, @project, @id)
+          when "find_file"
+            namespace_project_find_file_path(@project.namespace, @project, @id)
           when "graphs_commits"
             commits_namespace_project_graph_path(@project.namespace, @project, @id)
           else
@@ -62,9 +64,9 @@ class Projects::RefsController < Projects::ApplicationController
       }
     end
 
-    if @logs.present?
-      @log_url = namespace_project_tree_url(@project.namespace, @project, tree_join(@ref, @path || '/'))
-      @more_log_url = logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: (@offset +  @limit))
+    offset = (@offset + @limit)
+    if contents.size > offset
+      @more_log_url = logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: offset)
     end
 
     respond_to do |format|

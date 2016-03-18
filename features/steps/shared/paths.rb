@@ -7,6 +7,10 @@ module SharedPaths
     visit new_project_path
   end
 
+  step 'I visit login page' do
+    visit new_user_session_path
+  end
+
   # ----------------------------------------
   # User
   # ----------------------------------------
@@ -21,6 +25,10 @@ module SharedPaths
 
   step 'I visit group "Owned" page' do
     visit group_path(Group.find_by(name: "Owned"))
+  end
+
+  step 'I visit group "Owned" activity page' do
+    visit activity_group_path(Group.find_by(name: "Owned"))
   end
 
   step 'I visit group "Owned" issues page' do
@@ -103,6 +111,10 @@ module SharedPaths
     visit dashboard_groups_path
   end
 
+  step 'I visit dashboard todos page' do
+    visit dashboard_todos_path
+  end
+
   step 'I should be redirected to the dashboard groups page' do
     expect(current_path).to eq dashboard_groups_path
   end
@@ -183,12 +195,20 @@ module SharedPaths
     visit admin_groups_path
   end
 
+  step 'I visit admin appearance page' do
+    visit admin_appearances_path
+  end
+
   step 'I visit admin teams page' do
     visit admin_teams_path
   end
 
   step 'I visit admin settings page' do
     visit admin_application_settings_path
+  end
+
+  step 'I visit spam logs page' do
+    visit admin_spam_logs_path
   end
 
   step 'I visit applications page' do
@@ -257,6 +277,10 @@ module SharedPaths
 
   step 'I visit project deploy keys page' do
     visit namespace_project_deploy_keys_path(@project.namespace, @project)
+  end
+
+  step 'I visit project find file page' do
+    visit namespace_project_find_file_path(@project.namespace, @project, root_ref)
   end
 
   # ----------------------------------------
@@ -368,13 +392,19 @@ module SharedPaths
   end
 
   step 'I visit merge request page "Bug NS-04"' do
-    mr = MergeRequest.find_by(title: "Bug NS-04")
-    visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    visit merge_request_path("Bug NS-04")
   end
 
   step 'I visit merge request page "Bug NS-05"' do
-    mr = MergeRequest.find_by(title: "Bug NS-05")
-    visit namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
+    visit merge_request_path("Bug NS-05")
+  end
+
+  step 'I visit merge request page "Bug NS-07"' do
+    visit merge_request_path("Bug NS-07")
+  end
+
+  step 'I visit merge request page "Bug NS-08"' do
+    visit merge_request_path("Bug NS-08")
   end
 
   step 'I visit merge request page "Bug CO-01"' do
@@ -435,6 +465,10 @@ module SharedPaths
     visit namespace_project_path(project.namespace, project)
   end
 
+  step "I should not see command line instructions" do
+    expect(page).not_to have_css('.empty_wrapper')
+  end
+
   # ----------------------------------------
   # Public Projects
   # ----------------------------------------
@@ -477,6 +511,11 @@ module SharedPaths
 
   def project
     Project.find_by!(name: 'Shop')
+  end
+
+  def merge_request_path(title)
+    mr = MergeRequest.find_by(title: title)
+    namespace_project_merge_request_path(mr.target_project.namespace, mr.target_project, mr)
   end
 
   # ----------------------------------------

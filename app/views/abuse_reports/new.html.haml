@@ -2,7 +2,7 @@
 %h3.page-title Report abuse
 %p Please use this form to report users who create spam issues, comments or behave inappropriately.
 %hr
-= form_for @abuse_report, html: { class: 'form-horizontal'} do |f|
+= form_for @abuse_report, html: { class: 'form-horizontal js-quick-submit js-requires-input'} do |f|
   = f.hidden_field :user_id
   - if @abuse_report.errors.any?
     .alert.alert-danger
@@ -16,7 +16,7 @@
   .form-group
     = f.label :message, class: 'control-label'
     .col-sm-10
-      = f.text_area :message, class: "form-control", rows: 2, required: true
+      = f.text_area :message, class: "form-control", rows: 2, required: true, value: sanitize(@ref_url)
       .help-block
         Explain the problem with this user. If appropriate, provide a link to the relevant issue or comment.
 

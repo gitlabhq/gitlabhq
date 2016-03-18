@@ -27,6 +27,7 @@ class RepositoryForkWorker
       return
     end
 
+    project.repository.after_import
     project.import_finish
   end
 end

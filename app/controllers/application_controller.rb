@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   before_action :check_password_expiration
   before_action :check_2fa_requirement
   before_action :ldap_security_check
+  before_action :sentry_user_context
   before_action :default_headers
   before_action :add_gon_variables
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -24,6 +25,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :abilities, :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?
+  helper_method :repository, :can_collaborate_with_project?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -41,6 +43,16 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def sentry_user_context
+    if Rails.env.production? && current_application_settings.sentry_enabled && current_user
+      Raven.user_context(
+        id: current_user.id,
+        email: current_user.email,
+        username: current_user.username,
+      )
+    end
+  end
+
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
   # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
   def authenticate_user_from_token!
@@ -48,6 +60,8 @@ class ApplicationController < ActionController::Base
                    params[:authenticity_token].presence
                  elsif params[:private_token].presence
                    params[:private_token].presence
+                 elsif request.headers['PRIVATE-TOKEN'].present?
+                   request.headers['PRIVATE-TOKEN']
                  end
     user = user_token && User.find_by_authentication_token(user_token.to_s)
 
@@ -115,7 +129,7 @@ class ApplicationController < ActionController::Base
       #   localhost/group/project
       #
       if id =~ /\.git\Z/
-        redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+        redirect_to request.original_url.gsub(/\.git\/?\Z/, '') and return
       end
 
       project_path = "#{namespace}/#{id}"
@@ -150,7 +164,7 @@ class ApplicationController < ActionController::Base
   end
 
   def git_not_found!
-    render html: "errors/git_not_found", layout: "errors", status: 404
+    render "errors/git_not_found.html", layout: "errors", status: 404
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -232,6 +246,8 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
+      return unless current_user.try_obtain_ldap_lease
+
       unless Gitlab::LDAP::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = "Access denied for your LDAP account."
@@ -263,9 +279,10 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def view_to_html_string(partial)
+  def view_to_html_string(partial, locals = {})
     render_to_string(
       partial,
+      locals: locals,
       layout: false,
       formats: [:html]
     )
@@ -286,7 +303,8 @@ class ApplicationController < ActionController::Base
   end
 
   def set_filters_params
-    params[:sort] ||= 'created_desc'
+    set_default_sort
+
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
@@ -392,5 +410,32 @@ class ApplicationController < ActionController::Base
     return false if root_urls.include?(home_page_url)
 
     current_user.nil? && root_path == request.path
+  end
+
+  def can_collaborate_with_project?(project = nil)
+    project ||= @project
+
+    can?(current_user, :push_code, project) ||
+      (current_user && current_user.already_forked?(project))
+  end
+
+  private
+
+  def set_default_sort
+    key = if is_a_listing_page_for?('issues') || is_a_listing_page_for?('merge_requests')
+            'issuable_sort'
+          end
+
+    cookies[key]  = params[:sort] if key && params[:sort].present?
+    params[:sort] = cookies[key] if key
+    params[:sort] ||= 'id_desc'
+  end
+
+  def is_a_listing_page_for?(page_type)
+    controller_name, action_name = params.values_at(:controller, :action)
+
+    (controller_name == "projects/#{page_type}" && action_name == 'index') ||
+    (controller_name == 'groups' && action_name == page_type) ||
+    (controller_name == 'dashboard' && action_name == page_type)
   end
 end

@@ -174,7 +174,7 @@ The alias hostname for the service is made from the image name following these
 rules:
 
 1. Everything after `:` is stripped
-2. Backslash (`/`) is replaced with double underscores (`__`)
+2. Slash (`/`) is replaced with double underscores (`__`)
 
 ## Configuring services
 
@@ -270,7 +270,7 @@ This will forcefully (`-f`) remove the `build` container, the two service
 containers as well as all volumes (`-v`) that were created with the container
 creation.
 
-[Docker Fundamentals]: https://docs.docker.com/engine/introduction/understanding-docker/
+[Docker Fundamentals]: https://docs.docker.com/engine/understanding-docker/
 [hub]: https://hub.docker.com/
 [linking-containers]: https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/
 [tutum/wordpress]: https://registry.hub.docker.com/u/tutum/wordpress/

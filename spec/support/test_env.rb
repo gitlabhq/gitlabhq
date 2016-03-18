@@ -146,6 +146,22 @@ module TestEnv
     FileUtils.chmod_R 0755, target_repo_path
   end
 
+  # When no cached assets exist, manually hit the root path to create them
+  #
+  # Otherwise they'd be created by the first test, often timing out and
+  # causing a transient test failure
+  def warm_asset_cache
+    return if warm_asset_cache?
+    return unless defined?(Capybara)
+
+    Capybara.current_session.driver.visit '/'
+  end
+
+  def warm_asset_cache?
+    cache = Rails.root.join(*%w(tmp cache assets test))
+    Dir.exist?(cache) && Dir.entries(cache).length > 2
+  end
+
   private
 
   def factory_repo_path
@@ -171,7 +187,6 @@ module TestEnv
   def forked_repo_name
     'gitlab-test-fork'
   end
-
 
   # Prevent developer git configurations from being persisted to test
   # repositories

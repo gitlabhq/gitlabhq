@@ -1,8 +1,8 @@
 module Gitlab
   module Git
-    BLANK_SHA = '0' * 40
-    TAG_REF_PREFIX = "refs/tags/"
-    BRANCH_REF_PREFIX = "refs/heads/"
+    BLANK_SHA = ('0' * 40).freeze
+    TAG_REF_PREFIX = "refs/tags/".freeze
+    BRANCH_REF_PREFIX = "refs/heads/".freeze
 
     class << self
       def ref_name(ref)

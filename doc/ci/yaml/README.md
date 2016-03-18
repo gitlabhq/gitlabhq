@@ -116,7 +116,8 @@ Alias for [stages](#stages).
 
 ### variables
 
-_**Note:** Introduced in GitLab Runner v0.5.0._
+>**Note:**
+Introduced in GitLab Runner v0.5.0.
 
 GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in build
 environment. The variables are stored in the git repository and are meant to
@@ -134,22 +135,123 @@ thus allowing to fine tune them.
 
 ### cache
 
+>**Note:**
+Introduced in GitLab Runner v0.7.0.
+
 `cache` is used to specify a list of files and directories which should be
-cached between builds. Caches are stored according to the branch/ref and the
-job name. They are not currently shared between different job names or between
-branches/refs, which means that caching will benefit you if you push subsequent
-commits to an existing feature branch.
+cached between builds.
+
+**By default the caching is enabled per-job and per-branch.**
 
 If `cache` is defined outside the scope of the jobs, it means it is set
 globally and all jobs will use its definition.
 
-To cache all git untracked files and files in `binaries`:
+Cache all files in `binaries` and `.config`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
+    - .config
+```
+
+Cache all Git untracked files:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+```
+
+Cache all Git untracked files and files in `binaries`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+    paths:
+    - binaries/
+```
+
+Locally defined cache overwrites globally defined options. This will cache only
+`binaries/`:
 
 ```yaml
 cache:
-  untracked: true
   paths:
-  - binaries/
+  - my/files
+
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
+```
+
+The cache is provided on best effort basis, so don't expect that cache will be
+always present. For implementation details please check GitLab Runner.
+
+#### cache:key
+
+>**Note:**
+Introduced in GitLab Runner v1.0.0.
+
+The `key` directive allows you to define the affinity of caching
+between jobs, allowing to have a single cache for all jobs,
+cache per-job, cache per-branch or any other way you deem proper.
+
+This allows you to fine tune caching, allowing you to cache data between
+different jobs or even different branches.
+
+The `cache:key` variable can use any of the [predefined variables](../variables/README.md).
+
+---
+
+**Example configurations**
+
+To enable per-job caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_NAME"
+  untracked: true
+```
+
+To enable per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+To enable per-job and per-branch caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_NAME/$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+To enable per-branch and per-stage caching:
+
+```yaml
+cache:
+  key: "$CI_BUILD_STAGE/$CI_BUILD_REF_NAME"
+  untracked: true
+```
+
+If you use **Windows Batch** to run your shell scripts you need to replace
+`$` with `%`:
+
+```yaml
+cache:
+  key: "%CI_BUILD_STAGE%/%CI_BUILD_REF_NAME%"
+  untracked: true
 ```
 
 ## Jobs
@@ -177,13 +279,14 @@ job_name:
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
 | script        | yes | Defines a shell script which is executed by runner |
-| stage         | no (default: `test`) | Defines a build stage |
+| stage         | no | Defines a build stage (default: `test`) |
 | type          | no | Alias for `stage` |
 | only          | no | Defines a list of git refs for which build is created |
 | except        | no | Defines a list of git refs for which build is not created |
 | tags          | no | Defines a list of tags which are used to select runner |
 | allow_failure | no | Allow build to fail. Failed build doesn't contribute to commit status |
 | when          | no | Define when to run build. Can be `on_success`, `on_failure` or `always` |
+| dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
 | artifacts     | no | Define list build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
 
@@ -336,11 +439,18 @@ The above script will:
 
 ### artifacts
 
-_**Note:** Introduced in GitLab Runner v0.7.0. Also, the Windows shell executor
- does not currently support artifact uploads._
+>**Notes:**
+>
+> - Introduced in GitLab Runner v0.7.0 for non-Windows platforms.
+> - Windows support was added in GitLab Runner v.1.0.0.
+> - Currently not all executors are supported.
+> - Build artifacts are only collected for successful builds.
 
 `artifacts` is used to specify list of files and directories which should be
-attached to build after success. Below are some examples.
+attached to build after success. To pass artifacts between different builds,
+see [dependencies](#dependencies).
+
+Below are some examples.
 
 Send all files in `binaries` and `.config`:
 
@@ -351,14 +461,14 @@ artifacts:
   - .config
 ```
 
-Send all git untracked files:
+Send all Git untracked files:
 
 ```yaml
 artifacts:
   untracked: true
 ```
 
-Send all git untracked files and files in `binaries`:
+Send all Git untracked files and files in `binaries`:
 
 ```yaml
 artifacts:
@@ -367,64 +477,299 @@ artifacts:
   - binaries/
 ```
 
-The artifacts will be send after a successful build success to GitLab, and will
-be accessible in the GitLab UI to download.
+You may want to create artifacts only for tagged releases to avoid filling the
+build server storage with temporary build artifacts.
 
-### cache
-
-_**Note:** Introduced in GitLab Runner v0.7.0._
-
-`cache` is used to specify list of files and directories which should be cached
-between builds. Below are some examples:
-
-Cache all files in `binaries` and `.config`:
+Create artifacts only for tags (`default-job` will not create artifacts):
 
 ```yaml
-rspec:
-  script: test
-  cache:
+default-job:
+  script:
+    - mvn test -U
+  except:
+    - tags
+
+release-job:
+  script:
+    - mvn package -U
+  artifacts:
     paths:
-    - binaries/
-    - .config
+    - target/*.war
+  only:
+    - tags
 ```
 
-Cache all git untracked files:
+The artifacts will be sent to GitLab after a successful build and will
+be available for download in the GitLab UI.
+
+#### artifacts:name
+
+>**Note:**
+Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
+
+The `name` directive allows you to define the name of the created artifacts
+archive. That way, you can have a unique name of every archive which could be
+useful when you'd like to download the archive from GitLab. The `artifacts:name`
+variable can make use of any of the [predefined variables](../variables/README.md).
+
+---
+
+**Example configurations**
+
+To create an archive with a name of the current build:
 
 ```yaml
-rspec:
-  script: test
-  cache:
+job:
+  artifacts:
+    name: "$CI_BUILD_NAME"
+```
+
+To create an archive with a name of the current branch or tag including only
+the files that are untracked by Git:
+
+```yaml
+job:
+   artifacts:
+     name: "$CI_BUILD_REF_NAME"
+     untracked: true
+```
+
+To create an archive with a name of the current build and the current branch or
+tag including only the files that are untracked by Git:
+
+```yaml
+job:
+  artifacts:
+    name: "${CI_BUILD_NAME}_${CI_BUILD_REF_NAME}"
     untracked: true
 ```
 
-Cache all git untracked files and files in `binaries`:
+To create an archive with a name of the current [stage](#stages) and branch name:
 
 ```yaml
-rspec:
-  script: test
-  cache:
+job:
+  artifacts:
+    name: "${CI_BUILD_STAGE}_${CI_BUILD_REF_NAME}"
     untracked: true
-    paths:
-    - binaries/
 ```
 
-Locally defined cache overwrites globally defined options. This will cache only
-`binaries/`:
+---
+
+If you use **Windows Batch** to run your shell scripts you need to replace
+`$` with `%`:
 
 ```yaml
-cache:
-  paths:
-  - my/files
-
-rspec:
-  script: test
-  cache:
-    paths:
-    - binaries/
+job:
+  artifacts:
+    name: "%CI_BUILD_STAGE%_%CI_BUILD_REF_NAME%"
+    untracked: true
 ```
 
-The cache is provided on best effort basis, so don't expect that cache will be
-always present. For implementation details please check GitLab Runner.
+### dependencies
+
+>**Note:**
+Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+
+This feature should be used in conjunction with [`artifacts`](#artifacts) and
+allows you to define the artifacts to pass between different builds.
+
+Note that `artifacts` from previous [stages](#stages) are passed by default.
+
+To use this feature, define `dependencies` in context of the job and pass
+a list of all previous builds from which the artifacts should be downloaded.
+You can only define builds from stages that are executed before the current one.
+An error will be shown if you define builds from the current stage or next ones.
+
+---
+
+In the following example, we define two jobs with artifacts, `build:osx` and
+`build:linux`. When the `test:osx` is executed, the artifacts from `build:osx`
+will be downloaded and extracted in the context of the build. The same happens
+for `test:linux` and artifacts from `build:linux`.
+
+The job `deploy` will download artifacts from all previous builds because of
+the [stage](#stages) precedence:
+
+```yaml
+build:osx:
+  stage: build
+  script: make build:osx
+  artifacts:
+    paths:
+    - binaries/
+
+build:linux:
+  stage: build
+  script: make build:linux
+  artifacts:
+    paths:
+    - binaries/
+
+test:osx:
+  stage: test
+  script: make test:osx
+  dependencies:
+  - build:osx
+
+test:linux:
+  stage: test
+  script: make test:linux
+  dependencies:
+  - build:linux
+
+deploy:
+  stage: deploy
+  script: make deploy
+```
+
+## Hidden jobs
+
+>**Note:**
+Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+
+Jobs that start with a dot (`.`) will be not processed by GitLab CI. You can
+use this feature to ignore jobs, or use the
+[special YAML features](#special-yaml-features) and transform the hidden jobs
+into templates.
+
+In the following example, `.job_name` will be ignored:
+
+```yaml
+.job_name:
+  script:
+    - rake spec
+```
+
+## Special YAML features
+
+It's possible to use special YAML features like anchors (`&`), aliases (`*`)
+and map merging (`<<`), which will allow you to greatly reduce the complexity
+of `.gitlab-ci.yml`.
+
+Read more about the various [YAML features](https://learnxinyminutes.com/docs/yaml/).
+
+### Anchors
+
+>**Note:**
+Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
+
+YAML also has a handy feature called 'anchors', which let you easily duplicate
+content across your document. Anchors can be used to duplicate/inherit
+properties, and is a perfect example to be used with [hidden jobs](#hidden-jobs)
+to provide templates for your jobs.
+
+The following example uses anchors and map merging. It will create two jobs,
+`test1` and `test2`, that will inherit the parameters of `.job_template`, each
+having their own custom `script` defined:
+
+```yaml
+.job_template: &job_definition  # Hidden job that defines an anchor named 'job_definition'
+  image: ruby:2.1
+  services:
+    - postgres
+    - redis
+
+test1:
+  <<: *job_definition           # Merge the contents of the 'job_definition' alias
+  script:
+    - test1 project
+
+test2:
+  <<: *job_definition           # Merge the contents of the 'job_definition' alias
+  script:
+    - test2 project
+```
+
+`&` sets up the name of the anchor (`job_definition`), `<<` means "merge the
+given hash into the current one", and `*` includes the named anchor
+(`job_definition` again). The expanded version looks like this:
+
+```yaml
+.job_template:
+  image: ruby:2.1
+  services:
+    - postgres
+    - redis
+
+test1:
+  image: ruby:2.1
+  services:
+    - postgres
+    - redis
+  script:
+    - test1 project
+
+test2:
+  image: ruby:2.1
+  services:
+    - postgres
+    - redis
+  script:
+    - test2 project
+```
+
+Let's see another one example. This time we will use anchors to define two sets
+of services. This will create two jobs, `test:postgres` and `test:mysql`, that
+will share the `script` directive defined in `.job_template`, and the `services`
+directive defined in `.postgres_services` and `.mysql_services` respectively:
+
+```yaml
+.job_template: &job_definition
+  script:
+    - test project
+
+.postgres_services:
+  services: &postgres_definition
+    - postgres
+    - ruby
+
+.mysql_services:
+  services: &mysql_definition
+    - mysql
+    - ruby
+
+test:postgres:
+  << *job_definition
+  services: *postgres_definition
+
+test:mysql:
+  << *job_definition
+  services: *mysql_definition
+```
+
+The expanded version looks like this:
+
+```yaml
+.job_template:
+  script:
+    - test project
+
+.postgres_services:
+  services:
+    - postgres
+    - ruby
+
+.mysql_services:
+  services:
+    - mysql
+    - ruby
+
+test:postgres:
+  script:
+    - test project
+  services:
+    - postgres
+    - ruby
+
+test:mysql:
+  script:
+    - test project
+  services:
+    - mysql
+    - ruby
+```
+
+You can see that the hidden jobs are conveniently used as templates.
 
 ## Validate the .gitlab-ci.yml
 
@@ -435,3 +780,10 @@ You can find the link under `/ci/lint` of your gitlab instance.
 
 If your commit message contains `[ci skip]`, the commit will be created but the
 builds will be skipped.
+
+## Examples
+
+Visit the [examples README][examples] to see a list of examples using GitLab
+CI with various languages.
+
+[examples]: ../examples/README.md

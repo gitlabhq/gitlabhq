@@ -336,7 +336,7 @@ module Ci
     describe "Caches" do
       it "returns cache when defined globally" do
         config = YAML.dump({
-                             cache: { paths: ["logs/", "binaries/"], untracked: true },
+                             cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
                              rspec: {
                                script: "rspec"
                              }
@@ -348,13 +348,14 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["logs/", "binaries/"],
           untracked: true,
+          key: 'key',
         )
       end
 
       it "returns cache when defined in a job" do
         config = YAML.dump({
                              rspec: {
-                               cache: { paths: ["logs/", "binaries/"], untracked: true },
+                               cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
                                script: "rspec"
                              }
                            })
@@ -365,15 +366,16 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["logs/", "binaries/"],
           untracked: true,
+          key: 'key',
         )
       end
 
       it "overwrite cache when defined for a job and globally" do
         config = YAML.dump({
-                             cache: { paths: ["logs/", "binaries/"], untracked: true },
+                             cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
                              rspec: {
                                script: "rspec",
-                               cache: { paths: ["test/"], untracked: false },
+                               cache: { paths: ["test/"], untracked: false, key: 'local' },
                              }
                            })
 
@@ -383,6 +385,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first[:options][:cache]).to eq(
           paths: ["test/"],
           untracked: false,
+          key: 'local',
         )
       end
     end
@@ -394,7 +397,7 @@ module Ci
                              services:      ["mysql"],
                              before_script: ["pwd"],
                              rspec:         {
-                               artifacts: { paths: ["logs/", "binaries/"], untracked: true },
+                               artifacts: { paths: ["logs/", "binaries/"], untracked: true, name: "custom_name" },
                                script: "rspec"
                              }
                            })
@@ -414,10 +417,117 @@ module Ci
             image: "ruby:2.1",
             services: ["mysql"],
             artifacts: {
+              name: "custom_name",
               paths: ["logs/", "binaries/"],
               untracked: true
             }
           },
+          when: "on_success",
+          allow_failure: false
+        })
+      end
+    end
+
+    describe "Dependencies" do
+      let(:config) do
+        {
+          build1: { stage: 'build', script: 'test' },
+          build2: { stage: 'build', script: 'test' },
+          test1: { stage: 'test', script: 'test', dependencies: dependencies },
+          test2: { stage: 'test', script: 'test' },
+          deploy: { stage: 'test', script: 'test' }
+        }
+      end
+
+      subject { GitlabCiYamlProcessor.new(YAML.dump(config)) }
+
+      context 'no dependencies' do
+        let(:dependencies) { }
+
+        it { expect { subject }.to_not raise_error }
+      end
+
+      context 'dependencies to builds' do
+        let(:dependencies) { [:build1, :build2] }
+
+        it { expect { subject }.to_not raise_error }
+      end
+
+      context 'undefined dependency' do
+        let(:dependencies) { [:undefined] }
+
+        it { expect { subject }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'test1 job: undefined dependency: undefined') }
+      end
+
+      context 'dependencies to deploy' do
+        let(:dependencies) { [:deploy] }
+
+        it { expect { subject }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'test1 job: dependency deploy is not defined in prior stages') }
+      end
+    end
+
+    describe "Hidden jobs" do
+      let(:config) do
+        YAML.dump({
+                    '.hidden_job' => { script: 'test' },
+                    'normal_job' => { script: 'test' }
+                  })
+      end
+
+      let(:config_processor) { GitlabCiYamlProcessor.new(config) }
+
+      subject { config_processor.builds_for_stage_and_ref("test", "master") }
+
+      it "doesn't create jobs that starts with dot" do
+        expect(subject.size).to eq(1)
+        expect(subject.first).to eq({
+          except: nil,
+          stage: "test",
+          stage_idx: 1,
+          name: :normal_job,
+          only: nil,
+          commands: "\ntest",
+          tag_list: [],
+          options: {},
+          when: "on_success",
+          allow_failure: false
+        })
+      end
+    end
+
+    describe "YAML Alias/Anchor" do
+      it "is correctly supported for jobs" do
+        config = <<EOT
+job1: &JOBTMPL
+  script: execute-script-for-job
+
+job2: *JOBTMPL
+EOT
+
+        config_processor = GitlabCiYamlProcessor.new(config)
+
+        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(2)
+        expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+          except: nil,
+          stage: "test",
+          stage_idx: 1,
+          name: :job1,
+          only: nil,
+          commands: "\nexecute-script-for-job",
+          tag_list: [],
+          options: {},
+          when: "on_success",
+          allow_failure: false
+        })
+        expect(config_processor.builds_for_stage_and_ref("test", "master").second).to eq({
+          except: nil,
+          stage: "test",
+          stage_idx: 1,
+          name: :job2,
+          only: nil,
+          commands: "\nexecute-script-for-job",
+          tag_list: [],
+          options: {},
           when: "on_success",
           allow_failure: false
         })
@@ -587,6 +697,13 @@ module Ci
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure or always")
       end
 
+      it "returns errors if job artifacts:name is not an a string" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { name: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:name parameter should be a string")
+      end
+
       it "returns errors if job artifacts:untracked is not an array of strings" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { untracked: "string" } } })
         expect do
@@ -615,6 +732,20 @@ module Ci
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:paths parameter should be an array of strings")
       end
 
+      it "returns errors if cache:key is not a string" do
+        config = YAML.dump({ cache: { key: 1 }, rspec: { script: "test" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:key parameter should be a string")
+      end
+
+      it "returns errors if job cache:key is not an a string" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", cache: { key: 1 } } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:key parameter should be a string")
+      end
+
       it "returns errors if job cache:untracked is not an array of strings" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", cache: { untracked: "string" } } })
         expect do
@@ -627,6 +758,13 @@ module Ci
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:paths parameter should be an array of strings")
+      end
+
+      it "returns errors if job dependencies is not an array of strings" do
+        config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", dependencies: "string" } })
+        expect do
+          GitlabCiYamlProcessor.new(config)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: dependencies parameter should be an array of strings")
       end
     end
   end

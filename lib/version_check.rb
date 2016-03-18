@@ -13,6 +13,6 @@ class VersionCheck
   end
 
   def host
-    'https://version.gitlab.com/check.png'
+    'https://version.gitlab.com/check.svg'
   end
 end

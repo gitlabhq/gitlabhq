@@ -8,20 +8,18 @@
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
     %div
       - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
-        The changes were merged into
-        #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
-        The source branch has been removed.
-
+        %p
+          The changes were merged into
+          #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
+          The source branch has been removed.
+        = render 'projects/merge_requests/widget/merged_buttons'
       - elsif @merge_request.can_remove_source_branch?(current_user)
         .remove_source_branch_widget
           %p
             The changes were merged into
             #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.
             You can remove the source branch now.
-          = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), remote: true, method: :delete, class: "btn btn-primary btn-sm remove_source_branch" do
-            %i.fa.fa-times
-            Remove Source Branch
-
+          = render 'projects/merge_requests/widget/merged_buttons', source_branch_exists: true
         .remove_source_branch_widget.failed.hide
           %p
             Failed to remove source branch '#{@merge_request.source_branch}'.

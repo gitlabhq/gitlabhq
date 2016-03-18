@@ -113,7 +113,7 @@ describe GitlabMarkdownHelper do
     it 'should replace commit message with emoji to link' do
       actual = link_to_gfm(':book:Book', '/foo')
       expect(actual).
-        to eq %Q(<img class="emoji" title=":book:" alt=":book:" src="http://localhost/assets/emoji/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
+        to eq %Q(<img class="emoji" title=":book:" alt=":book:" src="http://localhost/assets/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
     end
   end
 
@@ -121,12 +121,13 @@ describe GitlabMarkdownHelper do
     before do
       @wiki = double('WikiPage')
       allow(@wiki).to receive(:content).and_return('wiki content')
+      helper.instance_variable_set(:@project_wiki, @wiki)
     end
 
-    it "should use GitLab Flavored Markdown for markdown files" do
+    it "should use Wiki pipeline for markdown files" do
       allow(@wiki).to receive(:format).and_return(:markdown)
 
-      expect(helper).to receive(:markdown).with('wiki content')
+      expect(helper).to receive(:markdown).with('wiki content', pipeline: :wiki, project_wiki: @wiki)
 
       helper.render_wiki_content(@wiki)
     end

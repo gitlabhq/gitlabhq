@@ -74,10 +74,11 @@ To set up a basic Postfix mail server with IMAP access on Ubuntu, follow [these 
 
     As mentioned, the part after `+` in the address is ignored, and any email sent here will end up in the mailbox for `incoming@gitlab.example.com`/`gitlab-incoming@gmail.com`.
 
-1. Reconfigure GitLab for the changes to take effect:
+1. Reconfigure GitLab and restart mailroom for the changes to take effect:
 
     ```sh
     sudo gitlab-ctl reconfigure
+    sudo gitlab-ctl restart mailroom
     ```
 
 1. Verify that everything is configured correctly:

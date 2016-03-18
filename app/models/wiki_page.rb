@@ -62,7 +62,7 @@ class WikiPage
   # The raw content of this page.
   def content
     @attributes[:content] ||= if @page
-                                @page.raw_data
+                                @page.text_data
                               end
   end
 
@@ -110,7 +110,7 @@ class WikiPage
   # Returns boolean True or False if this instance
   # is an old version of the page.
   def historical?
-    @page.historical?
+    @page.historical? && versions.first.sha != version.sha
   end
 
   # Returns boolean True or False if this instance
@@ -169,7 +169,7 @@ class WikiPage
   private
 
   def set_attributes
-    attributes[:slug] = @page.escaped_url_path
+    attributes[:slug] = @page.url_path
     attributes[:title] = @page.title
     attributes[:format] = @page.format
   end

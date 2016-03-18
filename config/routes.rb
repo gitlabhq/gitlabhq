@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
 
+  # Emojis
+  resources :emojis, only: :index
 
   # Search
   get 'search' => 'search#show'
@@ -51,9 +53,6 @@ Rails.application.routes.draw do
   # API
   API::API.logger Rails.logger
   mount API::API => '/api'
-
-  # Get all keys of user
-  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
 
   constraint = lambda { |request| request.env['warden'].authenticate? and request.env['warden'].user.admin? }
   constraints constraint do
@@ -88,6 +87,12 @@ Rails.application.routes.draw do
     member do
       post :accept
       match :decline, via: [:get, :post]
+    end
+  end
+
+  resources :sent_notifications, only: [], constraints: { id: /\h{32}/ } do
+    member do
+      get :unsubscribe
     end
   end
 
@@ -151,6 +156,11 @@ Rails.application.routes.draw do
         to:           "uploads#show",
         constraints:  { model: /note|user|group|project/, mounted_as: /avatar|attachment/, filename: /[^\/]+/ }
 
+    # Appearance
+    get ":model/:mounted_as/:id/:filename",
+        to:           "uploads#show",
+        constraints:  { model: /appearance/, mounted_as: /logo|header_logo/, filename: /.+/ }
+
     # Project markdown uploads
     get ":namespace_id/:project_id/:secret/:filename",
       to:           "projects/uploads#show",
@@ -208,6 +218,8 @@ Rails.application.routes.draw do
     end
 
     resources :abuse_reports, only: [:index, :destroy]
+    resources :spam_logs, only: [:index, :destroy]
+
     resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do
@@ -222,7 +234,10 @@ Rails.application.routes.draw do
       get :test
     end
 
-    resources :broadcast_messages, only: [:index, :create, :destroy]
+    resources :broadcast_messages, only: [:index, :edit, :create, :update, :destroy] do
+      post :preview, on: :collection
+    end
+
     resource :logs, only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
 
@@ -240,6 +255,14 @@ Rails.application.routes.draw do
         end
 
         resources :runner_projects
+      end
+    end
+
+    resource :appearances, path: 'appearance' do
+      member do
+        get :preview
+        delete :logo
+        delete :header_logos
       end
     end
 
@@ -272,7 +295,7 @@ Rails.application.routes.draw do
   resource :profile, only: [:show, :update] do
     member do
       get :audit_log
-      get :applications
+      get :applications, to: 'oauth/applications#index'
 
       put :reset_private_token
       put :update_username
@@ -291,7 +314,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys
+      resources :keys, except: [:new]
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
       resource :two_factor_auth, only: [:new, :create, :destroy] do
@@ -307,6 +330,15 @@ Rails.application.routes.draw do
       constraints: { username: /.*/ }
 
   get 'u/:username/calendar_activities' => 'users#calendar_activities', as: :user_calendar_activities,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/groups' => 'users#groups', as: :user_groups,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/projects' => 'users#projects', as: :user_projects,
+      constraints: { username: /.*/ }
+
+  get 'u/:username/contributed' => 'users#contributed', as: :user_contributed_projects,
       constraints: { username: /.*/ }
 
   get '/u/:username' => 'users#show', as: :user,
@@ -326,6 +358,12 @@ Rails.application.routes.draw do
       resources :groups, only: [:index]
       resources :snippets, only: [:index]
 
+      resources :todos, only: [:index, :destroy] do
+        collection do
+          delete :destroy_all
+        end
+      end
+
       resources :projects, only: [:index] do
         collection do
           get :starred
@@ -344,6 +382,7 @@ Rails.application.routes.draw do
       get :issues
       get :merge_requests
       get :projects
+      get :activity
     end
 
     scope module: :groups do
@@ -378,6 +417,7 @@ Rails.application.routes.draw do
         delete :remove_fork
         post :archive
         post :unarchive
+        post :housekeeping
         post :toggle_star
         post :markdown_preview
         get :autocomplete_sources
@@ -441,6 +481,24 @@ Rails.application.routes.draw do
         end
 
         scope do
+          get(
+            '/find_file/*id',
+            to: 'find_file#show',
+            constraints: { id: /.+/, format: /html/ },
+            as: :find_file
+          )
+        end
+
+        scope do
+          get(
+            '/files/*id',
+            to: 'find_file#list',
+            constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ },
+            as: :files
+          )
+        end
+
+        scope do
           post(
             '/create_dir/*id',
               to: 'tree#create_dir',
@@ -468,12 +526,13 @@ Rails.application.routes.draw do
         end
 
         resource  :avatar, only: [:show, :destroy]
-        resources :commit, only: [:show], constraints: { id: /[[:alnum:]]{6,40}/ } do
+        resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
           member do
             get :branches
             get :builds
             post :cancel_builds
             post :retry_builds
+            post :revert
           end
         end
 
@@ -497,7 +556,7 @@ Rails.application.routes.draw do
           end
         end
 
-        WIKI_SLUG_ID = { id: /[a-zA-Z.0-9_\-\/]+/ } unless defined? WIKI_SLUG_ID
+        WIKI_SLUG_ID = { id: /\S+/ } unless defined? WIKI_SLUG_ID
 
         scope do
           # Order matters to give priority to these matches
@@ -532,7 +591,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resource :fork, only: [:new, :create]
+        resources :forks, only: [:index, :new, :create]
         resource :import, only: [:new, :create, :show]
 
         resources :refs, only: [] do
@@ -580,7 +639,7 @@ Rails.application.routes.draw do
         resource :variables, only: [:show, :update]
         resources :triggers, only: [:index, :create, :destroy]
 
-        resources :builds, only: [:index, :show] do
+        resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
           end
@@ -588,8 +647,14 @@ Rails.application.routes.draw do
           member do
             get :status
             post :cancel
-            get :download
             post :retry
+            post :erase
+          end
+
+          resource :artifacts, only: [] do
+            get :download
+            get :browse, path: 'browse(/*path)', format: false
+            get :file, path: 'file/*path', format: false
           end
         end
 
@@ -609,6 +674,10 @@ Rails.application.routes.draw do
         resources :labels, constraints: { id: /\d+/ } do
           collection do
             post :generate
+          end
+
+          member do
+            post :toggle_subscription
           end
         end
 
@@ -635,6 +704,8 @@ Rails.application.routes.draw do
             post :resend_invite
           end
         end
+
+        resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
@@ -664,9 +735,18 @@ Rails.application.routes.draw do
         end
 
         resources :runner_projects, only: [:create, :destroy]
+        resources :badges, only: [], path: 'badges/*ref',
+                           constraints: { ref: Gitlab::Regex.git_reference_regex } do
+          collection do
+            get :build, constraints: { format: /svg/ }
+          end
+        end
       end
     end
   end
+
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
 
   get ':id' => 'namespaces#show', constraints: { id: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 end

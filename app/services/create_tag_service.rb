@@ -23,6 +23,7 @@ class CreateTagService < BaseService
       EventCreateService.new.push(project, current_user, push_data)
       project.execute_hooks(push_data.dup, :tag_push_hooks)
       project.execute_services(push_data.dup, :tag_push_hooks)
+      CreateCommitBuildsService.new.execute(project, current_user, push_data)
 
       if release_description
         CreateReleaseService.new(@project, @current_user).

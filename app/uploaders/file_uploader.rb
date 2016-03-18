@@ -30,4 +30,19 @@ class FileUploader < CarrierWave::Uploader::Base
   def secure_url
     File.join("/uploads", @secret, file.filename)
   end
+
+  def to_h
+    filename = image? ? self.file.basename : self.file.filename
+    escaped_filename = filename.gsub("]", "\\]")
+
+    markdown = "[#{escaped_filename}](#{self.secure_url})"
+    markdown.prepend("!") if image?
+
+    {
+      alt:      filename,
+      url:      self.secure_url,
+      is_image: image?,
+      markdown: markdown
+    }
+  end
 end

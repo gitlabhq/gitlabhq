@@ -8,7 +8,7 @@
         %i.fa.fa-comment
         = notes_left.count
     %td.notes_content.parallel.old
-      %ul.notes{ rel: note1.discussion_id }
+      %ul.notes{ data: { discussion_id: note1.discussion_id } }
         = render notes_left
 
       .discussion-reply-holder
@@ -23,7 +23,7 @@
         %i.fa.fa-comment
         = notes_right.count
     %td.notes_content.parallel.new
-      %ul.notes{ rel: note2.discussion_id }
+      %ul.notes{ data: { discussion_id: note2.discussion_id } }
         = render notes_right
 
       .discussion-reply-holder
@@ -31,4 +31,3 @@
   - else
     %td.notes_line.new= ""
     %td.notes_content.parallel.new= ""
-

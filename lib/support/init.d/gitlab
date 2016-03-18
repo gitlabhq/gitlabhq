@@ -38,6 +38,7 @@ web_server_pid_path="$pid_path/unicorn.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
 mail_room_enabled=false
 mail_room_pid_path="$pid_path/mail_room.pid"
+gitlab_workhorse_dir=$(cd $app_root/../gitlab-workhorse 2> /dev/null && pwd)
 gitlab_workhorse_pid_path="$pid_path/gitlab-workhorse.pid"
 gitlab_workhorse_options="-listenUmask 0 -listenNetwork unix -listenAddr $socket_path/gitlab-workhorse.socket -authBackend http://127.0.0.1:8080 -authSocket $rails_socket -documentRoot $app_root/public"
 gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
@@ -48,7 +49,7 @@ test -f /etc/default/gitlab && . /etc/default/gitlab
 
 # Switch to the app_user if it is not he/she who is running the script.
 if [ `whoami` != "$app_user" ]; then
-  eval su - "$app_user" -s $shell_path -c $(echo \")$0 "$@"$(echo \"); exit;
+  eval su - "$app_user" -c $(echo \")$shell_path -l -c \'$0 "$@"\'$(echo \"); exit;
 fi
 
 # Switch to the gitlab path, exit on failure.
@@ -218,7 +219,7 @@ start_gitlab() {
     echo "The Unicorn web server already running with pid $wpid, not restarting."
   else
     # Remove old socket if it exists
-    rm -f "$socket_path"/gitlab.socket 2>/dev/null
+    rm -f "$rails_socket" 2>/dev/null
     # Start the web server
     RAILS_ENV=$RAILS_ENV bin/web start
   fi
@@ -233,10 +234,12 @@ start_gitlab() {
   if [ "$gitlab_workhorse_status" = "0" ]; then
     echo "The gitlab-workhorse is already running with pid $spid, not restarting"
   else
-    # No need to remove a socket, gitlab-workhorse does this itself
+    # No need to remove a socket, gitlab-workhorse does this itself.
+    # Because gitlab-workhorse has multiple executables we need to fix
+    # the PATH.
     $app_root/bin/daemon_with_pidfile $gitlab_workhorse_pid_path  \
-      $app_root/../gitlab-workhorse/gitlab-workhorse \
-        $gitlab_workhorse_options \
+      /usr/bin/env PATH=$gitlab_workhorse_dir:$PATH \
+        gitlab-workhorse $gitlab_workhorse_options \
       >> $gitlab_workhorse_log 2>&1 &
   fi
 

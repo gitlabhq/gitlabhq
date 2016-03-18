@@ -1,5 +1,5 @@
 class Projects::TriggersController < Projects::ApplicationController
-  before_action :authorize_admin_project!
+  before_action :authorize_admin_build!
 
   layout 'project_settings'
 

@@ -70,19 +70,25 @@ module Gitlab
       end
 
       def ldap_search(*args)
-        results = ldap.search(*args)
+        # Net::LDAP's `time` argument doesn't work. Use Ruby `Timeout` instead.
+        Timeout.timeout(config.timeout) do
+          results = ldap.search(*args)
 
-        if results.nil?
-          response = ldap.get_operation_result
+          if results.nil?
+            response = ldap.get_operation_result
 
-          unless response.code.zero?
-            Rails.logger.warn("LDAP search error: #{response.message}")
+            unless response.code.zero?
+              Rails.logger.warn("LDAP search error: #{response.message}")
+            end
+
+            []
+          else
+            results
           end
-
-          []
-        else
-          results
         end
+      rescue Timeout::Error
+        Rails.logger.warn("LDAP search timed out after #{config.timeout} seconds")
+        []
       end
     end
   end

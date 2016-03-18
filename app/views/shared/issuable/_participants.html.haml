@@ -1,5 +1,10 @@
 .block.participants
-  .title
+  .sidebar-collapsed-icon
+    = icon('users')
+    %span
+      = participants.count
+  .title.hide-collapsed
     = pluralize participants.count, "participant"
   - participants.each do |participant|
-    = link_to_member(@project, participant, name: false, size: 24)
+    %span.hide-collapsed
+      = link_to_member(@project, participant, name: false, size: 24)

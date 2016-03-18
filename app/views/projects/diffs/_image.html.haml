@@ -1,9 +1,11 @@
 - diff = diff_file.diff
+- file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(@commit.id, diff.new_path))
+- old_file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(@commit.parent_id, diff.old_path))
 - if diff.renamed_file || diff.new_file || diff.deleted_file
   .image
     %span.wrap
       .frame{class: image_diff_class(diff)}
-        %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+        %img{src: diff.deleted_file ? old_file_raw_path : file_raw_path}
       %p.image-info= "#{number_to_human_size file.size}"
 - else
   .image
@@ -11,7 +13,7 @@
       %span.wrap
         .frame.deleted
           %a{href: namespace_project_blob_path(@project.namespace, @project, tree_join(@commit.parent_id, diff.old_path))}
-            %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+            %img{src: old_file_raw_path}
         %p.image-info.hide
           %span.meta-filesize= "#{number_to_human_size old_file.size}"
           |
@@ -23,7 +25,7 @@
       %span.wrap
         .frame.added
           %a{href: namespace_project_blob_path(@project.namespace, @project, tree_join(@commit.id, diff.new_path))}
-            %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+            %img{src: file_raw_path}
         %p.image-info.hide
           %span.meta-filesize= "#{number_to_human_size file.size}"
           |
@@ -36,10 +38,10 @@
     %div.swipe.view.hide
       .swipe-frame
         .frame.deleted
-          %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+          %img{src: old_file_raw_path}
         .swipe-wrap
           .frame.added
-            %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+            %img{src: file_raw_path}
         %span.swipe-bar
           %span.top-handle
           %span.bottom-handle
@@ -47,9 +49,9 @@
     %div.onion-skin.view.hide
       .onion-skin-frame
         .frame.deleted
-          %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
+          %img{src: old_file_raw_path}
         .frame.added
-          %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
+          %img{src: file_raw_path}
         .controls
           .transparent
           .drag-track

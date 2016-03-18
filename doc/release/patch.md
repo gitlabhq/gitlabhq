@@ -24,7 +24,7 @@ Use the following template:
 - Picked into respective `stable` branches:
 - [ ] Merge `x-y-stable` into `x-y-stable-ee`
 - [ ] release-tools: `x.y.z`
-- gitlab-omnibus
+- omnibus-gitlab
   - [ ] `x.y.z+ee.0`
   - [ ] `x.y.z+ce.0`
 - [ ] Deploy

@@ -13,16 +13,22 @@
         = icon('pencil-square-o fw')
         %span
           Project Settings
+    - if @project.allowed_to_share_with_group?
+      = nav_link(controller: :group_links) do
+        = link_to namespace_project_group_links_path(@project.namespace, @project), title: "Groups" do
+          = icon('share-square-o fw')
+          %span
+            Groups
     = nav_link(controller: :deploy_keys) do
       = link_to namespace_project_deploy_keys_path(@project.namespace, @project), title: 'Deploy Keys' do
         = icon('key fw')
         %span
           Deploy Keys
     = nav_link(controller: :hooks) do
-      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Web Hooks' do
+      = link_to namespace_project_hooks_path(@project.namespace, @project), title: 'Webhooks' do
         = icon('link fw')
         %span
-          Web Hooks
+          Webhooks
     = nav_link(controller: :services) do
       = link_to namespace_project_services_path(@project.namespace, @project), title: 'Services' do
         = icon('cogs fw')

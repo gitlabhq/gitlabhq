@@ -28,6 +28,11 @@ class Projects::ApplicationController < ApplicationController
 
   private
 
+  def apply_diff_view_cookie!
+    view = params[:view] || cookies[:diff_view]
+    cookies.permanent[:diff_view] = params[:view] = view if view
+  end
+
   def builds_enabled
     return render_404 unless @project.builds_enabled?
   end

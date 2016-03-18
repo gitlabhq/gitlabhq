@@ -1,6 +1,5 @@
 if Gitlab::Metrics.enabled?
   require 'influxdb'
-  require 'socket'
   require 'connection_pool'
   require 'method_source'
 
@@ -54,7 +53,26 @@ if Gitlab::Metrics.enabled?
     Gitlab::Git.constants.each do |name|
       const = Gitlab::Git.const_get(name)
 
-      config.instrument_methods(const) if const.is_a?(Module)
+      next unless const.is_a?(Module)
+
+      config.instrument_methods(const)
+      config.instrument_instance_methods(const)
+    end
+
+    Dir[Rails.root.join('app', 'finders', '*.rb')].each do |path|
+      const = File.basename(path, '.rb').camelize.constantize
+
+      config.instrument_instance_methods(const)
+    end
+
+    [
+      :Blame, :Branch, :BranchCollection, :Blob, :Commit, :Diff, :Repository,
+      :Tag, :TagCollection, :Tree
+    ].each do |name|
+      const = Rugged.const_get(name)
+
+      config.instrument_methods(const)
+      config.instrument_instance_methods(const)
     end
   end
 

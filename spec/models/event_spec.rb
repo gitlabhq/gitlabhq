@@ -65,23 +65,38 @@ describe Event, models: true do
     it { expect(@event.author).to eq(@user) }
   end
 
-  describe '.latest_update_time' do
-    describe 'when events are present' do
-      let(:time) { Time.utc(2015, 1, 1) }
+  describe '#proper?' do
+    context 'issue event' do
+      let(:project) { create(:empty_project, :public) }
+      let(:non_member) { create(:user) }
+      let(:member)  { create(:user) }
+      let(:author) { create(:author) }
+      let(:assignee) { create(:user) }
+      let(:admin) { create(:admin) }
+      let(:event) { Event.new(project: project, action: Event::CREATED, target: issue, author_id: author.id) }
 
       before do
-        create(:closed_issue_event, updated_at: time)
-        create(:closed_issue_event, updated_at: time + 5)
+        project.team << [member, :developer]
       end
 
-      it 'returns the latest update time' do
-        expect(Event.latest_update_time).to eq(time + 5)
-      end
-    end
+      context 'for non confidential issues' do
+        let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
 
-    describe 'when no events exist' do
-      it 'returns nil' do
-        expect(Event.latest_update_time).to be_nil
+        it { expect(event.proper?(non_member)).to eq true }
+        it { expect(event.proper?(author)).to eq true }
+        it { expect(event.proper?(assignee)).to eq true }
+        it { expect(event.proper?(member)).to eq true }
+        it { expect(event.proper?(admin)).to eq true }
+      end
+
+      context 'for confidential issues' do
+        let(:issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+
+        it { expect(event.proper?(non_member)).to eq false }
+        it { expect(event.proper?(author)).to eq true }
+        it { expect(event.proper?(assignee)).to eq true }
+        it { expect(event.proper?(member)).to eq true }
+        it { expect(event.proper?(admin)).to eq true }
       end
     end
   end

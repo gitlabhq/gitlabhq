@@ -48,6 +48,9 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
+        expect(transaction).to receive(:increment).
+          with(:method_duration, a_kind_of(Numeric))
+
         expect(transaction).to receive(:add_metric).
           with(described_class::SERIES, an_instance_of(Hash),
                method: 'Dummy.foo')
@@ -62,6 +65,16 @@ describe Gitlab::Metrics::Instrumentation do
         expect(transaction).to_not receive(:add_metric)
 
         @dummy.foo
+      end
+
+      it 'generates a method with the correct arity when using methods without arguments' do
+        dummy = Class.new do
+          def self.test; end
+        end
+
+        described_class.instrument_method(dummy, :test)
+
+        expect(dummy.method(:test).arity).to eq(0)
       end
     end
 
@@ -101,6 +114,9 @@ describe Gitlab::Metrics::Instrumentation do
 
         allow(described_class).to receive(:transaction).
           and_return(transaction)
+
+        expect(transaction).to receive(:increment).
+          with(:method_duration, a_kind_of(Numeric))
 
         expect(transaction).to receive(:add_metric).
           with(described_class::SERIES, an_instance_of(Hash),

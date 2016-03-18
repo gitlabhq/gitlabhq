@@ -1,0 +1,9 @@
+- path_to_file = file_namespace_project_build_artifacts_path(@project.namespace, @project, @build, path: file.path)
+
+%tr.tree-item{ 'data-link' => path_to_file }
+  %td.tree-item-file-name
+    = tree_icon('file', '664', file.name)
+    %span.str-truncated
+      = link_to file.name, path_to_file
+  %td
+    = number_to_human_size(file.metadata[:size], precision: 2)

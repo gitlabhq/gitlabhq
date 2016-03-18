@@ -37,7 +37,7 @@ describe CaseSensitivity, models: true do
             with(%q{LOWER("foo"."bar") = LOWER(:value)}, value: 'bar').
             and_return(criteria)
 
-          expect(model.iwhere(:'foo.bar' => 'bar')).to eq(criteria)
+          expect(model.iwhere('foo.bar'.to_sym => 'bar')).to eq(criteria)
         end
       end
 
@@ -87,8 +87,8 @@ describe CaseSensitivity, models: true do
             with(%q{LOWER("foo"."baz") = LOWER(:value)}, value: 'baz').
             and_return(final)
 
-          got = model.iwhere(:'foo.bar' => 'bar',
-                             :'foo.baz' => 'baz')
+          got = model.iwhere('foo.bar'.to_sym => 'bar',
+                             'foo.baz'.to_sym => 'baz')
 
           expect(got).to eq(final)
         end
@@ -127,7 +127,7 @@ describe CaseSensitivity, models: true do
             with(%q{`foo`.`bar` = :value}, value: 'bar').
             and_return(criteria)
 
-          expect(model.iwhere(:'foo.bar' => 'bar')).
+          expect(model.iwhere('foo.bar'.to_sym => 'bar')).
             to eq(criteria)
         end
       end
@@ -178,8 +178,8 @@ describe CaseSensitivity, models: true do
             with(%q{`foo`.`baz` = :value}, value: 'baz').
             and_return(final)
 
-          got = model.iwhere(:'foo.bar' => 'bar',
-                             :'foo.baz' => 'baz')
+          got = model.iwhere('foo.bar'.to_sym => 'bar',
+                             'foo.baz'.to_sym => 'baz')
 
           expect(got).to eq(final)
         end

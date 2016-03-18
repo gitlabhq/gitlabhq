@@ -1,7 +1,5 @@
 .detail-page-header {
-  margin: -$gl-padding;
-  padding: 7px $gl-padding;
-  margin-bottom: 0px;
+  padding: 11px 0;
   border-bottom: 1px solid $border-color;
   color: #5c5d5e;
   font-size: 16px;
@@ -13,6 +11,15 @@
 
   .identifier {
     color: #5c5d5e;
+  }
+
+  .issue_created_ago, .author_link {
+    white-space: nowrap;
+  }
+
+  .issue-meta {
+    display: inline-block;
+    line-height: 20px;
   }
 }
 

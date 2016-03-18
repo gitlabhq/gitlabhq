@@ -66,7 +66,7 @@ class @BranchGraph
     r.rect(40, 0, 30, @barHeight).attr fill: "#444"
 
     for day, mm in @days
-      if cuday isnt day[0]
+      if cuday isnt day[0] || cumonth isnt day[1]
         # Dates
         r.text(55, @offsetY + @unitTime * mm, day[0])
           .attr(

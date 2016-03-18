@@ -5,6 +5,7 @@ describe Issues::CloseService, services: true do
   let(:user2) { create(:user) }
   let(:issue) { create(:issue, assignee: user2) }
   let(:project) { issue.project }
+  let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
 
   before do
     project.team << [user, :master]
@@ -32,6 +33,10 @@ describe Issues::CloseService, services: true do
         note = @issue.notes.last
         expect(note.note).to include "Status changed to closed"
       end
+
+      it 'marks todos as done' do
+        expect(todo.reload).to be_done
+      end
     end
 
     context "external issue tracker" do
@@ -42,6 +47,7 @@ describe Issues::CloseService, services: true do
 
       it { expect(@issue).to be_valid }
       it { expect(@issue).to be_opened }
+      it { expect(todo.reload).to be_pending }
     end
   end
 end

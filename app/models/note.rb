@@ -33,14 +33,18 @@ class Note < ActiveRecord::Base
   participant :author
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true
+  belongs_to :noteable, polymorphic: true, touch: true
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
 
+  has_many :todos, dependent: :destroy
+
+  delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
   delegate :name, :email, to: :author, prefix: true
 
   before_validation :set_award!
+  before_validation :clear_blank_line_code!
 
   validates :note, :project, presence: true
   validates :note, uniqueness: { scope: [:author, :noteable_type, :noteable_id] }, if: ->(n) { n.is_award }
@@ -60,7 +64,7 @@ class Note < ActiveRecord::Base
   scope :nonawards, ->{ where(is_award: false) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
-  scope :not_inline, ->{ where(line_code: [nil, '']) }
+  scope :not_inline, ->{ where(line_code: nil) }
   scope :system, ->{ where(system: true) }
   scope :user, ->{ where(system: false) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
@@ -85,7 +89,7 @@ class Note < ActiveRecord::Base
         next if discussion_ids.include?(note.discussion_id)
 
         # don't group notes for the main target
-        if !note.for_diff_line? && note.noteable_type == "MergeRequest"
+        if !note.for_diff_line? && note.for_merge_request?
           discussions << [note]
         else
           discussions << notes.select do |other_note|
@@ -102,8 +106,18 @@ class Note < ActiveRecord::Base
       [:discussion, type.try(:underscore), id, line_code].join("-").to_sym
     end
 
+    # Searches for notes matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String.
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(note) like :query", query: "%#{query.downcase}%")
+      table   = arel_table
+      pattern = "%#{query}%"
+
+      where(table[:note].matches(pattern))
     end
 
     def grouped_awards
@@ -129,9 +143,11 @@ class Note < ActiveRecord::Base
   end
 
   def find_diff
-    return nil unless noteable && noteable.diffs.present?
+    return nil unless noteable
+    return @diff if defined?(@diff)
 
-    @diff ||= noteable.diffs.find do |d|
+    # Don't use ||= because nil is a valid value for @diff
+    @diff = noteable.diffs(Commit.max_diff_options).find do |d|
       Digest::SHA1.hexdigest(d.new_path) == diff_file_index if d.new_path
     end
   end
@@ -157,30 +173,29 @@ class Note < ActiveRecord::Base
     Note.where(noteable_id: noteable_id, noteable_type: noteable_type, line_code: line_code).last.try(:diff)
   end
 
-  # Check if such line of code exists in merge request diff
-  # If exists - its active discussion
-  # If not - its outdated diff
+  # Check if this note is part of an "active" discussion
+  #
+  # This will always return true for anything except MergeRequest noteables,
+  # which have special logic.
+  #
+  # If the note's current diff cannot be matched in the MergeRequest's current
+  # diff, it's considered inactive.
   def active?
     return true unless self.diff
     return false unless noteable
+    return @active if defined?(@active)
 
-    noteable.diffs.each do |mr_diff|
-      next unless mr_diff.new_path == self.diff.new_path
+    noteable_diff = find_noteable_diff
 
-      lines = Gitlab::Diff::Parser.new.parse(mr_diff.diff.lines.to_a)
+    if noteable_diff
+      parsed_lines = Gitlab::Diff::Parser.new.parse(noteable_diff.diff.each_line)
 
-      lines.each do |line|
-        if line.text == diff_line
-          return true
-        end
-      end
+      @active = parsed_lines.any? { |line_obj| line_obj.text == diff_line }
+    else
+      @active = false
     end
 
-    false
-  end
-
-  def outdated?
-    !active?
+    @active
   end
 
   def diff_file_index
@@ -244,7 +259,7 @@ class Note < ActiveRecord::Base
     prev_match_line = nil
     prev_lines = []
 
-    diff_lines.each do |line|
+    highlighted_diff_lines.each do |line|
       if line.type == "match"
         prev_lines.clear
         prev_match_line = line
@@ -261,7 +276,11 @@ class Note < ActiveRecord::Base
   end
 
   def diff_lines
-    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.lines.to_a)
+    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
+  end
+
+  def highlighted_diff_lines
+    Gitlab::Diff::Highlight.new(diff_lines).highlight
   end
 
   def discussion_id
@@ -309,20 +328,6 @@ class Note < ActiveRecord::Base
     nil
   end
 
-  # Mentionable override.
-  def gfm_reference(from_project = nil)
-    noteable.gfm_reference(from_project)
-  end
-
-  # Mentionable override.
-  def local_reference
-    noteable
-  end
-
-  def noteable_type_name
-    noteable_type.downcase if noteable_type.present?
-  end
-
   # FIXME: Hack for polymorphic associations with STI
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(noteable_type)
@@ -342,10 +347,6 @@ class Note < ActiveRecord::Base
     Event.reset_event_cache_for(self)
   end
 
-  def system?
-    read_attribute(:system)
-  end
-
   def downvote?
     is_award && note == "thumbsdown"
   end
@@ -358,6 +359,10 @@ class Note < ActiveRecord::Base
     !system? && !is_award
   end
 
+  def cross_reference_not_visible_for?(user)
+    cross_reference? && referenced_mentionables(user).empty?
+  end
+
   # Checks if note is an award added as a comment
   #
   # If note is an award, this method sets is_award to true
@@ -367,14 +372,25 @@ class Note < ActiveRecord::Base
   #
   def set_award!
     return unless awards_supported? && contains_emoji_only?
+
     self.is_award = true
     self.note = award_emoji_name
   end
 
   private
 
+  def clear_blank_line_code!
+    self.line_code = nil if self.line_code.blank?
+  end
+
+  # Find the diff on noteable that matches our own
+  def find_noteable_diff
+    diffs = noteable.diffs(Commit.max_diff_options)
+    diffs.find { |d| d.new_path == self.diff.new_path }
+  end
+
   def awards_supported?
-    noteable.kind_of?(Issue) || noteable.is_a?(MergeRequest)
+    (for_issue? || for_merge_request?) && !for_diff_line?
   end
 
   def contains_emoji_only?

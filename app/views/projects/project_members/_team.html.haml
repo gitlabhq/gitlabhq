@@ -4,7 +4,7 @@
     project members
     %small
       (#{members.count})
-    .pull-right
+    .controls
       = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
         .form-group
           = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control', spellcheck: false }

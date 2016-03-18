@@ -1,8 +1,11 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
+  include ToggleSubscriptionAction
+  include DiffHelper
+
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds
+    :ci_status, :cancel_merge_when_build_succeeds
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -34,6 +37,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
     @merge_requests = @merge_requests.preload(:target_project)
 
+    @label = @project.labels.find_by(title: params[:label_name])
+
     respond_to do |format|
       format.html
       format.json do
@@ -57,8 +62,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def diffs
+    apply_diff_view_cookie!
+
     @commit = @merge_request.last_commit
-    @first_commit = @merge_request.first_commit
+    @base_commit = @merge_request.diff_base_commit
+
+    # MRs created before 8.4 don't have a diff_base_commit,
+    # but we need it for the "View file @ ..." link by deleted files
+    @base_commit ||= @merge_request.first_commit.parent || @merge_request.first_commit
 
     @comments_allowed = @reply_allowed = true
     @comments_target = {
@@ -90,6 +101,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def new
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
     @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+    @noteable = @merge_request
 
     @target_branches = if @merge_request.target_project
                          @merge_request.target_project.repository.branch_names
@@ -101,8 +113,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @source_project = merge_request.source_project
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.last_commit
-    @first_commit = @merge_request.first_commit
-    @diffs = @merge_request.compare_diffs
+    @base_commit = @merge_request.diff_base_commit
+    @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
 
     @ci_commit = @merge_request.ci_commit
     @statuses = @ci_commit.statuses if @ci_commit
@@ -153,7 +165,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_check
-    @merge_request.check_if_can_be_merged if @merge_request.unchecked?
+    @merge_request.check_if_can_be_merged
 
     render partial: "projects/merge_requests/widget/show.html.haml", layout: false
   end
@@ -171,6 +183,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @status = :failed
       return
     end
+
+    TodoService.new.merge_merge_request(merge_request, current_user)
 
     @merge_request.update(merge_error: nil)
 
@@ -220,12 +234,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render json: response
   end
 
-  def toggle_subscription
-    @merge_request.toggle_subscription(current_user)
-
-    render nothing: true
-  end
-
   protected
 
   def selected_target_project
@@ -239,6 +247,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_request
     @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
+  alias_method :subscribable_resource, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues

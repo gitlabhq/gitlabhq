@@ -1,2 +1,9 @@
 .file-content.image_file
-  %img{ src: "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"}
+  - if blob.svg?
+    - # We need to scrub SVG but we cannot do so in the RawController: it would
+    - # be wrong/strange if RawController modified the data.
+    - blob.load_all_data!(@repository)
+    - blob = sanitize_svg(blob)
+    %img{src: "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"}
+  - else
+    %img{src: namespace_project_raw_path(@project.namespace, @project, tree_join(@commit.id, blob.path))}

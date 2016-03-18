@@ -12,8 +12,8 @@ describe API::API, api: true  do
   let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:project3) { create(:project, path: 'project3', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
-  let(:project_member) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
-  let(:project_member2) { create(:project_member, user: user3, project: project, access_level: ProjectMember::DEVELOPER) }
+  let(:project_member) { create(:project_member, :master, user: user, project: project) }
+  let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
     create(:project,
@@ -87,6 +87,29 @@ describe API::API, api: true  do
           expect(response.status).to eq(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(1)
+        end
+      end
+
+      context 'and using the visibility filter' do
+        it 'should filter based on private visibility param' do
+          get api('/projects', user), { visibility: 'private' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PRIVATE).count)
+        end
+
+        it 'should filter based on internal visibility param' do
+          get api('/projects', user), { visibility: 'internal' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::INTERNAL).count)
+        end
+
+        it 'should filter based on public visibility param' do
+          get api('/projects', user), { visibility: 'public' }
+          expect(response.status).to eq(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PUBLIC).count)
         end
       end
 
@@ -353,6 +376,20 @@ describe API::API, api: true  do
     end
   end
 
+  describe "POST /projects/:id/uploads" do
+    before { project }
+
+    it "uploads the file and returns its info" do
+      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+
+      expect(response.status).to be(201)
+      expect(json_response['alt']).to eq("dk")
+      expect(json_response['url']).to start_with("/uploads/")
+      expect(json_response['url']).to end_with("/dk.png")
+      expect(json_response['is_image']).to eq(true)
+    end
+  end
+
   describe 'GET /projects/:id' do
     before { project }
     before { project_member }
@@ -380,6 +417,15 @@ describe API::API, api: true  do
       other_user = create(:user)
       get api("/projects/#{project.id}", other_user)
       expect(response.status).to eq(404)
+    end
+
+    it 'should handle users with dots' do
+      dot_user = create(:user, username: 'dot.user')
+      project = create(:project, creator_id: dot_user.id, namespace: dot_user.namespace)
+
+      get api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(project.name)
     end
 
     describe 'permissions' do
@@ -698,6 +744,42 @@ describe API::API, api: true  do
           expect(project_fork_target.reload.forked_from_project).to be_nil
         end
       end
+    end
+  end
+
+  describe "POST /projects/:id/share" do
+    let(:group) { create(:group) }
+
+    it "should share project with group" do
+      expect do
+        post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+      end.to change { ProjectGroupLink.count }.by(1)
+
+      expect(response.status).to eq 201
+      expect(json_response['group_id']).to eq group.id
+      expect(json_response['group_access']).to eq Gitlab::Access::DEVELOPER
+    end
+
+    it "should return a 400 error when group id is not given" do
+      post api("/projects/#{project.id}/share", user), group_access: Gitlab::Access::DEVELOPER
+      expect(response.status).to eq 400
+    end
+
+    it "should return a 400 error when access level is not given" do
+      post api("/projects/#{project.id}/share", user), group_id: group.id
+      expect(response.status).to eq 400
+    end
+
+    it "should return a 400 error when sharing is disabled" do
+      project.namespace.update(share_with_group_lock: true)
+      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+      expect(response.status).to eq 400
+    end
+
+    it "should return a 409 error when wrong params passed" do
+      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
+      expect(response.status).to eq 409
+      expect(json_response['message']).to eq 'Group access is not included in the list'
     end
   end
 

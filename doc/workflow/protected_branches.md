@@ -1,6 +1,6 @@
 # Protected branches
 
-Permission in GitLab are fundamentally defined around the idea of having read or write permission to the repository and branches.
+Permissions in GitLab are fundamentally defined around the idea of having read or write permission to the repository and branches.
 
 To prevent people from messing with history or pushing code without review, we've created protected branches.
 
@@ -12,7 +12,7 @@ A protected branch does three simple things:
 
 You can make any branch a protected branch. GitLab makes the master branch a protected branch by default.
 
-To protect a branch, user needs to have at least a Master permission level, see [permissions document](doc/permissions/permissions.md).
+To protect a branch, user needs to have at least a Master permission level, see [permissions document](../permissions/permissions.md).
 
 ![protected branches page](protected_branches/protected_branches1.png)
 

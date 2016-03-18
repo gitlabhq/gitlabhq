@@ -18,7 +18,8 @@ class SystemHooksService
   def build_event_data(model, event)
     data = {
       event_name: build_event_name(model, event),
-      created_at: model.created_at.xmlschema
+      created_at: model.created_at.xmlschema,
+      updated_at: model.updated_at.xmlschema
     }
 
     case model
@@ -34,11 +35,20 @@ class SystemHooksService
       end
     when Project
       data.merge!(project_data(model))
+
+      if event == :rename || event == :transfer
+        data.merge!({
+          old_path_with_namespace: model.old_path_with_namespace
+        })
+      end
+
+      data
     when User
       data.merge!({
         name: model.name,
         email: model.email,
-        user_id: model.id
+        user_id: model.id,
+        username: model.username
       })
     when ProjectMember
       data.merge!(project_member_data(model))
@@ -90,8 +100,10 @@ class SystemHooksService
       project_path: model.project.path,
       project_path_with_namespace: model.project.path_with_namespace,
       project_id: model.project.id,
+      user_username: model.user.username,
       user_name: model.user.name,
       user_email: model.user.email,
+      user_id: model.user.id,
       access_level: model.human_access,
       project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
     }
@@ -102,6 +114,7 @@ class SystemHooksService
       group_name: model.group.name,
       group_path: model.group.path,
       group_id: model.group.id,
+      user_username: model.user.username,
       user_name: model.user.name,
       user_email: model.user.email,
       user_id: model.user.id,

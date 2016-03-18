@@ -1,5 +1,15 @@
 .member-search-form {
   float: left;
+
+  input[type='search'] {
+    width: 225px;
+    vertical-align: bottom;
+
+    @media (max-width: $screen-xs-max) {
+      width: 100px;
+      vertical-align: bottom;
+    }
+  }
 }
 
 .milestone-row {
@@ -9,5 +19,23 @@
 .dashboard .side .panel .panel-heading .input-group {
   .form-control {
     height: 42px;
+  }
+}
+
+.group-row {
+  &.no-description {
+    .group-name {
+      line-height: 44px;
+    }
+  }
+
+  .stats {
+    float: right;
+    line-height: 44px;
+    color: $gl-gray;
+
+    span {
+      margin-right: 15px;
+    }
   }
 }

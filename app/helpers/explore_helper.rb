@@ -1,5 +1,5 @@
 module ExploreHelper
-  def explore_projects_filter_path(options={})
+  def filter_projects_path(options={})
     exist_opts = {
       sort: params[:sort],
       scope: params[:scope],
@@ -9,9 +9,12 @@ module ExploreHelper
     }
 
     options = exist_opts.merge(options)
-
-    path = explore_projects_path
+    path = request.path
     path << "?#{options.to_param}"
     path
+  end
+
+  def explore_controller?
+    controller.class.name.split("::").first == "Explore"
   end
 end

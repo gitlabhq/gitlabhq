@@ -2,7 +2,7 @@
 .panel.panel-default
   .panel-heading
     Public deploy keys (#{@deploy_keys.count})
-    .panel-head-actions
+    .controls
       = link_to 'New Deploy Key', new_admin_deploy_key_path, class: "btn btn-new btn-sm"
   - if @deploy_keys.any?
     .table-holder

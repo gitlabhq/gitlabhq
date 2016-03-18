@@ -1,8 +1,8 @@
 # Shibboleth OmniAuth Provider
 
-This documentation is for enabling shibboleth with gitlab-omnibus package.
+This documentation is for enabling shibboleth with omnibus-gitlab package.
 
-In order to enable Shibboleth support in gitlab we need to use Apache instead of Nginx (It may be possible to use Nginx, however I did not found way to easily configure Nginx that is bundled in gitlab-omnibus package). Apache uses mod_shib2 module for shibboleth authentication and can pass attributes as headers to omniauth-shibboleth provider.
+In order to enable Shibboleth support in gitlab we need to use Apache instead of Nginx (It may be possible to use Nginx, however I did not found way to easily configure Nginx that is bundled in omnibus-gitlab package). Apache uses mod_shib2 module for shibboleth authentication and can pass attributes as headers to omniauth-shibboleth provider.
 
 
 To enable the Shibboleth OmniAuth provider you must:

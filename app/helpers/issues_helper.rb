@@ -44,14 +44,14 @@ module IssuesHelper
   end
 
   def bulk_update_milestone_options
-    milestones = project_active_milestones.to_a
+    milestones = @project.milestones.active.reorder(due_date: :asc, title: :asc).to_a
     milestones.unshift(Milestone::None)
 
     options_from_collection_for_select(milestones, 'id', 'title', params[:milestone_id])
   end
 
   def milestone_options(object)
-    milestones = object.project.milestones.active.to_a
+    milestones = object.project.milestones.active.reorder(due_date: :asc, title: :asc).to_a
     milestones.unshift(Milestone::None)
 
     options_from_collection_for_select(milestones, 'id', 'title', object.milestone_id)
@@ -69,7 +69,7 @@ module IssuesHelper
     end
   end
 
-  def issue_button_visibility(issue, closed)    
+  def issue_button_visibility(issue, closed)
     return 'hidden' if issue.closed? == closed
   end
 
@@ -80,7 +80,7 @@ module IssuesHelper
       xml.link    href: namespace_project_issue_url(issue.project.namespace,
                                                     issue.project, issue)
       xml.title   truncate(issue.title, length: 80)
-      xml.updated issue.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+      xml.updated issue.created_at.xmlschema
       xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(issue.author_email))
       xml.author do |author|
         xml.name issue.author_name
@@ -98,14 +98,21 @@ module IssuesHelper
     end.sort.to_sentence(last_word_connector: ', or ')
   end
 
+  def confidential_icon(issue)
+    icon('eye-slash') if issue.confidential?
+  end
+
   def emoji_icon(name, unicode = nil, aliases = [])
-    unicode ||= Emoji.emoji_filename(name)
+    unicode ||= Emoji.emoji_filename(name) rescue ""
 
     content_tag :div, "",
       class: "icon emoji-icon emoji-#{unicode}",
-      "data-emoji" => name,
-      "data-aliases" => aliases.join(" "),
-      "data-unicode-name" => unicode
+      title: name,
+      data: {
+        aliases: aliases.join(' '),
+        emoji: name,
+        unicode_name: unicode
+      }
   end
 
   def emoji_author_list(notes, current_user)

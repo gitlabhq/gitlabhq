@@ -1,5 +1,3 @@
-require 'banzai'
-
 module Banzai
   class LazyReference
     def self.load(refs)

@@ -1,7 +1,7 @@
 - project = project || @project
 
-.git-clone-holder
-  .btn-group.clone-options
+.git-clone-holder.input-group
+  .input-group-btn
     %a#clone-dropdown.clone-dropdown-btn.btn{href: '#', 'data-toggle' => 'dropdown'}
       %span
         = default_clone_protocol.upcase

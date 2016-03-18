@@ -12,7 +12,7 @@ if Rails.env.production?
 
   ActionMailer::Base.smtp_settings = {
     address: "email.server.com",
-    port: 456,
+    port: 465,
     user_name: "smtp",
     password: "123456",
     domain: "gitlab.company.com",

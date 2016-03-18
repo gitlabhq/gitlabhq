@@ -1,9 +1,4 @@
 class @Calendar
-  options =
-    month: "short"
-    day: "numeric"
-    year: "numeric"
-
   constructor: (timestamps, starting_year, starting_month, calendar_activities_path) ->
     cal = new CalHeatMap()
     cal.init

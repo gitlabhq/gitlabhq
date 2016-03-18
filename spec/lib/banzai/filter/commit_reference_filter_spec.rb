@@ -21,7 +21,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     let(:reference) { commit.id }
 
     # Let's test a variety of commit SHA sizes just to be paranoid
-    [6, 8, 12, 18, 20, 32, 40].each do |size|
+    [7, 8, 12, 18, 20, 32, 40].each do |size|
       it "links to a valid reference of #{size} characters" do
         doc = reference_filter("See #{reference[0...size]}")
 
@@ -35,7 +35,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
       doc = reference_filter("See #{commit.id}")
       expect(doc.text).to eq "See #{commit.short_id}"
 
-      doc = reference_filter("See #{commit.id[0...6]}")
+      doc = reference_filter("See #{commit.id[0...7]}")
       expect(doc.text).to eq "See #{commit.short_id}"
     end
 

@@ -1,11 +1,9 @@
 module Ci
   class Status
     def self.get_status(statuses)
-      statuses.reject! { |status| status.try(&:allow_failure?) }
-
       if statuses.none?
         'skipped'
-      elsif statuses.all?(&:success?)
+      elsif statuses.all? { |status| status.success? || status.ignored? }
         'success'
       elsif statuses.all?(&:pending?)
         'pending'

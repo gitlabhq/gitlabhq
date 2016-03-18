@@ -22,7 +22,7 @@ For the installations options please see [the installation page on the GitLab we
 - FreeBSD
 
 On the above unsupported distributions is still possible to install GitLab yourself.
-Please see the [installation from source guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md) and the [unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) on the public wiki for more information.
+Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/installation/) for more information.
 
 ### Non-Unix operating systems such as Windows
 
@@ -32,15 +32,17 @@ Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
 
-GitLab requires Ruby (MRI) 2.1
+GitLab requires Ruby (MRI) 2.1.x and currently does not work with versions 2.2 or 2.3.
+
 You will have to use the standard MRI implementation of Ruby.
-We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab needs several Gems that have native extensions.
+We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab
+needs several Gems that have native extensions.
 
 ## Hardware requirements
 
 ### Storage
 
-The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repos combined take up. 
+The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least as much free space as all your repos combined take up.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
 
@@ -64,9 +66,9 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 You need at least 2GB of addressable memory (RAM + swap) to install and use GitLab!
 With less memory GitLab will give strange errors during the reconfigure run and 500 errors during usage.
 
-- 512MB RAM + 1.5GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advise.
-- 1GB RAM + 1GB swap supports up to 100 users but it will be slow
-- **2GB RAM** is the **recommended** memory size and supports up to 100 users
+- 512MB RAM + 1.5GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advice.
+- 1GB RAM + 1GB swap supports up to 100 users but it will be very slow
+- **2GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
 - 4GB RAM supports up to 1,000 users
 - 8GB RAM supports up to 2,000 users
 - 16GB RAM supports up to 4,000 users
@@ -94,6 +96,17 @@ To change the Unicorn workers when you have the Omnibus package please see [the 
 ## Database
 
 If you want to run the database separately expect a size of about 1 MB per user.
+
+### PostgreSQL Requirements
+
+Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
+GitLab database. This extension can be enabled (using a PostgreSQL super user)
+by running the following query for every database:
+
+    CREATE EXTENSION pg_trgm;
+
+On some systems you may need to install an additional package (e.g.
+`postgresql-contrib`) for this extension to become available.
 
 ## Redis and Sidekiq
 

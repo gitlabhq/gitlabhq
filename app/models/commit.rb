@@ -12,12 +12,7 @@ class Commit
 
   attr_accessor :project
 
-  # Safe amount of changes (files and lines) in one commit to render
-  # Used to prevent 500 error on huge commits by suppressing diff
-  #
-  # User can force display of diff above this size
-  DIFF_SAFE_FILES  = 100 unless defined?(DIFF_SAFE_FILES)
-  DIFF_SAFE_LINES  = 5000 unless defined?(DIFF_SAFE_LINES)
+  DIFF_SAFE_LINES = Gitlab::Git::DiffCollection::DEFAULT_LIMITS[:max_lines]
 
   # Commits above this size will not be rendered in HTML
   DIFF_HARD_LIMIT_FILES = 1000 unless defined?(DIFF_HARD_LIMIT_FILES)
@@ -36,12 +31,19 @@ class Commit
 
     # Calculate number of lines to render for diffs
     def diff_line_count(diffs)
-      diffs.reduce(0) { |sum, d| sum + d.diff.lines.count }
+      diffs.reduce(0) { |sum, d| sum + Gitlab::Git::Util.count_lines(d.diff) }
     end
 
     # Truncate sha to 8 characters
     def truncate_sha(sha)
       sha[0..7]
+    end
+
+    def max_diff_options
+      {
+        max_files: DIFF_HARD_LIMIT_FILES,
+        max_lines: DIFF_HARD_LIMIT_LINES,
+      }
     end
   end
 
@@ -68,18 +70,18 @@ class Commit
 
   # Pattern used to extract commit references from text
   #
-  # The SHA can be between 6 and 40 hex characters.
+  # The SHA can be between 7 and 40 hex characters.
   #
   # This pattern supports cross-project references.
   def self.reference_pattern
     %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>\h{6,40})
+      (?<commit>\h{7,40})
     }x
   end
 
   def self.link_reference_pattern
-    super("commit", /(?<commit>\h{6,40})/)
+    super("commit", /(?<commit>\h{7,40})/)
   end
 
   def to_reference(from_project = nil)
@@ -213,6 +215,44 @@ class Commit
 
   def status
     ci_commit.try(:status) || :not_found
+  end
+
+  def revert_branch_name
+    "revert-#{short_id}"
+  end
+
+  def revert_description
+    if merged_merge_request
+      "This reverts merge request #{merged_merge_request.to_reference}"
+    else
+      "This reverts commit #{sha}"
+    end
+  end
+
+  def revert_message
+    %Q{Revert "#{title}"\n\n#{revert_description}}
+  end
+
+  def reverts_commit?(commit)
+    description? && description.include?(commit.revert_description)
+  end
+
+  def merge_commit?
+    parents.size > 1
+  end
+
+  def merged_merge_request
+    return @merged_merge_request if defined?(@merged_merge_request)
+
+    @merged_merge_request = project.merge_requests.find_by(merge_commit_sha: id) if merge_commit?
+  end
+
+  def has_been_reverted?(current_user = nil, noteable = self)
+    Gitlab::ReferenceExtractor.lazily do
+      noteable.notes.system.flat_map do |note|
+        note.all_references(current_user).commits
+      end
+    end.any? { |commit_ref| commit_ref.reverts_commit?(self) }
   end
 
   private

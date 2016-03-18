@@ -3,7 +3,7 @@
 %li
   %div
     = link_to namespace_project_tag_path(@project.namespace, @project, tag.name) do
-      %strong
+      %span.item-title
         = icon('tag')
         = tag.name
     - if tag.message.present?

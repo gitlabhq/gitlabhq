@@ -14,7 +14,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'sidekiq/testing/inline'
-require 'benchmark/ips'
+require 'rspec/retry'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -25,16 +25,19 @@ RSpec.configure do |config|
   config.use_instantiated_fixtures  = false
   config.mock_with :rspec
 
+  config.verbose_retry = true
+  config.display_try_failure_messages = true
+
   config.include Devise::TestHelpers, type: :controller
   config.include LoginHelpers,        type: :feature
   config.include LoginHelpers,        type: :request
   config.include StubConfiguration
+  config.include EmailHelpers
   config.include RelativeUrl,         type: feature
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include StubGitlabCalls
   config.include StubGitlabData
-  config.include BenchmarkMatchers, benchmark: true
 
   config.infer_spec_type_from_file_location!
   config.raise_errors_for_deprecations!
@@ -46,6 +49,12 @@ end
 
 FactoryGirl::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
+end
+
+# Work around a Rails 4.2.5.1 issue
+# See https://github.com/rspec/rspec-rails/issues/1532
+RSpec::Rails::ViewRendering::EmptyTemplatePathSetDecorator.class_eval do
+  alias_method :find_all_anywhere, :find_all
 end
 
 ActiveRecord::Migration.maintain_test_schema!

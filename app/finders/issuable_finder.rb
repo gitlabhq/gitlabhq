@@ -79,9 +79,10 @@ class IssuableFinder
     if project?
       @projects = project
     elsif current_user && params[:authorized_only].presence && !current_user_related?
-      @projects = current_user.authorized_projects
+      @projects = current_user.authorized_projects.reorder(nil)
     else
-      @projects = ProjectsFinder.new.execute(current_user)
+      @projects = ProjectsFinder.new.execute(current_user, group: group).
+        reorder(nil)
     end
   end
 
@@ -116,6 +117,20 @@ class IssuableFinder
 
   def filter_by_no_label?
     labels? && params[:label_name] == Label::None.title
+  end
+
+  def labels
+    return @labels if defined?(@labels)
+
+    if labels? && !filter_by_no_label?
+      @labels = Label.where(title: label_names)
+
+      if projects
+        @labels = @labels.where(project: projects)
+      end
+    else
+      @labels = Label.none
+    end
   end
 
   def assignee?
@@ -229,10 +244,17 @@ class IssuableFinder
     items
   end
 
+  def filter_by_upcoming_milestone?
+    params[:milestone_title] == '#upcoming'
+  end
+
   def by_milestone(items)
     if milestones?
       if filter_by_no_milestone?
         items = items.where(milestone_id: [-1, nil])
+      elsif filter_by_upcoming_milestone?
+        upcoming = Milestone.where(project_id: projects).upcoming
+        items = items.joins(:milestone).where(milestones: { title: upcoming.title })
       else
         items = items.joins(:milestone).where(milestones: { title: params[:milestone_title] })
 
@@ -248,13 +270,9 @@ class IssuableFinder
   def by_label(items)
     if labels?
       if filter_by_no_label?
-        items = items.
-          joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{klass.name}' AND label_links.target_id = #{klass.table_name}.id").
-          where(label_links: { id: nil })
+        items = items.without_label
       else
-        label_names = params[:label_name].split(",")
-
-        items = items.joins(:labels).where(labels: { title: label_names })
+        items = items.with_label(label_names)
 
         if projects
           items = items.where(labels: { project_id: projects })
@@ -263,6 +281,10 @@ class IssuableFinder
     end
 
     items
+  end
+
+  def label_names
+    params[:label_name].split(',')
   end
 
   def current_user_related?

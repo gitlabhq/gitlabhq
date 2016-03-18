@@ -47,6 +47,7 @@ module Ci
           return forbidden! unless runner
 
           if runner.id
+            runner.update(get_runner_version_from_params)
             present runner, with: Entities::Runner
           else
             not_found!

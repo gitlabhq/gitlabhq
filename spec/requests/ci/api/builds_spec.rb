@@ -101,31 +101,66 @@ describe Ci::API::API do
           { "key" => "TRIGGER_KEY", "value" => "TRIGGER_VALUE", "public" => false },
         ])
       end
+
+      it "returns dependent builds" do
+        commit = FactoryGirl.create(:ci_commit, project: project)
+        commit.create_builds('master', false, nil, nil)
+        commit.builds.where(stage: 'test').each(&:success)
+
+        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
+
+        expect(response.status).to eq(201)
+        expect(json_response["depends_on_builds"].count).to eq(2)
+        expect(json_response["depends_on_builds"][0]["name"]).to eq("rspec")
+      end
+
+      %w(name version revision platform architecture).each do |param|
+        context "updates runner #{param}" do
+          let(:value) { "#{param}_value" }
+
+          subject { runner.read_attribute(param.to_sym) }
+
+          it do
+            post ci_api("/builds/register"), token: runner.token, info: { param => value }
+            expect(response.status).to eq(404)
+            runner.reload
+            is_expected.to eq(value)
+          end
+        end
+      end
     end
 
     describe "PUT /builds/:id" do
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project)}
-      let(:build) { FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id) }
+      let(:commit) {create(:ci_commit, project: project)}
+      let(:build) { create(:ci_build, :trace, commit: commit, runner_id: runner.id) }
 
-      it "should update a running build" do
+      before do
         build.run!
         put ci_api("/builds/#{build.id}"), token: runner.token
+      end
+
+      it "should update a running build" do
         expect(response.status).to eq(200)
       end
 
-      it 'Should not override trace information when no trace is given' do
-        build.run!
-        build.update!(trace: 'hello_world')
-        put ci_api("/builds/#{build.id}"), token: runner.token
-        expect(build.reload.trace).to eq 'hello_world'
+      it 'should not override trace information when no trace is given' do
+        expect(build.reload.trace).to eq 'BUILD TRACE'
+      end
+
+      context 'build has been erased' do
+        let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
+
+        it 'should respond with forbidden' do
+          expect(response.status).to eq 403
+        end
       end
     end
 
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
-      let(:commit) { FactoryGirl.create(:ci_commit, project: project) }
-      let(:build) { FactoryGirl.create(:ci_build, commit: commit, runner_id: runner.id) }
+      let(:commit) { create(:ci_commit, project: project) }
+      let(:build) { create(:ci_build, commit: commit, runner_id: runner.id) }
       let(:authorize_url) { ci_api("/builds/#{build.id}/artifacts/authorize") }
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
@@ -133,12 +168,10 @@ describe Ci::API::API do
       let(:headers) { { "GitLab-Workhorse" => "1.0" } }
       let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token) }
 
+      before { build.run! }
+
       describe "POST /builds/:id/artifacts/authorize" do
         context "should authorize posting artifact to running build" do
-          before do
-            build.run!
-          end
-
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
             expect(response.status).to eq(200)
@@ -153,10 +186,6 @@ describe Ci::API::API do
         end
 
         context "should fail to post too large artifact" do
-          before do
-            build.run!
-          end
-
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { token: build.token, filesize: 100 }, headers
@@ -170,26 +199,32 @@ describe Ci::API::API do
           end
         end
 
-        context "should get denied" do
-          it do
-            post authorize_url, { token: 'invalid', filesize: 100 }
+        context 'authorization token is invalid' do
+          before { post authorize_url, { token: 'invalid', filesize: 100 } }
+
+          it 'should respond with forbidden' do
             expect(response.status).to eq(403)
           end
         end
       end
 
       describe "POST /builds/:id/artifacts" do
-        context "Disable sanitizer" do
+        context "disable sanitizer" do
           before do
             # by configuring this path we allow to pass temp file from any path
             allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
           end
 
-          context "should post artifact to running build" do
-            before do
-              build.run!
-            end
+          context 'build has been erased' do
+            let(:build) { create(:ci_build, erased_at: Time.now) }
+            before { upload_artifacts(file_upload, headers_with_token) }
 
+            it 'should respond with forbidden' do
+              expect(response.status).to eq 403
+            end
+          end
+
+          context "should post artifact to running build" do
             it "uses regual file post" do
               upload_artifacts(file_upload, headers_with_token, false)
               expect(response.status).to eq(201)
@@ -210,55 +245,83 @@ describe Ci::API::API do
             end
           end
 
-          context "should fail to post too large artifact" do
+          context 'should post artifacts file and metadata file' do
+            let!(:artifacts) { file_upload }
+            let!(:metadata) { file_upload2 }
+
+            let(:stored_artifacts_file) { build.reload.artifacts_file.file }
+            let(:stored_metadata_file) { build.reload.artifacts_metadata.file }
+
             before do
-              build.run!
+              post(post_url, post_data, headers_with_token)
             end
 
-            it do
+            context 'post data accelerated by workhorse is correct' do
+              let(:post_data) do
+                { 'file.path' => artifacts.path,
+                  'file.name' => artifacts.original_filename,
+                  'metadata.path' => metadata.path,
+                  'metadata.name' => metadata.original_filename }
+              end
+
+              it 'stores artifacts and artifacts metadata' do
+                expect(response.status).to eq(201)
+                expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
+                expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
+              end
+            end
+
+            context 'no artifacts file in post data' do
+              let(:post_data) do
+                { 'metadata' => metadata }
+              end
+
+              it 'is expected to respond with bad request' do
+                expect(response.status).to eq(400)
+              end
+
+              it 'does not store metadata' do
+                expect(stored_metadata_file).to be_nil
+              end
+            end
+          end
+
+          context "artifacts file is too large" do
+            it "should fail to post too large artifact" do
               stub_application_setting(max_artifacts_size: 0)
               upload_artifacts(file_upload, headers_with_token)
               expect(response.status).to eq(413)
             end
           end
 
-          context "should fail to post artifacts without file" do
-            before do
-              build.run!
-            end
-
-            it do
+          context "artifacts post request does not contain file" do
+            it "should fail to post artifacts without file" do
               post post_url, {}, headers_with_token
               expect(response.status).to eq(400)
             end
           end
 
-          context "should fail to post artifacts without GitLab-Workhorse" do
-            before do
-              build.run!
-            end
-
-            it do
+          context 'GitLab Workhorse is not configured' do
+            it "should fail to post artifacts without GitLab-Workhorse" do
               post post_url, { token: build.token }, {}
               expect(response.status).to eq(403)
             end
           end
         end
 
-        context "should fail to post artifacts for outside of tmp path" do
+        context "artifacts are being stored outside of tmp path" do
           before do
             # by configuring this path we allow to pass file from @tmpdir only
             # but all temporary files are stored in system tmp directory
             @tmpdir = Dir.mktmpdir
             allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
-            build.run!
           end
 
           after do
             FileUtils.remove_entry @tmpdir
           end
 
-          it do
+          it "should fail to post artifacts for outside of tmp path" do
             upload_artifacts(file_upload, headers_with_token)
             expect(response.status).to eq(400)
           end
@@ -276,33 +339,37 @@ describe Ci::API::API do
         end
       end
 
-      describe "DELETE /builds/:id/artifacts" do
-        before do
-          build.run!
-          post delete_url, token: build.token, file: file_upload
-        end
+      describe 'DELETE /builds/:id/artifacts' do
+        let(:build) { create(:ci_build, :artifacts) }
+        before { delete delete_url, token: build.token }
 
-        it "should delete artifact build" do
-          build.success
-          delete delete_url, token: build.token
+        it 'should remove build artifacts' do
           expect(response.status).to eq(200)
+          expect(build.artifacts_file.exists?).to be_falsy
+          expect(build.artifacts_metadata.exists?).to be_falsy
         end
       end
 
-      describe "GET /builds/:id/artifacts" do
-        before do
-          build.run!
+      describe 'GET /builds/:id/artifacts' do
+        before { get get_url, token: build.token }
+
+        context 'build has artifacts' do
+          let(:build) { create(:ci_build, :artifacts) }
+          let(:download_headers) do
+            { 'Content-Transfer-Encoding'=>'binary',
+              'Content-Disposition'=>'attachment; filename=ci_build_artifacts.zip' }
+          end
+
+          it 'should download artifact' do
+            expect(response.status).to eq(200)
+            expect(response.headers).to include download_headers
+          end
         end
 
-        it "should download artifact" do
-          build.update_attributes(artifacts_file: file_upload)
-          get get_url, token: build.token
-          expect(response.status).to eq(200)
-        end
-
-        it "should fail to download if no artifact uploaded" do
-          get get_url, token: build.token
-          expect(response.status).to eq(404)
+        context 'build does not has artifacts' do
+          it 'should respond with not found' do
+            expect(response.status).to eq(404)
+          end
         end
       end
     end

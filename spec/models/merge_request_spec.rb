@@ -2,25 +2,29 @@
 #
 # Table name: merge_requests
 #
-#  id                :integer          not null, primary key
-#  target_branch     :string(255)      not null
-#  source_branch     :string(255)      not null
-#  source_project_id :integer          not null
-#  author_id         :integer
-#  assignee_id       :integer
-#  title             :string(255)
-#  created_at        :datetime
-#  updated_at        :datetime
-#  milestone_id      :integer
-#  state             :string(255)
-#  merge_status      :string(255)
-#  target_project_id :integer          not null
-#  iid               :integer
-#  description       :text
-#  position          :integer          default(0)
-#  locked_at         :datetime
-#  updated_by_id     :integer
-#  merge_error       :string(255)
+#  id                        :integer          not null, primary key
+#  target_branch             :string(255)      not null
+#  source_branch             :string(255)      not null
+#  source_project_id         :integer          not null
+#  author_id                 :integer
+#  assignee_id               :integer
+#  title                     :string(255)
+#  created_at                :datetime
+#  updated_at                :datetime
+#  milestone_id              :integer
+#  state                     :string(255)
+#  merge_status              :string(255)
+#  target_project_id         :integer          not null
+#  iid                       :integer
+#  description               :text
+#  position                  :integer          default(0)
+#  locked_at                 :datetime
+#  updated_by_id             :integer
+#  merge_error               :string(255)
+#  merge_params              :text
+#  merge_when_build_succeeds :boolean          default(FALSE), not null
+#  merge_user_id             :integer
+#  merge_commit_sha          :string
 #
 
 require 'spec_helper'
@@ -74,6 +78,37 @@ describe MergeRequest, models: true do
     it { is_expected.to respond_to(:cannot_be_merged?) }
     it { is_expected.to respond_to(:merge_params) }
     it { is_expected.to respond_to(:merge_when_build_succeeds) }
+  end
+
+  describe '.in_projects' do
+    it 'returns the merge requests for a set of projects' do
+      expect(described_class.in_projects(Project.all)).to eq([subject])
+    end
+  end
+
+  describe '#source_sha' do
+    let(:last_branch_commit) { subject.source_project.repository.commit(subject.source_branch) }
+
+    context 'with diffs' do
+      subject { create(:merge_request, :with_diffs) }
+      it 'returns the sha of the source branch last commit' do
+        expect(subject.source_sha).to eq(last_branch_commit.sha)
+      end
+    end
+
+    context 'without diffs' do
+      subject { create(:merge_request, :without_diffs) }
+      it 'returns the sha of the source branch last commit' do
+        expect(subject.source_sha).to eq(last_branch_commit.sha)
+      end
+    end
+
+    context 'when the merge request is being created' do
+      subject { build(:merge_request, source_branch: nil, compare_commits: []) }
+      it 'returns nil' do
+        expect(subject.source_sha).to be_nil
+      end
+    end
   end
 
   describe '#to_reference' do
@@ -134,11 +169,13 @@ describe MergeRequest, models: true do
   describe 'detection of issues to be closed' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
-    let(:commit0) { double('commit0', closes_issues: [issue0]) }
-    let(:commit1) { double('commit1', closes_issues: [issue0]) }
-    let(:commit2) { double('commit2', closes_issues: [issue1]) }
+
+    let(:commit0) { double('commit0', safe_message: "Fixes #{issue0.to_reference}") }
+    let(:commit1) { double('commit1', safe_message: "Fixes #{issue0.to_reference}") }
+    let(:commit2) { double('commit2', safe_message: "Fixes #{issue1.to_reference}") }
 
     before do
+      subject.project.team << [subject.author, :developer]
       allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
     end
 
@@ -146,7 +183,9 @@ describe MergeRequest, models: true do
       allow(subject.project).to receive(:default_branch).
         and_return(subject.target_branch)
 
-      expect(subject.closes_issues).to eq([issue0, issue1].sort_by(&:id))
+      closed = subject.closes_issues
+
+      expect(closed).to include(issue0, issue1)
     end
 
     it 'only lists issues as to be closed if it targets the default branch' do
@@ -164,17 +203,6 @@ describe MergeRequest, models: true do
 
       expect(subject.closes_issues).to include(issue2)
     end
-
-    context 'for a project with JIRA integration' do
-      let(:issue0) { JiraIssue.new('JIRA-123', subject.project) }
-      let(:issue1) { JiraIssue.new('FOOBAR-4567', subject.project) }
-
-      it 'returns sorted JiraIssues' do
-        allow(subject.project).to receive_messages(default_branch: subject.target_branch)
-
-        expect(subject.closes_issues).to eq([issue0, issue1])
-      end
-    end
   end
 
   describe "#work_in_progress?" do
@@ -190,6 +218,11 @@ describe MergeRequest, models: true do
 
     it "detects the '[WIP] ' prefix" do
       subject.title = "[WIP] #{subject.title}"
+      expect(subject).to be_work_in_progress
+    end
+
+    it "detects the '[WIP]' prefix" do
+      subject.title = "[WIP]#{subject.title}"
       expect(subject).to be_work_in_progress
     end
 
@@ -231,8 +264,14 @@ describe MergeRequest, models: true do
       expect(subject.can_remove_source_branch?(user2)).to be_falsey
     end
 
-    it "is can be removed in all other cases" do
+    it "can be removed if the last commit is the head of the source branch" do
+      allow(subject.source_project).to receive(:commit).and_return(subject.last_commit)
+
       expect(subject.can_remove_source_branch?(user)).to be_truthy
+    end
+
+    it "cannot be removed if the last commit is not also the head of the source branch" do
+      expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
   end
 
@@ -248,13 +287,86 @@ describe MergeRequest, models: true do
   end
 
   describe "#hook_attrs" do
+    let(:attrs_hash) { subject.hook_attrs.to_h }
+
+    [:source, :target].each do |key|
+      describe "#{key} key" do
+        include_examples 'project hook data', project_key: key do
+          let(:data)    { attrs_hash }
+          let(:project) { subject.send("#{key}_project") }
+        end
+      end
+    end
+
     it "has all the required keys" do
-      attrs = subject.hook_attrs
-      attrs = attrs.to_h
-      expect(attrs).to include(:source)
-      expect(attrs).to include(:target)
-      expect(attrs).to include(:last_commit)
-      expect(attrs).to include(:work_in_progress)
+      expect(attrs_hash).to include(:source)
+      expect(attrs_hash).to include(:target)
+      expect(attrs_hash).to include(:last_commit)
+      expect(attrs_hash).to include(:work_in_progress)
+    end
+  end
+
+  describe '#diverged_commits_count' do
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
+
+    context 'diverged on same repository' do
+      subject(:merge_request_with_divergence) { create(:merge_request, :diverged, source_project: project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(5)
+      end
+    end
+
+    context 'diverged on fork' do
+      subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: fork_project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(5)
+      end
+    end
+
+    context 'rebased on fork' do
+      subject(:merge_request_rebased) { create(:merge_request, :rebased, source_project: fork_project, target_project: project) }
+
+      it 'counts commits that are on target branch but not on source branch' do
+        expect(subject.diverged_commits_count).to eq(0)
+      end
+    end
+
+    describe 'caching' do
+      before(:example) do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      end
+
+      it 'caches the output' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          once.
+          and_return(2)
+
+        subject.diverged_commits_count
+        subject.diverged_commits_count
+      end
+
+      it 'invalidates the cache when the source sha changes' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          twice.
+          and_return(2)
+
+        subject.diverged_commits_count
+        allow(subject).to receive(:source_sha).and_return('123abc')
+        subject.diverged_commits_count
+      end
+
+      it 'invalidates the cache when the target sha changes' do
+        expect(subject).to receive(:compute_diverged_commits_count).
+          twice.
+          and_return(2)
+
+        subject.diverged_commits_count
+        allow(subject).to receive(:target_sha).and_return('123abc')
+        subject.diverged_commits_count
+      end
     end
   end
 

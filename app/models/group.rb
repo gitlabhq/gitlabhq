@@ -11,7 +11,6 @@
 #  type        :string(255)
 #  description :string(255)      default(""), not null
 #  avatar      :string(255)
-#  public      :boolean          default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -20,10 +19,12 @@ require 'file_size_validator'
 class Group < Namespace
   include Gitlab::ConfigHelper
   include Referable
-  
+
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
   has_many :users, through: :group_members
+  has_many :project_group_links, dependent: :destroy
+  has_many :shared_projects, through: :project_group_links, source: :project
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -34,8 +35,18 @@ class Group < Namespace
   after_destroy :post_destroy_hook
 
   class << self
+    # Searches for groups matching the given query.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where("LOWER(namespaces.name) LIKE :query or LOWER(namespaces.path) LIKE :query", query: "%#{query.downcase}%")
+      table   = Namespace.arel_table
+      pattern = "%#{query}%"
+
+      where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
     end
 
     def sort(method)
@@ -48,10 +59,6 @@ class Group < Namespace
 
     def reference_pattern
       User.reference_pattern
-    end
-
-    def public_and_given_groups(ids)
-      where('public IS TRUE OR namespaces.id IN (?)', ids)
     end
 
     def visible_to_user(user)
@@ -123,10 +130,6 @@ class Group < Namespace
     unless self.avatar.image?
       self.errors.add :avatar, "only images allowed"
     end
-  end
-
-  def public_profile?
-    self.public || projects.public_only.any?
   end
 
   def post_create_hook

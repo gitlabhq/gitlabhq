@@ -15,7 +15,7 @@ class Email < ActiveRecord::Base
   belongs_to :user
 
   validates :user_id, presence: true
-  validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
+  validates :email, presence: true, uniqueness: true, email: true
   validate :unique_email, if: ->(email) { email.email_changed? }
 
   before_validation :cleanup_email

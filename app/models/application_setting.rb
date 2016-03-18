@@ -27,9 +27,23 @@
 #  admin_notification_email          :string(255)
 #  shared_runners_enabled            :boolean          default(TRUE), not null
 #  max_artifacts_size                :integer          default(100), not null
-#  runners_registration_token        :string(255)
-#  require_two_factor_authentication :boolean          default(TRUE)
+#  runners_registration_token        :string
+#  require_two_factor_authentication :boolean          default(FALSE)
 #  two_factor_grace_period           :integer          default(48)
+#  metrics_enabled                   :boolean          default(FALSE)
+#  metrics_host                      :string           default("localhost")
+#  metrics_username                  :string
+#  metrics_password                  :string
+#  metrics_pool_size                 :integer          default(16)
+#  metrics_timeout                   :integer          default(10)
+#  metrics_method_call_threshold     :integer          default(10)
+#  recaptcha_enabled                 :boolean          default(FALSE)
+#  recaptcha_site_key                :string
+#  recaptcha_private_key             :string
+#  metrics_port                      :integer          default(8089)
+#  sentry_enabled                    :boolean          default(FALSE)
+#  sentry_dsn                        :string
+#  email_author_in_body              :boolean          default(FALSE)
 #
 
 class ApplicationSetting < ActiveRecord::Base
@@ -57,8 +71,8 @@ class ApplicationSetting < ActiveRecord::Base
             url: true
 
   validates :admin_notification_email,
-            allow_blank: true,
-            email: true
+            email: true,
+            allow_blank: true
 
   validates :two_factor_grace_period,
             numericality: { greater_than_or_equal_to: 0 }
@@ -70,6 +84,18 @@ class ApplicationSetting < ActiveRecord::Base
   validates :recaptcha_private_key,
             presence: true,
             if: :recaptcha_enabled
+
+  validates :sentry_dsn,
+            presence: true,
+            if: :sentry_enabled
+
+  validates :akismet_api_key,
+            presence: true,
+            if: :akismet_enabled
+
+  validates :max_attachment_size,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
@@ -126,7 +152,9 @@ class ApplicationSetting < ActiveRecord::Base
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       max_artifacts_size: Settings.artifacts['max_size'],
       require_two_factor_authentication: false,
-      two_factor_grace_period: 48
+      two_factor_grace_period: 48,
+      recaptcha_enabled: false,
+      akismet_enabled: false
     )
   end
 

@@ -27,17 +27,17 @@ restart()
     stop
   fi
   killall
-  start_sidekiq -d -L $sidekiq_logfile
+  start_sidekiq -d -L $sidekiq_logfile >> $sidekiq_logfile 2>&1
 }
 
 start_no_deamonize()
 {
-  start_sidekiq
+  start_sidekiq >> $sidekiq_logfile 2>&1
 }
 
 start_sidekiq()
 {
-  bundle exec sidekiq -q post_receive -q mailers -q archive_repo -q system_hook -q project_web_hook -q gitlab_shell -q incoming_email -q runner -q common -q default -e $RAILS_ENV -P $sidekiq_pidfile $@ >> $sidekiq_logfile 2>&1
+  bundle exec sidekiq -q post_receive -q mailers -q archive_repo -q system_hook -q project_web_hook -q gitlab_shell -q incoming_email -q runner -q common -q default -e $RAILS_ENV -P $sidekiq_pidfile "$@"
 }
 
 load_ok()
@@ -65,6 +65,9 @@ case "$1" in
     ;;
   start_no_deamonize)
     start_no_deamonize
+    ;;
+  start_foreground)
+    start_sidekiq
     ;;
   restart)
     restart

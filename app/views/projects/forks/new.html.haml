@@ -22,7 +22,7 @@
 
             - else
               .fork-thumbnail
-                = link_to namespace_project_fork_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
+                = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
                   = image_tag namespace_icon(namespace, 100)
                   .caption
                     %strong

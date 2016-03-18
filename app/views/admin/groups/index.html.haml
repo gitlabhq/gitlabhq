@@ -1,6 +1,6 @@
 - page_title "Groups"
 %h3.page-title
-  Groups (#{@groups.total_count})
+  Groups (#{number_with_delimiter(@groups.total_count)})
   = link_to 'New Group', new_admin_group_path, class: "btn btn-new pull-right"
 
 %p.light
@@ -17,7 +17,7 @@
   .pull-right
     .dropdown.inline
       %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
-        %span.light sort:
+        %span.light
         - if @sort.present?
           = sort_options_hash[@sort]
         - else

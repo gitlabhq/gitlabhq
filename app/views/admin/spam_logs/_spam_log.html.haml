@@ -1,0 +1,32 @@
+- user = spam_log.user
+%tr
+  %td
+    = time_ago_with_tooltip(spam_log.created_at)
+  %td
+    - if user
+      = link_to user.name, [:admin, user]
+      .light.small
+        Joined #{time_ago_with_tooltip(user.created_at)}
+    - else
+      (removed)
+  %td
+    = spam_log.source_ip
+  %td
+    = spam_log.via_api? ? 'Y' : 'N'
+  %td
+    = spam_log.noteable_type
+  %td
+    = spam_log.title
+  %td
+    = truncate(spam_log.description, length: 100)
+  %td
+    - if user
+      = link_to 'Remove user', admin_spam_log_path(spam_log, remove_user: true),
+        data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-xs btn-remove"
+  %td
+    - if user && !user.blocked?
+      = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-xs"
+    - else
+      .btn.btn-xs.disabled
+        Already Blocked
+    = link_to 'Remove log', [:admin, spam_log], remote: true, method: :delete, class: "btn btn-xs btn-close js-remove-tr"

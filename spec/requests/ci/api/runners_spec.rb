@@ -51,6 +51,20 @@ describe Ci::API::API do
 
       expect(response.status).to eq(400)
     end
+
+    %w(name version revision platform architecture).each do |param|
+      context "creates runner with #{param} saved" do
+        let(:value) { "#{param}_value" }
+
+        subject { Ci::Runner.first.read_attribute(param.to_sym) }
+
+        it do
+          post ci_api("/runners/register"), token: registration_token, info: { param => value }
+          expect(response.status).to eq(201)
+          is_expected.to eq(value)
+        end
+      end
+    end
   end
 
   describe "DELETE /runners/delete" do

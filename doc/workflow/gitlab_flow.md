@@ -16,7 +16,7 @@ It offers a simple, transparent and effective way to work with git.
 ![Four stages (working copy, index, local repo, remote repo) and three steps between them](four_stages.png)
 
 When converting to git you have to get used to the fact that there are three steps before a commit is shared with colleagues.
-Most version control systems have only step, committing from the working copy to a shared server.
+Most version control systems have only one step, committing from the working copy to a shared server.
 In git you add files from the working copy to the staging area. After that you commit them to the local repo.
 The third step is pushing to a shared remote repository.
 After getting used to these three steps the branching model becomes the challenge.
@@ -152,9 +152,10 @@ The name of this branch should start with the issue number, for example '15-requ
 
 When you are done or want to discuss the code you open a merge request.
 This is an online place to discuss the change and review the code.
-Creating a branch is a manual action since you do not always want to merge a new branch you push, it could be a long-running environment or release branch.
-If you create the merge request but do not assign it to anyone it is a 'work-in-process' merge request.
+Opening a merge request is a manual action since you do not always want to merge a new branch you push, it could be a long-running environment or release branch.
+If you open the merge request but do not assign it to anyone it is a 'Work In Progress' merge request.
 These are used to discuss the proposed implementation but are not ready for inclusion in the master branch yet.
+_Pro tip:_ Start the title of the merge request with `[WIP]` or `WIP:` to prevent it from being merged before it's ready.
 
 When the author thinks the code is ready the merge request is assigned to reviewer.
 The reviewer presses the merge button when they think the code is ready for inclusion in the master branch.
@@ -185,13 +186,16 @@ If you have an issue that spans across multiple repositories, the best thing is 
 
 ![Vim screen showing the rebase view](rebase.png)
 
-With git you can use an interactive rebase (rebase -i) to squash multiple commits into one and reorder them.
+With git you can use an interactive rebase (`rebase -i`) to squash multiple commits into one and reorder them.
+In GitLab EE and .com you can also [rebase before merge](http://doc.gitlab.com/ee/workflow/rebase_before_merge.html) from the web interface.
 This functionality is useful if you made a couple of commits for small changes during development and want to replace them with a single commit or if you want to make the order more logical.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.
 When you rebase you change the identifier (SHA-1) of the commit and this is confusing.
 If you do that the same change will be known under multiple identifiers and this can cause much confusion.
 If people already reviewed your code it will be hard for them to review only the improvements you made since then if you have rebased everything into one commit.
+Another reasons not to rebase is that you lose authorship information, maybe someone created a merge request, another person pushed a commit on there to improve it and a third one merged it.
+In this case rebasing all the commits into one prevent the other authors from being properly attributed and sharing part of the [git blame](https://git-scm.com/docs/git-blame).
 
 People are encouraged to commit often and to frequently push to the remote repository so other people are aware what everyone is working on.
 This will lead to many commits per change which makes the history harder to understand.
@@ -220,13 +224,11 @@ You can reuse recorded resolutions (rerere) sometimes, but without rebasing you 
 There has to be a better way to avoid many merge commits.
 
 The way to prevent creating many merge commits is to not frequently merge master into the feature branch.
-We'll discuss the three reasons to merge in master: leveraging code, solving merge conflicts and long running branches.
+We'll discuss the three reasons to merge in master: leveraging code, merge conflicts, and long running branches.
 If you need to leverage some code that was introduced in master after you created the feature branch you can sometimes solve this by just cherry-picking a commit.
 If your feature branch has a merge conflict, creating a merge commit is a normal way of solving this.
-You should aim to prevent merge conflicts where they are likely to occur.
-One example is the CHANGELOG file where each significant change in the codebase is documented under a version header.
-Instead of everyone adding their change at the bottom of the list for the current version it is better to randomly insert it in the current list for that version.
-This it is likely that multiple feature branches that add to the CHANGELOG can be merged before a conflict occurs.
+You can prevent some merge conflicts by using [gitattributes](http://git-scm.com/docs/gitattributes) for files that can be in a random order.
+For example in GitLab our changelog file is specified in .gitattributes as `CHANGELOG merge=union` so that there are fewer merge conflicts in it.
 The last reason for creating merge commits is having long lived branches that you want to keep up to date with the latest state of the project.
 Martin Fowler, in [his article about feature branches](http://martinfowler.com/bliki/FeatureBranch.html) talks about this Continuous Integration (CI).
 At GitLab we are guilty of confusing CI with branch testing. Quoting Martin Fowler: "I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit.

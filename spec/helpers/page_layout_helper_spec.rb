@@ -2,10 +2,8 @@ require 'rails_helper'
 
 describe PageLayoutHelper do
   describe 'page_description' do
-    it 'defaults to value returned by page_description_default helper' do
-      allow(helper).to receive(:page_description_default).and_return('Foo')
-
-      expect(helper.page_description).to eq 'Foo'
+    it 'defaults to nil' do
+      expect(helper.page_description).to eq nil
     end
 
     it 'returns the last-pushed description' do
@@ -42,58 +40,32 @@ describe PageLayoutHelper do
     end
   end
 
-  describe 'page_description_default' do
-    it 'uses Project description when available' do
-      project = double(description: 'Project Description')
-      helper.instance_variable_set(:@project, project)
-
-      expect(helper.page_description_default).to eq 'Project Description'
-    end
-
-    it 'uses brand_title when Project description is nil' do
-      project = double(description: nil)
-      helper.instance_variable_set(:@project, project)
-
-      expect(helper).to receive(:brand_title).and_return('Brand Title')
-      expect(helper.page_description_default).to eq 'Brand Title'
-    end
-
-    it 'falls back to brand_title' do
-      allow(helper).to receive(:brand_title).and_return('Brand Title')
-
-      expect(helper.page_description_default).to eq 'Brand Title'
-    end
-  end
-
   describe 'page_image' do
     it 'defaults to the GitLab logo' do
       expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
     end
 
-    context 'with @project' do
-      it 'uses Project avatar if available' do
-        project = double(avatar_url: 'http://example.com/uploads/avatar.png')
-        helper.instance_variable_set(:@project, project)
+    %w(project user group).each do |type|
+      context "with @#{type} assigned" do
+        it "uses #{type.titlecase} avatar if available" do
+          object = double(avatar_url: 'http://example.com/uploads/avatar.png')
+          assign(type, object)
 
-        expect(helper.page_image).to eq project.avatar_url
+          expect(helper.page_image).to eq object.avatar_url
+        end
+
+        it 'falls back to the default when avatar_url is nil' do
+          object = double(avatar_url: nil)
+          assign(type, object)
+
+          expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+        end
       end
 
-      it 'falls back to the default' do
-        project = double(avatar_url: nil)
-        helper.instance_variable_set(:@project, project)
-
-        expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
-      end
-    end
-
-    context 'with @user' do
-      it 'delegates to avatar_icon helper' do
-        user = double('User')
-        helper.instance_variable_set(:@user, user)
-
-        expect(helper).to receive(:avatar_icon).with(user)
-
-        helper.page_image
+      context "with no assignments" do
+        it 'falls back to the default' do
+          expect(helper.page_image).to end_with 'assets/gitlab_logo.png'
+        end
       end
     end
   end

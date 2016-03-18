@@ -1,3 +1,6 @@
+- if current_application_settings.email_author_in_body
+  %div
+    #{link_to @merge_request.author_name, user_url(@merge_request.author)} wrote:
 %p.details
   != merge_path_description(@merge_request, '&rarr;')
 

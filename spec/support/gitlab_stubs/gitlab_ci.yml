@@ -36,8 +36,8 @@ staging:
   script: "cap deploy stating"
   type: deploy
   tags: 
-    - capistrano
-    - debian
+    - ruby
+    - mysql
   except:
     - stable
 
@@ -47,8 +47,8 @@ production:
     - cap deploy production
     - cap notify
   tags: 
-    - capistrano
-    - debian
+    - ruby
+    - mysql
   only:
     - master
     - /^deploy-.*$/

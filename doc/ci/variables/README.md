@@ -16,7 +16,7 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 ### Predefined variables (Environment Variables)
 
 | Variable                | Runner | Description |
-|-------------------------|-------------|
+|-------------------------|-----|--------|
 | **CI**                  | 0.4 | Mark that build is executed in CI environment |
 | **GITLAB_CI**           | all | Mark that build is executed in GitLab CI environment |
 | **CI_SERVER**           | all | Mark that build is executed in CI environment |
@@ -30,7 +30,7 @@ The API_TOKEN will take the Secure Variable value: `SECURE`.
 | **CI_BUILD_REF_NAME**   | all | The branch or tag name for which project is built |
 | **CI_BUILD_ID**         | all | The unique id of the current build that GitLab CI uses internally |
 | **CI_BUILD_REPO**       | all | The URL to clone the Git repository |
-| **CI_BUILD_TRIGGERED**  | 0.5 | The flag to indicate that build was triggered |
+| **CI_BUILD_TRIGGERED**  | 0.5 | The flag to indicate that build was [triggered] |
 | **CI_PROJECT_ID**       | all | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_DIR**      | all | The full path where the repository is cloned and where the build is ran |
 
@@ -56,7 +56,7 @@ export CI_SERVER_VERSION=""
 ```
 
 ### YAML-defined variables
-**This feature requires GitLab Runner 0.5.0 or higher**
+**This feature requires GitLab Runner 0.5.0 or higher and GitLab CI 7.14 or higher **
 
 GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in build environment.
 The variables are stored in repository and are meant to store non-sensitive project configuration, ie. RAILS_ENV or DATABASE_URL.
@@ -77,8 +77,11 @@ More information about Docker integration can be found in [Using Docker Images](
 
 GitLab CI allows you to define per-project **Secure Variables** that are set in build environment. 
 The secure variables are stored out of the repository (the `.gitlab-ci.yml`).
-These variables are securely stored in GitLab CI database and are hidden in the build log.
+The variables are securely passed to GitLab Runner and are available in build environment.
 It's desired method to use them for storing passwords, secret keys or whatever you want.
+
+**The value of the variable can be shown in build log if explicitly asked to do so.**
+If your project is public or internal you can make the builds private.
 
 Secure Variables can added by going to `Project > Variables > Add Variable`.
 
@@ -101,3 +104,5 @@ job_name:
   script:
     - export
 ```
+
+[triggered]: ../triggers/README.md

@@ -67,9 +67,9 @@ module FilterSpecHelper
     if reference =~ /\A(.+)?.\d+\z/
       # Integer-based reference with optional project prefix
       reference.gsub(/\d+\z/) { |i| i.to_i + 1 }
-    elsif reference =~ /\A(.+@)?(\h{6,40}\z)/
+    elsif reference =~ /\A(.+@)?(\h{7,40}\z)/
       # SHA-based reference with optional prefix
-      reference.gsub(/\h{6,40}\z/) { |v| v.reverse }
+      reference.gsub(/\h{7,40}\z/) { |v| v.reverse }
     else
       reference.gsub(/\w+\z/) { |v| v.reverse }
     end

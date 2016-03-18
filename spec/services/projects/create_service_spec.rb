@@ -32,6 +32,7 @@ describe Projects::CreateService, services: true do
 
       it { expect(@project).to be_valid }
       it { expect(@project.owner).to eq(@user) }
+      it { expect(@project.team.masters).to include(@user) }
       it { expect(@project.namespace).to eq(@user.namespace) }
     end
 

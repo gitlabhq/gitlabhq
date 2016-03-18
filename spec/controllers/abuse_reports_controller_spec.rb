@@ -1,76 +1,46 @@
 require 'spec_helper'
 
 describe AbuseReportsController do
-  let(:reporter)    { create(:user) }
-  let(:user)        { create(:user) }
-  let(:message)     { "This user is a spammer" }
+  let(:reporter) { create(:user) }
+  let(:user)     { create(:user) }
+  let(:attrs) do
+    attributes_for(:abuse_report) do |hash|
+      hash[:user_id] = user.id
+    end
+  end
 
   before do
     sign_in(reporter)
   end
 
-  describe "POST create" do
-    context "with admin notification email set" do
-      let(:admin_email) { "admin@example.com"}
-
-      before(:each) do
-        stub_application_setting(admin_notification_email: admin_email)
+  describe 'POST create' do
+    context 'with valid attributes' do
+      it 'saves the abuse report' do
+        expect do
+          post :create, abuse_report: attrs
+        end.to change { AbuseReport.count }.by(1)
       end
 
-      it "sends a notification email" do
-        perform_enqueued_jobs do
-          post :create,
-            abuse_report: {
-              user_id: user.id,
-              message: message
-            }
+      it 'calls notify' do
+        expect_any_instance_of(AbuseReport).to receive(:notify)
 
-          email = ActionMailer::Base.deliveries.last
-
-          expect(email.to).to eq([admin_email])
-          expect(email.subject).to include(user.username)
-          expect(email.text_part.body).to include(message)
-        end
+        post :create, abuse_report: attrs
       end
 
-      it "saves the abuse report" do
-        perform_enqueued_jobs do
-          expect do
-            post :create,
-              abuse_report: {
-                user_id: user.id,
-                message: message
-              }
-          end.to change { AbuseReport.count }.by(1)
-        end
+      it 'redirects back to the reported user' do
+        post :create, abuse_report: attrs
+
+        expect(response).to redirect_to user
       end
     end
 
-    context "without admin notification email set" do
-      before(:each) do
-        stub_application_setting(admin_notification_email: nil)
-      end
+    context 'with invalid attributes' do
+      it 'renders new' do
+        attrs.delete(:user_id)
+        post :create, abuse_report: attrs
 
-      it "does not send a notification email" do
-        expect do
-          post :create,
-            abuse_report: {
-              user_id: user.id,
-              message: message
-            }
-        end.not_to change { ActionMailer::Base.deliveries.count }
-      end
-
-      it "saves the abuse report" do
-        expect do
-          post :create,
-            abuse_report: {
-              user_id: user.id,
-              message: message
-            }
-        end.to change { AbuseReport.count }.by(1)
+        expect(response).to render_template(:new)
       end
     end
   end
-
 end

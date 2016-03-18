@@ -34,7 +34,8 @@ module MergeRequests
         committer: committer
       }
 
-      repository.merge(current_user, merge_request.source_sha, merge_request.target_branch, options)
+      commit_id = repository.merge(current_user, merge_request.source_sha, merge_request.target_branch, options)
+      merge_request.update(merge_commit_sha: commit_id)
     rescue StandardError => e
       merge_request.update(merge_error: "Something went wrong during merge")
       Rails.logger.error(e.message)
@@ -44,7 +45,7 @@ module MergeRequests
     def after_merge
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
 
-      if params[:should_remove_source_branch]
+      if params[:should_remove_source_branch].present?
         DeleteBranchService.new(@merge_request.source_project, current_user).
           execute(merge_request.source_branch)
       end

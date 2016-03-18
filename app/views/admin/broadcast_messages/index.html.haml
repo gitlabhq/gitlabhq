@@ -1,60 +1,37 @@
 - page_title "Broadcast Messages"
+
 %h3.page-title
   Broadcast Messages
 %p.light
-  Broadcast messages are displayed for every user and can be used to notify users about scheduled maintenance, recent upgrades and more.
-.broadcast-message-preview
-  %i.fa.fa-bullhorn
-  %span Your message here
+  Broadcast messages are displayed for every user and can be used to notify
+  users about scheduled maintenance, recent upgrades and more.
 
-= form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal'} do |f|
-  -if @broadcast_message.errors.any?
-    .alert.alert-danger
-      - @broadcast_message.errors.full_messages.each do |msg|
-        %p= msg
-  .form-group
-    = f.label :message, class: 'control-label'
-    .col-sm-10
-      = f.text_area :message, class: "form-control", rows: 2, required: true
-      %div
-        = link_to '#', class: 'js-toggle-colors-link' do
-          Customize colors
-  .form-group.js-toggle-colors-container.hide
-    = f.label :color, "Background Color", class: 'control-label'
-    .col-sm-10
-      = f.color_field :color, value: "#eb9532", class: "form-control"
-  .form-group.js-toggle-colors-container.hide
-    = f.label :font, "Font Color", class: 'control-label'
-    .col-sm-10
-      = f.color_field :font, value: "#FFFFFF", class: "form-control"
-  .form-group
-    = f.label :starts_at, class: 'control-label'
-    .col-sm-10.datetime-controls
-      = f.datetime_select :starts_at
-  .form-group
-    = f.label :ends_at, class: 'control-label'
-    .col-sm-10.datetime-controls
-      = f.datetime_select :ends_at
-  .form-actions
-    = f.submit "Add broadcast message", class: "btn btn-create"
+= render 'form'
+
+%br.clearfix
 
 -if @broadcast_messages.any?
-  %ul.bordered-list.broadcast-messages
-    - @broadcast_messages.each do |broadcast_message|
-      %li
-        .pull-right
-          - if broadcast_message.starts_at
-            %strong
-              #{broadcast_message.starts_at.to_s(:short)}
-            \...
-          - if broadcast_message.ends_at
-            %strong
-              #{broadcast_message.ends_at.to_s(:short)}
-          &nbsp;
-          = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-xs' do
-            %i.fa.fa-times.cred
+  %table.table
+    %thead
+      %tr
+        %th Status
+        %th Preview
+        %th Starts
+        %th Ends
+        %th &nbsp;
+    %tbody
+      - @broadcast_messages.each do |message|
+        %tr
+          %td
+            = broadcast_message_status(message)
+          %td
+            = broadcast_message(message)
+          %td
+            = message.starts_at
+          %td
+            = message.ends_at
+          %td
+            = link_to icon('pencil-square-o'), edit_admin_broadcast_message_path(message), title: 'Edit', class: 'btn btn-xs'
+            = link_to icon('times'), admin_broadcast_message_path(message), method: :delete, remote: true, title: 'Remove', class: 'js-remove-tr btn btn-xs btn-danger'
 
-        .message= broadcast_message.message
-
-
-  = paginate @broadcast_messages
+  = paginate @broadcast_messages, theme: 'gitlab'

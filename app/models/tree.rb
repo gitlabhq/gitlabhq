@@ -19,20 +19,28 @@ class Tree
 
     available_readmes = blobs.select(&:readme?)
 
-    if available_readmes.count == 0
-      return @readme = nil
+    previewable_readmes = available_readmes.select do |blob|
+      previewable?(blob.name)
     end
 
-    # Take the first previewable readme, or the first available readme, if we
-    # can't preview any of them
-    readme_tree = available_readmes.find do |readme|
-      previewable?(readme.name)
-    end || available_readmes.first
+    plain_readmes = available_readmes.select do |blob|
+      plain?(blob.name)
+    end
+
+    # Prioritize previewable over plain readmes
+    readme_tree = previewable_readmes.first || plain_readmes.first
+
+    # Return if we can't preview any of them
+    if readme_tree.nil?
+      return @readme = nil
+    end
 
     readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
 
     git_repo = repository.raw_repository
     @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
+    @readme.load_all_data!(git_repo)
+    @readme
   end
 
   def trees

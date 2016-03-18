@@ -22,7 +22,7 @@ GitHub will generate an application ID and secret key for you to use.
 
 1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot). 
     Keep this page open as you continue configuration.
-    ![GitHub app](github_app.png)
+    ![GitHub app](img/github_app.png)
 
 1.  On your GitLab server, open the configuration file.
 

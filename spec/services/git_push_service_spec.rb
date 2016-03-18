@@ -5,7 +5,6 @@ describe GitPushService, services: true do
 
   let(:user)          { create :user }
   let(:project)       { create :project }
-  let(:service) { GitPushService.new }
 
   before do
     @blankrev = Gitlab::Git::BLANK_SHA
@@ -15,34 +14,70 @@ describe GitPushService, services: true do
   end
 
   describe 'Push branches' do
+
+    let(:oldrev) { @oldrev }
+    let(:newrev) { @newrev }
+
+    subject do
+      execute_service(project, user, oldrev, newrev, @ref )
+    end
+
     context 'new branch' do
-      subject do
-        service.execute(project, user, @blankrev, @newrev, @ref)
-      end
+
+      let(:oldrev) { @blankrev }
 
       it { is_expected.to be_truthy }
+
+      it 'flushes general cached data' do
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
+
+        subject
+      end
+
+      it 'flushes the visible content cache' do
+        expect(project.repository).to receive(:expire_has_visible_content_cache)
+
+        subject
+      end
     end
 
     context 'existing branch' do
-      subject do
-        service.execute(project, user, @oldrev, @newrev, @ref)
-      end
 
       it { is_expected.to be_truthy }
+
+      it 'flushes general cached data' do
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
+
+        subject
+      end
     end
 
     context 'rm branch' do
-      subject do
-        service.execute(project, user, @oldrev, @blankrev, @ref)
-      end
+
+      let(:newrev) { @blankrev }
 
       it { is_expected.to be_truthy }
+
+      it 'flushes the visible content cache' do
+        expect(project.repository).to receive(:expire_has_visible_content_cache)
+
+        subject
+      end
+
+      it 'flushes general cached data' do
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
+
+        subject
+      end
     end
   end
 
   describe "Git Push Data" do
     before do
-      service.execute(project, user, @oldrev, @newrev, @ref)
+      service = execute_service(project, user, @oldrev, @newrev, @ref )
       @push_data = service.push_data
       @commit = project.commit(@newrev)
     end
@@ -104,31 +139,49 @@ describe GitPushService, services: true do
 
   describe "Push Event" do
     before do
-      service.execute(project, user, @oldrev, @newrev, @ref)
+      service = execute_service(project, user, @oldrev, @newrev, @ref )
       @event = Event.last
+      @push_data = service.push_data
     end
 
     it { expect(@event).not_to be_nil }
     it { expect(@event.project).to eq(project) }
     it { expect(@event.action).to eq(Event::PUSHED) }
-    it { expect(@event.data).to eq(service.push_data) }
+    it { expect(@event.data).to eq(@push_data) }
 
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do
         expect(project).to receive(:update_merge_requests).
                                with(@blankrev, 'newrev', 'refs/heads/master', user)
-        service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
     end
   end
 
-  describe "Web Hooks" do
-    context "execute web hooks" do
+  describe "Updates main language" do
+
+    context "before push" do
+      it { expect(project.main_language).to eq(nil) }
+    end
+
+    context "after push" do
+      before do
+        @service = execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it { expect(@service.update_main_language).to eq(true) }
+      it { expect(project.main_language).to eq("Ruby") }
+    end
+  end
+
+
+  describe "Webhooks" do
+    context "execute webhooks" do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
         expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: false })
-        service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
@@ -137,7 +190,7 @@ describe GitPushService, services: true do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
         expect(project.protected_branches).not_to receive(:create)
-        service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can push'" do
@@ -146,12 +199,12 @@ describe GitPushService, services: true do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
         expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: true })
-        service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
 
       it "when pushing new commits to existing branch" do
         expect(project).to receive(:execute_hooks)
-        service.execute(project, user, 'oldrev', 'newrev', 'refs/heads/master')
+        execute_service(project, user, 'oldrev', 'newrev', 'refs/heads/master' )
       end
     end
   end
@@ -162,19 +215,23 @@ describe GitPushService, services: true do
     let(:commit) { project.commit }
 
     before do
+      project.team << [commit_author, :developer]
+      project.team << [user, :developer]
+
       allow(commit).to receive_messages(
         safe_message: "this commit \n mentions #{issue.to_reference}",
         references: [issue],
         author_name: commit_author.name,
         author_email: commit_author.email
       )
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
     it "creates a note if a pushed commit mentions an issue" do
       expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, commit_author)
 
-      service.execute(project, user, @oldrev, @newrev, @ref)
+      execute_service(project, user, @oldrev, @newrev, @ref )
     end
 
     it "only creates a cross-reference note if one doesn't already exist" do
@@ -182,7 +239,7 @@ describe GitPushService, services: true do
 
       expect(SystemNoteService).not_to receive(:cross_reference).with(issue, commit, commit_author)
 
-      service.execute(project, user, @oldrev, @newrev, @ref)
+      execute_service(project, user, @oldrev, @newrev, @ref )
     end
 
     it "defaults to the pushing user if the commit's author is not known" do
@@ -192,7 +249,7 @@ describe GitPushService, services: true do
       )
       expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, user)
 
-      service.execute(project, user, @oldrev, @newrev, @ref)
+      execute_service(project, user, @oldrev, @newrev, @ref )
     end
 
     it "finds references in the first push to a non-default branch" do
@@ -201,7 +258,7 @@ describe GitPushService, services: true do
 
       expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, commit_author)
 
-      service.execute(project, user, @blankrev, @newrev, 'refs/heads/other')
+      execute_service(project, user, @blankrev, @newrev, 'refs/heads/other' )
     end
   end
 
@@ -221,22 +278,24 @@ describe GitPushService, services: true do
 
       allow(project.repository).to receive(:commits_between).
         and_return([closing_commit])
+
+      project.team << [commit_author, :master]
     end
 
     context "to default branches" do
       it "closes issues" do
-        service.execute(project, user, @oldrev, @newrev, @ref)
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
         expect(Issue.find(issue.id)).to be_closed
       end
 
       it "adds a note indicating that the issue is now closed" do
         expect(SystemNoteService).to receive(:change_status).with(issue, project, commit_author, "closed", closing_commit)
-        service.execute(project, user, @oldrev, @newrev, @ref)
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
 
       it "doesn't create additional cross-reference notes" do
         expect(SystemNoteService).not_to receive(:cross_reference)
-        service.execute(project, user, @oldrev, @newrev, @ref)
+        execute_service(project, commit_author, @oldrev, @newrev, @ref )
       end
 
       it "doesn't close issues when external issue tracker is in use" do
@@ -244,7 +303,7 @@ describe GitPushService, services: true do
 
         # The push still shouldn't create cross-reference notes.
         expect do
-          service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
+          execute_service(project, commit_author, @oldrev, @newrev,  'refs/heads/hurf' )
         end.not_to change { Note.where(project_id: project.id, system: true).count }
       end
     end
@@ -257,16 +316,15 @@ describe GitPushService, services: true do
 
       it "creates cross-reference notes" do
         expect(SystemNoteService).to receive(:cross_reference).with(issue, closing_commit, commit_author)
-        service.execute(project, user, @oldrev, @newrev, @ref)
+        execute_service(project, user, @oldrev, @newrev, @ref )
       end
 
       it "doesn't close issues" do
-        service.execute(project, user, @oldrev, @newrev, @ref)
+        execute_service(project, user, @oldrev, @newrev, @ref )
         expect(Issue.find(issue.id)).to be_opened
       end
     end
 
-    # EE-only tests
     context "for jira issue tracker" do
       include JiraServiceHelper
 
@@ -298,7 +356,7 @@ describe GitPushService, services: true do
         let(:message) { "this is some work.\n\nrelated to JIRA-1" }
 
         it "should initiate one api call to jira server to mention the issue" do
-          service.execute(project, user, @oldrev, @newrev, @ref)
+          execute_service(project, user, @oldrev, @newrev, @ref )
 
           expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
             body: /mentioned this issue in/
@@ -316,7 +374,7 @@ describe GitPushService, services: true do
             }
           }.to_json
 
-          service.execute(project, user, @oldrev, @newrev, @ref)
+          execute_service(project, commit_author, @oldrev, @newrev, @ref )
           expect(WebMock).to have_requested(:post, jira_api_transition_url).with(
             body: transition_body
           ).once
@@ -327,7 +385,7 @@ describe GitPushService, services: true do
             body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
           }.to_json
 
-          service.execute(project, user, @oldrev, @newrev, @ref)
+          execute_service(project, commit_author, @oldrev, @newrev, @ref )
           expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
             body: comment_body
           ).once
@@ -346,7 +404,52 @@ describe GitPushService, services: true do
     end
 
     it 'push to first branch updates HEAD' do
-      service.execute(project, user, @blankrev, @newrev, new_ref)
+      execute_service(project, user, @blankrev, @newrev, new_ref )
     end
+  end
+
+  describe "housekeeping" do
+    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+
+    before do
+      allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    it 'does not perform housekeeping when not needed' do
+      expect(housekeeping).not_to receive(:execute)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+
+    context 'when housekeeping is needed' do
+      before do
+        allow(housekeeping).to receive(:needed?).and_return(true)
+      end
+
+      it 'performs housekeeping' do
+        expect(housekeeping).to receive(:execute)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it 'does not raise an exception' do
+        allow(housekeeping).to receive(:try_obtain_lease).and_return(false)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+    end
+
+
+    it 'increments the push counter' do
+      expect(housekeeping).to receive(:increment!)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+  end
+
+  def execute_service(project, user, oldrev, newrev, ref)
+    service = described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref )
+    service.execute
+    service
   end
 end

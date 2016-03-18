@@ -1,9 +1,15 @@
 class Dashboard::ProjectsController < Dashboard::ApplicationController
+  include FilterProjects
+
   before_action :event_filter
 
   def index
-    @projects = current_user.authorized_projects.sorted_by_activity.non_archived
+    @projects = current_user.authorized_projects.sorted_by_activity
+    @projects = filter_projects(@projects)
     @projects = @projects.includes(:namespace)
+    @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
+
     @last_push = current_user.recent_push
 
     respond_to do |format|
@@ -13,13 +19,21 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
         load_events
         render layout: false
       end
+      format.json do
+        render json: {
+          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
+        }
+      end
     end
   end
 
   def starred
-    @projects = current_user.starred_projects
+    @projects = current_user.starred_projects.sorted_by_activity
+    @projects = filter_projects(@projects)
     @projects = @projects.includes(:namespace, :forked_from_project, :tags)
     @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.page(params[:page]).per(PER_PAGE)
+
     @last_push = current_user.recent_push
     @groups = []
 
@@ -27,8 +41,9 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       format.html
 
       format.json do
-        load_events
-        pager_json("events/_events", @events.count)
+        render json: {
+          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
+        }
       end
     end
   end
@@ -36,7 +51,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   private
 
   def load_events
-    @events = Event.in_projects(@projects.pluck(:id))
+    @events = Event.in_projects(@projects)
     @events = @event_filter.apply_filter(@events).with_associations
     @events = @events.limit(20).offset(params[:offset] || 0)
   end
