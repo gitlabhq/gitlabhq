@@ -46,21 +46,23 @@
       , 500)
 
   filterResults: (form) =>
-    $('.issues-holder').css("opacity", '0.5')
-    form_action = form.attr('action')
-    form_data = form.serialize()
-    issues_url = form_action + ("#{if form_action.indexOf("?") < 0 then '?' else '&'}") + form_data
+    $('.issues-holder, .merge-requests-holder').css("opacity", '0.5')
+    formAction = form.attr('action')
+    formData = form.serialize()
+    issuesUrl = formAction
+    issuesUrl += ("#{if formAction.indexOf("?") < 0 then '?' else '&'}")
+    issuesUrl += formData
 
     $.ajax
       type: "GET"
-      url: form_action
-      data: form_data
+      url: formAction
+      data: formData
       complete: ->
-        $('.issues-holder').css("opacity", '1.0')
+        $('.issues-holder, .merge-requests-holder').css("opacity", '1.0')
       success: (data) ->
-        $('.issues-holder').html(data.html)
+        $('.issues-holder, .merge-requests-holder').html(data.html)
         # Change url so if user reload a page - search results are saved
-        history.replaceState {page: issues_url}, document.title, issues_url
+        history.replaceState {page: issuesUrl}, document.title, issuesUrl
         Issues.reload()
       dataType: "json"
 
