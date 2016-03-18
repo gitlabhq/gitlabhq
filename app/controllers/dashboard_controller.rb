@@ -3,7 +3,7 @@ class DashboardController < Dashboard::ApplicationController
   include MergeRequestsAction
 
   before_action :event_filter, only: :activity
-  before_action :projects, only: [:issues, :merge_requests]
+  before_action :projects, only: [:issues, :merge_requests, :labels, :milestones]
 
   respond_to :html
 
@@ -16,6 +16,22 @@ class DashboardController < Dashboard::ApplicationController
       format.json do
         load_events
         pager_json("events/_events", @events.count)
+      end
+    end
+  end
+
+  def labels
+    respond_to do |format|
+      format.json do
+        render json: view_context.projects_labels_options
+      end
+    end
+  end
+
+  def milestones
+    respond_to do |format|
+      format.json do
+        render json: view_context.projects_milestones_options
       end
     end
   end

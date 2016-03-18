@@ -56,12 +56,15 @@ module MilestonesHelper
 
     epoch = DateTime.parse('1970-01-01')
     grouped_milestones = GlobalMilestone.build_collection(milestones)
-    grouped_milestones = grouped_milestones.sort_by { |x| x.due_date.nil? ? epoch : x.due_date }
-    grouped_milestones.unshift(Milestone::None)
-    grouped_milestones.unshift(Milestone::Any)
-    grouped_milestones.unshift(Milestone::Upcoming)
+    grouped_milestones.sort_by { |x| x.due_date.nil? ? epoch : x.due_date }
+  end
 
-    options_from_collection_for_select(grouped_milestones, 'name', 'title', params[:milestone_title])
+  def milestones_filter_dropdown_path
+    if @project
+      namespace_project_milestones_path(@project.namespace, @project, :json)
+    else
+      milestones_dashboard_path(:json)
+    end
   end
 
   def milestone_remaining_days(milestone)
