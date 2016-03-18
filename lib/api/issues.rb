@@ -82,7 +82,7 @@ module API
       #   GET /projects/:id/issues?milestone=1.0.0&state=closed
       #   GET /issues?iid=42
       get ":id/issues" do
-        issues = user_project.issues
+        issues = user_project.issues.visible_to_user(current_user)
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
         issues = filter_by_iid(issues, params[:iid]) unless params[:iid].nil?
@@ -104,6 +104,7 @@ module API
       #   GET /projects/:id/issues/:issue_id
       get ":id/issues/:issue_id" do
         @issue = user_project.issues.find(params[:issue_id])
+        not_found! unless can?(current_user, :read_issue, @issue)
         present @issue, with: Entities::Issue
       end
 

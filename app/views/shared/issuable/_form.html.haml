@@ -19,6 +19,7 @@
         - else
           Start the title with <code>[WIP]</code> or <code>WIP:</code> to prevent a
           <strong>Work In Progress</strong> merge request from being merged before it's ready.
+
 .form-group.detail-page-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
@@ -29,6 +30,15 @@
       = render 'projects/notes/hints'
       .clearfix
       .error-alert
+
+- if issuable.is_a?(Issue) && !issuable.project.private?
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :confidential do
+          = f.check_box :confidential
+          This issue is confidential and should only be visible to team members
+
 - if can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
   %hr
   .form-group

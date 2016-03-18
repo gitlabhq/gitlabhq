@@ -1,12 +1,13 @@
 module Gitlab
   class SearchResults
-    attr_reader :query
+    attr_reader :current_user, :query
 
     # Limit search results by passed projects
     # It allows us to search only for projects user has access to
     attr_reader :limit_projects
 
-    def initialize(limit_projects, query)
+    def initialize(current_user, limit_projects, query)
+      @current_user = current_user
       @limit_projects = limit_projects || Project.all
       @query = Shellwords.shellescape(query) if query.present?
     end
@@ -58,7 +59,7 @@ module Gitlab
     end
 
     def issues
-      issues = Issue.where(project_id: project_ids_relation)
+      issues = Issue.visible_to_user(current_user).where(project_id: project_ids_relation)
 
       if query =~ /#(\d+)\z/
         issues = issues.where(iid: $1)

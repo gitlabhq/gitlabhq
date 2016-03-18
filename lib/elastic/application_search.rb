@@ -113,7 +113,9 @@ module Elastic
       def project_ids_filter(query_hash, project_ids)
         if project_ids
           query_hash[:query][:filtered][:filter] = {
-            and: [ { terms: { project_id: project_ids } } ]
+            bool: {
+              must: [ { terms: { project_id: project_ids } } ]
+            }
           }
         end
 

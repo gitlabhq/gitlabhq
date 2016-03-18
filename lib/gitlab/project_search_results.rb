@@ -2,7 +2,8 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(project, query, repository_ref = nil)
+    def initialize(current_user, project, query, repository_ref = nil)
+      @current_user = current_user
       @project = project
       @repository_ref = if repository_ref.present?
                           repository_ref

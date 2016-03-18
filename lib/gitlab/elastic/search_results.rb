@@ -1,13 +1,14 @@
 module Gitlab
   module Elastic
     class SearchResults
-      attr_reader :query
+      attr_reader :current_user, :query
 
       # Limit search results by passed project ids
       # It allows us to search only for projects user has access to
       attr_reader :limit_project_ids
 
-      def initialize(limit_project_ids, query)
+      def initialize(current_user, limit_project_ids, query)
+        @current_user = current_user
         @limit_project_ids = limit_project_ids || Project.all
         @query = Shellwords.shellescape(query) if query.present?
       end
@@ -63,7 +64,8 @@ module Gitlab
 
       def issues
         opt = {
-          project_ids: limit_project_ids
+          project_ids: limit_project_ids,
+          current_user: current_user
         }
 
         Issue.elastic_search(query, options: opt)

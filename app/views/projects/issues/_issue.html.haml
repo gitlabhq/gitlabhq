@@ -5,6 +5,7 @@
 
   .issue-title
     %span.issue-title-text
+      = confidential_icon(issue)
       = link_to_gfm issue.title, issue_path(issue), class: "title"
     %ul.controls.light
       - if issue.closed?
