@@ -327,8 +327,7 @@ describe Gitlab::GitAccess, lib: true do
           describe 'git annex enabled, push to master branch' do
             before do
               allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true)
-              create(:ci_commit, project: project, sha: '570e7b2abdd848b95f2f578043fc23bd6f6fd24d', ref: 'refs/heads/master')
-              project.repository.add_branch(user, 'synced/master', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+              allow_any_instance_of(Commit).to receive(:safe_message) { 'git-annex in me@host:~/repo' }
             end
 
             it { expect(access.push_access_check(git_annex_master_changes)).to be_allowed }
