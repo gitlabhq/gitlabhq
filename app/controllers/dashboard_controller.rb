@@ -21,17 +21,24 @@ class DashboardController < Dashboard::ApplicationController
   end
 
   def labels
+    labels = Label.where(project_id: @projects).select(:title, :color).uniq(:title)
+
     respond_to do |format|
       format.json do
-        render json: view_context.projects_labels_options
+        render json: labels
       end
     end
   end
 
   def milestones
+    milestones = Milestone.where(project_id: @projects).active
+    epoch = DateTime.parse('1970-01-01')
+    grouped_milestones = GlobalMilestone.build_collection(milestones)
+    grouped_milestones = grouped_milestones.sort_by { |x| x.due_date.nil? ? epoch : x.due_date }
+
     respond_to do |format|
       format.json do
-        render json: view_context.projects_milestones_options
+        render json: grouped_milestones
       end
     end
   end
