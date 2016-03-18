@@ -202,8 +202,10 @@ module Gitlab
           return build_status_object(true)
         end
 
+        blank_oldrev = Gitlab::Git.blank_ref?(oldrev)
+
         # if oldrev is blank, the branch was just created
-        oldrev = project.default_branch if Gitlab::Git.blank_ref?(oldrev)
+        oldrev = project.default_branch if blank_oldrev
 
         commits =
           if oldrev
@@ -213,7 +215,7 @@ module Gitlab
           end
 
         commits.each do |commit|
-          next if commit_from_annex_sync?(commit.safe_message)
+          next if commit_from_annex_sync?(commit.safe_message) || (blank_oldrev && old_commit?(commit))
 
           if status_object = check_commit(commit, git_hook)
             return status_object
@@ -372,6 +374,10 @@ module Gitlab
 
       # Commit message starting with <git-annex in > so avoid git hooks on this
       commit_message.start_with?('git-annex in')
+    end
+
+    def old_commit?(commit)
+      commit.refs(project.repository).any?
     end
   end
 end
