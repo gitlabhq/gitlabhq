@@ -43,6 +43,7 @@ v 8.6.0 (unreleased)
   - Increase the notes polling timeout over time (Roberto Dip)
   - Add shortcut to toggle markdown preview (Florent Baldino)
   - Show labels in dashboard and group milestone views
+  - Fix an issue when the target branch of a MR had been deleted
   - Add main language of a project in the list of projects (Tiago Botelho)
   - Add #upcoming filter to Milestone filter (Tiago Botelho)
   - Add ability to show archived projects on dashboard, explore and group pages
