@@ -85,7 +85,6 @@ module VisibilityLevelHelper
   end
 
   def skip_level?(form_model, level)
-    form_model.is_a?(Project) &&
-    !form_model.visibility_level_allowed?(level)
+    form_model.is_a?(Project) && !form_model.visibility_level_allowed?(level)
   end
 end

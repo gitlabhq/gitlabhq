@@ -1,24 +1,17 @@
 require 'spec_helper'
 
 describe PersonalProjectsFinder do
-  let(:source_user) { create(:user) }
-  let(:current_user) { create(:user) }
-
-  let(:finder) { described_class.new(source_user) }
-
-  let!(:public_project) do
-    create(:project, :public, namespace: source_user.namespace, name: 'A',
-                              path: 'A')
-  end
+  let(:source_user)     { create(:user) }
+  let(:current_user)    { create(:user) }
+  let(:finder)          { described_class.new(source_user) }
+  let!(:public_project) { create(:project, :public, namespace: source_user.namespace) }
 
   let!(:private_project) do
-    create(:project, :private, namespace: source_user.namespace, name: 'B',
-                               path: 'B')
+    create(:project, :private, namespace: source_user.namespace, path: 'mepmep')
   end
 
   let!(:internal_project) do
-    create(:project, :internal, namespace: source_user.namespace, name: 'c',
-                               path: 'C')
+    create(:project, :internal, namespace: source_user.namespace, path: 'C')
   end
 
   before do

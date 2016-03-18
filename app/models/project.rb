@@ -73,7 +73,7 @@ class Project < ActiveRecord::Base
     update_column(:last_activity_at, self.created_at)
   end
 
-  # update visibility_levet of forks
+  # update visibility_level of forks
   after_update :update_forks_visibility_level
   def update_forks_visibility_level
     return unless visibility_level < visibility_level_was
@@ -197,6 +197,7 @@ class Project < ActiveRecord::Base
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+  validate :visibility_level_allowed_in_group
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -444,6 +445,12 @@ class Project < ActiveRecord::Base
     end
   rescue
     errors[:base] << ("Can't check your ability to create project")
+  end
+
+  def visibility_level_allowed_in_group
+    unless visibility_level_allowed?
+      self.errors.add(:visibility_level, "#{self.visibility_level} is not allowed in a #{self.group.visibility_level} group.")
+    end
   end
 
   def to_param
@@ -961,9 +968,14 @@ class Project < ActiveRecord::Base
     issues.opened.count
   end
 
-  def visibility_level_allowed?(level)
-    allowed_by_forks = forked? ? Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level.to_i) : true
-    allowed_by_groups = group.present? ? level.to_i <= group.visibility_level : true
+  def visibility_level_allowed?(level = self.visibility_level)
+    allowed_by_forks =  if forked?
+                          Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level)
+                        else
+                          true
+                        end
+
+    allowed_by_groups = group.present? ? level <= group.visibility_level : true
 
     allowed_by_forks && allowed_by_groups
   end

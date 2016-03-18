@@ -9,13 +9,8 @@ module Projects
 
       @project = Project.new(params)
 
-      # Make sure that the user is allowed to use the specified visibility
-      # level
-
-      unless visibility_level_allowed?
-        deny_visibility_level(@project)
-        return @project
-      end
+      # Make sure that the user is allowed to use the specified visibility level
+      return @project unless visibility_level_allowed?
 
       # Set project name from path
       if @project.name.present? && @project.path.present?
@@ -55,9 +50,7 @@ module Projects
         @project.save
 
         if @project.persisted? && !@project.import?
-          unless @project.create_repository
-            raise 'Failed to create repository'
-          end
+          raise 'Failed to create repository' unless @project.create_repository
         end
       end
 

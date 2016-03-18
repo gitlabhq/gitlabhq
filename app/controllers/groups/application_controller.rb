@@ -9,7 +9,7 @@ class Groups::ApplicationController < ApplicationController
   end
 
   def authorize_read_group!
-    unless @group and can?(current_user, :read_group, @group)
+    unless @group && can?(current_user, :read_group, @group)
       if current_user.nil?
         return authenticate_user!
       else

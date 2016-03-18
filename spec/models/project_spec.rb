@@ -571,12 +571,8 @@ describe Project, models: true do
     end
 
     context 'when checking on forked project' do
-      let(:forked_project) { create :forked_project_with_submodules }
-
-      before do
-        forked_project.build_forked_project_link(forked_to_project_id: forked_project.id, forked_from_project_id: project.id)
-        forked_project.save
-      end
+      let(:project)        { create(:project, :internal) }
+      let(:forked_project) { create(:project, forked_from_project: project) }
 
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }

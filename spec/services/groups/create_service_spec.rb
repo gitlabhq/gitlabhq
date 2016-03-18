@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Groups::CreateService, services: true do
-    let!(:user)         { create(:user) }
-    let!(:group_params) { { path: "group_path", visibility_level: Gitlab::VisibilityLevel::PUBLIC } }
+  let!(:user)         { create(:user) }
+  let!(:group_params) { { path: "group_path", visibility_level: Gitlab::VisibilityLevel::PUBLIC } }
 
   describe "execute" do
     let!(:service) { described_class.new(user, group_params ) }

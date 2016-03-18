@@ -295,7 +295,7 @@ class Ability
     end
 
     def can_read_group?(user, group)
-        user.admin? || group.public? || (group.internal? && !user.external?) || group.users.include?(user) ||
+      user.admin? || group.public? || (group.internal? && !user.external?) || group.users.include?(user) ||
         ProjectsFinder.new.execute(user, group: group).any?
     end
 

@@ -105,17 +105,6 @@ class GroupsController < Groups::ApplicationController
     @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity
   end
 
-  # Dont allow unauthorized access to group
-  def authorize_read_group!
-    unless can?(current_user, :read_group, @group)
-      if current_user.nil?
-        return authenticate_user!
-      else
-        return render_404
-      end
-    end
-  end
-
   def authorize_create_group!
     unless can?(current_user, :create_group, nil)
       return render_404
