@@ -99,13 +99,23 @@ describe Todo, models: true do
   end
 
   describe '#target' do
-    it 'returns an instance of Commit for commits' do
-      subject.project = project
-      subject.target_type = 'Commit'
-      subject.commit_id = commit.id
+    context 'for commits' do
+      it 'returns an instance of Commit when exists' do
+        subject.project = project
+        subject.target_type = 'Commit'
+        subject.commit_id = commit.id
 
-      expect(subject.target).to be_a(Commit)
-      expect(subject.target).to eq commit
+        expect(subject.target).to be_a(Commit)
+        expect(subject.target).to eq commit
+      end
+
+      it 'returns nil when does not exists' do
+        subject.project = project
+        subject.target_type = 'Commit'
+        subject.commit_id = 'xxxx'
+
+        expect(subject.target).to be_nil
+      end
     end
 
     it 'returns the issuable for issuables' do

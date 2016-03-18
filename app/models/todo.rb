@@ -61,14 +61,10 @@ class Todo < ActiveRecord::Base
   # override to return commits, which are not active record
   def target
     if for_commit?
-      project.commit(commit_id)
+      project.commit(commit_id) rescue nil
     else
       super
     end
-  # Temp fix to prevent app crash
-  # if note commit id doesn't exist
-  rescue
-    nil
   end
 
   def target_reference
