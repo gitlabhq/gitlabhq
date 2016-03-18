@@ -9,7 +9,8 @@ module Commits
       @commit = params[:commit]
       @create_merge_request = params[:create_merge_request].present?
 
-      validate and commit
+      check_push_permissions unless @create_merge_request
+      commit
     rescue Repository::CommitError, Gitlab::Git::Repository::InvalidBlobName, GitHooksService::PreReceiveError,
            ValidationError, ReversionError => ex
       error(ex.message)
@@ -45,11 +46,11 @@ module Commits
       end
     end
 
-    def validate
+    def check_push_permissions
       allowed = ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(@target_branch)
 
       unless allowed
-        raise_error('You are not allowed to push into this branch')
+        raise ValidationError.new('You are not allowed to push into this branch')
       end
 
       true
