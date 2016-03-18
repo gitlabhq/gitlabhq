@@ -8,7 +8,6 @@ class @MergeRequestWidget
 
   constructor: (@opts) ->
     @firstCICheck = true
-    modal = $('#modal_merge_info').modal(show: false)
     @getCIStatus()
     notifyPermissions()
     @readyForCICheck = true
