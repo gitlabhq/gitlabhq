@@ -176,4 +176,12 @@ class Issue < ActiveRecord::Base
       self.related_branches(current_user).empty? &&
       self.closed_by_merge_requests(current_user).empty?
   end
+
+  def overdue?
+    if due_date
+      due_date.past?
+    else
+      false
+    end
+  end
 end
