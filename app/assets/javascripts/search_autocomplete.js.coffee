@@ -20,15 +20,15 @@ class @SearchAutocomplete
     # Dropdown Element
     @dropdown = @wrap.find('.dropdown')
 
-    @locationBadgeEl = @$('.search-location-badge')
-    @locationText = @$('.location-text')
-    @scopeInputEl = @$('#scope')
-    @searchInput = @$('.search-input')
-    @projectInputEl = @$('#search_project_id')
-    @groupInputEl = @$('#group_id')
-    @searchCodeInputEl = @$('#search_code')
-    @repositoryInputEl = @$('#repository_ref')
-    @scopeInputEl = @$('#scope')
+    @locationBadgeEl = @getElement('.search-location-badge')
+    @locationText = @getElement('.location-text')
+    @scopeInputEl = @getElement('#scope')
+    @searchInput = @getElement('.search-input')
+    @projectInputEl = @getElement('#search_project_id')
+    @groupInputEl = @getElement('#group_id')
+    @searchCodeInputEl = @getElement('#search_code')
+    @repositoryInputEl = @getElement('#repository_ref')
+    @scopeInputEl = @getElement('#scope')
 
     @saveOriginalState()
 
@@ -36,7 +36,8 @@ class @SearchAutocomplete
 
     @bindEvents()
 
-  $: (selector) ->
+  # Finds an element inside wrapper element
+  getElement: (selector) ->
     @wrap.find(selector)
 
   saveOriginalState: ->
@@ -60,11 +61,9 @@ class @SearchAutocomplete
     @searchInput.on 'blur', @onSearchInputBlur
 
   enableAutocomplete: ->
-    self = @
-    @query = "?project_id=" + @projectId + "&project_ref=" + @projectRef
-    dropdownMenu = self.dropdown.find('.dropdown-menu')
-
-    @searchInput.glDropdown(
+    dropdownMenu = @dropdown.find('.dropdown-menu')
+    _this = @
+    @searchInput.glDropdown
         filterInputBlur: false
         filterable: true
         filterRemote: true
@@ -73,13 +72,11 @@ class @SearchAutocomplete
         search:
           fields: ['text']
         data: (term, callback) ->
-          $.ajax
-            url: self.autocompletePath + self.query
-            data:
+          $.get(_this.autocompletePath, {
+              project_id: _this.projectId
+              project_ref: _this.projectRef
               term: term
-            beforeSend: ->
-              # dropdownMenu.addClass 'is-loading'
-            success: (response) ->
+            }, (response) ->
               data = []
 
               # Save groups ordering according to server response
@@ -101,16 +98,12 @@ class @SearchAutocomplete
                   data.push
                     text: item.label
                     url: item.url
-
               callback(data)
-            complete: ->
-              # dropdownMenu.removeClass 'is-loading'
-
           )
 
     @dropdown.addClass('open')
     @searchInput.removeClass('disabled')
-    @autocomplete = true;
+    @autocomplete = true
 
   onDropdownOpen: (e) =>
     @dropdown.dropdown('toggle')
@@ -158,7 +151,7 @@ class @SearchAutocomplete
     inputs = Object.keys @originalState
 
     for input in inputs
-      @$("##{input}").val(@originalState[input])
+      @getElement("##{input}").val(@originalState[input])
 
 
     if @originalState._location is ''
@@ -200,6 +193,6 @@ class @SearchAutocomplete
     @resetSearchState()
 
   disableAutocomplete: ->
-    if @autocomplete isnt undefined
+    if @autocomplete?
       @searchInput.addClass('disabled')
-    @autocomplete = undefined
+    @autocomplete = null

@@ -20,7 +20,7 @@ class GitLabDropdownFilter
         blur_field = @shouldBlur e.keyCode
         search_text = @input.val()
 
-        if blur_field && @filterInputBlur
+        if blur_field and @filterInputBlur
           @input.blur()
 
         if @options.remote
@@ -88,7 +88,7 @@ class GitLabDropdown
     # Set Defaults
     {
       # If no input is passed create a default one
-      @filterInput = @$(FILTER_INPUT)
+      @filterInput = @getElement(FILTER_INPUT)
       @highlight = false
       @filterInputBlur = true
     } = @options
@@ -97,8 +97,7 @@ class GitLabDropdown
 
     # If selector was passed
     if _.isString(@filterInput)
-      @filterInput = @$(@filterInput)
-
+      @filterInput = @getElement(@filterInput)
 
     search_fields = if @options.search then @options.search.fields else [];
 
@@ -156,8 +155,9 @@ class GitLabDropdown
         if self.options.clicked
           self.options.clicked()
 
-  $: (selector) ->
-    $(selector, @dropdown)
+  # Finds an element inside wrapper element
+  getElement: (selector) ->
+    @dropdown.find selector
 
   toggleLoading: ->
     $('.dropdown-menu', @dropdown).toggleClass LOADING_CLASS
@@ -268,12 +268,9 @@ class GitLabDropdown
 
   highlightTextMatches: (text, term) ->
     occurrences = fuzzaldrinPlus.match(text, term)
-    textArr = text.split('')
-    textArr.forEach (character, i, textArr) ->
-      if i in occurrences
-        textArr[i] = "<b>#{character}</b>"
-
-    textArr.join ''
+    text.split('').map((character, i) ->
+      if i in occurrences then "<b>#{character}</b>" else character
+    ).join('')
 
   noResults: ->
     html = "<li>"
