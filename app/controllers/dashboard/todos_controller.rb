@@ -1,5 +1,5 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
-  before_action :find_todos, only: [:index, :destroy_all]
+  before_action :find_todos, only: [:index, :destroy, :destroy_all]
 
   def index
     @todos = @todos.page(params[:page]).per(PER_PAGE)
@@ -8,9 +8,14 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def destroy
     todo.done!
 
+    todo_notice = 'Todo was successfully marked as done.'
+
     respond_to do |format|
-      format.html { redirect_to dashboard_todos_path, notice: 'Todo was successfully marked as done.' }
+      format.html { redirect_to dashboard_todos_path, notice: todo_notice }
       format.js { render nothing: true }
+      format.json do
+        render json: { count: @todos.size, done_count: current_user.todos.done.count }
+      end
     end
   end
 
@@ -20,6 +25,10 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
       format.js { render nothing: true }
+      format.json do
+        find_todos
+        render json: { count: @todos.size, done_count: current_user.todos.done.count }
+      end
     end
   end
 

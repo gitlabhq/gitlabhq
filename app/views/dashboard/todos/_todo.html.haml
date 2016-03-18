@@ -16,7 +16,9 @@
 
     - if todo.pending?
       .todo-actions.pull-right
-        = link_to 'Done', [:dashboard, todo], method: :delete, class: 'btn'
+        = link_to [:dashboard, todo], method: :delete, class: 'btn btn-loading done-todo' do
+          Done
+          = icon('spinner spin')
 
     .todo-body
       .todo-note
