@@ -11,7 +11,7 @@ class @LabelsSelect
       newColorField = $('#new_label_color')
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
-      defaultLabel = $dropdown.text().trim()
+      defaultLabel = $dropdown.data('default-label')
 
       if newLabelField.length
         $('.suggest-colors-dropdown a').on 'click', (e) ->
