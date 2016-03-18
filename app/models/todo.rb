@@ -29,8 +29,8 @@ class Todo < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :action, :project, :target_type, :user, presence: true
-  validates :target_id, presence: true, if: ->(t) { t.target_type.present? && t.target_type != 'Commit' }
-  validates :commit_id, presence: true, if: ->(t) { t.target_type.present? && t.target_type == 'Commit' }
+  validates :target_id, presence: true, unless: :for_commit?
+  validates :commit_id, presence: true, if: :for_commit?
 
   default_scope { reorder(id: :desc) }
 
