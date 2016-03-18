@@ -1,7 +1,7 @@
 // Common
 .diff-file {
   border: 1px solid $border-color;
-  border-top: none;
+  margin-bottom: $gl-padding;
 
   .diff-header {
     position: relative;
@@ -359,5 +359,13 @@
 
   &.diff-line-num {
     border-color: $border;
+  }
+}
+
+.files {
+  margin-top: -1px;
+
+  .diff-file:last-child {
+    margin-bottom: 0;
   }
 }
