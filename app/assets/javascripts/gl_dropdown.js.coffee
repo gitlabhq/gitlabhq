@@ -1,13 +1,30 @@
 class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
+  HAS_VALUE_CLASS = "has-value"
 
   constructor: (@dropdown, @options) ->
-    @input = @dropdown.find(".dropdown-input .dropdown-input-field")
+    @input = @dropdown.find('.dropdown-input .dropdown-input-field')
+    $inputContainer = @input.parent()
+    $clearButton = $inputContainer.find('.js-dropdown-input-clear')
+
+    # Clear click
+    $clearButton.on 'click', (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      @input
+        .val('')
+        .trigger('keyup')
+        .focus()
 
     # Key events
     timeout = ""
     @input.on "keyup", (e) =>
-      if e.keyCode is 13 && @input.val() isnt ""
+      if @input.val() isnt "" and !$inputContainer.hasClass HAS_VALUE_CLASS
+        $inputContainer.addClass HAS_VALUE_CLASS
+      else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
+        $inputContainer.removeClass HAS_VALUE_CLASS
+
+      if e.keyCode is 13 and @input.val() isnt ""
         if @options.enterCallback
           @options.enterCallback()
         return

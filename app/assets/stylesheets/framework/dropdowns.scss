@@ -270,6 +270,22 @@
     font-size: 12px;
     pointer-events: none;
   }
+
+  .dropdown-input-clear {
+    display: none;
+    cursor: pointer;
+    pointer-events: all;
+  }
+
+  &.has-value {
+    .dropdown-input-clear {
+      display: block;
+    }
+
+    .dropdown-input-search {
+      display: none;
+    }
+  }
 }
 
 .dropdown-input-field {
@@ -286,13 +302,13 @@
     border-color: $dropdown-input-focus-border;
     box-shadow: 0 0 4px $dropdown-input-focus-shadow;
 
-    + .fa {
+    ~ .fa {
       color: $dropdown-link-color;
     }
   }
 
   &:hover {
-    + .fa {
+    ~ .fa {
       color: $dropdown-link-color;
     }
   }
