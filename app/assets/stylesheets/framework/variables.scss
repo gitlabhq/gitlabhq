@@ -10,36 +10,37 @@ $gutter_inner_width: 258px;
 /*
  * UI elements
  */
-$border-color: #efeff1;
+$border-color:       #efeff1;
 $table-border-color: #eef0f2;
-$background-color: #faf9f9;
+$background-color:   #faf9f9;
 
 /*
  * Text
  */
-$gl-font-size: 15px;
-$gl-title-color: #333;
-$gl-text-color: #555;
+$gl-font-size:         15px;
+$gl-title-color:       #333;
+$gl-text-color:        #555;
+$gl-text-green:        #4a2;
+$gl-text-red:          #d12f19;
+$gl-text-orange:       #d90;
+$gl-link-color:        #3084bb;
+$gl-dark-link-color:   #333;
 $gl-placeholder-color: #8f8f8f;
-$gl-text-green: #4a2;
-$gl-text-red: #d12f19;
-$gl-text-orange: #d90;
-$gl-header-color: $gl-title-color;
-$gl-link-color: #333c48;
-$gl-gray: $gl-text-color;
+$gl-gray:              $gl-text-color;
+$gl-header-color:      $gl-title-color;
 
 /*
  * Lists
  */
-$list-font-size: $gl-font-size;
+$list-font-size:   $gl-font-size;
 $list-title-color: $gl-title-color;
-$list-text-color: $gl-text-color;
+$list-text-color:  $gl-text-color;
 
 /*
  * Markdown
  */
-$md-text-color: #444;
-$md-link-color: #3084bb;
+$md-text-color: $gl-text-color;
+$md-link-color: $gl-link-color;
 
 /*
  * Code

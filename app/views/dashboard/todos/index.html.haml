@@ -51,7 +51,7 @@
         .panel-heading
           = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
 
-        %ul.well-list.todos-list
+        %ul.content-list.todos-list
           = render group[1]
     = paginate @todos, theme: "gitlab"
   - else
