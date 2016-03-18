@@ -780,4 +780,34 @@ describe Repository, models: true do
       end
     end
   end
+
+  describe '#build_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'builds the caches if they do not already exist' do
+      expect(cache).to receive(:exist?).
+        exactly(repository.cache_keys.length).
+        times.
+        and_return(false)
+
+      repository.cache_keys.each do |key|
+        expect(repository).to receive(key)
+      end
+
+      repository.build_cache
+    end
+
+    it 'does not build any caches that already exist' do
+      expect(cache).to receive(:exist?).
+        exactly(repository.cache_keys.length).
+        times.
+        and_return(true)
+
+      repository.cache_keys.each do |key|
+        expect(repository).to_not receive(key)
+      end
+
+      repository.build_cache
+    end
+  end
 end
