@@ -117,9 +117,11 @@ describe Todo, models: true do
 
   describe '#to_reference' do
     it 'returns the short commit id for commits' do
+      subject.project = project
       subject.target_type = 'Commit'
       subject.commit_id = commit.id
-      expect(subject.to_reference).to eq Commit.truncate_sha(commit.id)
+
+      expect(subject.to_reference).to eq commit.short_id
     end
 
     it 'returns reference for issuables' do

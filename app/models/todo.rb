@@ -73,7 +73,7 @@ class Todo < ActiveRecord::Base
 
   def to_reference
     if for_commit?
-      Commit.truncate_sha(commit_id)
+      target.short_id
     else
       target.to_reference
     end
