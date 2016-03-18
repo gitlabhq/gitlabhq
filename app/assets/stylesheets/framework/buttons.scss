@@ -208,3 +208,13 @@
     background-color: #e4e7ed !important;
   }
 }
+
+.btn-loading {
+  &:not(.disabled) .fa {
+    display: none;
+  }
+
+  .fa {
+    margin-right: 5px;
+  }
+}
