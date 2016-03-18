@@ -56,7 +56,7 @@ class @UsersSelect
         selectable: true
         fieldName: $dropdown.data('field-name')
         toggleLabel: (selected) ->
-          if selected && selected.id?
+          if selected && 'id' of selected
             selected.name
           else
             defaultLabel
