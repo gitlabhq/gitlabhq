@@ -1,21 +1,23 @@
 class @MilestoneSelect
   constructor: ->
     $('.js-milestone-select').each (i, dropdown) ->
-      projectId = $(dropdown).data('project-id')
-      milestonesUrl = $(dropdown).data('milestones')
-      selectedMilestone = $(dropdown).data('selected')
-      showNo = $(dropdown).data('show-no')
-      showAny = $(dropdown).data('show-any')
-      useId = $(dropdown).data('use-id')
+      $dropdown = $(dropdown)
+      projectId = $dropdown.data('project-id')
+      milestonesUrl = $dropdown.data('milestones')
+      selectedMilestone = $dropdown.data('selected')
+      showNo = $dropdown.data('show-no')
+      showAny = $dropdown.data('show-any')
+      useId = $dropdown.data('use-id')
+      defaultLabel = $dropdown.text().trim()
 
-      $(dropdown).glDropdown(
+      $dropdown.glDropdown(
         data: (term, callback) ->
           $.ajax(
             url: milestonesUrl
           ).done (data) ->
             if showNo
               data.unshift(
-                id: "0"
+                id: '0'
                 title: 'No Milestone'
               )
 
@@ -25,14 +27,19 @@ class @MilestoneSelect
               )
 
             if data.length > 2
-              data.splice 2, 0, "divider"
+              data.splice 2, 0, 'divider'
 
             callback(data)
         filterable: true
         search:
           fields: ['title']
         selectable: true
-        fieldName: $(dropdown).data('field-name')
+        toggleLabel: (selected) ->
+          if selected && 'id' of selected
+            selected.title
+          else
+            defaultLabel
+        fieldName: $dropdown.data('field-name')
         text: (milestone) ->
           milestone.title
         id: (milestone) ->
@@ -40,12 +47,18 @@ class @MilestoneSelect
             if milestone.title isnt "Any milestone"
               milestone.title
             else
-              ""
+              ''
           else
             milestone.id
         isSelected: (milestone) ->
           milestone.title is selectedMilestone
         clicked: ->
-          if $(dropdown).hasClass "js-filter-submit"
-            $(dropdown).parents('form').submit()
+          page = $('body').data 'page'
+          isIssueIndex = page is 'projects:issues:index'
+          isMRIndex = page is page is 'projects:merge_requests:index'
+
+          if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+            Issues.filterResults $dropdown.closest('form')
+          else if $dropdown.hasClass 'js-filter-submit'
+            $dropdown.closest('form').submit()
       )
