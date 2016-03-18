@@ -22,6 +22,7 @@
       = icon('angle-double-left')
 
     .issue-meta
+      = confidential_icon(@issue)
       %strong.identifier
         Issue ##{@issue.iid}
       %span.creator

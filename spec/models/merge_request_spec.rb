@@ -150,6 +150,7 @@ describe MergeRequest, models: true do
     let(:commit2) { double('commit2', safe_message: "Fixes #{issue1.to_reference}") }
 
     before do
+      subject.project.team << [subject.author, :developer]
       allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
     end
 
