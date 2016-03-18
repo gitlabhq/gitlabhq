@@ -6,11 +6,8 @@ module MergeRequests
     end
 
     def create_title_change_note(issuable, old_title)
-      wipless_old_title = old_title.sub(MergeRequest::WIP_REGEX, "")
-      wipless_new_title = issuable.title.sub(MergeRequest::WIP_REGEX, "")
-      
-      removed_wip = wipless_old_title == issuable.title
-      added_wip = wipless_new_title == old_title
+      removed_wip = old_title =~ MergeRequest::WIP_REGEX && !issuable.work_in_progress?
+      added_wip = old_title !~ MergeRequest::WIP_REGEX && issuable.work_in_progress?
 
       if removed_wip
         SystemNoteService.remove_merge_request_wip(issuable, issuable.project, current_user)

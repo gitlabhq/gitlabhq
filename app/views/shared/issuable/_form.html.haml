@@ -14,15 +14,20 @@
     - if issuable.is_a?(MergeRequest)
       %p.help-block
         .js-wip-explanation
-          %a{href: "#", class: "js-remove-wip", data: {  }}
-            Remove the <code>WIP</code> prefix from the title
+          %a.js-toggle-wip{href: ""}
+            Remove the
+            %code WIP:
+            prefix from the title
           to allow this
-          <strong>Work In Progress</strong> merge request to be merged when it's ready.
+          %strong Work In Progress
+          merge request to be merged when it's ready.
         .js-no-wip-explanation
-          %a{href: "#", class: "js-add-wip"}
-            Start the title with <code>[WIP]</code> or <code>WIP:</code>
+          %a.js-toggle-wip{href: ""}
+            Start the title with
+            %code WIP:
           to prevent a
-          <strong>Work In Progress</strong> merge request from being merged before it's ready.
+          %strong Work In Progress
+          merge request from being merged before it's ready.
 .form-group.detail-page-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10

@@ -145,13 +145,13 @@ class SystemNoteService
   end
 
   def self.remove_merge_request_wip(noteable, project, author)
-    body = 'Unmarked this merge request as Work In Progress'
+    body = 'Unmarked this merge request as a Work In Progress'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
   def self.add_merge_request_wip(noteable, project, author)
-    body = 'Marked this merge request as **Work In Progress**'
+    body = 'Marked this merge request as a **Work In Progress**'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end

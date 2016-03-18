@@ -1,5 +1,5 @@
 class @IssuableForm
-  wipRegex: /^\[?WIP(\]|:| )\s*/i
+  wipRegex: /^\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i
   constructor: (@form) ->
     GitLab.GfmAutoComplete.setup()
     new UsersSelect()
@@ -35,39 +35,39 @@ class @IssuableForm
     @descriptionField.data("autosave").reset()
 
   initWip: ->
-    return unless @form.find(".js-wip-explanation").length
-    
-    @form.on "click", ".js-remove-wip", @removeWip
+    @$wipExplanation = @form.find(".js-wip-explanation")
+    @$noWipExplanation = @form.find(".js-no-wip-explanation")
+    return unless @$wipExplanation.length and @$noWipExplanation.length
 
-    @form.on "click", ".js-add-wip", @addWip
+    @form.on "click", ".js-toggle-wip", @toggleWip
 
-    @titleField.on "change", @renderWipExplanation
+    @titleField.on "keyup blur", @renderWipExplanation
 
     @renderWipExplanation()
 
   workInProgress: ->
-    @titleField.val().match(@wipRegex)
+    @wipRegex.test @titleField.val()
 
   renderWipExplanation: =>
     if @workInProgress()
-      @form.find(".js-wip-explanation").show()
-      @form.find(".js-no-wip-explanation").hide()
+      @$wipExplanation.show()
+      @$noWipExplanation.hide()
     else
-      @form.find(".js-wip-explanation").hide()
-      @form.find(".js-no-wip-explanation").show()
+      @$wipExplanation.hide()
+      @$noWipExplanation.show()
 
-  removeWip: (event) =>
+  toggleWip: (event) =>
     event.preventDefault()
 
-    return unless @workInProgress()
+    if @workInProgress()
+      @removeWip()
+    else
+      @addWip()
+
+    @renderWipExplanation()
+
+  removeWip: ->
     @titleField.val @titleField.val().replace(@wipRegex, "")
 
-    @renderWipExplanation()
-
-  addWip: (event) =>
-    event.preventDefault()
-
-    return if @workInProgress()
+  addWip: ->
     @titleField.val "WIP: #{@titleField.val()}"
-
-    @renderWipExplanation()
