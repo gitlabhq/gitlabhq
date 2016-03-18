@@ -2,12 +2,23 @@ module Gitlab
   class Redis
     attr_reader :url
 
+    # To be thread-safe we must be careful when writing the class instance
+    # variables @url and @pool. Because @pool depends on @url we need two
+    # mutexes to prevent deadlock.
+    URL_MUTEX = Mutex.new
+    POOL_MUTEX = Mutex.new
+    private_constant :URL_MUTEX, :POOL_MUTEX
+
     def self.url
-      @url ||= new.url
+      @url || URL_MUTEX.synchronize { @url = new.url }
     end
 
     def self.with
-      @pool ||= ConnectionPool.new { ::Redis.new(url: url) }
+      if @pool.nil?
+        POOL_MUTEX.synchronize do
+          @pool = ConnectionPool.new { ::Redis.new(url: url) }
+        end
+      end
       @pool.with { |redis| yield redis }
     end
     
