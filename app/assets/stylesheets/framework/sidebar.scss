@@ -27,14 +27,15 @@
   }
 
   &.right-sidebar-expanded {
-    /* Extra small devices (phones, less than 768px) */
-    /* No media query since this is the default in Bootstrap */
     padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
-      padding-right: $gutter_width;
+
+    @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+      padding-right: $sidebar_collapsed_width;
     }
 
+    @media (min-width: $screen-md-min) {
+      padding-right: $gutter_width;
+    }
   }
 }
 
@@ -209,15 +210,6 @@
     padding-left: $sidebar_width;
   }
 
-  &.right-sidebar-collapsed {
-    /* Extra small devices (phones, less than 768px) */
-    padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
-      padding-right: $sidebar_collapsed_width;
-    }
-  }
-
   .sidebar-wrapper {
     width: $sidebar_width;
 
@@ -241,9 +233,8 @@
   padding-left: $sidebar_collapsed_width;
 
   &.right-sidebar-collapsed {
-    /* Extra small devices (phones, less than 768px) */
     padding-right: 0;
-    /* Small devices (tablets, 768px and up) */
+
     @media (min-width: $screen-sm-min) {
       padding-right: $sidebar_collapsed_width;
     }
