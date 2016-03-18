@@ -1,0 +1,16 @@
+- show_counter = local_assigns.fetch(:show_counter, false)
+- primary = local_assigns.fetch(:primary, false)
+- panel_class = primary ? 'panel-primary' : 'panel-default'
+
+.panel{ class: panel_class }
+  .panel-heading
+    = title
+    - if show_counter
+      .pull-right= issuables.size
+
+  - class_prefix = dom_class(issuables).pluralize
+  %ul{ class: "well-list #{class_prefix}-sortable-list", id: "#{class_prefix}-list-#{id}", "data-state" => id }
+    = render partial: 'shared/milestones/issuable',
+             collection: issuables.sort_by(&:position),
+             as: :issuable,
+             locals: { show_project_name: show_project_name, show_full_project_name: show_full_project_name }

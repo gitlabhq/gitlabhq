@@ -1,25 +1,6 @@
-%li{class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: dom_id(milestone.milestones.first) }
-  .row
-    .col-sm-6
-      %strong
-        = link_to_gfm truncate(milestone.title, length: 100), dashboard_milestone_path(milestone.safe_title, title: milestone.title)
-    .col-sm-6
-      .pull-right.light #{milestone.percent_complete}% complete
-  .row
-    .col-sm-6
-      = link_to issues_dashboard_path(milestone_title: milestone.title) do
-        = pluralize milestone.issue_count, 'Issue'
-      &middot;
-      = link_to merge_requests_dashboard_path(milestone_title: milestone.title) do
-        = pluralize milestone.merge_requests_count, 'Merge Request'
-    .col-sm-6
-      = milestone_progress_bar(milestone)
-  .row
-    .col-sm-6
-      .expiration
-        = render 'shared/milestone_expired', milestone: milestone
-      .projects
-        - milestone.milestones.each do |milestone|
-          = link_to milestone_path(milestone) do
-            %span.label.label-gray
-              = milestone.project.name_with_namespace
+= render 'shared/milestones/milestone',
+          milestone_path: dashboard_milestone_path(milestone.safe_title, title: milestone.title),
+          issues_path: issues_dashboard_path(milestone_title: milestone.title),
+          merge_requests_path: merge_requests_dashboard_path(milestone_title: milestone.title),
+          milestone: milestone,
+          dashboard: true

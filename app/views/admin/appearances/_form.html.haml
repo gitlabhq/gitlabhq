@@ -1,0 +1,58 @@
+= form_for @appearance, url: admin_appearances_path, html: { class: 'form-horizontal'} do |f|
+  - if @appearance.errors.any?
+    .alert.alert-danger
+      - @appearance.errors.full_messages.each do |msg|
+        %p= msg
+
+  %fieldset.sign-in
+    %legend
+      Sign in/Sign up pages:
+  .form-group
+    = f.label :title, class: 'control-label'
+    .col-sm-10
+      = f.text_field :title, class: "form-control"
+  .form-group
+    = f.label :description, class: 'control-label'
+    .col-sm-10
+      = f.text_area :description, class: "form-control", rows: 10
+      .hint
+        Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('markdown', 'markdown'), target: '_blank'}.
+  .form-group
+    = f.label :logo, class: 'control-label'
+    .col-sm-10
+      - if @appearance.logo?
+        = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
+        - if @appearance.persisted?
+          %br
+          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
+        %hr
+      = f.hidden_field :logo_cache
+      = f.file_field :logo, class: ""
+      .hint
+        Maximum file size is 1MB. Pages are optimized for a 640x360 px logo.
+
+  %fieldset.app_logo
+    %legend
+      Navigation bar:
+  .form-group
+    = f.label :header_logo, 'Header logo', class: 'control-label'
+    .col-sm-10
+      - if @appearance.header_logo?
+        = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
+        - if @appearance.persisted?
+          %br
+          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
+        %hr
+      = f.hidden_field :header_logo_cache
+      = f.file_field :header_logo, class: ""
+      .hint
+        Maximum file size is 1MB. Pages are optimized for a 72x72 px header logo
+
+  .form-actions
+    = f.submit 'Save', class: 'btn btn-save'
+    - if @appearance.persisted?
+      = link_to 'Preview last save', preview_admin_appearances_path, class: 'btn', target: '_blank'
+
+    - if @appearance.updated_at
+      %span.pull-right
+        Last edit #{time_ago_with_tooltip(@appearance.updated_at)}

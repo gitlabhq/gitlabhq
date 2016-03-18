@@ -31,8 +31,6 @@
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require underscore
-#= require nprogress
-#= require nprogress-turbolinks
 #= require dropzone
 #= require mousetrap
 #= require mousetrap/pause
@@ -44,7 +42,6 @@
 #= require jquery.nicescroll
 #= require_tree .
 #= require fuzzaldrin-plus
-#= require cropper.js
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
@@ -110,6 +107,8 @@ window.onload = ->
     setTimeout shiftWindow, 100
 
 $ ->
+  bootstrapBreakpoint = bp.getBreakpointSize()
+
   $(".nicescroll").niceScroll(cursoropacitymax: '0.4', cursorcolor: '#FFF', cursorborder: "1px solid #FFF")
 
   # Click a .js-select-on-focus field, select the contents
@@ -222,71 +221,50 @@ $ ->
     .off 'breakpoint:change'
     .on 'breakpoint:change', (e, breakpoint) ->
       if breakpoint is 'sm' or breakpoint is 'xs'
-        $gutterIcon = $('.gutter-toggle').find('i')
+        $gutterIcon = $('.js-sidebar-toggle').find('i')
         if $gutterIcon.hasClass('fa-angle-double-right')
           $gutterIcon.closest('a').trigger('click')
 
   $(document)
-    .off 'click', 'aside .gutter-toggle'
-    .on 'click', 'aside .gutter-toggle', (e) ->
+    .off 'click', '.js-sidebar-toggle'
+    .on 'click', '.js-sidebar-toggle', (e, triggered) ->
       e.preventDefault()
       $this = $(this)
       $thisIcon = $this.find 'i'
+      $allGutterToggleIcons = $('.js-sidebar-toggle i')
       if $thisIcon.hasClass('fa-angle-double-right')
-        $thisIcon
+        $allGutterToggleIcons
           .removeClass('fa-angle-double-right')
           .addClass('fa-angle-double-left')
-        $this
-          .closest('aside')
+        $('aside.right-sidebar')
           .removeClass('right-sidebar-expanded')
           .addClass('right-sidebar-collapsed')
         $('.page-with-sidebar')
           .removeClass('right-sidebar-expanded')
           .addClass('right-sidebar-collapsed')
       else
-        $thisIcon
+        $allGutterToggleIcons
           .removeClass('fa-angle-double-left')
           .addClass('fa-angle-double-right')
-        $this
-          .closest('aside')
+        $('aside.right-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
         $('.page-with-sidebar')
           .removeClass('right-sidebar-collapsed')
           .addClass('right-sidebar-expanded')
-      $.cookie("collapsed_gutter",
-        $('.right-sidebar')
-          .hasClass('right-sidebar-collapsed'), { path: '/' })
-
-  bootstrapBreakpoint = undefined;
-  checkBootstrapBreakpoints = ->
-    if $('.device-xs').is(':visible')
-      bootstrapBreakpoint = "xs"
-    else if $('.device-sm').is(':visible')
-      bootstrapBreakpoint = "sm"
-    else if $('.device-md').is(':visible')
-      bootstrapBreakpoint = "md"
-    else if $('.device-lg').is(':visible')
-      bootstrapBreakpoint = "lg"
-
-  setBootstrapBreakpoints = ->
-    if $('.device-xs').length
-      return
-
-    $("body")
-      .append('<div class="device-xs visible-xs"></div>'+
-        '<div class="device-sm visible-sm"></div>'+
-        '<div class="device-md visible-md"></div>'+
-        '<div class="device-lg visible-lg"></div>')
-    checkBootstrapBreakpoints()
+      if not triggered
+        $.cookie("collapsed_gutter",
+          $('.right-sidebar')
+            .hasClass('right-sidebar-collapsed'), { path: '/' })
 
   fitSidebarForSize = ->
     oldBootstrapBreakpoint = bootstrapBreakpoint
-    checkBootstrapBreakpoints()
+    bootstrapBreakpoint = bp.getBreakpointSize()
     if bootstrapBreakpoint != oldBootstrapBreakpoint
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
   checkInitialSidebarSize = ->
+    bootstrapBreakpoint = bp.getBreakpointSize()
     if bootstrapBreakpoint is "xs" or "sm"
       $(document).trigger('breakpoint:change', [bootstrapBreakpoint])
 
@@ -295,6 +273,5 @@ $ ->
     .on "resize", (e) ->
       fitSidebarForSize()
 
-  setBootstrapBreakpoints()
   checkInitialSidebarSize()
   new Aside()

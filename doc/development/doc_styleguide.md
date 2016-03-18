@@ -85,9 +85,19 @@ Inside the document:
 
 ## Notes
 
-- Notes should be in italics with the word `Note:` being bold. Use this form:
-  `_**Note:** This is something to note._`. If the note spans across multiple
-  lines it's OK to split the line.
+- Notes should be quoted with the word `Note:` being bold. Use this form:
+
+    ```
+    >**Note:**
+    This is something to note.
+    ```
+
+    which renders to:
+
+    >**Note:**
+    This is something to note.
+
+    If the note spans across multiple lines it's OK to split the line.
 
 ## New features
 

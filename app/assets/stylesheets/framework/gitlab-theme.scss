@@ -23,13 +23,13 @@
       &:hover {
         background-color: $color-darker;
         a {
-          color: #FFF;
+          color: #fff;
         }
       }
     }
 
     .collapse-nav a {
-      color: #FFF;
+      color: #fff;
       background: $color;
     }
 
@@ -42,7 +42,7 @@
 
         &:hover {
           background-color: $color-dark;
-          color: #FFF;
+          color: #fff;
           text-decoration: none;
         }
       }
@@ -71,7 +71,7 @@
       }
 
       &.active a {
-        color: #FFF;
+        color: #fff;
         background: $color-dark;
 
         &.no-highlight {
@@ -79,42 +79,42 @@
         }
 
         i {
-          color: #FFF
+          color: #fff
         }
       }
     }
   }
 }
 
-$theme-blue: #2980B9;
+$theme-blue: #2980b9;
 $theme-charcoal: #333c47;
-$theme-graphite: #888888;
+$theme-graphite: #888;
 $theme-gray: #373737;
 $theme-green: #019875;
-$theme-violet: #554488;
+$theme-violet: #548;
 
 body {
   &.ui_blue {
-    @include gitlab-theme(#BECDE9, $theme-blue, #1970A9, #096099);
+    @include gitlab-theme(#becde9, $theme-blue, #1970a9, #096099);
   }
 
   &.ui_charcoal {
-    @include gitlab-theme(#c5d0de, $theme-charcoal, #2b333d, #24272D);
+    @include gitlab-theme(#c5d0de, $theme-charcoal, #2b333d, #24272d);
   }
 
   &.ui_graphite {
-    @include gitlab-theme(#CCCCCC, $theme-graphite, #777777, #666666);
+    @include gitlab-theme(#ccc, $theme-graphite, #777, #666);
   }
 
   &.ui_gray {
-    @include gitlab-theme(#979797, $theme-gray, #272727, #222222);
+    @include gitlab-theme(#979797, $theme-gray, #272727, #222);
   }
 
   &.ui_green {
-    @include gitlab-theme(#AADDCC, $theme-green, #018865, #017855);
+    @include gitlab-theme(#adc, $theme-green, #018865, #017855);
   }
 
   &.ui_violet {
-    @include gitlab-theme(#9988CC, $theme-violet, #443366, #332255);
+    @include gitlab-theme(#98c, $theme-violet, #436, #325);
   }
 }

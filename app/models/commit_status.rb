@@ -114,7 +114,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def ignored?
-    failed? && allow_failure?
+    allow_failure? && (failed? || canceled?)
   end
 
   def duration
@@ -125,23 +125,7 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  def cancel_url
-    nil
-  end
-
-  def retry_url
-    nil
-  end
-
-  def show_warning?
+  def stuck?
     false
-  end
-
-  def artifacts_download_url
-    nil
-  end
-
-  def artifacts_browse_url
-    nil
   end
 end

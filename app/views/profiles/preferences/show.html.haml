@@ -1,56 +1,56 @@
 - page_title 'Preferences'
 - header_title page_title, profile_preferences_path
 
-.alert.alert-help.prepend-top-default
-  These settings allow you to customize the appearance and behavior of the site.
-  They are saved with your account and will persist to any device you use to
-  access the site.
-
-= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'js-preferences-form form-horizontal'} do |f|
-  .panel.panel-default.application-theme
-    .panel-heading
+= form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'row prepend-top-default js-preferences-form'} do |f|
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
       Application theme
-    .panel-body
-      - Gitlab::Themes.each do |theme|
-        = label_tag do
-          .preview{class: theme.css_class}
-          = f.radio_button :theme_id, theme.id
-          = theme.name
-
-  .panel.panel-default.syntax-theme
-    .panel-heading
+    %p
+      This setting allows you to customize the appearance of the site, ex. sidebar.
+  .col-lg-9.application-theme
+    - Gitlab::Themes.each do |theme|
+      = label_tag do
+        .preview{class: theme.css_class}
+        = f.radio_button :theme_id, theme.id
+        = theme.name
+  .col-sm-12
+    %hr
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
       Syntax highlighting theme
-    .panel-body
-      - Gitlab::ColorSchemes.each do |scheme|
-        = label_tag do
-          .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
-          = f.radio_button :color_scheme_id, scheme.id
-          = scheme.name
-
-  .panel.panel-default
-    .panel-heading
+    %p
+      This setting allow you to customize the appearance of the syntax.
+  .col-lg-9.syntax-theme
+    - Gitlab::ColorSchemes.each do |scheme|
+      = label_tag do
+        .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
+        = f.radio_button :color_scheme_id, scheme.id
+        = scheme.name
+  .col-sm-12
+    %hr
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
       Behavior
-    .panel-body
-      .form-group
-        = f.label :layout, class: 'control-label' do
-          Layout width
-        .col-sm-10
-          = f.select :layout, layout_choices, {}, class: 'form-control'
-          .help-block
-            Choose between fixed (max. 1200px) and fluid (100%) application layout.
-      .form-group
-        = f.label :dashboard, class: 'control-label' do
-          Default Dashboard
-          = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
-        .col-sm-10
-          = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
-      .form-group
-        = f.label :project_view, class: 'control-label' do
-          Project view
-          = link_to('(?)', help_page_path('profile', 'preferences') + '#default-project-view', target: '_blank')
-        .col-sm-10
-          = f.select :project_view, project_view_choices, {}, class: 'form-control'
-          .help-block
-            Choose what content you want to see on a project's home page.
-    .panel-footer
+    %p
+      This setting allows you to customize the behavior of the system layout and default views.
+  .col-lg-9
+    .form-group
+      = f.label :layout, class: 'label-light' do
+        Layout width
+      = f.select :layout, layout_choices, {}, class: 'form-control'
+      .help-block
+        Choose between fixed (max. 1200px) and fluid (100%) application layout.
+    .form-group
+      = f.label :dashboard, class: 'label-light' do
+        Default Dashboard
+        = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
+      = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
+    .form-group
+      = f.label :project_view, class: 'label-light' do
+        Project view
+        = link_to('(?)', help_page_path('profile', 'preferences') + '#default-project-view', target: '_blank')
+      = f.select :project_view, project_view_choices, {}, class: 'form-control'
+      .help-block
+        Choose what content you want to see on a project's home page.
+    .form-group
       = f.submit 'Save changes', class: 'btn btn-save'

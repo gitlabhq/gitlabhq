@@ -105,6 +105,40 @@ describe Issue, models: true do
     end
   end
 
+  describe '#referenced_merge_requests' do
+    it 'returns the referenced merge requests' do
+      project = create(:project, :public)
+
+      mr1 = create(:merge_request,
+                   source_project: project,
+                   source_branch:  'master',
+                   target_branch:  'feature')
+
+      mr2 = create(:merge_request,
+                   source_project: project,
+                   source_branch:  'feature',
+                   target_branch:  'master')
+
+      issue = create(:issue, description: mr1.to_reference, project: project)
+
+      create(:note_on_issue,
+             noteable:   issue,
+             note:       mr2.to_reference,
+             project_id: project.id)
+
+      expect(issue.referenced_merge_requests).to eq([mr1, mr2])
+    end
+  end
+
+  describe '#related_branches' do
+    it "should " do
+      allow(subject.project.repository).to receive(:branch_names).
+                                    and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
+
+      expect(subject.related_branches).to eq [subject.to_branch_name]
+    end
+  end
+
   it_behaves_like 'an editable mentionable' do
     subject { create(:issue) }
 
@@ -114,5 +148,13 @@ describe Issue, models: true do
 
   it_behaves_like 'a Taskable' do
     let(:subject) { create :issue }
+  end
+
+  describe "#to_branch_name" do
+    let(:issue) { build(:issue, title: 'a' * 30) }
+
+    it "starts with the issue iid" do
+      expect(issue.to_branch_name).to match /\A#{issue.iid}-a+\z/
+    end
   end
 end

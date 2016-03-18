@@ -1,50 +1,49 @@
 - page_title "Emails"
 - header_title page_title, profile_emails_path
 
-.alert.alert-help.prepend-top-default
-  %ul
-    %li
-      Your
-      %b Primary Email
-      will be used for avatar detection and web based operations, such as edits and merges.
-    %li
-      Your
-      %b Notification Email
-      will be used for account notifications.
-    %li
-      Your
-      %b Public Email
-      will be displayed on your public profile.
-    %li
-      All email addresses will be used to identify your commits.
-
-.panel.panel-default
-  .panel-heading
-    Emails (#{@emails.count + 1})
-  %ul.well-list#emails-table
-    %li
-      %strong= @primary
-      %span.label.label-success Primary Email
-      - if @primary === current_user.public_email
-        %span.label.label-info Public Email
-      - if @primary === current_user.notification_email
-        %span.label.label-info Notification Email
-    - @emails.each do |email|
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      Control emails linked to your account
+  .col-lg-9
+    %h4.prepend-top-0
+      Add email address
+    = form_for 'email', url: profile_emails_path do |f|
+      .form-group
+        = f.label :email, class: 'label-light'
+        = f.text_field :email, class: 'form-control'
+      .prepend-top-default
+        = f.submit 'Add email address', class: 'btn btn-create'
+    %hr
+    %h4.prepend-top-0
+      Linked emails (#{@emails.count + 1})
+    .account-well.append-bottom-default
+      %ul
+        %li
+          Your Primary Email will be used for avatar detection and web based operations, such as edits and merges.
+        %li
+          Your Notification Email will be used for account notifications.
+        %li
+          Your Public Email will be displayed on your public profile.
+        %li
+          All email addresses will be used to identify your commits.
+    %ul.well-list
       %li
-        %strong= email.email
-        - if email.email === current_user.public_email
-          %span.label.label-info Public Email
-        - if email.email === current_user.notification_email
-          %span.label.label-info Notification Email
-        %span.cgray
-          added #{time_ago_with_tooltip(email.created_at)}
-        = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'
-
-%h4 Add email address
-= form_for 'email', url: profile_emails_path, html: { class: 'form-horizontal' } do |f|
-  .form-group
-    = f.label :email, class: 'control-label'
-    .col-sm-10
-      = f.text_field :email, class: 'form-control'
-  .form-actions
-    = f.submit 'Add email address', class: 'btn btn-create'
+        = @primary
+        %span.pull-right
+          %span.label.label-success Primary Email
+          - if @primary === current_user.public_email
+            %span.label.label-info Public Email
+          - if @primary === current_user.notification_email
+            %span.label.label-info Notification Email
+      - @emails.each do |email|
+        %li
+          = email.email
+          %span.pull-right
+            - if email.email === current_user.public_email
+              %span.label.label-info Public Email
+            - if email.email === current_user.notification_email
+              %span.label.label-info Notification Email
+          = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove pull-right'

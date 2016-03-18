@@ -8,8 +8,8 @@ describe API::API do
   let!(:trigger_token) { 'secure_token' }
   let!(:trigger_token_2) { 'secure_token_2' }
   let!(:project) { create(:project, creator_id: user.id) }
-  let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
-  let!(:developer) { create(:project_member, user: user2, project: project, access_level: ProjectMember::DEVELOPER) }
+  let!(:master) { create(:project_member, :master, user: user, project: project) }
+  let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
   let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token) }
   let!(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2) }
   let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }

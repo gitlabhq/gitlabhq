@@ -4,13 +4,13 @@
     = ci_status_with_icon(build.status)
 
   %td.build-link
-    - if can?(current_user, :read_build, project) && build.target_url
-      = link_to build.target_url do
+    - if can?(current_user, :read_build, build.project)
+      = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
         %strong Build ##{build.id}
     - else
       %strong Build ##{build.id}
 
-    - if build.show_warning?
+    - if build.stuck?
       %i.fa.fa-warning.text-warning
 
   %td
@@ -18,11 +18,11 @@
       = link_to project.name_with_namespace, admin_namespace_project_path(project.namespace, project), class: "monospace"
 
   %td
-    = link_to build.short_sha, namespace_project_commit_path(project.namespace, project, build.sha), class: "monospace"
+    = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace"
 
   %td
     - if build.ref
-      = link_to build.ref, namespace_project_commits_path(project.namespace, project, build.ref)
+      = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref)
     - else
       .light none
 
@@ -61,13 +61,12 @@
   %td
     .pull-right
       - if can?(current_user, :read_build, project) && build.artifacts?
-        = link_to build.artifacts_download_url, title: 'Download artifacts' do
+        = link_to download_namespace_project_build_artifacts_path(build.project.namespace, build.project, build), title: 'Download artifacts' do
           %i.fa.fa-download
       - if can?(current_user, :update_build, build.project)
         - if build.active?
-          - if build.cancel_url
-            = link_to build.cancel_url, method: :post, title: 'Cancel' do
-              %i.fa.fa-remove.cred
-        - elsif defined?(allow_retry) && allow_retry && build.retry_url
-          = link_to build.retry_url, method: :post, title: 'Retry' do
+          = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel' do
+            %i.fa.fa-remove.cred
+        - elsif defined?(allow_retry) && allow_retry && build.retryable?
+          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry' do
             %i.fa.fa-repeat

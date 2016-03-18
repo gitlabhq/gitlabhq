@@ -32,8 +32,53 @@ describe Issue, "Issuable" do
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
-    it "matches by title" do
+    it 'returns notes with a matching title' do
+      expect(described_class.search(searchable_issue.title)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching title' do
       expect(described_class.search('able')).to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching title regardless of the casing' do
+      expect(described_class.search(searchable_issue.title.upcase)).
+        to eq([searchable_issue])
+    end
+  end
+
+  describe ".full_search" do
+    let!(:searchable_issue) do
+      create(:issue, title: "Searchable issue", description: 'kittens')
+    end
+
+    it 'returns notes with a matching title' do
+      expect(described_class.full_search(searchable_issue.title)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching title' do
+      expect(described_class.full_search('able')).to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching title regardless of the casing' do
+      expect(described_class.full_search(searchable_issue.title.upcase)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching description' do
+      expect(described_class.full_search(searchable_issue.description)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a partially matching description' do
+      expect(described_class.full_search(searchable_issue.description)).
+        to eq([searchable_issue])
+    end
+
+    it 'returns notes with a matching description regardless of the casing' do
+      expect(described_class.full_search(searchable_issue.description.upcase)).
+        to eq([searchable_issue])
     end
   end
 
@@ -65,6 +110,48 @@ describe Issue, "Issuable" do
       allow(issue).to receive(:today?).and_return(true)
       issue.touch
       expect(issue.new?).to be_falsey
+    end
+  end
+
+  describe '#subscribed?' do
+    context 'user is not a participant in the issue' do
+      before { allow(issue).to receive(:participants).with(user).and_return([]) }
+
+      it 'returns false when no subcription exists' do
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+
+      it 'returns true when a subcription exists and subscribed is true' do
+        issue.subscriptions.create(user: user, subscribed: true)
+
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns false when a subcription exists and subscribed is false' do
+        issue.subscriptions.create(user: user, subscribed: false)
+
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+    end
+
+    context 'user is a participant in the issue' do
+      before { allow(issue).to receive(:participants).with(user).and_return([user]) }
+
+      it 'returns false when no subcription exists' do
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns true when a subcription exists and subscribed is true' do
+        issue.subscriptions.create(user: user, subscribed: true)
+
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns false when a subcription exists and subscribed is false' do
+        issue.subscriptions.create(user: user, subscribed: false)
+
+        expect(issue.subscribed?(user)).to be_falsey
+      end
     end
   end
 

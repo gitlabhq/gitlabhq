@@ -1,5 +1,5 @@
 module ExploreHelper
-  def explore_projects_filter_path(options={})
+  def filter_projects_path(options={})
     exist_opts = {
       sort: params[:sort],
       scope: params[:scope],
@@ -9,15 +9,7 @@ module ExploreHelper
     }
 
     options = exist_opts.merge(options)
-
-    path = if explore_controller?
-             explore_projects_path
-           elsif current_action?(:starred)
-             starred_dashboard_projects_path
-           else
-             dashboard_projects_path
-           end
-
+    path = request.path
     path << "?#{options.to_param}"
     path
   end

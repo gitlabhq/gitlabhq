@@ -47,7 +47,7 @@ eos
     end
 
     before do
-      @lines = parser.parse(diff.lines)
+      @lines = parser.parse(diff.lines).to_a
     end
 
     it { expect(@lines.size).to eq(30) }
@@ -89,5 +89,10 @@ eos
         it { expect(line.text).to eq('       @cmd_output << stderr.read') }
       end
     end
+  end
+
+  context 'when lines is empty' do
+    it { expect(parser.parse([])).to eq([]) }
+    it { expect(parser.parse(nil)).to eq([]) }
   end
 end

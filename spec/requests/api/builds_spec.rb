@@ -7,8 +7,8 @@ describe API::API, api: true  do
   let(:api_user) { user }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
-  let!(:developer) { create(:project_member, user: user, project: project, access_level: ProjectMember::DEVELOPER) }
-  let!(:reporter) { create(:project_member, user: user2, project: project, access_level: ProjectMember::REPORTER) }
+  let!(:developer) { create(:project_member, :developer, user: user, project: project) }
+  let!(:reporter) { create(:project_member, :reporter, user: user2, project: project) }
   let(:commit) { create(:ci_commit, project: project)}
   let(:build) { create(:ci_build, commit: commit) }
 

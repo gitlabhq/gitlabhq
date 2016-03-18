@@ -146,6 +146,7 @@ class @MergeRequestTabs
       url: "#{source}.json" + @_location.search
       success: (data) =>
         document.querySelector("div#diffs").innerHTML = data.html
+        $('.js-timeago').timeago()
         $('div#diffs .js-syntax-highlight').syntaxHighlight()
         @expandViewContainer() if @diffViewType() is 'parallel'
         @diffsLoaded = true
@@ -188,12 +189,11 @@ class @MergeRequestTabs
     $('.container-fluid').removeClass('container-limited')
 
   shrinkView: ->
-    $gutterIcon = $('.gutter-toggle i')
+    $gutterIcon = $('.js-sidebar-toggle i')
 
     # Wait until listeners are set
     setTimeout( ->
       # Only when sidebar is collapsed
       if $gutterIcon.is('.fa-angle-double-right')
-        $gutterIcon.closest('a').trigger('click')
+        $gutterIcon.closest('a').trigger('click',[true])
     , 0)
-

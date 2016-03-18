@@ -728,13 +728,15 @@ namespace :gitlab do
     def check_imap_authentication
       print "IMAP server credentials are correct? ... "
 
-      config = Gitlab.config.incoming_email
+      config_path = Rails.root.join('config', 'mail_room.yml')
+      config_file = YAML.load(ERB.new(File.read(config_path)).result)
+      config = config_file[:mailboxes].first
 
       if config
         begin
-          imap = Net::IMAP.new(config.host, port: config.port, ssl: config.ssl)
-          imap.starttls if config.start_tls
-          imap.login(config.user, config.password)
+          imap = Net::IMAP.new(config[:host], port: config[:port], ssl: config[:ssl])
+          imap.starttls if config[:start_tls]
+          imap.login(config[:email], config[:password])
           connected = true
         rescue
           connected = false
@@ -911,7 +913,7 @@ namespace :gitlab do
   end
 
   def check_git_version
-    required_version = Gitlab::VersionInfo.new(1, 7, 10)
+    required_version = Gitlab::VersionInfo.new(2, 7, 3)
     current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""

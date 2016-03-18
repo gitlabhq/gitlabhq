@@ -66,7 +66,7 @@ class SystemNoteService
   def self.change_label(noteable, project, author, added_labels, removed_labels)
     labels_count = added_labels.count + removed_labels.count
 
-    references     = ->(label) { label.to_reference(:id) }
+    references     = ->(label) { label.to_reference(format: :id) }
     added_labels   = added_labels.map(&references).join(' ')
     removed_labels = removed_labels.map(&references).join(' ')
 
@@ -217,6 +217,18 @@ class SystemNoteService
       end
     body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when a branch is created from the 'new branch' button on a issue
+  # Example note text:
+  #
+  #   "Started branch `201-issue-branch-button`"
+  def self.new_issue_branch(issue, project, author, branch)
+    h = Gitlab::Application.routes.url_helpers
+    link = h.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
+
+    body = "Started branch [`#{branch}`](#{link})"
+    create_note(noteable: issue, project: project, author: author, note: body)
   end
 
   # Called when a Mentionable references a Noteable
