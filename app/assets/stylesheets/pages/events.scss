@@ -21,7 +21,7 @@
   }
 
   a {
-    color: #4c4e54;
+    color: $gl-dark-link-color;
   }
 
   .avatar {
@@ -31,11 +31,7 @@
   .event-title {
     @include str-truncated(calc(100% - 174px));
     font-weight: 600;
-    color: $list-title-color;
-
-    a {
-      color: $list-title-color;
-    }
+    color: $list-text-color;
   }
 
   .event-body {

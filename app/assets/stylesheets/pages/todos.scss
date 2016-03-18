@@ -14,26 +14,8 @@
 }
 
 .todo-item {
-  font-size: $gl-font-size;
-  padding-left: $gl-avatar-size + $gl-padding-top;
-  color: $gl-text-color;
-
-  a {
-    color: #4c4e54;
-  }
-
-  .avatar {
-    margin-left: -($gl-avatar-size + $gl-padding-top);
-  }
-
   .todo-title {
     @include str-truncated(calc(100% - 174px));
-    font-weight: 600;
-    color: $list-title-color;
-
-    a {
-      color: $list-title-color;
-    }
   }
 
   .todo-body {
