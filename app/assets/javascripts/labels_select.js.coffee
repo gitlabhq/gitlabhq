@@ -78,8 +78,11 @@ class @LabelsSelect
           else
             selected = if label.title is selectedLabel then 'is-active' else ''
 
+          color = if label.color? then "<span class='dropdown-label-box' style='background-color: #{label.color}'></span>" else ""
+
           "<li>
             <a href='#' class='#{selected}'>
+              #{color}
               #{label.title}
             </a>
           </li>"

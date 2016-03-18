@@ -354,11 +354,11 @@
   }
 }
 
-.dropdown-menu-labels {
-  .label {
-    position: relative;
-    width: 30px;
-    margin-right: 5px;
-    text-indent: -99999px;
-  }
+.dropdown-label-box {
+  position: relative;
+  top: 3px;
+  display: inline-block;
+  width: 20px;
+  height: 16px;
+  border-radius: 3px;
 }
