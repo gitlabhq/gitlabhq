@@ -5,7 +5,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :issue, only: [:edit, :update, :show]
 
   # Allow read any issue
-  before_action :authorize_read_issue!
+  before_action :authorize_read_issue!, only: [:show]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -128,6 +128,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
   alias_method :subscribable_resource, :issue
 
+  def authorize_read_issue!
+    return render_404 unless can?(current_user, :read_issue, @issue)
+  end
+
   def authorize_update_issue!
     return render_404 unless can?(current_user, :update_issue, @issue)
   end
@@ -158,7 +162,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue_params
     params.require(:issue).permit(
-      :title, :assignee_id, :position, :description,
+      :title, :assignee_id, :position, :description, :confidential,
       :milestone_id, :state_event, :task_num, label_ids: []
     )
   end

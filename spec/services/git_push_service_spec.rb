@@ -215,12 +215,16 @@ describe GitPushService, services: true do
     let(:commit) { project.commit }
 
     before do
+      project.team << [commit_author, :developer]
+      project.team << [user, :developer]
+
       allow(commit).to receive_messages(
         safe_message: "this commit \n mentions #{issue.to_reference}",
         references: [issue],
         author_name: commit_author.name,
         author_email: commit_author.email
       )
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 

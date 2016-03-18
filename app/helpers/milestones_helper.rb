@@ -38,7 +38,7 @@ module MilestonesHelper
   def milestone_progress_bar(milestone)
     options = {
       class: 'progress-bar progress-bar-success',
-      style: "width: #{milestone.percent_complete}%;"
+      style: "width: #{milestone.percent_complete(current_user)}%;"
     }
 
     content_tag :div, class: 'progress' do
