@@ -16,7 +16,7 @@
 .todo-item {
   font-size: $gl-font-size;
   padding-left: $gl-avatar-size + $gl-padding-top;
-  color: $secondary-text;
+  color: $gl-text-color;
 
   a {
     color: #4c4e54;
@@ -29,9 +29,10 @@
   .todo-title {
     @include str-truncated(calc(100% - 174px));
     font-weight: 600;
+    color: $list-title-color;
 
-    .author-name {
-      color: #333;
+    a {
+      color: $list-title-color;
     }
   }
 
