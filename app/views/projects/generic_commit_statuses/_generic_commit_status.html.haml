@@ -1,8 +1,7 @@
 %tr.generic_commit_status
   %td.status
     - if can?(current_user, :read_commit_status, generic_commit_status) && generic_commit_status.target_url
-      = link_to generic_commit_status.target_url, class: "ci-status ci-#{generic_commit_status.status}" do
-        = ci_status_with_icon(generic_commit_status.status)
+      = ci_status_with_icon(generic_commit_status.status, generic_commit_status.target_url)
     - else
       = ci_status_with_icon(generic_commit_status.status)
 

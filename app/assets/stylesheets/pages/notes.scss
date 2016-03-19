@@ -3,16 +3,16 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background:#fffff0; }
-  50% { background:#ffffd3; }
-  to { background:#fffff0; }
+  from { background: #fffff0; }
+  50% { background: #ffffd3; }
+  to { background: #fffff0; }
 }
 
 ul.notes {
   display: block;
   list-style: none;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 
   .timeline-icon {
     float: left;
@@ -30,7 +30,7 @@ ul.notes {
     font-size: 14px;
     padding-top: 10px;
     padding-bottom: 10px;
-    background: #FDFDFD;
+    background: #fdfdfd;
 
     .timeline-icon {
       .avatar {
@@ -93,12 +93,12 @@ ul.notes {
   .discussion {
     overflow: hidden;
     display: block;
-    position:relative;
+    position: relative;
   }
 
   .note {
     display: block;
-    position:relative;
+    position: relative;
 
     .note-body {
       overflow: auto;
@@ -107,6 +107,13 @@ ul.notes {
         overflow: auto;
         word-wrap: break-word;
         @include md-typography;
+
+        // On diffs code should wrap nicely and not overflow
+        pre {
+          code {
+            white-space: pre-wrap;
+          }
+        }
 
         // Reset ul style types since we're nested inside a ul already
         & > ul {
@@ -129,7 +136,7 @@ ul.notes {
 
         hr {
           // Darken 'whitesmoke' a bit to make it more visible in note bodies
-          border-color: darken(#F5F5F5, 8%);
+          border-color: darken(#f5f5f5, 8%);
           margin: 10px 0;
         }
       }
@@ -166,7 +173,7 @@ ul.notes {
       vertical-align: middle;
       text-align: center;
       padding: 10px 0;
-      background: #FFF;
+      background: #fff;
       color: $text-color;
     }
     &.notes_line2 {
@@ -232,7 +239,7 @@ ul.notes {
   .add-diff-note {
     margin-top: -4px;
     @include border-radius(40px);
-    background: #FFF;
+    background: #fff;
     padding: 4px;
     font-size: 16px;
     color: $gl-link-color;
@@ -249,7 +256,7 @@ ul.notes {
 
     &:hover {
       background: $gl-info;
-      color: #FFF;
+      color: #fff;
       @include show-add-diff-note;
     }
   }

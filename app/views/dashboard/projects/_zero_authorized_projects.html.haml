@@ -1,4 +1,4 @@
-- publicish_project_count = Project.publicish(current_user).count
+- publicish_project_count = ProjectsFinder.new.execute(current_user).count
 %h3.page-title Welcome to GitLab!
 %p.light Self hosted Git management application.
 %hr
@@ -18,7 +18,7 @@
     - if current_user.can_create_project?
       .link_holder
         = link_to new_project_path, class: "btn btn-new" do
-          %i.fa.fa-plus
+          = icon('plus')
           New Project
 
 - if current_user.can_create_group?

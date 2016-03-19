@@ -42,7 +42,7 @@
           = preserve do
             = markdown @milestone.description
 
-- if @milestone.complete? && @milestone.active?
+- if @milestone.complete?(current_user) && @milestone.active?
   .alert.alert-success.prepend-top-default
     %span All issues for this milestone are closed. You may close milestone now.
 

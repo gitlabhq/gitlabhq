@@ -254,12 +254,6 @@ class Project < ActiveRecord::Base
       where('projects.last_activity_at < ?', 6.months.ago)
     end
 
-    def publicish(user)
-      visibility_levels = [Project::PUBLIC]
-      visibility_levels << Project::INTERNAL if user
-      where(visibility_level: visibility_levels)
-    end
-
     def with_push
       joins(:events).where('events.action = ?', Event::PUSHED)
     end
@@ -286,7 +280,14 @@ class Project < ActiveRecord::Base
           or(ptable[:description].matches(pattern))
       )
 
+      # We explicitly remove any eager loading clauses as they're:
+      #
+      # 1. Not needed by this query
+      # 2. Combined with .joins(:namespace) lead to all columns from the
+      #    projects & namespaces tables being selected, leading to a SQL error
+      #    due to the columns of all UNION'd queries no longer being the same.
       namespaces = select(:id).
+        except(:includes).
         joins(:namespace).
         where(ntable[:name].matches(pattern))
 
@@ -508,6 +509,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_tracker
+    return @external_issue_tracker if defined?(@external_issue_tracker)
     @external_issue_tracker ||=
       services.issue_trackers.active.without_defaults.first
   end
@@ -569,10 +571,7 @@ class Project < ActiveRecord::Base
   end
 
   def avatar_in_git
-    @avatar_file ||= 'logo.png' if repository.blob_at_branch('master', 'logo.png')
-    @avatar_file ||= 'logo.jpg' if repository.blob_at_branch('master', 'logo.jpg')
-    @avatar_file ||= 'logo.gif' if repository.blob_at_branch('master', 'logo.gif')
-    @avatar_file
+    repository.avatar
   end
 
   def avatar_url

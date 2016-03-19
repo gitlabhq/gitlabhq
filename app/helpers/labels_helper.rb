@@ -109,19 +109,20 @@ module LabelsHelper
     end
   end
 
-  def projects_labels_options
-    labels =
-      if @project
-        @project.labels
-      else
-        Label.where(project_id: @projects)
-      end
+  def labels_filter_path
+    if @project
+      namespace_project_labels_path(@project.namespace, @project, :json)
+    else
+      labels_dashboard_path(:json)
+    end
+  end
 
-    grouped_labels = GlobalLabel.build_collection(labels)
-    grouped_labels.unshift(Label::None)
-    grouped_labels.unshift(Label::Any)
+  def label_subscription_status(label)
+    label.subscribed?(current_user) ? 'subscribed' : 'unsubscribed'
+  end
 
-    options_from_collection_for_select(grouped_labels, 'name', 'title', params[:label_name])
+  def label_subscription_toggle_button_text(label)
+    label.subscribed?(current_user) ? 'Unsubscribe' : 'Subscribe'
   end
 
   # Required for Banzai::Filter::LabelReferenceFilter

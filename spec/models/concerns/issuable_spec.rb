@@ -113,6 +113,48 @@ describe Issue, "Issuable" do
     end
   end
 
+  describe '#subscribed?' do
+    context 'user is not a participant in the issue' do
+      before { allow(issue).to receive(:participants).with(user).and_return([]) }
+
+      it 'returns false when no subcription exists' do
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+
+      it 'returns true when a subcription exists and subscribed is true' do
+        issue.subscriptions.create(user: user, subscribed: true)
+
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns false when a subcription exists and subscribed is false' do
+        issue.subscriptions.create(user: user, subscribed: false)
+
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+    end
+
+    context 'user is a participant in the issue' do
+      before { allow(issue).to receive(:participants).with(user).and_return([user]) }
+
+      it 'returns false when no subcription exists' do
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns true when a subcription exists and subscribed is true' do
+        issue.subscriptions.create(user: user, subscribed: true)
+
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+
+      it 'returns false when a subcription exists and subscribed is false' do
+        issue.subscriptions.create(user: user, subscribed: false)
+
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+    end
+  end
+
   describe "#to_hook_data" do
     let(:data) { issue.to_hook_data(user) }
     let(:project) { issue.project }

@@ -20,6 +20,23 @@ module IssuablesHelper
     base_issuable_scope(issuable).where('iid < ?', issuable.iid).first
   end
 
+  def user_dropdown_label(user_id, default_label)
+    return "Unassigned" if user_id == "0"
+
+    if @project
+      member = @project.team.find_member(user_id)
+      user = member.user if member
+    else
+      user = User.find_by(id: user_id)
+    end
+
+    if user
+      user.name
+    else
+      default_label
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -31,7 +48,11 @@ module IssuablesHelper
   end
 
   def issuable_state_scope(issuable)
-    issuable.open? ? :opened : :closed
+    if issuable.respond_to?(:merged?) && issuable.merged?
+      :merged
+    else
+      issuable.open? ? :opened : :closed
+    end
   end
 
 end

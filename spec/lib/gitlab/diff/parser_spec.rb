@@ -90,4 +90,9 @@ eos
       end
     end
   end
+
+  context 'when lines is empty' do
+    it { expect(parser.parse([])).to eq([]) }
+    it { expect(parser.parse(nil)).to eq([]) }
+  end
 end

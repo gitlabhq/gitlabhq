@@ -343,6 +343,7 @@ class @Notes
   updateNote: (_xhr, note, _status) =>
     # Convert returned HTML to a jQuery object so we can modify it further
     $html = $(note.html)
+    $('.js-timeago', $html).timeago()
     $html.syntaxHighlight()
     $html.find('.js-task-list-container').taskList('enable')
 
@@ -626,10 +627,10 @@ class @Notes
       if closebtn.text() isnt closetext
         closebtn.text(closetext)
 
-      if reopenbtn.is(':not(.btn-comment-and-reopen)')
+      if reopenbtn.is('.btn-comment-and-reopen')
         reopenbtn.removeClass('btn-comment-and-reopen')
 
-      if closebtn.is(':not(.btn-comment-and-close)')
+      if closebtn.is('.btn-comment-and-close')
         closebtn.removeClass('btn-comment-and-close')
 
       if discardbtn.is(':visible')

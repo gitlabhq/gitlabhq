@@ -7,8 +7,8 @@ header {
 
   &.navbar-empty {
     height: 58px;
-    background: #FFF;
-    border-bottom: 1px solid #EEE;
+    background: #fff;
+    border-bottom: 1px solid #eee;
 
     .center-logo {
       margin: 11px 0;
@@ -28,7 +28,7 @@ header {
     min-height: $header-height;
     background-color: #fff;
     border: none;
-    border-bottom: 1px solid #EEE;
+    border-bottom: 1px solid #eee;
 
     .container-fluid {
       width: 100% !important;
@@ -47,7 +47,7 @@ header {
         text-align: center;
 
         &:hover, &:focus, &:active {
-          background-color: #FFF;
+          background-color: #fff;
         }
       }
 
@@ -59,7 +59,7 @@ header {
         right: 2px;
 
         &:hover {
-          background-color: #EEE;
+          background-color: #eee;
         }
         &.active {
           color: #7f8fa4;
@@ -162,7 +162,7 @@ header {
     font-size: 18px;
 
     .navbar-nav {
-      margin: 0px;
+      margin: 0;
       float: none !important;
 
       .visible-xs, .visable-sm {

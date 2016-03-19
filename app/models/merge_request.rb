@@ -516,11 +516,15 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_sha
-    @target_sha ||= target_project.repository.commit(target_branch).sha
+    @target_sha ||= target_project.repository.commit(target_branch).try(:sha)
   end
 
   def source_sha
-    last_commit.try(:sha)
+    last_commit.try(:sha) || source_tip.try(:sha)
+  end
+
+  def source_tip
+    source_branch && source_project.repository.commit(source_branch)
   end
 
   def fetch_ref
@@ -568,8 +572,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def compute_diverged_commits_count
+    return 0 unless source_sha && target_sha
+
     Gitlab::Git::Commit.between(target_project.repository.raw_repository, source_sha, target_sha).size
   end
+  private :compute_diverged_commits_count
 
   def diverged_from_target_branch?
     diverged_commits_count > 0

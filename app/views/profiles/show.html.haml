@@ -1,7 +1,4 @@
 = form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit-user prepend-top-default" }, authenticity_token: true do |f|
-  = f.hidden_field :avatar_crop_x
-  = f.hidden_field :avatar_crop_y
-  = f.hidden_field :avatar_crop_size
   -if @user.errors.any?
     %div.alert.alert-danger
       %ul
@@ -97,19 +94,3 @@
       .prepend-top-default.append-bottom-default
         = f.submit 'Update profile settings', class: "btn btn-success"
         = link_to "Cancel", user_path(current_user), class: "btn btn-cancel"
-
-.modal.modal-profile-crop
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span
-            &times;
-        %h4.modal-title
-          Crop your new profile picture
-      .modal-body
-        %p
-          %img.modal-profile-crop-image
-      .modal-footer
-        %button.btn.btn-primary.js-upload-user-avatar{:type => "button"}
-          Set new profile picture
