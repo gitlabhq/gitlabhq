@@ -34,7 +34,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
-    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
+    @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
     @label = @project.labels.find_by(title: params[:label_name])
