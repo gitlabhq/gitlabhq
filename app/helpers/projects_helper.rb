@@ -209,7 +209,7 @@ module ProjectsHelper
 
   def default_clone_protocol
     if !current_user || current_user.require_ssh_key?
-      "http"
+      gitlab_config.protocol
     else
       "ssh"
     end
