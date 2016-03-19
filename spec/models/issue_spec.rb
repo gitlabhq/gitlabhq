@@ -131,7 +131,7 @@ describe Issue, models: true do
   end
 
   describe '#related_branches' do
-    it "should " do
+    it "selects the right branches" do
       allow(subject.project.repository).to receive(:branch_names).
                                     and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
 
@@ -151,10 +151,10 @@ describe Issue, models: true do
   end
 
   describe "#to_branch_name" do
-    let(:issue) { build(:issue, title: 'a' * 30) }
+    let(:issue) { create(:issue, title: 'a' * 30) }
 
     it "starts with the issue iid" do
-      expect(issue.to_branch_name).to match /\A#{issue.iid}-a+\z/
+      expect(issue.to_branch_name).to match /-#{issue.iid}\z/
     end
   end
 end
