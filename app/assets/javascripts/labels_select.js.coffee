@@ -28,8 +28,8 @@ class @LabelsSelect
         # Suggested colors in the dropdown to chose from pre-chosen colors
         $('.suggest-colors-dropdown a').on 'click', (e) ->
 
-      issueURLSplit = issueURL.split('/') if issueURL?
-      if issueURL
+      issueURLSplit = issueUpdateURL.split('/') if issueUpdateURL?
+      if issueUpdateURL
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>'+
             '<a href="'+ 
@@ -147,7 +147,7 @@ class @LabelsSelect
         $loading.fadeIn()
         $.ajax(
           type: 'PUT'
-          url: issueURL
+          url: issueUpdateURL
           dataType: 'JSON'
           data: data
         ).done (data) ->
@@ -160,7 +160,15 @@ class @LabelsSelect
           href = $value
                   .show()
                   .html(template)
->>>>>>> Add multi select stay open functionality
+          $value
+            .find('a')
+            .each((i) ->
+              setTimeout(=>
+                glAnimate($(@), 'pulse')
+              ,200 * i
+              )
+            )
+
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -224,6 +232,8 @@ class @LabelsSelect
         hidden: ->
           $selectbox.hide()
           $value.show()
+          if $dropdown.hasClass 'js-multiselect'
+            saveLabelData()
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
 

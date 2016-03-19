@@ -67,8 +67,7 @@ class @MilestoneSelect
           if $dropdown.hasClass "js-filter-submit"
             $dropdown.parents('form').submit()
           else
-            selected = $dropdown
-              .closest('.selectbox')
+            selected = $selectbox
               .find('input[type="hidden"]')
               .val()
             data = {}
@@ -83,16 +82,15 @@ class @MilestoneSelect
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()
-              href = $value
+              $milestoneLink = $value
                       .show()
-                      .find('.milestone-title')
-                      .text(data.milestone.title)
-                      .end()
                       .find('a')
+              href = $milestoneLink
+                      .text(data.milestone.title)
                       .attr('href')
+
               splitHref = href.split('/')
-              splitHref[splitHref.length - 1] = data.id
-              $value
-                .find('a')
+              splitHref[splitHref.length - 1] = data.milestone.iid
+              $milestoneLink
                 .attr('href',splitHref.join('/'))
       )

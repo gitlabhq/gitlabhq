@@ -2,9 +2,9 @@
   .issuable-sidebar
     .block.issuable-sidebar-header
       - if issuable.to_ability_name == 'merge_request'
-        - issuable_url = namespace_project_merge_request_path(@project.namespace, @project, issuable.iid)
+        - issuable_url = namespace_project_merge_request_path(@project.namespace, @project, issuable.iid, :json)
       - else
-        - issuable_url = namespace_project_issue_path(@project.namespace, @project, issuable.iid)
+        - issuable_url = namespace_project_issue_path(@project.namespace, @project, issuable.iid, :json)
       %span.issuable-count.hide-collapsed.pull-left
         = issuable.iid
         of
