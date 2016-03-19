@@ -130,7 +130,10 @@ describe Gitlab::ReferenceExtractor, lib: true do
     let(:label) { create(:label, project: project) }
     let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference}" }
 
-    before { subject.analyze(text) }
+    before do
+      project.team << [project.creator, :developer]
+      subject.analyze(text)
+    end
 
     it 'returns all referables' do
       expect(subject.all).to match_array([issue, label])

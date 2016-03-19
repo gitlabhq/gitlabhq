@@ -4,9 +4,14 @@ describe Gitlab::Gfm::ReferenceUnfolder do
   let(:text) { 'some text' }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }
+  let(:user) { create(:user) }
+
+  before { old_project.team << [user, :guest] }
 
   describe '#unfold' do
-    subject { described_class.new(text, old_project).unfold(new_project) }
+    subject do
+      described_class.new(text, old_project, user).unfold(new_project)
+    end
 
     context 'multiple issues and merge requests referenced' do
       let!(:issue_first) { create(:issue, project: old_project) }

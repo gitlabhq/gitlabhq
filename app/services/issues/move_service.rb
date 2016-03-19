@@ -77,7 +77,8 @@ module Issues
     end
 
     def unfold_references(content)
-      unfolder = Gitlab::Gfm::ReferenceUnfolder.new(content, @old_project)
+      unfolder = Gitlab::Gfm::ReferenceUnfolder.new(content, @old_project,
+                                                    @current_user)
       unfolder.unfold(@new_project)
     end
 

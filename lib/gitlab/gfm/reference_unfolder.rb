@@ -29,9 +29,10 @@ module Gitlab
     #  http://gitlab.com/some/link/#1234, and code `puts #1234`'
     #
     class ReferenceUnfolder
-      def initialize(text, project)
+      def initialize(text, project, user)
         @text = text
         @project = project
+        @user = user
         @original = markdown(text)
       end
 
@@ -61,7 +62,7 @@ module Gitlab
       def referables
         return @referables if @referables
 
-        extractor = Gitlab::ReferenceExtractor.new(@project)
+        extractor = Gitlab::ReferenceExtractor.new(@project, @user)
         extractor.analyze(@text)
         @referables = extractor.all
       end
