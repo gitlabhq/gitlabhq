@@ -33,6 +33,7 @@ class @SearchAutocomplete
     @saveOriginalState()
 
     @searchInput.addClass('disabled')
+    @autocomplete = false
 
     @bindEvents()
 
@@ -61,8 +62,12 @@ class @SearchAutocomplete
     @searchInput.on 'blur', @onSearchInputBlur
 
   enableAutocomplete: ->
+    return if @autocomplete
+
     dropdownMenu = @dropdown.find('.dropdown-menu')
     _this = @
+    loading = false
+
     @searchInput.glDropdown
         filterInputBlur: false
         filterable: true
@@ -72,7 +77,19 @@ class @SearchAutocomplete
         search:
           fields: ['text']
         data: (term, callback) ->
-          $.get(_this.autocompletePath, {
+          # Ensure this is not called when autocomplete is disabled because
+          # this method still will be called because `GitLabDropdownFilter` is triggering this on keyup
+          return if _this.autocomplete is false
+
+          # Do not trigger request if input is empty
+          return if _this.searchInput.val() is ''
+
+          # Prevent multiple ajax calls
+          return if loading
+
+          loading = true
+
+          jqXHR = $.get(_this.autocompletePath, {
               project_id: _this.projectId
               project_ref: _this.projectRef
               term: term
@@ -99,7 +116,8 @@ class @SearchAutocomplete
                     text: item.label
                     url: item.url
               callback(data)
-          )
+          ).always ->
+            loading = false
 
     @dropdown.addClass('open')
     @searchInput.removeClass('disabled')
@@ -109,23 +127,26 @@ class @SearchAutocomplete
     @dropdown.dropdown('toggle')
 
   onSearchInputKeyDown: (e) =>
-    # Remove tag when pressing backspace and input search is empty
-    if e.keyCode is KEYCODE.BACKSPACE and e.currentTarget.value is ''
-      @removeLocationBadge()
-      @searchInput.focus()
+    switch e.keyCode
+      when KEYCODE.BACKSPACE
+        if e.currentTarget.value is ''
+          @removeLocationBadge()
+          @searchInput.focus()
+      when KEYCODE.ESCAPE
+        if @badgePresent()
+        else
+          @restoreOriginalState()
 
-    else if e.keyCode is KEYCODE.ESCAPE
-      @searchInput.val('')
-      @restoreOriginalState()
-    else
-      # Create new autocomplete if it hasn't been created yet and there's no badge
-      if @autocomplete is undefined
-        if !@badgePresent()
-          @enableAutocomplete()
+          # If after restoring there's a badge
+          @disableAutocomplete() if @badgePresent()
       else
-        # There's a badge
         if @badgePresent()
           @disableAutocomplete()
+        else
+          @enableAutocomplete()
+
+    # Avoid falsy value to be returned
+    return
 
   onSearchInputFocus: =>
     @wrap.addClass('search-active')
@@ -193,6 +214,6 @@ class @SearchAutocomplete
     @resetSearchState()
 
   disableAutocomplete: ->
-    if @autocomplete?
+    if @autocomplete
       @searchInput.addClass('disabled')
-    @autocomplete = null
+    @autocomplete = false
