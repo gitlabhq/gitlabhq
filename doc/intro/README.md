@@ -1,3 +1,5 @@
+# Get started with GitLab
+
 ## Organize
 
 > Create projects and groups
