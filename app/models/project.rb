@@ -969,8 +969,9 @@ class Project < ActiveRecord::Base
   end
 
   def visibility_level_allowed?(level = self.visibility_level)
-    allowed_by_forks =  if forked?
-                          Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level)
+    allowed_by_forks =  if forked? && forked_project_link.forked_from_project_id.present?
+                          from_project = eager_load_forked_from_project
+                          Gitlab::VisibilityLevel.allowed_fork_levels(from_project.visibility_level).include?(level)
                         else
                           true
                         end
@@ -978,6 +979,11 @@ class Project < ActiveRecord::Base
     allowed_by_groups = group.present? ? level <= group.visibility_level : true
 
     allowed_by_forks && allowed_by_groups
+  end
+
+  #Necessary to retrieve many-to-many associations on new forks before validating visibility level
+  def eager_load_forked_from_project
+    Project.find(forked_project_link.forked_from_project_id)
   end
 
   def runners_token

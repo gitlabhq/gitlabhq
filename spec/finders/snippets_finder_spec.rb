@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SnippetsFinder do
   let(:user) { create :user }
   let(:user1) { create :user }
-  let(:group) { create :group }
+  let(:group) { create :group, visibility_level: Gitlab::VisibilityLevel::PUBLIC }
 
   let(:project1) { create(:empty_project, :public,  group: group) }
   let(:project2) { create(:empty_project, :private, group: group) }

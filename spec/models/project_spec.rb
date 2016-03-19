@@ -442,7 +442,7 @@ describe Project, models: true do
   end
 
   describe '.trending' do
-    let(:group)    { create(:group) }
+    let(:group)    { create(:group, :public) }
     let(:project1) { create(:empty_project, :public, group: group) }
     let(:project2) { create(:empty_project, :public, group: group) }
 

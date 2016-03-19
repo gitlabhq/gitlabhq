@@ -12,25 +12,25 @@ feature 'Project', feature: true do
     it 'parses Markdown' do
       project.update_attribute(:description, 'This is **my** project')
       visit path
-      expect(page).to have_css('.project-home-desc > p > strong')
+      expect(page).to have_css('.cover-title > p > strong')
     end
 
     it 'passes through html-pipeline' do
       project.update_attribute(:description, 'This project is the :poop:')
       visit path
-      expect(page).to have_css('.project-home-desc > p > img')
+      expect(page).to have_css('.cover-title > p > img')
     end
 
     it 'sanitizes unwanted tags' do
       project.update_attribute(:description, "```\ncode\n```")
       visit path
-      expect(page).not_to have_css('.project-home-desc code')
+      expect(page).not_to have_css('.cover-title code')
     end
 
     it 'permits `rel` attribute on links' do
       project.update_attribute(:description, 'https://google.com/')
       visit path
-      expect(page).to have_css('.project-home-desc a[rel]')
+      expect(page).to have_css('.cover-title a[rel]')
     end
   end
 

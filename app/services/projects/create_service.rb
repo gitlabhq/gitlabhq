@@ -10,7 +10,10 @@ module Projects
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
-      return @project unless visibility_level_allowed?
+      unless visibility_level_allowed?
+        deny_visibility_level(@project)
+        return @project
+      end
 
       # Set project name from path
       if @project.name.present? && @project.path.present?

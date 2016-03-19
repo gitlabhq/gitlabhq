@@ -4,7 +4,7 @@ describe 'Group access', feature: true do
   include AccessMatchers
 
   def group
-    @group ||= create(:group)
+    @group ||= create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
   end
 
   def create_project(access_level)

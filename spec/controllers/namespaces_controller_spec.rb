@@ -15,7 +15,7 @@ describe NamespacesController do
     end
 
     context "when the namespace belongs to a group" do
-      let!(:group) { create(:group) }
+      let!(:group)   { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
       let!(:project) { create(:project, namespace: group) }
 
       context "when the group has public projects" do
