@@ -36,9 +36,6 @@
 
 > Install and update your GitLab installation.
 
-- Install GitLab
-    - [Omnibus](https://about.gitlab.com/downloads/)
-    - [Source](../install/installation.md)
-- [Update GitLab](update/README.md)
+- [Install GitLab](https://about.gitlab.com/installation/)
+- [Update GitLab](https://about.gitlab.com/update/)
 - [GitLab Omnibus configuration options](http://doc.gitlab.com/omnibus/settings/configuration.html)
-- [Migrating from source installation to GitLab Omnibus](http://doc.gitlab.com/omnibus/update/README.html)
