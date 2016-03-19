@@ -280,6 +280,18 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.new_issue_branch' do
+    subject { described_class.new_issue_branch(noteable, project, author, "1-mepmep") }
+
+    it_behaves_like 'a system note'
+
+    context 'when a branch is created from the new branch button' do
+      it 'sets the note text' do
+        expect(subject.note).to match /\AStarted branch [`1-mepmep`]/
+      end
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 

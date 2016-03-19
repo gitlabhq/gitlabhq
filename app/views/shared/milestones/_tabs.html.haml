@@ -2,7 +2,7 @@
   %li.active
     = link_to '#tab-issues', 'data-toggle' => 'tab', 'data-show' => '.tab-issues-buttons' do
       Issues
-      %span.badge= milestone.issues.size
+      %span.badge= milestone.issues_visible_to_user(current_user).size
   %li
     = link_to '#tab-merge-requests', 'data-toggle' => 'tab', 'data-show' => '.tab-merge-requests-buttons' do
       Merge Requests
@@ -21,7 +21,7 @@
 
 .tab-content.milestone-content
   .tab-pane.active#tab-issues
-    = render 'shared/milestones/issues_tab', issues: milestone.issues, show_project_name: show_project_name, show_full_project_name: show_full_project_name
+    = render 'shared/milestones/issues_tab', issues: milestone.issues_visible_to_user(current_user), show_project_name: show_project_name, show_full_project_name: show_full_project_name
   .tab-pane#tab-merge-requests
     = render 'shared/milestones/merge_requests_tab', merge_requests: milestone.merge_requests, show_project_name: show_project_name, show_full_project_name: show_full_project_name
   .tab-pane#tab-participants

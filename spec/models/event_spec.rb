@@ -65,6 +65,42 @@ describe Event, models: true do
     it { expect(@event.author).to eq(@user) }
   end
 
+  describe '#proper?' do
+    context 'issue event' do
+      let(:project) { create(:empty_project, :public) }
+      let(:non_member) { create(:user) }
+      let(:member)  { create(:user) }
+      let(:author) { create(:author) }
+      let(:assignee) { create(:user) }
+      let(:admin) { create(:admin) }
+      let(:event) { Event.new(project: project, action: Event::CREATED, target: issue, author_id: author.id) }
+
+      before do
+        project.team << [member, :developer]
+      end
+
+      context 'for non confidential issues' do
+        let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
+
+        it { expect(event.proper?(non_member)).to eq true }
+        it { expect(event.proper?(author)).to eq true }
+        it { expect(event.proper?(assignee)).to eq true }
+        it { expect(event.proper?(member)).to eq true }
+        it { expect(event.proper?(admin)).to eq true }
+      end
+
+      context 'for confidential issues' do
+        let(:issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+
+        it { expect(event.proper?(non_member)).to eq false }
+        it { expect(event.proper?(author)).to eq true }
+        it { expect(event.proper?(assignee)).to eq true }
+        it { expect(event.proper?(member)).to eq true }
+        it { expect(event.proper?(admin)).to eq true }
+      end
+    end
+  end
+
   describe '.limit_recent' do
     let!(:event1) { create(:closed_issue_event) }
     let!(:event2) { create(:closed_issue_event) }

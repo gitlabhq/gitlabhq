@@ -114,7 +114,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def ignored?
-    failed? && allow_failure?
+    allow_failure? && (failed? || canceled?)
   end
 
   def duration

@@ -28,7 +28,7 @@
   %h2.title
     = markdown escape_once(milestone.title), pipeline: :single_line
 
-- if milestone.complete? && milestone.active?
+- if milestone.complete?(current_user) && milestone.active?
   .alert.alert-success.prepend-top-default
     - close_msg = group ? 'You may close the milestone now.' : 'Navigate to the project to close the milestone.'
     %span All issues for this milestone are closed. #{close_msg}
@@ -47,7 +47,7 @@
           - project_name = group ? ms.project.name : ms.project.name_with_namespace
           = link_to project_name, namespace_project_milestone_path(ms.project.namespace, ms.project, ms)
         %td
-          = ms.issues.opened.count
+          = ms.issues_visible_to_user(current_user).opened.count
         %td
           - if ms.closed?
             Closed

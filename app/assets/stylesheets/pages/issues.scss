@@ -3,7 +3,7 @@
     padding: 10px $gl-padding;
     position: relative;
 
-    .issue-title {
+    .title {
       margin-bottom: 2px;
     }
 
@@ -49,7 +49,7 @@ form.edit-issue {
   margin: 0;
 }
 
-.merge-requests-title {
+.merge-requests-title, .related-branches-title {
   font-size: 16px;
   font-weight: 600;
 }
@@ -130,13 +130,13 @@ form.edit-issue {
 }
 
 .issue-closed-by-widget {
-  color: $secondary-text;
+  color: $gl-text-color;
   margin-left: 52px;
 }
 
 .editor-details {
   display: block;
-  
+
   @media (min-width: $screen-sm-min) {
     display: inline-block;
   }
