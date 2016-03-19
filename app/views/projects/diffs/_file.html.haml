@@ -40,8 +40,8 @@
         = view_file_btn(diff_commit.id, diff_file, project)
 
   .diff-content.diff-wrap-lines
-    -# Skipp all non non-supported blobs
-    - return unless blob.respond_to?('text?')
+    -# Skip all non-supported blobs
+    - return unless blob.respond_to?(:text?)
     - if blob_text_viewable?(blob)
       - if diff_view == 'parallel'
         = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i

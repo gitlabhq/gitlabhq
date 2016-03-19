@@ -679,8 +679,9 @@ describe Notify do
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base, project), to: Commit.new(compare.head, project)) }
     let(:send_from_committer_email) { false }
+    let(:diff_refs) { [project.merge_base_commit(sample_image_commit.id, sample_commit.id), project.commit(sample_commit.id)] }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, send_from_committer_email: send_from_committer_email) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, diff_refs: diff_refs, send_from_committer_email: send_from_committer_email) }
 
     it_behaves_like 'it should not have Gmail Actions links'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -705,15 +706,15 @@ describe Notify do
       is_expected.to have_body_text /Change some files/
     end
 
-    it 'includes diffs' do
-      is_expected.to have_body_text /def archive_formats_regex/
+    it 'includes diffs with character-level highlighting' do
+      is_expected.to have_body_text /def<\/span> <span class=\"nf\">archive_formats_regex/
     end
 
     it 'contains a link to the diff' do
       is_expected.to have_body_text /#{diff_path}/
     end
 
-    it 'doesn not contain the misleading footer' do
+    it 'does not contain the misleading footer' do
       is_expected.not_to have_body_text /you are a member of/
     end
 
@@ -787,8 +788,9 @@ describe Notify do
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
+    let(:diff_refs) { [project.merge_base_commit(sample_commit.parent_id, sample_commit.id), project.commit(sample_commit.id)] }
 
-    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare) }
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, diff_refs: diff_refs) }
 
     it_behaves_like 'it should show Gmail Actions View Commit link'
     it_behaves_like "a user cannot unsubscribe through footer link"
@@ -813,8 +815,8 @@ describe Notify do
       is_expected.to have_body_text /Change some files/
     end
 
-    it 'includes diffs' do
-      is_expected.to have_body_text /def archive_formats_regex/
+    it 'includes diffs with character-level highlighting' do
+      is_expected.to have_body_text /def<\/span> <span class=\"nf\">archive_formats_regex/
     end
 
     it 'contains a link to the diff' do

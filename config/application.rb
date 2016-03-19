@@ -49,6 +49,8 @@ module Gitlab
     config.assets.paths << Gemojione.index.images_path
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
+    config.assets.precompile << "notify.css"
+    config.assets.precompile << "mailers/repository_push_email.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

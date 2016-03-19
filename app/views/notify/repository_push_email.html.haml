@@ -1,3 +1,6 @@
+= content_for :head do
+  = stylesheet_link_tag 'mailers/repository_push_email'
+
 %h3
   #{@message.author_name} #{@message.action_name} #{@message.ref_type} #{@message.ref_name}
   at #{link_to(@message.project_name_with_namespace, namespace_project_url(@message.project_namespace, @message.project))}
@@ -43,25 +46,34 @@
             = diff.new_path
 
   - unless @message.disable_diffs?
+    - diff_files = safe_diff_files(@message.diffs, @message.diff_refs)
+
     %h4 Changes:
-    - @message.diffs.each_with_index do |diff, i|
+    - diff_files.each_with_index do |diff_file, i|
       %li{id: "diff-#{i}"}
         %a{href: @message.target_url + "#diff-#{i}"}
-          - if diff.deleted_file
+          - if diff_file.deleted_file
             %strong
-              = diff.old_path
+              = diff_file.old_path
             deleted
-          - elsif diff.renamed_file
+          - elsif diff_file.renamed_file
             %strong
-              = diff.old_path
+              = diff_file.old_path
             &rarr;
             %strong
-              = diff.new_path
+              = diff_file.new_path
           - else
             %strong
-              = diff.new_path
+              = diff_file.new_path
         %hr
-        = color_email_diff(diff.diff)
+        - diff_commit = diff_file.deleted_file ? @message.diff_refs.first : @message.diff_refs.last
+        - blob = @message.project.repository.blob_for_diff(diff_commit, diff_file)
+        - if blob && blob.respond_to?(:text?) && blob_text_viewable?(blob)
+          %table.code.white
+            - diff_file.highlighted_diff_lines.each do |line|
+              = render "projects/diffs/line", {line: line, diff_file: diff_file, line_code: nil, plain: true}
+        - else
+          No preview for this file type
         %br
 
   - if @message.compare_timeout
