@@ -7,7 +7,6 @@ class @Subscription
     @subscribe_button.unbind('click').click(@toggleSubscription)
 
   toggleSubscription: (event) =>
-    console.log 'toggleSubscription'
     btn = $(event.currentTarget)
     action = btn.find('span').text()
     current_status = @subscription_status.attr('data-status')
