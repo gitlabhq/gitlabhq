@@ -240,7 +240,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'empty project "Empty Project"' do
-    create :empty_project, name: 'Empty Project', namespace: @user.namespace
+    create :project_empty_repo, name: 'Empty Project', namespace: @user.namespace
   end
 
   When 'I visit empty project page' do
