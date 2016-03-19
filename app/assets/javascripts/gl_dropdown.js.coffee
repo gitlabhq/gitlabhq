@@ -117,7 +117,7 @@ class GitLabDropdown
             @parseData @fullData
         }
 
-    # Init filiterable
+    # Init filterable
     if @options.filterable
       @filter = new GitLabDropdownFilter @dropdown,
         filterInputBlur: @filterInputBlur
@@ -327,4 +327,6 @@ class GitLabDropdown
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
-    new GitLabDropdown @, opts
+    if (!$.data @, 'glDropdown')
+      $.data(@, 'glDropdown', new GitLabDropdown @, opts)
+
