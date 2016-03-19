@@ -7,7 +7,7 @@
 
 ## Prioritize
 
-> Create issues, labels, milestones, voting, and review issues
+> Create issues, labels, milestones, cast your vote and review issues
 
 - [Create a new issue](../gitlab-basics/create-issue.md)
 - [Assign labels to issues](../workflow/labels.md)
@@ -18,23 +18,25 @@
 
 > Create merge requests, diffs, commits, and review code
 
+- [Fork a project and contribute to it](../workflow/forking_workflow.md)
 - [Create a new merge request](../gitlab-basics/add-merge-request.md)
-- Review merge requests easily using inline comments
+- [Automatically close issues from merge requests](../customization/issue_closing.md)
+- [Automatically merge when your builds succeed](../workflow/merge_when_build_succeeds.md)
+- [Revert any commit](../workflow/revert_changes.md)
 
-## Deploy
+## Test and Deploy
 
-> Use built-in continuous integration in GitLab, or use your favorite CI tool.
+> Use the built-in continuous integration in GitLab
 
 - [GitLab CI quick start guide](../ci/quick_start/README.md)
 
-## Install
+## Install and Update
 
 > Install and update your GitLab installation.
 
 - Install GitLab
-    - Omnibus
+    - [Omnibus](https://about.gitlab.com/downloads/)
     - [Source](../install/installation.md)
-- Upgrade GitLab
-- Learn about GitLab Omnibus architecture
-- GitLab Omnibus configuration options
-- Migrating from source installation to GitLab Omnibus
+- [Update GitLab](update/README.md)
+- [GitLab Omnibus configuration options](http://doc.gitlab.com/omnibus/settings/configuration.html)
+- [Migrating from source installation to GitLab Omnibus](http://doc.gitlab.com/omnibus/update/README.html)
