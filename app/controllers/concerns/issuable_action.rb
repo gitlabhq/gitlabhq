@@ -11,7 +11,7 @@ module IssuableAction
     issuable.destroy
 
     route = polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
-    issuable_name = issuable.class.name.underscore.gsub('_', ' ')
+    issuable_name = issuable.class.name.underscore.tr('_', ' ')
 
     respond_to do |format|
       format.html { redirect_to route, notice: "This #{issuable_name} was deleted." }

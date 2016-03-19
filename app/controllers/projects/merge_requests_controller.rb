@@ -165,7 +165,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-<<<<<<< 67043ec53b4c35d5a9862fe78bd3f47e412919cd
   def remove_wip
     MergeRequests::UpdateService.new(project, current_user, title: @merge_request.wipless_title).execute(@merge_request)
 
@@ -173,8 +172,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       notice: "The merge request can now be merged."
   end
 
-=======
->>>>>>> Dry destroy action on issuables
   def merge_check
     @merge_request.check_if_can_be_merged
 
