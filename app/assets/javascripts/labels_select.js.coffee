@@ -31,17 +31,16 @@ class @LabelsSelect
       issueURLSplit = issueUpdateURL.split('/') if issueUpdateURL?
       if issueUpdateURL
         labelHTMLTemplate = _.template(
-            '<% _.each(labels, function(label){ %>'+
-            '<a href="'+ 
-            ['',issueURLSplit[1], issueURLSplit[2],''].join('/') +
-            'issues?label_name=<%= label.title %>">'+
-            '<span class="label color-label" '+
-            'style="background-color: <%= label.color %>; '+
-            'color: #FFFFFF">'+
-            '<%= label.title %>'+
-            '</span>'+
-            '</a>'+
-            '<% }); %>');
+            '<% _.each(labels, function(label){ %>
+            <a href="
+            #{["",issueURLSplit[1], issueURLSplit[2],""].join("/")}
+            issues?label_name=<%= label.title %>">
+            <span class="label color-label" style="background-color: <%= label.color %>; color: #FFFFFF">
+            <%= label.title %>
+            </span>
+            </a>
+            <% }); %>'
+        );
         labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
 
       if newLabelField.length and $dropdown.hasClass 'js-extra-options'

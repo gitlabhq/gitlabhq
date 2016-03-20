@@ -19,6 +19,27 @@ class @UsersSelect
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
 
+      noAssigneeTemplate = _.template(
+        '<% if (username) { %>
+        <a class="author_link " href="/u/<%= username %>">
+          <% if( avatar ) { %>
+          <img width="32" class="avatar avatar-inline s32" alt="" src="<%= avatar %>">
+          <% } %>
+          <span class="author"><%= name %></span>
+          <span class="username">
+            @<%= username %>
+          </span>
+        </a>
+          <% } else { %>
+        <span class="assign-yourself">
+          No assignee - 
+          <a href="#" class="js-assign-yourself">
+            assign yourself
+          </a>
+        </span>
+          <% } %>'
+      )
+
       $dropdown.glDropdown(
         data: (term, callback) =>
           @users term, (users) =>
@@ -100,21 +121,21 @@ class @UsersSelect
             ).done (data) ->
               $loading.fadeOut()
               $selectbox.hide()
-              href = $value
-                      .show()
-                      .find('.author')
-                      .text(data.assignee.name)
-                      .end()
-                      .find('.username')
-                      .text("@#{data.assignee.username}")
-                      .end()
-                      .find('a')
-                      .attr('href')
-              splitHref = href.split('/')
-              splitHref[splitHref.length - 1] = data.assignee.username
-              $value
-                .find('a')
-                .attr('href',splitHref.join('/'))
+              
+              if data.assignee
+                user =
+                  name: data.assignee.name
+                  username: data.assignee.username
+                  avatar: data.assignee.avatar.url
+              else
+                user =
+                  name: 'Unassigned'
+                  username: ''
+                  avatar: ''
+
+              $value.html(noAssigneeTemplate(user))
+              $value.find('a').attr('href')
+
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false
@@ -131,17 +152,25 @@ class @UsersSelect
             if avatar
               img = "<img src='#{avatar}' class='avatar avatar-inline' width='30' />"
 
-            "<li>
-              <a href='#' class='dropdown-menu-user-link #{selected}'>
-                #{img}
-                <strong class='dropdown-menu-user-full-name'>
-                  #{user.name}
-                </strong>
-                <span class='dropdown-menu-user-username'>
-                  #{username}
-                </span>
-              </a>
-            </li>"
+          # split into three parts so we can remove the username section if nessesary
+          listWithName = "<li>
+            <a href='#' class='dropdown-menu-user-link #{selected}'>
+              #{img}
+              <strong class='dropdown-menu-user-full-name'>
+                #{user.name}
+              </strong>"
+
+          listWithUserName = "<span class='dropdown-menu-user-username'>
+                #{username}
+              </span>"
+          listClosingTags = "</a>
+          </li>"
+
+          
+          if username is ''
+            listWithUserName = ''
+
+          listWithName + listWithUserName + listClosingTags
       )
 
     $('.ajax-users-select').each (i, select) =>
