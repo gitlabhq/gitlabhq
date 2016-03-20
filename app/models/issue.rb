@@ -33,9 +33,6 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   validates :project, presence: true
 
-  scope :of_group,
-    ->(group) { where(project_id: group.projects.select(:id).reorder(nil)) }
-
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
@@ -106,7 +103,7 @@ class Issue < ActiveRecord::Base
 
   def related_branches
     return [] if self.project.empty_repo?
-    
+
     self.project.repository.branch_names.select { |branch| branch.end_with?("-#{iid}") }
   end
 

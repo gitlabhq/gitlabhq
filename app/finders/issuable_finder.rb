@@ -80,9 +80,10 @@ class IssuableFinder
       @projects = project
     elsif current_user && params[:authorized_only].presence && !current_user_related?
       @projects = current_user.authorized_projects.reorder(nil)
+    elsif group
+      @projects = GroupProjectsFinder.new(group).execute(current_user).reorder(nil)
     else
-      @projects = GroupProjectsFinder.new(group).execute(current_user).
-        reorder(nil)
+      @projects = ProjectsFinder.new.execute(current_user).reorder(nil)
     end
   end
 
@@ -198,8 +199,7 @@ class IssuableFinder
   end
 
   def by_group(items)
-    items = items.of_group(group) if group
-
+    # Selection by group is already covered by `by_project` and `projects`
     items
   end
 
