@@ -11,7 +11,6 @@ class @Project
       $(@).toggleClass('active')
 
       url = $("#project_clone").val()
-      console.log("url",url)
 
       # Update the input field
       $('#project_clone').val(url)
