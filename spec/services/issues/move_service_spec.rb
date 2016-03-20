@@ -7,7 +7,6 @@ describe Issues::MoveService, services: true do
   let(:description) { 'Some issue description' }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }
-  let(:issue_params) { old_issue.serializable_hash }
 
   let(:old_issue) do
     create(:issue, title: title, description: description,
@@ -15,7 +14,7 @@ describe Issues::MoveService, services: true do
   end
 
   let(:move_service) do
-    described_class.new(old_project, user, issue_params)
+    described_class.new(old_project, user)
   end
 
   shared_context 'user can move issue' do
