@@ -121,6 +121,11 @@ describe Issues::MoveService, services: true do
           it 'preserves orignal author of comment' do
             expect(user_notes.pluck(:author_id)).to all(eq(author.id))
           end
+
+          it 'preserves time when note has been created at' do
+            expect(old_issue.notes.first.created_at)
+              .to eq new_issue.notes.first.created_at
+          end
         end
 
         context 'notes with references' do

@@ -53,7 +53,8 @@ module Issues
       @old_issue.notes.find_each do |note|
         new_note = note.dup
         new_params = { project: @new_project, noteable: @new_issue,
-                       note: unfold_references(new_note.note) }
+                       note: unfold_references(new_note.note),
+                       created_at: note.created_at }
 
         new_note.update(new_params)
       end
