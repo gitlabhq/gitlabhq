@@ -13,29 +13,29 @@ class GroupProjectsFinder < UnionFinder
   private
 
   def group_projects(current_user)
-    include_owned = @options.fetch(:owned, true)
-    include_shared = @options.fetch(:shared, true)
+    only_owned = @options.fetch(:only_owned, false)
+    only_shared = @options.fetch(:only_shared, false)
 
     projects = []
 
     if current_user
       if @group.users.include?(current_user)
-        projects << @group.projects if include_owned
-        projects << @group.shared_projects if include_shared
+        projects << @group.projects unless only_shared
+        projects << @group.shared_projects unless only_owned
       else
-        if include_owned
+        unless only_shared
           projects << @group.projects.visible_to_user(current_user)
           projects << @group.projects.public_to_user(current_user)
         end
 
-        if include_shared
+        unless only_owned
           projects << @group.shared_projects.visible_to_user(current_user)
           projects << @group.shared_projects.public_to_user(current_user)
         end
       end
     else
-      projects << @group.projects.public_only if include_owned
-      projects << @group.shared_projects.public_only if include_shared
+      projects << @group.projects.public_only unless only_shared
+      projects << @group.shared_projects.public_only unless only_owned
     end
 
     projects

@@ -44,7 +44,7 @@ class GroupsController < Groups::ApplicationController
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]).per(PER_PAGE) if params[:filter_projects].blank?
 
-    @shared_projects = GroupProjectsFinder.new(group, shared: true).execute(current_user)
+    @shared_projects = GroupProjectsFinder.new(group, only_shared: true).execute(current_user)
 
     respond_to do |format|
       format.html
@@ -77,7 +77,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def projects
-    @projects = @projects.sorted_by_activity.page(params[:page])
+    @projects = @group.projects.page(params[:page])
   end
 
   def update
