@@ -191,6 +191,10 @@ v 8.6.1
 v 8.6.0
   - Add ability to move issue to another project
   - Prevent tokens in the import URL to be showed by the UI
+v 8.7.0(unreleased)
+  - Add ability set due date to issues, sort and filter issues by due date(Mehmet Beydogan)
+
+v 8.6.0 (unreleased)
   - Fix bug where wrong commit ID was being used in a merge request diff to show old image (Stan Hu)
   - Add confidential issues
   - Bump gitlab_git to 9.0.3 (Stan Hu)
