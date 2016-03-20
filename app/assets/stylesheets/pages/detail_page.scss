@@ -20,6 +20,10 @@
   .issue-meta {
     display: inline-block;
     line-height: 20px;
+
+    @media (min-width: $screen-sm-min) {
+      width: 48%;
+    }
   }
 }
 

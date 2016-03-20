@@ -28,14 +28,13 @@
       %span.creator
         opened
         .editor-details
-          .editor-details
-            = time_ago_with_tooltip(@issue.created_at)
-            by
-            %strong
-              = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-xs")
-            %strong
-              = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
-                by_username: true, avatar: false)
+          = time_ago_with_tooltip(@issue.created_at)
+          by
+          %strong
+            = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-xs")
+          %strong
+            = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
+              by_username: true, avatar: false)
 
     .pull-right.issue-btn-group
       - if can?(current_user, :create_issue, @project)
