@@ -11,7 +11,7 @@
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
     - elsif @repository.merged_to_root_ref? branch.name
-      %span.label.label-info.has_tooltip(title="Merged into #{@repository.root_ref}")
+      %span.label.label-info.has-tooltip(title="Merged into #{@repository.root_ref}")
         merged
 
     - if @project.protected_branch? branch.name
@@ -30,7 +30,7 @@
           Compare
 
       - if can_remove_branch?(@project, branch.name)
-        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has_tooltip', title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do
+        = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-grouped btn-xs btn-remove remove-row has-tooltip', title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do
           = icon("trash-o")
 
     - if branch.name != @repository.root_ref

@@ -138,7 +138,7 @@ $ ->
 
   # Initialize tooltips
   $('body').tooltip(
-    selector: '.has_tooltip, [data-toggle="tooltip"]'
+    selector: '.has-tooltip, [data-toggle="tooltip"]'
     placement: (_, el) ->
       $el = $(el)
       $el.data('placement') || 'bottom'
