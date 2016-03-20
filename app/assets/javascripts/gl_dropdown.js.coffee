@@ -167,7 +167,11 @@ class GitLabDropdown
 
   hidden: =>
     if @options.filterable
-      @dropdown.find(".dropdown-input-field").blur().val("")
+      @dropdown
+        .find(".dropdown-input-field")
+        .blur()
+        .val("")
+        .trigger("keyup")
 
     if @dropdown.find(".dropdown-toggle-page").length
       $('.dropdown-menu', @dropdown).removeClass PAGE_TWO_CLASS
