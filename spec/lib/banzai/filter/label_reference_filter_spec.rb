@@ -56,7 +56,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   describe 'label span element' do
     it 'includes default classes' do
       doc = reference_filter("Label #{reference}")
-      expect(doc.css('a span').first.attr('class')).to eq 'label color-label'
+      expect(doc.css('a span').first.attr('class')).to eq 'label color-label has_tooltip'
     end
 
     it 'includes a style attribute' do

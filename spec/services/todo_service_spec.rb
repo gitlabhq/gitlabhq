@@ -148,8 +148,13 @@ describe TodoService, services: true do
         should_not_create_todo(user: stranger, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
       end
 
-      it 'does not create todo when leaving a note on commit' do
-        should_not_create_any_todo { service.new_note(note_on_commit, john_doe) }
+      it 'creates a todo for each valid mentioned user when leaving a note on commit' do
+        service.new_note(note_on_commit, john_doe)
+
+        should_create_todo(user: michael, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+        should_create_todo(user: author, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+        should_not_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+        should_not_create_todo(user: stranger, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
       end
 
       it 'does not create todo when leaving a note on snippet' do

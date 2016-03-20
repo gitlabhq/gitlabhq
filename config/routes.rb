@@ -351,6 +351,8 @@ Rails.application.routes.draw do
     get :issues
     get :merge_requests
     get :activity
+    get :labels
+    get :milestones
 
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
@@ -621,6 +623,7 @@ Rails.application.routes.draw do
             post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
+            post :remove_wip
           end
 
           collection do

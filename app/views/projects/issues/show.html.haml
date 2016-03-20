@@ -22,20 +22,20 @@
       = icon('angle-double-left')
 
     .issue-meta
+      = confidential_icon(@issue)
       %strong.identifier
         Issue ##{@issue.iid}
       %span.creator
-        by
+        opened
         .editor-details
           .editor-details
+            = time_ago_with_tooltip(@issue.created_at)
+            by
             %strong
               = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-xs")
-            %span.hidden-xs
-              = '@' + @issue.author.username
             %strong
               = link_to_member(@project, @issue.author, size: 24, mobile_classes: "hidden-sm hidden-md hidden-lg",
                 by_username: true, avatar: false)
-            = time_ago_with_tooltip(@issue.created_at)
 
     .pull-right.issue-btn-group
       - if can?(current_user, :create_issue, @project)
@@ -63,15 +63,14 @@
                 = markdown(@issue.description, cache_key: [@issue, "description"])
             %textarea.hidden.js-task-list-field
               = @issue.description
-      - if @issue.updated_at != @issue.created_at
-        %small
-          Edited
-          = time_ago_with_tooltip(@issue.updated_at, placement: 'bottom', html_class: 'issue_edited_ago')
+      = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue_edited_ago')
 
       .merge-requests
         = render 'merge_requests'
+        = render 'related_branches'
 
     .content-block.content-block-small
+      = render 'new_branch'
       = render 'votes/votes_block', votable: @issue
 
     .row

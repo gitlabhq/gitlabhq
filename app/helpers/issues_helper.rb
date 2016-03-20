@@ -98,6 +98,10 @@ module IssuesHelper
     end.sort.to_sentence(last_word_connector: ', or ')
   end
 
+  def confidential_icon(issue)
+    icon('eye-slash') if issue.confidential?
+  end
+
   def emoji_icon(name, unicode = nil, aliases = [])
     unicode ||= Emoji.emoji_filename(name) rescue ""
 

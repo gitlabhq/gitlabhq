@@ -576,10 +576,7 @@ class Project < ActiveRecord::Base
   end
 
   def avatar_in_git
-    @avatar_file ||= 'logo.png' if repository.blob_at_branch('master', 'logo.png')
-    @avatar_file ||= 'logo.jpg' if repository.blob_at_branch('master', 'logo.jpg')
-    @avatar_file ||= 'logo.gif' if repository.blob_at_branch('master', 'logo.gif')
-    @avatar_file
+    repository.avatar
   end
 
   def avatar_url

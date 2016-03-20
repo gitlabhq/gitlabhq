@@ -24,6 +24,10 @@ module Gitlab
         @lines ||= parser.parse(raw_diff.each_line).to_a
       end
 
+      def too_large?
+        diff.too_large?
+      end
+
       def highlighted_diff_lines
         Gitlab::Diff::Highlight.new(self).highlight
       end
