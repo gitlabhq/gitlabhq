@@ -198,7 +198,7 @@ class Project < ActiveRecord::Base
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validate :visibility_level_allowed_by_group
-  validate :visibility_level_allowed_as_fork, on: :update
+  validate :visibility_level_allowed_as_fork
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -974,7 +974,12 @@ class Project < ActiveRecord::Base
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
 
-    level <= forked_from_project.visibility_level
+    # self.forked_from_project will be nil before the project is saved, so
+    # we need to go through the relation
+    original_project = forked_project_link.forked_from_project
+    return true unless original_project
+
+    level <= original_project.visibility_level
   end
 
   def visibility_level_allowed_by_group?(level = self.visibility_level)
