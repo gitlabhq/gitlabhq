@@ -57,6 +57,8 @@ To enable the CAS OmniAuth provider you must register your application with your
 
 1.  Save the configuration file.
 
+1.  If you're using the omnibus package, reconfigure GitLab (```gitlab-ctl reconfigure```).
+
 1.  Restart GitLab for the changes to take effect.
 
 On the sign in page there should now be a CAS tab in the sign in form.
