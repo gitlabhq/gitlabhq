@@ -5,6 +5,6 @@
       = render 'projects/zen', f: f, attr: :note, classes: 'note_text js-note-text js-task-list-field'
       = render 'projects/notes/hints'
 
-    .note-form-actions
+    .note-form-actions.clearfix
       = f.submit 'Save Comment', class: 'btn btn-nr btn-save btn-grouped js-comment-button'
       = link_to  'Cancel', '#', class: 'btn btn-nr btn-cancel note-edit-cancel'
