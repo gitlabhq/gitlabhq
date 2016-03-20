@@ -1,7 +1,8 @@
 class @UsersSelect
-  constructor: ->
+  constructor: (currentUser) ->
     @usersPath = "/autocomplete/users.json"
     @userPath = "/autocomplete/users/:id.json"
+    @currentUser = JSON.parse(currentUser)
 
     $('.js-user-search').each (i, dropdown) =>
       $dropdown = $(dropdown)
@@ -18,6 +19,40 @@ class @UsersSelect
       abilityName = $dropdown.data('ability-name')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
+
+      $block.on('click','.js-assign-yourself' , (e) => 
+        e.preventDefault()
+        assignTo(@currentUser.id)
+      )
+
+      assignTo = (selected) ->
+        data = {}
+        data[abilityName] = {}
+        data[abilityName].assignee_id = selected
+        $loading
+          .fadeIn()
+        $.ajax(
+          type: 'PUT'
+          dataType: 'json'
+          url: issueURL
+          data: data
+        ).done (data) ->
+          $loading.fadeOut()
+          $selectbox.hide()
+          
+          if data.assignee
+            user =
+              name: data.assignee.name
+              username: data.assignee.username
+              avatar: data.assignee.avatar.url
+          else
+            user =
+              name: 'Unassigned'
+              username: ''
+              avatar: ''
+
+          $value.html(noAssigneeTemplate(user))
+          $value.find('a').attr('href')
 
       noAssigneeTemplate = _.template(
         '<% if (username) { %>
@@ -108,33 +143,7 @@ class @UsersSelect
             selected = $dropdown
               .closest('.selectbox')
               .find("input[name='#{$dropdown.data('field-name')}']").val()
-            data = {}
-            data[abilityName] = {}
-            data[abilityName].assignee_id = selected
-            $loading
-              .fadeIn()
-            $.ajax(
-              type: 'PUT'
-              dataType: 'json'
-              url: issueURL
-              data: data
-            ).done (data) ->
-              $loading.fadeOut()
-              $selectbox.hide()
-              
-              if data.assignee
-                user =
-                  name: data.assignee.name
-                  username: data.assignee.username
-                  avatar: data.assignee.avatar.url
-              else
-                user =
-                  name: 'Unassigned'
-                  username: ''
-                  avatar: ''
-
-              $value.html(noAssigneeTemplate(user))
-              $value.find('a').attr('href')
+            assignTo(selected)
 
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""

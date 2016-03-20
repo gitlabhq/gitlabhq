@@ -1,8 +1,7 @@
 class @IssuableContext
   constructor: ->
     @initParticipants()
-
-    new UsersSelect()
+    new UsersSelect(currentUser)
     $('select.select2').select2({width: 'resolve', dropdownAutoWidth: true})
 
     $(".issuable-sidebar .inline-update").on "change", "select", ->

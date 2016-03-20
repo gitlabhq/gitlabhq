@@ -152,5 +152,5 @@
     :javascript
       new MilestoneSelect();
       new LabelsSelect();
-      new IssuableContext();
+      new IssuableContext('#{current_user.to_json(only: [:username, :id, :name])}');
       new Subscription('.subscription')
