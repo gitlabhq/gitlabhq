@@ -109,9 +109,8 @@ class Issue < ActiveRecord::Base
 
   def related_branches
     return [] if self.project.empty_repo?
-    self.project.repository.branch_names.select do |branch|
-      branch =~ /\A#{iid}-(?!\d+-stable)/i
-    end
+    
+    self.project.repository.branch_names.select { |branch| branch.end_with?("-#{iid}") }
   end
 
   # Reset issue events cache
@@ -154,7 +153,7 @@ class Issue < ActiveRecord::Base
   end
 
   def to_branch_name
-    "#{iid}-#{title.parameterize}"
+    "#{title.parameterize}-#{iid}"
   end
 
   def can_be_worked_on?(current_user)

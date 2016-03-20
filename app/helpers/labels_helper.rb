@@ -32,7 +32,7 @@ module LabelsHelper
   #   link_to_label(label) { "My Custom Label Text" }
   #
   # Returns a String
-  def link_to_label(label, project: nil, type: :issue, &block)
+  def link_to_label(label, project: nil, type: :issue, tooltip: true, &block)
     project ||= @project || label.project
     link = send("namespace_project_#{type.to_s.pluralize}_path",
                 project.namespace,
@@ -42,7 +42,7 @@ module LabelsHelper
     if block_given?
       link_to link, &block
     else
-      link_to render_colored_label(label), link
+      link_to render_colored_label(label, tooltip: tooltip), link
     end
   end
 
@@ -50,23 +50,24 @@ module LabelsHelper
     @project.labels.pluck(:title)
   end
 
-  def render_colored_label(label, label_suffix = '')
+  def render_colored_label(label, label_suffix = '', tooltip: true)
     label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
-    span = %(<span class="label color-label") +
-      %(style="background-color: #{label_color}; color: #{text_color}">) +
+    span = %(<span class="label color-label #{"has_tooltip" if tooltip}" ) +
+      %(style="background-color: #{label_color}; color: #{text_color}" ) +
+      %(title="#{escape_once(label.description)}" data-container="body">) +
       %(#{escape_once(label.name)}#{label_suffix}</span>)
 
     span.html_safe
   end
 
-  def render_colored_cross_project_label(label)
+  def render_colored_cross_project_label(label, tooltip: true)
     label_suffix = label.project.name_with_namespace
     label_suffix = " <i>in #{escape_once(label_suffix)}</i>"
-    render_colored_label(label, label_suffix)
+    render_colored_label(label, label_suffix, tooltip: tooltip)
   end
 
   def suggested_colors

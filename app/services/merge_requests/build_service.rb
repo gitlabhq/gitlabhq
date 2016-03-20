@@ -51,7 +51,7 @@ module MergeRequests
       # be interpreted as the use wants to close that issue on this project
       # Pattern example: 112-fix-mep-mep
       # Will lead to appending `Closes #112` to the description
-      if match = merge_request.source_branch.match(/\A(\d+)-/)
+      if match = merge_request.source_branch.match(/-(\d+)\z/)
         iid = match[1]
         closes_issue = "Closes ##{iid}"
 
