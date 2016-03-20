@@ -67,9 +67,9 @@ describe Group, models: true do
     end
 
     describe 'public_and_internal_only' do
-      subject { described_class.public_and_internal_only.to_a }
+      subject { described_class.public_and_internal_only.to_a.sort }
 
-      it{ is_expected.to eq([group, internal_group]) }
+      it{ is_expected.to eq([group, internal_group].sort) }
     end
   end
 

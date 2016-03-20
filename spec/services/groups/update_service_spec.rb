@@ -16,8 +16,9 @@ describe Groups::UpdateService, services: true do
           create(:project, :public, group: public_group)
         end
 
-        it "cant downgrade permission level" do
-          expect(public_group.errors.count).to eq(2)
+        it "does not change permission level" do
+          service.execute
+          expect(public_group.errors.count).to eq(1)
         end
       end
 
@@ -29,8 +30,9 @@ describe Groups::UpdateService, services: true do
           create(:project, :internal, group: internal_group)
         end
 
-        it "cant downgrade permission level" do
-          expect(internal_group.errors.count).to eq(2)
+        it "does not change permission level" do
+          service.execute
+          expect(internal_group.errors.count).to eq(1)
         end
       end
     end
@@ -43,6 +45,7 @@ describe Groups::UpdateService, services: true do
     end
 
     it "does not change permission level" do
+      service.execute
       expect(internal_group.errors.count).to eq(1)
     end
   end

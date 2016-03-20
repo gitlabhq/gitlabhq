@@ -1,5 +1,5 @@
 module Groups
-  class BaseService < BaseService
+  class BaseService < ::BaseService
     attr_accessor :group, :current_user, :params
 
     def initialize(group, user, params = {})

@@ -56,10 +56,6 @@ module Gitlab
         options.has_value?(level)
       end
 
-      def allowed_fork_levels(origin_level)
-        [PRIVATE, INTERNAL, PUBLIC].select{ |level| level <= origin_level }
-      end
-
       def level_name(level)
         level_name = 'Unknown'
         options.each do |name, lvl|

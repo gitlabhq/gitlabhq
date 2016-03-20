@@ -198,7 +198,7 @@ class Project < ActiveRecord::Base
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validate :visibility_level_allowed_by_group
-  validate :visibility_level_allowed_as_fork
+  validate :visibility_level_allowed_as_fork, on: :update
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -974,7 +974,7 @@ class Project < ActiveRecord::Base
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
 
-    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level)
+    level <= forked_from_project.visibility_level
   end
 
   def visibility_level_allowed_by_group?(level = self.visibility_level)
