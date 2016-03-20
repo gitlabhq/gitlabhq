@@ -18,10 +18,6 @@ describe NamespacesController do
       let!(:group)   { create(:group) }
 
       context "when the group is public" do
-        before do
-          group.update_attribute(:visibility_level, Group::PUBLIC)
-        end
-
         context "when not signed in" do
           it "redirects to the group's page" do
             get :show, id: group.path
@@ -44,10 +40,14 @@ describe NamespacesController do
       end
 
       context "when the group is private" do
+        before do
+          group.update_attribute(:visibility_level, Group::PRIVATE)
+        end
+
         context "when not signed in" do
-          it "does not redirect to the sign in page" do
+          it "redirects to the sign in page" do
             get :show, id: group.path
-            expect(response).not_to redirect_to(new_user_session_path)
+            expect(response).to redirect_to(new_user_session_path)
           end
         end
 

@@ -129,10 +129,6 @@ describe UploadsController do
       let!(:group)   { create(:group, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
 
       context "when the group is public" do
-        before do
-          group.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
-        end
-
         context "when not signed in" do
           it "responds with status 200" do
             get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
@@ -155,6 +151,10 @@ describe UploadsController do
       end
 
       context "when the group is private" do
+        before do
+          group.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+        end
+
         context "when signed in" do
           before do
             sign_in(user)
@@ -162,7 +162,7 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.add_developer(user)
+              group.add_developer(user)
             end
 
             context "when the user is blocked" do

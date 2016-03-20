@@ -59,18 +59,17 @@ describe Group, models: true do
   describe 'scopes' do
     let!(:private_group)  { create(:group, :private)  }
     let!(:internal_group) { create(:group, :internal) }
-    let!(:public_group)   { create(:group, :public) }
 
     describe 'public_only' do
       subject { described_class.public_only.to_a }
 
-      it{ is_expected.to eq([public_group]) }
+      it{ is_expected.to eq([group]) }
     end
 
     describe 'public_and_internal_only' do
       subject { described_class.public_and_internal_only.to_a }
 
-      it{ is_expected.to eq([public_group, internal_group]) }
+      it{ is_expected.to eq([group, internal_group]) }
     end
   end
 
