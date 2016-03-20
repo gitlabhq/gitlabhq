@@ -33,6 +33,8 @@ module ButtonHelper
       href: @project.http_url_to_repo,
       data: {
         html: true,
+        placement: 'right',
+        container: 'body',
         title: "Set a password on your account<br>to pull or push via #{protocol}"
       }
   end
@@ -46,6 +48,8 @@ module ButtonHelper
       href: project.ssh_url_to_repo,
       data: {
         html: true,
+        placement: 'right',
+        container: 'body',
         title: 'Add an SSH key to your profile<br>to pull or push via SSH.'
       }
   end
