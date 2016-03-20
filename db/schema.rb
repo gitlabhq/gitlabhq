@@ -601,6 +601,7 @@ ActiveRecord::Schema.define(version: 20160316204731) do
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
+  add_index "namespaces", ["visibility_level"], name: "index_namespaces_on_visibility_level", using: :btree
 
   create_table "notes", force: :cascade do |t|
     t.text     "note"

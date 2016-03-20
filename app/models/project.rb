@@ -246,10 +246,6 @@ class Project < ActiveRecord::Base
   end
 
   class << self
-    def public_and_internal_levels
-      [Project::PUBLIC, Project::INTERNAL]
-    end
-
     def abandoned
       where('projects.last_activity_at < ?', 6.months.ago)
     end
@@ -976,11 +972,9 @@ class Project < ActiveRecord::Base
   end
 
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
-    return true unless forked? && forked_project_link.forked_from_project_id.present?
+    return true unless forked?
 
-    from_project = self.forked_from_project
-    from_project ||= Project.find(forked_project_link.forked_from_project_id)
-    Gitlab::VisibilityLevel.allowed_fork_levels(from_project.visibility_level).include?(level)
+    Gitlab::VisibilityLevel.allowed_fork_levels(forked_from_project.visibility_level).include?(level)
   end
 
   def visibility_level_allowed_by_group?(level = self.visibility_level)

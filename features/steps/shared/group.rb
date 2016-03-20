@@ -38,7 +38,7 @@ module SharedGroup
   def is_member_of(username, groupname, role)
     @project_count ||= 0
     user = User.find_by(name: username) || create(:user, name: username)
-    group = Group.find_by(name: groupname) || create(:group, name: groupname, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+    group = Group.find_by(name: groupname) || create(:group, name: groupname)
     group.add_user(user, role)
     project ||= create(:project, namespace: group, path: "project#{@project_count}")
     create(:closed_issue_event, project: project)
@@ -47,6 +47,6 @@ module SharedGroup
   end
 
   def owned_group
-    @owned_group ||= Group.find_by(name: "Owned", visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+    @owned_group ||= Group.find_by(name: "Owned")
   end
 end
