@@ -77,9 +77,9 @@ module Issues
     end
 
     def unfold_references(content)
-      unfolder = Gitlab::Gfm::ReferenceUnfolder.new(content, @old_project,
+      rewriter = Gitlab::Gfm::ReferenceRewriter.new(content, @old_project,
                                                     @current_user)
-      unfolder.unfold(@new_project)
+      rewriter.rewrite(@new_project)
     end
 
     def notify_participants

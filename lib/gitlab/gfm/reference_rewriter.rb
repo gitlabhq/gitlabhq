@@ -28,32 +28,31 @@ module Gitlab
     # 'Merge request for issue gitlab-org/gitlab-ce#1234, se also link:
     #  http://gitlab.com/some/link/#1234, and code `puts #1234`'
     #
-    class ReferenceUnfolder
-      def initialize(text, project, user)
+    class ReferenceRewriter
+      def initialize(text, source_project, current_user)
         @text = text
-        @project = project
-        @user = user
-        @original = markdown(text)
+        @source_project = source_project
+        @current_user = current_user
+        @original_html = markdown(text)
       end
 
-      def unfold(from_project)
+      def rewrite(target_project)
         pattern = Gitlab::ReferenceExtractor.references_pattern
-        return @text unless @text =~ pattern
 
         @text.gsub(pattern) do |reference|
-          unfold_reference(reference, Regexp.last_match, from_project)
+          unfold_reference(reference, Regexp.last_match, target_project)
         end
       end
 
       private
 
-      def unfold_reference(reference, match, from_project)
+      def unfold_reference(reference, match, target_project)
         before = @text[0...match.begin(0)]
-        after = @text[match.end(0)...@text.length]
-        referable = find_referable(reference)
+        after = @text[match.end(0)..-1]
+        referable = find_local_referable(reference)
 
         return reference unless referable
-        cross_reference = referable.to_reference(from_project)
+        cross_reference = referable.to_reference(target_project)
         new_text = before + cross_reference + after
 
         substitution_valid?(new_text) ? cross_reference : reference
@@ -62,21 +61,22 @@ module Gitlab
       def referables
         return @referables if @referables
 
-        extractor = Gitlab::ReferenceExtractor.new(@project, @user)
+        extractor = Gitlab::ReferenceExtractor.new(@source_project,
+                                                   @current_user)
         extractor.analyze(@text)
         @referables = extractor.all
       end
 
-      def find_referable(reference)
+      def find_local_referable(reference)
         referables.find { |ref| ref.to_reference == reference }
       end
 
       def substitution_valid?(substituted)
-        @original == markdown(substituted)
+        @original_html == markdown(substituted)
       end
 
       def markdown(text)
-        Banzai.render(text, project: @project, no_original_data: true)
+        Banzai.render(text, project: @source_project, no_original_data: true)
       end
     end
   end

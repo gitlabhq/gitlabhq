@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Gfm::ReferenceUnfolder do
+describe Gitlab::Gfm::ReferenceRewriter do
   let(:text) { 'some text' }
   let(:old_project) { create(:project) }
   let(:new_project) { create(:project) }
@@ -8,9 +8,9 @@ describe Gitlab::Gfm::ReferenceUnfolder do
 
   before { old_project.team << [user, :guest] }
 
-  describe '#unfold' do
+  describe '#rewrite' do
     subject do
-      described_class.new(text, old_project, user).unfold(new_project)
+      described_class.new(text, old_project, user).rewrite(new_project)
     end
 
     context 'multiple issues and merge requests referenced' do
