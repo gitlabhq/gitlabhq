@@ -49,7 +49,7 @@ module Gitlab
       def unfold_reference(reference, match, target_project)
         before = @text[0...match.begin(0)]
         after = @text[match.end(0)..-1]
-        referable = find_local_referable(reference)
+        referable = find_referable(reference)
 
         return reference unless referable
         cross_reference = referable.to_reference(target_project)
@@ -58,17 +58,11 @@ module Gitlab
         substitution_valid?(new_text) ? cross_reference : reference
       end
 
-      def referables
-        return @referables if @referables
-
+      def find_referable(reference)
         extractor = Gitlab::ReferenceExtractor.new(@source_project,
                                                    @current_user)
-        extractor.analyze(@text)
-        @referables = extractor.all
-      end
-
-      def find_local_referable(reference)
-        referables.find { |ref| ref.to_reference == reference }
+        extractor.analyze(reference)
+        extractor.all.first
       end
 
       def substitution_valid?(substituted)

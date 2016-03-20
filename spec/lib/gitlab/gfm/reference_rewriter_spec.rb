@@ -61,6 +61,21 @@ describe Gitlab::Gfm::ReferenceRewriter do
 
           it { is_expected.to eq "#{ref}, `#1`, #{ref}, `#1`" }
         end
+
+        context 'description with labels' do
+          let!(:label) { create(:label, id: 123, name: 'test', project: old_project) }
+          let(:project_ref) { old_project.to_reference }
+
+          context 'label referenced by id' do
+            let(:text) { '#1 and ~123' }
+            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~123} }
+          end
+
+          context 'label referenced by text' do
+            let(:text) { '#1 and ~"test"' }
+            it { is_expected.to eq %Q{#{project_ref}#1 and #{project_ref}~123} }
+          end
+        end
       end
 
       context 'reference contains milestone' do
