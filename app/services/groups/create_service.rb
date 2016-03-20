@@ -7,7 +7,10 @@ module Groups
     def execute
       @group = Group.new(params)
 
-      return @group unless visibility_allowed_for_user?
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
+        deny_visibility_level(@group)
+        return @group
+      end
 
       @group.name = @group.path.dup unless @group.name
       @group.save

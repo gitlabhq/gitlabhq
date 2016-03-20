@@ -590,8 +590,8 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.string   "type"
     t.string   "description",           default: "",    null: false
     t.string   "avatar"
-    t.integer  "visibility_level",      default: 0,     null: false
     t.boolean  "share_with_group_lock", default: false
+    t.integer  "visibility_level",      default: 20,    null: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree

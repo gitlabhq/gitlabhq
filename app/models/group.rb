@@ -83,16 +83,9 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_projects
-    unless visibility_level_allowed?
-      level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase
-      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are projects with higher visibility.")
-    end
-  end
-
-  def visibility_level_allowed?
     projects_visibility = self.projects.pluck(:visibility_level)
 
-    allowed_by_projects = projects_visibility.none? { |project_visibility| self.visibility_level < project_visibility }
+    allowed_by_projects = projects_visibility.all? { |project_visibility| self.visibility_level >= project_visibility }
 
     unless allowed_by_projects
       level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase

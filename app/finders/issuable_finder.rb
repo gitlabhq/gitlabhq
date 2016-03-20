@@ -81,7 +81,7 @@ class IssuableFinder
     elsif current_user && params[:authorized_only].presence && !current_user_related?
       @projects = current_user.authorized_projects.reorder(nil)
     else
-      @projects = ProjectsFinder.new.execute(current_user, group: group).
+      @projects = GroupProjectsFinder.new(group).execute(current_user).
         reorder(nil)
     end
   end
@@ -170,7 +170,7 @@ class IssuableFinder
   end
 
   def by_scope(items)
-    case params[:scope]
+    case params[:scope] || 'all'
     when 'created-by-me', 'authored' then
       items.where(author_id: current_user.id)
     when 'all' then

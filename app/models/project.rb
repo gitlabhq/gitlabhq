@@ -197,7 +197,8 @@ class Project < ActiveRecord::Base
   validate :avatar_type,
     if: ->(project) { project.avatar.present? && project.avatar_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
-  validate :visibility_level_allowed_in_group
+  validate :visibility_level_allowed_by_group
+  validate :visibility_level_allowed_as_fork
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -441,16 +442,25 @@ class Project < ActiveRecord::Base
 
   def check_limit
     unless creator.can_create_project? or namespace.kind == 'group'
-      errors[:limit_reached] << ("Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
+      self.errors.add(:limit_reached, "Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
     end
   rescue
-    errors[:base] << ("Can't check your ability to create project")
+    self.errors.add(:base, "Can't check your ability to create project")
   end
 
-  def visibility_level_allowed_in_group
-    unless visibility_level_allowed?
-      self.errors.add(:visibility_level, "#{self.visibility_level} is not allowed in a #{self.group.visibility_level} group.")
-    end
+  def visibility_level_allowed_by_group
+    return if visibility_level_allowed_by_group?
+
+    level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
+    group_level_name = Gitlab::VisibilityLevel.level_name(self.group.visibility_level).downcase
+    self.errors.add(:visibility_level, "#{level_name} is not allowed in a #{group_level_name} group.")
+  end
+
+  def visibility_level_allowed_as_fork
+    return if visibility_level_allowed_as_fork?
+
+    level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
+    self.errors.add(:visibility_level, "#{level_name} is not allowed since the fork source project has lower visibility.")
   end
 
   def to_param
@@ -965,22 +975,22 @@ class Project < ActiveRecord::Base
     issues.opened.count
   end
 
-  def visibility_level_allowed?(level = self.visibility_level)
-    allowed_by_forks =  if forked? && forked_project_link.forked_from_project_id.present?
-                          from_project = eager_load_forked_from_project
-                          Gitlab::VisibilityLevel.allowed_fork_levels(from_project.visibility_level).include?(level)
-                        else
-                          true
-                        end
+  def visibility_level_allowed_as_fork?(level = self.visibility_level)
+    return true unless forked? && forked_project_link.forked_from_project_id.present?
 
-    allowed_by_groups = group.present? ? level <= group.visibility_level : true
-
-    allowed_by_forks && allowed_by_groups
+    from_project = self.forked_from_project
+    from_project ||= Project.find(forked_project_link.forked_from_project_id)
+    Gitlab::VisibilityLevel.allowed_fork_levels(from_project.visibility_level).include?(level)
   end
 
-  #Necessary to retrieve many-to-many associations on new forks before validating visibility level
-  def eager_load_forked_from_project
-    Project.find(forked_project_link.forked_from_project_id)
+  def visibility_level_allowed_by_group?(level = self.visibility_level)
+    return true unless group
+
+    level <= group.visibility_level
+  end
+
+  def visibility_level_allowed?(level = self.visibility_level)
+    visibility_level_allowed_as_fork?(level) && visibility_level_allowed_by_group?(level)
   end
 
   def runners_token

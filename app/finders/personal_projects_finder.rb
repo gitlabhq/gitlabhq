@@ -1,4 +1,4 @@
-class PersonalProjectsFinder
+class PersonalProjectsFinder < UnionFinder
   def initialize(user)
     @user = user
   end
@@ -11,38 +11,19 @@ class PersonalProjectsFinder
   #
   # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
-    if current_user
-      relation = projects_visible_to_user(current_user)
-    else
-      relation = public_projects
-    end
+    segments = all_projects(current_user)
 
-    relation.includes(:namespace).order_id_desc
+    find_union(segments, Project).includes(:namespace).order_id_desc
   end
 
   private
 
-  def projects_visible_to_user(current_user)
-    union = Gitlab::SQL::Union.new(projects_for_user_ids(current_user))
+  def all_projects(current_user)
+    projects = []
 
-    Project.where("projects.id IN (#{union.to_sql})")
-  end
+    projects << @user.personal_projects.visible_to_user(current_user) if current_user
+    projects << @user.personal_projects.public_to_user(current_user)
 
-  def public_projects
-    @user.personal_projects.public_only
-  end
-
-  def public_and_internal_projects
-    @user.personal_projects.public_and_internal_only
-  end
-
-  def projects_for_user_ids(current_user)
-    authorized = @user.personal_projects.visible_to_user(current_user)
-
-    if current_user.external?
-      [authorized.select(:id), public_projects.select(:id)]
-    else
-      [authorized.select(:id), public_and_internal_projects.select(:id)]
-    end
+    projects
   end
 end

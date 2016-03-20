@@ -63,6 +63,14 @@ module VisibilityLevelHelper
     end
   end
 
+  def group_visibility_icon_description(group)
+    "#{visibility_level_label(group.visibility_level)} - #{group_visibility_level_description(group.visibility_level)}"
+  end
+
+  def project_visibility_icon_description(project)
+    "#{visibility_level_label(project.visibility_level)} - #{project_visibility_level_description(project.visibility_level)}"
+  end
+
   def visibility_level_label(level)
     Project.visibility_levels.key(level)
   end

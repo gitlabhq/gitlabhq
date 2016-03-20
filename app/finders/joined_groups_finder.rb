@@ -1,5 +1,4 @@
-#Shows only authorized groups of a user
-class JoinedGroupsFinder
+class JoinedGroupsFinder < UnionFinder
   def initialize(user)
     @user = user
   end
@@ -12,34 +11,19 @@ class JoinedGroupsFinder
   #
   # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
-    if current_user
-      relation = groups_visible_to_user(current_user)
-    else
-      relation = public_groups
-    end
+    segments = all_groups(current_user)
 
-    relation.order_id_desc
+    find_union(segments, Group).order_id_desc
   end
 
   private
 
-  # Returns the groups the user in "current_user" can see.
-  #
-  # This list includes all public/internal projects as well as the projects of
-  # "@user" that "current_user" also has access to.
-  def groups_visible_to_user(current_user)
-    base  = @user.authorized_groups.visible_to_user(current_user)
-    extra = current_user.external? ? public_groups : public_and_internal_groups
-    union = Gitlab::SQL::Union.new([base.select(:id), extra.select(:id)])
+  def all_groups(current_user)
+    groups = []
 
-    Group.where("namespaces.id IN (#{union.to_sql})")
-  end
+    groups << @user.authorized_groups.visible_to_user(current_user) if current_user
+    groups << @user.authorized_groups.public_to_user(current_user)
 
-  def public_groups
-    @user.authorized_groups.public_only
-  end
-
-  def public_and_internal_groups
-    @user.authorized_groups.public_and_internal_only
+    groups
   end
 end

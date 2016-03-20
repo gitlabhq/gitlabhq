@@ -114,19 +114,18 @@ class Ability
         # Push abilities on the users team role
         rules.push(*project_team_rules(project.team, user))
 
+        if project.owner == user ||
+          (project.group && project.group.has_owner?(user)) ||
+          user.admin?
+
+          rules.push(*project_owner_rules)
+        end
+
         if project.public? || (project.internal? && !user.external?)
           rules.push(*public_project_rules)
 
           # Allow to read builds for internal projects
           rules << :read_build if project.public_builds?
-        end
-
-        if project.owner == user || user.admin?
-          rules.push(*project_admin_rules)
-        end
-
-        if project.group && project.group.has_owner?(user)
-          rules.push(*project_admin_rules)
         end
 
         if project.archived?
@@ -228,8 +227,8 @@ class Ability
       ]
     end
 
-    def project_admin_rules
-      @project_admin_rules ||= project_master_rules + [
+    def project_owner_rules
+      @project_owner_rules ||= project_master_rules + [
         :change_namespace,
         :change_visibility_level,
         :rename_project,
@@ -275,7 +274,7 @@ class Ability
 
       rules << :read_group if can_read_group?(user, group)
 
-      # Only group masters and group owners can create new projects and change permission level
+      # Only group masters and group owners can create new projects
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules += [
           :create_projects,
@@ -298,7 +297,7 @@ class Ability
 
     def can_read_group?(user, group)
       user.admin? || group.public? || (group.internal? && !user.external?) || group.users.include?(user) ||
-        ProjectsFinder.new.execute(user, group: group).any?
+        GroupProjectsFinder.new(group).execute(user).any?
     end
 
     def namespace_abilities(user, namespace)

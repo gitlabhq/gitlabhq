@@ -1,114 +1,109 @@
 require 'rails_helper'
 
-describe 'Public group access', feature: true do
+describe 'Public Group access', feature: true do
   include AccessMatchers
-  include GroupAccessHelper
 
+  let(:group) { create(:group, :public) }
+  let(:project) { create(:project, :public, group: group) }
 
+  let(:owner)     { create(:user) }
+  let(:master)    { create(:user) }
+  let(:developer) { create(:user) }
+  let(:reporter)  { create(:user) }
+  let(:guest)     { create(:user) }
+
+  let(:project_guest) { create(:user) }
+
+  before do
+    group.add_user(owner, Gitlab::Access::OWNER)
+    group.add_user(master, Gitlab::Access::MASTER)
+    group.add_user(developer, Gitlab::Access::DEVELOPER)
+    group.add_user(reporter, Gitlab::Access::REPORTER)
+    group.add_user(guest, Gitlab::Access::GUEST)
+
+    project.team << [project_guest, :guest]
+  end
+
+  describe "Group should be public" do
+    describe '#public?' do
+      subject { group.public? }
+      it { is_expected.to be_truthy }
+    end
+  end
 
   describe 'GET /groups/:path' do
-    subject { group_path(group(Gitlab::VisibilityLevel::PUBLIC)) }
+    subject { group_path(group) }
 
-    context "when user not in group project" do
-      it { is_expected.to be_allowed_for group_member(:owner) }
-      it { is_expected.to be_allowed_for group_member(:master) }
-      it { is_expected.to be_allowed_for group_member(:reporter) }
-      it { is_expected.to be_allowed_for group_member(:guest) }
-      it { is_expected.to be_allowed_for external_guest }
-      it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
-      it { is_expected.to be_allowed_for :external }
-    end
-
-    context "when user in group project" do
-      it { is_expected.to be_allowed_for project_group_member(:user) }
-      it { is_expected.to be_allowed_for :visitor }
-    end
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_allowed_for guest }
+    it { is_expected.to be_allowed_for project_guest }
+    it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :external }
+    it { is_expected.to be_allowed_for :visitor }
   end
 
   describe 'GET /groups/:path/issues' do
-    subject { issues_group_path(group(Gitlab::VisibilityLevel::PUBLIC)) }
+    subject { issues_group_path(group) }
 
-    context "when user not in group project" do
-      it { is_expected.to be_allowed_for group_member(:owner) }
-      it { is_expected.to be_allowed_for group_member(:master) }
-      it { is_expected.to be_allowed_for group_member(:reporter) }
-      it { is_expected.to be_allowed_for group_member(:guest) }
-      it { is_expected.to be_allowed_for external_guest }
-      it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
-      it { is_expected.to be_allowed_for :external }
-    end
-
-    context "when user in group project" do
-      it { is_expected.to be_allowed_for project_group_member(:user) }
-      it { is_expected.to be_allowed_for :visitor }
-    end
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_allowed_for guest }
+    it { is_expected.to be_allowed_for project_guest }
+    it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :external }
+    it { is_expected.to be_allowed_for :visitor }
   end
 
   describe 'GET /groups/:path/merge_requests' do
-    subject { issues_group_path(group(Gitlab::VisibilityLevel::PUBLIC)) }
+    subject { merge_requests_group_path(group) }
 
-    context "when user not in group project" do
-      it { is_expected.to be_allowed_for group_member(:owner) }
-      it { is_expected.to be_allowed_for group_member(:master) }
-      it { is_expected.to be_allowed_for group_member(:reporter) }
-      it { is_expected.to be_allowed_for group_member(:guest) }
-      it { is_expected.to be_allowed_for external_guest }
-      it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
-      it { is_expected.to be_allowed_for :external }
-    end
-
-    context "when user in group project" do
-      it { is_expected.to be_allowed_for project_group_member(:user) }
-      it { is_expected.to be_allowed_for :visitor }
-    end
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_allowed_for guest }
+    it { is_expected.to be_allowed_for project_guest }
+    it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :external }
+    it { is_expected.to be_allowed_for :visitor }
   end
 
 
   describe 'GET /groups/:path/group_members' do
-    subject { issues_group_path(group(Gitlab::VisibilityLevel::PUBLIC)) }
+    subject { group_group_members_path(group) }
 
-    context "when user not in group project" do
-      it { is_expected.to be_allowed_for group_member(:owner) }
-      it { is_expected.to be_allowed_for group_member(:master) }
-      it { is_expected.to be_allowed_for group_member(:reporter) }
-      it { is_expected.to be_allowed_for group_member(:guest) }
-      it { is_expected.to be_allowed_for external_guest }
-      it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
-      it { is_expected.to be_allowed_for :external }
-    end
-
-    context "when user in group project" do
-      it { is_expected.to be_allowed_for project_group_member(:user) }
-      it { is_expected.to be_allowed_for :visitor }
-    end
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_allowed_for guest }
+    it { is_expected.to be_allowed_for project_guest }
+    it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_allowed_for :external }
+    it { is_expected.to be_allowed_for :visitor }
   end
 
   describe 'GET /groups/:path/edit' do
-    subject { issues_group_path(group(Gitlab::VisibilityLevel::PUBLIC)) }
+    subject { edit_group_path(group) }
 
-    context "when user not in group project" do
-      it { is_expected.to be_allowed_for group_member(:owner) }
-      it { is_expected.to be_allowed_for group_member(:master) }
-      it { is_expected.to be_allowed_for group_member(:reporter) }
-      it { is_expected.to be_allowed_for group_member(:guest) }
-      it { is_expected.to be_allowed_for external_guest }
-      it { is_expected.to be_allowed_for :admin }
-      it { is_expected.to be_allowed_for :user }
-      it { is_expected.to be_allowed_for :visitor }
-      it { is_expected.to be_allowed_for :external }
-    end
-
-    context "when user in group project" do
-      it { is_expected.to be_allowed_for project_group_member(:user) }
-      it { is_expected.to be_allowed_for :visitor }
-    end
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_denied_for master }
+    it { is_expected.to be_denied_for developer }
+    it { is_expected.to be_denied_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for project_guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :visitor }
+    it { is_expected.to be_denied_for :external }
   end
 end

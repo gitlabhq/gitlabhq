@@ -43,8 +43,4 @@ module GroupsHelper
       full_title
     end
   end
-
-  def group_visibility_description(group)
-    "#{visibility_level_label(group.visibility_level)} - #{group_visibility_level_description(group.visibility_level)}"
-  end
 end

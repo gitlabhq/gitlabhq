@@ -5,7 +5,7 @@
 class AddDefaultGroupVisibilityToApplicationSettings < ActiveRecord::Migration
   def up
     add_column :application_settings, :default_group_visibility, :integer
-    execute("update application_settings set default_group_visibility = #{allowed_visibility_level}")
+    execute("UPDATE application_settings SET default_group_visibility = #{allowed_visibility_level}")
   end
 
   def down
@@ -15,6 +15,7 @@ class AddDefaultGroupVisibilityToApplicationSettings < ActiveRecord::Migration
   private
 
   def allowed_visibility_level
+    # TODO: Don't use `current_application_settings`
     allowed_levels = Gitlab::VisibilityLevel.values - current_application_settings.restricted_visibility_levels
     allowed_levels.max
   end

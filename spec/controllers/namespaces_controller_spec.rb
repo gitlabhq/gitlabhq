@@ -15,12 +15,11 @@ describe NamespacesController do
     end
 
     context "when the namespace belongs to a group" do
-      let!(:group)   { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-      let!(:project) { create(:project, namespace: group) }
+      let!(:group)   { create(:group) }
 
-      context "when the group has public projects" do
+      context "when the group is public" do
         before do
-          project.update_attribute(:visibility_level, Project::PUBLIC)
+          group.update_attribute(:visibility_level, Group::PUBLIC)
         end
 
         context "when not signed in" do
@@ -44,27 +43,27 @@ describe NamespacesController do
         end
       end
 
-      context "when the project doesn't have public projects" do
+      context "when the group is private" do
         context "when not signed in" do
           it "does not redirect to the sign in page" do
             get :show, id: group.path
             expect(response).not_to redirect_to(new_user_session_path)
           end
         end
+
         context "when signed in" do
           before do
             sign_in(user)
           end
 
-          context "when the user has access to the project" do
+          context "when the user has access to the group" do
             before do
-              project.team << [user, :master]
+              group.add_developer(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.team << [user, :master]
               end
 
               it "redirects to the sign in page" do
@@ -83,11 +82,11 @@ describe NamespacesController do
             end
           end
 
-          context "when the user doesn't have access to the project" do
-            it "redirects to the group's page" do
+          context "when the user doesn't have access to the group" do
+            it "responds with status 404" do
               get :show, id: group.path
 
-              expect(response).to redirect_to(group_path(group))
+              expect(response.status).to eq(404)
             end
           end
         end
