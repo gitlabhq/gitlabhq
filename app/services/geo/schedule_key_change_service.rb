@@ -8,7 +8,7 @@ module Geo
     end
 
     def execute
-      GeoKeyRefreshWorker.perform_async(project['id'], project['clone_url'])
+      GeoKeyRefreshWorker.perform_async(@id, @action)
     end
   end
 end

@@ -19,6 +19,8 @@ class GeoKeyRefreshWorker
       # ActiveRecord::RecordNotFound when not found (so job will retry)
       key = Key.find(key_id)
       key.remove_from_shell
+    else
+      fail "Invalid action: #{action}"
     end
   end
 
