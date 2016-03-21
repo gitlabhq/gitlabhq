@@ -1,5 +1,5 @@
 class AddFingerprintIndex < ActiveRecord::Migration
   def change
-    add_index :keys, :fingerprint, unique: false
+    add_index :keys, :fingerprint
   end
 end
