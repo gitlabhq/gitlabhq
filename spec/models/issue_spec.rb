@@ -130,12 +130,62 @@ describe Issue, models: true do
     end
   end
 
+  describe '#can_move?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue) }
+    subject { issue.can_move?(user) }
+
+    context 'user is not a member of project issue belongs to' do
+      it { is_expected.to eq false}
+    end
+
+    context 'user is reporter in project issue belongs to' do
+      let(:project) { create(:project) }
+      let(:issue) { create(:issue, project: project) }
+
+      before { project.team << [user, :reporter] }
+
+      it { is_expected.to eq true }
+
+      context 'checking destination project also' do
+        subject { issue.can_move?(user, to_project) }
+        let(:to_project) { create(:project) }
+
+        context 'destination project allowed' do
+          before { to_project.team << [user, :reporter] }
+          it { is_expected.to eq true }
+        end
+
+        context 'destination project not allowed' do
+          before { to_project.team << [user, :guest] }
+          it { is_expected.to eq false }
+        end
+      end
+    end
+  end
+
+  describe '#moved?' do
+    let(:issue) { create(:issue) }
+    subject { issue.moved? }
+
+    context 'issue not moved' do
+      it { is_expected.to eq false }
+    end
+
+    context 'issue already moved' do
+      let(:moved_to_issue) { create(:issue) }
+      let(:issue) { create(:issue, moved_to: moved_to_issue) }
+
+      it { is_expected.to eq true }
+    end
+  end
+
   describe '#related_branches' do
     it "selects the right branches" do
       allow(subject.project.repository).to receive(:branch_names).
-                                    and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
+        and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name])
 
-      expect(subject.related_branches).to eq [subject.to_branch_name]
+      expect(subject.related_branches).to eq([subject.to_branch_name])
     end
   end
 

@@ -15,7 +15,7 @@ class Projects::ForksController < Projects::ApplicationController
 
     @sort  = params[:sort] || 'id_desc'
     @forks = @forks.search(params[:filter_projects]) if params[:filter_projects].present?
-    @forks = @forks.order_by(@sort).page(params[:page]).per(PER_PAGE)
+    @forks = @forks.order_by(@sort).page(params[:page])
 
     respond_to do |format|
       format.html

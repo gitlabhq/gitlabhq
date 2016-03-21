@@ -25,7 +25,7 @@ class SnippetsController < ApplicationController
         filter: :by_user,
         user: @user,
         scope: params[:scope] }).
-      page(params[:page]).per(PER_PAGE)
+      page(params[:page])
 
       render 'index'
     else

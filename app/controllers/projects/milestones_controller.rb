@@ -22,7 +22,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        @milestones = @milestones.page(params[:page]).per(PER_PAGE)
+        @milestones = @milestones.page(params[:page])
       end
       format.json do
         render json: @milestones

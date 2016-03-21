@@ -898,6 +898,7 @@ class Project < ActiveRecord::Base
     # Forked import is handled asynchronously
     unless forked?
       if gitlab_shell.add_repository(path_with_namespace)
+        repository.after_create
         true
       else
         errors.add(:base, 'Failed to create repository via gitlab-shell')
