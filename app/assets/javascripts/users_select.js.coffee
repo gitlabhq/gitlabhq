@@ -2,7 +2,8 @@ class @UsersSelect
   constructor: (currentUser) ->
     @usersPath = "/autocomplete/users.json"
     @userPath = "/autocomplete/users/:id.json"
-    @currentUser = JSON.parse(currentUser)
+    if currentUser?
+      @currentUser = JSON.parse(currentUser)
 
     $('.js-user-search').each (i, dropdown) =>
       $dropdown = $(dropdown)
@@ -20,7 +21,7 @@ class @UsersSelect
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
 
-      $block.on('click','.js-assign-yourself' , (e) => 
+      $block.on('click', '.js-assign-yourself', (e) =>
         e.preventDefault()
         assignTo(@currentUser.id)
       )
@@ -39,7 +40,7 @@ class @UsersSelect
         ).done (data) ->
           $loading.fadeOut()
           $selectbox.hide()
-          
+
           if data.assignee
             user =
               name: data.assignee.name
@@ -67,7 +68,7 @@ class @UsersSelect
         </a>
           <% } else { %>
         <span class="assign-yourself">
-          No assignee - 
+          No assignee -
           <a href="#" class="js-assign-yourself">
             assign yourself
           </a>
@@ -175,7 +176,7 @@ class @UsersSelect
           listClosingTags = "</a>
           </li>"
 
-          
+
           if username is ''
             listWithUserName = ''
 
