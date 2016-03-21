@@ -405,14 +405,17 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
-    sanitizer = Gitlab::ImportUrlSanitizer.new(value)
-    self[:import_url] = sanitizer.sanitized_url
-    create_import_data(credentials: sanitizer.credentials)
+    import_url = Gitlab::ImportUrl.new(value)
+    create_import_data(credentials: import_url.credentials)
+    super(import_url.sanitized_url)
   end
 
   def import_url
     if import_data
-      Gitlab::ImportUrlExposer.expose(import_url: self[:import_url], credentials: import_data.credentials)
+      import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
+      import_url.full_url
+    else
+      super
     end
   end
 
@@ -447,6 +450,7 @@ class Project < ActiveRecord::Base
   def safe_import_url
     result = URI.parse(self.import_url)
     result.password = '*****' unless result.password.nil?
+    result.user = '*****' unless result.user.nil? #tokens or other data may be saved as user
     result.to_s
   rescue
     self.import_url

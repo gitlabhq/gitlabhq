@@ -3,12 +3,7 @@ require 'spec_helper'
 describe Gitlab::GithubImport::WikiFormatter, lib: true do
   let(:project) do
     create(:project, namespace: create(:namespace, path: 'gitlabhq'),
-           import_url: 'https://github.com/gitlabhq/sample.gitlabhq.git')
-  end
-
-  let!(:project_import_data) do
-    create(:project_import_data, credentials: { github_access_token: 'xxx' },
-           project: project)
+           import_url: 'https://xxx@github.com/gitlabhq/sample.gitlabhq.git')
   end
 
   subject(:wiki) { described_class.new(project) }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160316204731) do
+ActiveRecord::Schema.define(version: 20160302151724) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -260,7 +260,6 @@ ActiveRecord::Schema.define(version: 20160316204731) do
   end
 
   add_index "ci_runners", ["description"], name: "index_ci_runners_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
-  add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token_trigram", using: :gin, opclasses: {"token"=>"gin_trgm_ops"}
 
   create_table "ci_services", force: :cascade do |t|
@@ -686,6 +685,7 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.text    "data"
     t.text    "encrypted_credentials"
     t.text    "encrypted_credentials_iv"
+    t.text    "encrypted_credentials_salt"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -725,7 +725,6 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.boolean  "pending_delete",         default: false
     t.boolean  "public_builds",          default: true,     null: false
     t.string   "main_language"
-    t.integer  "pushes_since_gc",        default: 0
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -811,6 +810,7 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.string   "file_name"
     t.string   "type"
     t.integer  "visibility_level", default: 0, null: false
+    t.datetime "expires_at"
   end
 
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
@@ -869,7 +869,7 @@ ActiveRecord::Schema.define(version: 20160316204731) do
   create_table "todos", force: :cascade do |t|
     t.integer  "user_id",     null: false
     t.integer  "project_id",  null: false
-    t.integer  "target_id"
+    t.integer  "target_id",   null: false
     t.string   "target_type", null: false
     t.integer  "author_id"
     t.integer  "action",      null: false
@@ -877,11 +877,9 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "note_id"
-    t.string   "commit_id"
   end
 
   add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
-  add_index "todos", ["commit_id"], name: "index_todos_on_commit_id", using: :btree
   add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
   add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
   add_index "todos", ["state"], name: "index_todos_on_state", using: :btree
@@ -946,7 +944,6 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.string   "unlock_token"
     t.datetime "otp_grace_period_started_at"
     t.boolean  "ldap_email",                  default: false, null: false
-    t.boolean  "external",                    default: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -1,7 +1,8 @@
 module Gitlab
-  class ImportUrlSanitizer
-    def initialize(url)
+  class ImportUrl
+    def initialize(url, credentials: nil)
       @url = URI.parse(url)
+      @credentials = credentials
     end
 
     def sanitized_url
@@ -12,7 +13,18 @@ module Gitlab
       @credentials ||= { user: @url.user, password: @url.password }
     end
 
+    def full_url
+      @full_url ||= generate_full_url.to_s
+    end
+
     private
+
+    def generate_full_url
+      @full_url = @url.dup
+      @full_url.user = @credentials[:user]
+      @full_url.password = @credentials[:password]
+      @full_url
+    end
 
     def safe_url
       safe_url = @url.dup
