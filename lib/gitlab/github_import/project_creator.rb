@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def execute
-        project = ::Projects::CreateService.new(
+        ::Projects::CreateService.new(
           current_user,
           name: repo.name,
           path: repo.name,
@@ -20,19 +20,9 @@ module Gitlab
           visibility_level: repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC,
           import_type: "github",
           import_source: repo.full_name,
-          import_url: repo.clone_url,
+          import_url: repo.clone_url.sub("https://", "https://#{@session_data[:github_access_token]}@"),
           wiki_enabled: !repo.has_wiki? # If repo has wiki we'll import it later
         ).execute
-
-        create_import_data(project)
-        project
-      end
-
-      private
-
-      def create_import_data(project)
-        project.create_import_data(
-          credentials: { github_access_token: session_data.delete(:github_access_token) })
       end
     end
   end

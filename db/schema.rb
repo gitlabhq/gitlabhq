@@ -416,7 +416,7 @@ ActiveRecord::Schema.define(version: 20160316204731) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
-    t.boolean  "confidential",              default: false
+    t.boolean  "confidential",  default: false
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -684,6 +684,8 @@ ActiveRecord::Schema.define(version: 20160316204731) do
   create_table "project_import_data", force: :cascade do |t|
     t.integer "project_id"
     t.text    "data"
+    t.text    "encrypted_credentials"
+    t.text    "encrypted_credentials_iv"
   end
 
   create_table "projects", force: :cascade do |t|

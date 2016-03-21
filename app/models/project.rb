@@ -404,6 +404,18 @@ class Project < ActiveRecord::Base
     self.import_data.destroy if self.import_data
   end
 
+  def import_url=(value)
+    sanitizer = Gitlab::ImportUrlSanitizer.new(value)
+    self[:import_url] = sanitizer.sanitized_url
+    create_import_data(credentials: sanitizer.credentials)
+  end
+
+  def import_url
+    if import_data
+      Gitlab::ImportUrlExposer.expose(import_url: self[:import_url], credentials: import_data.credentials)
+    end
+  end
+
   def import?
     external_import? || forked?
   end
