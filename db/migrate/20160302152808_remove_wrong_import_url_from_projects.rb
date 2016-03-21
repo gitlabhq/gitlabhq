@@ -10,7 +10,6 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   end
 
   def up
-    byebug
     projects_with_wrong_import_url do |project|
       import_url = Gitlab::ImportUrl.new(project["import_url"])
 
