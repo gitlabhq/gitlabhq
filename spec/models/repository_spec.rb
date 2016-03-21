@@ -537,6 +537,12 @@ describe Repository, models: true do
 
         repository.before_delete
       end
+
+      it 'flushes the exists cache' do
+        expect(repository).to receive(:expire_exists_cache)
+
+        repository.before_delete
+      end
     end
 
     describe 'when a repository exists' do
@@ -593,6 +599,12 @@ describe Repository, models: true do
 
       repository.after_import
     end
+
+    it 'flushes the exists cache' do
+      expect(repository).to receive(:expire_exists_cache)
+
+      repository.after_import
+    end
   end
 
   describe '#after_push_commit' do
@@ -616,6 +628,14 @@ describe Repository, models: true do
       expect(repository).to receive(:expire_has_visible_content_cache)
 
       repository.after_remove_branch
+    end
+  end
+
+  describe '#after_create' do
+    it 'flushes the exists cache' do
+      expect(repository).to receive(:expire_exists_cache)
+
+      repository.after_create
     end
   end
 
@@ -778,6 +798,16 @@ describe Repository, models: true do
 
         repository.expire_avatar_cache(repository.root_ref, '123')
       end
+    end
+  end
+
+  describe '#expire_exists_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache' do
+      expect(cache).to receive(:expire).with(:exists?)
+
+      repository.expire_exists_cache
     end
   end
 

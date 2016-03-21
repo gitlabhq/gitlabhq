@@ -20,14 +20,15 @@ class RepositoryForkWorker
       return
     end
 
+    project.repository.after_import
+
     unless project.valid_repo?
-      logger.error("Project #{id} had an invalid repository after fork")
+      logger.error("Project #{project_id} had an invalid repository after fork")
       project.update(import_error: "The forked repository is invalid.")
       project.import_fail
       return
     end
 
-    project.repository.after_import
     project.import_finish
   end
 end
