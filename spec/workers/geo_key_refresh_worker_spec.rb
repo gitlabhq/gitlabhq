@@ -15,7 +15,7 @@ describe GeoKeyRefreshWorker do
 
   context 'key removal' do
     it 'removes key from the shell' do
-      expect(Key).to receive(:find).with(key.id) { key }
+      expect(Key).to receive(:new).with(id: key.id) { key }
       expect(key).to receive(:remove_from_shell)
       expect { key_delete }.not_to raise_error
     end
