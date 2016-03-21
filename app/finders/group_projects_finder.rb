@@ -1,19 +1,18 @@
 class GroupProjectsFinder < UnionFinder
   def initialize(group, options = {})
-    @group = group
+    @group   = group
     @options = options
   end
 
   def execute(current_user = nil)
     segments = group_projects(current_user)
-
     find_union(segments, Project)
   end
 
   private
 
   def group_projects(current_user)
-    only_owned = @options.fetch(:only_owned, false)
+    only_owned  = @options.fetch(:only_owned, false)
     only_shared = @options.fetch(:only_shared, false)
 
     projects = []

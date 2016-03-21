@@ -77,7 +77,6 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.boolean  "akismet_enabled",                   default: false
     t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
-    t.integer  "default_group_visibility"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -417,7 +416,7 @@ ActiveRecord::Schema.define(version: 20160320204112) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
-    t.boolean  "confidential",              default: false
+    t.boolean  "confidential",  default: false
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
