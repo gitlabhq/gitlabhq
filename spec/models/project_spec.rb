@@ -720,4 +720,45 @@ describe Project, models: true do
       expect(described_class.search_by_title('KITTENS')).to eq([project])
     end
   end
+
+  describe '#create_repository' do
+    let(:project) { create(:project) }
+    let(:shell) { Gitlab::Shell.new }
+
+    before do
+      allow(project).to receive(:gitlab_shell).and_return(shell)
+    end
+
+    context 'using a regular repository' do
+      it 'creates the repository' do
+        expect(shell).to receive(:add_repository).
+          with(project.path_with_namespace).
+          and_return(true)
+
+        expect(project.repository).to receive(:after_create)
+
+        expect(project.create_repository).to eq(true)
+      end
+
+      it 'adds an error if the repository could not be created' do
+        expect(shell).to receive(:add_repository).
+          with(project.path_with_namespace).
+          and_return(false)
+
+        expect(project.repository).not_to receive(:after_create)
+
+        expect(project.create_repository).to eq(false)
+        expect(project.errors).not_to be_empty
+      end
+    end
+
+    context 'using a forked repository' do
+      it 'does nothing' do
+        expect(project).to receive(:forked?).and_return(true)
+        expect(shell).not_to receive(:add_repository)
+
+        project.create_repository
+      end
+    end
+  end
 end

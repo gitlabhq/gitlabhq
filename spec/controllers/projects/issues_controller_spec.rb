@@ -2,7 +2,7 @@ require('spec_helper')
 
 describe Projects::IssuesController do
   describe "GET #index" do
-    let(:project) { create(:project) }
+    let(:project) { create(:project_empty_repo) }
     let(:user) { create(:user) }
     let(:issue) { create(:issue, project: project) }
 
@@ -41,7 +41,7 @@ describe Projects::IssuesController do
   end
 
   describe 'Confidential Issues' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project_empty_repo, :public) }
     let(:assignee) { create(:assignee) }
     let(:author) { create(:user) }
     let(:non_member) { create(:user) }
