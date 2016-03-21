@@ -7,6 +7,7 @@
 #= require jquery
 #= require jquery-ui/autocomplete
 #= require jquery-ui/datepicker
+#= require jquery-ui/draggable
 #= require jquery-ui/effect-highlight
 #= require jquery-ui/sortable
 #= require jquery_ujs
