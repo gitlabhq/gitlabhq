@@ -14,6 +14,10 @@ v 8.6.0 (unreleased)
   - [Elastic] More accurate as_indexed_json (More stable database indexer)
   - [Elastic] Fix: Don't index newly created system messages and awards
   - [Elastic] Fixed exception on branch removing
+  - GitLab Geo: OAuth authentication
+  - GitLab Geo: Wiki synchronization
+  - GitLab Geo: ReadOnly Middleware improvements
+  - GitLab Geo: SSH Keys synchronization
 
 v 8.5.8
   - GitLab Geo: Documentation

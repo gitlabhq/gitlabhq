@@ -1,7 +1,8 @@
 # GitLab Geo
 
 > **Note:**
-This feature was introduced in GitLab 8.5 EE.
+This feature was introduced in GitLab 8.5 EE as Alpha.
+We recommend you use with at least GitLab 8.6 EE.
 
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
@@ -65,13 +66,9 @@ there are a few things to consider:
 
 ## Current limitations
 
-- The secondary node cannot be used for browsing
 - You cannot push code to secondary nodes
 - Git LFS is not supported yet
 - Git Annex is not supported yet
-- Wiki's are not being replicated yet
-- Git clone from secondaries by HTTP/HTTPS only (ssh-keys aren't being
-  replicated yet)
 
 ## Frequently Asked Questions
 
