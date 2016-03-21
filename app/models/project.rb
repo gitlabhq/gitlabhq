@@ -435,6 +435,7 @@ class Project < ActiveRecord::Base
   def safe_import_url
     result = URI.parse(self.import_url)
     result.password = '*****' unless result.password.nil?
+    result.user = '*****' unless result.user.nil? || result.user == "git" #tokens or other data may be saved as user
     result.to_s
   rescue
     self.import_url
