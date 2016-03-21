@@ -411,4 +411,26 @@ class SystemNoteService
     body = "Marked the task **#{new_task.source}** as #{status_label}"
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
+
+  # Called when noteable has been moved to another project
+  #
+  # direction    - symbol, :to or :from
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable
+  # author       - User performing the move
+  #
+  # Example Note text:
+  #
+  #   "Moved to some_namespace/project_new#11"
+  #
+  # Returns the created Note object
+  def self.noteable_moved(noteable, project, noteable_ref, author, direction:)
+    unless [:to, :from].include?(direction)
+      raise ArgumentError, "Invalid direction `#{direction}`"
+    end
+
+    cross_reference = noteable_ref.to_reference(project)
+    body = "Moved #{direction} #{cross_reference}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
 end

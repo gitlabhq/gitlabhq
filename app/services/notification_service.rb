@@ -236,6 +236,16 @@ class NotificationService
     end
   end
 
+  def issue_moved(issue, new_issue, current_user)
+    recipients = build_recipients(issue, issue.project, current_user)
+
+    recipients.map do |recipient|
+      email = mailer.issue_moved_email(recipient, issue, new_issue, current_user)
+      email.deliver_later
+      email
+    end
+  end
+
   protected
 
   # Get project users with WATCH notification level

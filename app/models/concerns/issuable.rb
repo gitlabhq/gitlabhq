@@ -209,4 +209,13 @@ module Issuable
     Taskable.get_updated_tasks(old_content: previous_changes['description'].first,
                                new_content: description)
   end
+
+  ##
+  # Method that checks if issuable can be moved to another project.
+  #
+  # Should be overridden if issuable can be moved.
+  #
+  def can_move?(*)
+    false
+  end
 end
