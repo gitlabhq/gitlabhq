@@ -406,8 +406,7 @@ class Project < ActiveRecord::Base
 
   def import_url=(value)
     import_url = Gitlab::ImportUrl.new(value)
-    # deletes any existing import_data
-    create_import_data(credentials: import_url.credentials)
+    create_or_update_import_data(import_url.credentials)
     super(import_url.sanitized_url)
   end
 
@@ -418,6 +417,13 @@ class Project < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def create_or_update_import_data(credentials)
+    project_import_data = import_data || ProjectImportData.new
+    project_import_data.credentials = credentials
+    project_import_data.project_id = id
+    project_import_data.save
   end
 
   def import?
