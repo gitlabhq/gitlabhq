@@ -5,6 +5,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   include SharedNote
   include SharedPaths
   include SharedMarkdown
+  include SharedUser
 
   step 'I should see "Release 0.4" in issues' do
     expect(page).to have_content "Release 0.4"
