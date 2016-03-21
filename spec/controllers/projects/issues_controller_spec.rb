@@ -1,7 +1,7 @@
 require('spec_helper')
 
 describe Projects::IssuesController do
-  let(:project)   { create(:project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:issue)   { create(:issue, project: project) }
 
@@ -201,7 +201,7 @@ describe Projects::IssuesController do
       let(:namespace) { create(:namespace, owner: owner) }
       let(:project)   { create(:project, namespace: namespace) }
 
-      before { sign_in owner }
+      before { sign_in(owner) }
 
       it "deletes the issue" do
         delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid

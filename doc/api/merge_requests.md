@@ -383,9 +383,8 @@ If an error occurs, an error number and a message explaining the reason is retur
 ## Delete a merge request
 
 Only for admins and project owners. Soft deletes the merge request in question.
-If the operation is successful, a status code of `200` is returned. Any the case you cannot
+If the operation is successful, a status code `200` is returned. In case you cannot
 destroy this merge request, or it is not present, code `404` is given.
-
 
 ```
 DELETE /projects/:id/merge_requests/:merge_request_id

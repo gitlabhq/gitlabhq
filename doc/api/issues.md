@@ -329,7 +329,7 @@ Example response:
 ## Delete an issue
 
 Only for admins and project owners. Soft deletes the issue in question.
-If the operation is successful, a status code of `200` is returned. Any the case you cannot
+If the operation is successful, a status code `200` is returned. In case you cannot
 destroy this issue, or it is not present, code `404` is given.
 
 ```
