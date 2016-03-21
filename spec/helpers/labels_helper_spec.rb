@@ -11,7 +11,7 @@ describe LabelsHelper do
       end
 
       it 'uses the instance variable' do
-        expect(link_to_label(label)).to match %r{<a href="/#{@project.to_reference}/issues\?label_name=#{label.name}">.*</a>}
+        expect(link_to_label(label)).to match %r{<a href="/#{@project.to_reference}/issues\?label_name=#{label.name}"><span class="[\w\s\-]*has_tooltip".*</span></a>}
       end
     end
 
@@ -39,6 +39,14 @@ describe LabelsHelper do
       end
     end
 
+    context 'with a tooltip argument' do
+      context 'set to false' do
+        it 'does not include the has_tooltip class' do
+          expect(link_to_label(label, tooltip: false)).not_to match %r{has_tooltip}
+        end
+      end
+    end
+
     context 'with block' do
       it 'passes the block to link_to' do
         link = link_to_label(label) { 'Foo' }
@@ -49,7 +57,7 @@ describe LabelsHelper do
     context 'without block' do
       it 'uses render_colored_label as the link content' do
         expect(self).to receive(:render_colored_label).
-          with(label).and_return('Foo')
+          with(label, tooltip: true).and_return('Foo')
         expect(link_to_label(label)).to match('Foo')
       end
     end

@@ -1,6 +1,6 @@
 %li{id: dom_id(label)}
   .label-row
-    = render_colored_label(label)
+    = render_colored_label(label, tooltip: false)
     = markdown(label.description, pipeline: :single_line)
     .pull-right
       = link_to 'Edit', edit_admin_label_path(label), class: 'btn btn-sm'

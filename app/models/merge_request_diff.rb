@@ -17,7 +17,7 @@ class MergeRequestDiff < ActiveRecord::Base
   include Sortable
 
   # Prevent store of diff if commits amount more then 500
-  COMMITS_SAFE_SIZE = 500
+  COMMITS_SAFE_SIZE = 100
 
   belongs_to :merge_request
 

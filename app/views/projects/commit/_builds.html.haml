@@ -43,8 +43,8 @@
           %th Coverage
         %th
     - @ci_commit.refs.each do |ref|
-      = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.statuses.for_ref(ref).latest.ordered,
-               locals: { coverage: @ci_commit.project.build_coverage_enabled?, stage: true, allow_retry: true }
+      - builds = @ci_commit.statuses.for_ref(ref).latest.ordered
+      = render builds, coverage: @ci_commit.project.build_coverage_enabled?, stage: true, allow_retry: true
 
 - if @ci_commit.retried.any?
   .gray-content-block.second-block
@@ -64,5 +64,4 @@
           - if @ci_commit.project.build_coverage_enabled?
             %th Coverage
           %th
-      = render partial: "projects/commit_statuses/commit_status", collection: @ci_commit.retried,
-               locals: { coverage: @ci_commit.project.build_coverage_enabled?, stage: true }
+      = render @ci_commit.retried, coverage: @ci_commit.project.build_coverage_enabled?, stage: true

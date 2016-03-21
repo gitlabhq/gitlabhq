@@ -14,7 +14,6 @@ class Dispatcher
 
     path = page.split(':')
     shortcut_handler = null
-
     switch page
       when 'projects:issues:index'
         Issues.init()
@@ -23,8 +22,10 @@ class Dispatcher
         new Issue()
         shortcut_handler = new ShortcutsIssuable()
         new ZenMode()
-      when 'projects:milestones:show'
+      when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
         new Milestone()
+      when 'dashboard:todos:index'
+        new Todos()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
         new DropzoneInput($('.milestone-form'))
@@ -74,8 +75,9 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
 
         new TreeView() if $('#tree-slider').length
-      when 'groups:show'
+      when 'groups:activity'
         new Activities()
+      when 'groups:show'
         shortcut_handler = new ShortcutsNavigation()
       when 'groups:group_members:index'
         new GroupMembers()
@@ -103,6 +105,8 @@ class Dispatcher
         new ProjectFork()
       when 'projects:artifacts:browse'
         new BuildArtifacts()
+      when 'projects:group_links:index'
+        new GroupsSelect()
 
     switch path.first()
       when 'admin'

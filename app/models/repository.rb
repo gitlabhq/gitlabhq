@@ -3,6 +3,10 @@ require 'securerandom'
 class Repository
   class CommitError < StandardError; end
 
+  # Files to use as a project avatar in case no avatar was uploaded via the web
+  # UI.
+  AVATAR_FILES = %w{logo.png logo.jpg logo.gif}
+
   include Gitlab::ShellAdapter
 
   attr_accessor :path_with_namespace, :project
@@ -38,12 +42,15 @@ class Repository
   end
 
   def exists?
-    return false unless raw_repository
+    return @exists unless @exists.nil?
 
-    raw_repository.rugged
-    true
-  rescue Gitlab::Git::Repository::NoRepository
-    false
+    @exists = cache.fetch(:exists?) do
+      begin
+        raw_repository && raw_repository.rugged ? true : false
+      rescue Gitlab::Git::Repository::NoRepository
+        false
+      end
+    end
   end
 
   def empty?
@@ -133,18 +140,18 @@ class Repository
       rugged.branches.create(branch_name, target)
     end
 
-    expire_branches_cache
+    after_create_branch
     find_branch(branch_name)
   end
 
   def add_tag(tag_name, ref, message = nil)
-    expire_tags_cache
+    before_push_tag
 
     gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(user, branch_name)
-    expire_branches_cache
+    before_remove_branch
 
     branch = find_branch(branch_name)
     oldrev = branch.try(:target)
@@ -155,12 +162,12 @@ class Repository
       rugged.branches.delete(branch_name)
     end
 
-    expire_branches_cache
+    after_remove_branch
     true
   end
 
   def rm_tag(tag_name)
-    expire_tags_cache
+    before_remove_tag
 
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
@@ -181,6 +188,14 @@ class Repository
         0
       end
     end
+  end
+
+  def branch_count
+    @branch_count ||= cache.fetch(:branch_count) { raw_repository.branch_count }
+  end
+
+  def tag_count
+    @tag_count ||= cache.fetch(:tag_count) { raw_repository.rugged.tags.count }
   end
 
   # Return repo size in megabytes
@@ -215,12 +230,6 @@ class Repository
         send(key)
       end
     end
-
-    branches.each do |branch|
-      unless cache.exist?(:"diverging_commit_counts_#{branch.name}")
-        send(:diverging_commit_counts, branch)
-      end
-    end
   end
 
   def expire_tags_cache
@@ -233,12 +242,13 @@ class Repository
     @branches = nil
   end
 
-  def expire_cache(branch_name = nil)
+  def expire_cache(branch_name = nil, revision = nil)
     cache_keys.each do |key|
       cache.expire(key)
     end
 
     expire_branch_cache(branch_name)
+    expire_avatar_cache(branch_name, revision)
 
     # This ensures this particular cache is flushed after the first commit to a
     # new repository.
@@ -278,16 +288,14 @@ class Repository
     @has_visible_content = nil
   end
 
-  def rebuild_cache
-    cache_keys.each do |key|
-      cache.expire(key)
-      send(key)
-    end
+  def expire_branch_count_cache
+    cache.expire(:branch_count)
+    @branch_count = nil
+  end
 
-    branches.each do |branch|
-      cache.expire(:"diverging_commit_counts_#{branch.name}")
-      diverging_commit_counts(branch)
-    end
+  def expire_tag_count_cache
+    cache.expire(:tag_count)
+    @tag_count = nil
   end
 
   def lookup_cache
@@ -298,12 +306,40 @@ class Repository
     cache.expire(:branch_names)
   end
 
+  def expire_avatar_cache(branch_name = nil, revision = nil)
+    # Avatars are pulled from the default branch, thus if somebody pushes to a
+    # different branch there's no need to expire anything.
+    return if branch_name && branch_name != root_ref
+
+    # We don't want to flush the cache if the commit didn't actually make any
+    # changes to any of the possible avatar files.
+    if revision && commit = self.commit(revision)
+      return unless commit.diffs.
+        any? { |diff| AVATAR_FILES.include?(diff.new_path) }
+    end
+
+    cache.expire(:avatar)
+
+    @avatar = nil
+  end
+
+  def expire_exists_cache
+    cache.expire(:exists?)
+    @exists = nil
+  end
+
+  # Runs code after a repository has been created.
+  def after_create
+    expire_exists_cache
+  end
+
   # Runs code just before a repository is deleted.
   def before_delete
     expire_cache if exists?
 
     expire_root_ref_cache
     expire_emptiness_caches
+    expire_exists_cache
   end
 
   # Runs code just before the HEAD of a repository is changed.
@@ -313,29 +349,47 @@ class Repository
     expire_root_ref_cache
   end
 
-  # Runs code before creating a new tag.
-  def before_create_tag
+  # Runs code before pushing (= creating or removing) a tag.
+  def before_push_tag
     expire_cache
+    expire_tags_cache
+    expire_tag_count_cache
+  end
+
+  # Runs code before removing a tag.
+  def before_remove_tag
+    expire_tags_cache
+    expire_tag_count_cache
   end
 
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_emptiness_caches
+    expire_exists_cache
   end
 
   # Runs code after a new commit has been pushed.
-  def after_push_commit(branch_name)
-    expire_cache(branch_name)
+  def after_push_commit(branch_name, revision)
+    expire_cache(branch_name, revision)
   end
 
   # Runs code after a new branch has been created.
   def after_create_branch
+    expire_branches_cache
     expire_has_visible_content_cache
+    expire_branch_count_cache
+  end
+
+  # Runs code before removing an existing branch.
+  def before_remove_branch
+    expire_branches_cache
   end
 
   # Runs code after an existing branch has been removed.
   def after_remove_branch
     expire_has_visible_content_cache
+    expire_branch_count_cache
+    expire_branches_cache
   end
 
   def method_missing(m, *args, &block)
@@ -723,12 +777,15 @@ class Repository
   def parse_search_result(result)
     ref = nil
     filename = nil
+    basename = nil
     startline = 0
 
     result.each_line.each_with_index do |line, index|
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
         startline = startline.to_i - index
+        extname = File.extname(filename)
+        basename = filename.sub(/#{extname}$/, '')
         break
       end
     end
@@ -741,6 +798,7 @@ class Repository
 
     OpenStruct.new(
       filename: filename,
+      basename: basename,
       ref: ref,
       startline: startline,
       data: data
@@ -810,6 +868,20 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
+  end
+
+  def main_language
+    unless empty?
+      Linguist::Repository.new(rugged, rugged.head.target_id).language
+    end
+  end
+
+  def avatar
+    @avatar ||= cache.fetch(:avatar) do
+      AVATAR_FILES.find do |file|
+        blob_at_branch('master', file)
+      end
+    end
   end
 
   private

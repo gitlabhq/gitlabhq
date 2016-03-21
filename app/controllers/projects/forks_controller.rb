@@ -1,4 +1,6 @@
 class Projects::ForksController < Projects::ApplicationController
+  include ContinueParams
+
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
@@ -13,7 +15,7 @@ class Projects::ForksController < Projects::ApplicationController
 
     @sort  = params[:sort] || 'id_desc'
     @forks = @forks.search(params[:filter_projects]) if params[:filter_projects].present?
-    @forks = @forks.order_by(@sort).page(params[:page]).per(PER_PAGE)
+    @forks = @forks.order_by(@sort).page(params[:page])
 
     respond_to do |format|
       format.html
@@ -51,17 +53,6 @@ class Projects::ForksController < Projects::ApplicationController
       end
     else
       render :error
-    end
-  end
-
-  private
-
-  def continue_params
-    continue_params = params[:continue]
-    if continue_params
-      continue_params.permit(:to, :notice, :notice_now)
-    else
-      nil
     end
   end
 end

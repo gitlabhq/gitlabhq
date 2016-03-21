@@ -11,7 +11,7 @@ describe Notify do
       let(:example_site_path) { root_path }
       let(:new_user) { create(:user, email: new_user_address, created_by_id: 1) }
       let(:token) { 'kETLwRaayvigPq_x3SNM' }
-      
+
       subject { Notify.new_user_email(new_user.id, token) }
 
       it_behaves_like 'an email sent from GitLab'
@@ -76,6 +76,10 @@ describe Notify do
 
       it 'includes a link to ssh keys page' do
         is_expected.to have_body_text /#{profile_keys_path}/
+      end
+
+      context 'with SSH key that does not exist' do
+        it { expect { Notify.new_ssh_key_email('foo') }.not_to raise_error }
       end
     end
 

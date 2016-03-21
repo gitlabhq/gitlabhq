@@ -46,10 +46,17 @@ Feature: Project Merge Requests
     Then I should see "Feature NS-03" in merge requests
     And I should see "Bug NS-04" in merge requests
 
-  Scenario: I visit merge request page
+  Scenario: I visit an open merge request page
     Given I click link "Bug NS-04"
     Then I should see merge request "Bug NS-04"
     And I should see "1 of 1" in the sidebar
+
+  Scenario: I visit a merged merge request page
+    Given project "Shop" have "Feature NS-05" merged merge request
+    And I click link "Merged"
+    And I click link "Feature NS-05"
+    Then I should see merge request "Feature NS-05"
+    And I should see "3 of 3" in the sidebar
 
   Scenario: I close merge request page
     Given I click link "Bug NS-04"
@@ -87,15 +94,6 @@ Feature: Project Merge Requests
     Then I should see comment "XML attached"
 
   @javascript
-  Scenario: Visiting Merge Requests after leaving a comment
-    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
-    And I visit merge request page "Bug NS-04"
-    And I leave a comment like "XML attached"
-    And I visit project "Shop" merge requests page
-    And I sort the list by "Last updated"
-    Then I should see "Bug NS-04" at the top
-
-  @javascript
   Scenario: Visiting Merge Requests after being sorted the list
     Given I visit project "Shop" merge requests page
     And I sort the list by "Oldest updated"
@@ -127,16 +125,6 @@ Feature: Project Merge Requests
     Then The list should be sorted by "Most popular"
     And I sort the list by "Least popular"
     Then The list should be sorted by "Least popular"
-
-  @javascript
-  Scenario: Visiting Merge Requests after commenting on diffs
-    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
-    And I visit merge request page "Bug NS-05"
-    And I click on the Changes tab
-    And I leave a comment like "Line is wrong" on diff
-    And I visit project "Shop" merge requests page
-    And I sort the list by "Last updated"
-    Then I should see "Bug NS-05" at the top
 
   @javascript
   Scenario: I comment on a merge request diff
@@ -337,3 +325,11 @@ Feature: Project Merge Requests
     When I click the "Target branch" dropdown
     And I select a new target branch
     Then I should see new target branch changes
+
+  @javascript
+  Scenario: I can close merge request after commenting
+    Given I visit merge request page "Bug NS-04"
+    And I leave a comment like "XML attached"
+    Then I should see comment "XML attached"
+    And I click link "Close"
+    Then I should see closed merge request "Bug NS-04"

@@ -8,13 +8,6 @@ class ProfilesController < Profiles::ApplicationController
   def show
   end
 
-  def applications
-    @applications = current_user.oauth_applications
-    @authorized_tokens = current_user.oauth_authorized_tokens
-    @authorized_anonymous_tokens = @authorized_tokens.reject(&:application)
-    @authorized_apps = @authorized_tokens.map(&:application).uniq - [nil]
-  end
-
   def update
     user_params.except!(:email) if @user.ldap_user?
 
@@ -41,8 +34,7 @@ class ProfilesController < Profiles::ApplicationController
   def audit_log
     @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id).
       order("created_at DESC").
-      page(params[:page]).
-      per(PER_PAGE)
+      page(params[:page])
   end
 
   def update_username
@@ -65,9 +57,6 @@ class ProfilesController < Profiles::ApplicationController
 
   def user_params
     params.require(:user).permit(
-      :avatar_crop_x,
-      :avatar_crop_y,
-      :avatar_crop_size,
       :avatar,
       :bio,
       :email,

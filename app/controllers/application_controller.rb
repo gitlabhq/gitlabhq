@@ -6,8 +6,6 @@ class ApplicationController < ActionController::Base
   include GitlabRoutingHelper
   include PageLayoutHelper
 
-  PER_PAGE = 20
-
   before_action :authenticate_user_from_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
@@ -246,6 +244,8 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
+      return unless current_user.try_obtain_ldap_lease
+
       unless Gitlab::LDAP::Access.allowed?(current_user)
         sign_out current_user
         flash[:alert] = "Access denied for your LDAP account."

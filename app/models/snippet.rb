@@ -10,7 +10,6 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #  file_name        :string(255)
-#  expires_at       :datetime
 #  type             :string(255)
 #  visibility_level :integer          default(0), not null
 #
@@ -46,8 +45,6 @@ class Snippet < ActiveRecord::Base
   scope :are_public, -> { where(visibility_level: Snippet::PUBLIC) }
   scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
   scope :fresh,   -> { order("created_at DESC") }
-  scope :expired, -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
-  scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
 
   participant :author, :notes
 
@@ -111,21 +108,37 @@ class Snippet < ActiveRecord::Base
     nil
   end
 
-  def expired?
-    expires_at && expires_at < Time.current
-  end
-
   def visibility_level_field
     visibility_level
   end
 
   class << self
+    # Searches for snippets with a matching title or file name.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String.
+    #
+    # Returns an ActiveRecord::Relation.
     def search(query)
-      where('(title LIKE :query OR file_name LIKE :query)', query: "%#{query}%")
+      t = arel_table
+      pattern = "%#{query}%"
+
+      where(t[:title].matches(pattern).or(t[:file_name].matches(pattern)))
     end
 
+    # Searches for snippets with matching content.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String.
+    #
+    # Returns an ActiveRecord::Relation.
     def search_code(query)
-      where('(content LIKE :query)', query: "%#{query}%")
+      table   = Snippet.arel_table
+      pattern = "%#{query}%"
+
+      where(table[:content].matches(pattern))
     end
 
     def accessible_to(user)

@@ -1,8 +1,8 @@
 %li.snippet-row
   = image_tag avatar_icon(snippet.author_email), class: "avatar s40 hidden-xs", alt: ''
 
-  .snippet-title
-    = link_to reliable_snippet_path(snippet), class: 'title' do
+  .title
+    = link_to reliable_snippet_path(snippet) do
       = truncate(snippet.title, length: 60)
       - if snippet.private?
         %span.label.label-gray

@@ -101,13 +101,29 @@ describe Repository, models: true do
     end
 
     describe 'parsing result' do
-      subject { repository.parse_search_result(results.first) }
+      subject { repository.parse_search_result(search_result) }
+      let(:search_result) { results.first }
 
       it { is_expected.to be_an OpenStruct }
       it { expect(subject.filename).to eq('CHANGELOG') }
+      it { expect(subject.basename).to eq('CHANGELOG') }
       it { expect(subject.ref).to eq('master') }
       it { expect(subject.startline).to eq(186) }
       it { expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n") }
+
+      context "when filename has extension" do
+        let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
+
+        it { expect(subject.filename).to eq('CONTRIBUTE.md') }
+        it { expect(subject.basename).to eq('CONTRIBUTE') }
+      end
+
+      context "when file under directory" do
+        let(:search_result) { "master:a/b/c.md:5:a b c\n" }
+
+        it { expect(subject.filename).to eq('a/b/c.md') }
+        it { expect(subject.basename).to eq('a/b/c') }
+      end
     end
 
   end
@@ -147,6 +163,12 @@ describe Repository, models: true do
         branch = repository.add_branch(user, 'new_feature', 'master')
 
         expect(branch.name).to eq('new_feature')
+      end
+
+      it 'calls the after_create_branch hook' do
+        expect(repository).to receive(:after_create_branch)
+
+        repository.add_branch(user, 'new_feature', 'master')
       end
     end
 
@@ -405,7 +427,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#expire_branch_ache' do
+  describe '#expire_branch_cache' do
     # This method is private but we need it for testing purposes. Sadly there's
     # no other proper way of testing caching operations.
     let(:cache) { repository.send(:cache) }
@@ -515,6 +537,12 @@ describe Repository, models: true do
 
         repository.before_delete
       end
+
+      it 'flushes the exists cache' do
+        expect(repository).to receive(:expire_exists_cache)
+
+        repository.before_delete
+      end
     end
 
     describe 'when a repository exists' do
@@ -556,11 +584,12 @@ describe Repository, models: true do
     end
   end
 
-  describe '#before_create_tag' do
+  describe '#before_push_tag' do
     it 'flushes the cache' do
       expect(repository).to receive(:expire_cache)
+      expect(repository).to receive(:expire_tag_count_cache)
 
-      repository.before_create_tag
+      repository.before_push_tag
     end
   end
 
@@ -570,13 +599,19 @@ describe Repository, models: true do
 
       repository.after_import
     end
+
+    it 'flushes the exists cache' do
+      expect(repository).to receive(:expire_exists_cache)
+
+      repository.after_import
+    end
   end
 
   describe '#after_push_commit' do
     it 'flushes the cache' do
-      expect(repository).to receive(:expire_cache).with('master')
+      expect(repository).to receive(:expire_cache).with('master', '123')
 
-      repository.after_push_commit('master')
+      repository.after_push_commit('master', '123')
     end
   end
 
@@ -593,6 +628,216 @@ describe Repository, models: true do
       expect(repository).to receive(:expire_has_visible_content_cache)
 
       repository.after_remove_branch
+    end
+  end
+
+  describe '#after_create' do
+    it 'flushes the exists cache' do
+      expect(repository).to receive(:expire_exists_cache)
+
+      repository.after_create
+    end
+  end
+
+  describe "#main_language" do
+    it 'shows the main language of the project' do
+      expect(repository.main_language).to eq("Ruby")
+    end
+
+    it 'returns nil when the repository is empty' do
+      allow(repository).to receive(:empty?).and_return(true)
+
+      expect(repository.main_language).to be_nil
+    end
+  end
+
+  describe '#before_remove_tag' do
+    it 'flushes the tag cache' do
+      expect(repository).to receive(:expire_tag_count_cache)
+
+      repository.before_remove_tag
+    end
+  end
+
+  describe '#branch_count' do
+    it 'returns the number of branches' do
+      expect(repository.branch_count).to be_an_instance_of(Fixnum)
+    end
+  end
+
+  describe '#tag_count' do
+    it 'returns the number of tags' do
+      expect(repository.tag_count).to be_an_instance_of(Fixnum)
+    end
+  end
+
+  describe '#expire_branch_count_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache' do
+      expect(cache).to receive(:expire).with(:branch_count)
+
+      repository.expire_branch_count_cache
+    end
+  end
+
+  describe '#expire_tag_count_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache' do
+      expect(cache).to receive(:expire).with(:tag_count)
+
+      repository.expire_tag_count_cache
+    end
+  end
+
+  describe '#add_tag' do
+    it 'adds a tag' do
+      expect(repository).to receive(:before_push_tag)
+
+      expect_any_instance_of(Gitlab::Shell).to receive(:add_tag).
+        with(repository.path_with_namespace, '8.5', 'master', 'foo')
+
+      repository.add_tag('8.5', 'master', 'foo')
+    end
+  end
+
+  describe '#rm_branch' do
+    let(:user) { create(:user) }
+
+    it 'removes a branch' do
+      expect(repository).to receive(:before_remove_branch)
+      expect(repository).to receive(:after_remove_branch)
+
+      repository.rm_branch(user, 'feature')
+    end
+  end
+
+  describe '#rm_tag' do
+    it 'removes a tag' do
+      expect(repository).to receive(:before_remove_tag)
+
+      expect_any_instance_of(Gitlab::Shell).to receive(:rm_tag).
+        with(repository.path_with_namespace, '8.5')
+
+      repository.rm_tag('8.5')
+    end
+  end
+
+  describe '#avatar' do
+    it 'returns the first avatar file found in the repository' do
+      expect(repository).to receive(:blob_at_branch).
+        with('master', 'logo.png').
+        and_return(true)
+
+      expect(repository.avatar).to eq('logo.png')
+    end
+
+    it 'caches the output' do
+      allow(repository).to receive(:blob_at_branch).
+        with('master', 'logo.png').
+        and_return(true)
+
+      expect(repository.avatar).to eq('logo.png')
+
+      expect(repository).to_not receive(:blob_at_branch)
+      expect(repository.avatar).to eq('logo.png')
+    end
+  end
+
+  describe '#expire_avatar_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    before do
+      allow(repository).to receive(:cache).and_return(cache)
+    end
+
+    context 'without a branch or revision' do
+      it 'flushes the cache' do
+        expect(cache).to receive(:expire).with(:avatar)
+
+        repository.expire_avatar_cache
+      end
+    end
+
+    context 'with a branch' do
+      it 'does not flush the cache if the branch is not the default branch' do
+        expect(cache).not_to receive(:expire)
+
+        repository.expire_avatar_cache('cats')
+      end
+
+      it 'flushes the cache if the branch equals the default branch' do
+        expect(cache).to receive(:expire).with(:avatar)
+
+        repository.expire_avatar_cache(repository.root_ref)
+      end
+    end
+
+    context 'with a branch and revision' do
+      let(:commit) { double(:commit) }
+
+      before do
+        allow(repository).to receive(:commit).and_return(commit)
+      end
+
+      it 'does not flush the cache if the commit does not change any logos' do
+        diff = double(:diff, new_path: 'test.txt')
+
+        expect(commit).to receive(:diffs).and_return([diff])
+        expect(cache).not_to receive(:expire)
+
+        repository.expire_avatar_cache(repository.root_ref, '123')
+      end
+
+      it 'flushes the cache if the commit changes any of the logos' do
+        diff = double(:diff, new_path: Repository::AVATAR_FILES[0])
+
+        expect(commit).to receive(:diffs).and_return([diff])
+        expect(cache).to receive(:expire).with(:avatar)
+
+        repository.expire_avatar_cache(repository.root_ref, '123')
+      end
+    end
+  end
+
+  describe '#expire_exists_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'expires the cache' do
+      expect(cache).to receive(:expire).with(:exists?)
+
+      repository.expire_exists_cache
+    end
+  end
+
+  describe '#build_cache' do
+    let(:cache) { repository.send(:cache) }
+
+    it 'builds the caches if they do not already exist' do
+      expect(cache).to receive(:exist?).
+        exactly(repository.cache_keys.length).
+        times.
+        and_return(false)
+
+      repository.cache_keys.each do |key|
+        expect(repository).to receive(key)
+      end
+
+      repository.build_cache
+    end
+
+    it 'does not build any caches that already exist' do
+      expect(cache).to receive(:exist?).
+        exactly(repository.cache_keys.length).
+        times.
+        and_return(true)
+
+      repository.cache_keys.each do |key|
+        expect(repository).to_not receive(key)
+      end
+
+      repository.build_cache
     end
   end
 end

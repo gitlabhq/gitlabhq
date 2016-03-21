@@ -27,6 +27,10 @@ module SharedPaths
     visit group_path(Group.find_by(name: "Owned"))
   end
 
+  step 'I visit group "Owned" activity page' do
+    visit activity_group_path(Group.find_by(name: "Owned"))
+  end
+
   step 'I visit group "Owned" issues page' do
     visit issues_group_path(Group.find_by(name: "Owned"))
   end

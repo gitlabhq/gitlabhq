@@ -7,7 +7,7 @@ class AutocompleteController < ApplicationController
     @users = @users.search(params[:search]) if params[:search].present?
     @users = @users.active
     @users = @users.reorder(:name)
-    @users = @users.page(params[:page]).per(PER_PAGE)
+    @users = @users.page(params[:page])
 
     if params[:search].blank?
       # Include current user if available to filter by "Me"
