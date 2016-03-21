@@ -8,10 +8,11 @@ class @MergeRequestWidget
 
   constructor: (@opts) ->
     @firstCICheck = true
-    @getCIStatus()
-    notifyPermissions()
     @readyForCICheck = true
-    # clear the build poller
+    clearInterval @fetchBuildStatusInterval
+
+    @pollCIStatus()
+    notifyPermissions()
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
@@ -39,23 +40,32 @@ class @MergeRequestWidget
     else
       status
 
-  getCIStatus: ->
-    _this = @
+  pollCIStatus: ->
     @fetchBuildStatusInterval = setInterval ( =>
       return if not @readyForCICheck
 
-      $.getJSON @opts.ci_status_url, (data) =>
-        @readyForCICheck = true
+      @getCIStatus(true)
 
-        if @firstCICheck
-          @firstCICheck = false
-          @opts.ci_status = data.status
+      @readyForCICheck = false
+    ), 5000
 
-        if data.status isnt @opts.ci_status
-          @showCIState data.status
-          if data.coverage
-            @showCICoverage data.coverage
+  getCIStatus: (showNotification) ->
+    _this = @
+    $('.ci-widget-fetching').show()
 
+    $.getJSON @opts.ci_status_url, (data) =>
+      @readyForCICheck = true
+
+      if @firstCICheck
+        @firstCICheck = false
+        @opts.ci_status = data.status
+
+      if data.status isnt @opts.ci_status
+        @showCIStatus data.status
+        if data.coverage
+          @showCICoverage data.coverage
+
+        if showNotification
           message = @opts.ci_message.replace('{{status}}', @ciLabelForStatus(data.status))
           message = message.replace('{{sha}}', data.sha)
           message = message.replace('{{title}}', data.title)
@@ -69,19 +79,9 @@ class @MergeRequestWidget
               Turbolinks.visit _this.opts.builds_path
           )
 
-          @opts.ci_status = data.status
+        @opts.ci_status = data.status
 
-      @readyForCICheck = false
-    ), 5000
-
-  getCIState: ->
-    $('.ci-widget-fetching').show()
-    $.getJSON @opts.ci_status_url, (data) =>
-      @showCIState data.status
-      if data.coverage
-        @showCICoverage data.coverage
-
-  showCIState: (state) ->
+  showCIStatus: (state) ->
     $('.ci_widget').hide()
     allowed_states = ["failed", "canceled", "running", "pending", "success", "skipped", "not_found"]
     if state in allowed_states
