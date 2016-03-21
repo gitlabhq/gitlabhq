@@ -5,7 +5,7 @@
   .project-home-desc
     %h1
       = @project.name
-      %span.visibility-icon.has_tooltip{data: { container: 'body' },
+      %span.visibility-icon.has-tooltip{data: { container: 'body' },
         title: "#{visibility_level_label(@project.visibility_level)} - #{project_visibility_level_description(@project.visibility_level)}"}
         = visibility_level_icon(@project.visibility_level, fw: false)
 
