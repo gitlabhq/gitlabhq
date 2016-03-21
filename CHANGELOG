@@ -5,6 +5,7 @@ v 8.6.0 (unreleased)
   - Fix bug where wrong commit ID was being used in a merge request diff to show old image (Stan Hu)
   - Add confidential issues
   - Bump gitlab_git to 9.0.3 (Stan Hu)
+  - Fix diff image view modes (2-up, swipe, onion skin) not working (Stan Hu)
   - Support Golang subpackage fetching (Stan Hu)
   - Bump Capybara gem to 2.6.2 (Stan Hu)
   - New branch button appears on issues where applicable
