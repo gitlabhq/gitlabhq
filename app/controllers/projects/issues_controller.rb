@@ -33,7 +33,7 @@ class Projects::IssuesController < Projects::ApplicationController
       end
     end
 
-    @issues = @issues.page(params[:page]).per(PER_PAGE)
+    @issues = @issues.page(params[:page])
     @label = @project.labels.find_by(title: params[:label_name])
 
     respond_to do |format|

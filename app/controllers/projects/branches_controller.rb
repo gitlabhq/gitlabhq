@@ -8,7 +8,7 @@ class Projects::BranchesController < Projects::ApplicationController
   def index
     @sort = params[:sort] || 'name'
     @branches = @repository.branches_sorted_by(@sort)
-    @branches = Kaminari.paginate_array(@branches).page(params[:page]).per(PER_PAGE)
+    @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
     @max_commits = @branches.reduce(0) do |memo, branch|
       diverging_commit_counts = repository.diverging_commit_counts(branch)

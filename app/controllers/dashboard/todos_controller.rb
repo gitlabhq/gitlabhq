@@ -2,7 +2,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   before_action :find_todos, only: [:index, :destroy, :destroy_all]
 
   def index
-    @todos = @todos.page(params[:page]).per(PER_PAGE)
+    @todos = @todos.page(params[:page])
   end
 
   def destroy
