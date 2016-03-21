@@ -163,6 +163,14 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#notify_key_url' do
+    let(:refresh_url) { 'https://localhost:3000/gitlab/api/v3/geo/refresh_key' }
+
+    it 'returns api url based on node uri' do
+      expect(new_node.notify_key_url).to eq(refresh_url)
+    end
+  end
+
   describe '#oauth_callback_url' do
     let(:oauth_callback_url) { 'https://localhost:3000/gitlab/oauth/geo/callback' }
 

@@ -60,6 +60,10 @@ class GeoNode < ActiveRecord::Base
     URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_wikis").to_s
   end
 
+  def notify_key_url
+    URI.join(uri, "#{uri.path}/", "api/#{API::API.version}/geo/refresh_key").to_s
+  end
+
   def oauth_callback_url
     URI.join(uri, "#{uri.path}/", 'oauth/geo/callback').to_s
   end
