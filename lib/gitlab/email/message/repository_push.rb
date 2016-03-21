@@ -50,7 +50,7 @@ module Gitlab
         end
 
         def compare_timeout
-          compare.timeout if compare
+          diffs.overflow? if diffs
         end
 
         def reverse_compare?

@@ -9,8 +9,6 @@
 #  updated_at             :datetime
 #
 
-# Read about factories at https://github.com/thoughtbot/factory_girl
-
 FactoryGirl.define do
   factory :forked_project_link do
     association :forked_to_project, factory: :project

@@ -1,9 +1,11 @@
 class Projects::IssuesController < Projects::ApplicationController
+  include ToggleSubscriptionAction
+
   before_action :module_enabled
-  before_action :issue, only: [:edit, :update, :show, :toggle_subscription]
+  before_action :issue, only: [:edit, :update, :show]
 
   # Allow read any issue
-  before_action :authorize_read_issue!
+  before_action :authorize_read_issue!, only: [:show]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -63,6 +65,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @notes = @issue.notes.nonawards.with_associations.fresh
     @noteable = @issue
     @merge_requests = @issue.referenced_merge_requests(current_user)
+    @related_branches = @issue.related_branches - @merge_requests.map(&:source_branch)
 
     respond_with(@issue)
   end
@@ -110,12 +113,6 @@ class Projects::IssuesController < Projects::ApplicationController
     redirect_back_or_default(default: { action: 'index' }, options: { notice: "#{result[:count]} issues updated" })
   end
 
-  def toggle_subscription
-    @issue.toggle_subscription(current_user)
-
-    render nothing: true
-  end
-
   def closed_by_merge_requests
     @closed_by_merge_requests ||= @issue.closed_by_merge_requests(current_user)
   end
@@ -128,6 +125,11 @@ class Projects::IssuesController < Projects::ApplicationController
                rescue ActiveRecord::RecordNotFound
                  redirect_old
                end
+  end
+  alias_method :subscribable_resource, :issue
+
+  def authorize_read_issue!
+    return render_404 unless can?(current_user, :read_issue, @issue)
   end
 
   def authorize_update_issue!
@@ -160,7 +162,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue_params
     params.require(:issue).permit(
-      :title, :assignee_id, :position, :description,
+      :title, :assignee_id, :position, :description, :confidential,
       :milestone_id, :state_event, :task_num, label_ids: []
     )
   end

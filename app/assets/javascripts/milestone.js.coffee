@@ -69,7 +69,7 @@ class @Milestone
 
     @bindIssuesSorting()
     @bindMergeRequestSorting()
-    @bindTabsSwitching
+    @bindTabsSwitching()
 
   bindIssuesSorting: ->
     $("#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed").sortable(
@@ -104,7 +104,7 @@ class @Milestone
 
     ).disableSelection()
 
-  bindMergeRequestSorting: ->
+  bindTabsSwitching: ->
     $('a[data-toggle="tab"]').on 'show.bs.tab', (e) ->
       currentTabClass  = $(e.target).data('show')
       previousTabClass =  $(e.relatedTarget).data('show')
@@ -112,7 +112,8 @@ class @Milestone
       $(previousTabClass).hide()
       $(currentTabClass).removeClass('hidden')
       $(currentTabClass).show()
-      
+
+  bindMergeRequestSorting: ->
     $("#merge_requests-list-unassigned, #merge_requests-list-ongoing, #merge_requests-list-closed").sortable(
       connectWith: ".merge_requests-sortable-list",
       dropOnEmpty: true,

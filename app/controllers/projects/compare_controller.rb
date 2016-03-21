@@ -1,6 +1,8 @@
 require 'addressable/uri'
 
 class Projects::CompareController < Projects::ApplicationController
+  include DiffHelper
+
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
@@ -11,16 +13,14 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def show
-    diff_options = { ignore_whitespace_change: true } if params[:w] == '1'
-
-    compare_result = CompareService.new.
+    compare = CompareService.new.
       execute(@project, @head_ref, @project, @base_ref, diff_options)
 
-    if compare_result
-      @commits = Commit.decorate(compare_result.commits, @project)
-      @diffs = compare_result.diffs
+    if compare
+      @commits = Commit.decorate(compare.commits, @project)
       @commit = @project.commit(@head_ref)
       @base_commit = @project.merge_base_commit(@base_ref, @head_ref)
+      @diffs = compare.diffs(diff_options)
       @diff_refs = [@base_commit, @commit]
       @line_notes = []
     end

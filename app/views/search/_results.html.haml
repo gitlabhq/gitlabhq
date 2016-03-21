@@ -18,7 +18,9 @@
           = render 'shared/projects/list', projects: @objects
       - else
         = render partial: "search/results/#{@scope.singularize}", collection: @objects
-    = paginate @objects, theme: 'gitlab'
+
+    - if @scope != 'projects'
+      = paginate @objects, theme: 'gitlab'
 
 :javascript
   $(".search-results .term").highlight("#{escape_javascript(params[:search])}");

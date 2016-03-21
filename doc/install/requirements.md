@@ -22,7 +22,7 @@ For the installations options please see [the installation page on the GitLab we
 - FreeBSD
 
 On the above unsupported distributions is still possible to install GitLab yourself.
-Please see the [installation from source guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md) and the [unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) on the public wiki for more information.
+Please see the [installation from source guide](installation.md) and the [installation guides](https://about.gitlab.com/installation/) for more information.
 
 ### Non-Unix operating systems such as Windows
 
@@ -96,6 +96,17 @@ To change the Unicorn workers when you have the Omnibus package please see [the 
 ## Database
 
 If you want to run the database separately expect a size of about 1 MB per user.
+
+### PostgreSQL Requirements
+
+Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
+GitLab database. This extension can be enabled (using a PostgreSQL super user)
+by running the following query for every database:
+
+    CREATE EXTENSION pg_trgm;
+
+On some systems you may need to install an additional package (e.g.
+`postgresql-contrib`) for this extension to become available.
 
 ## Redis and Sidekiq
 

@@ -28,6 +28,7 @@ contains some settings that are common for all providers.
 - [SAML](saml.md)
 - [Crowd](crowd.md)
 - [Azure](azure.md)
+- [Auth0](auth0.md)
 
 ## Initial OmniAuth Configuration
 

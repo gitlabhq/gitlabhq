@@ -9,6 +9,7 @@ class Ability
       when CommitStatus then commit_status_abilities(user, subject)
       when Project then project_abilities(user, subject)
       when Issue then issue_abilities(user, subject)
+      when ExternalIssue then external_issue_abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
       when PersonalSnippet then personal_snippet_abilities(user, subject)
@@ -48,7 +49,6 @@ class Ability
         rules = [
           :read_project,
           :read_wiki,
-          :read_issue,
           :read_label,
           :read_milestone,
           :read_project_snippet,
@@ -61,6 +61,9 @@ class Ability
 
         # Allow to read builds by anonymous user if guests are allowed
         rules << :read_build if project.public_builds?
+
+        # Allow to read issues by anonymous user if issue is not confidential
+        rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
 
         rules - project_disabled_features_rules(project)
       else
@@ -108,23 +111,10 @@ class Ability
       key = "/user/#{user.id}/project/#{project.id}"
 
       RequestStore.store[key] ||= begin
-        team = project.team
+        # Push abilities on the users team role
+        rules.push(*project_team_rules(project.team, user))
 
-        # Rules based on role in project
-        if team.master?(user)
-          rules.push(*project_master_rules)
-
-        elsif team.developer?(user)
-          rules.push(*project_dev_rules)
-
-        elsif team.reporter?(user)
-          rules.push(*project_report_rules)
-
-        elsif team.guest?(user)
-          rules.push(*project_guest_rules)
-        end
-
-        if project.public? || project.internal?
+        if project.public? || (project.internal? && !user.external?)
           rules.push(*public_project_rules)
 
           # Allow to read builds for internal projects
@@ -144,6 +134,19 @@ class Ability
         end
 
         rules - project_disabled_features_rules(project)
+      end
+    end
+
+    def project_team_rules(team, user)
+      # Rules based on role in project
+      if team.master?(user)
+        project_master_rules
+      elsif team.developer?(user)
+        project_dev_rules
+      elsif team.reporter?(user)
+        project_report_rules
+      elsif team.guest?(user)
+        project_guest_rules
       end
     end
 
@@ -188,6 +191,7 @@ class Ability
     def project_dev_rules
       @project_dev_rules ||= project_report_rules + [
         :admin_merge_request,
+        :update_merge_request,
         :create_commit_status,
         :update_commit_status,
         :create_build,
@@ -212,7 +216,6 @@ class Ability
       @project_master_rules ||= project_dev_rules + [
         :push_code_to_protected_branches,
         :update_project_snippet,
-        :update_merge_request,
         :admin_milestone,
         :admin_project_snippet,
         :admin_project_member,
@@ -320,6 +323,7 @@ class Ability
         end
 
         rules += project_abilities(user, subject.project)
+        rules = filter_confidential_issues_abilities(user, subject, rules) if subject.is_a?(Issue)
         rules
       end
     end
@@ -355,7 +359,7 @@ class Ability
         ]
       end
 
-      if snippet.public? || snippet.internal?
+      if snippet.public? || (snippet.internal? && !user.external?)
         rules << :read_personal_snippet
       end
 
@@ -424,6 +428,10 @@ class Ability
       end
     end
 
+    def external_issue_abilities(user, subject)
+      project_abilities(user, subject.project)
+    end
+
     private
 
     def named_abilities(name)
@@ -433,6 +441,18 @@ class Ability
         :"update_#{name}",
         :"admin_#{name}"
       ]
+    end
+
+    def filter_confidential_issues_abilities(user, issue, rules)
+      return rules if user.admin? || !issue.confidential?
+
+      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user.id)
+        rules.delete(:admin_issue)
+        rules.delete(:read_issue)
+        rules.delete(:update_issue)
+      end
+
+      rules
     end
   end
 end

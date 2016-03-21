@@ -26,4 +26,20 @@ module SharedUser
   step 'I have no ssh keys' do
     @user.keys.delete_all
   end
+
+  step 'I click on "Personal projects" tab' do
+    page.within '.nav-links' do
+      click_link 'Personal projects'
+    end
+
+    expect(page).to have_css('.tab-content #projects.active')
+  end
+
+  step 'I click on "Contributed projects" tab' do
+    page.within '.nav-links' do
+      click_link 'Contributed projects'
+    end
+
+    expect(page).to have_css('.tab-content #contributed.active')
+  end
 end

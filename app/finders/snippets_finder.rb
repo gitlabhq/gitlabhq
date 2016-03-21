@@ -4,7 +4,7 @@ class SnippetsFinder
 
     case filter
     when :all then
-      snippets(current_user).fresh.non_expired
+      snippets(current_user).fresh
     when :by_user then
       by_user(current_user, params[:user], params[:scope])
     when :by_project
@@ -27,7 +27,7 @@ class SnippetsFinder
   end
 
   def by_user(current_user, user, scope)
-    snippets = user.snippets.fresh.non_expired
+    snippets = user.snippets.fresh
 
     return snippets.are_public unless current_user
 
@@ -48,7 +48,7 @@ class SnippetsFinder
   end
 
   def by_project(current_user, project)
-    snippets = project.snippets.fresh.non_expired
+    snippets = project.snippets.fresh
 
     if current_user
       if project.team.member?(current_user.id)

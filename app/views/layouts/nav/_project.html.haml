@@ -16,7 +16,7 @@
 
   = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
     = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do
-      = icon('home fw')
+      = icon('bookmark fw')
       %span
         Project
   = nav_link(path: 'projects#activity') do
@@ -67,7 +67,7 @@
         %span
           Issues
           - if @project.default_issues_tracker?
-            %span.count.issue_counter= number_with_delimiter(@project.issues.opened.count)
+            %span.count.issue_counter= number_with_delimiter(@project.issues.visible_to_user(current_user).opened.count)
 
   - if project_nav_tab? :merge_requests
     = nav_link(controller: :merge_requests) do

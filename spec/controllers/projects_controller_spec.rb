@@ -9,19 +9,6 @@ describe ProjectsController do
 
   describe "GET show" do
 
-    context "when requested by `go get`" do
-      render_views
-
-      it "renders the go-import meta tag" do
-        get :show, "go-get" => "1", namespace_id: "bogus_namespace", id: "bogus_project"
-
-        expect(response.body).to include("name='go-import'")
-
-        content = "localhost/bogus_namespace/bogus_project git http://localhost/bogus_namespace/bogus_project.git"
-        expect(response.body).to include("content='#{content}'")
-      end
-    end
-
     context "rendering default project view" do
       render_views
 

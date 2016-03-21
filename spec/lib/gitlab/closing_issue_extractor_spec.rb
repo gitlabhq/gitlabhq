@@ -11,6 +11,7 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
   subject { described_class.new(project, project.creator) }
 
   before do
+    project.team  << [project.creator, :developer]
     project2.team << [project.creator, :master]
   end
 

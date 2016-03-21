@@ -151,6 +151,8 @@ Parameters:
   "name": "John Smith",
   "state": "active",
   "created_at": "2012-05-23T08:00:58Z",
+  "confirmed_at": "2012-05-23T08:00:58Z",
+  "last_sign_in_at": "2015-03-23T08:00:58Z",
   "bio": null,
   "skype": "",
   "linkedin": "",
@@ -192,6 +194,7 @@ Parameters:
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
 - `confirm` (optional)          - Require confirmation - true (default) or false
+- `external` (optional)         - Flags the user as external - true or false(default)
 
 ## User modification
 
@@ -217,6 +220,7 @@ Parameters:
 - `bio`                         - User's biography
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `external` (optional)         - Flags the user as external - true or false(default)
 
 Note, at the moment this method does only return a 404 error,
 even in cases where a 409 (Conflict) would be more appropriate,
@@ -558,7 +562,7 @@ Parameters:
 
 - `uid` (required) - id of specified user
 
-Will return `200 OK` on success, `404 User Not Found` is user cannot be found or 
+Will return `200 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to block an already blocked user by LDAP synchronization.
 
 ## Unblock user

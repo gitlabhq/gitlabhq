@@ -1,5 +1,6 @@
 - user = member.user
 - return unless user || member.invite?
+- show_roles = local_assigns.fetch(:show_roles, true)
 
 %li{class: "#{dom_class(member)} js-toggle-container", id: dom_id(member)}
   %span{class: ("list-item-name" if show_controls)}
@@ -28,7 +29,7 @@
         = link_to resend_invite_group_group_member_path(@group, member), method: :post, class: "btn-xs btn", title: 'Resend invite' do
           Resend invite
 
-  - if should_user_see_group_roles?(current_user, @group)
+  - if show_roles && should_user_see_group_roles?(current_user, @group)
     %span.pull-right
       %strong.member-access-level= member.human_access
       - if show_controls
