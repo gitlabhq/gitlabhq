@@ -7,7 +7,7 @@ class GeoKeyRefreshWorker
     count <= 30 ? linear_backoff_strategy(count) : geometric_backoff_strategy(count)
   end
 
-  def perform(key_id, action)
+  def perform(key_id, key, action)
     action = action.to_sym
 
     case action
@@ -18,7 +18,7 @@ class GeoKeyRefreshWorker
     when :delete
       # we are physically removing the key after model is removed
       # so we must reconstruct ids to schedule removal
-      key = Key.new(id: key_id)
+      key = Key.new(id: key_id, key: key)
       key.remove_from_shell
     else
       fail "Invalid action: #{action}"

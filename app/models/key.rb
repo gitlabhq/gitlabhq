@@ -57,7 +57,7 @@ class Key < ActiveRecord::Base
   end
 
   def add_to_shell
-    Gitlab::Geo.notify_ssh_key_change(id, :create) if Gitlab::Geo.primary?
+    Gitlab::Geo.notify_key_change(id, key, :create) if Gitlab::Geo.primary?
     GitlabShellWorker.perform_async(
       :add_key,
       shell_id,
@@ -74,7 +74,7 @@ class Key < ActiveRecord::Base
   end
 
   def remove_from_shell
-    Gitlab::Geo.notify_ssh_key_change(id, :delete) if Gitlab::Geo.primary?
+    Gitlab::Geo.notify_key_change(id, key, :delete) if Gitlab::Geo.primary?
     GitlabShellWorker.perform_async(
       :remove_key,
       shell_id,

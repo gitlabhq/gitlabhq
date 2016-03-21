@@ -1,13 +1,14 @@
 module Geo
   class NotifyKeyChangeService < BaseNotify
 
-    def initialize(key_id, change)
+    def initialize(key_id, key, action)
       @id = key_id
-      @action = change
+      @key = key
+      @action = action
     end
 
     def execute
-      key_change = { 'id' => @id, 'action' => @action }
+      key_change = { 'id' => @id, 'key' => @key, 'action' => @action }
       content = { key_change: key_change }.to_json
 
       ::Gitlab::Geo.secondary_nodes.each do |node|

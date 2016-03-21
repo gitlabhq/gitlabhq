@@ -42,8 +42,8 @@ module Gitlab
       ::Geo::EnqueueWikiUpdateService.new(project).execute
     end
 
-    def self.notify_ssh_key_change(key_id, change)
-      GeoKeyChangeNotifyWorker.perform_async(key_id, change)
+    def self.notify_key_change(key_id, key, action)
+      GeoKeyChangeNotifyWorker.perform_async(key_id, key, action)
     end
 
     def self.bulk_notify_job

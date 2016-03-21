@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe GeoKeyRefreshWorker do
-  subject(:key_create) { described_class.new.perform(key.id, 'create') }
-  subject(:key_delete) { described_class.new.perform(key.id, 'delete') }
+  subject(:key_create) { described_class.new.perform(key.id, key.key, 'create') }
+  subject(:key_delete) { described_class.new.perform(key.id, key.key, 'delete') }
   let(:key) { FactoryGirl.create(:key) }
 
   context 'key creation' do
@@ -15,7 +15,7 @@ describe GeoKeyRefreshWorker do
 
   context 'key removal' do
     it 'removes key from the shell' do
-      expect(Key).to receive(:new).with(id: key.id) { key }
+      expect(Key).to receive(:new).with(id: key.id, key: key.key) { key }
       expect(key).to receive(:remove_from_shell)
       expect { key_delete }.not_to raise_error
     end

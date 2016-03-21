@@ -7,8 +7,8 @@ class GeoKeyChangeNotifyWorker
     count <= 30 ? linear_backoff_strategy(count) : geometric_backoff_strategy(count)
   end
 
-  def perform(key_id, change)
-    Geo::NotifyKeyChangeService.new(key_id, change).execute
+  def perform(key_id, key, action)
+    Geo::NotifyKeyChangeService.new(key_id, key, action).execute
   end
 
   private
