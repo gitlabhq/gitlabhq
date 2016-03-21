@@ -12,7 +12,7 @@ require 'file_size_validator'
 
 class ProjectImportData < ActiveRecord::Base
   belongs_to :project
-  attr_encrypted :credentials, key: Gitlab::Application.secrets.db_key_base, marshal: true, encode: true, :mode => :per_attribute_iv_and_salt
+  attr_encrypted :credentials, key: Gitlab::Application.secrets.db_key_base, marshal: true, encode: true, mode: :per_attribute_iv_and_salt
 
   serialize :data, JSON
 
