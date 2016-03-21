@@ -36,8 +36,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   end
 
   def projects_with_wrong_import_url
-    # TODO Check live with #operations for possible false positives. Also, consider regex? But may have issues MySQL/PSQL
-    select_all("SELECT p.id, p.import_url FROM projects p WHERE p.import_url IS NOT NULL AND (p.import_url LIKE '%//%:%@%' OR p.import_url LIKE 'https___#{"_"*40}@github.com%')")
+    select_all("SELECT p.id, p.import_url FROM projects p WHERE p.import_url IS NOT NULL AND p.import_type = 'github' AND p.import_url LIKE '%//%:%@%'")
   end
 
   def project_import_data(project_id)
