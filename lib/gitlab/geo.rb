@@ -43,7 +43,7 @@ module Gitlab
     end
 
     def self.notify_ssh_key_change(key_id, change)
-      ::Geo::ScheduleKeyChangeService.new(key_id, change.to_sym).execute
+      GeoKeyChangeNotifyWorker.perform_async(key_id, change)
     end
 
     def self.bulk_notify_job
