@@ -4,7 +4,7 @@ module Geo
 
     def initialize(key_change)
       @id = key_change['id']
-      @action = key_change['change']
+      @action = key_change['action']
     end
 
     def execute
