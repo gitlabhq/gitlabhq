@@ -15,11 +15,11 @@ describe 'Private Group access', feature: true do
   let(:project_guest) { create(:user) }
 
   before do
-    group.add_user(owner, Gitlab::Access::OWNER)
-    group.add_user(master, Gitlab::Access::MASTER)
-    group.add_user(developer, Gitlab::Access::DEVELOPER)
-    group.add_user(reporter, Gitlab::Access::REPORTER)
-    group.add_user(guest, Gitlab::Access::GUEST)
+    group.add_owner(owner)
+    group.add_master(master)
+    group.add_developer(developer)
+    group.add_reporter(reporter)
+    group.add_guest(guest)
 
     project.team << [project_guest, :guest]
   end

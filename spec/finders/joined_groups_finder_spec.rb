@@ -5,64 +5,70 @@ describe JoinedGroupsFinder do
     let!(:profile_owner)    { create(:user) }
     let!(:profile_visitor)  { create(:user) }
 
-    let!(:private_group)    { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
-    let!(:private_group_2)  { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
-    let!(:internal_group)   { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-    let!(:internal_group_2) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-    let!(:public_group)     { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-    let!(:public_group_2)   { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+    let!(:private_group)    { create(:group, :private) }
+    let!(:private_group_2)  { create(:group, :private) }
+    let!(:internal_group)   { create(:group, :internal) }
+    let!(:internal_group_2) { create(:group, :internal) }
+    let!(:public_group)     { create(:group, :public) }
+    let!(:public_group_2)   { create(:group, :public) }
     let!(:finder) { described_class.new(profile_owner) }
 
-    describe 'execute' do
-      context 'without a user only shows public groups from profile owner' do
-        before { public_group.add_user(profile_owner, Gitlab::Access::MASTER)}
-        subject { finder.execute }
-
-        it { is_expected.to eq([public_group]) }
+    context 'without a user' do
+      before do
+        public_group.add_master(profile_owner)
       end
 
-      context 'only shows groups where both users are authorized to see' do
-        subject { finder.execute(profile_visitor) }
+      it 'only shows public groups from profile owner' do
+        expect(finder.execute).to eq([public_group])
+      end
+    end
 
-        before do
-          private_group.add_user(profile_owner, Gitlab::Access::MASTER)
-          private_group.add_user(profile_visitor, Gitlab::Access::DEVELOPER)
-          internal_group.add_user(profile_owner, Gitlab::Access::MASTER)
-          public_group.add_user(profile_owner, Gitlab::Access::MASTER)
-        end
-
-        it { is_expected.to eq([public_group, internal_group, private_group]) }
+    context "with a user" do
+      before do
+        private_group.add_master(profile_owner)
+        private_group.add_developer(profile_visitor)
+        internal_group.add_master(profile_owner)
+        public_group.add_master(profile_owner)
       end
 
-      context 'shows group if profile visitor is in one of its projects' do
+      it 'only shows groups where both users are authorized to see' do
+        expect(finder.execute(profile_visitor)).to eq([public_group, internal_group, private_group])
+      end
+
+      context 'if profile visitor is in one of its projects' do
         before do
-          public_group.add_user(profile_owner, Gitlab::Access::MASTER)
-          private_group.add_user(profile_owner, Gitlab::Access::MASTER)
+          public_group.add_master(profile_owner)
+          private_group.add_master(profile_owner)
           project = create(:project, :private, group: private_group, name: 'B', path: 'B')
-          project.team.add_user(profile_visitor, Gitlab::Access::DEVELOPER)
+          project.team.add_developer(profile_visitor)
         end
 
-        subject { finder.execute(profile_visitor) }
-
-        it { is_expected.to eq([public_group, private_group]) }
+        it 'shows group' do
+          expect(finder.execute(profile_visitor)).to eq([public_group, private_group])
+        end
       end
 
       context 'external users' do
         before do
           profile_visitor.update_attributes(external: true)
-          public_group.add_user(profile_owner, Gitlab::Access::MASTER)
-          internal_group.add_user(profile_owner, Gitlab::Access::MASTER)
+          public_group.add_master(profile_owner)
+          internal_group.add_master(profile_owner)
         end
 
-        subject { finder.execute(profile_visitor) }
-
-        it "doest not show internal groups if not member" do
-          expect(subject).to eq([public_group])
+        context 'if not a member' do
+          it "does not show internal groups" do
+            expect(finder.execute(profile_visitor)).to eq([public_group])
+          end
         end
 
-        it "shows internal groups if authorized" do
-          internal_group.add_user(profile_visitor, Gitlab::Access::MASTER)
-          expect(subject).to eq([public_group, internal_group])
+        context "if authorized" do
+          before do
+            internal_group.add_master(profile_visitor)
+          end
+
+          it "shows internal groups if authorized" do
+            expect(finder.execute(profile_visitor)).to eq([public_group, internal_group])
+          end
         end
       end
     end

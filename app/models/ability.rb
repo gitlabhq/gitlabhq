@@ -170,7 +170,8 @@ class Ability
         :read_note,
         :create_project,
         :create_issue,
-        :create_note
+        :create_note,
+        :upload_file
       ]
     end
 
@@ -298,8 +299,12 @@ class Ability
     end
 
     def can_read_group?(user, group)
-      user.admin? || group.public? || (group.internal? && !user.external?) || group.users.include?(user) ||
-        GroupProjectsFinder.new(group).execute(user).any?
+      return true if user.admin?
+      return true if group.public?
+      return true if group.internal? && !user.external?
+      return true if group.users.include?(user)
+
+      GroupProjectsFinder.new(group).execute(user).any?
     end
 
     def namespace_abilities(user, namespace)

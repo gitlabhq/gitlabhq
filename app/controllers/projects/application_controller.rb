@@ -1,6 +1,7 @@
 class Projects::ApplicationController < ApplicationController
   skip_before_action :authenticate_user!
-  before_action :project, :repository
+  before_action :project
+  before_action :repository
   layout 'project'
 
   helper_method :repository, :can_collaborate_with_project?

@@ -721,8 +721,8 @@ describe Project, models: true do
     let(:private_group)    { create(:group, visibility_level: 0)  }
     let(:internal_group)   { create(:group, visibility_level: 10) }
 
-    let(:private_project)  { create :project, group: private_group, visibility_level: Gitlab::VisibilityLevel::PRIVATE   }
-    let(:internal_project) { create :project, group: internal_group, visibility_level: Gitlab::VisibilityLevel::INTERNAL }
+    let(:private_project)  { create :project, :private, group: private_group }
+    let(:internal_project) { create :project, :internal, group: internal_group }
 
     context 'when group is private project can not be internal' do
       it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }

@@ -12,7 +12,7 @@ module Groups
         return @group
       end
 
-      @group.name = @group.path.dup unless @group.name
+      @group.name ||= @group.path.dup
       @group.save
       @group.add_owner(current_user)
       @group

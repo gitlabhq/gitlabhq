@@ -171,15 +171,13 @@ class IssuableFinder
   end
 
   def by_scope(items)
-    case params[:scope] || 'all'
-    when 'created-by-me', 'authored' then
+    case params[:scope]
+    when 'created-by-me', 'authored'
       items.where(author_id: current_user.id)
-    when 'all' then
-      items
-    when 'assigned-to-me' then
+    when 'assigned-to-me'
       items.where(assignee_id: current_user.id)
     else
-      raise 'You must specify default scope'
+      items
     end
   end
 

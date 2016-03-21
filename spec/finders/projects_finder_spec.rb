@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ProjectsFinder do
   describe '#execute' do
     let(:user) { create(:user) }
-    let(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+    let(:group) { create(:group, :public) }
 
     let!(:private_project) do
       create(:project, :private, name: 'A', path: 'A')

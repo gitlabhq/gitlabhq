@@ -40,11 +40,11 @@ module VisibilityLevelHelper
   def group_visibility_level_description(level)
     case level
     when Gitlab::VisibilityLevel::PRIVATE
-      "The group can be accessed only by members."
+      "The group and its projects can only be viewed by members."
     when Gitlab::VisibilityLevel::INTERNAL
-      "The group can be accessed by any logged user."
+      "The group and any internal projects can be viewed by any logged in user."
     when Gitlab::VisibilityLevel::PUBLIC
-      "The group can be accessed without any authentication."
+      "The group and any public projects can be viewed without any authentication."
     end
   end
 
@@ -63,12 +63,21 @@ module VisibilityLevelHelper
     end
   end
 
-  def group_visibility_icon_description(group)
-    "#{visibility_level_label(group.visibility_level)} - #{group_visibility_level_description(group.visibility_level)}"
+  def visibility_icon_description(form_model)
+    case form_model
+    when Project
+      project_visibility_icon_description(form_model.visibility_level)
+    when Group
+      group_visibility_icon_description(form_model.visibility_level)
+    end
   end
 
-  def project_visibility_icon_description(project)
-    "#{visibility_level_label(project.visibility_level)} - #{project_visibility_level_description(project.visibility_level)}"
+  def group_visibility_icon_description(level)
+    "#{visibility_level_label(level)} - #{group_visibility_level_description(level)}"
+  end
+
+  def project_visibility_icon_description(level)
+    "#{visibility_level_label(level)} - #{project_visibility_level_description(level)}"
   end
 
   def visibility_level_label(level)

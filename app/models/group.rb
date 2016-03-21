@@ -7,7 +7,7 @@
 #  path                   :string(255)      not null
 #  owner_id               :integer
 #  visibility_level       :integer          default(20), not null
-#  created_at             :key => "value", datetime
+#  created_at             :datetime
 #  updated_at             :datetime
 #  type                   :string(255)
 #  description            :string(255)      default(""), not null
@@ -83,9 +83,7 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_projects
-    projects_visibility = self.projects.pluck(:visibility_level)
-
-    allowed_by_projects = projects_visibility.all? { |project_visibility| self.visibility_level >= project_visibility }
+    allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
 
     unless allowed_by_projects
       level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase

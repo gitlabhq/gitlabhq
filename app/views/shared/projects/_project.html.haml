@@ -27,7 +27,7 @@
         %span
           = icon('star')
           = project.star_count
-      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: project_visibility_icon_description(project)}
+      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project)}
         = visibility_level_icon(project.visibility_level, fw: false)
 
     .title

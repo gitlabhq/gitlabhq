@@ -5,11 +5,6 @@ class JoinedGroupsFinder < UnionFinder
 
   # Finds the groups of the source user, optionally limited to those visible to
   # the current user.
-  #
-  # current_user - If given the groups of "@user" will only include the groups
-  #                "current_user" can also see.
-  #
-  # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
     segments = all_groups(current_user)
 
