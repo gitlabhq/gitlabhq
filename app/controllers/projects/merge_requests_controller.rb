@@ -1,10 +1,11 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
+  include ToggleSubscriptionAction
   include DiffHelper
 
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -19,7 +20,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :authorize_create_merge_request!, only: [:new, :create]
 
   # Allow modify merge_request
-  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :sort]
+  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
 
   def index
     terms = params['issue_search']
@@ -163,6 +164,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def remove_wip
+    MergeRequests::UpdateService.new(project, current_user, title: @merge_request.wipless_title).execute(@merge_request)
+
+    redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
+      notice: "The merge request can now be merged."
+  end
+
   def merge_check
     @merge_request.check_if_can_be_merged
 
@@ -233,12 +241,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render json: response
   end
 
-  def toggle_subscription
-    @merge_request.toggle_subscription(current_user)
-
-    render nothing: true
-  end
-
   protected
 
   def selected_target_project
@@ -252,6 +254,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_request
     @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
+  alias_method :subscribable_resource, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues

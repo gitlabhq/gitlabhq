@@ -59,6 +59,7 @@
 #  hide_project_limit          :boolean          default(FALSE)
 #  unlock_token                :string
 #  otp_grace_period_started_at :datetime
+#  external                    :boolean           default(FALSE)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -77,6 +78,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
+  default_value_for :external, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
@@ -97,9 +99,6 @@ class User < ActiveRecord::Base
 
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
-
-  # Virtual attributes to define avatar cropping
-  attr_accessor :avatar_crop_x, :avatar_crop_y, :avatar_crop_size
 
   #
   # Relations
@@ -166,11 +165,6 @@ class User < ActiveRecord::Base
   validate :owns_public_email, if: ->(user) { user.public_email_changed? }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
-  validates :avatar_crop_x, :avatar_crop_y, :avatar_crop_size,
-    numericality: { only_integer: true },
-    presence: true,
-    if: ->(user) { user.avatar? && user.avatar_changed? }
-
   before_validation :generate_password, on: :create
   before_validation :restricted_signup_domains, on: :create
   before_validation :sanitize_attrs
@@ -179,6 +173,7 @@ class User < ActiveRecord::Base
 
   after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
   before_save :ensure_authentication_token
+  before_save :ensure_external_user_rights
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit
   after_create :post_create_hook
@@ -226,6 +221,7 @@ class User < ActiveRecord::Base
   # Scopes
   scope :admins, -> { where(admin: true) }
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
+  scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
@@ -281,6 +277,8 @@ class User < ActiveRecord::Base
         self.with_two_factor
       when 'wop'
         self.without_projects
+      when 'external'
+        self.external
       else
         self.active
       end
@@ -832,7 +830,8 @@ class User < ActiveRecord::Base
   def projects_union
     Gitlab::SQL::Union.new([personal_projects.select(:id),
                             groups_projects.select(:id),
-                            projects.select(:id)])
+                            projects.select(:id),
+                            groups.joins(:shared_projects).select(:project_id)])
   end
 
   def ci_projects_union
@@ -847,5 +846,12 @@ class User < ActiveRecord::Base
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
+  end
+
+  def ensure_external_user_rights
+    return unless self.external?
+
+    self.can_create_group   = false
+    self.projects_limit     = 0
   end
 end

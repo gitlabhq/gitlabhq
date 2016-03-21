@@ -16,7 +16,15 @@ module Emails
     def closed_issue_email(recipient_id, issue_id, updated_by_user_id)
       setup_issue_mail(issue_id, recipient_id)
 
-      @updated_by = User.find updated_by_user_id
+      @updated_by = User.find(updated_by_user_id)
+      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
+    end
+
+    def relabeled_issue_email(recipient_id, issue_id, label_names, updated_by_user_id)
+      setup_issue_mail(issue_id, recipient_id)
+
+      @label_names = label_names
+      @labels_url = namespace_project_labels_url(@project.namespace, @project)
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
     end
 
@@ -24,19 +32,11 @@ module Emails
       setup_issue_mail(issue_id, recipient_id)
 
       @issue_status = status
-      @updated_by = User.find updated_by_user_id
+      @updated_by = User.find(updated_by_user_id)
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
     end
 
     private
-
-    def issue_thread_options(sender_id, recipient_id)
-      {
-        from: sender(sender_id),
-        to: recipient(recipient_id),
-        subject: subject("#{@issue.title} (##{@issue.iid})")
-      }
-    end
 
     def setup_issue_mail(issue_id, recipient_id)
       @issue = Issue.find(issue_id)
@@ -44,6 +44,14 @@ module Emails
       @target_url = namespace_project_issue_url(@project.namespace, @project, @issue)
 
       @sent_notification = SentNotification.record(@issue, recipient_id, reply_key)
+    end
+
+    def issue_thread_options(sender_id, recipient_id)
+      {
+        from: sender(sender_id),
+        to: recipient(recipient_id),
+        subject: subject("#{@issue.title} (##{@issue.iid})")
+      }
     end
   end
 end

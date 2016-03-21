@@ -3,22 +3,11 @@
   vertical-align: top;
 }
 
-@media (min-width: 800px)  {
+@media (min-width: $screen-sm-min)  {
   .issues-filters,
   .issues_bulk_update {
-    select, .select2-container {
-      width: 120px !important;
-      display: inline-block;
-    }
-  }
-}
-
-@media (min-width: 1200px) {
-  .issues-filters,
-  .issues_bulk_update {
-    select, .select2-container {
-      width: 150px !important;
-      display: inline-block;
+    .dropdown-menu-toggle {
+      width: 132px;
     }
   }
 }

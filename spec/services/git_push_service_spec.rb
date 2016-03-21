@@ -29,7 +29,8 @@ describe GitPushService, services: true do
       it { is_expected.to be_truthy }
 
       it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).with('master')
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
 
         subject
       end
@@ -46,7 +47,8 @@ describe GitPushService, services: true do
       it { is_expected.to be_truthy }
 
       it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).with('master')
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
 
         subject
       end
@@ -65,7 +67,8 @@ describe GitPushService, services: true do
       end
 
       it 'flushes general cached data' do
-        expect(project.repository).to receive(:expire_cache).with('master')
+        expect(project.repository).to receive(:expire_cache).
+          with('master', newrev)
 
         subject
       end
@@ -212,12 +215,16 @@ describe GitPushService, services: true do
     let(:commit) { project.commit }
 
     before do
+      project.team << [commit_author, :developer]
+      project.team << [user, :developer]
+
       allow(commit).to receive_messages(
         safe_message: "this commit \n mentions #{issue.to_reference}",
         references: [issue],
         author_name: commit_author.name,
         author_email: commit_author.email
       )
+
       allow(project.repository).to receive(:commits_between).and_return([commit])
     end
 
@@ -398,6 +405,45 @@ describe GitPushService, services: true do
 
     it 'push to first branch updates HEAD' do
       execute_service(project, user, @blankrev, @newrev, new_ref )
+    end
+  end
+
+  describe "housekeeping" do
+    let(:housekeeping) { Projects::HousekeepingService.new(project) }
+
+    before do
+      allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
+    end
+
+    it 'does not perform housekeeping when not needed' do
+      expect(housekeeping).not_to receive(:execute)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+
+    context 'when housekeeping is needed' do
+      before do
+        allow(housekeeping).to receive(:needed?).and_return(true)
+      end
+
+      it 'performs housekeeping' do
+        expect(housekeeping).to receive(:execute)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it 'does not raise an exception' do
+        allow(housekeeping).to receive(:try_obtain_lease).and_return(false)
+
+        execute_service(project, user, @oldrev, @newrev, @ref)
+      end
+    end
+
+
+    it 'increments the push counter' do
+      expect(housekeeping).to receive(:increment!)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
     end
   end
 

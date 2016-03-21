@@ -41,24 +41,28 @@
     @timer = null
     $("#issue_search").keyup ->
       clearTimeout(@timer)
-      @timer = setTimeout(Issues.filterResults, 500)
+      @timer = setTimeout( ->
+        Issues.filterResults $("#issue_search_form")
+      , 500)
 
-  filterResults: =>
-    form = $("#issue_search_form")
-    search = $("#issue_search").val()
-    $('.issues-holder').css("opacity", '0.5')
-    issues_url = form.attr('action') + '?' + form.serialize()
+  filterResults: (form) =>
+    $('.issues-holder, .merge-requests-holder').css("opacity", '0.5')
+    formAction = form.attr('action')
+    formData = form.serialize()
+    issuesUrl = formAction
+    issuesUrl += ("#{if formAction.indexOf("?") < 0 then '?' else '&'}")
+    issuesUrl += formData
 
     $.ajax
       type: "GET"
-      url: form.attr('action')
-      data: form.serialize()
+      url: formAction
+      data: formData
       complete: ->
-        $('.issues-holder').css("opacity", '1.0')
+        $('.issues-holder, .merge-requests-holder').css("opacity", '1.0')
       success: (data) ->
-        $('.issues-holder').html(data.html)
+        $('.issues-holder, .merge-requests-holder').html(data.html)
         # Change url so if user reload a page - search results are saved
-        history.replaceState {page: issues_url}, document.title, issues_url
+        history.replaceState {page: issuesUrl}, document.title, issuesUrl
         Issues.reload()
       dataType: "json"
 

@@ -122,6 +122,14 @@ rubocop:
     - ruby
     - mysql
 
+scss-lint:
+  stage: test
+  script:
+    - bundle exec rake scss_lint
+  tags:
+    - ruby
+  allow_failure: true
+
 brakeman:
   stage: test
   script:
@@ -148,13 +156,14 @@ flay:
 
 bundler:audit:
   stage: test
+  only:
+    - master
   script:
     - "bundle exec bundle-audit update"
-    - "bundle exec bundle-audit check"
+    - "bundle exec bundle-audit check --ignore OSVDB-115941"
   tags:
     - ruby
     - mysql
-  allow_failure: true
 
 # Ruby 2.2 jobs
 
@@ -162,7 +171,7 @@ spec:feature:ruby22:
   stage: test
   image: ruby:2.2
   only:
-  - master
+    - master
   script:
     - RAILS_ENV=test bundle exec rake assets:precompile 2>/dev/null
     - RAILS_ENV=test SIMPLECOV=true bundle exec rake spec:feature

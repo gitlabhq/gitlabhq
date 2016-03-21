@@ -295,7 +295,7 @@ Rails.application.routes.draw do
   resource :profile, only: [:show, :update] do
     member do
       get :audit_log
-      get :applications
+      get :applications, to: 'oauth/applications#index'
 
       put :reset_private_token
       put :update_username
@@ -351,6 +351,8 @@ Rails.application.routes.draw do
     get :issues
     get :merge_requests
     get :activity
+    get :labels
+    get :milestones
 
     scope module: :dashboard do
       resources :milestones, only: [:index, :show]
@@ -621,6 +623,7 @@ Rails.application.routes.draw do
             post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
+            post :remove_wip
           end
 
           collection do
@@ -675,6 +678,10 @@ Rails.application.routes.draw do
           collection do
             post :generate
           end
+
+          member do
+            post :toggle_subscription
+          end
         end
 
         resources :issues, constraints: { id: /\d+/ }, except: [:destroy] do
@@ -700,6 +707,8 @@ Rails.application.routes.draw do
             post :resend_invite
           end
         end
+
+        resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do

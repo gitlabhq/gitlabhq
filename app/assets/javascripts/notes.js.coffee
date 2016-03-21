@@ -343,6 +343,7 @@ class @Notes
   updateNote: (_xhr, note, _status) =>
     # Convert returned HTML to a jQuery object so we can modify it further
     $html = $(note.html)
+    $('.js-timeago', $html).timeago()
     $html.syntaxHighlight()
     $html.find('.js-task-list-container').taskList('enable')
 
@@ -360,14 +361,12 @@ class @Notes
   showEditForm: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
-    note.find(".note-body > .note-text").hide()
-    note.find(".note-header").hide()
+    note.addClass "is-editting"
     form = note.find(".note-edit-form")
     isNewForm = form.is(':not(.gfm-form)')
     if isNewForm
       form.addClass('gfm-form')
     form.addClass('current-note-edit-form')
-    form.show()
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
@@ -401,11 +400,9 @@ class @Notes
   cancelEdit: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
-    note.find(".note-body > .note-text").show()
-    note.find(".note-header").show()
+    note.removeClass "is-editting"
     note.find(".current-note-edit-form")
       .removeClass("current-note-edit-form")
-      .hide()
 
   ###
   Called in response to deleting a note of any kind.
@@ -626,10 +623,10 @@ class @Notes
       if closebtn.text() isnt closetext
         closebtn.text(closetext)
 
-      if reopenbtn.is(':not(.btn-comment-and-reopen)')
+      if reopenbtn.is('.btn-comment-and-reopen')
         reopenbtn.removeClass('btn-comment-and-reopen')
 
-      if closebtn.is(':not(.btn-comment-and-close)')
+      if closebtn.is('.btn-comment-and-close')
         closebtn.removeClass('btn-comment-and-close')
 
       if discardbtn.is(':visible')

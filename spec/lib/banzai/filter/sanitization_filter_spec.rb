@@ -149,10 +149,20 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
         output: '<a href="java"></a>'
       },
 
+      'protocol-based JS injection: invalid URL char' => {
+        input: '<img src=java\script:alert("XSS")>',
+        output: '<img>'
+      },
+
       'protocol-based JS injection: spaces and entities' => {
         input:  '<a href=" &#14;  javascript:alert(\'XSS\');">foo</a>',
         output: '<a href="">foo</a>'
       },
+
+      'protocol whitespace' => {
+        input: '<a href=" http://example.com/"></a>',
+        output: '<a href="http://example.com/"></a>'
+      }
     }
 
     protocols.each do |name, data|
@@ -175,6 +185,16 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       output = filter(input)
 
       expect(output.to_html).to eq '<a>XSS</a>'
+    end
+
+    it 'disallows invalid URIs' do
+      expect(Addressable::URI).to receive(:parse).with('foo://example.com').
+        and_raise(Addressable::URI::InvalidURIError)
+
+      input = '<a href="foo://example.com">Foo</a>'
+      output = filter(input)
+
+      expect(output.to_html).to eq '<a>Foo</a>'
     end
 
     it 'allows non-standard anchor schemes' do

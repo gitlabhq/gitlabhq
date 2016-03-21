@@ -167,7 +167,11 @@ class GitLabDropdown
 
   hidden: =>
     if @options.filterable
-      @dropdown.find(".dropdown-input-field").blur().val("")
+      @dropdown
+        .find(".dropdown-input-field")
+        .blur()
+        .val("")
+        .trigger("keyup")
 
     if @dropdown.find(".dropdown-toggle-page").length
       $('.dropdown-menu', @dropdown).removeClass PAGE_TWO_CLASS
@@ -238,18 +242,24 @@ class GitLabDropdown
         selectedObject = @renderedData[selectedIndex]
       value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
 
+      if !value?
+        field.remove()
+
       if @options.multiSelect
         oldValue = field.val()
         if oldValue
           value = "#{oldValue},#{value}"
       else
-        @dropdown.find(ACTIVE_CLASS).removeClass ACTIVE_CLASS
-        field.remove()
+        @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
 
       # Toggle active class for the tick mark
       el.toggleClass "is-active"
 
-      if value
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject)
+
+      if value?
         if !field.length
           # Create hidden input for form
           input = "<input type='hidden' name='#{fieldName}' />"

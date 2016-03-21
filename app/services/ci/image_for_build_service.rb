@@ -3,7 +3,7 @@ module Ci
     def execute(project, opts)
       sha = opts[:sha] || ref_sha(project, opts[:ref])
 
-      commit = project.ci_commits.ordered.find_by(sha: sha)
+      commit = project.ci_commits.find_by(sha: sha)
       image_name = image_for_commit(commit)
 
       image_path = Rails.root.join('public/ci', image_name)
