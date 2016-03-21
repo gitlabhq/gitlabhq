@@ -56,10 +56,6 @@
     font-style: normal;
   }
 
-  .remove-badge {
-    display: none;
-  }
-
   .search-input {
     border: none;
     font-size: 14px;
@@ -73,16 +69,17 @@
   .location-badge {
     line-height: 25px;
     padding: 0 5px;
-    border-radius: 2px;
+    border-radius: $border-radius-default;
     font-size: 14px;
     font-style: normal;
-    color: #AAAAAA;
+    color: $location-badge-color;
     display: inline-block;
-    background-color: #F5F5F5;
+    background-color: $location-badge-bg;
     vertical-align: top;
   }
 
   .search-input-container {
+    display: -webkit-flex;
     display: flex;
   }
 
@@ -100,7 +97,7 @@
       @include transition(color .15s);
       position: absolute;
       right: 5px;
-      color: #E7E9ED;
+      color: $location-icon-color;
       top: 0;
       -webkit-user-select: none;
       -moz-user-select: none;
