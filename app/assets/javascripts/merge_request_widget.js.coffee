@@ -7,6 +7,7 @@ class @MergeRequestWidget
   #
 
   constructor: (@opts) ->
+    $('#modal_merge_info').modal(show: false)
     @firstCICheck = true
     @readyForCICheck = true
     clearInterval @fetchBuildStatusInterval
