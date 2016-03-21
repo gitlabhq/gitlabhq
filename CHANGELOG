@@ -62,6 +62,7 @@ v 8.6.0 (unreleased)
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
   - Let project owners and admins soft delete issues and merge requests
+  - Fix sorting issues by votes on the groups issues page results in SQL errors
 
 v 8.5.8
   - Bump Git version requirement to 2.7.4
