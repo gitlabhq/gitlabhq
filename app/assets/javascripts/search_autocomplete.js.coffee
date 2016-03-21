@@ -28,7 +28,6 @@ class @SearchAutocomplete
     @groupInputEl = @getElement('#group_id')
     @searchCodeInputEl = @getElement('#search_code')
     @repositoryInputEl = @getElement('#repository_ref')
-    @scopeInputEl = @getElement('#scope')
 
     @saveOriginalState()
 
@@ -51,6 +50,7 @@ class @SearchAutocomplete
       group_id: @groupInputEl.val()
       search_code: @searchCodeInputEl.val()
       repository_ref: @repositoryInputEl.val()
+      scope: @scopeInputEl.val()
 
       # Location badge
       _location: $.trim(@locationText.text())
@@ -191,20 +191,17 @@ class @SearchAutocomplete
     @locationBadgeEl.children().length
 
   resetSearchState: ->
-    # Remove scope
-    @scopeInputEl.val('')
+    inputs = Object.keys @originalState
 
-    # Remove group
-    @groupInputEl.val('')
+    for input in inputs
 
-    # Remove project id
-    @projectInputEl.val('')
+      # _location isnt a input
+      break if input is '_location'
 
-    # Remove code search
-    @searchCodeInputEl.val('')
+      # renamed to avoid tests to fail
+      if input is 'project_id' then input = 'search_project_id'
 
-    # Remove repository ref
-    @repositoryInputEl.val('')
+      @getElement("##{input}").val('')
 
   removeLocationBadge: ->
     @locationBadgeEl.empty()
