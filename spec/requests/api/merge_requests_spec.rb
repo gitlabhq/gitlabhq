@@ -317,23 +317,26 @@ describe API::API, api: true  do
     end
   end
 
-  describe "DELETE /projects/:id/merge_request/:merge_request_id" do
-    it "owners can destroy" do
-      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
+  describe "DELETE /projects/:id/merge_requests/:merge_request_id" do
+    context "when the user is developer" do
+      let(:developer) { create(:user) }
 
-      expect(response.status).to eq(200)
+      before do
+        project.team << [developer, :developer]
+      end
+
+      it "denies the deletion of the merge request" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", developer)
+        expect(response.status).to be(403)
+      end
     end
 
-    it "let's Admins and owners delete a merge request" do
-      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", admin)
+    context "when the user is project owner" do
+      it "destroys the merge request owners can destroy" do
+        delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
 
-      expect(response.status).to eq(200)
-      expect(json_response['id']).to eq merge_request.id
-    end
-
-    it "rejects removal from other users" do
-      delete api("/projects/#{project.id}/merge_requests/#{merge_request.id}", non_member)
-      expect(response.status).to eq(404)
+        expect(response.status).to eq(200)
+      end
     end
   end
 

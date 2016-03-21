@@ -1,9 +1,9 @@
 class Projects::IssuesController < Projects::ApplicationController
   include ToggleSubscriptionAction
-  include IssuableAction
+  include IssuableActions
 
   before_action :module_enabled
-  before_action :issue, only: [:edit, :update, :show, :destroy]
+  before_action :issue, only: [:edit, :update, :show]
 
   # Allow read any issue
   before_action :authorize_read_issue!, only: [:show]
@@ -128,6 +128,7 @@ class Projects::IssuesController < Projects::ApplicationController
                end
   end
   alias_method :subscribable_resource, :issue
+  alias_method :issuable, :issue
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)

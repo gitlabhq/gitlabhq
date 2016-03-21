@@ -1,11 +1,11 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
   include DiffHelper
-  include IssuableAction
+  include IssuableActions
 
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :destroy, :diffs, :commits, :builds, :merge, :merge_check,
+    :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
@@ -256,6 +256,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
   alias_method :subscribable_resource, :merge_request
+  alias_method :issuable, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues

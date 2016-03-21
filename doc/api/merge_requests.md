@@ -380,9 +380,12 @@ Parameters:
 If the operation is successful, 200 and the updated merge request is returned.
 If an error occurs, an error number and a message explaining the reason is returned.
 
-## Delete a MR
+## Delete a merge request
 
-Soft deletes a merge request. For admins and owners only.
+Only for admins and project owners. Soft deletes the merge request in question.
+If the operation is successful, a status code of `200` is returned. Any the case you cannot
+destroy this merge request, or it is not present, code `404` is given.
+
 
 ```
 DELETE /projects/:id/merge_requests/:merge_request_id
@@ -393,53 +396,8 @@ DELETE /projects/:id/merge_requests/:merge_request_id
 | `id`            | integer | yes | The ID of a project |
 | `merge_request_id` | integer | yes | The ID of a project's merge request |
 
-Example response:
-
-```json
-{
-  "id": 1,
-  "target_branch": "master",
-  "source_branch": "test1",
-  "project_id": 3,
-  "title": "test1",
-  "state": "merged",
-  "upvotes": 0,
-  "downvotes": 0,
-  "author": {
-    "id": 1,
-    "username": "admin",
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
-  },
-  "assignee": {
-    "id": 1,
-    "username": "admin",
-    "email": "admin@example.com",
-    "name": "Administrator",
-    "state": "active",
-    "created_at": "2012-04-29T08:46:00Z"
-  },
-  "source_project_id": 4,
-  "target_project_id": 4,
-  "labels": [ ],
-  "description":"fixed login page css paddings",
-  "work_in_progress": false,
-  "milestone": {
-    "id": 5,
-    "iid": 1,
-    "project_id": 4,
-    "title": "v2.0",
-    "description": "Assumenda aut placeat expedita exercitationem labore sunt enim earum.",
-    "state": "closed",
-    "created_at": "2015-02-02T19:49:26.013Z",
-    "updated_at": "2015-02-02T19:49:26.013Z",
-    "due_date": null
-  },
-  "merge_when_build_succeeds": true,
-  "merge_status": "can_be_merged"
-}
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_request/85
 ```
 
 ## Accept MR

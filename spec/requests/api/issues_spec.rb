@@ -469,20 +469,25 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/issues/:issue_id" do
-    it "should reject a non member from deleting an issue" do
+    it "rejects a non member from deleting an issue" do
       delete api("/projects/#{project.id}/issues/#{issue.id}", non_member)
       expect(response.status).to be(403)
     end
 
-    it "should reject a developer from deleting an issue" do
+    it "rejects a developer from deleting an issue" do
       delete api("/projects/#{project.id}/issues/#{issue.id}", author)
       expect(response.status).to be(403)
     end
 
-    it "deletes the issue if an admin requests it" do
-      delete api("/projects/#{project.id}/issues/#{issue.id}", admin)
-      expect(response.status).to eq(200)
-      expect(json_response['state']).to eq 'opened'
+    context "when the user is project owner" do
+      let(:owner)     { create(:user) }
+      let(:project)   { create(:project, namespace: owner.namespace) }
+
+      it "deletes the issue if an admin requests it" do
+        delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
+        expect(response.status).to eq(200)
+        expect(json_response['state']).to eq 'opened'
+      end
     end
   end
 end

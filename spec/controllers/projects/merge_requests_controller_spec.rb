@@ -123,7 +123,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe '#index' do
+  describe 'GET #index' do
     def get_merge_requests
       get :index,
           namespace_id: project.namespace.to_param,
@@ -157,23 +157,25 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe "#destroy" do
-    it "lets mere mortals not access this endpoint" do
+  describe "DELETE #destroy" do
+    it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
-      expect(response.status).to eq 404
+      expect(response.status).to eq(404)
     end
 
-    context "user is an admin or owner" do
-      before do
-        user.admin = true
-        user.save
-      end
+    context "when the user is owner" do
+      let(:owner)     { create(:user) }
+      let(:namespace) { create(:namespace, owner: owner) }
+      let(:project)   { create(:project, namespace: namespace) }
 
-      it "lets an admin or owner delete an issue" do
+      before { sign_in owner }
+
+      it "deletes the merge request" do
         delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
-        expect(response.status).to be 302
+        expect(response.status).to eq(302)
+        expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
       end
     end
   end

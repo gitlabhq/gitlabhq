@@ -1,7 +1,7 @@
 require('spec_helper')
 
 describe Projects::IssuesController do
-  let(:project) { create(:project) }
+  let(:project)   { create(:project) }
   let(:user)    { create(:user) }
   let(:issue)   { create(:issue, project: project) }
 
@@ -188,21 +188,26 @@ describe Projects::IssuesController do
   end
 
   describe "DELETE #destroy" do
-    it "rejects a developer to destory an issue" do
-      delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
-      expect(response.status).to eq 404
+    context "when the user is a developer" do
+      before { sign_in(user) }
+      it "rejects a developer to destroy an issue" do
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+        expect(response.status).to eq(404)
+      end
     end
 
-    context "user is an admin" do
-      before do
-        user.admin = true
-        user.save
-      end
+    context "when the user is owner" do
+      let(:owner)     { create(:user) }
+      let(:namespace) { create(:namespace, owner: owner) }
+      let(:project)   { create(:project, namespace: namespace) }
 
-      it "lets an admin delete an issue" do
+      before { sign_in owner }
+
+      it "deletes the issue" do
         delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
 
-        expect(response.status).to eq 302
+        expect(response.status).to eq(302)
+        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./).now
       end
     end
   end

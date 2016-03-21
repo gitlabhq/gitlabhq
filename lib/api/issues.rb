@@ -199,14 +199,10 @@ module API
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id
       delete ":id/issues/:issue_id" do
-        issue = user_project.issues.find(params[:issue_id])
+        issue = user_project.issues.find_by(id: params[:issue_id])
 
-        authorize!(:remove_issue, issue)
-
-        issue = user_project.issues.find(params[:issue_id])
+        authorize!(:destroy_issue, issue)
         issue.destroy
-
-        present issue, with: Entities::Issue
       end
     end
   end

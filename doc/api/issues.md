@@ -326,9 +326,11 @@ Example response:
 }
 ```
 
-## Delete existing issue
+## Delete an issue
 
-Only for admins and project owners. Soft deletes the issue in question. Returns the issue which was deleted.
+Only for admins and project owners. Soft deletes the issue in question.
+If the operation is successful, a status code of `200` is returned. Any the case you cannot
+destroy this issue, or it is not present, code `404` is given.
 
 ```
 DELETE /projects/:id/issues/:issue_id
@@ -341,34 +343,6 @@ DELETE /projects/:id/issues/:issue_id
 
 ```bash
 curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
-```
-
-Example response:
-
-```json
-{
-   "created_at" : "2016-01-07T12:46:01.410Z",
-   "author" : {
-      "name" : "Alexandra Bashirian",
-      "avatar_url" : null,
-      "username" : "eileen.lowe",
-      "id" : 18,
-      "state" : "active",
-      "web_url" : "https://gitlab.example.com/u/eileen.lowe"
-   },
-   "state" : "closed",
-   "title" : "Issues with auth",
-   "project_id" : 4,
-   "description" : null,
-   "updated_at" : "2016-01-07T12:55:16.213Z",
-   "iid" : 15,
-   "labels" : [
-      "bug"
-   ],
-   "id" : 85,
-   "assignee" : null,
-   "milestone" : null
-}
 ```
 
 ## Comments on issues
