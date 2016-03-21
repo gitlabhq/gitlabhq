@@ -20,6 +20,7 @@ module Gitlab
     private
 
     def generate_full_url
+      return @url unless @credentials
       @full_url = @url.dup
       @full_url.user = @credentials[:user]
       @full_url.password = @credentials[:password]

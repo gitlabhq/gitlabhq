@@ -406,6 +406,7 @@ class Project < ActiveRecord::Base
 
   def import_url=(value)
     import_url = Gitlab::ImportUrl.new(value)
+    # deletes any existing import_data
     create_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
   end
@@ -450,7 +451,7 @@ class Project < ActiveRecord::Base
   def safe_import_url
     result = URI.parse(self.import_url)
     result.password = '*****' unless result.password.nil?
-    result.user = '*****' unless result.user.nil? #tokens or other data may be saved as user
+    result.user = '*****' unless result.user.nil? || result.user == "git" #tokens or other data may be saved as user
     result.to_s
   rescue
     self.import_url
