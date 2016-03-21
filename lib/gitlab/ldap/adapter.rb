@@ -93,6 +93,16 @@ module Gitlab
                     attributes: %w{dn}).any?
       end
 
+      def dns_for_filter(filter)
+        ldap_search(
+          base: config.base,
+          filter: filter,
+          scope: Net::LDAP::SearchScope_WholeSubtree,
+          attributes: %w{dn}
+        ).map(&:dn)
+      end
+
+
       def ldap_search(*args)
         # Net::LDAP's `time` argument doesn't work. Use Ruby `Timeout` instead.
         Timeout.timeout(config.timeout) do

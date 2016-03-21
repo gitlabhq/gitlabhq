@@ -36,6 +36,10 @@ class Group < Namespace
   after_create :post_create_hook
   after_destroy :post_destroy_hook
 
+  scope :where_group_links_with_provider, ->(provider) do
+    joins(:ldap_group_links).where(ldap_group_links: { provider: provider })
+  end
+
   class << self
     # Searches for groups matching the given query.
     #

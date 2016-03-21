@@ -227,6 +227,9 @@ class User < ActiveRecord::Base
   scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
   scope :with_two_factor,    -> { where(two_factor_enabled: true) }
   scope :without_two_factor, -> { where(two_factor_enabled: false) }
+  scope :with_provider, ->(provider) do
+    joins(:identities).where(identities: { provider: provider })
+  end
 
   #
   # Class methods

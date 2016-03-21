@@ -18,7 +18,6 @@ module Gitlab
         self.open(user) do |access|
           # Whether user is allowed, or not, we should update
           # permissions to keep things clean
-          access.update_permissions(options)
           if access.allowed?
             access.update_user
             user.last_credential_check_at = Time.now
@@ -73,17 +72,6 @@ module Gitlab
         update_email
         update_ssh_keys if sync_ssh_keys?
         update_kerberos_identity if import_kerberos_identities?
-      end
-
-      def update_permissions(options)
-        if group_base.present?
-          if options[:update_ldap_group_links_synchronously]
-            update_ldap_group_links
-          else
-            LdapGroupLinksWorker.perform_async(user.id)
-          end
-        end
-        update_admin_status if admin_group.present?
       end
 
       # Update user ssh keys if they changed in LDAP
@@ -148,63 +136,6 @@ module Gitlab
         user.update(email: ldap_email)
       end
 
-      def update_admin_status
-        admin_group = Gitlab::LDAP::Group.find_by_cn(ldap_config.admin_group, adapter)
-        admin_user = Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
-
-        if admin_group && admin_group.has_member?(admin_user)
-          unless user.admin?
-            user.admin = true
-            user.save
-          end
-        else
-          if user.admin?
-            user.admin = false
-            user.save
-          end
-        end
-      end
-
-      # Loop through all ldap connected groups, and update the users link with it
-      #
-      # We documented what sort of queries an LDAP server can expect from
-      # GitLab EE in doc/integration/ldap.md. Please remember to update that
-      # documentation if you change the algorithm below.
-      def update_ldap_group_links
-        gitlab_groups_with_ldap_link.each do |group|
-          active_group_links = group.ldap_group_links.where(cn: cns_with_access)
-
-          if active_group_links.any?
-            max_access = active_group_links.maximum(:group_access)
-
-            # Ensure we don't leave a group without an owner
-            if max_access < Gitlab::Access::OWNER && group.last_owner?(user)
-              logger.warn "#{self.class.name}: LDAP group sync cannot demote #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
-            else
-              group.add_users([user.id], max_access, skip_notification: true)
-            end
-          elsif group.last_owner?(user)
-            logger.warn "#{self.class.name}: LDAP group sync cannot remove #{user.name} (#{user.id}) from group #{group.name} (#{group.id}) as this is the group's last owner"
-          else
-            group.users.delete(user)
-          end
-        end
-      end
-
-      def ldap_groups
-        @ldap_groups ||= ::LdapGroupLink.with_provider(provider).distinct(:cn).pluck(:cn).map do |cn|
-          Gitlab::LDAP::Group.find_by_cn(cn, adapter)
-        end.compact
-      end
-
-      # returns a collection of cn strings to which the user has access
-      def cns_with_access
-        return [] unless ldap_user.present?
-        @ldap_groups_with_access ||= ldap_groups.select do |ldap_group|
-          ldap_group.has_member?(ldap_user)
-        end.map(&:cn)
-      end
-
       def sync_ssh_keys?
         ldap_config.sync_ssh_keys?
       end
@@ -214,21 +145,7 @@ module Gitlab
         ldap_config.active_directory && (Gitlab.config.kerberos.enabled || AuthHelper.kerberos_enabled? )
       end
 
-      def group_base
-        ldap_config.group_base
-      end
-
-      def admin_group
-        ldap_config.admin_group
-      end
-
       private
-
-      def gitlab_groups_with_ldap_link
-        ::Group.includes(:ldap_group_links).references(:ldap_group_links).
-          where.not(ldap_group_links: { id: nil }).
-          where(ldap_group_links: { provider: provider })
-      end
 
       def logger
         Rails.logger
