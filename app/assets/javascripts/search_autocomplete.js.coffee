@@ -27,6 +27,7 @@ class @SearchAutocomplete
     @groupInputEl = @getElement('#group_id')
     @searchCodeInputEl = @getElement('#search_code')
     @repositoryInputEl = @getElement('#repository_ref')
+    @clearInput = @getElement('.js-clear-input')
 
     @saveOriginalState()
 
@@ -59,6 +60,7 @@ class @SearchAutocomplete
     @searchInput.on 'keydown', @onSearchInputKeyDown
     @searchInput.on 'focus', @onSearchInputFocus
     @searchInput.on 'blur', @onSearchInputBlur
+    @clearInput.on 'click', @onRemoveLocationClick
 
   enableAutocomplete: ->
     return if @autocomplete
@@ -150,12 +152,25 @@ class @SearchAutocomplete
   onSearchInputFocus: =>
     @wrap.addClass('search-active')
 
-  onSearchInputBlur: =>
-    @wrap.removeClass('search-active')
+  onRemoveLocationClick: (e) =>
+    e.preventDefault()
+    @removeLocationBadge()
+    @searchInput.val('').focus()
+    @skipBlurEvent = true
 
-    # If input is blank then restore state
-    if @searchInput.val() is ''
-      @restoreOriginalState()
+  onSearchInputBlur: (e) =>
+    @skipBlurEvent = false
+
+    # We should wait to make sure we are not clearing the input instead
+    setTimeout( =>
+      return if @skipBlurEvent
+
+      @wrap.removeClass('search-active')
+
+      # If input is blank then restore state
+      if @searchInput.val() is ''
+        @restoreOriginalState()
+    , 100)
 
   addLocationBadge: (item) ->
     category = if item.category? then "#{item.category}: " else ''
@@ -165,6 +180,7 @@ class @SearchAutocomplete
               <i class='location-text'>#{category}#{value}</i>
             </span>"
     @locationBadgeEl.html(html)
+    @wrap.addClass('has-location-badge')
 
   restoreOriginalState: ->
     inputs = Object.keys @originalState
@@ -207,6 +223,8 @@ class @SearchAutocomplete
 
     # Reset state
     @resetSearchState()
+
+    @wrap.removeClass('has-location-badge')
 
   disableAutocomplete: ->
     if @autocomplete

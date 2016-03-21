@@ -1,8 +1,16 @@
-.search.search-form
+- if controller.controller_path =~ /^groups/
+  - label = 'This group'
+- if controller.controller_path =~ /^projects/
+  - label = 'This project'
+
+.search.search-form{class: "#{'has-location-badge' if label.present?}"}
   = form_tag search_path, method: :get, class: 'navbar-form' do |f|
     .search-input-container
       .search-location-badge
-        = render 'shared/location_badge'
+        - if label.present?
+          %span.location-badge
+            %i.location-text
+              = label
       .search-input-wrap
         .dropdown{ data: {url: search_autocomplete_path } }
           = search_field_tag "search", nil, placeholder: 'Search', class: "search-input dropdown-menu-toggle", spellcheck: false, tabindex: "1", autocomplete: 'off',  data: { toggle: 'dropdown' }
@@ -10,6 +18,7 @@
             = dropdown_content
             = dropdown_loading
         %i.search-icon
+        %i.clear-icon.js-clear-input
 
     = hidden_field_tag :group_id, @group.try(:id)
     = hidden_field_tag :project_id, @project && @project.persisted? ? @project.id : '', id: 'search_project_id'

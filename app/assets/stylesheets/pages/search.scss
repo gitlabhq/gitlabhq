@@ -26,24 +26,6 @@
   margin-left: 10px;
   margin-top: ($header-height - 35) / 2;
 
-  &.search-active {
-    form {
-      @extend .form-control:focus;
-    }
-
-    .location-badge {
-      @include transition(all .15s);
-      background-color: $input-border-focus;
-      color: $white-light;
-    }
-
-    .search-input-wrap {
-      i {
-        color: $input-border-focus;
-      }
-    }
-  }
-
   form {
     @extend .form-control;
     margin: 0;
@@ -92,16 +74,11 @@
     width: 100%;
     position: relative;
 
-    .search-icon {
-      @extend .fa-search;
-      @include transition(color .15s);
+    .search-icon, .clear-icon {
       position: absolute;
       right: 5px;
-      color: $location-icon-color;
       top: 0;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      color: $location-icon-color;
 
       &:before {
         font-family: FontAwesome;
@@ -110,9 +87,53 @@
       }
     }
 
+    .search-icon {
+      @extend .fa-search;
+      @include transition(color .15s);
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .clear-icon {
+      @extend .fa-times;
+      display: none;
+    }
+
     .dropdown-header {
       text-transform: uppercase;
       font-size: 11px;
     }
   }
+
+  &.search-active {
+    form {
+      @extend .form-control:focus;
+    }
+
+    .location-badge {
+      @include transition(all .15s);
+      background-color: $location-active-bg;
+      color: $white-light;
+    }
+
+    .search-input-wrap {
+      i {
+        color: $location-active-color;
+      }
+    }
+
+    &.has-location-badge {
+      .search-icon {
+        display: none;
+      }
+
+      .clear-icon {
+        cursor: pointer;
+        display: block;
+      }
+    }
+  }
+
+
 }
