@@ -2,14 +2,14 @@
 
 ## Organize
 
-> Create projects and groups
+Create projects and groups.
 
 - [Create a new project](../gitlab-basics/create-project.md)
 - [Create a new group](../gitlab-basics/create-group.md)
 
 ## Prioritize
 
-> Create issues, labels, milestones, cast your vote and review issues
+Create issues, labels, milestones, cast your vote and review issues.
 
 - [Create a new issue](../gitlab-basics/create-issue.md)
 - [Assign labels to issues](../workflow/labels.md)
@@ -18,7 +18,7 @@
 
 ## Collaborate
 
-> Create merge requests, diffs, commits, and review code
+Create merge requests, diffs, commits, and review code.
 
 - [Fork a project and contribute to it](../workflow/forking_workflow.md)
 - [Create a new merge request](../gitlab-basics/add-merge-request.md)
@@ -28,13 +28,13 @@
 
 ## Test and Deploy
 
-> Use the built-in continuous integration in GitLab
+Use the built-in continuous integration in GitLab.
 
 - [GitLab CI quick start guide](../ci/quick_start/README.md)
 
 ## Install and Update
 
-> Install and update your GitLab installation.
+Install and update your GitLab installation.
 
 - [Install GitLab](https://about.gitlab.com/installation/)
 - [Update GitLab](https://about.gitlab.com/update/)
