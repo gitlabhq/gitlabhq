@@ -49,12 +49,14 @@ module Gitlab
       def unfold_reference(reference, match, target_project)
         before = @text[0...match.begin(0)]
         after = @text[match.end(0)..-1]
+
         referable = find_referable(reference)
-
         return reference unless referable
-        cross_reference = referable.to_reference(target_project)
-        new_text = before + cross_reference + after
 
+        cross_reference = referable.to_reference(target_project)
+        return reference if reference == cross_reference
+
+        new_text = before + cross_reference + after
         substitution_valid?(new_text) ? cross_reference : reference
       end
 
