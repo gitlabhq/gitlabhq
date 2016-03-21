@@ -1,7 +1,7 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['dashboard#show', 'root#show', 'projects#trending', 'projects#starred', 'projects#index'], html_options: {class: 'home'}) do
     = link_to explore_root_path, title: 'Projects' do
-      = icon('home fw')
+      = icon('bookmark fw')
       %span
         Projects
   = nav_link(controller: :groups) do
