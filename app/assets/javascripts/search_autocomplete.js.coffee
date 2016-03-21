@@ -176,7 +176,7 @@ class @SearchAutocomplete
 
 
     if @originalState._location is ''
-      @locationBadgeEl.html('')
+      @locationBadgeEl.empty()
     else
       @addLocationBadge(
         value: @originalState._location
