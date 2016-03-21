@@ -420,9 +420,8 @@ class Project < ActiveRecord::Base
   end
 
   def create_or_update_import_data(credentials)
-    project_import_data = import_data || ProjectImportData.new
+    project_import_data = import_data || build_import_data
     project_import_data.credentials = credentials
-    project_import_data.project_id = id
     project_import_data.save
   end
 
