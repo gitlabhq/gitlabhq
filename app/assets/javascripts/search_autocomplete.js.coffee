@@ -164,7 +164,6 @@ class @SearchAutocomplete
 
     html = "<span class='location-badge'>
               <i class='location-text'>#{category}#{value}</i>
-              <a class='remove-badge' href='#'>x</a>
             </span>"
     @locationBadgeEl.html(html)
 
