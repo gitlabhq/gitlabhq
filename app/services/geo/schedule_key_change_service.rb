@@ -2,9 +2,9 @@ module Geo
   class ScheduleKeyChangeService
     attr_reader :id, :action
 
-    def initialize(key_change)
-      @id = key_change['id']
-      @action = key_change['action']
+    def initialize(key_id, change)
+      @id = key_id
+      @action = change
     end
 
     def execute

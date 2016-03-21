@@ -42,6 +42,10 @@ module Gitlab
       ::Geo::EnqueueWikiUpdateService.new(project).execute
     end
 
+    def self.notify_ssh_key_change(key_id, change)
+      ::Geo::ScheduleKeyChangeService(key_id, change.to_sym)
+    end
+
     def self.bulk_notify_job
       Sidekiq::Cron::Job.find('geo_bulk_notify_worker')
     end
