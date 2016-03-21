@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
+  - Add ability to move issue to another project
   - Fix bug where wrong commit ID was being used in a merge request diff to show old image (Stan Hu)
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Add confidential issues
