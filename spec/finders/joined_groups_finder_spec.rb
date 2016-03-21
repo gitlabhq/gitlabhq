@@ -26,33 +26,34 @@ describe JoinedGroupsFinder do
     context "with a user" do
       before do
         private_group.add_master(profile_owner)
-        private_group.add_developer(profile_visitor)
         internal_group.add_master(profile_owner)
         public_group.add_master(profile_owner)
       end
 
-      it 'only shows groups where both users are authorized to see' do
-        expect(finder.execute(profile_visitor)).to eq([public_group, internal_group, private_group])
+      context "when the profile visitor is in the private group" do
+        before do
+          private_group.add_developer(profile_visitor)
+        end
+
+        it 'only shows groups where both users are authorized to see' do
+          expect(finder.execute(profile_visitor)).to eq([public_group, internal_group, private_group])
+        end
       end
 
-      context 'if profile visitor is in one of its projects' do
+      context 'if profile visitor is in one of the private group projects' do
         before do
-          public_group.add_master(profile_owner)
-          private_group.add_master(profile_owner)
           project = create(:project, :private, group: private_group, name: 'B', path: 'B')
-          project.team.add_developer(profile_visitor)
+          project.team.add_user(profile_visitor, Gitlab::Access::DEVELOPER)
         end
 
         it 'shows group' do
-          expect(finder.execute(profile_visitor)).to eq([public_group, private_group])
+          expect(finder.execute(profile_visitor)).to eq([public_group, internal_group, private_group])
         end
       end
 
       context 'external users' do
         before do
           profile_visitor.update_attributes(external: true)
-          public_group.add_master(profile_owner)
-          internal_group.add_master(profile_owner)
         end
 
         context 'if not a member' do

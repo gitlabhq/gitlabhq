@@ -17,7 +17,6 @@ class AddVisibilityLevelToGroups < ActiveRecord::Migration
   private
 
   def allowed_visibility_level
-    return 20
     application_settings = select_one("SELECT restricted_visibility_levels FROM application_settings ORDER BY id DESC LIMIT 1")
     if application_settings
       restricted_visibility_levels = YAML.safe_load(application_settings["restricted_visibility_levels"]) rescue nil
