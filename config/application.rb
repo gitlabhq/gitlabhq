@@ -19,7 +19,8 @@ module Gitlab
                                    #{config.root}/app/models/hooks
                                    #{config.root}/app/models/concerns
                                    #{config.root}/app/models/project_services
-                                   #{config.root}/app/models/members))
+                                   #{config.root}/app/models/members
+                                   #{config.root}/app/workers/concerns))
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
