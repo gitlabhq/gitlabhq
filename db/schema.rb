@@ -418,6 +418,7 @@ ActiveRecord::Schema.define(version: 20160317092222) do
     t.integer  "updated_by_id"
     t.integer  "moved_to_id"
     t.boolean  "confidential",              default: false
+    t.datetime "deleted_at"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -425,6 +426,7 @@ ActiveRecord::Schema.define(version: 20160317092222) do
   add_index "issues", ["confidential"], name: "index_issues_on_confidential", using: :btree
   add_index "issues", ["created_at", "id"], name: "index_issues_on_created_at_and_id", using: :btree
   add_index "issues", ["created_at"], name: "index_issues_on_created_at", using: :btree
+  add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree
   add_index "issues", ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
@@ -547,12 +549,14 @@ ActiveRecord::Schema.define(version: 20160317092222) do
     t.boolean  "merge_when_build_succeeds", default: false, null: false
     t.integer  "merge_user_id"
     t.string   "merge_commit_sha"
+    t.datetime "deleted_at"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
   add_index "merge_requests", ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
   add_index "merge_requests", ["created_at", "id"], name: "index_merge_requests_on_created_at_and_id", using: :btree
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
+  add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
