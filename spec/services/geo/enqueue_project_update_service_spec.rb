@@ -1,4 +1,4 @@
-describe Geo::EnqueueProjectUpdateService, service: true do
+describe Geo::EnqueueProjectUpdateService, services: true do
   subject { Geo::EnqueueProjectUpdateService.new(project) }
   let(:project) { double(:project) }
   let(:fake_url) { 'git@localhost:repo/path.git' }

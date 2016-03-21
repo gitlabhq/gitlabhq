@@ -2,7 +2,7 @@ module Gitlab
   module Middleware
     class ReadonlyGeo
       DISALLOWED_METHODS = %w(POST PATCH PUT DELETE)
-      WHITELISTED = %w(api/v3/internal api/v3/geo/refresh_projects api/v3/geo/refresh_wikis)
+      WHITELISTED = %w(api/v3/internal api/v3/geo/refresh_projects api/v3/geo/refresh_wikis api/v3/geo/refresh_key)
       APPLICATION_JSON = 'application/json'
 
       def initialize(app)
