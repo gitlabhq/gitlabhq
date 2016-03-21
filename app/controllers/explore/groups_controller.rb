@@ -3,6 +3,6 @@ class Explore::GroupsController < Explore::ApplicationController
     @groups = Group.order_id_desc
     @groups = @groups.search(params[:search]) if params[:search].present?
     @groups = @groups.sort(@sort = params[:sort])
-    @groups = @groups.page(params[:page]).per(PER_PAGE)
+    @groups = @groups.page(params[:page])
   end
 end

@@ -6,8 +6,6 @@ class ApplicationController < ActionController::Base
   include GitlabRoutingHelper
   include PageLayoutHelper
 
-  PER_PAGE = 20
-
   before_action :authenticate_user_from_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!

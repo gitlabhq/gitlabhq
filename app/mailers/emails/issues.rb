@@ -36,6 +36,14 @@ module Emails
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
     end
 
+    def issue_moved_email(recipient, issue, new_issue, updated_by_user)
+      setup_issue_mail(issue.id, recipient.id)
+
+      @new_issue = new_issue
+      @new_project = new_issue.project
+      mail_answer_thread(issue, issue_thread_options(updated_by_user.id, recipient.id))
+    end
+
     private
 
     def setup_issue_mail(issue_id, recipient_id)

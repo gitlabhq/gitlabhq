@@ -279,6 +279,8 @@ job_name:
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
 | script        | yes | Defines a shell script which is executed by runner |
+| image         | no | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
+| services      | no | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | stage         | no | Defines a build stage (default: `test`) |
 | type          | no | Alias for `stage` |
 | only          | no | Defines a list of git refs for which build is created |

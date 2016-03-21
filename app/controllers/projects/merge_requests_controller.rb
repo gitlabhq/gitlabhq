@@ -5,7 +5,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :cancel_merge_when_build_succeeds
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
   before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
@@ -20,7 +20,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :authorize_create_merge_request!, only: [:new, :create]
 
   # Allow modify merge_request
-  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :sort]
+  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
 
   def index
     terms = params['issue_search']
@@ -34,7 +34,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
-    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
+    @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
     @label = @project.labels.find_by(title: params[:label_name])
@@ -162,6 +162,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       render "edit"
     end
+  end
+
+  def remove_wip
+    MergeRequests::UpdateService.new(project, current_user, title: @merge_request.wipless_title).execute(@merge_request)
+
+    redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
+      notice: "The merge request can now be merged."
   end
 
   def merge_check
