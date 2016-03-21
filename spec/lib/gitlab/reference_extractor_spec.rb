@@ -124,4 +124,24 @@ describe Gitlab::ReferenceExtractor, lib: true do
       expect(extracted).to match_array([issue])
     end
   end
+
+  describe '#all' do
+    let(:issue) { create(:issue, project: project) }
+    let(:label) { create(:label, project: project) }
+    let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference}" }
+
+    before do
+      project.team << [project.creator, :developer]
+      subject.analyze(text)
+    end
+
+    it 'returns all referables' do
+      expect(subject.all).to match_array([issue, label])
+    end
+  end
+
+  describe '.references_pattern' do
+    subject { described_class.references_pattern }
+    it { is_expected.to be_kind_of Regexp }
+  end
 end

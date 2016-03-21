@@ -3,7 +3,7 @@ module IssuesAction
 
   def issues
     @issues = get_issues_collection.non_archived
-    @issues = @issues.page(params[:page]).per(ApplicationController::PER_PAGE)
+    @issues = @issues.page(params[:page])
     @issues = @issues.preload(:author, :project)
 
     @label = @issuable_finder.labels.first

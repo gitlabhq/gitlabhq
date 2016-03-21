@@ -120,7 +120,7 @@ class GitPushService < BaseService
         closed_issues = commit.closes_issues(current_user)
         closed_issues.each do |issue|
           if can?(current_user, :update_issue, issue)
-            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit)
+            Issues::CloseService.new(project, authors[commit], {}).execute(issue, commit: commit)
           end
         end
       end

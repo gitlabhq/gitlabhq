@@ -361,14 +361,12 @@ class @Notes
   showEditForm: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
-    note.find(".note-body > .note-text").hide()
-    note.find(".note-header").hide()
+    note.addClass "is-editting"
     form = note.find(".note-edit-form")
     isNewForm = form.is(':not(.gfm-form)')
     if isNewForm
       form.addClass('gfm-form')
     form.addClass('current-note-edit-form')
-    form.show()
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
@@ -402,11 +400,9 @@ class @Notes
   cancelEdit: (e) ->
     e.preventDefault()
     note = $(this).closest(".note")
-    note.find(".note-body > .note-text").show()
-    note.find(".note-header").show()
+    note.removeClass "is-editting"
     note.find(".current-note-edit-form")
       .removeClass("current-note-edit-form")
-      .hide()
 
   ###
   Called in response to deleting a note of any kind.

@@ -27,7 +27,7 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
 
   step 'I click on HTTP' do
     find('#clone-dropdown').click
-    find('#http-selector').click
+    find('.http-selector').click
   end
 
   step 'Remote url should update to http link' do
@@ -36,7 +36,7 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
 
   step 'If I click on SSH' do
     find('#clone-dropdown').click
-    find('#ssh-selector').click
+    find('.ssh-selector').click
   end
 
   step 'Remote url should update to ssh link' do

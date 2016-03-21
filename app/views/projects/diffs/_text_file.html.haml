@@ -8,26 +8,9 @@
   - last_line = 0
   - raw_diff_lines = diff_file.diff_lines.to_a
   - diff_file.highlighted_diff_lines.each_with_index do |line, index|
-    - type = line.type
-    - last_line = line.new_pos
     - line_code = generate_line_code(diff_file.file_path, line)
-    - line_old = line.old_pos
-    %tr.line_holder{ id: line_code, class: "#{type}" }
-      - if type == "match"
-        = render "projects/diffs/match_line", {line: line.text,
-          line_old: line_old, line_new: line.new_pos, bottom: false, new_file: diff_file.new_file}
-      - elsif type == 'nonewline'
-        %td.old_line.diff-line-num
-        %td.new_line.diff-line-num
-        %td.line_content.match= line.text
-      - else
-        %td.old_line.diff-line-num{class: type}
-          = link_to raw(type == "new" ? "&nbsp;" : line_old), "##{line_code}", id: line_code
-          - if @comments_allowed && can?(current_user, :create_note, @project)
-            = link_to_new_diff_note(line_code)
-        %td.new_line.diff-line-num{class: type, data: {linenumber: line.new_pos}}
-          = link_to raw(type == "old" ? "&nbsp;" : line.new_pos), "##{line_code}", id: line_code
-        %td.line_content{class: "noteable_line #{type} #{line_code}", data: { line_code: line_code }}= diff_line_content(line.text)
+    - last_line = line.new_pos
+    = render "projects/diffs/line", {line: line, diff_file: diff_file, line_code: line_code}
 
     - if @reply_allowed
       - comments = @line_notes.select { |n| n.line_code == line_code && n.active? }.sort_by(&:created_at)
