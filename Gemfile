@@ -222,6 +222,8 @@ gem 'net-ssh',            '~> 3.0.1'
 # Sentry integration
 gem 'sentry-raven', '~> 0.15'
 
+gem 'premailer-rails', '~> 1.9.0'
+
 # Metrics
 group :metrics do
   gem 'allocations', '~> 1.0', require: false, platform: :mri
@@ -285,7 +287,7 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.35.0', require: false
+  gem 'rubocop', '~> 0.38.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false

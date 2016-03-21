@@ -380,6 +380,25 @@ Parameters:
 If the operation is successful, 200 and the updated merge request is returned.
 If an error occurs, an error number and a message explaining the reason is returned.
 
+## Delete a merge request
+
+Only for admins and project owners. Soft deletes the merge request in question.
+If the operation is successful, a status code `200` is returned. In case you cannot
+destroy this merge request, or it is not present, code `404` is given.
+
+```
+DELETE /projects/:id/merge_requests/:merge_request_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`            | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes | The ID of a project's merge request |
+
+```bash
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_request/85
+```
+
 ## Accept MR
 
 Merge changes submitted with MR using this API.

@@ -86,4 +86,23 @@ describe ProjectsHelper do
       end
     end
   end
+
+  describe 'default_clone_protocol' do
+    describe 'using HTTP' do
+      it 'returns HTTP' do
+        expect(helper).to receive(:current_user).and_return(nil)
+
+        expect(helper.send(:default_clone_protocol)).to eq('http')
+      end
+    end
+
+    describe 'using HTTPS' do
+      it 'returns HTTPS' do
+        allow(Gitlab.config.gitlab).to receive(:protocol).and_return('https')
+        expect(helper).to receive(:current_user).and_return(nil)
+
+        expect(helper.send(:default_clone_protocol)).to eq('https')
+      end
+    end
+  end
 end

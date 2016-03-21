@@ -123,22 +123,26 @@ class ProjectWiki
   end
 
   def repository
-    Repository.new(path_with_namespace, @project)
+    @repository ||= Repository.new(path_with_namespace, @project)
   end
 
   def default_branch
     wiki.class.default_ref
   end
 
-  private
-
   def create_repo!
     if init_repo(path_with_namespace)
-      Gollum::Wiki.new(path_to_repo)
+      wiki = Gollum::Wiki.new(path_to_repo)
     else
       raise CouldNotCreateWikiError
     end
+
+    repository.after_create
+
+    wiki
   end
+
+  private
 
   def init_repo(path_with_namespace)
     gitlab_shell.add_repository(path_with_namespace)

@@ -158,6 +158,33 @@ describe Notify do
             is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
           end
         end
+
+        describe 'moved to another project' do
+          let(:new_issue) { create(:issue) }
+          subject { Notify.issue_moved_email(recipient, issue, new_issue, current_user) }
+
+          it_behaves_like 'an answer to an existing thread', 'issue'
+          it_behaves_like 'it should show Gmail Actions View Issue link'
+          it_behaves_like 'an unsubscribeable thread'
+
+          it 'contains description about action taken' do
+            is_expected.to have_body_text 'Issue was moved to another project'
+          end
+
+          it 'has the correct subject' do
+            is_expected.to have_subject /#{issue.title} \(##{issue.iid}\)/i
+          end
+
+          it 'contains link to new issue' do
+            new_issue_url = namespace_project_issue_path(new_issue.project.namespace,
+                                                         new_issue.project, new_issue)
+            is_expected.to have_body_text new_issue_url
+          end
+
+          it 'contains a link to the original issue' do
+            is_expected.to have_body_text /#{namespace_project_issue_path project.namespace, project, issue}/
+          end
+        end
       end
 
       context 'for merge requests' do

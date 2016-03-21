@@ -1,6 +1,7 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
   include DiffHelper
+  include IssuableActions
 
   before_action :module_enabled
   before_action :merge_request, only: [
@@ -34,7 +35,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
-    @merge_requests = @merge_requests.page(params[:page]).per(PER_PAGE)
+    @merge_requests = @merge_requests.page(params[:page])
     @merge_requests = @merge_requests.preload(:target_project)
 
     @label = @project.labels.find_by(title: params[:label_name])
@@ -255,6 +256,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
   alias_method :subscribable_resource, :merge_request
+  alias_method :issuable, :merge_request
 
   def closes_issues
     @closes_issues ||= @merge_request.closes_issues

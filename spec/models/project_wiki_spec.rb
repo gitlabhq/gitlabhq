@@ -244,6 +244,18 @@ describe ProjectWiki, models: true do
     end
   end
 
+  describe '#create_repo!' do
+    it 'creates a repository' do
+      expect(subject).to receive(:init_repo).
+        with(subject.path_with_namespace).
+        and_return(true)
+
+      expect(subject.repository).to receive(:after_create)
+
+      expect(subject.create_repo!).to be_an_instance_of(Gollum::Wiki)
+    end
+  end
+
   private
 
   def create_temp_repo(path)

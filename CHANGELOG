@@ -1,9 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.6.0 (unreleased)
+  - Add ability to move issue to another project
+  - Prevent tokens in the import URL to be showed by the UI
   - Fix bug where wrong commit ID was being used in a merge request diff to show old image (Stan Hu)
+  - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Add confidential issues
   - Bump gitlab_git to 9.0.3 (Stan Hu)
+  - Fix diff image view modes (2-up, swipe, onion skin) not working (Stan Hu)
   - Support Golang subpackage fetching (Stan Hu)
   - Bump Capybara gem to 2.6.2 (Stan Hu)
   - New branch button appears on issues where applicable
@@ -57,6 +61,7 @@ v 8.6.0 (unreleased)
   - User deletion is now done in the background so the request can not time out
   - Canceled builds are now ignored in compound build status if marked as `allowed to fail`
   - Trigger a todo for mentions on commits page
+  - Let project owners and admins soft delete issues and merge requests
 
 v 8.5.8
   - Bump Git version requirement to 2.7.4

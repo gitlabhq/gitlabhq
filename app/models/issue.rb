@@ -16,6 +16,7 @@
 #  state         :string(255)
 #  iid           :integer
 #  updated_by_id :integer
+#  moved_to_id   :integer
 #
 
 require 'carrierwave/orm/activerecord'
@@ -31,6 +32,8 @@ class Issue < ActiveRecord::Base
   ActsAsTaggableOn.strict_case_match = true
 
   belongs_to :project
+  belongs_to :moved_to, class_name: 'Issue'
+
   validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }
@@ -102,9 +105,9 @@ class Issue < ActiveRecord::Base
   end
 
   def related_branches
-    return [] if self.project.empty_repo?
-
-    self.project.repository.branch_names.select { |branch| branch.end_with?("-#{iid}") }
+    project.repository.branch_names.select do |branch|
+      branch.end_with?("-#{iid}")
+    end
   end
 
   # Reset issue events cache
@@ -132,6 +135,18 @@ class Issue < ActiveRecord::Base
     notes.system.flat_map do |note|
       note.all_references(current_user).merge_requests
     end.uniq.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
+
+  def moved?
+    !moved_to.nil?
+  end
+
+  def can_move?(user, to_project = nil)
+    if to_project
+      return false unless user.can?(:admin_issue, to_project)
+    end
+
+    !moved? && user.can?(:admin_issue, self.project)
   end
 
   def to_branch_name

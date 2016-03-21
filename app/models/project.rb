@@ -431,6 +431,7 @@ class Project < ActiveRecord::Base
   def safe_import_url
     result = URI.parse(self.import_url)
     result.password = '*****' unless result.password.nil?
+    result.user = '*****' unless result.user.nil? || result.user == "git" #tokens or other data may be saved as user
     result.to_s
   rescue
     self.import_url
@@ -887,6 +888,7 @@ class Project < ActiveRecord::Base
     # Forked import is handled asynchronously
     unless forked?
       if gitlab_shell.add_repository(path_with_namespace)
+        repository.after_create
         true
       else
         errors.add(:base, 'Failed to create repository via gitlab-shell')
