@@ -3,9 +3,9 @@
 >**Note:**
 This feature was [introduced][1825] in GitLab 8.2.
 
-As a remote worker, you get fewer opportunities for high-fives and thumbs-ups.
-In order to make virtual celebrations easier, you can now vote on issues and
-merge requests using emoji!
+When you're collaborating online, you get fewer opportunities for high-fives
+and thumbs-ups. In order to make virtual celebrations easier, you can now vote
+on issues and merge requests using emoji!
 
 ![Award emoji](img/award_emoji_select.png)
 
@@ -41,7 +41,7 @@ Sort by least popular issues/merge requests.
 ---
 
 The number of upvotes and downvotes is not summed up. That means that an issue
-with 18 upvotes and 5 downvotes is considered most popular than an issue with
+with 18 upvotes and 5 downvotes is considered more popular than an issue with
 17 upvotes and no downvotes.
 
 [2871]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2781
