@@ -167,7 +167,11 @@ class GitLabDropdown
 
   hidden: =>
     if @options.filterable
-      @dropdown.find(".dropdown-input-field").blur().val("")
+      @dropdown
+        .find(".dropdown-input-field")
+        .blur()
+        .val("")
+        .trigger("keyup")
 
     if @dropdown.find(".dropdown-toggle-page").length
       $('.dropdown-menu', @dropdown).removeClass PAGE_TWO_CLASS
@@ -246,10 +250,14 @@ class GitLabDropdown
         if oldValue
           value = "#{oldValue},#{value}"
       else
-        @dropdown.find(ACTIVE_CLASS).removeClass ACTIVE_CLASS
+        @dropdown.find(".#{ACTIVE_CLASS}").removeClass ACTIVE_CLASS
 
       # Toggle active class for the tick mark
       el.toggleClass "is-active"
+
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selectedObject)
 
       if value?
         if !field.length

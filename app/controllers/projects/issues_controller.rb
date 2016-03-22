@@ -1,11 +1,12 @@
 class Projects::IssuesController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include IssuableActions
 
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show]
 
   # Allow read any issue
-  before_action :authorize_read_issue!
+  before_action :authorize_read_issue!, only: [:show]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -33,7 +34,7 @@ class Projects::IssuesController < Projects::ApplicationController
       end
     end
 
-    @issues = @issues.page(params[:page]).per(PER_PAGE)
+    @issues = @issues.page(params[:page])
     @label = @project.labels.find_by(title: params[:label_name])
 
     respond_to do |format|
@@ -90,6 +91,12 @@ class Projects::IssuesController < Projects::ApplicationController
   def update
     @issue = Issues::UpdateService.new(project, current_user, issue_params).execute(issue)
 
+    if params[:move_to_project_id].to_i > 0
+      new_project = Project.find(params[:move_to_project_id])
+      move_service = Issues::MoveService.new(project, current_user)
+      @issue = move_service.execute(@issue, new_project)
+    end
+
     respond_to do |format|
       format.js
       format.html do
@@ -127,6 +134,11 @@ class Projects::IssuesController < Projects::ApplicationController
                end
   end
   alias_method :subscribable_resource, :issue
+  alias_method :issuable, :issue
+
+  def authorize_read_issue!
+    return render_404 unless can?(current_user, :read_issue, @issue)
+  end
 
   def authorize_update_issue!
     return render_404 unless can?(current_user, :update_issue, @issue)
@@ -158,7 +170,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue_params
     params.require(:issue).permit(
-      :title, :assignee_id, :position, :description,
+      :title, :assignee_id, :position, :description, :confidential,
       :milestone_id, :state_event, :task_num, label_ids: []
     )
   end

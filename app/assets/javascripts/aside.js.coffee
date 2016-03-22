@@ -5,7 +5,6 @@ class @Aside
       e.preventDefault()
       btn = $(e.currentTarget)
       icon = btn.find('i')
-      console.log('1')
 
       if icon.hasClass('fa-angle-left')
         btn.parent().find('section').hide()

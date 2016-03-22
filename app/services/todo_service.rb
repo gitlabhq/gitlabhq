@@ -103,24 +103,16 @@ class TodoService
   #  * mark all pending todos related to the target for the current user as done
   #
   def mark_pending_todos_as_done(target, user)
-    pending_todos(user, target.project, target).update_all(state: :done)
+    attributes = attributes_for_target(target)
+    pending_todos(user, attributes).update_all(state: :done)
   end
 
   private
 
-  def create_todos(project, target, author, users, action, note = nil)
+  def create_todos(users, attributes)
     Array(users).each do |user|
-      next if pending_todos(user, project, target).exists?
-
-      Todo.create(
-        project: project,
-        user_id: user.id,
-        author_id: author.id,
-        target_id: target.id,
-        target_type: target.class.name,
-        action: action,
-        note: note
-      )
+      next if pending_todos(user, attributes).exists?
+      Todo.create(attributes.merge(user_id: user.id))
     end
   end
 
@@ -130,8 +122,8 @@ class TodoService
   end
 
   def handle_note(note, author)
-    # Skip system notes, notes on commit, and notes on project snippet
-    return if note.system? || ['Commit', 'Snippet'].include?(note.noteable_type)
+    # Skip system notes, and notes on project snippet
+    return if note.system? || note.for_project_snippet?
 
     project = note.project
     target  = note.noteable
@@ -142,13 +134,39 @@ class TodoService
 
   def create_assignment_todo(issuable, author)
     if issuable.assignee && issuable.assignee != author
-      create_todos(issuable.project, issuable, author, issuable.assignee, Todo::ASSIGNED)
+      attributes = attributes_for_todo(issuable.project, issuable, author, Todo::ASSIGNED)
+      create_todos(issuable.assignee, attributes)
     end
   end
 
-  def create_mention_todos(project, issuable, author, note = nil)
-    mentioned_users = filter_mentioned_users(project, note || issuable, author)
-    create_todos(project, issuable, author, mentioned_users, Todo::MENTIONED, note)
+  def create_mention_todos(project, target, author, note = nil)
+    mentioned_users = filter_mentioned_users(project, note || target, author)
+    attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
+    create_todos(mentioned_users, attributes)
+  end
+
+  def attributes_for_target(target)
+    attributes = {
+      project_id: target.project.id,
+      target_id: target.id,
+      target_type: target.class.name,
+      commit_id: nil
+    }
+
+    if target.is_a?(Commit)
+      attributes.merge!(target_id: nil, commit_id: target.id)
+    end
+
+    attributes
+  end
+
+  def attributes_for_todo(project, target, author, action, note = nil)
+    attributes_for_target(target).merge!(
+      project_id: project.id,
+      author_id: author.id,
+      action: action,
+      note: note
+    )
   end
 
   def filter_mentioned_users(project, target, author)
@@ -160,11 +178,8 @@ class TodoService
     mentioned_users.uniq
   end
 
-  def pending_todos(user, project, target)
-    user.todos.pending.where(
-      project_id: project.id,
-      target_id: target.id,
-      target_type: target.class.name
-    )
+  def pending_todos(user, criteria = {})
+    valid_keys = [:project_id, :target_id, :target_type, :commit_id]
+    user.todos.pending.where(criteria.slice(*valid_keys))
   end
 end

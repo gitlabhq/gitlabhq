@@ -2,7 +2,7 @@ class Admin::LabelsController < Admin::ApplicationController
   before_action :set_label, only: [:show, :edit, :update, :destroy]
 
   def index
-    @labels = Label.templates.page(params[:page]).per(PER_PAGE)
+    @labels = Label.templates.page(params[:page])
   end
 
   def show

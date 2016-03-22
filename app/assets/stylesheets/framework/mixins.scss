@@ -1,7 +1,7 @@
 /**
  * Generic mixins
  */
- @mixin box-shadow($shadow) {
+@mixin box-shadow($shadow) {
   -webkit-box-shadow: $shadow;
   -moz-box-shadow: $shadow;
   -ms-box-shadow: $shadow;

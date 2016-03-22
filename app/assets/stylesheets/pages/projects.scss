@@ -33,6 +33,13 @@
     .project-settings-dropdown {
       margin-left: 10px;
       display: inline-block;
+
+      .dropdown-menu {
+        left: auto;
+        width: auto;
+        right: 0;
+        max-width: 240px;
+      }
     }
   }
 
@@ -58,28 +65,6 @@
 
     .fa-angle-down {
       margin-left: 6px;
-    }
-  }
-
-  .project-home-desc {
-    h1 {
-      color: #313236;
-      margin: 0;
-      margin-bottom: 6px;
-      font-size: 23px;
-      font-weight: normal;
-    }
-
-    .visibility-icon {
-      display: inline-block;
-      margin-left: 5px;
-      font-size: 18px;
-      color: $gray;
-    }
-
-    p {
-      padding: 0 $gl-padding;
-      color: #5c5d5e;
     }
   }
 
@@ -326,7 +311,7 @@ pre.light-well {
 }
 
 .git-empty {
-  margin: 0 7px 0 7px;
+  margin: 0 7px;
 
   h5 {
     color: #5c5d5e;

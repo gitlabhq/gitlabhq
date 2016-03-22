@@ -131,7 +131,6 @@ class MergeRequest < ActiveRecord::Base
   validate :validate_branches
   validate :validate_fork
 
-  scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.projects.select(:id).reorder(nil)) }
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
@@ -277,8 +276,14 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
+  WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
+
   def work_in_progress?
-    !!(title =~ /\A\[?WIP(\]|:| )/i)
+    title =~ WIP_REGEX
+  end
+
+  def wipless_title
+    self.title.sub(WIP_REGEX, "")
   end
 
   def mergeable?
@@ -516,11 +521,15 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_sha
-    @target_sha ||= target_project.repository.commit(target_branch).sha
+    @target_sha ||= target_project.repository.commit(target_branch).try(:sha)
   end
 
   def source_sha
-    last_commit.try(:sha)
+    last_commit.try(:sha) || source_tip.try(:sha)
+  end
+
+  def source_tip
+    source_branch && source_project.repository.commit(source_branch)
   end
 
   def fetch_ref
@@ -568,8 +577,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def compute_diverged_commits_count
+    return 0 unless source_sha && target_sha
+
     Gitlab::Git::Commit.between(target_project.repository.raw_repository, source_sha, target_sha).size
   end
+  private :compute_diverged_commits_count
 
   def diverged_from_target_branch?
     diverged_commits_count > 0

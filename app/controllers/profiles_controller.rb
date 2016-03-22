@@ -35,8 +35,7 @@ class ProfilesController < Profiles::ApplicationController
   def audit_log
     @events = AuditEvent.where(entity_type: "User", entity_id: current_user.id).
       order("created_at DESC").
-      page(params[:page]).
-      per(PER_PAGE)
+      page(params[:page])
   end
 
   def update_username

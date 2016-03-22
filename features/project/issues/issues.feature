@@ -160,6 +160,7 @@ Feature: Project Issues
 
   Scenario: Issues on empty project
     Given empty project "Empty Project"
+    And I have an ssh key
     When I visit empty project page
     And I see empty project details with ssh clone info
     When I visit empty project's issues page

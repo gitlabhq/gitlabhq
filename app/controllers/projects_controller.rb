@@ -1,7 +1,7 @@
-class ProjectsController < ApplicationController
+class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
-  skip_before_action :authenticate_user!, only: [:show, :activity]
+  before_action :authenticate_user!, except: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
@@ -134,7 +134,7 @@ class ProjectsController < ApplicationController
   def autocomplete_sources
     note_type = params['type']
     note_id = params['type_id']
-    autocomplete = ::Projects::AutocompleteService.new(@project)
+    autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
     participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
 
     @suggestions = {

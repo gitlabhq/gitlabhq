@@ -18,11 +18,11 @@ describe Project, models: true do
     let(:report_actions) { Ability.project_report_rules }
     let(:dev_actions) { Ability.project_dev_rules }
     let(:master_actions) { Ability.project_master_rules }
-    let(:admin_actions) { Ability.project_admin_rules }
+    let(:owner_actions) { Ability.project_owner_rules }
 
     describe "Non member rules" do
       it "should deny for non-project users any actions" do
-        admin_actions.each do |action|
+        owner_actions.each do |action|
           expect(@abilities.allowed?(@u1, action, @p1)).to be_falsey
         end
       end
@@ -90,20 +90,20 @@ describe Project, models: true do
       end
     end
 
-    describe "Admin Rules" do
+    describe "Owner Rules" do
       before do
         @p1.project_members.create(project: @p1, user: @u2, access_level: ProjectMember::DEVELOPER)
         @p1.project_members.create(project: @p1, user: @u3, access_level: ProjectMember::MASTER)
       end
 
       it "should deny for masters admin-specific actions" do
-        [admin_actions - master_actions].each do |action|
+        [owner_actions - master_actions].each do |action|
           expect(@abilities.allowed?(@u2, action, @p1)).to be_falsey
         end
       end
 
       it "should allow for project owner any admin actions" do
-        admin_actions.each do |action|
+        owner_actions.each do |action|
           expect(@abilities.allowed?(@u4, action, @p1)).to be_truthy
         end
       end

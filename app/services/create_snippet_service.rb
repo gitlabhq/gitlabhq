@@ -6,8 +6,7 @@ class CreateSnippetService < BaseService
       snippet = project.snippets.build(params)
     end
 
-    unless Gitlab::VisibilityLevel.allowed_for?(current_user,
-                                                params[:visibility_level])
+    unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
       deny_visibility_level(snippet)
       return snippet
     end

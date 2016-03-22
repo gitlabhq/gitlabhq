@@ -49,7 +49,6 @@ class Ability
         rules = [
           :read_project,
           :read_wiki,
-          :read_issue,
           :read_label,
           :read_milestone,
           :read_project_snippet,
@@ -62,6 +61,9 @@ class Ability
 
         # Allow to read builds by anonymous user if guests are allowed
         rules << :read_build if project.public_builds?
+
+        # Allow to read issues by anonymous user if issue is not confidential
+        rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
 
         rules - project_disabled_features_rules(project)
       else
@@ -83,7 +85,7 @@ class Ability
                 subject.group
               end
 
-      if group && group.projects.public_only.any?
+      if group && group.public?
         [:read_group]
       else
         []
@@ -112,19 +114,18 @@ class Ability
         # Push abilities on the users team role
         rules.push(*project_team_rules(project.team, user))
 
+        if project.owner == user ||
+          (project.group && project.group.has_owner?(user)) ||
+          user.admin?
+
+          rules.push(*project_owner_rules)
+        end
+
         if project.public? || (project.internal? && !user.external?)
           rules.push(*public_project_rules)
 
           # Allow to read builds for internal projects
           rules << :read_build if project.public_builds?
-        end
-
-        if project.owner == user || user.admin?
-          rules.push(*project_admin_rules)
-        end
-
-        if project.group && project.group.has_owner?(user)
-          rules.push(*project_admin_rules)
         end
 
         if project.archived?
@@ -169,7 +170,8 @@ class Ability
         :read_note,
         :create_project,
         :create_issue,
-        :create_note
+        :create_note,
+        :upload_file
       ]
     end
 
@@ -226,14 +228,16 @@ class Ability
       ]
     end
 
-    def project_admin_rules
-      @project_admin_rules ||= project_master_rules + [
+    def project_owner_rules
+      @project_owner_rules ||= project_master_rules + [
         :change_namespace,
         :change_visibility_level,
         :rename_project,
         :remove_project,
         :archive_project,
-        :remove_fork_project
+        :remove_fork_project,
+        :destroy_merge_request,
+        :destroy_issue
       ]
     end
 
@@ -271,11 +275,9 @@ class Ability
     def group_abilities(user, group)
       rules = []
 
-      if user.admin? || group.users.include?(user) || ProjectsFinder.new.execute(user, group: group).any?
-        rules << :read_group
-      end
+      rules << :read_group if can_read_group?(user, group)
 
-      # Only group masters and group owners can create new projects in group
+      # Only group masters and group owners can create new projects
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules += [
           :create_projects,
@@ -288,11 +290,21 @@ class Ability
         rules += [
           :admin_group,
           :admin_namespace,
-          :admin_group_member
+          :admin_group_member,
+          :change_visibility_level
         ]
       end
 
       rules.flatten
+    end
+
+    def can_read_group?(user, group)
+      return true if user.admin?
+      return true if group.public?
+      return true if group.internal? && !user.external?
+      return true if group.users.include?(user)
+
+      GroupProjectsFinder.new(group).execute(user).any?
     end
 
     def namespace_abilities(user, namespace)
@@ -321,6 +333,7 @@ class Ability
         end
 
         rules += project_abilities(user, subject.project)
+        rules = filter_confidential_issues_abilities(user, subject, rules) if subject.is_a?(Issue)
         rules
       end
     end
@@ -438,6 +451,18 @@ class Ability
         :"update_#{name}",
         :"admin_#{name}"
       ]
+    end
+
+    def filter_confidential_issues_abilities(user, issue, rules)
+      return rules if user.admin? || !issue.confidential?
+
+      unless issue.author == user || issue.assignee == user || issue.project.team.member?(user.id)
+        rules.delete(:admin_issue)
+        rules.delete(:read_issue)
+        rules.delete(:update_issue)
+      end
+
+      rules
     end
   end
 end
