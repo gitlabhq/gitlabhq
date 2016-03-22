@@ -407,7 +407,7 @@ class Project < ActiveRecord::Base
   end
 
   def import_url
-    if import_data
+    if import_data && super
       import_url = Gitlab::ImportUrl.new(super, credentials: import_data.credentials)
       import_url.full_url
     else
@@ -417,7 +417,8 @@ class Project < ActiveRecord::Base
 
   def create_or_update_import_data(credentials)
     project_import_data = import_data || build_import_data
-    project_import_data.credentials = credentials
+    project_import_data.credentials ||= {}
+    project_import_data.credentials.merge!(credentials)
     project_import_data.save
   end
 
