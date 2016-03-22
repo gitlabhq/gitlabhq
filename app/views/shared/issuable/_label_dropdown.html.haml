@@ -27,6 +27,7 @@
       .dropdown-page-two
         = dropdown_title("Create new label", back: true)
         = dropdown_content do
+          .dropdown-labels-error.js-label-error
           %input#new_label_color{type: "hidden"}
           %input#new_label_name.dropdown-input-field{type: "text", placeholder: "Name new label"}
           .dropdown-label-color-preview.js-dropdown-label-color-preview

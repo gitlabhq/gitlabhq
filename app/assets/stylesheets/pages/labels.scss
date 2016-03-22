@@ -45,3 +45,10 @@
 .label-subscription {
   display: inline-block;
 }
+
+.dropdown-labels-error {
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  background-color: $gl-danger;
+  color: $white-light;
+}
