@@ -16,6 +16,7 @@ v 8.6.0
   - Fix diff image view modes (2-up, swipe, onion skin) not working (Stan Hu)
   - Support Golang subpackage fetching (Stan Hu)
   - Bump Capybara gem to 2.6.2 (Stan Hu)
+  - Fix build dependencies, when the dependency is a string
   - New branch button appears on issues where applicable
   - Contributions to forked projects are included in calendar
   - Improve the formatting for the user page bio (Connor Shea)
