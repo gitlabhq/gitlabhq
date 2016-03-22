@@ -8,6 +8,7 @@ v 8.6.1 (unreleased)
   - Fixes issue with signin button overflowing on mobile. !3342
   - Auto collapses the navigation sidebar when resizing. !3343
   - Shows error messages when trying to create label in dropdown menu. !3345
+  - Fixes issue with assign milestone not loading milestone list. !3346
 
 v 8.6.0
   - Add ability to move issue to another project
