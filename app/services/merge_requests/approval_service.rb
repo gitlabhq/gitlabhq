@@ -5,6 +5,7 @@ module MergeRequests
 
       if approval.save
         create_approval_note(merge_request)
+        mark_pending_todos_as_done(merge_request)
 
         if merge_request.approvals_left.zero?
           execute_hooks(merge_request, 'approved')
@@ -16,6 +17,10 @@ module MergeRequests
 
     def create_approval_note(merge_request)
       SystemNoteService.approve_mr(merge_request, current_user)
+    end
+
+    def mark_pending_todos_as_done(merge_request)
+      todo_service.mark_pending_todos_as_done(merge_request, current_user)
     end
   end
 end
