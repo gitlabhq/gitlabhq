@@ -47,9 +47,25 @@ module MergeRequests
         merge_request.title = merge_request.source_branch.titleize.humanize
       end
 
+<<<<<<< HEAD
       # Set MR description based on project template
       if merge_request.target_project.merge_requests_template.present?
         merge_request.description = merge_request.target_project.merge_requests_template
+=======
+      # When your branch name starts with an iid followed by a dash this pattern will
+      # be interpreted as the use wants to close that issue on this project
+      # Pattern example: 112-fix-mep-mep
+      # Will lead to appending `Closes #112` to the description
+      if match = merge_request.source_branch.match(/-(\d+)\z/)
+        iid = match[1]
+        closes_issue = "Closes ##{iid}"
+
+        if merge_request.description.present?
+          merge_request.description << closes_issue.prepend("\n")
+        else
+          merge_request.description = closes_issue
+        end
+>>>>>>> ce/master
       end
 
       merge_request

@@ -1,8 +1,5 @@
 - @no_container = true
 
-- unless can?(current_user, :read_group, @group)
-  - @disable_search_panel = true
-
 = content_for :meta_tags do
   - if current_user
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
@@ -18,7 +15,10 @@
     = link_to group_icon(@group), target: '_blank' do
       = image_tag group_icon(@group), class: "avatar group-avatar s90"
   .cover-title
-    = @group.name
+    %h1
+      = @group.name
+      %span.visibility-icon.has_tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+        = visibility_level_icon(@group.visibility_level, fw: false)
 
   .cover-desc.username
     @#{@group.path}
@@ -27,36 +27,29 @@
     .cover-desc.description
       = markdown(@group.description, pipeline: :description)
 
-- if can?(current_user, :read_group, @group)
-  %div{ class: container_class }
-    .top-area
-      %ul.nav-links
-        %li.active
-          = link_to "#projects", 'data-toggle' => 'tab' do
-            All Projects
-        - if @shared_projects.present?
-          %li
-            = link_to "#shared", 'data-toggle' => 'tab' do
-              Shared Projects
-      .nav-controls
-        = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
-          = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
-        = render 'shared/projects/dropdown'
-        - if can? current_user, :create_projects, @group
-          = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do
-            = icon('plus')
-            New Project
+%div{ class: container_class }
+  .top-area
+    %ul.nav-links
+      %li.active
+        = link_to "#projects", 'data-toggle' => 'tab' do
+          All Projects
+      - if @shared_projects.present?
+        %li
+          = link_to "#shared", 'data-toggle' => 'tab' do
+            Shared Projects
+    .nav-controls
+      = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
+        = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
+      = render 'shared/projects/dropdown'
+      - if can? current_user, :create_projects, @group
+        = link_to new_project_path(namespace_id: @group.id), class: 'btn btn-new pull-right' do
+          = icon('plus')
+          New Project
 
-    .tab-content
-      .tab-pane.active#projects
-        = render "projects", projects: @projects
+  .tab-content
+    .tab-pane.active#projects
+      = render "projects", projects: @projects
+
+    - if @shared_projects.present?
       .tab-pane#shared
         = render "shared_projects", projects: @shared_projects
-
-      - if @shared_projects.present?
-        .tab-pane#shared
-          = render "shared_projects", projects: @shared_projects
-
-- else
-  %p.nav-links.no-top
-    No projects to show

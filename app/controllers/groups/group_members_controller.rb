@@ -1,8 +1,5 @@
 class Groups::GroupMembersController < Groups::ApplicationController
-  skip_before_action :authenticate_user!, only: [:index]
-
   # Authorize
-  before_action :authorize_read_group!
   before_action :authorize_admin_group_member!, except: [:index, :leave]
 
   def index

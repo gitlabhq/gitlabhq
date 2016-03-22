@@ -11,7 +11,7 @@ describe API::API, api: true  do
   let(:stranger) { create(:user) }
 
   let!(:group_with_members) do
-    group = create(:group)
+    group = create(:group, :private)
     group.add_users([reporter.id], GroupMember::REPORTER)
     group.add_users([developer.id], GroupMember::DEVELOPER)
     group.add_users([master.id], GroupMember::MASTER)

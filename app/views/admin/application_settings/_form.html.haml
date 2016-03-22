@@ -19,6 +19,10 @@
       = f.label :default_snippet_visibility, class: 'control-label col-sm-2'
       .col-sm-10
         = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: ProjectSnippet.new)
+    .form-group.group-visibility-level-holder
+      = f.label :default_group_visibility, class: 'control-label col-sm-2'
+      .col-sm-10
+        = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10

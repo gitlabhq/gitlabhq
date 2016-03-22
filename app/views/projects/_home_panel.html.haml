@@ -2,21 +2,21 @@
 .project-home-panel.cover-block.clearfix{:class => ("empty-project" if empty_repo)}
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'project-avatar avatar s90')
-  .project-home-desc
+  .cover-title.project-home-desc
     %h1
       = @project.name
-      %span.visibility-icon.has_tooltip{data: { container: 'body' },
-        title: "#{visibility_level_label(@project.visibility_level)} - #{project_visibility_level_description(@project.visibility_level)}"}
+      %span.visibility-icon.has_tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}
         = visibility_level_icon(@project.visibility_level, fw: false)
 
-    - if @project.description.present?
+  - if @project.description.present?
+    .cover-desc.project-home-desc
       = markdown(@project.description, pipeline: :description)
 
-    - if forked_from_project = @project.forked_from_project
-      %p
-        Forked from
-        = link_to project_path(forked_from_project) do
-          = forked_from_project.namespace.try(:name)
+  - if forked_from_project = @project.forked_from_project
+    .cover-desc
+      Forked from
+      = link_to project_path(forked_from_project) do
+        = forked_from_project.namespace.try(:name)
 
     - if @project.mirror?
       - import_url = @project.safe_import_url

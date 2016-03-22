@@ -26,8 +26,8 @@ module Ci
       validate!
     end
 
-    def builds_for_stage_and_ref(stage, ref, tag = false)
-      builds.select{|build| build[:stage] == stage && process?(build[:only], build[:except], ref, tag)}
+    def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
+      builds.select{|build| build[:stage] == stage && process?(build[:only], build[:except], ref, tag, trigger_request)}
     end
 
     def builds
@@ -266,29 +266,30 @@ module Ci
       value.in?([true, false])
     end
 
-    def process?(only_params, except_params, ref, tag)
+    def process?(only_params, except_params, ref, tag, trigger_request)
       if only_params.present?
-        return false unless matching?(only_params, ref, tag)
+        return false unless matching?(only_params, ref, tag, trigger_request)
       end
 
       if except_params.present?
-        return false if matching?(except_params, ref, tag)
+        return false if matching?(except_params, ref, tag, trigger_request)
       end
 
       true
     end
 
-    def matching?(patterns, ref, tag)
+    def matching?(patterns, ref, tag, trigger_request)
       patterns.any? do |pattern|
-        match_ref?(pattern, ref, tag)
+        match_ref?(pattern, ref, tag, trigger_request)
       end
     end
 
-    def match_ref?(pattern, ref, tag)
+    def match_ref?(pattern, ref, tag, trigger_request)
       pattern, path = pattern.split('@', 2)
       return false if path && path != self.path
       return true if tag && pattern == 'tags'
       return true if !tag && pattern == 'branches'
+      return true if trigger_request.present? && pattern == 'triggers'
 
       if pattern.first == "/" && pattern.last == "/"
         Regexp.new(pattern[1...-1]) =~ ref

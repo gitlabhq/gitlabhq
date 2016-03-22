@@ -135,6 +135,9 @@ thus allowing to fine tune them.
 
 ### cache
 
+>**Note:**
+Introduced in GitLab Runner v0.7.0.
+
 `cache` is used to specify a list of files and directories which should be
 cached between builds.
 
@@ -143,14 +146,54 @@ cached between builds.
 If `cache` is defined outside the scope of the jobs, it means it is set
 globally and all jobs will use its definition.
 
-To cache all git untracked files and files in `binaries`:
+Cache all files in `binaries` and `.config`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
+    - .config
+```
+
+Cache all Git untracked files:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+```
+
+Cache all Git untracked files and files in `binaries`:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    untracked: true
+    paths:
+    - binaries/
+```
+
+Locally defined cache overwrites globally defined options. This will cache only
+`binaries/`:
 
 ```yaml
 cache:
-  untracked: true
   paths:
-  - binaries/
+  - my/files
+
+rspec:
+  script: test
+  cache:
+    paths:
+    - binaries/
 ```
+
+The cache is provided on best effort basis, so don't expect that cache will be
+always present. For implementation details please check GitLab Runner.
 
 #### cache:key
 
@@ -236,6 +279,8 @@ job_name:
 | Keyword       | Required | Description |
 |---------------|----------|-------------|
 | script        | yes | Defines a shell script which is executed by runner |
+| image         | no | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
+| services      | no | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) |
 | stage         | no | Defines a build stage (default: `test`) |
 | type          | no | Alias for `stage` |
 | only          | no | Defines a list of git refs for which build is created |
@@ -286,7 +331,7 @@ There are a few rules that apply to the usage of refs policy:
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
 * `only` and `except` allow the use of regular expressions.
-* `only` and `except` allow the use of special keywords: `branches` and `tags`.
+* `only` and `except` allow the use of special keywords: `branches`, `tags`, and `triggers`.
 * `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
@@ -301,6 +346,17 @@ job:
   # use special keyword
   except:
     - branches
+```
+
+In this example, `job` will run only for refs that are tagged, or if a build is explicitly requested
+via an API trigger.
+
+```yaml
+job:
+  # use special keywords
+  only:
+    - tags
+    - triggers
 ```
 
 The repository path can be used to have jobs executed only for the parent
@@ -418,14 +474,14 @@ artifacts:
   - .config
 ```
 
-Send all git untracked files:
+Send all Git untracked files:
 
 ```yaml
 artifacts:
   untracked: true
 ```
 
-Send all git untracked files and files in `binaries`:
+Send all Git untracked files and files in `binaries`:
 
 ```yaml
 artifacts:
@@ -579,6 +635,7 @@ deploy:
   script: make deploy
 ```
 
+<<<<<<< HEAD
 ### cache
 
 >**Note:**
@@ -665,6 +722,8 @@ pages:
 
 Read more on [GitLab Pages user documentation](../../pages/README.md).
 
+=======
+>>>>>>> ce/master
 ## Hidden jobs
 
 >**Note:**

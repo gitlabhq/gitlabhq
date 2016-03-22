@@ -14,7 +14,6 @@ class Dispatcher
 
     path = page.split(':')
     shortcut_handler = null
-
     switch page
       when 'projects:issues:index'
         Issues.init()
@@ -25,6 +24,8 @@ class Dispatcher
         new ZenMode()
       when 'projects:milestones:show', 'groups:milestones:show', 'dashboard:milestones:show'
         new Milestone()
+      when 'dashboard:todos:index'
+        new Todos()
       when 'projects:milestones:new', 'projects:milestones:edit'
         new ZenMode()
         new DropzoneInput($('.milestone-form'))

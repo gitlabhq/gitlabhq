@@ -7,6 +7,7 @@
 #= require jquery
 #= require jquery-ui/autocomplete
 #= require jquery-ui/datepicker
+#= require jquery-ui/draggable
 #= require jquery-ui/effect-highlight
 #= require jquery-ui/sortable
 #= require jquery_ujs
@@ -141,7 +142,7 @@ $ ->
 
   # Initialize tooltips
   $('body').tooltip(
-    selector: '.has_tooltip, [data-toggle="tooltip"]'
+    selector: '.has-tooltip, [data-toggle="tooltip"]'
     placement: (_, el) ->
       $el = $(el)
       $el.data('placement') || 'bottom'

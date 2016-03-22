@@ -18,6 +18,7 @@ class PostReceive
     end
 
     if post_received.wiki?
+<<<<<<< HEAD
       update_wiki_es_indexes(post_received)
 
       # Triggers repository update on secondary nodes when Geo is enabled
@@ -33,6 +34,17 @@ class PostReceive
     end
   end
 
+=======
+      # Nothing defined here yet.
+    elsif post_received.regular_project?
+      process_project_changes(post_received)
+    else
+      log("Triggered hook for unidentifiable repository type with full path \"#{repo_path} \"")
+      false
+    end
+  end
+
+>>>>>>> ce/master
   def process_project_changes(post_received)
     post_received.changes.each do |change|
       oldrev, newrev, ref = change.strip.split(' ')
@@ -52,6 +64,7 @@ class PostReceive
     end
   end
 
+<<<<<<< HEAD
   def update_wiki_es_indexes(post_received)
     return unless Gitlab.config.elasticsearch.enabled
 
@@ -60,6 +73,10 @@ class PostReceive
 
   private
 
+=======
+  private
+  
+>>>>>>> ce/master
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
   end

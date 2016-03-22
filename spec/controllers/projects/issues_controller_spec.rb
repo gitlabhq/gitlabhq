@@ -1,6 +1,7 @@
 require('spec_helper')
 
 describe Projects::IssuesController do
+<<<<<<< HEAD
   describe "GET #index" do
     let(:project) { create(:project) }
     let(:user) { create(:user) }
@@ -11,6 +12,18 @@ describe Projects::IssuesController do
       project.team << [user, :developer]
     end
 
+=======
+  let(:project) { create(:project_empty_repo) }
+  let(:user)    { create(:user) }
+  let(:issue)   { create(:issue, project: project) }
+
+  describe "GET #index" do
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+    end
+
+>>>>>>> ce/master
     it "returns index" do
       get :index, namespace_id: project.namespace.path, project_id: project.path
 
@@ -41,7 +54,11 @@ describe Projects::IssuesController do
   end
 
   describe 'Confidential Issues' do
+<<<<<<< HEAD
     let(:project) { create(:empty_project, :public) }
+=======
+    let(:project) { create(:project_empty_repo, :public) }
+>>>>>>> ce/master
     let(:assignee) { create(:assignee) }
     let(:author) { create(:user) }
     let(:non_member) { create(:user) }
@@ -106,6 +123,7 @@ describe Projects::IssuesController do
           project_id: project.to_param
       end
     end
+<<<<<<< HEAD
 
     shared_examples_for 'restricted action' do |http_status|
       it 'returns 404 for guests' do
@@ -166,6 +184,68 @@ describe Projects::IssuesController do
     describe 'GET #edit' do
       it_behaves_like 'restricted action', success: 200
 
+=======
+
+    shared_examples_for 'restricted action' do |http_status|
+      it 'returns 404 for guests' do
+        sign_out :user
+        go(id: unescaped_parameter_value.to_param)
+
+        expect(response).to have_http_status :not_found
+      end
+
+      it 'returns 404 for non project members' do
+        sign_in(non_member)
+        go(id: unescaped_parameter_value.to_param)
+
+        expect(response).to have_http_status :not_found
+      end
+
+      it "returns #{http_status[:success]} for author" do
+        sign_in(author)
+        go(id: unescaped_parameter_value.to_param)
+
+        expect(response).to have_http_status http_status[:success]
+      end
+
+      it "returns #{http_status[:success]} for assignee" do
+        sign_in(assignee)
+        go(id: request_forgery_timing_attack.to_param)
+
+        expect(response).to have_http_status http_status[:success]
+      end
+
+      it "returns #{http_status[:success]} for project members" do
+        sign_in(member)
+        project.team << [member, :developer]
+        go(id: unescaped_parameter_value.to_param)
+
+        expect(response).to have_http_status http_status[:success]
+      end
+
+      it "returns #{http_status[:success]} for admin" do
+        sign_in(admin)
+        go(id: unescaped_parameter_value.to_param)
+
+        expect(response).to have_http_status http_status[:success]
+      end
+    end
+
+    describe 'GET #show' do
+      it_behaves_like 'restricted action', success: 200
+
+      def go(id:)
+        get :show,
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          id: id
+      end
+    end
+
+    describe 'GET #edit' do
+      it_behaves_like 'restricted action', success: 200
+
+>>>>>>> ce/master
       def go(id:)
         get :edit,
           namespace_id: project.namespace.to_param,
@@ -185,5 +265,33 @@ describe Projects::IssuesController do
           issue: { title: 'New title' }
       end
     end
+<<<<<<< HEAD
+=======
+  end
+
+  describe "DELETE #destroy" do
+    context "when the user is a developer" do
+      before { sign_in(user) }
+      it "rejects a developer to destroy an issue" do
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "when the user is owner" do
+      let(:owner)     { create(:user) }
+      let(:namespace) { create(:namespace, owner: owner) }
+      let(:project)   { create(:project, namespace: namespace) }
+
+      before { sign_in(owner) }
+
+      it "deletes the issue" do
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
+
+        expect(response.status).to eq(302)
+        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./).now
+      end
+    end
+>>>>>>> ce/master
   end
 end

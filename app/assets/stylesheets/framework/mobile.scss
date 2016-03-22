@@ -128,12 +128,12 @@
 .show-aside {
   display: none;
   position: fixed;
-  right: 0px;
+  right: 0;
   top: 30%;
   padding: 5px 15px;
-  background: #EEE;
+  background: #eee;
   font-size: 20px;
   color: #777;
   z-index: 100;
-  @include box-shadow(0 1px 2px #DDD);
+  @include box-shadow(0 1px 2px #ddd);
 }

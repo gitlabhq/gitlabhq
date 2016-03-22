@@ -12,45 +12,38 @@
       = icon('group fw')
       %span
         Group
-  - if can?(current_user, :read_group, @group)
-    = nav_link(path: 'groups#activity') do
-      = link_to activity_group_path(@group), title: 'Activity' do
-        = icon('dashboard fw')
+  = nav_link(path: 'groups#activity') do
+    = link_to activity_group_path(@group), title: 'Activity' do
+      = icon('dashboard fw')
+      %span
+        Activity
+  = nav_link(controller: [:group, :milestones]) do
+    = link_to group_milestones_path(@group), title: 'Milestones' do
+      = icon('clock-o fw')
+      %span
+        Milestones
+  = nav_link(path: 'groups#issues') do
+    = link_to issues_group_path(@group), title: 'Issues' do
+      = icon('exclamation-circle fw')
+      %span
+        Issues
+        - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
+        %span.count= number_with_delimiter(issues.count)
+  = nav_link(path: 'groups#merge_requests') do
+    = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
+      = icon('tasks fw')
+      %span
+        Merge Requests
+        - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened').execute
+        %span.count= number_with_delimiter(merge_requests.count)
+  = nav_link(controller: [:group_members]) do
+    = link_to group_group_members_path(@group), title: 'Members' do
+      = icon('users fw')
+      %span
+        Members
+  - if can?(current_user, :admin_group, @group)
+    = nav_link(html_options: { class: "separate-item" }) do
+      = link_to edit_group_path(@group), title: 'Settings' do
+        = icon ('cogs fw')
         %span
-          Activity
-    - if current_user
-      = nav_link(controller: [:group, :milestones]) do
-        = link_to group_milestones_path(@group), title: 'Milestones' do
-          = icon('clock-o fw')
-          %span
-            Milestones
-    = nav_link(path: 'groups#issues') do
-      = link_to issues_group_path(@group), title: 'Issues' do
-        = icon('exclamation-circle fw')
-        %span
-          Issues
-          - if current_user
-            %span.count= number_with_delimiter(Issue.visible_to_user(current_user).opened.of_group(@group).count)
-    = nav_link(path: 'groups#merge_requests') do
-      = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
-        = icon('tasks fw')
-        %span
-          Merge Requests
-          - if current_user
-            %span.count= number_with_delimiter(MergeRequest.opened.of_group(@group).count)
-    = nav_link(controller: [:group_members]) do
-      = link_to group_group_members_path(@group), title: 'Members' do
-        = icon('users fw')
-        %span
-          Members
-    = nav_link(controller: [:stats]) do
-      = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
-        = icon('bar-chart fw')
-        %span
-          Contribution Analytics
-    - if can?(current_user, :admin_group, @group)
-      = nav_link(html_options: { class: "separate-item" }) do
-        = link_to edit_group_path(@group), title: 'Settings' do
-          = icon ('cogs fw')
-          %span
-            Settings
+          Settings

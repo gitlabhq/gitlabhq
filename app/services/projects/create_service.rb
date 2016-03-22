@@ -9,10 +9,8 @@ module Projects
 
       @project = Project.new(params)
 
-      # Make sure that the user is allowed to use the specified visibility
-      # level
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user,
-                                                  params[:visibility_level])
+      # Make sure that the user is allowed to use the specified visibility level
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
         deny_visibility_level(@project)
         return @project
       end
@@ -55,9 +53,7 @@ module Projects
         @project.save
 
         if @project.persisted? && !@project.import?
-          unless @project.create_repository
-            raise 'Failed to create repository'
-          end
+          raise 'Failed to create repository' unless @project.create_repository
         end
       end
 

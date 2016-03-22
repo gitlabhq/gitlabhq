@@ -7,6 +7,7 @@ class AutocompleteController < ApplicationController
     @users = @users.search(params[:search]) if params[:search].present?
     @users = @users.active
     @users = @users.reorder(:name)
+<<<<<<< HEAD
 
     if params[:push_code_to_protected_branches].present? && params[:project_id].present?
       project = Project.find_by(id: params[:project_id])
@@ -14,6 +15,9 @@ class AutocompleteController < ApplicationController
     else
       @users = @users.page(params[:page]).per(PER_PAGE)
     end
+=======
+    @users = @users.page(params[:page])
+>>>>>>> ce/master
 
     if params[:search].blank?
       # Include current user if available to filter by "Me"

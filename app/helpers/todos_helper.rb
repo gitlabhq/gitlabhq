@@ -16,14 +16,19 @@ module TodosHelper
 
   def todo_target_link(todo)
     target = todo.target_type.titleize.downcase
-    link_to "#{target} #{todo.target.to_reference}", todo_target_path(todo), { title: h(todo.target.title) }
+    link_to "#{target} #{todo.target_reference}", todo_target_path(todo), { title: todo.target.title }
   end
 
   def todo_target_path(todo)
     anchor = dom_id(todo.note) if todo.note.present?
 
-    polymorphic_path([todo.project.namespace.becomes(Namespace),
-                      todo.project, todo.target], anchor: anchor)
+    if todo.for_commit?
+      namespace_project_commit_path(todo.project.namespace.becomes(Namespace), todo.project,
+                                    todo.target, anchor: anchor)
+    else
+      polymorphic_path([todo.project.namespace.becomes(Namespace),
+                        todo.project, todo.target], anchor: anchor)
+    end
   end
 
   def todos_filter_params

@@ -4,14 +4,16 @@ class @UsersSelect
     @userPath = "/autocomplete/users/:id.json"
 
     $('.js-user-search').each (i, dropdown) =>
-      @projectId = $(dropdown).data('project-id')
-      @showCurrentUser = $(dropdown).data('current-user')
-      showNullUser = $(dropdown).data('null-user')
-      showAnyUser = $(dropdown).data('any-user')
-      firstUser = $(dropdown).data('first-user')
-      selectedId = $(dropdown).data('selected')
+      $dropdown = $(dropdown)
+      @projectId = $dropdown.data('project-id')
+      @showCurrentUser = $dropdown.data('current-user')
+      showNullUser = $dropdown.data('null-user')
+      showAnyUser = $dropdown.data('any-user')
+      firstUser = $dropdown.data('first-user')
+      selectedId = $dropdown.data('selected')
+      defaultLabel = $dropdown.data('default-label')
 
-      $(dropdown).glDropdown(
+      $dropdown.glDropdown(
         data: (term, callback) =>
           @users term, (users) =>
             if term.length is 0
@@ -52,10 +54,21 @@ class @UsersSelect
         search:
           fields: ['name', 'username']
         selectable: true
-        fieldName: $(dropdown).data('field-name')
+        fieldName: $dropdown.data('field-name')
+        toggleLabel: (selected) ->
+          if selected && 'id' of selected
+            selected.name
+          else
+            defaultLabel
         clicked: ->
-          if $(dropdown).hasClass "js-filter-submit"
-            $(dropdown).parents('form').submit()
+          page = $('body').data 'page'
+          isIssueIndex = page is 'projects:issues:index'
+          isMRIndex = page is page is 'projects:merge_requests:index'
+
+          if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+            Issues.filterResults $dropdown.closest('form')
+          else if $dropdown.hasClass 'js-filter-submit'
+            $dropdown.closest('form').submit()
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false

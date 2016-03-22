@@ -19,6 +19,7 @@
 #  max_attachment_size               :integer          default(10), not null
 #  default_project_visibility        :integer
 #  default_snippet_visibility        :integer
+#  default_group_visibility          :integer
 #  restricted_signup_domains         :text
 #  user_oauth_applications           :boolean          default(TRUE)
 #  after_sign_out_path               :string(255)

@@ -41,7 +41,6 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
       click_link 'Done'
     end
 
-    expect(page).to have_content 'Todo was successfully marked as done.'
     expect(page).to have_content 'To do 3'
     expect(page).to have_content 'Done 1'
     should_not_see_todo "John Doe assigned you merge request !#{merge_request.iid}"
