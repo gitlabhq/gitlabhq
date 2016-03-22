@@ -218,13 +218,20 @@ $ ->
       $this = $(this)
       $this.attr 'value', $this.val()
 
+  $sidebarGutterToggle = $('.js-sidebar-toggle')
+  $navIconToggle = $('.toggle-nav-collapse')
+
   $(document)
     .off 'breakpoint:change'
     .on 'breakpoint:change', (e, breakpoint) ->
       if breakpoint is 'sm' or breakpoint is 'xs'
-        $gutterIcon = $('.js-sidebar-toggle').find('i')
+        $gutterIcon = $sidebarGutterToggle.find('i')
         if $gutterIcon.hasClass('fa-angle-double-right')
-          $gutterIcon.closest('a').trigger('click')
+          $sidebarGutterToggle.trigger('click')
+
+        $navIcon = $navIconToggle.find('.fa')
+        if $navIcon.hasClass('fa-angle-left')
+          $navIconToggle.trigger('click')
 
   $(document)
     .off 'click', '.js-sidebar-toggle'

@@ -4,6 +4,7 @@ v 8.6.1 (unreleased)
   - Add option to reload the schema before restoring a database backup. !2807
   - Restrict notifications for confidential issues. !3334
   - Fixes issue with signin button overflowing on mobile. !3342
+  - Auto collapses the navigation sidebar when resizing. !3343
 
 v 8.6.0
   - Add ability to move issue to another project
