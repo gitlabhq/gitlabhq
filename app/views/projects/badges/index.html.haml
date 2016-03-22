@@ -1,0 +1,15 @@
+- page_title 'Badges'
+
+.prepend-top-10
+  .panel.panel-default
+    .panel-heading
+      %b Builds badge &middot;
+      = image_tag(build_namespace_project_badges_path(@project.namespace, @project, :master, format: :svg), alt: 'Builds badge')
+    .panel-body
+      %table.table
+        %tr
+          %td Markdown
+          %td= markdown("```markdown\n[![build status](url)](link)\n```")
+        %tr
+          %td HTML
+          %td= markdown("```html\n<a href='link'><img src='url' /></a>\n```")

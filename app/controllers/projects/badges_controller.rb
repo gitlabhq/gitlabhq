@@ -1,5 +1,8 @@
 class Projects::BadgesController < Projects::ApplicationController
-  before_action :no_cache_headers
+  before_action :no_cache_headers, except: [:index]
+
+  def index
+  end
 
   def build
     badge = Gitlab::Badge::Build.new(project, params[:ref])

@@ -749,7 +749,7 @@ Rails.application.routes.draw do
         end
 
         resources :runner_projects, only: [:create, :destroy]
-        resources :badges, only: [] do
+        resources :badges, only: [:index] do
           collection do
             scope '*ref', constraints: { ref: Gitlab::Regex.git_reference_regex } do
               get :build, constraints: { format: /svg/ }
