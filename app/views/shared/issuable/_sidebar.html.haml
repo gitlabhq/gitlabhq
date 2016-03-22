@@ -33,11 +33,11 @@
         .value.bold.hide-collapsed
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 32) do
+              - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
+                %span.pull-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: 'Not allowed to merge' }
+                  = icon('exclamation-triangle')
               %span.username
                 = issuable.assignee.to_reference
-            - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
-              %a.pull-right.cannot-be-merged{href: '#', data: {toggle: 'tooltip'}, title: 'Not allowed to merge'}
-                = icon('exclamation-triangle')
           - else
             .light None
 
