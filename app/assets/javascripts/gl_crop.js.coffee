@@ -27,9 +27,9 @@ class GitLabCrop
 
     # Ensure needed elements are jquery objects
     # If selector is provided we will convert them to a jQuery Object
-    @filename = @$(@filename)
-    @previewImage = @$(@previewImage)
-    @pickImageEl = @$(@pickImageEl)
+    @filename = @getElement(@filename)
+    @previewImage = @getElement(@previewImage)
+    @pickImageEl = @getElement(@pickImageEl)
 
     # Modal elements usually are outside the @form element
     @modalCrop = if _.isString(@modalCrop) then $(@modalCrop) else @modalCrop
@@ -40,7 +40,7 @@ class GitLabCrop
 
     @bindEvents()
 
-  $: (selector) ->
+  getElement: (selector) ->
     $(selector, @form)
 
   bindEvents: ->
