@@ -1,21 +1,35 @@
 # How to create a project in GitLab
 
-To create a new project, sign in to GitLab.
+A project includes the Git repository, an issue and merge request tracker,
+and a dedicated wiki.
 
-Go to your Dashboard and click on "new project" on the right side of your screen.
+When you create a new project, you can:
 
-![Create a project](img/new_project.png)
+- [Import a project][import] from another provider
+- Provide an optional description
+- Set the [visibility level] for that project such as Private, Internal or Public.
 
-Fill out the required information:
+---
 
-1. Project path or the name of your project (you can't add spaces, so you can use hyphens or underscores)
+There are 2 ways to create a new project. You can go to your Dashboard and
+click on **New Project** on the right side of your screen or use the plus (`+`)
+button which is always visible in the upper right corner.
 
-1. Your project's description
+![Create a project](img/create_project_new_project.png)
 
-1. Select a [visibility level](https://gitlab.com/help/public_access/public_access)
+>**Note:**
+If you intend to import a project from another provider you don't need to
+follow the steps below.
 
-1. You can also [import your existing projects](http://doc.gitlab.com/ce/workflow/importing/README.html)
+From there on you must fill out the required information:
 
-1. Click on "create project"
+1. Set the project path or the name of your project (you can't add spaces, you
+   can use hyphens or underscores instead)
+1. Optionally provide a description
+1. Set the project's visibility level
+1. Click on **Create project**
 
-!![Project information](img/project_info.png)
+![Project information](img/create_project_info.png)
+
+[import]: ../workflow/importing/README.md
+[visibility level]: ../public_access/public_access.md
