@@ -7,6 +7,7 @@ v 8.6.1 (unreleased)
   - Add a confirmation step before deleting an issuable. !3341
   - Fixes issue with signin button overflowing on mobile. !3342
   - Auto collapses the navigation sidebar when resizing. !3343
+  - Shows error messages when trying to create label in dropdown menu. !3345
 
 v 8.6.0
   - Add ability to move issue to another project
