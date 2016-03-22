@@ -58,6 +58,8 @@ module Issuable
     attr_mentionable :description, cache: true
     participant :author, :assignee, :notes_with_associations
     strip_attributes :title
+
+    acts_as_paranoid
   end
 
   module ClassMethods

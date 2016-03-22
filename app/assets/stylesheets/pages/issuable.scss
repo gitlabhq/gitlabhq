@@ -183,7 +183,7 @@
     .block {
       width: $sidebar_collapsed_width - 1px;
       margin-left: -19px;
-      padding: 15px 0 0 0;
+      padding: 15px 0 0;
       border-bottom: none;
       overflow: hidden;
     }
@@ -273,12 +273,12 @@
 }
 
 .participants-list {
-  margin: -5px -5px;
+  margin: -5px;
 }
 
 .participants-author {
   display: inline-block;
-  padding: 5px 5px;
+  padding: 5px;
 
   .author_link {
     display: block;

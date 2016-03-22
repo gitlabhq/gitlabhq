@@ -8,6 +8,7 @@ describe VisibilityLevelHelper do
   end
 
   let(:project)          { build(:project) }
+  let(:group)            { build(:group) }
   let(:personal_snippet) { build(:personal_snippet) }
   let(:project_snippet)  { build(:project_snippet) }
 
@@ -16,6 +17,13 @@ describe VisibilityLevelHelper do
       it 'delegates projects to #project_visibility_level_description' do
         expect(visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, project))
             .to match /project/i
+      end
+    end
+
+    context 'used with a Group' do
+      it 'delegates groups to #group_visibility_level_description' do
+        expect(visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, group))
+            .to match /group/i
       end
     end
 
@@ -58,13 +66,8 @@ describe VisibilityLevelHelper do
 
   describe "skip_level?" do
     describe "forks" do
-      let(:project) { create(:project, :internal) }
-      let(:fork_project) { create(:forked_project_with_submodules) }
-
-      before do
-        fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-        fork_project.save
-      end
+      let(:project)       { create(:project, :internal) }
+      let(:fork_project)  { create(:project, forked_from_project: project) }
 
       it "skips levels" do
         expect(skip_level?(fork_project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy

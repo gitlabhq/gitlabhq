@@ -442,7 +442,7 @@ describe Project, models: true do
   end
 
   describe '.trending' do
-    let(:group)    { create(:group) }
+    let(:group)    { create(:group, :public) }
     let(:project1) { create(:empty_project, :public, group: group) }
     let(:project2) { create(:empty_project, :public, group: group) }
 
@@ -571,12 +571,8 @@ describe Project, models: true do
     end
 
     context 'when checking on forked project' do
-      let(:forked_project) { create :forked_project_with_submodules }
-
-      before do
-        forked_project.build_forked_project_link(forked_to_project_id: forked_project.id, forked_from_project_id: project.id)
-        forked_project.save
-      end
+      let(:project)        { create(:project, :internal) }
+      let(:forked_project) { create(:project, forked_from_project: project) }
 
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
@@ -718,6 +714,22 @@ describe Project, models: true do
 
     it 'returns projects with a matching name regardless of the casing' do
       expect(described_class.search_by_title('KITTENS')).to eq([project])
+    end
+  end
+
+  context 'when checking projects from groups' do
+    let(:private_group)    { create(:group, visibility_level: 0)  }
+    let(:internal_group)   { create(:group, visibility_level: 10) }
+
+    let(:private_project)  { create :project, :private, group: private_group }
+    let(:internal_project) { create :project, :internal, group: internal_group }
+
+    context 'when group is private project can not be internal' do
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
+    end
+
+    context 'when group is internal project can not be public' do
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
   end
 

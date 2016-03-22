@@ -118,9 +118,7 @@ module API
     end
 
     def authorize!(action, subject)
-      unless abilities.allowed?(current_user, action, subject)
-        forbidden!
-      end
+      forbidden! unless abilities.allowed?(current_user, action, subject)
     end
 
     def authorize_push_project

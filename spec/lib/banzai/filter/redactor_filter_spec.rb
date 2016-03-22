@@ -119,7 +119,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     context 'with data-group' do
       it 'removes unpermitted Group references' do
         user = create(:user)
-        group = create(:group)
+        group = create(:group, :private)
 
         link = reference_link(group: group.id, reference_filter: 'UserReferenceFilter')
         doc = filter(link, current_user: user)
@@ -129,7 +129,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
 
       it 'allows permitted Group references' do
         user = create(:user)
-        group = create(:group)
+        group = create(:group, :private)
         group.add_developer(user)
 
         link = reference_link(group: group.id, reference_filter: 'UserReferenceFilter')

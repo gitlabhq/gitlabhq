@@ -1,7 +1,7 @@
 class Projects::AvatarsController < Projects::ApplicationController
   include BlobHelper
 
-  before_action :project
+  before_action :authorize_admin_project!, only: [:destroy]
 
   def show
     @blob = @repository.blob_at_branch('master', @project.avatar_in_git)

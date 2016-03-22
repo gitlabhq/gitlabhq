@@ -49,6 +49,11 @@ describe MergeRequest, models: true do
     it { is_expected.to include_module(Taskable) }
   end
 
+  describe "act_as_paranoid" do
+    it { is_expected.to have_db_column(:deleted_at) }
+    it { is_expected.to have_db_index(:deleted_at) }
+  end
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:target_branch) }
     it { is_expected.to validate_presence_of(:source_branch) }

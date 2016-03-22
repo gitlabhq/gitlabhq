@@ -613,7 +613,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :merge_requests, constraints: { id: /\d+/ }, except: [:destroy] do
+        resources :merge_requests, constraints: { id: /\d+/ } do
           member do
             get :commits
             get :diffs
@@ -684,7 +684,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :issues, constraints: { id: /\d+/ }, except: [:destroy] do
+        resources :issues, constraints: { id: /\d+/ } do
           member do
             post :toggle_subscription
           end

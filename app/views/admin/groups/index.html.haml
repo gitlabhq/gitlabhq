@@ -46,6 +46,9 @@
 
         %h4
           = link_to [:admin, group] do
+            %span{ class: visibility_level_color(group.visibility_level) }
+              = visibility_level_icon(group.visibility_level)
+
             %i.fa.fa-folder
             = group.name
 

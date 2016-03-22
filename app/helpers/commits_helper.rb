@@ -182,7 +182,7 @@ module CommitsHelper
       end
 
     options = {
-      class: "commit-#{options[:source]}-link has_tooltip",
+      class: "commit-#{options[:source]}-link has-tooltip",
       data: { 'original-title'.to_sym => sanitize(source_email) }
     }
 
