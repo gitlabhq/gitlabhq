@@ -9,7 +9,7 @@ Create projects and groups.
 
 ## Prioritize
 
-Create issues, labels, milestones, cast your vote and review issues.
+Create issues, labels, milestones, cast your vote, and review issues.
 
 - [Create a new issue](../gitlab-basics/create-issue.md)
 - [Assign labels to issues](../workflow/labels.md)
@@ -30,7 +30,7 @@ Create merge requests, diffs, commits, and review code.
 
 Use the built-in continuous integration in GitLab.
 
-- [GitLab CI quick start guide](../ci/quick_start/README.md)
+- [Get started with GitLab CI](../ci/quick_start/README.md)
 
 ## Install and Update
 
@@ -38,4 +38,4 @@ Install and update your GitLab installation.
 
 - [Install GitLab](https://about.gitlab.com/installation/)
 - [Update GitLab](https://about.gitlab.com/update/)
-- [GitLab Omnibus configuration options](http://doc.gitlab.com/omnibus/settings/configuration.html)
+- [Explore Omnibus GitLab configuration options](http://doc.gitlab.com/omnibus/settings/configuration.html)
