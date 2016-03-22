@@ -110,7 +110,6 @@ class GitLabCrop
     data = $(btn).data()
 
     if @modalCropImg.data('cropper') && data.method
-      data = $.extend {}, data
       result = @modalCropImg.cropper data.method, data.option
 
   onFileInputChange: (e, input) ->
