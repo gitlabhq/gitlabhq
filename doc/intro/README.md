@@ -14,11 +14,11 @@ Create issues, labels, milestones, cast your vote, and review issues.
 - [Create a new issue](../gitlab-basics/create-issue.md)
 - [Assign labels to issues](../workflow/labels.md)
 - [Use milestones as an overview of your project's tracker](../workflow/milestones.md)
-- [Use voting to express your like/dislike to the issue in demand](../workflow/award_emoji.md)
+- [Use voting to express your like/dislike to issues and merge requests](../workflow/award_emoji.md)
 
 ## Collaborate
 
-Create merge requests, diffs, commits, and review code.
+Create merge requests and review code.
 
 - [Fork a project and contribute to it](../workflow/forking_workflow.md)
 - [Create a new merge request](../gitlab-basics/add-merge-request.md)
