@@ -1,4 +1,11 @@
 module SearchHelper
+
+  CAT_SETTINGS = 'Settings'
+  CAT_HELP = 'Help'
+  CAT_CURR_PROJECT = 'Current Project'
+  CAT_GROUPS = 'Groups'
+  CAT_PROJECTS = 'Projects'
+
   def search_autocomplete_opts(term)
     return unless current_user
 
@@ -23,25 +30,25 @@ module SearchHelper
   # Autocomplete results for various settings pages
   def default_autocomplete
     [
-      { category: "Settings", label: "Profile settings", url: profile_path },
-      { category: "Settings", label: "SSH Keys",         url: profile_keys_path },
-      { category: "Settings", label: "Dashboard",        url: root_path },
-      { category: "Settings", label: "Admin Section",       url: admin_root_path },
+      { category: CAT_SETTINGS, label: "Profile settings", url: profile_path },
+      { category: CAT_SETTINGS, label: "SSH Keys",         url: profile_keys_path },
+      { category: CAT_SETTINGS, label: "Dashboard",        url: root_path },
+      { category: CAT_SETTINGS, label: "Admin Section",    url: admin_root_path },
     ]
   end
 
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { category: "Help", label: "API Help",           url: help_page_path("api", "README") },
-      { category: "Help", label: "Markdown Help",      url: help_page_path("markdown", "markdown") },
-      { category: "Help", label: "Permissions Help",   url: help_page_path("permissions", "permissions") },
-      { category: "Help", label: "Public Access Help", url: help_page_path("public_access", "public_access") },
-      { category: "Help", label: "Rake Tasks Help",    url: help_page_path("raketasks", "README") },
-      { category: "Help", label: "SSH Keys Help",      url: help_page_path("ssh", "README") },
-      { category: "Help", label: "System Hooks Help",  url: help_page_path("system_hooks", "system_hooks") },
-      { category: "Help", label: "Webhooks Help",      url: help_page_path("web_hooks", "web_hooks") },
-      { category: "Help", label: "Workflow Help",      url: help_page_path("workflow", "README") },
+      { category: CAT_HELP, label: "API Help",           url: help_page_path("api", "README") },
+      { category: CAT_HELP, label: "Markdown Help",      url: help_page_path("markdown", "markdown") },
+      { category: CAT_HELP, label: "Permissions Help",   url: help_page_path("permissions", "permissions") },
+      { category: CAT_HELP, label: "Public Access Help", url: help_page_path("public_access", "public_access") },
+      { category: CAT_HELP, label: "Rake Tasks Help",    url: help_page_path("raketasks", "README") },
+      { category: CAT_HELP, label: "SSH Keys Help",      url: help_page_path("ssh", "README") },
+      { category: CAT_HELP, label: "System Hooks Help",  url: help_page_path("system_hooks", "system_hooks") },
+      { category: CAT_HELP, label: "Webhooks Help",      url: help_page_path("web_hooks", "web_hooks") },
+      { category: CAT_HELP, label: "Workflow Help",      url: help_page_path("workflow", "README") },
     ]
   end
 
@@ -51,16 +58,16 @@ module SearchHelper
       ref    = @ref || @project.repository.root_ref
 
       [
-        { category: "Current Project", label: "Files",          url: namespace_project_tree_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Commits",        url: namespace_project_commits_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Network",        url: namespace_project_network_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Graph",          url: namespace_project_graph_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Issues",         url: namespace_project_issues_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Merge Requests", url: namespace_project_merge_requests_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Milestones",     url: namespace_project_milestones_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Snippets",       url: namespace_project_snippets_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Members",        url: namespace_project_project_members_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) },
+        { category: CAT_CURR_PROJECT, label: "Files",          url: namespace_project_tree_path(@project.namespace, @project, ref) },
+        { category: CAT_CURR_PROJECT, label: "Commits",        url: namespace_project_commits_path(@project.namespace, @project, ref) },
+        { category: CAT_CURR_PROJECT, label: "Network",        url: namespace_project_network_path(@project.namespace, @project, ref) },
+        { category: CAT_CURR_PROJECT, label: "Graph",          url: namespace_project_graph_path(@project.namespace, @project, ref) },
+        { category: CAT_CURR_PROJECT, label: "Issues",         url: namespace_project_issues_path(@project.namespace, @project) },
+        { category: CAT_CURR_PROJECT, label: "Merge Requests", url: namespace_project_merge_requests_path(@project.namespace, @project) },
+        { category: CAT_CURR_PROJECT, label: "Milestones",     url: namespace_project_milestones_path(@project.namespace, @project) },
+        { category: CAT_CURR_PROJECT, label: "Snippets",       url: namespace_project_snippets_path(@project.namespace, @project) },
+        { category: CAT_CURR_PROJECT, label: "Members",        url: namespace_project_project_members_path(@project.namespace, @project) },
+        { category: CAT_CURR_PROJECT, label: "Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) },
       ]
     else
       []
@@ -71,8 +78,7 @@ module SearchHelper
   def groups_autocomplete(term, limit = 5)
     current_user.authorized_groups.search(term).limit(limit).map do |group|
       {
-        category: "Groups",
-        location: "groups",
+        category: CAT_GROUPS,
         id: group.id,
         label: "#{search_result_sanitize(group.name)}",
         url: group_path(group)
@@ -85,8 +91,7 @@ module SearchHelper
     current_user.authorized_projects.search_by_title(term).
       sorted_by_stars.non_archived.limit(limit).map do |p|
       {
-        category: "Projects",
-        location: "projects",
+        category: CAT_PROJECTS,
         id: p.id,
         value: "#{search_result_sanitize(p.name)}",
         label: "#{search_result_sanitize(p.name_with_namespace)}",
