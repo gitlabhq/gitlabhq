@@ -44,9 +44,9 @@ class GitLabCrop
     $(selector, @form)
 
   bindEvents: ->
-    self = @
+    _this = @
     @fileInput.on 'change', (e) ->
-      self.onFileInputChange(e, @)
+      _this.onFileInputChange(e, @)
 
     @pickImageEl.on 'click', @onPickImageClick
     @modalCrop.on 'shown.bs.modal', @onModalShow
@@ -54,14 +54,14 @@ class GitLabCrop
     @uploadImageBtn.on 'click', @onUploadImageBtnClick
     @cropActionsBtn.on 'click', (e) ->
       btn = @
-      self.onActionBtnClick(btn)
+      _this.onActionBtnClick(btn)
     @croppedImageBlob = null
 
   onPickImageClick: =>
     @fileInput.trigger('click')
 
   onModalShow: =>
-    self = @
+    _this = @
     @modalCropImg.cropper(
       viewMode: 1
       center: false
@@ -78,11 +78,12 @@ class GitLabCrop
       cropBoxResizable: false
       toggleDragModeOnDblclick: false
       built: ->
-        container = $(@).cropper 'getContainerData'
-        cropBoxWidth = self.cropBoxWidth;
-        cropBoxHeight = self.cropBoxHeight;
+        $image = $(@)
+        container = $image.cropper 'getContainerData'
+        cropBoxWidth = _this.cropBoxWidth;
+        cropBoxHeight = _this.cropBoxHeight;
 
-        $(@).cropper('setCropBoxData',
+        $image.cropper('setCropBoxData',
           width: cropBoxWidth,
           height: cropBoxHeight,
           left: (container.width - cropBoxWidth) / 2,
@@ -113,11 +114,11 @@ class GitLabCrop
     @readFile(input)
 
   readFile: (input) ->
-    self = @
+    _this = @
     reader = new FileReader
     reader.onload = ->
-      self.modalCropImg.attr('src', reader.result)
-      self.modalCrop.modal('show')
+      _this.modalCropImg.attr('src', reader.result)
+      _this.modalCrop.modal('show')
 
     reader.readAsDataURL(input.files[0])
 
