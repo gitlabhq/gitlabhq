@@ -97,25 +97,20 @@ class @SearchAutocomplete
             }, (response) ->
               data = []
 
-              # Save groups ordering according to server response
-              groupNames =  _.unique(_.pluck(response, 'category'))
-
-              # Group results by category name
-              groups = _.groupBy response, (item) ->
-                item.category
-
               # List results
-              for groupName in groupNames
+              for suggestion in response
 
                 # Add group header before list each group
-                data.push
-                  header: groupName
-
-                # List group
-                for item in groups[groupName]
+                if lastCategory isnt suggestion.category
                   data.push
-                    text: item.label
-                    url: item.url
+                    header: suggestion.category
+
+                  lastCategory = suggestion.category
+
+                data.push
+                  text: suggestion.label
+                  url: suggestion.url
+
               callback(data)
           ).always ->
             loading = false
