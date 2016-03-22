@@ -75,7 +75,7 @@
 
         .selectbox.hide-collapsed
           = f.hidden_field 'milestone_id', value: issuable.milestone_id, id: nil
-          = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_url, use_id: true }})
+          = dropdown_tag('Milestone', options: { title: 'Assign milestone', toggle_class: 'js-milestone-select js-extra-options', filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search milestones', data: { show_no: true, field_name: "#{issuable.to_ability_name}[milestone_id]", project_id: @project.id, issuable_id: issuable.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), ability_name: issuable.to_ability_name, issue_update: issuable_url, use_id: true }})
 
       - if issuable.project.labels.any?
         .block.labels
@@ -150,7 +150,7 @@
           = clipboard_button(clipboard_text: project_ref)
 
     :javascript
-      new MilestoneSelect();
+      new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
       new IssuableContext('#{current_user.to_json(only: [:username, :id, :name])}');
       new Subscription('.subscription')

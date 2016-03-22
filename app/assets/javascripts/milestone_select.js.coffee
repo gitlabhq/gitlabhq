@@ -1,5 +1,8 @@
 class @MilestoneSelect
-  constructor: () ->
+  constructor: (currentProject) ->
+    if currentProject?
+      _this = @
+      @currentProject = JSON.parse(currentProject)
     $('.js-milestone-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
       projectId = $dropdown.data('project-id')
@@ -16,6 +19,13 @@ class @MilestoneSelect
       $block = $selectbox.closest('.block')
       $value = $block.find('.value')
       $loading = $block.find('.block-loading').fadeOut()
+
+      if issueUpdateURL
+        milestoneLinkTemplate = _.template(
+          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>"><%= title %></a>'
+        )
+
+        milestoneLinkNoneTemplate = '<div class="light">None</div>'
 
       $dropdown.glDropdown(
         data: (term, callback) ->
@@ -85,12 +95,10 @@ class @MilestoneSelect
               $milestoneLink = $value
                       .show()
                       .find('a')
-              href = $milestoneLink
-                      .text(data.milestone.title)
-                      .attr('href')
-
-              splitHref = href.split('/')
-              splitHref[splitHref.length - 1] = data.milestone.iid
-              $milestoneLink
-                .attr('href',splitHref.join('/'))
+              if data.milestone?
+                data.milestone.namespace = _this.currentProject.namespace
+                data.milestone.path = _this.currentProject.path
+                $value.html(milestoneLinkTemplate(data.milestone))
+              else
+                $value.html(milestoneLinkNoneTemplate)
       )

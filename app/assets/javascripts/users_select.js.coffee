@@ -127,6 +127,8 @@ class @UsersSelect
           else
             defaultLabel
 
+        inputId: 'issue_assignee_id'
+
         hidden: ->
           $selectbox.hide()
           $value.show()

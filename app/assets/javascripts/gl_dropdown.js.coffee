@@ -314,6 +314,9 @@ class GitLabDropdown
         if !field.length
           # Create hidden input for form
           input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
+          if @options.inputId?  
+            input = $(input)
+                      .attr('id', @options.inputId)
           @dropdown.before input
 
   selectFirstRow: ->
