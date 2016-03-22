@@ -130,6 +130,12 @@
       text-decoration: none;
       outline: 0;
     }
+
+    &.dropdown-menu-empty-link {
+      &.is-focused {
+        background-color: $dropdown-empty-row-bg;
+      }
+    }
   }
 }
 
