@@ -14,6 +14,9 @@ class @LabelsSelect
       defaultLabel = $dropdown.data('default-label')
 
       if newLabelField.length
+        $newLabelError = $dropdown.parent().find('.js-label-error')
+        $newLabelError.hide()
+
         $('.suggest-colors-dropdown a').on 'click', (e) ->
           e.preventDefault()
           e.stopPropagation()
@@ -27,6 +30,7 @@ class @LabelsSelect
           e.stopPropagation()
 
           if newLabelField.val() isnt '' and newColorField.val() isnt ''
+            $newLabelError.hide()
             $('.js-new-label-btn').disable()
 
             # Create new label with API
@@ -35,7 +39,13 @@ class @LabelsSelect
               color: newColorField.val()
             }, (label) ->
               $('.js-new-label-btn').enable()
-              $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
+
+              if label.message?
+                $newLabelError
+                  .text label.message
+                  .show()
+              else
+                $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
 
       $dropdown.glDropdown(
         data: (term, callback) ->
