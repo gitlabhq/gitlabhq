@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317092222) do
+ActiveRecord::Schema.define(version: 20160320204112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(version: 20160317092222) do
     t.boolean  "akismet_enabled",                   default: false
     t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",              default: false
+    t.integer  "default_group_visibility"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -595,6 +596,7 @@ ActiveRecord::Schema.define(version: 20160317092222) do
     t.string   "description",           default: "",    null: false
     t.string   "avatar"
     t.boolean  "share_with_group_lock", default: false
+    t.integer  "visibility_level",      default: 20,    null: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
@@ -604,6 +606,7 @@ ActiveRecord::Schema.define(version: 20160317092222) do
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", unique: true, using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
+  add_index "namespaces", ["visibility_level"], name: "index_namespaces_on_visibility_level", using: :btree
 
   create_table "notes", force: :cascade do |t|
     t.text     "note"

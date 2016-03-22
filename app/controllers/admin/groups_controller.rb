@@ -59,6 +59,6 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar)
+    params.require(:group).permit(:name, :description, :path, :avatar, :visibility_level)
   end
 end

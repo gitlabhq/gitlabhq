@@ -111,6 +111,24 @@
     color: #4c4e54;
     font-size: 23px;
     line-height: 1.1;
+
+    h1 {
+      color: #313236;
+      margin-bottom: 6px;
+      font-size: 23px;
+    }
+
+    .visibility-icon {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 18px;
+      color: $gray;
+    }
+
+    p {
+      padding: 0 $gl-padding;
+      color: #5c5d5e;
+    }
   }
 
   .cover-desc {
