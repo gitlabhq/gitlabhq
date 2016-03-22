@@ -71,7 +71,7 @@ class ProjectsController < ApplicationController
   def remove_fork
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
-    if @project.unlink_fork(current_user)
+    if ::Projects::UnlinkForkService.new(@project, current_user).execute
       flash[:notice] = 'The fork relationship has been removed.'
     end
   end
