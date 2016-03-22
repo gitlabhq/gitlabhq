@@ -36,4 +36,10 @@ describe ExternalIssue, models: true do
       expect(issue.title).to eq "External Issue #{issue}"
     end
   end
+
+  describe '#reference_link_text' do
+    it 'returns a String reference to the object' do
+      expect(issue.reference_link_text).to eq '#EXT-1234'
+    end
+  end
 end

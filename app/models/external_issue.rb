@@ -34,7 +34,15 @@ class ExternalIssue
     %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
   end
 
+  def self.reference_prefix
+    '#'
+  end
+
   def to_reference(_from_project = nil)
     id
+  end
+
+  def reference_link_text(from_project = nil)
+    "#{self.class.reference_prefix}#{id}"
   end
 end
