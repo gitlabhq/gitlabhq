@@ -11,3 +11,11 @@
     }
   }
 }
+
+@media (max-width: $screen-xs-max) {
+  .filter-item {
+    display: block;
+    margin: 0 0 10px 0;
+  }
+}
+
