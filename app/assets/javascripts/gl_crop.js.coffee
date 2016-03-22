@@ -105,6 +105,7 @@ class GitLabCrop
     @setBlob()
     @setPreview()
     @modalCrop.modal('hide')
+    @fileInput.val('')
 
   onActionBtnClick: (btn) ->
     data = $(btn).data()
