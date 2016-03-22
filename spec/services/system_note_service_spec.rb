@@ -439,7 +439,14 @@ describe SystemNoteService, services: true do
 
     context 'commit with cross-reference from fork' do
       let(:author2) { create(:user) }
-      let(:forked_project) { Projects::ForkService.new(project, author2).execute }
+      let(:forked_project) do
+        fp = Projects::ForkService.new(project, author2).execute
+        # The call to project.repository.after_import in RepositoryForkWorker does
+        # not reset the @exists variable of @fork_project.repository so we have to
+        # explicitely call this method to clear the @exists variable.
+        fp.repository.after_import
+        fp
+      end
       let(:commit2) { forked_project.commit }
 
       before do
