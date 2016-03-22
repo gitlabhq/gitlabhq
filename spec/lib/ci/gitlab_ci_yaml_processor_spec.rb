@@ -497,6 +497,12 @@ module Ci
         it { expect { subject }.to_not raise_error }
       end
 
+      context 'dependencies to builds defined as symbols' do
+        let(:dependencies) { [:build1, :build2] }
+
+        it { expect { subject }.to_not raise_error }
+      end
+
       context 'undefined dependency' do
         let(:dependencies) { ['undefined'] }
 
