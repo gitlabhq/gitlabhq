@@ -4,6 +4,7 @@ v 8.6.1 (unreleased)
   - Add option to reload the schema before restoring a database backup. !2807
   - Restrict notifications for confidential issues. !3334
   - Do not allow to move issue if it has not been persisted. !3340
+  - Add a confirmation step before deleting an issuable. !3341
   - Fixes issue with signin button overflowing on mobile. !3342
   - Auto collapses the navigation sidebar when resizing. !3343
 
