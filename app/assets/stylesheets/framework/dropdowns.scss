@@ -183,7 +183,7 @@
 }
 
 .dropdown-select {
-  width: 280px;
+  width: 300px;
 }
 
 .dropdown-menu-align-right {
@@ -237,7 +237,7 @@
 
 .dropdown-title-button {
   position: absolute;
-  top: -1px;
+  top: 0;
   padding: 0;
   color: $dropdown-title-btn-color;
   font-size: 14px;
@@ -357,8 +357,9 @@
 .dropdown-label-box {
   position: relative;
   top: 3px;
+  margin-right: 5px;
   display: inline-block;
-  width: 20px;
-  height: 16px;
-  border-radius: 3px;
+  width: 15px;
+  height: 15px;
+  border-radius: $border-radius-base;
 }

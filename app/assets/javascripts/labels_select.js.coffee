@@ -23,7 +23,13 @@ class @LabelsSelect
           newColorField.val $(this).data('color')
           $('.js-dropdown-label-color-preview')
             .css 'background-color', $(this).data('color')
+            .parent()
             .addClass 'is-active'
+
+        $('.js-cancel-label-btn').on 'click', (e) ->
+          e.preventDefault()
+          e.stopPropagation()
+          $('.dropdown-menu-back', $dropdown.parent()).trigger 'click'
 
         $('.js-new-label-btn').on 'click', (e) ->
           e.preventDefault()
