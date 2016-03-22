@@ -65,18 +65,8 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
-      link_output = simple_sanitize(project.name)
-
-      if current_user
-        link_output += project_select_tag :project_path,
-          class: "project-item-select js-projects-dropdown",
-          data: { include_groups: false, order_by: 'last_activity_at' }
-      end
-
-      link_output
-    end
-    project_link += icon "chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle" if current_user
+    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder"}
+    project_link += icon "chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", data: { target: ".header-content", toggle: "dropdown" }  if current_user
 
     full_title = namespace_link + ' / ' + project_link
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
