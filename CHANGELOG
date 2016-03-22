@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.6.1 (unreleased)
   - Add option to reload the schema before restoring a database backup. !2807
   - Restrict notifications for confidential issues. !3334
+  - Fixes issue with signin button overflowing on mobile. !3342
 
 v 8.6.0
   - Add ability to move issue to another project
