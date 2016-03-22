@@ -59,6 +59,7 @@ class @Profile
         new Flash(jqXHR.responseJSON.message, 'alert')
       complete: ->
         window.scrollTo 0, 0
+        # Enable submit button after requests ends
         self.form.find(':input[disabled]').enable()
 
 $ ->
