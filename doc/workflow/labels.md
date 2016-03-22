@@ -97,6 +97,13 @@ label description like shown below.
 
 ![Filter labels](img/labels_filter.png)
 
+---
+
+And if you added a description to your label, you can see it by hovering your
+mouse over the label in the issue tracker.
+
+![Label tooltips](img/labels_description_tooltip.png)
+
 ## Subscribe to labels
 
 If you don’t want to miss issues or merge requests that are important to you,
