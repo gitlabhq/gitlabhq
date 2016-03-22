@@ -71,7 +71,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
   # All bitbucket imports
   def bitbucket_projects_with_wrong_import_url
-    select_all("SELECT p.id, p.import_urlselect_all("SELECT i.id, p.import_url, i.data FROM projects p INNER JOIN project_import_data i ON p.id = i.project_id WHERE p.import_url IS NOT NULL AND p.import_type = 'bitbucket' "), i.data FROM projects p INNER JOIN project_import_data i ON p.id = i.project_id WHERE p.import_url IS NOT NULL AND p.import_type = 'bitbucket' ")
+    select_all("SELECT i.id, p.import_url, i.data FROM projects p INNER JOIN project_import_data i ON p.id = i.project_id WHERE p.import_url IS NOT NULL AND p.import_type = 'bitbucket' ")
   end
 
   def project_import_data(project_id)
