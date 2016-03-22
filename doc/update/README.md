@@ -15,3 +15,4 @@ Depending on the installation method and your GitLab version, there are multiple
 
 - [MySQL to PostgreSQL](mysql_to_postgresql.md) guides you through migrating your database from MySQL to PostgreSQL.
 - [MySQL installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/database_mysql.md) contains additional information about configuring GitLab to work with a MySQL database.
+- [Restoring from backup after a failed upgrade](restore_after_failure.md)
