@@ -25,7 +25,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :abilities, :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?
-  helper_method :repository, :can_collaborate_with_project?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -118,47 +117,6 @@ class ApplicationController < ActionController::Base
     abilities.allowed?(object, action, subject)
   end
 
-  def project
-    unless @project
-      namespace = params[:namespace_id]
-      id = params[:project_id] || params[:id]
-
-      # Redirect from
-      #   localhost/group/project.git
-      # to
-      #   localhost/group/project
-      #
-      if id =~ /\.git\Z/
-        redirect_to request.original_url.gsub(/\.git\/?\Z/, '') and return
-      end
-
-      project_path = "#{namespace}/#{id}"
-      @project = Project.find_with_namespace(project_path)
-
-      if @project and can?(current_user, :read_project, @project)
-        if @project.path_with_namespace != project_path
-          redirect_to request.original_url.gsub(project_path, @project.path_with_namespace) and return
-        end
-        @project
-      elsif current_user.nil?
-        @project = nil
-        authenticate_user!
-      else
-        @project = nil
-        render_404 and return
-      end
-    end
-    @project
-  end
-
-  def repository
-    @repository ||= project.repository
-  end
-
-  def authorize_project!(action)
-    return access_denied! unless can?(current_user, action, project)
-  end
-
   def access_denied!
     render "errors/access_denied", layout: "errors", status: 404
   end
@@ -167,24 +125,12 @@ class ApplicationController < ActionController::Base
     render "errors/git_not_found.html", layout: "errors", status: 404
   end
 
-  def method_missing(method_sym, *arguments, &block)
-    if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
-      authorize_project!($1.to_sym)
-    else
-      super
-    end
-  end
-
   def render_403
     head :forbidden
   end
 
   def render_404
     render file: Rails.root.join("public", "404"), layout: false, status: "404"
-  end
-
-  def require_non_empty_project
-    redirect_to @project if @project.empty_repo?
   end
 
   def no_cache_headers
@@ -410,13 +356,6 @@ class ApplicationController < ActionController::Base
     return false if root_urls.include?(home_page_url)
 
     current_user.nil? && root_path == request.path
-  end
-
-  def can_collaborate_with_project?(project = nil)
-    project ||= @project
-
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project))
   end
 
   private

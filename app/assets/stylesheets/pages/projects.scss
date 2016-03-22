@@ -68,28 +68,6 @@
     }
   }
 
-  .project-home-desc {
-    h1 {
-      color: #313236;
-      margin: 0;
-      margin-bottom: 6px;
-      font-size: 23px;
-      font-weight: normal;
-    }
-
-    .visibility-icon {
-      display: inline-block;
-      margin-left: 5px;
-      font-size: 18px;
-      color: $gray;
-    }
-
-    p {
-      padding: 0 $gl-padding;
-      color: #5c5d5e;
-    }
-  }
-
   .project-repo-buttons {
     margin-top: 20px;
     margin-bottom: 0;

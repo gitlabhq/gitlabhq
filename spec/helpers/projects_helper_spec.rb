@@ -11,16 +11,8 @@ describe ProjectsHelper do
 
   describe "can_change_visibility_level?" do
     let(:project) { create(:project) }
-
-    let(:fork_project) do
-      fork_project = create(:forked_project_with_submodules)
-      fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-      fork_project.save
-
-      fork_project
-    end
-
     let(:user) { create(:user) }
+    let(:fork_project) { Projects::ForkService.new(project, user).execute }
 
     it "returns false if there are no appropriate permissions" do
       allow(helper).to receive(:can?) { false }

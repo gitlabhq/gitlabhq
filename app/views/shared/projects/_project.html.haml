@@ -42,8 +42,7 @@
         %span
           = icon('star')
           = project.star_count
-      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' },
-        title: "#{visibility_level_label(project.visibility_level)} - #{project_visibility_level_description(project.visibility_level)}"}
+      %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project)}
         = visibility_level_icon(project.visibility_level, fw: false)
     - if show_last_commit_as_description
       .description

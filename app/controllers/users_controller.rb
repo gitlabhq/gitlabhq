@@ -108,7 +108,7 @@ class UsersController < ApplicationController
   end
 
   def load_groups
-    @groups = @user.groups.order_id_desc
+    @groups = JoinedGroupsFinder.new(@user).execute(current_user)
   end
 
   def projects_for_current_user

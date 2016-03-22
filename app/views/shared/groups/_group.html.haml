@@ -21,6 +21,9 @@
       = icon('users')
       = number_with_delimiter(group.users.count)
 
+    %span.visibility-icon.has_tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group)}
+      = visibility_level_icon(group.visibility_level, fw: false)
+
   = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   = link_to group, class: 'group-name title' do
     = group.name
