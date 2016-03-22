@@ -97,6 +97,28 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
         end
 
+        it "returns builds if only has a triggers keyword specified and a trigger is provided" do
+          config = YAML.dump({
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec", type: type, only: ["triggers"] }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, true).size).to eq(1)
+        end
+
+        it "does not return builds if only has a triggers keyword specified and no trigger is provided" do
+          config = YAML.dump({
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec", type: type, only: ["triggers"] }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
+        end
+
         it "returns builds if only has current repository path" do
           config = YAML.dump({
                                before_script: ["pwd"],
@@ -196,6 +218,28 @@ module Ci
           config = YAML.dump({
                                before_script: ["pwd"],
                                rspec: { script: "rspec", type: type, except: ["tags"] }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
+        end
+
+        it "does not return builds if except has a triggers keyword specified and a trigger is provided" do
+          config = YAML.dump({
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec", type: type, except: ["triggers"] }
+                             })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, true).size).to eq(0)
+        end
+
+        it "returns builds if except has a triggers keyword specified and no trigger is provided" do
+          config = YAML.dump({
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec", type: type, except: ["triggers"] }
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, path)
