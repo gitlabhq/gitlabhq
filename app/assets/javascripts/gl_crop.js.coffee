@@ -1,4 +1,7 @@
 class GitLabCrop
+  # Matches everything but the file name
+  FILENAMEREGEX = /^.*[\\\/]/
+
   constructor: (input, opts = {}) ->
     @fileInput = $(input)
 
@@ -131,7 +134,7 @@ class GitLabCrop
 
   setPreview: ->
     @previewImage.attr('src', @dataURL)
-    filename = @fileInput.val().replace(/^.*[\\\/]/, '')
+    filename = @fileInput.val().replace(FILENAMEREGEX, '')
     @filename.text(filename)
 
   setBlob: ->
