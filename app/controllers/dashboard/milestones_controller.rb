@@ -6,14 +6,14 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   before_action :milestone, only: [:show]
 
   def index
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @milestones
+      end
+    end
   end
 
   def show
-  end
-
-  private
-
-  def projects
-    @projects ||= current_user.authorized_projects.sorted_by_activity.non_archived
   end
 end
