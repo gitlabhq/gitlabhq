@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.6.1 (unreleased)
+v 8.6.2 (unreleased)
+
+v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
   - Display navigation controls on mobile. !3214
   - Fixed bug where participants would not work correctly on merge requests. !3329
