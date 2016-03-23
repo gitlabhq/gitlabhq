@@ -1,6 +1,6 @@
 class DeviseMailerPreview < ActionMailer::Preview
   def confirmation_instructions_for_signup
-    user = User.new(email: 'signup@example.com')
+    user = User.new(name: 'Jane Doe', email: 'signup@example.com')
     DeviseMailer.confirmation_instructions(user, 'faketoken', {})
   end
 
