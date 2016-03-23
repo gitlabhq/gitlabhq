@@ -149,9 +149,9 @@ class @SearchAutocomplete
     # Avoid falsy value to be returned
     return
 
-  onSearchInputClick: =>
-    if (@searchInput.val() is '')
-      @disableAutocomplete()
+  onSearchInputClick: (e) =>
+    # Prevents closing the dropdown menu
+    e.stopImmediatePropagation()
 
   onSearchInputFocus: =>
     @wrap.addClass('search-active')
