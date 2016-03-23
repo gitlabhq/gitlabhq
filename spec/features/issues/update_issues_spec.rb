@@ -37,8 +37,48 @@ feature 'Multiple issue updating from issues#index', feature: true do
     end
   end
 
+  context 'assignee update', js: true do
+    before do
+      project.team << [user, :master]
+      login_as(user)
+    end
+
+    it 'should update to current user' do
+      visit namespace_project_issues_path(project.namespace, project)
+
+      find('#check_all_issues').click
+      find('.js-update-assignee').click
+
+      find('.dropdown-menu-user-link', text: user.username).click
+      click_update_issues_button
+
+      page.within('.issue .controls') do
+        expect(find('.author_link')["data-original-title"]).to have_content(user.name)
+      end
+    end
+
+    it 'should update to unassigned' do
+      create_assigned
+      visit namespace_project_issues_path(project.namespace, project)
+
+      find('#check_all_issues').click
+      find('.js-update-assignee').click
+
+      find('.dropdown-menu-user-link', text: "Unassigned").click
+      click_update_issues_button
+
+      within first('.issue .controls') do
+        expect(page).to have_no_selector('.author_link')
+      end
+    end
+  end
+
   def create_closed
     create(:issue, project: project, state: :closed)
+  end
+
+  def create_assigned
+    create(:issue, project: project, assignee: user)
   end
 
   def click_update_issues_button
