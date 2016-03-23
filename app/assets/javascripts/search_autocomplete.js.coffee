@@ -36,6 +36,8 @@ class @SearchAutocomplete
 
     @searchInput.addClass('disabled')
 
+    @saveTextLength()
+
     @bindEvents()
 
   # Finds an element inside wrapper element
@@ -44,6 +46,9 @@ class @SearchAutocomplete
 
   saveOriginalState: ->
     @originalState = @serializeState()
+
+  saveTextLength: ->
+    @lastTextLength = @searchInput.val().length
 
   createAutocomplete: ->
     @searchInput.glDropdown
@@ -64,6 +69,8 @@ class @SearchAutocomplete
 
     # Prevent multiple ajax calls
     return if @loadingSuggestions
+
+    return if @badgePresent()
 
     @loadingSuggestions = true
 
@@ -102,10 +109,11 @@ class @SearchAutocomplete
       scope: @scopeInputEl.val()
 
       # Location badge
-      _location: $.trim(@locationText.text())
+      _location: @locationText.text()
     }
 
   bindEvents: ->
+    @searchInput.on 'keydown', @onSearchInputKeyDown
     @searchInput.on 'keyup', @onSearchInputKeyUp
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
@@ -123,12 +131,19 @@ class @SearchAutocomplete
   onDropdownOpen: (e) =>
     @dropdown.dropdown('toggle')
 
+  onSearchInputKeyDown: =>
+    # Saves last length of the entered text
+    @saveTextLength()
+
   onSearchInputKeyUp: (e) =>
     switch e.keyCode
       when KEYCODE.BACKSPACE
-        if e.currentTarget.value is ''
-          @removeLocationBadge()
-          @searchInput.focus()
+        # when trying to remove the location badge
+        if @lastTextLength is 0 and @badgePresent()
+            @removeLocationBadge()
+
+        # When removing the last character and no badge is present
+        if @lastTextLength is 1 and !@badgePresent()
           @disableAutocomplete()
       when KEYCODE.ESCAPE
         if @badgePresent()
