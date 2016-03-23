@@ -12,7 +12,8 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   def up
     say("Encrypting and migrating project import credentials...")
 
-    say("Projects and Github projects with a wrong URL. Also, migrating Gitlab projects credentials.")
+    # This should cover Github, Gitlab, Bitbucket user:password, token@domain, and other similar URLs.
+    say("Projects and Github projects with a wrong URL. It also migrates Gitlab project credentials.")
     in_transaction { process_projects_with_wrong_url }
 
     say("Migrating bitbucket credentials...")
@@ -20,6 +21,9 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
     say("Migrating fogbugz credentials...")
     in_transaction { process_project(import_type: 'fogbugz') }
+
+    say("Migrating google code credentials...")
+    in_transaction { process_project(import_type: 'google_code') }
   end
 
   def process_projects_with_wrong_url
@@ -39,7 +43,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
   def replace_data_credentials(data)
     data_hash = YAML::load(data['data']) if data['data']
-    if defined?(data_hash) && data_hash
+    if defined?(data_hash) && !data_hash.blank?
       update_with_encrypted_data(data_hash, data['id'])
     end
   end
@@ -83,7 +87,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
 
   #Github projects with token, and any user:password@ based URL
   def projects_with_wrong_import_url
-    select_all("SELECT p.id, p.import_url FROM projects p WHERE p.import_url IS NOT NULL AND (p.import_url LIKE '%//%:%@%' OR p.import_url LIKE 'https___#{"_"*40}@github.com%')")
+    select_all("SELECT p.id, p.import_url FROM projects p WHERE p.import_url IS NOT NULL AND p.import_url LIKE '%//%@%'")
   end
 
   # All imports with data for import_type

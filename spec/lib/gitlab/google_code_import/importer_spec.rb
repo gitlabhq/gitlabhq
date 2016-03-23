@@ -15,7 +15,7 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
   subject { described_class.new(project) }
 
   before do
-    project.create_import_data(data: import_data)
+    project.create_import_data(credentials: import_data)
   end
 
   describe "#execute" do
