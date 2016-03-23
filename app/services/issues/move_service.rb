@@ -54,7 +54,8 @@ module Issues
         new_note = note.dup
         new_params = { project: @new_project, noteable: @new_issue,
                        note: unfold_references(new_note.note),
-                       created_at: note.created_at }
+                       created_at: note.created_at,
+                       updated_at: note.updated_at }
 
         new_note.update(new_params)
       end
