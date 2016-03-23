@@ -70,6 +70,7 @@ class @SearchAutocomplete
     # Prevent multiple ajax calls
     return if @loadingSuggestions
 
+    # Do not request suggestions if dropdown is disabled
     return if @badgePresent()
 
     @loadingSuggestions = true
@@ -102,7 +103,7 @@ class @SearchAutocomplete
   serializeState: ->
     {
       # Search Criteria
-      project_id: @projectInputEl.val()
+      search_project_id: @projectInputEl.val()
       group_id: @groupInputEl.val()
       search_code: @searchCodeInputEl.val()
       repository_ref: @repositoryInputEl.val()
@@ -231,9 +232,6 @@ class @SearchAutocomplete
 
       # _location isnt a input
       break if input is '_location'
-
-      # renamed to avoid tests to fail
-      if input is 'project_id' then input = 'search_project_id'
 
       @getElement("##{input}").val('')
 
