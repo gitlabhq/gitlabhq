@@ -97,12 +97,12 @@ class Label < ActiveRecord::Base
     end
   end
 
-  def open_issues_count
-    issues.opened.count
+  def open_issues_count(user = nil)
+    issues.visible_to_user(user).opened.count
   end
 
-  def closed_issues_count
-    issues.closed.count
+  def closed_issues_count(user = nil)
+    issues.visible_to_user(user).closed.count
   end
 
   def open_merge_requests_count
