@@ -8,6 +8,7 @@ v 8.6.2
   - Make dropdowns pixel perfect. !3337
   - Fix bold text in issuable sidebar. !3358
   - Fix error with anonymous token in applications settings. !3362
+  - Fix the milestone 'upcoming' filter. !3364
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
