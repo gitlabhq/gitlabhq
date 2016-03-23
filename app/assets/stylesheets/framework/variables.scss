@@ -138,13 +138,14 @@ $regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif
 */
 $dropdown-bg: #fff;
 $dropdown-link-color: #555;
-$dropdown-link-hover-bg: rgba(#000, .04);
+$dropdown-link-hover-bg: $row-hover;
+$dropdown-empty-row-bg: rgba(#000, .04);
 $dropdown-border-color: rgba(#000, .1);
 $dropdown-shadow-color: rgba(#000, .1);
 $dropdown-divider-color: rgba(#000, .1);
 $dropdown-header-color: #959494;
 $dropdown-title-btn-color: #bfbfbf;
-$dropdown-input-color: #c7c7c7;
+$dropdown-input-color: #555;
 $dropdown-input-focus-border: rgb(58, 171, 240);
 $dropdown-input-focus-shadow: rgba(#000, .2);
 $dropdown-loading-bg: rgba(#fff, .6);
