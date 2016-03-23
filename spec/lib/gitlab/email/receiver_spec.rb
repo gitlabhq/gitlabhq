@@ -24,7 +24,7 @@ describe Gitlab::Email::Receiver, lib: true do
     end
   end
 
-  context "when no sent notificiation for the reply key could be found" do
+  context "when no sent notification for the reply key could be found" do
     let(:email_raw) { fixture_file('emails/wrong_reply_key.eml') }
 
     it "raises a SentNotificationNotFoundError" do
