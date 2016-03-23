@@ -18,6 +18,7 @@ class @SearchAutocomplete
 
     # Dropdown Element
     @dropdown = @wrap.find('.dropdown')
+    @dropdownContent = @dropdown.find('.dropdown-content')
 
     @locationBadgeEl = @getElement('.search-location-badge')
     @locationText = @getElement('.location-text')
@@ -136,6 +137,7 @@ class @SearchAutocomplete
         if e.currentTarget.value is ''
           @removeLocationBadge()
           @searchInput.focus()
+          @disableAutocomplete()
       when KEYCODE.ESCAPE
         if @badgePresent()
         else
@@ -239,4 +241,13 @@ class @SearchAutocomplete
   disableAutocomplete: ->
     if @autocomplete
       @searchInput.addClass('disabled')
+      @dropdown.removeClass('open')
+      @restoreMenu()
+
     @autocomplete = false
+
+  restoreMenu: ->
+    html = "<ul>
+              <li><a class='is-focused'>Loading...</a></li>
+            </ul>"
+    @dropdownContent.html(html)
