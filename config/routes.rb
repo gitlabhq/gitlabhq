@@ -59,9 +59,6 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
   end
 
-  # Enable Grack support
-  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post, :put]
-
   # Help
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page, constraints: { category: /.*/, file: /[^\/\.]+/ }
@@ -426,6 +423,13 @@ Rails.application.routes.draw do
       end
 
       scope module: :projects do
+        # Git HTTP clients ('git clone' etc.)
+        scope constraints: { format: /(git|wiki\.git)/ } do
+          get '/info/refs', to: 'git_http#info_refs', only: :get
+          get '/git-upload-pack', to: 'git_http#git_upload_pack', only: :post
+          get '/git-receive-pack', to: 'git_http#git_receive_pack', only: :post
+        end
+
         # Blob routes:
         get '/new/*id', to: 'blob#new', constraints: { id: /.+/ }, as: 'new_blob'
         post '/create/*id', to: 'blob#create', constraints: { id: /.+/ }, as: 'create_blob'
