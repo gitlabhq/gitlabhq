@@ -242,9 +242,9 @@ module Ci
       stage_index = stages.index(job[:stage])
 
       job[:dependencies].each do |dependency|
-        raise ValidationError, "#{name} job: undefined dependency: #{dependency}" unless @jobs[dependency]
+        raise ValidationError, "#{name} job: undefined dependency: #{dependency}" unless @jobs[dependency.to_sym]
 
-        unless stages.index(@jobs[dependency][:stage]) < stage_index
+        unless stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
       end

@@ -6,6 +6,7 @@ v 8.7.0 (unreleased)
 v 8.6.1 (unreleased)
   - Do not allow to move issue if it has not been persisted
   - Fix an issue causing the Dashboard/Milestones page to be blank
+  - Fix build dependencies, when the dependency is a string
 
 v 8.6.0
   - Add ability to move issue to another project
