@@ -96,6 +96,7 @@ class GitLabDropdown
   LOADING_CLASS = "is-loading"
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
+  CURRENT_INDEX = 0
 
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
 
@@ -218,6 +219,8 @@ class GitLabDropdown
         return true
 
   opened: =>
+    @addArrowKeyEvent()
+
     contentHtml = $('.dropdown-content', @dropdown).html()
     if @remote && contentHtml is ""
       @remote.execute()
@@ -228,6 +231,7 @@ class GitLabDropdown
     @dropdown.trigger('shown.gl.dropdown')
 
   hidden: (e) =>
+    @removeArrayKeyEvent()
     if @options.filterable
       @dropdown
         .find(".dropdown-input-field")
@@ -322,8 +326,8 @@ class GitLabDropdown
     ).join('')
 
   noResults: ->
-    html = "<li>"
-    html += "<a class='dropdown-menu-empty-link is-focused'>"
+    html = "<li class='dropdown-menu-empty-link is-focused'>"
+    html += "<a href='#'>"
     html += "No matching results."
     html += "</a>"
     html += "</li>"
@@ -343,7 +347,7 @@ class GitLabDropdown
       selectedObject = @renderedData[selectedIndex]
     value = if @options.id then @options.id(selectedObject, el) else selectedObject.id
     field = @dropdown.parent().find("input[name='#{fieldName}'][value='#{value}']")
-  
+
     if el.hasClass(ACTIVE_CLASS)
       el.removeClass(ACTIVE_CLASS)
       field.remove()
@@ -384,8 +388,53 @@ class GitLabDropdown
     # simulate a click on the first link
     $(selector).trigger "click"
 
+  addArrowKeyEvent: ->
+    ARROW_KEY_CODES = [38, 40]
+    $input = @dropdown.find(".dropdown-input-field")
+
+    selector = '.dropdown-content li:not(.divider)'
+    if @dropdown.find(".dropdown-toggle-page").length
+      selector = ".dropdown-page-one #{selector}"
+
+    $('body').on 'keydown', (e) =>
+      currentKeyCode = e.keyCode
+
+      if ARROW_KEY_CODES.indexOf(currentKeyCode) >= 0
+        e.preventDefault()
+        e.stopPropagation()
+
+        $listItems = $(selector, @dropdown)
+
+        if @options.filterable
+          $input.blur()
+
+        if currentKeyCode is 40
+          # Move down
+          CURRENT_INDEX += 1 if CURRENT_INDEX < $listItems.length
+        else if currentKeyCode is 38
+          # Move up
+          CURRENT_INDEX -= 1 if CURRENT_INDEX > 0
+
+        @highlightRowAtIndex(CURRENT_INDEX)
+
+        return false
+
+  removeArrayKeyEvent: ->
+    $('body').off 'keydown'
+
+  highlightRowAtIndex: (index, prevIndex) ->
+    # Remove the class for the previously focused row
+    $('.is-focused', @dropdown).removeClass 'is-focused'
+
+    # Update the class for the row at the specific index
+    selector = ".dropdown-content li:not(.divider):eq(#{index})"
+    if @dropdown.find(".dropdown-toggle-page").length
+      selector = ".dropdown-page-one #{selector}"
+
+    $listItem = $(selector, @dropdown)
+    $listItem.addClass "is-focused"
+
 $.fn.glDropdown = (opts) ->
   return @.each ->
     if (!$.data @, 'glDropdown')
       $.data(@, 'glDropdown', new GitLabDropdown @, opts)
-
