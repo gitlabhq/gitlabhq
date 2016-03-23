@@ -307,8 +307,8 @@ See an example that has different files in the [`master` branch][jekyll-master]
 and the source files for Jekyll are in a [`pages` branch][jekyll-pages] which
 also includes `.gitlab-ci.yml`.
 
-[jekyll-master]: https://gitlab.com/gitlab-examples/pages-jekyll-branched/tree/master
-[jekyll-pages]: https://gitlab.com/gitlab-examples/pages-jekyll-branched/tree/pages
+[jekyll-master]: https://gitlab.com/pages/jekyll-branched/tree/master
+[jekyll-pages]: https://gitlab.com/pages/jekyll-branched/tree/pages
 
 ## Next steps
 
@@ -320,17 +320,17 @@ what more you can do with GitLab Pages.
 Below is a list of example projects for GitLab Pages with a plain HTML website
 or various static site generators. Contributions are very welcome.
 
-- [Plain HTML](https://gitlab.com/gitlab-examples/pages-plain-html)
-- [Jekyll](https://gitlab.com/gitlab-examples/pages-jekyll)
-- [Hugo](https://gitlab.com/gitlab-examples/pages-hugo)
-- [Middleman](https://gitlab.com/gitlab-examples/pages-middleman)
-- [Hexo](https://gitlab.com/gitlab-examples/pages-hexo)
-- [Brunch](https://gitlab.com/gitlab-examples/pages-brunch)
-- [Metalsmith](https://gitlab.com/gitlab-examples/pages-metalsmith)
-- [Harp](https://gitlab.com/gitlab-examples/pages-harp)
+- [Plain HTML](https://gitlab.com/pages/plain-html)
+- [Jekyll](https://gitlab.com/pages/jekyll)
+- [Hugo](https://gitlab.com/pages/hugo)
+- [Middleman](https://gitlab.com/pages/middleman)
+- [Hexo](https://gitlab.com/pages/hexo)
+- [Brunch](https://gitlab.com/pages/brunch)
+- [Metalsmith](https://gitlab.com/pages/metalsmith)
+- [Harp](https://gitlab.com/pages/harp)
 
-Visit the gitlab-examples group for a full list of projects:
-<https://gitlab.com/groups/gitlab-examples>.
+Visit the GitLab Pages group for a full list of example projects:
+<https://gitlab.com/groups/pages>.
 
 ### Add a custom domain to your Pages website
 
@@ -458,6 +458,6 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [gitlab runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
 [pages]: ../ci/yaml/README.md#pages
 [staticgen]: https://www.staticgen.com/
-[pages-jekyll]: https://gitlab.com/gitlab-examples/pages-jekyll
+[pages-jekyll]: https://gitlab.com/pages/jekyll
 [metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
 [public issue tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Pages
