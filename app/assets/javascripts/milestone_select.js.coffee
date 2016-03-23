@@ -27,6 +27,18 @@ class @MilestoneSelect
 
         milestoneLinkNoneTemplate = '<div class="light">None</div>'
 
+      extraOptions = [{
+        isAny: true
+        title: 'Any Milestone'
+      }, {
+        id: '0'
+        title: 'No Milestone'
+      }, {
+        upcoming: true
+        id: '#upcoming'
+        title: 'Upcoming'
+      }]
+
       $dropdown.glDropdown(
         data: (term, callback) ->
           $.ajax(
@@ -73,11 +85,13 @@ class @MilestoneSelect
         hidden: ->
           $selectbox.hide()
           $value.show()
-        clicked: (e) ->
+        clicked: (selected) ->
           if $dropdown.hasClass 'js-filter-bulk-update'
             return
-            
+
           if $dropdown.hasClass 'js-filter-submit'
+            if selected.title?
+              selectedMilestone = selected.title
             $dropdown.parents('form').submit()
           else
             selected = $selectbox

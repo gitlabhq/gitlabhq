@@ -145,11 +145,10 @@ class GitLabDropdown
         selector = ".dropdown-page-one .dropdown-content a"
 
       @dropdown.on "click", selector, (e) ->
-        e.preventDefault()
-        self.rowClicked $(@)
+        selected = self.rowClicked $(@)
 
         if self.options.clicked
-          self.options.clicked.call(@,e)
+          self.options.clicked(selected)
 
   toggleLoading: ->
     $('.dropdown-menu', @dropdown).toggleClass LOADING_CLASS
@@ -288,6 +287,10 @@ class GitLabDropdown
     if el.hasClass(ACTIVE_CLASS)
       el.removeClass(ACTIVE_CLASS)
       field.remove()
+
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        $(@el).find(".dropdown-toggle-text").text @options.toggleLabel
     else
       fieldName = @options.fieldName
       selectedIndex = el.parent().index()
@@ -304,7 +307,7 @@ class GitLabDropdown
         @dropdown.parent().find("input[name='#{fieldName}']").remove()
 
       # Toggle active class for the tick mark
-      el.toggleClass "is-active"
+      el.addClass ACTIVE_CLASS
 
       # Toggle the dropdown label
       if @options.toggleLabel
@@ -313,10 +316,14 @@ class GitLabDropdown
         if !field.length
           # Create hidden input for form
           input = "<input type='hidden' name='#{fieldName}' value='#{value}' />"
-          if @options.inputId?  
+          if @options.inputId?
             input = $(input)
                       .attr('id', @options.inputId)
           @dropdown.before input
+
+        @dropdown.parent().find("input[name='#{fieldName}']").val value
+
+      return selectedObject
 
   selectFirstRow: ->
     selector = '.dropdown-content li:first-child a'

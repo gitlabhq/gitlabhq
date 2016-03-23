@@ -133,7 +133,7 @@ class @UsersSelect
           $selectbox.hide()
           $value.show()
 
-        clicked: ->
+        clicked: (user) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
@@ -141,6 +141,7 @@ class @UsersSelect
             return
 
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+            selectedId = user.id
             Issues.filterResults $dropdown.closest('form')
           else if $dropdown.hasClass 'js-filter-submit'
             $dropdown.closest('form').submit()
