@@ -78,6 +78,8 @@ module Issues
     end
 
     def unfold_references(content)
+      return unless content
+
       rewriter = Gitlab::Gfm::ReferenceRewriter.new(content, @old_project,
                                                     @current_user)
       rewriter.rewrite(@new_project)
