@@ -203,11 +203,10 @@
   line-height: 40px;
   transition-duration: .3s;
   outline: none;
-}
 
-.collapse-nav a:hover {
-  text-decoration: none;
-  background: #f2f6f7;
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .page-sidebar-collapsed {
