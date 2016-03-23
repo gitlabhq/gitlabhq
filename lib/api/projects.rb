@@ -244,6 +244,34 @@ module API
         end
       end
 
+      # Archive project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   PUT /projects/:id/archive
+      put ':id/archive' do
+        authorize!(:archive_project, user_project)
+
+        user_project.archive!
+
+        present @project, with: Entities::Project
+      end
+
+      # Unarchive project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   PUT /projects/:id/unarchive
+      put ':id/unarchive' do
+        authorize!(:archive_project, user_project)
+
+        user_project.unarchive!
+
+        present @project, with: Entities::Project
+      end
+
       # Remove project
       #
       # Parameters:

@@ -948,6 +948,78 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'PUT /projects/:id/archive' do
+    context 'on an unarchived project' do
+      it 'archives the project' do
+        put api("/projects/#{project.id}/archive", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response['archived']).to be_truthy
+      end
+
+      it 'rejects archivation on other users' do
+        put api("/projects/#{project.id}/archive", user3)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'on an archived project' do
+      before do
+        project.archive!
+      end
+
+      it 'remains archived' do
+        put api("/projects/#{project.id}/archive", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response['archived']).to be_truthy
+      end
+
+      it 'rejects archivation on other users' do
+        put api("/projects/#{project.id}/archive", user3)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/unarchive' do
+    context 'on an unarchived project' do
+      it 'remains unarchived' do
+        put api("/projects/#{project.id}/unarchive", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response['archived']).to be_falsey
+      end
+
+      it 'rejects archivation on other users' do
+        put api("/projects/#{project.id}/unarchive", user3)
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'on an archived project' do
+      before do
+        project.archive!
+      end
+
+      it 'remains archived' do
+        put api("/projects/#{project.id}/unarchive", user)
+
+        expect(response.status).to eq(200)
+        expect(json_response['archived']).to be_falsey
+      end
+
+      it 'rejects archivation on other users' do
+        put api("/projects/#{project.id}/archive", user3)
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
   describe 'DELETE /projects/:id' do
     context 'when authenticated as user' do
       it 'should remove project' do
