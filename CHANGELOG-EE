@@ -3,8 +3,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.7.0 (unreleased)
 
 
-v 8.6.1 (unreleased)
-
+v 8.6.1
+  - Only rename the `light_logo` column in the `appearances` table if its not there yet. !290
+  - Fix diffs in text part of email-on-push messages (Stan Hu). !293
+  - Fix an issue with methods not accessible in some controllers. !295
+  - Ensure Projects::ApproversController inherits from Projects::ApplicationController. !296
 
 v 8.6.0
   - Handle duplicate appearances table creation issue with upgrade from CE to EE
