@@ -10,27 +10,37 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   end
 
   def up
-    process_projects_with_wrong_url
-    process_bitbucket_projects
+    say("Encrypting and migrating project import credentials...")
+
+    say("Projects and Github projects with a wrong URL")
+    in_transaction { process_projects_with_wrong_url }
+
+    say("Migrating bitbucket credentials...")
+    in_transaction { process_bitbucket_projects }
   end
 
   def process_projects_with_wrong_url
-    projects_with_wrong_import_url do |project|
+    projects_with_wrong_import_url.each do |project|
       import_url = Gitlab::ImportUrl.new(project["import_url"])
 
-      ActiveRecord::Base.transaction do
-        update_import_url(import_url, project)
-        update_import_data(import_url, project)
-      end
+      update_import_url(import_url, project)
+      update_import_data(import_url, project)
     end
   end
 
   def process_bitbucket_projects
-    bitbucket_projects_with_wrong_import_url do |bitbucket_data|
-      data = bitbucket_data['data']
-      data_hash = YAML::load(data)
-      if data_hash && data_hash['bb_session']
+    bitbucket_projects_with_wrong_import_url.each do |bitbucket_data|
+      data_hash = YAML::load(bitbucket_data['data']) if bitbucket_data['data']
+      if defined?(data_hash) && data_hash && data_hash['bb_session']
         update_import_data_for_bitbucket(data_hash, bitbucket_data['id'])
+      end
+    end
+  end
+
+  def in_transaction
+    say_with_time("Processing new transaction...") do
+      ActiveRecord::Base.transaction do
+        yield
       end
     end
   end
@@ -60,8 +70,8 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     %( INSERT into project_import_data (encrypted_credentials, project_id, encrypted_credentials_iv, encrypted_credentials_salt) VALUES ( #{quote(fake_import_data.encrypted_credentials)}, '#{project_id}', #{quote(fake_import_data.encrypted_credentials_iv)}, #{quote(fake_import_data.encrypted_credentials_salt)}))
   end
 
-  def update_import_data_sql(id, fake_import_data)
-    %( UPDATE project_import_data SET encrypted_credentials = #{quote(fake_import_data.encrypted_credentials)}, encrypted_credentials_iv = #{quote(fake_import_data.encrypted_credentials_iv)}, encrypted_credentials_salt = #{quote(fake_import_data.encrypted_credentials_salt)} WHERE id = '#{id}')
+  def update_import_data_sql(id, fake_import_data, data = 'NULL')
+    %( UPDATE project_import_data SET encrypted_credentials = #{quote(fake_import_data.encrypted_credentials)}, encrypted_credentials_iv = #{quote(fake_import_data.encrypted_credentials_iv)}, encrypted_credentials_salt = #{quote(fake_import_data.encrypted_credentials_salt)}, data = #{data} WHERE id = '#{id}')
   end
 
   #Github projects with token, and any user:password@ based URL
