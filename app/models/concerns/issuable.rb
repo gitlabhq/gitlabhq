@@ -41,7 +41,7 @@ module Issuable
 
     scope :join_project, -> { joins(:project) }
     scope :references_project, -> { references(:project) }
-    scope :non_archived, -> { join_project.merge(Project.non_archived) }
+    scope :non_archived, -> { join_project.merge(Project.non_archived.only(:where)) }
 
     delegate :name,
              :email,
@@ -58,6 +58,8 @@ module Issuable
     attr_mentionable :description, cache: true
     participant :author, :assignee, :notes_with_associations
     strip_attributes :title
+
+    acts_as_paranoid
   end
 
   module ClassMethods

@@ -11,7 +11,7 @@ describe LabelsHelper do
       end
 
       it 'uses the instance variable' do
-        expect(link_to_label(label)).to match %r{<a href="/#{@project.to_reference}/issues\?label_name=#{label.name}"><span class="[\w\s\-]*has_tooltip".*</span></a>}
+        expect(link_to_label(label)).to match %r{<a href="/#{@project.to_reference}/issues\?label_name=#{label.name}"><span class="[\w\s\-]*has-tooltip".*</span></a>}
       end
     end
 
@@ -41,8 +41,8 @@ describe LabelsHelper do
 
     context 'with a tooltip argument' do
       context 'set to false' do
-        it 'does not include the has_tooltip class' do
-          expect(link_to_label(label, tooltip: false)).not_to match %r{has_tooltip}
+        it 'does not include the has-tooltip class' do
+          expect(link_to_label(label, tooltip: false)).not_to match %r{has-tooltip}
         end
       end
     end

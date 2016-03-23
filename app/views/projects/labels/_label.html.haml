@@ -8,7 +8,7 @@
 
     %strong.append-right-20
       = link_to_label(label) do
-        = pluralize label.open_issues_count, 'open issue'
+        = pluralize label.open_issues_count(current_user), 'open issue'
 
     - if current_user
       .label-subscription{data: {url: toggle_subscription_namespace_project_label_path(@project.namespace, @project, label)}}

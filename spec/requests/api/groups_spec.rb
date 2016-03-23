@@ -9,7 +9,7 @@ describe API::API, api: true  do
   let(:admin) { create(:admin) }
   let(:avatar_file_path) { File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif') }
   let!(:group1) { create(:group, avatar: File.open(avatar_file_path)) }
-  let!(:group2) { create(:group) }
+  let!(:group2) { create(:group, :private) }
   let!(:project1) { create(:project, namespace: group1) }
   let!(:project2) { create(:project, namespace: group2) }
 

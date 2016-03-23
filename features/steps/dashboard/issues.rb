@@ -43,10 +43,10 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
 
   step 'I click "All" link' do
     find('.js-author-search').click
-    find('.dropdown-menu-user-full-name', match: :first).click
+    find('.dropdown-content a', match: :first).click
 
     find('.js-assignee-search').click
-    find('.dropdown-menu-user-full-name', match: :first).click
+    find('.dropdown-content a', match: :first).click
   end
 
   def should_see(issue)

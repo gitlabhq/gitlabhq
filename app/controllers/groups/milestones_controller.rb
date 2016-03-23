@@ -1,12 +1,16 @@
 class Groups::MilestonesController < Groups::ApplicationController
   include GlobalMilestones
 
-  before_action :projects
-  before_action :milestones, only: [:index]
+  before_action :group_projects
   before_action :milestone, only: [:show, :update]
-  before_action :authorize_group_milestone!, only: [:create, :update]
+  before_action :authorize_admin_milestones!, only: [:new, :create, :update]
 
   def index
+    respond_to do |format|
+      format.html do
+        @milestones = Kaminari.paginate_array(milestones).page(params[:page])
+      end
+    end
   end
 
   def new
@@ -17,7 +21,7 @@ class Groups::MilestonesController < Groups::ApplicationController
     project_ids = params[:milestone][:project_ids]
     title = milestone_params[:title]
 
-    @group.projects.where(id: project_ids).each do |project|
+    @projects.where(id: project_ids).each do |project|
       Milestones::CreateService.new(project, current_user, milestone_params).execute
     end
 
@@ -37,7 +41,7 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   private
 
-  def authorize_group_milestone!
+  def authorize_admin_milestones!
     return render_404 unless can?(current_user, :admin_milestones, group)
   end
 
@@ -47,9 +51,5 @@ class Groups::MilestonesController < Groups::ApplicationController
 
   def milestone_path(title)
     group_milestone_path(@group, title.to_slug.to_s, title: title)
-  end
-
-  def projects
-    @projects ||= @group.projects
   end
 end

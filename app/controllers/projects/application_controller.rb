@@ -1,20 +1,74 @@
 class Projects::ApplicationController < ApplicationController
+  skip_before_action :authenticate_user!
   before_action :project
   before_action :repository
   layout 'project'
 
-  def authenticate_user!
-    # Restrict access to Projects area only
-    # for non-signed users
-    if !current_user
-      id = params[:project_id] || params[:id]
-      project_with_namespace = "#{params[:namespace_id]}/#{id}"
-      @project = Project.find_with_namespace(project_with_namespace)
+  helper_method :repository, :can_collaborate_with_project?
 
-      return if @project && @project.public?
+  private
+
+  def project
+    unless @project
+      namespace = params[:namespace_id]
+      id = params[:project_id] || params[:id]
+
+      # Redirect from
+      #   localhost/group/project.git
+      # to
+      #   localhost/group/project
+      #
+      if id =~ /\.git\Z/
+        redirect_to request.original_url.gsub(/\.git\/?\Z/, '')
+        return
+      end
+
+      project_path = "#{namespace}/#{id}"
+      @project = Project.find_with_namespace(project_path)
+
+      if @project && can?(current_user, :read_project, @project)
+        if @project.path_with_namespace != project_path
+          redirect_to request.original_url.gsub(project_path, @project.path_with_namespace)
+        end
+      else
+        @project = nil
+
+        if current_user.nil?
+          authenticate_user!
+        else
+          render_404
+        end
+      end
     end
 
-    super
+    @project
+  end
+
+  def repository
+    @repository ||= project.repository
+  end
+
+  def can_collaborate_with_project?(project = nil)
+    project ||= @project
+
+    can?(current_user, :push_code, project) ||
+      (current_user && current_user.already_forked?(project))
+  end
+
+  def authorize_project!(action)
+    return access_denied! unless can?(current_user, action, project)
+  end
+
+  def method_missing(method_sym, *arguments, &block)
+    if method_sym.to_s =~ /\Aauthorize_(.*)!\z/
+      authorize_project!($1.to_sym)
+    else
+      super
+    end
+  end
+
+  def require_non_empty_project
+    redirect_to namespace_project_path(@project.namespace, @project) if @project.empty_repo?
   end
 
   def require_branch_head
@@ -25,8 +79,6 @@ class Projects::ApplicationController < ApplicationController
       )
     end
   end
-
-  private
 
   def apply_diff_view_cookie!
     view = params[:view] || cookies[:diff_view]

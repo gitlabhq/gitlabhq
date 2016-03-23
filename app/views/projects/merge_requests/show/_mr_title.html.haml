@@ -29,7 +29,7 @@
       - if @merge_request.open?
         = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: 'btn btn-nr btn-grouped btn-close', title: 'Close merge request'
         = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-nr btn-grouped issuable-edit', id: 'edit_merge_request' do
-          %i.fa.fa-pencil-square-o
+          = icon('pencil-square-o')
           Edit
       - if @merge_request.closed?
         = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'btn btn-nr btn-grouped btn-reopen reopen-mr-link', title: 'Reopen merge request'

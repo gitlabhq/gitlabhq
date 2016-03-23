@@ -292,8 +292,11 @@ table {
 }
 
 .btn-sign-in {
-  margin-top: 10px;
   text-shadow: none;
+
+  @media (min-width: $screen-sm-min) {
+    margin-top: 11px;
+  }
 }
 
 .side-filters {
@@ -375,7 +378,6 @@ table {
     position: absolute;
     top: 0;
     right: 0;
-    width: 250px !important;
     visibility: hidden;
   }
 }

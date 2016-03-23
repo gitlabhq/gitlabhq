@@ -111,6 +111,7 @@ Parameters:
 - `name` (required) - The name of the group
 - `path` (required) - The path of the group
 - `description` (optional) - The group's description
+- `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
 
 ## Transfer project to group
 

@@ -36,9 +36,6 @@ class Issue < ActiveRecord::Base
 
   validates :project, presence: true
 
-  scope :of_group,
-    ->(group) { where(project_id: group.projects.select(:id).reorder(nil)) }
-
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
@@ -149,7 +146,8 @@ class Issue < ActiveRecord::Base
       return false unless user.can?(:admin_issue, to_project)
     end
 
-    !moved? && user.can?(:admin_issue, self.project)
+    !moved? && persisted? &&
+      user.can?(:admin_issue, self.project)
   end
 
   def to_branch_name

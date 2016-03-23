@@ -127,7 +127,12 @@
       for this project.
 
   - if issuable.new_record?
-    - cancel_project = issuable.source_project
+    = link_to 'Cancel', namespace_project_issues_path(@project.namespace, @project), class: 'btn btn-cancel'
   - else
-    - cancel_project = issuable.project
-  = link_to 'Cancel', [cancel_project.namespace.becomes(Namespace), cancel_project, issuable], class: 'btn btn-cancel'
+    .pull-right
+      - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)
+        = link_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
+                                                                                                  method: :delete, class: 'btn btn-grouped' do
+          = icon('trash-o')
+          Delete
+      = link_to 'Cancel', namespace_project_issue_path(@project.namespace, @project, issuable), class: 'btn btn-grouped btn-cancel'

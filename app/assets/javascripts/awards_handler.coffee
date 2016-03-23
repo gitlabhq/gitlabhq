@@ -122,7 +122,7 @@ class @AwardsHandler
 
     nodes = []
     nodes.push(
-      "<button class='btn award-control js-emoji-btn has_tooltip active' title='me'>",
+      "<button class='btn award-control js-emoji-btn has-tooltip active' title='me'>",
       "<div class='icon emoji-icon #{emojiCssClass}' data-emoji='#{emoji}'></div>",
       "<span class='award-control-text js-counter'>1</span>",
       "</button>"

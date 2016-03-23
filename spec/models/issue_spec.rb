@@ -37,6 +37,11 @@ describe Issue, models: true do
 
   subject { create(:issue) }
 
+  describe "act_as_paranoid" do
+    it { is_expected.to have_db_column(:deleted_at) }
+    it { is_expected.to have_db_index(:deleted_at) }
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(subject.to_reference).to eq "##{subject.iid}"
@@ -146,6 +151,11 @@ describe Issue, models: true do
       before { project.team << [user, :reporter] }
 
       it { is_expected.to eq true }
+
+      context 'issue not persisted' do
+        let(:issue) { build(:issue, project: project) }
+        it { is_expected.to eq false }
+      end
 
       context 'checking destination project also' do
         subject { issue.can_move?(user, to_project) }
