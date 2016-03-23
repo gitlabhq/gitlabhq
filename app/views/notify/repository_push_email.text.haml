@@ -28,17 +28,17 @@
     \
     \
     Changes:
-    - @message.diffs.each do |diff|
+    - @message.diffs.each do |diff_file|
       \
       \=====================================
-      - if diff.deleted_file
-        #{diff.old_path} deleted
-      - elsif diff.renamed_file
-        #{diff.old_path} → #{diff.new_path}
+      - if diff_file.deleted_file
+        #{diff_file.old_path} deleted
+      - elsif diff_file.renamed_file
+        #{diff_file.old_path} → #{diff_file.new_path}
       - else
-        = diff.new_path
+        = diff_file.new_path
       \=====================================
-      != diff.diff
+      != diff_file.diff.diff
   - if @message.compare_timeout
     \
     \

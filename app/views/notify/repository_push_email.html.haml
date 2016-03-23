@@ -46,7 +46,7 @@
             = diff.new_path
 
   - unless @message.disable_diffs?
-    - diff_files = safe_diff_files(@message.diffs, @message.diff_refs)
+    - diff_files = @message.diffs
 
     %h4 Changes:
     - diff_files.each_with_index do |diff_file, i|

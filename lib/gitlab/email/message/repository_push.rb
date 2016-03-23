@@ -6,6 +6,7 @@ module Gitlab
         attr_reader :author_id, :ref, :action
 
         include Gitlab::Routing.url_helpers
+        include DiffHelper
 
         delegate :namespace, :name_with_namespace, to: :project, prefix: :project
         delegate :name, to: :author, prefix: :author
@@ -38,7 +39,7 @@ module Gitlab
         end
 
         def diffs
-          @diffs ||= (compare.diffs if compare)
+          @diffs ||= (safe_diff_files(compare.diffs, diff_refs) if compare)
         end
 
         def diffs_count

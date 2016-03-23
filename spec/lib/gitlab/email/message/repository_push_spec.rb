@@ -57,7 +57,7 @@ describe Gitlab::Email::Message::RepositoryPush do
 
     describe '#diffs' do
       subject { message.diffs }
-      it { is_expected.to all(be_an_instance_of Gitlab::Git::Diff) }
+      it { is_expected.to all(be_an_instance_of Gitlab::Diff::File) }
     end
 
     describe '#diffs_count' do
