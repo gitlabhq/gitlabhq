@@ -79,10 +79,6 @@ module SharedPaths
     visit edit_group_path(Group.find_by(name: "Guest"))
   end
 
-  step 'I visit audit event page' do
-    visit namespace_project_audit_events_path(@project.namespace, @project)
-  end
-
   # ----------------------------------------
   # Dashboard
   # ----------------------------------------
