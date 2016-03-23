@@ -15,6 +15,20 @@ describe Gitlab::Email::Receiver, lib: true do
   let!(:sent_notification) { SentNotification.record(noteable, user.id, reply_key) }
 
   let(:receiver) { described_class.new(email_raw) }
+  let(:markdown) { "![image](uploads/image.png)" }
+
+  def setup_attachment
+    allow_any_instance_of(Gitlab::Email::AttachmentUploader).to receive(:execute).and_return(
+      [
+        {
+          url: "uploads/image.png",
+          is_image: true,
+          alt: "image",
+          markdown: markdown
+        }
+      ]
+    )
+  end
 
   context "when the recipient address doesn't include a reply key" do
     let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(reply_key, "") }
@@ -108,19 +122,8 @@ describe Gitlab::Email::Receiver, lib: true do
   end
 
   context "when everything is fine" do
-    let(:markdown) { "![image](uploads/image.png)" }
-
     before do
-      allow_any_instance_of(Gitlab::Email::AttachmentUploader).to receive(:execute).and_return(
-        [
-          {
-            url: "uploads/image.png",
-            is_image: true,
-            alt: "image",
-            markdown: markdown
-          }
-        ]
-      )
+      setup_attachment
     end
 
     it "creates a comment" do
@@ -158,6 +161,45 @@ describe Gitlab::Email::Receiver, lib: true do
         let(:email_raw) { fixture_file('emails/reply_without_subaddressing_and_key_inside_references.eml') }
 
         it_behaves_like 'an email that contains a reply key', 'References'
+      end
+    end
+  end
+
+  context "when it's trying to create a new issue" do
+    before do
+      setup_attachment
+      stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.adventuretime.ooo")
+    end
+
+    let(:sent_notification) {}
+    let!(:user)     { create(:user, email: 'jake@adventuretime.ooo') }
+    let(:namespace) { create(:namespace, path: 'gitlabhq') }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:email_raw) { fixture_file('emails/valid_new_issue.eml') }
+
+    context "when everything is fine" do
+      it "creates a new issue" do
+        expect { receiver.execute }.to change { project.issues.count }.by(1)
+        issue = project.issues.last
+
+        expect(issue.author).to eq(user)
+        expect(issue.title).to eq('New Issue by email')
+        expect(issue.description).to include('reply by email')
+        expect(issue.description).to include(markdown)
+      end
+    end
+
+    context "something is wrong" do
+      context "when the issue could not be saved" do
+        before do
+          project
+
+          allow_any_instance_of(Issue).to receive(:persisted?).and_return(false)
+        end
+
+        it "raises an InvalidIssueError" do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::Receiver::InvalidIssueError)
+        end
       end
     end
   end
