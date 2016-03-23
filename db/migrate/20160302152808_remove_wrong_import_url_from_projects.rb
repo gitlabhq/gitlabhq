@@ -12,11 +12,14 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   def up
     say("Encrypting and migrating project import credentials...")
 
-    say("Projects and Github projects with a wrong URL")
+    say("Projects and Github projects with a wrong URL. Also, migrating Gitlab projects credentials.")
     in_transaction { process_projects_with_wrong_url }
 
     say("Migrating bitbucket credentials...")
-    in_transaction { process_bitbucket_projects }
+    in_transaction { process_project(import_type: 'bitbucket') }
+
+    say("Migrating fogbugz credentials...")
+    in_transaction { process_project(import_type: 'fogbugz') }
   end
 
   def process_projects_with_wrong_url
@@ -28,12 +31,16 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     end
   end
 
-  def process_bitbucket_projects
-    bitbucket_projects_with_wrong_import_url.each do |bitbucket_data|
-      data_hash = YAML::load(bitbucket_data['data']) if bitbucket_data['data']
-      if defined?(data_hash) && data_hash && data_hash['bb_session']
-        update_import_data_for_bitbucket(data_hash, bitbucket_data['id'])
-      end
+  def process_project(import_type: )
+    unencrypted_import_data(import_type: import_type).each do |data|
+      replace_data_credentials(data)
+    end
+  end
+
+  def replace_data_credentials(data)
+    data_hash = YAML::load(data['data']) if data['data']
+    if defined?(data_hash) && data_hash
+      update_with_encrypted_data(data_hash, data['id'])
     end
   end
 
@@ -56,7 +63,7 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     end
   end
 
-  def update_import_data_for_bitbucket(data_hash, import_data_id)
+  def update_with_encrypted_data(data_hash, import_data_id)
     fake_import_data = FakeProjectImportData.new
     fake_import_data.credentials = data_hash
     execute(update_import_data_sql(import_data_id, fake_import_data))
@@ -79,9 +86,9 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
     select_all("SELECT p.id, p.import_url FROM projects p WHERE p.import_url IS NOT NULL AND (p.import_url LIKE '%//%:%@%' OR p.import_url LIKE 'https___#{"_"*40}@github.com%')")
   end
 
-  # All bitbucket imports
-  def bitbucket_projects_with_wrong_import_url
-    select_all("SELECT i.id, p.import_url, i.data FROM projects p INNER JOIN project_import_data i ON p.id = i.project_id WHERE p.import_url IS NOT NULL AND p.import_type = 'bitbucket' ")
+  # All imports with data for import_type
+  def unencrypted_import_data(import_type: )
+    select_all("SELECT i.id, p.import_url, i.data FROM projects p INNER JOIN project_import_data i ON p.id = i.project_id WHERE p.import_url IS NOT NULL AND p.import_type = '#{import_type}' ")
   end
 
   def project_import_data(project_id)

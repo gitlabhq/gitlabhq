@@ -25,7 +25,7 @@ module Gitlab
         ).execute
 
         project.create_import_data(
-          data: {
+          credentials: {
             'repo' => repo.raw_data,
             'user_map' => user_map,
             'fb_session' => fb_session

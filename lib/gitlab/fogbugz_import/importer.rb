@@ -8,9 +8,12 @@ module Gitlab
 
         import_data = project.import_data.try(:data)
         repo_data = import_data['repo'] if import_data
-        @repo = FogbugzImport::Repository.new(repo_data)
-
-        @known_labels = Set.new
+        if import_data_credentials && import_data_credentials['repo']
+          @repo = FogbugzImport::Repository.new(repo_data)
+          @known_labels = Set.new
+        else
+          raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
+        end
       end
 
       def execute
@@ -29,6 +32,10 @@ module Gitlab
       end
 
       private
+
+      def import_data_credentials
+        @import_data_credentials ||= project.import_data.credentials if project.import_data
+      end
 
       def user_map
         @user_map ||= begin
