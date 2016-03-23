@@ -4,7 +4,7 @@ v 8.7.0 (unreleased)
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
 
 v 8.6.1 (unreleased)
-
+  - Do not allow to move issue if it has not been persisted
 
 v 8.6.0
   - Add ability to move issue to another project
