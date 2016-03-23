@@ -35,7 +35,6 @@ class @SearchAutocomplete
     @createAutocomplete()
 
     @searchInput.addClass('disabled')
-    @autocomplete = false
 
     @bindEvents()
 
@@ -59,10 +58,6 @@ class @SearchAutocomplete
 
   getData: (term, callback) ->
     _this = @
-
-    # Ensure this is not called when autocomplete is disabled because
-    # this method still will be called because `GitLabDropdownFilter` is triggering this on keyup
-    return if @autocomplete is false
 
     # Do not trigger request if input is empty
     return if @searchInput.val() is ''
@@ -118,15 +113,12 @@ class @SearchAutocomplete
     @clearInput.on 'click', @onRemoveLocationClick
 
   enableAutocomplete: ->
-    return if @autocomplete
-
     dropdownMenu = @dropdown.find('.dropdown-menu')
     _this = @
     @loadingSuggestions = false
 
     @dropdown.addClass('open')
     @searchInput.removeClass('disabled')
-    @autocomplete = true
 
   onDropdownOpen: (e) =>
     @dropdown.dropdown('toggle')
@@ -239,12 +231,9 @@ class @SearchAutocomplete
     @wrap.removeClass('has-location-badge')
 
   disableAutocomplete: ->
-    if @autocomplete
-      @searchInput.addClass('disabled')
-      @dropdown.removeClass('open')
-      @restoreMenu()
-
-    @autocomplete = false
+    @searchInput.addClass('disabled')
+    @dropdown.removeClass('open')
+    @restoreMenu()
 
   restoreMenu: ->
     html = "<ul>
