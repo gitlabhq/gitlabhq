@@ -114,7 +114,7 @@ module LabelsHelper
     if @project
       namespace_project_labels_path(@project.namespace, @project, :json)
     else
-      labels_dashboard_path(:json)
+      dashboard_labels_path(:json)
     end
   end
 
