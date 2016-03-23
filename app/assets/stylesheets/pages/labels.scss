@@ -9,26 +9,43 @@
   }
 
   &.suggest-colors-dropdown {
-    margin-bottom: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: $border-radius-base;
+    overflow: hidden;
 
     a {
       @include border-radius(0);
-      width: 36.7px;
+      width: (100% / 7);
       margin-right: 0;
       margin-bottom: -5px;
     }
   }
 }
 
-.dropdown-label-color-preview {
-  display: none;
-  margin-top: 5px;
-  width: 100%;
-  height: 25px;
+.dropdown-new-label {
+  .dropdown-content {
+    max-height: 260px;
+  }
+}
+
+.dropdown-label-color-input {
+  position: relative;
+  margin-bottom: 10px;
 
   &.is-active {
-    display: block;
+    padding-left: 32px;
   }
+}
+
+.dropdown-label-color-preview {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  border-top-left-radius: $border-radius-base;
+  border-bottom-left-radius: $border-radius-base;
 }
 
 .label-row {

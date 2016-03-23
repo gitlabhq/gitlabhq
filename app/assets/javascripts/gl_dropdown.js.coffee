@@ -1,13 +1,29 @@
 class GitLabDropdownFilter
   BLUR_KEYCODES = [27, 40]
+  HAS_VALUE_CLASS = "has-value"
 
-  constructor: (@dropdown, @options) ->
-    @input = @dropdown.find(".dropdown-input .dropdown-input-field")
+  constructor: (@input, @options) ->
+    $inputContainer = @input.parent()
+    $clearButton = $inputContainer.find('.js-dropdown-input-clear')
+
+    # Clear click
+    $clearButton.on 'click', (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      @input
+        .val('')
+        .trigger('keyup')
+        .focus()
 
     # Key events
     timeout = ""
     @input.on "keyup", (e) =>
-      if e.keyCode is 13 && @input.val() isnt ""
+      if @input.val() isnt "" and !$inputContainer.hasClass HAS_VALUE_CLASS
+        $inputContainer.addClass HAS_VALUE_CLASS
+      else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
+        $inputContainer.removeClass HAS_VALUE_CLASS
+
+      if e.keyCode is 13 and @input.val() isnt ""
         if @options.enterCallback
           @options.enterCallback()
         return
@@ -95,7 +111,9 @@ class GitLabDropdown
 
     # Init filiterable
     if @options.filterable
-      @filter = new GitLabDropdownFilter @dropdown,
+      @input = @dropdown.find('.dropdown-input .dropdown-input-field')
+
+      @filter = new GitLabDropdownFilter @input,
         remote: @options.filterRemote
         query: @options.data
         keys: @options.search.fields
@@ -103,6 +121,7 @@ class GitLabDropdown
           return @fullData
         callback: (data) =>
           @parseData data
+          @highlightRow 1
         enterCallback: =>
           @selectFirstRow()
 
@@ -224,10 +243,18 @@ class GitLabDropdown
 
   noResults: ->
     html = "<li>"
-    html += "<a href='#' class='is-focused'>"
+    html += "<a href='#' class='dropdown-menu-empty-link is-focused'>"
     html += "No matching results."
     html += "</a>"
     html += "</li>"
+
+  highlightRow: (index) ->
+    if @input.val() isnt ""
+      selector = '.dropdown-content li:first-child a'
+      if @dropdown.find(".dropdown-toggle-page").length
+        selector = ".dropdown-page-one .dropdown-content li:first-child a"
+
+      $(selector).addClass 'is-focused'
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
@@ -272,7 +299,7 @@ class GitLabDropdown
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content li:first-child a"
 
-    # similute a click on the first link
+    # simulate a click on the first link
     $(selector).trigger "click"
 
 $.fn.glDropdown = (opts) ->
