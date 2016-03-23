@@ -31,6 +31,8 @@ class @SearchAutocomplete
 
     @saveOriginalState()
 
+    @createAutocomplete()
+
     @searchInput.addClass('disabled')
     @autocomplete = false
 
@@ -42,6 +44,57 @@ class @SearchAutocomplete
 
   saveOriginalState: ->
     @originalState = @serializeState()
+
+  createAutocomplete: ->
+    @searchInput.glDropdown
+        filterInputBlur: false
+        filterable: true
+        filterRemote: true
+        highlight: true
+        filterInput: 'input#search'
+        search:
+          fields: ['text']
+        data: @getData.bind(@)
+
+  getData: (term, callback) ->
+    _this = @
+
+    # Ensure this is not called when autocomplete is disabled because
+    # this method still will be called because `GitLabDropdownFilter` is triggering this on keyup
+    return if @autocomplete is false
+
+    # Do not trigger request if input is empty
+    return if @searchInput.val() is ''
+
+    # Prevent multiple ajax calls
+    return if @loadingSuggestions
+
+    @loadingSuggestions = true
+
+    jqXHR = $.get(@autocompletePath, {
+        project_id: @projectId
+        project_ref: @projectRef
+        term: term
+      }, (response) ->
+        data = []
+
+        # List results
+        for suggestion in response
+
+          # Add group header before list each group
+          if lastCategory isnt suggestion.category
+            data.push
+              header: suggestion.category
+
+            lastCategory = suggestion.category
+
+          data.push
+            text: suggestion.label
+            url: suggestion.url
+
+        callback(data)
+    ).always ->
+      _this.loadingSuggestions = false
 
   serializeState: ->
     {
@@ -57,7 +110,8 @@ class @SearchAutocomplete
     }
 
   bindEvents: ->
-    @searchInput.on 'keydown', @onSearchInputKeyDown
+    @searchInput.on 'keyup', @onSearchInputKeyUp
+    @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
     @searchInput.on 'blur', @onSearchInputBlur
     @clearInput.on 'click', @onRemoveLocationClick
@@ -67,53 +121,7 @@ class @SearchAutocomplete
 
     dropdownMenu = @dropdown.find('.dropdown-menu')
     _this = @
-    loading = false
-
-    @searchInput.glDropdown
-        filterInputBlur: false
-        filterable: true
-        filterRemote: true
-        highlight: true
-        filterInput: 'input#search'
-        search:
-          fields: ['text']
-        data: (term, callback) ->
-          # Ensure this is not called when autocomplete is disabled because
-          # this method still will be called because `GitLabDropdownFilter` is triggering this on keyup
-          return if _this.autocomplete is false
-
-          # Do not trigger request if input is empty
-          return if _this.searchInput.val() is ''
-
-          # Prevent multiple ajax calls
-          return if loading
-
-          loading = true
-
-          jqXHR = $.get(_this.autocompletePath, {
-              project_id: _this.projectId
-              project_ref: _this.projectRef
-              term: term
-            }, (response) ->
-              data = []
-
-              # List results
-              for suggestion in response
-
-                # Add group header before list each group
-                if lastCategory isnt suggestion.category
-                  data.push
-                    header: suggestion.category
-
-                  lastCategory = suggestion.category
-
-                data.push
-                  text: suggestion.label
-                  url: suggestion.url
-
-              callback(data)
-          ).always ->
-            loading = false
+    @loadingSuggestions = false
 
     @dropdown.addClass('open')
     @searchInput.removeClass('disabled')
@@ -122,7 +130,7 @@ class @SearchAutocomplete
   onDropdownOpen: (e) =>
     @dropdown.dropdown('toggle')
 
-  onSearchInputKeyDown: (e) =>
+  onSearchInputKeyUp: (e) =>
     switch e.keyCode
       when KEYCODE.BACKSPACE
         if e.currentTarget.value is ''
@@ -139,10 +147,17 @@ class @SearchAutocomplete
         if @badgePresent()
           @disableAutocomplete()
         else
-          @enableAutocomplete()
+
+          # We should display the menu only when input is not empty
+          if @searchInput.val() isnt ''
+            @enableAutocomplete()
 
     # Avoid falsy value to be returned
     return
+
+  onSearchInputClick: =>
+    if (@searchInput.val() is '')
+      @disableAutocomplete()
 
   onSearchInputFocus: =>
     @wrap.addClass('search-active')

@@ -15,7 +15,10 @@
         .dropdown{ data: {url: search_autocomplete_path } }
           = search_field_tag "search", nil, placeholder: 'Search', class: "search-input dropdown-menu-toggle", spellcheck: false, tabindex: "1", autocomplete: 'off',  data: { toggle: 'dropdown' }
           .dropdown-menu.dropdown-select
-            = dropdown_content
+            = dropdown_content do
+              %li
+                %a.is-focused
+                  Loading...
             = dropdown_loading
         %i.search-icon
         %i.clear-icon.js-clear-input
