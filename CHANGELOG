@@ -4,6 +4,7 @@ v 8.6.1 (unreleased)
   - Add option to reload the schema before restoring a database backup. !2807
   - Display navigation controls on mobile. !3214
   - Fixed bug where participants would not work correctly on merge requests. !3329
+  - Fix sorting issues by votes on the groups issues page results in SQL errors. !3333
   - Restrict notifications for confidential issues. !3334
   - Do not allow to move issue if it has not been persisted. !3340
   - Add a confirmation step before deleting an issuable. !3341
