@@ -4,6 +4,7 @@ v 8.6.3 (unreleased)
 
 v 8.6.2
   - Fix dropdown alignment. !3298
+  - Fix issuable sidebar overlaps on tablet. !3299
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
