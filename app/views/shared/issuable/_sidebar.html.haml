@@ -77,7 +77,7 @@
             Labels
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
               = link_to 'Edit', '#', class: 'edit-link pull-right'
-          .value.issuable-show-labels.hide-collapsed{class: ("has-labels" if issuable.labels.any?)}
+          .value.bold.issuable-show-labels.hide-collapsed{ class: ("has-labels" if issuable.labels.any?) }
             - if issuable.labels.any?
               - issuable.labels.each do |label|
                 = link_to_label(label, type: issuable.to_ability_name)
