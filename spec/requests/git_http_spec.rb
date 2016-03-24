@@ -60,13 +60,13 @@ describe 'Git HTTP requests', lib: true do
       before do
         project.update_attribute(:visibility_level, Project::PUBLIC)
       end
-      
+
       it "responds with status 200" do
         download(path, env) do |response|
           expect(response.status).to eq(200)
         end
       end
-      
+
       context 'but git-upload-pack is disabled' do
         it "responds with status 404" do
           allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
