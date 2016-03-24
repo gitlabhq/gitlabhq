@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!
   before_action :set_user
+  before_filter :authorize_read_user, only: [:show]
 
   def show
     respond_to do |format|
@@ -74,6 +75,9 @@ class UsersController < ApplicationController
   end
 
   private
+  def authorize_read_user
+    render_404 unless @user.public?
+  end
 
   def set_user
     @user = User.find_by_username!(params[:username])
