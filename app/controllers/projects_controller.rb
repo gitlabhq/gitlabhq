@@ -1,7 +1,7 @@
-class ProjectsController < ApplicationController
+class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
-  skip_before_action :authenticate_user!, only: [:show, :activity]
+  before_action :authenticate_user!, except: [:show, :activity]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?

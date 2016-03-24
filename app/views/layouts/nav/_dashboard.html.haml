@@ -1,7 +1,7 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: {class: 'home'}) do
     = link_to dashboard_projects_path, title: 'Projects' do
-      = icon('home fw')
+      = icon('bookmark fw')
       %span
         Projects
   = nav_link(controller: :todos) do

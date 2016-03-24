@@ -28,6 +28,11 @@
             = @group.description
 
         %li
+          %span.light Visibility level:
+          %strong
+            = visibility_level_label(@group.visibility_level)
+
+        %li
           %span.light Created on:
           %strong
             = @group.created_at.to_s(:medium)

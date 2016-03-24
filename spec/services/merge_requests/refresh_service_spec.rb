@@ -13,6 +13,11 @@ describe MergeRequests::RefreshService, services: true do
 
       @project = create(:project, namespace: group, approvals_before_merge: 1, reset_approvals_on_push: true)
       @fork_project = Projects::ForkService.new(@project, @user).execute
+      # The call to project.repository.after_import in RepositoryForkWorker does
+      # not reset the @exists variable of @fork_project.repository so we have to
+      # explicitely call this method to clear the @exists variable.
+      @fork_project.repository.after_import
+
       @merge_request = create(:merge_request,
                               source_project: @project,
                               source_branch: 'master',

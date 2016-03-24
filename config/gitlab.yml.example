@@ -457,6 +457,12 @@ production: &base
       #       crowd_server_url: 'CROWD SERVER URL',
       #       application_name: 'YOUR_APP_NAME',
       #       application_password: 'YOUR_APP_PASSWORD' } }
+      #
+      # - { name: 'auth0',
+      #     args: {
+      #       client_id: 'YOUR_AUTH0_CLIENT_ID',
+      #       client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
+      #       namespace: 'YOUR_AUTH0_DOMAIN' } }
 
     # SSO maximum session duration in seconds. Defaults to CAS default of 8 hours.
     # cas3:

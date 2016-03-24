@@ -74,3 +74,24 @@ Any user can remove themselves from a group, unless they are the last Owner of t
 | Create project in group |       |          |           | ✓      | ✓     |
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
+
+## External Users
+
+In cases where it is desired that a user has access only to some internal or
+private projects, there is the option of creating **External Users**. This
+feature may be useful when for example a contractor is working on a given
+project and should only have access to that project.
+
+External users can only access projects to which they are explicitly granted
+access, thus hiding all other internal or private ones from them. Access can be
+granted by adding the user as member to the project or group.
+
+They will, like usual users, receive a role in the project or group with all
+the abilities that are mentioned in the table above. They cannot however create
+groups or projects, and they have the same access as logged out users in all
+other cases.
+
+An administrator can flag a user as external [through the API](../api/users.md)
+or by checking the checkbox on the admin panel. As an administrator, navigate
+to **Admin > Users** to create a new user or edit an existing one. There, you
+will find the option to flag the user as external.

@@ -1,13 +1,12 @@
 %aside.right-sidebar{ class: sidebar_gutter_collapsed_class }
   .issuable-sidebar
-    .block
+    .block.issuable-sidebar-header
       %span.issuable-count.hide-collapsed.pull-left
         = issuable.iid
         of
         = issuables_count(issuable)
-      %span.pull-right
-        %a.gutter-toggle.js-sidebar-toggle{href: '#'}
-          = sidebar_gutter_toggle_icon
+      %a.gutter-toggle.pull-right.js-sidebar-toggle{href: '#'}
+        = sidebar_gutter_toggle_icon
       .issuable-nav.hide-collapsed.pull-right.btn-group{role: 'group', "aria-label" => '...'}
         - if prev_issuable = prev_issuable_for(issuable)
           = link_to 'Prev', [@project.namespace.becomes(Namespace), @project, prev_issuable], class: 'btn btn-default prev-btn'
@@ -22,20 +21,20 @@
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
-        .sidebar-collapsed-icon
+        .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.to_reference if issuable.assignee)}
           - if issuable.assignee
-            = link_to_member_avatar(issuable.assignee, size: 24)
+            = link_to_member(@project, issuable.assignee, size: 24)
           - else
             = icon('user')
         .title.hide-collapsed
-          %label
-            Assignee
+          Assignee
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-            .pull-right
-              = link_to 'Edit', '#', class: 'edit-link'
-        .value.hide-collapsed
+            = link_to 'Edit', '#', class: 'edit-link pull-right'
+        .value.bold.hide-collapsed
           - if issuable.assignee
-            %strong= link_to_member(@project, issuable.assignee, size: 24)
+            = link_to_member(@project, issuable.assignee, size: 32) do
+              %span.username
+                = issuable.assignee.to_reference
             - if issuable.instance_of?(MergeRequest) && !issuable.can_be_merged_by?(issuable.assignee)
               %a.pull-right.cannot-be-merged{href: '#', data: {toggle: 'tooltip'}, title: 'Not allowed to merge'}
                 = icon('exclamation-triangle')
@@ -54,18 +53,13 @@
             - else
               No
         .title.hide-collapsed
-          %label
-            Milestone
+          Milestone
           - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-            .pull-right
-              = link_to 'Edit', '#', class: 'edit-link'
-        .value.hide-collapsed
+            = link_to 'Edit', '#', class: 'edit-link pull-right'
+        .value.bold.hide-collapsed
           - if issuable.milestone
-            %span.back-to-milestone
-              = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
-                %strong
-                  = icon('clock-o')
-                  = issuable.milestone.title
+            = link_to namespace_project_milestone_path(@project.namespace, @project, issuable.milestone) do
+              = issuable.milestone.title
           - else
             .light None
         .selectbox.hide-collapsed
@@ -80,11 +74,10 @@
             %span
               = issuable.labels.count
           .title.hide-collapsed
-            %label Labels
+            Labels
             - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
-              .pull-right
-                = link_to 'Edit', '#', class: 'edit-link'
-          .value.issuable-show-labels.hide-collapsed
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.issuable-show-labels.hide-collapsed{class: ("has-labels" if issuable.labels.any?)}
             - if issuable.labels.any?
               - issuable.labels.each do |label|
                 = link_to_label(label, type: issuable.to_ability_name)
@@ -119,14 +112,13 @@
               { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
-      %hr
       - if current_user
         - subscribed = issuable.subscribed?(current_user)
         .block.light.subscription{data: {url: toggle_subscription_path(issuable)}}
           .sidebar-collapsed-icon
             = icon('rss')
           .title.hide-collapsed
-            %label.light Notifications
+            Notifications
           - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
           %button.btn.btn-block.btn-gray.subscribe-button.hide-collapsed{:type => 'button'}
             %span= subscribed ? 'Unsubscribe' : 'Subscribe'

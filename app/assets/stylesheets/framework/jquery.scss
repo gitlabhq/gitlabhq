@@ -3,13 +3,13 @@
   font-size: $font-size-base;
 
   &.ui-datepicker-inline {
-    border: 1px solid #DDD;
+    border: 1px solid #ddd;
     padding: 10px;
     width: 270px;
 
     .ui-datepicker-header {
-      background: #FFF;
-      border-color: #DDD;
+      background: #fff;
+      border-color: #ddd;
     }
 
     .ui-datepicker-calendar td a {
@@ -19,7 +19,7 @@
   }
 
   &.ui-autocomplete {
-    border-color: #DDD;
+    border-color: #ddd;
     padding: 0;
     margin-top: 2px;
     z-index: 1001;
@@ -30,20 +30,20 @@
   }
 
   .ui-state-default {
-    border: 1px solid #FFF;
-    background: #FFF;
+    border: 1px solid #fff;
+    background: #fff;
     color: #777;
   }
 
   .ui-state-highlight {
-    border: 1px solid #EEE;
-    background: #EEE;
+    border: 1px solid #eee;
+    background: #eee;
   }
 
   .ui-state-active {
     border: 1px solid $gl-primary;
     background: $gl-primary;
-    color: #FFF;
+    color: #fff;
   }
 
   .ui-state-hover,

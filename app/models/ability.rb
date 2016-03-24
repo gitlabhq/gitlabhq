@@ -99,7 +99,7 @@ class Ability
                 subject.group
               end
 
-      if group && group.projects.public_only.any?
+      if group && group.public?
         [:read_group]
       else
         []
@@ -125,35 +125,21 @@ class Ability
       key = "/user/#{user.id}/project/#{project.id}"
 
       RequestStore.store[key] ||= begin
-        team = project.team
+        # Push abilities on the users team role
+        rules.push(*project_team_rules(project.team, user))
 
-        # Rules based on role in project
-        if team.master?(user)
-          rules.push(*project_master_rules)
+        if project.owner == user ||
+          (project.group && project.group.has_owner?(user)) ||
+          user.admin?
 
-        elsif team.developer?(user)
-          rules.push(*project_dev_rules)
-
-        elsif team.reporter?(user)
-          rules.push(*project_report_rules)
-
-        elsif team.guest?(user)
-          rules.push(*project_guest_rules)
+          rules.push(*project_owner_rules)
         end
 
-        if project.public? || project.internal?
+        if project.public? || (project.internal? && !user.external?)
           rules.push(*public_project_rules)
 
           # Allow to read builds for internal projects
           rules << :read_build if project.public_builds?
-        end
-
-        if project.owner == user || user.admin?
-          rules.push(*project_admin_rules)
-        end
-
-        if project.group && project.group.has_owner?(user)
-          rules.push(*project_admin_rules)
         end
 
         if project.archived?
@@ -161,6 +147,19 @@ class Ability
         end
 
         rules - project_disabled_features_rules(project)
+      end
+    end
+
+    def project_team_rules(team, user)
+      # Rules based on role in project
+      if team.master?(user)
+        project_master_rules
+      elsif team.developer?(user)
+        project_dev_rules
+      elsif team.reporter?(user)
+        project_report_rules
+      elsif team.guest?(user)
+        project_guest_rules
       end
     end
 
@@ -185,7 +184,8 @@ class Ability
         :read_note,
         :create_project,
         :create_issue,
-        :create_note
+        :create_note,
+        :upload_file
       ]
     end
 
@@ -245,15 +245,17 @@ class Ability
       ]
     end
 
-    def project_admin_rules
-      @project_admin_rules ||= project_master_rules + [
+    def project_owner_rules
+      @project_owner_rules ||= project_master_rules + [
         :change_namespace,
         :change_visibility_level,
         :rename_project,
         :remove_project,
         :remove_pages,
         :archive_project,
-        :remove_fork_project
+        :remove_fork_project,
+        :destroy_merge_request,
+        :destroy_issue
       ]
     end
 
@@ -291,11 +293,9 @@ class Ability
     def group_abilities(user, group)
       rules = []
 
-      if user.admin? || group.users.include?(user) || ProjectsFinder.new.execute(user, group: group).any?
-        rules << :read_group
-      end
+      rules << :read_group if can_read_group?(user, group)
 
-      # Only group masters and group owners can create new projects in group
+      # Only group masters and group owners can create new projects
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules += [
           :create_projects,
@@ -308,7 +308,8 @@ class Ability
         rules += [
           :admin_group,
           :admin_namespace,
-          :admin_group_member
+          :admin_group_member,
+          :change_visibility_level
         ]
 
         if group.ldap_synced?
@@ -317,6 +318,15 @@ class Ability
       end
 
       rules.flatten
+    end
+
+    def can_read_group?(user, group)
+      return true if user.admin?
+      return true if group.public?
+      return true if group.internal? && !user.external?
+      return true if group.users.include?(user)
+
+      GroupProjectsFinder.new(group).execute(user).any?
     end
 
     def namespace_abilities(user, namespace)
@@ -381,7 +391,7 @@ class Ability
         ]
       end
 
-      if snippet.public? || snippet.internal?
+      if snippet.public? || (snippet.internal? && !user.external?)
         rules << :read_personal_snippet
       end
 

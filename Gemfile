@@ -22,6 +22,7 @@ gem 'devise',                 '~> 3.5.4'
 gem 'devise-async',           '~> 0.9.0'
 gem 'doorkeeper',             '~> 2.2.0'
 gem 'omniauth',               '~> 1.3.1'
+gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
@@ -54,7 +55,7 @@ gem "browser", '~> 1.0.0'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 9.0'
+gem "gitlab_git", '~> 10.0'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -63,7 +64,9 @@ gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
 gem 'net-ldap'
 
 # Git Wiki
-gem 'gollum-lib', '~> 4.1.0'
+# Required manually in config/initializers/gollum.rb to control load order
+gem 'gollum-lib', '~> 4.1.0', require: false
+gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 
 # Language detection
 gem "github-linguist", "~> 4.7.0", require: "linguist"
@@ -294,7 +297,7 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.0.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.35.0', require: false
+  gem 'rubocop', '~> 0.38.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'coveralls',  '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.10.0', require: false

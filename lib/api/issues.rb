@@ -191,7 +191,7 @@ module API
         end
       end
 
-      # Delete a project issue (deprecated)
+      # Delete a project issue
       #
       # Parameters:
       #   id (required) - The ID of a project
@@ -199,7 +199,10 @@ module API
       # Example Request:
       #   DELETE /projects/:id/issues/:issue_id
       delete ":id/issues/:issue_id" do
-        not_allowed!
+        issue = user_project.issues.find_by(id: params[:issue_id])
+
+        authorize!(:destroy_issue, issue)
+        issue.destroy
       end
     end
   end

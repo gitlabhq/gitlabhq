@@ -23,7 +23,7 @@ namespace :gitlab do
     end
 
     # Restore backup of GitLab system
-    desc "GitLab | Restore a previously created backup"
+    desc 'GitLab | Restore a previously created backup'
     task restore: :environment do
       warn_user_is_not_gitlab
       configure_cron_mode
@@ -31,14 +31,32 @@ namespace :gitlab do
       backup = Backup::Manager.new
       backup.unpack
 
-      Rake::Task["gitlab:backup:db:restore"].invoke unless backup.skipped?("db")
-      Rake::Task["gitlab:backup:repo:restore"].invoke unless backup.skipped?("repositories")
-      Rake::Task["gitlab:backup:uploads:restore"].invoke unless backup.skipped?("uploads")
-      Rake::Task["gitlab:backup:builds:restore"].invoke unless backup.skipped?("builds")
-      Rake::Task["gitlab:backup:artifacts:restore"].invoke unless backup.skipped?("artifacts")
-      Rake::Task["gitlab:backup:pages:restore"].invoke unless backup.skipped?("artifacts")
-      Rake::Task["gitlab:backup:lfs:restore"].invoke unless backup.skipped?("lfs")
-      Rake::Task["gitlab:shell:setup"].invoke
+      unless backup.skipped?('db')
+        unless ENV['force'] == 'yes'
+          warning = warning = <<-MSG.strip_heredoc
+            Before restoring the database we recommend removing all existing
+            tables to avoid future upgrade problems. Be aware that if you have
+            custom tables in the GitLab database these tables and all data will be
+            removed.
+          MSG
+          ask_to_continue
+          puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.yellow
+          sleep(5)
+        end
+        # Drop all tables Load the schema to ensure we don't have any newer tables
+        # hanging out from a failed upgrade
+        $progress.puts 'Cleaning the database ... '.blue
+        Rake::Task['gitlab:db:drop_tables'].invoke
+        $progress.puts 'done'.green
+        Rake::Task['gitlab:backup:db:restore'].invoke
+      end
+      Rake::Task['gitlab:backup:repo:restore'].invoke unless backup.skipped?('repositories')
+      Rake::Task['gitlab:backup:uploads:restore'].invoke unless backup.skipped?('uploads')
+      Rake::Task['gitlab:backup:builds:restore'].invoke unless backup.skipped?('builds')
+      Rake::Task['gitlab:backup:artifacts:restore'].invoke unless backup.skipped?('artifacts')
+      Rake::Task['gitlab:backup:pages:restore'].invoke unless backup.skipped?('artifacts')
+      Rake::Task['gitlab:backup:lfs:restore'].invoke unless backup.skipped?('lfs')
+      Rake::Task['gitlab:shell:setup'].invoke
 
       backup.cleanup
     end

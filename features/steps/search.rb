@@ -100,7 +100,7 @@ class Spinach::Features::Search < Spinach::FeatureSteps
 
   step 'I should see "test_wiki" link in the search results' do
     page.within('.results') do
-      expect(find(:css, '.search-results')).to have_link 'test_wiki.md'
+      expect(find(:css, '.search-results')).to have_link 'test_wiki'
     end
   end
 

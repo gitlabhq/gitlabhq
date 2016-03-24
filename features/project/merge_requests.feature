@@ -331,6 +331,14 @@ Feature: Project Merge Requests
     And I select a new target branch
     Then I should see new target branch changes
 
+  @javascript
+  Scenario: I can close merge request after commenting
+    Given I visit merge request page "Bug NS-04"
+    And I leave a comment like "XML attached"
+    Then I should see comment "XML attached"
+    And I click link "Close"
+    Then I should see closed merge request "Bug NS-04"
+
   Scenario: I approve merge request
     Given merge request 'Bug NS-04' must be approved
     And I click link "Bug NS-04"

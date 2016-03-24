@@ -43,12 +43,12 @@
   // Search result highlight
   span.highlight_word {
     background-color: #ffe792 !important;
-    color: #000000 !important;
+    color: #000 !important;
   }
 
   .hll { background-color: #373b41 }
   .c { color: #969896 } /* Comment */
-  .err { color: #cc6666 } /* Error */
+  .err { color: #c66 } /* Error */
   .k { color: #b294bb } /* Keyword */
   .l { color: #de935f } /* Literal */
   .n { color: #c5c8c6 } /* Name */
@@ -58,7 +58,7 @@
   .cp { color: #969896 } /* Comment.Preproc */
   .c1 { color: #969896 } /* Comment.Single */
   .cs { color: #969896 } /* Comment.Special */
-  .gd { color: #cc6666 } /* Generic.Deleted */
+  .gd { color: #c66 } /* Generic.Deleted */
   .ge { font-style: italic } /* Generic.Emph */
   .gh { color: #c5c8c6; font-weight: bold } /* Generic.Heading */
   .gi { color: #b5bd68 } /* Generic.Inserted */
@@ -77,17 +77,17 @@
   .na { color: #81a2be } /* Name.Attribute */
   .nb { color: #c5c8c6 } /* Name.Builtin */
   .nc { color: #f0c674 } /* Name.Class */
-  .no { color: #cc6666 } /* Name.Constant */
+  .no { color: #c66 } /* Name.Constant */
   .nd { color: #8abeb7 } /* Name.Decorator */
   .ni { color: #c5c8c6 } /* Name.Entity */
-  .ne { color: #cc6666 } /* Name.Exception */
+  .ne { color: #c66 } /* Name.Exception */
   .nf { color: #81a2be } /* Name.Function */
   .nl { color: #c5c8c6 } /* Name.Label */
   .nn { color: #f0c674 } /* Name.Namespace */
   .nx { color: #81a2be } /* Name.Other */
   .py { color: #c5c8c6 } /* Name.Property */
   .nt { color: #8abeb7 } /* Name.Tag */
-  .nv { color: #cc6666 } /* Name.Variable */
+  .nv { color: #c66 } /* Name.Variable */
   .ow { color: #8abeb7 } /* Operator.Word */
   .w { color: #c5c8c6 } /* Text.Whitespace */
   .mf { color: #de935f } /* Literal.Number.Float */
@@ -106,8 +106,8 @@
   .s1 { color: #b5bd68 } /* Literal.String.Single */
   .ss { color: #b5bd68 } /* Literal.String.Symbol */
   .bp { color: #c5c8c6 } /* Name.Builtin.Pseudo */
-  .vc { color: #cc6666 } /* Name.Variable.Class */
-  .vg { color: #cc6666 } /* Name.Variable.Global */
-  .vi { color: #cc6666 } /* Name.Variable.Instance */
+  .vc { color: #c66 } /* Name.Variable.Class */
+  .vg { color: #c66 } /* Name.Variable.Global */
+  .vi { color: #c66 } /* Name.Variable.Instance */
   .il { color: #de935f } /* Literal.Number.Integer.Long */
 }

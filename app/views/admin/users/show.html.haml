@@ -48,6 +48,10 @@
               Disabled
 
         %li
+          %span.light External User:
+          %strong
+            = @user.external? ? "Yes" : "No"
+        %li
           %span.light Can create groups:
           %strong
             = @user.can_create_group ? "Yes" : "No"
