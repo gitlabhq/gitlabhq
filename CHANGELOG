@@ -14,6 +14,7 @@ v 8.6.2
   - Fix an issue hiding the password form when signed-in with a linked account. !3381
   - Add links to CI setup documentation from project settings and builds pages. !3384
   - Fix an issue with width of project select dropdown. !3386
+  - Fix error 500 with cancel button on issuable edit form. !3392
 
 v 8.6.2 (unreleased)
   - Comments on confidential issues don't show up in activity feed to non-members
