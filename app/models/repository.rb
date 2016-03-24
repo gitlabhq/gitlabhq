@@ -467,6 +467,10 @@ class Repository
     end
   end
 
+  def gitlab_ci_yml
+    @gitlab_ci_yml ||= blob_at(head_commit.sha, '.gitlab-ci.yml') unless empty?
+  end
+
   def head_commit
     @head_commit ||= commit(self.root_ref)
   end

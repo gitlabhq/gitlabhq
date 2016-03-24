@@ -2,7 +2,7 @@
   %legend
     Builds:
 
-  - unless @project.builds.any?
+  - unless @repository.gitlab_ci_yml
     .form-group
       .col-sm-offset-2.col-sm-10
         %p Before you can use Builds (Continuous Integration) feature you need to setup it.
