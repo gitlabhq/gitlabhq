@@ -249,8 +249,11 @@ class GitLabDropdown
   renderItem: (data) ->
     html = ""
 
-    # Separator
+    # Divider
     return "<li class='divider'></li>" if data is "divider"
+
+    # Separator is a full-width divider
+    return "<li class='separator'></li>" if data is "separator"
 
     # Header
     return "<li class='dropdown-header'>#{data.header}</li>" if data.header?
