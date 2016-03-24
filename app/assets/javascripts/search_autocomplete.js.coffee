@@ -191,7 +191,7 @@ class @SearchAutocomplete
       # If input is blank then restore state
       if @searchInput.val() is ''
         @restoreOriginalState()
-    , 100)
+    , 150)
 
   addLocationBadge: (item) ->
     category = if item.category? then "#{item.category}: " else ''
