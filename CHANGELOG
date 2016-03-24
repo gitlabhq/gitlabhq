@@ -5,6 +5,9 @@ v 8.7.0 (unreleased)
   - Make HTTP(s) label consistent on clone bar (Stan Hu)
   - Fix avatar stretching by providing a cropping feature
 
+v 8.6.2 (unreleased)
+  - Comments on confidential issues don't show up in activity feed to non-members
+
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
   - Display navigation controls on mobile. !3214

@@ -66,21 +66,25 @@ describe Event, models: true do
   end
 
   describe '#proper?' do
+    let(:project) { create(:empty_project, :public) }
+    let(:non_member) { create(:user) }
+    let(:member)  { create(:user) }
+    let(:author) { create(:author) }
+    let(:assignee) { create(:user) }
+    let(:admin) { create(:admin) }
+    let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
+    let(:confidential_issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+    let(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
+    let(:note_on_confidential_issue) { create(:note_on_issue, noteable: confidential_issue, project: project) }
+    let(:event) { Event.new(project: project, target: target, author_id: author.id) }
+
+    before do
+      project.team << [member, :developer]
+    end
+
     context 'issue event' do
-      let(:project) { create(:empty_project, :public) }
-      let(:non_member) { create(:user) }
-      let(:member)  { create(:user) }
-      let(:author) { create(:author) }
-      let(:assignee) { create(:user) }
-      let(:admin) { create(:admin) }
-      let(:event) { Event.new(project: project, action: Event::CREATED, target: issue, author_id: author.id) }
-
-      before do
-        project.team << [member, :developer]
-      end
-
       context 'for non confidential issues' do
-        let(:issue) { create(:issue, project: project, author: author, assignee: assignee) }
+        let(:target) { issue }
 
         it { expect(event.proper?(non_member)).to eq true }
         it { expect(event.proper?(author)).to eq true }
@@ -90,7 +94,29 @@ describe Event, models: true do
       end
 
       context 'for confidential issues' do
-        let(:issue) { create(:issue, :confidential, project: project, author: author, assignee: assignee) }
+        let(:target) { confidential_issue }
+
+        it { expect(event.proper?(non_member)).to eq false }
+        it { expect(event.proper?(author)).to eq true }
+        it { expect(event.proper?(assignee)).to eq true }
+        it { expect(event.proper?(member)).to eq true }
+        it { expect(event.proper?(admin)).to eq true }
+      end
+    end
+
+    context 'note event' do
+      context 'on non confidential issues' do
+        let(:target) { note_on_issue }
+
+        it { expect(event.proper?(non_member)).to eq true }
+        it { expect(event.proper?(author)).to eq true }
+        it { expect(event.proper?(assignee)).to eq true }
+        it { expect(event.proper?(member)).to eq true }
+        it { expect(event.proper?(admin)).to eq true }
+      end
+
+      context 'on confidential issues' do
+        let(:target) { note_on_confidential_issue }
 
         it { expect(event.proper?(non_member)).to eq false }
         it { expect(event.proper?(author)).to eq true }
