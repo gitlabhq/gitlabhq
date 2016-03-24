@@ -166,6 +166,7 @@ $regular_font: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif
 /*
 * Dropdowns
 */
+$dropdown-width: 300px;
 $dropdown-bg: #fff;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
@@ -197,6 +198,7 @@ $award-emoji-new-btn-icon-color: #dcdcdc;
 /*
  * Search Box
  */
+$search-input-width: $dropdown-width;
 $location-badge-color: #aaa;
 $location-badge-bg: $gray-normal;
 $location-icon-color: #e7e9ed;

@@ -30,7 +30,7 @@
     @extend .form-control;
     margin: 0;
     padding: 4px;
-    width: 350px;
+    width: $search-input-width;
     line-height:  24px;
   }
 
