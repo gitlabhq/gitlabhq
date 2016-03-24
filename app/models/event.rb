@@ -73,7 +73,7 @@ class Event < ActiveRecord::Base
     end
   end
 
-  def proper?(user = nil)
+  def visible_to_user?(user = nil)
     if push?
       true
     elsif membership_changed?
