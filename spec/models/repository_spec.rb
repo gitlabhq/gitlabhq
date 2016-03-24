@@ -725,6 +725,12 @@ describe Repository, models: true do
   end
 
   describe '#avatar' do
+    it 'returns nil if repo does not exist' do
+      expect(repository).to receive(:exists?).and_return(false)
+
+      expect(repository.avatar).to eq(nil)
+    end
+
     it 'returns the first avatar file found in the repository' do
       expect(repository).to receive(:blob_at_branch).
         with('master', 'logo.png').
