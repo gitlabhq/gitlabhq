@@ -429,8 +429,8 @@ Rails.application.routes.draw do
         # Git HTTP clients ('git clone' etc.)
         scope constraints: { format: /(git|wiki\.git)/ } do
           get '/info/refs', to: 'git_http#info_refs', only: :get
-          get '/git-upload-pack', to: 'git_http#git_upload_pack', only: :post
-          get '/git-receive-pack', to: 'git_http#git_receive_pack', only: :post
+          post '/git-upload-pack', to: 'git_http#git_upload_pack', only: :post
+          post '/git-receive-pack', to: 'git_http#git_receive_pack', only: :post
         end
 
         # Blob routes:
