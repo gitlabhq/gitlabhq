@@ -50,19 +50,22 @@ class @MilestoneSelect
             extraOptions = []
             if showAny
               extraOptions.push(
-                isAny: true
+                id: 0
+                name: ''
                 title: 'Any Milestone'
               )
 
             if showNo
               extraOptions.push(
-                id: '0'
+                id: -1
+                name: 'No Milestone'
                 title: 'No Milestone'
               )
 
             if showUpcoming
               extraOptions.push(
-                id: '#upcoming'
+                id: -2
+                name: '#upcoming'
                 title: 'Upcoming'
               )
 >>>>>>> Updated to only include upcoming on filters
@@ -84,14 +87,11 @@ class @MilestoneSelect
           milestone.title
         id: (milestone) ->
           if !useId
-            if !milestone.isAny?
-              milestone.title
-            else
-              ''
+            milestone.name
           else
             milestone.id
         isSelected: (milestone) ->
-          milestone.title is selectedMilestone
+          milestone.name is selectedMilestone
         hidden: ->
           $selectbox.hide()
           $value.show()
@@ -99,8 +99,10 @@ class @MilestoneSelect
           if $dropdown.hasClass 'js-filter-bulk-update'
             return
 
-          if $dropdown.hasClass 'js-filter-submit'
-            if selected.title?
+          if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
+            if selected.name?
+              selectedMilestone = selected.name
+            else if selected.title?
               selectedMilestone = selected.title
             $dropdown.parents('form').submit()
           else

@@ -47,6 +47,20 @@ module IssuablesHelper
     end
   end
 
+  def milestone_dropdown_label(milestone_title, default_label)
+    milestone_title = if milestone_title == Milestone::Upcoming.name
+      Milestone::Upcoming.title
+    else
+      milestone_title
+    end
+
+    if !milestone_title.nil? && !milestone_title.empty?
+      h(milestone_title)
+    else
+      default_label
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?

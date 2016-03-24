@@ -243,7 +243,7 @@ class IssuableFinder
   end
 
   def filter_by_upcoming_milestone?
-    params[:milestone_title] == 'Upcoming'
+    params[:milestone_title] == Milestone::Upcoming.name
   end
 
   def by_milestone(items)

@@ -8,12 +8,13 @@ class GlobalMilestone
     milestones = milestones.group_by(&:title)
 
     milestones.map do |title, milestones|
-      new(title, milestones)
+      new(title,  milestones)
     end
   end
 
   def initialize(title, milestones)
     @title = title
+    @name = title
     @milestones = milestones
   end
 
