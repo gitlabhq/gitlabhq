@@ -1,4 +1,4 @@
-- if event.proper?(current_user)
+- if event.visible_to_user?(current_user)
   .event-item{class: "#{event.body? ? "event-block" : "event-inline" }"}
     .event-item-timestamp
       #{time_ago_with_tooltip(event.created_at)}
