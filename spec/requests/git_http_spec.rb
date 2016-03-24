@@ -61,9 +61,35 @@ describe 'Git HTTP requests', lib: true do
         project.update_attribute(:visibility_level, Project::PUBLIC)
       end
 
-      it "responds with status 200" do
+      it "downloads get status 200" do
         download(path, env) do |response|
           expect(response.status).to eq(200)
+        end
+      end
+
+      it "uploads get status 401" do
+        upload(path, env) do |response|
+          expect(response.status).to eq(401)
+        end
+      end
+      
+      context "with correct credentials" do
+        let(:env) { { user: user.username, password: user.password } }
+
+        it "uploads get status 200 (because Git hooks do the real check)" do
+          upload(path, env) do |response|
+            expect(response.status).to eq(200)
+          end
+        end
+        
+        context 'but git-receive-pack is disabled' do
+          it "responds with status 404" do
+            allow(Gitlab.config.gitlab_shell).to receive(:receive_pack).and_return(false)
+  
+            upload(path, env) do |response|
+              expect(response.status).to eq(404)
+            end
+          end
         end
       end
 
@@ -133,12 +159,18 @@ describe 'Git HTTP requests', lib: true do
             end
 
             context "when the user isn't blocked" do
-              it "responds with status 200" do
+              it "downloads status 200" do
                 expect(Rack::Attack::Allow2Ban).to receive(:reset)
 
                 clone_get(path, env)
 
                 expect(response.status).to eq(200)
+              end
+              
+              it "uploads get status 200" do
+                upload(path, env) do |response|
+                  expect(response.status).to eq(200)
+                end      
               end
             end
 
@@ -174,9 +206,15 @@ describe 'Git HTTP requests', lib: true do
           end
 
           context "when the user doesn't have access to the project" do
-            it "responds with status 404" do
+            it "downloads get status 404" do
               download(path, user: user.username, password: user.password) do |response|
                 expect(response.status).to eq(404)
+              end
+            end
+            
+            it "uploads get status 200 (because Git hooks do the real check)" do
+              upload(path, user: user.username, password: user.password) do |response|
+                expect(response.status).to eq(200)
               end
             end
           end
@@ -196,12 +234,21 @@ describe 'Git HTTP requests', lib: true do
       end
     end
   end
+
   def clone_get(project, options={})
     get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password))
   end
 
   def clone_post(project, options={})
     post "/#{project}/git-upload-pack", {}, auth_env(*options.values_at(:user, :password))
+  end
+
+  def push_get(project, options={})
+    get "/#{project}/info/refs", { service: 'git-receive-pack' }, auth_env(*options.values_at(:user, :password))
+  end
+
+  def push_post(project, options={})
+    post "/#{project}/git-receive-pack", {}, auth_env(*options.values_at(:user, :password))
   end
 
   def download(project, user: nil, password: nil)
@@ -211,6 +258,16 @@ describe 'Git HTTP requests', lib: true do
     yield response
 
     clone_post *args
+    yield response
+  end
+
+  def upload(project, user: nil, password: nil)
+    args = [project, {user: user, password: password}]
+
+    push_get *args
+    yield response
+
+    push_post *args
     yield response
   end
 

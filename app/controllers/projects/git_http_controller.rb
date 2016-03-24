@@ -5,10 +5,12 @@ class Projects::GitHttpController < Projects::ApplicationController
     
   def git_rpc
     if upload_pack? && upload_pack_allowed?
-      render_ok and return
+      render_ok
+    elsif receive_pack? && receive_pack_allowed?
+      render_ok
+    else
+      render_not_found
     end
-    
-    render_not_found
   end
   
   %i{info_refs git_receive_pack git_upload_pack}.each do |method|
@@ -30,7 +32,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def project_found?
-    render_not_found if project.nil?
+    render_not_found if project.blank?
   end
 
   def ci_request?(login, password)
@@ -124,13 +126,21 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def upload_pack?
-    if action_name == 'info_refs'
-      params[:service] == 'git-upload-pack'
-    else
-      action_name == 'git_upload_pack'
-    end
+    rpc == 'git-upload-pack'
   end
 
+  def receive_pack?
+    rpc == 'git-receive-pack'
+  end
+
+  def rpc
+    if action_name == 'info_refs'
+      params[:service]
+    else
+      action_name.gsub('_', '-')
+    end
+  end
+    
   def render_ok
     render json: {
       'GL_ID' => Gitlab::ShellEnv.gl_id(@user),
@@ -159,6 +169,18 @@ class Projects::GitHttpController < Projects::ApplicationController
       Gitlab::GitAccess.new(user, project).download_access_check.allowed?
     elsif project.public?
       # Allow clone/fetch for public projects
+      true
+    else
+      false
+    end
+  end
+
+  def receive_pack_allowed?
+    if !Gitlab.config.gitlab_shell.receive_pack
+      false
+    elsif user
+      # Skip user authorization on upload request.
+      # It will be done by the pre-receive hook in the repository.
       true
     else
       false
