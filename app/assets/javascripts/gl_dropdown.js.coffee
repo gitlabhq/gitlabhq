@@ -197,7 +197,6 @@ class GitLabDropdown
       @dropdown.find(".dropdown-input-field").focus()
 
   hidden: (e) =>
-
     if @options.filterable
       @dropdown
         .find(".dropdown-input-field")

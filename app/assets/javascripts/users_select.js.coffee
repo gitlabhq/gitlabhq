@@ -45,7 +45,7 @@ class @UsersSelect
             user =
               name: data.assignee.name
               username: data.assignee.username
-              avatar: data.assignee.avatar.url
+              avatar: data.assignee.avatar_url
           else
             user =
               name: 'Unassigned'
@@ -129,7 +129,7 @@ class @UsersSelect
 
         inputId: 'issue_assignee_id'
 
-        hidden: ->
+        hidden: (e) ->
           $selectbox.hide()
           $value.show()
 

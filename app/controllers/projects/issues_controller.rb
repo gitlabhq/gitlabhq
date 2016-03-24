@@ -113,7 +113,7 @@ class Projects::IssuesController < Projects::ApplicationController
         end
       end
       format.json do
-        render json: @issue.to_json(include: [:milestone, :labels, :assignee])
+        render json: @issue.to_json(include: [:milestone, :labels, assignee: { methods: :avatar_url }])
       end
     end
   end
