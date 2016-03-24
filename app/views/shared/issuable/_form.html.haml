@@ -127,7 +127,7 @@
       for this project.
 
   - if issuable.new_record?
-    = link_to 'Cancel', namespace_project_issues_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = link_to 'Cancel', polymorphic_path([@project.namespace, @project, issuable.class]), class: 'btn btn-cancel'
   - else
     .pull-right
       - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)
