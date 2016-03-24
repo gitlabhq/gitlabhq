@@ -306,7 +306,7 @@ class GitLabDropdown
       if @dropdown.find(".dropdown-toggle-page").length
         selector = ".dropdown-page-one .dropdown-content li:first-child a"
 
-      $(selector).addClass 'is-focused'
+      @getElement(selector).addClass 'is-focused'
 
   rowClicked: (el) ->
     fieldName = @options.fieldName
