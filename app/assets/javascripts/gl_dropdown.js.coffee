@@ -436,15 +436,22 @@ class GitLabDropdown
 
     # Dropdown content scroll area
     $dropdownContent = $listItem.closest('.dropdown-content')
-    dropdownContentBottom = $dropdownContent.prop('offsetTop') + $dropdownContent.prop('offsetHeight')
+    dropdownScrollTop = $dropdownContent.prop('scrollTop')
+    dropdownContentHeight = $dropdownContent.prop('offsetHeight')
+    dropdownContentTop = $dropdownContent.prop('offsetTop')
+    dropdownContentBottom = dropdownContentTop + dropdownContentHeight
 
     # Get the offset bottom of the list item
-    listItemBottom = $listItem.prop('offsetTop') + $listItem.prop('offsetHeight')
-    console.log listItemBottom, dropdownContentBottom
+    listItemHeight = $listItem.prop('offsetHeight')
+    listItemTop = $listItem.prop('offsetTop')
+    listItemBottom = listItemTop + listItemHeight
 
-    if listItemBottom > dropdownContentBottom
+    if listItemBottom > dropdownContentBottom + dropdownScrollTop
       # Scroll the dropdown content down
       $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom)
+    else if listItemTop < dropdownContentTop + dropdownScrollTop
+      # Scroll the dropdown content up
+      $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
