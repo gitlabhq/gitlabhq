@@ -108,6 +108,7 @@ class GitLabDropdown
       @filterInput = @getElement(FILTER_INPUT)
       @highlight = false
       @filterInputBlur = true
+      @enterCallback = true
     } = @options
 
     self = @
@@ -147,7 +148,8 @@ class GitLabDropdown
           @parseData data
           @highlightRow 1
         enterCallback: =>
-          @selectFirstRow()
+          if @enterCallback
+            @selectFirstRow()
 
     # Event listeners
     @dropdown.on "shown.bs.dropdown", @opened
