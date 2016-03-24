@@ -5,6 +5,16 @@ describe Ci::ProjectsController do
   let!(:project) { create(:project, visibility, ci_id: 1) }
   let(:ci_id) { project.ci_id }
 
+  describe '#index' do
+    let(:user) { create(:user) }
+    before { sign_in(user) }
+    before { get(:index) }
+
+    it 'returns 200' do
+      expect(response.status).to eq 200
+    end
+  end
+
   ##
   # Specs for *deprecated* CI badge
   #
