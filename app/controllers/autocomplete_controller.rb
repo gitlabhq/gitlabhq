@@ -10,7 +10,9 @@ class AutocompleteController < ApplicationController
 
     if params[:push_code_to_protected_branches].present? && params[:project_id].present?
       project = Project.find_by(id: params[:project_id])
-      @users = @users.to_a.select { |user| user.can?(:push_code_to_protected_branches, project) }.take(20)
+      @users = @users.to_a.
+        select { |user| user.can?(:push_code_to_protected_branches, project) }.
+        take(Kaminari.config.default_per_page)
     else
       @users = @users.page(params[:page])
     end
