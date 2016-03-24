@@ -96,7 +96,7 @@ class GitLabDropdown
   LOADING_CLASS = "is-loading"
   PAGE_TWO_CLASS = "is-page-two"
   ACTIVE_CLASS = "is-active"
-  CURRENT_INDEX = 0
+  CURRENT_INDEX = -1
 
   FILTER_INPUT = '.dropdown-input .dropdown-input-field'
 
@@ -410,7 +410,7 @@ class GitLabDropdown
 
         if currentKeyCode is 40
           # Move down
-          CURRENT_INDEX += 1 if CURRENT_INDEX < $listItems.length
+          CURRENT_INDEX += 1 if CURRENT_INDEX < ($listItems.length - 1)
         else if currentKeyCode is 38
           # Move up
           CURRENT_INDEX -= 1 if CURRENT_INDEX > 0
@@ -433,6 +433,18 @@ class GitLabDropdown
 
     $listItem = $(selector, @dropdown)
     $listItem.addClass "is-focused"
+
+    # Dropdown content scroll area
+    $dropdownContent = $listItem.closest('.dropdown-content')
+    dropdownContentBottom = $dropdownContent.prop('offsetTop') + $dropdownContent.prop('offsetHeight')
+
+    # Get the offset bottom of the list item
+    listItemBottom = $listItem.prop('offsetTop') + $listItem.prop('offsetHeight')
+    console.log listItemBottom, dropdownContentBottom
+
+    if listItemBottom > dropdownContentBottom
+      # Scroll the dropdown content down
+      $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
