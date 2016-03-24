@@ -652,7 +652,7 @@ GEM
       redis-store (~> 1.1.0)
     redis-store (1.1.7)
       redis (>= 2.2)
-    request_store (1.2.1)
+    request_store (1.3.0)
     rerun (0.11.0)
       listen (~> 3.0)
     responders (2.1.1)
@@ -1011,7 +1011,7 @@ DEPENDENCIES
   redcarpet (~> 3.3.3)
   redis-namespace
   redis-rails (~> 4.0.0)
-  request_store (~> 1.2.0)
+  request_store (~> 1.3.0)
   rerun (~> 0.11.0)
   responders (~> 2.0)
   rouge (~> 1.10.1)

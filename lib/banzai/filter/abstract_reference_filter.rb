@@ -62,9 +62,51 @@ module Banzai
         # Example: project.merge_requests.find
       end
 
+      def find_object_cached(project, id)
+        if RequestStore.active?
+          cache = find_objects_cache[object_class][project.id]
+
+          if cache.key?(id)
+            cache[id]
+          else
+            cache[id] = find_object(project, id)
+          end
+        else
+          find_object(project, id)
+        end
+      end
+
+      def project_from_ref_cache(ref)
+        if RequestStore.active?
+          cache = project_refs_cache
+
+          if cache.key?(ref)
+            cache[ref]
+          else
+            cache[ref] = project_from_ref(ref)
+          end
+        else
+          project_from_ref(ref)
+        end
+      end
+
       def url_for_object(object, project)
         # Implement in child class
         # Example: project_merge_request_url
+      end
+
+      def url_for_object_cached(object, project)
+        if RequestStore.active?
+          cache = url_for_object_cache[object_class][project.id]
+
+          if cache.key?(object)
+            cache[object]
+          else
+            cache[object] = url_for_object(object, project)
+          end
+        else
+          url_for_object(object, project)
+        end
       end
 
       def call
@@ -109,9 +151,9 @@ module Banzai
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
       def object_link_filter(text, pattern, link_text: nil)
         references_in(text, pattern) do |match, id, project_ref, matches|
-          project = project_from_ref(project_ref)
+          project = project_from_ref_cache(project_ref)
 
-          if project && object = find_object(project, id)
+          if project && object = find_object_cached(project, id)
             title = object_link_title(object)
             klass = reference_class(object_sym)
 
@@ -121,8 +163,11 @@ module Banzai
               object_sym => object.id
             )
 
-            url = matches[:url] if matches.names.include?("url")
-            url ||= url_for_object(object, project)
+            if matches.names.include?("url") && matches[:url]
+              url = matches[:url]
+            else
+              url = url_for_object_cached(object, project)
+            end
 
             text = link_text || object_link_text(object, matches)
 
@@ -156,6 +201,24 @@ module Banzai
         text += " (#{extras.join(", ")})" if extras.any?
 
         text
+      end
+
+      private
+
+      def project_refs_cache
+        RequestStore[:banzai_project_refs] ||= {}
+      end
+
+      def find_objects_cache
+        RequestStore[:banzai_find_objects_cache] ||= Hash.new do |hash, key|
+          hash[key] = Hash.new { |h, k| h[k] = {} }
+        end
+      end
+
+      def url_for_object_cache
+        RequestStore[:banzai_url_for_object] ||= Hash.new do |hash, key|
+          hash[key] = Hash.new { |h, k| h[k] = {} }
+        end
       end
     end
   end
