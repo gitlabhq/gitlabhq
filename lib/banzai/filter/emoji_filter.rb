@@ -1,7 +1,3 @@
-require 'action_controller'
-require 'gitlab_emoji'
-require 'html/pipeline/filter'
-
 module Banzai
   module Filter
     # HTML filter that replaces :emoji: with images.
