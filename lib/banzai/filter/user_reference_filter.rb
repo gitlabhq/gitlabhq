@@ -90,7 +90,7 @@ module Banzai
       private
 
       def urls
-        Gitlab::Application.routes.url_helpers
+        Gitlab::Routing.url_helpers
       end
 
       def link_class

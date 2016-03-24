@@ -11,7 +11,7 @@ module Banzai
       end
 
       def url_for_object(issue, project)
-        h = Gitlab::Application.routes.url_helpers
+        h = Gitlab::Routing.url_helpers
         h.namespace_project_milestone_url(project.namespace, project, milestone,
                                         only_path: context[:only_path])
       end

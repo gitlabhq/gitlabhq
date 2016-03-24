@@ -21,7 +21,7 @@
 
 class JiraService < IssueTrackerService
   include HTTParty
-  include Gitlab::Application.routes.url_helpers
+  include Gitlab::Routing.url_helpers
 
   DEFAULT_API_VERSION = 2
 
