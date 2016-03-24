@@ -10,6 +10,7 @@ v 8.6.2
   - Fix error with anonymous token in applications settings. !3362
   - Fix the milestone 'upcoming' filter. !3364
   - Fix comments on confidential issues showing up in activity feed to non-members. !3375
+  - Add a tooltip to new branch button in issue page. !3380
 
 v 8.6.1
   - Add option to reload the schema before restoring a database backup. !2807
