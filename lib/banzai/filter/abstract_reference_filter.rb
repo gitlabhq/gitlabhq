@@ -11,15 +11,15 @@ module Banzai
       end
 
       def self.object_name
-        object_class.name.underscore
+        @object_name ||= object_class.name.underscore
       end
 
       def self.object_sym
-        object_name.to_sym
+        @object_sym ||= object_name.to_sym
       end
 
       def self.data_reference
-        "data-#{object_name.dasherize}"
+        @data_reference ||= "data-#{object_name.dasherize}"
       end
 
       # Public: Find references in text (like `!123` for merge requests)
