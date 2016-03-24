@@ -66,37 +66,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     end
   end
 
-  step 'I change the role to "Developer"' do
-    user = User.find_by(name: "Mary Jane")
-    member = Group.find_by(name: "Owned").members.where(user_id: user.id).first
-
-    page.within "#group_member_#{member.id}" do
-      find(".js-toggle-button").click
-      page.within "#edit_group_member_#{member.id}" do
-        select 'Developer', from: 'group_member_access_level'
-        click_on 'Save'
-      end
-    end
-
-    page.within "#group_member_#{member.id}" do
-      expect(page).to have_content "Developer"
-    end
-  end
-
-  step 'I go to "Audit Events"' do
-    find(:link, 'Audit Events').trigger('click')
-  end
-
-  step 'I should see the audit event listed' do
-    page.within('table#audits') do
-      expect(page).to have_content 'Add user access as reporter'
-      expect(page).to have_content 'Change access level from reporter to developer'
-      expect(page).to have_content 'Remove user access'
-      expect(page).to have_content('John Doe', count: 3)
-      expect(page).to have_content('Mary Jane', count: 3)
-    end
-  end
-
   step 'project from group "Owned" has issues assigned to me' do
     create :issue,
       project: project,
