@@ -28,17 +28,6 @@ class @MilestoneSelect
 
         milestoneLinkNoneTemplate = '<div class="light">None</div>'
 
-      extraOptions = [{
-        isAny: true
-        title: 'Any Milestone'
-      }, {
-        id: '0'
-        title: 'No Milestone'
-      }, {
-        id: '#upcoming'
-        title: 'Upcoming'
-      }]
-
       $dropdown.glDropdown(
         data: (term, callback) ->
           $.ajax(
