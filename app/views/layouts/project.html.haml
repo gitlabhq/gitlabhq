@@ -18,7 +18,7 @@
   = render "layouts/init_auto_complete" if current_user
 
 - content_for :header_content do
-  .dropdown-menu.dropdown-select
+  .dropdown-menu.dropdown-select.dropdown-menu-projects
     = dropdown_title("Go to a project")
     = dropdown_filter("Search your projects")
     = dropdown_content

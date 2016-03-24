@@ -65,7 +65,7 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder"}
+    project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
     project_link += icon "chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", data: { target: ".header-content", toggle: "dropdown" }  if current_user
 
     full_title = namespace_link + ' / ' + project_link
