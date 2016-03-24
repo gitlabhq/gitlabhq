@@ -87,6 +87,8 @@ module Gitlab
       end
 
       # Find the first matched user in database from email From: section
+      # TODO: Since this address could be forged, we should have some kind of
+      #       auth token attached somewhere to verify the identity better.
       def message_sender
         @message_sender ||= message.from.find do |email|
           user = User.find_by_any_email(email)
