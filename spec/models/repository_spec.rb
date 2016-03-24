@@ -148,6 +148,29 @@ describe Repository, models: true do
     end
   end
 
+  describe "#gitlab_ci_yml" do
+    before do
+      TestBlob = Struct.new(:name)
+    end
+
+    it 'returns valid file' do
+      files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
+      expect(repository.tree).to receive(:blobs).and_return(files)
+
+      expect(repository.gitlab_ci_yml.name).to eq('.gitlab-ci.yml')
+    end
+
+    it 'returns nil if not exists' do
+      expect(repository.tree).to receive(:blobs).and_return([])
+      expect(repository.gitlab_ci_yml).to be_nil
+    end
+
+    it 'returns nil for empty repository' do
+      expect(repository).to receive(:empty?).and_return(true)
+      expect(repository.gitlab_ci_yml).to be_nil
+    end
+  end
+
   describe :add_branch do
     context 'when pre hooks were successful' do
       it 'should run without errors' do

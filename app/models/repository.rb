@@ -468,7 +468,11 @@ class Repository
   end
 
   def gitlab_ci_yml
-    @gitlab_ci_yml ||= blob_at(head_commit.sha, '.gitlab-ci.yml') unless empty?
+    return nil if empty?
+
+    @gitlab_ci_yml ||= tree(:head).blobs.find do |file|
+      file.name == '.gitlab-ci.yml'
+    end
   end
 
   def head_commit
