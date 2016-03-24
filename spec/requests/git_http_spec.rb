@@ -40,7 +40,7 @@ describe 'Git HTTP requests', lib: true do
 
         download("/#{wiki.repository.path_with_namespace}.git") do |response|
           json_body = ActiveSupport::JSON.decode(response.body)
-  
+
           expect(response.status).to eq(200)
           expect(json_body['RepoPath']).to include(wiki.repository.path_with_namespace)
         end
@@ -75,7 +75,7 @@ describe 'Git HTTP requests', lib: true do
 
         context "when username and password are provided" do
           let(:env) { { user: user.username, password: 'nope' } }
-          
+
           context "when authentication fails" do
             it "responds with status 401" do
               download(path, env) do |response|
@@ -87,9 +87,9 @@ describe 'Git HTTP requests', lib: true do
               it "responds with status 401" do
                 expect(Rack::Attack::Allow2Ban).to receive(:filter).and_return(true)
                 allow_any_instance_of(Rack::Request).to receive(:ip).and_return('1.2.3.4')
-                
+
                 clone_get(path, env)
-              
+
                 expect(response.status).to eq(401)
               end
             end
@@ -97,7 +97,7 @@ describe 'Git HTTP requests', lib: true do
 
           context "when authentication succeeds" do
             let(:env) { { user: user.username, password: user.password } }
-            
+
             context "when the user has access to the project" do
               before do
                 project.team << [user, :master]
@@ -117,9 +117,9 @@ describe 'Git HTTP requests', lib: true do
               context "when the user isn't blocked" do
                 it "responds with status 200" do
                   expect(Rack::Attack::Allow2Ban).to receive(:reset)
-                  
+
                   clone_get(path, env)
-                  
+
                   expect(response.status).to eq(200)
                 end
               end
@@ -183,13 +183,9 @@ describe 'Git HTTP requests', lib: true do
   def clone_get(project, options={})
     get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password))
   end
-  
+
   def clone_post(project, options={})
     post "/#{project}/git-upload-pack", {}, auth_env(*options.values_at(:user, :password))
-  end
-
-  def clone_path(project)
-    "/#{project.path_with_namespace}.git/info/refs"
   end
 
   def download(project, user: nil, password: nil)
@@ -197,11 +193,11 @@ describe 'Git HTTP requests', lib: true do
 
     clone_get *args
     yield response
-    
+
     clone_post *args
     yield response
   end
-  
+
   def auth_env(user, password)
     if user && password
       { 'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials(user, password) }
