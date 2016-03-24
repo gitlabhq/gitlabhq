@@ -59,7 +59,7 @@ feature 'Multiple issue updating from issues#index', feature: true do
       find('#check_all_issues').click
       find('.js-update-assignee').click
 
-      find('.dropdown-menu-user-link', text: "Unassigned").click
+      click_link 'Unassigned'
       click_update_issues_button
 
       within first('.issue .controls') do
