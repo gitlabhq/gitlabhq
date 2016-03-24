@@ -146,11 +146,11 @@ class GitLabDropdown
         data: =>
           return @fullData
         callback: (data) =>
+          CURRENT_INDEX = -1
           @parseData data
-          @highlightRow 1
         enterCallback: =>
           if @enterCallback
-            @selectFirstRow()
+            @selectRowAtIndex 0
 
     # Event listeners
 
@@ -380,10 +380,11 @@ class GitLabDropdown
 
       return selectedObject
 
-  selectFirstRow: ->
-    selector = '.dropdown-content li:first-child a'
+  selectRowAtIndex: (index) ->
+    selector = ".dropdown-content li:not(.divider):eq(#{index}) a"
+
     if @dropdown.find(".dropdown-toggle-page").length
-      selector = ".dropdown-page-one .dropdown-content li:first-child a"
+      selector = ".dropdown-page-one #{selector}"
 
     # simulate a click on the first link
     $(selector).trigger "click"
@@ -403,6 +404,7 @@ class GitLabDropdown
         e.preventDefault()
         e.stopPropagation()
 
+        PREV_INDEX = CURRENT_INDEX
         $listItems = $(selector, @dropdown)
 
         if @options.filterable
@@ -415,23 +417,22 @@ class GitLabDropdown
           # Move up
           CURRENT_INDEX -= 1 if CURRENT_INDEX > 0
 
-        @highlightRowAtIndex(CURRENT_INDEX)
+        @highlightRowAtIndex($listItems, CURRENT_INDEX) if CURRENT_INDEX isnt PREV_INDEX
 
         return false
+
+      if currentKeyCode is 13
+        @selectRowAtIndex CURRENT_INDEX
 
   removeArrayKeyEvent: ->
     $('body').off 'keydown'
 
-  highlightRowAtIndex: (index, prevIndex) ->
+  highlightRowAtIndex: ($listItems, index) ->
     # Remove the class for the previously focused row
     $('.is-focused', @dropdown).removeClass 'is-focused'
 
     # Update the class for the row at the specific index
-    selector = ".dropdown-content li:not(.divider):eq(#{index})"
-    if @dropdown.find(".dropdown-toggle-page").length
-      selector = ".dropdown-page-one #{selector}"
-
-    $listItem = $(selector, @dropdown)
+    $listItem = $listItems.eq(index)
     $listItem.addClass "is-focused"
 
     # Dropdown content scroll area
