@@ -29,6 +29,9 @@ class Group < Namespace
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
   has_many :hooks, dependent: :destroy, class_name: 'GroupHook'
+  # We cannot simply set `has_many :audit_events, as: :entity, dependent: :destroy`
+  # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
+  has_many :audit_events, -> { where(entity_type: Group) }, dependent: :destroy, foreign_key: 'entity_id'
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects

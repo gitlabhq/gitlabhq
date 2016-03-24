@@ -2,4 +2,4 @@
 %h3.page-title Project Audit Events
 %p.light Events in #{@project.path_with_namespace}
 
-= render 'event_table', events: @events
+= render 'shared/audit_events/event_table', events: @events
