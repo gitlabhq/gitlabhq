@@ -136,11 +136,8 @@ class GitLabDropdown
 
     # Init filterable
     if @options.filterable
-      @input = @dropdown.find('.dropdown-input .dropdown-input-field')
-
-      @filter = new GitLabDropdownFilter @input,
+      @filter = new GitLabDropdownFilter @filterInput,
         filterInputBlur: @filterInputBlur
-        input: @filterInput
         remote: @options.filterRemote
         query: @options.data
         keys: @options.search.fields
