@@ -32,7 +32,8 @@ class @SearchAutocomplete
 
     @saveOriginalState()
 
-    @createAutocomplete()
+    # Only when user is logged in
+    @createAutocomplete() if gon.current_user_id
 
     @searchInput.addClass('disabled')
 
@@ -123,6 +124,9 @@ class @SearchAutocomplete
     @clearInput.on 'click', @onRemoveLocationClick
 
   enableAutocomplete: ->
+    # No need to enable anything if user is not logged in
+    return if !gon.current_user_id
+
     dropdownMenu = @dropdown.find('.dropdown-menu')
     _this = @
     @loadingSuggestions = false
