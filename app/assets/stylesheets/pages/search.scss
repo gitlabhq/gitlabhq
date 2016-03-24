@@ -135,5 +135,9 @@
     }
   }
 
-
+  &.has-location-badge {
+    .search-input-wrap {
+      width: 78%;
+    }
+  }
 }
