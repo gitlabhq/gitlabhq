@@ -90,7 +90,7 @@ class @SearchAutocomplete
 
           # Add group header before list each group
           if lastCategory isnt suggestion.category
-            data.push 'divider' if !firstCategory
+            data.push 'separator' if !firstCategory
 
             firstCategory = false if firstCategory
 
