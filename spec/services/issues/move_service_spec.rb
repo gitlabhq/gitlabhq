@@ -160,6 +160,25 @@ describe Issues::MoveService, services: true do
               .to eq "Note with reference to merge request #{old_project.to_reference}!1"
           end
         end
+
+        context 'issue description with uploads' do
+          let(:path) { Rails.root + 'spec/fixtures/rails_sample.jpg' }
+          let(:file) { fixture_file_upload(path, 'image/jpg') }
+          let(:uploader) { FileUploader.new(old_project) }
+          let!(:store) { uploader.store!(file) }
+          let(:markdown) { uploader.to_h[:markdown] }
+          let(:description) { "Text and #{markdown}"}
+
+          include_context 'issue move executed'
+
+          it 'rewrites uploads in description' do
+            expect(new_issue.description).to_not eq description
+            expect(new_issue.description)
+              .to match(/Text and #{FileUploader::MARKDOWN_PATTERN}/)
+          end
+
+          after { uploader.remove! }
+        end
       end
 
       describe 'rewritting references' do
