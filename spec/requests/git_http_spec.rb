@@ -4,6 +4,12 @@ describe 'Git HTTP requests', lib: true do
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
 
+  it "gives WWW-Authenticate hints" do
+    clone_get('doesnt/exist.git')
+
+    expect(response.header['WWW-Authenticate']).to start_with('Basic ')
+  end
+
   context "when the project doesn't exist" do
     context "when no authentication is provided" do
       it "responds with status 401" do
