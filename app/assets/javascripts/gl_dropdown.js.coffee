@@ -301,7 +301,7 @@ class GitLabDropdown
     html += "</li>"
 
   highlightRow: (index) ->
-    if @input.val() isnt ""
+    if @filterInput.val() isnt ""
       selector = '.dropdown-content li:first-child a'
       if @dropdown.find(".dropdown-toggle-page").length
         selector = ".dropdown-page-one .dropdown-content li:first-child a"
