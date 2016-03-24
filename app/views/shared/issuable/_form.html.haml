@@ -13,15 +13,6 @@
 
     - if issuable.is_a?(MergeRequest)
       %p.help-block
-<<<<<<< HEAD
-        - if issuable.work_in_progress?
-          Remove the <code>WIP</code> prefix from the title to allow this
-          <strong>Work In Progress</strong> merge request to be merged when it's ready.
-        - else
-          Start the title with <code>[WIP]</code> or <code>WIP:</code> to prevent a
-          <strong>Work In Progress</strong> merge request from being merged before it's ready.
-
-=======
         .js-wip-explanation
           %a.js-toggle-wip{href: ""}
             Remove the
@@ -37,7 +28,6 @@
           to prevent a
           %strong Work In Progress
           merge request from being merged before it's ready.
->>>>>>> ce/master
 .form-group.detail-page-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
@@ -186,17 +176,6 @@
   - if issuable.new_record?
     = link_to 'Cancel', namespace_project_issues_path(@project.namespace, @project), class: 'btn btn-cancel'
   - else
-<<<<<<< HEAD
-    - cancel_project = issuable.project
-  = link_to 'Cancel', [cancel_project.namespace.becomes(Namespace), cancel_project, issuable], class: 'btn btn-cancel'
-
-%li.project-approvers.hide.approver-template{id: "user_{user_id}"}
-  = link_to "{approver_name}", "#"
-  .pull-right
-    = link_to "#", data: { confirm: "Are you sure you want to remove approver {approver_name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
-      = icon("sign-out")
-      Remove
-=======
     .pull-right
       - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)
         = link_to polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
@@ -204,4 +183,10 @@
           = icon('trash-o')
           Delete
       = link_to 'Cancel', namespace_project_issue_path(@project.namespace, @project, issuable), class: 'btn btn-grouped btn-cancel'
->>>>>>> ce/master
+
+%li.project-approvers.hide.approver-template{id: "user_{user_id}"}
+  = link_to "{approver_name}", "#"
+  .pull-right
+    = link_to "#", data: { confirm: "Are you sure you want to remove approver {approver_name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+      = icon("sign-out")
+      Remove
