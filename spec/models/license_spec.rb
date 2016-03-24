@@ -210,4 +210,34 @@ describe License do
       end
     end
   end
+
+  describe 'reading add-ons' do
+    context "with add-ons" do
+      before do
+        gl_license.restrictions = { add_ons: { support: 1, custom_domain: 2 } }
+      end
+
+      it 'returns all available add-ons' do
+        expect(license.add_ons.keys).to include('support', 'custom_domain')
+      end
+
+      it 'returns a single addon if it exists' do
+        expect(license.add_on('support')).to eq({ 'support' => 1 })
+      end
+
+      it 'returns Nil if add-on does not exists' do
+        expect(license.add_on('unknown')).to be_nil
+      end
+    end
+
+    context "without add-ons" do
+      it 'returns an empty Hash' do
+        expect(license.add_ons).to eq({})
+      end
+
+      it 'returns nil when asking for a single add-on' do
+        expect(license.add_on('support')).to be_nil
+      end
+    end
+  end
 end

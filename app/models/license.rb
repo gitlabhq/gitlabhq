@@ -76,6 +76,15 @@ class License < ActiveRecord::Base
     end
   end
 
+  def add_ons
+    return {} unless self.license? && self.restricted?(:add_ons)
+
+    self.restrictions[:add_ons]
+  end
+
+  def add_on(code)
+    add_ons.slice(code).presence or nil
+  end
   private
 
   def reset_current
