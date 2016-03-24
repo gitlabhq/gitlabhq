@@ -52,18 +52,13 @@ module Banzai
         html.html_safe? ? html : ERB::Util.html_escape_once(html)
       end
 
-      def ignore_parents
-        @ignore_parents ||= begin
-          # Don't look for references in text nodes that are children of these
-          # elements.
+      def ignore_ancestor_query
+        @ignore_ancestor_query ||= begin
           parents = %w(pre code a style)
           parents << 'blockquote' if context[:ignore_blockquotes]
-          parents.to_set
-        end
-      end
 
-      def ignored_ancestry?(node)
-        has_ancestor?(node, ignore_parents)
+          parents.map { |n| "ancestor::#{n}" }.join(' or ')
+        end
       end
 
       def project
@@ -74,119 +69,66 @@ module Banzai
         "gfm gfm-#{type}"
       end
 
-      # Iterate through the document's text nodes, yielding the current node's
-      # content if:
-      #
-      # * The `project` context value is present AND
-      # * The node's content matches `pattern` AND
-      # * The node is not an ancestor of an ignored node type
-      #
-      # pattern - Regex pattern against which to match the node's content
-      #
-      # Yields the current node's String contents. The result of the block will
-      # replace the node's existing content and update the current document.
-      #
-      # Returns the updated Nokogiri::HTML::DocumentFragment object.
-      def replace_text_nodes_matching(pattern)
-        return doc if project.nil?
-
-        search_text_nodes(doc).each do |node|
-          next if ignored_ancestry?(node)
-          next unless node.text =~ pattern
-
-          content = node.to_html
-
-          html = yield content
-
-          next if html == content
-
-          node.replace(html)
-        end
-
-        doc
-      end
-
-      # Iterate through the document's link nodes, yielding the current node's
-      # content if:
-      #
-      # * The `project` context value is present AND
-      # * The node's content matches `pattern`
-      #
-      # pattern - Regex pattern against which to match the node's content
-      #
-      # Yields the current node's String contents. The result of the block will
-      # replace the node and update the current document.
-      #
-      # Returns the updated Nokogiri::HTML::DocumentFragment object.
-      def replace_link_nodes_with_text(pattern)
-        return doc if project.nil?
-
-        doc.xpath('descendant-or-self::a').each do |node|
-          klass = node.attr('class')
-          next if klass && klass.include?('gfm')
-
-          link = node.attr('href')
-          text = node.text
-
-          next unless link && text
-
-          link = CGI.unescape(link)
-          next unless link.force_encoding('UTF-8').valid_encoding?
-          # Ignore ending punctionation like periods or commas
-          next unless link == text && text =~ /\A#{pattern}/
-
-          html = yield text
-
-          next if html == text
-
-          node.replace(html)
-        end
-
-        doc
-      end
-
-      # Iterate through the document's link nodes, yielding the current node's
-      # content if:
-      #
-      # * The `project` context value is present AND
-      # * The node's HREF matches `pattern`
-      #
-      # pattern - Regex pattern against which to match the node's HREF
-      #
-      # Yields the current node's String HREF and String content.
-      # The result of the block will replace the node and update the current document.
-      #
-      # Returns the updated Nokogiri::HTML::DocumentFragment object.
-      def replace_link_nodes_with_href(pattern)
-        return doc if project.nil?
-
-        doc.xpath('descendant-or-self::a').each do |node|
-          klass = node.attr('class')
-          next if klass && klass.include?('gfm')
-
-          link = node.attr('href')
-          text = node.text
-
-          next unless link && text
-          link = CGI.unescape(link)
-          next unless link.force_encoding('UTF-8').valid_encoding?
-          next unless link && link =~ /\A#{pattern}\z/
-
-          html = yield link, text
-
-          next if html == link
-
-          node.replace(html)
-        end
-
-        doc
-      end
-
       # Ensure that a :project key exists in context
       #
       # Note that while the key might exist, its value could be nil!
       def validate
         needs :project
+      end
+
+      # Iterates over all <a> and text() nodes in a document.
+      #
+      # Nodes are skipped whenever their ancestor is one of the nodes returned
+      # by `ignore_ancestor_query`. Link tags are not processed if they have a
+      # "gfm" class or the "href" attribute is empty.
+      def each_node
+        query = %Q{descendant-or-self::text()[not(#{ignore_ancestor_query})]
+        | descendant-or-self::a[
+          not(contains(concat(" ", @class, " "), " gfm ")) and not(@href = "")
+        ]}
+
+        doc.xpath(query).each do |node|
+          yield node
+        end
+      end
+
+      # Yields the link's URL and text whenever the node is a valid <a> tag.
+      def yield_valid_link(node)
+        link = CGI.unescape(node.attr('href').to_s)
+        text = node.text
+
+        return unless link.force_encoding('UTF-8').valid_encoding?
+
+        yield link, text
+      end
+
+      def replace_text_when_pattern_matches(node, pattern)
+        return unless node.text =~ pattern
+
+        content = node.to_html
+        html = yield content
+
+        node.replace(html) unless content == html
+      end
+
+      def replace_link_node_with_text(node, link)
+        html = yield
+
+        node.replace(html) unless html == node.text
+      end
+
+      def replace_link_node_with_href(node, link)
+        html = yield
+
+        node.replace(html) unless html == link
+      end
+
+      def text_node?(node)
+        node.is_a?(Nokogiri::XML::Text)
+      end
+
+      def element_node?(node)
+        node.is_a?(Nokogiri::XML::Element)
       end
     end
   end

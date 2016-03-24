@@ -37,13 +37,27 @@ module Banzai
         # Early return if the project isn't using an external tracker
         return doc if project.nil? || project.default_issues_tracker?
 
-        replace_text_nodes_matching(ExternalIssue.reference_pattern) do |content|
-          issue_link_filter(content)
+        ref_pattern = ExternalIssue.reference_pattern
+        ref_start_pattern = /\A#{ref_pattern}\z/
+
+        each_node do |node|
+          if text_node?(node)
+            replace_text_when_pattern_matches(node, ref_pattern) do |content|
+              issue_link_filter(content)
+            end
+
+          elsif element_node?(node)
+            yield_valid_link(node) do |link, text|
+              if link =~ ref_start_pattern
+                replace_link_node_with_href(node, link) do
+                  issue_link_filter(link, link_text: text)
+                end
+              end
+            end
+          end
         end
 
-        replace_link_nodes_with_href(ExternalIssue.reference_pattern) do |link, text|
-          issue_link_filter(link, link_text: text)
-        end
+        doc
       end
 
       # Replace `JIRA-123` issue references in text with links to the referenced

@@ -110,30 +110,45 @@ module Banzai
       end
 
       def call
-        if object_class.reference_pattern
-          # `#123`
-          replace_text_nodes_matching(object_class.reference_pattern) do |content|
-            object_link_filter(content, object_class.reference_pattern)
-          end
+        return doc if project.nil?
 
-          # `[Issue](#123)`, which is turned into
-          # `<a href="#123">Issue</a>`
-          replace_link_nodes_with_href(object_class.reference_pattern) do |link, text|
-            object_link_filter(link, object_class.reference_pattern, link_text: text)
-          end
-        end
+        ref_pattern = object_class.reference_pattern
+        link_pattern = object_class.link_reference_pattern
 
-        if object_class.link_reference_pattern
-          # `http://gitlab.example.com/namespace/project/issues/123`, which is turned into
-          # `<a href="http://gitlab.example.com/namespace/project/issues/123">http://gitlab.example.com/namespace/project/issues/123</a>`
-          replace_link_nodes_with_text(object_class.link_reference_pattern) do |text|
-            object_link_filter(text, object_class.link_reference_pattern)
-          end
+        each_node do |node|
+          if text_node?(node) && ref_pattern
+            replace_text_when_pattern_matches(node, ref_pattern) do |content|
+              object_link_filter(content, ref_pattern)
+            end
 
-          # `[Issue](http://gitlab.example.com/namespace/project/issues/123)`, which is turned into
-          # `<a href="http://gitlab.example.com/namespace/project/issues/123">Issue</a>`
-          replace_link_nodes_with_href(object_class.link_reference_pattern) do |link, text|
-            object_link_filter(link, object_class.link_reference_pattern, link_text: text)
+          elsif element_node?(node)
+            yield_valid_link(node) do |link, text|
+              if ref_pattern && link =~ /\A#{ref_pattern}/
+                replace_link_node_with_href(node, link) do
+                  object_link_filter(link, ref_pattern, link_text: text)
+                end
+
+                next
+              end
+
+              next unless link_pattern
+
+              if link == text && text =~ /\A#{link_pattern}/
+                replace_link_node_with_text(node, link) do
+                  object_link_filter(text, link_pattern)
+                end
+
+                next
+              end
+
+              if link =~ /\A#{link_pattern}\z/
+                replace_link_node_with_href(node, link) do
+                  object_link_filter(link, link_pattern, link_text: text)
+                end
+
+                next
+              end
+            end
           end
         end
 
