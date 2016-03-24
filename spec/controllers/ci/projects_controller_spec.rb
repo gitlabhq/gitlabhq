@@ -6,12 +6,23 @@ describe Ci::ProjectsController do
   let(:ci_id) { project.ci_id }
 
   describe '#index' do
-    let(:user) { create(:user) }
-    before { sign_in(user) }
-    before { get(:index) }
+    context 'user signed in' do
+      before do
+        sign_in(create(:user))
+        get(:index)
+      end
 
-    it 'returns 200' do
-      expect(response.status).to eq 200
+      it 'redirects to /' do
+        expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'user not signed in' do
+      before { get(:index) }
+
+      it 'redirects to sign in page' do
+        expect(response).to redirect_to(new_user_session_path)
+      end
     end
   end
 

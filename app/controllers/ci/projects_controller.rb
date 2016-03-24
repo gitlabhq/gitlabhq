@@ -6,6 +6,10 @@ module Ci
     skip_before_action :authenticate_user!, only: [:badge]
     protect_from_forgery
 
+    def index
+      redirect_to root_path
+    end
+
     def show
       # Temporary compatibility with CI badges pointing to CI project page
       redirect_to namespace_project_path(project.namespace, project)
