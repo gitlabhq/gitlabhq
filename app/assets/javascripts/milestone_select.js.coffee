@@ -11,6 +11,7 @@ class @MilestoneSelect
       selectedMilestone = $dropdown.data('selected')
       showNo = $dropdown.data('show-no')
       showAny = $dropdown.data('show-any')
+      showUpcoming = $dropdown.data('show-upcoming')
       useId = $dropdown.data('use-id')
       defaultLabel = $dropdown.data('default-label')
       issuableId = $dropdown.data('issuable-id')
@@ -34,7 +35,6 @@ class @MilestoneSelect
         id: '0'
         title: 'No Milestone'
       }, {
-        upcoming: true
         id: '#upcoming'
         title: 'Upcoming'
       }]
@@ -44,6 +44,7 @@ class @MilestoneSelect
           $.ajax(
             url: milestonesUrl
           ).done (data) ->
+<<<<<<< c9dea7761dc69ff38d101d06e0e636e1f3b2a0c4
             if $dropdown.hasClass "js-extra-options"
               if showNo
                 data.unshift(
@@ -56,6 +57,26 @@ class @MilestoneSelect
                   isAny: true
                   title: 'Any Milestone'
                 )
+=======
+            extraOptions = []
+            if showAny
+              extraOptions.push(
+                isAny: true
+                title: 'Any Milestone'
+              )
+
+            if showNo
+              extraOptions.push(
+                id: '0'
+                title: 'No Milestone'
+              )
+
+            if showUpcoming
+              extraOptions.push(
+                id: '#upcoming'
+                title: 'Upcoming'
+              )
+>>>>>>> Updated to only include upcoming on filters
 
               if data.length > 2
                 data.splice 2, 0, 'divider'
