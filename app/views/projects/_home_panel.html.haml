@@ -5,7 +5,7 @@
   .cover-title.project-home-desc
     %h1
       = @project.name
-      %span.visibility-icon.has_tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}
+      %span.visibility-icon.has-tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}
         = visibility_level_icon(@project.visibility_level, fw: false)
 
   - if @project.description.present?

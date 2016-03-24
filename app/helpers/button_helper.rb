@@ -57,7 +57,7 @@ module ButtonHelper
   def kerberos_clone_button(project)
     klass = 'btn js-protocol-switch'
     klass << ' active'      if default_clone_protocol == 'kerberos'
-    klass << ' has_tooltip'
+    klass << ' has-tooltip'
 
     content_tag :button, 'KRB5',
       class: klass,

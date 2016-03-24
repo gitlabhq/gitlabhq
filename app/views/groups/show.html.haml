@@ -17,7 +17,7 @@
   .cover-title
     %h1
       = @group.name
-      %span.visibility-icon.has_tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
         = visibility_level_icon(@group.visibility_level, fw: false)
 
   .cover-desc.username

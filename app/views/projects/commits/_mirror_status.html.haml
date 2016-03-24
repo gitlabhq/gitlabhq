@@ -10,6 +10,6 @@
       = render "shared/mirror_status"
 
       - if @ref.present? && @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(@ref)
-        %span.has_tooltip{data: { html: "true", title: branch_diverged_tooltip_message }}
+        %span.has-tooltip{data: { html: "true", title: branch_diverged_tooltip_message }}
           = icon('exclamation-triangle')
           This branch has diverged from upstream.
